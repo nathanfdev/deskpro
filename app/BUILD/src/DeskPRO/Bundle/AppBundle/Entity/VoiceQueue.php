@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class VoiceQueue.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceQueueRepository")
+ * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceQueueListener"})
  * @ORM\Table(name="voice_queues", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="name", columns={"name"})
  * })

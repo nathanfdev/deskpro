@@ -373,6 +373,7 @@ class VoiceCallbacksHelper
                     $queueDepartment = $voiceQueue->getDepartment();
                     if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
                         $ticket->setDepartment($queueDepartment);
+                        $ticket->setBrand($voiceQueue->getBrand());
                     }
                 }
             }

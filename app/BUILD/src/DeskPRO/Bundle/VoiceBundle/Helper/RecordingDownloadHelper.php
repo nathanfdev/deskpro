@@ -306,6 +306,8 @@ class RecordingDownloadHelper
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
+            $ticket->setDepartment($queue->getDepartment());
+            $ticket->setBrand($queue->getBrand());
 
             // set asset properties
             if ($queue->getVoicemailAgent()) {

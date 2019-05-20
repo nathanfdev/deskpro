@@ -11,6 +11,8 @@ import { loadAgents, loadAgentTeams } from '../../../../Application/Actions/peop
 import { loadSelectableTicketDepartments } from '../../../../Application/Actions/departmentsActions';
 import { allAgentsSelector, isAgentsLoadedSelector, allAgentTeamsSelector, isAgentTeamsLoadedSelector } from '../../../../Application/Selectors/people';
 import { selectableTicketDepartmentsSelector, isTicketDepartmentsLoadedSelector } from '../../../../Application/Selectors/departments';
+import { allBrandsSelector, allBrandsLoadedSelector } from '../../../../Application/Selectors/brands';
+import { loadBrands } from '../../../../Application/Actions/brandsActions';
 
 @connect(state => ({
   agents:                  allAgentsSelector(state),
@@ -22,7 +24,9 @@ import { selectableTicketDepartmentsSelector, isTicketDepartmentsLoadedSelector 
   agentTeams:              allAgentTeamsSelector(state),
   agentTeamsLoaded:        isAgentTeamsLoadedSelector(state),
   ticketDepartments:       selectableTicketDepartmentsSelector(state),
-  ticketDepartmentsLoaded: isTicketDepartmentsLoadedSelector(state)
+  ticketDepartmentsLoaded: isTicketDepartmentsLoadedSelector(state),
+  brands:                  allBrandsSelector(state),
+  brandsLoaded:            allBrandsLoadedSelector(state)
 }))
 class LoadingFormContainer extends BaseQueueFormContainer {
 
@@ -44,13 +48,14 @@ class LoadingFormContainer extends BaseQueueFormContainer {
     dispatch(loadSelectableTicketDepartments());
     dispatch(loadAccounts());
     dispatch(loadQueues());
+    dispatch(loadBrands());
   }
 
   render() {
-    const { queuesLoaded, agentsLoaded, accountsLoaded, agentTeamsLoaded, ticketDepartmentsLoaded } = this.props;
+    const { queuesLoaded, agentsLoaded, accountsLoaded, agentTeamsLoaded, ticketDepartmentsLoaded, brandsLoaded } = this.props;
     const { form } = this.props;
 
-    if (!queuesLoaded || !agentsLoaded || !accountsLoaded || !agentTeamsLoaded || !ticketDepartmentsLoaded) {
+    if (!queuesLoaded || !agentsLoaded || !accountsLoaded || !agentTeamsLoaded || !ticketDepartmentsLoaded || !brandsLoaded) {
       return <LoadingPage />;
     }
 

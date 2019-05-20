@@ -18,6 +18,7 @@ class QueueForm extends BaseForm {
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
     ticketDepartments: PropTypes.object,
+    brands:            PropTypes.object,
     onSubmit:          PropTypes.func.isRequired,
     onDelete:          PropTypes.func,
     onCancel:          PropTypes.func
@@ -48,6 +49,7 @@ class QueueForm extends BaseForm {
     return {
       name:                 queue ? queue.get('name') : '',
       department:           queue ? queue.get('department') : null,
+      brand:                queue ? queue.get('brand') : null,
       agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
       routing_model:        queue ? queue.get('routing_model') : 'round_robin',
       max_queue_size:       queue ? queue.get('max_queue_size') : 0,
@@ -71,8 +73,17 @@ class QueueForm extends BaseForm {
   }
 
   render() {
-    const { queueId, agents, agentTeams, ticketDepartments, onCancel } = this.props;
+    const { queueId, agents, agentTeams, ticketDepartments, brands, onCancel } = this.props;
     const { formData, saving } = this.state;
+
+    let departmentBrands = Immutable.fromJS([]);
+    const currentDepartment = formData.value.department;
+    if (currentDepartment) {
+      const department = ticketDepartments.get(currentDepartment);
+      if (department.get('brands').size > 1) {
+        departmentBrands = brands;
+      }
+    }
 
     return (
       <div className="twilio-queue-form">
@@ -86,6 +97,12 @@ class QueueForm extends BaseForm {
                 <Select {...this.props} clearable={false} />
               </RecordsChoiceWrapper>
             </Field>
+            {departmentBrands.size > 1 &&
+            <Field select="brand" label="Brand">
+              <RecordsChoiceWrapper records={departmentBrands} labelProp="name">
+                <Select {...this.props} clearable={false} />
+              </RecordsChoiceWrapper>
+            </Field>}
             {agents && agents.size > 0 &&
               <Field select="agents" label="Agents">
                 <VoiceAgentChoiceList agents={agents} />
