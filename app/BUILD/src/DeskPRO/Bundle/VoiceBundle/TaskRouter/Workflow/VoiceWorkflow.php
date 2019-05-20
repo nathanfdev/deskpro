@@ -205,43 +205,20 @@ class VoiceWorkflow implements WorkflowInterface
 
                     break;
                 case VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED:
-                    // get answered call stat, order by answered calls count
-                    // and get ids with max available count of workers option from queue settings
-                    if (!is_array($taskQueue->getAttribute('answered_calls_counts'))) {
-                        $taskQueue->setAttribute('answered_calls_counts', []);
-                    }
+                    $leastUtilizedWorkers = $workers;
+                    $leastUtilizedWorkers = array_filter($leastUtilizedWorkers, function (Worker $worker) use ($queueAgentIds) {
+                        return in_array($worker->getTypeId(), $queueAgentIds) && $worker->getType() === 'agent';
+                    });
+                    usort($leastUtilizedWorkers, function (Worker $a, Worker $b) {
+                        return $a->getLastCallAt() > $b->getLastCallAt();
+                    });
 
-                    $answeredCallsCounts = $taskQueue->getAttribute('answered_calls_counts');
-                    if (is_array($answeredCallsCounts)) {
-                        // check if 'answered_calls_counts' is up to date with voice queue agents list
-                        foreach ($answeredCallsCounts as $agentId => $callsCount) {
-                            if (!in_array($agentId, $queueAgentIds)) {
-                                unset($answeredCallsCounts[$agentId]);
-                            }
-                        }
-                        foreach ($queueAgentIds as $agentId) {
-                            if (!isset($answeredCallsCounts[$agentId])) {
-                                $answeredCallsCounts[$agentId] = 0;
-                            }
-                        }
+                    $leastUtilizedWorkers = array_splice($leastUtilizedWorkers, 0, $voiceQueue->getMaxQueueSize());
+                    $workerIds            = array_map(function (Worker $worker) {
+                        return $worker->getId();
+                    }, $leastUtilizedWorkers);
 
-                        // sort by least utilized
-                        // and return limited by max allowed workers number
-                        asort($answeredCallsCounts);
-
-                        $workerIds = [];
-                        foreach ($answeredCallsCounts as $agentId => $callsCount) {
-                            if (isset($workerToAgentMap[$agentId])) {
-                                $workerIds[] = $workerToAgentMap[$agentId];
-                            }
-
-                            if (count($workerIds) >= $voiceQueue->getMaxQueueSize()) {
-                                break;
-                            }
-                        }
-
-                        $task->setWorkersIds($workerIds);
-                    }
+                    $task->setWorkersIds($workerIds);
 
                     break;
                 case VoiceQueue::ROUTING_MODEL_SIMULRING:

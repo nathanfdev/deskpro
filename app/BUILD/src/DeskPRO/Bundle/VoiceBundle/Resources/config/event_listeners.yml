@@ -55,6 +55,13 @@ services:
     tags:
       - { name: dp.voice.event_subscriber }
 
+  dp.voice.listener.worker_last_call_at:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\WorkerLastCallAtListener
+    arguments:
+      - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
   event_listener.doctrine.twilio_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener
     arguments:

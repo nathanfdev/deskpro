@@ -65,49 +65,12 @@ class VoiceQueueCountListener implements EventSubscriberInterface
     {
         return [
             TaskRouterEvent::TASK_CREATED   => 'addWaitingUser',
-            TaskRouterEvent::ACCEPTED       => [['incrementAnsweredCounts'], ['removeWaitingUser']],
+            TaskRouterEvent::ACCEPTED       => 'removeWaitingUser',
             TaskRouterEvent::ERROR          => 'removeWaitingUser',
             TaskRouterEvent::TIMEOUT        => 'removeWaitingUser',
             TaskRouterEvent::TASK_COMPLETED => 'removeWaitingUser',
             TaskRouterEvent::TASK_CANCELED  => 'removeWaitingUser',
         ];
-    }
-
-    /**
-     * If the call came from a voice queue then update calls count stat to handle routing model strategies.
-     *
-     * @internal
-     *
-     * @param TaskRouterEvent $event
-     */
-    public function incrementAnsweredCounts(TaskRouterEvent $event)
-    {
-        $task = $event->getTask();
-        if (!$task) {
-            return;
-        }
-
-        $voiceQueue = $this->taskHelper->getVoiceQueue($task);
-        if (!$voiceQueue) {
-            return;
-        }
-
-        $taskQueue = $this->storage->getTaskQueue(VoiceWorkflow::getChannelName(), $voiceQueue->getId());
-        if (!$taskQueue) {
-            return;
-        }
-
-        $callsCount = $taskQueue->getAttribute('answered_calls_counts') ?: [];
-        $worker     = $this->storage->getWorker($task->getAcceptedWorkerId());
-
-        if (!isset($callsCount[$worker->getTypeId()])) {
-            $callsCount[$worker->getTypeId()] = 0;
-        }
-
-        ++$callsCount[$worker->getTypeId()];
-        $taskQueue->setAttribute('answered_calls_counts', $callsCount);
-
-        $this->storage->saveTaskQueue($taskQueue);
     }
 
     /**

@@ -31,6 +31,11 @@ class Worker extends AbstractModel
     protected $dateLastActive;
 
     /**
+     * @var \DateTime
+     */
+    protected $lastCallAt;
+
+    /**
      * @var array
      */
     protected $pendingTaskIds = [];
@@ -132,6 +137,26 @@ class Worker extends AbstractModel
     public function setDateLastActive(\DateTime $dateLastActive = null)
     {
         $this->dateLastActive = $dateLastActive;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastCallAt()
+    {
+        return $this->lastCallAt;
+    }
+
+    /**
+     * @param \DateTime $lastCallAt
+     *
+     * @return $this
+     */
+    public function setLastCallAt(\DateTime $lastCallAt = null)
+    {
+        $this->lastCallAt = $lastCallAt;
 
         return $this;
     }

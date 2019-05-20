@@ -364,78 +364,38 @@ class VoiceWorkflowSpec extends ObjectBehavior
         Worker $worker4,
         VoiceQueue $queue,
         Task $task,
-        TaskQueue $taskQueue,
-        VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        VoiceTaskHelper $taskHelper
     ) {
         $worker1->getId()->willReturn(10);
+        $worker1->getType()->willReturn('agent');
         $worker1->getTypeId()->willReturn(1);
+        $worker1->getLastCallAt()->willReturn(new \DateTime('-5 days'));
 
         $worker2->getId()->willReturn(20);
+        $worker2->getType()->willReturn('agent');
         $worker2->getTypeId()->willReturn(2);
+        $worker2->getLastCallAt()->willReturn(new \DateTime('-2 days'));
 
         $worker3->getId()->willReturn(30);
+        $worker3->getType()->willReturn('agent');
         $worker3->getTypeId()->willReturn(3);
+        $worker3->getLastCallAt()->willReturn(new \DateTime('-1 days'));
 
         $worker4->getId()->willReturn(40);
+        $worker4->getType()->willReturn('agent');
         $worker4->getTypeId()->willReturn(4);
+        $worker4->getLastCallAt()->willReturn(new \DateTime('-4 days'));
 
         $queue->getId()->willReturn(1);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED);
-        $queue->getActiveAgentsPeopleIds()->willReturn([1, 2, 3]);
+        $queue->getActiveAgentsPeopleIds()->willReturn([2, 3, 4]);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
         $taskHelper->getWorkerAgent($task)->willReturn(null);
 
-        $taskQueue->getAttribute('answered_calls_counts')->willReturn([
-            1 => 5,
-            2 => 10,
-            3 => 1,
-        ]);
-
-        $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
-
-        $task->setWorkersIds([30, 10])->shouldBeCalled();
+        $task->setWorkersIds([40, 20])->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker2, $worker3, $worker4]);
-    }
-
-    public function it_keeps_least_utilized_up_to_date(
-        Worker $worker3,
-        Worker $worker4,
-        VoiceQueue $queue,
-        Task $task,
-        TaskQueue $taskQueue,
-        VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
-    ) {
-        $worker3->getId()->willReturn(30);
-        $worker3->getTypeId()->willReturn(3);
-
-        $worker4->getId()->willReturn(40);
-        $worker4->getTypeId()->willReturn(4);
-
-        $queue->getId()->willReturn(1);
-        $queue->getMaxQueueSize()->willReturn(2);
-        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED);
-        $queue->getActiveAgentsPeopleIds()->willReturn([1, 3, 4]);
-
-        $taskHelper->getVoiceQueue($task)->willReturn($queue);
-        $taskHelper->getWorkerAgent($task)->willReturn(null);
-
-        $taskQueue->getAttribute('answered_calls_counts')->willReturn([
-            1 => 5,
-            2 => 10,
-            3 => 1,
-        ]);
-
-        $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
-
-        $task->setWorkersIds([40, 30])->shouldBeCalled();
-
-        $this->assignTask($task, [$worker3, $worker4]);
     }
 }

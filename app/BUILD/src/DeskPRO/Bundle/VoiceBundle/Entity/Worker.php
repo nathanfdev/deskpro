@@ -41,6 +41,13 @@ class Worker extends AbstractEntity
     protected $dateLastActive;
 
     /**
+     * @ORM\Column(name="last_call_at", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    protected $lastCallAt;
+
+    /**
      * @ORM\Column(name="pending_tasks", type="json_array", nullable=true)
      *
      * @var int[]
@@ -130,6 +137,26 @@ class Worker extends AbstractEntity
     public function setDateLastActive(\DateTime $dateLastActive = null)
     {
         $this->setModelField('lastActiveDate', $dateLastActive);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastCallAt()
+    {
+        return $this->lastCallAt;
+    }
+
+    /**
+     * @param \DateTime $lastCallAt
+     *
+     * @return $this
+     */
+    public function setLastCallAt(\DateTime $lastCallAt = null)
+    {
+        $this->setModelField('lastCallAt', $lastCallAt);
 
         return $this;
     }

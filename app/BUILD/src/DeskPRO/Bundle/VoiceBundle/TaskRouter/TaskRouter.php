@@ -613,4 +613,31 @@ class TaskRouter
             $this->lock->release();
         }
     }
+
+    /**
+     * @param string $workerType
+     * @param int    $workerId
+     *
+     * @return bool
+     */
+    public function updateLastWorkerActivity($workerType, $workerId)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+            if (!$worker) {
+                return false;
+            }
+
+            $worker->setLastCallAt(new \DateTime());
+            $this->storage->saveWorker($worker);
+
+            return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->lock->release();
+        }
+    }
 }
