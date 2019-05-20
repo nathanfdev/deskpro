@@ -11,22 +11,27 @@ import { isAccountsLoadedSelector, allAccountsSelector } from '../../Selectors/a
 import { toggleVoiceEnabled, toggleOutboundCallsEnabled, toggleUseForwarding, toggleAll } from '../../Actions/agentActions';
 import { settingsSelector, settingsLoadedSelector } from '../../Selectors/settings';
 import { loadSettings, updateSettings } from '../../Actions/settingActions';
+import { isTicketDepartmentsLoadedSelector, selectableTicketDepartmentsSelector } from '../../../Application/Selectors/departments';
+import { loadSelectableTicketDepartments } from '../../../Application/Actions/departmentsActions';
 
 @connect(state => ({
-  accounts:       allAccountsSelector(state),
-  accountsLoaded: isAccountsLoadedSelector(state),
-  agents:         agentsSelector(state),
-  isAgentsLoaded: isAgentsLoadedSelector(state),
-  settings:       settingsSelector(state),
-  settingsLoaded: settingsLoadedSelector(state)
+  accounts:                allAccountsSelector(state),
+  accountsLoaded:          isAccountsLoadedSelector(state),
+  agents:                  agentsSelector(state),
+  isAgentsLoaded:          isAgentsLoadedSelector(state),
+  settings:                settingsSelector(state),
+  settingsLoaded:          settingsLoadedSelector(state),
+  ticketDepartments:       selectableTicketDepartmentsSelector(state),
+  ticketDepartmentsLoaded: isTicketDepartmentsLoadedSelector(state),
 }))
 class AgentsVoiceToggleContainer extends React.Component {
 
   static propTypes = {
-    dispatch:       PropTypes.func,
-    isAgentsLoaded: PropTypes.bool,
-    accountsLoaded: PropTypes.bool,
-    settingsLoaded: PropTypes.bool
+    dispatch:                PropTypes.func,
+    isAgentsLoaded:          PropTypes.bool,
+    accountsLoaded:          PropTypes.bool,
+    settingsLoaded:          PropTypes.bool,
+    ticketDepartmentsLoaded: PropTypes.bool
   };
 
   componentDidMount() {
@@ -35,6 +40,7 @@ class AgentsVoiceToggleContainer extends React.Component {
     dispatch(loadAccounts());
     dispatch(loadAgents());
     dispatch(loadSettings());
+    dispatch(loadSelectableTicketDepartments());
   }
 
   toggleEnabled = agent => this.props.dispatch(toggleVoiceEnabled(agent));
@@ -47,9 +53,9 @@ class AgentsVoiceToggleContainer extends React.Component {
   };
 
   render() {
-    const { isAgentsLoaded, accountsLoaded, settingsLoaded } = this.props;
+    const { isAgentsLoaded, accountsLoaded, settingsLoaded, ticketDepartmentsLoaded } = this.props;
 
-    if (!isAgentsLoaded || !accountsLoaded || !settingsLoaded) {
+    if (!isAgentsLoaded || !accountsLoaded || !settingsLoaded || !ticketDepartmentsLoaded) {
       return <LoadingPage />;
     }
 

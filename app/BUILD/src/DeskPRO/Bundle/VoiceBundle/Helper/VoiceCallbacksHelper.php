@@ -360,9 +360,6 @@ class VoiceCallbacksHelper
             $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
 
             // set ticket department
-            $permissionsHelper          = $agent->getHelper('AgentPermissions');
-            $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
-
             $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
             if ($task && $queueId = $task->getAttribute('queue')) {
                 /** @var VoiceQueue $voiceQueue */
@@ -370,6 +367,9 @@ class VoiceCallbacksHelper
                 if ($voiceQueue) {
                     // set ticket department from the queue
                     // make sure the agent has permissions to this department
+                    $permissionsHelper          = $agent->getHelper('AgentPermissions');
+                    $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+
                     $queueDepartment = $voiceQueue->getDepartment();
                     if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
                         $ticket->setDepartment($queueDepartment);
@@ -379,15 +379,7 @@ class VoiceCallbacksHelper
             }
 
             // set department from the agent
-            if (!$ticket->getDepartment()) {
-                $departmentId = reset($allowedTicketDepartmentIds);
-                if ($departmentId) {
-                    $agentDepartment = $this->em->getRepository(Department::class)->find($departmentId);
-                    if ($agentDepartment) {
-                        $ticket->setDepartment($agentDepartment);
-                    }
-                }
-            }
+            $this->setAgentDefaultDepartment($ticket, $agent);
 
             $this->voiceTicketHelper->saveTicket($ticket);
         } else {
@@ -527,6 +519,8 @@ class VoiceCallbacksHelper
             $ticket->setAgent($agent);
             $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             $ticket->setCreationSystem(Ticket::CREATED_PHONE_OUTBOUND);
+
+            $this->setAgentDefaultDepartment($ticket, $agent);
         }
 
         $ticket->addMessage($ticketMessage);
@@ -1048,5 +1042,32 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->persist($phoneCall);
         $this->em->flush();
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $agent
+     */
+    private function setAgentDefaultDepartment(Ticket $ticket, Person $agent)
+    {
+        // set department from the agent
+        if (!$ticket->getDepartment()) {
+            $permissionsHelper          = $agent->getHelper('AgentPermissions');
+            $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+
+            $agentDefaultDepartment = $this->voiceSettingsResolver->getAgentDefaultDepartment();
+            if ($agentDefaultDepartment && in_array($agentDefaultDepartment, $allowedTicketDepartmentIds)) {
+                $departmentId = $agentDefaultDepartment;
+            } else {
+                $departmentId = reset($allowedTicketDepartmentIds);
+            }
+
+            if ($departmentId) {
+                $agentDepartment = $this->em->getRepository(Department::class)->find($departmentId);
+                if ($agentDepartment) {
+                    $ticket->setDepartment($agentDepartment);
+                }
+            }
+        }
     }
 }

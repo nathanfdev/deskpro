@@ -33,3 +33,10 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }
+
+  form.voice_settings:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceSettingsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }

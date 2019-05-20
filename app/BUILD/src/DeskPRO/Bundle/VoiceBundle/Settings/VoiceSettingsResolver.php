@@ -12,6 +12,7 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 class VoiceSettingsResolver
 {
     const VOICE_AGENT_VOICEMAIL_TIMEOUT           = 'voice.agent_voicemail_timeout';
+    const VOICE_AGENT_DEFAULT_DEPARTMENT          = 'voice.agent_default_department';
     const VOICE_GROUP_MISSED_CALL_TICKETS         = 'voice.group_missed_call_tickets';
     const VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT = 'voice.group_missed_call_tickets_timeout';
     const VOICE_TWILIO_PROXY_API_URL              = 'voice.twilio_proxy_api_url';
@@ -44,6 +45,7 @@ class VoiceSettingsResolver
     {
         $model = new VoiceSettings();
         $model
+            ->setAgentDefaultDepartment($this->getAgentDefaultDepartment())
             ->setAgentVoicemailTimeout($this->getAgentVoicemailTimeout())
             ->setGroupMissedCallTickets($this->isGroupMissedCallTickets())
             ->setGroupMissedCallTicketsTimeout($this->getGroupMissedCallTicketsTimeout())
@@ -58,6 +60,14 @@ class VoiceSettingsResolver
     public function getAgentVoicemailTimeout()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_AGENT_VOICEMAIL_TIMEOUT, TwilioAdapter::VOICEMAIL_WAITING_TIMEOUT);
+    }
+
+    /**
+     * @return int
+     */
+    public function getAgentDefaultDepartment()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_AGENT_DEFAULT_DEPARTMENT);
     }
 
     /**

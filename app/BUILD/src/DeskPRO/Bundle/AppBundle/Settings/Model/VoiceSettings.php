@@ -17,6 +17,13 @@ class VoiceSettings
     private $agentVoicemailTimeout;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $agentDefaultDepartment;
+
+    /**
      * @JMS\Type("boolean")
      *
      * @var bool
@@ -46,6 +53,26 @@ class VoiceSettings
     public function setAgentVoicemailTimeout($agentVoicemailTimeout)
     {
         $this->agentVoicemailTimeout = $agentVoicemailTimeout;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAgentDefaultDepartment()
+    {
+        return $this->agentDefaultDepartment;
+    }
+
+    /**
+     * @param int $agentDefaultDepartment
+     *
+     * @return $this
+     */
+    public function setAgentDefaultDepartment($agentDefaultDepartment)
+    {
+        $this->agentDefaultDepartment = $agentDefaultDepartment;
 
         return $this;
     }

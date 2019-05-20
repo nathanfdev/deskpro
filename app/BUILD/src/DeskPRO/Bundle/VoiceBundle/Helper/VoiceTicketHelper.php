@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContext;
@@ -38,23 +39,31 @@ class VoiceTicketHelper
     private $storageAdapter;
 
     /**
+     * @var VoiceTaskHelper
+     */
+    private $voiceTaskHelper;
+
+    /**
      * Constructor.
      *
      * @param EntityManager           $em
      * @param VoiceSettingsResolver   $voiceSettingsResolver
      * @param TicketManager           $ticketManager
      * @param StorageAdapterInterface $storageAdapter
+     * @param VoiceTaskHelper         $voiceTaskHelper
      */
     public function __construct(
         EntityManager           $em,
         VoiceSettingsResolver   $voiceSettingsResolver,
         TicketManager           $ticketManager,
-        StorageAdapterInterface $storageAdapter
+        StorageAdapterInterface $storageAdapter,
+        VoiceTaskHelper         $voiceTaskHelper
     ) {
         $this->em                    = $em;
         $this->voiceSettingsResolver = $voiceSettingsResolver;
         $this->ticketManager         = $ticketManager;
         $this->storageAdapter        = $storageAdapter;
+        $this->voiceTaskHelper       = $voiceTaskHelper;
     }
 
     /**
@@ -116,6 +125,16 @@ class VoiceTicketHelper
                 $ticket->setPerson($phoneCall->getPerson());
                 $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
                 $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
+
+                if ($task && $voiceQueue = $this->voiceTaskHelper->getVoiceQueue($task)) {
+                    $ticket->setDepartment($voiceQueue->getDepartment());
+                    $ticket->setBrand($voiceQueue->getBrand());
+                } elseif ($departmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment()) {
+                    $department = $this->em->getRepository(Department::class)->find($departmentId);
+                    if ($department) {
+                        $ticket->setDepartment($department);
+                    }
+                }
             }
 
             $ticket->addMessage($ticketMessage);

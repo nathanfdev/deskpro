@@ -25,6 +25,7 @@ class AgentsVoiceToggle extends React.Component {
     accounts:            PropTypes.object,
     agents:              PropTypes.object,
     settings:            PropTypes.object,
+    ticketDepartments:   PropTypes.object,
     toggleAll:           PropTypes.func,
     toggleEnabled:       PropTypes.func,
     toggleOutboundCalls: PropTypes.func,
@@ -84,13 +85,14 @@ class AgentsVoiceToggle extends React.Component {
   }
 
   renderList() {
-    const { agents, settings, toggleEnabled, toggleOutboundCalls, toggleUseForwarding, saveSettings } = this.props;
+    const { agents, settings, ticketDepartments, toggleEnabled, toggleOutboundCalls, toggleUseForwarding, saveSettings } = this.props;
     const { saving } = this.state;
 
     return (
       <div className="page">
         <AgentVoiceHeader />
         <AgentSettingsForm
+          ticketDepartments={ticketDepartments}
           settings={settings}
           onSubmit={saveSettings}
         />
