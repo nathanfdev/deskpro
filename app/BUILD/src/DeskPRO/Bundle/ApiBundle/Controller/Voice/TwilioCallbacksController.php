@@ -769,7 +769,7 @@ class TwilioCallbacksController extends BaseController
         $dial  = $twiml->dial([
             'action'                        => $this->getOnDialHangupCallbackUrl($account, $phoneCall),
             'method'                        => 'POST',
-            'record'                        => 'record-from-answer',
+            'record'                        => 'record-from-answer-dual',
             'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account, $phoneCall),
             'recordingStatusCallbackMethod' => 'POST',
         ]);
@@ -949,7 +949,9 @@ class TwilioCallbacksController extends BaseController
                     $phoneCall->getId(), $request->query->get('CallSid')
                 ));
 
-                $twiml->dial()->conference($phoneCall->getConferenceName(), [
+                $twiml->dial([
+                    'record' => 'record-from-answer-dual',
+                ])->conference($phoneCall->getConferenceName(), [
                     'beep'                          => false,
                     'waitUrl'                       => '',
                     'statusCallback'                => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
@@ -1060,7 +1062,7 @@ class TwilioCallbacksController extends BaseController
         $dial  = $twiml->dial([
             'action'                        => $this->getOnDialHangupCallbackUrl($account, $phoneCall),
             'method'                        => 'POST',
-            'record'                        => 'record-from-answer',
+            'record'                        => 'record-from-answer-dual',
             'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account, $phoneCall),
             'recordingStatusCallbackMethod' => 'POST',
         ]);
@@ -1212,7 +1214,9 @@ class TwilioCallbacksController extends BaseController
         }
 
         $twiml = new Twiml();
-        $twiml->dial()->conference($phoneCall->getConferenceName(), [
+        $twiml->dial([
+            'record' => 'record-from-answer-dual',
+        ])->conference($phoneCall->getConferenceName(), [
             'beep'                          => false,
             'waitUrl'                       => '',
             'statusCallback'                => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
@@ -1291,7 +1295,7 @@ class TwilioCallbacksController extends BaseController
                 $dial    = $twiml->dial([
                     'action'                        => $this->getOnDialHangupCallbackUrl($account, $phoneCall),
                     'method'                        => 'POST',
-                    'record'                        => 'record-from-answer',
+                    'record'                        => 'record-from-answer-dual',
                     'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account, $phoneCall),
                     'recordingStatusCallbackMethod' => 'POST',
                 ]);
@@ -1471,7 +1475,9 @@ class TwilioCallbacksController extends BaseController
                 $request->query->all()
             );
 
-            $twiml->dial()->conference($phoneCall->getConferenceName(), [
+            $twiml->dial([
+                'record' => 'record-from-answer-dual',
+            ])->conference($phoneCall->getConferenceName(), [
                 'beep'                          => false,
                 'waitUrl'                       => '',
                 'statusCallback'                => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
