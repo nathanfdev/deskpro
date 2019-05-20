@@ -79,7 +79,7 @@
     {{ macro.perm_row('ticket', 'modify_messages_delete_notes_own',               {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_notes_own',              {toggleName: 'ticket.modify_messages_own'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_messages_own',           {toggleName: 'ticket.modify_messages_own'}) }}
-    {{ macro.perm_row('ticket', 'modify_messages_no_logging_own',                 {toggleName: 'ticket.modify_messages_own', tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_own',                 {toggleName: 'ticket.modify_messages_own', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
     {% if app.getSetting('beta_features.voice') %}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_own',    {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_own',  {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
@@ -124,7 +124,7 @@
     {{ macro.perm_row('ticket', 'modify_messages_delete_notes_followed',              {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_notes_followed',             {toggleName: 'ticket.modify_messages_followed'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_messages_followed',          {toggleName: 'ticket.modify_messages_followed'}) }}
-    {{ macro.perm_row('ticket', 'modify_messages_no_logging_followed',                {toggleName: 'ticket.modify_messages_followed', tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_followed',                {toggleName: 'ticket.modify_messages_followed', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
     {% if app.getSetting('beta_features.voice') %}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_followed',   {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_followed', {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
@@ -169,7 +169,7 @@
     {{ macro.perm_row('ticket', 'modify_messages_delete_notes_unassigned',              {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_notes_unassigned',             {toggleName: 'ticket.modify_messages_unassigned'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_messages_unassigned',          {toggleName: 'ticket.modify_messages_unassigned'}) }}
-    {{ macro.perm_row('ticket', 'modify_messages_no_logging_unassigned',                {toggleName: 'ticket.modify_messages_unassigned', tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_unassigned',                {toggleName: 'ticket.modify_messages_unassigned', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
     {% if app.getSetting('beta_features.voice') %}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_unassigned',   {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_unassigned', {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
@@ -215,7 +215,7 @@
     {{ macro.perm_row('ticket', 'modify_messages_delete_notes_others',              {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_notes_others',             {toggleName: 'ticket.modify_messages_others'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_convert_messages_others',          {toggleName: 'ticket.modify_messages_others'}) }}
-    {{ macro.perm_row('ticket', 'modify_messages_no_logging_others',                {toggleName: 'ticket.modify_messages_others', tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_others',                {toggleName: 'ticket.modify_messages_others', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
     {% if app.getSetting('beta_features.voice') %}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_others',   {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_others', {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
