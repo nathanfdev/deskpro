@@ -99,6 +99,8 @@ adm.agents.perm_ticket_modify_messages_delete_timelimited_notes: 'Can Delete Not
 adm.agents.perm_ticket_modify_messages_delete_notes: 'Can Delete Notes (Anytime)'
 adm.agents.perm_ticket_modify_messages_convert_notes: 'Can Convert Notes to Messages'
 adm.agents.perm_ticket_modify_messages_convert_messages: 'Can Convert Messages to Notes'
+adm.agents.perm_ticket_modify_messages_no_logging: 'Can edit/delete without logging original'
+adm.agents.perm_ticket_modify_messages_no_logging_tooltip: 'Wherever the agent can edit/delete, they will be able to enable an option that disables saving the original to history. This is usually used to allow an agent to permanently remove content such as sensitive information like credit-card numbers.'
 adm.agents.perm_ticket_modify_messages_delete_voice_messages: 'Can Delete Voice Recordings'
 adm.agents.perm_ticket_modify_messages_delete_voice_recordings: 'Can Delete Voice Messages (would delete the voice message + the recording)'
 adm.agents.perm_ticket_modify_notes: 'Can add notes'

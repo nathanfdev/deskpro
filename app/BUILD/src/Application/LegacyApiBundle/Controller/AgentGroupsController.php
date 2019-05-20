@@ -136,7 +136,11 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         $data['members'] = [];
         $data['perms']   = $loader->getGroupPermissions($group->id)->toArray();
 
-        $this->enablePermsForGroupOnArray($group, $data['perms']);
+        // Loader already disabled non-safe permisssions, no need to update anything
+        // not sure why wee need this call at all
+        if ($group->sys_name != 'agent_all_safe_perms') {
+            $this->enablePermsForGroupOnArray($group, $data['perms']);
+        }
 
         $member_ids = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', [$group->id]);
         if ($member_ids) {

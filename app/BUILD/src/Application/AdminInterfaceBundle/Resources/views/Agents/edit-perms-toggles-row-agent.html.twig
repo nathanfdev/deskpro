@@ -17,6 +17,12 @@
                 {% endif %}
             </span>
 
+            {% if opts.tooltip %}
+              <span>
+								<i tooltip-placement="left" tooltip="{{ng_var('opts.tooltip')}}" class="far fa-question-circle"></i>
+							</span>
+            {% endif %}
+
             {% if opts.showToggler %}
                 <span class="toggle-wrap" ng-click="{{ row_id }}_toggler = !{{ row_id }}_toggler">
                 <span ng-show="!{{ row_id }}_toggler">expand <i class="fas fa-caret-down"></i></span>
