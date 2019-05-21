@@ -160,6 +160,8 @@ class RecordingDownloadHelper
                 'recording_id'  => $recording->getId(),
             ]));
         } else {
+            // recording is disabled so
+            // we won't fetch the recording and just delete it
             $this->providerHelper->deleteRecording($phoneCall, $recordingSid);
         }
 
@@ -195,6 +197,9 @@ class RecordingDownloadHelper
 
         // ignore short voicemails
         if ($duration < 5) {
+            // we won't fetch the recording so just delete it
+            $this->providerHelper->deleteRecording($phoneCall, $recordingSid);
+
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
             $this->em->flush();
 
