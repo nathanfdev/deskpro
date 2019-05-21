@@ -123,10 +123,18 @@ class PersonMerge implements PersonContextInterface
             $this->em->persist($this->person);
             $this->em->flush();
 
+            $primaryEmail = $this->other_person->getPrimaryEmailAddress();
+
             $this->em->refresh($this->other_person);
             $this->em->remove($this->other_person);
             $this->em->flush();
 
+            $this->em->refresh($this->person);
+            if (!$this->person->getPrimaryEmail() && $primaryEmail) {
+                $this->person->setEmail($primaryEmail);
+            }
+
+            $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
