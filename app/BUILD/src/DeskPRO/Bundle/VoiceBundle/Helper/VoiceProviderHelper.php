@@ -143,18 +143,6 @@ class VoiceProviderHelper implements VoiceProviderInterface
      *
      * @throws \Exception
      */
-    public function tryEndCallByAgent(VoicePhoneCall $phoneCall)
-    {
-        if (count($phoneCall->getActiveParticipants()) < 2) {
-            $this->endCall($phoneCall);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws \Exception
-     */
     public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
         $this->getAdapter($participant->getPhoneCall())->kickParticipant($participant);

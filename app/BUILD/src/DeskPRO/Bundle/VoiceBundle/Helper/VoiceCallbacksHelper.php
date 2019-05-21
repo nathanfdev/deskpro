@@ -604,8 +604,6 @@ class VoiceCallbacksHelper
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
         }
 
-        $task = $phoneCall->getTaskSid() ? $this->storageAdapter->getTask($phoneCall->getTaskSid()) : null;
-
         // user ends call
         // create a ticket for missed calls
         $this->voiceTicketHelper->createMissedTicketMessageIfNotExist($phoneCall);
@@ -664,7 +662,9 @@ class VoiceCallbacksHelper
         $this->em->flush();
 
         if (!$phoneCall->isColdTransfer()) {
-            $this->voiceProviderHelper->tryEndCallByAgent($phoneCall);
+            if (count($phoneCall->getActiveParticipants()) < 2) {
+                $this->voiceProviderHelper->endCall($phoneCall);
+            }
         }
 
         // unhold end-user after attempt to end the conference

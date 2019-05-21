@@ -73,7 +73,6 @@ class VoiceTicketHelper
      */
     public function createMissedTicketMessageIfNotExist(VoicePhoneCall $phoneCall)
     {
-        $this->em->refresh($phoneCall);
         $task = $phoneCall->getTaskSid() ? $this->storageAdapter->getTask($phoneCall->getTaskSid()) : null;
 
         if (!$phoneCall->hasAgentParticipants()

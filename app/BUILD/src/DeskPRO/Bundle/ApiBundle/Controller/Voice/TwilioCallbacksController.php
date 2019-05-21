@@ -132,7 +132,8 @@ class TwilioCallbacksController extends BaseController
 
             if ($participant) {
                 $lock = $this->get('dp.voice.phone_lock_helper')->createPhoneLock($participant->getPhoneCall()->getId());
-                $lock->acquire();
+                $lock->acquire(true);
+                $logger->info(sprintf('[TwilioCallbacks] Lock phone call, uuid = %s', $callSid));
 
                 try {
                     $phoneCall = $participant->getPhoneCall();
@@ -196,6 +197,7 @@ class TwilioCallbacksController extends BaseController
                     }
                 } finally {
                     $lock->release();
+                    $logger->info(sprintf('[TwilioCallbacks] Unlock phone call, uuid = %s', $callSid));
                 }
             }
         } elseif ($callStatus === 'busy') {
@@ -325,7 +327,7 @@ class TwilioCallbacksController extends BaseController
         $eventName     = $parameters->get('StatusCallbackEvent');
 
         $lock = $this->get('dp.voice.phone_lock_helper')->createPhoneLock($phoneCall->getId());
-        $lock->acquire();
+        $lock->acquire(true);
 
         try {
             $this->getManager()->refresh($phoneCall);
@@ -934,7 +936,7 @@ class TwilioCallbacksController extends BaseController
 
         $twiml = new Twiml();
         $lock  = $this->get('dp.voice.phone_lock_helper')->createPhoneLock($phoneCall->getId());
-        $lock->acquire();
+        $lock->acquire(true);
 
         try {
             $this->getManager()->refresh($phoneCall);
