@@ -862,7 +862,9 @@ class VoiceClientPhoneCallController extends BaseController
 
                     $logger->info(sprintf(
                         '[VoiceClientPhoneCallController] Calls are canceled, call_id = %s, request_ids = %s',
-                        $phoneCall->getId(), implode(', ', $phoneCall->getCallSids())
+                        $phoneCall->getId(), implode(', ', array_map(function ($sidInfo) {
+                            return $sidInfo['callSid'];
+                        }, $phoneCall->getCallSids()))
                     ));
 
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_CANCELED);
