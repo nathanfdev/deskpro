@@ -80,6 +80,11 @@ class RecordingDownloadHelper
     private $callLockHelper;
 
     /**
+     * @var VoiceProviderHelper
+     */
+    private $providerHelper;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
@@ -92,6 +97,7 @@ class RecordingDownloadHelper
      * @param VoiceTaskHelper          $taskHelper
      * @param VoiceTicketHelper        $voiceTicketHelper
      * @param PhoneCallLockHelper      $callLockHelper
+     * @param VoiceProviderHelper      $providerHelper
      */
     public function __construct(
         EntityManager            $em,
@@ -103,7 +109,8 @@ class RecordingDownloadHelper
         StorageAdapterInterface  $storage,
         VoiceTaskHelper          $taskHelper,
         VoiceTicketHelper        $voiceTicketHelper,
-        PhoneCallLockHelper      $callLockHelper
+        PhoneCallLockHelper      $callLockHelper,
+        VoiceProviderHelper      $providerHelper
     ) {
         $this->em                = $em;
         $this->serializer        = $serializer;
@@ -115,6 +122,7 @@ class RecordingDownloadHelper
         $this->taskHelper        = $taskHelper;
         $this->voiceTicketHelper = $voiceTicketHelper;
         $this->callLockHelper    = $callLockHelper;
+        $this->providerHelper    = $providerHelper;
     }
 
     /**
@@ -151,6 +159,8 @@ class RecordingDownloadHelper
                 'recording_sid' => $recordingSid,
                 'recording_id'  => $recording->getId(),
             ]));
+        } else {
+            $this->providerHelper->deleteRecording($phoneCall, $recordingSid);
         }
 
         $context = new SideloadSerializationContext();
