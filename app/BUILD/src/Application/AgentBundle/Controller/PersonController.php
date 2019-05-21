@@ -1622,7 +1622,7 @@ class PersonController extends AbstractController
         if (!$newEmail && !count($phoneNumbers)) {
             return $this->createJsonResponse([
                 'success'        => false,
-                'error_messages' => ['Please enter a valid email address or phone add at lease one phone number'],
+                'error_messages' => ['Please enter a valid email address or phone add at least one phone number'],
             ]);
         }
 
