@@ -527,6 +527,7 @@ class TwilioAdapter implements VoiceProviderInterface
             'machineDetectionSpeechThreshold'    => 1000,
             'machineDetectionSpeechEndThreshold' => 500,
             'machineDetectionTimeout'            => 3,
+            'timeout'                            => $agent->getAgentData()->getForwardingRingTimeout() ?: 10,
         ]);
     }
 

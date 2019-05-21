@@ -237,12 +237,6 @@ $voice-green-border-color: #47BF61;
           }
 
           .call-forward {
-            form {
-              > div {
-                display: flex;
-              }
-            }
-
             .field {
               margin-top: 10px;
               margin-left: 10px;
@@ -266,18 +260,25 @@ $voice-green-border-color: #47BF61;
                 padding-left: 50px;
                 max-width: 225px;
               }
+
+              .ring-timeout {
+                display: flex;
+                font-size: 14px;
+
+                span {
+                  margin-right: 10px;
+                  line-height: 35px;
+                }
+
+                input[type=number] {
+                  width: 65px;
+                }
+              }
             }
 
             .call-forward-save {
-              margin-left: 10px;
-              margin-top: 10px;
-              margin-right: 10px;
-              position: relative;
-
-              button {
-                position: absolute;
-                top: 82px;
-              }
+              margin-left: 20px;
+              margin-top: -10px;
             }
           }
         }
@@ -582,7 +583,12 @@ $voice-green-border-color: #47BF61;
 
       .voice-forward-help {
         margin: 10px;
-        font-size: 14px;
+        font-size: 11px;
+
+        ul {
+          list-style: disc;
+          margin-left: 15px;
+        }
       }
 
       .voice-online-agents {

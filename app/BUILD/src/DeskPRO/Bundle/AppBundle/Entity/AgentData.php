@@ -153,6 +153,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $forwardingNumber;
 
     /**
+     * @ORM\Column(name="forwarding_ring_timeout", type="integer", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $forwardingRingTimeout = 10;
+
+    /**
      * @ORM\Column(name="forwarding_number_type", type="string", length=50, nullable=true)
      *
      * @JMS\Expose()
@@ -389,5 +399,25 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function getForwardingNumberType()
     {
         return $this->forwardingNumberType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getForwardingRingTimeout()
+    {
+        return $this->forwardingRingTimeout;
+    }
+
+    /**
+     * @param int $forwardingRingTimeout
+     *
+     * @return $this
+     */
+    public function setForwardingRingTimeout($forwardingRingTimeout)
+    {
+        $this->setModelField('forwardingRingTimeout', $forwardingRingTimeout);
+
+        return $this;
     }
 }

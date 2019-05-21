@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
-import { Form, Field, Toggle, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Toggle, Input, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import classNames from 'classnames';
 import $ from 'jquery';
@@ -52,7 +52,8 @@ class CallForward extends BaseForm {
     return {
       agent_data: {
         agent_can_use_forwarding: me ? me.getIn(['agent_data', 'agent_can_use_forwarding']) : false,
-        forwarding_number:        (me && me.getIn(['agent_data', 'forwarding_number'])) || ''
+        forwarding_number:        (me && me.getIn(['agent_data', 'forwarding_number'])) || '',
+        forwarding_ring_timeout:  (me && me.getIn(['agent_data', 'forwarding_ring_timeout'])) || 10,
       }
     };
   }
@@ -73,12 +74,24 @@ class CallForward extends BaseForm {
           </Fieldset>
         </Form>
         <div className="voice-forward-help">
-          Forward incoming calls to this number. Any time a call rings you in Deskpro, it will also ring this phone.
-          You will be able to answer the call either in Deskpro or on your phone.
+          Forward incoming calls to a different number. Incoming calls can be answered
+          in Deskpro or by answering this phone number.
         </div>
         <div className="voice-forward-help">
-          When enabled, calls will only be forwarded when an Agent&apos;s status is set as &apos;Online&apos; for calls.
-          This applies even if the Agent is &apos;Online&apos; but logged out of the helpdesk.
+          <h3>Personal Voicemail</h3>
+          Voicemail on your number may conflict with regular handling and queuing of
+          calls in Deskpro. The system cannot know if _you_ answered the call, or
+          if your _voicemail_ answered the call. If the user is sent to your voicemail,
+          then the user will not be sent through to the next agent online because the
+          call will be considered answered.
+        </div>
+        <div className="voice-forward-help">
+          Here are some steps you can take to avoid these issues:
+          <ul>
+            <li>Ensure the maximum ring time entered above is LESS THAN your voicemail time.</li>
+            <li>On some devices, explicitly declining a call may send the user directly to voicemail immediately. You should avoid declining calls on such devices.</li>
+            <li>Calls are forwareded from your Voice phone numbers in Deskpro. Some devices/providers may allow you to disable voicemail for these specific numbers.</li>
+          </ul>
         </div>
       </div>
     );
@@ -104,6 +117,29 @@ class CallForwardField extends React.Component {
         <Field select="forwarding_number" label="Forwarding number">
           <PhoneInput supportSip type="text" />
         </Field>
+        <Field select="forwarding_ring_timeout">
+          <RingTimeout />
+        </Field>
+      </div>
+    );
+  }
+}
+
+class RingTimeout extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.object,
+    onChange: PropTypes.func
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+
+    return (
+      <div className="ring-timeout">
+        <span>Ring for a maximum of</span>
+        <span><Input type="number" value={value} onChange={onChange} /></span>
+        <span>seconds</span>
       </div>
     );
   }

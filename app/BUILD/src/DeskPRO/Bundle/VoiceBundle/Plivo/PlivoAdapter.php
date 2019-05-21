@@ -348,6 +348,7 @@ class PlivoAdapter implements VoiceProviderInterface
             [
                 'answer_url'        => $forwardingUrl,
                 'machine_detection' => 'hangup',
+                'ring_timeout'      => $agent->getAgentData()->getForwardingRingTimeout() ?: 10,
             ]
         );
     }
