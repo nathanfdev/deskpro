@@ -121,10 +121,7 @@ class TwilioCallbacksController extends BaseController
         }
 
         $logger = $this->get('dp.voice.logger');
-        $logger->info(sprintf(
-            '[TwilioCallbacks] Begin phone number status callback, uuid = %s',
-            $request->query->get('CallSid')
-        ));
+        $logger->info(sprintf('[TwilioCallbacks] Begin phone number status callback, uuid = %s, call_status = %s', $callSid, $callStatus));
 
         if ($callStatus === 'completed') {
             // log call participants
@@ -151,13 +148,13 @@ class TwilioCallbacksController extends BaseController
                         $this->get('dp.voice.callbacks_helper')->callHangupByUser($callSid, $details);
                         $logger->info(sprintf(
                             '[TwilioCallbacks] Hangup call by user, call_id = %s, uuid = %s',
-                            $phoneCall->getId(), $request->query->get('CallSid')
+                            $phoneCall->getId(), $callSid
                         ));
                     } else {
                         $this->get('dp.voice.callbacks_helper')->callHangupByAgent($callSid, $details);
                         $logger->info(sprintf(
                             '[TwilioCallbacks] Hangup call by agent, call_id = %s, uuid = %s',
-                            $phoneCall->getId(), $request->query->get('CallSid')
+                            $phoneCall->getId(), $callSid
                         ));
 
                         if (count($phoneCall->getActiveParticipants()) === 2) {
@@ -928,10 +925,11 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $logger = $this->get('dp.voice.logger');
+        $callSid = $request->get('CallSid');
+        $logger  = $this->get('dp.voice.logger');
         $logger->info(sprintf(
             '[TwilioCallbacks] Begin end dialing queue callback, call_id = %s, uuid = %s',
-            $phoneCall->getId(), $request->query->get('CallSid')
+            $phoneCall->getId(), $callSid
         ));
 
         $twiml = new Twiml();
@@ -946,7 +944,7 @@ class TwilioCallbacksController extends BaseController
                 // so we need to force move into the conference on hang up
                 $logger->info(sprintf(
                     '[TwilioCallbacks] Warm transfer, join conference, call_id = %s, uuid = %s',
-                    $phoneCall->getId(), $request->query->get('CallSid')
+                    $phoneCall->getId(), $callSid
                 ));
 
                 $twiml->dial([
@@ -971,7 +969,7 @@ class TwilioCallbacksController extends BaseController
             } else {
                 $logger->info(sprintf(
                     '[TwilioCallbacks] End call, call_id = %s, uuid = %s',
-                    $phoneCall->getId(), $request->query->get('CallSid')
+                    $phoneCall->getId(), $callSid
                 ));
 
                 $twiml->hangup();
