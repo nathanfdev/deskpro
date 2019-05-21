@@ -25,8 +25,8 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
  */
 class MessengerAuthenticator implements SimplePreAuthenticatorInterface
 {
-    const HTTP_REALM      = 'session,token,key realm="DeskPRO User Messenger API"';
-    const APP_HEADER_NAME = 'X-DeskPRO-App-ID';
+    const HTTP_REALM          = 'realm="x-deskpro-visitorid DeskPRO User Messenger API"';
+    const VISITOR_HEADER_NAME = 'X-Deskpro-VisitorID';
 
     /**
      * @var string

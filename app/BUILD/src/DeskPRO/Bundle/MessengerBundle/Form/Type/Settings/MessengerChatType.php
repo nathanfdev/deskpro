@@ -42,9 +42,7 @@ class MessengerChatType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $permissionsBag           = $this->permissionsManager->getPortalPermissionsBag();
-        $allowedChatDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
-        $brand                    = $options['brand'];
+        $brand = $options['brand'];
 
         $builder
             ->add('enabled', ApiBooleanType::class)
@@ -54,16 +52,14 @@ class MessengerChatType extends AbstractType
             ->add('department', EntityType::class, [
                 'class'         => Department::class,
                 'choice_label'  => 'id',
-                'query_builder' => function (EntityRepository $er) use ($allowedChatDepartmentIds, $brand) {
+                'query_builder' => function (EntityRepository $er) use ($brand) {
                     $qb = $er
                         ->createQueryBuilder('d')
                         ->join('d.brands', 'b')
                         ->where(
                             'd.is_chat_enabled = true',
-                            'd.id IN (:allowed_department_ids)',
                             'b.id IN(:brand)'
                         )
-                        ->setParameter('allowed_department_ids', $allowedChatDepartmentIds)
                         ->setParameter('brand', $brand)
                     ;
 
