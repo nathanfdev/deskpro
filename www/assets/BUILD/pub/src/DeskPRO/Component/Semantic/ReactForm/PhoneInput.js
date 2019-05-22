@@ -54,6 +54,10 @@ class PhoneInput extends React.Component {
     }
   }
 
+  setCountryCode(countryCode) {
+    $(this.input).intlTelInput('setCountry', countryCode);
+  }
+
   getCountryData() {
     return $(this.input).intlTelInput('getSelectedCountryData');
   }

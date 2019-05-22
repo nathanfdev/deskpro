@@ -54,6 +54,15 @@ class Dialpad extends React.Component {
 
   componentDidMount() {
     this.lastQuery = '';
+    const { numbers } = this.props;
+    const { formData } = this.state;
+
+    const callFrom = numbers ? numbers.getIn([formData.value.call_from, 'number']) : '';
+    const callTo = formData.value.call_to;
+
+    if (!callTo && callFrom) {
+      this.phoneInput.setCountryCode(getPhoneCountryCode(callFrom));
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -79,7 +88,7 @@ class Dialpad extends React.Component {
     this.setState({ formData });
 
     const $input = $(this.phoneInput.input);
-    const { searchPerson } = this.props;
+    const { searchPerson, numbers } = this.props;
     const searchPeople = debounce(() => {
       const callTo = this.state.formData.value.call_to;
       if (callTo && this.lastQuery !== callTo) {
@@ -107,55 +116,7 @@ class Dialpad extends React.Component {
     // if just 'call to' field was changed then
     // try to set find appropriate 'call from' number
     if (changedFields.indexOf('call_to') !== -1 && changedFields.indexOf('call_from') === -1) {
-      // update 'call from' field based on current country code
-      const countryCode = this.phoneInput.getCountryData().iso2;
-      const { numbers = Immutable.fromJS({}) } = this.props;
-
-      let selectedNumber;
-
-      // try to get from country code
-      if (!selectedNumber) {
-        numbers.forEach((number) => {
-          if (number.get('outbound_calls_default')
-            && number.get('outbound_calls_default_type') === 'country'
-            && countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))
-          ) {
-            selectedNumber = number;
-          }
-        });
-      }
-
-      // try to get from specific countries
-      numbers.forEach((number) => {
-        if (number.get('outbound_calls_default')
-          && number.get('outbound_calls_default_type') === 'specific'
-          && number.get('outbound_calls_default_countries').contains(countryCode)
-        ) {
-          selectedNumber = number;
-        }
-      });
-
-      // try to get global outgoing number
-      if (!selectedNumber) {
-        numbers.forEach((number) => {
-          if (number.get('outbound_calls_default')
-            && number.get('outbound_calls_default_type') === 'all'
-          ) {
-            selectedNumber = number;
-          }
-        });
-      }
-
-      if (!selectedNumber) {
-        // try to get last selected number
-        if (storageAvailable('localStorage')) {
-          const storedNumberId = localStorage.getItem('dpAgent.voice.lastCallFrom');
-          if (storedNumberId) {
-            selectedNumber = numbers.get(parseInt(storedNumberId, 10));
-          }
-        }
-      }
-
+      const selectedNumber = this.getFromNumber();
       if (selectedNumber) {
         if (formData.value.call_from !== selectedNumber.get('id')) {
           setTimeout(() => {
@@ -175,6 +136,13 @@ class Dialpad extends React.Component {
       // 'call from' number was manually changed, store user's choice in local storage
       if (storageAvailable('localStorage')) {
         localStorage.setItem('dpAgent.voice.lastCallFrom', formData.value.call_from);
+      }
+
+      const callFrom = numbers ? numbers.getIn([formData.value.call_from, 'number']) : '';
+      const callTo = formData.value.call_to;
+
+      if (!callTo && callFrom) {
+        this.phoneInput.setCountryCode(getPhoneCountryCode(callFrom));
       }
     }
   };
@@ -239,6 +207,71 @@ class Dialpad extends React.Component {
       });
     }, 1);
   };
+
+  getFromNumber() {
+    // update 'call from' field based on current country code
+    const countryCode = this.phoneInput.getCountryData().iso2;
+    const { numbers = Immutable.fromJS({}) } = this.props;
+
+    let selectedNumber;
+
+    // try to get from country code
+    // with 'outbound_calls_default' option
+    if (!selectedNumber) {
+      numbers.forEach((number) => {
+        if (number.get('outbound_calls_default')
+          && number.get('outbound_calls_default_type') === 'country'
+          && countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))
+        ) {
+          selectedNumber = number;
+        }
+      });
+    }
+
+    // try to get from specific countries
+    // with 'outbound_calls_default' option
+    numbers.forEach((number) => {
+      if (number.get('outbound_calls_default')
+        && number.get('outbound_calls_default_type') === 'specific'
+        && number.get('outbound_calls_default_countries').contains(countryCode)
+      ) {
+        selectedNumber = number;
+      }
+    });
+
+    // try to get global outgoing number
+    // with 'outbound_calls_default' option
+    if (!selectedNumber) {
+      numbers.forEach((number) => {
+        if (number.get('outbound_calls_default')
+          && number.get('outbound_calls_default_type') === 'all'
+        ) {
+          selectedNumber = number;
+        }
+      });
+    }
+
+    // try to get a number by just country code
+    if (!selectedNumber) {
+      numbers.forEach((number) => {
+        if (countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))) {
+          selectedNumber = number;
+        }
+      });
+    }
+
+    if (!selectedNumber) {
+      // try to get last selected number
+      if (storageAvailable('localStorage')) {
+        const storedNumberId = localStorage.getItem('dpAgent.voice.lastCallFrom');
+        if (storedNumberId) {
+          selectedNumber = numbers.get(parseInt(storedNumberId, 10));
+        }
+      }
+    }
+
+    return selectedNumber;
+  }
 
   setOutgoingNumber = (number) => {
     const $input = $(this.phoneInput.input);
