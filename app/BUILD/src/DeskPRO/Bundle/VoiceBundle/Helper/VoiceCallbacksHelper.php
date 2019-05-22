@@ -1067,7 +1067,7 @@ class VoiceCallbacksHelper
             $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
             $voiceAgentDefaultDepartmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment();
-            $defaultDepartmentId           = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE));
+            $defaultDepartmentId           = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE));
             if ($voiceAgentDefaultDepartmentId && in_array($voiceAgentDefaultDepartmentId, $allowedTicketDepartmentIds)) {
                 $departmentId = $voiceAgentDefaultDepartmentId;
             } elseif ($defaultDepartmentId && in_array($defaultDepartmentId, $allowedTicketDepartmentIds)) {

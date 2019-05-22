@@ -151,7 +151,7 @@ class VoiceTicketHelper
                             }
                         }
                     }
-                } elseif ($departmentId = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE))) {
+                } elseif ($departmentId = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE))) {
                     $department = $this->em->getRepository(Department::class)->find($departmentId);
                     if ($department) {
                         $ticket->setDepartment($department);
