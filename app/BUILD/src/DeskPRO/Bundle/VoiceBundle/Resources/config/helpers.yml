@@ -14,6 +14,7 @@ services:
       - "@dp.voice.transfer_helper"
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
+      - "@brand_aware_settings_resolver"
       - "@event_dispatcher"
       - "@dp.voice.logger"
 
@@ -71,3 +72,4 @@ services:
       - "@ticket_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_task_helper"
+      - "@brand_aware_settings_resolver"

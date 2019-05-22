@@ -26,6 +26,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
@@ -97,6 +99,11 @@ class VoiceCallbacksHelper
     private $storageAdapter;
 
     /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
@@ -109,34 +116,36 @@ class VoiceCallbacksHelper
     /**
      * Constructor.
      *
-     * @param EntityManager            $em
-     * @param Serializer               $serializer
-     * @param TaskBuilder              $taskBuilder
-     * @param TaskRouter               $taskRouter
-     * @param VoiceSettingsResolver    $voiceSettingsResolver
-     * @param TicketManager            $ticketManager
-     * @param VoiceProviderHelper      $voiceProviderHelper
-     * @param VoiceTicketHelper        $voiceTicketHelper
-     * @param TransferCallHelper       $transferCallHelper
-     * @param WorkerHelper             $workerHelper
-     * @param StorageAdapterInterface  $storageAdapter
-     * @param EventDispatcherInterface $dispatcher
-     * @param LoggerInterface          $logger
+     * @param EntityManager              $em
+     * @param Serializer                 $serializer
+     * @param TaskBuilder                $taskBuilder
+     * @param TaskRouter                 $taskRouter
+     * @param VoiceSettingsResolver      $voiceSettingsResolver
+     * @param TicketManager              $ticketManager
+     * @param VoiceProviderHelper        $voiceProviderHelper
+     * @param VoiceTicketHelper          $voiceTicketHelper
+     * @param TransferCallHelper         $transferCallHelper
+     * @param WorkerHelper               $workerHelper
+     * @param StorageAdapterInterface    $storageAdapter
+     * @param BrandAwareSettingsResolver $settingsResolver
+     * @param EventDispatcherInterface   $dispatcher
+     * @param LoggerInterface            $logger
      */
     public function __construct(
-        EntityManager            $em,
-        Serializer               $serializer,
-        TaskBuilder              $taskBuilder,
-        TaskRouter               $taskRouter,
-        VoiceSettingsResolver    $voiceSettingsResolver,
-        TicketManager            $ticketManager,
-        VoiceProviderHelper      $voiceProviderHelper,
-        VoiceTicketHelper        $voiceTicketHelper,
-        TransferCallHelper       $transferCallHelper,
-        WorkerHelper             $workerHelper,
-        StorageAdapterInterface  $storageAdapter,
-        EventDispatcherInterface $dispatcher,
-        LoggerInterface          $logger
+        EntityManager              $em,
+        Serializer                 $serializer,
+        TaskBuilder                $taskBuilder,
+        TaskRouter                 $taskRouter,
+        VoiceSettingsResolver      $voiceSettingsResolver,
+        TicketManager              $ticketManager,
+        VoiceProviderHelper        $voiceProviderHelper,
+        VoiceTicketHelper          $voiceTicketHelper,
+        TransferCallHelper         $transferCallHelper,
+        WorkerHelper               $workerHelper,
+        StorageAdapterInterface    $storageAdapter,
+        BrandAwareSettingsResolver $settingsResolver,
+        EventDispatcherInterface   $dispatcher,
+        LoggerInterface            $logger
     ) {
         $this->em                    = $em;
         $this->serializer            = $serializer;
@@ -149,6 +158,7 @@ class VoiceCallbacksHelper
         $this->transferCallHelper    = $transferCallHelper;
         $this->workerHelper          = $workerHelper;
         $this->storageAdapter        = $storageAdapter;
+        $this->settingsResolver      = $settingsResolver;
         $this->dispatcher            = $dispatcher;
         $this->logger                = $logger;
     }
@@ -1056,9 +1066,12 @@ class VoiceCallbacksHelper
             $permissionsHelper          = $agent->getHelper('AgentPermissions');
             $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
-            $agentDefaultDepartmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment();
-            if ($agentDefaultDepartmentId && in_array($agentDefaultDepartmentId, $allowedTicketDepartmentIds)) {
-                $departmentId = $agentDefaultDepartmentId;
+            $voiceAgentDefaultDepartmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment();
+            $defaultDepartmentId           = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE));
+            if ($voiceAgentDefaultDepartmentId && in_array($voiceAgentDefaultDepartmentId, $allowedTicketDepartmentIds)) {
+                $departmentId = $voiceAgentDefaultDepartmentId;
+            } elseif ($defaultDepartmentId && in_array($defaultDepartmentId, $allowedTicketDepartmentIds)) {
+                $departmentId = $defaultDepartmentId;
             } else {
                 $departmentId = reset($allowedTicketDepartmentIds);
             }
@@ -1068,8 +1081,8 @@ class VoiceCallbacksHelper
                 if ($agentDepartment) {
                     $ticket->setDepartment($agentDepartment);
 
-                    if ($agentDefaultBrandId = $this->voiceSettingsResolver->getAgentDefaultBrand()) {
-                        $agentBrand = $this->em->getRepository(Brand::class)->find($agentDefaultBrandId);
+                    if ($voiceAgentDefaultBrandId = $this->voiceSettingsResolver->getAgentDefaultBrand()) {
+                        $agentBrand = $this->em->getRepository(Brand::class)->find($voiceAgentDefaultBrandId);
                         if ($agentBrand && $agentDepartment->hasBrand($agentBrand)) {
                             $ticket->setBrand($agentBrand);
                         }

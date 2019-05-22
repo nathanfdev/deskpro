@@ -10,6 +10,8 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use Doctrine\ORM\EntityManager;
@@ -45,26 +47,34 @@ class VoiceTicketHelper
     private $voiceTaskHelper;
 
     /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager           $em
-     * @param VoiceSettingsResolver   $voiceSettingsResolver
-     * @param TicketManager           $ticketManager
-     * @param StorageAdapterInterface $storageAdapter
-     * @param VoiceTaskHelper         $voiceTaskHelper
+     * @param EntityManager              $em
+     * @param VoiceSettingsResolver      $voiceSettingsResolver
+     * @param TicketManager              $ticketManager
+     * @param StorageAdapterInterface    $storageAdapter
+     * @param VoiceTaskHelper            $voiceTaskHelper
+     * @param BrandAwareSettingsResolver $settingsResolver
      */
     public function __construct(
-        EntityManager           $em,
-        VoiceSettingsResolver   $voiceSettingsResolver,
-        TicketManager           $ticketManager,
-        StorageAdapterInterface $storageAdapter,
-        VoiceTaskHelper         $voiceTaskHelper
+        EntityManager              $em,
+        VoiceSettingsResolver      $voiceSettingsResolver,
+        TicketManager              $ticketManager,
+        StorageAdapterInterface    $storageAdapter,
+        VoiceTaskHelper            $voiceTaskHelper,
+        BrandAwareSettingsResolver $settingsResolver
     ) {
         $this->em                    = $em;
         $this->voiceSettingsResolver = $voiceSettingsResolver;
         $this->ticketManager         = $ticketManager;
         $this->storageAdapter        = $storageAdapter;
         $this->voiceTaskHelper       = $voiceTaskHelper;
+        $this->settingsResolver      = $settingsResolver;
     }
 
     /**
@@ -140,6 +150,11 @@ class VoiceTicketHelper
                                 $ticket->setBrand($agentBrand);
                             }
                         }
+                    }
+                } elseif ($departmentId = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE))) {
+                    $department = $this->em->getRepository(Department::class)->find($departmentId);
+                    if ($department) {
+                        $ticket->setDepartment($department);
                     }
                 }
             }

@@ -50,7 +50,7 @@ class AgentSettingsForm extends BaseForm {
               help="This department will be set on voice tickets that get sent directly to an agent (i.e. rather than through a queue)."
             >
               <RecordsChoiceWrapper records={ticketDepartments} labelProp="title">
-                <Select {...this.props} clearable={false} />
+                <Select {...this.props} clearable />
               </RecordsChoiceWrapper>
             </Field>
             {departmentBrands.size > 1 &&
