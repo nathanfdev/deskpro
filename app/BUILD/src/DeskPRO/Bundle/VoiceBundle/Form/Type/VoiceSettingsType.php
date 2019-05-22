@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
@@ -54,6 +55,10 @@ class VoiceSettingsType extends AbstractType
                     return $er->createQueryBuilder('u')->where('u.is_tickets_enabled = 1');
                 },
             ])
+            ->add('agent_default_brand', EntityType::class, [
+                'class'    => Brand::class,
+                'required' => false,
+            ])
             ->add('group_missed_call_tickets', ApiBooleanType::class, [
                 'required' => false,
             ])
@@ -62,9 +67,11 @@ class VoiceSettingsType extends AbstractType
             ])
         ;
 
-        $builder
-            ->get('agent_default_department')
-            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($this->em->getRepository(Department::class))))
-        ;
+        $builder->get('agent_default_department')->addModelTransformer(
+            new ReversedTransformer(new EntityToIdTransformer($this->em->getRepository(Department::class)))
+        );
+        $builder->get('agent_default_brand')->addModelTransformer(
+            new ReversedTransformer(new EntityToIdTransformer($this->em->getRepository(Brand::class)))
+        );
     }
 }

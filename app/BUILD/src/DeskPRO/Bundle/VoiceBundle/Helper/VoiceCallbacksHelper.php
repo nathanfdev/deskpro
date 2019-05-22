@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -1055,9 +1056,9 @@ class VoiceCallbacksHelper
             $permissionsHelper          = $agent->getHelper('AgentPermissions');
             $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
-            $agentDefaultDepartment = $this->voiceSettingsResolver->getAgentDefaultDepartment();
-            if ($agentDefaultDepartment && in_array($agentDefaultDepartment, $allowedTicketDepartmentIds)) {
-                $departmentId = $agentDefaultDepartment;
+            $agentDefaultDepartmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment();
+            if ($agentDefaultDepartmentId && in_array($agentDefaultDepartmentId, $allowedTicketDepartmentIds)) {
+                $departmentId = $agentDefaultDepartmentId;
             } else {
                 $departmentId = reset($allowedTicketDepartmentIds);
             }
@@ -1066,6 +1067,13 @@ class VoiceCallbacksHelper
                 $agentDepartment = $this->em->getRepository(Department::class)->find($departmentId);
                 if ($agentDepartment) {
                     $ticket->setDepartment($agentDepartment);
+
+                    if ($agentDefaultBrandId = $this->voiceSettingsResolver->getAgentDefaultBrand()) {
+                        $agentBrand = $this->em->getRepository(Brand::class)->find($agentDefaultBrandId);
+                        if ($agentBrand && $agentDepartment->hasBrand($agentBrand)) {
+                            $ticket->setBrand($agentBrand);
+                        }
+                    }
                 }
             }
         }

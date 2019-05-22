@@ -24,6 +24,13 @@ class VoiceSettings
     private $agentDefaultDepartment;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $agentDefaultBrand;
+
+    /**
      * @JMS\Type("boolean")
      *
      * @var bool
@@ -73,6 +80,26 @@ class VoiceSettings
     public function setAgentDefaultDepartment($agentDefaultDepartment)
     {
         $this->agentDefaultDepartment = $agentDefaultDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAgentDefaultBrand()
+    {
+        return $this->agentDefaultBrand;
+    }
+
+    /**
+     * @param int $agentDefaultBrand
+     *
+     * @return $this
+     */
+    public function setAgentDefaultBrand($agentDefaultBrand)
+    {
+        $this->agentDefaultBrand = $agentDefaultBrand;
 
         return $this;
     }

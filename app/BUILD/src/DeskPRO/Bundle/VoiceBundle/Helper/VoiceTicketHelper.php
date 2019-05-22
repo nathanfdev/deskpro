@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -132,6 +133,13 @@ class VoiceTicketHelper
                     $department = $this->em->getRepository(Department::class)->find($departmentId);
                     if ($department) {
                         $ticket->setDepartment($department);
+
+                        if ($agentDefaultBrandId = $this->voiceSettingsResolver->getAgentDefaultBrand()) {
+                            $agentBrand = $this->em->getRepository(Brand::class)->find($agentDefaultBrandId);
+                            if ($agentBrand && $department->hasBrand($agentBrand)) {
+                                $ticket->setBrand($agentBrand);
+                            }
+                        }
                     }
                 }
             }

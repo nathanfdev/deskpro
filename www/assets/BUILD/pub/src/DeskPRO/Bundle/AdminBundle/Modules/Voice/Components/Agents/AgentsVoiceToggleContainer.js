@@ -13,6 +13,8 @@ import { settingsSelector, settingsLoadedSelector } from '../../Selectors/settin
 import { loadSettings, updateSettings } from '../../Actions/settingActions';
 import { isTicketDepartmentsLoadedSelector, selectableTicketDepartmentsSelector } from '../../../Application/Selectors/departments';
 import { loadSelectableTicketDepartments } from '../../../Application/Actions/departmentsActions';
+import { allBrandsLoadedSelector, allBrandsSelector } from '../../../Application/Selectors/brands';
+import { loadBrands } from '../../../Application/Actions/brandsActions';
 
 @connect(state => ({
   accounts:                allAccountsSelector(state),
@@ -23,6 +25,8 @@ import { loadSelectableTicketDepartments } from '../../../Application/Actions/de
   settingsLoaded:          settingsLoadedSelector(state),
   ticketDepartments:       selectableTicketDepartmentsSelector(state),
   ticketDepartmentsLoaded: isTicketDepartmentsLoadedSelector(state),
+  brands:                  allBrandsSelector(state),
+  brandsLoaded:            allBrandsLoadedSelector(state)
 }))
 class AgentsVoiceToggleContainer extends React.Component {
 
@@ -31,7 +35,8 @@ class AgentsVoiceToggleContainer extends React.Component {
     isAgentsLoaded:          PropTypes.bool,
     accountsLoaded:          PropTypes.bool,
     settingsLoaded:          PropTypes.bool,
-    ticketDepartmentsLoaded: PropTypes.bool
+    ticketDepartmentsLoaded: PropTypes.bool,
+    brandsLoaded:            PropTypes.bool,
   };
 
   componentDidMount() {
@@ -41,6 +46,7 @@ class AgentsVoiceToggleContainer extends React.Component {
     dispatch(loadAgents());
     dispatch(loadSettings());
     dispatch(loadSelectableTicketDepartments());
+    dispatch(loadBrands());
   }
 
   toggleEnabled = agent => this.props.dispatch(toggleVoiceEnabled(agent));
@@ -53,9 +59,9 @@ class AgentsVoiceToggleContainer extends React.Component {
   };
 
   render() {
-    const { isAgentsLoaded, accountsLoaded, settingsLoaded, ticketDepartmentsLoaded } = this.props;
+    const { isAgentsLoaded, accountsLoaded, settingsLoaded, ticketDepartmentsLoaded, brandsLoaded } = this.props;
 
-    if (!isAgentsLoaded || !accountsLoaded || !settingsLoaded || !ticketDepartmentsLoaded) {
+    if (!isAgentsLoaded || !accountsLoaded || !settingsLoaded || !ticketDepartmentsLoaded || !brandsLoaded) {
       return <LoadingPage />;
     }
 
