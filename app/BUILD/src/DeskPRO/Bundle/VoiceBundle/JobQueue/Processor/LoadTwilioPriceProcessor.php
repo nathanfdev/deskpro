@@ -64,7 +64,7 @@ class LoadTwilioPriceProcessor extends AbstractJobProcessor
             $callInfo = $this->twilioAdapter->getCallInfo($phoneCall, $data['call_sid']);
             if ($callInfo->price) {
                 $this->jobQueue->addJob(new Job(VoiceCallCostProcessor::JOB_TYPE, [
-                    'call_sid' => $data['call_id'],
+                    'call_sid' => $data['call_sid'],
                     'cost'     => preg_replace('/^-/', '', $callInfo->price),
                     'currency' => $callInfo->priceUnit,
                 ]));
