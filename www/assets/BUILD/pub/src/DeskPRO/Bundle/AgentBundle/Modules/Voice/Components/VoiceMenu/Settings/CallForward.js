@@ -90,7 +90,7 @@ class CallForward extends BaseForm {
           <ul>
             <li>Ensure the maximum ring time entered above is LESS THAN your voicemail time.</li>
             <li>On some devices, explicitly declining a call may send the user directly to voicemail immediately. You should avoid declining calls on such devices.</li>
-            <li>Calls are forwareded from your Voice phone numbers in Deskpro. Some devices/providers may allow you to disable voicemail for these specific numbers.</li>
+            <li>Calls are forwarded from your Voice phone numbers in Deskpro. Some devices/providers may allow you to disable voicemail for these specific numbers.</li>
           </ul>
         </div>
       </div>
