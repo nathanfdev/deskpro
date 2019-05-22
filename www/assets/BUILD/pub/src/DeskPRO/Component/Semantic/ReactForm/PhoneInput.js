@@ -3,6 +3,7 @@ import React from 'react';
 import $ from 'jquery';
 import 'intl-tel-input';
 import 'intl-tel-input/build/js/utils';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import Checkbox from './Checkbox';
 
 class PhoneInput extends React.Component {
@@ -78,7 +79,19 @@ class PhoneInput extends React.Component {
       $input.bind('change keyup', () => {
         onChange($input.intlTelInput('getNumber'));
       });
-      $input.intlTelInput('setNumber', `${value}`);
+      $input.on('countrychange', (e, countryData) => {
+        if (storageAvailable('localStorage')) {
+          localStorage.setItem('dpAgent.voice.phoneCountryCode', countryData.iso2);
+        }
+      });
+      if (value) {
+        $input.intlTelInput('setNumber', `${value}`);
+      } else if (storageAvailable('localStorage')) {
+        const lastCountryCode = localStorage.getItem('dpAgent.voice.phoneCountryCode');
+        if (lastCountryCode) {
+          $input.intlTelInput('setCountry', lastCountryCode);
+        }
+      }
     }
   }
 
