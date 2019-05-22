@@ -376,16 +376,11 @@ class KbController extends AbstractController
 
             case 'delete':
                 $article->status_code = 'hidden.deleted';
-                $article->setDeletedSlug();
-                $article->clearSlugHistory();
-                $data['slug'] = $article['slug'];
-
                 break;
 
             case 'undelete':
                 $article->status_code = 'published';
                 $article->setSlug(null);
-
                 break;
 
             case 'categories':
@@ -578,7 +573,7 @@ class KbController extends AbstractController
             $data['revision_id'] = null;
         }
 
-        if ($action === 'undelete') {
+        if (in_array($action, ['undelete', 'delete'], true)) {
             $data['slug'] = $article->getSlug();
         }
 
