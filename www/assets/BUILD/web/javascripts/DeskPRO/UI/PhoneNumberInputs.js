@@ -58,6 +58,19 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				phone_input.intlTelInput('setNumber', input.val());
 			}
 
+			try {
+				if (window.localStorage) {
+					var lastCountryCode = window.localStorage.getItem('dpAgent.voice.phoneCountryCode');
+					if (lastCountryCode) {
+						phone_input.intlTelInput('setCountry', lastCountryCode);
+					}
+
+					phone_input.on('countrychange', function (e, countryData) {
+						window.localStorage.setItem('dpAgent.voice.phoneCountryCode', countryData.iso2);
+					});
+				}
+			} catch (e) {}
+
 			phone_input.width('300px');
 
 			phone_input.on('input change', function () {
