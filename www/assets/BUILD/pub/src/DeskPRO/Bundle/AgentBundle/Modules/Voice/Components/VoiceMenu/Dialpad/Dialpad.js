@@ -97,13 +97,15 @@ class Dialpad extends React.Component {
         });
 
         const promise = searchPerson(callTo);
-        promise.success(({ data }) => {
-          if (this.lastQuery === callTo) {
-            this.setState({
-              searchResults: Immutable.fromJS(data)
-            });
-          }
-        });
+        if (promise) {
+          promise.success(({ data }) => {
+            if (this.lastQuery === callTo) {
+              this.setState({
+                searchResults: Immutable.fromJS(data)
+              });
+            }
+          });
+        }
       }
 
       this.lastQuery = callTo;
