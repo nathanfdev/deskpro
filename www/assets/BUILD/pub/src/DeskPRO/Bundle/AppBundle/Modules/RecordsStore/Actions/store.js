@@ -77,11 +77,11 @@ export const loadBatch = createAction(
 
 export const loadAll = createAction(
   'RECORDS_STORE_LOAD',
-  recordName => (dispatch, getState) => {
+  (recordName, reload = false) => (dispatch, getState) => {
     const recordStore = getState().RecordsStore.store.get(recordName);
 
     let result;
-    if (!recordStore || !recordStore.hasIn(['statuses', 'all'])) {
+    if (!recordStore || !recordStore.hasIn(['statuses', 'all']) || reload) {
       result = {
         recordName,
         collectionName: 'all',
@@ -130,11 +130,11 @@ export const loadWithParams = createAction(
 
 export const loadFromApi = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName, url, collectionName) => (dispatch, getState) => {
+  (recordName, url, collectionName, reload = false) => (dispatch, getState) => {
     const recordStore = getState().RecordsStore.store.get(recordName);
 
     let result;
-    if (!recordStore || !recordStore.hasIn(['statuses', collectionName])) {
+    if (!recordStore || !recordStore.hasIn(['statuses', collectionName]) || reload) {
       result = {
         recordName,
         collectionName,

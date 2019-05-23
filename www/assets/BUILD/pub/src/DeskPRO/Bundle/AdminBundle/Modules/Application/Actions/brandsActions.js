@@ -3,5 +3,5 @@ import { loadAll } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const loadBrands = createAction(
   'VOICE_LOAD_ACCOUNTS',
-  () => dispatch => dispatch(loadAll('Brand'))
+  (reload = false) => dispatch => dispatch(loadAll('Brand', reload))
 );

@@ -45,8 +45,8 @@ class AgentsVoiceToggleContainer extends React.Component {
     dispatch(loadAccounts());
     dispatch(loadAgents());
     dispatch(loadSettings());
-    dispatch(loadSelectableTicketDepartments());
-    dispatch(loadBrands());
+    dispatch(loadSelectableTicketDepartments(true));
+    dispatch(loadBrands(true));
   }
 
   toggleEnabled = agent => this.props.dispatch(toggleVoiceEnabled(agent));

@@ -45,10 +45,10 @@ class LoadingFormContainer extends BaseQueueFormContainer {
 
     dispatch(loadAgents());
     dispatch(loadAgentTeams());
-    dispatch(loadSelectableTicketDepartments());
+    dispatch(loadSelectableTicketDepartments(true));
     dispatch(loadAccounts());
     dispatch(loadQueues());
-    dispatch(loadBrands());
+    dispatch(loadBrands(true));
   }
 
   render() {
