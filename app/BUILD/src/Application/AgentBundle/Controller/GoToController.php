@@ -71,7 +71,7 @@ class GoToController extends AbstractController
         /** @var Ticket $ticket */
         $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($ref);
         if (!$ticket instanceof Ticket) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$ticket->getId());
@@ -97,7 +97,7 @@ class GoToController extends AbstractController
         /** @var Person $person */
         $person = $this->getDoctrine()->getRepository(Person::class)->findOneByEmail($emailAddress);
         if (!$person) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         return $this->redirect($this->getBasePath().'#app.people,people:*,p:'.$person->getId());

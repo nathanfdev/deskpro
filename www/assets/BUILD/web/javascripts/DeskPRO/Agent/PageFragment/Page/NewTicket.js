@@ -395,8 +395,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			});
 
-			newFields.sort();
-
 			var changed = false;
 			if (!self.oldFields) {
 				changed = false; // means null aka first page laod
