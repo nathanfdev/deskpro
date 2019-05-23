@@ -45,6 +45,13 @@ class VoiceSettings
     private $groupMissedCallTicketsTimeout;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $forwardingMachineDetection;
+
+    /**
      * @return int
      */
     public function getAgentVoicemailTimeout()
@@ -140,6 +147,26 @@ class VoiceSettings
     public function setGroupMissedCallTicketsTimeout($groupMissedCallTicketsTimeout)
     {
         $this->groupMissedCallTicketsTimeout = $groupMissedCallTicketsTimeout;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForwardingMachineDetection()
+    {
+        return $this->forwardingMachineDetection;
+    }
+
+    /**
+     * @param bool $forwardingMachineDetection
+     *
+     * @return $this
+     */
+    public function setForwardingMachineDetection($forwardingMachineDetection)
+    {
+        $this->forwardingMachineDetection = $forwardingMachineDetection;
 
         return $this;
     }

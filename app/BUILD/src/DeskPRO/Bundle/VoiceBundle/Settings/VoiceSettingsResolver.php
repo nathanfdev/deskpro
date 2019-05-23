@@ -16,6 +16,7 @@ class VoiceSettingsResolver
     const VOICE_AGENT_DEFAULT_BRAND               = 'voice.agent_default_brand';
     const VOICE_GROUP_MISSED_CALL_TICKETS         = 'voice.group_missed_call_tickets';
     const VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT = 'voice.group_missed_call_tickets_timeout';
+    const VOICE_FORWARDING_MACHINE_DETECTION      = 'voice.forwarding_machine_detection';
     const VOICE_TWILIO_PROXY_API_URL              = 'voice.twilio_proxy_api_url';
     const VOICE_TWILIO_PROXY_TASK_ROUTER_URL      = 'voice.twilio_proxy_task_router_url';
     const VOICE_TWILIO_PROXY_ACCOUNTS_URL         = 'voice.twilio_proxy_accounts_url';
@@ -51,6 +52,7 @@ class VoiceSettingsResolver
             ->setAgentVoicemailTimeout($this->getAgentVoicemailTimeout())
             ->setGroupMissedCallTickets($this->isGroupMissedCallTickets())
             ->setGroupMissedCallTicketsTimeout($this->getGroupMissedCallTicketsTimeout())
+            ->setForwardingMachineDetection($this->getForwardingMachineDetection())
         ;
 
         return $model;
@@ -94,6 +96,14 @@ class VoiceSettingsResolver
     public function getGroupMissedCallTicketsTimeout()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getForwardingMachineDetection()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_FORWARDING_MACHINE_DETECTION);
     }
 
     /**

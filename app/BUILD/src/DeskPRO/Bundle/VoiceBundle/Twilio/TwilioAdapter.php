@@ -40,7 +40,7 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * @var VoiceSettingsResolver
      */
-    private $settingsResolver;
+    private $voiceSettingsResolver;
 
     /**
      * @var UrlGeneratorInterface
@@ -56,20 +56,20 @@ class TwilioAdapter implements VoiceProviderInterface
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param VoiceSettingsResolver $settingsResolver
+     * @param VoiceSettingsResolver $voiceSettingsResolver
      * @param UrlGeneratorInterface $router
      * @param LoggerInterface       $logger
      */
     public function __construct(
         EntityManager         $em,
-        VoiceSettingsResolver $settingsResolver,
+        VoiceSettingsResolver $voiceSettingsResolver,
         UrlGeneratorInterface $router,
         LoggerInterface       $logger
     ) {
-        $this->em               = $em;
-        $this->settingsResolver = $settingsResolver;
-        $this->router           = $router;
-        $this->logger           = $logger;
+        $this->em                    = $em;
+        $this->voiceSettingsResolver = $voiceSettingsResolver;
+        $this->router                = $router;
+        $this->logger                = $logger;
     }
 
     /**
@@ -187,6 +187,7 @@ class TwilioAdapter implements VoiceProviderInterface
      * @param TwilioVoiceAccount $account
      * @param array              $data
      *
+     * @throws \Exception
      * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return bool|IncomingPhoneNumberInstance
@@ -237,6 +238,7 @@ class TwilioAdapter implements VoiceProviderInterface
      * @param string             $statusUrl
      * @param string             $statusMethod
      *
+     * @throws \Exception
      * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return \Twilio\Rest\Api\V2010\Account\ApplicationInstance
@@ -360,6 +362,7 @@ class TwilioAdapter implements VoiceProviderInterface
      * @param TwilioVoiceAccount $account
      * @param string             $conferenceSid
      *
+     * @throws \Exception
      * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return \Twilio\Rest\Api\V2010\Account\ConferenceInstance
@@ -526,7 +529,7 @@ class TwilioAdapter implements VoiceProviderInterface
         ];
 
         // disabled for now
-        if (false) {
+        if ($this->voiceSettingsResolver->getForwardingMachineDetection()) {
             $options = array_merge($options, [
                 'machineDetection'                   => 'Enable',
                 'machineDetectionSilenceTimeout'     => 2000,
@@ -641,10 +644,10 @@ class TwilioAdapter implements VoiceProviderInterface
     {
         $client = new ClientProxy($account->getAccountId(), $account->getAuthToken());
         $client
-            ->setApiProxyUrl($this->settingsResolver->getTwilioProxyApiUrl())
-            ->setTaskRouterProxyUrl($this->settingsResolver->getTwilioProxyTaskRouterUrl())
-            ->setAccountsProxyUrl($this->settingsResolver->getTwilioProxyAccountsUrl())
-            ->setProxyPricingUrl($this->settingsResolver->getTwilioProxyPricingUrl())
+            ->setApiProxyUrl($this->voiceSettingsResolver->getTwilioProxyApiUrl())
+            ->setTaskRouterProxyUrl($this->voiceSettingsResolver->getTwilioProxyTaskRouterUrl())
+            ->setAccountsProxyUrl($this->voiceSettingsResolver->getTwilioProxyAccountsUrl())
+            ->setProxyPricingUrl($this->voiceSettingsResolver->getTwilioProxyPricingUrl())
         ;
 
         return $client;

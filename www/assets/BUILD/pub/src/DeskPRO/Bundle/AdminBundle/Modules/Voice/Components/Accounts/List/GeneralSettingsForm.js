@@ -16,7 +16,8 @@ class GeneralSettingsForm extends BaseForm {
 
     return {
       group_missed_call_tickets:         settings ? settings.get('group_missed_call_tickets') : false,
-      group_missed_call_tickets_timeout: settings ? settings.get('group_missed_call_tickets_timeout') : 0
+      group_missed_call_tickets_timeout: settings ? settings.get('group_missed_call_tickets_timeout') : 0,
+      forwarding_machine_detection:      settings ? settings.get('forwarding_machine_detection') : false
     };
   }
 
@@ -33,6 +34,9 @@ class GeneralSettingsForm extends BaseForm {
           <Field select="group_missed_call_tickets_timeout">
             <GroupMissedCallTicketsTimeout />
           </Field>}
+          <Field select="forwarding_machine_detection">
+            <Checkbox label="Forwarding Machine Detection (+ve is stops VM pickup, -ve is latency + cost)" />
+          </Field>
 
           <button className={classNames('ui button', { loading: saving })}>
             Save

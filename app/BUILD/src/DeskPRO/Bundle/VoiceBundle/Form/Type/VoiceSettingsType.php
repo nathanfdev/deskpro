@@ -65,6 +65,9 @@ class VoiceSettingsType extends AbstractType
             ->add('group_missed_call_tickets_timeout', IntegerType::class, [
                 'required' => false,
             ])
+            ->add('forwarding_machine_detection', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
 
         $builder->get('agent_default_department')->addModelTransformer(
