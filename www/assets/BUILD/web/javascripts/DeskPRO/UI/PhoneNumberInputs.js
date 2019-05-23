@@ -56,20 +56,24 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				phone_input.intlTelInput('setNumber', input.val() + ' ext. ' + ext_input.val());
 			} else if (input.val()) {
 				phone_input.intlTelInput('setNumber', input.val());
+			} else {
+				try {
+					if (window.localStorage) {
+						var lastCountryCode = window.localStorage.getItem('dpAgent.voice.phoneCountryCode');
+						if (lastCountryCode) {
+							phone_input.intlTelInput('setCountry', lastCountryCode);
+						}
+					}
+				} catch (e) {}
 			}
 
-			try {
-				if (window.localStorage) {
-					var lastCountryCode = window.localStorage.getItem('dpAgent.voice.phoneCountryCode');
-					if (lastCountryCode) {
-						phone_input.intlTelInput('setCountry', lastCountryCode);
-					}
-
-					phone_input.on('countrychange', function (e, countryData) {
+			phone_input.on('countrychange', function (e, countryData) {
+				try {
+					if (window.localStorage) {
 						window.localStorage.setItem('dpAgent.voice.phoneCountryCode', countryData.iso2);
-					});
-				}
-			} catch (e) {}
+					}
+				} catch (e) {}
+			});
 
 			phone_input.width('300px');
 
