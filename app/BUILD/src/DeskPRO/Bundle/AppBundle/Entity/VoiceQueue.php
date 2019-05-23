@@ -97,6 +97,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent>")
      *
      * @Assert\Valid()
+     * @Assert\Count(min="1")
      *
      * @var VoiceQueueAgent[]|ArrayCollection
      */

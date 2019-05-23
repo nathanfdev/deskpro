@@ -47,8 +47,9 @@ class VoiceQueueType extends AbstractType
                 'required' => false,
             ])
             ->add('agents', VoiceQueueAgentCollectionType::class, [
-                'queue'    => $builder->getData(),
-                'required' => true,
+                'queue'          => $builder->getData(),
+                'required'       => true,
+                'error_bubbling' => false,
             ])
             ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
