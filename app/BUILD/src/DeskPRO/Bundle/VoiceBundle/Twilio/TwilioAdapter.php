@@ -641,7 +641,7 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         try {
-            return  $this->getClient($account)->calls($phoneCall->getCallSid())->fetch();
+            return  $this->getClient($account)->calls($callSid)->fetch();
         } catch (\Exception $e) {
         }
 
