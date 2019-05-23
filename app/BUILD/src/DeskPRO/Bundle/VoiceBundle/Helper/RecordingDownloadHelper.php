@@ -196,7 +196,7 @@ class RecordingDownloadHelper
         }
 
         // ignore short voicemails
-        if ($duration < 5) {
+        if ($duration < 6) {
             // we won't fetch the recording so just delete it
             $this->providerHelper->deleteRecording($phoneCall, $recordingSid);
 
