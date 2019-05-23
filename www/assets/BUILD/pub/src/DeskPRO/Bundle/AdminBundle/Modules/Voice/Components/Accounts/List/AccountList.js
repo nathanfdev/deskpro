@@ -7,6 +7,7 @@ class AccountList extends React.Component {
 
   static propTypes = {
     accounts:      PropTypes.object,
+    numbers:       PropTypes.object,
     settings:      PropTypes.object,
     onNewAccount:  PropTypes.func,
     onEditAccount: PropTypes.func,
@@ -29,25 +30,24 @@ class AccountList extends React.Component {
           </button>
         </div>
       );
-    } else {
-      return (
-        <div className="page">
-          <SectionHeader title="General Settings" dividing />
-
-          You currently have no accounts.
-          <br /><br />
-
-          <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
-            Add new account
-          </button>
-        </div>
-      );
     }
+
+    return (
+      <div className="page">
+        <SectionHeader title="General Settings" dividing />
+
+        You currently have no accounts.
+        <br /><br />
+
+        <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
+          Add new account
+        </button>
+      </div>
+    );
   }
 
   renderTable() {
-
-    const { accounts = [], onEditAccount, settings, saveSettings } = this.props;
+    const { accounts = [], numbers, onEditAccount, settings, saveSettings } = this.props;
 
     return (
       <div className="page">
@@ -86,7 +86,7 @@ class AccountList extends React.Component {
 
         <div className="admin-list-options">
           <div className="voice-general-settings-form">
-            <GeneralSettingsForm settings={settings} onSubmit={saveSettings} />
+            <GeneralSettingsForm settings={settings} numbers={numbers} onSubmit={saveSettings} />
           </div>
         </div>
       </div>

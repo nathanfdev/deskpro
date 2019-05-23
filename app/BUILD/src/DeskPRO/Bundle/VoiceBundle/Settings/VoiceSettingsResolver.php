@@ -17,6 +17,8 @@ class VoiceSettingsResolver
     const VOICE_GROUP_MISSED_CALL_TICKETS         = 'voice.group_missed_call_tickets';
     const VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT = 'voice.group_missed_call_tickets_timeout';
     const VOICE_FORWARDING_MACHINE_DETECTION      = 'voice.forwarding_machine_detection';
+    const VOICE_FORWARDING_NUMBER_TYPE            = 'voice.forwarding_number_type';
+    const VOICE_FORWARDING_NUMBER                 = 'voice.forwarding_number';
     const VOICE_TWILIO_PROXY_API_URL              = 'voice.twilio_proxy_api_url';
     const VOICE_TWILIO_PROXY_TASK_ROUTER_URL      = 'voice.twilio_proxy_task_router_url';
     const VOICE_TWILIO_PROXY_ACCOUNTS_URL         = 'voice.twilio_proxy_accounts_url';
@@ -24,6 +26,9 @@ class VoiceSettingsResolver
     const VOICE_PLIVO_PROXY_HOST                  = 'voice.plivo_proxy_host';
     const VOICE_PLIVO_PROXY_USERNAME              = 'voice.plivo_proxy_username';
     const VOICE_PLIVO_PROXY_PASSWORD              = 'voice.plivo_proxy_password';
+
+    const DEFAULT_FORWARDING_NUMBER  = 'default';
+    const SPECIFIC_FORWARDING_NUMBER = 'specific';
 
     /**
      * @var SettingsResolver
@@ -53,6 +58,8 @@ class VoiceSettingsResolver
             ->setGroupMissedCallTickets($this->isGroupMissedCallTickets())
             ->setGroupMissedCallTicketsTimeout($this->getGroupMissedCallTicketsTimeout())
             ->setForwardingMachineDetection($this->getForwardingMachineDetection())
+            ->setForwardingNumberType($this->getForwardingNumberType())
+            ->setForwardingNumber($this->getForwardingNumber())
         ;
 
         return $model;
@@ -104,6 +111,22 @@ class VoiceSettingsResolver
     public function getForwardingMachineDetection()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_FORWARDING_MACHINE_DETECTION);
+    }
+
+    /**
+     * @return string
+     */
+    public function getForwardingNumberType()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_FORWARDING_NUMBER_TYPE);
+    }
+
+    /**
+     * @return int
+     */
+    public function getForwardingNumber()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_FORWARDING_NUMBER);
     }
 
     /**

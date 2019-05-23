@@ -81,6 +81,8 @@ class VoiceSettingsController extends BaseController
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS, $form->get('group_missed_call_tickets')->getData());
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT, $form->get('group_missed_call_tickets_timeout')->getData());
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FORWARDING_MACHINE_DETECTION, $form->get('forwarding_machine_detection')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FORWARDING_NUMBER_TYPE, $form->get('forwarding_number_type')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FORWARDING_NUMBER, $form->get('forwarding_number')->getData());
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

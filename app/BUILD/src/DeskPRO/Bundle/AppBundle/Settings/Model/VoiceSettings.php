@@ -52,6 +52,20 @@ class VoiceSettings
     private $forwardingMachineDetection;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $forwardingNumberType;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $forwardingNumber;
+
+    /**
      * @return int
      */
     public function getAgentVoicemailTimeout()
@@ -167,6 +181,46 @@ class VoiceSettings
     public function setForwardingMachineDetection($forwardingMachineDetection)
     {
         $this->forwardingMachineDetection = $forwardingMachineDetection;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForwardingNumberType()
+    {
+        return $this->forwardingNumberType;
+    }
+
+    /**
+     * @param string $forwardingNumberType
+     *
+     * @return $this
+     */
+    public function setForwardingNumberType($forwardingNumberType)
+    {
+        $this->forwardingNumberType = $forwardingNumberType;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getForwardingNumber()
+    {
+        return $this->forwardingNumber;
+    }
+
+    /**
+     * @param int $forwardingNumber
+     *
+     * @return $this
+     */
+    public function setForwardingNumber($forwardingNumber)
+    {
+        $this->forwardingNumber = $forwardingNumber;
 
         return $this;
     }

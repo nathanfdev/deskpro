@@ -505,7 +505,11 @@ class TwilioAdapter implements VoiceProviderInterface
             return false;
         }
 
-        $account       = $phoneCall->getNumber()->getAccount();
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
         $forwardingUrl = $this->router->generate('twilio_answer_forwarding_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
@@ -528,7 +532,6 @@ class TwilioAdapter implements VoiceProviderInterface
             'timeout'              => $agent->getAgentData()->getForwardingRingTimeout() ?: 10,
         ];
 
-        // disabled for now
         if ($this->voiceSettingsResolver->getForwardingMachineDetection()) {
             $options = array_merge($options, [
                 'machineDetection'                   => 'Enable',
@@ -539,7 +542,19 @@ class TwilioAdapter implements VoiceProviderInterface
             ]);
         }
 
-        return $this->callNumber($phoneCall, $agent->getForwardingNumber(), $options);
+        $forwardedPhoneCall = $phoneCall;
+
+        if ($this->voiceSettingsResolver->getForwardingNumberType() === VoiceSettingsResolver::SPECIFIC_FORWARDING_NUMBER
+            && $this->voiceSettingsResolver->getForwardingNumber()
+        ) {
+            $voiceNumber = $this->em->getRepository(VoiceNumber::class)->find($this->voiceSettingsResolver->getForwardingNumber());
+            if ($voiceNumber) {
+                $forwardedPhoneCall = new VoicePhoneCall();
+                $forwardedPhoneCall->setNumber($voiceNumber);
+            }
+        }
+
+        return $this->callNumber($forwardedPhoneCall, $agent->getForwardingNumber(), $options);
     }
 
     /**

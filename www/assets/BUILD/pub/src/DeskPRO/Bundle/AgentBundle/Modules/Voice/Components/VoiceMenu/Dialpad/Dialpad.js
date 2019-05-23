@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field, PhoneInput, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, PhoneInput, Checkbox, NumberSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
@@ -10,7 +10,6 @@ import 'mark.js/dist/jquery.mark';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
-import NumberSelect from '../NumberSelect';
 import DialGrid from '../../Common/DialGrid';
 
 class Dialpad extends React.Component {

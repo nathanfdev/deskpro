@@ -4,12 +4,15 @@ namespace DeskPRO\Bundle\VoiceBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\ReversedTransformer;
@@ -68,6 +71,18 @@ class VoiceSettingsType extends AbstractType
             ->add('forwarding_machine_detection', ApiBooleanType::class, [
                 'required' => false,
             ])
+            ->add('forwarding_number_type', ChoiceType::class, [
+                'required'          => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    VoiceSettingsResolver::DEFAULT_FORWARDING_NUMBER,
+                    VoiceSettingsResolver::SPECIFIC_FORWARDING_NUMBER,
+                ],
+            ])
+            ->add('forwarding_number', EntityType::class, [
+                'class'    => VoiceNumber::class,
+                'required' => false,
+            ])
         ;
 
         $builder->get('agent_default_department')->addModelTransformer(
@@ -75,6 +90,9 @@ class VoiceSettingsType extends AbstractType
         );
         $builder->get('agent_default_brand')->addModelTransformer(
             new ReversedTransformer(new EntityToIdTransformer($this->em->getRepository(Brand::class)))
+        );
+        $builder->get('forwarding_number')->addModelTransformer(
+            new ReversedTransformer(new EntityToIdTransformer($this->em->getRepository(VoiceNumber::class)))
         );
     }
 }

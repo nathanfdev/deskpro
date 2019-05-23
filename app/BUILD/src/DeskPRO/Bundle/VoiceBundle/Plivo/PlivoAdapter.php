@@ -45,7 +45,7 @@ class PlivoAdapter implements VoiceProviderInterface
     /**
      * @var VoiceSettingsResolver
      */
-    private $settingsResolver;
+    private $voiceSettingsResolver;
 
     /**
      * @var UrlGeneratorInterface
@@ -61,20 +61,20 @@ class PlivoAdapter implements VoiceProviderInterface
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param VoiceSettingsResolver $settingsResolver
+     * @param VoiceSettingsResolver $voiceSettingsResolver
      * @param UrlGeneratorInterface $router
      * @param LoggerInterface       $logger
      */
     public function __construct(
         EntityManager         $em,
-        VoiceSettingsResolver $settingsResolver,
+        VoiceSettingsResolver $voiceSettingsResolver,
         UrlGeneratorInterface $router,
         LoggerInterface       $logger
     ) {
-        $this->em               = $em;
-        $this->settingsResolver = $settingsResolver;
-        $this->router           = $router;
-        $this->logger           = $logger;
+        $this->em                    = $em;
+        $this->voiceSettingsResolver = $voiceSettingsResolver;
+        $this->router                = $router;
+        $this->logger                = $logger;
     }
 
     /**
@@ -334,7 +334,11 @@ class PlivoAdapter implements VoiceProviderInterface
             return false;
         }
 
-        $account       = $phoneCall->getNumber()->getAccount();
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
         $forwardingUrl = $this->router->generate('plivo_answer_forwarding_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
@@ -342,15 +346,28 @@ class PlivoAdapter implements VoiceProviderInterface
             'AgentId'     => $agent->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->callNumber(
-            $phoneCall,
-            $agent->getForwardingNumber(),
-            [
-                'answer_url'        => $forwardingUrl,
-                'machine_detection' => 'hangup',
-                'ring_timeout'      => $agent->getAgentData()->getForwardingRingTimeout() ?: 10,
-            ]
-        );
+        $options = [
+            'answer_url'   => $forwardingUrl,
+            'ring_timeout' => $agent->getAgentData()->getForwardingRingTimeout() ?: 10,
+        ];
+
+        if ($this->voiceSettingsResolver->getForwardingMachineDetection()) {
+            $options['machine_detection'] = 'hangup';
+        }
+
+        $forwardedPhoneCall = $phoneCall;
+
+        if ($this->voiceSettingsResolver->getForwardingNumberType() === VoiceSettingsResolver::SPECIFIC_FORWARDING_NUMBER
+            && $this->voiceSettingsResolver->getForwardingNumber()
+        ) {
+            $voiceNumber = $this->em->getRepository(VoiceNumber::class)->find($this->voiceSettingsResolver->getForwardingNumber());
+            if ($voiceNumber) {
+                $forwardedPhoneCall = new VoicePhoneCall();
+                $forwardedPhoneCall->setNumber($voiceNumber);
+            }
+        }
+
+        return $this->callNumber($forwardedPhoneCall, $agent->getForwardingNumber(), $options);
     }
 
     /**
@@ -672,9 +689,9 @@ class PlivoAdapter implements VoiceProviderInterface
         return new ProxyRestClient(
             $account->getAccountId(),
             $account->getAuthToken(),
-            $this->settingsResolver->getPlivoProxyHost(),
-            $this->settingsResolver->getPlivoProxyUsername(),
-            $this->settingsResolver->getPlivoProxyPassword()
+            $this->voiceSettingsResolver->getPlivoProxyHost(),
+            $this->voiceSettingsResolver->getPlivoProxyUsername(),
+            $this->voiceSettingsResolver->getPlivoProxyPassword()
         );
     }
 }

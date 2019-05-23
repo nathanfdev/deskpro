@@ -11,18 +11,23 @@ import EditAccountContainer from '../Form/EditAccountContainer';
 import AccountForm from '../Form/AccountForm';
 import { settingsLoadedSelector, settingsSelector } from '../../../Selectors/settings';
 import { loadSettings, updateSettings } from '../../../Actions/settingActions';
+import { loadNumbers } from '../../../Actions/numberActions';
+import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 
 @connect(state => ({
   accounts:       allAccountsSelector(state),
   accountsLoaded: isAccountsLoadedSelector(state),
   settings:       settingsSelector(state),
-  settingsLoaded: settingsLoadedSelector(state)
+  settingsLoaded: settingsLoadedSelector(state),
+  numbers:        allNumbersSelector(state),
+  numbersLoaded:  isNumbersLoadedSelector(state),
 }))
 class AccountListContainer extends React.Component {
 
   static propTypes = {
     dispatch:       PropTypes.func,
     accountsLoaded: PropTypes.bool,
+    numbersLoaded:  PropTypes.bool,
     settingsLoaded: PropTypes.bool,
   };
 
@@ -40,6 +45,7 @@ class AccountListContainer extends React.Component {
 
     dispatch(loadAccounts());
     dispatch(loadSettings());
+    dispatch(loadNumbers());
   }
 
   onNewAccountClick = (accountType) => {
@@ -68,12 +74,12 @@ class AccountListContainer extends React.Component {
   saveSettings = data => this.props.dispatch(updateSettings(data));
 
   render() {
-    const { accountsLoaded, settingsLoaded } = this.props;
+    const { accountsLoaded, settingsLoaded, numbersLoaded } = this.props;
     const { editAccount, accountType, formOpened } = this.state;
     const FormContainer = editAccount ? EditAccountContainer : NewAccountContainer;
     const title = editAccount ? 'Edit account' : 'New account';
 
-    if (!accountsLoaded || !settingsLoaded) {
+    if (!accountsLoaded || !settingsLoaded || !numbersLoaded) {
       return <LoadingPage />;
     }
 
