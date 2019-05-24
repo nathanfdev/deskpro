@@ -331,72 +331,6 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * Check if the user can modify (or delete) a message.
-     *
-     * @param Ticket $ticket
-     *
-     * @return bool
-     */
-    public function canEditMessages(Ticket $ticket)
-    {
-        if (!$this->canView($ticket)) {
-            return false;
-        }
-
-        //------------------------------
-        // Can modify messages own
-        //------------------------------
-
-        if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
-            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
-                return true;
-            }
-
-            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
-                return true;
-            }
-        }
-
-        //------------------------------
-        // Can modify messages unassigned
-        //------------------------------
-
-        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
-            return true;
-        }
-
-        //------------------------------
-        // Can modify messages assigned
-        //------------------------------
-
-        if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
-            return true;
-        }
-
-        //------------------------------
-        // Can modify messages others
-        //------------------------------
-
-        if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
-            return true;
-        }
-
-        //------------------------------
-        // Can modify messages followed
-        //------------------------------
-
-        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_messages_followed')) {
-            return true;
-        }
-
-        //------------------------------
-        // Cant delete
-        //------------------------------
-
-        return false;
-    }
-
-    /**
      * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
      *
      * @param Ticket $ticket1
@@ -472,24 +406,21 @@ class TicketChecker extends AbstractChecker
                 $permissionsToCheck[] = 'delete_timelimited_notes';
             }
         } else {
-            $permissionsToCheck = ['delete'];
+            $permissionsToCheck[] = $message->isVoiceMessage() ? 'delete_voice_messages' : 'delete';
         }
 
-        $res = array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
+        return array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
             return $carry || $this->canModifyMessages($message->getTicket(), $item);
         });
-
-        if ($res && $message->isVoiceMessage()) {
-            $res = $this->canModifyMessages($message->getTicket(), 'delete_voice_messages');
-        }
-
-        return $res;
     }
 
     /**
      * Check if modify message permission is enabled
-     * There is top level permission that checked always agent_tickets.modify_messages_{suffix}
+     * There is a top level permission agent_tickets.modify_messages_{suffix}
      * if this permission is true - all sub-permissions assumed as true.
+     *
+     * Check TicketPermissions properties with modify_messages_ prefix to get a list of possible $op
+     * $op examples: 'edit', 'edit_notes', 'delete_voice_messages' etc ...
      *
      * @param Ticket $ticket
      * @param string $op

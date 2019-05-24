@@ -3,22 +3,35 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use Doctrine\ORM\EntityManager;
 
 /**
- * Class TicketMessagesVoter.
+ * Class VoicePhoneCallVoter.
  */
-class TicketMessagesVoter extends AbstractTicketsVoter
+class VoicePhoneCallVoter extends AbstractTicketsVoter
 {
+    const DELETE_RECORDING = 'delete_recording';
+
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return TicketMessage::class;
+        return VoicePhoneCall::class;
     }
 
     /**
@@ -30,29 +43,26 @@ class TicketMessagesVoter extends AbstractTicketsVoter
             return false;
         }
 
-        /** @var Ticket $ticket */
-        $ticket = $context->getParent();
-        /** @var TicketMessage $message */
-        $message = $context->getChild();
+        /** @var VoicePhoneCall $phoneCall */
+        $phoneCall = $context->getParent();
 
         switch ($attribute) {
             case PermissionGroupVoter::VIEW_LIST:
             case PermissionGroupVoter::VIEW:
-                return $this->getTicketChecker($user)->canView($ticket);
             case PermissionGroupVoter::CREATE:
-                return $this->getTicketChecker($user)->canReply($ticket);
             case PermissionGroupVoter::MODIFY:
-                if (!$message) {
-                    return false;
-                }
-
-                return $this->getTicketChecker($user)->canEditMessage($message);
             case PermissionGroupVoter::DELETE:
-                if (!$message) {
+                // not implemented yet
+                return false;
+            case self::DELETE_RECORDING:
+                $attribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy(['phoneCall' => $phoneCall]);
+                // If we can't identify ticket we can't check permission
+                if (!$attribute) {
                     return false;
                 }
+                $ticket = $attribute->getMessage()->getTicket();
 
-                return $this->getTicketChecker($user)->canDeleteMessage($message);
+                return $this->getTicketChecker($user)->canModifyMessages($ticket, 'delete_voice_recordings');
         }
 
         return true;

@@ -81,8 +81,8 @@
     {{ macro.perm_row('ticket', 'modify_messages_convert_messages_own',           {toggleName: 'ticket.modify_messages_own'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_no_logging_own',                 {toggleName: 'ticket.modify_messages_own', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
     {% if app.getSetting('beta_features.voice') %}
-        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_own',    {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
         {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_own',  {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_own',    {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
     {% endif %}
     </tbody>
     <tbody>

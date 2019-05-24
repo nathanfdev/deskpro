@@ -136,11 +136,7 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
         $data['members'] = [];
         $data['perms']   = $loader->getGroupPermissions($group->id)->toArray();
 
-        // Loader already disabled non-safe permisssions, no need to update anything
-        // not sure why wee need this call at all
-        if ($group->sys_name != 'agent_all_safe_perms') {
-            $this->enablePermsForGroupOnArray($group, $data['perms']);
-        }
+        $this->enablePermsForGroupOnArray($group, $data['perms']);
 
         $member_ids = $this->db->fetchAllCol('SELECT person_id FROM person2usergroups WHERE usergroup_id = ?', [$group->id]);
         if ($member_ids) {
@@ -387,15 +383,14 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      */
     private function enablePermsForGroupOnArray(Usergroup $ug, array &$perms)
     {
-        if ($ug->sys_name != 'agent_all_perms' && $ug->sys_name != 'agent_all_safe_perms') {
+        // for agent_all_safe_perms all needed permissions has been enabled by loaders
+        if ($ug->sys_name != 'agent_all_perms') {
             return;
         }
 
         foreach ($perms as &$set) {
             foreach ($set as $n => &$v) {
-                if ($ug->sys_name != 'agent_all_safe_perms' || strpos($n, 'delete') === false) {
-                    $v = true;
-                }
+                $v = true;
             }
         }
     }

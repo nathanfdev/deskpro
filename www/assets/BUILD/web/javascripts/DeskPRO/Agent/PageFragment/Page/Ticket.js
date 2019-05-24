@@ -1950,6 +1950,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         $rElement.get(0),
         $el.data('message'),
         $el.data('message-date-created-fulltime'),
+        $el.data('perms'),
         $el.data('elid')
       );
     };
@@ -3180,10 +3181,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         } else {
           menuElement.find('li.delete-attachments-link').hide();
         }
-
-        console.log(perms);
-        console.log(perms.edit == true);
-        console.log(menuElement.find('li.edit').length);
 
         menuElement.find('li.edit').toggle(perms.edit == true);
         menuElement.find('li.delete-link').toggle(perms.delete == true);

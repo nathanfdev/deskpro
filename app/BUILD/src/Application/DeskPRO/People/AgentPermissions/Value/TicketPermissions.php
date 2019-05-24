@@ -40,7 +40,11 @@ class TicketPermissions implements PermissionValueInterface
     public $modify_labels_own = false;
     /** @var bool */
     public $modify_slas_own = false;
-    /** @var bool */
+    /**
+     * Means ability to add note to the ticket.
+     *
+     * @var bool
+     */
     public $modify_notes_own = false;
     /** @var bool */
     public $modify_set_hold_own = false;
@@ -107,7 +111,11 @@ class TicketPermissions implements PermissionValueInterface
     public $modify_labels_followed = false;
     /** @var bool */
     public $modify_slas_followed = false;
-    /** @var bool */
+    /**
+     * Means ability to add note to the ticket.
+     *
+     * @var bool
+     */
     public $modify_notes_followed = false;
     /** @var bool */
     public $modify_set_hold_followed = false;
@@ -176,7 +184,11 @@ class TicketPermissions implements PermissionValueInterface
     public $modify_labels_unassigned = false;
     /** @var bool */
     public $modify_slas_unassigned = false;
-    /** @var bool */
+    /**
+     * Means ability to add note to the ticket.
+     *
+     * @var bool
+     */
     public $modify_notes_unassigned = false;
     /** @var bool */
     public $modify_set_hold_unassigned = false;
@@ -245,7 +257,11 @@ class TicketPermissions implements PermissionValueInterface
     public $modify_labels_others = false;
     /** @var bool */
     public $modify_slas_others = false;
-    /** @var bool */
+    /**
+     * Means ability to add note to the ticket.
+     *
+     * @var bool
+     */
     public $modify_notes_others = false;
     /** @var bool */
     public $modify_set_hold_others = false;
