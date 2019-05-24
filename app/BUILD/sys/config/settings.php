@@ -410,6 +410,12 @@ return [
     'core.agent_translate_debug'     => false,
     'core.agent_enable_kb_shortcuts' => true,
 
+    /*
+     * https://yourzone/ or just / to enable using image resizing on cloudflare instead of our own
+     * (This just changes the URLs we output, so you could still use resizing through file.php itself)
+     */
+    'images.cf_resize_zone' => null,
+
     //###################################################################################################################
     // core_tickets
     //###################################################################################################################
