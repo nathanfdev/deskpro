@@ -209,7 +209,7 @@ class PersonFactory
         } else {
             if ($person->isUser()) {
                 // this person can login, so force a login!
-                throw new LoginRequiredException($person);
+                throw new LoginRequiredException($guest->getEmailAddress(), $person);
             } else {
                 // this person exists in the db but can't login, send them a validation email!
                 throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name, $person);
