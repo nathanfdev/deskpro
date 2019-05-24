@@ -854,6 +854,7 @@ user.defaults.article_example_content: 'Αυτό είναι ένα παράδε�
 user.defaults.article_example_title: 'Παράδειγμα  άρθρου'
 user.defaults.department_sales: Πωλήσεις
 user.defaults.downloads_category_general: Έγγραφα
+user.defaults.navigate: Κυβερνώ
 user.defaults.news_category_general: Γενικά
 user.defaults.news_example_content: 'Αυτό είναι ένα παράδειγμα άρθρου νέων. Μπορείτε να το επεξεργαστείτε ή να το διαγράψετε από την διεπαφή εκπροσώπου Support.'
 user.defaults.news_example_title: 'Παράδειγμα άρθρου νέων'

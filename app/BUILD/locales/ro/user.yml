@@ -338,6 +338,7 @@ user.defaults.article_example_title: 'Exemplu de articol'
 user.defaults.department_sales: Vanzari
 user.defaults.department_support: Suport
 user.defaults.downloads_category_general: Documente
+user.defaults.navigate: Navigaţi
 user.defaults.news_example_content: 'Acesta este un exemplu de stire. Puteti edita sau sterge acest exemplu din interfata de agent'
 user.defaults.news_example_title: 'Exemplu de stire'
 user.email_subjects.chat_transcript: 'Inregistrare Chat'

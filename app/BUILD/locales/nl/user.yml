@@ -865,6 +865,7 @@ user.defaults.article_example_title: Voorbeeldartikel
 user.defaults.department_sales: Verkoop
 user.defaults.department_support: Ondersteuning
 user.defaults.downloads_category_general: Documenten
+user.defaults.navigate: Navigeren
 user.defaults.news_category_general: Algemeen
 user.defaults.news_example_content: 'Dit is een voorbeeld van een nieuwsbericht. U kunt dit onderdeel bewerken of verwijderen van de medewerkers-interface.'
 user.defaults.news_example_title: 'Voorbeeld nieuwsbericht'

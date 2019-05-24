@@ -372,6 +372,7 @@ user.defaults.article_example_title: 'Artigo de Exemplo'
 user.defaults.department_sales: Vendas
 user.defaults.department_support: Suporte
 user.defaults.downloads_category_general: Documentos
+user.defaults.navigate: Navegar
 user.defaults.news_category_general: Geral
 user.defaults.news_example_content: 'Isto é um exemplo de postar notícia. Esteja à vontade de o editar ou apagar do interface do agente.'
 user.defaults.news_example_title: 'Exemplo de postar notícia'

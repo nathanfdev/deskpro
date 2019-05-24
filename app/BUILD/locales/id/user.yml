@@ -856,6 +856,7 @@ user.defaults.article_example_title: 'Contoh artikel'
 user.defaults.department_sales: Penjualan
 user.defaults.department_support: Bantuan
 user.defaults.downloads_category_general: Dokumen
+user.defaults.navigate: Menavigasi
 user.defaults.news_category_general: Umum
 user.defaults.news_example_content: 'Ini adalah contoh pos berita. Dipersilakan untuk mengedit atau menghapusnya dari interface agen.'
 user.defaults.news_example_title: 'Contoh Pos Berita'
