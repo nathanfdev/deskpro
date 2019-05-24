@@ -178,9 +178,6 @@ class AgentPermissions implements PermissionsSetInterface
             }
 
             foreach ($this->$prop->getNames() as $name) {
-                if ($name == 'modify_messages_edit_timelimited_notes_own') {
-                    $a = 'b';
-                }
                 $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool) $perms[$prop][$name]) : false;
             }
         }

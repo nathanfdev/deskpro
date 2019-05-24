@@ -591,7 +591,7 @@ class TicketController extends AbstractController
      *    message_id => [
      *        'edit' => true/false
      *        'delete' => true/false
-     *    ]no_logging_own
+     *    ]
      * ].
      *
      * Check TicketPermissions properties with modify_messages_ prefix to get a list of possible message permissions
