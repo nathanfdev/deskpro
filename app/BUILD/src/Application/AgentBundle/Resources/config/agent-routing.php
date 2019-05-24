@@ -528,6 +528,12 @@ $collection->create('agent_person_ajaxsavecustomfields', [
     'requirements' => ['person_id' => '\\d+'],
 ]);
 
+$collection->create('agent_people_uploadvcardoverlay', [
+    'path'         => '/people/{person_id}/upload-vcard-overlay',
+    'controller'   => 'AgentBundle:Person:uploadVcardOverlay',
+    'requirements' => ['person_id' => '\\d+'],
+]);
+
 $collection->create('agent_peoplesearch_usergroup', [
     'path'       => '/people-search/usergroup/{id}',
     'controller' => 'AgentBundle:PeopleSearch:showUsergroup',
