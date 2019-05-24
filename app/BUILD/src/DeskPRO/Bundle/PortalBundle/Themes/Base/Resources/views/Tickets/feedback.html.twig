@@ -12,7 +12,7 @@
     <div class="icon-mark"></div>
     <h1>{{ phrase('user.tickets.rate_support') }}</h1>
       <span class="agent-avatar agent-avatar-mid"
-      style="background-image: url({{ avatar_url(message.person, 36) }});"></span>
+      style="background-image: url({{ avatar_url(message.person, 36) }}); background-size: contain;"></span>
       <p>{{ phrase('portal.tickets.rate-intro', {name: message.person.display_name_user, subject: ticket.subject}) }}</p>
     <div class="footer">
         <article class="news kb-article dpx-form padded">

@@ -15,7 +15,7 @@
 								class="{% if agent.id == app.user.id %}agent-me{% else %}agent-{{ agent.id }}{% endif %}"
 								style="{% if agent.id != app.user.id and agent.id not in online_agent_ids %}display: none;{% endif %}"
 							>
-								<i class="agent-inline-icon" style="background-image: url({{ agent.getPictureUrl(16) }});"></i>
+								<i class="agent-inline-icon" style="background-image: url({{ agent.getPictureUrl(16) }}); background-size: contain;"></i>
 							</li>
 						{% endfor %}
 					</ul>

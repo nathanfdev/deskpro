@@ -19,7 +19,7 @@
     <div class="chat-message {{ message.origin == 'agent' ? 'chat-message-agent' : 'chat-message-user' }}">
           <span class="author">
               {% if message.author %}
-                  <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
+                  <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }}); background-size: contain;"></span>
               {% endif %}
               {% if message.origin == 'agent' %}
                 {{ message.author ? message.author.display_name_user : '' }}
@@ -126,7 +126,7 @@
     {% if message.is_sys %}
          <div class="chat-message chat-event">
           {% if message.author %}
-            <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }});"></span>
+            <span class="avatar" style="background-image: url({{ avatar_url(message.author, 36) }}); background-size: contain;"></span>
           {% endif %}
           <span class="title">
               {% if message.metadata.phrase_id %}

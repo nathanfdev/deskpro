@@ -39,7 +39,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 				{%- set phrase_part -%}<a
 					class="click-through name"
 					data-route="person:{{ path('agent_people_view', {'person_id': convo.person.id}) }}"
-					><span class="with-icon" data-person-id="{{ convo.person.id|default(0) }}" style="background-image: url('{{ convo.person.getPictureUrl(16) }}');">{{ convo.person.display_name }}</span></a> &lt;{{ convo.person.primary_email_address }}&gt;
+					><span class="with-icon" data-person-id="{{ convo.person.id|default(0) }}" style="background-image: url('{{ convo.person.getPictureUrl(16) }}'); background-size: contain;">{{ convo.person.display_name }}</span></a> &lt;{{ convo.person.primary_email_address }}&gt;
 				{%- endset -%}
 				{% else %}
 					{% if convo.person_name or convo.person_email %}

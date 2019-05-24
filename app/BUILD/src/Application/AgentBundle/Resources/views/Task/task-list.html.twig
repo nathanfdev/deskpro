@@ -119,14 +119,14 @@
 					<ul>
 						<li class="me last-me">
 							<input type="radio" name="{{ tplvars.baseId }}_asignedto" value="{{ app.user.id }}" />
-							<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }})">{{ phrase('agent.general.me') }}</span></label>
+							<label><span class="agent-pic agent-label-{{ app.user.id }}" style="background-image: url({{ app.user.getPictureUrl(16) }}); background-size: contain;">{{ phrase('agent.general.me') }}</span></label>
 						</li>
 
 						{% for agent in agents %}
 							{% if agent.id != app.user.id %}
 								<li>
 									<input type="radio" name="{{ tplvars.baseId }}_asignedto" value="{{ agent.id }}" />
-									<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }})">{{ agent.display_name }}</span></label>
+									<label><span class="agent-pic agent-label-{{ agent.id }}" style="background-image: url({{ agent.getPictureUrl(16) }}); background-size: contain;">{{ agent.display_name }}</span></label>
 									<div class="bound-fade"></div>
 								</li>
 							{% endif %}

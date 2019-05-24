@@ -9,7 +9,7 @@
                 title="{{ ng_var('agents[permission.person].name') }}"
             >
                 <span class="text">{{ ng_var('getInitials(agents[permission.person])') }}</span>
-                <span class="image" style="background-image: url({{ ng_var('agents[permission.person].avatar.url') }});"/>
+                <span class="image" style="background-image: url({{ ng_var('agents[permission.person].avatar.url') }}); background-size: contain;"/>
             </a>
             <a ng-if="(dashboard.permissions | filter:filterPermissions).length > 6 && canEdit()" ng-click="openEdit('permissions')" class="avatar avatar-blank"><span>+{{ ng_var('(dashboard.permissions | filter:filterPermissions).length - 6') }}</span></a>
             <a ng-if="canEdit()" ng-click="openEdit('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fas fa-user"></i></span></a>
