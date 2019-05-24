@@ -734,7 +734,7 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
-     * User answered an incoming call.
+     * Agent is calling, user answered the call.
      *
      * @ApiDoc(
      *     description="Outgoing callback",
@@ -950,17 +950,16 @@ class TwilioCallbacksController extends BaseController
                 ));
 
                 $twiml->dial([
-                    'record' => 'record-from-answer-dual',
-                ])->conference($phoneCall->getConferenceName(), [
-                    'beep'                          => false,
-                    'waitUrl'                       => '',
-                    'statusCallback'                => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-                    'statusCallbackMethod'          => 'POST',
-                    'statusCallbackEvent'           => 'join leave start end mute hold',
-                    'record'                        => 'record-from-start',
+                    'record'                        => 'record-from-answer-dual',
                     'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account, $phoneCall),
                     'recordingStatusCallbackMethod' => 'POST',
-                    'endConferenceOnExit'           => false,
+                ])->conference($phoneCall->getConferenceName(), [
+                    'beep'                 => false,
+                    'waitUrl'              => '',
+                    'statusCallback'       => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                    'statusCallbackMethod' => 'POST',
+                    'statusCallbackEvent'  => 'join leave start end mute hold',
+                    'endConferenceOnExit'  => false,
                 ]);
             } elseif ($phoneCall->isOnHold()) {
                 if ($phoneCall->isOutgoingCall()) {
@@ -1214,18 +1213,13 @@ class TwilioCallbacksController extends BaseController
         }
 
         $twiml = new Twiml();
-        $twiml->dial([
-            'record' => 'record-from-answer-dual',
-        ])->conference($phoneCall->getConferenceName(), [
-            'beep'                          => false,
-            'waitUrl'                       => '',
-            'statusCallback'                => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-            'statusCallbackMethod'          => 'POST',
-            'statusCallbackEvent'           => 'join leave start end mute hold',
-            'record'                        => 'record-from-start',
-            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account, $phoneCall),
-            'recordingStatusCallbackMethod' => 'POST',
-            'endConferenceOnExit'           => false,
+        $twiml->dial()->conference($phoneCall->getConferenceName(), [
+            'beep'                 => false,
+            'waitUrl'              => '',
+            'statusCallback'       => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+            'statusCallbackMethod' => 'POST',
+            'statusCallbackEvent'  => 'join leave start end mute hold',
+            'endConferenceOnExit'  => false,
         ]);
 
         $response = new Response($twiml);
@@ -1452,6 +1446,8 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
+     * Agent answers conference call (invite or transfer).
+     *
      * @param TwilioVoiceAccount $account
      * @param Request            $request
      *
@@ -1475,18 +1471,13 @@ class TwilioCallbacksController extends BaseController
                 $request->query->all()
             );
 
-            $twiml->dial([
-                'record' => 'record-from-answer-dual',
-            ])->conference($phoneCall->getConferenceName(), [
-                'beep'                          => false,
-                'waitUrl'                       => '',
-                'statusCallback'                => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-                'statusCallbackMethod'          => 'POST',
-                'statusCallbackEvent'           => 'join leave start end mute hold',
-                'record'                        => 'record-from-start',
-                'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account, $phoneCall),
-                'recordingStatusCallbackMethod' => 'POST',
-                'endConferenceOnExit'           => false,
+            $twiml->dial()->conference($phoneCall->getConferenceName(), [
+                'beep'                 => false,
+                'waitUrl'              => '',
+                'statusCallback'       => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                'statusCallbackMethod' => 'POST',
+                'statusCallbackEvent'  => 'join leave start end mute hold',
+                'endConferenceOnExit'  => false,
             ]);
 
             // join user or agent to the conference
