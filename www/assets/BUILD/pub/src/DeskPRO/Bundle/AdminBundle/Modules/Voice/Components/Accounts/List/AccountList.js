@@ -6,16 +6,16 @@ import GeneralSettingsForm from './GeneralSettingsForm';
 class AccountList extends React.Component {
 
   static propTypes = {
-    accounts:      PropTypes.object,
-    numbers:       PropTypes.object,
-    settings:      PropTypes.object,
-    onNewAccount:  PropTypes.func,
-    onEditAccount: PropTypes.func,
-    saveSettings:  PropTypes.func,
+    accounts:         PropTypes.object,
+    numbers:          PropTypes.object,
+    settings:         PropTypes.object,
+    createNewAccount: PropTypes.func,
+    editAccount:      PropTypes.func,
+    saveSettings:     PropTypes.func,
   };
 
   renderEmpty() {
-    const { onNewAccount } = this.props;
+    const { createNewAccount } = this.props;
 
     if (window.DP_IS_CLOUD) {
       return (
@@ -25,7 +25,7 @@ class AccountList extends React.Component {
           Voice has not been enabled on your account yet.
           <br /><br />
 
-          <button className="ui primary button" onClick={() => onNewAccount('cloud')}>
+          <button className="ui primary button" onClick={() => createNewAccount('cloud')}>
             Enable Voice
           </button>
         </div>
@@ -39,7 +39,7 @@ class AccountList extends React.Component {
         You currently have no accounts.
         <br /><br />
 
-        <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
+        <button className="ui primary button" onClick={() => createNewAccount('twilio')}>
           Add new account
         </button>
       </div>
@@ -47,12 +47,12 @@ class AccountList extends React.Component {
   }
 
   renderTable() {
-    const { accounts = [], numbers, onEditAccount, settings, saveSettings } = this.props;
+    const { accounts = [], numbers, editAccount, settings, saveSettings } = this.props;
 
     return (
       <div className="page">
         {/* disabled for now because we can just support only one account at the moment
-        <button className="ui right floated basic button" onClick={onNewAccount} disabled="disabled">
+        <button className="ui right floated basic button" onClick={createNewAccount} disabled="disabled">
           <i className="icon plus" />
           Add new account
         </button>*/}
@@ -73,7 +73,7 @@ class AccountList extends React.Component {
                   <div className="column sid">{account.get('account_id')}</div>
                   <div className="column date">{account.get('date_created')}</div>
                   <div className="column options-button">
-                    <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>
+                    <a onClick={(event) => { event.preventDefault(); editAccount(account); }}>
                       <i className="fas fa-cog" />
                     </a>
                   </div>

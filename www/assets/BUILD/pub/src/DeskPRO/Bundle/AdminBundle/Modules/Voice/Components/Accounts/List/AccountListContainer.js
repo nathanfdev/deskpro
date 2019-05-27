@@ -48,14 +48,14 @@ class AccountListContainer extends React.Component {
     dispatch(loadNumbers());
   }
 
-  onNewAccountClick = (accountType) => {
+  createNewAccount = (accountType) => {
     this.setState({
       formOpened: true,
       accountType
     });
   };
 
-  onEditAccountClick = (account) => {
+  editAccount = (account) => {
     this.setState({
       formOpened:  true,
       editAccount: account,
@@ -87,8 +87,8 @@ class AccountListContainer extends React.Component {
       <div>
         <AccountList
           {...this.props}
-          onNewAccount={this.onNewAccountClick}
-          onEditAccount={this.onEditAccountClick}
+          createNewAccount={this.createNewAccount}
+          editAccount={this.editAccount}
           saveSettings={this.saveSettings}
         />
         <Modal isOpen={formOpened} onClose={this.onClose} title={title} onCloseButtonClick={this.closeEditPopup}>
