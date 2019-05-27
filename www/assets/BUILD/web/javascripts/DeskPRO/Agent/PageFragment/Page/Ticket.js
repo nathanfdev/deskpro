@@ -3183,9 +3183,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         }
 
         menuElement.find('li.edit').toggle(perms.edit == true);
-        menuElement.find('li.delete-link').toggle(perms.delete == true);
-        menuElement.find('li.email_delete').toggle(perms.delete == true);
-        menuElement.find('li.delete-attachments-link').toggle(perms.delete == true);
+        menuElement.find('li.delete-link').toggle(perms['delete'] == true);
+        menuElement.find('li.email_delete').toggle(perms['delete'] == true);
+        menuElement.find('li.delete-attachments-link').toggle(perms['delete'] == true);
         if (message.hasClass('note-message')) {
           menuElement.find('li.set-as-message').toggle(perms.convert == true);
         } else {
