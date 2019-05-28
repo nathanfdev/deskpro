@@ -112,15 +112,15 @@ class VoiceCloudProxy
             $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
             $client->setMethod(\Zend\Http\Request::METHOD_GET);
             $client->setUri($url);
-            $res = $client->send();
 
-            $data = json_decode($res->getBody(), true);
+            $response = $client->send();
+            $data     = json_decode($response->getBody(), true);
 
-            if (!empty($res['error'])) {
-                throw new InsufficientBalanceException($res['code']);
+            if (!empty($data['error'])) {
+                throw new InsufficientBalanceException($data['code']);
             }
 
-            if (empty($res['accessToken']) || empty($res['accessToken'])) {
+            if (empty($data['accessToken']) || empty($data['accessToken'])) {
                 throw new AccessDeniedException('dpms');
             }
 

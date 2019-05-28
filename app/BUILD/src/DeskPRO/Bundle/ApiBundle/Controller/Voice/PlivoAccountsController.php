@@ -279,7 +279,7 @@ class PlivoAccountsController extends AbstractVoiceCrudController
      *
      * @return View
      */
-    public function createCloudAccount(Request $request)
+    public function createCloudAccountAction(Request $request)
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 

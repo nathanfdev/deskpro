@@ -6,16 +6,17 @@ import GeneralSettingsForm from './GeneralSettingsForm';
 class AccountList extends React.Component {
 
   static propTypes = {
-    accounts:         PropTypes.object,
-    numbers:          PropTypes.object,
-    settings:         PropTypes.object,
-    createNewAccount: PropTypes.func,
-    editAccount:      PropTypes.func,
-    saveSettings:     PropTypes.func,
+    accounts:            PropTypes.object,
+    numbers:             PropTypes.object,
+    settings:            PropTypes.object,
+    openNewAccountForm:  PropTypes.func,
+    createCloudAccount:  PropTypes.func,
+    openEditAccountForm: PropTypes.func,
+    saveSettings:        PropTypes.func,
   };
 
   renderEmpty() {
-    const { createNewAccount } = this.props;
+    const { openNewAccountForm, createCloudAccount } = this.props;
 
     if (window.DP_IS_CLOUD) {
       return (
@@ -25,7 +26,7 @@ class AccountList extends React.Component {
           Voice has not been enabled on your account yet.
           <br /><br />
 
-          <button className="ui primary button" onClick={() => createNewAccount('cloud')}>
+          <button className="ui primary button" onClick={() => createCloudAccount('twilio')}>
             Enable Voice
           </button>
         </div>
@@ -39,7 +40,7 @@ class AccountList extends React.Component {
         You currently have no accounts.
         <br /><br />
 
-        <button className="ui primary button" onClick={() => createNewAccount('twilio')}>
+        <button className="ui primary button" onClick={() => openNewAccountForm('twilio')}>
           Add new account
         </button>
       </div>
@@ -47,7 +48,7 @@ class AccountList extends React.Component {
   }
 
   renderTable() {
-    const { accounts = [], numbers, editAccount, settings, saveSettings } = this.props;
+    const { accounts = [], numbers, openEditAccountForm, settings, saveSettings } = this.props;
 
     return (
       <div className="page">
@@ -73,7 +74,7 @@ class AccountList extends React.Component {
                   <div className="column sid">{account.get('account_id')}</div>
                   <div className="column date">{account.get('date_created')}</div>
                   <div className="column options-button">
-                    <a onClick={(event) => { event.preventDefault(); editAccount(account); }}>
+                    <a onClick={(event) => { event.preventDefault(); openEditAccountForm(account); }}>
                       <i className="fas fa-cog" />
                     </a>
                   </div>

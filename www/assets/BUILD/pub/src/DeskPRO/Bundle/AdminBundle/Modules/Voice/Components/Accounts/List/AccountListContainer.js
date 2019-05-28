@@ -4,7 +4,7 @@ import Modal from 'DeskPRO/Component/Semantic/Modal';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import AccountList from './AccountList';
-import { loadAccounts } from '../../../Actions/accountActions';
+import { loadAccounts, createCloudAccount } from '../../../Actions/accountActions';
 import { allAccountsSelector, isAccountsLoadedSelector } from '../../../Selectors/account';
 import NewAccountContainer from '../Form/NewAccountContainer';
 import EditAccountContainer from '../Form/EditAccountContainer';
@@ -48,14 +48,14 @@ class AccountListContainer extends React.Component {
     dispatch(loadNumbers());
   }
 
-  createNewAccount = (accountType) => {
+  openNewAccountForm = (accountType) => {
     this.setState({
       formOpened: true,
       accountType
     });
   };
 
-  editAccount = (account) => {
+  openEditAccountForm = (account) => {
     this.setState({
       formOpened:  true,
       editAccount: account,
@@ -69,6 +69,10 @@ class AccountListContainer extends React.Component {
       editAccount: null,
       accountType: null
     });
+  };
+
+  createCloudAccount = () => {
+    this.props.dispatch(createCloudAccount('twilio'));
   };
 
   saveSettings = data => this.props.dispatch(updateSettings(data));
@@ -87,8 +91,9 @@ class AccountListContainer extends React.Component {
       <div>
         <AccountList
           {...this.props}
-          createNewAccount={this.createNewAccount}
-          editAccount={this.editAccount}
+          openNewAccountForm={this.openNewAccountForm}
+          openEditAccountForm={this.openEditAccountForm}
+          createCloudAccount={this.createCloudAccount}
           saveSettings={this.saveSettings}
         />
         <Modal isOpen={formOpened} onClose={this.onClose} title={title} onCloseButtonClick={this.closeEditPopup}>
