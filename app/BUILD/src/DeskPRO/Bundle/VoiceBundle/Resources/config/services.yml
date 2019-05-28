@@ -16,6 +16,12 @@ services:
     arguments:
       - "@settings_resolver"
 
+  dp.voice.cloud_proxy:
+    class: DeskPRO\Bundle\VoiceBundle\Cloud\VoiceCloudProxy
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@settings_resolver"
+
   twilio_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter
     arguments:

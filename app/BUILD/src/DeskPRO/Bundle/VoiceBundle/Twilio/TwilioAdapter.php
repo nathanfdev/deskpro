@@ -657,7 +657,10 @@ class TwilioAdapter implements VoiceProviderInterface
      */
     protected function getClient(TwilioVoiceAccount $account)
     {
-        $client = new ClientProxy($account->getAccountId(), $account->getAuthToken());
+        $username = $this->voiceSettingsResolver->getTwilioProxyUsername() ?: $account->getAccountId();
+        $password = $this->voiceSettingsResolver->getTwilioProxyPassword() ?: $account->getAuthToken();
+
+        $client = new ClientProxy($username, $password);
         $client
             ->setApiProxyUrl($this->voiceSettingsResolver->getTwilioProxyApiUrl())
             ->setTaskRouterProxyUrl($this->voiceSettingsResolver->getTwilioProxyTaskRouterUrl())

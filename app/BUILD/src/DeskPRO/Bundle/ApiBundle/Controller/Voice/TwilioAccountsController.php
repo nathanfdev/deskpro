@@ -8,6 +8,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\TwilioAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceBuyNumberType;
@@ -245,5 +247,67 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         } catch (TwilioException $e) {
             return $this->getFormErrorResponseFromException('twilio_exception', $e);
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Enable voice on cloud",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount"
+     * )
+     *
+     * @Rest\Post("/create_cloud_account")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function createCloudAccount(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
+
+        try {
+            $this->get('dp.voice.cloud_proxy')->initProxy($this->getUser(), 'twilio');
+        } catch (InsufficientBalanceException $e) {
+            return new View([
+                'code'    => 'invalid_input',
+                'message' => 'Could not setup voice account',
+                'errors'  => [
+                    'errors' => [
+                        ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                    ],
+                    'fields' => [
+                        'dpms_client' => [
+                            'errors' => [
+                                ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                            ],
+                        ],
+                    ],
+                ],
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            throw $this->createAccessDeniedException($e->getMessage());
+        }
+
+        $account = $this->getRepository(TwilioVoiceAccount::class)->findOneBy([
+            'accountId' => '_',
+            'authToken' => '_',
+        ]);
+
+        if (!$account) {
+            $account = new TwilioVoiceAccount();
+            $account->setAccountId('_');
+            $account->setAuthToken('_');
+            $account->setAccountName('Deskpro Cloud Voice Account');
+
+            $this->getManager()->persist($account);
+            $this->getManager()->flush();
+        }
+
+        return new View($this->wrap($account), Response::HTTP_CREATED);
     }
 }
