@@ -47,12 +47,17 @@ class VoiceCloudProxy
     public function initPlivoProxy(Person $person)
     {
         $data = $this->callMemberArea($person);
+        $url  = "{$data['dpmsUrl']}/voice/plivo-api/";
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_HOST, "{$data['dpmsUrl']}/voice/plivo-api/");
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_HOST, $url);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_USERNAME, $data['accessToken']);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_PASSWORD, $data['authToken']);
+
+        // reload settings because we need these settings
+        // to create account app in voice account doctrine listener
+        $this->settingsResolver->getGlobalSettings(true);
     }
 
     /**
@@ -63,12 +68,17 @@ class VoiceCloudProxy
     public function initTwilioProxy(Person $person)
     {
         $data = $this->callMemberArea($person);
+        $url  = "{$data['dpmsUrl']}/twilio/twilio-proxy/{$data['accessToken']}/{$data['authToken']}";
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_HOST, "{$data['dpmsUrl']}/twilio/twilio-proxy/{$data['accessToken']}/{$data['authToken']}");
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_HOST, $url);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_USERNAME, $data['accessToken']);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PASSWORD, $data['authToken']);
+
+        // reload settings because we need these settings
+        // to create account app in voice account doctrine listener
+        $this->settingsResolver->getGlobalSettings(true);
     }
 
     /**

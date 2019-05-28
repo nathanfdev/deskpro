@@ -300,7 +300,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
 
         if (!$account) {
             $account = new TwilioVoiceAccount();
-            $account->setAccountId('_');
+            $account->setAccountId('__ACCOUNT_ID__');
             $account->setAuthToken('_');
             $account->setAccountName('Deskpro Cloud Voice Account');
 
