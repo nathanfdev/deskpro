@@ -271,7 +271,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
         try {
-            $this->get('dp.voice.cloud_proxy')->initProxy($this->getUser(), 'twilio');
+            $this->get('dp.voice.cloud_proxy')->initTwilioProxy($this->getUser());
         } catch (InsufficientBalanceException $e) {
             return new View([
                 'code'    => 'invalid_input',

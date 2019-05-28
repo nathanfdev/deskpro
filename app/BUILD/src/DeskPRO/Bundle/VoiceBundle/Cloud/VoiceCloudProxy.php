@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -42,17 +43,32 @@ class VoiceCloudProxy
      * Inits plivo proxy settings.
      *
      * @param Person $person
-     * @param string $provider
      */
-    public function initProxy(Person $person, $provider)
+    public function initPlivoProxy(Person $person)
     {
         $data = $this->callMemberArea($person);
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
-        $settingsRepo->updateSetting("voice.{$provider}_proxy_host", "{$data['dpmsUrl']}/voice/{$provider}-api/");
-        $settingsRepo->updateSetting("voice.{$provider}_proxy_username", $data['accessToken']);
-        $settingsRepo->updateSetting("voice.{$provider}_proxy_password", $data['authToken']);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_HOST, "{$data['dpmsUrl']}/voice/plivo-api/");
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_USERNAME, $data['accessToken']);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_PASSWORD, $data['authToken']);
+    }
+
+    /**
+     * Inits plivo proxy settings.
+     *
+     * @param Person $person
+     */
+    public function initTwilioProxy(Person $person)
+    {
+        $data = $this->callMemberArea($person);
+
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
+        $settingsRepo = $this->em->getRepository(Setting::class);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_HOST, "{$data['dpmsUrl']}/voice/twilio-api/");
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_USERNAME, $data['accessToken']);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PASSWORD, $data['authToken']);
     }
 
     /**

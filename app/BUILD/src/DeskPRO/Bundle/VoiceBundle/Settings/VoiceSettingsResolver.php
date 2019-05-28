@@ -19,12 +19,12 @@ class VoiceSettingsResolver
     const VOICE_FORWARDING_MACHINE_DETECTION      = 'voice.forwarding_machine_detection';
     const VOICE_FORWARDING_NUMBER_TYPE            = 'voice.forwarding_number_type';
     const VOICE_FORWARDING_NUMBER                 = 'voice.forwarding_number';
-    const VOICE_TWILIO_PROXY_API_URL              = 'voice.twilio_proxy_api_url';
+    const VOICE_TWILIO_PROXY_HOST                 = 'voice.twilio_proxy_host';
     const VOICE_TWILIO_PROXY_USERNAME             = 'voice.twilio_proxy_username';
     const VOICE_TWILIO_PROXY_PASSWORD             = 'voice.twilio_proxy_password';
-    const VOICE_TWILIO_PROXY_TASK_ROUTER_URL      = 'voice.twilio_proxy_task_router_url';
-    const VOICE_TWILIO_PROXY_ACCOUNTS_URL         = 'voice.twilio_proxy_accounts_url';
-    const VOICE_TWILIO_PROXY_PRICING_URL          = 'voice.twilio_proxy_pricing_url';
+    const VOICE_TWILIO_PROXY_TASK_ROUTER_HOST     = 'voice.twilio_proxy_task_router_host';
+    const VOICE_TWILIO_PROXY_ACCOUNTS_HOST        = 'voice.twilio_proxy_accounts_host';
+    const VOICE_TWILIO_PROXY_PRICING_HOST         = 'voice.twilio_proxy_pricing_host';
     const VOICE_PLIVO_PROXY_HOST                  = 'voice.plivo_proxy_host';
     const VOICE_PLIVO_PROXY_USERNAME              = 'voice.plivo_proxy_username';
     const VOICE_PLIVO_PROXY_PASSWORD              = 'voice.plivo_proxy_password';
@@ -136,7 +136,7 @@ class VoiceSettingsResolver
      */
     public function getTwilioProxyApiUrl()
     {
-        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_API_URL);
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_HOST);
     }
 
     /**
@@ -160,7 +160,7 @@ class VoiceSettingsResolver
      */
     public function getTwilioProxyTaskRouterUrl()
     {
-        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_TASK_ROUTER_URL);
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_TASK_ROUTER_HOST);
     }
 
     /**
@@ -168,7 +168,7 @@ class VoiceSettingsResolver
      */
     public function getTwilioProxyAccountsUrl()
     {
-        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_ACCOUNTS_URL);
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_ACCOUNTS_HOST);
     }
 
     /**
@@ -176,7 +176,7 @@ class VoiceSettingsResolver
      */
     public function getTwilioProxyPricingUrl()
     {
-        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_PRICING_URL);
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_PRICING_HOST);
     }
 
     /**
