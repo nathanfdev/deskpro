@@ -66,7 +66,7 @@ class VoiceCloudProxy
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_HOST, "{$data['dpmsUrl']}/voice/twilio-api/");
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_HOST, "{$data['dpmsUrl']}/twilio/twilio-proxy/{$data['accessToken']}/{$data['authToken']}");
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_USERNAME, $data['accessToken']);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PASSWORD, $data['authToken']);
     }
