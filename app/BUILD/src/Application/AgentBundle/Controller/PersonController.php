@@ -687,6 +687,9 @@ class PersonController extends AbstractController
                 if (!$this->person->hasPerm('agent_people.reset_password')) {
                     throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
                 }
+                if (!$this->person->getEmailAddress()) {
+                    throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('Person has no email. Password could be neither changed nor reseted.');
+                }
                 if ($this->in->getString('password')) {
                     $person->setPassword($this->in->getString('password'));
                     $this->em->persist($person);
@@ -1623,6 +1626,13 @@ class PersonController extends AbstractController
             return $this->createJsonResponse([
                 'success'        => false,
                 'error_messages' => ['Please enter a valid email address or at least one phone number'],
+            ]);
+        }
+
+        if (!$newEmail && (bool) $this->in->getString('newperson.send_welcome_email')) {
+            return $this->createJsonResponse([
+                'success'        => false,
+                'error_messages' => ['Please enter a valid email address if you want to send a welcome email'],
             ]);
         }
 

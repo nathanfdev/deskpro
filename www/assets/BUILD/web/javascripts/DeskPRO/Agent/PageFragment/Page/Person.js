@@ -463,7 +463,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					);
 				} else if (action == 'reset-password') {
 
-					DeskPRO_Window.showConfirm(
+					if (!self.meta.person.email) {
+						DeskPRO_Window.showAlert("Cannot reset the password for the person - they don't have an email address");
+					} else {
+						DeskPRO_Window.showConfirm(
 							self.getEl('reset_password_confirm'),
 							function() {
 								$.ajax({
@@ -477,8 +480,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							null,
 							null, null,
 							400, 260
-					);
-
+						);
+					}
 				} else if (action == 'delete') {
 					var el = self.getEl('delete_confirm');//.clone();
 					DeskPRO_Window.showConfirm(
