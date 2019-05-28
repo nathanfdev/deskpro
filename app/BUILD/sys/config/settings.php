@@ -407,6 +407,12 @@ return [
      */
     'core.hit_tracks_db_count' => 7500,
 
+    /**
+     * Array or string with "\n" as delimiter
+     * Used in MiscController::proxyAction
+     */
+    'agent.legacy_proxy_whitelist' => null,
+
     'core.agent_translate_debug'     => false,
     'core.agent_enable_kb_shortcuts' => true,
 

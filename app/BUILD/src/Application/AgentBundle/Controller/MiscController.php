@@ -23,6 +23,8 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Util\RegexUtils;
+use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -363,6 +365,40 @@ JS;
         $urlinfo = @parse_url($url);
         if (!$url or !$urlinfo or empty($urlinfo['scheme']) or !preg_match('#^https?#', $urlinfo['scheme'])) {
             return $this->createResponse('Bad url', 400);
+        }
+
+        // Initialize white list
+        $whiteList = $this->container->get('settings_resolver')->getGlobalSettings()->get('agent.legacy_proxy_whitelist', []);
+        if ($whiteList && is_string($whiteList)) {
+            $whiteList = explode("\n", $whiteList);
+        }
+        if (!is_array($whiteList)) {
+            $whiteList = [];
+        }
+        $whiteList = Arrays::removeFalsey($whiteList);
+
+        // Validate Url against whitelist
+        $isValid = false;
+        foreach ($whiteList as $urlPattern) {
+            if (preg_match('#^/(.+)/$#', $urlPattern, $m)) {
+                $urlPattern = $m[1];
+                if (RegexUtils::safePregMatch("#$urlPattern#", $url)) {
+                    $isValid = true;
+                    break;
+                }
+            } elseif (preg_match('#(.+)\*$#', $urlPattern, $m)) {
+                if (StringUtils::startsWith($m[1], $url)) {
+                    $isValid = true;
+                    break;
+                }
+            } elseif ($urlPattern === $url) {
+                $isValid = true;
+                break;
+            }
+        }
+
+        if (!$isValid) {
+            throw $this->createAccessDeniedException();
         }
 
         $originalMethod = $this->request->getMethod();
