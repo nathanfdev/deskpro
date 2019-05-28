@@ -1747,7 +1747,7 @@ class PersonController extends AbstractController
 
             $this->get('event_dispatcher')->dispatch(PersonCreatedEvent::EVENT_NAME, new PersonCreatedEvent($person));
 
-            if ($this->in->getString('newperson.send_welcome_email')) {
+            if ($this->in->getString('newperson.send_welcome_email') && $newperson->getPerson()->getEmailAddress()) {
                 $trans = $this->container->getTranslator();
                 $trans->setPersonContext($newperson->getPerson());
 
