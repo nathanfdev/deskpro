@@ -378,6 +378,7 @@ JS;
         $whiteList = Arrays::removeFalsey($whiteList);
 
         // Validate Url against whitelist
+        // Logic copied from ProxyRequestValidator::validateWhitelistableRequest
         $isValid = false;
         foreach ($whiteList as $urlPattern) {
             if (preg_match('#^/(.+)/$#', $urlPattern, $m)) {
