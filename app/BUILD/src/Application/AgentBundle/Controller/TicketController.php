@@ -4236,6 +4236,13 @@ class TicketController extends AbstractController
                 $newTicket = $ticketManager->createTicket();
                 $this->em->commit();
                 $ticket->copyTo($newTicket);
+                $messages = $ticket->getMessages();
+                foreach ($messages as $message) {
+                    $messageCopy     = clone $message;
+                    $messageCopy->id = null;
+                    $messageCopy->setTicket($newTicket);
+                    $this->em->persist($messageCopy);
+                }
                 $ticketManager->markAsUnmanaged($ticket);
             } catch (\Exception $e) {
                 $ticketManager->markAsUnmanaged($ticket);
