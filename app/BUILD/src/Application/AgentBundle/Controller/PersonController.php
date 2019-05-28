@@ -1626,6 +1626,13 @@ class PersonController extends AbstractController
             ]);
         }
 
+        if (!$newEmail && (bool) $this->in->getString('newperson.send_welcome_email')) {
+            return $this->createJsonResponse([
+                'success'        => false,
+                'error_messages' => ['Please enter a valid email address if you want to send a welcome email'],
+            ]);
+        }
+
         if ($language = $this->in->getUInt('newperson.language')) {
             /** @var LanguageDataService $languageDataService */
             $languageDataService = $this->container->getDataService('Language');
@@ -1747,7 +1754,7 @@ class PersonController extends AbstractController
 
             $this->get('event_dispatcher')->dispatch(PersonCreatedEvent::EVENT_NAME, new PersonCreatedEvent($person));
 
-            if ($this->in->getString('newperson.send_welcome_email') && $newperson->getPerson()->getEmailAddress()) {
+            if ($this->in->getString('newperson.send_welcome_email')) {
                 $trans = $this->container->getTranslator();
                 $trans->setPersonContext($newperson->getPerson());
 
