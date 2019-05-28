@@ -687,6 +687,9 @@ class PersonController extends AbstractController
                 if (!$this->person->hasPerm('agent_people.reset_password')) {
                     throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
                 }
+                if (!$this->person->getEmailAddress()) {
+                    throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException('Person has no email. Password could be neither changed nor reseted.');
+                }
                 if ($this->in->getString('password')) {
                     $person->setPassword($this->in->getString('password'));
                     $this->em->persist($person);
