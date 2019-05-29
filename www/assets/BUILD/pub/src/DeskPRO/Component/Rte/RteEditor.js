@@ -55,12 +55,9 @@ export default class RteEditor extends React.Component {
 
       // wrap content
       if (!$('p', node).length) {
-        this.medium.saveSelection();
-        this.medium.setContent(`<p>${node.innerHTML}</p>`);
-
-        // refocus and reset caret position after the modification
+        node.innerHTML = `<p>${node.innerHTML}</p>`;
+        // refocus after the modification
         this.focus();
-        this.medium.restoreSelection();
       }
       this.updated = true;
 
