@@ -44,6 +44,7 @@ export default class RteEditor extends React.Component {
     } = this.props;
 
     const node = this.getNode();
+    let firstChange = true;
     const onChangeContent = () => {
       // remove empty blocks
       $('p', node).each((i, p) => {
@@ -55,9 +56,19 @@ export default class RteEditor extends React.Component {
 
       // wrap content
       if (!$('p', node).length) {
-        node.innerHTML = `<p>${node.innerHTML}</p>`;
-        // refocus after the modification
-        this.focus();
+        if (firstChange) {
+          this.medium.saveSelection();
+          this.medium.setContent(`<p>${node.innerHTML}</p>`);
+
+          // refocus and reset caret position after the modification
+          this.focus();
+          this.medium.restoreSelection();
+          firstChange = false;
+        } else {
+          node.innerHTML = `<p>${node.innerHTML}</p>`;
+          // refocus after the modification
+          this.focus();
+        }
       }
       this.updated = true;
 
