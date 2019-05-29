@@ -407,7 +407,7 @@ return [
      */
     'core.hit_tracks_db_count' => 7500,
 
-    /**
+    /*
      * Array or string with "\n" as delimiter
      * Used in MiscController::proxyAction
      */
