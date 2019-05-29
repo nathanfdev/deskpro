@@ -1,28 +1,23 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\EntityRepository\Traits\ClearSlugHistoryTrait;
+
+/**
+ * Class ArticleSlugHistory
+ *
+ * @package Application\DeskPRO\EntityRepository
+ */
 class ArticleSlugHistory extends AbstractEntityRepository
 {
+    use ClearSlugHistoryTrait;
+
     /**
-     * @param \Application\DeskPRO\Entity\Article $article
-     *
-     * @throws \Doctrine\DBAL\DBALException
-     *
-     * @return int
+     * @return string
      */
-    public function clearHistoryByEntity($article)
+    protected function getEntityFieldName()
     {
-        return $this->_em->getConnection()->executeUpdate('
-            DELETE
-            FROM articles_slug_history
-            WHERE article_id = ?
-        ', [$article->getId()]);
+        return 'article_id';
     }
 }

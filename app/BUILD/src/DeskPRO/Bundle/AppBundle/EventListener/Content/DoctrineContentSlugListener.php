@@ -62,8 +62,7 @@ class DoctrineContentSlugListener implements EventSubscriber
         $hiddenStatusChanges = $scr->getFirstChangeForField('hidden_status');
 
         if ($hiddenStatusChanges instanceof ChangeInterface &&
-            $hiddenStatusChanges->getNew() === ContentAbstract::HIDDEN_STATUS_DELETED &&
-            in_array($content::CONTENT_TYPE, $this->getContentTypesToDeleteProcess(), true)
+            $hiddenStatusChanges->getNew() === ContentAbstract::HIDDEN_STATUS_DELETED
         ) {
             $this->slug_manager->processSlugForDeletedEntity($content);
         } else {
@@ -110,13 +109,5 @@ class DoctrineContentSlugListener implements EventSubscriber
             'preUpdate',
             'postFlush',
         ];
-    }
-
-    /**
-     * @return array
-     */
-    private function getContentTypesToDeleteProcess()
-    {
-        return [Article::CONTENT_TYPE];
     }
 }
