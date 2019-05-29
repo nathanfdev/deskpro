@@ -1,25 +1,33 @@
 services:
 
-   api_param_converter.ticket_layout_departmnet:
-     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\TicketLayoutDepartmentConverter
-     arguments: ["@doctrine.orm.default_entity_manager"]
-     tags:
-       - { name: request.param_converter, priority: -1, converter: ticket_layout_department }
+ api_param_converter.ticket_layout_departmnet:
+   class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\TicketLayoutDepartmentConverter
+   arguments: ["@doctrine.orm.default_entity_manager"]
+   tags:
+     - { name: request.param_converter, priority: -1, converter: ticket_layout_department }
 
-   api_param_converter.feature:
-     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\FeatureConverter
-     arguments: ["@deskpro.features_collection"]
-     tags:
-       - { name: request.param_converter, priority: -1, converter: feature }
+ api_param_converter.feature:
+   class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\FeatureConverter
+   arguments: ["@deskpro.features_collection"]
+   tags:
+     - { name: request.param_converter, priority: -1, converter: feature }
 
-   api_param_converter.oauth_client:
-     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\OAuthClientConverter
-     arguments: ["@doctrine.orm.default_entity_manager"]
-     tags:
-       - { name: request.param_converter, priority: -1, converter: oauth_client }
+ api_param_converter.oauth_client:
+   class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\OAuthClientConverter
+   arguments: ["@doctrine.orm.default_entity_manager"]
+   tags:
+     - { name: request.param_converter, priority: -1, converter: oauth_client }
 
-   api_param_converter.dashboard_shareable_link:
-     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\ReportDashboardShareableLinkConverter
-     arguments: ["@doctrine.orm.default_entity_manager"]
-     tags:
-       - { name: request.param_converter, priority: -1, converter: dashboard_shareable_link }
+ api_param_converter.dashboard_shareable_link:
+   class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\ReportDashboardShareableLinkConverter
+   arguments: ["@doctrine.orm.default_entity_manager"]
+   tags:
+     - { name: request.param_converter, priority: -1, converter: dashboard_shareable_link }
+
+ api_param_converter.voice_account_sid:
+   class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\TwilioVoiceAccountSidConverter
+   arguments:
+    - "@doctrine.orm.default_entity_manager"
+    - "@voice_settings_resolver"
+   tags:
+     - { name: request.param_converter, priority: -1, converter: twilio_voice_account_sid }

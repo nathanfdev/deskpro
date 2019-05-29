@@ -32,6 +32,8 @@ class VoiceSettingsResolver
     const DEFAULT_FORWARDING_NUMBER  = 'default';
     const SPECIFIC_FORWARDING_NUMBER = 'specific';
 
+    const TWILIO_PROXY_ACCOUNT_PLACEHOLDER = '__ACCOUNT_ID__';
+
     /**
      * @var SettingsResolver
      */

@@ -27,6 +27,7 @@ use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Twiml;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -37,6 +38,7 @@ use Twilio\Exceptions\RestException;
  *
  * @ApiModes("all")
  * @Rest\Route("/twilio_callbacks/{account}/{accountAuth}")
+ * @ParamConverter(name="account", converter="twilio_voice_account_sid", options={"tokenParam": "accountAuth"})
  * @ApiUserContext("open")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel")
@@ -56,19 +58,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Get("/phone_number_callback", name="twilio_phone_number_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param Request            $request
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function phoneNumberCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function phoneNumberCallbackAction(TwilioVoiceAccount $account, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         if ($request->query->get('Outbound')) {
             // outbound call
             return $this->phoneNumberAgentOutgoingCallback($account, $request);
@@ -99,17 +96,12 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/phone_number_status_callback", name="twilio_phone_number_status_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param Request            $request
      *
      * @throws \Exception
      */
-    public function phoneNumberStatusCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function phoneNumberStatusCallbackAction(TwilioVoiceAccount $account, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $em = $this->getManager();
 
         $details    = $request->request->all();
@@ -233,19 +225,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/{phoneCall}/user_ring_callback", name="twilio_user_ring_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function userRingCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
+    public function userRingCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $queue = $this->container->get('dp.voice.voice_task_helper')->getVoiceQueue($task);
@@ -268,20 +255,14 @@ class TwilioCallbacksController extends BaseController
     /**
      * @Rest\Post("/{phoneCall}/agent_wait_callback", name="twilio_agent_wait_callback")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     * @param VoicePhoneCall     $phoneCall
+     * @param VoicePhoneCall $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function agentWaitCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
+    public function agentWaitCallbackAction(VoicePhoneCall $phoneCall)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $twiml = new Twiml();
 
@@ -308,19 +289,13 @@ class TwilioCallbacksController extends BaseController
      *
      * @Rest\Post("/{phoneCall}/conference_status_callback", name="twilio_conference_status_callback")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     * @param VoicePhoneCall     $phoneCall
-     * @param Request            $request
+     * @param VoicePhoneCall $phoneCall
+     * @param Request        $request
      *
      * @throws \Exception
      */
-    public function conferenceStatusCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall, Request $request)
+    public function conferenceStatusCallbackAction(VoicePhoneCall $phoneCall, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $parameters    = $request->request;
         $callSid       = $parameters->get('CallSid');
         $conferenceSid = $parameters->get('ConferenceSid');
@@ -378,7 +353,6 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/auto_attendant_callback/{autoAttendant}", name="twilio_auto_attendant_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoiceAutoAttendant $autoAttendant
      * @param Request            $request
      *
@@ -386,12 +360,8 @@ class TwilioCallbacksController extends BaseController
      *
      * @return Response
      */
-    public function autoAttendantCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoiceAutoAttendant $autoAttendant, Request $request)
+    public function autoAttendantCallbackAction(TwilioVoiceAccount $account, VoiceAutoAttendant $autoAttendant, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
             'callSid' => $request->request->get('CallSid'),
@@ -481,19 +451,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/agent_extension_callback", name="twilio_agent_extension_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param Request            $request
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function agentExtensionCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function agentExtensionCallbackAction(TwilioVoiceAccount $account, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
 
         /** @var VoicePhoneCall $phoneCall */
@@ -557,19 +522,13 @@ class TwilioCallbacksController extends BaseController
      *
      * @Rest\Post("/{phoneCall}/recording_status_callback", name="twilio_recording_status_callback")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     * @param VoicePhoneCall     $phoneCall
-     * @param Request            $request
+     * @param VoicePhoneCall $phoneCall
+     * @param Request        $request
      *
      * @throws \Exception
      */
-    public function recordingStatusCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall, Request $request)
+    public function recordingStatusCallbackAction(VoicePhoneCall $phoneCall, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload(
             $phoneCall,
             $request->request->get('RecordingSid'),
@@ -590,18 +549,12 @@ class TwilioCallbacksController extends BaseController
      *
      * @Rest\Post("/voicemail_recording_status_callback", name="twilio_voicemail_recording_status_callback")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     * @param Request            $request
+     * @param Request $request
      *
      * @throws \Exception
      */
-    public function voicemailRecordingStatusCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function voicemailRecordingStatusCallbackAction(Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $source    = $request->request->get('RecordingSource');
         $phoneCall = null;
         if ($source === 'RecordVerb') {
@@ -636,19 +589,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/voicemail", name="twilio_voicemail")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param Request            $request
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function voicemailAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function voicemailAction(TwilioVoiceAccount $account, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         /** @var VoicePhoneCall $phoneCall */
         $callId    = $request->get('CallSid');
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
@@ -711,19 +659,12 @@ class TwilioCallbacksController extends BaseController
      *
      * @Rest\Post("/voicemail_end", name="twilio_voicemail_end")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     *
      * @throws \Exception
      *
      * @return Response
      */
-    public function voicemailEndAction(TwilioVoiceAccount $account, $accountAuth)
+    public function voicemailEndAction()
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $twiml->hangup();
 
@@ -748,7 +689,6 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/outbound_callback/{phoneCall}", name="twilio_outbound_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      * @param Request            $request
      *
@@ -756,12 +696,8 @@ class TwilioCallbacksController extends BaseController
      *
      * @return Response
      */
-    public function outgoingCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall, Request $request)
+    public function outgoingCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $this->get('dp.voice.callbacks_helper')->createTicketForOutgoingPhoneCall($phoneCall->getId());
 
         $twiml = new Twiml();
@@ -795,20 +731,14 @@ class TwilioCallbacksController extends BaseController
      *
      * @Rest\Get("/hold_music", name="twilio_hold_music")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     * @param Request            $request
+     * @param Request $request
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function holdMusicAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function holdMusicAction(Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $asset   = null;
         $assetId = $request->query->get('asset');
         if ($assetId) {
@@ -837,19 +767,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/answer_forwarding_callback", name="twilio_answer_forwarding_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param Request            $request
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function answeredForwardingCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function answeredForwardingCallbackAction(TwilioVoiceAccount $account, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         try {
             $answeredBy = $request->request->get('AnsweredBy');
             if (in_array($answeredBy, ['machine_start', 'fax'])) {
@@ -913,7 +838,6 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/{phoneCall}/on_dial_hangup_callback", name="twilio_on_dial_hangup_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      * @param Request            $request
      *
@@ -921,12 +845,8 @@ class TwilioCallbacksController extends BaseController
      *
      * @return Response
      */
-    public function onDialHangupCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall, Request $request)
+    public function onDialHangupCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $callSid = $request->get('CallSid');
         $logger  = $this->get('dp.voice.logger');
         $logger->info(sprintf(
@@ -998,19 +918,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/{phoneCall}/put_on_hold_callback", name="twilio_put_on_hold_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function putOnHoldCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
+    public function putOnHoldCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         if ($phoneCall->isOutgoingCall()) {
             $waitUrl = $this->getHoldSilentCallbackUrl($account);
         } else {
@@ -1044,19 +959,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/{phoneCall}/unhold_direct_call_callback", name="twilio_unhold_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function unholdDirectCallCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
+    public function unholdDirectCallCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $dial  = $twiml->dial([
             'action'                        => $this->getOnDialHangupCallbackUrl($account, $phoneCall),
@@ -1087,19 +997,12 @@ class TwilioCallbacksController extends BaseController
      *
      * @Rest\Post("/hold_music_callback", name="twilio_hold_music_callback")
      *
-     * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
-     *
      * @throws \Exception
      *
      * @return Response
      */
-    public function holdMusicCallbackAction(TwilioVoiceAccount $account, $accountAuth)
+    public function holdMusicCallbackAction()
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $twiml->play('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3', [
             'loop' => 0,
@@ -1124,18 +1027,13 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/hold_silent_callback", name="twilio_hold_silent_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function holdSilentCallbackAction(TwilioVoiceAccount $account, $accountAuth)
+    public function holdSilentCallbackAction(TwilioVoiceAccount $account)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $twiml->pause([
             'length' => 3600,
@@ -1161,19 +1059,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/{phoneCall}/call_routing", name="twilio_call_routing_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function callRoutingCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
+    public function callRoutingCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $twiml->enqueue($phoneCall->getQueueName(), [
             'waitUrl'       => $this->getUserRingMusicCallbackUrl($account, $phoneCall),
@@ -1199,19 +1092,14 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/{phoneCall}/join_conference", name="twilio_join_conference_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function joinConferenceCallbackAction(TwilioVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
+    public function joinConferenceCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $twiml = new Twiml();
         $twiml->dial()->conference($phoneCall->getConferenceName(), [
             'beep'                 => false,
@@ -1241,18 +1129,13 @@ class TwilioCallbacksController extends BaseController
      * @Rest\Post("/transcribe_callback", name="twilio_transcribe_callback")
      *
      * @param TwilioVoiceAccount $account
-     * @param string             $accountAuth
      * @param Request            $request
      *
      * @throws \Exception
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function transcribeAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    public function transcribeAction(TwilioVoiceAccount $account, Request $request)
     {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
         $addOns     = json_decode($request->request->get('AddOns'), true);
         $payloadUrL = $addOns['results']['voicebase_transcription']['payload'][0]['url'];
 

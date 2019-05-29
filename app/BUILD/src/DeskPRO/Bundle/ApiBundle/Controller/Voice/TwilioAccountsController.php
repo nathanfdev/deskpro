@@ -13,6 +13,7 @@ use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\TwilioAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceBuyNumberType;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -294,13 +295,13 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         }
 
         $account = $this->getRepository(TwilioVoiceAccount::class)->findOneBy([
-            'accountId' => '_',
+            'accountId' => VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER,
             'authToken' => '_',
         ]);
 
         if (!$account) {
             $account = new TwilioVoiceAccount();
-            $account->setAccountId('__ACCOUNT_ID__');
+            $account->setAccountId(VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER);
             $account->setAuthToken('_');
             $account->setAccountName('Deskpro Cloud Voice Account');
 
