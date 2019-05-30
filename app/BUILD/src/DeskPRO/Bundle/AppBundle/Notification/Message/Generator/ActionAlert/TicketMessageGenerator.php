@@ -25,7 +25,10 @@ class TicketMessageGenerator extends SystemEventGenerator
 
         // process broadcast message probably idea to move it to standalone broadcast event is good
 
-        if ($event->getEventType() === 'agent.filter-update' || $event->getEventType() === 'agent.ticket-updated') {
+        // the empty($event->getTargets()) chekc here is because $this->getTarget() will replace an empty list with
+        // "all online agents" anyway. It's more efficient to replace those with broadcasts instead.
+
+        if ($event->getEventType() === 'agent.filter-update' || $event->getEventType() === 'agent.ticket-updated' || empty($event->getTargets())) {
             $actionAlert = new ActionAlert(NotificationService::TARGET_BROADCAST, $event->getData(), $event->getName());
             $actionAlert->setBroadcast();
             $messages[] = $actionAlert;
