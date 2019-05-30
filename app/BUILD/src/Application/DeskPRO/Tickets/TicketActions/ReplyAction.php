@@ -226,7 +226,9 @@ class ReplyAction extends AbstractReplyAction
     public function getMessageContent(Ticket $ticket)
     {
         $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-        $formatter->setPersonContext($this->person_context);
+        if ($this->person_context) {
+            $formatter->setPersonContext($this->person_context);
+        }
 
         $replyText = $this->reply_text;
         $replyText = $formatter->formatText($replyText, $ticket);
