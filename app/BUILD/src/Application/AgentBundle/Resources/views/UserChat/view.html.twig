@@ -12,6 +12,7 @@ pageMeta.email            = {{ convo.person_email|json_encode|raw }};
 pageMeta.convo            = {{ convo_api|json_encode|raw }};
 pageMeta.userPictureUrl   = '{{ convo.getPersonPictureUrl() }}';
 pageMeta.api_data         = {{ convo.toApiData()|json_encode|raw }};
+pageMeta.currentAgent     = {{ app.user.toApiData()|json_encode|raw }};
 
 pageMeta.session_id = {{ session.id|default(0) }};
 {% if convo.person.id %}
