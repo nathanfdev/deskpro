@@ -461,7 +461,7 @@ class GuideController extends PublishController
         $guides = [];
 
         foreach ($unFilteredGuides as $c) {
-            if ($brandId == $c->getBrand()->getId()) {
+            if ($c->getBrand() && $brandId == $c->getBrand()->getId()) {
                 $guides[] = [
                     'id'       => $c->getId(),
                     'label'    => $c->getTitle(),
