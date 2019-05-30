@@ -293,9 +293,10 @@ export const voiceBootstrap = createAction(
       });
 
       const runTaskRouter = () => {
-        api.sendPut('DP_API/voice_client/task_router').success(() => {
-          setTimeout(runTaskRouter, 2000);
-        });
+        api.sendPut('DP_API/voice_client/task_router').then(
+          () => { setTimeout(runTaskRouter, 2000); },
+          () => { setTimeout(runTaskRouter, 2000); }
+        );
       };
 
       runTaskRouter();
