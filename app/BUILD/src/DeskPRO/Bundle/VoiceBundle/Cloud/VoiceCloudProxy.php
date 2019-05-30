@@ -67,14 +67,17 @@ class VoiceCloudProxy
      */
     public function initTwilioProxy(Person $person)
     {
-        $data        = $this->callMemberArea($person);
+        $data = $this->callMemberArea($person);
+
         $apiHost     = "{$data['dpmsUrl']}/twilio/twilio-api-proxy/{$data['accessToken']}/{$data['authToken']}";
         $pricingHost = "{$data['dpmsUrl']}/twilio/twilio-pricing-proxy/{$data['accessToken']}/{$data['authToken']}";
+        $clientHost  = "{$data['dpmsUrl']}/twilio/twilio-client/generate-token/{$data['accessToken']}/{$data['authToken']}";
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_API_HOST, $apiHost);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PRICING_HOST, $pricingHost);
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_CLIENT_HOST, $clientHost);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_USERNAME, $data['accessToken']);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_TWILIO_PROXY_PASSWORD, $data['authToken']);
 

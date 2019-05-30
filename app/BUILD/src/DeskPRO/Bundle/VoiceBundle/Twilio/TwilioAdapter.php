@@ -17,6 +17,8 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
+use GuzzleHttp\Client as GuzzleHttpClient;
+use GuzzleHttp\Psr7\Request as GuzzleHttpRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twilio\Jwt\ClientToken;
@@ -294,11 +296,23 @@ class TwilioAdapter implements VoiceProviderInterface
      */
     public function createPhoneToken(TwilioVoiceAccount $account, Person $person)
     {
-        $capability = new ClientToken($account->getAccountId(), $account->getAuthToken());
-        $capability->allowClientOutgoing($account->getTwimlAppSid());
-        $capability->allowClientIncoming(self::getWorkerClientName($person));
+        $twimlAppSid = $account->getTwimlAppSid();
+        $clientName  = self::getWorkerClientName($person);
 
-        $token = $capability->generateToken(604800);
+        if (!$twimlAppSid) {
+            return;
+        }
+
+        if ($this->voiceSettingsResolver->getTwilioProxyClientUrl()) {
+            $client = new GuzzleHttpClient();
+            $token  = $client->send(new GuzzleHttpRequest('GET', $this->voiceSettingsResolver->getTwilioProxyClientUrl()."/{$twimlAppSid}/{$clientName}"))->getBody()->getContents();
+        } else {
+            $capability = new ClientToken($account->getAccountId(), $account->getAuthToken());
+            $capability->allowClientOutgoing($twimlAppSid);
+            $capability->allowClientIncoming($clientName);
+
+            $token = $capability->generateToken(604800);
+        }
 
         return $token;
     }

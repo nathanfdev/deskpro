@@ -25,6 +25,7 @@ class VoiceSettingsResolver
     const VOICE_TWILIO_PROXY_TASK_ROUTER_HOST     = 'voice.twilio_proxy_task_router_host';
     const VOICE_TWILIO_PROXY_ACCOUNTS_HOST        = 'voice.twilio_proxy_accounts_host';
     const VOICE_TWILIO_PROXY_PRICING_HOST         = 'voice.twilio_proxy_pricing_host';
+    const VOICE_TWILIO_PROXY_CLIENT_HOST          = 'voice.twilio_proxy_client_host';
     const VOICE_PLIVO_PROXY_HOST                  = 'voice.plivo_proxy_host';
     const VOICE_PLIVO_PROXY_USERNAME              = 'voice.plivo_proxy_username';
     const VOICE_PLIVO_PROXY_PASSWORD              = 'voice.plivo_proxy_password';
@@ -171,6 +172,14 @@ class VoiceSettingsResolver
     public function getTwilioProxyAccountsUrl()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_ACCOUNTS_HOST);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTwilioProxyClientUrl()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TWILIO_PROXY_CLIENT_HOST);
     }
 
     /**
