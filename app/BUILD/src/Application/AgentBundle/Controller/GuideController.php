@@ -313,7 +313,18 @@ class GuideController extends PublishController
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brands[0]->getId()]);
+        $brandIndex = 0;
+
+        $guides = [];
+
+        while (count($guides) === 0 && $brandIndex < count($brands)) {
+            $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brands[$brandIndex]->getId()]);
+            ++$brandIndex;
+        }
+
+        if (count($guides) === 0) {
+            $brandIndex = 1;
+        }
 
         $topics = [];
         if (count($guides) > 0) {
@@ -325,10 +336,11 @@ class GuideController extends PublishController
         array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Guide:new-topic.html.twig', [
-            'guides' => $guides,
-            'state'  => $state,
-            'brands' => $brands,
-            'topics' => $topics,
+            'guides'            => $guides,
+            'state'             => $state,
+            'brands'            => $brands,
+            'topics'            => $topics,
+            'selected_brand_id' => $brands[$brandIndex - 1]->getId(),
         ]);
     }
 
