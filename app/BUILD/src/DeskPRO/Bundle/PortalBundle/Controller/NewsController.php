@@ -23,7 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 class NewsController extends AbstractController
 {
     /**
-     * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
+     *     requirements={"_format":"html|rss|ical"})
      * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
@@ -59,6 +60,16 @@ class NewsController extends AbstractController
             ['_format' => 'rss']
         );
 
+        // iCalendar
+
+        if ('ical' === $_format) {
+            // @todo: Add implementation
+        }
+        $icalLink = $this->generateUrl(
+            'portal_news',
+            ['_format' => 'ical']
+        );
+
         // BREADCRUMBS
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildNews();
@@ -81,6 +92,7 @@ class NewsController extends AbstractController
                 'page_title'    => $this->createPageTitle()->news(),
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,
+                'ical_link'     => $icalLink,
                 'is_subscribed' => $isSubscribed,
             ]
         );
