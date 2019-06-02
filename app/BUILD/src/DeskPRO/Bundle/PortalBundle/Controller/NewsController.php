@@ -19,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NewsController extends AbstractController
 {
@@ -42,12 +43,7 @@ class NewsController extends AbstractController
         // RSS
 
         if ('rss' === $_format) {
-            $pager = $this->getNewsDataService()->getNewsPager(
-                null,
-                $page,
-                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
-                $person
-            );
+            $pager = $this->getNewsPager($request, $page, $person);
 
             return $this->render('PortalBundle:News:feed.rss.twig', [
                 'page_title' => $this->createPageTitle()->news(),
@@ -63,12 +59,19 @@ class NewsController extends AbstractController
         // iCalendar
 
         if ('ical' === $_format) {
-            // @todo: Add implementation
+            $pager = $this->getNewsPager($request, $page, $person);
+
+            return $this->render('PortalBundle:News:feed.ical.twig', [
+                'page_title' => $this->createPageTitle()->news(),
+                'pager'      => $pager,
+                'category'   => null,
+            ]);
         }
-        $icalLink = $this->generateUrl(
+        $icalLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
             'portal_news',
-            ['_format' => 'ical']
-        );
+            ['_format' => 'ical'],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        ));
 
         // BREADCRUMBS
 
@@ -455,5 +458,22 @@ class NewsController extends AbstractController
         );
 
         return $pdfRenderer->generateFile($contentHtml->getContent(), $post->getTitle().'.pdf');
+    }
+
+    /**
+     * @param Request                                                                    $request
+     * @param int                                                                        $page
+     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest $person
+     *
+     * @return \Pagerfanta\Pagerfanta
+     */
+    private function getNewsPager(Request $request, $page, $person)
+    {
+        return $this->getNewsDataService()->getNewsPager(
+            null,
+            $page,
+            $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
+            $person
+        );
     }
 }

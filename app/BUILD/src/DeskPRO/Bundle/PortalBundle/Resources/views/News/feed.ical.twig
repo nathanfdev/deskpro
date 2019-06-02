@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+{% for news in pager %}
+BEGIN:VEVENT
+SUMMARY:{{ news.title }}
+DTSTART;VALUE=DATE:{{ news.date_published|date('Ymd') }}
+DTEND;VALUE=DATE:{{ news.date_published|date_modify('+1 day')|date('Ymd') }}
+URL:{{ url('portal_news_view', { slug: news.id }) }}
+END:VEVENT
+{% endfor %}
+END:VCALENDAR
