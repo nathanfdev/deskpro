@@ -27,7 +27,6 @@ class ArticleSearch extends SearcherAbstract
     const TERM_LABEL             = 'label';
     const TERM_AGENT_LIST        = 'agent_list';
     const TERM_PENDING_TRANSLATE = 'pending_translate';
-    const TERM_PENDING_REVIEW    = 'pending_review';
     const TERM_QUERY             = 'query';
     const TERM_BRAND             = 'brand';
 
@@ -471,12 +470,6 @@ class ArticleSearch extends SearcherAbstract
                     }
 
                     $wheres[] = implode(' OR ', $w);
-
-                    break;
-
-                case self::TERM_PENDING_REVIEW:
-                    $now      = new \DateTime();
-                    $wheres[] = sprintf("(articles.date_next_review IS NOT NULL AND articles.date_next_review < '%s')", $now->format('Y-m-d H:i:s'));
 
                     break;
 
