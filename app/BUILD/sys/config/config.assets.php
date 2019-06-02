@@ -146,6 +146,7 @@ $CONFIG['agent_pages_lists'] = [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingReviewArticles.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',

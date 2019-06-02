@@ -116,6 +116,9 @@ class ArticlesController extends AbstractContentController
             'person'       => $this->getUser(),
             'filter_clean' => !($this->getUser()->isAdmin() && $noClean),
         ]);
+        if ($model->getReviewInterval()) {
+            $options['with_review_date'] = true;
+        }
 
         return parent::handleForm($model, $request, $options);
     }

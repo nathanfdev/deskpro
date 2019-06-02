@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\BaseAttachmentType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang\ObjectLangCollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -55,8 +56,16 @@ class ArticleType extends AbstractType
                     'data_class' => ArticleAttachment::class,
                     'person'     => $options['person'],
                 ],
-            ])
-        ;
+            ]);
+
+        if ($options['with_review_date']) {
+            $builder
+                ->add('date_next_review', DateTimeType::class, [
+                    'property_path' => 'date_next_review',
+                    'widget'        => 'single_text',
+                    'required'      => false,
+                ]);
+        }
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'preSetData']);
     }
@@ -76,7 +85,8 @@ class ArticleType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => Article::class,
+                'data_class'       => Article::class,
+                'with_review_date' => false,
             ])
 
             ->setRequired('person')

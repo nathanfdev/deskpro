@@ -43,6 +43,12 @@
 					<br />
 				</div>
 			{% endif %}
+      <div {% if not article.review_interval %}style="display:none;"{% endif %}>
+        <span style="float: right; padding-right: 18px; padding-bottom: 4px;">
+          <label><input type="checkbox" name="article[restart-review-date]"{% if article.review_interval %}checked="checked"{% endif %} /> <span>{{ phrase('agent.publish.review_date_restart_full', {'interval': article.getReviewIntervalTranslated()}) }}</span></label>
+        </span>
+         <br class="clear" />
+      </div>
 			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
 			{% if app.languages.isMultiLang() %}
 				<div style="float: right; padding-right: 18px; padding-top: 4px;">
