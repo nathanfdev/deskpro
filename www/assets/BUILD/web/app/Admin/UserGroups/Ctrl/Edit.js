@@ -263,6 +263,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      * @returns bool
      */
     isReopenTimelimitSet() {
+
+      // Need this default ticket object because forms initialized with timeout and could be undefined from the start
       let default_form_ticket = {
         reopen_resolved: false,
         reopen_resolved_timelimit: false,
