@@ -25,7 +25,7 @@ class TicketMessageGenerator extends SystemEventGenerator
 
         // process broadcast message probably idea to move it to standalone broadcast event is good
 
-        // the empty($event->getTargets()) chekc here is because $this->getTarget() will replace an empty list with
+        // the empty($event->getTargets()) check here is because $this->getTarget() will replace an empty list with
         // "all online agents" anyway. It's more efficient to replace those with broadcasts instead.
 
         if ($event->getEventType() === 'agent.filter-update' || $event->getEventType() === 'agent.ticket-updated' || empty($event->getTargets())) {
