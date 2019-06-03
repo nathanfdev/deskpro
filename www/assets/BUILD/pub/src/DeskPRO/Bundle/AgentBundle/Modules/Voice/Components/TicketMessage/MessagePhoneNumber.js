@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { findPhoneNumbers, getCountryCallingCode } from 'libphonenumber-js';
@@ -52,15 +53,30 @@ class MessagePhoneNumber extends React.PureComponent {
     if (element.innerHTML.length > 5000) {
       return;
     }
-    let diff = 0;
-    findPhoneNumbers(element.innerHTML, country).forEach((number) => {
-      const initialNumber = element.innerHTML.substring(number.startsAt - diff, number.endsAt - diff);
-      const intlNumber = `${getCountryCallingCode(number.country)}${number.phone}`;
-      const replacement = `<span data-tel="+${intlNumber}" class="dp-click-to-call">${initialNumber}</span>`;
-      element.innerHTML = element.innerHTML.substring(0, number.startsAt - diff)
-        + replacement + element.innerHTML.substring(number.endsAt - diff);
-      diff = diff + initialNumber.length - replacement.length;
+    const nodes = $(element).contents();
+
+    $(nodes).each((index, elem) => {
+      const contents = elem.nodeType === 3 ? elem.textContent : elem.innerHTML;
+      if ($(elem).find('*').length > 0) {
+        MessagePhoneNumber.detectPhoneNumbers(elem, country);
+      } else {
+        let diff = 0;
+        findPhoneNumbers(contents, country).forEach((number) => {
+          const initialNumber = contents.substring(number.startsAt - diff, number.endsAt - diff);
+          const intlNumber = `${getCountryCallingCode(number.country)}${number.phone}`;
+          const replacement = `<span data-tel="+${intlNumber}" class="dp-click-to-call">${initialNumber}</span>`;
+          if (elem.nodeType === 3) {
+            $(elem).replaceWith(elem.textContent.substring(0, number.startsAt - diff)
+              + replacement + elem.textContent.substring(number.endsAt - diff));
+          } else if (elem.nodeType === 1) {
+            elem.innerHTML = elem.innerHTML.substring(0, number.startsAt - diff)
+              + replacement + elem.innerHTML.substring(number.endsAt - diff);
+          }
+          diff = diff + initialNumber.length - replacement.length;
+        });
+      }
     });
+
     element.innerHTML = element.innerHTML.replace(/(sip:\S+@\S+)/, '<span data-tel="$1" class="dp-click-to-call">$1</span>');
     const clickToCall = element.getElementsByClassName('dp-click-to-call');
     for (let i = 0; i < clickToCall.length; i++) {
