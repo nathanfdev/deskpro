@@ -59,13 +59,6 @@ services:
     tags:
       - { name: deskpro.feature }
 
-  deskpro.features.new_forward:
-      class: DeskPRO\Bundle\AppBundle\Features\NewForwardFeature
-      arguments:
-        - "@settings_resolver"
-      tags:
-        - { name: deskpro.feature }
-
   deskpro.features.email_templates:
     class: DeskPRO\Bundle\AppBundle\Features\EmailTemplatesFeature
     arguments:

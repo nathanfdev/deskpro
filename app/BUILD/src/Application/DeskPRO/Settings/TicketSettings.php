@@ -91,6 +91,7 @@ class TicketSettings
         'reply_user_notify'                 => true,
         'reply_reassign_auto_change_status' => true,
         'reply_resolve_auto_close_tab'      => true,
+        'forward_as_new_linked_ticket'      => false,
 
         'view_reverse_order' => true,
     ];
@@ -151,6 +152,7 @@ class TicketSettings
         $this->agent_defaults['reply_user_notify']                 = (bool) $this->settings->get('core_tickets.default_send_user_notify');
         $this->agent_defaults['reply_reassign_auto_change_status'] = (bool) $this->settings->get('core_tickets.reassign_auto_change_status');
         $this->agent_defaults['reply_resolve_auto_close_tab']      = (bool) $this->settings->get('core_tickets.resolve_auto_close_tab');
+        $this->agent_defaults['forward_as_new_linked_ticket']      = (bool) $this->settings->get('core_tickets.forward_as_new_linked_ticket');
         $this->agent_defaults['view_reverse_order']                = (bool) $this->settings->get('core_tickets.default_ticket_reverse_order');
 
         $this->add_agent_ccs      = (bool) $this->settings->get('core_tickets.add_agent_ccs');
@@ -316,6 +318,7 @@ class TicketSettings
         $this->settings->setSetting('core_tickets.default_send_user_notify',      $this->agent_defaults['reply_user_notify']);
         $this->settings->setSetting('core_tickets.reassign_auto_change_status',   $this->agent_defaults['reply_reassign_auto_change_status']);
         $this->settings->setSetting('core_tickets.resolve_auto_close_tab',        $this->agent_defaults['reply_resolve_auto_close_tab']);
+        $this->settings->setSetting('core_tickets.forward_as_new_linked_ticket',  $this->agent_defaults['forward_as_new_linked_ticket']);
         $this->settings->setSetting('core_tickets.default_ticket_reverse_order',  $this->agent_defaults['view_reverse_order']);
 
         $this->settings->setSetting('core_tickets.add_agent_ccs', $this->add_agent_ccs);

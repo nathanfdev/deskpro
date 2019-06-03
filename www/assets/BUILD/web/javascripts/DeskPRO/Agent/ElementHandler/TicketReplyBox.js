@@ -40,6 +40,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSel       = this.getElById('agent_team_sel');
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
+		var fwdAsNewCheck = this.getElById('fwd_new_ticket_check');
 
 		var jiraActionSel = this.getElById('jira_app_action'),
 				jiraActionText = this.getElById('jira_app_action_text'),
@@ -314,6 +315,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).hide();
       $('.show-reply', self.el).show();
       $('.show-note', self.el).hide();
+			$('.fwd-as-new', self.el).show();
 
       // process special stuff
       if (closeReply) {
@@ -368,6 +370,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).hide();
       $('.show-reply', self.el).hide();
       $('.show-note', self.el).show();
+			$('.fwd-as-new', self.el).show();
 			self.getElById('actions_row').hide();
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
@@ -416,6 +419,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).show();
       $('.show-reply', self.el).hide();
       $('.show-note', self.el).hide();
+      console.log(self.el.data('fwd-as-new'));
+      if (self.el.data('fwd-as-new')) {
+				$('.fwd-as-new', self.el).show();
+			} else {
+      	$('.fwd-as-new', self.el).hide();
+			}
       replyMode = 'fwd';
       self.getElById('actions_row').hide();
       self.el.addClass('dp-fwd-on');
@@ -426,6 +435,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 			self.dontDispatch = false;
     });
+
+		fwdAsNewCheck.on('click', function() {
+			if (fwdAsNewCheck.prop('checked')) {
+				$('.fwd-as-new', self.el).show();
+			} else {
+				$('.fwd-as-new', self.el).hide();
+			}
+		});
 
 		//------------------------------
 		// Expanding cc row
@@ -981,6 +998,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         api.syncCode();
       }
 
+      var options = {
+				fwd_new_ticket:  self.getElById('fwd_new_ticket_check').prop('checked'),
+				do_assign_agent: self.getElById('agent_sel_check').prop('checked'),
+				agent_id:        self.getElById('agent_sel').val(),
+				do_assign_team:  self.getElById('agent_team_sel_check').prop('checked'),
+				agent_team_id:   self.getElById('agent_team_sel').val()
+			};
+
       var formData = {
       	custom_message: api.getCode(),
 				messages_ids:   self.fwdMessages,
@@ -989,7 +1014,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
 				subject: self.getElById('fwd_subject').val(),
-        attachments: self.fwdAttachments
+        attachments: self.fwdAttachments,
+				options: options
       };
 
       $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){

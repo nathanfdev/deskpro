@@ -488,6 +488,7 @@ return [
     'core_tickets.default_send_user_notify'     => true,
     'core_tickets.new_default_send_user_notify' => true,
     'core_tickets.newticket_enable_drafts'      => true,
+    'core_tickets.forward_as_new_linked_ticket' => false,
 
     /*
      * True to add agents CC's in emails as followers

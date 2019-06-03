@@ -3183,10 +3183,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
         break;
 
-      case 'fwd_legacy':
-        this.showFwdOverlay(messageId);
-        break;
-
       case 'fwd':
         this.handleFwd({ mode: 'single', messageId: messageId });
         break;
@@ -3379,89 +3375,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
               DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
             }
           });
-        });
-      }
-    });
-    overlay.open();
-  },
-
-  showFwdOverlay: function(messageId) {
-    var self = this;
-    var overlay = new DeskPRO.UI.Overlay({
-      contentMethod: 'ajax',
-      contentAjax: { url: BASE_URL + 'agent/tickets/' + this.meta.ticket_id + '/forward/' + messageId },
-      zIndex: 1900, // Above floating people windows
-      destroyOnClose: true,
-      onAjaxDone: function() {
-        var wrapper = overlay.getWrapper(),
-          form = wrapper.find('form'),
-          sendBtn = wrapper.find('.save-trigger'),
-          footer = wrapper.find('.overlay-footer'),
-          msgInput = wrapper.find('textarea.note'),
-          sigPreview = wrapper.find('.agent-sig-view');
-
-        DeskPRO.ElementHandler_Exec(wrapper);
-
-        msgInput.TextAreaExpander();
-        $('iframe.forward_overlay_iframe').load(function() {
-          $(this).height(this.contentWindow.document.body.scrollHeight);
-        });
-
-        wrapper.find('.to_line').each(function() {
-          var line = $(this);
-          var emailInput = line.find('.email-address-input');
-          var emailInputWrap = line.find('.email-address-wrap');
-          emailInputWrap.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
-            emailInput.val(email);
-            sb.close();
-          });
-        });
-
-        wrapper.find('.add-to-btn').on('click', function(ev) {
-          ev.preventDefault();
-          wrapper.find('.to_line').not('.is_visible').first().addClass('is_visible').show();
-        })
-
-        msgInput.on('change keyup keydown', function() {
-          var txt = $.trim($(this).val());
-          if (txt.length) {
-            sigPreview.show();
-          } else {
-            sigPreview.hide();
-          }
-        })
-
-        form.on('submit', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-        });
-
-        sendBtn.on('click', function(ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-
-          var formData = form.serializeArray();
-          footer.addClass('loading');
-
-          $.ajax({
-            url: form.attr('action'),
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            withActionAlerts: true,
-            success: function(data) {
-              if (data.error && data.error == 'invalid_to') {
-                DeskPRO_Window.showAlert('Please enter a valid To address');
-                footer.removeClass('loading');
-              } else if (data.error && data.error == 'to_helpdesk_address') {
-                DeskPRO_Window.showAlert($('<div>You have entered an email address that is handled by DeskPRO: ' + data.addresses.join(', ') + '<br/><br/>If you want another helpdesk agent to view this message, try one of these alternatives:<br/>&bull; Assign the agent or add them as a follower<br/>&bull; Change the department<br/>&bull; Split the ticket</div>'));
-                footer.removeClass('loading');
-              } else {
-                DeskPRO_Window.showAlert('Your message has been sent.');
-                overlay.close();
-              }
-            }
-          })
         });
       }
     });
