@@ -257,6 +257,28 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       }
     }
 
+    /**
+     * If reopen timelimit set and not 'Forever'
+     * 
+     * @returns bool
+     */
+    isReopenTimelimitSet() {
+      let default_form_ticket = {
+        reopen_resolved: false,
+        reopen_resolved_timelimit: false,
+        reopen_resolved_timelimit: 0
+      };
+
+      let ticket = this.perm_form ? this.perm_form.ticket : default_form_ticket;
+      let reg_ticket = this.perm_form_reg ? this.perm_form_reg.ticket : default_form_ticket;
+      let everyone_ticket = this.perm_form_everyone ? this.perm_form_everyone.ticket : default_form_ticket;
+
+      return (ticket.reopen_resolved
+              || reg_ticket.reopen_resolved
+              || everyone_ticket.reopen_resolved
+            ) && (ticket.reopen_resolved_timelimit != 0);
+    }
+
     isLocked(depId, type) {
       if (this.group.sys_name === 'everyone') {
         return false;
