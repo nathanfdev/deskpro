@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
 
 /**
  * Class UpdateOnlineMessageGenerator.
@@ -20,9 +21,10 @@ class UpdateOnlineMessageGenerator extends AbstractGenerator
         $event->getName();
         /* @var UpdateOnlineEvent $event */
         $messages = [];
-        foreach ($event->getOnlineAgents() as $agent) {
-            $messages[] = new ActionAlert($agent, $event->getAgentsOnlineStatus(), $event->getName());
-        }
+
+        $actionAlert = new ActionAlert(NotificationService::TARGET_BROADCAST, $event->getAgentsOnlineStatus(), $event->getName());
+        $actionAlert->setBroadcast();
+        $messages[] = $actionAlert;
 
         return $messages;
     }
