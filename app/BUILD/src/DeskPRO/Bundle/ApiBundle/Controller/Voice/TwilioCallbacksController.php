@@ -1305,13 +1305,17 @@ class TwilioCallbacksController extends BaseController
                 new LegacySystemEvent('agent.voice.outgoing-call-init')
             );
         } elseif ($exception) {
-            if ($exception instanceof RestException && $exception->getStatusCode() === 400) {
+            if ($exception instanceof RestException) {
+                $errorCodeGen = $this->get('form_error.error_code_generator.api');
+                if ($exception->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+                } else {
+                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
+                }
+
                 $this->get('event_dispatcher')->dispatch(
                     LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent(
-                        'agent.voice.outgoing-provider-error',
-                        $this->get('form_error.error_code_generator.api')->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to'])
-                    )
+                    new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
                 );
             }
 
