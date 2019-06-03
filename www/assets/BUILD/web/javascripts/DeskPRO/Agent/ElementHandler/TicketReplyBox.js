@@ -1508,6 +1508,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     }
     var vars         = this.page.meta.api_data;
 
+    var agent = this.page.meta.currentAgent;
+
     var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
       var agentText, defaultText, wantText, useText;
 
@@ -1552,7 +1554,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       'ticket',
       this.textarea,
       this.attachBlobs.bind(this),
-      this.recordSnippetUse.bind(this)
+      this.recordSnippetUse.bind(this),
+			agent
     );
     this.isSnippetOpen = false;
 	},

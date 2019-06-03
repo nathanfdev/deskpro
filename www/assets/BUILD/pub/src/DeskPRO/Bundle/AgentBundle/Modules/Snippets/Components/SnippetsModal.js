@@ -546,7 +546,7 @@ export class SnippetsModal extends React.Component {
     const { types, ticketCustomFields, personCustomFields, userChatCustomFields } = this.props;
     if (types.find(type => type === 'ticket')) {
       variables = [
-        { value: 'ticket', label: <FormattedMessage id="agent.general.ticket" />, disabled: true },
+        { value: 'ticket', label: <FormattedMessage id="agent.general.ticket" />, isDisabled: true },
         { value: 'entity.subject', label: <FormattedMessage id="agent.general.subject" /> },
         { value: 'entity.ref', label: <FormattedMessage id="agent.general.ref" /> },
         { value: 'entity.department.title', label: <FormattedMessage id="agent.general.department" /> },
@@ -569,7 +569,7 @@ export class SnippetsModal extends React.Component {
     }
     if (types.find(type => type === 'chat')) {
       variables = variables.concat([
-        { value: 'chat', label: <FormattedMessage id="agent.general.chat" />, disabled: true },
+        { value: 'chat', label: <FormattedMessage id="agent.general.chat" />, isDisabled: true },
         { value: 'entity.subject', label: <FormattedMessage id="agent.general.subject" /> },
         { value: 'entity.department.title', label: <FormattedMessage id="agent.general.department" /> },
         { value: 'entity.department.parent.title', label: <FormattedMessage id="agent.general.department.parent" /> },
@@ -585,7 +585,7 @@ export class SnippetsModal extends React.Component {
       });
     }
     variables = variables.concat([
-      { value: 'user', label: <FormattedMessage id="agent.general.user" />, disabled: true },
+      { value: 'user', label: <FormattedMessage id="agent.general.user" />, isDisabled: true },
       { value: 'entity.person.display_name', label: <FormattedMessage id="agent.general.name" /> },
       { value: 'entity.person.first_name', label: <FormattedMessage id="agent.general.first_name" /> },
       { value: 'entity.person.last_name', label: <FormattedMessage id="agent.general.last_name" /> },
@@ -600,6 +600,13 @@ export class SnippetsModal extends React.Component {
         label: field.get('title')
       });
     });
+    variables = variables.concat([
+      { value: 'agent', label: <FormattedMessage id="agent.general.agent" />, isDisabled: true },
+      { value: 'me.display_name', label: <FormattedMessage id="agent.general.name" /> },
+      { value: 'me.first_name', label: <FormattedMessage id="agent.general.first_name" /> },
+      { value: 'me.last_name', label: <FormattedMessage id="agent.general.last_name" /> },
+      { value: 'me.primary_email.email', label: <FormattedMessage id="agent.general.email_address" /> },
+    ]);
     return (
       <div className="variable-switch field">
         <Select

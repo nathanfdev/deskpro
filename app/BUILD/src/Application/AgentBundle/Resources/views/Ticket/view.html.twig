@@ -56,6 +56,7 @@
 
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
+  pageMeta.currentAgent = {{ app.user.toApiData()|json_encode|raw }};
   pageMeta.ticket = pageMeta.api_data;
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';

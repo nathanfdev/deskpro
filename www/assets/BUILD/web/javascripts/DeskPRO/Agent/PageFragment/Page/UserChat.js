@@ -687,6 +687,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
   },
 
 	insertSnippet: function(snippet, blobs, langId) {
+		var agent = this.meta.currentAgent;
+
     window.LegacySnippetInserter.insertSnippet(
       snippet,
       blobs,
@@ -695,7 +697,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       'chat',
       this.textarea,
       this.attachBlobs.bind(this),
-      this.recordSnippetUse.bind(this)
+      this.recordSnippetUse.bind(this),
+			agent
     );
     this.isSnippetOpen = false;
 	},
