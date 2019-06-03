@@ -30,7 +30,6 @@
 </div>
 
 {% if ticket.person.organization %}
-    &nbsp;&nbsp;
     <a id="{{ baseId }}_org_link" class="dp-btn as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}">
         <i class="fas fa-briefcase"></i>
         {{ ticket.person.organization }}

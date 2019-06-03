@@ -662,6 +662,16 @@ class ServeFileScript extends LowScriptAbstract
         // Serve up
         //------------------------------
 
+        $etag = 'W/"'.md5_file($filepath).'"';
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+
+        if ($etagHeader === $etag) {
+            header('HTTP/1.0 304 Not Modified');
+
+            return;
+        }
+
         $mimetype = ContentTypes::getContentTypeFromFilename($filename);
         if (!$mimetype) {
             $mimetype = 'application/octet-stream';
@@ -676,9 +686,12 @@ class ServeFileScript extends LowScriptAbstract
         header('X-Content-Type-Options: nosniff');
         header('Content-Length: '.filesize($filepath));
         header('Content-Disposition: '.$contentDisposition.'; filename="'.addslashes($filename).'"');
-        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
-        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
-        header('Cache-Control: max-age=31556926,private');
+        if ($contentDisposition != 'inline' || $attachmentTagSuffix) {
+            header('Cache-Control: max-age=86400,private');
+        } else {
+            header('Cache-Control: max-age=604800,public');
+        }
+        header("ETag: $etag");
         header('X-Robots-Tag: noindex, nofollow');
 
         if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
@@ -973,7 +986,9 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         $safeInlineContent = $this->alwaysForceDownloadOfHtmlFiles;
+        $inline            = false;
         if (!isset($_GET['dl']) && ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
+            $inline                         = true;
             $headers['Content-Disposition'] = 'inline; filename="'.addslashes($blob['filename']).'"';
         } else {
             $headers['Content-Disposition'] = 'attachment; filename="'.addslashes($blob['filename']).'"';
@@ -983,11 +998,15 @@ class ServeFileScript extends LowScriptAbstract
         if (!$d) {
             $d = new \DateTime();
         }
-        $headers['Last-Modified']          = $d->format('D, d M Y H:i:s').' GMT';
-        $headers['Expires']                = date('D, d M Y H:i:s', strtotime('+1 year')).' GMT';
-        $headers['Cache-Control']          = 'max-age=31556926,private';
+
+        if (!$inline || Blob::getSuffixFromAuthcode($blob['authcode'])) {
+            header('Cache-Control: max-age=86400,private');
+        } else {
+            header('Cache-Control: max-age=604800,public');
+        }
         $headers['X-Robots-Tag']           = 'noindex, nofollow';
         $headers['X-Content-Type-Options'] = 'nosniff';
+        $headers['ETag']                   = 'W/"'.$blob['blob_hash'].'"';
 
         return $headers;
     }
@@ -1004,6 +1023,11 @@ class ServeFileScript extends LowScriptAbstract
     protected function sendFromFilesystem($blob)
     {
         $headers = $this->getHeaders($blob);
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+        if ($etagHeader === $headers['ETag']) {
+            return new Response('', 304);
+        }
 
         // folder we store blobs in
         $basePath = $this->dpEnv->getUserFilesDir();
@@ -1035,11 +1059,16 @@ class ServeFileScript extends LowScriptAbstract
      *
      * @param Blob $blob
      *
-     * @return StreamedResponse
+     * @return Response
      */
     public function sendFromDatabase($blob)
     {
         $headers = $this->getHeaders($blob);
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+        if ($etagHeader === $headers['ETag']) {
+            return new Response('', 304);
+        }
 
         $sth = $this->getPdoRead()->prepare('SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC');
         $sth->execute(['blob_id' => $blob['id']]);

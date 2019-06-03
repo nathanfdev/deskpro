@@ -36,7 +36,7 @@
 							data-picture-url="{{ agent.getPictureUrl(30) }}"
 							data-picture-url-sizable="{{ agent.getPictureUrl('_SIZE_') }}"
 						>
-							<div class="avatar" style="background-image: url({{ agent.getPictureUrl(30) }});"></div>
+							<div class="avatar" style="background-image: url({{ agent.getPictureUrl(30) }}); background-size: contain;"></div>
 							{{ agent.display_name }}
 						</li>
 					{% endfor %}

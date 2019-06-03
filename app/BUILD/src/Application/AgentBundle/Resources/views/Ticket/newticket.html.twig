@@ -248,7 +248,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 									<li class="agent-{{ a.person.id }}" data-agent-id="{{ a.person.id }}"><a
 												class="dp-btn dp-btn-small agent-link"
 												data-agent-id="{{ a.person.id }}"><span class="text"
-																						style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span><span
+																						style="background-image: url({{ a.person.getPictureUrl(15) }}); background-size: contain;">{{ a.person.display_name }}</span><span
 													class="remove-row-trigger"> <i
 														class="fas fa-times"></i></span></a></li>
                                 {% endfor %}

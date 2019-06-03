@@ -1137,6 +1137,27 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $a
+     *
+     * @return string|null
+     */
+    public static function getSuffixFromAuthcode($a)
+    {
+        if (!$a) {
+            return null;
+        }
+
+        if (substr($a, -1) === self::SUFFIX_TICKET_ATTACHMENT) {
+            return self::SUFFIX_TICKET_ATTACHMENT;
+        }
+        if (substr($a, -2) === self::SUFFIX_DOWNLOAD_ATTACHMENT) {
+            return self::SUFFIX_DOWNLOAD_ATTACHMENT;
+        }
+
+        return null;
+    }
+
+    /**
      * Check if this blob require authentication.
      *
      * @return bool

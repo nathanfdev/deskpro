@@ -43,7 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="margin-top: 10px;" style="clear: both">
 		{{ phrase('agent.twitter.associated_people') }}:
 		{% for person in user.getVerifiedPeople() %}
-			<a class="as-popover tipped person-name-picture person-verified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}');" title="Verified">{{ person.display_name }}<em></em></a>
+			<a class="as-popover tipped person-name-picture person-verified" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}" style="background-image: url('{{ person.getPictureUrl(16) }}'); background-size: contain;" title="Verified">{{ person.display_name }}<em></em></a>
 		{% endfor %}
 		{% for person in user.getPossiblePeople() %}
 			{% include 'AgentBundle:TwitterUser:part-possible-person.html.twig' %}

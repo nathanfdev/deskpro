@@ -36,7 +36,7 @@ pageMeta.conversation_id = {{convo.id}};
 								<time>{{ message.date_created|date('g:ia') }}</time>
 							</div>
 						{% elseif message.author.id == app.user.id %}
-							<div class="avatar tipped"><span class="tipped" title="{{ message.author.display_name }}" style="background-image: url({{ message.author.getPictureUrl(25) }})"></span></div>
+							<div class="avatar tipped"><span class="tipped" title="{{ message.author.display_name }}" style="background-image: url({{ message.author.getPictureUrl(25) }}); background-size: contain;"></span></div>
 							<div class="message-content">
 								<div class="chatSend">
 									<div class="chatMsgSend">
@@ -47,7 +47,7 @@ pageMeta.conversation_id = {{convo.id}};
 								<time>{{ message.date_created|date('g:ia') }}</time>
 							</div>
 						{% else %}
-							<div class="avatar"><span class="tipped" title="{{ message.author.display_name }}" style="background-image: url({{ message.author.getPictureUrl(25) }})"></span></div>
+							<div class="avatar"><span class="tipped" title="{{ message.author.display_name }}" style="background-image: url({{ message.author.getPictureUrl(25) }}); background-size: contain;"></span></div>
 							<div class="message-content">
 								<div class="chatReceive">
 									<div class="chatMsgReceive">
