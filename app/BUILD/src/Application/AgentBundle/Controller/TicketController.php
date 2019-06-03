@@ -2410,7 +2410,7 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+        if (!$this->person->PermissionsManager->TicketChecker->canDeleteMessage($message)) {
             throw new NotFoundHttpException();
         }
 
@@ -2462,7 +2462,7 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+        if (!$this->person->PermissionsManager->TicketChecker->canDeleteMessage($message)) {
             throw new NotFoundHttpException();
         }
 
