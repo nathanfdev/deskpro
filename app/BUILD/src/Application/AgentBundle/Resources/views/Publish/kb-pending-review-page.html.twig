@@ -1,0 +1,27 @@
+<section class="search-results page-set" data-page="{{ page }}">
+	{% for article in articles %}
+		<article class="row-item content review-article-{{article.id}}">
+			<input class="item-select"
+             type="checkbox"
+             value="{{article.id}}"
+             data-content-type="article"
+             data-content-id="{{ article.id }}"
+             {% if not app.user.hasPerm('agent_publish.edit') %}style="display:none;"{% endif %} />
+			<div class="top-row">
+				<div class="top-row-left">
+					<h3>
+						<a class="with-route" data-route="page:{{ object_path_agent(article) }}">{{ article.title }}</a>
+					</h3>
+				</div>
+			</div>
+			<hr class="clear-top" />
+			<div class="extra-fields">
+				<ul>
+					<li>{{ phrase('agent.publish.review_date') }}: {{ article.date_next_review|date('j M, Y') }}</li>
+          <li>{{ phrase('agent.publish.review_restart_in') }}: +{{ article.getReviewIntervalTranslated() }}</li>
+				</ul>
+				<br class="clear" />
+			</div>
+		</article>
+	{% endfor %}
+</section>

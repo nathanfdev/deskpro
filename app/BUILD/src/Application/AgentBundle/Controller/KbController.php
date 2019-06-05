@@ -517,10 +517,56 @@ class KbController extends AbstractController
 
                 $article->date_updated = new \DateTime();
 
+                $restartReviewDate = $this->in->getBool('restart-review-date');
+                if ($restartReviewDate) {
+                    $article->restartReviewDate();
+                }
+
                 $data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', [
                     'article' => $article,
                     'content' => $content,
                 ]);
+                if ($restartReviewDate) {
+                    $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                        'article' => $article,
+                    ]);
+                }
+                break;
+
+            case 'set-review-date':
+
+                $count = $this->in->getInt('interval_count');
+                $unit  = $this->in->getString('interval_unit');
+
+                if (!$count || !in_array($unit, ['days', 'months', 'years'])) {
+                    return $this->createJsonResponse([
+                        'success' => false,
+                    ]);
+                }
+
+                $article->setReviewInterval($count.' '.$unit);
+                $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                    'article' => $article,
+                ]);
+
+                break;
+
+            case 'restart-review-date':
+
+                $article->restartReviewDate();
+                $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                    'article' => $article,
+                ]);
+
+                break;
+
+            case 'remove-review-date':
+
+                $article->setReviewInterval(null);
+                $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                    'article' => $article,
+                ]);
+
                 break;
 
             case 'trans':
@@ -807,6 +853,31 @@ class KbController extends AbstractController
                         continue;
                     }
                     $this->em->remove($p_article);
+                    break;
+            }
+        }
+
+        $this->em->flush();
+        $this->em->commit();
+
+        return $this->createJsonResponse([
+            'success' => 1,
+        ]);
+    }
+
+    public function pendingReviewArticlesMassActionsAction($action)
+    {
+        $this->em->beginTransaction();
+
+        $articles = $this->em->getRepository(Article::class)->findById($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+
+        foreach ($articles as $article) {
+            switch ($action) {
+                case 'restart-review':
+                    if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+                        continue;
+                    }
+                    $article->restartReviewDate();
                     break;
             }
         }

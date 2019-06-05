@@ -180,6 +180,7 @@ class PublishController extends AbstractController
         $counts['all_drafts']          = $this->publishHelper->getCountsByHiddenStatus(false);
         $counts['pending_approval']    = $this->publishHelper->getCountsByHiddenStatus(false, 'pending');
         $counts['pending']             = $this->db->fetchColumn('SELECT COUNT(*) FROM article_pending_create');
+        $counts['pending_review']      = $this->em->getRepository(Article::class)->getPendingReviewArticlesCount();
 
         /** @var UsergroupDataService $usergroupsService */
         $usergroupsService = $this->container->getDataService('Usergroup');
@@ -657,6 +658,36 @@ class PublishController extends AbstractController
 
         return $this->render($tpl, [
             'drafts'   => $drafts,
+            'total'    => $total,
+            'pageinfo' => $pageinfo,
+        ]);
+    }
+
+    public function listPendingReviewAction()
+    {
+        $perPage = 25;
+
+        $currentPage = $this->in->getUInt('page');
+        if (!$currentPage) {
+            $currentPage = 1;
+        }
+
+        $pageinfo = null;
+        $total    = null;
+        if (!@$_REQUEST['_partial']) {
+            $total    = $this->em->getRepository(Article::class)->getPendingReviewArticlesCount();
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
+        }
+
+        $articles = $this->em->getRepository(Article::class)->getPendingReviewArticles($perPage);
+
+        $tpl = 'AgentBundle:Publish:kb-pending-review.html.twig';
+        if (@$_REQUEST['_partial']) {
+            $tpl = 'AgentBundle:Publish:kb-pending-review-page.html.twig';
+        }
+
+        return $this->render($tpl, [
+            'articles' => $articles,
             'total'    => $total,
             'pageinfo' => $pageinfo,
         ]);

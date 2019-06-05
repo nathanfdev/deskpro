@@ -42,6 +42,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this._initPostArea();
 			this._initAutoUnpublishOptions();
 			this._initAutoPublishOptions();
+      this._initReviewDateOptions();
 			this._initEditSlug();
 
 			var btn = $('.kb-editor-edit', this.wrapper);
@@ -775,6 +776,136 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	//#################################################################
+	//# Review Date
+	//#################################################################
+
+	_initReviewDateOptions: function() {
+    var self = this;
+    var optWrap = this.getEl('review_date');
+    var changeFrom = null;
+
+    function showBlock(id, show) {
+      show ? $('.'+id, optWrap).show() : $('.'+id, optWrap).hide();
+    }
+
+    function updateEditorCheckbox() {
+      var isReviewSet = $('input[name="review-interval"]', optWrap).val();
+      var checkbox = $('.article-editor-wrap input[name="article[restart-review-date]"]', self.wrapper);
+
+      if (!isReviewSet) {
+        checkbox.prop('checked', false);
+        checkbox.parent().closest('div').hide();
+      } else {
+        checkbox.prop('checked', true);
+        checkbox.parent().closest('div').show();
+        checkbox.parent().closest('label').find('span').text($('.action-review-date-restart', optWrap).text());
+      }
+    }
+
+    $('.action-review-date-set', optWrap).on('click', function() {
+      changeFrom = 'set';
+      showBlock('review_date_not_set', false);
+      showBlock('review_date_controls', true);
+    });
+
+    $('.action-review-date-change', optWrap).on('click', function() {
+      changeFrom = 'change';
+      showBlock('review_date_already_set', false);
+      showBlock('review_date_controls', true);
+    });
+
+    $('.action-review-date-control-cancel', optWrap).on('click', function() {
+      showBlock('review_date_controls', false);
+      if (changeFrom == 'change') {
+        showBlock('review_date_already_set', true);
+      } else {
+        showBlock('review_date_not_set', true);
+      }
+    });
+
+    $('.review-date-control-set', optWrap).on('click', function(e) {
+      e.preventDefault();
+
+      var interval_count = parseInt($('.review-date-control-input', optWrap).val());
+      var interval_unit = $('.review-date-control-select', optWrap).val();
+
+      if (!interval_count) {
+        return;
+      }
+
+      $('.review-date-control-input', optWrap).prop('disabled', true);
+      $('.review-date-control-select', optWrap).prop('disabled', true);
+      $('.review-date-control-set', optWrap).prop('disabled', true);
+
+      $.ajax({
+        url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+        type: 'POST',
+        data: [{
+          name: 'interval_count',
+          value: interval_count
+        }, {
+          name: 'interval_unit',
+          value: interval_unit
+        }, {
+          name: 'action',
+          value: 'set-review-date'
+        }],
+        context: self,
+        dataType: 'json',
+        complete: function(data) {
+          $('.review-date-control-input', optWrap).prop('disabled', false);
+          $('.review-date-control-select', optWrap).prop('disabled', false);
+          $('.review-date-control-set', optWrap).prop('disabled', false);
+          if (data && data.responseJSON && data.responseJSON.success == 1) {
+            self.getEl('review_date').html(data.responseJSON.prop_html);
+            updateEditorCheckbox();
+            self._initReviewDateOptions();
+          }
+        }
+      });
+    });
+
+    $('.action-review-date-restart', optWrap).on('click', function(e) {
+      $.ajax({
+        url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+        type: 'POST',
+        data: [{
+          name: 'action',
+          value: 'restart-review-date'
+        }],
+        context: self,
+        dataType: 'json',
+        success: function(data) {
+          if (data.success == 1) {
+            self.getEl('review_date').html(data.prop_html);
+            self._initReviewDateOptions();
+          }
+        }
+      });
+    });
+    
+    $('.action-review-date-remove', optWrap).on('click', function(e) {
+      $.ajax({
+        url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+        type: 'POST',
+        data: [{
+          name: 'action',
+          value: 'remove-review-date'
+        }],
+        context: self,
+        dataType: 'json',
+        success: function(data) {
+          if (data.success == 1) {
+            self.getEl('review_date').html(data.prop_html);
+            updateEditorCheckbox();
+            self._initReviewDateOptions();
+          }
+        }
+      });
+    });
+	},
+
+	//#################################################################
 	//# Article body
 	//#################################################################
 
@@ -852,6 +983,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			name: 'language_id',
 				value: wrap.find('.article-editor.wrap').find('.language_id').val()
 		});
+		data.push({
+			name: 'restart-review-date',
+				value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
+		});
 
 		$('input.edit-content-attach:checked', wrap).each(function() {
 			data.push({
@@ -887,6 +1022,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				this._initPostArea();
 				this._initArticleArea();
 				this.handleUnloadRevisions(data.revision_id);
+
+        if (data.prop_html) {
+          this.getEl('review_date').html(data.prop_html);
+          this._initReviewDateOptions();
+        }
 
 				showSaved.show().fadeOut(2000);
 			}

@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
@@ -65,6 +66,16 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      * @var \DateTime
      */
     protected $date_end;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_next_review;
+
+    /**
+     * @var string
+     */
+    protected $review_interval;
 
     /**
      * @var string
@@ -567,6 +578,84 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @return DateTime|null
+     */
+    public function getDateNextReview()
+    {
+        return $this->date_next_review;
+    }
+
+    /**
+     * @param DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateNextReview(DateTime $date = null)
+    {
+        $this->setModelField('date_next_review', $date);
+
+        return $this;
+    }
+
+    /**
+     * Update next_review_date according to review_interval.
+     */
+    public function restartReviewDate()
+    {
+        $this->setDateNextReview(
+            $this->review_interval
+            ? new \DateTime('+'.$this->review_interval)
+            : null
+        );
+    }
+
+    /**
+     * @return string|[]
+     */
+    public function getReviewInterval($split = false)
+    {
+        if ($split) {
+            if (!$this->review_interval) {
+                return [];
+            }
+
+            return explode(' ', trim($this->review_interval));
+        }
+
+        return $this->review_interval;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReviewIntervalTranslated()
+    {
+        $tr       = App::getTranslator();
+        $interval = $this->getReviewInterval(true);
+        if (!$interval) {
+            return '';
+        }
+
+        // interval[1] is one of ['years', 'months', 'days']
+        return $tr->phrase(sprintf('agent.time.x_%s', substr($interval[1], 0, -1)), ['count' => $interval[0]]);
+    }
+
+    /**
+     * @param string $interval
+     *
+     * @return $this
+     */
+    public function setReviewInterval($interval, $restartReviewDate = true)
+    {
+        $this->setModelField('review_interval', $interval);
+        if ($restartReviewDate) {
+            $this->restartReviewDate();
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection|ObjectLang[]
      *
      * @Assert\Valid()
@@ -927,6 +1016,28 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'article',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_next_review',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_next_review',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'review_interval',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'review_interval',
             ]
         );
 
