@@ -205,6 +205,7 @@ class DownloadsController extends AbstractController
 
             case 'undelete':
                 $download['status_code'] = 'published';
+                $download->setSlug(null);
                 break;
 
             case 'title':
@@ -325,6 +326,10 @@ class DownloadsController extends AbstractController
             $data['revision_id'] = $rev['id'];
         } else {
             $data['revision_id'] = null;
+        }
+
+        if (in_array($action, ['undelete', 'delete'], true)) {
+            $data['slug'] = $download->getSlug();
         }
 
         return $this->createJsonResponse($data);

@@ -209,6 +209,7 @@ class GuideController extends PublishController
 
             case 'undelete':
                 $topic->status_code = 'published';
+                $topic->setSlug(null);
                 break;
 
             case 'auto-unpub':
@@ -252,6 +253,10 @@ class GuideController extends PublishController
             $data['revision_id'] = $rev['id'];
         } else {
             $data['revision_id'] = null;
+        }
+
+        if (in_array($action, ['undelete', 'delete'], true)) {
+            $data['slug'] = $topic->getSlug();
         }
 
         return $this->createJsonResponse($data);

@@ -380,6 +380,7 @@ class KbController extends AbstractController
 
             case 'undelete':
                 $article->status_code = 'published';
+                $article->setSlug(null);
                 break;
 
             case 'categories':
@@ -570,6 +571,10 @@ class KbController extends AbstractController
             $data['revision_id'] = $rev['id'];
         } else {
             $data['revision_id'] = null;
+        }
+
+        if (in_array($action, ['undelete', 'delete'], true)) {
+            $data['slug'] = $article->getSlug();
         }
 
         return $this->createJsonResponse($data);
