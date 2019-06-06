@@ -63,7 +63,6 @@ class CallLogsList extends React.Component {
         isOpen={deleteConfirmation > 0}
         title="Confirm record deletion"
         contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '150px', width: '30%' }}
-        className="voice-delete-callrecord-confirmation"
       >
         <h2>Do you really want to delete this record? This cannot be undone.</h2>
         <div>

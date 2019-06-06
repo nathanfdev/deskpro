@@ -3,6 +3,8 @@ import React from 'react';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form/index';
+import Modal from 'DeskPRO/Component/Semantic/Modal';
+import { Button } from '@deskpro/react-components';
 import SectionHeader from '../../../Common/Components/SectionHeader';
 import AgentSettingsForm from './AgentSettingsForm';
 
@@ -38,16 +40,42 @@ class AgentsVoiceToggle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving: false
+      savingToggleAll:         false,
+      untoggleAllConfirmation: false
     };
   }
 
   toggleAll = (event) => {
+    const { agents } = this.props;
+
+    let isVoiceEnabled = false;
+    agents.forEach((agent) => {
+      if (!agent.getIn(['agent_data', 'is_voice_enabled'])) {
+        isVoiceEnabled = true;
+      }
+    });
+
+    if (isVoiceEnabled) {
+      this.performToggleAll(event);
+    } else {
+      this.setState({
+        untoggleAllConfirmation: true
+      });
+    }
+  };
+
+  rejectUntoggleAll = () => {
+    this.setState({
+      untoggleAllConfirmation: false
+    });
+  };
+
+  performToggleAll = (event) => {
     event.preventDefault();
 
     const { toggleAll } = this.props;
-    const { saving } = this.state;
-    if (saving) {
+    const { savingToggleAll } = this.state;
+    if (savingToggleAll) {
       return;
     }
 
@@ -58,12 +86,14 @@ class AgentsVoiceToggle extends React.Component {
     const promise = toggleAll();
     promise.success(() => {
       this.setState({
-        saving: false
+        savingToggleAll:         false,
+        untoggleAllConfirmation: false
       });
     });
     promise.error(() => {
       this.setState({
-        saving: false
+        savingToggleAll:         false,
+        untoggleAllConfirmation: false
       });
     });
   };
@@ -88,10 +118,25 @@ class AgentsVoiceToggle extends React.Component {
   renderList() {
     const { agents, settings, ticketDepartments, brands } = this.props;
     const { toggleEnabled, toggleOutboundCalls, toggleUseForwarding, saveSettings } = this.props;
-    const { saving } = this.state;
+    const { savingToggleAll, untoggleAllConfirmation } = this.state;
 
     return (
       <div className="page">
+        <Modal
+          isOpen={untoggleAllConfirmation}
+          title="Confirm removing access"
+          contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '150px', width: '30%' }}
+        >
+          <h2>Removing access to voice will remove agents from queues and IVRs, and the agents personal extensions will be deleted.</h2>
+          <div>
+            <span style={{ float: 'left' }}>
+              <Button size="large" type="secondary" onClick={this.rejectUntoggleAll}>Decline</Button>
+            </span>
+            <span style={{ float: 'right' }}>
+              <Button size="large" type="cta" onClick={this.performToggleAll}>Confirm</Button>
+            </span>
+          </div>
+        </Modal>
         <AgentVoiceHeader />
         <AgentSettingsForm
           ticketDepartments={ticketDepartments}
@@ -120,7 +165,7 @@ class AgentsVoiceToggle extends React.Component {
                   toggleEnabled={toggleEnabled}
                   toggleOutboundCalls={toggleOutboundCalls}
                   toggleUseForwarding={toggleUseForwarding}
-                  disabled={saving}
+                  disabled={savingToggleAll}
                 />
               )}
             </tbody>
