@@ -3,7 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import classNames from 'classnames';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { Button } from '@deskpro/react-components';
 import Widget from './Widget';
 import CodeMirror from '../CodeMirror';
 
@@ -54,10 +54,12 @@ class TemplatePopup extends React.Component {
         ref={(c) => { this.widgetEditor = c; }}
       />
       <div className="footer">
-        <Button onClick={this.saveChanges}>Submit</Button>
-        <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+        <Button type="primary" onClick={this.saveChanges}>Submit</Button>
+        <Button type="secondary" onClick={this.closePopup}>Cancel</Button>
         <Button
-          className={classNames('right floated basic small', { loading: this.state.resetSubmit })}
+          className={classNames('right floated small')}
+          type="secondary"
+          loading={this.state.resetSubmit}
           disabled={this.state.resetSubmit}
           onClick={this.resetTemplate}
           confirm

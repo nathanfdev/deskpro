@@ -300,6 +300,15 @@
       }
     }
   }
+  .footer {
+    button {
+      margin-right: 5px;
+    }
+    button:last-of-type {
+      margin-right: 0;
+      float: right;
+    }
+  }
 }
 .email-dropdown-menu {
     .ui.bottom.left.popup:before {

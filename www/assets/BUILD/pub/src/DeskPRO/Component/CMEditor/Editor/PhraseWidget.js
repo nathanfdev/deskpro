@@ -3,7 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { Field, Input } from 'DeskPRO/Component/Semantic/Form';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { Button } from '@deskpro/react-components';
 import Widget from './Widget';
 
 class PhrasePopup extends React.Component {
@@ -56,7 +56,7 @@ class PhrasePopup extends React.Component {
         <div className="ui horizontal divider">Translations</div>
         {this.getTranslations()}
         {this.getVariables()}
-        <Button onClick={this.saveChanges}>Submit</Button>
+        <Button onClick={this.saveChanges}>Submit</Button>&nbsp;
         <Button className="basic" onClick={this.closePopup}>Cancel</Button>
       </div>
     );
