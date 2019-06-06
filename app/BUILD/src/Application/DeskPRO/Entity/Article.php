@@ -612,6 +612,29 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @return DateTime|null
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param DateTime $date
+     *
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date = null)
+    {
+        if ($date === null) {
+            $date = new \DateTime();
+        }
+        $this->setModelField('date_created', $date);
+
+        return $this;
+    }
+
+    /**
      * Update next_review_date according to review_interval.
      */
     public function restartReviewDate()
