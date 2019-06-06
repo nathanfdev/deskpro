@@ -66,7 +66,7 @@ class CustomDefAbstract extends AbstractEntityRepository
      * So the idea is this is a bit defensive and that two small queries is better than 1 query with potentially
      * a very large result set.
      */
-    private function preloadHierarchy()
+    protected function preloadHierarchy()
     {
         if ($this->didLoadHierarchy) {
             return;

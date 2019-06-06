@@ -554,6 +554,7 @@ portal.forms.label_language: Language
 portal.forms.label_last_name: 'Last Name'
 portal.forms.label_message: Message
 portal.forms.label_name: Name
+portal.forms.label_display_name: Display Name
 portal.forms.label_password: Password
 portal.forms.label_password_confirm: Confirm
 portal.forms.label_priority: Priority
@@ -631,6 +632,7 @@ portal.general.nav-guides-desc: 'Product documentation'
 portal.general.nav-kb: Knowledgebase
 portal.general.nav-kb-desc: 'Read help articles'
 portal.general.nav-login: Login
+portal.general.nav-members: Members
 portal.general.nav-news: News
 portal.general.nav-news-desc: 'News & updates'
 portal.general.nav-newticket: 'Contact Us'
@@ -704,6 +706,8 @@ portal.news.view-as-agent: 'You can see this page because you are an agent. Norm
 portal.news.view-x-news:
   one: 'View 1 article'
   other: 'View {{count}} articles'
+portal.members.title: Members
+portal.members.none: No members
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
 portal.sidebar.agents_x_online:

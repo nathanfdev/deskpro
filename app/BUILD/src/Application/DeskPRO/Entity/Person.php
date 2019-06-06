@@ -273,6 +273,13 @@ class Person extends DomainObject implements
     protected $name = '';
 
     /**
+     * Members community public name.
+     *
+     * @var string
+     */
+    protected $community_name;
+
+    /**
      * The users name (best guess from other sources etc).
      *
      * @var string
@@ -703,6 +710,26 @@ class Person extends DomainObject implements
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCommunityName()
+    {
+        return $this->community_name;
+    }
+
+    /**
+     * @param string $community_name
+     *
+     * @return $this
+     */
+    public function setCommunityName($community_name)
+    {
+        $this->setModelField('community_name', $community_name);
+
+        return $this;
     }
 
     /**
@@ -4299,6 +4326,17 @@ class Person extends DomainObject implements
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'name',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'community_name',
+                'type'       => 'string',
+                'length'     => 50,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'community_name',
             ]
         );
         $metadata->mapField(

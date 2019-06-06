@@ -5,6 +5,7 @@ namespace Application\DeskPRO\CustomFields\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Form\StringObject;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
 use DeskPRO\Bundle\AppBundle\ObjectAlias\Comparators;
@@ -41,6 +42,12 @@ abstract class CustomFieldAbstract
     public $is_enabled = false;
     /** @var bool */
     public $is_agent_field = false;
+    /**
+     * Used only by CustomDefPerson.
+     *
+     * @var bool
+     */
+    public $is_public = false;
     /** @var bool */
     public $agent_validation_resolve = false;
     public $display_order            = 0;
@@ -66,6 +73,8 @@ abstract class CustomFieldAbstract
         $this->is_enabled               = $field->is_enabled;
         $this->agent_validation_resolve = $field->getOption('agent_validation_resolve', false);
         $this->default_value            = $field->default_value;
+
+        $this->is_public = $field instanceof CustomDefPerson ? $field->is_public : false;
 
         if ($field->getOption('required')) {
             $this->required = true;
@@ -126,6 +135,10 @@ abstract class CustomFieldAbstract
         $field->is_enabled     = $this->is_enabled;
         $field->is_agent_field = $this->is_agent_field;
         $field->default_value  = $this->default_value ?: null;
+
+        if ($field instanceof CustomDefPerson) {
+            $field->is_public = $this->is_public;
+        }
 
         if ($this->isNewField()) {
             $field->handler_class = $this->handler_class;
