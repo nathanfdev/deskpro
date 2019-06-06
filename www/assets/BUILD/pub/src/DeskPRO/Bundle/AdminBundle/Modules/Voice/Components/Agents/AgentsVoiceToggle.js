@@ -40,8 +40,10 @@ class AgentsVoiceToggle extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      savingToggleAll:         false,
-      untoggleAllConfirmation: false
+      savingToggleAll:           false,
+      savingToggleAgent:         false,
+      untoggleAllConfirmation:   false,
+      untoggleAgentConfirmation: false
     };
   }
 
@@ -64,9 +66,25 @@ class AgentsVoiceToggle extends React.Component {
     }
   };
 
+  toggleAgent = (agent) => {
+    if (!agent.getIn(['agent_data', 'is_voice_enabled'])) {
+      this.performToggleAgent(agent);
+    } else {
+      this.setState({
+        untoggleAgentConfirmation: agent
+      });
+    }
+  };
+
   rejectUntoggleAll = () => {
     this.setState({
       untoggleAllConfirmation: false
+    });
+  };
+
+  rejectUntoggleAgent = () => {
+    this.setState({
+      untoggleAgentConfirmation: false
     });
   };
 
@@ -80,7 +98,7 @@ class AgentsVoiceToggle extends React.Component {
     }
 
     this.setState({
-      saving: true
+      savingToggleAll: true
     });
 
     const promise = toggleAll();
@@ -94,6 +112,27 @@ class AgentsVoiceToggle extends React.Component {
       this.setState({
         savingToggleAll:         false,
         untoggleAllConfirmation: false
+      });
+    });
+  };
+
+  performToggleAgent = (agent) => {
+    const { toggleEnabled } = this.props;
+    this.setState({
+      savingToggleAgent: agent
+    });
+
+    const promise = toggleEnabled(agent);
+    promise.success(() => {
+      this.setState({
+        savingToggleAgent:         false,
+        untoggleAgentConfirmation: false
+      });
+    });
+    promise.error(() => {
+      this.setState({
+        savingToggleAgent:         false,
+        untoggleAgentConfirmation: false
       });
     });
   };
@@ -117,8 +156,8 @@ class AgentsVoiceToggle extends React.Component {
 
   renderList() {
     const { agents, settings, ticketDepartments, brands } = this.props;
-    const { toggleEnabled, toggleOutboundCalls, toggleUseForwarding, saveSettings } = this.props;
-    const { savingToggleAll, untoggleAllConfirmation } = this.state;
+    const { toggleOutboundCalls, toggleUseForwarding, saveSettings } = this.props;
+    const { savingToggleAll, savingToggleAgent, untoggleAllConfirmation, untoggleAgentConfirmation } = this.state;
 
     return (
       <div className="page">
@@ -134,6 +173,27 @@ class AgentsVoiceToggle extends React.Component {
             </span>
             <span style={{ float: 'right' }}>
               <Button size="large" type="cta" onClick={this.performToggleAll}>Confirm</Button>
+            </span>
+          </div>
+        </Modal>
+        <Modal
+          isOpen={untoggleAgentConfirmation}
+          title="Confirm removing access"
+          contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '150px', width: '30%' }}
+        >
+          <h2>Removing access to voice will remove this agent from queues and IVRs, and the agents personal extension will be deleted.</h2>
+          <div>
+            <span style={{ float: 'left' }}>
+              <Button size="large" type="secondary" onClick={this.rejectUntoggleAgent}>Decline</Button>
+            </span>
+            <span style={{ float: 'right' }}>
+              <Button
+                size="large"
+                type="cta"
+                onClick={(event) => { event.preventDefault(); this.performToggleAgent(untoggleAgentConfirmation); }}
+              >
+                Confirm
+              </Button>
             </span>
           </div>
         </Modal>
@@ -162,10 +222,10 @@ class AgentsVoiceToggle extends React.Component {
                 <AgentVoiceToggle
                   key={index}
                   agent={agent}
-                  toggleEnabled={toggleEnabled}
+                  toggleEnabled={this.toggleAgent}
                   toggleOutboundCalls={toggleOutboundCalls}
                   toggleUseForwarding={toggleUseForwarding}
-                  disabled={savingToggleAll}
+                  disabled={savingToggleAll || savingToggleAgent === agent}
                 />
               )}
             </tbody>
@@ -206,21 +266,7 @@ class AgentVoiceToggle extends React.Component {
       return;
     }
 
-    this.setState({
-      saving: true
-    });
-
-    const promise = toggleEnabled(agent);
-    promise.success(() => {
-      this.setState({
-        saving: false
-      });
-    });
-    promise.error(() => {
-      this.setState({
-        saving: false
-      });
-    });
+    toggleEnabled(agent);
   };
 
   toggleOutboundCalls = () => {
