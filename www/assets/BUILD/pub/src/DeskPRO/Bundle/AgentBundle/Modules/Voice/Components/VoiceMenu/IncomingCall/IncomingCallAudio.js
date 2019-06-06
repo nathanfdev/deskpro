@@ -30,7 +30,10 @@ class IncomingCallAudio extends React.Component {
     }
     const playPromise = this.sound.play();
     if (playPromise) {
-      playPromise.catch(() => setTimeout(this.playSound, 100));
+      playPromise.catch((e) => {
+        console.log(e);
+        setTimeout(() => { this.playSound(); }, 100);
+      });
     }
   }
 
