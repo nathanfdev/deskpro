@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @Rest\Route("/voice_queues")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
- * @ApiUserContext("admin", agent={"list", "get", "count", "toggleAgent"})
+ * @ApiUserContext("admin", agent={"list", "get", "count", "toggleAgent", "averageWaitingTime"})
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
