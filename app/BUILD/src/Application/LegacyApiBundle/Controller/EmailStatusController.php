@@ -230,7 +230,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         $data = [];
         foreach ($results as $r) {
             $res = $r->toArray();
-            if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED) {
+            if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED && $res['status'] === SendmailSource::STATUS_ERROR && $res['error_code'] === 'rate_limit') {
                 // dont reveal rate limit error code
                 $res['status']     = SendmailSource::STATUS_COMPLETE;
                 $res['error_code'] = null;
@@ -261,8 +261,8 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $info = [];
 
-        $info['source']     = $this->getApiData($source);
-        $info['source_log'] = null;
+        $info['source']      = $this->getApiData($source);
+        $info['source_log']  = null;
         $info['account_log'] = null;
 
         if ($source->email_account_log instanceof EmailAccountLog) {
@@ -638,7 +638,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED) {
+        if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED && $sendmail->getStatus() === SendmailSource::STATUS_ERROR && $sendmail->getErrorCode() === 'rate_limit') {
             // dont allow reset on unapproved sites
             // noop and pretend success
             return $this->createApiSuccessResponse();
@@ -672,21 +672,21 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         switch ($action) {
             case 'resend':
+                $extraWhere = '';
                 if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED) {
                     // dont allow reset on unapproved sites
                     // noop and pretend success
-                    return $this->createApiSuccessResponse();
+                    $extraWhere = 'AND (error_code IS NULL OR error_code != "rate_limit")';
                 }
 
                 /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 
-                $recs = $this->db->fetchAll(
-                    '
+                $recs = $this->db->fetchAll("
                     SELECT *
                     FROM sendmail_sources
-                    WHERE id IN (?)
-                ',
+                    WHERE id IN (?) $extraWhere
+                ",
                     [$ids],
                     [Connection::PARAM_INT_ARRAY]
                 );
