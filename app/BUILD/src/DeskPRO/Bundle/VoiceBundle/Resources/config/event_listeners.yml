@@ -97,6 +97,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.doctrine.voice_permission_removal:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoicePermissionRemovalListener
+    tags:
+      - { name: doctrine.entity_listener }
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.doctrine.voice_number:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceNumberListener
     arguments: ["@service_container", "@event_dispatcher"]

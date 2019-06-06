@@ -21,7 +21,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * @ORM\EntityListeners({
  *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceWorkerListener",
- *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceSettingsListener"
+ *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceSettingsListener",
+ *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoicePermissionRemovalListener"
  * })
  *
  * @JMS\ExclusionPolicy("all")
