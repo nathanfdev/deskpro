@@ -39,7 +39,7 @@ class WidgetLiveDemoController extends BaseController
      *     },
      *
      *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\WidgetLiveDemoState"
-     *)
+     * )
      *
      * @Rest\Get("/sample_state")
      * @SerializerView(mapping={

@@ -34,7 +34,7 @@ class AssetsController extends BaseController
      *             "dataType"="string"
      *         }
      *     },
-     *)
+     * )
      * @Rest\Get("/{type}")
      *
      * @param string $type
@@ -66,7 +66,7 @@ class AssetsController extends BaseController
      *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType"
      *     },
      *     output="Application\DeskPRO\Entity\Blob"
-     *)
+     * )
      * @Rest\Post("/{type}")
      *
      * @param Request $request

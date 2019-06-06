@@ -61,7 +61,7 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType"
      *     },
      *     noOutput=true
-     *)
+     * )
      * @Rest\Post("")
      *
      * @param Request $request

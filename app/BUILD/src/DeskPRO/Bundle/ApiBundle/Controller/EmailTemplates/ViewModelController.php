@@ -33,7 +33,7 @@ class ViewModelController extends BaseController
      *         }
      *     },
      *     output="array"
-     *)
+     * )
      * @ApiUnstable()
      * @Rest\Get("/variables/{className}")
      *

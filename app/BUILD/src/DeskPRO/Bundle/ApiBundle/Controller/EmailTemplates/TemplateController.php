@@ -51,7 +51,7 @@ class TemplateController extends BaseController
      *         }
      *     },
      *     output="array"
-     *)
+     * )
      * @Rest\Get("/template/{name}")
      *
      * @param $name
@@ -102,7 +102,7 @@ class TemplateController extends BaseController
      *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType",
      *     },
      *     output="array"
-     *)
+     * )
      * @ApiUnstable()
      * @Rest\Post("/template/{name}")
      *
@@ -182,7 +182,7 @@ class TemplateController extends BaseController
      *             "dataType"="string"
      *         }
      *     },
-     *)
+     * )
      * @ApiUnstable()
      * @Rest\Delete("/template/{name}")
      *
@@ -234,7 +234,7 @@ class TemplateController extends BaseController
      *     description="Render a template to preview",
      *     input="array",
      *     output="string"
-     *)
+     * )
      * @ApiUnstable()
      * @Rest\Post("/render_template")
      *
@@ -269,7 +269,7 @@ class TemplateController extends BaseController
      *     description="Send preview of a template",
      *     input="array",
      *     output="string"
-     *)
+     * )
      * @ApiUnstable()
      * @Rest\Post("/send_preview")
      *
@@ -319,7 +319,7 @@ class TemplateController extends BaseController
      *     section="Email Templates",
      *     description="Get legacy templates to upgrade",
      *     output="string"
-     *)
+     * )
      * @Rest\Get("/legacy_templates")
      *
      * @return View
@@ -336,7 +336,7 @@ class TemplateController extends BaseController
      *     section="Email Templates",
      *     description="Revert legacy template to hardcoded template",
      *     output="string"
-     *)
+     * )
      * @Rest\Get("/revert_legacy_template/{id}")
      *
      * @param $id
@@ -379,7 +379,7 @@ class TemplateController extends BaseController
      *     section="Email Templates",
      *     description="Delete legacy template",
      *     output="string"
-     *)
+     * )
      * @Rest\Delete("/legacy_template/{id}")
      *
      * @param $id
