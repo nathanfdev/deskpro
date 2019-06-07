@@ -17,3 +17,36 @@ Feature: KB
     When I follow "Example Article"
     Then I should be on "/kb/articles/example-article"
     And the response status code should be 200
+
+  Scenario: I navigate to a KB article with everyone usergroup disabled
+    Given everyone user group disabled
+    When I am on "/"
+    Then I should not see "Knowledgebase"
+    When I am on "/kb/articles/example-article"
+    Then I should be on "/login"
+
+  Scenario: I navigate to a KB article with everyone usergroup disabled
+    Given everyone user group disabled
+    When I am on "/"
+    Then I should not see "Knowledgebase"
+    When I am on "/kb/articles/example-article"
+    Then I should be on "/login"
+
+  Scenario: I navigate to a KB article as participant of usergroup
+    Given everyone user group disabled
+    And registered user group disabled
+    And testo user group exists
+    And I grant the KB_general KB category permission for usergroup testo
+    And I login with user credentials
+    When I am on "/"
+    Then I should not see "Knowledgebase"
+    When I am on "/kb/articles/example-article"
+    Then the response status code should be 403
+
+    When I add me usergroup relation testo
+    And I am on "/"
+    Then I follow "Knowledgebase"
+    And I follow "General"
+    When I follow "Example Article"
+    Then I should be on "/kb/articles/example-article"
+    And the response status code should be 200

@@ -198,6 +198,32 @@ class PermissionContext extends BaseContext
     }
 
     /**
+     * @Given I grant the :category KB category permission for usergroup :usergroup
+     *
+     * @param string $usergroup
+     * @param string $departmentId
+     * @param string $app
+     */
+    public function iGrantKbCategoryPermissionForUsergroup($category, $usergroup)
+    {
+        DataContext::scheduleCleanup();
+
+        if (is_numeric($category)) {
+            $categoryId = DataContext::replace($category);
+        } else {
+            $category   = DataContext::getReference($category);
+            $categoryId = $category->getId();
+        }
+        $usergroup = DataContext::getReference($usergroup.'_group');
+
+        $connection = $this->em()->getConnection();
+        $connection->executeUpdate(
+            'INSERT IGNORE INTO article_category2usergroup SET category_id = ?, usergroup_id = ?',
+            [$categoryId, $usergroup->getId()]
+        );
+    }
+
+    /**
      * @Given I clear permissions for :who
      *
      * @param $who

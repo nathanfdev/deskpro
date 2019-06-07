@@ -79,6 +79,21 @@ class PeopleContext extends BaseContext
     }
 
     /**
+     * @Given :name user group disabled
+     *
+     * @param string $name
+     *
+     * @return Usergroup
+     */
+    public function usergroupDisabled($name)
+    {
+        /** @var Usergroup $group */
+        $group             = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $name]);
+        $group->is_enabled = false;
+        $this->persistAndFlush($group);
+    }
+
+    /**
      * @Given :name agent group exists
      *
      * @param string $name
