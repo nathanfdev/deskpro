@@ -54,6 +54,10 @@ class AgentDataProfileType extends AbstractType
                 'property_path' => 'forwardingRingTimeout',
                 'required'      => false,
             ])
+            ->add('forwarding_logged_out', ApiBooleanType::class, [
+                'property_path' => 'forwardingLoggedOut',
+                'required'      => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);

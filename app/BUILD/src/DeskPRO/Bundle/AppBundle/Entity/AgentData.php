@@ -174,6 +174,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $forwardingNumberType;
 
     /**
+     * @ORM\Column(name="forwarding_logged_out", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $forwardingLoggedOut = true;
+
+    /**
      * @return int
      */
     public function getId()
@@ -418,6 +428,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setForwardingRingTimeout($forwardingRingTimeout)
     {
         $this->setModelField('forwardingRingTimeout', $forwardingRingTimeout);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForwardingLoggedOut()
+    {
+        return $this->forwardingLoggedOut;
+    }
+
+    /**
+     * @param bool $forwardingLoggedOut
+     *
+     * @return $this
+     */
+    public function setForwardingLoggedOut($forwardingLoggedOut)
+    {
+        $this->setModelField('forwardingLoggedOut', $forwardingLoggedOut);
 
         return $this;
     }

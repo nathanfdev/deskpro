@@ -54,6 +54,7 @@ class CallForward extends BaseForm {
         agent_can_use_forwarding: me ? me.getIn(['agent_data', 'agent_can_use_forwarding']) : false,
         forwarding_number:        (me && me.getIn(['agent_data', 'forwarding_number'])) || '',
         forwarding_ring_timeout:  (me && me.getIn(['agent_data', 'forwarding_ring_timeout'])) || 10,
+        forwarding_logged_out:    me ? me.getIn(['agent_data', 'forwarding_logged_out']) : false,
       }
     };
   }
@@ -112,6 +113,11 @@ class CallForwardField extends React.Component {
         <Field select="agent_can_use_forwarding">
           <Toggle className="small" disabled={!value.forwarding_number}>
             Enable call forwarding
+          </Toggle>
+        </Field>
+        <Field select="forwarding_logged_out">
+          <Toggle className="small" disabled={!value.agent_can_use_forwarding}>
+            Only forward calls when I am not logged-in to the helpdesk
           </Toggle>
         </Field>
         <Field select="forwarding_number" label="Forwarding number">
