@@ -25,13 +25,6 @@ Feature: KB
     When I am on "/kb/articles/example-article"
     Then I should be on "/login"
 
-  Scenario: I navigate to a KB article with everyone usergroup disabled
-    Given everyone user group disabled
-    When I am on "/"
-    Then I should not see "Knowledgebase"
-    When I am on "/kb/articles/example-article"
-    Then I should be on "/login"
-
   Scenario: I navigate to a KB article as participant of usergroup
     Given everyone user group disabled
     And registered user group disabled
