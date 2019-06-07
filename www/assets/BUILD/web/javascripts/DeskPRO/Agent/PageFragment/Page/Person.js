@@ -435,7 +435,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				if (action == 'set-password') {
 					DeskPRO_Window.showPrompt(
-						'<div>Enter a new password. The user will be notified.</div>',
+            self.meta.person.email
+              ? '<div>Enter a new password. The user will be notified.</div>'
+              : '<div>Notice: This user does NOT have an email address on their account, so the system cannot notify them of their new password.</div>',
 						function(val, wrap) {
 							var postData = [];
 							postData.push({
