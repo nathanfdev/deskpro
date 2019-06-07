@@ -950,7 +950,12 @@ class ServeFileScript extends LowScriptAbstract
             }
 
             header('HTTP/1.1 301 Moved Permanently');
-            header("Location: {$blob['file_url']}");
+            if ($blob['storage_loc'] === 's3') {
+                $url = Blob::rewriteDynFileUrl($blob['file_url']);
+                header("Location: {$url}");
+            } else {
+                header("Location: {$blob['file_url']}");
+            }
             exit;
         }
 
