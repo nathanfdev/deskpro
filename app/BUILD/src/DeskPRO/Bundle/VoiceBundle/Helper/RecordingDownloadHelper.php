@@ -243,21 +243,46 @@ class RecordingDownloadHelper
      */
     private function voicemailForAgent(VoicePhoneCall $phoneCall, Person $agent, $recordingSid, $recordingUrl, $duration)
     {
-        $recording = new VoicemailAgentRecording();
-        $recording
-            ->setPhoneCall($phoneCall)
-            ->setDuration($duration)
-            ->setRecordingUrl($recordingUrl)
-            ->setAgent($agent)
-        ;
+        // this phone call can already have a ticket
+        // e.g. it's cold transfer redirected to voicemail (call was answered by Agent A and unsuccessful cold transfer to Agent B)
+        // check if ticket is already created for this phone call
+        $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
 
-        $this->em->persist($recording);
-        $this->em->flush();
+        if ($messageAttribute) {
+            // found active ticket
+            // then don't create a personal voicemail, just a attach as a new recording to existing message
+            $recording = new VoiceRecording();
+            $recording->setDuration($duration);
+            $recording->setRecordingUrl($recordingUrl);
 
-        $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
-            'recording_sid'          => $recordingSid,
-            'voicemail_recording_id' => $recording->getId(),
-        ]));
+            $phoneCall->addRecording($recording);
+            $this->em->flush();
+
+            $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+                'recording_sid' => $recordingSid,
+                'recording_id'  => $recording->getId(),
+            ]));
+        } else {
+            // there is no ticket
+            // create a personal voicemail
+            $recording = new VoicemailAgentRecording();
+            $recording
+                ->setPhoneCall($phoneCall)
+                ->setDuration($duration)
+                ->setRecordingUrl($recordingUrl)
+                ->setAgent($agent)
+            ;
+
+            $this->em->persist($recording);
+            $this->em->flush();
+
+            $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+                'recording_sid'          => $recordingSid,
+                'voicemail_recording_id' => $recording->getId(),
+            ]));
+        }
     }
 
     /**
@@ -276,14 +301,25 @@ class RecordingDownloadHelper
         $recording->setRecordingUrl($recordingUrl);
 
         $phoneCall->addRecording($recording);
-
-        $this->em->persist($phoneCall);
         $this->em->flush();
 
         $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
             'recording_sid' => $recordingSid,
             'recording_id'  => $recording->getId(),
         ]));
+
+        // this phone call can already have a ticket
+        // e.g. it's cold transfer redirected to voicemail (call was answered by Agent A and unsuccessful cold transfer to Agent B)
+        // check if ticket is already created for this phone call
+        $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+
+        if ($messageAttribute) {
+            // found active ticket
+            // don't create a new message, just a attach as a new recording to existing message
+            return;
+        }
 
         // create voicemail queue ticket
         $ticketMessageCall = new TicketMessageVoicePhoneCall();
@@ -297,6 +333,9 @@ class RecordingDownloadHelper
 
         // try to get last ticket
         $ticket = null;
+
+        // group missed call tickets is enabled
+        // try to get last ticket related to this number
         if ($this->settingsResolver->isGroupMissedCallTickets()) {
             /** @var Ticket $lastTicket */
             $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
