@@ -607,7 +607,7 @@ return [
     /*
      * Member community
      */
-    'portal.members_community' => true,
+    'portal.members_community' => false,
 
     /*
      * http s-maxage for a guest "page"
