@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiDoc(target="all", section="Email Templates", output="Application\DeskPRO\Entity\Blob")
  * @Feature("email_templates")
  * @Rest\Route("/email_templates/email_assets")
+ * @ApiUserContext("admin")
  */
 class AssetsController extends BaseController
 {

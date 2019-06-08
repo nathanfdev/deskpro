@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
+import { PopUp } from '../../Semantic/PopUp';
+import { MenuItem } from '../../Semantic/Menu';
 
 class ImageMenuItem extends React.Component {
   static propTypes    = {

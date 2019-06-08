@@ -3,12 +3,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Progress, ProgressBar } from '@deskpro/react-components';
-import { Tab, TabGroup } from 'DeskPRO/Component/Semantic/Tab';
-import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
+import { Tab, TabGroup } from '../../Semantic/Tab';
+import { MenuWrapper, Menu, MenuItem } from '../../Semantic/Menu';
+import { MimeIcon } from '../../Semantic/Icon';
 import ImageMenuItem from './ImageMenuItem';
 import MediaDropZone from './MediaDropZone';
-import * as actions from '../../Actions/templatesActions';
+import * as actions from '../../../Bundle/AdminBundle/Modules/EmailTemplates/Actions/templatesActions';
 
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates

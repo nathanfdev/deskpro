@@ -560,6 +560,8 @@ class LanguagesController extends CrudController
      * @param Request $request
      * @param $phraseName
      *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      * @return View
      */
     public function postTranslationsAction(Request $request, $phraseName)

@@ -4,7 +4,8 @@
 @import "../../../../../../node_modules/codemirror/lib/codemirror.css";
 @import "../../../../../../node_modules/codemirror/theme/monokai.css";
 
-.dp-email-templates {
+.dp-email-templates,
+.dp-portal-editor {
   font-family: Open Sans, Helvetica, Arial, sans-serif;
   .editor {
     width: 55%;
@@ -184,6 +185,7 @@
     .CodeMirror {
       margin: 0 20px;
     }
+    .template-preview,
     .email-preview {
       background-color: $dp-greyscale-150;
       position: absolute;
@@ -266,6 +268,9 @@
 }
 .dp-email-templates .editor,
 .template-popup {
+  pre {
+    font-size: 11px;
+  }
   .CodeMirror {
     user-select: none;
     span.twig-variable {
@@ -310,7 +315,7 @@
     }
   }
 }
-.email-dropdown-menu {
+.editor-dropdown-menu {
     .ui.bottom.left.popup:before {
       display: none;
     }
@@ -631,7 +636,7 @@
     text-align: left;
     line-height: 1.21428571em;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding: 0.67857143em 1em;
+    padding: 0.66em 1em;
     background: #FFFFFF;
     border: 1px solid rgba(34, 36, 38, 0.15);
     color: #2b2f2f;
@@ -700,5 +705,10 @@
     .email-preview {
       top: 0;
     }
+  }
+}
+.dp-portal-editor {
+  .editor {
+    width: 100%;
   }
 }

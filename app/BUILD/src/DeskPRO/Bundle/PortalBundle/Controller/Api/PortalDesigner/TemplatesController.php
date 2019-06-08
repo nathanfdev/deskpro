@@ -49,13 +49,13 @@ class TemplatesController extends AbstractApiController
      */
     public function getTemplateSourceAction(Request $request)
     {
-        $template_name = $request->get('template');
-        if ($template = $this->getEditThemeSetTemplate($template_name)) {
+        $templateName = $request->get('template');
+        if ($template = $this->getEditThemeSetTemplate($templateName)) {
             $source   = $template->getTemplateCode();
             $isCustom = true;
         } else {
             $theme    = $this->getTheme();
-            $source   = file_get_contents($this->getThemeResolver()->templatePath($theme, $template_name));
+            $source   = file_get_contents($this->getThemeResolver()->templatePath($theme, $templateName));
             $isCustom = false;
         }
 
@@ -75,11 +75,11 @@ class TemplatesController extends AbstractApiController
      */
     public function updateTemplateSourceAction(Request $request)
     {
-        $template_name = $request->get('template');
-        if (!$template = $this->getEditThemeSetTemplate($template_name)) {
+        $templateName = $request->get('template');
+        if (!$template = $this->getEditThemeSetTemplate($templateName)) {
             $template            = new Template();
             $template->theme_set = $this->getEditThemeSet();
-            $template->name      = $template_name;
+            $template->name      = $templateName;
         }
 
         $data = json_decode($request->getContent(), true);
@@ -93,7 +93,7 @@ class TemplatesController extends AbstractApiController
             } else {
                 $template->setTemplate(
                     $data['code'],
-                    $this->get('twig')->compileSource($template->template_code, $template_name)
+                    $this->get('twig')->compileSource($template->template_code, $templateName)
                 );
                 $this->getManager()->persist($template);
             }

@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -18,6 +19,7 @@ use FOS\RestBundle\View\View;
  * @ApiModes("all")
  * @Feature("email_templates")
  * @Rest\Route("/email_templates/view_model")
+ * @ApiUserContext("admin")
  */
 class ViewModelController extends BaseController
 {
@@ -38,6 +40,8 @@ class ViewModelController extends BaseController
      * @Rest\Get("/variables/{className}")
      *
      * @param $className
+     *
+     * @throws \Exception
      *
      * @return View
      */

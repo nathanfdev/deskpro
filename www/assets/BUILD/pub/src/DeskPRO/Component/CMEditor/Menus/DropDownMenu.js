@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
+import { PopUp } from '../../Semantic/PopUp';
 
 class DropDownMenu extends React.Component {
   static propTypes    = {
@@ -43,7 +43,7 @@ class DropDownMenu extends React.Component {
         zIndex={100}
         content={this.props.children}
         ref={(c) => { this.dropdown = c; }}
-        className="email-dropdown-menu"
+        className="editor-dropdown-menu"
         autoOpen={false}
         manual
       >

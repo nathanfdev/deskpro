@@ -21,6 +21,7 @@ class Editor extends React.Component {
     phrases:                PropTypes.object,
   };
   static defaultProps = {
+    type:     'block',
     disabled: false,
     changeTemplateBody() {},
     changeTemplateSubject() {},
@@ -129,7 +130,7 @@ class Editor extends React.Component {
     const { disabled, subject, body } = this.props;
     let extendedSubject = false;
     const bodyStyle = {};
-    if (subject.split(/\r\n|\r|\n/).length > 1) {
+    if (subject && subject.split(/\r\n|\r|\n/).length > 1) {
       extendedSubject = true;
       bodyStyle.height = 'calc(100% - 205px)';
     }

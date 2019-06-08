@@ -167,13 +167,19 @@
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
                             <div>
-                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
+                                    Edit Header
+                                </a>
 
-                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-footer.html.twig'}") }}">
+                                    Edit Footer
+                                </a>
                             </div>
                             <br />
                             <div style="margin-top: 4px;">
-                                <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
+                                    Edit Head Include
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -183,7 +189,11 @@
                         <p>
                             Edit the homepage template to add or remove elements from the main portal homepage.
                         </p>
-                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button></div>
+                        <div style="text-align: center; padding-top: 8px;">
+                            <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
+                                Edit Homepage Template
+                            </a>
+                        </div>
                     </div>
 
                     <!-- Sidebar -->
@@ -191,7 +201,11 @@
                         <p>
                             Edit the sidebar template to add or remove elements from the site-wide sidebar.
                         </p>
-                        <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:sidebar.html.twig')">Edit Sidebar Template</button></div>
+                        <div style="text-align: center; padding-top: 8px;">
+                            <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:sidebar.html.twig'}") }}">
+                                Edit Sidebar Template
+                            </a>
+                        </div>
                     </div>
 
                     <!-- CSS -->
@@ -259,6 +273,9 @@
                             ng-change="Portal.editTemplate()"
                             ng-options="t.value as t.name group by t.group for t in Portal.template_options">
                     </select>
+                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
+                        Open template editor
+                    </a>
                 </div>
 
                 <div ng-show="Portal.selected_template">Loading template...</div>

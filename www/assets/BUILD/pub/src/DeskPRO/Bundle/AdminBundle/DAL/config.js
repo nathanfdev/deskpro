@@ -1,10 +1,12 @@
 import EmailTemplatesRepository from './Repositories/EmailTemplatesRepository';
+import PortalTemplatesRepository from './Repositories/PortalTemplatesRepository';
 import EmailAccountRepository from './Repositories/EmailAccountRepository';
 import LanguagesRepository from './Repositories/LanguagesRepository';
 import TicketsRepository from './Repositories/TicketsRepository';
 
 export const repositoriesConfig = {
   EmailTemplates:     { type: 'api', url: '/email_templates', repositoryClass: EmailTemplatesRepository },
+  PortalTemplates:    { type: 'api', url: '/portal_templates', repositoryClass: PortalTemplatesRepository },
   EmailAccounts:      { type: 'api', url: '/email_accounts', repositoryClass: EmailAccountRepository },
   Languages:          { type: 'api', url: '/languages', repositoryClass: LanguagesRepository },
   Person:             { type: 'api', url: '/people', allowAll: false },

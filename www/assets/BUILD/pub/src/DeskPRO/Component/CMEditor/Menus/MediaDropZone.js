@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
-import DropZone from 'DeskPRO/Component/Uploader/DropZone';
+import { UploadButton } from '../../Uploader/UploadButton';
+import DropZone from '../../Uploader/DropZone';
 
 class MediaDropZone extends React.Component {
   static propTypes = {

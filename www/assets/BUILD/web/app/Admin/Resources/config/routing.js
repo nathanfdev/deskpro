@@ -1614,6 +1614,21 @@ define(function() {
     controller:   'AdminPortalCtrlPortalEditor'
   });
 
+
+  routes.push({
+    id:           'portal.templates_editor',
+    url:          '/templates_editor',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'portal.templates_editor.edit',
+    url:          '/{name}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
   // ###
   // # Portal Editor Disabled
   // ###

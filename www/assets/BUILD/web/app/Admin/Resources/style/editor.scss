@@ -206,6 +206,13 @@ $transition: all 0.15s ease;
       transition: $transition;
     }
 
+    a.btn {
+      color: #333;
+      &:hover {
+        color: #333;
+      }
+    }
+
     a:hover {
       color: #fff;
     }

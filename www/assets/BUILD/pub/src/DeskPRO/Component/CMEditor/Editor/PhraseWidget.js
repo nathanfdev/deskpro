@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { render } from 'react-dom';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { Field, Input } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from '@deskpro/react-components';
+import { PopUp } from '../../Semantic/PopUp';
+import { Field, Input } from '../../Semantic/Form';
 import Widget from './Widget';
 
 class PhrasePopup extends React.Component {
