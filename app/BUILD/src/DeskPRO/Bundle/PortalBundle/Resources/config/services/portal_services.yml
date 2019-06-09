@@ -24,6 +24,7 @@ services:
       - "@anti_abuse"
       - "@router"
       - "@brand_stack"
+      - "@tickets.statuses"
 
   content.page_view:
     class: DeskPRO\Bundle\PortalBundle\PageViewLog\PageViewLogService
