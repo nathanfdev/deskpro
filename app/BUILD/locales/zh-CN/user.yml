@@ -365,6 +365,7 @@ portal.feedback.form_i_have_a: 我有一个
 portal.feedback.form_logout: 不是你？
 portal.feedback.form_tell_us_more: 请告诉我们更多
 portal.feedback.form_title: 标题
+portal.feedback.form_custom_cat: 類別
 portal.feedback.module_forbidden: 您无权访问此模块
 portal.feedback.no_matching: 没有匹配的反馈
 portal.feedback.none: 没有回复

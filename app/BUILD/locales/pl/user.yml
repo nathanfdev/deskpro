@@ -414,6 +414,7 @@ portal.feedback.form_logged_in_as: 'Zalogowany jako: <span>{{name}}</span>, z ad
 portal.feedback.form_logout: 'Nie ty?'
 portal.feedback.form_tell_us_more: 'Powiedz nam więcej'
 portal.feedback.form_title: Tytuł
+portal.feedback.form_custom_cat: Kategoria
 portal.feedback.module_forbidden: 'Nie masz dostępu do tego modułu'
 portal.feedback.no_matching: 'Brak pasującej opinii'
 portal.feedback.none: 'Na razie brak opinii'

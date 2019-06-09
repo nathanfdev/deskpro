@@ -378,6 +378,7 @@ portal.feedback.form_logged_in_as: 'Συνδεθήκατε ως: <span>{{name}}<
 portal.feedback.form_logout: 'Δεν είστε εσείς;'
 portal.feedback.form_tell_us_more: 'Πείτε μας περισσότερα'
 portal.feedback.form_title: Τίτλος
+portal.feedback.form_custom_cat: Κατηγορία
 portal.feedback.module_forbidden: 'Δεν έχετε πρόσβαση σε αυτήν την ενότητα'
 portal.feedback.no_matching: 'Δεν υπάρχει feedback που να ταιριάζει'
 portal.feedback.none: 'Δεν υπάρχει feedback ακόμα'

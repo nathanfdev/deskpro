@@ -294,6 +294,7 @@ portal.feedback.form_logged_in_as: "ورود با نام کاربری <span>{{na
 portal.feedback.form_logout: 'شما نیستید؟'
 portal.feedback.form_tell_us_more: 'توضیح بیشتر'
 portal.feedback.form_title: عنوان
+portal.feedback.form_custom_cat: 'دسته بندی'
 portal.feedback.none: 'هیچ بازخوردی  وجود ندارد'
 portal.feedback.search-title: 'انتقادات و پیشنهادات'
 portal.feedback.section-desc: 'در این قسمت میتوانید نظرات و انتقادات خود را با ما و سایر کاربران در میان گذارید'

@@ -87,6 +87,7 @@ portal.emails.tickets_ommitted:
 portal.emails.view_full_history_online: 'Se hele saken online'
 portal.error.404-title: 'Fant Ikke'
 portal.feedback.attachments: Vedlegg
+portal.feedback.form_custom_cat: Kategori
 portal.forms.label_category: Kategori
 portal.forms.label_department: Avdeling
 portal.forms.label_first_name: Fornavn

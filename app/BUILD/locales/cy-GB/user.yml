@@ -50,6 +50,7 @@ portal.account.section-desc-login-external: 'Defnyddiwch y cyslltiadau isod os o
 portal.account.section-desc-register: 'Cofrestrwch gyfrif fel y gallwch chi rheoli''ch cysylltiadau''n haws.'
 portal.account.section-title-emails: E-bostiau
 portal.account.section-title-login: Mewngofnodi
+portal.feedback.form_custom_cat: Categori
 portal.articles.view-x-articles:
   zero: 'View {{count}} articles'
   one: 'View 1 article'

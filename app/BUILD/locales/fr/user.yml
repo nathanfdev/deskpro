@@ -381,6 +381,7 @@ portal.feedback.form_logged_in_as: 'Connecté en tant que: <span>{{name}}</span>
 portal.feedback.form_logout: 'Pas toi?'
 portal.feedback.form_tell_us_more: 'Dis nous en plus'
 portal.feedback.form_title: Titre
+portal.feedback.form_custom_cat: Catégorie
 portal.feedback.module_forbidden: 'Vous n''avez pas accès à ce module'
 portal.feedback.no_matching: 'Aucun commentaire correspondant'
 portal.feedback.none: 'Pas encore de retour'

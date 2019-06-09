@@ -115,6 +115,7 @@ portal.feedback.section-desc: 'Ezeken az oldalakon olyan ötleteket, javaslatoka
 portal.feedback.section-title: Ötlettár
 portal.feedback.sort_comments: 'Hozzászólás?'
 portal.feedback.submit_feedback: 'Visszajelzés küldése'
+portal.feedback.form_custom_cat: Kategória
 portal.flashes.comment_thank_you: 'Köszönjük hozzászólását'
 portal.forms.label_category: Típus
 portal.forms.label_department: Részleg

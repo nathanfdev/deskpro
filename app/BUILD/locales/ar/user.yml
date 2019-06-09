@@ -441,6 +441,7 @@ portal.feedback.form_logged_in_as: 'تم الدخول كـ؟ <span>{{name}}</spa
 portal.feedback.form_logout: 'الست انت؟'
 portal.feedback.form_tell_us_more: 'أخبرنا اكثر'
 portal.feedback.form_title: العنوان
+portal.feedback.form_custom_cat: الفئة
 portal.feedback.module_forbidden: 'لم تدخل الى هذة الوحدة'
 portal.feedback.no_matching: 'لا توجد تغذية راجعة مطابقة'
 portal.feedback.none: 'لا توجد تغذية راجعة بعد'

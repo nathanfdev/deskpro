@@ -373,6 +373,7 @@ portal.feedback.form_logged_in_as: 'Masuk sebagai: <span>{{name}}</span>, dari e
 portal.feedback.form_logout: 'Bukan Anda?'
 portal.feedback.form_tell_us_more: 'Beritahu kami lebih'
 portal.feedback.form_title: Judul
+portal.feedback.form_custom_cat: Kategori
 portal.feedback.module_forbidden: 'Anda tidak memiliki akses terhadap modul ini'
 portal.feedback.no_matching: 'Tidak ada tanggapan yang sesuai'
 portal.feedback.none: 'Belum ada tanggapan'

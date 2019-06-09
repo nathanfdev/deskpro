@@ -139,6 +139,7 @@ portal.feedback.attachments: 첨부파일
 portal.feedback.btn-closed: 닫혔습니다
 portal.feedback.btn-vote: 동의합니다.
 portal.feedback.form_title: 제목
+portal.feedback.form_custom_cat: 범주
 portal.feedback.search-title: 피드백
 portal.feedback.section-title: 피드백
 portal.feedback.submit_feedback: '피드백 작성하기'

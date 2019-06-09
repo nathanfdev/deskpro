@@ -188,6 +188,8 @@ class NewFeedbackType extends AbstractType
         $defs  = $this->fieldManager->getAvailableFeedbackDefs();
 
         foreach ($defs as $def) {
+            $def->setTitle($this->phrase("portal.feedback.form_custom_{$def->sys_name}"));
+
             $forms[] = [
                 'name'    => $def->getId(),
                 'type'    => CustomDataType::class,

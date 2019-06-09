@@ -387,6 +387,7 @@ portal.feedback.form_logged_in_as: 'Inloggad som: <span>{{name}}</span>, från e
 portal.feedback.form_logout: 'Inte du?'
 portal.feedback.form_tell_us_more: 'Berätta mer'
 portal.feedback.form_title: Titel
+portal.feedback.form_custom_cat: Kategori
 portal.feedback.module_forbidden: 'Du har inte behörighet att se denna modul'
 portal.feedback.no_matching: 'Ingen matchande feedback'
 portal.feedback.none: 'Ingen feedback ännu'
