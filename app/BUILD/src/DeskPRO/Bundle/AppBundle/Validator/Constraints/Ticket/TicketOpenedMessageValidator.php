@@ -55,14 +55,14 @@ class TicketOpenedMessageValidator extends ConstraintValidator
             return;
         }
 
-        if ($ticket->isArchived()) {
-            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-            $context = $this->context;
-            $context
-                ->buildViolation($constraint->message)
-                ->setCode(TicketOpenedMessage::TICKET_OPENED)
-                ->addViolation()
-            ;
-        }
+        // if ($ticket->isArchived()) {
+        //     /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        //     $context = $this->context;
+        //     $context
+        //         ->buildViolation($constraint->message)
+        //         ->setCode(TicketOpenedMessage::TICKET_OPENED)
+        //         ->addViolation()
+        //     ;
+        // }
     }
 }
