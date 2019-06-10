@@ -202,4 +202,9 @@ abstract class AbstractVoiceAccount implements EntityInterface, NotifyPropertyCh
     {
         return $this->numbers;
     }
+
+    /**
+     * @return string
+     */
+    abstract public function getRouterPrefix();
 }

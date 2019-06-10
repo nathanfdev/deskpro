@@ -13,8 +13,13 @@ use Application\DeskPRO\Entity\ReportDashboardShareableLink;
 use Application\DeskPRO\Entity\ReportDashboardShareableShortUrl;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceRecording;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GoToController extends AbstractController
 {
@@ -200,6 +205,63 @@ class GoToController extends AbstractController
         }
 
         return $this->redirect($this->getDashboardLinkUrl($shortUrl->getShareableLink()));
+    }
+
+    /**
+     * @param string         $authCode
+     * @param VoiceRecording $recording
+     *
+     * @return string
+     */
+    public function voiceRecordingAction($authCode, VoiceRecording $recording)
+    {
+        return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
+    }
+
+    /**
+     * @param string                  $authCode
+     * @param VoicemailAgentRecording $recording
+     *
+     * @return string
+     */
+    public function agentVoicemailRecordingAction($authCode, VoicemailAgentRecording $recording)
+    {
+        return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
+    }
+
+    /**
+     * @param string                 $authCode
+     * @param AbstractVoiceRecording $recording
+     *
+     * @return RedirectResponse
+     */
+    private function redirectToVoiceRecordingBlobUrl($authCode, AbstractVoiceRecording $recording)
+    {
+        if (!$blob = $recording->getBlob()) {
+            throw $this->createNotFoundException();
+        }
+
+        // get phone call ticket
+        /** @var TicketMessageVoicePhoneCall $messageAttribute */
+        $messageAttribute = $this->getDoctrine()->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $recording->getPhoneCall(),
+        ]);
+
+        if (!$messageAttribute) {
+            throw $this->createNotFoundException();
+        }
+
+        $ticket = $messageAttribute->getMessage()->getTicket();
+        if ($ticket->getAuth() !== $authCode) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $blobUrl = $this->get('router')->generate('serve_blob', [
+            'blob_auth_id' => $blob->getAuthcode(),
+            'filename'     => $blob->getFilenameSafe(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->redirect($blobUrl);
     }
 
     /**

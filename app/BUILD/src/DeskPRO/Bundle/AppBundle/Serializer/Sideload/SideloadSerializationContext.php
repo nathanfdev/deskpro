@@ -47,6 +47,11 @@ class SideloadSerializationContext extends SerializationContext
     protected $mapping = [];
 
     /**
+     * @var Person
+     */
+    protected $user;
+
+    /**
      * @var TokenStorageInterface
      */
     protected $tokenStorage;
@@ -203,10 +208,25 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
+     * @param Person $user
+     *
+     * @return $this
+     */
+    public function setUser(Person $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * @return Person|null
      */
     public function getUser()
     {
+        if ($this->user) {
+            return $this->user;
+        }
         if ($this->tokenStorage) {
             $person = $this->tokenStorage->getToken()->getUser();
 

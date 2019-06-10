@@ -18,6 +18,7 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\VoicePhoneCallHandler
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@dp.voice.task_router.storage"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

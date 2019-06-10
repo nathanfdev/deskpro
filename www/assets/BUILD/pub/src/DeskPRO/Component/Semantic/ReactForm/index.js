@@ -13,6 +13,7 @@ import Radio from './Radio';
 import ClipboardInput from './ClipboardInput';
 import PhoneInput from './PhoneInput';
 import DatePicker from './DatePicker';
+import NumberSelect from './NumberSelect';
 
 export { Field, SemanticError } from './Field';
 export {
@@ -30,5 +31,6 @@ export {
   Radio,
   ClipboardInput,
   DatePicker,
-  PhoneInput
+  PhoneInput,
+  NumberSelect
 };

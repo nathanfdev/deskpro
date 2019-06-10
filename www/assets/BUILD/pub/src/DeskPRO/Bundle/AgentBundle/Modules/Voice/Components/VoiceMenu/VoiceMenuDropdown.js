@@ -15,7 +15,8 @@ class VoiceMenuDropdown extends React.Component {
     onlineAgents: PropTypes.object,
     voiceEnabled: PropTypes.bool,
     callsEnabled: PropTypes.bool,
-    openUserMenu: PropTypes.func
+    openUserMenu: PropTypes.func,
+    recordsCount: PropTypes.number
   };
 
   componentDidMount() {
@@ -76,6 +77,17 @@ class VoiceMenuDropdown extends React.Component {
     return <i className="ui call icon red voice-menu-icon" />;
   }
 
+  showProviderError = (outgoingNumber, errors) => {
+    this.popup.openPopup();
+    setTimeout(() => {
+      this.voiceMenu.changeTab('phone');
+      setTimeout(() => {
+        this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+        setTimeout(() => { this.voiceMenu.dialpad.showProviderError(errors); }, 1);
+      }, 1);
+    }, 1);
+  };
+
   openUserMenu = (event) => {
     event.preventDefault();
 
@@ -100,6 +112,14 @@ class VoiceMenuDropdown extends React.Component {
     }, 1);
   };
 
+  renderCount = () => {
+    const { recordsCount } = this.props;
+    if (parseInt(recordsCount, 10) > 0) {
+      return <div className="ui knuckles label">{recordsCount}</div>;
+    }
+    return null;
+  };
+
   render() {
     const { incomingCall, outgoingCall } = this.props;
 
@@ -121,6 +141,7 @@ class VoiceMenuDropdown extends React.Component {
           allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >
           {this.getIcon()}
+          {this.renderCount()}
           {this.getStatus()}
         </PopUp>
       </div>

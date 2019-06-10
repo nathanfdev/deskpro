@@ -10,7 +10,7 @@ Feature: /voice_assets endpoint
     And the setting "beta_features.voice" is set to 1
 
   Scenario: I create text asset
-    When I send a POST request to "/api/v2/voice_assets/create" with body:
+    When I send a POST request to "/api/v2/voice_assets" with body:
     """
 {
   "type": "text",
@@ -28,7 +28,7 @@ Feature: /voice_assets endpoint
 
   Scenario: I create record asset
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
-    When I send a POST request to "/api/v2/voice_assets/create" with body:
+    When I send a POST request to "/api/v2/voice_assets" with body:
     """
 {
   "type": "record",
@@ -46,7 +46,7 @@ Feature: /voice_assets endpoint
 
   Scenario: I create upload asset
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
-    When I send a POST request to "/api/v2/voice_assets/create" with body:
+    When I send a POST request to "/api/v2/voice_assets" with body:
     """
 {
   "type": "upload",
@@ -61,7 +61,7 @@ Feature: /voice_assets endpoint
     And the JSON node "data.language" should not exist
 
   Scenario: Upload asset validation
-    When I send a POST request to "/api/v2/voice_assets/create" with body:
+    When I send a POST request to "/api/v2/voice_assets" with body:
     """
 {
   "name": "",
@@ -72,7 +72,7 @@ Feature: /voice_assets endpoint
     And the JSON node "errors.fields.blob.errors[0].code" should be equal to the string "required"
 
   Scenario: Record asset validation
-    When I send a POST request to "/api/v2/voice_assets/create" with body:
+    When I send a POST request to "/api/v2/voice_assets" with body:
     """
 {
   "name": "",
@@ -84,7 +84,7 @@ Feature: /voice_assets endpoint
     And the JSON node "errors.fields.blob.errors[0].code" should be equal to the string "required"
 
   Scenario: Text asset validation
-    When I send a POST request to "/api/v2/voice_assets/create" with body:
+    When I send a POST request to "/api/v2/voice_assets" with body:
     """
 {
   "type": "text"

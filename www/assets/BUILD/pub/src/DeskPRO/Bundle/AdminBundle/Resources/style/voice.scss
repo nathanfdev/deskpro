@@ -115,6 +115,15 @@
         }
       }
 
+      &.queue-agents {
+        width: auto;
+        max-width: 1000px;
+
+        .avatar {
+          margin-bottom: 10px;
+        }
+      }
+
       &.targets {
         width: 350px;
 

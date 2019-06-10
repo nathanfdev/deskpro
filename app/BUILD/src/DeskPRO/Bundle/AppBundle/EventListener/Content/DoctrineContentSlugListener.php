@@ -6,7 +6,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Content;
 
-use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;

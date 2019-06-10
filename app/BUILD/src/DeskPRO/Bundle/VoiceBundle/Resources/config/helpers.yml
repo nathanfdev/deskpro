@@ -10,9 +10,13 @@ services:
       - "@voice_settings_resolver"
       - "@ticket_manager"
       - "@dp.voice.provider_helper"
+      - "@dp.voice.ticket_helper"
+      - "@dp.voice.transfer_helper"
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
+      - "@brand_aware_settings_resolver"
       - "@event_dispatcher"
+      - "@dp.voice.logger"
 
   dp.voice.assets_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper
@@ -29,9 +33,43 @@ services:
       - "@serializer"
       - "@event_dispatcher"
       - "@job.queue"
+      - "@voice_settings_resolver"
+      - "@ticket_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_task_helper"
+      - "@dp.voice.ticket_helper"
+      - "@dp.voice.phone_lock_helper"
+      - "@dp.voice.provider_helper"
 
   dp.voice.provider_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper
     arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@router"
+      - "@dp.voice.task_router"
       - "@twilio_adapter"
       - "@plivo_adapter"
+      - "@event_dispatcher"
+
+  dp.voice.transfer_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\TransferCallHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@router"
+      - "@dp.voice.assets_helper"
+      - "@dp.voice.provider_helper"
+
+  dp.voice.phone_lock_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\PhoneCallLockHelper
+    arguments:
+      - "@doctrine.dbal.default_connection"
+
+  dp.voice.ticket_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceTicketHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@voice_settings_resolver"
+      - "@ticket_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_task_helper"
+      - "@brand_aware_settings_resolver"

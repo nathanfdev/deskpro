@@ -16,11 +16,13 @@ use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
-use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
 use Application\LegacyApiBundle\Controller\ResetHelpdeskController;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceDownloadRecordProcessor;
 
 class JobRouterService
 {
@@ -91,14 +93,31 @@ class JobRouterService
 
         $router->addProcessor(new UsersImportProcessor($container));
 
-        // voice records processor
+        // voice processors
         $router->addProcessor(
             new VoiceDownloadRecordProcessor(
                 $conn,
                 $container->getEm(),
                 $container->getBlobStorage(),
                 $container->get('serializer'),
-                $container->get('event_dispatcher')
+                $container->get('event_dispatcher'),
+                $container->get('dp.voice.provider_helper')
+            )
+        );
+
+        $router->addProcessor(
+            new VoiceCallCostProcessor(
+                $conn,
+                $container->getEm()
+            )
+        );
+
+        $router->addProcessor(
+            new LoadTwilioPriceProcessor(
+                $conn,
+                $container->getEm(),
+                $container->get('twilio_adapter'),
+                $container->getJobQueue()
             )
         );
 

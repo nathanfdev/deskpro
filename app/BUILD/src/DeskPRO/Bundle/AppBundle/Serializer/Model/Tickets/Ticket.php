@@ -629,6 +629,13 @@ class Ticket
     private $ticketUserErrors;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketPermissions;
+
+    /**
      * Constructor.
      *
      * @param TicketEntity $ticket
@@ -825,6 +832,18 @@ class Ticket
     {
         $this->ticketSlas     = $ticketSlas;
         $this->worstSlaStatus = TicketEntity::calctWorstSlaStatus($ticketSlas);
+
+        return $this;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketPermissions
+     *
+     * @return $this
+     */
+    public function setTicketPermissions($ticketPermissions)
+    {
+        $this->ticketPermissions = $ticketPermissions;
 
         return $this;
     }

@@ -1629,6 +1629,12 @@ DeskPRO.Agent.Window = new Orb.Class({
       allowIgnore = true;
 		}
 
+		if (window.AgentLegacyBundle.hasActiveVoiceCall() && allowIgnore) {
+			// don't show refresh alert and don't reload the interface if there is an active phone call
+			// and we can ignore it
+			return;
+		}
+
 		var self = this;
 
 		if (this._refreshAlertTimeout) {
@@ -1689,22 +1695,34 @@ DeskPRO.Agent.Window = new Orb.Class({
       $('#refresh_alert_overlay').find('.cancel-trigger').hide();
 		}
 
-		var time = 30;
-		var timeShow = $('#refresh_alert_overlay').find('.countdown').text(30);
+		if (window.AgentLegacyBundle.hasActiveVoiceCall()) {
+			$('#refresh_alert_overlay').find('.refresh_message').text('You are currently on a call. The interface will reload once your call ends.').show();
+			$('#refresh_alert_overlay').find('.okay-trigger').text('End call');
+			$('#refresh_alert_overlay').find('.refresh_timeout').hide();
 
-		this._refreshAlertTimeout = window.setInterval(function() {
-			time--;
+			window.setInterval(function() {
+				if (!window.AgentLegacyBundle.hasActiveVoiceCall()) {
+					window.location.reload(false);
+				}
+			}, 1000);
+		} else {
+			var time = 30;
 			$('#refresh_alert_overlay').find('.countdown').text(time);
 
-			if (time <= 0) {
-				if (self._refreshAlertTimeout) {
-					window.clearTimeout(self._refreshAlertTimeout);
-					self._refreshAlertTimeout = null;
-				}
+			this._refreshAlertTimeout = window.setInterval(function() {
+				time--;
+				$('#refresh_alert_overlay').find('.countdown').text(time);
 
-				window.location.reload(false);
-			}
-		}, 1000);
+				if (time <= 0) {
+					if (self._refreshAlertTimeout) {
+						window.clearTimeout(self._refreshAlertTimeout);
+						self._refreshAlertTimeout = null;
+					}
+
+					window.location.reload(false);
+				}
+			}, 1000);
+		}
 
 		this._refreshAlertOverlay.openOverlay();
 	},

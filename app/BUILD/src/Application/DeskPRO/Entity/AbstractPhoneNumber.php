@@ -77,12 +77,12 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
      *
      * @var string
      */
-    protected $region;
+    protected $region = '';
 
     /**
      * @var int see Orb\Util\PhoneNumbers constants for the meanings of the ints stored here
      */
-    protected $guessed_type;
+    protected $guessed_type = '';
 
     /**
      * @var \DateTime
@@ -108,7 +108,7 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
     /**
      * @param $phone_number
      *
-     * @return AbstractPhoneNumber
+     * @return static
      */
     public static function createEntity($phone_number)
     {
@@ -135,7 +135,7 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
             throw new \Exception(sprintf('Invalid number %s', $number));
         }
 
-        $phone_number = (string) $number;
+        $phone_number = '+'.$number->getCountryCode().$number->getNationalNumber();
         $region       = $phone_util->getRegionCodeForNumber($number);
         $type         = PhoneNumbers::getType($phone_number);
 
@@ -335,7 +335,7 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
             [
                 'fieldName'  => 'number',
                 'type'       => 'string',
-                'length'     => 30,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,

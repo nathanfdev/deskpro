@@ -7,6 +7,8 @@ import classNames from 'classnames';
 import TextTab from './TextTab';
 import UploadTab from './UploadTab';
 import RecordTab from './RecordTab';
+import AddAudioAsset from './AddAudioAsset';
+import EditAudioAsset from './EditAudioAsset';
 
 class AudioWidgetForm extends React.Component {
 
@@ -253,51 +255,13 @@ class Tab extends React.Component {
   }
 }
 
-
-class AddButton extends React.Component {
-
-  static propTypes = {
-    onOpen: PropTypes.func
-  };
-
-  render() {
-    const { onOpen } = this.props;
-
-    return (
-      <button onClick={onOpen}>
-        Add
-      </button>
-    );
-  }
-}
-
-class EditButton extends React.Component {
-
-  static propTypes = {
-    value:  PropTypes.object,
-    onOpen: PropTypes.func
-  };
-
-  render() {
-    const { value, onOpen } = this.props;
-
-    return (
-      <div>
-        <a onClick={(event) => { event.preventDefault(); onOpen(); }}>
-          {value.get('name')}
-          <i className="write icon" />
-        </a>
-      </div>
-    );
-  }
-}
-
 class AudioWidget extends React.Component {
 
   static propTypes = {
     value:               PropTypes.object,
     addButtonComponent:  PropTypes.func,
-    editButtonComponent: PropTypes.func
+    editButtonComponent: PropTypes.func,
+    deleteAsset:         PropTypes.func
   };
 
   constructor(props) {
@@ -307,27 +271,27 @@ class AudioWidget extends React.Component {
     };
   }
 
-  onOpen = () => {
+  onMenu = () => {
     this.setState({
       formOpened: true
     });
   };
 
-  onClose = () => {
+  closeMenu = () => {
     this.setState({
       formOpened: false
     });
   };
 
   render() {
-    const { value } = this.props;
-    const { addButtonComponent = AddButton, editButtonComponent = EditButton } = this.props;
+    const { value, deleteAsset } = this.props;
+    const { addButtonComponent = AddAudioAsset, editButtonComponent = EditAudioAsset } = this.props;
 
     return (
       <div>
         <Modal
           isOpen={this.state.formOpened}
-          onClose={this.onClose}
+          onClose={this.closeMenu}
           title={value ? 'Edit audio' : 'Add new audio'}
           className="audio-widget"
         >
@@ -335,8 +299,8 @@ class AudioWidget extends React.Component {
         </Modal>
 
         {value
-          ? React.createElement(editButtonComponent, { onOpen: this.onOpen, value })
-          : React.createElement(addButtonComponent, { onOpen: this.onOpen })
+          ? React.createElement(editButtonComponent, { onOpen: this.onMenu, value, deleteAsset })
+          : React.createElement(addButtonComponent, { onOpen: this.onMenu })
         }
       </div>
     );

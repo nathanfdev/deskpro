@@ -68,4 +68,12 @@ class PlivoVoiceAccount extends AbstractVoiceAccount
 
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouterPrefix()
+    {
+        return 'plivo';
+    }
 }

@@ -144,7 +144,7 @@ class Boot
         if (substr($path, 0, 22) === '/admin/updater-status/') {
             self::bootServerInfoChecks($env, 'update_watcher', [
                 'auth'    => substr($path, 22),
-                'request' => $request,
+                'request' => $request, 9,
             ]);
 
             return;
@@ -167,6 +167,8 @@ class Boot
             $lowClass = 'DpSys\\LowScript\\GetMsgScript';
         } elseif (substr($path, 0, 30) === '/agent/ping-task-router-worker' && (!isset($path[30]) || $path[30] === '/')) {
             $lowClass = 'DpSys\\LowScript\\PingTaskRouterWorker';
+        } elseif (substr($path, 0, 54) === '/api/v2/plivo_callbacks/user_joins_conference_callback' && (!isset($path[54]) || $path[54] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\PlivoUserJoinsConferenceCallbackScript';
         }
 
         if ($lowClass) {

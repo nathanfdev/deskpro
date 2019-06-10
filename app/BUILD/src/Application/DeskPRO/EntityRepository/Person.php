@@ -740,27 +740,35 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * @param string $phoneNumber
+     * @param string $number
+     * @param string $createdBy
      *
      * @return PersonEntity|null
      */
-    public function getOrCreateUserByPhoneNumber($phoneNumber)
+    public function getOrCreateUserByPhoneNumber($number, $createdBy = null)
     {
         $person = null;
-        if ($phoneNumber) {
+        if ($number) {
             // check for an existing person
-            $phoneNumberEntity = $this->_em->getRepository(PhoneNumberEntity::class)->findOneBy([
-                'number' => $phoneNumber,
+            $phoneNumbers = $this->_em->getRepository(PhoneNumberEntity::class)->findBy([
+                'number' => $number,
             ]);
-            if ($phoneNumberEntity) {
-                $person = $phoneNumberEntity->getPerson();
+
+            // exact match if phone number is found and just one person is associated
+            // otherwise you should select a person
+            if (count($phoneNumbers) === 1) {
+                $person = $phoneNumbers[0]->getPerson();
             }
 
             // if person was not found then create a new one
             if (!$person) {
                 $person = new PersonEntity();
-                $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
+                $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($number));
                 $person->setPreference('voice.unknown_caller', 1);
+
+                if ($createdBy) {
+                    $person->setCreationSystem($createdBy);
+                }
 
                 $this->_em->persist($person);
                 $this->_em->flush();

@@ -1,10 +1,10 @@
 <div class="select-user-menu">
     <label class="select-user-menu-header">Select the person who made this call:</label>
     <ul>
-        {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number) %}
+        {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number, 1) %}
             {% if ticket.person.id != person.id %}
                 <li>
-                    <input type="radio" name="select_user" value="{{ person.id }}">
+                    <input type="radio" name="select_user" value="{{ person.id }}" data-email="{{ person.getPrimaryEmailAddress() }}">
                     <label>{{ person.getDisplayName() }}</label>
                 </li>
             {% endif %}
@@ -15,7 +15,7 @@
         </li>
         <li>
             <input type="radio" name="select_user" value="find_person">
-            <label>Find a different person</label>
+            <label>Find an existing person</label>
             <div class="select-user-item-options">
                 <section id="{{baseId}}_user_section" class="user-section">
                     <div id="{{baseId}}_choose_user" style="padding: 10px">
@@ -30,6 +30,7 @@
                         >
                             <input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_a_person') }}" />
                             <input type="hidden" name="select_user_find_id" class="person-id" id="{{baseId}}_person_id" />
+                            <input type="hidden" name="select_user_find_email" class="person-email" id="{{baseId}}_person_email" />
 
                             <script type="text/x-deskpro-tmpl" class="user-row-tpl">
                                                     <li>

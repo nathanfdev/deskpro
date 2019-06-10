@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -19,6 +21,13 @@ class VoicePhoneCallParticipant
      * @var int
      */
     private $id;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $type;
 
     /**
      * @JMS\Type("string")
@@ -72,17 +81,23 @@ class VoicePhoneCallParticipant
     /**
      * Constructor.
      *
-     * @param AbstractVoicePhoneCallParticipant $phoneCall
+     * @param AbstractVoicePhoneCallParticipant $participant
      */
-    public function __construct(AbstractVoicePhoneCallParticipant $phoneCall)
+    public function __construct(AbstractVoicePhoneCallParticipant $participant)
     {
-        $this->id           = $phoneCall->getId();
-        $this->callSid      = $phoneCall->getCallSid();
-        $this->person       = $phoneCall->getPerson();
-        $this->dateCreated  = $phoneCall->getDateCreated();
-        $this->dateJoined   = $phoneCall->getDateJoined();
-        $this->dateLeft     = $phoneCall->getDateLeft();
-        $this->cost         = number_format($phoneCall->getCost(), 3, '.', ',');
-        $this->costCurrency = $phoneCall->getCostCurrency();
+        $this->id           = $participant->getId();
+        $this->callSid      = $participant->getCallSid();
+        $this->person       = $participant->getPerson();
+        $this->dateCreated  = $participant->getDateCreated();
+        $this->dateJoined   = $participant->getDateJoined();
+        $this->dateLeft     = $participant->getDateLeft();
+        $this->cost         = $participant->getCost() ? number_format($participant->getCost(), 3, '.', ',') : null;
+        $this->costCurrency = $participant->getCostCurrency();
+
+        if ($participant instanceof VoicePhoneCallParticipantUser) {
+            $this->type = 'user';
+        } elseif ($participant instanceof VoicePhoneCallParticipantAgent) {
+            $this->type = 'agent';
+        }
     }
 }

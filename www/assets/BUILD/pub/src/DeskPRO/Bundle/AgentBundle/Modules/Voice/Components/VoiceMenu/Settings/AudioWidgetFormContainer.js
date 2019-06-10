@@ -7,7 +7,7 @@ import AudioWidgetForm from 'DeskPRO/Component/AudioWidget/AudioWidget';
 import AddAudioAsset from 'DeskPRO/Component/AudioWidget/AddAudioAsset';
 import EditAudioAsset from 'DeskPRO/Component/AudioWidget/EditAudioAsset';
 import { editAgentProfile } from '../../../../Agent/Actions/agentActions';
-import { createVoiceAsset } from '../../../Actions/assetActions';
+import { createVoiceAsset, deleteVoiceAsset } from '../../../Actions/assetActions';
 
 @connect(state => ({
   me: meSelector(state)
@@ -69,6 +69,19 @@ class AudioWidgetFormContainer extends React.Component {
     });
   };
 
+  deleteAsset = () => {
+    const { me, dispatch } = this.props;
+    const value = me.getIn(['agent_data', 'voicemail_asset']);
+    if (value) {
+      const promise = dispatch(deleteVoiceAsset(value.get('id')));
+      promise.success(() => {
+        dispatch(editAgentProfile({
+          voicemail_asset: null
+        }));
+      });
+    }
+  };
+
   render() {
     const { me } = this.props;
 
@@ -80,6 +93,7 @@ class AudioWidgetFormContainer extends React.Component {
         addButtonComponent={AddAudioAsset}
         editButtonComponent={EditAudioAsset}
         onSubmit={this.onSubmit}
+        deleteAsset={this.deleteAsset}
       />
     );
   }

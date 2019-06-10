@@ -5,9 +5,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\EntityRepository\Traits\ClearSlugHistoryTrait;
 
 /**
- * Class DownloadSlugHistory
- *
- * @package Application\DeskPRO\EntityRepository
+ * Class DownloadSlugHistory.
  */
 class DownloadSlugHistory extends AbstractEntityRepository
 {

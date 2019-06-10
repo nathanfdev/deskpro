@@ -23,6 +23,7 @@ export const repositoriesConfig = {
   UserChatQueue:      { type: 'api', url: '/user_chat_queues', allowAll: true },
   UserGroup:          { type: 'api', url: '/user_groups', allowAll: true },
   AgentGroup:         { type: 'api', url: '/agent_groups', allowAll: true },
+  Brand:              { type: 'api', url: '/brands', allowAll: true },
 };
 
 export default repositoriesConfig;

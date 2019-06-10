@@ -4,25 +4,30 @@ import Modal from 'DeskPRO/Component/Semantic/Modal';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import AccountList from './AccountList';
-import { loadAccounts } from '../../../Actions/accountActions';
+import { loadAccounts, createCloudAccount } from '../../../Actions/accountActions';
 import { allAccountsSelector, isAccountsLoadedSelector } from '../../../Selectors/account';
 import NewAccountContainer from '../Form/NewAccountContainer';
 import EditAccountContainer from '../Form/EditAccountContainer';
 import AccountForm from '../Form/AccountForm';
 import { settingsLoadedSelector, settingsSelector } from '../../../Selectors/settings';
 import { loadSettings, updateSettings } from '../../../Actions/settingActions';
+import { loadNumbers } from '../../../Actions/numberActions';
+import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 
 @connect(state => ({
   accounts:       allAccountsSelector(state),
   accountsLoaded: isAccountsLoadedSelector(state),
   settings:       settingsSelector(state),
-  settingsLoaded: settingsLoadedSelector(state)
+  settingsLoaded: settingsLoadedSelector(state),
+  numbers:        allNumbersSelector(state),
+  numbersLoaded:  isNumbersLoadedSelector(state),
 }))
 class AccountListContainer extends React.Component {
 
   static propTypes = {
     dispatch:       PropTypes.func,
     accountsLoaded: PropTypes.bool,
+    numbersLoaded:  PropTypes.bool,
     settingsLoaded: PropTypes.bool,
   };
 
@@ -40,16 +45,17 @@ class AccountListContainer extends React.Component {
 
     dispatch(loadAccounts());
     dispatch(loadSettings());
+    dispatch(loadNumbers());
   }
 
-  onNewAccountClick = (accountType) => {
+  openNewAccountForm = (accountType) => {
     this.setState({
       formOpened: true,
       accountType
     });
   };
 
-  onEditAccountClick = (account) => {
+  openEditAccountForm = (account) => {
     this.setState({
       formOpened:  true,
       editAccount: account,
@@ -65,15 +71,19 @@ class AccountListContainer extends React.Component {
     });
   };
 
+  createCloudAccount = () => {
+    this.props.dispatch(createCloudAccount('twilio'));
+  };
+
   saveSettings = data => this.props.dispatch(updateSettings(data));
 
   render() {
-    const { accountsLoaded, settingsLoaded } = this.props;
+    const { accountsLoaded, settingsLoaded, numbersLoaded } = this.props;
     const { editAccount, accountType, formOpened } = this.state;
     const FormContainer = editAccount ? EditAccountContainer : NewAccountContainer;
     const title = editAccount ? 'Edit account' : 'New account';
 
-    if (!accountsLoaded || !settingsLoaded) {
+    if (!accountsLoaded || !settingsLoaded || !numbersLoaded) {
       return <LoadingPage />;
     }
 
@@ -81,8 +91,9 @@ class AccountListContainer extends React.Component {
       <div>
         <AccountList
           {...this.props}
-          onNewAccount={this.onNewAccountClick}
-          onEditAccount={this.onEditAccountClick}
+          openNewAccountForm={this.openNewAccountForm}
+          openEditAccountForm={this.openEditAccountForm}
+          createCloudAccount={this.createCloudAccount}
           saveSettings={this.saveSettings}
         />
         <Modal isOpen={formOpened} onClose={this.onClose} title={title} onCloseButtonClick={this.closeEditPopup}>

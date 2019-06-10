@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Timer from 'DeskPRO/Component/Timer';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
+import WarmTransferAudio from './WarmTransferAudio';
 import Avatar from '../Common/Avatar';
 
 class TransferStatus extends React.Component {
@@ -12,7 +13,7 @@ class TransferStatus extends React.Component {
     cancelLabel: PropTypes.string,
     type:        PropTypes.string,
     target:      PropTypes.object,
-    onCancel:    PropTypes.func
+    cancel:      PropTypes.func,
   };
 
   constructor(props) {
@@ -26,13 +27,6 @@ class TransferStatus extends React.Component {
     if (window.DeskPRO_Window) {
       const messageBroker = window.DeskPRO_Window.getMessageBroker();
       messageBroker.addMessageListener('agent.voice.conference.participant-ignore', this.onIgnore);
-    }
-  }
-
-  componentWillUnmount() {
-    if (window.DeskPRO_Window) {
-      const messageBroker = window.DeskPRO_Window.getMessageBroker();
-      messageBroker.removeMessageListener('agent.voice.conference.participant-ignore', this.onExternalSetHold);
     }
   }
 
@@ -59,11 +53,9 @@ class TransferStatus extends React.Component {
     });
   };
 
-  onCancel = (event) => {
+  cancel = (event) => {
     event.preventDefault();
-
-    const { target, type, onCancel } = this.props;
-    onCancel(target, type);
+    this.props.cancel();
   };
 
   render() {
@@ -75,6 +67,7 @@ class TransferStatus extends React.Component {
         <div className="voice-transfer-status">
           <span className="voice-transfer-status-title">
             {type === 'warm' ? 'Calling ...' : title}
+            {type === 'warm' ? <WarmTransferAudio /> : null}
           </span>
           <span className="voice-transfer-status-timer">
             <Timer />
@@ -92,18 +85,10 @@ class TransferStatus extends React.Component {
             Agent rejected your request
           </div>
           : <div className="voice-transfer-status-buttons">
-            {type === 'warm' &&
-              <div>
-                <Button className="red" onClick={this.onCancel}>
-                  Cancel add
-                </Button>
-              </div>}
-            {type === 'cold' &&
-              <Button className="basic" onClick={this.onCancel}>
-                <i className="icon remove" />
-                {cancelLabel}
-              </Button>
-            }
+            <Button className="basic" onClick={this.cancel}>
+              <i className="icon remove" />
+              {cancelLabel}
+            </Button>
           </div>
         }
       </div>

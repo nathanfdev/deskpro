@@ -70,20 +70,20 @@ class ChatWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function isTaskTimedOut(Task $task)
+    public function getTimeout(Task $task)
     {
         $now = new \DateTime();
 
         $timeout = $this->settingsResolver->getAgentChatTimeout();
         $offset  = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
 
-        return $offset > $timeout;
+        return $timeout - $offset;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAvailableWorkers(Task $task)
+    public function getAvailableWorkers(Task $task, $ignoreRejected = false)
     {
         /** @var Worker[] $availableAgentWorkers */
         $availableAgentWorkers = [];
@@ -95,9 +95,9 @@ class ChatWorkflow implements WorkflowInterface
         $maxChatsCount         = $this->settingsResolver->getMaxChatsCount();
         $availableAgentWorkers = array_filter(
             $availableAgentWorkers,
-            function (Worker $worker) use ($task, $maxChatsCount, $activeAgentIds) {
+            function (Worker $worker) use ($task, $maxChatsCount, $activeAgentIds, $ignoreRejected) {
                 // ignore if agent has already rejected task
-                if ($task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
+                if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
                     return false;
                 }
 

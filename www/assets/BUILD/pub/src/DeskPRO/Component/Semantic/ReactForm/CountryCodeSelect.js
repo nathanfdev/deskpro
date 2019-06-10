@@ -31,7 +31,10 @@ class CountryCodeSelect extends React.Component {
 
     delete countries.countries.XK;
 
-    const countryCodes = allowedCountryCodes || Object.keys(countries.countries);
+    const allCountryCodes = Object.keys(countries.countries);
+    const countryCodes = allowedCountryCodes
+      ? allCountryCodes.filter(countryCode => allowedCountryCodes.indexOf(countryCode) !== -1)
+      : allCountryCodes;
     const choices = Object.values(countryCodes.map(countryCode => ({
       value:   countryCode,
       label:   countries.countries[countryCode] ? countries.countries[countryCode].name : '',

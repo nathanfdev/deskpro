@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,13 +26,20 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const TYPE_INCOMING  = 'incoming';
+    const TYPE_OUTGOING  = 'outgoing';
+    const TYPE_FORWARDED = 'forwarded';
+
     const EXTERNAL_NUMBER_TYPE_PHONE = 'phone';
     const EXTERNAL_NUMBER_TYPE_SIP   = 'sip';
 
     const STATUS_PENDING       = 'pending';
+    const STATUS_WARM_ADD      = 'warm_add';
+    const STATUS_WARM_TRANSFER = 'warm_transfer';
     const STATUS_COLD_TRANSFER = 'cold_transfer';
     const STATUS_ACTIVE        = 'active';
     const STATUS_ENDED         = 'ended';
+    const STATUS_CANCELED      = 'canceled';
     const STATUS_VOICEMAIL     = 'voicemail';
 
     const DIRECTION_INBOUND  = 'inbound';
@@ -64,6 +70,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $taskSid;
 
     /**
+     * @ORM\Column(name="task_sids", type="json_array", nullable=true)
+     *
+     * @var string[]
+     */
+    private $taskSids = [];
+
+    /**
      * @ORM\Column(name="call_sid", type="string", length=50, nullable=true)
      *
      * @var string
@@ -78,26 +91,11 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $conferenceSid;
 
     /**
-     * @ORM\Column(name="forwarding_sids", type="json_array")
+     * @ORM\Column(name="call_sids", type="json_array")
      *
      * @var array[]
      */
-    private $forwardingSids = [];
-
-    /**
-     * @ORM\Column(name="forwarding_request_ids", type="json_array")
-     *
-     * @var array[]
-     */
-    private $forwardingRequestIds = [];
-
-    /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
-     * @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     *
-     * @var VoiceQueue
-     */
-    private $queue;
+    private $callSids = [];
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
@@ -193,25 +191,18 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $dateEnded;
 
     /**
-     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
      *
-     * @var Blob
+     * @var VoiceRecording[]|ArrayCollection
      */
-    private $recording;
+    private $recordings;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord", mappedBy="phoneCall")
+     * @ORM\OneToOne(targetEntity="VoicemailAgentRecording", mappedBy="phoneCall")
      *
-     * @var VoicemailRecord
+     * @var VoicemailAgentRecording
      */
-    private $voicemailRecord;
-
-    /**
-     * @ORM\Column(name="duration", type="integer", nullable=true)
-     *
-     * @var int
-     */
-    private $duration;
+    private $agentVoicemailRecord;
 
     /**
      * @ORM\Column(name="cost", type="string", nullable=true)
@@ -242,6 +233,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->participants            = new ArrayCollection();
         $this->phoneCallLogs           = new ArrayCollection();
         $this->ticketMessageAttributes = new ArrayCollection();
+        $this->recordings              = new ArrayCollection();
         $this->dateCreated             = new \DateTime();
     }
 
@@ -288,9 +280,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      */
     public function setTaskSid($taskSid)
     {
+        $taskSids   = $this->taskSids;
+        $taskSids[] = $taskSid;
+
         $this->setModelField('taskSid', $taskSid);
+        $this->setModelField('taskSids', $taskSids);
 
         return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTaskSids()
+    {
+        return $this->taskSids;
     }
 
     /**
@@ -397,6 +401,22 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isOutgoingCall()
+    {
+        return $this->type === self::DIRECTION_OUTBOUND;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIncomingCall()
+    {
+        return $this->type === self::DIRECTION_INBOUND;
+    }
+
+    /**
      * @param string $type
      *
      * @return $this
@@ -414,6 +434,62 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isColdTransfer()
+    {
+        return $this->status === self::STATUS_COLD_TRANSFER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWarmTransfer()
+    {
+        return $this->status === self::STATUS_WARM_TRANSFER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWarmAdd()
+    {
+        return $this->status === self::STATUS_WARM_ADD;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoicemail()
+    {
+        return $this->status === self::STATUS_VOICEMAIL;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCanceled()
+    {
+        return $this->status === self::STATUS_CANCELED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnded()
+    {
+        return $this->status === self::STATUS_ENDED;
     }
 
     /**
@@ -457,6 +533,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return AbstractVoicePhoneCallParticipant[]|ArrayCollection
+     */
+    public function getActiveParticipants()
+    {
+        return $this->participants->filter(function (AbstractVoicePhoneCallParticipant $participant) {
+            return !$participant->getDateLeft();
+        });
+    }
+
+    /**
      * @return ArrayCollection|VoicePhoneCallParticipantUser[]
      */
     public function getUserParticipants()
@@ -474,6 +560,32 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         return $this->participants->filter(function (AbstractVoicePhoneCallParticipant $participant) {
             return $participant instanceof VoicePhoneCallParticipantAgent;
         });
+    }
+
+    /**
+     * @return ArrayCollection|VoicePhoneCallParticipantAgent[]
+     */
+    public function getActiveAgentParticipants()
+    {
+        return $this->getAgentParticipants()->filter(function (AbstractVoicePhoneCallParticipant $participant) {
+            return !$participant->getDateLeft();
+        });
+    }
+
+    /**
+     * @return VoicePhoneCallParticipantUser|null
+     */
+    public function getUserParticipant()
+    {
+        return $this->getUserParticipants()->first();
+    }
+
+    /**
+     * @return VoicePhoneCallParticipantAgent|null
+     */
+    public function getActiveAgentParticipant()
+    {
+        return $this->getActiveAgentParticipants()->first();
     }
 
     /**
@@ -552,6 +664,19 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $participant = $this->getParticipantByCallSid($callSid);
 
         return $participant ? $participant->getPerson() : null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnHold()
+    {
+        $userParticipant = $this->getUserParticipants()->first();
+        if ($userParticipant instanceof VoicePhoneCallParticipantUser) {
+            return $userParticipant->isOnHold();
+        }
+
+        return false;
     }
 
     /**
@@ -669,46 +794,6 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Blob
-     */
-    public function getRecording()
-    {
-        return $this->recording;
-    }
-
-    /**
-     * @param Blob $recording
-     *
-     * @return $this
-     */
-    public function setRecording(Blob $recording = null)
-    {
-        $this->setModelField('recording', $recording);
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * @param int $duration
-     *
-     * @return $this
-     */
-    public function setDuration($duration)
-    {
-        $this->setModelField('duration', $duration);
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getCost()
@@ -765,23 +850,57 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoicemailRecord
+     * @return VoiceRecording[]|ArrayCollection
      */
-    public function getVoicemailRecord()
+    public function getRecordings()
     {
-        return $this->voicemailRecord;
+        return $this->recordings;
     }
 
     /**
-     * @param VoicemailRecord $voicemailRecord
+     * @param VoiceRecording $recording
      *
      * @return $this
      */
-    public function setVoicemailRecord(VoicemailRecord $voicemailRecord = null)
+    public function addRecording(VoiceRecording $recording)
     {
-        $this->setModelField('voicemailRecord', $voicemailRecord);
-        if ($voicemailRecord) {
-            $voicemailRecord->setPhoneCall($this);
+        $this->recordings->add($recording);
+        $recording->setPhoneCall($this);
+
+        return $this;
+    }
+
+    /**
+     * @param VoiceRecording $recording
+     *
+     * @return $this
+     */
+    public function removeRecording(VoiceRecording $recording)
+    {
+        $this->recordings->removeElement($recording);
+        $recording->setPhoneCall(null);
+
+        return $this;
+    }
+
+    /**
+     * @return VoicemailAgentRecording
+     */
+    public function getAgentVoicemailRecord()
+    {
+        return $this->agentVoicemailRecord;
+    }
+
+    /**
+     * @param VoicemailAgentRecording $agentVoicemailRecord
+     *
+     * @return $this
+     */
+    public function setAgentVoicemailRecord(VoicemailAgentRecording $agentVoicemailRecord = null)
+    {
+        $this->setModelField('voicemailRecord', $agentVoicemailRecord);
+        if ($agentVoicemailRecord) {
+            $agentVoicemailRecord->setPhoneCall($this);
         }
 
         return $this;
@@ -790,107 +909,75 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @return array[]
      */
-    public function getForwardingSids()
+    public function getCallSids()
     {
-        return $this->forwardingSids;
+        return $this->callSids;
     }
 
     /**
-     * @param int $agentId
-     *
      * @return string[]
      */
-    public function getAgentForwardingSids($agentId)
+    public function getFlattenCallSids()
     {
-        $forwardingSids = $this->forwardingSids;
-        if (!isset($forwardingSids[$agentId])) {
-            $forwardingSids[$agentId] = [];
+        $sids = [];
+        foreach ($this->callSids as $callSid) {
+            $sids[] = $callSid['callSid'];
         }
 
-        return $forwardingSids[$agentId];
+        return $sids;
     }
 
     /**
-     * @param int    $agentId
-     * @param string $forwardingSid
-     *
-     * @return $this
-     */
-    public function addForwardingSid($agentId, $forwardingSid)
-    {
-        $forwardingSids = $this->forwardingSids;
-        if (!isset($forwardingSids[$agentId])) {
-            $forwardingSids[$agentId] = [];
-        }
-        if (!in_array($forwardingSid, $forwardingSids[$agentId])) {
-            $forwardingSids[$agentId][] = $forwardingSid;
-        }
-
-        $this->setModelField('forwardingSids', $forwardingSids);
-
-        return $this;
-    }
-
-    /**
-     * @return array[]
-     */
-    public function getForwardingRequestIds()
-    {
-        return $this->forwardingRequestIds;
-    }
-
-    /**
-     * @param int $agentId
+     * @param $participantId
      *
      * @return array
      */
-    public function getAgentForwardingRequestIds($agentId)
+    public function getParticipantCallSids($participantId)
     {
-        $requestIds = $this->forwardingRequestIds;
-        if (!isset($requestIds[$agentId])) {
-            $requestIds[$agentId] = [];
+        $sids = [];
+        foreach ($this->callSids as $callSid) {
+            if ($callSid['participant'] === $participantId) {
+                $sids[] = $callSid['callSid'];
+            }
         }
 
-        return $requestIds[$agentId];
+        return $sids;
     }
 
     /**
-     * @param int    $agentId
-     * @param string $requestId
+     * @param int $participantId
      *
-     * @return VoicePhoneCall
+     * @return array
      */
-    public function addForwardingRequestId($agentId, $requestId)
+    public function getParticipantForwardedCallSids($participantId)
     {
-        $requestIds = $this->forwardingRequestIds;
-        if (!isset($requestIds[$agentId])) {
-            $requestIds[$agentId] = [];
-        }
-        if (!in_array($requestId, $requestIds[$agentId])) {
-            $requestIds[$agentId][] = $requestId;
+        $sids = [];
+        foreach ($this->callSids as $callSid) {
+            if ($callSid['participant'] === $participantId && $callSid['type'] === self::TYPE_FORWARDED) {
+                $sids[] = $callSid['callSid'];
+            }
         }
 
-        $this->setModelField('forwardingRequestIds', $requestIds);
-
-        return $this;
+        return $sids;
     }
 
     /**
-     * @return VoiceQueue
-     */
-    public function getQueue()
-    {
-        return $this->queue;
-    }
-
-    /**
-     * @param VoiceQueue $queue
+     * @param int    $participantId
+     * @param string $type
+     * @param string $callSid
      *
      * @return $this
      */
-    public function setQueue(VoiceQueue $queue = null)
+    public function addCallSid($participantId, $type, $callSid)
     {
-        $this->setModelField('queue', $queue);
+        $callSids   = $this->callSids;
+        $callSids[] = [
+            'callSid'     => $callSid,
+            'type'        => $type,
+            'participant' => $participantId,
+        ];
+
+        $this->setModelField('callSids', $callSids);
 
         return $this;
     }
@@ -901,6 +988,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getTicketMessageAttributes()
     {
         return $this->ticketMessageAttributes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueueName()
+    {
+        return 'queue'.$this->getId();
     }
 
     /**

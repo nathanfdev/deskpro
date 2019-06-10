@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -55,35 +56,6 @@ class VoiceClientController extends BaseController
 
     /**
      * @ApiDoc(
-     *     description="Declines and ignores incoming phone call",
-     *     statusCodes={
-     *         204="Returned if everything is ok"
-     *     },
-     *     noInput=true
-     * )
-     *
-     * @Rest\Put("/reject_call/{taskSid}")
-     *
-     * @param string $taskSid
-     *
-     * @return View
-     */
-    public function rejectCallAction($taskSid)
-    {
-        $phoneCall = $this->getManager()->getRepository(VoicePhoneCall::class)->findOneBy([
-            'taskSid' => $taskSid,
-        ]);
-
-        if ($phoneCall) {
-            $this->get('dp.voice.callbacks_helper')->rejectIncomingPhoneCall($phoneCall, $this->getUser());
-            $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
-        }
-
-        return new View(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @ApiDoc(
      *     description="Prepares outbound phone call",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -110,12 +82,65 @@ class VoiceClientController extends BaseController
             throw new InvalidFormException($form);
         }
 
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $form->getData();
 
         $em = $this->getManager();
         $em->persist($phoneCall);
         $em->flush();
 
+        // create a task for the call
+        // so we can reserve the agent's worker
+        $task = $this->get('dp.voice.task_builder')->createVoiceTaskForOutgoingCall($phoneCall, $this->getUser());
+        $phoneCall->setTaskSid($task->getId());
+
+        $em->flush();
+
+        // todo check that agent can accept tasks, e.g. not on a call
+        $this->get('dp.voice.task_router')->joinTask($task->getId(), 'agent', $this->getUser()->getId());
+
         return new View($this->wrap($phoneCall));
+    }
+
+    /**
+     * @Rest\Put("/task_router")
+     */
+    public function callRouterAction()
+    {
+        // evaluate task router
+        $this->container->get('dp.voice.task_router')->evaluate();
+    }
+
+    /**
+     * @Rest\Get("/busy_voice_agents")
+     *
+     * @return View
+     */
+    public function getBusyAgentsForVoiceAction()
+    {
+        $busyAgents = [];
+        $workers    = $this->get('dp.voice.task_router.storage')->getOnlineWorkersByType('agent');
+        foreach ($workers as $worker) {
+            if (VoiceWorkflow::workerIsBusy($worker)) {
+                $busyAgents[] = $worker->getTypeId();
+            }
+        }
+
+        return new View($this->wrap($busyAgents));
+    }
+
+    /**
+     * @Rest\Get("/performance_logs")
+     *
+     * @return Response
+     */
+    public function performanceLogsAction()
+    {
+        $content = file_get_contents($this->get('deskpro.app_env')->getUserLogsDir().'/voice.log');
+        if (!$content) {
+            $content = '';
+        }
+
+        return new Response($content);
     }
 }

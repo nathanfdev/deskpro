@@ -117,7 +117,7 @@ class Storage
 
         $models = [];
         foreach ($data as $oid => $rawData) {
-            $model = $this->parser->exportRawData($oid, $rawData, $modelClass);
+            $model = $this->parser->parseRawData($oid, $rawData, $modelClass);
             if ($model) {
                 $models[$oid] = $model;
             }

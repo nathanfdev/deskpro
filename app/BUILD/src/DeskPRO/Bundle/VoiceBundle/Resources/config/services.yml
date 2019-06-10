@@ -1,5 +1,11 @@
 services:
 
+  dp.voice.logger:
+    class: Psr\Log\LoggerInterface
+    factory: ['DeskPRO\Bundle\VoiceBundle\Monolog\VoiceLoggerFactory', createLogger]
+    arguments:
+      - "@service_container"
+
   voice_settings_resolver:
     class: DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver
     arguments:
@@ -10,22 +16,33 @@ services:
     arguments:
       - "@settings_resolver"
 
+  dp.voice.cloud_proxy:
+    class: DeskPRO\Bundle\VoiceBundle\Cloud\VoiceCloudProxy
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@settings_resolver"
+
   twilio_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"
+      - "@router"
+      - "@dp.voice.logger"
 
   plivo_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"
+      - "@router"
+      - "@dp.voice.logger"
 
   dp.voice.task_builder:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder
     arguments:
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.event_dispatcher"
 
   dp.voice.task_router_lock:
     class: Symfony\Component\Lock\Lock

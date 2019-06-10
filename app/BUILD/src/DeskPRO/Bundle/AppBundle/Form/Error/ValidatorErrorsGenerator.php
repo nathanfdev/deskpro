@@ -21,23 +21,23 @@ class ValidatorErrorsGenerator
     /**
      * @var ErrorCodeFactory
      */
-    private $error_code_factory;
+    private $errorCodeFactory;
 
     /**
      * @var ErrorMessageFactory
      */
-    private $error_message_factory;
+    private $errorMessageFactory;
 
     /**
      * Constructor.
      *
-     * @param ErrorCodeFactory    $error_code_factory
-     * @param ErrorMessageFactory $error_message_factory
+     * @param ErrorCodeFactory    $errorCodeFactory
+     * @param ErrorMessageFactory $errorMessageFactory
      */
-    public function __construct(ErrorCodeFactory $error_code_factory, ErrorMessageFactory $error_message_factory)
+    public function __construct(ErrorCodeFactory $errorCodeFactory, ErrorMessageFactory $errorMessageFactory)
     {
-        $this->error_code_factory    = $error_code_factory;
-        $this->error_message_factory = $error_message_factory;
+        $this->errorCodeFactory    = $errorCodeFactory;
+        $this->errorMessageFactory = $errorMessageFactory;
     }
 
     /**
@@ -60,34 +60,34 @@ class ValidatorErrorsGenerator
 
     /**
      * @param array               $errors
-     * @param string              $numeric_prefix
+     * @param string              $numericPrefix
      * @param array               $path
      * @param ConstraintViolation $violation
      */
-    protected function addError(array &$errors, $numeric_prefix, array $path, ConstraintViolation $violation)
+    protected function addError(array &$errors, $numericPrefix, array $path, ConstraintViolation $violation)
     {
-        $sub_path = array_shift($path);
-        if (is_numeric($sub_path)) {
-            $sub_path = $numeric_prefix.'_'.$sub_path;
+        $subPath = array_shift($path);
+        if (is_numeric($subPath)) {
+            $subPath = $numericPrefix.'_'.$subPath;
         }
 
         if (empty($path)) {
-            $code    = $this->error_code_factory->getErrorCodeForConstraintViolation($violation);
-            $params  = $this->error_message_factory->parseParams($violation->getParameters());
-            $message = $this->error_message_factory->createMessage($code, $params);
+            $code    = $this->errorCodeFactory->getErrorCodeForConstraintViolation($violation);
+            $params  = $this->errorMessageFactory->parseParams($violation->getParameters());
+            $message = $this->errorMessageFactory->createMessage($code, $params);
 
-            $errors['fields'][$sub_path]['errors'][] = [
+            $errors['fields'][$subPath]['errors'][] = [
                 'code'    => $code,
                 'message' => $message,
             ];
         } else {
-            if (!isset($errors['fields'][$sub_path]['fields'])) {
-                $errors['fields'][$sub_path]['fields'] = [];
+            if (!isset($errors['fields'][$subPath]['fields'])) {
+                $errors['fields'][$subPath]['fields'] = [];
             }
 
-            $sub_list = &$errors['fields'][$sub_path];
+            $subList = &$errors['fields'][$subPath];
 
-            $this->addError($sub_list, $sub_path, $path, $violation);
+            $this->addError($subList, $subPath, $path, $violation);
         }
     }
 }

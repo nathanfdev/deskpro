@@ -75,8 +75,8 @@ class TriggerData extends AbstractDefaultData
         ] as $eventTrigger => $templateName) {
             $trigger = new TicketTrigger();
             $trigger->setEventTrigger($eventTrigger);
-            $trigger->setByUserMode(['api', 'email', 'form', 'portal', 'widget']);
-            $trigger->setByAgentMode(['api', 'email', 'web', 'mobile']);
+            $trigger->setByUserMode(['api', 'email', 'form', 'portal', 'widget', 'phone']);
+            $trigger->setByAgentMode(['api', 'email', 'web', 'mobile', 'phone']);
             $trigger->setRunOrder(1000);
             $trigger->setSysName("default_{$eventTrigger}_agentemail");
             $trigger->setTitle('Send agent notifications');

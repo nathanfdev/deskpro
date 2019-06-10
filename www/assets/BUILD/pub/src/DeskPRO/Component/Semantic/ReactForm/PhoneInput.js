@@ -3,6 +3,7 @@ import React from 'react';
 import $ from 'jquery';
 import 'intl-tel-input';
 import 'intl-tel-input/build/js/utils';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import Checkbox from './Checkbox';
 
 class PhoneInput extends React.Component {
@@ -33,17 +34,28 @@ class PhoneInput extends React.Component {
   }
 
   setNumber(number) {
-    const $input = $(this.input);
     const { onChange } = this.props;
-    const { isSip } = this.state;
+    const isSip = /^sip:/.test(number);
+    const doSetNumber = () => {
+      const $input = $(this.input);
+      if (isSip) {
+        $input.val(`${number}`.replace(/^sip:/, ''));
+        onChange(`sip:${$input.val()}`);
+      } else {
+        $input.intlTelInput('setNumber', `${number}`);
+        onChange($input.intlTelInput('getNumber') || `${number}`);
+      }
+    };
 
-    if (isSip) {
-      $input.val(`${number}`.replace(/^sip:/, ''));
-      onChange(`sip:${$input.val()}`);
+    if (isSip !== this.state.isSip) {
+      this.setState({ isSip }, doSetNumber);
     } else {
-      $input.intlTelInput('setNumber', `${number}`);
-      onChange($input.intlTelInput('getNumber') || `${number}`);
+      doSetNumber();
     }
+  }
+
+  setCountryCode(countryCode) {
+    $(this.input).intlTelInput('setCountry', countryCode);
   }
 
   getCountryData() {
@@ -71,7 +83,19 @@ class PhoneInput extends React.Component {
       $input.bind('change keyup', () => {
         onChange($input.intlTelInput('getNumber'));
       });
-      $input.intlTelInput('setNumber', `${value}`);
+      $input.on('countrychange', (e, countryData) => {
+        if (storageAvailable('localStorage')) {
+          localStorage.setItem('dpAgent.voice.phoneCountryCode', countryData.iso2);
+        }
+      });
+      if (value) {
+        $input.intlTelInput('setNumber', `${value}`);
+      } else if (storageAvailable('localStorage')) {
+        const lastCountryCode = localStorage.getItem('dpAgent.voice.phoneCountryCode');
+        if (lastCountryCode) {
+          $input.intlTelInput('setCountry', lastCountryCode);
+        }
+      }
     }
   }
 
@@ -81,6 +105,7 @@ class PhoneInput extends React.Component {
       this.initInput();
 
       const $input = $(this.input);
+      $input.val('');
       $input.focus();
     });
   };

@@ -180,6 +180,17 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			}
 		});
 
+		var updateSipNumbers = function () {
+			$('.phone-number-type', self.contactEditor).on('change', function () {
+				var $countryCode = $(this).parent().find('.phone-country-code');
+				if ($(this).val() === 'sip') {
+					$countryCode.hide();
+				} else {
+					$countryCode.show();
+				}
+			});
+		};
+
 		this.contactEditor.on('click', '.add-trigger', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 
@@ -193,6 +204,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			el.addClass('new');
 			el.appendTo($('ul', rowTypeEl));
 			self.phone_numbers.renderPhoneInputs();
+			updateSipNumbers();
 
 			DeskPRO_Window.initInterfaceServices(el);
 
@@ -207,6 +219,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		});
 
 		this.phone_numbers.renderPhoneInputs();
+		updateSipNumbers();
 	},
 
 	destroy: function() {

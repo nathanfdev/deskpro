@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount as AbstractVoiceAccountEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -48,6 +49,13 @@ abstract class AbstractVoiceAccount
     protected $dateCreated;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    protected $availableVoiceCountries;
+
+    /**
      * Constructor.
      *
      * @param AbstractVoiceAccountEntity $entity
@@ -59,5 +67,13 @@ abstract class AbstractVoiceAccount
         $this->authToken   = $entity->getAuthToken();
         $this->accountName = $entity->getAccountName();
         $this->dateCreated = $entity->getDateCreated();
+    }
+
+    /**
+     * @param InlineCustomSideload $availableVoiceCountries
+     */
+    public function setAvailableVoiceCountries($availableVoiceCountries)
+    {
+        $this->availableVoiceCountries = $availableVoiceCountries;
     }
 }

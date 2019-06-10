@@ -7,10 +7,12 @@ import Avatar from '../Common/Avatar';
 class AgentList extends React.Component {
 
   static propTypes = {
-    target:       PropTypes.object,
-    agents:       PropTypes.object,
-    participants: PropTypes.array,
-    onClick:      PropTypes.func
+    target:           PropTypes.object,
+    agents:           PropTypes.object,
+    busyAgents:       PropTypes.array,
+    participants:     PropTypes.array,
+    onClick:          PropTypes.func,
+    transferDisabled: PropTypes.bool
   };
 
   static defaultProps = {
@@ -23,15 +25,17 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { agents, target, participants } = this.props;
+    const { agents, busyAgents, target, participants, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
         {agents.toArray().map((agent, index) =>
           <Agent
+            transferDisabled={transferDisabled}
             key={index}
             agent={agent}
-            active={agent === target}
+            busy={busyAgents.indexOf(agent.get('id')) !== -1}
+            active={target && agent === target.target || busyAgents.indexOf(agent.get('id')) !== -1}
             participant={participants.indexOf(agent.get('id')) !== -1}
             onClick={this.onSelect}
           />
@@ -44,19 +48,21 @@ class AgentList extends React.Component {
 class Agent extends React.Component {
 
   static propTypes = {
-    agent:       PropTypes.object,
-    active:      PropTypes.bool,
-    participant: PropTypes.bool,
-    onClick:     PropTypes.func
+    transferDisabled: PropTypes.bool,
+    agent:            PropTypes.object,
+    active:           PropTypes.bool,
+    busy:             PropTypes.bool,
+    participant:      PropTypes.bool,
+    onClick:          PropTypes.func
   };
 
   onClick = (event) => {
     event.preventDefault();
 
-    const { agent, participant, onClick } = this.props;
+    const { agent, participant, onClick, transferDisabled } = this.props;
 
     // already in conference, skipping
-    if (participant) {
+    if (participant || transferDisabled) {
       return;
     }
 
@@ -64,7 +70,7 @@ class Agent extends React.Component {
   };
 
   render() {
-    const { agent, active, participant } = this.props;
+    const { agent, active, busy, participant } = this.props;
 
     return (
       <div
@@ -75,6 +81,7 @@ class Agent extends React.Component {
         <span className="agent-name">
           {agent.get('name')}
           {participant && <span className="agent-participant">(participant)</span>}
+          {!participant && busy && <span className="agent-participant">(busy)</span>}
         </span>
       </div>
     );

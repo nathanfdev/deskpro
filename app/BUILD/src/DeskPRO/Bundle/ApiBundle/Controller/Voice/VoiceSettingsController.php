@@ -76,8 +76,13 @@ class VoiceSettingsController extends BaseController
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->getManager()->getRepository(Setting::class);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_AGENT_VOICEMAIL_TIMEOUT, $form->get('agent_voicemail_timeout')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_AGENT_DEFAULT_DEPARTMENT, $form->get('agent_default_department')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_AGENT_DEFAULT_BRAND, $form->get('agent_default_brand')->getData());
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS, $form->get('group_missed_call_tickets')->getData());
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT, $form->get('group_missed_call_tickets_timeout')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FORWARDING_MACHINE_DETECTION, $form->get('forwarding_machine_detection')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FORWARDING_NUMBER_TYPE, $form->get('forwarding_number_type')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_FORWARDING_NUMBER, $form->get('forwarding_number')->getData());
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

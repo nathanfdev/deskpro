@@ -1,12 +1,13 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
+import $ from 'jquery';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { connectionsSelector, incomingCallSelector } from '../Selectors/client';
+import { connectionsSelector, incomingCallSelector, outgoingCallSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allVoiceAccountsSelector } from '../Selectors/accounts';
 import { allNumbersSelector } from '../Selectors/numbers';
@@ -22,7 +23,10 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
-export const updateConnectionState = createAction('VOICE_AGENT_UPDATE_CONNECTION_STATE');
+export const setBusyAgents = createAction('VOICE_AGENT_SET_BUSY_AGENTS');
+export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
+export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
+export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
 
 const filterConnection = (connection, callSid) => {
   if (!connection) {
@@ -97,12 +101,28 @@ export const voiceBootstrap = createAction(
             dispatch(loadBatch('Person', relatedPeopleIds, 'all'));
           }
 
+          const state = getState();
+          const phoneCalls = allPhoneCallsSelector(state);
+
+          const phoneCall = Immutable.fromJS(data.phone_call);
+          if (phoneCalls.get(phoneCall.get('id'))) {
+            dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+          } else {
+            dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+          }
+
           dispatch(addIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.conference.incoming-call-answered', (data) => {
           // another agent have already accepted the call
           // fetch the ticket info to get assigned agent
           const state = getState();
+          const me = meSelector(state);
+
+          if (parseInt(me.get('id'), 10) !== parseInt(data.accepted_agent_id, 10)) {
+            return;
+          }
+
           let incomingCall = incomingCallSelector(state);
           if (incomingCall && data.call_id === incomingCall.get('call_id')) {
             incomingCall = incomingCall.set('assigned_agent', data.accepted_agent_id);
@@ -116,10 +136,16 @@ export const voiceBootstrap = createAction(
           // user canceled the call, remove notification
           const state = getState();
           const incomingCall = incomingCallSelector(state);
+          const me = meSelector(state);
 
-          if (incomingCall && data.call_id === incomingCall.get('call_id')) {
-            dispatch(removeIncomingCall(incomingCall));
+          if (parseInt(me.get('id'), 10) !== parseInt(data.rejected_agent_id, 10)) {
+            return;
           }
+          if (!incomingCall || data.call_id !== incomingCall.get('call_id')) {
+            return;
+          }
+
+          dispatch(removeIncomingCall(incomingCall));
         });
         messageBroker.addMessageListener('agent.voice.calls_enabled', (data) => {
           const state = getState();
@@ -165,17 +191,24 @@ export const voiceBootstrap = createAction(
           if (eventName === 'conference-end') {
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
           }
-
-          dispatch(updateConnectionState({
-            call_id: parseInt(event.phone_call.id, 10),
-            state:   {
-              participants: event.agent_participants,
-              hold:         !!event.hold
-            }
-          }));
+        });
+        messageBroker.addMessageListener('agent.voice.reached-voicemail', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
+        messageBroker.addMessageListener('agent.voice.call-answered', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
+        messageBroker.addMessageListener('agent.voice.call-ended', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+          const state = getState();
+          const me = meSelector(state);
           const data = event.data;
+
+          if (data.data.agent !== me.get('id')) {
+            return;
+          }
 
           dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
 
@@ -207,8 +240,8 @@ export const voiceBootstrap = createAction(
             closeIframes();
 
             dispatch(resetOutgoingCall());
-            connection.ticketId = data.ticket_id;
-            connection.callId   = data.call_id;
+            connection.ticketId = parseInt(data.ticket_id, 10);
+            connection.callId   = parseInt(data.call_id, 10);
 
             const routeUrl = `/agent/tickets/${data.ticket_id}`;
             if (!window.DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl)) {
@@ -226,13 +259,30 @@ export const voiceBootstrap = createAction(
             hangupConnection(connection);
           }
         });
-        messageBroker.addMessageListener('agent.voice.conference.hold', (data) => {
-          dispatch(updateConnectionState({
-            call_id: parseInt(data.call_id, 10),
-            state:   {
-              hold: !!data.hold
-            }
-          }));
+        messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (errors) => {
+          const state = getState();
+          const outgoingCall = outgoingCallSelector(state);
+          if (outgoingCall) {
+            dispatch(resetOutgoingCall());
+            window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), errors);
+          }
+        });
+        messageBroker.addMessageListener('agent.voice.worker-idle', (data) => {
+          if (data.worker_type === 'agent') {
+            dispatch(setAgentAsIdle(data.worker_type_id));
+          }
+        });
+        messageBroker.addMessageListener('agent.voice.worker-busy', (data) => {
+          if (data.worker_type === 'agent') {
+            dispatch(setAgentAsBusy(data.worker_type_id));
+          }
+        });
+        messageBroker.addMessageListener('agent.voice.open-forwarded-ticket', (data) => {
+          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket_id}`, { noToggle: true });
+        });
+
+        api.sendGet('DP_API/voice_client/busy_voice_agents').success(({ data }) => {
+          dispatch(setBusyAgents(data));
         });
       })
       .catch((e) => {
@@ -241,6 +291,15 @@ export const voiceBootstrap = createAction(
         // catch mic disabled exception
         // nothing to do
       });
+
+      const runTaskRouter = () => {
+        api.sendPut('DP_API/voice_client/task_router').then(
+          () => { setTimeout(runTaskRouter, 2000); },
+          () => { setTimeout(runTaskRouter, 2000); }
+        );
+      };
+
+      runTaskRouter();
 
       accounts.forEach((account) => {
         const id = account.get('id');
@@ -262,8 +321,8 @@ export const voiceBootstrap = createAction(
               console.log(error);
             });
             clients[id].connect((connection) => {
-              connection.ticketId = connection.message.TicketId;
-              connection.callId   = connection.message.CallId;
+              connection.ticketId = parseInt(connection.message.TicketId, 10);
+              connection.callId   = parseInt(connection.message.CallId, 10);
               connection.outbound = connection.message.Outbound;
 
               dispatch(addConnection(connection));
@@ -328,6 +387,13 @@ export const voiceBootstrap = createAction(
         }
       });
     }
+
+    $(window).unload(() => {
+      const connections = connectionsSelector(getState());
+      connections.forEach((connection) => {
+        hangupConnection(connection);
+      });
+    });
   }
 );
 
@@ -343,6 +409,8 @@ export const makeOutboundCall = createAction(
       call_to:   callTo,
       ticket:    ticketId
     });
+
+    dispatch(waitingConnection());
     promise.success(({ data, linked }) => {
       if (linked.person) {
         dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
@@ -357,7 +425,7 @@ export const makeOutboundCall = createAction(
       dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
       if (accountType === 'twilio') {
         clients[accountId].connect({
-          CallId:   data.id,
+          CallId:   parseInt(data.id, 10),
           AgentId:  agentId,
           From:     number.get('number'),
           To:       callTo,
@@ -373,7 +441,7 @@ export const makeOutboundCall = createAction(
         });
 
         clients[accountId].client.agentId  = agentId;
-        clients[accountId].client.callId   = data.id;
+        clients[accountId].client.callId   = parseInt(data.id, 10);
         clients[accountId].client.outbound = true;
 
         dispatch(addConnection(clients[accountId].client));
@@ -415,21 +483,24 @@ export const acceptPhoneCall = createAction(
       promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/assign_agent`);
     }
 
+    dispatch(waitingConnection());
     promise.success(({ data }) => {
       closeIframes();
 
       dispatch(removeIncomingCall(incomingCall));
       if (accountType === 'twilio') {
         clients[accountId].connect({
-          CallId:   callId,
-          AgentId:  agentId,
-          TicketId: data.id
+          CallId:     callId,
+          AgentId:    agentId,
+          TicketId:   data.id,
+          Conference: !incomingCall.get('task')
         });
       } else if (accountType === 'plivo') {
         clients[accountId].client.call('accept', {
           'X-PH-CallId':   callId,
           'X-PH-AgentId':  agentId,
-          'X-PH-TicketId': data.id
+          'X-PH-TicketId': data.id,
+          'X-PH-CallTime': (new Date()).getTime()
         });
 
         clients[accountId].client.ticketId = data.id;
@@ -489,30 +560,71 @@ export const toggleMute = createAction(
   }
 );
 
-export const addAgent = createAction(
+export const warmAddAgent = createAction(
   'VOICE_AGENT_ADD',
-  (connection, agent, type) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/add/${agent.get('id')}/${type}`)
+  (connection, agent) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_add/${agent.get('id')}`)
 );
 
-export const transferCall = createAction(
+export const warmTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent, type) => (dispatch) => {
-    dispatch(toggleHold(connection.callId, true));
+  (connection, agent) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
+    promise.success(() => {
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
 
-    return api
-      .sendPut(`DP_API/voice_client/phone_call/${connection.callId}/transfer/${agent.get('id')}/${type}`)
-      .success(() => {
-        if (type === 'cold') {
-          hangupConnection(connection);
-        }
-      });
+      let phoneCall = phoneCalls.get(connection.callId);
+      if (phoneCall) {
+        phoneCall = phoneCall.set('status', 'warm_transfer');
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'merge'));
+      }
+    });
+
+    return promise;
   }
+);
+
+export const coldTransferToAgent = createAction(
+  'VOICE_AGENT_TRANSFER_CALL',
+  (connection, agent) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/agent/${agent.get('id')}`)
+);
+
+export const coldTransferToQueue = createAction(
+  'VOICE_AGENT_TRANSFER_CALL',
+  (connection, queue) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/queue/${queue.get('id')}`)
+);
+
+export const coldTransferToAutoAttendant = createAction(
+  'VOICE_AGENT_TRANSFER_CALL',
+  (connection, autoAttendant) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/auto_attendant/${autoAttendant.get('id')}`)
 );
 
 export const cancelInvite = createAction(
   'VOICE_AGENT_CANCEL_INVITE',
-  (callId, agent) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`)
+  (callId, target, reason) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${target.get('id')}`, { reason });
+    promise.success(() => {
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+
+      let phoneCall = phoneCalls.get(callId);
+      if (phoneCall) {
+        phoneCall = phoneCall.set('status', 'active');
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'merge'));
+      }
+    });
+
+    return promise;
+  }
+);
+
+export const checkIsActive = createAction(
+  'VOICE_AGENT_CHECK_IS_ACTIVE',
+  callId => api.sendGet(`DP_API/voice_client/phone_call/${callId}/is_active`)
 );
 
 export const hangup = createAction(
@@ -544,4 +656,3 @@ export const deleteRecord = createAction(
   'VOICE_AGENT_DELETE_RECORD',
   phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
 );
-

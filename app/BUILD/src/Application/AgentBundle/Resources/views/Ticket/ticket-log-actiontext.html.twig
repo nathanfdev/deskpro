@@ -96,6 +96,8 @@
 			{{ phrase('agent.tickets.log_new_email_agent') }}
 		{% elseif log.details.event_method == 'api' %}
 			{{ phrase('agent.tickets.log_new_api_agent') }}
+		{% elseif log.details.event_method == 'phone' %}
+			{{ phrase('agent.tickets.log_new_phone_agent') }}
 		{% elseif log.details.event_method == 'web' %}
 			{{ phrase('agent.tickets.log_new_web_agent_portal') }}
 		{% elseif log.details.event_method %}
@@ -106,6 +108,8 @@
 			{{ phrase('agent.tickets.log_new_email_user') }}
 		{% elseif log.details.event_method == 'api' %}
 			{{ phrase('agent.tickets.log_new_api_user') }}
+		{% elseif log.details.event_method == 'phone' %}
+			{{ phrase('agent.tickets.log_new_phone_user') }}
 		{% elseif log.details.event_method == 'portal' %}
 			{{ phrase('agent.tickets.log_new_web_user_portal') }}
 		{% elseif log.details.event_method == 'form' %}
@@ -738,8 +742,8 @@
 {% elseif log.action_type == 'call.recording_downloaded' %}
 	<span class="type">
 		[{{ log.details.duration|date('H:i:s', '+00:00 GMT') }}] {{ phrase('agent.voice.recording_downloaded') }}
-        {% if ticket_perms.delete %}
-			<a class="delete-record" href="{{ path('voice_phone_call_delete_record', {'phoneCallId': log.id_object}) }}">({{ phrase('agent.voice.delete_record') }})</a>
+        {% if ticket_perms.modify_messages %}
+			<a class="delete-record" href="{{ path('voice_phone_call_delete_record', {'phoneCall': log.id_object}) }}">({{ phrase('agent.voice.delete_record') }})</a>
 		{% endif %}
 	</span>
 {% elseif log.action_type == 'call.recording_deleted' %}

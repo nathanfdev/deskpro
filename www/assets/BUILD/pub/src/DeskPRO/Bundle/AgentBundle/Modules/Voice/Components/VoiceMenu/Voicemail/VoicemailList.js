@@ -110,15 +110,10 @@ class VoicemailRecord extends React.Component {
   onPlay = (event) => {
     event.preventDefault();
 
-    const { record, phoneCalls, onMarkListened } = this.props;
+    const { record, onMarkListened } = this.props;
     const { playing } = this.state;
 
-    const phoneCall = phoneCalls.get(record.get('phone_call'));
-    if (!phoneCall) {
-      return;
-    }
-
-    const recording = phoneCall.get('recording');
+    const recording = record.get('blob');
     if (!recording) {
       return;
     }
@@ -134,11 +129,7 @@ class VoicemailRecord extends React.Component {
 
       onMarkListened(record);
     } else {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.setState({
-        playing: false
-      });
+      this.stopPlaying();
     }
   };
 
@@ -155,8 +146,11 @@ class VoicemailRecord extends React.Component {
   };
 
   stopPlaying = () => {
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    if (this.audio.readyState > 0) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
+
     this.setState({
       playing: false
     });
@@ -172,7 +166,7 @@ class VoicemailRecord extends React.Component {
     }
 
     const person = people.get(phoneCall.get('person'));
-    const recording = phoneCall.get('recording');
+    const recording = record.get('blob');
 
     return (
       <div className="voice-menu-voicemail-record">
@@ -189,7 +183,7 @@ class VoicemailRecord extends React.Component {
             {moment(record.get('date_created')).fromNow()}
           </div>
           <div className="voicemail-record-duration">
-            <WaitingFormat value={phoneCall.get('duration')} />
+            <WaitingFormat value={record.get('duration')} />
           </div>
 
           <div className="voicemail-person-name">

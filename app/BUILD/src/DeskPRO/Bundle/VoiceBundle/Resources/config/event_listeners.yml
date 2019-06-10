@@ -10,16 +10,7 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@dp.voice.task_router.storage"
       - "@event_dispatcher"
-    tags:
-      - { name: dp.voice.event_subscriber }
-
-  dp.voice.listener.voicemail:
-    class: DeskPRO\Bundle\VoiceBundle\EventListener\VoicemailListener
-    arguments:
-      - "@doctrine.orm.entity_manager"
-      - "@dp.voice.voice_task_helper"
-      - "@voice_settings_resolver"
-      - "@ticket_manager"
+      - "@serializer"
     tags:
       - { name: dp.voice.event_subscriber }
 
@@ -28,6 +19,8 @@ services:
     arguments:
       - "@dp.voice.voice_task_helper"
       - "@dp.voice.task_router.storage"
+      - "@event_dispatcher"
+      - "@serializer"
     tags:
       - { name: dp.voice.event_subscriber }
 
@@ -50,6 +43,25 @@ services:
     tags:
       - { name: dp.voice.event_subscriber }
 
+  dp.voice.listener.incoming_call_listener:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\TwilioIncomingCallListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_task_helper"
+      - "@dp.voice.assets_helper"
+      - "@twilio_adapter"
+      - "@router"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
+  dp.voice.listener.worker_last_call_at:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\WorkerLastCallAtListener
+    arguments:
+      - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
   event_listener.doctrine.twilio_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener
     arguments:
@@ -62,9 +74,17 @@ services:
   event_listener.doctrine.plivo_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\PlivoAccountListener
     arguments:
+      - "@settings_resolver"
       - "@plivo_adapter"
       - "@doctrine.orm.default_entity_manager"
       - "@router"
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.voice_queue:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceQueueListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: doctrine.entity_listener }
 
@@ -76,6 +96,12 @@ services:
       - "@dp.voice.task_router.storage"
     tags:
       - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.voice_permission_removal:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoicePermissionRemovalListener
+    tags:
+      - { name: doctrine.entity_listener }
+      - { name: doctrine.event_subscriber, connection: default }
 
   event_listener.doctrine.voice_number:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceNumberListener

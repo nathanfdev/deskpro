@@ -26,3 +26,10 @@ services:
     arguments: ["@person_repository"]
     tags:
       - { name: form.type }
+
+  form.voice_settings_type:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceSettingsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }

@@ -435,7 +435,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				if (action == 'set-password') {
 					DeskPRO_Window.showPrompt(
-						'<div>Enter a new password. The user will be notified.</div>',
+            self.meta.person.email
+              ? '<div>Enter a new password. The user will be notified.</div>'
+              : '<div>Notice: This user does NOT have an email address on their account, so the system cannot notify them of their new password.</div>',
 						function(val, wrap) {
 							var postData = [];
 							postData.push({
@@ -463,7 +465,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					);
 				} else if (action == 'reset-password') {
 
-					DeskPRO_Window.showConfirm(
+					if (!self.meta.person.email) {
+						DeskPRO_Window.showAlert("Cannot reset the password for the person - they don't have an email address");
+					} else {
+						DeskPRO_Window.showConfirm(
 							self.getEl('reset_password_confirm'),
 							function() {
 								$.ajax({
@@ -477,8 +482,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							null,
 							null, null,
 							400, 260
-					);
-
+						);
+					}
 				} else if (action == 'delete') {
 					var el = self.getEl('delete_confirm');//.clone();
 					DeskPRO_Window.showConfirm(

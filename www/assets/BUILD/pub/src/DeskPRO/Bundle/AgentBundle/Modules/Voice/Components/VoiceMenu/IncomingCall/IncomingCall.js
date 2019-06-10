@@ -9,6 +9,9 @@ import IncomingCallAudio from './IncomingCallAudio';
 class IncomingCall extends React.Component {
 
   static propTypes = {
+    mp3:                   PropTypes.string,
+    wav:                   PropTypes.string,
+    ogg:                   PropTypes.string,
     me:                    PropTypes.object,
     agents:                PropTypes.object,
     people:                PropTypes.object,
@@ -31,8 +34,8 @@ class IncomingCall extends React.Component {
       this.audio.playSound();
     }
 
-    const { hideCall, agentVoicemailTimeout } = this.props;
-    if (agentVoicemailTimeout) {
+    const { incomingCall, hideCall, agentVoicemailTimeout } = this.props;
+    if (!incomingCall.get('call_type') && agentVoicemailTimeout) {
       setTimeout(hideCall, agentVoicemailTimeout * 1000);
     }
   }
@@ -60,13 +63,20 @@ class IncomingCall extends React.Component {
 
   renderAcceptCall() {
     const { me, agents, people, queues, incomingCall, ringingVolume } = this.props;
+    const { mp3, wav, ogg } = this.props;
 
     let callType = 'Direct';
     if (incomingCall.get('call_type')) {
       callType = 'Invite';
 
       if (incomingCall.get('call_type') === 'transfer') {
-        callType = 'Transfer';
+        let transferType = '';
+        if (incomingCall.get('invite_type') === 'cold') {
+          transferType = 'COLD ';
+        } else if (incomingCall.get('invite_type') === 'warm') {
+          transferType = 'WARM ';
+        }
+        callType = `${transferType}Transfer`;
       }
 
       if (incomingCall.get('from_agent_id')) {
@@ -85,6 +95,9 @@ class IncomingCall extends React.Component {
     return (
       <div className="incoming-call">
         <IncomingCallAudio
+          mp3={mp3}
+          wav={wav}
+          ogg={ogg}
           ref={(c) => { this.audio = c; }}
           ringingVolume={ringingVolume}
           onSoundEnded={this.onSoundEnded}

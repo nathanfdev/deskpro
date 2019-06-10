@@ -99,6 +99,37 @@
                             </div>
                         </div>
                     </div>
+                    <div class="section title-section" id="{{ baseId }}_phone_number_section">
+                        <div class="content">
+                            <h4>{{ phrase('agent.general.phone') }}</h4>
+
+                            <div class="row-type phone {% if contact_data.phone_numbers|length %}with-values{% endif %}">
+                                <div class="contact-info">
+                                    <ul>
+                                    </ul>
+                                    <a class="add-trigger">
+                                        <em class="with-none">{{ phrase('agent.people.add_phone') }}</em>
+                                        <em class="with-some">{{ phrase('agent.people.add_another') }}</em>
+                                    </a>
+                                </div>
+                                <script type="text/x-deskpro-plain" class="tpl-new-row">
+                                    <li>
+                                        <div class="controls">
+                                            <span class="remove">x</span>
+                                        </div>
+                                        <div class="input">
+                                            <input type="hidden" id="newperson_phone_numbers__name___number" name="newperson[phone_numbers][__name__][number]" class="dp_phone_number_hidden" />
+                                            <input type="hidden" id="newperson_phone_numbers__name___ext" name="newperson[phone_numbers][__name__][ext]" class="dp_phone_ext_hidden" />
+                                        </div>
+                                        <div class="phone-label">
+                                            <input type="text" id="newperson_phone_numbers__name___label" name="newperson[phone_numbers][__name__][label]" placeholder="Add a label" />
+                                        </div>
+                                        <br class="clear" />
+                                    </li>
+                                </script>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="section cat-section" id="{{ baseId }}_set_password_section">
                         <div class="content">

@@ -457,16 +457,17 @@ class TicketResultsDisplay implements PersonContextInterface
             return $this->all_previews;
         }
 
-        $message_data = $this->db->fetchAllKeyed('
+        $message_data = $this->db->fetchAllKeyed("
             SELECT
                 tickets_messages.id, tickets_messages.ticket_id, tickets_messages.date_created, tickets_messages.message,
                 people.id AS person_id, people.name, people.first_name, people.last_name, people.is_agent,
-                tickets_messages.is_agent_note
+                tickets_messages.is_agent_note, IF(ticket_message_attributes.name = 'voice_phone_call', 1, 0) as is_voice_call
             FROM tickets_messages
             LEFT JOIN people ON (people.id = tickets_messages.person_id)
+            LEFT JOIN ticket_message_attributes ON (tickets_messages.id = ticket_message_attributes.ticket_message_id)
             JOIN (SELECT MAX(id) AS id FROM tickets_messages WHERE ticket_id IN (?) GROUP by ticket_id) tickets_messages2
             WHERE tickets_messages.id = tickets_messages2.id
-        ', [$this->ticket_ids], 'id', [Connection::PARAM_INT_ARRAY]);
+        ", [$this->ticket_ids], 'id', [Connection::PARAM_INT_ARRAY]);
 
         $extra_people     = [];
         $extra_people_ids = [];
@@ -496,6 +497,10 @@ class TicketResultsDisplay implements PersonContextInterface
                     ? $languageManager->phrase('agent.tickets.preview_created_ticket')
                     : $languageManager->phrase('agent.tickets.preview_replied')
                 );
+
+            if ($m['is_voice_call']) {
+                $m['status'] = $languageManager->phrase('agent.tickets.preview_phone_call');
+            }
 
             $m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
 

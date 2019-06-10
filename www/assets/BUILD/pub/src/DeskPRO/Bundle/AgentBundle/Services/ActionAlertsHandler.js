@@ -44,7 +44,7 @@ class ActionAlertsHandler {
         this.handleLegacyClientMessage(payload.data);
         break;
       case 'helpdesk.agent.refresh_interface': {
-        const { who, message, isIgnoreAllowed, reasonCode } = payload.data;
+        const { who, message, is_ignore_allowed, reasonCode } = payload.data;
         if (reasonCode === 'upgrade_complete') {
           if (!window.DeskPRO_Window.update_running) {
             // the upgrading message was never displayed,
@@ -56,7 +56,7 @@ class ActionAlertsHandler {
           // on a slight delay to let any offline trigger files to be unset
           window.setTimeout(() => window.location.reload(false), 5000);
         } else {
-          window.DeskPRO_Window.showRefreshAlert(who, message, isIgnoreAllowed);
+          window.DeskPRO_Window.showRefreshAlert(who, message, is_ignore_allowed);
         }
       }
         break;

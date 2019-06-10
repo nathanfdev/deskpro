@@ -7,13 +7,14 @@ import TransferStatus from '../TransferStatus';
 class AddList extends React.Component {
 
   static propTypes = {
-    addTarget:      PropTypes.object,
-    addTargetType:  PropTypes.string,
-    onlineAgents:   PropTypes.object,
-    participants:   PropTypes.array,
-    connection:     PropTypes.object,
-    onAddAgent:     PropTypes.func,
-    onCancelInvite: PropTypes.func
+    target:       PropTypes.object,
+    onlineAgents: PropTypes.object,
+    busyAgents:   PropTypes.array,
+    participants: PropTypes.array,
+    connection:   PropTypes.object,
+    warmAddAgent: PropTypes.func,
+    cancelInvite: PropTypes.func,
+    inviteError:  PropTypes.string
   };
 
   static defaultProps = {
@@ -29,33 +30,31 @@ class AddList extends React.Component {
     };
   }
 
-  onChangeTarget = (selectedTarget) => {
-    this.setState({ selectedTarget });
+  selectAgentTarget = (target) => {
+    this.setState({ selectedTarget: { type: 'agent', target } });
   };
 
-  onWarmAdd = () => {
-    const { onAddAgent } = this.props;
+  warmAddAgent = () => {
+    const { warmAddAgent } = this.props;
     const { selectedTarget } = this.state;
     this.setState({
       selectedTarget: null
     });
 
-    setTimeout(() => onAddAgent(selectedTarget, 'warm'), 1);
+    setTimeout(() => warmAddAgent(selectedTarget.target, 'warm'), 1);
   };
 
-  onCancel = (target, type) => {
-    const { onCancelInvite } = this.props;
-
-    setTimeout(() => onCancelInvite(target, type), 1);
+  cancel = () => {
+    setTimeout(() => this.props.cancelInvite(), 1);
   };
 
   renderList() {
-    const { onlineAgents, participants } = this.props;
+    const { inviteError, onlineAgents, busyAgents, participants } = this.props;
     const { selectedTarget } = this.state;
 
     return (
       <div>
-        {/* <TransferSearch /> */}
+        {inviteError && <div className="error-message">{inviteError}</div>}
 
         <div className="online-agents-header">
           <i className="fas fa-user" />
@@ -64,9 +63,10 @@ class AddList extends React.Component {
 
         <AgentList
           agents={onlineAgents}
+          busyAgents={busyAgents}
           participants={participants}
           target={selectedTarget}
-          onClick={this.onChangeTarget}
+          onClick={this.selectAgentTarget}
         />
 
         <div className="voice-ticket-list-buttons">
@@ -75,7 +75,7 @@ class AddList extends React.Component {
             icon="call"
             help="Places caller on hold"
             disabled={!selectedTarget}
-            onClick={this.onWarmAdd}
+            onClick={this.warmAddAgent}
           />
         </div>
       </div>
@@ -83,18 +83,17 @@ class AddList extends React.Component {
   }
 
   render() {
-    const { connection, addTarget, addTargetType } = this.props;
+    const { connection, target } = this.props;
 
-    if (addTarget) {
+    if (target) {
       return (
         <div className="voice-ticket-add-list">
           <TransferStatus
             connection={connection}
             title="Adding..."
             cancelLabel="Cancel add"
-            type={addTargetType}
-            target={addTarget}
-            onCancel={this.onCancel}
+            target={target}
+            cancel={this.cancel}
           />
         </div>
       );

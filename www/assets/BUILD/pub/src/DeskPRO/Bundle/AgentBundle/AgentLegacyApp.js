@@ -24,7 +24,7 @@ import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Ap
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { ExternalEventsContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/ExternalEvents/Components/ExternalEventsContainer';
-import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
+import { isVoiceEnabledSelector, connectionsSelector, incomingCallSelector, outgoingCallSelector, waitingConnectionSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
 import { canOpenDialpadSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
 import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
@@ -214,6 +214,16 @@ class AgentLegacyApp {
 
   openVoiceDialpad(number) {
     this.store.dispatch(openDialpad(number));
+  }
+
+  hasActiveVoiceCall() {
+    const state = this.store.getState();
+    const connections = connectionsSelector(state);
+    const incomingCall = incomingCallSelector(state);
+    const outgoingCall = outgoingCallSelector(state);
+    const waitingConnection = waitingConnectionSelector(state);
+
+    return connections.size > 0 || incomingCall || outgoingCall || waitingConnection;
   }
 
   unmountEmbeddedReactNode(node) { // eslint-disable-line
