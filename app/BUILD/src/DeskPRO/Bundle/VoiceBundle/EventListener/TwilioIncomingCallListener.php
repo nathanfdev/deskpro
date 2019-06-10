@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
@@ -52,6 +53,11 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     private $router;
 
     /**
+     * @var AgentDataService
+     */
+    private $agentDataService;
+
+    /**
      * Constructor.
      *
      * @param EntityManager           $em
@@ -60,6 +66,7 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
      * @param VoiceAssetHelper        $assetHelper
      * @param TwilioAdapter           $twilioAdapter
      * @param UrlGeneratorInterface   $router
+     * @param AgentDataService        $agentDataService
      */
     public function __construct(
         EntityManager           $em,
@@ -67,14 +74,16 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
         VoiceTaskHelper         $taskHelper,
         VoiceAssetHelper        $assetHelper,
         TwilioAdapter           $twilioAdapter,
-        UrlGeneratorInterface   $router
+        UrlGeneratorInterface   $router,
+        AgentDataService        $agentDataService
     ) {
-        $this->em             = $em;
-        $this->storageAdapter = $storageAdapter;
-        $this->taskHelper     = $taskHelper;
-        $this->assetHelper    = $assetHelper;
-        $this->twilioAdapter  = $twilioAdapter;
-        $this->router         = $router;
+        $this->em               = $em;
+        $this->storageAdapter   = $storageAdapter;
+        $this->taskHelper       = $taskHelper;
+        $this->assetHelper      = $assetHelper;
+        $this->twilioAdapter    = $twilioAdapter;
+        $this->router           = $router;
+        $this->agentDataService = $agentDataService;
     }
 
     /**
@@ -120,10 +129,13 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
                     $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
                     if ($agent) {
                         if ($agent->canForwardCall()) {
-                            // make an outbound call
-                            $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
-                            if ($callUuid) {
-                                $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
+                            $isAgentOnline = $this->agentDataService->isAgentOnline($agent);
+                            if ((!$isAgentOnline && $agent->getAgentData()->isForwardingLoggedOut()) || $isAgentOnline) {
+                                // make an outbound call
+                                $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
+                                if ($callUuid) {
+                                    $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
+                                }
                             }
                         }
                     }

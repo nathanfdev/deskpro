@@ -52,6 +52,7 @@ services:
       - "@dp.voice.assets_helper"
       - "@twilio_adapter"
       - "@router"
+      - "@data.agent"
     tags:
       - { name: dp.voice.event_subscriber }
 
