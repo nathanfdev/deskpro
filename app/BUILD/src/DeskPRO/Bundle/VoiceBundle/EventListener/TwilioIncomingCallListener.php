@@ -5,17 +5,14 @@ namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
-use DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class TwilioIncomingCallListener.
@@ -38,19 +35,9 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     private $taskHelper;
 
     /**
-     * @var VoiceAssetHelper
-     */
-    private $assetHelper;
-
-    /**
      * @var TwilioAdapter
      */
     private $twilioAdapter;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
 
     /**
      * @var AgentDataService
@@ -63,26 +50,20 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
      * @param EntityManager           $em
      * @param StorageAdapterInterface $storageAdapter
      * @param VoiceTaskHelper         $taskHelper
-     * @param VoiceAssetHelper        $assetHelper
      * @param TwilioAdapter           $twilioAdapter
-     * @param UrlGeneratorInterface   $router
      * @param AgentDataService        $agentDataService
      */
     public function __construct(
         EntityManager           $em,
         StorageAdapterInterface $storageAdapter,
         VoiceTaskHelper         $taskHelper,
-        VoiceAssetHelper        $assetHelper,
         TwilioAdapter           $twilioAdapter,
-        UrlGeneratorInterface   $router,
         AgentDataService        $agentDataService
     ) {
         $this->em               = $em;
         $this->storageAdapter   = $storageAdapter;
         $this->taskHelper       = $taskHelper;
-        $this->assetHelper      = $assetHelper;
         $this->twilioAdapter    = $twilioAdapter;
-        $this->router           = $router;
         $this->agentDataService = $agentDataService;
     }
 
@@ -93,7 +74,6 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     {
         return [
             TaskRouterEvent::ASSIGNED => 'onAssigned',
-            TaskRouterEvent::TIMEOUT  => 'onTimeout',
         ];
     }
 
@@ -144,51 +124,5 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
                 $this->em->flush();
             }
         }
-    }
-
-    /**
-     * @internal
-     *
-     * @param TaskRouterEvent $event
-     */
-    public function onTimeout(TaskRouterEvent $event)
-    {
-        $task = $event->getTask();
-        if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
-            return;
-        }
-
-        $phoneCall = $this->taskHelper->getPhoneCall($task);
-        if (!$phoneCall) {
-            return;
-        }
-
-        $account = $phoneCall->getNumber()->getAccount();
-
-        if ($account instanceof TwilioVoiceAccount) {
-            $userParticipant = $phoneCall->getUserParticipants()->first();
-            if ($userParticipant) {
-                $this->twilioAdapter->transferParticipant(
-                    $userParticipant,
-                    $this->getVoicemailUrl($account, $this->assetHelper->getVoicemailAsset($task->getId())),
-                    'POST'
-                );
-            }
-        }
-    }
-
-    /**
-     * @param TwilioVoiceAccount $account
-     * @param AbstractVoiceAsset $asset
-     *
-     * @return string
-     */
-    private function getVoicemailUrl(TwilioVoiceAccount $account, AbstractVoiceAsset $asset = null)
-    {
-        return $this->router->generate('twilio_voicemail', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'asset'       => $asset ? $asset->getId() : null,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

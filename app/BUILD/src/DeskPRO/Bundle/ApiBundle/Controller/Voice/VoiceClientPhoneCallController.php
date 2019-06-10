@@ -117,12 +117,6 @@ class VoiceClientPhoneCallController extends BaseController
 
         $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
 
-        // if call target is an agent, redirect to voicemail immediately
-        $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
-        if ($task && $taskAgent = $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
-            $this->get('dp.voice.transfer_helper')->transferToVoicemail($phoneCall);
-        }
-
         // log that agent rejected the incoming call
         $log = new VoicePhoneCallLog();
         $log->setPerson($agent);

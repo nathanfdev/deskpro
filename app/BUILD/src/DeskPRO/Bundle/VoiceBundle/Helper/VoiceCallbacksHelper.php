@@ -319,12 +319,6 @@ class VoiceCallbacksHelper
     {
         // reject task worker
         if ($this->taskRouter->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
-            // if call target is an agent, redirect to voicemail immediately
-            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
-            if ($task && $task->getAttribute('agent')) {
-                $this->transferCallHelper->transferToVoicemail($phoneCall);
-            }
-
             // log that agent rejected the incoming call
             $log = new VoicePhoneCallLog();
             $log->setPerson($agent);
