@@ -35,27 +35,6 @@
 				<td width="100%">
 					Can re-open resolved tickets
 
-					<div style="padding: 10px 0 0 25px;" ng-show="!EditCtrl.perm_form.ticket.reopen_resolved && !EditCtrl.perm_form_reg.ticket.reopen_resolved">
-						How should the helpdesk handle an email reply to a resolved ticket?<br/>
-						<div ng-if="EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
-							<label tooltip="This permission is being granted through the Everyone usergroup">
-								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" disabled="disabled" />
-								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
-							</label>
-						</div>
-						<div ng-if="!EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
-							<label>
-								<input type="radio" value="reject" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
-								<strong>Reject</strong> &middot; The message is rejected and the user is sent an auto-response
-							</label>
-							<br/>
-							<label>
-								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
-								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
-							</label>
-						</div>
-					</div>
-
 					<div style="padding: 10px 0 0 25px;" ng-show="EditCtrl.perm_form.ticket.reopen_resolved
                                                         || EditCtrl.perm_form_reg.ticket.reopen_resolved
                                                         || EditCtrl.perm_form_everyone.ticket.reopen_resolved">
@@ -75,6 +54,30 @@
                   <option value="0">{{ phrase('admin.general.forever') }}</option>
                 </select>
                 {{ phrase('adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_2') }}
+							</label>
+						</div>
+					</div>
+
+					<div style="padding: 10px 0 0 25px;" ng-show="(!EditCtrl.perm_form.ticket.reopen_resolved && !EditCtrl.perm_form_reg.ticket.reopen_resolved) || EditCtrl.isReopenTimelimitSet()">
+
+            <span ng-show="!EditCtrl.isReopenTimelimitSet()">How should the helpdesk handle an email reply to a resolved ticket?</span>
+            <span ng-show="EditCtrl.isReopenTimelimitSet()">How should the helpdesk handle an email reply to a resolved ticket after the time limit?</span>
+            <br/>
+						<div ng-if="EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
+							<label tooltip="This permission is being granted through the Everyone usergroup">
+								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" disabled="disabled" />
+								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
+							</label>
+						</div>
+						<div ng-if="!EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
+							<label>
+								<input type="radio" value="reject" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
+								<strong>Reject</strong> &middot; The message is rejected and the user is sent an auto-response
+							</label>
+							<br/>
+							<label>
+								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
+								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
 							</label>
 						</div>
 					</div>
