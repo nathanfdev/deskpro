@@ -60,9 +60,11 @@ class VoicePhoneCallVoter extends AbstractTicketsVoter
                 if (!$attribute) {
                     return false;
                 }
-                $ticket = $attribute->getMessage()->getTicket();
+                $ticket  = $attribute->getMessage()->getTicket();
+                $checker = $this->getTicketChecker($user);
 
-                return $this->getTicketChecker($user)->canModifyMessages($ticket, 'delete_voice_recordings');
+                return $checker->canModifyMessages($ticket, 'delete_voice_recordings')
+                        || $checker->canModifyMessages($ticket, 'delete_voice_messages');
         }
 
         return true;

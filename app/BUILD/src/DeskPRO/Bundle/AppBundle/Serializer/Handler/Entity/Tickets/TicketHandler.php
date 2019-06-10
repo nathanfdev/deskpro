@@ -278,6 +278,12 @@ class TicketHandler extends AbstractEntityHandler
             new CallbackDeferredProperty([$this, 'getTicketPermissions'], [$entity, $context]),
             $model
         );
+        $sideloads->addCustomSideload(
+            'voice_permissions',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getVoicePermissions'], [$entity, $context]),
+            $model
+        );
 
         // validation
         $sideloads->addCustomSideload(
@@ -424,7 +430,6 @@ class TicketHandler extends AbstractEntityHandler
             'delete'              => $checker->canDelete($ticket),
             'reply'               => $checker->canReply($ticket),
             'modify_set_archived' => $checker->canSetArchived($ticket),
-            'modify_messages'     => $checker->canEditMessages($ticket),
         ];
 
         foreach ([
@@ -448,6 +453,28 @@ class TicketHandler extends AbstractEntityHandler
                  ] as $p) {
             $permissions["modify_$p"] = $checker->canModify($ticket, $p);
         }
+
+        return $permissions;
+    }
+
+    /**
+     * @param TicketEntity                 $ticket
+     * @param SideloadSerializationContext $context
+     *
+     * @return array
+     */
+    public function getVoicePermissions(TicketEntity $ticket, SideloadSerializationContext $context)
+    {
+        if (!$context->getUser() instanceof Person) {
+            return;
+        }
+
+        /** @var TicketChecker $checker */
+        $checker     = $context->getUser()->PermissionsManager->TicketChecker;
+        $permissions = [
+            'delete_voice_recordings' => $checker->canModifyMessages($ticket, 'delete_voice_recordings'),
+            'delete_voice_messages'   => $checker->canModifyMessages($ticket, 'delete_voice_messages'),
+        ];
 
         return $permissions;
     }

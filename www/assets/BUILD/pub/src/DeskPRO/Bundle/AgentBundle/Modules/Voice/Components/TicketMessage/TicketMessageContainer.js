@@ -33,7 +33,6 @@ class TicketMessageContainer extends React.Component {
     people:      PropTypes.object,
     connections: PropTypes.object,
     phoneCalls:  PropTypes.object,
-    perms:       PropTypes.object,
     elid:        PropTypes.string
   };
 
@@ -97,13 +96,13 @@ class TicketMessageContainer extends React.Component {
   canEditMessage() {
     const { data } = this.state;
     const ticket = this.getTicket();
-    if (!ticket || !data.linked.ticket_permissions) {
+    if (!ticket || !data.linked.voice_permissions) {
       return false;
     }
 
-    const permissions = data.linked.ticket_permissions[ticket.get('id')];
+    const permissions = data.linked.voice_permissions[ticket.get('id')];
 
-    return permissions ? permissions.modify_messages : false;
+    return permissions ? permissions.delete_voice_recordings || permissions.delete_voice_messages  : false;
   }
 
   openDialpad = () => {
@@ -157,7 +156,6 @@ class TicketMessageContainer extends React.Component {
     return (
       <TicketMessage
         {...this.props}
-        perms={this.props.perms}
         elid={this.props.elid}
         message={data.data}
         ticket={this.getTicket()}

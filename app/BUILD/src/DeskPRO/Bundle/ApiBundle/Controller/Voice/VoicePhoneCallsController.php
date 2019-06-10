@@ -12,8 +12,8 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoicePhoneCallVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -68,7 +68,7 @@ class VoicePhoneCallsController extends CrudController
         $message = $attribute->getMessage();
         $ticket  = $message->getTicket();
 
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, new PermissionGroupContext($ticket, $message));
+        $this->denyAccessUnlessGranted(VoicePhoneCallVoter::DELETE_RECORDING, new PermissionGroupContext($phoneCall));
 
         $recordings = $phoneCall->getRecordings();
         if ($recordings->count() > 0) {

@@ -237,7 +237,7 @@ class AgentLegacyApp {
     }
   }
 
-  renderVoiceMessage(node, data, dateCreatedFormatted, perms, elid) {
+  renderVoiceMessage(node, data, dateCreatedFormatted, elid) {
     let tabRef;
 
     ReactDOM.render(
@@ -250,7 +250,6 @@ class AgentLegacyApp {
             <VoiceTicketMessageContainer
               tabRef={(c) => { tabRef = c; }}
               data={data}
-              perms={perms}
               elid={elid}
               dateCreatedFormatted={dateCreatedFormatted}
             />
