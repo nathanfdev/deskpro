@@ -5,9 +5,7 @@ namespace Application\DeskPRO\EntityRepository\Traits;
 use Application\DeskPRO\Entity\ContentAbstract;
 
 /**
- * Trait ClearSlugHistoryTrait
- *
- * @package Application\DeskPRO\EntityRepository\Traits
+ * Trait ClearSlugHistoryTrait.
  */
 trait ClearSlugHistoryTrait
 {
@@ -18,7 +16,7 @@ trait ClearSlugHistoryTrait
      */
     public function clearHistoryByEntity($entity)
     {
-        if(!$entity instanceof ContentAbstract) {
+        if (!$entity instanceof ContentAbstract) {
             throw new \InvalidArgumentException('Entity should extends from ContentAbstract');
         }
 
@@ -28,7 +26,7 @@ trait ClearSlugHistoryTrait
             WHERE {$this->getEntityFieldName()} = :entity_id
         ",
             ['entity_id' => $entity->getId()],
-            ['entity_id' => \PDO::PARAM_INT,]
+            ['entity_id' => \PDO::PARAM_INT]
         );
     }
 
