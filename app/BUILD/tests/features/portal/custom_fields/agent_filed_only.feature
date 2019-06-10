@@ -33,6 +33,7 @@ Feature: Agent field only
 
     Scenario: I check profile agent only field is hidden
       Given I'm authenticated as user
+      And the setting "portal.members_community" is set to 0
       When I go to "/profile"
       Then the ".form-ticket" form should have 4 elements
       And I should see ".form-ticket" form fields in following order:

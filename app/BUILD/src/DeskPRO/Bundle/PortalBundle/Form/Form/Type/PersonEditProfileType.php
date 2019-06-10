@@ -68,6 +68,8 @@ class PersonEditProfileType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $settings = $options['settings'];
+
         $builder
             ->add('name', TextType::class, [
                 'label' => $this->phrase('portal.forms.label_name'),
@@ -82,6 +84,14 @@ class PersonEditProfileType extends AbstractType
                 'view_context' => 'user',
                 'label'        => $this->phrase('portal.forms.label_language'),
             ]);
+        }
+
+        if ($settings->get('portal.members_community')) {
+            $builder
+                ->add('community_name', TextType::class, [
+                    'label'    => $this->phrase('portal.forms.label_display_name'),
+                    'required' => false,
+                ]);
         }
 
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);

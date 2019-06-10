@@ -40,6 +40,13 @@ class CustomDefPerson extends CustomDefAbstract implements AliasesOwner
     protected $aliases;
 
     /**
+     * Show on public profile.
+     *
+     * @var bool
+     */
+    protected $is_public = false;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct()
@@ -93,6 +100,28 @@ class CustomDefPerson extends CustomDefAbstract implements AliasesOwner
         $this->aliases->removeElement($alias);
 
         return $this;
+    }
+
+    /**
+     * Show on public profile.
+     *
+     * @param bool $is_public
+     *
+     * @return $this
+     */
+    public function setIsPublic($is_public)
+    {
+        $this->setModelField('is_public', (bool) $is_public);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return $this->is_public;
     }
 
     //###########################################################################
@@ -213,6 +242,14 @@ class CustomDefPerson extends CustomDefAbstract implements AliasesOwner
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'is_agent_field',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_public',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_public',
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([

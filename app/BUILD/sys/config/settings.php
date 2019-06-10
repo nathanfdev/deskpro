@@ -605,6 +605,11 @@ return [
     'portal.http_cache_last_modified' => false,
 
     /*
+     * Member community
+     */
+    'portal.members_community' => false,
+
+    /*
      * http s-maxage for a guest "page"
      */
     'portal.smaxage_guest_page' => 600,
