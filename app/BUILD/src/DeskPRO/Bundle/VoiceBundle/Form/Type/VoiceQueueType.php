@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Form\Type;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
@@ -41,9 +42,14 @@ class VoiceQueueType extends AbstractType
                     return $er->createQueryBuilder('u')->where('u.is_tickets_enabled = 1');
                 },
             ])
+            ->add('brand', EntityType::class, [
+                'class'    => Brand::class,
+                'required' => false,
+            ])
             ->add('agents', VoiceQueueAgentCollectionType::class, [
-                'queue'    => $builder->getData(),
-                'required' => true,
+                'queue'          => $builder->getData(),
+                'required'       => true,
+                'error_bubbling' => false,
             ])
             ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
@@ -78,13 +84,14 @@ class VoiceQueueType extends AbstractType
             ->add('voicemail_timeout', IntegerType::class, [
                 'required'      => false,
                 'property_path' => 'voicemailTimeout',
+                'empty_data'    => '30',
             ])
             ->add('routing_model', ChoiceType::class, [
                 'required'          => true,
                 'property_path'     => 'routingModel',
                 'choices_as_values' => true,
                 'choices'           => [
-                    VoiceQueue::ROUTING_MODEL_AUTOMATIC,
+                    VoiceQueue::ROUTING_MODEL_ROUND_ROBIN,
                     VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED,
                     VoiceQueue::ROUTING_MODEL_SIMULRING,
                 ],
@@ -124,7 +131,7 @@ class VoiceQueueType extends AbstractType
 
         // set task queue max size
         if (isset($data['routing_model'])) {
-            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_AUTOMATIC) {
+            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_ROUND_ROBIN) {
                 $data['max_queue_size'] = 1;
             } elseif ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_SIMULRING) {
                 $data['max_queue_size'] = 50;

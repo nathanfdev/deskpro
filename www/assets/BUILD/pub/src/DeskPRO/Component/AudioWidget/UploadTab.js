@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { SemanticError } from 'DeskPRO/Component/Semantic/ReactForm';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
@@ -6,6 +7,10 @@ import BaseUploadTab from './BaseUploadTab';
 import { UploadPlayButton } from './PlayButton';
 
 class UploadTab extends BaseUploadTab {
+
+  static propTypes = {
+    value: PropTypes.object
+  };
 
   onUpload = () => {
     this.playButton.stopPlaying();
@@ -18,6 +23,7 @@ class UploadTab extends BaseUploadTab {
   };
 
   render() {
+    const { value } = this.props;
     const { downloadUrl, upload, uploadError } = this.state;
     const baseUrl = window.DP_BASE_URL ? window.DP_BASE_URL.replace(/\/$/, '') : '';
 
@@ -34,7 +40,7 @@ class UploadTab extends BaseUploadTab {
           className={classNames('ui basic upload button', { loading: upload, disabled: upload })}
           onClick={() => false}
         >
-          Choose a file
+          {value && value.blob && value.blob.blob_auth ? 'Choose a different file' : 'Choose a file'}
           <UploadButton
             name="file"
             uploadUrl={`${baseUrl}/api/v2/blobs/temp`}

@@ -13,7 +13,7 @@ namespace DeskPRO\Bundle\VoiceBundle\Twilio;
  * @method $this dial(array $options = [])
  * @method $this conference($name, array $options = [])
  * @method $this hangup()
- * @method $this enqueue(array $options)
+ * @method $this enqueue($queueName, array $options)
  * @method $this task($jsonOptions)
  * @method $this redirect($url, array $options = [])
  */

@@ -2,24 +2,22 @@
 
 namespace Application\DeskPRO\Form\Transformer;
 
+use Egulias\EmailValidator\EmailValidator;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\DataTransformerInterface;
 
 class PhoneNumberModelTransformer implements DataTransformerInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function transform($number)
     {
         return $number;
     }
 
     /**
-     * Transforms a string (number) to an object (issue).
-     *
-     * @param string $number
-     *
-     * @throws TransformationFailedException if object (issue) is not found
-     *
-     * @return Issue|null
+     * {@inheritdoc}
      */
     public function reverseTransform($number)
     {
@@ -28,6 +26,18 @@ class PhoneNumberModelTransformer implements DataTransformerInterface
         }
 
         try {
+            if (preg_match('/^sip:.+/', $number)) {
+                $email = preg_replace('/^sip:/', '', $number);
+                if (!$email) {
+                    return;
+                }
+
+                $strictValidator = new EmailValidator();
+                if (preg_match('/^.+\@\S+\.\S+$/', $email) && $strictValidator->isValid($email, false, true)) {
+                    return $number;
+                }
+            }
+
             if (!$formatted = PhoneNumbers::toE164Format($number)) {
                 return;
             }

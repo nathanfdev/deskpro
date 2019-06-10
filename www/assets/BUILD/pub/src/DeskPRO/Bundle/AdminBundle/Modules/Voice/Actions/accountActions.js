@@ -8,6 +8,17 @@ export const loadAccounts = createAction(
   () => dispatch => dispatch(loadAll('VoiceAccount'))
 );
 
+export const loadAvailableCountries = createAction(
+  'VOICE_LOAD_ACCOUNTS_COUNTRIES',
+  () => new Promise((resolve, reject) => {
+    api.sendGet('DP_API/voice_accounts?include=available_voice_countries').success(({ linked }) => {
+      resolve(linked.available_voice_countries);
+    }).catch(() => {
+      reject();
+    });
+  })
+);
+
 export const testCredentials = createAction(
   'VOICE_TEST_CREDENTIALS',
   (accountType, data) => api.sendPost(`DP_API/voice_accounts/${accountType}/test_credentials`, data)
@@ -19,6 +30,15 @@ export const createAccount = createAction(
     const account = Immutable.fromJS(response.data);
     dispatch(addToCollection('VoiceAccount', 'all', Immutable.List([account])));
   })
+);
+
+export const createCloudAccount = createAction(
+  'VOICE_CREATE_ACCOUNT',
+  (accountType, data) => dispatch =>
+    api.sendPost(`DP_API/voice_accounts/${accountType}/create_cloud_account`, data).success((response) => {
+      const account = Immutable.fromJS(response.data);
+      dispatch(addToCollection('VoiceAccount', 'all', Immutable.List([account])));
+    })
 );
 
 export const updateAccount = createAction(

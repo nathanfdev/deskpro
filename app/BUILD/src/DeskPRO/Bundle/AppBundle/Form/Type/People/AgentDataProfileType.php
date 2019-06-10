@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAssetAuthType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -47,6 +48,14 @@ class AgentDataProfileType extends AbstractType
             ])
             ->add('forwarding_number', TextType::class, [
                 'property_path' => 'forwardingNumber',
+                'required'      => false,
+            ])
+            ->add('forwarding_ring_timeout', IntegerType::class, [
+                'property_path' => 'forwardingRingTimeout',
+                'required'      => false,
+            ])
+            ->add('forwarding_logged_out', ApiBooleanType::class, [
+                'property_path' => 'forwardingLoggedOut',
                 'required'      => false,
             ])
         ;

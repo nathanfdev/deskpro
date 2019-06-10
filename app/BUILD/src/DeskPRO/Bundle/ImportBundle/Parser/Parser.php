@@ -40,7 +40,7 @@ class Parser
      *
      * @return PrimaryImportModelInterface
      */
-    public function exportRawData($oid, $rawData, $modelClass)
+    public function parseRawData($oid, $rawData, $modelClass)
     {
         try {
             $this->logger->debug("Export $modelClass#$oid");

@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Egulias\EmailValidator\EmailValidator;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
@@ -62,6 +63,45 @@ abstract class AbstractNumberValidator extends ConstraintValidator
                     break;
             }
         } catch (\Exception $e) {
+            $context
+                ->buildViolation($constraint->invalidFormatMessage)
+                ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                ->addViolation()
+            ;
+        }
+    }
+
+    /**
+     * @param string         $value
+     * @param AbstractNumber $constraint
+     */
+    protected function validateSip($value, AbstractNumber $constraint)
+    {
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+
+        if (preg_match('/\s/', $value)) {
+            $context
+                ->buildViolation($constraint->invalidFormatMessage)
+                ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                ->addViolation()
+            ;
+        }
+
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+        $email   = preg_replace('/^sip:/', '', $value);
+
+        if (!$email) {
+            $context
+                ->buildViolation($constraint->invalidFormatMessage)
+                ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                ->addViolation()
+            ;
+        }
+
+        $strictValidator = new EmailValidator();
+        if (!preg_match('/^.+\@\S+\.\S+$/', $email) || !$strictValidator->isValid($email, false, true)) {
             $context
                 ->buildViolation($constraint->invalidFormatMessage)
                 ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)

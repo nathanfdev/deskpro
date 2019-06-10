@@ -11,6 +11,9 @@ import VoicemailListContainer from './Voicemail/VoicemailListContainer';
 class VoiceMenu extends React.Component {
 
   static propTypes = {
+    mp3:                   PropTypes.string,
+    wav:                   PropTypes.string,
+    ogg:                   PropTypes.string,
     me:                    PropTypes.object,
     agents:                PropTypes.object,
     people:                PropTypes.object,
@@ -27,12 +30,12 @@ class VoiceMenu extends React.Component {
     callsEnabled:          PropTypes.bool,
     voiceEnabled:          PropTypes.bool,
     micEnabled:            PropTypes.bool,
-    openUserMenu:          PropTypes.func
+    openUserMenu:          PropTypes.func,
+    recordsCount:          PropTypes.number
   };
 
   constructor(props) {
     super(props);
-
     const { incomingCall, outgoingCall, outboundCallsEnabled } = this.props;
     this.state = {
       tabName: incomingCall || outgoingCall || outboundCallsEnabled ? 'phone' : 'settings'
@@ -72,10 +75,14 @@ class VoiceMenu extends React.Component {
   renderPhoneTab() {
     const { me, agents, people, queues, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
     const { outgoingCall, acceptCall, declineCall, hideCall, onHangup } = this.props;
+    const { mp3, wav, ogg } = this.props;
 
     if (incomingCall) {
       return (
         <IncomingCall
+          mp3={mp3}
+          wav={wav}
+          ogg={ogg}
           me={me}
           agents={agents}
           people={people}
@@ -112,7 +119,7 @@ class VoiceMenu extends React.Component {
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
-
+    const voicemailTitle = this.props.recordsCount > 0 ? `Voicemail (${this.props.recordsCount})` : 'Voicemail';
     return (
       <div className="voice-menu">
         <div className="header">
@@ -125,7 +132,7 @@ class VoiceMenu extends React.Component {
           {!pendingCall &&
           <TabButton
             tabName="voicemail"
-            title="Voicemail"
+            title={voicemailTitle}
             iconClass="fa-play-circle"
             onClick={this.changeTab}
             active={tabName === 'voicemail'}

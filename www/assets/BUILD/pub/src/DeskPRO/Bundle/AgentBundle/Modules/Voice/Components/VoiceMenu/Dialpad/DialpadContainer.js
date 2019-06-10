@@ -52,8 +52,8 @@ class DialpadContainer extends React.Component {
       lastCallFrom,
       ticketId,
       ticketTitle,
-      onMakeCall:     this.makeCall,
-      onSearchPerson: this.searchPerson,
+      makeCall:     this.makeCall,
+      searchPerson: this.searchPerson,
     });
   }
 }

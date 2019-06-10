@@ -380,6 +380,7 @@ portal.feedback.form_logged_in_as: 'Hai effettuato l''accesso come:<span>{{name}
 portal.feedback.form_logout: 'Non sei tu?'
 portal.feedback.form_tell_us_more: 'Dicci di più'
 portal.feedback.form_title: Titolo
+portal.feedback.form_custom_cat: Categoria
 portal.feedback.module_forbidden: 'Non hai accesso a questo modulo'
 portal.feedback.no_matching: 'Non ci sono feedback corrispondenti'
 portal.feedback.none: 'Non c''è alcun feedback'

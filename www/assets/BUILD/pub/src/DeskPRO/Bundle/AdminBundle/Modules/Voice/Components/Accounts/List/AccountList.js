@@ -6,15 +6,17 @@ import GeneralSettingsForm from './GeneralSettingsForm';
 class AccountList extends React.Component {
 
   static propTypes = {
-    accounts:      PropTypes.object,
-    settings:      PropTypes.object,
-    onNewAccount:  PropTypes.func,
-    onEditAccount: PropTypes.func,
-    saveSettings:  PropTypes.func,
+    accounts:            PropTypes.object,
+    numbers:             PropTypes.object,
+    settings:            PropTypes.object,
+    openNewAccountForm:  PropTypes.func,
+    createCloudAccount:  PropTypes.func,
+    openEditAccountForm: PropTypes.func,
+    saveSettings:        PropTypes.func,
   };
 
   renderEmpty() {
-    const { onNewAccount } = this.props;
+    const { openNewAccountForm, createCloudAccount } = this.props;
 
     if (window.DP_IS_CLOUD) {
       return (
@@ -24,35 +26,34 @@ class AccountList extends React.Component {
           Voice has not been enabled on your account yet.
           <br /><br />
 
-          <button className="ui primary button" onClick={() => onNewAccount('cloud')}>
+          <button className="ui primary button" onClick={() => createCloudAccount('twilio')}>
             Enable Voice
           </button>
         </div>
       );
-    } else {
-      return (
-        <div className="page">
-          <SectionHeader title="General Settings" dividing />
-
-          You currently have no accounts.
-          <br /><br />
-
-          <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
-            Add new account
-          </button>
-        </div>
-      );
     }
+
+    return (
+      <div className="page">
+        <SectionHeader title="General Settings" dividing />
+
+        You currently have no accounts.
+        <br /><br />
+
+        <button className="ui primary button" onClick={() => openNewAccountForm('twilio')}>
+          Add new account
+        </button>
+      </div>
+    );
   }
 
   renderTable() {
-
-    const { accounts = [], onEditAccount, settings, saveSettings } = this.props;
+    const { accounts = [], numbers, openEditAccountForm, settings, saveSettings } = this.props;
 
     return (
       <div className="page">
         {/* disabled for now because we can just support only one account at the moment
-        <button className="ui right floated basic button" onClick={onNewAccount} disabled="disabled">
+        <button className="ui right floated basic button" onClick={createNewAccount} disabled="disabled">
           <i className="icon plus" />
           Add new account
         </button>*/}
@@ -73,7 +74,7 @@ class AccountList extends React.Component {
                   <div className="column sid">{account.get('account_id')}</div>
                   <div className="column date">{account.get('date_created')}</div>
                   <div className="column options-button">
-                    <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>
+                    <a onClick={(event) => { event.preventDefault(); openEditAccountForm(account); }}>
                       <i className="fas fa-cog" />
                     </a>
                   </div>
@@ -86,7 +87,7 @@ class AccountList extends React.Component {
 
         <div className="admin-list-options">
           <div className="voice-general-settings-form">
-            <GeneralSettingsForm settings={settings} onSubmit={saveSettings} />
+            <GeneralSettingsForm settings={settings} numbers={numbers} onSubmit={saveSettings} />
           </div>
         </div>
       </div>

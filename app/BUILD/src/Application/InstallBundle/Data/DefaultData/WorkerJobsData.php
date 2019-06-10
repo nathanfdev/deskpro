@@ -10,6 +10,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
 use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\CheckVoiceWorkers;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\RunTaskRouter;
 
 /**
  * Class WorkerJobsData.
@@ -355,6 +356,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Check if voice workers are stuck',
             'job_class'    => CheckVoiceWorkers::class,
             'run_interval' => CheckVoiceWorkers::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'run_task_router',
+            'worker_group' => 'voice',
+            'title'        => 'Run task router',
+            'description'  => 'Background job to evaluate task router',
+            'job_class'    => RunTaskRouter::class,
+            'run_interval' => RunTaskRouter::DEFAULT_INTERVAL,
         ];
 
         //------------------------------

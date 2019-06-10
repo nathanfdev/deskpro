@@ -352,6 +352,7 @@ portal.feedback.form_logged_in_as: 'Đăng nhập với tư cách là: <span>{{n
 portal.feedback.form_logout: 'Không phải bạn?'
 portal.feedback.form_tell_us_more: 'Hãy cho chúng tôi biết thêm'
 portal.feedback.form_title: 'Chức vụ'
+portal.feedback.form_custom_cat: 'Thể loại'
 portal.feedback.module_forbidden: 'Bạn không có quyền truy cập vào mô-đun này'
 portal.feedback.no_matching: 'Không có phản hồi phù hợp'
 portal.feedback.none: 'Chưa có phản hồi'

@@ -24,6 +24,19 @@ class CallStatus extends React.Component {
       }
     }
 
+    if (status === 'voicemail') {
+      const recordings = call.get('recordings');
+      const agentVoicemail = call.get('agent_voicemail');
+
+      if (!recordings.size && !agentVoicemail) {
+        // call was redirected to voicemail
+        // but no message was actually recorded
+        // so just display as 'missed' in this case
+        status = 'missed';
+      }
+    }
+
+
     return (
       <td
         className={classNames({

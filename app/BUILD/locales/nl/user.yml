@@ -383,6 +383,7 @@ portal.feedback.form_logged_in_as: 'Ingelogd als: <span>{{name}}</span>, vanuit 
 portal.feedback.form_logout: 'Bent u dit niet?'
 portal.feedback.form_tell_us_more: 'Vertel ons meer'
 portal.feedback.form_title: Titel
+portal.feedback.form_custom_cat: Kategori
 portal.feedback.module_forbidden: 'U heeft geen toegang tot deze module'
 portal.feedback.no_matching: 'Geen overeenkomstige feedback'
 portal.feedback.none: 'Nog geen feedback'

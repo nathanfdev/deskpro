@@ -21,7 +21,7 @@ class BaseUploadTab extends React.Component {
   }
 
   onUploadSuccess = (event, data) => {
-    const { onChange } = this.props;
+    const { value, onChange } = this.props;
     const info = data.result && data.result.data ? data.result.data : {};
     const blobAuth = info.blob_auth_id;
     const downloadUrl = info.download_url;
@@ -34,6 +34,7 @@ class BaseUploadTab extends React.Component {
       });
 
       onChange({
+        ...value,
         blob: {
           blob_auth: blobAuth
         }

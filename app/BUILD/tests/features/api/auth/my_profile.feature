@@ -24,7 +24,7 @@ Feature: Person profile
     And the JSON node "data.timezone" should be equal to "UTC"
     And the JSON node "data.avatar" should be equal to 0
 
-  Scenario: I check validation
+  Scenario: I check email validation
     When I send a PUT request to "/api/v2/me/profile" with body:
     """
 {
@@ -33,10 +33,18 @@ Feature: Person profile
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.name.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "errors.fields.emails.errors[0].code" should be equal to "too_few_elements"
-    And the JSON node "errors.fields.emails.errors[0].message" should be equal to "This collection should contain 1 elements or more."
+
+  Scenario: I check name validation
+    When I send a PUT request to "/api/v2/me/profile" with body:
+    """
+{
+  "name": "",
+  "emails": ["my_new_email@deskpro.com"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.name.errors[0].code" should be equal to "required"
 
   Scenario: I update person profile
     When I send a PUT request to "/api/v2/me/profile" with body:

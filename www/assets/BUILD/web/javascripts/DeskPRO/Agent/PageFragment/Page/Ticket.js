@@ -1945,7 +1945,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     var renderVoiceComponent = function($el) {
       var $rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter($el);
 
-      $el.hide();
+      $el.remove();
       window.AgentLegacyBundle.renderVoiceMessage(
         $rElement.get(0),
         $el.data('message'),
@@ -2690,10 +2690,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     $type.first().parent().find('.select-user-item-options').show();
 
     if ($('.select-user-menu', this.wrapper).length) {
-      this.wrapper.addClass('field-error');
-    } else if (!this.getEl('field_errors').hasClass('on')) {
-      this.wrapper.removeClass('field-error');
-    }
+			this.wrapper.addClass('select-user-error');
+			this.wrapper.removeClass('no-user-email-error');
+			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
+			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
+		} else if (!self.meta.person_email) {
+			this.wrapper.addClass('no-user-email-error');
+			this.wrapper.removeClass('select-user-error');
+			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
+			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
+		} else {
+			this.wrapper.removeClass('select-user-error');
+			this.wrapper.removeClass('no-user-email-error');
+			if (!this.getEl('field_errors').hasClass('on')) {
+				this.wrapper.find('.submit-reply-trigger').removeAttr('disabled');
+				this.wrapper.find('.status-reply-menu-trigger').removeAttr('disabled');
+			}
+		}
 
     $type.on('click', function () {
       var $selected = $(this);
@@ -2701,7 +2714,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       $selected.parent().find('.select-user-item-options').show();
     });
 
-    var searchbox = this.getEl('user_searchbox');
+		var searchbox = $('.select-user', this.wrapper).parent();
     searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
       $.ajax({
         type: 'GET',
@@ -2710,6 +2723,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         context: this,
         success: function() {
           $('input.person-id', searchbox).val(personId);
+          $('input.person-email', searchbox).val(email);
           $('input.select-user', searchbox).val(name);
         }
       });
@@ -2723,64 +2737,193 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         type: 'GET',
         success: function (response) {
           $('.ticket-person-holder', self.wrapper).html(response);
+					DeskPRO.ElementHandler_Exec($('.ticket-person-holder', self.wrapper));
           self._initSelectUser();
         }
       });
     };
 
-    $('.select-user-button', this.wrapper).on('click', function () {
+    var removeNumberFromPerson = function (phoneNumber, personData) {
+    	var newPhoneNumbers = [];
+    	if (personData.phone_numbers.length > 0) {
+				personData.phone_numbers.forEach(function(value) {
+					if (value.number != phoneNumber) {
+						newPhoneNumbers.push(value);
+					}
+				});
+			}
+			$.ajax({
+				url: BASE_URL + 'api/v2/people/' + personData.id,
+				type: 'PUT',
+				data: JSON.stringify({
+					phone_numbers: newPhoneNumbers.length > 0 ? newPhoneNumbers : {}
+				}),
+			});
+		};
+
+    var setPerson = function(personId, personEmail) {
+			$.ajax({
+				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+				type: 'GET',
+				success: function(response) {
+					// existing user, change
+					if (response.data.primary_email || !response.data.preferences['voice.unknown_caller'] || response.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
+						$.ajax({
+							url: BASE_URL + 'api/v2/tickets/' + self.meta.ticket_id,
+							type: 'PUT',
+							data: {
+								person: personId,
+							},
+							success: function () {
+								reloadPersonView();
+								self.meta.person_id = personId;
+								self.meta.person_email = personEmail;
+							}
+						});
+					} else {
+						// voice user, merge
+						$.ajax({
+							url: BASE_URL + 'agent/people/' + personId + '/merge/' + self.meta.person_id,
+							type: 'POST',
+							success: function (response) {
+								if (response.success) {
+									$.ajax({
+										url: BASE_URL + 'api/v2/people/' + personId,
+										type: 'PUT',
+										data: {
+											preferences: {
+												'voice.unknown_caller': 0
+											},
+										},
+										success: function () {
+											$.ajax({
+												url: BASE_URL + 'api/v2/tickets/' + self.meta.ticket_id,
+												type: 'PUT',
+												data: {
+													person: personId,
+												},
+												success: function () {
+													reloadPersonView();
+													self.meta.person_id = personId;
+													self.meta.person_email = personEmail;
+												}
+											});
+
+										}
+									});
+								}
+							}
+						});
+					}
+				}
+			});
+		};
+
+		$('.select-user-button', this.wrapper).on('click', function () {
       var value = $('input[name=select_user]:checked', self.wrapper).val();
       if (value === 'find_person') {
         var personId = $('input[name=select_user_find_id]', self.wrapper).val();
+        var personEmail = $('input[name=select_user_find_email]', self.wrapper).val();
         if (personId) {
-          $.ajax({
-            url: BASE_URL + 'agent/people/' + personId + '/merge/' + self.meta.person_id,
-            type: 'POST',
-            success: reloadPersonView
-          });
-        }
-      } else if (value === 'new_person') {
-        $.ajax({
-          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-          type: 'PUT',
-          data: {
-            name: $('input[name=select_user_name]', self.wrapper).val(),
-            primary_email: $('input[name=select_user_email]', self.wrapper).val(),
-            language: $('select[name=select_user_language]', self.wrapper).val(),
-          },
-          success: reloadPersonView,
-          error: function (response) {
-            var data = response.responseJSON;
-            var errors = data.errors;
-            var error;
+					setPerson(personId, personEmail);
+				}
+			} else if (value === 'new_person') {
+      	var submitData = {
+					name: $('input[name=select_user_name]', self.wrapper).val(),
+					language: $('select[name=select_user_language]', self.wrapper).val(),
+					preferences: {
+						'voice.unknown_caller': 0
+					}
+				};
+      	var email =  $('input[name=select_user_email]', self.wrapper).val();
+      	if (email) {
+      		submitData.primary_email = email;
+				}
 
-            if (errors && errors.fields && errors.fields.primary_email) {
-               error = errors.fields.primary_email.errors[0].message;
-            }
+      	var errorHandler = function (response) {
+					var data = response.responseJSON;
+					var errors = data.errors;
+					var error;
 
-            if (error) {
-              $('.error-message', self.wrapper).html(error);
-            }
-          }
-        });
+					if (errors && errors.fields && errors.fields.primary_email) {
+						error = errors.fields.primary_email.errors[0].message;
+					}
+
+					if (error) {
+						$('.error-message', self.wrapper).html(error);
+					}
+				};
+
+				$.ajax({
+					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+					type: 'GET',
+					success: function(getResponse) {
+						// existing user, create a new person and change
+						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
+							submitData.phone_numbers = [{number: self.meta.voicePhoneNumber}];
+							$.ajax({
+								url: BASE_URL + 'api/v2/people',
+								type: 'POST',
+								data: submitData,
+								success: function(response) {
+									setPerson(response.data.id, response.data.primary_email);
+									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
+								},
+								error: errorHandler
+							});
+						} else {
+							// voice user, merge
+							$.ajax({
+								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+								type: 'PUT',
+								data: submitData,
+								success: function() {
+									reloadPersonView();
+									self.meta.person_email = submitData.primary_email;
+								},
+								error: errorHandler
+							});
+						}
+					}
+				});
       } else if (value === 'unknown_person') {
-        $.ajax({
-          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-          type: 'PUT',
-          data: {
-            preferences: {
-              'voice.unknown_caller': 0
-            },
-          },
-          success: reloadPersonView
-        });
-      } else if (value) {
-        $.ajax({
-          url: BASE_URL + 'agent/people/' + value + '/merge/' + self.meta.person_id,
-          type: 'POST',
-          success: reloadPersonView
-        });
-      }
+				$.ajax({
+					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+					type: 'GET',
+					success: function (getResponse) {
+						// existing user, create a new person and change
+						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
+							$.ajax({
+								url: BASE_URL + 'api/v2/people',
+								type: 'POST',
+								data: {
+									phone_numbers: [
+										{number: self.meta.voicePhoneNumber}
+									]
+								},
+								success: function(response) {
+									setPerson(response.data.id, null);
+									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
+								}
+							});
+						} else {
+							$.ajax({
+								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+								type: 'PUT',
+								data: {
+									preferences: {
+										'voice.unknown_caller': 0
+									},
+								},
+								success: reloadPersonView
+							});
+						}
+					}
+				});
+			} else if (value) {
+				var email = $('input[name=select_user]:checked', self.wrapper).data('email');
+				setPerson(value, email);
+			}
     });
 
     $('.change-user-button', this.wrapper).on('click', function () {
@@ -2789,6 +2932,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         type: 'GET',
         success: function (response) {
           $('.ticket-person-holder', self.wrapper).html(response);
+					DeskPRO.ElementHandler_Exec($('.ticket-person-holder', self.wrapper));
           self._initSelectUser();
         }
       });

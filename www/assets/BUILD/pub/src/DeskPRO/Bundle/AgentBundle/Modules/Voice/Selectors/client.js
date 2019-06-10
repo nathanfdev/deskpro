@@ -36,6 +36,11 @@ export const connectionsSelector = createSelector(
   state => state.get('connections')
 );
 
+export const waitingConnectionSelector = createSelector(
+  stateSelector,
+  state => state.get('waitingConnection')
+);
+
 export const outboundNumberSelector = createSelector(
   stateSelector,
   state => state.get('outboundNumber')
@@ -62,7 +67,7 @@ export const ringingVolumeSelector = createSelector(
   state => state.get('ringingVolume')
 );
 
-export const connectionStatesSelector = createSelector(
+export const busyAgentsSelector = createSelector(
   stateSelector,
-  state => state.get('connectionStates')
+  state => state.get('busyAgents')
 );

@@ -34,3 +34,8 @@ export const updateQueue = createAction(
     dispatch(updateCollection('VoiceQueue', Immutable.List([queue]), 'merge'));
   })
 );
+
+export const loadAverageWaitingTime = createAction(
+  'VOICE_QUEUES_LOAD_AVERAGE_WAITING_TIME',
+  () => api.sendGet('DP_API/voice_queues/average_waiting_time')
+);

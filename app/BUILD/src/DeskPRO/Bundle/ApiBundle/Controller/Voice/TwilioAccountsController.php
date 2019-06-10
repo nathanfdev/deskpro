@@ -8,9 +8,12 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\TwilioAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceBuyNumberType;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -88,6 +91,28 @@ class TwilioAccountsController extends AbstractVoiceCrudController
 
     /**
      * @ApiDoc(
+     *     description="Returns a list of available countries with voice service",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="array<DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber>"
+     * )
+     *
+     * @Rest\Get("/{account}/available_countries")
+     *
+     * @param TwilioVoiceAccount $account
+     *
+     * @return View
+     */
+    public function getAvailableCountriesAction(TwilioVoiceAccount $account)
+    {
+        $countries = $this->get('twilio_adapter')->getAvailableCountries($account);
+
+        return new View($this->wrap($countries));
+    }
+
+    /**
+     * @ApiDoc(
      *     description="Returns a list of available numbers to buy",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -107,7 +132,9 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         $adapter     = $this->get('twilio_adapter');
         $query       = $request->query;
         $countryCode = strtoupper($query->get('country_code'));
-        $options     = [];
+        $options     = [
+            'VoiceEnabled' => true,
+        ];
 
         $region = $query->get('region');
         if ($region) {
@@ -166,13 +193,22 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      */
     public function getExistingNumbersAction(TwilioVoiceAccount $account, Request $request)
     {
-        $page   = $request->query->getInt('page', 1);
-        $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);
+        if ($this->get('deskpro.app_env')->isQa() || in_array($this->get('deskpro.app_env')->getEnvId(), ['dev', 'test'])) {
+            $page   = $request->query->getInt('page', 1);
+            $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);
 
-        return new View($this->wrap($result->getRecords(), [
-            'page_num' => $result->getPageNum(),
-            'has_next' => $result->hasNext(),
-        ]));
+            $view = new View($this->wrap($result->getRecords(), [
+                'page_num' => $result->getPageNum(),
+                'has_next' => $result->hasNext(),
+            ]));
+        } else {
+            $view = new View($this->wrap([], [
+                'page_num' => 1,
+                'has_next' => false,
+            ]));
+        }
+
+        return $view;
     }
 
     /**
@@ -212,5 +248,67 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         } catch (TwilioException $e) {
             return $this->getFormErrorResponseFromException('twilio_exception', $e);
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Enable voice on cloud",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount"
+     * )
+     *
+     * @Rest\Post("/create_cloud_account")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function createCloudAccountAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
+
+        try {
+            $this->get('dp.voice.cloud_proxy')->initTwilioProxy($this->getUser());
+        } catch (InsufficientBalanceException $e) {
+            return new View([
+                'code'    => 'invalid_input',
+                'message' => 'Could not setup voice account',
+                'errors'  => [
+                    'errors' => [
+                        ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                    ],
+                    'fields' => [
+                        'dpms_client' => [
+                            'errors' => [
+                                ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                            ],
+                        ],
+                    ],
+                ],
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            throw $this->createAccessDeniedException($e->getMessage());
+        }
+
+        $account = $this->getRepository(TwilioVoiceAccount::class)->findOneBy([
+            'accountId' => VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER,
+            'authToken' => '_',
+        ]);
+
+        if (!$account) {
+            $account = new TwilioVoiceAccount();
+            $account->setAccountId(VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER);
+            $account->setAuthToken('_');
+            $account->setAccountName('Deskpro Cloud Voice Account');
+
+            $this->getManager()->persist($account);
+            $this->getManager()->flush();
+        }
+
+        return new View($this->wrap($account), Response::HTTP_CREATED);
     }
 }

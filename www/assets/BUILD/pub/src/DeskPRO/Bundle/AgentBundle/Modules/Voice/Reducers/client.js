@@ -1,7 +1,7 @@
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
-import { setFullPayload, pushPayloadToCollection, deletePayloadFromCollection, setValue } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
+import { setFullPayload, pushPayloadToCollection, deletePayloadFromCollection, setValue, composeHandlers } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/clientActions';
 
 let ringingVolume = 100;
@@ -10,12 +10,13 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 }
 
 const initialState = {
-  micEnabled:       false,
-  incomingCalls:    [],
-  outgoingCall:     null,
-  connections:      [],
-  connectionStates: [],
-  ringingVolume
+  waitingConnection: false,
+  micEnabled:        false,
+  incomingCalls:     [],
+  outgoingCall:      null,
+  connections:       [],
+  busyAgents:        [],
+  ringingVolume,
 };
 
 export default createReducer(initialState, {
@@ -50,21 +51,16 @@ export default createReducer(initialState, {
 
     return state.set('incomingCalls', incomingCalls);
   },
-  [actions.addConnection]:         pushPayloadToCollection('connections'),
-  [actions.removeConnection]:      deletePayloadFromCollection('connections'),
-  [actions.setOutgoingCall]:       setFullPayload('outgoingCall'),
-  [actions.resetOutgoingCall]:     setValue('outgoingCall', null),
-  [actions.setRingingVolume]:      setFullPayload('ringingVolume'),
-  [actions.updateConnectionState]: (state, payload) => {
-    const connectionStates = state.get('connectionStates');
-    const connection = connectionStates.get(payload.call_id, Immutable.fromJS({
-      hold:         false,
-      participants: []
-    }));
-
-    const newConnection = connection.merge(payload.state);
-    const newConnectionStates = connectionStates.set(payload.call_id, newConnection);
-
-    return state.set('connectionStates', newConnectionStates);
-  }
+  [actions.addConnection]: composeHandlers(
+    pushPayloadToCollection('connections'),
+    setValue('waitingConnection', false)
+  ),
+  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
+  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]: setValue('outgoingCall', null),
+  [actions.setRingingVolume]:  setFullPayload('ringingVolume'),
+  [actions.setBusyAgents]:     setFullPayload('busyAgents'),
+  [actions.setAgentAsIdle]:    deletePayloadFromCollection('busyAgents'),
+  [actions.setAgentAsBusy]:    pushPayloadToCollection('busyAgents'),
+  [actions.waitingConnection]: setValue('waitingConnection', true)
 });

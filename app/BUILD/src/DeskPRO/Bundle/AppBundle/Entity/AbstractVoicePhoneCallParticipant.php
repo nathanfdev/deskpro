@@ -49,12 +49,26 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     private $callSid;
 
     /**
+     * @ORM\Column(name="member_id", type="string", length=50, nullable=true)
+     *
+     * @var string
+     */
+    private $memberId;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
      * @var Person
      */
     private $person;
+
+    /**
+     * @ORM\Column(name="on_hold", type="boolean")
+     *
+     * @var bool
+     */
+    private $onHold = false;
 
     /**
      * @ORM\Column(name="date_created", type="datetime")
@@ -148,6 +162,26 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     }
 
     /**
+     * @return string
+     */
+    public function getMemberId()
+    {
+        return $this->memberId;
+    }
+
+    /**
+     * @param string $memberId
+     *
+     * @return $this
+     */
+    public function setMemberId($memberId)
+    {
+        $this->setModelField('memberId', $memberId);
+
+        return $this;
+    }
+
+    /**
      * @return Person
      */
     public function getPerson()
@@ -163,6 +197,26 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnHold()
+    {
+        return $this->onHold;
+    }
+
+    /**
+     * @param bool $onHold
+     *
+     * @return $this
+     */
+    public function setOnHold($onHold)
+    {
+        $this->setModelField('onHold', $onHold);
 
         return $this;
     }

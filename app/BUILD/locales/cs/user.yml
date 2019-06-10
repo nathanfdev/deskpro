@@ -201,6 +201,7 @@ portal.feedback.form_logged_in_as: 'Přihlášen jako: <span>{{name}}</span>, z 
 portal.feedback.form_logout: 'Nejste to vy?'
 portal.feedback.form_tell_us_more: 'Řekněte nám více'
 portal.feedback.form_title: Název
+portal.feedback.form_custom_cat: Kategorie
 portal.feedback.module_forbidden: 'Nemáte přístup k tomuto modulu'
 portal.feedback.no_matching: 'Žádná související připomínka'
 portal.feedback.none: 'Zatím žádná připomínka'

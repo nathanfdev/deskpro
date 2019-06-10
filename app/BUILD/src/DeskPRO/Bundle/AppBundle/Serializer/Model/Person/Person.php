@@ -332,6 +332,15 @@ class Person extends ExtendedPerson
     protected $brands;
 
     /**
+     * Prefs.
+     *
+     * @JMS\Type("deferred<array>")
+     *
+     * @var \Application\DeskPRO\Entity\PersonPref[]
+     */
+    protected $preferences;
+
+    /**
      * {@inheritdoc}
      *
      * @param array $customData
@@ -460,6 +469,13 @@ class Person extends ExtendedPerson
     public function setEmails($emails = null)
     {
         $this->emails = $emails;
+
+        return $this;
+    }
+
+    public function setPrefs($prefs)
+    {
+        $this->preferences = $prefs;
 
         return $this;
     }

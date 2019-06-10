@@ -381,6 +381,7 @@ portal.feedback.form_logged_in_as: 'Inicia sesión como: <span> {{name}} </span>
 portal.feedback.form_logout: '¿No tú?'
 portal.feedback.form_tell_us_more: 'Cuentanos más'
 portal.feedback.form_title: Título
+portal.feedback.form_custom_cat: Categoría
 portal.feedback.module_forbidden: 'No tienes acceso a este módulo.'
 portal.feedback.no_matching: 'No hay comentarios coincidentes'
 portal.feedback.none: 'No hay comentarios todavía'

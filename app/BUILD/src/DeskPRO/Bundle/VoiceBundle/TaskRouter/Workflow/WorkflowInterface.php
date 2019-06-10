@@ -18,16 +18,17 @@ interface WorkflowInterface
     /**
      * @param Task $task
      *
-     * @return bool
+     * @return int
      */
-    public function isTaskTimedOut(Task $task);
+    public function getTimeout(Task $task);
 
     /**
      * @param Task $task
+     * @param bool $ignoreRejected
      *
      * @return Worker[]
      */
-    public function getAvailableWorkers(Task $task);
+    public function getAvailableWorkers(Task $task, $ignoreRejected = false);
 
     /**
      * @param Task     $task

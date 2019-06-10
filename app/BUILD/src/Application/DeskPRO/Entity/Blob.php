@@ -411,8 +411,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getDownloadUrl($absolute = false, $use_file_url = true)
     {
-        if ($use_file_url && $this->file_url) {
-            return $this->file_url;
+        if ($use_file_url && $this->getFileUrl()) {
+            return $this->getFileUrl();
         }
 
         if (!$this->getAuthId()) {
@@ -423,7 +423,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         // We are specifically requestinga local url,
         // make sure serve_file doesn't redirect.
-        if ($this->file_url && !$use_file_url) {
+        if ($this->getFileUrl() && !$use_file_url) {
             $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
@@ -718,7 +718,58 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getFileUrl()
     {
-        return $this->file_url;
+        $url = $this->file_url;
+        if ($this->storage_loc === 's3') {
+            return self::rewriteDynFileUrl($url);
+        }
+
+        return $url;
+    }
+
+    /**
+     * This is meant to dynamically re-write S3 file URLs.
+     *
+     * E.g. on cloud its used like:
+     * $SETTINGS['core.filestorage_s3_file_dynurl'] = "https://" . $siteContext->getMasterDomain() . "/dps-fs/__SIGNSEG__/__PATH__";
+     * $SETTINGS['core.filestorage_s3_file_dynurl_domain_dyn_sign'] = '????????????????';
+     *
+     * The purpose is a quick-fix on Cloud to make each site use its own domain. In our case, it gets proxied through
+     * Cloudflare to the real S3 bucket. But having each file on it's own domain means no single site can
+     * cause the whole S3 domain to be targetted as unsafe by block lists.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function rewriteDynFileUrl($url)
+    {
+        /* @var \Dprun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        $urlPattern = $DP_ENV->getConfig('settings.filestorage_s3_file_dynurl');
+
+        if (!$urlPattern) {
+            return $url;
+        }
+
+        $existUrl      = parse_url($url);
+        $patternDomain = parse_url($urlPattern, PHP_URL_HOST);
+
+        $path = ltrim($existUrl['path'], '/').(!empty($existUrl['query']) ? "?{$existUrl['query']}" : '');
+
+        $signDomain = $DP_ENV->getConfig('settings.filestorage_s3_file_dynurl_domain_dyn_sign') ?: '';
+        $signKey    = sha1($signDomain.$patternDomain);
+
+        if (strpos($url, $signKey)) {
+            return $url;
+        }
+
+        $newUrl = str_replace(
+            ['__PATH__', '__SIGNSEG__'],
+            [$path, $signKey],
+            $urlPattern
+        );
+
+        return $newUrl;
     }
 
     /**
@@ -856,7 +907,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'storage_loc_pref'     => $this->storage_loc_pref,
             'storage_loc_specific' => $this->storage_loc_specific,
             'save_path'            => $this->save_path,
-            'file_url'             => $this->file_url,
+            'file_url'             => $this->getFileUrl(),
             'filename'             => $this->filename,
             'filesize'             => $this->filesize,
             'content_type'         => $this->content_type,

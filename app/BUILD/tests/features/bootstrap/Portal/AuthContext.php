@@ -78,6 +78,8 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
         $session->save();
         $cookie = new Cookie($session->getName(), $session->getId());
         $client->getCookieJar()->set($cookie);
+
+        DataContext::setReference('me', $this->me);
     }
 
     /**

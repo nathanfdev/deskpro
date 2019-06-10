@@ -252,13 +252,16 @@ class GenericContext extends BasePortalContext
         }
         $class = $classes[$type];
 
-        if (!$em->getRepository($class)->findOneBy(compact('title'))) {
+        if (!($category = $em->getRepository($class)->findOneBy(compact('title')))) {
             $category = new $class();
             $category->setTitle($title);
+            $category->updateSlug();
             $category->root = 1;
             $em->persist($category);
             $em->flush();
         }
+
+        DataContext::setReference($type.'_'.$category->getSlug(), $category);
     }
 
     /**

@@ -23,6 +23,8 @@ class TaskRouterController extends BaseController
     /**
      * @Rest\Post("/create_worker")
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function createWorkerAction()
@@ -41,7 +43,8 @@ class TaskRouterController extends BaseController
         }
 
         // create a voice worker for the agent
-        if (!$this->get('dp.voice.task_router.storage')->getWorkerByType('agent', $person->getId())) {
+        $storage = $this->get('dp.voice.task_router.storage');
+        if (!$storage->getWorkerByType('agent', $person->getId())) {
             $worker = new Worker();
             $worker->setType('agent');
             $worker->setTypeId($person->getId());
@@ -52,8 +55,10 @@ class TaskRouterController extends BaseController
                 $worker->setActivity(Worker::ACTIVITY_OFFLINE);
             }
 
-            $this->get('dp.voice.task_router.storage')->saveWorker($worker);
+            $storage->saveWorker($worker);
         }
+
+        $this->get('dp.voice.task_router')->updateLastWorkerActivity('agent', $person->getId());
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

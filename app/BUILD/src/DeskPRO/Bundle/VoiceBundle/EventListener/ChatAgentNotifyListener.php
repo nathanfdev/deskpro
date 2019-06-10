@@ -64,9 +64,9 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TaskRouterEvent::ASSIGNED => 'onAssigned',
-            TaskRouterEvent::ACCEPTED => 'onAccepted',
-            TaskRouterEvent::CANCELED => 'onCanceled',
+            TaskRouterEvent::ASSIGNED      => 'onAssigned',
+            TaskRouterEvent::ACCEPTED      => 'onAccepted',
+            TaskRouterEvent::TASK_CANCELED => 'onCanceled',
         ];
     }
 

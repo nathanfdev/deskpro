@@ -11,6 +11,13 @@ $voice-green-border-color: #47BF61;
   }
 }
 
+.user_popup {
+  .ui.popup {
+    max-width: 360px;
+    width: 360px;
+  }
+}
+
 .voice-profile {
   width: 360px;
   font-family: 'Open Sans';
@@ -137,15 +144,17 @@ $voice-green-border-color: #47BF61;
 }
 
 .voice-menu-popup {
+  position: relative;
+
+  .ui.popup {
+    width: 360px;
+    max-width: 360px;
+  }
 
   .status {
-    position: relative;
-    margin-right: 10px;
-
-    .spinner-flat {
-      position: absolute;
-      right: -20px;
-    }
+    width: 60px;
+    text-align: center;
+    right: -13px;
   }
 
   .voice-menu {
@@ -169,7 +178,7 @@ $voice-green-border-color: #47BF61;
         font-weight: 600;
         font-size: 12px;
         color: $dp-greyscale-850;
-        flex: 1;
+        flex: auto;
 
         i {
           margin-right: 5px;
@@ -229,7 +238,8 @@ $voice-green-border-color: #47BF61;
 
           .call-forward {
             .field {
-              margin: 20px;
+              margin-top: 10px;
+              margin-left: 10px;
 
               label {
                 font-weight: 400;
@@ -244,12 +254,31 @@ $voice-green-border-color: #47BF61;
                   position: absolute;
                   left: 3px;
                 }
+              }
 
-                input {
-                  padding-left: 50px;
-                  width: 100%;
+              input[type=text] {
+                padding-left: 50px;
+                max-width: 225px;
+              }
+
+              .ring-timeout {
+                display: flex;
+                font-size: 14px;
+
+                span {
+                  margin-right: 10px;
+                  line-height: 35px;
+                }
+
+                input[type=number] {
+                  width: 65px;
                 }
               }
+            }
+
+            .call-forward-save {
+              margin-left: 20px;
+              margin-top: -10px;
             }
           }
         }
@@ -352,10 +381,17 @@ $voice-green-border-color: #47BF61;
           width: 100%;
           border: 1px solid $dp-greyscale-250;
           box-shadow: 0 4px 8px 0 $dp-greyscale-250;
+          max-height: 200px;
+          overflow-x: hidden;
+          overflow-y: auto;
 
           .dialpad-search-result-item {
             padding: 5px;
             cursor: pointer;
+
+            &:hover {
+              text-decoration: underline $dp-sonic-primary;
+            }
           }
         }
       }
@@ -413,6 +449,7 @@ $voice-green-border-color: #47BF61;
             .call-from-details {
               display: inline-block;
               margin-left: 20px;
+              vertical-align: top;
             }
           }
 
@@ -545,8 +582,13 @@ $voice-green-border-color: #47BF61;
       }
 
       .voice-forward-help {
-        margin: 20px;
-        font-size: 14px;
+        margin: 10px;
+        font-size: 11px;
+
+        ul {
+          list-style: disc;
+          margin-left: 15px;
+        }
       }
 
       .voice-online-agents {
@@ -963,10 +1005,10 @@ $voice-green-border-color: #47BF61;
 .voice-ticket-transfer-list {
   .tab-menu {
     width: 100%;
+    display: flex;
 
     .item {
-      display: inline-block;
-      width: 33.3%;
+      flex-grow: 1;
       height: 50px;
       text-align: center;
       border-top: 1px solid $dp-greyscale-250;
@@ -1015,6 +1057,17 @@ $voice-green-border-color: #47BF61;
       }
     }
   }
+
+  .voice-auto-attendant-list {
+    .auto-attendant-item {
+      cursor: pointer;
+
+      &.active {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+      }
+    }
+  }
 }
 
 .voice-ticket-add-list, .voice-ticket-transfer-list {
@@ -1028,6 +1081,11 @@ $voice-green-border-color: #47BF61;
       margin-right: 10px;
     }
   }
+
+  .error-message {
+    color: #ff0000;
+    padding: 10px;
+  }
 }
 
 .voice-ticket-dialpad {
@@ -1040,8 +1098,25 @@ $voice-green-border-color: #47BF61;
   max-height: 250px;
 
   .queue-item {
-    padding: 20px;
+    padding: 10px 20px 5px 20px;
     border-bottom: 1px solid #E6E6E6;
+
+    label {
+      margin-top: -2px;
+    }
+
+    .more-button {
+      display: inline-block;
+      margin-left: 5px;
+      position: relative;
+
+      .voice-popup-avatars {
+        width: 200px;
+        padding: 5px 5px 3px;
+        border: 1px solid #3A8DDE;
+        background-color: #FFFFFF;
+      }
+    }
 
     &:last-child {
       border-bottom: 0;
@@ -1064,6 +1139,15 @@ $voice-green-border-color: #47BF61;
       font-size: 14px;
       color: $dp-greyscale-850;
       margin-bottom: 10px;
+      display: flex;
+    }
+
+    .queue-agents-count {
+      white-space: nowrap;
+    }
+
+    .more-text {
+      margin-left: 5px;
     }
 
     .avatar {
@@ -1100,6 +1184,22 @@ $voice-green-border-color: #47BF61;
   .empty-message {
     text-align: center;
     margin: 10px;
+  }
+}
+
+.voice-auto-attendant-list {
+  max-height: 250px;
+
+  .auto-attendant-item {
+    padding: 10px 20px 5px 20px;
+    border-bottom: 1px solid #E6E6E6;
+
+    .auto-attendant-name {
+      font-weight: 400;
+      font-size: 16px;
+      color:$dp-greyscale-850;
+      margin-bottom: 10px;
+    }
   }
 }
 
@@ -1262,6 +1362,8 @@ $voice-green-border-color: #47BF61;
       }
 
       button {
+        position: relative;
+        min-width: 19px;
         height: 30px;
         padding-top: 3px;
         padding-bottom: 3px;

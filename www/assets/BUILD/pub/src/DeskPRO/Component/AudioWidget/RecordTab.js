@@ -13,7 +13,7 @@ class RecordTab extends BaseUploadTab {
     this.state.recording = false;
   }
 
-  onToggleRecording = (event) => {
+  toggleRecording = (event) => {
     event.preventDefault();
     if (this.locked) {
       return;
@@ -80,10 +80,10 @@ class RecordTab extends BaseUploadTab {
         </Field>
         <button
           className={classNames('ui basic button', { loading: upload, disabled: upload })}
-          onClick={this.onToggleRecording}
+          onClick={this.toggleRecording}
         >
           <i className={classNames(recording ? 'mute' : 'unmute', 'icon')} />
-          Start recording
+          {recording ? 'Stop recording' : 'Start recording'}
         </button>
         <UploadPlayButton
           ref={(c) => { this.playButton = c; }}

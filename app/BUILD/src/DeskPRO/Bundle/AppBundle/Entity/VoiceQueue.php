@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -19,6 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class VoiceQueue.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceQueueRepository")
+ * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceQueueListener"})
  * @ORM\Table(name="voice_queues", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="name", columns={"name"})
  * })
@@ -33,7 +35,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const ROUTING_MODEL_AUTOMATIC      = 'automatic';
+    const ROUTING_MODEL_ROUND_ROBIN    = 'round_robin';
     const ROUTING_MODEL_LEAST_UTILIZED = 'least_utilized';
     const ROUTING_MODEL_SIMULRING      = 'simulring';
 
@@ -64,7 +66,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\JoinColumn(name="department_id")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      *
      * @JMS\Expose()
@@ -78,12 +80,24 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $department;
 
     /**
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Brand")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    private $brand;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
      *
      * @JMS\Expose()
      * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent>")
      *
      * @Assert\Valid()
+     * @Assert\Count(min="1")
      *
      * @var VoiceQueueAgent[]|ArrayCollection
      */
@@ -102,6 +116,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $routingModel;
 
     /**
+     * @ORM\JoinColumn(name="greet_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
@@ -113,6 +128,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $greetAsset;
 
     /**
+     * @ORM\JoinColumn(name="loop_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
@@ -124,6 +140,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $loopAsset;
 
     /**
+     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
@@ -256,6 +273,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setDepartment(Department $department = null)
     {
         $this->setModelField('department', $department);
+
+        return $this;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand(Brand $brand = null)
+    {
+        $this->setModelField('brand', $brand);
 
         return $this;
     }

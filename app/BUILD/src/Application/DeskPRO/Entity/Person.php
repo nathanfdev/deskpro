@@ -117,6 +117,8 @@ class Person extends DomainObject implements
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
     const CREATED_WEB_API        = 'web.api';
+    const CREATED_PHONE_INBOUND  = 'phone.inbound';
+    const CREATED_PHONE_OUTBOUND = 'phone.outbound';
 
     const EVENT_PRE_CREATE  = 'person.pre_create';
     const EVENT_POST_CREATE = 'person.post_create';
@@ -268,7 +270,7 @@ class Person extends DomainObject implements
      *
      * @var string
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups="CheckName")
      */
     protected $name = '';
 
@@ -382,7 +384,7 @@ class Person extends DomainObject implements
      * The primary email address used by this account.
      *
      * @var PersonEmail
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups="CheckEmail")
      */
     protected $primary_email;
 
@@ -390,7 +392,7 @@ class Person extends DomainObject implements
      * @var ArrayCollection|PersonEmail[]
      *
      * @Assert\Valid()
-     * @Assert\Count(min=1)
+     * @Assert\Count(min=1, groups="CheckEmail")
      */
     protected $emails;
 
@@ -2324,6 +2326,9 @@ class Person extends DomainObject implements
         return $region;
     }
 
+    /**
+     * @param PersonPhoneNumber|null $number
+     */
     public function setPrimaryPhoneNumber(PersonPhoneNumber $number = null)
     {
         // note that while this is a 1-many relationship, we ensure in this method that we only have 1
@@ -4994,6 +4999,11 @@ class Person extends DomainObject implements
             $groups[] = 'Agent';
         } else {
             $groups[] = 'User';
+        }
+
+        if (!$this->phone_numbers->count()) {
+            $groups[] = 'CheckEmail';
+            $groups[] = 'CheckName';
         }
 
         return $groups;

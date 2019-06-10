@@ -8,16 +8,38 @@ namespace Application\AgentBundle\Form\Model;
 
 class NewTicketPerson
 {
-    /** @var int */
+    /**
+     * @var int
+     */
     public $id;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $name;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $email_address;
-    /** @var string ? */
+
+    /**
+     * @var string
+     */
+    public $phoneNumber;
+
+    /**
+     * @var string ?
+     */
     public $organization = 0;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $organization_position;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     public $language_id;
 }

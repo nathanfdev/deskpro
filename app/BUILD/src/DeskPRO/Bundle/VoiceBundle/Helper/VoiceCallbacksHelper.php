@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -9,6 +10,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendantDialNumber;
@@ -17,19 +19,23 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
-use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskRouter;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -73,6 +79,16 @@ class VoiceCallbacksHelper
     private $voiceProviderHelper;
 
     /**
+     * @var VoiceTicketHelper
+     */
+    private $voiceTicketHelper;
+
+    /**
+     * @var TransferCallHelper
+     */
+    private $transferCallHelper;
+
+    /**
      * @var WorkerHelper
      */
     private $workerHelper;
@@ -83,35 +99,53 @@ class VoiceCallbacksHelper
     private $storageAdapter;
 
     /**
+     * @var BrandAwareSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager            $em
-     * @param Serializer               $serializer
-     * @param TaskBuilder              $taskBuilder
-     * @param TaskRouter               $taskRouter
-     * @param VoiceSettingsResolver    $voiceSettingsResolver
-     * @param TicketManager            $ticketManager
-     * @param VoiceProviderHelper      $voiceProviderHelper
-     * @param WorkerHelper             $workerHelper
-     * @param StorageAdapterInterface  $storageAdapter
-     * @param EventDispatcherInterface $dispatcher
+     * @param EntityManager              $em
+     * @param Serializer                 $serializer
+     * @param TaskBuilder                $taskBuilder
+     * @param TaskRouter                 $taskRouter
+     * @param VoiceSettingsResolver      $voiceSettingsResolver
+     * @param TicketManager              $ticketManager
+     * @param VoiceProviderHelper        $voiceProviderHelper
+     * @param VoiceTicketHelper          $voiceTicketHelper
+     * @param TransferCallHelper         $transferCallHelper
+     * @param WorkerHelper               $workerHelper
+     * @param StorageAdapterInterface    $storageAdapter
+     * @param BrandAwareSettingsResolver $settingsResolver
+     * @param EventDispatcherInterface   $dispatcher
+     * @param LoggerInterface            $logger
      */
     public function __construct(
-        EntityManager            $em,
-        Serializer               $serializer,
-        TaskBuilder              $taskBuilder,
-        TaskRouter               $taskRouter,
-        VoiceSettingsResolver    $voiceSettingsResolver,
-        TicketManager            $ticketManager,
-        VoiceProviderHelper      $voiceProviderHelper,
-        WorkerHelper             $workerHelper,
-        StorageAdapterInterface  $storageAdapter,
-        EventDispatcherInterface $dispatcher
+        EntityManager              $em,
+        Serializer                 $serializer,
+        TaskBuilder                $taskBuilder,
+        TaskRouter                 $taskRouter,
+        VoiceSettingsResolver      $voiceSettingsResolver,
+        TicketManager              $ticketManager,
+        VoiceProviderHelper        $voiceProviderHelper,
+        VoiceTicketHelper          $voiceTicketHelper,
+        TransferCallHelper         $transferCallHelper,
+        WorkerHelper               $workerHelper,
+        StorageAdapterInterface    $storageAdapter,
+        BrandAwareSettingsResolver $settingsResolver,
+        EventDispatcherInterface   $dispatcher,
+        LoggerInterface            $logger
     ) {
         $this->em                    = $em;
         $this->serializer            = $serializer;
@@ -120,22 +154,27 @@ class VoiceCallbacksHelper
         $this->voiceSettingsResolver = $voiceSettingsResolver;
         $this->ticketManager         = $ticketManager;
         $this->voiceProviderHelper   = $voiceProviderHelper;
+        $this->voiceTicketHelper     = $voiceTicketHelper;
+        $this->transferCallHelper    = $transferCallHelper;
         $this->workerHelper          = $workerHelper;
         $this->storageAdapter        = $storageAdapter;
+        $this->settingsResolver      = $settingsResolver;
         $this->dispatcher            = $dispatcher;
+        $this->logger                = $logger;
     }
 
     /**
-     * @param string $callId
+     * @param string $callSid
      * @param string $fromNumber
      * @param string $toNumber
      * @param array  $details
      *
+     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws OutOfServiceException
      *
      * @return VoicePhoneCall
      */
-    public function createIncomingPhoneCall($callId, $fromNumber, $toNumber, array $details)
+    public function createIncomingPhoneCall($callSid, $fromNumber, $toNumber, array $details)
     {
         if (!preg_match('/^\+/', $fromNumber)) {
             $fromNumber = '+'.$fromNumber;
@@ -155,12 +194,13 @@ class VoiceCallbacksHelper
         // get the caller person
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
         $personRepo = $this->em->getRepository(Person::class);
-        $person     = $personRepo->getOrCreateUserByPhoneNumber($fromNumber);
+        $person     = $personRepo->getOrCreateUserByPhoneNumber($fromNumber, Person::CREATED_PHONE_INBOUND);
 
         // create phone call
         $phoneCall = new VoicePhoneCall();
         $phoneCall
-            ->setCallSid($callId)
+            ->setCallSid($callSid)
+            ->addCallSid($person->getId(), VoicePhoneCall::TYPE_INCOMING, $callSid)
             ->setNumber($number)
             ->setExternalNumber($fromNumber)
             ->setPerson($person)
@@ -170,7 +210,7 @@ class VoiceCallbacksHelper
 
         // create user participant
         $participant = new VoicePhoneCallParticipantUser();
-        $participant->setCallSid($callId);
+        $participant->setCallSid($callSid);
         $participant->setPerson($person);
 
         $phoneCall->addParticipant($participant);
@@ -202,16 +242,16 @@ class VoiceCallbacksHelper
 
     /**
      * @param string $callId
-     * @param string $agentCallId
+     * @param string $agentCallSid
      * @param int    $agentId
      * @param array  $details
      * @param string $forwardedNumber
      *
-     * @throws OutOfServiceException
+     * @throws \Exception
      *
      * @return VoicePhoneCall|null
      */
-    public function joinIncomingPhoneCall($callId, $agentCallId, $agentId, $forwardedNumber, array $details)
+    public function joinIncomingPhoneCall($callId, $agentCallSid, $agentId, $forwardedNumber, array $details)
     {
         $agent     = $this->getAgent($agentId);
         $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($callId);
@@ -220,19 +260,19 @@ class VoiceCallbacksHelper
             throw new OutOfServiceException();
         }
 
-        if (!$this->voiceProviderHelper->isCallActive($phoneCall)) {
-            return;
-        }
+        $phoneCall->addCallSid($agentId, VoicePhoneCall::TYPE_INCOMING, $agentCallSid);
 
         // create the agent participant
         $existParticipant = $phoneCall->getParticipantByPerson($agent);
         if ($existParticipant instanceof VoicePhoneCallParticipantAgent) {
-            $existParticipant->setCallSid($agentCallId);
+            $existParticipant->setCallSid($agentCallSid);
+            $existParticipant->setDateLeft(null);
             $this->em->flush();
         } else {
             $participant = new VoicePhoneCallParticipantAgent();
-            $participant->setCallSid($agentCallId);
+            $participant->setCallSid($agentCallSid);
             $participant->setPerson($agent);
+            $participant->setDateJoined(new \DateTime());
 
             $phoneCall->addParticipant($participant);
 
@@ -255,6 +295,14 @@ class VoiceCallbacksHelper
             $log->setDetails($details);
         }
 
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.agent-joined-call',
+            [
+                'call_id'  => $callId,
+                'agent_id' => $agentId,
+            ]
+        ));
+
         $this->em->persist($log);
         $this->em->flush();
 
@@ -264,25 +312,35 @@ class VoiceCallbacksHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function rejectIncomingPhoneCall(VoicePhoneCall $phoneCall, Person $agent)
     {
         // reject task worker
-        $this->taskRouter->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId());
+        if ($this->taskRouter->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            // if call target is an agent, redirect to voicemail immediately
+            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+            if ($task && $task->getAttribute('agent')) {
+                $this->transferCallHelper->transferToVoicemail($phoneCall);
+            }
 
-        // log that agent rejected the incoming call
-        $log = new VoicePhoneCallLog();
-        $log->setPerson($agent);
-        $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
-        $log->setPhoneCall($phoneCall);
+            // log that agent rejected the incoming call
+            $log = new VoicePhoneCallLog();
+            $log->setPerson($agent);
+            $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
+            $log->setPhoneCall($phoneCall);
 
-        $this->em->persist($log);
-        $this->em->flush();
+            $this->em->persist($log);
+            $this->em->flush();
+        }
     }
 
     /**
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
+     *
+     * @throws \Exception
      *
      * @return Ticket
      */
@@ -308,34 +366,33 @@ class VoiceCallbacksHelper
             $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             $ticket->addMessage($ticketMessage);
+            $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
 
             // set ticket department
-            $permissionsHelper          = $agent->getHelper('AgentPermissions');
-            $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+            if ($task && $queueId = $task->getAttribute('queue')) {
+                /** @var VoiceQueue $voiceQueue */
+                $voiceQueue = $this->em->getRepository(VoiceQueue::class)->find($queueId);
+                if ($voiceQueue) {
+                    // set ticket department from the queue
+                    // make sure the agent has permissions to this department
+                    $permissionsHelper          = $agent->getHelper('AgentPermissions');
+                    $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
-            $voiceQueue = $phoneCall->getQueue();
-            if ($voiceQueue) {
-                // set ticket department from the queue
-                // make sure the agent has permissions to this department
-                $queueDepartment = $voiceQueue->getDepartment();
-                if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
-                    $ticket->setDepartment($queueDepartment);
-                }
-            }
-
-            // set department from the agent
-            if (!$ticket->getDepartment()) {
-                $departmentId = reset($allowedTicketDepartmentIds);
-                if ($departmentId) {
-                    $agentDepartment = $this->em->getRepository(Department::class)->find($departmentId);
-                    if ($agentDepartment) {
-                        $ticket->setDepartment($agentDepartment);
+                    $queueDepartment = $voiceQueue->getDepartment();
+                    if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
+                        $ticket->setDepartment($queueDepartment);
+                        $ticket->setBrand($voiceQueue->getBrand());
                     }
                 }
             }
 
-            $this->saveTicket($ticket);
+            // set department from the agent
+            $this->setAgentDefaultDepartment($ticket, $agent);
+
+            $this->voiceTicketHelper->saveTicket($ticket);
         } else {
             // ticket is already created, that means we are joining the existing conference
             $ticket = $messageAttribute->getMessage()->getTicket();
@@ -350,7 +407,7 @@ class VoiceCallbacksHelper
                 $ticket->setAgent($agent);
             }
 
-            $this->saveTicket($ticket);
+            $this->voiceTicketHelper->saveTicket($ticket);
         }
 
         return $ticket;
@@ -363,6 +420,7 @@ class VoiceCallbacksHelper
      * @param array  $details
      *
      * @throws OutOfServiceException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setOutgoingAgentParticipant($callId, $callSid, $agentId, array $details)
     {
@@ -373,8 +431,6 @@ class VoiceCallbacksHelper
 
         // get the caller person
         $agent = $this->getAgent($agentId);
-
-        $phoneCall->setCallSid($callSid);
         $phoneCall->setData(array_merge($phoneCall->getData(), $details));
 
         // create agent participant
@@ -401,6 +457,7 @@ class VoiceCallbacksHelper
      * @param string $callSid
      *
      * @throws OutOfServiceException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setOutgoingUserParticipant($callId, $callSid)
     {
@@ -409,12 +466,17 @@ class VoiceCallbacksHelper
             throw new OutOfServiceException();
         }
 
-        // create user participant
-        $participant = new VoicePhoneCallParticipantUser();
-        $participant->setCallSid($callSid);
-        $participant->setPerson($phoneCall->getPerson());
+        $phoneCall->setCallSid($callSid);
+        $phoneCall->addCallSid($phoneCall->getPerson()->getId(), VoicePhoneCall::TYPE_OUTGOING, $callSid);
 
-        $phoneCall->addParticipant($participant);
+        if (!$phoneCall->getParticipantByCallSid($callSid)) {
+            // create user participant
+            $participant = new VoicePhoneCallParticipantUser();
+            $participant->setCallSid($callSid);
+            $participant->setPerson($phoneCall->getPerson());
+
+            $phoneCall->addParticipant($participant);
+        }
 
         $this->em->persist($phoneCall);
         $this->em->flush();
@@ -423,7 +485,7 @@ class VoiceCallbacksHelper
     /**
      * @param string $callId
      *
-     * @throws OutOfServiceException
+     * @throws \Exception
      */
     public function createTicketForOutgoingPhoneCall($callId)
     {
@@ -466,10 +528,23 @@ class VoiceCallbacksHelper
             $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
+            $ticket->setCreationSystem(Ticket::CREATED_PHONE_OUTBOUND);
+
+            $this->setAgentDefaultDepartment($ticket, $agent);
         }
 
         $ticket->addMessage($ticketMessage);
-        $this->saveTicket($ticket);
+
+        $changes = $ticket->getStateChangeRecorder();
+        if ($changes->isNewTicket()) {
+            $event = ExecutorContext::EVENT_NEW;
+        } else {
+            $event = ExecutorContext::EVENT_REPLY;
+        }
+
+        $context = $this->ticketManager->createAgentExecutorContext($agent, $event, ExecutorContext::METHOD_PHONE);
+        $this->ticketManager->saveTicket($ticket, $context);
 
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.outgoing-call-answered',
@@ -484,6 +559,8 @@ class VoiceCallbacksHelper
     /**
      * @param string $callSid
      * @param array  $details
+     *
+     * @throws \Exception
      */
     public function callHangupByUser($callSid, array $details)
     {
@@ -524,64 +601,23 @@ class VoiceCallbacksHelper
         $this->taskRouter->endTask($phoneCall->getTaskSid());
 
         // cancel all ringing forwarding calls
-        $this->voiceProviderHelper->cancelForwardingCalls($phoneCall);
+        $this->voiceProviderHelper->endCall($phoneCall);
+
+        // force end all agent workers
+        // in case if agent hangup callback is not called for some reason
+        foreach ($phoneCall->getTaskSids() as $taskSid) {
+            $this->taskRouter->resetWorkersForTask($taskSid);
+        }
 
         // mark the phone call as finished
         $phoneCall->setDateEnded(new \DateTime());
-        $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+        if (!$phoneCall->isVoicemail()) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+        }
 
         // user ends call
         // create a ticket for missed calls
-        if (!$phoneCall->hasAgentParticipants()
-            // check the call is not answered and voicemail wasn't reached
-            // otherwise we got a voicemail record and agent will see it in a separate interface
-            && !$phoneCall->getVoicemailRecord()
-            // create a ticket just it was assigned to any target
-            && $phoneCall->getTaskSid()
-            // don't create missed tickets for strange numbers
-            && !$phoneCall->isStrangeNumber()
-            // no ticket messages were created for this phone call yet
-            && !$phoneCall->getTicketMessageAttributes()->count()
-        ) {
-            $ticketMessageCall = new TicketMessageVoicePhoneCall();
-            $ticketMessageCall->setPhoneCall($phoneCall);
-
-            $ticketMessage = new TicketMessage();
-            $ticketMessage->setPerson($phoneCall->getPerson());
-            $ticketMessage->addAttribute($ticketMessageCall);
-            $ticketMessage->setMessage('Missed call from '.$phoneCall->getExternalNumber());
-            $ticketMessage->setAsAgentNote(true);
-
-            // try to get last ticket
-            $ticket = null;
-            if ($this->voiceSettingsResolver->isGroupMissedCallTickets()) {
-                /** @var Ticket $lastTicket */
-                $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
-                if ($lastTicket) {
-                    $lastTicket->disableAutoTicketProcess();
-
-                    $now    = new \DateTime();
-                    $hours  = $this->voiceSettingsResolver->getGroupMissedCallTicketsTimeout();
-                    $offset = clone $lastTicket->getDateCreated();
-                    $offset->modify("+{$hours} hours");
-
-                    if ($offset > $now) {
-                        $ticket = $lastTicket;
-                    }
-                }
-            }
-
-            // if no last ticket, create a new one
-            if (!$ticket) {
-                $ticket = new Ticket();
-                $ticket->disableAutoTicketProcess();
-                $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
-                $ticket->setPerson($phoneCall->getPerson());
-            }
-
-            $ticket->addMessage($ticketMessage);
-            $this->saveTicket($ticket);
-        }
+        $this->voiceTicketHelper->createMissedTicketMessageIfNotExist($phoneCall);
 
         // log call end event
         // for now if a end-user finishes the call then it means the conference is ended
@@ -598,6 +634,8 @@ class VoiceCallbacksHelper
     /**
      * @param string $callSid
      * @param array  $details
+     *
+     * @throws \Exception
      */
     public function callHangupByAgent($callSid, array $details)
     {
@@ -605,6 +643,7 @@ class VoiceCallbacksHelper
             return;
         }
 
+        /** @var VoicePhoneCallParticipantAgent $participant */
         $participant = $this->em->getRepository(VoicePhoneCallParticipantAgent::class)->findOneBy([
             'callSid' => $callSid,
         ]);
@@ -633,20 +672,37 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->flush();
 
-        if ($phoneCall->getStatus() !== VoicePhoneCall::STATUS_COLD_TRANSFER) {
-            $this->voiceProviderHelper->tryEndConference($phoneCall);
+        if (!$phoneCall->isColdTransfer()) {
+            if (count($phoneCall->getActiveParticipants()) < 2) {
+                $this->voiceProviderHelper->endCall($phoneCall);
+            }
         }
 
-        $this->taskRouter->completeTaskForWorker(
-            $phoneCall->getTaskSid(),
-            'agent',
-            $participant->getPerson()->getId()
-        );
+        // unhold end-user after attempt to end the conference
+        // so there won't be race conditions
+        if ($phoneCall->isWarmTransfer()) {
+            // mark the phone call as started
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
+            $this->em->flush();
+
+            // unhold end-user
+            $this->voiceProviderHelper->holdEndUser($phoneCall, false);
+        }
+
+        foreach ($phoneCall->getTaskSids() as $taskSid) {
+            $this->taskRouter->completeTaskForWorker(
+                $taskSid,
+                'agent',
+                $participant->getPerson()->getId()
+            );
+        }
     }
 
     /**
      * @param string $callSid
      * @param array  $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function callBusyByUser($callSid, array $details)
     {
@@ -664,6 +720,12 @@ class VoiceCallbacksHelper
 
         /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $participant->getPhoneCall();
+
+        // force end all agent workers
+        // in case if agent hangup callback is not called for some reason
+        foreach ($phoneCall->getTaskSids() as $taskSid) {
+            $this->taskRouter->resetWorkersForTask($taskSid);
+        }
 
         // set participant leave event time
         $participant->setDateLeft(new \DateTime());
@@ -688,8 +750,7 @@ class VoiceCallbacksHelper
         if ($phoneCall->getTaskSid()) {
             $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
             if ($task && $task->isPending()) {
-                $task->setStatus(Task::STATUS_CANCELED);
-                $this->storageAdapter->saveTask($task);
+                $this->taskRouter->endTask($task->getId());
             }
         }
 
@@ -720,9 +781,11 @@ class VoiceCallbacksHelper
      * @param VoicePhoneCall $phoneCall
      * @param string         $callSid
      * @param string         $conferenceSid
-     * @param array          $details
+     * @param string         $memberId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function joinConference(VoicePhoneCall $phoneCall, $callSid, $conferenceSid, array $details)
+    public function joinConference(VoicePhoneCall $phoneCall, $callSid, $conferenceSid, $memberId = null)
     {
         // if didn't get the phone call by conference sid then the initial caller didn't join the conference yet
         // store conference sid on its join callback
@@ -732,36 +795,16 @@ class VoiceCallbacksHelper
         }
 
         $participant = $phoneCall->getParticipantByCallSid($callSid);
-        if ($participant instanceof VoicePhoneCallParticipantAgent) {
-            // set participant join event time
-            $participant->setDateJoined(new \DateTime());
+        if ($participant) {
+            $participant->setMemberId($memberId);
             $this->em->flush();
-
-            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
-                // mark the phone call as started
-                $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
-
-                $this->em->flush();
-            }
-
-            // log participant join event
-            $log = new VoicePhoneCallLog();
-            $log->setDetails($details);
-            $log->setPhoneCall($phoneCall);
-            $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_JOINED);
-            if ($participant->getPerson()) {
-                $log->setPerson($participant->getPerson());
-            }
-
-            $this->em->persist($log);
-            $this->em->flush();
-        } elseif ($participant instanceof VoicePhoneCallParticipantUser) {
-            $this->logConferenceStart($phoneCall, $details);
         }
     }
 
     /**
      * @param VoicePhoneCall $phoneCall
+     *
+     * @throws \Exception
      */
     public function sendConferenceStatus(VoicePhoneCall $phoneCall)
     {
@@ -770,16 +813,22 @@ class VoiceCallbacksHelper
         $statusParams = [];
 
         // phone call
-        $statusParams['phone_call'] = $this->serializer->toArray($phoneCall, new SideloadSerializationContext());
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['recording_enabled']);
+        $context->setInlineSideloads(true);
+
+        $statusParams['phone_call'] = $this->serializer->toArray(new ApiWrapper($phoneCall), $context)['data'];
         unset($statusParams['phone_call']['ticket']);
 
         // is conference on hold
-        $statusParams['hold'] = $this->voiceProviderHelper->isConferenceOnHold($phoneCall);
+        $statusParams['hold'] = $phoneCall->getUserParticipants()->count()
+            ? $phoneCall->getUserParticipants()->first()->isOnHold()
+            : false;
 
         // all active participants
-        $statusParams['agent_participants'] = array_map(function (Person $person) {
-            return $person->getId();
-        }, $this->voiceProviderHelper->getActivePhoneCallParticipants($phoneCall));
+        $statusParams['agent_participants'] = $phoneCall->getActiveAgentParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant->getPerson()->getId();
+        })->getValues();
 
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
@@ -790,6 +839,8 @@ class VoiceCallbacksHelper
     /**
      * @param VoicePhoneCall      $phoneCall
      * @param AbstractVoiceTarget $target
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return \DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task|null
      */
@@ -816,6 +867,38 @@ class VoiceCallbacksHelper
         }
 
         return $task;
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @throws \Exception
+     */
+    public function changeTicketAgentToFollower(VoicePhoneCall $phoneCall)
+    {
+        // get phone call ticket
+        $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute instanceof TicketMessageVoicePhoneCall) {
+            return;
+        }
+
+        /** @var Ticket $ticket */
+        $ticket = $messageAttribute->getMessage()->getTicket();
+
+        // change ticket assigned agent to follower on cold transfer
+        $ticketAgent = $ticket->getAgent();
+        $ticket->setAgent(null);
+
+        if ($ticketAgent) {
+            $participant = new TicketParticipant();
+            $participant->setPerson($ticketAgent);
+
+            $ticket->addParticipant($participant);
+        }
+
+        $this->voiceTicketHelper->saveTicket($ticket);
     }
 
     /**
@@ -862,6 +945,8 @@ class VoiceCallbacksHelper
      * @param VoicePhoneCall               $phoneCall
      * @param VoiceAutoAttendantDialNumber $dialNumber
      * @param array                        $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function logPressedAutoAttendantDigit(VoicePhoneCall $phoneCall, VoiceAutoAttendantDialNumber $dialNumber, array $details)
     {
@@ -879,6 +964,8 @@ class VoiceCallbacksHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param array          $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function logPressedUnsupportedAutoAttendantDigit(VoicePhoneCall $phoneCall, array $details)
     {
@@ -894,6 +981,8 @@ class VoiceCallbacksHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param array          $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function logPressedAutoAttendantRepeatKey(VoicePhoneCall $phoneCall, array $details)
     {
@@ -909,6 +998,8 @@ class VoiceCallbacksHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param array          $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function logPressedAutoAttendantExtensionKey(VoicePhoneCall $phoneCall, array $details)
     {
@@ -925,6 +1016,8 @@ class VoiceCallbacksHelper
      * @param VoicePhoneCall $phoneCall
      * @param string         $enteredCode
      * @param array          $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function logEnteredAgentExtension(VoicePhoneCall $phoneCall, $enteredCode, array $details)
     {
@@ -942,6 +1035,8 @@ class VoiceCallbacksHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param array          $details
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function logConferenceStart(VoicePhoneCall $phoneCall, array $details)
     {
@@ -962,23 +1057,38 @@ class VoiceCallbacksHelper
 
     /**
      * @param Ticket $ticket
+     * @param Person $agent
      */
-    public function saveTicket(Ticket $ticket)
+    private function setAgentDefaultDepartment(Ticket $ticket, Person $agent)
     {
-        $changes = $ticket->getStateChangeRecorder();
-        if ($changes->isNewTicket()) {
-            $event = ExecutorContext::EVENT_NEW;
-        } else {
-            $event = ExecutorContext::EVENT_UPDATE;
-        }
+        // set department from the agent
+        if (!$ticket->getDepartment()) {
+            $permissionsHelper          = $agent->getHelper('AgentPermissions');
+            $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
-        $person = $ticket->getPerson();
-        if ($person && $person->isAgent()) {
-            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_API);
-        } else {
-            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_API);
-        }
+            $voiceAgentDefaultDepartmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment();
+            $defaultDepartmentId           = $this->settingsResolver->getSetting(DefaultDepartmentSettings::constructName(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE));
+            if ($voiceAgentDefaultDepartmentId && in_array($voiceAgentDefaultDepartmentId, $allowedTicketDepartmentIds)) {
+                $departmentId = $voiceAgentDefaultDepartmentId;
+            } elseif ($defaultDepartmentId && in_array($defaultDepartmentId, $allowedTicketDepartmentIds)) {
+                $departmentId = $defaultDepartmentId;
+            } else {
+                $departmentId = reset($allowedTicketDepartmentIds);
+            }
 
-        $this->ticketManager->saveTicket($ticket, $context);
+            if ($departmentId) {
+                $agentDepartment = $this->em->getRepository(Department::class)->find($departmentId);
+                if ($agentDepartment) {
+                    $ticket->setDepartment($agentDepartment);
+
+                    if ($voiceAgentDefaultBrandId = $this->voiceSettingsResolver->getAgentDefaultBrand()) {
+                        $agentBrand = $this->em->getRepository(Brand::class)->find($voiceAgentDefaultBrandId);
+                        if ($agentBrand && $agentDepartment->hasBrand($agentBrand)) {
+                            $ticket->setBrand($agentBrand);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

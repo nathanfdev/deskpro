@@ -143,9 +143,9 @@ class NumberList extends React.Component {
         <button className="ui primary button" onClick={onAddNumber}>
           Add number
         </button>
-        <button className="ui primary button" onClick={onAddExistingNumber}>
+        { window.DP_IS_QA || window.DP_IS_DEV_ENV ? (<button className="ui primary button" onClick={onAddExistingNumber}>
           Add existing number
-        </button>
+        </button>) : null }
       </div>
     );
   }
@@ -160,10 +160,10 @@ class NumberList extends React.Component {
           <i className="icon plus" />
           Add number
         </button>
-        <button className="ui right floated basic button" onClick={onAddExistingNumber}>
+        { window.DP_IS_QA || window.DP_IS_DEV_ENV ? (<button className="ui right floated basic button" onClick={onAddExistingNumber}>
           <i className="icon plus" />
           Add existing number
-        </button>
+        </button>) : null }
 
         <NumberHeader />
 

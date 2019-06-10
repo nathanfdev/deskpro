@@ -27,6 +27,7 @@ class ExecutorContext implements ExecutorContextInterface
     const METHOD_EMAIL  = 'email';
     const METHOD_MOBILE = 'mobile';
     const METHOD_SMS    = 'sms';
+    const METHOD_PHONE  = 'phone';
 
     /**
      * @var \Orb\Util\OptionsArray

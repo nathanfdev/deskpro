@@ -34,6 +34,8 @@ interface GlobalVariablesInterface
 
     public function isTesting();
 
+    public function isQa();
+
     public function isDemo();
 
     /**

@@ -245,4 +245,9 @@ interface AppEnvInterface
      * @return bool
      */
     public function isCloud();
+
+    /**
+     * @return mixed
+     */
+    public function isQa();
 }

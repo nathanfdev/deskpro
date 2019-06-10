@@ -31,6 +31,10 @@ class PhoneNumberValidator extends AbstractNumberValidator
             throw new UnexpectedTypeException($value, implode(', ', ['string', PhoneNumber::class]));
         }
 
-        $this->validatePhoneNumber($checkValue, $constraint);
+        if (preg_match('/^sip:/', $checkValue)) {
+            $this->validateSip($checkValue, $constraint);
+        } else {
+            $this->validatePhoneNumber($checkValue, $constraint);
+        }
     }
 }

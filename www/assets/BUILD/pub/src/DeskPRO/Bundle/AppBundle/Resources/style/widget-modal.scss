@@ -118,3 +118,52 @@
   }
 
 }
+
+.edit-audio-asset {
+  display: flex;
+  align-items: center;
+
+  & > span {
+    display: inline-flex;
+  }
+
+  .asset-type-icon {
+    border: 2px solid #ECECEC;
+  }
+
+  .asset-edit-icon, .asset-delete-icon {
+    cursor: pointer;
+  }
+
+  .asset-text {
+    padding: 0 10px;
+  }
+
+  .isvg {
+    vertical-align: middle;
+    svg {
+      height: 35px;
+    }
+  }
+
+  &:hover {
+    .asset-type-icon {
+      border-color: #4c94db;
+    }
+
+    .asset-delete-icon {
+      svg {
+        .st0 {
+          fill: #de2430;
+        }
+      }
+    }
+    .asset-edit-icon {
+      svg {
+        .st0 {
+          fill: #4c94db;
+        }
+      }
+    }
+  }
+}

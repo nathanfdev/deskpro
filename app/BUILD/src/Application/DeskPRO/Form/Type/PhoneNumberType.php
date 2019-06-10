@@ -46,8 +46,9 @@ class PhoneNumberType extends AbstractType
 
         if ($options['show_phone_label']) {
             $builder->add('label', 'text', [
-                'label' => false,
-                'attr'  => [
+                'required' => false,
+                'label'    => false,
+                'attr'     => [
                     'class' => 'phone_label',
                 ],
             ]);
@@ -62,7 +63,7 @@ class PhoneNumberType extends AbstractType
              * get the region code, and validate/format the number.
              */
 
-            if ($data && $data['number']) {
+            if ($data && $data['number'] && !preg_match('/^sip:.+/', $data['number'])) {
                 $number = $data['number'];
                 $data['region'] = PhoneNumbers::getRegionForNumber($number);
                 $data['guessed_type'] = PhoneNumbers::getTypeCode($number);

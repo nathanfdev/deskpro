@@ -12,12 +12,16 @@ import { connectionsSelector } from '../../Selectors/client';
 import { outboundCallsEnabledSelector } from '../../Selectors/agents';
 import { allNumbersSelector } from '../../Selectors/numbers';
 import { closeIframes } from './../../../Application/Actions/bootstrapActions';
+import { allQueuesSelector } from '../../Selectors/queue';
+import { allAutoAttendantsSelector } from '../../Selectors/autoAttendants';
 
 @connect(state => ({
   people:               collectionSelectorFactory('Person', 'all')(state),
   phoneCalls:           allPhoneCallsSelector(state),
   connections:          connectionsSelector(state),
   numbers:              allNumbersSelector(state),
+  queues:               allQueuesSelector(state),
+  autoAttendants:       allAutoAttendantsSelector(state),
   outboundCallsEnabled: outboundCallsEnabledSelector(state),
   me:                   meSelector(state)
 }))
@@ -59,17 +63,6 @@ class TicketMessageContainer extends React.Component {
     this.loadParticipants();
   }
 
-  onCall = () => {
-    const phoneCall = this.getPhoneCall();
-    const ticket = this.getTicket();
-
-    this.props.dispatch(openDialpad(phoneCall.get('external_number'), ticket.get('id'), ticket.get('subject')));
-  };
-
-  onOpenSettings = () => {
-    console.log('onOpenSettings');
-  };
-
   getPhoneCall() {
     const { phoneCalls } = this.props;
     const { data } = this.state;
@@ -99,6 +92,25 @@ class TicketMessageContainer extends React.Component {
 
     return connections.filter(connection => parseInt(connection.callId, 10) === phoneCall.get('id')).first();
   }
+
+  canEditMessage() {
+    const { data } = this.state;
+    const ticket = this.getTicket();
+    if (!ticket || !data.linked.ticket_permissions) {
+      return false;
+    }
+
+    const permissions = data.linked.ticket_permissions[ticket.get('id')];
+
+    return permissions ? permissions.modify_messages : false;
+  }
+
+  openDialpad = () => {
+    const phoneCall = this.getPhoneCall();
+    const ticket = this.getTicket();
+
+    this.props.dispatch(openDialpad(phoneCall.get('external_number'), ticket.get('id'), ticket.get('subject')));
+  };
 
   openTarget = (target) => {
     const type = target.get('type');
@@ -149,9 +161,9 @@ class TicketMessageContainer extends React.Component {
         ticket={this.getTicket()}
         phoneCall={this.getPhoneCall()}
         connection={this.getConnection()}
-        onCall={this.onCall}
-        onOpenSettings={this.onOpenSettings}
+        openDialpad={this.openDialpad}
         openTarget={this.openTarget}
+        canEditMessage={this.canEditMessage()}
       />
     );
   }

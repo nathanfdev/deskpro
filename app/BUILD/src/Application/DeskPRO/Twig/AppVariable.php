@@ -120,16 +120,33 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getLanguage();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isDebug()
     {
         return $this->container->get('templating.globals')->isDebug();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isTesting()
     {
         return $this->container->get('templating.globals')->isTesting();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function isQa()
+    {
+        return $this->container->get('templating.globals')->isQa();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isDemo()
     {
         return $this->container->get('templating.globals')->isDemo();

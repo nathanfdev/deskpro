@@ -18,22 +18,25 @@ class TicketMessage extends React.Component {
   static propTypes = {
     people:               PropTypes.object,
     numbers:              PropTypes.object,
+    queues:               PropTypes.object,
+    autoAttendants:       PropTypes.object,
     message:              PropTypes.object,
     phoneCall:            PropTypes.object,
     connection:           PropTypes.object,
     transcript:           PropTypes.string,
-    onCall:               PropTypes.func,
     outboundCallsEnabled: PropTypes.bool,
     dateCreatedFormatted: PropTypes.string,
     openTarget:           PropTypes.func,
+    openDialpad:          PropTypes.func,
     me:                   PropTypes.object,
     elid:                 PropTypes.string,
-    dispatch:             PropTypes.func
+    dispatch:             PropTypes.func,
+    canEditMessage:       PropTypes.bool
   };
 
   static defaultProps = {
-    onCall:         () => {},
-    onOpenSettings: () => {}
+    openDialpad:    () => {},
+    canEditMessage: false
   };
 
   constructor(props) {
@@ -66,17 +69,17 @@ class TicketMessage extends React.Component {
 
   deleteRecord = (phoneCallId) => {
     this.props.dispatch(deleteRecord(phoneCallId));
-  }
+  };
 
   render() {
-    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
-    const { transcript, outboundCallsEnabled, dateCreatedFormatted } = this.props;
-    const { onCall, me, openTarget } = this.props;
+    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants, connection } = this.props;
+    const { transcript, outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
+    const { openDialpad, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
-    const recording = phoneCall.get('recording');
-    const recordingProcessed = phoneCall.hasIn(['data', 'RecordingEnabled']);
-    const recordingEnabled = phoneCall.getIn(['data', 'RecordingEnabled']);
+    const recordings = phoneCall.get('recordings');
+    const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+    const recordingsDeleted = recordings.filter(recording => recording.get('is_deleted'));
     const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
 
     return (
@@ -103,6 +106,7 @@ class TicketMessage extends React.Component {
                   : 'agent.voice.incoming_call_title'}
               />
             </span>
+            {canEditMessage &&
             <span className="voice-ticket-message-edit-menu" onClick={this.openMenu}>
               <i className="fas fa-cog" />
               <PopUp
@@ -118,7 +122,7 @@ class TicketMessage extends React.Component {
                   />
                 }
               />
-            </span>
+            </span>}
             <span className="voice-ticket-message-date">
               <time
                 data-stickytip-target={`#${this.props.elid}`}
@@ -135,12 +139,13 @@ class TicketMessage extends React.Component {
               </div>
             : <div className="voice-ticket-message-controls">
               {outboundCallsEnabled &&
-              <Button className="basic call-button" onClick={onCall}>
+              <Button className="basic call-button" onClick={openDialpad}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
-              {recording && <MediaControls recording={recording} />}
-              {!recording && recordingEnabled ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
-              {recordingProcessed && !recording && !recordingEnabled ? 'This call was not recorded.' : ''}
+              {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <MediaControls key={`recording_${recording.get('blob').get('blob_id')}`} recording={recording.get('blob')} />)}
+              {recordings.size > 0 && !recordingsDeleted.size && !recordingsEnabled.size ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {recordingsDeleted.size > 0 && !recordingsEnabled.size && 'This call recording has been deleted.'}
+              {!recordings.size ? 'This call was not recorded.' : ''}
             </div>}
           {transcript &&
             <div className="voice-ticket-message-transcript">
@@ -213,6 +218,8 @@ class TicketMessage extends React.Component {
                                 {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
                               </a>
                             ),
+                            queue:            queues.getIn([log.getIn(['details', 'to_queue']), 'name']),
+                            auto_attendant:   autoAttendants.getIn([log.getIn(['details', 'to_auto_attendant']), 'name']),
                             to_number:        number.get('nickname') || number.get('number'),
                             key:              log.getIn(['details', 'Digits']) || '',
                             target,

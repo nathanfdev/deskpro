@@ -226,6 +226,7 @@ portal.feedback.section-desc: 'Estas sugestões foram apresentadas por clientes 
 portal.feedback.section-title: Comentário
 portal.feedback.sort_comments: 'Comentários?'
 portal.feedback.submit_feedback: 'Submeter Comentário'
+portal.feedback.form_custom_cat: Categoria
 portal.flashes.comment_thank_you: 'Obrigado pelo seu comentário'
 portal.forms.label_category: Categoria
 portal.forms.label_department: Departamento

@@ -18,7 +18,7 @@ class EmojiBox extends React.Component {
     return this.hasOpenToTop ? 'right+25 bottom-25' : 'right+25 top+25';
   }
 
-  get hasOpenToTop() {
+  get hasOpenToTop() { // eslint-disable-line
     const el = document.querySelector('.im.chat.drawer');
     const rect = el.getBoundingClientRect();
 

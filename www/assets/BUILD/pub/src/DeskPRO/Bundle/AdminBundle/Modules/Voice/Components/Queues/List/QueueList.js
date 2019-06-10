@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 
@@ -38,40 +37,16 @@ class QueueRow extends React.Component {
     const queueAgentIds = queue.get('agents') ? queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) : Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
 
-    const displayQueueAgents = queueAgents.slice(0, 5);
-    const popupQueueAgents = queueAgents.slice(5);
-
     return (
       <div className="row" key={queue.get('id')}>
         <div className="info">
           <div className="column queue-name">{queue.get('name')}</div>
-          <div className="column agents">
-            {displayQueueAgents.toArray().map((agent, index) =>
+          <div className="column agents queue-agents">
+            {queueAgents.toArray().map((agent, index) =>
               <div className="avatar">
                 <PersonAvatar key={index} person={agent} size={24} />
               </div>
             )}
-            {popupQueueAgents.size > 0 &&
-              <span>
-                <PopUp
-                  positionMy="left top"
-                  positionAt="left bottom"
-                  zIndex={99999}
-                  autoClose
-                  content={(
-                    <div className="voice-popup-avatars">
-                      {popupQueueAgents.toArray().map((agent, index) =>
-                        <div className="avatar">
-                          <PersonAvatar key={index} person={agent} size={24} />
-                        </div>
-                      )}
-                    </div>
-                  )}
-                >
-                  <a className="more-button">+ {popupQueueAgents.size} more</a>
-                </PopUp>
-              </span>
-            }
           </div>
           <div className="column options-button">
             <a onClick={this.onEditQueue}>

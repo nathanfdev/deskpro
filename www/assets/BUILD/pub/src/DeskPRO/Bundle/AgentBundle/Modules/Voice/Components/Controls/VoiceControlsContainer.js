@@ -1,48 +1,62 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import Immutable from 'immutable';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { voiceParticipantsSelector } from '../../Selectors/agents';
+import { voiceAgentsSelector } from '../../Selectors/agents';
 import VoiceControls from './VoiceControls';
-import { hangup, toggleMute, toggleHold, addAgent, transferCall, cancelInvite } from '../../Actions/clientActions';
-import { connectionsSelector, connectionStatesSelector } from '../../Selectors/client';
+import {
+  hangup,
+  toggleMute,
+  toggleHold,
+  warmAddAgent,
+  warmTransferToAgent,
+  coldTransferToAgent,
+  coldTransferToQueue,
+  coldTransferToAutoAttendant,
+  cancelInvite,
+  checkIsActive
+} from '../../Actions/clientActions';
+import { agentVoicemailTimeoutSelector, busyAgentsSelector, connectionsSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
+import { allQueuesSelector } from '../../Selectors/queue';
+import { allAutoAttendantsSelector } from '../../Selectors/autoAttendants';
+import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 
 @connect(state => ({
-  me:               meSelector(state),
-  agents:           voiceParticipantsSelector(state),
-  connections:      connectionsSelector(state),
-  onlineAgentIds:   onlineAgentsSelector(state),
-  connectionStates: connectionStatesSelector(state)
+  me:                    meSelector(state),
+  agents:                voiceAgentsSelector(state),
+  queues:                allQueuesSelector(state),
+  autoAttendants:        allAutoAttendantsSelector(state),
+  connections:           connectionsSelector(state),
+  onlineAgentIds:        onlineAgentsSelector(state),
+  phoneCalls:            allPhoneCallsSelector(state),
+  agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
+  busyAgents:            busyAgentsSelector(state)
 }))
 class VoiceControlsContainer extends React.Component {
 
   static propTypes = {
-    dispatch:         PropTypes.func,
-    agents:           PropTypes.object,
-    onlineAgentIds:   PropTypes.object,
-    connections:      PropTypes.object,
-    ticketId:         PropTypes.number,
-    baseId:           PropTypes.string,
-    tabRef:           PropTypes.func,
-    onEndCall:        PropTypes.func,
-    connectionStates: PropTypes.object,
-  };
-
-  static defaultProps = {
-    onEndCall: () => {}
+    dispatch:              PropTypes.func,
+    me:                    PropTypes.object,
+    agents:                PropTypes.object,
+    onlineAgentIds:        PropTypes.object,
+    connections:           PropTypes.object,
+    ticketId:              PropTypes.number,
+    baseId:                PropTypes.string,
+    tabRef:                PropTypes.func,
+    onEndCall:             PropTypes.func,
+    phoneCalls:            PropTypes.object,
+    agentVoicemailTimeout: PropTypes.number,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      mute:               false,
-      status:             null,
-      addTarget:          null,
-      addTargetType:      null,
-      transferTarget:     null,
-      transferTargetType: null
+      mute:         false,
+      status:       null,
+      hold:         false,
+      participants: [],
+      inviteError:  null
     };
   }
 
@@ -57,14 +71,14 @@ class VoiceControlsContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { tabRef, onEndCall } = this.props;
-
+    const { dispatch, tabRef, onEndCall } = this.props;
     tabRef({
       isCallActive: this.isCallActive,
       endCall:      this.endCall
     });
 
     this.interval = setInterval(() => {
+      const { me } = this.props;
       const { status } = this.state;
       const connection = this.getConnection();
 
@@ -81,9 +95,16 @@ class VoiceControlsContainer extends React.Component {
       }
 
       if (connectionStatus === 'open') {
-        if (status !== 'active' || connection.outbound) {
+        if (status !== 'active' && this.state.participants.indexOf(me.get('id') !== -1)) {
           this.setState({
             status: 'active'
+          });
+
+          const promise = dispatch(checkIsActive(connection.callId));
+          promise.success(({ data }) => {
+            if (!data.is_active) {
+              dispatch(hangup(connection));
+            }
           });
         } else if (status !== 'connected' && status !== 'active') {
           this.setState({
@@ -97,32 +118,39 @@ class VoiceControlsContainer extends React.Component {
         });
       }
     }, 1000);
-  }
 
-  componentWillUpdate() {
-    const { addTarget, transferTarget } = this.state;
-    const connectionState = this.getConnectionState();
-    const participants = connectionState.participants;
-    const newState = {};
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
+      const connection = this.getConnection();
+      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.phone_call.id, 10)) {
+        return;
+      }
 
-    // update participant list
-    let update = false;
-    if (addTarget && participants.contains(addTarget.get('id'))) {
-      newState.addTarget     = null;
-      newState.addTargetType = null;
+      this.setState({
+        participants: event.agent_participants,
+        hold:         !!event.hold
+      });
+    });
+    messageBroker.addMessageListener('agent.voice.conference.hold', (event) => {
+      const connection = this.getConnection();
+      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
+        return;
+      }
 
-      update = true;
-    }
-    if (transferTarget && participants.contains(transferTarget.get('id'))) {
-      newState.transferTarget     = null;
-      newState.transferTargetType = null;
+      this.setState({
+        hold: !!event.hold
+      });
+    });
+    messageBroker.addMessageListener('agent.voice.agent-joined-call', (event) => {
+      const connection = this.getConnection();
+      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
+        return;
+      }
 
-      update = true;
-    }
-
-    if (update) {
-      this.setState(newState);
-    }
+      this.setState({
+        target: null
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -136,53 +164,6 @@ class VoiceControlsContainer extends React.Component {
       .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10))
       .first();
   }
-
-  getConnectionState() {
-    const { connectionStates } = this.props;
-    const connection = this.getConnection();
-
-    let connectionState;
-    if (connection) {
-      connectionState = connectionStates.get(connection.callId);
-    }
-    if (!connectionState) {
-      connectionState = Immutable.fromJS({
-        hold:         false,
-        participants: []
-      });
-    }
-
-    return connectionState.toJS();
-  }
-
-  addAgent = (target, type) => {
-    const { dispatch } = this.props;
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
-
-    dispatch(addAgent(connection, target, type));
-    this.setState({
-      addTarget:     target,
-      addTargetType: type
-    });
-  };
-
-  cancelInvite = (target, type) => {
-    const { dispatch } = this.props;
-    const connection = this.getConnection();
-
-    const promise = dispatch(cancelInvite(connection.callId, target, type));
-    promise.then(() => {
-      this.setState({
-        addTarget:          null,
-        addTargetType:      null,
-        transferTarget:     null,
-        transferTargetType: null
-      });
-    });
-  };
 
   endCall = () => {
     const { dispatch } = this.props;
@@ -222,23 +203,64 @@ class VoiceControlsContainer extends React.Component {
 
   toggleHold = () => {
     const { dispatch } = this.props;
+    const { hold } = this.state;
     const connection = this.getConnection();
-    const connectionState = this.getConnectionState();
 
-    return connection ? dispatch(toggleHold(connection.callId, !connectionState.hold)) : null;
+    const promise = connection ? dispatch(toggleHold(connection.callId, !hold)) : null;
+    if (promise) {
+      promise.success(() => {
+        // update hold status right away
+        // don't wait for a browser notification
+        this.setState({
+          hold: !hold
+        });
+      });
+    }
+
+    return promise;
   };
 
-  transferCall = (target, type) => {
+  sendInvite = method => (target) => {
+    const { dispatch, agentVoicemailTimeout } = this.props;
+    const connection = this.getConnection();
+    if (!connection) {
+      return;
+    }
+
+    const promise = dispatch(method(connection, target));
+    promise.success(() => {
+      setTimeout(() => {
+        if (this.state.target) {
+          this.cancelInvite('timeout');
+        }
+      }, agentVoicemailTimeout * 1000);
+    });
+    promise.error((error) => {
+      this.setState({
+        target:      null,
+        inviteError: error.message
+      });
+    });
+
+    this.setState({
+      target,
+      inviteError: null
+    });
+  };
+
+  cancelInvite = (reason = null) => {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     if (!connection) {
       return;
     }
 
-    dispatch(transferCall(connection, target, type));
-    this.setState({
-      transferTarget:     target,
-      transferTargetType: type
+    const promise = dispatch(cancelInvite(connection.callId, this.state.target, reason));
+    promise.then(() => {
+      this.setState({
+        target:      null,
+        inviteError: reason === 'timeout' ? 'Call was canceled by timeout' : null
+      });
     });
   };
 
@@ -252,10 +274,9 @@ class VoiceControlsContainer extends React.Component {
   };
 
   render() {
-    const { agents, onlineAgentIds, baseId } = this.props;
-    const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')));
+    const { me, agents, onlineAgentIds, baseId, phoneCalls } = this.props;
+    const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')) && agent !== me);
     const connection = this.getConnection();
-    const connectionState = this.getConnectionState();
 
     if (!connection) {
       return null;
@@ -265,16 +286,19 @@ class VoiceControlsContainer extends React.Component {
       <VoiceControls
         {...this.props}
         {...this.state}
-        {...connectionState}
+        phoneCall={phoneCalls.get(connection.callId)}
         onlineAgents={onlineAgents}
         connection={connection}
         endCall={this.endCall}
         toggleMute={this.toggleMute}
         toggleHold={this.toggleHold}
         sendDigits={this.sendDigits}
-        onAddAgent={this.addAgent}
-        onTransferCall={this.transferCall}
-        onCancelInvite={this.cancelInvite}
+        warmAddAgent={this.sendInvite(warmAddAgent)}
+        warmTransferToAgent={this.sendInvite(warmTransferToAgent)}
+        coldTransferToAgent={this.sendInvite(coldTransferToAgent)}
+        coldTransferToQueue={this.sendInvite(coldTransferToQueue)}
+        coldTransferToAutoAttendant={this.sendInvite(coldTransferToAutoAttendant)}
+        cancelInvite={this.cancelInvite}
         baseId={baseId}
       />
     );

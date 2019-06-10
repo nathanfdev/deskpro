@@ -385,6 +385,7 @@ portal.feedback.form_logged_in_as: 'Angemeldet als: <span>{{name}}</span>, mit d
 portal.feedback.form_logout: 'Nicht Sie?'
 portal.feedback.form_tell_us_more: 'Erzählen Sie uns mehr'
 portal.feedback.form_title: Titel
+portal.feedback.form_custom_cat: Kategorie
 portal.feedback.module_forbidden: 'Sie haben auf dieses Modul keinen Zugriff'
 portal.feedback.no_matching: 'Kein passendes Feedback'
 portal.feedback.none: 'Bisher kein Feedback'
