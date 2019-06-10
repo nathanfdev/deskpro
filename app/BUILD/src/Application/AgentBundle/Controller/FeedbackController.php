@@ -586,6 +586,7 @@ class FeedbackController extends AbstractController
 
             case 'undelete':
                 $feedback['status_code'] = 'new';
+                $feedback->setSlug(null);
                 break;
 
             case 'title':
@@ -674,6 +675,10 @@ class FeedbackController extends AbstractController
             $data['revision_id'] = $rev['id'];
         } else {
             $data['revision_id'] = null;
+        }
+
+        if (in_array($action, ['undelete', 'delete'], true)) {
+            $data['slug'] = $feedback->getSlug();
         }
 
         return $this->createJsonResponse($data);

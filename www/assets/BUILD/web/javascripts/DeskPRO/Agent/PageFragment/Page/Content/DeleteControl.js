@@ -36,7 +36,8 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 					// just revert UI elements
 					self.handleUndelete();
 				},
-				success: function(html) {
+				success: function(response) {
+          self.handleSlugChange(response);
 					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.content_deleted.' + page.TYPENAME);
 
 					if (self.options.reloadSelf && self.page && self.page.meta.refreshUrl) {
@@ -58,8 +59,9 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 					// just revert UI elements
 					self.handleDelete();
 				},
-				success: function(html) {
-					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.content_undeleted.' + page.TYPENAME);
+				success: function(response) {
+          self.handleSlugChange(response);
+          DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.content_undeleted.' + page.TYPENAME);
 
 					if (self.options.reloadSelf && self.page && self.page.meta.refreshUrl) {
 						DeskPRO_Window.loadPage(self.page.meta.refreshUrl, {ignoreExist:true});
@@ -86,5 +88,12 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 		this.statusBtn.show();
 		this.deletedNotice.hide();
 		this.otherDeleteBtns.show();
-	}
+	},
+
+  handleSlugChange: function(response) {
+    if (response.hasOwnProperty('slug')) {
+      this.page.getEl('slug').text(response.slug);
+    }
+  },
+
 });

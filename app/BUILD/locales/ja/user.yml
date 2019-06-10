@@ -273,6 +273,7 @@ user.defaults.article_example_title: 記事の例
 user.defaults.department_sales: セールス
 user.defaults.department_support: サポート
 user.defaults.downloads_category_general: 書類
+user.defaults.navigate: ナビゲート
 user.defaults.news_category_general: 一般
 user.defaults.news_example_content: こちらはニュースポストの例文です。必要に応じてエージェントインターフェースから編集や削除をしてください。
 user.defaults.news_example_title: ニュースポストの例文

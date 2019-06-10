@@ -241,6 +241,7 @@ class NewsController extends AbstractController
 
             case 'undelete':
                 $news->status_code = 'published';
+                $news->setSlug(null);
                 break;
 
             case 'auto-unpub':
@@ -305,6 +306,10 @@ class NewsController extends AbstractController
             $data['revision_id'] = $rev['id'];
         } else {
             $data['revision_id'] = null;
+        }
+
+        if (in_array($action, ['undelete', 'delete'], true)) {
+            $data['slug'] = $news->getSlug();
         }
 
         return $this->createJsonResponse($data);

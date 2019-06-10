@@ -933,6 +933,7 @@ user.defaults.article_example_title: 'Przykładowy artykuł'
 user.defaults.department_sales: Sprzedaż
 user.defaults.department_support: Wsparcie
 user.defaults.downloads_category_general: Dokumenty
+user.defaults.navigate: Nawigować
 user.defaults.news_category_general: Podstawowa
 user.defaults.news_example_content: 'To jest przykładowy post z aktualnościami. Możesz edytować go albo usunąć z intefejsu użytkownika.'
 user.defaults.news_example_title: 'Przykładowy post z aktualnościami'

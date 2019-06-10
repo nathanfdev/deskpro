@@ -88,9 +88,19 @@ class ContentSlugManager
             $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()) ?: strtolower(TypeUtils::getBaseTypeName($content)), ++$i);
         }
 
-        $newHistory = $content->setSlug($newSlug);
+        return $content->setSlug($newSlug);
+    }
 
-        return $newHistory;
+    /**
+     * @param ContentAbstract $content
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function processSlugForDeletedEntity(ContentAbstract $content)
+    {
+        $this->getHistoryRepoForContent($content)->clearHistoryByEntity($content);
+
+        $content->setSlug($content::DELETED_SLUG_PREFIX.$content->getId());
     }
 
     /**

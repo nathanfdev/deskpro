@@ -528,6 +528,12 @@ $collection->create('agent_person_ajaxsavecustomfields', [
     'requirements' => ['person_id' => '\\d+'],
 ]);
 
+$collection->create('agent_people_uploadvcardoverlay', [
+    'path'         => '/people/{person_id}/upload-vcard-overlay',
+    'controller'   => 'AgentBundle:Person:uploadVcardOverlay',
+    'requirements' => ['person_id' => '\\d+'],
+]);
+
 $collection->create('agent_peoplesearch_usergroup', [
     'path'       => '/people-search/usergroup/{id}',
     'controller' => 'AgentBundle:PeopleSearch:showUsergroup',
@@ -1756,6 +1762,12 @@ $collection->create('agent_public_pending_approval', [
     'options'    => ['fragment_name' => 'pending_approval', 'fragment_type' => 'list'],
 ]);
 
+$collection->create('agent_public_pending_review', [
+    'path'       => '/publish/pending_review/',
+    'controller' => 'AgentBundle:Publish:listPendingReview',
+    'options'    => ['fragment_name' => 'pending_review', 'fragment_type' => 'list'],
+]);
+
 $collection->create('agent_public_drafts', [
     'path'       => '/publish/drafts/{type}',
     'controller' => 'AgentBundle:Publish:listDrafts',
@@ -1860,6 +1872,11 @@ $collection->create('agent_kb_pending', [
 $collection->create('agent_kb_pending_massactions', [
     'path'       => '/kb/pending-articles/mass-actions/{action}',
     'controller' => 'AgentBundle:Kb:pendingArticlesMassActions',
+]);
+
+$collection->create('agent_kb_pending_review_massactions', [
+    'path'       => '/kb/pending-review-articles/mass-actions/{action}',
+    'controller' => 'AgentBundle:Kb:pendingReviewArticlesMassActions',
 ]);
 
 $collection->create('agent_kb_list', [

@@ -312,7 +312,7 @@
 				{% for log in ticket_fwd_logs[message.id] %}
 					<li style="background: none; padding: 0; font-size: 11px; line-height: 18px;">
 						{% if log.person %}
-							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }}); line-height: 16px; display: inline-block;">{{ log.person.display_name }}</span>
+							<span class="agent-icon" style="background-image: url({{ log.person.getPictureUrl(16) }}); background-size: contain; line-height: 16px; display: inline-block;">{{ log.person.display_name }}</span>
 						{% else %}
 							{{ log.details.from_name }}
 						{% endif %}

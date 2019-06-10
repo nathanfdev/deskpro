@@ -1866,6 +1866,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     if (langId) {
       ticketLangId = langId;
     }
+		var agent = this.page.meta.currentAgent;
+
     window.LegacySnippetInserter.insertSnippet(
     	snippet,
 			blobs,
@@ -1905,7 +1907,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       'ticket',
       this.textarea,
 			this.attachBlobs.bind(this),
-			this.recordSnippetUse.bind(this)
+			this.recordSnippetUse.bind(this),
+			agent
 		);
     this.isSnippetOpen = false;
 	},

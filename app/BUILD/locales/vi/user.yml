@@ -784,6 +784,7 @@ user.defaults.article_example_title: 'Ví dụ bài viết'
 user.defaults.department_sales: 'Bán hàng'
 user.defaults.department_support: 'Ủng hộ'
 user.defaults.downloads_category_general: 'Các tài liệu'
+user.defaults.navigate: 'Điều hướng'
 user.defaults.news_category_general: Chung
 user.defaults.news_example_content: 'Đây là một ví dụ về tin tức. Bạn có thể chỉnh sửa hoặc xóa nó khỏi giao diện agent.'
 user.defaults.news_example_title: 'Ví dụ bài báo'

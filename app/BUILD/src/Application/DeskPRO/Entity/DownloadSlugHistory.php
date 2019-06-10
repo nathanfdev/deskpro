@@ -102,7 +102,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleSlugHistory';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadSlugHistory';
         $metadata->setPrimaryTable(['name' => 'downloads_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(

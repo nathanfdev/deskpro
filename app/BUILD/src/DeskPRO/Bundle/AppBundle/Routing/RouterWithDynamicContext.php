@@ -106,7 +106,51 @@ class RouterWithDynamicContext implements RouterInterface, RouterDecorator, Requ
         }
 
         try {
-            return $this->getBaseRouter()->generate($name, $parameters, $referenceType);
+            $cfParams = [];
+            if (
+                ($name === 'serve_blob' || $name === 'serve_blob_sizefit' || $name === 'serve_blob_size' || $name === 'serve_default_picture')
+                && isset($parameters['s'])
+                && $this->contextFactory->hasCfImageResize()
+            ) {
+                if (preg_match('#^(\d+)x(\d+)$#', $parameters['s'], $m)) {
+                    $reqW = $m[1];
+                    $reqH = $m[2];
+                } else {
+                    $reqW = $parameters['s'];
+                    $reqH = $parameters['s'];
+                }
+
+                $cfParams      = [];
+                $cfParams['w'] = $reqW;
+                $cfParams['h'] = $reqH;
+
+                if (isset($parameters['size-fit']) || $name === 'serve_blob_sizefit' || $name === 'serve_default_picture') {
+                    $cfParams['fit'] = 'contain';
+                } else {
+                    $cfParams['fit'] = 'scale-down';
+                }
+
+                $cfParams['format']  = 'auto';
+                $cfParams['onerror'] = 'redirect';
+
+                if ($name === 'serve_blob_sizefit' || $name === 'serve_blob_size') {
+                    $name = 'serve_blob';
+                }
+
+                unset($parameters['s']);
+                unset($parameters['size-fit']);
+            }
+
+            $url = $this->getBaseRouter()->generate($name, $parameters, $referenceType);
+            if ($cfParams) {
+                $url = $this->contextFactory->getCfResizeUrl(
+                    $url,
+                    $cfParams,
+                    $context
+                );
+            }
+
+            return $url;
         } finally {
             if ($context !== $prevContext) {
                 $this->setContext($prevContext);

@@ -172,7 +172,7 @@
 
                     <tr ng-repeat="team in teams track by team.id">
                         <td class="agent-name">
-                            <span class="avatar" style="background-image: url({{ ng_var('team.avatar.url') }})"></span>
+                            <span class="avatar" style="background-image: url({{ ng_var('team.avatar.url') }}); background-size: contain;"></span>
                             {{ ng_var('team.name') }}
                         </td>
                         <td>
@@ -212,7 +212,7 @@
                         <td class="agent-name">
                             <span class="avatar">
                                 <span class="text">{{ ng_var('getInitials(agent)') }}</span>
-                                <span class="image" style="background-image: url({{ ng_var('agent.avatar.url') }})"></span>
+                                <span class="image" style="background-image: url({{ ng_var('agent.avatar.url') }}); background-size: contain;"></span>
                             </span>
                             {{ ng_var('agent.name') }}
                         </td>

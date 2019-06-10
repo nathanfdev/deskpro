@@ -1,0 +1,23 @@
+<div class="review_date_not_set" {% if article.date_next_review %}style="display: none"{% endif %}>
+  {{ phrase('agent.publish.review_date_no') }}&nbsp;
+  <span class="action-review-date-set"> {{ phrase('agent.publish.review_date_set') }}</span>
+</div>
+<div class="review_date_already_set" {% if not article.date_next_review %}style="display: none"{% endif %}>
+  <input type="hidden" name="review-interval" value="{{ article.review_interval }}"/>
+  <span class="review-date-display">{{ article.date_next_review|date('j M, Y') }}</span>&nbsp;
+  <span class="action-review-date-change">{{ phrase('agent.publish.review_date_change') }}</span>&nbsp;
+  <span class="action-review-date-restart">{{ phrase('agent.publish.review_date_restart_full', {'interval': article.getReviewIntervalTranslated()}) }}</span>&nbsp;
+  <span class="action-review-date-remove">{{ phrase('agent.publish.review_date_remove') }}</span>&nbsp;
+</div>
+<div class="review_date_controls" style="display: none">
+  {{ phrase('agent.publish.review_in') }}
+  {% set interval = article.getReviewInterval(true) %}
+  <input type="number" min="1" class="review-date-control-input" value="{% if interval %}{{ interval[0] }}{% endif %}" size="10"/>
+  <select class="review-date-control-select">
+    <option value="days" {% if interval and interval[1] == 'days'%}selected{% endif %}>{{ phrase('agent.general.days')|capitalize }}</option>
+    <option value="months" {% if interval and interval[1] == 'months'%}selected{% endif %}>{{ phrase('agent.general.months')|capitalize }}</option>
+    <option value="years" {% if interval and interval[1] == 'years'%}selected{% endif %}>{{ phrase('agent.general.years')|capitalize }}</option>
+  </select>
+  <button class="review-date-control-set clean-white">{{ phrase('agent.publish.review_date_button_set') }}</button>&nbsp;
+  <span class="action-review-date-control-cancel"> {{ phrase('agent.general.cancel') }}</span>
+</div>

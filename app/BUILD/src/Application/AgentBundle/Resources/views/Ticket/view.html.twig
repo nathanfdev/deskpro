@@ -56,6 +56,7 @@
 
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
+  pageMeta.currentAgent = {{ app.user.toApiData()|json_encode|raw }};
   pageMeta.ticket = pageMeta.api_data;
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
@@ -563,7 +564,7 @@
                                             {% for a in agent_parts %}
                                                 <li class="agent-{{ a.person.id }}" data-agent-id="{{ a.person.id }}">
                                                     <a class="dp-btn dp-btn-small agent-link" data-agent-id="{{ a.person.id }}">
-                                                        <span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span>
+                                                        <span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }}); background-size: contain;">{{ a.person.display_name }}</span>
                                                         {% if ticket_perms.modify_assign_agent %}
                                                         <span class="remove-row-trigger"> <i class="fas fa-times"></i></span>
                                                         {% endif %}
@@ -1103,12 +1104,8 @@
                 <li data-option-id="window"
                     data-url="{{ path('agent_ticket_message_window', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.view_message_in_window') }}</li>
                 <li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
-                {% if app.hasBeta('new_fwd') %}
-                    <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
-                    <li class="forward-ticket-from-here" data-option-id="fwd-from-here">{{ phrase('agent.tickets.forward_ticket_from_here') }}</li>
-                {% else %}
-                    <li class="forward-message" data-option-id="fwd_legacy">{{ phrase('agent.tickets.forward_message') }}</li>
-                {% endif %}
+                <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
+                <li class="forward-ticket-from-here" data-option-id="fwd-from-here">{{ phrase('agent.tickets.forward_ticket_from_here') }}</li>
                 {% if ticket_perms.modify_messages %}
                     <li class="delete-link"
                         data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>{% endif %}

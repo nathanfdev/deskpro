@@ -870,6 +870,7 @@ user.defaults.article_example_content: 'Detta är ett exempel på en kunskapsbas
 user.defaults.article_example_title: Exempelartikel
 user.defaults.department_sales: Försäljning
 user.defaults.downloads_category_general: Dokument
+user.defaults.navigate: Navigera
 user.defaults.news_category_general: Allmänt
 user.defaults.news_example_content: 'Detta är ett exempel på en nyhet. Känn dig fri att redigera eller radera den från agentgränsittet.'
 user.defaults.news_example_title: Nyhetsexempel

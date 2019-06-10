@@ -407,8 +407,20 @@ return [
      */
     'core.hit_tracks_db_count' => 7500,
 
+    /*
+     * Array or string with "\n" as delimiter
+     * Used in MiscController::proxyAction
+     */
+    'agent.legacy_proxy_whitelist' => null,
+
     'core.agent_translate_debug'     => false,
     'core.agent_enable_kb_shortcuts' => true,
+
+    /*
+     * https://yourzone/ or just / to enable using image resizing on cloudflare instead of our own
+     * (This just changes the URLs we output, so you could still use resizing through file.php itself)
+     */
+    'images.cf_resize_zone' => null,
 
     //###################################################################################################################
     // core_tickets
@@ -488,6 +500,7 @@ return [
     'core_tickets.default_send_user_notify'     => true,
     'core_tickets.new_default_send_user_notify' => true,
     'core_tickets.newticket_enable_drafts'      => true,
+    'core_tickets.forward_as_new_linked_ticket' => false,
 
     /*
      * True to add agents CC's in emails as followers

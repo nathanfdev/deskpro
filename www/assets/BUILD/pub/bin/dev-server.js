@@ -7,6 +7,10 @@ const config   = require('../webpack.config');
 
 const app      = express();
 const compiler = webpack(config);
+
+const assetServerHostname = process.env.ASSET_SERVER_HOSTNAME || 'localhost';
+const assetServerPort = process.env.ASSET_SERVER_PORT || 9666;
+
 app.use(webpackDevMiddleware(compiler, {
   publicPath:         config.output.publicPath,
   hot:                true,
@@ -27,18 +31,23 @@ app.use(webpackDevMiddleware(compiler, {
 
 app.use(webpackHotMiddleware(compiler));
 app.use(cors());
-app.listen(9666, '0.0.0.0', (err) => {
+app.listen(assetServerPort, '0.0.0.0', (err) => {
   if (err) {
     throw new gutil.PluginError('webpack-dev-server', err);
   }
 
-  console.log('[webpack-dev-server]', 'http://localhost:9666/');
+  console.log('[webpack-dev-server]', `http://${assetServerHostname}:${assetServerPort}/`);
   console.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exist: ');
-  console.log('[webpack-dev-server]', '\r\n$PATHS_CONFIG[\'asset_paths\'][\'app_assets\'] = [' +
-    '\r\n    \'type\' => \'url\',' +
-    '\r\n    \'value\' => \'http://localhost:9666/pub/build/\'' +
-    '\r\n];'
-  );
+  console.log('[webpack-dev-server]', '$PATHS_CONFIG[\'asset_paths\'] = [\r\n' +
+      '  \'assets_root\' => [\r\n' +
+      '      \'type\'    => \'url\',\r\n' +
+      '      \'value\'   => \'http://' + assetServerHostname + ':' + assetServerPort + '/\',\r\n' +
+      '  ],\r\n' +
+      '  \'app_assets\' => [\r\n' +
+      '      \'type\'    => \'url\',\r\n' +
+      '      \'value\'   => \'http://' + assetServerHostname + ':' + assetServerPort + '/pub/build/\'\r\n' +
+      '  ],\r\n' +
+      '];');
 });
 
 return app;

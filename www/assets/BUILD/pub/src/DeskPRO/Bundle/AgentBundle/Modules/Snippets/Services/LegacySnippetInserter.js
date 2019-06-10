@@ -34,7 +34,7 @@ class LegacySnippetInserter {
 
     return translation;
   }
-  insertSnippet(snippet, blobs, langId, metadata, type, textArea, attachBlobs, recordSnippetUse) {
+  insertSnippet(snippet, blobs, langId, metadata, type, textArea, attachBlobs, recordSnippetUse, agent) {
     const snippetId   = snippet.id;
     const isSplit     = snippet.is_split;
     const translations = snippet.translations;
@@ -62,6 +62,7 @@ class LegacySnippetInserter {
           result = tpl.render({
             entity: metadata,
             ticket: metadata,
+            me:     agent,
           }, {
             strict_variables: true
           });

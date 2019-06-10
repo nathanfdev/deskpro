@@ -846,6 +846,7 @@ user.defaults.article_example_title: 示例文章
 user.defaults.department_sales: 销售
 user.defaults.department_support: 支持
 user.defaults.downloads_category_general: 文件
+user.defaults.navigate: 导航
 user.defaults.news_category_general: 综合的
 user.defaults.news_example_content: 这是一条新发布消息的例子。欢迎随时在代理界面进行编辑或删除。
 user.defaults.news_example_title: 新发布消息示例

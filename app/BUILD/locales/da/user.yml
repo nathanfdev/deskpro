@@ -855,6 +855,7 @@ user.defaults.article_example_content: 'Dette er et eksempel på en videnbaseart
 user.defaults.article_example_title: 'Eksempel artikel'
 user.defaults.department_sales: Salg
 user.defaults.downloads_category_general: Dokumenter
+user.defaults.navigate: Navigere
 user.defaults.news_category_general: Generelt
 user.defaults.news_example_content: 'Dette er et eksempel på en nyhed. Du kan bare redigere eller slette den fra agent brugergrænsefladen.'
 user.defaults.news_example_title: 'Eksempel nyhed'

@@ -937,6 +937,7 @@ user.defaults.article_example_title: 'Пример статьи'
 user.defaults.department_sales: Распродажа
 user.defaults.department_support: 'Служба поддержки'
 user.defaults.downloads_category_general: Документация
+user.defaults.navigate: Навигация
 user.defaults.news_category_general: Общее
 user.defaults.news_example_content: 'Это пример нового сообщения. Не бойтесь его редактировать или удалять.'
 user.defaults.news_example_title: 'Пример нового сообщения'

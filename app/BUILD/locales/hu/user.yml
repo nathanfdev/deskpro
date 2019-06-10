@@ -249,6 +249,7 @@ user.defaults.article_example_title: 'Példa bejegyzés'
 user.defaults.department_sales: Értékesítés
 user.defaults.department_support: Támogatás
 user.defaults.downloads_category_general: Dokumentumok
+user.defaults.navigate: Hajózik
 user.defaults.news_category_general: Általános
 user.defaults.news_example_content: 'Ez egy példa hír. Természetesen ezt is szabadon szerkesztheti vagy törölheti a munkatárs felületről.'
 user.defaults.news_example_title: 'Példa hír'

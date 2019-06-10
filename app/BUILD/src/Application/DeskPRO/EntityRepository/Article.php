@@ -78,6 +78,42 @@ class Article extends AbstractEntityRepository
     }
 
     /**
+     * @return int
+     */
+    public function getPendingReviewArticlesCount()
+    {
+        $now = new \DateTime();
+
+        return App::getDb()->fetchColumn('
+            SELECT COUNT(*)
+            FROM articles
+            WHERE date_next_review IS NOT NULL
+            AND date_next_review < ?
+        ', [$now->format('Y-m-d H:i:s')]);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPendingReviewArticles($limit = null)
+    {
+        $now   = new \DateTime();
+        $query = $this->getEntityManager()->createQuery('
+            SELECT a
+            FROM DeskPRO:Article a
+            WHERE a.date_next_review IS NOT NULL
+            AND a.date_next_review < ?1
+            ORDER BY a.date_next_review ASC
+        ')->setParameter(1, $now->format('Y-m-d H:i:s'));
+
+        if ($limit) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query->execute();
+    }
+
+    /**
      * Get a collection of articles by ID. If $person_context
      * is supplied, only articles that this person is able to view will be returned.
      *
