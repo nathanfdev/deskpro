@@ -13,6 +13,8 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVote
  */
 class TicketMessagesVoter extends AbstractTicketsVoter
 {
+    const DELETE_RECORDING = 'delete_recording';
+
     /**
      * {@inheritdoc}
      */
@@ -53,6 +55,9 @@ class TicketMessagesVoter extends AbstractTicketsVoter
                 }
 
                 return $this->getTicketChecker($user)->canDeleteMessage($message);
+            case self::DELETE_RECORDING:
+                return $this->getTicketChecker($user)->canModifyMessages($ticket, 'delete_voice_recordings')
+                        || $this->getTicketChecker($user)->canModifyMessages($ticket, 'delete_voice_messages');
         }
 
         return true;

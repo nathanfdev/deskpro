@@ -12,7 +12,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoicePhoneCallVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -61,14 +61,17 @@ class VoicePhoneCallsController extends CrudController
         ]);
 
         if (!$attribute) {
-            throw $this->createNotFoundException('Ticket not found');
+            throw $this->createNotFoundException('Call not found');
         }
 
         /** @var TicketMessage $message */
         $message = $attribute->getMessage();
-        $ticket  = $message->getTicket();
+        if (!$message) {
+            throw $this->createNotFoundException('Message not found');
+        }
+        $ticket = $message->getTicket();
 
-        $this->denyAccessUnlessGranted(VoicePhoneCallVoter::DELETE_RECORDING, new PermissionGroupContext($phoneCall));
+        $this->denyAccessUnlessGranted(TicketMessagesVoter::DELETE_RECORDING, new PermissionGroupContext($ticket, $message));
 
         $recordings = $phoneCall->getRecordings();
         if ($recordings->count() > 0) {
