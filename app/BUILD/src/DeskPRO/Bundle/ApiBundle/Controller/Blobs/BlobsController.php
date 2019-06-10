@@ -78,7 +78,7 @@ class BlobsController extends CrudController
             $dataUri = $request->request->get('file');
 
             // must be a data url
-            if (SafeFile::isValid($dataUri, SafeFile::DATA)) {
+            if (!SafeFile::isValid($dataUri, SafeFile::DATA)) {
                 throw $this->createBadRequestException();
             }
 
