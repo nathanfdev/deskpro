@@ -192,6 +192,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.article:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Content\ArticleType
+    arguments: ["@custom_field_manager"]
+    tags:
+      - { name: form.type }
+
   form.organization_member:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationMemberType
     arguments: ["@doctrine.orm.default_entity_manager"]

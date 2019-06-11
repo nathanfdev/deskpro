@@ -49,6 +49,14 @@ class CustomDataArticle extends CustomDataAbstract
     }
 
     /**
+     * @param Article $article
+     */
+    public function setArticle(Article $article)
+    {
+        $this->article = $article;
+    }
+
+    /**
      * Set a field.
      *
      * @param CustomDefArticle $field
@@ -98,6 +106,11 @@ class CustomDataArticle extends CustomDataAbstract
     // Doctrine Metadata
     //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->customRepositoryClassName = Basic::class;

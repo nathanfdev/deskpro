@@ -113,8 +113,9 @@ class ArticlesController extends AbstractContentController
             $request->request->remove('no_clean');
         }
         $options = array_merge($options, [
-            'person'       => $this->getUser(),
-            'filter_clean' => !($this->getUser()->isAdmin() && $noClean),
+            'agent_interface' => true,
+            'person'          => $this->getUser(),
+            'filter_clean'    => !($this->getUser()->isAdmin() && $noClean),
         ]);
         if ($model->getReviewInterval()) {
             $options['with_review_date'] = true;
