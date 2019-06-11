@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
 
-class Build1560158527 extends AbstractBuild implements OnlineBuildInterface
+class Build1560243630 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {

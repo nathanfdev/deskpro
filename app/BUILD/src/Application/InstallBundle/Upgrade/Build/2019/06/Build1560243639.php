@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1560158535 extends AbstractBuild implements OnlineBuildInterface
+class Build1560243639 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -10,7 +10,7 @@ class Build1560158535 extends AbstractBuild implements OnlineBuildInterface
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE agent_data ADD forwarding_ring_timeout INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE agent_data ADD forwarding_logged_out TINYINT(1) NOT NULL');
     }
 
     public function run()
