@@ -60,7 +60,7 @@ class MembersController extends AbstractController
     {
         $this->isCommunityEnabledOrNotFoundException();
 
-        if (!$person->isUser() || $person->isAgent() || $person->isDeleted()) {
+        if (!$person->isUser() || $person->isDeleted()) {
             throw $this->createNotFoundException();
         }
 
