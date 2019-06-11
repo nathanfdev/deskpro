@@ -51,6 +51,7 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@twilio_adapter"
       - "@data.agent"
+      - "@dp.voice.logger"
     tags:
       - { name: dp.voice.event_subscriber }
 

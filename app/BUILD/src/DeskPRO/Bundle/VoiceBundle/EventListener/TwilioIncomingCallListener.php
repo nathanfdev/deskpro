@@ -12,6 +12,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -45,6 +46,11 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     private $agentDataService;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param EntityManager           $em
@@ -52,19 +58,22 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
      * @param VoiceTaskHelper         $taskHelper
      * @param TwilioAdapter           $twilioAdapter
      * @param AgentDataService        $agentDataService
+     * @param LoggerInterface         $logger
      */
     public function __construct(
         EntityManager           $em,
         StorageAdapterInterface $storageAdapter,
         VoiceTaskHelper         $taskHelper,
         TwilioAdapter           $twilioAdapter,
-        AgentDataService        $agentDataService
+        AgentDataService        $agentDataService,
+        LoggerInterface         $logger
     ) {
         $this->em               = $em;
         $this->storageAdapter   = $storageAdapter;
         $this->taskHelper       = $taskHelper;
         $this->twilioAdapter    = $twilioAdapter;
         $this->agentDataService = $agentDataService;
+        $this->logger           = $logger;
     }
 
     /**
@@ -91,6 +100,9 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
         if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
             return;
         }
+        if (!$task->getWorkerIds()) {
+            return;
+        }
 
         $phoneCall = $this->taskHelper->getPhoneCall($task);
         if (!$phoneCall) {
@@ -98,31 +110,45 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
         }
 
         $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof TwilioVoiceAccount) {
+            return;
+        }
 
-        if ($account instanceof TwilioVoiceAccount) {
-            if ($task->getWorkerIds()) {
-                // once workers are found
-                // we can call them and enqueue the user
-                $workers = $this->storageAdapter->getWorkers($task->getWorkerIds());
-                foreach ($workers as $worker) {
-                    /** @var Person $agent */
-                    $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
-                    if ($agent) {
-                        if ($agent->canForwardCall()) {
-                            $isAgentOnline = $this->agentDataService->isAgentOnline($agent);
-                            if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
-                                // make an outbound call
-                                $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
-                                if ($callUuid) {
-                                    $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
-                                }
-                            }
+        $this->logger->info(sprintf(
+            '[TwilioIncomingCallListener] Assigned to workers = %s',
+            implode(', ', $task->getWorkerIds())
+        ));
+
+        // once workers are found
+        // we can call them and enqueue the user
+        $workers = $this->storageAdapter->getWorkers($task->getWorkerIds());
+        foreach ($workers as $worker) {
+            /** @var Person $agent */
+            $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
+            if ($agent) {
+                if ($agent->canForwardCall()) {
+                    $isAgentOnline = $this->agentDataService->isAgentOnline($agent);
+                    $this->logger->info(sprintf(
+                        '[TwilioIncomingCallListener] Agent #%s is_online = %s',
+                        $agent->getId(), $isAgentOnline ? 'true' : 'false'
+                    ));
+
+                    if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
+                        // make an outbound call
+                        $this->logger->info(sprintf(
+                            '[TwilioIncomingCallListener] Make a forwarding call to agent #%s',
+                            $agent->getId()
+                        ));
+
+                        $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
+                        if ($callUuid) {
+                            $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
                         }
                     }
                 }
-
-                $this->em->flush();
             }
         }
+
+        $this->em->flush();
     }
 }
