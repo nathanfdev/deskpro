@@ -7,7 +7,7 @@ class ExtensionsHeader extends React.Component {
     return (
       <SectionHeader
         title="Extensions"
-        description="Easily set up and manage extenions for all your agents as well as using targets for other extensions."
+        description="Easily set up and manage extensions for all your agents as well as using targets for other extensions."
         dividing
       />
     );
