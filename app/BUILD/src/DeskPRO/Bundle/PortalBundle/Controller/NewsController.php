@@ -25,7 +25,7 @@ class NewsController extends AbstractController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
-     *     requirements={"_format":"html|rss|ical"})
+     *     requirements={"_format":"html|rss|ics"})
      * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
@@ -58,18 +58,18 @@ class NewsController extends AbstractController
 
         // iCalendar
 
-        if ('ical' === $_format) {
+        if ('ics' === $_format) {
             $pager = $this->getNewsPager($request, $page, $person);
 
-            return $this->render('PortalBundle:News:feed.ical.twig', [
+            return $this->render('PortalBundle:News:feed.ics.twig', [
                 'page_title' => $this->createPageTitle()->news(),
                 'pager'      => $pager,
                 'category'   => null,
-            ]);
+            ], new Response(null, Response::HTTP_OK, ['Content-Type' => 'text/calendar']));
         }
-        $icalLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
+        $icsLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
             'portal_news',
-            ['_format' => 'ical'],
+            ['_format' => 'ics'],
             UrlGeneratorInterface::ABSOLUTE_URL
         ));
 
@@ -95,7 +95,7 @@ class NewsController extends AbstractController
                 'page_title'    => $this->createPageTitle()->news(),
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,
-                'ical_link'     => $icalLink,
+                'ics_link'      => $icsLink,
                 'is_subscribed' => $isSubscribed,
             ]
         );
