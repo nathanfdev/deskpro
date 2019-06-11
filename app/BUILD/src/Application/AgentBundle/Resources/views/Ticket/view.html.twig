@@ -1106,15 +1106,11 @@
                 <li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
                 <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
                 <li class="forward-ticket-from-here" data-option-id="fwd-from-here">{{ phrase('agent.tickets.forward_ticket_from_here') }}</li>
-                {% if ticket_perms.modify_messages %}
-                    <li class="delete-link"
-                        data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>{% endif %}
-                {% if ticket_perms.delete %}
-                    <li class="delete-attachments-link"
-                        data-option-id="delete-attachments">{{ phrase('agent.tickets.delete_attach') }}</li>{% endif %}
-                {% if ticket_perms.modify_messages %}
-                    <li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
-                {% endif %}
+                <li class="delete-link"
+                    data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>
+                <li class="delete-attachments-link"
+                    data-option-id="delete-attachments">{{ phrase('agent.tickets.delete_attach') }}</li>
+                <li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
                 {% if ticket_perms.reply %}
                 <li class="set-as-message"
                     data-option-id="setnote.message">{{ phrase('agent.tickets.set_as_normal_message') }}</li>
@@ -1125,9 +1121,8 @@
                     <li data-option-id="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
                 {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                     <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>{% endif %}
-                {% if ticket_perms.modify_messages %}
-                    <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
-                {% endif %}
+                <li class="edit"
+                    data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
                 <li
                     class="email-download"
                     data-option-id="email_download"
@@ -1135,13 +1130,11 @@
                 >
                     {{ phrase('agent.tickets.email_download') }}
                 </li>
-                {% if ticket_perms.modify_messages %}
-                    <li
-                        class='email-delete'
-                        data-option-id="email_delete">
-                        {{ phrase('agent.tickets.email_delete') }}
-                    </li>
-                {% endif %}
+                <li
+                    class='email-delete'
+                    data-option-id="email_delete">
+                    {{ phrase('agent.tickets.email_delete') }}
+                </li>
                 {% if app.user.can_admin %}
                     <li data-option-id="debug"
                         data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}"
@@ -1321,13 +1314,11 @@
                               style="width: 98%; height: 200px; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;"
                               name="message_text" class="message_text"></textarea>
                 </div>
-                <div class="overlay-footer" {% if ticket_perms.modify_messages %}style="height: 45px;"{% endif %}>
-                    {% if ticket_perms.modify_messages %}
+                <div class="overlay-footer" style="height: 45px;">
                     <label class="log_original_contents">
                         <input type="checkbox" value='1' name="log_original_contents" checked="checked"/>
                         <span>{{ phrase('agent.tickets.log_original_contents') }}</span>
                     </label>
-                    {% endif %}
                     <button class="clean-white save-text-trigger">{{ phrase('agent.general.save') }}</button>
                     <span class="flat-spinner save-text-loading" style="display: none"></span>
                 </div>

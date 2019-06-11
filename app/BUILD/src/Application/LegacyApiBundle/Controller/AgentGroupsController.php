@@ -383,15 +383,14 @@ class AgentGroupsController extends AbstractController implements ProtectedContr
      */
     private function enablePermsForGroupOnArray(Usergroup $ug, array &$perms)
     {
-        if ($ug->sys_name != 'agent_all_perms' && $ug->sys_name != 'agent_all_safe_perms') {
+        // for agent_all_safe_perms all needed permissions has been enabled by loaders
+        if ($ug->sys_name != 'agent_all_perms') {
             return;
         }
 
         foreach ($perms as &$set) {
             foreach ($set as $n => &$v) {
-                if ($ug->sys_name != 'agent_all_safe_perms' || strpos($n, 'delete') === false) {
-                    $v = true;
-                }
+                $v = true;
             }
         }
     }

@@ -581,11 +581,53 @@ class TicketController extends AbstractController
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
 
-        $ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
-
         $this->ticketPermsCache[$ticket->getId()] = $ticket_perms;
 
         return $ticket_perms;
+    }
+
+    /**
+     * [
+     *    message_id => [
+     *        'edit' => true/false
+     *        'delete' => true/false
+     *    ]
+     * ].
+     *
+     * Check TicketPermissions properties with modify_messages_ prefix to get a list of possible message permissions
+     *
+     * @param Entity\Ticket          $ticket
+     * @param Entity\TicketMessage[] $messages
+     *
+     * @return array
+     */
+    protected function _getTicketMessagesPerms(Ticket $ticket, $messages)
+    {
+        $perms   = [];
+        $checker = $this->person->PermissionsManager->TicketChecker;
+
+        // global perms, same for all messages
+        $convertMessages  = $checker->canModifyMessages($ticket, 'convert_messages');
+        $convertNotes     = $checker->canModifyMessages($ticket, 'convert_notes');
+        $deleteRecordings = $checker->canModifyMessages($ticket, 'delete_voice_recordings');
+        $noLogging        = $checker->canModifyMessages($ticket, 'no_logging');
+
+        // fill perms for each message
+        foreach ($messages as $message) {
+            $perms[$message->getId()] = [
+                'edit'                    => $checker->canEditMessage($message),
+                'delete'                  => $checker->canDeleteMessage($message),
+                'delete_voice_recordings' => $deleteRecordings,
+                'no_logging'              => $noLogging,
+            ];
+            if ($message->isAgentNote()) {
+                $perms[$message->getId()]['convert'] = $convertNotes;
+            } else {
+                $perms[$message->getId()]['convert'] = $convertMessages;
+            }
+        }
+
+        return $perms;
     }
 
     public function loadTicketLogsAction($ticket_id)
@@ -850,6 +892,7 @@ class TicketController extends AbstractController
                 [
                     'ticket'                     => $ticket,
                     'ticket_perms'               => $this->_getTicketPerms($ticket),
+                    'messages_perms'             => $this->_getTicketMessagesPerms($ticket, $ticket_messages),
                     'ticket_messages'            => $ticket_messages,
                     'ticket_messages_translated' => $ticket_messages_translated,
                     'ticket_messages_num'        => $ticket_messages_num,
@@ -2137,7 +2180,7 @@ class TicketController extends AbstractController
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
         $message = $this->em->find(TicketMessage::class, $message_id);
         $ticket  = null;
-        if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
+        if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessage($message)) {
             $ticket = $message->ticket;
         }
 
@@ -2156,9 +2199,7 @@ class TicketController extends AbstractController
         $newMessage = Strings::trimHtml($newMessage);
         $newMessage = Strings::prepareWysiwygHtml($newMessage);
 
-        $logOriginalContents =
-            $this->in->getBool('log_original_contents')
-            || !$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket);
+        $logOriginalContents = $this->in->getBool('log_original_contents');
 
         $details = [
             'message_id' => $message->getId(),
@@ -2206,8 +2247,15 @@ class TicketController extends AbstractController
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
         $message = $this->em->find(TicketMessage::class, $message_id);
         $ticket  = null;
+        $isNote  = $this->in->getBool('is_note');
+
         if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
             $ticket = $message->ticket;
+        }
+        if ($ticket && !$this->person->PermissionsManager->TicketChecker
+                ->canModifyMessages($ticket, $isNote ? 'convert_messages' : 'convert_notes')
+        ) {
+            $ticket = null;
         }
 
         if (!$ticket) {
@@ -2218,7 +2266,7 @@ class TicketController extends AbstractController
         $tm->markAsManaged($ticket);
 
         $old_val                = $message->is_agent_note;
-        $message->is_agent_note = $this->in->getBool('is_note');
+        $message->is_agent_note = $isNote;
 
         // When converting to a reply, we act as though this is a new
         // agent reply and pass it through newreply triggers
@@ -2277,7 +2325,7 @@ class TicketController extends AbstractController
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
         $message = $this->em->find(TicketMessage::class, $message_id);
         $ticket  = null;
-        if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
+        if ($message && $this->person->PermissionsManager->TicketChecker->canDeleteMessage($message)) {
             $ticket = $message->ticket;
         }
 
@@ -2362,7 +2410,7 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+        if (!$this->person->PermissionsManager->TicketChecker->canDeleteMessage($message)) {
             throw new NotFoundHttpException();
         }
 
@@ -2414,7 +2462,7 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        if (!$this->person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+        if (!$this->person->PermissionsManager->TicketChecker->canDeleteMessage($message)) {
             throw new NotFoundHttpException();
         }
 
@@ -5770,7 +5818,7 @@ CSS;
     public function deleteTicketMessageEmailAction($messageId)
     {
         $message = $this->getMessageOr404($messageId);
-        if (!$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
+        if (!$this->person->PermissionsManager->TicketChecker->canDeleteMessage($message)) {
             throw $this->createAccessDeniedException();
         }
 

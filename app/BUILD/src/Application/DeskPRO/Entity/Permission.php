@@ -233,7 +233,7 @@ class Permission extends DomainObject
             [
                 'fieldName'  => 'name',
                 'type'       => 'string',
-                'length'     => 50,
+                'length'     => 100,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,

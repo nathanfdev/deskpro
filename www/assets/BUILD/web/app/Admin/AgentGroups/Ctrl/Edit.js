@@ -253,7 +253,29 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       });
     }
 
+    hasSomePerms(typename, permname, permPrefix) {
+      let name,
+        val;
+      const prefix = permPrefix ? permPrefix : permname.replace(/(^.*?_).*?$/, '$1');
+      const suffix = permname.replace(prefix, '').replace(/^.*?(_.*?)$/, '$1');
+      if (!suffix || !this.group.perms[typename]) { return; }
 
+      for (name of Object.keys(this.group.perms[typename] || {})) {
+        val = this.group.perms[typename][name];
+        if (
+            val
+            && ((name.indexOf(suffix) !== -1) && (name.indexOf(prefix) === 0))
+            && !(prefix === 'modify_' && name.indexOf('modify_messages_') === 0) // both modify_ tickets and modify_ messages
+                                                                                 // have the same prefix modify_
+                                                                                 // so, have to add this check
+          ) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+    
     /*
      * Shows the copy settings modal
      */

@@ -17,6 +17,12 @@
                 {% endif %}
             </span>
 
+            {% if opts.tooltip %}
+              <span>
+                <i tooltip-placement="left" tooltip="{{opts.tooltip}}" class="far fa-question-circle"></i>
+              </span>
+            {% endif %}
+
             {% if opts.showToggler %}
                 <span class="toggle-wrap" ng-click="{{ row_id }}_toggler = !{{ row_id }}_toggler">
                 <span ng-show="!{{ row_id }}_toggler">expand <i class="fas fa-caret-down"></i></span>
@@ -37,7 +43,7 @@
                         locked-tip="This permission is locked because this agent is part of a usergroup with this permission"
 
                         {% if opts.showToggler %}
-                            is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}')"
+                            is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}', '{{opts.permPrefix}}')"
                         {% endif %}
                     {% endif %}
                     />

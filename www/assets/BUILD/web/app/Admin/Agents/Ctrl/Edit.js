@@ -355,17 +355,23 @@ define([
       })();
     }
 
-    hasSomePerms(typename, permname) {
+    hasSomePerms(typename, permname, permPrefix) {
       let name,
         val;
-      const prefix = permname.replace(/(^.*?_).*?$/, '$1');
-      const suffix = permname.replace(/^.*?(_.*?)$/, '$1');
+      const prefix = permPrefix ? permPrefix : permname.replace(/(^.*?_).*?$/, '$1');
+      const suffix = permname.replace(prefix, '').replace(/^.*?(_.*?)$/, '$1');
       if (!suffix || !(((this.ugEffectivePerms != null ? this.ugEffectivePerms[typename] : undefined) != null) || ((this.perm_form != null ? this.perm_form[typename] : undefined) != null))) { return; }
 
       if ((this.ugEffectivePerms != null ? this.ugEffectivePerms[typename] : undefined) != null) {
         for (name of Object.keys(this.ugEffectivePerms[typename] || {})) {
           val = this.ugEffectivePerms[typename][name];
-          if (val && ((name.indexOf(suffix) !== -1) && (name.indexOf(prefix) === 0))) {
+          if (
+              val
+              && ((name.indexOf(suffix) !== -1) && (name.indexOf(prefix) === 0))
+              && !(prefix === 'modify_' && name.indexOf('modify_messages_') === 0) // both modify_ tickets and modify_ messages
+                                                                                   // have the same prefix modify_
+                                                                                   // so, have to add this check
+            ) {
             return true;
           }
         }
@@ -374,7 +380,13 @@ define([
       if ((this.perm_form != null ? this.perm_form[typename] : undefined) != null) {
         for (name of Object.keys(this.perm_form[typename] || {})) {
           val = this.perm_form[typename][name];
-          if (val && ((name.indexOf(suffix) !== -1) && (name.indexOf(prefix) === 0))) {
+          if (
+              val
+              && ((name.indexOf(suffix) !== -1) && (name.indexOf(prefix) === 0))
+              && !(prefix === 'modify_' && name.indexOf('modify_messages_') === 0) // both modify_ tickets and modify_ messages
+                                                                                   // have the same prefix modify_
+                                                                                   // so, have to add this check
+            ) {
             return true;
           }
         }

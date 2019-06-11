@@ -68,7 +68,24 @@
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
         {{ macro.perm_row('ticket', 'modify_billing_own', {toggleName: 'ticket.modify_own'}) }}
     {% endif %}
-    {{ macro.perm_row('ticket', 'modify_messages_own') }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'modify_messages_own',                            {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_own',                       {toggleName: 'ticket.modify_messages_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_own',                     {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_own',     {toggleName: 'ticket.modify_messages_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_notes_own',                 {toggleName: 'ticket.modify_messages_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_timelimited_notes_own',   {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_notes_own',               {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_notes_own',              {toggleName: 'ticket.modify_messages_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_messages_own',           {toggleName: 'ticket.modify_messages_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_own',                 {toggleName: 'ticket.modify_messages_own', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {% if app.getSetting('beta_features.voice') %}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_own',  {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_own',    {toggleName: 'ticket.modify_messages_own', destructive: true}) }}
+    {% endif %}
+    </tbody>
+    <tbody>
     {{ macro.perm_row('ticket', 'delete_own', {destructive: true}) }}
     </tbody>
     <tbody>
@@ -96,7 +113,24 @@
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
         {{ macro.perm_row('ticket', 'modify_billing_followed', {toggleName: 'ticket.modify_followed'}) }}
     {% endif %}
-    {{ macro.perm_row('ticket', 'modify_messages_followed') }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'modify_messages_followed',                           {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_followed',                      {toggleName: 'ticket.modify_messages_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_followed',                    {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_followed',    {toggleName: 'ticket.modify_messages_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_notes_followed',                {toggleName: 'ticket.modify_messages_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_timelimited_notes_followed',  {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_notes_followed',              {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_notes_followed',             {toggleName: 'ticket.modify_messages_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_messages_followed',          {toggleName: 'ticket.modify_messages_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_followed',                {toggleName: 'ticket.modify_messages_followed', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {% if app.getSetting('beta_features.voice') %}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_followed',   {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_followed', {toggleName: 'ticket.modify_messages_followed', destructive: true}) }}
+    {% endif %}
+    </tbody>
+    <tbody>
     {{ macro.perm_row('ticket', 'delete_followed', {destructive: true}) }}
     </tbody>
     <tbody>
@@ -125,7 +159,23 @@
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
         {{ macro.perm_row('ticket', 'modify_billing_unassigned', {toggleName: 'ticket.modify_unassigned'}) }}
     {% endif %}
-    {{ macro.perm_row('ticket', 'modify_messages_unassigned') }}
+    <tbody>
+    {{ macro.perm_row('ticket', 'modify_messages_unassigned',                           {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_unassigned',                      {toggleName: 'ticket.modify_messages_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_unassigned',                    {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_unassigned',    {toggleName: 'ticket.modify_messages_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_notes_unassigned',                {toggleName: 'ticket.modify_messages_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_timelimited_notes_unassigned',  {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_notes_unassigned',              {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_notes_unassigned',             {toggleName: 'ticket.modify_messages_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_messages_unassigned',          {toggleName: 'ticket.modify_messages_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_unassigned',                {toggleName: 'ticket.modify_messages_unassigned', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {% if app.getSetting('beta_features.voice') %}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_unassigned',   {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_unassigned', {toggleName: 'ticket.modify_messages_unassigned', destructive: true}) }}
+    {% endif %}
+    </tbody>
+    <tbody>
     {{ macro.perm_row('ticket', 'delete_unassigned', {destructive: true}) }}
     </tbody>
     <tbody>
@@ -154,7 +204,24 @@
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
         {{ macro.perm_row('ticket', 'modify_billing_others', {toggleName: 'ticket.modify_others'}) }}
     {% endif %}
-    {{ macro.perm_row('ticket', 'modify_messages_others') }}
+    </tbody>
+    <tbody>
+    {{ macro.perm_row('ticket', 'modify_messages_others',                           {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_others',                      {toggleName: 'ticket.modify_messages_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_others',                    {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_others',    {toggleName: 'ticket.modify_messages_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_edit_notes_others',                {toggleName: 'ticket.modify_messages_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_timelimited_notes_others',  {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_delete_notes_others',              {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_notes_others',             {toggleName: 'ticket.modify_messages_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_convert_messages_others',          {toggleName: 'ticket.modify_messages_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_no_logging_others',                {toggleName: 'ticket.modify_messages_others', destructive: true, tooltip: phrase('adm.agents.perm_ticket_modify_messages_no_logging_tooltip')}) }}
+    {% if app.getSetting('beta_features.voice') %}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_messages_others',   {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
+        {{ macro.perm_row('ticket', 'modify_messages_delete_voice_recordings_others', {toggleName: 'ticket.modify_messages_others', destructive: true}) }}
+    {% endif %}
+    </tbody>
+    <tbody>
     {{ macro.perm_row('ticket', 'delete_others', {destructive: true}) }}
     </tbody>
 </table>
