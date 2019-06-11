@@ -307,18 +307,22 @@ class Boot
             $app->add($command);
         }
 
-        /** @var \SplFileInfo[] $customScripts */
-        $customScripts = Finder::create()
-            ->in(implode(DIRECTORY_SEPARATOR, [$env->getDpRoot(), 'app', 'scripts', 'command']))
-            ->name('*Command.php')
-            ->files();
+        /* @var \SplFileInfo[] $customScripts */
+        try {
+            $customScripts = Finder::create()
+                ->in(implode(DIRECTORY_SEPARATOR, [$env->getDpRoot(), 'app', 'scripts', 'command']))
+                ->name('*Command.php')
+                ->files();
 
-        foreach ($customScripts as $f) {
-            $className = 'DpScripts\Command\\'.$f->getBasename('.php');
-            if (class_exists($className, true)) {
-                $command = new $className();
-                $app->add($command);
+            foreach ($customScripts as $f) {
+                $className = 'DpScripts\Command\\'.$f->getBasename('.php');
+                if (class_exists($className, true)) {
+                    $command = new $className();
+                    $app->add($command);
+                }
             }
+        } catch (\Exception $e) {
+            // ignore
         }
 
         $app->run($input);

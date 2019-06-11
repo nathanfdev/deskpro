@@ -111,7 +111,11 @@ class RawTransportFactory
         }
         $tr->registerPlugin($tr_logger);
 
-        if ($heloDomain = $this->settings->get('smtp.helo_domain')) {
+        if ($heloDomain = $this->settings->get('smtp.helo_domain.'.$config->user)) {
+            $tr->setLocalDomain($heloDomain);
+        } elseif ($heloDomain = $this->settings->get('smtp.helo_domain')) {
+            $tr->setLocalDomain($heloDomain);
+        } elseif ($heloDomain = $this->settings->get('smtp.helo_domain_default')) {
             $tr->setLocalDomain($heloDomain);
         }
 
