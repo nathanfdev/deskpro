@@ -56,14 +56,15 @@ class TicketMessagesController extends AbstractTicketsCrudSubController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'ticket'                 => $this->findParentOr404(),
-            'person'                 => $this->getUser(),
-            'has_attachments'        => true,
-            'with_ticket_validation' => $request->get('with_ticket_validation'),
-            'allow_set_status'       => true,
-            'allow_apply_macros'     => true,
-            'allow_set_snippets'     => true,
-            'admin_api_key_request'  => $this->isAdminApiKeyRequest(),
+            'ticket'                  => $this->findParentOr404(),
+            'person'                  => $this->getUser(),
+            'has_attachments'         => true,
+            'with_ticket_validation'  => $request->get('with_ticket_validation'),
+            'allow_set_status'        => true,
+            'allow_apply_macros'      => true,
+            'allow_set_snippets'      => true,
+            'allow_reply_on_archived' => true,
+            'admin_api_key_request'   => $this->isAdminApiKeyRequest(),
         ]);
 
         return parent::handleForm($model, $request, $options);

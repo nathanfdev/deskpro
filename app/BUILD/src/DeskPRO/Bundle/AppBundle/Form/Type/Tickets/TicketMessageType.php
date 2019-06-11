@@ -268,26 +268,27 @@ class TicketMessageType extends AbstractType
                         'data-ctrl-enter-submit' => (int) $options['ctrl_enter_submit'],
                     ];
                 },
-                'error_bubbling'         => false,
-                'ticket'                 => null,
-                'person'                 => null,
-                'ticket_message'         => null,
-                'render_is_note'         => true,
-                'has_attachments'        => false,
-                'format'                 => '',
-                'with_ticket_validation' => false,
-                'ctrl_enter_submit'      => false,
-                'allow_set_person'       => $this->tokenStorage->getToken() instanceof ApiKeySecurityToken,
-                'allow_set_status'       => false,
-                'allow_set_snippets'     => false,
-                'allow_apply_macros'     => false,
-                'message_constraints'    => [],
-                'error_mapping'          => [
+                'error_bubbling'          => false,
+                'ticket'                  => null,
+                'person'                  => null,
+                'ticket_message'          => null,
+                'render_is_note'          => true,
+                'has_attachments'         => false,
+                'format'                  => '',
+                'with_ticket_validation'  => false,
+                'ctrl_enter_submit'       => false,
+                'allow_set_person'        => $this->tokenStorage->getToken() instanceof ApiKeySecurityToken,
+                'allow_set_status'        => false,
+                'allow_set_snippets'      => false,
+                'allow_apply_macros'      => false,
+                'allow_reply_on_archived' => false,
+                'message_constraints'     => [],
+                'error_mapping'           => [
                     // we use custom setters to modify message,
                     // so we need to map entity property with the form field
                     'message' => 'message',
                 ],
-                'constraints' => [
+                'constraints'             => [
                     // check message directly via the form to prevent checking all ticket messages collection
                     new Assert\Valid(),
                 ],
@@ -306,6 +307,7 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('allow_set_status', 'bool')
             ->setAllowedTypes('allow_set_snippets', 'bool')
             ->setAllowedTypes('allow_apply_macros', 'bool')
+            ->setAllowedTypes('allow_reply_on_archived', 'bool')
             ->setAllowedTypes('admin_api_key_request', 'bool')
         ;
     }
