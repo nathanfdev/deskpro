@@ -28,24 +28,7 @@ export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
 export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
 export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
 
-const filterConnection = (connection, callSid) => {
-  if (!connection) {
-    return false;
-  }
-
-  // filter for twilio
-  if (connection.parameters && connection.parameters.CallSid === callSid) {
-    return true;
-  }
-
-  // filter for plivo
-  if (connection.getCallUUID && connection.getCallUUID() === callSid) {
-    return true;
-  }
-
-  return false;
-};
-
+const filterConnection = (connection, callId) => connection && parseInt(connection.callId, 10) === parseInt(callId, 10);
 const hangupConnection = (connection) => {
   // twilio
   if (connection.disconnect) {
@@ -234,7 +217,7 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
           const state = getState();
           const connections = connectionsSelector(state);
-          const connection = connections.filter(c => filterConnection(c, data.call_sid)).first();
+          const connection = connections.filter(c => filterConnection(c, data.call_id)).first();
 
           if (connection) {
             closeIframes();
@@ -252,7 +235,7 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
           const state = getState();
           const connections = connectionsSelector(state);
-          const connection = connections.filter(c => filterConnection(c, data.CallSid)).first();
+          const connection = connections.filter(c => filterConnection(c, data.call_id)).first();
 
           dispatch(resetOutgoingCall());
           if (connection) {

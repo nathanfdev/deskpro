@@ -766,7 +766,8 @@ class VoiceCallbacksHelper
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
             new LegacySystemEvent('agent.voice.outgoing-call-declined', [
-                'CallSid' => $phoneCall->getCallSid(),
+                'call_id'  => $phoneCall->getId(),
+                'call_sid' => $phoneCall->getCallSid(),
             ])
         );
     }
