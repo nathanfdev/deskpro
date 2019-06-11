@@ -110,7 +110,7 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
                     if ($agent) {
                         if ($agent->canForwardCall()) {
                             $isAgentOnline = $this->agentDataService->isAgentOnline($agent);
-                            if ((!$isAgentOnline && $agent->getAgentData()->isForwardingLoggedOut()) || $isAgentOnline) {
+                            if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
                                 // make an outbound call
                                 $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
                                 if ($callUuid) {

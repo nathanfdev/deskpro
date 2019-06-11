@@ -612,7 +612,7 @@ class PlivoCallbacksController extends BaseController
                             $agent = $this->getRepository(Person::class)->find($worker->getTypeId());
                             if ($agent && $agent->canForwardCall()) {
                                 $isAgentOnline = $this->get('data.agent')->isAgentOnline($agent);
-                                if ((!$isAgentOnline && $agent->getAgentData()->isForwardingLoggedOut()) || $isAgentOnline) {
+                                if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
                                     // make an outbound call
                                     $callUuid = $this->get('plivo_adapter')->callForwardingNumber($phoneCall, $agent);
                                     if ($callUuid) {
