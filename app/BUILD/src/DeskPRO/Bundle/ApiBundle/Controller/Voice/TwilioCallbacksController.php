@@ -861,7 +861,9 @@ class TwilioCallbacksController extends BaseController
         try {
             $this->getManager()->refresh($phoneCall);
 
-            if ($phoneCall->isWarmAdd()) {
+            if ($phoneCall->isColdTransfer()) {
+                $twiml->redirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
+            } elseif ($phoneCall->isWarmAdd()) {
                 // if it's warm add user and agent are in an active call
                 // so we need to force move into the conference on hang up
                 $logger->info(sprintf(
