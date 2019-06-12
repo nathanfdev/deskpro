@@ -22,7 +22,6 @@ class TicketMessage extends React.Component {
     autoAttendants:       PropTypes.object,
     message:              PropTypes.object,
     phoneCall:            PropTypes.object,
-    connection:           PropTypes.object,
     transcript:           PropTypes.string,
     outboundCallsEnabled: PropTypes.bool,
     dateCreatedFormatted: PropTypes.string,
@@ -72,12 +71,12 @@ class TicketMessage extends React.Component {
   };
 
   render() {
-    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants, connection } = this.props;
+    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants } = this.props;
     const { transcript, outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
     const { openDialpad, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
-    const recordings = phoneCall.get('recordings');
+    const recordings = phoneCall.get('recordings') || [];
     const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
     const recordingsDeleted = recordings.filter(recording => recording.get('is_deleted'));
     const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
@@ -133,7 +132,7 @@ class TicketMessage extends React.Component {
             </span>
 
           </div>
-          {connection
+          {!phoneCall.get('date_ended')
             ? <div className="voice-ticket-message-controls">
                 Call in progress
               </div>

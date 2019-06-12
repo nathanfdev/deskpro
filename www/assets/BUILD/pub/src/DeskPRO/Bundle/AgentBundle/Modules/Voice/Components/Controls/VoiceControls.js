@@ -12,8 +12,9 @@ import DialGrid from '../Common/DialGrid';
 class VoiceControls extends React.Component {
 
   static propTypes = {
-    status: PropTypes.string,
-    baseId: PropTypes.string
+    status:    PropTypes.string,
+    baseId:    PropTypes.string,
+    phoneCall: PropTypes.object
   };
 
   static defaultProps = {
@@ -53,7 +54,7 @@ class VoiceControls extends React.Component {
   };
 
   render() {
-    const { status } = this.props;
+    const { status, phoneCall } = this.props;
 
     switch (status) {
       case 'dialing':
@@ -87,7 +88,7 @@ class VoiceControls extends React.Component {
           <Active
             divRef={(c) => { this.div = c; }}
             {...this.props}
-            ended={status === 'closed'}
+            ended={phoneCall.get('date_ended')}
           />
         );
       default:
@@ -166,6 +167,7 @@ class Active extends React.Component {
     sendDigits:         PropTypes.func,
     divRef:             PropTypes.func,
     participants:       PropTypes.array,
+    connection:         PropTypes.object,
     phoneCall:          PropTypes.object
   };
 
@@ -251,7 +253,8 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType, phoneCall } = this.props;
+    const { hold, mute, ended, onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
+    const { connection, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
     const noQueues = !queues || !queues.size;
@@ -265,7 +268,7 @@ class Active extends React.Component {
         className={classNames('voice-controls active', { hold, ended })}
       >
         <Title>
-          Duration: <Timer paused={ended} />
+          Duration: <Timer paused={ended} startTime={phoneCall.get('duration')} />
         </Title>
 
         <span className="voice-controls-recording">
@@ -276,6 +279,7 @@ class Active extends React.Component {
           </span>}
         </span>
 
+        {connection &&
         <Button
           ref={(c) => { this.dialpadButton = c; }}
           className={classNames('basic', { active: dialpadOpened, disabled: ended || isWarmTransfer })}
@@ -283,21 +287,24 @@ class Active extends React.Component {
         >
           <i className="grid layout icon" />
           Dialpad
-        </Button>
+        </Button>}
+        {connection &&
         <Button
           className={classNames('basic', { active: hold, disabled: ended || isWarmTransfer, loading: updatingHold })}
           onClick={this.toggleHold}
         >
           <i className="pause icon" />
           Hold
-        </Button>
+        </Button>}
+        {connection &&
         <Button
           className={classNames('basic', { active: mute, disabled: hold || ended || isWarmTransfer })}
           onClick={this.toggleMute}
         >
           <i className={classNames(mute ? 'mute' : 'unmute', 'icon')} />
           Mute
-        </Button>
+        </Button>}
+        {connection &&
         <Button
           ref={(c) => { this.transferButton = c; }}
           className={classNames(
@@ -311,7 +318,8 @@ class Active extends React.Component {
         >
           <i className="share icon" />
           Transfer
-        </Button>
+        </Button>}
+        {connection &&
         <Button
           ref={(c) => { this.addButton = c; }}
           className={classNames('basic', { active: addMenuOpened, disabled: transferDisabled })}
@@ -319,14 +327,14 @@ class Active extends React.Component {
         >
           <i className="add icon" />
           Add
-        </Button>
+        </Button>}
+        {connection &&
         <Button
           className={classNames('red', { disabled: ended })}
           onClick={this.endCall}
         >
-          {/* TODO: this is temp solution, that should be {status === 'warm_transfer'} */}
           {participants.length >= 2 ? 'Hang up' : 'End call'}
-        </Button>
+        </Button>}
 
         <Detached
           positionMy="right top"

@@ -174,6 +174,13 @@ class VoicePhoneCall
     private $recordingEnabled;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $duration;
+
+    /**
      * Constructor.
      *
      * @param VoicePhoneCallEntity $phoneCall
@@ -200,6 +207,7 @@ class VoicePhoneCall
         $this->agentVoicemail     = $phoneCall->getAgentVoicemailRecord();
         $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
+        $this->duration           = $phoneCall->getDateStarted() ? time() - $phoneCall->getDateStarted()->getTimestamp() : 0;
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
             unset($this->data['RecordingUrl']);

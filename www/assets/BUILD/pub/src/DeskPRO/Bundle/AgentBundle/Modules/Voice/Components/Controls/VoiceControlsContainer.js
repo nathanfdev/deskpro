@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { voiceAgentsSelector } from '../../Selectors/agents';
 import VoiceControls from './VoiceControls';
 import {
@@ -56,7 +58,8 @@ class VoiceControlsContainer extends React.Component {
       status:       null,
       hold:         false,
       participants: [],
-      inviteError:  null
+      inviteError:  null,
+      viewCallId:   null
     };
   }
 
@@ -74,7 +77,8 @@ class VoiceControlsContainer extends React.Component {
     const { dispatch, tabRef, onEndCall } = this.props;
     tabRef({
       isCallActive: this.isCallActive,
-      endCall:      this.endCall
+      endCall:      this.endCall,
+      setViewCall:  this.setViewCall
     });
 
     this.interval = setInterval(() => {
@@ -164,6 +168,25 @@ class VoiceControlsContainer extends React.Component {
       .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10))
       .first();
   }
+
+  setViewCall = (activeCall) => {
+    const connection = this.getConnection();
+    if (connection) {
+      return;
+    }
+
+    const { phoneCalls, dispatch } = this.props;
+    const phoneCall = Immutable.fromJS(activeCall);
+    this.setState({
+      viewCallId: phoneCall.get('id')
+    });
+
+    if (phoneCalls.get(phoneCall.get('id'))) {
+      dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+    } else {
+      dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+    }
+  };
 
   endCall = () => {
     const { dispatch } = this.props;
@@ -275,10 +298,15 @@ class VoiceControlsContainer extends React.Component {
 
   render() {
     const { me, agents, onlineAgentIds, baseId, phoneCalls } = this.props;
+    const { viewCallId } = this.state;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')) && agent !== me);
     const connection = this.getConnection();
+    const phoneCall = phoneCalls.get(connection ? connection.callId : viewCallId);
 
-    if (!connection) {
+    if (!phoneCall) {
+      return null;
+    }
+    if ((!viewCallId && !connection) || (viewCallId && phoneCall.get('date_ended'))) {
       return null;
     }
 
@@ -286,7 +314,7 @@ class VoiceControlsContainer extends React.Component {
       <VoiceControls
         {...this.props}
         {...this.state}
-        phoneCall={phoneCalls.get(connection.callId)}
+        phoneCall={phoneCall}
         onlineAgents={onlineAgents}
         connection={connection}
         endCall={this.endCall}
