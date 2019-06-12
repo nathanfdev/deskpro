@@ -62,6 +62,7 @@ class PersonDump
     protected function getSimpleFields(Person $person)
     {
         $fields = [
+            'id',
             'first_name',
             'last_name',
             'name',

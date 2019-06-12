@@ -29,13 +29,28 @@ class PersonRestore
      *
      * @return bool
      */
-    public function restore(Person $person, $data)
+    public function restore(Person $person, $data, $restoreId = false)
     {
         if (!$person->getId()) {
-            $this->em->persist($person);
-            $this->em->flush($person);
+            if (
+                $restoreId
+                && isset($data['simple_fields'])
+                && isset($data['simple_fields']['id'])
+                && !$this->em->find(Person::class, $data['simple_fields']['id'])
+            ) {
+                $metadata   = $this->em->getClassMetaData(get_class($person));
+                $person->id = $data['simple_fields']['id'];
+                $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+                $this->em->persist($person);
+                $this->em->flush($person);
+                $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_IDENTITY);
+                $metadata->setIdGenerator(new \Doctrine\ORM\Id\IdentityGenerator());
+            } else {
+                $this->em->persist($person);
+                $this->em->flush($person);
+            }
         }
-
         $this->restoreSimpleFields($person, $data);
         $this->restoreContactData($person, $data);
         $this->restoreCustomData($person, $data);

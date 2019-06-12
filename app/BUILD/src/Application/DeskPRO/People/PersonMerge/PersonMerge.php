@@ -77,7 +77,6 @@ class PersonMerge implements PersonContextInterface
     public function merge()
     {
         $this->em->beginTransaction();
-
         try {
             $this->_logMergeAndBackup();
 
