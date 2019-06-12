@@ -128,7 +128,7 @@ class PersonRestore
             }
         }
 
-        if (isset($data['contact_data']) && isset($data['contact_data']['contacts']) && !empty($data['contact_data']['phone_numbers'])) {
+        if (isset($data['contact_data']) && isset($data['contact_data']['contacts']) && !empty($data['contact_data']['contacts'])) {
             $this->em->getConnection()->executeUpdate(
                 'DELETE FROM people_contact_data WHERE person_id = :person_id',
                 ['person_id' => $person->getId()],
