@@ -3,11 +3,11 @@
 namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
@@ -41,11 +41,6 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     private $twilioAdapter;
 
     /**
-     * @var AgentDataService
-     */
-    private $agentDataService;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -57,7 +52,6 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
      * @param StorageAdapterInterface $storageAdapter
      * @param VoiceTaskHelper         $taskHelper
      * @param TwilioAdapter           $twilioAdapter
-     * @param AgentDataService        $agentDataService
      * @param LoggerInterface         $logger
      */
     public function __construct(
@@ -65,15 +59,13 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
         StorageAdapterInterface $storageAdapter,
         VoiceTaskHelper         $taskHelper,
         TwilioAdapter           $twilioAdapter,
-        AgentDataService        $agentDataService,
         LoggerInterface         $logger
     ) {
-        $this->em               = $em;
-        $this->storageAdapter   = $storageAdapter;
-        $this->taskHelper       = $taskHelper;
-        $this->twilioAdapter    = $twilioAdapter;
-        $this->agentDataService = $agentDataService;
-        $this->logger           = $logger;
+        $this->em             = $em;
+        $this->storageAdapter = $storageAdapter;
+        $this->taskHelper     = $taskHelper;
+        $this->twilioAdapter  = $twilioAdapter;
+        $this->logger         = $logger;
     }
 
     /**
@@ -121,13 +113,18 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
 
         // once workers are found
         // we can call them and enqueue the user
-        $workers = $this->storageAdapter->getWorkers($task->getWorkerIds());
-        foreach ($workers as $worker) {
+        $taskWorkers   = $this->storageAdapter->getWorkers($task->getWorkerIds());
+        $onlineWorkers = $this->storageAdapter->getOnlineWorkersByType('agent');
+
+        foreach ($taskWorkers as $taskWorker) {
             /** @var Person $agent */
-            $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
+            $agent = $this->em->getRepository(Person::class)->find($taskWorker->getTypeId());
             if ($agent) {
                 if ($agent->canForwardCall()) {
-                    $isAgentOnline = $this->agentDataService->isAgentOnline($agent);
+                    $isAgentOnline = count(array_filter($onlineWorkers, function (Worker $onlineWorker) use ($taskWorker) {
+                        return $onlineWorker->getTypeId() === $taskWorker->getTypeId();
+                    })) > 0;
+
                     $this->logger->info(sprintf(
                         '[TwilioIncomingCallListener] Agent #%s is_online = %s',
                         $agent->getId(), $isAgentOnline ? 'true' : 'false'
