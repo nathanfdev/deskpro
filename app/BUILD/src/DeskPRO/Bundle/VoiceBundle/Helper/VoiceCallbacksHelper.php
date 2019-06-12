@@ -426,6 +426,7 @@ class VoiceCallbacksHelper
         // get the caller person
         $agent = $this->getAgent($agentId);
         $phoneCall->setData(array_merge($phoneCall->getData(), $details));
+        $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_OUTGOING, $callSid);
 
         // create agent participant
         $participant = new VoicePhoneCallParticipantAgent();
