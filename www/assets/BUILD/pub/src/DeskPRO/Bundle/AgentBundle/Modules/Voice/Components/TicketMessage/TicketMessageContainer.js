@@ -83,7 +83,7 @@ class TicketMessageContainer extends React.Component {
     const { data } = this.state;
     const message = data.data;
 
-    return Immutable.fromJS(data.linked.ticket[message.ticket]);
+    return Immutable.fromJS(message.ticket);
   }
 
   getConnection() {
