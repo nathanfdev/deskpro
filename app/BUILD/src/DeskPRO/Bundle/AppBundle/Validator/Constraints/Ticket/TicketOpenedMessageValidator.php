@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use Symfony\Component\Form\Form;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -55,7 +56,11 @@ class TicketOpenedMessageValidator extends ConstraintValidator
             return;
         }
 
-        if ($ticket->isArchived() && !$this->context->getRoot()->getConfig()->getOption('allow_reply_on_archived')) {
+        $form = $this->context->getRoot();
+
+        if ($ticket->isArchived() &&
+            !($form instanceof Form && $form->getConfig()->getOption('allow_reply_on_archived'))
+        ) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $this->context
                 ->buildViolation($constraint->message)
