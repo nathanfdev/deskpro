@@ -818,6 +818,7 @@ class TwilioCallbacksController extends BaseController
             new LegacySystemEvent('agent.voice.open-forwarded-ticket', [
                 'call_id'   => $phoneCall->getId(),
                 'ticket_id' => $ticket->getId(),
+                'target'    => $agent->getId(),
             ])
         );
 
