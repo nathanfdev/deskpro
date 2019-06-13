@@ -155,7 +155,7 @@ class TwilioCallbacksController extends BaseController
                             // connect user and agent directly
                             $voiceProviderHelper = $this->get('dp.voice.provider_helper');
 
-                            if ($phoneCall->isOutgoingCall()) {
+                            if ($phoneCall->enqueuedAsAgent()) {
                                 $voiceProviderHelper->transferParticipant(
                                     $phoneCall->getActiveAgentParticipant(),
                                     $this->getCallRoutingCallbackUrl($account, $phoneCall),
@@ -893,7 +893,7 @@ class TwilioCallbacksController extends BaseController
                     'endConferenceOnExit'  => false,
                 ]);
             } elseif ($phoneCall->isOnHold()) {
-                if ($phoneCall->isOutgoingCall()) {
+                if ($phoneCall->enqueuedAsAgent()) {
                     $twiml->redirect($this->getHoldMusicCallbackUrl($account));
                 } else {
                     $twiml->redirect($this->getHoldSilentCallbackUrl($account));
@@ -939,7 +939,7 @@ class TwilioCallbacksController extends BaseController
      */
     public function putOnHoldCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($phoneCall->isOutgoingCall()) {
+        if ($phoneCall->enqueuedAsAgent()) {
             $waitUrl = $this->getHoldSilentCallbackUrl($account);
         } else {
             $waitUrl = $this->getHoldMusicCallbackUrl($account);
@@ -1398,7 +1398,7 @@ class TwilioCallbacksController extends BaseController
                 } elseif ($phoneCall->isWarmAdd()) {
                     // if it's an outgoing call then user was dialing to the queue
                     // and has a reference to the 'on hangup' callback action
-                    if ($phoneCall->isOutgoingCall()) {
+                    if ($phoneCall->enqueuedAsAgent()) {
                         foreach ($phoneCall->getAgentParticipants() as $participant) {
                             $providerHelper->transferParticipant(
                                 $participant,

@@ -546,6 +546,7 @@ class VoiceClientPhoneCallController extends BaseController
         $em = $this->getManager();
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
+        $phoneCall->setEnqueuedAs(VoicePhoneCall::ENQUEUED_AS_USER);
         $em->flush();
 
         // disconnect existing agents from the call
@@ -601,9 +602,15 @@ class VoiceClientPhoneCallController extends BaseController
         $em = $this->getManager();
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
+        $phoneCall->setEnqueuedAs(VoicePhoneCall::ENQUEUED_AS_USER);
         $em->flush();
 
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
+
+        // disconnect existing agents from the call
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
+        }
 
         // create a router task
         // and transfer to call router
@@ -613,11 +620,6 @@ class VoiceClientPhoneCallController extends BaseController
         $em->flush();
 
         $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall);
-
-        // disconnect existing agents from the call
-        foreach ($phoneCall->getAgentParticipants() as $participant) {
-            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
-        }
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -659,6 +661,7 @@ class VoiceClientPhoneCallController extends BaseController
         $em = $this->getManager();
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
+        $phoneCall->setEnqueuedAs(VoicePhoneCall::ENQUEUED_AS_USER);
         $em->flush();
 
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
