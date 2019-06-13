@@ -66,6 +66,16 @@ abstract class AbstractVoiceRecording implements EntityInterface, NotifyProperty
     protected $blob;
 
     /**
+     * @ORM\Column(name="transcription", type="text", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @return string
+     */
+    protected $transcription;
+
+    /**
      * @ORM\Column(name="is_deleted", type="boolean")
      *
      * @JMS\Expose()
@@ -159,6 +169,26 @@ abstract class AbstractVoiceRecording implements EntityInterface, NotifyProperty
     public function setBlob(Blob $blob = null)
     {
         $this->setModelField('blob', $blob);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranscription()
+    {
+        return $this->transcription;
+    }
+
+    /**
+     * @param string $transcription
+     *
+     * @return $this
+     */
+    public function setTranscription($transcription)
+    {
+        $this->setModelField('transcription', $transcription);
 
         return $this;
     }
