@@ -187,6 +187,10 @@ class TwilioCallbacksController extends BaseController
                             $em->flush();
                         }
                     }
+
+                    // send client message
+                    // for real time ui updates
+                    $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
                 } finally {
                     $lock->release();
                     $logger->info(sprintf('[TwilioCallbacks] Unlock phone call, uuid = %s', $callSid));
@@ -217,6 +221,10 @@ class TwilioCallbacksController extends BaseController
 
                 // reject the call
                 $this->get('dp.voice.callbacks_helper')->rejectIncomingPhoneCall($phoneCall, $agent);
+
+                // send client message
+                // for real time ui updates
+                $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
             }
         }
     }
@@ -897,6 +905,8 @@ class TwilioCallbacksController extends BaseController
 
                 $twiml->hangup();
             }
+
+            $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
         } finally {
             $lock->release();
         }

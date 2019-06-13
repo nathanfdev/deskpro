@@ -167,6 +167,7 @@ class Active extends React.Component {
     sendDigits:         PropTypes.func,
     divRef:             PropTypes.func,
     participants:       PropTypes.array,
+    me:                 PropTypes.object,
     connection:         PropTypes.object,
     phoneCall:          PropTypes.object
   };
@@ -253,14 +254,18 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
-    const { connection, phoneCall } = this.props;
+    const { onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
+    const { me, hold, mute, ended, connection, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
     const noQueues = !queues || !queues.size;
     const noAutoAttendants = !autoAttendants || !autoAttendants.size;
     const isWarmTransfer = phoneCall && phoneCall.get('status') === 'warm_transfer';
     const transferDisabled = ended || (noAgents && noQueues && noAutoAttendants) || isWarmTransfer;
+    const memberOfTheCall = phoneCall && phoneCall.get('participants')
+      .filter(participant => participant.get('person') === me.get('id') && !participant.get('date_left'))
+      .size > 0;
+    const displayButton = connection || memberOfTheCall;
 
     return (
       <div
@@ -279,16 +284,16 @@ class Active extends React.Component {
           </span>}
         </span>
 
-        {connection &&
+        {displayButton &&
         <Button
           ref={(c) => { this.dialpadButton = c; }}
-          className={classNames('basic', { active: dialpadOpened, disabled: ended || isWarmTransfer })}
+          className={classNames('basic', { active: dialpadOpened, disabled: ended || isWarmTransfer || !connection })}
           onClick={this.openDialpad}
         >
           <i className="grid layout icon" />
           Dialpad
         </Button>}
-        {connection &&
+        {displayButton &&
         <Button
           className={classNames('basic', { active: hold, disabled: ended || isWarmTransfer, loading: updatingHold })}
           onClick={this.toggleHold}
@@ -296,15 +301,15 @@ class Active extends React.Component {
           <i className="pause icon" />
           Hold
         </Button>}
-        {connection &&
+        {displayButton &&
         <Button
-          className={classNames('basic', { active: mute, disabled: hold || ended || isWarmTransfer })}
+          className={classNames('basic', { active: mute, disabled: hold || ended || isWarmTransfer || !connection })}
           onClick={this.toggleMute}
         >
           <i className={classNames(mute ? 'mute' : 'unmute', 'icon')} />
           Mute
         </Button>}
-        {connection &&
+        {displayButton &&
         <Button
           ref={(c) => { this.transferButton = c; }}
           className={classNames(
@@ -319,7 +324,7 @@ class Active extends React.Component {
           <i className="share icon" />
           Transfer
         </Button>}
-        {connection &&
+        {displayButton &&
         <Button
           ref={(c) => { this.addButton = c; }}
           className={classNames('basic', { active: addMenuOpened, disabled: transferDisabled })}
@@ -328,9 +333,9 @@ class Active extends React.Component {
           <i className="add icon" />
           Add
         </Button>}
-        {connection &&
+        {displayButton &&
         <Button
-          className={classNames('red', { disabled: ended })}
+          className={classNames('red', { disabled: ended || !connection })}
           onClick={this.endCall}
         >
           {participants.length >= 2 ? 'Hang up' : 'End call'}

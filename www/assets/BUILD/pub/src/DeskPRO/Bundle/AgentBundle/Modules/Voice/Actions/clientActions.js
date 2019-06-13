@@ -545,19 +545,18 @@ export const toggleMute = createAction(
 
 export const warmAddAgent = createAction(
   'VOICE_AGENT_ADD',
-  (connection, agent) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_add/${agent.get('id')}`)
+  (callId, agent) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/warm_add/${agent.get('id')}`)
 );
 
 export const warmTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent) => (dispatch, getState) => {
-    const promise = api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
+  (callId, agent) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/warm_transfer/${agent.get('id')}`);
     promise.success(() => {
       const state = getState();
       const phoneCalls = allPhoneCallsSelector(state);
 
-      let phoneCall = phoneCalls.get(connection.callId);
+      let phoneCall = phoneCalls.get(callId);
       if (phoneCall) {
         phoneCall = phoneCall.set('status', 'warm_transfer');
         dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'merge'));
@@ -570,20 +569,20 @@ export const warmTransferToAgent = createAction(
 
 export const coldTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/agent/${agent.get('id')}`)
+  (callId, agent) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/cold_transfer/agent/${agent.get('id')}`)
 );
 
 export const coldTransferToQueue = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, queue) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/queue/${queue.get('id')}`)
+  (callId, queue) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/cold_transfer/queue/${queue.get('id')}`)
 );
 
 export const coldTransferToAutoAttendant = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, autoAttendant) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/auto_attendant/${autoAttendant.get('id')}`)
+  (callId, autoAttendant) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/cold_transfer/auto_attendant/${autoAttendant.get('id')}`)
 );
 
 export const cancelInvite = createAction(

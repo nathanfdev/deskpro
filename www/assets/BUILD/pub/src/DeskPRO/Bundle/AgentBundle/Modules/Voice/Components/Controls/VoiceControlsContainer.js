@@ -162,6 +162,13 @@ class VoiceControlsContainer extends React.Component {
     clearInterval(this.interval);
   }
 
+  getCallId() {
+    const connection = this.getConnection();
+    const { viewCallId } = this.state;
+
+    return connection ? connection.callId : viewCallId;
+  }
+
   getConnection() {
     const { connections, ticketId } = this.props;
     return connections
@@ -227,9 +234,9 @@ class VoiceControlsContainer extends React.Component {
   toggleHold = () => {
     const { dispatch } = this.props;
     const { hold } = this.state;
-    const connection = this.getConnection();
+    const callId = this.getCallId();
 
-    const promise = connection ? dispatch(toggleHold(connection.callId, !hold)) : null;
+    const promise = callId ? dispatch(toggleHold(callId, !hold)) : null;
     if (promise) {
       promise.success(() => {
         // update hold status right away
@@ -245,12 +252,12 @@ class VoiceControlsContainer extends React.Component {
 
   sendInvite = method => (target) => {
     const { dispatch, agentVoicemailTimeout } = this.props;
-    const connection = this.getConnection();
-    if (!connection) {
+    const callId = this.getCallId();
+    if (!callId) {
       return;
     }
 
-    const promise = dispatch(method(connection, target));
+    const promise = dispatch(method(callId, target));
     promise.success(() => {
       setTimeout(() => {
         if (this.state.target) {
@@ -273,12 +280,12 @@ class VoiceControlsContainer extends React.Component {
 
   cancelInvite = (reason = null) => {
     const { dispatch } = this.props;
-    const connection = this.getConnection();
-    if (!connection) {
+    const callId = this.getCallId();
+    if (!callId) {
       return;
     }
 
-    const promise = dispatch(cancelInvite(connection.callId, this.state.target, reason));
+    const promise = dispatch(cancelInvite(callId, this.state.target, reason));
     promise.then(() => {
       this.setState({
         target:      null,
@@ -301,7 +308,7 @@ class VoiceControlsContainer extends React.Component {
     const { viewCallId } = this.state;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')) && agent !== me);
     const connection = this.getConnection();
-    const phoneCall = phoneCalls.get(connection ? connection.callId : viewCallId);
+    const phoneCall = phoneCalls.get(this.getCallId());
 
     if (!phoneCall) {
       return null;
