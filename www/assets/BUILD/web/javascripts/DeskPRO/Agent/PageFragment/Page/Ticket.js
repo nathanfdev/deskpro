@@ -2667,8 +2667,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     );
 
     if (self.voiceControls.isCallActive()) {
-      console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_FAST);
-      DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_FAST);
+      console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_VOICE);
+      DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_VOICE);
       DeskPRO_Window.TabBar.lockTab(DeskPRO_Window.TabBar.getTab(this.meta.tabId));
     }
 
