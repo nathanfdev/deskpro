@@ -607,11 +607,6 @@ class VoiceClientPhoneCallController extends BaseController
 
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
 
-        // disconnect existing agents from the call
-        foreach ($phoneCall->getAgentParticipants() as $participant) {
-            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
-        }
-
         // create a router task
         // and transfer to call router
         $task = $this->get('dp.voice.task_builder')->createVoiceTransferToQueueTask($phoneCall, $queue);
@@ -620,6 +615,11 @@ class VoiceClientPhoneCallController extends BaseController
         $em->flush();
 
         $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall);
+
+        // disconnect existing agents from the call
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
+        }
 
         // add action log
         $log = new VoicePhoneCallLog();
