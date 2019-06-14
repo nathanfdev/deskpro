@@ -666,13 +666,13 @@ class VoiceClientPhoneCallController extends BaseController
 
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
 
+        // transfer to auto attendant
+        $this->get('dp.voice.transfer_helper')->transferToAutoAttendant($phoneCall, $autoAttendant);
+
         // disconnect existing agents from the call
         foreach ($phoneCall->getAgentParticipants() as $participant) {
             $this->get('dp.voice.provider_helper')->kickParticipant($participant);
         }
-
-        // transfer to auto attendant
-        $this->get('dp.voice.transfer_helper')->transferToAutoAttendant($phoneCall, $autoAttendant);
 
         // add action log
         $log = new VoicePhoneCallLog();
