@@ -597,7 +597,8 @@
   }
 }
 .phrase-popup,
-.variable-popup {
+.variable-popup,
+.show-tag-popup {
   width: 700px;
   .phrase {
     margin-left: 5px;
@@ -648,6 +649,22 @@
       height: 100px;
       margin-bottom: 5px;
     }
+  }
+  .footer {
+    button {
+      margin-right: 5px;
+    }
+  }
+}
+.show-tag-popup {
+  span.twig-include {
+    color: $dp-emerald-primary;
+    border: solid 1px $dp-emerald-primary;
+    padding: 0 2px;
+    cursor: pointer;
+  }
+  .template + .footer {
+    margin-top: 15px;
   }
 }
 .template-popup {

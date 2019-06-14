@@ -40,6 +40,7 @@ export default createReducer(initialState, {
   [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),
   [actions.setCurrentTemplate]:      (state, payload) => state.set('currentTemplate', payload),
   [actions.setExtraTemplate]:        (state, payload) => state.setIn(['template', 'extra_templates', payload.name], payload.code),
+  [actions.setTag]:                  (state, payload) => state.setIn(['template', 'tags', payload.name], payload.info),
   [actions.unselectTemplate]:        state => state.delete('template'),
   [actions.deletePreview]:           state => state.delete('preview'),
   [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),

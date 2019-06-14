@@ -56,8 +56,10 @@ class PhrasePopup extends React.Component {
         <div className="ui horizontal divider">Translations</div>
         {this.getTranslations()}
         {this.getVariables()}
-        <Button onClick={this.saveChanges}>Submit</Button>&nbsp;
-        <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+        <div className="footer">
+          <Button onClick={this.saveChanges}>Submit</Button>
+          <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+        </div>
       </div>
     );
   };
@@ -203,7 +205,7 @@ class PhrasePopup extends React.Component {
   }
 }
 class PhraseWidget extends Widget {
-  constructor(cm, pos, code, text, setCurrentWidget, getPhraseTranslations, savePhraseTranslations) {
+  constructor(cm, pos, code, text, matches, setCurrentWidget, getPhraseTranslations, savePhraseTranslations) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -212,6 +214,7 @@ class PhraseWidget extends Widget {
 
       this.code = code;
       this.text = text;
+      this.matches = matches;
       this.getPhraseTranslations = getPhraseTranslations;
       this.savePhraseTranslations = savePhraseTranslations;
       this.setCurrentWidget = setCurrentWidget;
@@ -223,7 +226,7 @@ class PhraseWidget extends Widget {
   }
 
   addReactComponent = (element) => {
-    const matches = this.code.match(/{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/);
+    const { matches } = this;
     const phrase = matches[1];
     const variables = {};
     const re = /{{([^}]+)}}/g;

@@ -86,6 +86,17 @@ export const loadTemplate = createAction(
   })
 );
 
+export const loadTagInfo = createAction(
+  'PORTAL_TEMPLATES_LOAD_TAG_INFO',
+  name => new Promise((resolve) => {
+    repository('PortalTemplates').loadTagInfo(name).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res);
+    });
+  })
+);
+
 const templateName = template => template.name.split(':')[2].replace(/\.twig/, '');
 const templateGroup = (template) => {
   const parts = template.name.split(':');
@@ -202,6 +213,8 @@ export const setCurrentTemplateGroup = createAction(
 );
 
 export const setExtraTemplate = createAction('PORTAL_TEMPLATES_SET_EXTRA_TEMPLATE');
+
+export const setTag = createAction('PORTAL_TEMPLATES_SET_TAG');
 
 export const setPreview = createAction('PORTAL_TEMPLATES_SET_PREVIEW');
 

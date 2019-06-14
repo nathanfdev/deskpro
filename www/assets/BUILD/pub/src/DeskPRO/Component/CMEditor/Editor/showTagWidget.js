@@ -1,20 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { render } from 'react-dom';
-import classNames from 'classnames';
-import { ConfirmButton, Button } from '@deskpro/react-components';
+import { Button } from '@deskpro/react-components';
 import { PopUp } from '../../Semantic/PopUp';
 import Widget from './Widget';
-import CodeMirror from '../CodeMirror';
+import { Field, Input } from '../../Semantic/Form';
+import { TemplatePopup } from './TemplateWidget';
 
-export class TemplatePopup extends React.Component {
+class ShowTagPopup extends React.Component {
   static propTypes = {
     text:             PropTypes.string,
+    loadTagInfo:      PropTypes.func,
     loadTemplate:     PropTypes.func,
     resetTemplate:    PropTypes.func,
     setCurrentWidget: PropTypes.func,
     setValue:         PropTypes.func,
     addMarks:         PropTypes.func,
+    variables:        PropTypes.object,
   };
   static defaultProps = {
     loadTemplate() {},
@@ -24,10 +26,17 @@ export class TemplatePopup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      content:       '',
+      tagInfo:       {},
       currentWidget: '',
+      variables:     {},
       resetSubmit:   false
     };
+  }
+
+  componentWillMount() {
+    this.setState({
+      variables: this.props.variables
+    });
   }
 
   componentWillUnmount() {
@@ -47,27 +56,60 @@ export class TemplatePopup extends React.Component {
   };
 
   getPopUp = () => (
-    <div className="template-popup">
-      <CodeMirror
-        value={this.state.content}
-        onChange={this.handleChange}
-        ref={(c) => { this.widgetEditor = c; }}
-      />
+    <div className="show-tag-popup">
+      {this.getTemplate()}
+      {this.getVariables()}
       <div className="footer">
         <Button type="primary" onClick={this.saveChanges}>Submit</Button>
         <Button type="secondary" onClick={this.closePopup}>Cancel</Button>
-        <ConfirmButton
-          className={classNames('right floated small')}
-          type="secondary"
-          loading={this.state.resetSubmit}
-          disabled={this.state.resetSubmit}
-          onClick={this.resetTemplate}
-        >
-          Reset template
-        </ConfirmButton>
       </div>
     </div>
     );
+
+  getTemplate = () => {
+    if (!this.state.tagInfo.template) {
+      return null;
+    }
+    return (
+      <div className="template">
+        <div className="ui horizontal divider">Template</div>
+        <span className="twig-include">
+          <TemplatePopup
+            text={this.state.tagInfo.template}
+            addMarks={this.props.addMarks}
+            loadTemplate={this.props.loadTemplate}
+            resetTemplate={this.props.resetTemplate}
+            setCurrentWidget={this.setCurrentWidget}
+            setValue={this.props.setValue}
+          />
+        </span>
+      </div>
+    );
+  };
+
+  getVariables = () => {
+    const { variables } = this.state;
+    if (Object.keys(variables).length === 0) {
+      return null;
+    }
+    this.variableInputs = [];
+    return (
+      <div className="variables">
+        <div className="ui horizontal divider">Variables</div>
+        {Object.keys(variables).map(key =>
+          <Field key={`variable_${key}`} field={`variable_${key}`} errors={null}>
+            <label htmlFor={`variable_${key}`}>{key}</label>
+            <Input
+              id={`variable_${key}`}
+              name={`variable_${key}`}
+              defaultValue={variables[key]}
+              ref={(c) => { this.variableInputs.push(c); }}
+            />
+          </Field>
+        )}
+      </div>
+    );
+  };
 
   handleChange = (cm, change) => {
     this.props.addMarks(cm, change, this.setCurrentWidget);
@@ -76,18 +118,18 @@ export class TemplatePopup extends React.Component {
     });
   };
 
-  loadContent = () => {
-    this.props.loadTemplate(this.props.text).then(
-      (content) => {
+  loadInfo = () => {
+    this.props.loadTagInfo(this.props.text).then(
+      (tagInfo) => {
         this.setState({
-          content,
+          tagInfo,
         });
       }
     );
   };
 
   openPopup = () => {
-    this.loadContent();
+    this.loadInfo();
     this.popup.openPopup();
     setTimeout(() => {
       this.props.setCurrentWidget(this, this.widgetEditor);
@@ -130,7 +172,7 @@ export class TemplatePopup extends React.Component {
     let positionAt = 'left bottom';
     if (this.span) {
       const viewportOffset = this.span.getBoundingClientRect();
-      if (window.innerHeight - viewportOffset.bottom < 370) {
+      if (window.innerHeight - viewportOffset.bottom < 400) {
         positionMy = 'left bottom+1px';
         positionAt = 'left top';
       }
@@ -156,8 +198,20 @@ export class TemplatePopup extends React.Component {
     );
   }
 }
-class TemplateWidget extends Widget {
-  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, resetTemplate, setValue, addMarks) {
+class ShowTagWidget extends Widget {
+  constructor(
+    cm,
+    pos,
+    code,
+    text,
+    matches,
+    setCurrentWidget,
+    loadTemplate,
+    resetTemplate,
+    setValue,
+    loadTagInfo,
+    addMarks
+  ) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -165,24 +219,36 @@ class TemplateWidget extends Widget {
       this.setMark(element, code);
 
       this.text = text;
+      this.matches = matches;
       this.addMarks = addMarks;
+      this.loadTagInfo = loadTagInfo;
       this.loadTemplate = loadTemplate;
       this.resetTemplate = resetTemplate;
       this.setCurrentWidget = setCurrentWidget;
       this.setValue = setValue;
 
-      this.addReactComponent(element);
+      this.addReactComponent(element, matches);
     } catch (e) {
       console.error(e);
     }
   }
 
   addReactComponent = (element) => {
+    const { matches } = this;
+    const variables = {};
+    if (matches[4]) {
+      matches[4].trim().split(',').forEach((variable) => {
+        const pieces = variable.split(':');
+        variables[pieces[0].trim()] = pieces[1].trim();
+      });
+    }
     render(
-      <TemplatePopup
+      <ShowTagPopup
         text={this.text}
+        variables={variables}
         addMarks={this.addMarks}
         loadTemplate={this.loadTemplate}
+        loadTagInfo={this.loadTagInfo}
         resetTemplate={this.resetTemplate}
         setCurrentWidget={this.setCurrentWidget}
         setValue={this.setValue}
@@ -191,4 +257,4 @@ class TemplateWidget extends Widget {
     );
   };
 }
-export default TemplateWidget;
+export default ShowTagWidget;

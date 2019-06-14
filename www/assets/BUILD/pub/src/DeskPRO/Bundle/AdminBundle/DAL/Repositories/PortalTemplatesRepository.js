@@ -9,6 +9,10 @@ class PortalTemplatesRepository extends ApiRepository {
     return this.api.sendGet(`/portal/api/style/edit-theme-set/template-info?template=${name}`);
   }
 
+  loadTagInfo(name) {
+    return this.api.sendGet(`/portal/api/style/edit-theme-set/tag-info?tag=${name}`);
+  }
+
   saveTemplate(name, template) {
     return this.api.sendPut(`/portal/api/style/edit-theme-set/template-sources?template=${name}`, template);
   }

@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import CodeMirror from './CodeMirror';
 import { PhraseWidget, TemplateWidget } from './Editor/';
+import showTagWidget from './Editor/showTagWidget';
 
 class Editor extends React.Component {
   static propTypes = {
@@ -13,6 +14,7 @@ class Editor extends React.Component {
     changeTemplateBody:     PropTypes.func,
     changeTemplateSubject:  PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
+    loadTagInfo:            PropTypes.func,
     loadTemplate:           PropTypes.func,
     resetTemplate:          PropTypes.func,
     savePhraseTranslations: PropTypes.func,
@@ -86,6 +88,7 @@ class Editor extends React.Component {
             },
             match[0],
             this.findPhrase(match[1]),
+            match,
             setCurrentWidget,
             this.props.getPhraseTranslations,
             this.props.savePhraseTranslations
@@ -107,6 +110,27 @@ class Editor extends React.Component {
             this.props.loadTemplate,
             this.props.resetTemplate,
             this.props.setTemplateValue,
+            this.addMarks
+          ));
+          match = re.exec(content);
+        }
+        re = /{%\s*show\s+(section)?\s*([^ ]+)\s*(with\s*{([^}]+)}\s*)?\s*%}/g;
+        match = re.exec(content);
+        while (match !== null) {
+          this.widgets.push(new showTagWidget(
+            cm,
+            {
+              line: line + from.line,
+              ch:   match.index
+            },
+            match[0],
+            match[2],
+            match,
+            setCurrentWidget,
+            this.props.loadTemplate,
+            this.props.resetTemplate,
+            this.props.setTemplateValue,
+            this.props.loadTagInfo,
             this.addMarks
           ));
           match = re.exec(content);
