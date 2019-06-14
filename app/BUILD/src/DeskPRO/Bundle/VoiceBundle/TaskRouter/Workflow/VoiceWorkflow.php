@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\WorkerHelper;
+use DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
@@ -37,23 +38,31 @@ class VoiceWorkflow implements WorkflowInterface
     private $storage;
 
     /**
+     * @var DepartmentChecker
+     */
+    private $departmentChecker;
+
+    /**
      * Constructor.
      *
      * @param WorkerHelper            $workerHelper
      * @param VoiceTaskHelper         $taskHelper
      * @param VoiceSettingsResolver   $settingsResolver
      * @param StorageAdapterInterface $storage
+     * @param DepartmentChecker       $departmentChecker
      */
     public function __construct(
         WorkerHelper            $workerHelper,
         VoiceTaskHelper         $taskHelper,
         VoiceSettingsResolver   $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        DepartmentChecker       $departmentChecker
     ) {
-        $this->workerHelper     = $workerHelper;
-        $this->taskHelper       = $taskHelper;
-        $this->settingsResolver = $settingsResolver;
-        $this->storage          = $storage;
+        $this->workerHelper      = $workerHelper;
+        $this->taskHelper        = $taskHelper;
+        $this->settingsResolver  = $settingsResolver;
+        $this->storage           = $storage;
+        $this->departmentChecker = $departmentChecker;
     }
 
     /**
@@ -151,8 +160,14 @@ class VoiceWorkflow implements WorkflowInterface
         $agent      = $this->taskHelper->getWorkerAgent($task);
 
         if ($voiceQueue) {
-            $queueAgentIds = $voiceQueue->getActiveAgentsPeopleIds();
-            $taskQueue     = $this->storage->getTaskQueue(self::getChannelName(), $voiceQueue->getId());
+            $queueAgentIds = [];
+            foreach ($voiceQueue->getActiveAgentsPeople() as $agent) {
+                if ($this->departmentChecker->canBeMemberOfVoiceQueue($voiceQueue, $agent)) {
+                    $queueAgentIds[] = $agent->getId();
+                }
+            }
+
+            $taskQueue = $this->storage->getTaskQueue(self::getChannelName(), $voiceQueue->getId());
             if (!$taskQueue) {
                 $taskQueue = new TaskQueue();
                 $taskQueue->setType(self::getChannelName());

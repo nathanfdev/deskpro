@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Validator\Constraints;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -13,7 +14,24 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class VoiceQueueAgentPermissionsValidator extends ConstraintValidator
 {
     /**
+     * @var DepartmentChecker
+     */
+    private $departmentChecker;
+
+    /**
+     * Constructor.
+     *
+     * @param DepartmentChecker $departmentChecker
+     */
+    public function __construct(DepartmentChecker $departmentChecker)
+    {
+        $this->departmentChecker = $departmentChecker;
+    }
+
+    /**
      * {@inheritdoc}
+     *
+     * @throws UnexpectedTypeException
      */
     public function validate($value, Constraint $constraint)
     {
@@ -34,11 +52,9 @@ class VoiceQueueAgentPermissionsValidator extends ConstraintValidator
         }
 
         foreach ($value->getAgents() as $queueAgent) {
-            $agent                      = $queueAgent->getAgent();
-            $permissionsHelper          = $agent->getHelper('AgentPermissions');
-            $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+            $agent = $queueAgent->getAgent();
 
-            if (!in_array($department->getId(), $allowedTicketDepartmentIds)) {
+            if (!$this->departmentChecker->canBeMemberOfVoiceQueue($value, $agent)) {
                 /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
                 $context = $this->context;
                 $context

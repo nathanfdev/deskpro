@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 export const loadQueues = createAction(
   'VOICE_LOAD_QUEUES',
-  () => dispatch => dispatch(loadAll('VoiceQueue'))
+  (reload = false) => dispatch => dispatch(loadAll('VoiceQueue', reload))
 );
 
 export const createQueue = createAction(

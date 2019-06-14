@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\WorkerHelper;
+use DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
@@ -26,9 +27,10 @@ class VoiceWorkflowSpec extends ObjectBehavior
         WorkerHelper            $workerHelper,
         VoiceTaskHelper         $taskHelper,
         VoiceSettingsResolver   $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        DepartmentChecker       $departmentChecker
     ) {
-        $this->beConstructedWith($workerHelper, $taskHelper, $settingsResolver, $storage);
+        $this->beConstructedWith($workerHelper, $taskHelper, $settingsResolver, $storage, $departmentChecker);
     }
 
     public function it_returns_empty_list_of_workers(Task $task, WorkerHelper $workerHelper, StorageAdapterInterface $storage)
@@ -245,7 +247,11 @@ class VoiceWorkflowSpec extends ObjectBehavior
         Task $task,
         TaskQueue $taskQueue,
         VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        Person $person1,
+        Person $person2,
+        Person $person3,
+        DepartmentChecker $departmentChecker
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -253,9 +259,17 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $worker3->getId()->willReturn(30);
         $worker3->getTypeId()->willReturn(3);
 
+        $person1->getId()->willReturn(1);
+        $person2->getId()->willReturn(2);
+        $person3->getId()->willReturn(3);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_ROUND_ROBIN);
-        $queue->getActiveAgentsPeopleIds()->willReturn([1, 2, 3]);
+        $queue->getActiveAgentsPeople()->willReturn([$person1, $person2, $person3]);
+
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person1)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person2)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person3)->willReturn(true);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
         $taskHelper->getWorkerAgent($task)->willReturn(null);
@@ -277,14 +291,26 @@ class VoiceWorkflowSpec extends ObjectBehavior
         Task $task,
         TaskQueue $taskQueue,
         VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        Person $person1,
+        Person $person3,
+        Person $person5,
+        DepartmentChecker $departmentChecker
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
 
+        $person1->getId()->willReturn(1);
+        $person3->getId()->willReturn(3);
+        $person5->getId()->willReturn(5);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_ROUND_ROBIN);
-        $queue->getActiveAgentsPeopleIds()->willReturn([1, 3, 5]);
+        $queue->getActiveAgentsPeople()->willReturn([$person1, $person3, $person5]);
+
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person1)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person3)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person5)->willReturn(true);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
         $taskHelper->getWorkerAgent($task)->willReturn(null);
@@ -305,11 +331,23 @@ class VoiceWorkflowSpec extends ObjectBehavior
         Task $task,
         TaskQueue $taskQueue,
         VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        Person $person1,
+        Person $person3,
+        Person $person5,
+        DepartmentChecker $departmentChecker
     ) {
+        $person1->getId()->willReturn(1);
+        $person3->getId()->willReturn(3);
+        $person5->getId()->willReturn(5);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_ROUND_ROBIN);
-        $queue->getActiveAgentsPeopleIds()->willReturn([1, 3, 5]);
+        $queue->getActiveAgentsPeople()->willReturn([$person1, $person3, $person5]);
+
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person1)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person3)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person5)->willReturn(true);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
         $taskHelper->getWorkerAgent($task)->willReturn(null);
@@ -331,7 +369,12 @@ class VoiceWorkflowSpec extends ObjectBehavior
         Task $task,
         TaskQueue $taskQueue,
         VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        Person $person1,
+        Person $person2,
+        Person $person4,
+        Person $person5,
+        DepartmentChecker $departmentChecker
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -342,9 +385,19 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $worker3->getId()->willReturn(50);
         $worker3->getTypeId()->willReturn(5);
 
+        $person1->getId()->willReturn(1);
+        $person2->getId()->willReturn(2);
+        $person4->getId()->willReturn(4);
+        $person5->getId()->willReturn(5);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_SIMULRING);
-        $queue->getActiveAgentsPeopleIds()->willReturn([1, 2, 4, 5]);
+        $queue->getActiveAgentsPeople()->willReturn([$person1, $person2, $person4, $person5]);
+
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person1)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person2)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person4)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person5)->willReturn(true);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
         $taskHelper->getWorkerAgent($task)->willReturn(null);
@@ -364,7 +417,11 @@ class VoiceWorkflowSpec extends ObjectBehavior
         Worker $worker4,
         VoiceQueue $queue,
         Task $task,
-        VoiceTaskHelper $taskHelper
+        VoiceTaskHelper $taskHelper,
+        Person $person2,
+        Person $person3,
+        Person $person4,
+        DepartmentChecker $departmentChecker
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getType()->willReturn('agent');
@@ -386,10 +443,18 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $worker4->getTypeId()->willReturn(4);
         $worker4->getLastCallAt()->willReturn(new \DateTime('-4 days'));
 
+        $person2->getId()->willReturn(2);
+        $person3->getId()->willReturn(3);
+        $person4->getId()->willReturn(4);
+
         $queue->getId()->willReturn(1);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED);
-        $queue->getActiveAgentsPeopleIds()->willReturn([2, 3, 4]);
+        $queue->getActiveAgentsPeople()->willReturn([$person2, $person3, $person4]);
+
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person2)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person3)->willReturn(true);
+        $departmentChecker->canBeMemberOfVoiceQueue($queue, $person4)->willReturn(true);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
         $taskHelper->getWorkerAgent($task)->willReturn(null);
