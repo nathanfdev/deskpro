@@ -22,7 +22,6 @@ class TicketMessage extends React.Component {
     autoAttendants:       PropTypes.object,
     message:              PropTypes.object,
     phoneCall:            PropTypes.object,
-    transcript:           PropTypes.string,
     outboundCallsEnabled: PropTypes.bool,
     dateCreatedFormatted: PropTypes.string,
     openTarget:           PropTypes.func,
@@ -72,7 +71,7 @@ class TicketMessage extends React.Component {
 
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants } = this.props;
-    const { transcript, outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
+    const { outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
     const { openDialpad, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
@@ -80,6 +79,13 @@ class TicketMessage extends React.Component {
     const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
     const recordingsDeleted = recordings.filter(recording => recording.get('is_deleted'));
     const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
+
+    let transcription = '';
+    recordings.forEach((recording) => {
+      if (recording.get('transcription')) {
+        transcription = `${transcription} ${recording.get('transcription')}`;
+      }
+    });
 
     return (
       <div className="voice-ticket-message">
@@ -146,7 +152,7 @@ class TicketMessage extends React.Component {
               {recordingsDeleted.size > 0 && !recordingsEnabled.size && 'This call recording has been deleted.'}
               {!recordings.size ? 'This call was not recorded.' : ''}
             </div>}
-          {transcript &&
+          {transcription &&
             <div className="voice-ticket-message-transcript">
               {!transcriptExpanded &&
                 <span className="voice-ticket-message-section-title">
@@ -161,7 +167,7 @@ class TicketMessage extends React.Component {
               />
               {transcriptExpanded &&
                 <span className="voice-ticket-message-transcript-text">
-                  {transcript}
+                  {transcription}
                 </span>}
             </div>}
           <div className="voice-ticket-message-log">

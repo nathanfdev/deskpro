@@ -31,6 +31,13 @@ abstract class AbstractVoiceRecording implements EntityInterface, NotifyProperty
     protected $id;
 
     /**
+     * @ORM\Column(name="recording_sid", type="string", length=50, nullable=true)
+     *
+     * @var string
+     */
+    protected $recordingSid;
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall", inversedBy="phoneCallLogs")
      * @ORM\JoinColumn(name="phone_call_id", referencedColumnName="id", onDelete="CASCADE")
      *
@@ -91,6 +98,26 @@ abstract class AbstractVoiceRecording implements EntityInterface, NotifyProperty
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecordingSid()
+    {
+        return $this->recordingSid;
+    }
+
+    /**
+     * @param string $recordingSid
+     *
+     * @return $this
+     */
+    public function setRecordingSid($recordingSid)
+    {
+        $this->setModelField('recordingSid', $recordingSid);
+
+        return $this;
     }
 
     /**

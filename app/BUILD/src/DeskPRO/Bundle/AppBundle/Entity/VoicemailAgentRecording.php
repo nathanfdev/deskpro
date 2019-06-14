@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as JMS;
  * Class VoicemailRecord.
  *
  * @ORM\Entity()
- * @ORM\Table(name="voicemail_agent_recordings")
+ * @ORM\Table(name="voicemail_agent_recordings", indexes={@ORM\Index(name="recording_sid", columns={"recording_sid"})})
  *
  * @JMS\ExclusionPolicy("all")
  */

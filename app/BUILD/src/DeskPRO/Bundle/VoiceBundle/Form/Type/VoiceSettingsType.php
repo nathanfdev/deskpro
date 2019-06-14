@@ -71,6 +71,9 @@ class VoiceSettingsType extends AbstractType
             ->add('forwarding_machine_detection', ApiBooleanType::class, [
                 'required' => false,
             ])
+            ->add('transcribe_voicemail', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('forwarding_number_type', ChoiceType::class, [
                 'required'          => false,
                 'choices_as_values' => true,

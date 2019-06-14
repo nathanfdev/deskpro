@@ -147,6 +147,7 @@ class RecordingDownloadHelper
 
         if ($recordingEnabled) {
             $recording = new VoiceRecording();
+            $recording->setRecordingSid($recordingSid);
             $recording->setDuration($duration);
             $recording->setRecordingUrl($recordingUrl);
 
@@ -254,6 +255,7 @@ class RecordingDownloadHelper
             // found active ticket
             // then don't create a personal voicemail, just a attach as a new recording to existing message
             $recording = new VoiceRecording();
+            $recording->setRecordingSid($recordingSid);
             $recording->setDuration($duration);
             $recording->setRecordingUrl($recordingUrl);
 
@@ -269,6 +271,7 @@ class RecordingDownloadHelper
             // create a personal voicemail
             $recording = new VoicemailAgentRecording();
             $recording
+                ->setRecordingSid($recordingSid)
                 ->setPhoneCall($phoneCall)
                 ->setDuration($duration)
                 ->setRecordingUrl($recordingUrl)
@@ -297,6 +300,7 @@ class RecordingDownloadHelper
     private function voicemailForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, $recordingSid, $recordingUrl, $duration)
     {
         $recording = new VoiceRecording();
+        $recording->setRecordingSid($recordingSid);
         $recording->setDuration($duration);
         $recording->setRecordingUrl($recordingUrl);
 
