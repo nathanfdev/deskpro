@@ -52,7 +52,7 @@ if impersonation is OFF "impersonator" is the agent
                                 {{- phrase('portal.general.agent_bar_agent_home') -}}
                             </a>
                         </li>
-                        {% if app.user.hasPerm('agent_publish.use') or true %}
+                        {% if app.user.hasPerm('agent_publish.use') %}
                         <li>
                             <a href="{{ path('agent') }}#app.publish">
                                 <i class="fas fa-angle-double-right"></i>
