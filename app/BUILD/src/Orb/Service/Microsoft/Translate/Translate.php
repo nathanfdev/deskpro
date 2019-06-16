@@ -120,6 +120,8 @@ class Translate
     /**
      * Translates a text string from one language to another.
      *
+     * @see https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-translate?tabs=curl
+     *
      * @param string|string[] $text         A string or array of strings
      * @param string|null     $from         Language to translate from, or null to auto-detect
      * @param string          $to           Language to translate to
@@ -170,8 +172,7 @@ class Translate
     /**
      * Use the Detect Method to identify the language of a selected piece of text.
      *
-     * @see http://msdn.microsoft.com/en-us/library/ff512411.aspx
-     * @see http://msdn.microsoft.com/en-us/library/ff512412.aspx
+     * @see https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-detect?tabs=curl
      *
      * @param string|array $text A string or array of strings to detect
      *
@@ -211,35 +212,9 @@ class Translate
     }
 
     /**
-     * Returns a wave or mp3 stream of the passed-in text being spoken in the desired language.
-     *
-     * @see http://msdn.microsoft.com/en-us/library/ff512420.aspx
-     *
-     * @param string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters
-     * @param string $lang   A string representing the supported language code to speak the text in
-     * @param string $format A string specifying the content-type ID
-     * @param string $opt    A string specifying the quality of the audio signals
-     *
-     * @return string
-     */
-    public function speak($text, $lang, $format = self::FORMAT_WAV, $opt = self::OPT_MINSIZE)
-    {
-        $response = $this->getServiceHttpClient()->get('Speak', [
-            RequestOptions::QUERY => [
-                'text'     => $text,
-                'language' => $lang,
-                'format'   => $format,
-                'options'  => $opt,
-            ],
-        ]);
-
-        return $response->getBody();
-    }
-
-    /**
      * Obtain a list of language codes representing languages that are supported by the Translation Service.
      *
-     * @see http://msdn.microsoft.com/en-us/library/ff512416.aspx
+     * @see https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages?tabs=curl
      *
      * @param bool $use_local True to use the local cache (dont do a service request)
      *
@@ -292,11 +267,37 @@ class Translate
     }
 
     /**
+     * Returns a wave or mp3 stream of the passed-in text being spoken in the desired language.
+     *
+     * @see http://msdn.microsoft.com/en-us/library/ff512420.aspx
+     *
+     * @param string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters
+     * @param string $lang   A string representing the supported language code to speak the text in
+     * @param string $format A string specifying the content-type ID
+     * @param string $opt    A string specifying the quality of the audio signals
+     *
+     * @return string
+     */
+    public function speak($text, $lang, $format = self::FORMAT_WAV, $opt = self::OPT_MINSIZE)
+    {
+        $response = $this->getServiceHttpClient()->get('Speak', [
+            RequestOptions::QUERY => [
+                'text'     => $text,
+                'language' => $lang,
+                'format'   => $format,
+                'options'  => $opt,
+            ],
+        ]);
+
+        return $response->getBody();
+    }
+
+    /**
      * Retrieves friendly names for the languages passed in as the parameter languageCodes, and localized using the passed locale language.
      *
      * This will use the local data cache unless a lang code could not be found, then a request against the service is made.
      *
-     * @see http://msdn.microsoft.com/en-us/library/ff512414.aspx
+     * @see https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-languages?tabs=curl
      *
      * @param string[] $lang_codes An array of lang codes
      * @param string   $locale     The locale to get names for
