@@ -207,7 +207,7 @@ class Translate
             }
         }
 
-        return $isTextArray ? $result : $result[0];
+        return $isTextArray ? $result : array_shift($result);
     }
 
     /**
@@ -318,38 +318,34 @@ class Translate
                     }
                 }
 
-                if (count($names) == count($lang_codes)) {
+                if (count($names) === count($lang_codes)) {
                     return $names;
                 }
             }
         }
 
-        $body     = $this->createArrayOfStringXmlBody($lang_codes);
-        $response = $this->getServiceHttpClient()->post('GetLanguageNames', [
-            RequestOptions::QUERY => ['locale' => $locale],
-            RequestOptions::BODY  => $body,
+        $response = $this->getServiceHttpClient()->get('languages', [
+            RequestOptions::HEADERS => [
+                'Accept-Language' => $locale,
+            ],
+            RequestOptions::QUERY   => ['scope' => 'translation'],
         ]);
+        $data = json_decode($response->getBody(), true);
 
-        $raw_data = $this->xml($response->getBody());
-
-        $data = [];
-
-        $i = 0;
-        foreach ($raw_data as $k => $r) {
-            if (isset($lang_codes[$i])) {
-                $data[$lang_codes[$i]] = (string) $r;
+        $result = [];
+        foreach ($data['translation'] as $code => $language) {
+            if (in_array($language[$code], $lang_codes, true)) {
+                $result[$language[$code]] = $language['name'];
             }
-
-            ++$i;
         }
 
-        return $data;
+        return $result;
     }
 
     /**
      * Just like getLanguageNames except returns just a string for a single lang code.
      *
-     * @param string[] $lang_codes An array of lang codes
+     * @param string   $lang_code An array of lang codes
      * @param string   $locale     The locale to get names for
      * @param bool     $use_local  True to use the local cache of names (dont do a service request)
      *
