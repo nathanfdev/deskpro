@@ -7,14 +7,22 @@ use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
+use Orb\Service\Microsoft\Translate\Exceptions\EntireTextTooLongException;
+use Orb\Service\Microsoft\Translate\Exceptions\TextValueTooLongException;
 use Orb\Util\Arrays;
 use Psr\Http\Message\RequestInterface;
 
+/**
+ * Class Translate
+ *
+ * @package Orb\Service\Microsoft\Translate
+ * @url https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-reference
+ */
 class Translate
 {
-    const OAUTH_AUTH = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
-    const OAUTH_SCOPE_URL = 'http://api.microsofttranslator.com';
-    const API_URL = 'https://api.cognitive.microsofttranslator.com';
+    const OAUTH_AUTH        = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
+    const OAUTH_SCOPE_URL   = 'http://api.microsofttranslator.com';
+    const API_URL           = 'https://api.cognitive.microsofttranslator.com';
     const API_VERSION_QUERY = 'api-version=3.0';
 
     const FORMAT_WAV = 'audio/wav';
@@ -128,6 +136,7 @@ class Translate
      * @param string          $content_type Content type of the string. HTML must be well-formed
      *
      * @return string|string[]
+     * @throws \Exception
      */
     public function translate($text, $from, $to, $content_type = self::TYPE_TEXT, $category = self::CAT_GENERAL)
     {
@@ -138,14 +147,16 @@ class Translate
         $wrappedText = $isTextArray ? $text : [$text];
 
         $result = [];
-        $numOfChunks = ceil(count($wrappedText) / self::LIMIT_TRANS_TEXT_ELEMENTS);
+        $page   = 1;
 
-        for ($page = 1; $page <= $numOfChunks; $page++) {
-            $textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_TRANS_TEXT_ELEMENTS);
+        while (!empty($textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_TRANS_TEXT_ELEMENTS))) {
+            $page++;
 
             $requestBody = [];
             foreach ($textChunk as $textItem) {
-                // @todo: Add string limitation
+                if (strlen($textItem) > self::LIMIT_TRANS_TEXT_LENGTH) {
+                    throw new TextValueTooLongException(self::LIMIT_TRANS_TEXT_LENGTH);
+                }
                 $requestBody[] = ['Text' => $textItem];
             }
 
@@ -166,7 +177,7 @@ class Translate
             }
         }
 
-        return $isTextArray ? $result : $result[0];
+        return $isTextArray ? $result : array_shift($result);
     }
 
     /**
@@ -176,7 +187,7 @@ class Translate
      *
      * @param string|array $text A string or array of strings to detect
      *
-     * @throws \InvalidArgumentException
+     * @throws \Exception
      *
      * @return string|array The lang or array of lang IDs
      */
@@ -186,20 +197,29 @@ class Translate
         $wrappedText = $isTextArray ? $text : [$text];
 
         $result = [];
-        $numOfChunks = ceil(count($wrappedText) / self::LIMIT_DETECT_TEXT_ELEMENTS);
+        $page   = 1;
 
-        // @todo: Add entire string limitation
-        for ($page = 1; $page <= $numOfChunks; $page++) {
-            // @todo: Add string limitation
-            $textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_DETECT_TEXT_ELEMENTS);
+        while (!empty($textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_DETECT_TEXT_ELEMENTS))) {
+            $page++;
 
             $requestBody = [];
+            $totalLength = 0;
             foreach ($textChunk as $textItem) {
+                $stringLength = strlen($textItem);
+                if ($stringLength > self::LIMIT_DETECT_TEXT_LENGTH) {
+                    throw new TextValueTooLongException(self::LIMIT_DETECT_TEXT_LENGTH);
+                }
+
+                $totalLength += $stringLength;
+                if ($totalLength > self::LIMIT_DETECT_ENTIRE_TEXT) {
+                    throw new EntireTextTooLongException(self::LIMIT_DETECT_ENTIRE_TEXT);
+                }
+
                 $requestBody[] = ['Text' => $textItem];
             }
 
             $response = $this->getServiceHttpClient()->post('detect', [
-                RequestOptions::JSON  => $requestBody,
+                RequestOptions::JSON => $requestBody,
             ]);
             $data = json_decode($response->getBody(), true);
 
