@@ -32,10 +32,21 @@ class Translate
      * @url https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-translate?tabs=curl#request-body
      *
      * Single request can't have more then 100 elements in texts array.
-     * And each string can't be longer then 5000 characters including spaces.
+     * The text value of an array element cannot exceed 5,000 characters including spaces.
      */
-    const LIMIT_TEXT_ELEMENTS = 100;
-    const LIMIT_TEXT_LENGTH = 5000;
+    const LIMIT_TRANS_TEXT_ELEMENTS = 100;
+    const LIMIT_TRANS_TEXT_LENGTH   = 5000;
+
+    /**
+     * @url https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-detect?tabs=curl
+     *
+     * Single request can't have more then 100 elements in texts array.
+     * The text value of an array element cannot exceed 10,000 characters including spaces.
+     * The entire text included in the request cannot exceed 50,000 characters including spaces.
+     */
+    const LIMIT_DETECT_TEXT_ELEMENTS = 100;
+    const LIMIT_DETECT_TEXT_LENGTH   = 10000;
+    const LIMIT_DETECT_ENTIRE_TEXT   = 50000;
 
     /**
      * @var string
@@ -125,10 +136,10 @@ class Translate
         $wrappedText = $isTextArray ? $text : [$text];
 
         $result = [];
-        $numOfChunks = ceil(count($wrappedText) / self::LIMIT_TEXT_ELEMENTS);
+        $numOfChunks = ceil(count($wrappedText) / self::LIMIT_TRANS_TEXT_ELEMENTS);
 
         for ($page = 1; $page <= $numOfChunks; $page++) {
-            $textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_TEXT_ELEMENTS);
+            $textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_TRANS_TEXT_ELEMENTS);
 
             $requestBody = [];
             foreach ($textChunk as $textItem) {
@@ -170,28 +181,33 @@ class Translate
      */
     public function detect($text)
     {
-        if (is_array($text)) {
-            $response = $this->getServiceHttpClient()->post('DetectArray', [
-                RequestOptions::BODY => $this->createArrayOfStringXmlBody($text),
-            ]);
+        $isTextArray = is_array($text);
+        $wrappedText = $isTextArray ? $text : [$text];
 
-            $raw_data = $this->xml($response->getBody());
-            $langs    = [];
+        $result = [];
+        $numOfChunks = ceil(count($wrappedText) / self::LIMIT_DETECT_TEXT_ELEMENTS);
 
-            foreach ($raw_data->string as $l) {
-                $langs[] = (string) $l;
+        // @todo: Add entire string limitation
+        for ($page = 1; $page <= $numOfChunks; $page++) {
+            // @todo: Add string limitation
+            $textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_DETECT_TEXT_ELEMENTS);
+
+            $requestBody = [];
+            foreach ($textChunk as $textItem) {
+                $requestBody[] = ['Text' => $textItem];
             }
 
-            return $langs;
-        } else {
-            $response = $this->getServiceHttpClient()->get('Detect', [
-                RequestOptions::QUERY => ['text' => $text],
+            $response = $this->getServiceHttpClient()->post('detect', [
+                RequestOptions::JSON  => $requestBody,
             ]);
-            $raw_data = $this->xml($response->getBody());
-            $lang     = (string) $raw_data;
+            $data = json_decode($response->getBody(), true);
 
-            return $lang;
+            foreach ($data as $detection) {
+                $result[] = $detection['language'];
+            }
         }
+
+        return $isTextArray ? $result : $result[0];
     }
 
     /**
