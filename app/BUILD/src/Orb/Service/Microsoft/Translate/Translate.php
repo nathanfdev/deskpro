@@ -1,19 +1,21 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Orb\Service\Microsoft\Translate;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\RequestOptions;
+use Orb\Util\Arrays;
+use Psr\Http\Message\RequestInterface;
 
 class Translate
 {
-    const OAUTH_AUTH      = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
+    const OAUTH_AUTH = 'https://api.cognitive.microsoft.com/sts/v1.0/issueToken';
     const OAUTH_SCOPE_URL = 'http://api.microsofttranslator.com';
-    const API_URL         = 'http://api.microsofttranslator.com/v2/http.svc/';
+    const API_URL = 'https://api.cognitive.microsofttranslator.com';
+    const API_VERSION_QUERY = 'api-version=3.0';
 
     const FORMAT_WAV = 'audio/wav';
     const FORMAT_MP3 = 'audio/mp3';
@@ -21,10 +23,19 @@ class Translate
     const OPT_MINSIZE    = 'MinSize';
     const OPT_MAXQUALITY = 'MaxQuality';
 
-    const TYPE_TEXT = 'text/plain';
-    const TYPE_HTML = 'text/html';
+    const TYPE_TEXT = 'plain';
+    const TYPE_HTML = 'html';
 
     const CAT_GENERAL = 'general';
+
+    /**
+     * @url https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-translate?tabs=curl#request-body
+     *
+     * Single request can't have more then 100 elements in texts array.
+     * And each string can't be longer then 5000 characters including spaces.
+     */
+    const LIMIT_TEXT_ELEMENTS = 100;
+    const LIMIT_TEXT_LENGTH = 5000;
 
     /**
      * @var string
@@ -110,45 +121,22 @@ class Translate
         $from = $this->getNearestTranslateLocale($from);
         $to   = $this->getNearestTranslateLocale($to);
 
-        if (is_array($text)) {
-            $post_body   = [];
-            $post_body[] = '<TranslateArrayRequest>';
-            $post_body[] = "\t<AppId/>";
-            if ($from) {
-                $post_body[] = "\t<From>$from</From>";
+        $isTextArray = is_array($text);
+        $wrappedText = $isTextArray ? $text : [$text];
+
+        $result = [];
+        $numOfChunks = ceil(count($wrappedText) / self::LIMIT_TEXT_ELEMENTS);
+
+        for ($page = 1; $page <= $numOfChunks; $page++) {
+            $textChunk = Arrays::getPageChunk($wrappedText, $page, self::LIMIT_TEXT_ELEMENTS);
+
+            $requestBody = [];
+            foreach ($textChunk as $textItem) {
+                // @todo: Add string limitation
+                $requestBody[] = ['Text' => $textItem];
             }
 
-            $post_body[] = "\t<Options>";
-            $post_body[] = "\t\t<Category xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\">$category</Category>";
-            $post_body[] = "\t\t<ContentType xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\">$content_type</ContentType>";
-            $post_body[] = "\t\t<ReservedFlags xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\"/>";
-            $post_body[] = "\t\t<State xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\"/>";
-            $post_body[] = "\t\t<Uri xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\"/>";
-            $post_body[] = "\t\t<User xmlns=\"http://schemas.datacontract.org/2004/07/Microsoft.MT.Web.Service.V2\"/>";
-            $post_body[] = "\t</Options>";
-
-            $post_body[] = "\t<Texts>";
-            foreach ($text as $t) {
-                $post_body[] = "\t\t<string xmlns=\"http://schemas.microsoft.com/2003/10/Serialization/Arrays\">".$this->escapeXml($t).'</string>';
-            }
-            $post_body[] = "\t</Texts>";
-            $post_body[] = "\t<To>$to</To>";
-            $post_body[] = '</TranslateArrayRequest>';
-            $post_body   = implode("\n", $post_body);
-
-            $response = $this->getServiceHttpClient()->post('TranslateArray', [
-                RequestOptions::BODY => $post_body,
-            ]);
-
-            $raw_data = $this->xml($response->getBody());
-            $data     = [];
-            foreach ($raw_data as $l) {
-                $data[] = (string) $l->TranslatedText;
-            }
-
-            return $data;
-        } else {
-            $response = $this->getServiceHttpClient()->get('Translate', [
+            $response = $this->getServiceHttpClient()->post('translate', [
                 RequestOptions::QUERY => [
                     'text'        => $text,
                     'from'        => $from ?: '',
@@ -156,13 +144,16 @@ class Translate
                     'contentType' => $content_type,
                     'category'    => $category,
                 ],
+                RequestOptions::JSON  => $requestBody,
             ]);
+            $data = json_decode($response->getBody(), true);
 
-            $raw_data = $this->xml($response->getBody());
-            $lang     = (string) $raw_data;
-
-            return $lang;
+            foreach ($data['translations'] as $translation) {
+                $result[] = $translation['text'];
+            }
         }
+
+        return $isTextArray ? $result : $result[0];
     }
 
     /**
@@ -171,7 +162,7 @@ class Translate
      * @see http://msdn.microsoft.com/en-us/library/ff512411.aspx
      * @see http://msdn.microsoft.com/en-us/library/ff512412.aspx
      *
-     * @param string|string $text A string or array of strings to detect
+     * @param string|array $text A string or array of strings to detect
      *
      * @throws \InvalidArgumentException
      *
@@ -247,15 +238,12 @@ class Translate
             }
         }
 
-        $response = $this->getServiceHttpClient()->get('GetLanguagesForTranslate');
-        $raw_data = $this->xml($response->getBody());
+        $response = $this->getServiceHttpClient()->get('languages', [
+            RequestOptions::QUERY => ['scope' => 'translation'],
+        ]);
+        $data = json_decode($response->getBody(), true);
 
-        $data = [];
-        foreach ($raw_data->string as $r) {
-            $data[] = (string) $r;
-        }
-
-        return $data;
+        return array_keys($data['translation']);
     }
 
     /**
@@ -384,12 +372,26 @@ class Translate
             return $this->service_http_client;
         }
 
+        $stack = new HandlerStack();
+        $stack->setHandler(new CurlHandler());
+
+        $stack->push(Middleware::mapRequest(function (RequestInterface $request) {
+            $uri = $request->getUri();
+            $query = $uri->getQuery();
+
+            $query .= empty($query) ? '' : '&';
+            $query .= self::API_VERSION_QUERY;
+
+            return $request->withUri($uri->withQuery($query));
+        }));
+
         $this->service_http_client = new Client([
             'base_uri'              => self::API_URL,
+            'handler'               => $stack,
             RequestOptions::VERIFY  => false,
             RequestOptions::HEADERS => [
                 'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Content-Type'  => 'text/xml',
+                'Content-Type'  => 'application/json',
             ],
         ]);
 
@@ -439,7 +441,7 @@ class Translate
     {
         $avail = $this->getLanguagesForTranslate();
 
-        if (in_array($locale, $avail)) {
+        if (in_array($locale, $avail, true)) {
             return $locale;
         }
 
