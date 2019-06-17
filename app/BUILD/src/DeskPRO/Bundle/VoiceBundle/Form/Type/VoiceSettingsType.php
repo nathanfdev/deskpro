@@ -66,7 +66,10 @@ class VoiceSettingsType extends AbstractType
                 'required' => false,
             ])
             ->add('group_missed_call_tickets_timeout', IntegerType::class, [
-                'required' => false,
+                'required'    => false,
+                'constraints' => [
+                    new Assert\GreaterThanOrEqual(1),
+                ],
             ])
             ->add('forwarding_machine_detection', ApiBooleanType::class, [
                 'required' => false,
