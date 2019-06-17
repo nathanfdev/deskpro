@@ -25,13 +25,15 @@ class DirectMessageThread implements EntityInterface, NotifyPropertyChanged
 
     /**
      * Array as a sorted comma-separated list with person id's, with a unique index on it
-     * The purpose is mostly to verify db integrity with a unique constraint. we dont ever want two threads between the same people.
+     * The purpose is mostly to verify db integrity with a unique constraint. we don't ever want two threads between the same people.
      *
-     * @ORM\Column(name="participant_ids", type="simple_array", unique=true, nullable=true)
+     * Can't user simple_array field because we need an unique index here
+     *
+     * @ORM\Column(name="participant_ids", type="string", length=255, unique=true, nullable=true)
      *
      * @var array
      */
-    protected $participantIds = [];
+    protected $participantIds;
 
     /**
      * @ORM\Column(name="date_last_message", type="datetime", nullable=true)
@@ -80,7 +82,7 @@ class DirectMessageThread implements EntityInterface, NotifyPropertyChanged
      */
     public function getParticipantIds()
     {
-        return $this->participantIds;
+        return explode(',', $this->participantIds);
     }
 
     /**
@@ -90,11 +92,12 @@ class DirectMessageThread implements EntityInterface, NotifyPropertyChanged
      */
     public function addParticipantId($id)
     {
-        $id = (int) $id;
-        if (!in_array($id, $this->participantIds)) {
-            $this->participantIds[] = $id;
-            sort($this->participantIds);
-            $this->setModelField('participantIds', $this->participantIds);
+        $id  = (int) $id;
+        $ids = $this->participantIds ? explode(',', $this->participantIds) : [];
+        if (!in_array($id, $ids)) {
+            $ids[] = $id;
+            sort($ids);
+            $this->setModelField('participantIds', implode(',', $ids));
         }
 
         return $this;
