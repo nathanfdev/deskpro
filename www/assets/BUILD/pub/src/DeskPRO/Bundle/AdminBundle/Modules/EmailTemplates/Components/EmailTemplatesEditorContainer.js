@@ -39,6 +39,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       undoSubmit:           false,
       resetSubmit:          false,
       previewSubmit:        false,
+      asConvertedSubmit:    false,
       addingNewTemplate:    false,
       emailAccounts:        [],
       selectedEmailAccount: '',
@@ -432,6 +433,16 @@ class EmailTemplatesEditorContainer extends React.Component {
     );
   });
 
+  markAsConverted = () => new Promise((resolve) => {
+    this.setState({
+      asConvertedSubmit: true
+    });
+    const name = this.props.emailTemplates.getIn(['legacyTemplate', 0, 'name'], null);
+    this.props.dispatch(actions.markAsConverted(name)).then(() => {
+      resolve();
+    });
+  });
+
   sendPreview = () => {
     this.setState({
       previewSubmit: true
@@ -499,6 +510,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       resetTemplate={this.resetTemplate}
       resetTemplateAction={this.resetTemplateAction}
       undoChanges={this.undoChanges}
+      markAsConverted={this.markAsConverted}
       insertInlineImage={this.insertInlineImage}
       insertAttachment={this.insertAttachment}
       insertAttachmentAsLink={this.insertAttachmentAsLink}
@@ -515,6 +527,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
       undoSubmit={this.state.undoSubmit}
+      asConvertedSubmit={this.state.asConvertedSubmit}
       addingNewTemplate={this.state.addingNewTemplate}
       ref={(c) => { this.editor = c; }}
     />);
@@ -539,6 +552,7 @@ class EmailTemplatesEditor extends React.Component {
     resetTemplate:          PropTypes.func,
     resetTemplateAction:    PropTypes.func,
     undoChanges:            PropTypes.func,
+    markAsConverted:        PropTypes.func,
     insertAttachment:       PropTypes.func,
     insertAttachmentAsLink: PropTypes.func,
     insertInlineImage:      PropTypes.func,
@@ -555,6 +569,7 @@ class EmailTemplatesEditor extends React.Component {
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
     undoSubmit:             PropTypes.bool,
+    asConvertedSubmit:      PropTypes.bool,
     addingNewTemplate:      PropTypes.bool,
   };
 
@@ -733,6 +748,12 @@ class EmailTemplatesEditor extends React.Component {
     });
   };
 
+  markAsConverted = () => {
+    this.props.markAsConverted().then(() => {
+      window.location.href = 'admin-interface#/emails/email_templates_legacy';
+    });
+  };
+
   render() {
     const {
       contentChanged,
@@ -880,6 +901,16 @@ class EmailTemplatesEditor extends React.Component {
             >
               Undo changes
             </Button>
+            { this.props.emailTemplates.get('legacyTemplate') ?
+              <Button
+                className={classNames('basic small', { loading: this.props.asConvertedSubmit })}
+                disabled={textareaDisabled}
+                onClick={this.markAsConverted}
+                confirm
+              >
+                Save and Mark as converted
+              </Button>
+              : null }
             { this.props.emailTemplates.getIn(['currentTemplate', 'is_custom'], false) ?
               <Button
                 className={classNames('right floated negative basic small', { loading: this.props.resetSubmit })}

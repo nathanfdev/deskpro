@@ -417,6 +417,38 @@ class TemplateController extends BaseController
         $em->flush();
     }
 
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Mark a legacy template as converted",
+     *     requirements={
+     *         {
+     *             "name"="name",
+     *             "description"="The template name",
+     *             "dataType"="string"
+     *         }
+     *     },
+     *     output="array"
+     *)
+     * @Rest\Get("/mark_as_converted/{name}")
+     *     output="string"
+     *)
+     *
+     * @param $name
+     * @param Request $request
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function getMarkAsConvertedAction($name)
+    {
+        $em       = $this->getManager();
+        $template = $em->getRepository(Template::class)->findOneBy(['name' => $name]);
+        if (!$template) {
+            throw $this->createNotFoundException();
+        }
+        $this->deleteLegacyTemplateAction($template->getId());
+    }
+
     private function upgradeTrigger(TicketTrigger $trigger, $templateName, $replace = true)
     {
         $templatesDesc = new EmailTemplatesDesc();
