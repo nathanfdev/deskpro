@@ -751,6 +751,18 @@ class EzcReader extends AbstractReader
     protected function getOriginalCharset(\ezcMailPart $part)
     {
         $originalCharset = $part->originalCharset;
+
+        /*
+         * Fix case:
+         * > Content-Type: text/plain; charset="8bit"
+         *
+         * 8bit - is not a valid charset, it is content encoding
+         * mapping this on UNKNOWN-8BIT charset doesn't help
+         * as a fix - just ignore this charset
+         */
+        if ($originalCharset == '8bit') {
+            $originalCharset = null;
+        }
         if (!$originalCharset) {
             $originalCharset = 'us-ascii';
         }
