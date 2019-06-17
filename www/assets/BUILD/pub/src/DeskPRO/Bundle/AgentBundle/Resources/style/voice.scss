@@ -922,6 +922,14 @@ $voice-green-border-color: #47BF61;
         }
       }
 
+      .voice-avatar-container {
+        .online-status {
+          top: 0;
+          right: 5px;
+        }
+      }
+
+
       &.active {
         color: $dp-sonic-primary;
         background-color: $dp-morning-sky;
@@ -1162,7 +1170,7 @@ $voice-green-border-color: #47BF61;
       overflow: hidden;
       opacity: 0.2;
 
-      &.active {
+      &.online {
         opacity: 1;
       }
 
@@ -1446,5 +1454,37 @@ $voice-green-border-color: #47BF61;
 
   input {
     padding-left: 50px !important;
+  }
+}
+
+.voice-avatar-container {
+  display: inline-block;
+  position: relative;
+
+  .online-status {
+    background-color: #CB2325;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    display: block;
+    right: -4px;
+    top: -4px;
+    z-index: 10;
+
+    &.online {
+      background-color: #4DBE5F;
+    }
+
+    &.forwarding {
+      background-color: #E9E32A;
+    }
+  }
+
+  .avatar {
+    &.with-online-status {
+      opacity: 1;
+    }
   }
 }

@@ -39,6 +39,7 @@ class AgentList extends React.Component {
             active={target && agent === target.target || busyAgents.indexOf(agent.get('id')) !== -1}
             participant={participants.indexOf(agent.get('id')) !== -1}
             onClick={this.onSelect}
+            online={onlineAgents.contains(agent)}
           />
         )}
       </ScrollArea>
@@ -52,6 +53,7 @@ class Agent extends React.Component {
     transferDisabled: PropTypes.bool,
     agent:            PropTypes.object,
     active:           PropTypes.bool,
+    online:           PropTypes.bool,
     busy:             PropTypes.bool,
     participant:      PropTypes.bool,
     onClick:          PropTypes.func
@@ -71,14 +73,19 @@ class Agent extends React.Component {
   };
 
   render() {
-    const { agent, active, busy, participant } = this.props;
+    const { agent, active, online, busy, participant } = this.props;
 
     return (
       <div
         className={classNames('voice-agent-list-item', { active, participant })}
         onClick={this.onClick}
       >
-        <Avatar person={agent} size={24} />
+        <Avatar
+          person={agent}
+          size={24}
+          online={online}
+          withOnlineStatus
+        />
         <span className="agent-name">
           {agent.get('name')}
           {participant && <span className="agent-participant">(participant)</span>}

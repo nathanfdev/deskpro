@@ -126,7 +126,7 @@ class TransferList extends React.Component {
 
     const hasAgentsTab = ((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
     const hasQueuesTab = queues && queues.size > 0;
-    const hasAutoAttendantTab = queues && queues.size > 0;
+    const hasAutoAttendantTab = autoAttendants && autoAttendants.size > 0;
 
     return (
       <div>
