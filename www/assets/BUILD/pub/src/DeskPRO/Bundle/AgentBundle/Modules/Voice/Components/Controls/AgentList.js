@@ -8,7 +8,8 @@ class AgentList extends React.Component {
 
   static propTypes = {
     target:           PropTypes.object,
-    agents:           PropTypes.object,
+    onlineAgents:     PropTypes.object,
+    forwardingAgents: PropTypes.object,
     busyAgents:       PropTypes.array,
     participants:     PropTypes.array,
     onClick:          PropTypes.func,
@@ -25,11 +26,11 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { agents, busyAgents, target, participants, transferDisabled } = this.props;
+    const { onlineAgents, forwardingAgents, busyAgents, target, participants, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
-        {agents.toArray().map((agent, index) =>
+        {onlineAgents.concat(forwardingAgents).toArray().map((agent, index) =>
           <Agent
             transferDisabled={transferDisabled}
             key={index}

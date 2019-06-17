@@ -307,6 +307,16 @@ class VoiceControlsContainer extends React.Component {
     const { me, agents, onlineAgentIds, baseId, phoneCalls } = this.props;
     const { viewCallId } = this.state;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')) && agent !== me);
+    const forwardingAgents = agents.filter((agent) => {
+      const agentData = agent.get('agent_data') || Immutable.fromJS({});
+      const isOnline = onlineAgents.contains(agent);
+
+      return agentData.get('forwarding_number')
+        && agentData.get('can_use_forwarding')
+        && agentData.get('agent_can_use_forwarding')
+        && ((isOnline && !agentData.get('forwarding_logged_out')) || !isOnline)
+        && agent !== me;
+    });
     const connection = this.getConnection();
     const phoneCall = phoneCalls.get(this.getCallId());
 
@@ -323,6 +333,7 @@ class VoiceControlsContainer extends React.Component {
         {...this.state}
         phoneCall={phoneCall}
         onlineAgents={onlineAgents}
+        forwardingAgents={forwardingAgents}
         connection={connection}
         endCall={this.endCall}
         toggleMute={this.toggleMute}

@@ -159,6 +159,7 @@ class Active extends React.Component {
     hold:               PropTypes.bool,
     ended:              PropTypes.bool,
     onlineAgents:       PropTypes.object,
+    forwardingAgents:   PropTypes.object,
     queues:             PropTypes.object,
     autoAttendants:     PropTypes.object,
     toggleHold:         PropTypes.func,
@@ -254,10 +255,10 @@ class Active extends React.Component {
   };
 
   render() {
-    const { onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
+    const { onlineAgents, forwardingAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
     const { me, hold, mute, ended, connection, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
-    const noAgents = !onlineAgents || !onlineAgents.size;
+    const noAgents = !((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
     const noQueues = !queues || !queues.size;
     const noAutoAttendants = !autoAttendants || !autoAttendants.size;
     const isWarmTransfer = phoneCall && phoneCall.get('status') === 'warm_transfer';
@@ -349,7 +350,11 @@ class Active extends React.Component {
           zIndex={1000}
         >
           <ClickOut onClickOut={this.closeTransferMenu}>
-            <TransferList {...this.props} closeMenu={this.closeTransferMenu} transferDisabled={transferDisabled} />
+            <TransferList
+              {...this.props}
+              closeMenu={this.closeTransferMenu}
+              transferDisabled={transferDisabled}
+            />
           </ClickOut>
         </Detached>
         <Detached

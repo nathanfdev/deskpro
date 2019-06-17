@@ -7,19 +7,15 @@ import TransferStatus from '../TransferStatus';
 class AddList extends React.Component {
 
   static propTypes = {
-    target:       PropTypes.object,
-    onlineAgents: PropTypes.object,
-    busyAgents:   PropTypes.array,
-    participants: PropTypes.array,
-    connection:   PropTypes.object,
-    warmAddAgent: PropTypes.func,
-    cancelInvite: PropTypes.func,
-    inviteError:  PropTypes.string
-  };
-
-  static defaultProps = {
-    onAddAgent:     () => {},
-    onCancelInvite: () => {}
+    target:           PropTypes.object,
+    onlineAgents:     PropTypes.object,
+    forwardingAgents: PropTypes.object,
+    busyAgents:       PropTypes.array,
+    participants:     PropTypes.array,
+    connection:       PropTypes.object,
+    warmAddAgent:     PropTypes.func,
+    cancelInvite:     PropTypes.func,
+    inviteError:      PropTypes.string
   };
 
   constructor(props) {
@@ -49,7 +45,7 @@ class AddList extends React.Component {
   };
 
   renderList() {
-    const { inviteError, onlineAgents, busyAgents, participants } = this.props;
+    const { inviteError, onlineAgents, forwardingAgents, busyAgents, participants } = this.props;
     const { selectedTarget } = this.state;
 
     return (
@@ -62,7 +58,8 @@ class AddList extends React.Component {
         </div>
 
         <AgentList
-          agents={onlineAgents}
+          onlineAgents={onlineAgents}
+          forwardingAgents={forwardingAgents}
           busyAgents={busyAgents}
           participants={participants}
           target={selectedTarget}
