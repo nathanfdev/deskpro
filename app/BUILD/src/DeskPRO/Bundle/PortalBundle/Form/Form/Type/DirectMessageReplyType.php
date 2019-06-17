@@ -35,23 +35,16 @@ class DirectMessageReplyType extends AbstractType
             ])
         ;
 
-//        $builder->get('message')
-//            ->addModelTransformer(new CallbackTransformer(
-//                function ($value) {
-//                    return $value;
-//                },
-//                function ($value) {
-
-//                    $s = '""""';
-//                    $b = '"';
-//                    $m = '';
-//                    if ($value == '""') {
-//                        return '';
-//                    }
-//                    return nl2br($value);
-//                }
-//            ))
-//        ;
+        $builder->get('message')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($value) {
+                    return $value;
+                },
+                function ($value) {
+                    return nl2br($value);
+                }
+            ))
+        ;
     }
 
     /**
