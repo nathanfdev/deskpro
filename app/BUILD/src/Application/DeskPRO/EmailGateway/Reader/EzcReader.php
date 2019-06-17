@@ -760,7 +760,7 @@ class EzcReader extends AbstractReader
          * mapping this on UNKNOWN-8BIT charset doesn't help
          * as a fix - just ignore this charset
          */
-        if ($originalCharset == '8bit') {
+        if (strtoupper(trim($originalCharset)) == '8BIT') {
             $originalCharset = null;
         }
         if (!$originalCharset) {
