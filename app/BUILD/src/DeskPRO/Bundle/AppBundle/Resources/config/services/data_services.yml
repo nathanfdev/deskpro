@@ -8,6 +8,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\PersonDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
+  data.direct_message.thread:
+    class: DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
   data.tickets:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@brand_stack", "@logger"]

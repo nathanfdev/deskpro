@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -217,6 +218,27 @@ class PortalEmailSender
                         ],
                         UrlGeneratorInterface::ABSOLUTE_URL
                     ),
+                ]
+            );
+        }
+    }
+
+    public function sendDirectMessageNewEmail(Person $person, DirectMessage $message)
+    {
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            //@TODO: implement new email
+        } else {
+            /** @var \DeskPRO\Bundle\AppBundle\Entity\DirectMessageThread $thread */
+            $thread    = $message->getAuthor()->getThread();
+            $threadUrl = $this->getRouter()->generate('portal_dm_view', ['id' => $thread->getId()]);
+
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:direct-message-new.html.twig',
+                [
+                    'thread_url' => $threadUrl,
+                    'thread'     => $thread,
+                    'message'    => $message,
                 ]
             );
         }
