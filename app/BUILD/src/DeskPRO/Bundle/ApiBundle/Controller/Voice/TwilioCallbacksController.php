@@ -809,8 +809,15 @@ class TwilioCallbacksController extends BaseController
             if (!$agentId || !$agent = $this->get('dp.voice.callbacks_helper')->getAgent($agentId)) {
                 throw new \RuntimeException('Agent not found');
             }
-            if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
-                throw new \RuntimeException('Phone call is already accepted');
+
+            if (count($phoneCall->getActiveParticipants()) >= 2) {
+                if (!$this->get('dp.voice.task_router')->joinTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                    throw new \RuntimeException('Unable to join this phone call');
+                }
+            } else {
+                if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                    throw new \RuntimeException('Phone call is already accepted');
+                }
             }
         } catch (\Exception $e) {
             $twiml = new Twiml();
