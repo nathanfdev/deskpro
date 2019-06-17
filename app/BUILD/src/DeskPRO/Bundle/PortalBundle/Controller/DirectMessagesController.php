@@ -30,6 +30,8 @@ class DirectMessagesController extends AbstractController
      */
     public function indexAction(Request $request)
     {
+        $this->isCommunityEnabledOrNotFoundException();
+
         $dataService  = $this->getDirectMessageThreadDataService();
         $pager        = $dataService->getForUser($this->getUser(), $request->query->has('unread') ? true : false, 1, 500);
         $participants = $dataService->getParticipantsGroupedByThreads($pager->getCurrentPageResults());
@@ -59,6 +61,8 @@ class DirectMessagesController extends AbstractController
      */
     public function viewAction(Request $request, DirectMessageThread $thread)
     {
+        $this->isCommunityEnabledOrNotFoundException();
+
         $messages = $this->getEm()->getRepository(DirectMessage::class)
             ->getForThread($thread);
 
@@ -103,6 +107,8 @@ class DirectMessagesController extends AbstractController
      */
     public function replyAction(Request $request, DirectMessageThread $thread)
     {
+        $this->isCommunityEnabledOrNotFoundException();
+
         $participant = $this->getEm()->getRepository(DirectMessageParticipant::class)->findOneBy([
             'thread' => $thread,
             'person' => $this->getUser(),
@@ -141,6 +147,8 @@ class DirectMessagesController extends AbstractController
      */
     public function sendAction(Request $request)
     {
+        $this->isCommunityEnabledOrNotFoundException();
+
         $defaultData = [
             'person'  => null,
             'email'   => '',
@@ -204,6 +212,17 @@ class DirectMessagesController extends AbstractController
                 continue;
             }
             $this->getEmailSender()->sendDirectMessageNewEmail($participant->getPerson(), $message);
+        }
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    protected function isCommunityEnabledOrNotFoundException()
+    {
+        $settings = $this->container->get('settings_resolver');
+        if (!$settings->getGlobalSettings()->get('portal.members_community')) {
+            throw $this->createNotFoundException();
         }
     }
 }
