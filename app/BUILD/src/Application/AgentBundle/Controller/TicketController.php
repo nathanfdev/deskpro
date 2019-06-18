@@ -4405,6 +4405,9 @@ class TicketController extends AbstractController
             return str_replace($accessCodes, '', $body);
         });
 
+        $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+        $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
+
         foreach ($tos as $k => $x) {
             $message->addTo($k, $x);
         }
