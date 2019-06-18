@@ -54,7 +54,7 @@ return [
     'te'      => 'Telugu',
     'th'      => 'Thai',
     'tlh'     => 'Klingon',
-    'to'      => 'Tongan',
+    'to'      => 'lea fakatonga',
     'tr'      => 'Turkish',
     'ty'      => 'Tahitian',
     'uk'      => 'Ukrainian',

@@ -172,8 +172,8 @@ class Translate
             ]);
             $data = json_decode($response->getBody(), true);
 
-            foreach ($data['translations'] as $translation) {
-                $result[] = $translation['text'];
+            foreach ($data as $translation) {
+                $result[] = $translation['translations'][0]['text'];
             }
         }
 
@@ -355,8 +355,8 @@ class Translate
 
         $result = [];
         foreach ($data['translation'] as $code => $language) {
-            if (in_array($language[$code], $lang_codes, true)) {
-                $result[$language[$code]] = $language['name'];
+            if (in_array($code, $lang_codes, true)) {
+                $result[$code] = $language['name'];
             }
         }
 

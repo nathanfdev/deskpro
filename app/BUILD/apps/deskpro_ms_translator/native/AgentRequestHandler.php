@@ -145,7 +145,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         try {
-            $trans_text = $api->translate($message_text, $from, $to, Translate::TYPE_TEXT);
+            $trans_text = $api->translate($message_text, $from, $to, Translate::TYPE_HTML);
         } catch (\Exception $e) {
             return $context->createJsonResponse(['error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()]);
         }
