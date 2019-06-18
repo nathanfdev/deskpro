@@ -6,7 +6,6 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
@@ -14,13 +13,10 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Guide;
-use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\PageViewLog;
@@ -73,6 +69,10 @@ class PublishController extends AbstractController
 
     public function getSectionDataAction()
     {
+        if (!$this->person->hasPerm('agent_publish.use')) {
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
+        }
+
         $data = [];
 
         //------------------------------
