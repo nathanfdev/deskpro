@@ -3,11 +3,13 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
+import Isvg from 'react-inlinesvg';
 import VoiceMenu from './VoiceMenu';
 
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
+    me:           PropTypes.object,
     isSecure:     PropTypes.bool,
     micEnabled:   PropTypes.bool,
     incomingCall: PropTypes.object,
@@ -64,17 +66,42 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getIcon() {
-    const { onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
+    const { me, onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
+    const canUseForwarding = me.getIn(['agent_data', 'agent_can_use_forwarding']) && me.getIn(['agent_data', 'forwarding_number']);
 
     if (voiceEnabled && micEnabled) {
       if (callsEnabled) {
-        return <i className="ui call icon green voice-menu-icon" />;
+        if (canUseForwarding) {
+          return (
+            <Isvg
+              className="voice-menu-icon"
+              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call-forwarding.svg`}
+            />
+          );
+        }
+
+        return (
+          <Isvg
+            className="voice-menu-icon"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call.svg`}
+          />
+        );
       } else if (onlineAgents.size > 0) {
-        return <i className="ui call icon yellow voice-menu-icon" />;
+        return (
+          <Isvg
+            className="voice-menu-icon"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call-another-agent.svg`}
+          />
+        );
       }
     }
 
-    return <i className="ui call icon red voice-menu-icon" />;
+    return (
+      <Isvg
+        className="voice-menu-icon"
+        src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call-offline.svg`}
+      />
+    );
   }
 
   showProviderError = (outgoingNumber, errors) => {
