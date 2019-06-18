@@ -105,6 +105,21 @@ $voice-green-border-color: #47BF61;
             padding-left: 10px;
             color: $dp-greyscale-450;
           }
+
+          .voice-profile-status-checkbox-sub-checkbox {
+            display: block;
+
+            .ui.checkbox {
+              float: none;
+              margin-top: 10px;
+              margin-left: 50px;
+
+              label {
+                padding-left: 25px;
+                font-size: 14px;
+              }
+            }
+          }
         }
       }
     }

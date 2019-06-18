@@ -24,8 +24,9 @@ class StatusFormContainer extends React.Component {
 
     dispatch(toggleUserChat(data.chats));
     dispatch(editAgentProfile({
-      available_status:    data.status,
-      agent_calls_enabled: data.calls
+      available_status:         data.status,
+      agent_calls_enabled:      data.calls,
+      agent_can_use_forwarding: data.forwarding
     }));
   };
 

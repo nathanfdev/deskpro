@@ -17,6 +17,7 @@ const statusChoices = [
 class StatusForm extends React.Component {
 
   static propTypes = {
+    me:              PropTypes.object,
     voiceAvailable:  PropTypes.bool,
     voiceEnabled:    PropTypes.bool,
     userChatEnabled: PropTypes.bool,
@@ -56,9 +57,10 @@ class StatusForm extends React.Component {
 
     return createValue({
       value: {
-        status: agentData.get('available_status') || 'offline',
-        chats:  props.userChatEnabled,
-        calls:  agentData.get('agent_calls_enabled')
+        status:     agentData.get('available_status') || 'offline',
+        chats:      props.userChatEnabled,
+        calls:      agentData.get('agent_calls_enabled'),
+        forwarding: agentData.get('agent_can_use_forwarding')
       },
       onChange: this.onChange
     });
@@ -72,8 +74,9 @@ class StatusForm extends React.Component {
   );
 
   render() {
-    const { voiceAvailable, voiceEnabled, userChatEnabled } = this.props;
+    const { me, voiceAvailable, voiceEnabled, userChatEnabled } = this.props;
     const { formData } = this.state;
+    const canUseForwarding = me.getIn(['agent_data', 'can_use_forwarding']);
 
     return (
       <Fieldset formValue={formData}>
@@ -109,6 +112,12 @@ class StatusForm extends React.Component {
                       (Use HTTPS for calls)
                     </span>
                   }
+                  {canUseForwarding &&
+                    <div className="voice-profile-status-checkbox-sub-checkbox">
+                      <Field select="forwarding">
+                        <Checkbox label="Forwarding" disabled={!me.getIn(['agent_data', 'forwarding_number'])} />
+                      </Field>
+                    </div>}
                 </span>
               </div>}
           </div>
