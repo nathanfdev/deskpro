@@ -318,7 +318,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     } else {
                         $now  = new \DateTime();
                         $diff = $now->diff($ticket->getDateResolved());
-                        if ($diff->days > $timelimit) {
+                        if ($diff->days >= $timelimit) {
                             $this->logMessage(sprintf(
                                 '[TicketGatewayProcessor] Ticket was resolved (%s) earlier than timelimit (%s days)',
                                 $ticket->getDateResolved()->format('Y-m-d'),
