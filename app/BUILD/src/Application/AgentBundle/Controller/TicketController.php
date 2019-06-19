@@ -4494,17 +4494,15 @@ class TicketController extends AbstractController
         }
         $this->container->getMailer()->send($message);
 
-        foreach ($messagesIds as $messageId) {
-            // Log the action
+        if (isset($oldTicket) && $oldTicket) {
             $this->db->insert(
                 'tickets_logs',
                 [
-                    'ticket_id'   => $ticket->id,
+                    'ticket_id'   => $oldTicket->id,
                     'person_id'   => $this->person->id,
-                    'action_type' => 'message_forwarded',
+                    'action_type' => 'message_forwarded_as_new',
                     'details'     => serialize(
                         [
-                            'message_id'     => $messageId,
                             'agent_id'       => $this->person->id,
                             'agent_name'     => $this->person->getDisplayName(),
                             'to'             => array_keys($tos),
@@ -4520,11 +4518,74 @@ class TicketController extends AbstractController
                             'from_email'     => $fromEmail,
                             'from_name'      => $fromName,
                             'custom_message' => $customMessage ?: null,
+                            'new_ticket_id'  => $ticket->id,
                         ]
                     ),
                     'date_created' => date('Y-m-d H:i:s'),
                 ]
             );
+            $this->db->insert(
+                'tickets_logs',
+                [
+                    'ticket_id'   => $ticket->id,
+                    'person_id'   => $this->person->id,
+                    'action_type' => 'created_by_forward',
+                    'details'     => serialize(
+                        [
+                            'agent_id'       => $this->person->id,
+                            'agent_name'     => $this->person->getDisplayName(),
+                            'to'             => array_keys($tos),
+                            'cc'             => array_keys($ccs),
+                            'bcc'            => array_keys($bccs),
+                            'all_rec_string' => implode(
+                                ', ',
+                                array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                            ),
+                            'to_string'      => implode(', ', array_keys($tos)),
+                            'cc_string'      => implode(', ', array_keys($ccs)),
+                            'bcc_string'     => implode(', ', array_keys($bccs)),
+                            'from_email'     => $fromEmail,
+                            'from_name'      => $fromName,
+                            'custom_message' => $customMessage ?: null,
+                            'old_ticket_id'  => $oldTicket->id,
+                        ]
+                    ),
+                    'date_created' => date('Y-m-d H:i:s'),
+                ]
+            );
+        } else {
+            foreach ($messagesIds as $messageId) {
+                // Log the action
+                $this->db->insert(
+                    'tickets_logs',
+                    [
+                        'ticket_id'   => $ticket->id,
+                        'person_id'   => $this->person->id,
+                        'action_type' => 'message_forwarded',
+                        'details'     => serialize(
+                            [
+                                'message_id'     => $messageId,
+                                'agent_id'       => $this->person->id,
+                                'agent_name'     => $this->person->getDisplayName(),
+                                'to'             => array_keys($tos),
+                                'cc'             => array_keys($ccs),
+                                'bcc'            => array_keys($bccs),
+                                'all_rec_string' => implode(
+                                    ', ',
+                                    array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                                ),
+                                'to_string'      => implode(', ', array_keys($tos)),
+                                'cc_string'      => implode(', ', array_keys($ccs)),
+                                'bcc_string'     => implode(', ', array_keys($bccs)),
+                                'from_email'     => $fromEmail,
+                                'from_name'      => $fromName,
+                                'custom_message' => $customMessage ?: null,
+                            ]
+                        ),
+                        'date_created' => date('Y-m-d H:i:s'),
+                    ]
+                );
+            }
         }
 
         return $this->createJsonResponse(['success' => true]);
