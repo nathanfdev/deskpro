@@ -144,7 +144,13 @@ class QueueForm extends BaseForm {
               </Field>}
             </div>
 
-            <Field select="recording_enabled" label="Recording">
+            <Field
+              select="recording_enabled"
+              label="Recording"
+              help={formData.value.recording_enabled
+                ? 'You have enabled call recording. Ensure that customers are informed of this in accordance with your state\'s or country\'s recording laws. For example, it is common to give callers notice during the caller greeting message.'
+                : ''}
+            >
               <Checkbox label="Recording enabled" />
             </Field>
 
