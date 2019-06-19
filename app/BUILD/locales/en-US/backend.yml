@@ -4074,6 +4074,7 @@ agent.people.reg_gateway: 'User was created by submitting an email to the helpde
 agent.people.reg_website: 'User registered using the website'
 agent.people.reg_phone_inbound: 'User created by an inbound call'
 agent.people.reg_phone_outbound: 'User created by an outbound call'
+agent.people.reg_usersource_sync: 'User created by usersource sync'
 agent.people.remove_picture: 'Remove Picture'
 agent.people.since: Since
 agent.people.title_dr: Dr.

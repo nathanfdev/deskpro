@@ -569,6 +569,8 @@
                             {{ phrase('agent.people.reg_phone_inbound') }}
                         {% elseif person.creation_system == 'phone.outbound' %}
                             {{ phrase('agent.people.reg_phone_outbound') }}
+                        {% elseif person.creation_system == 'usersource.sync' %}
+                            {{ phrase('agent.people.reg_usersource_sync') }}
                         {% else %}
                             {{ person.creation_system }}
                         {% endif %}
