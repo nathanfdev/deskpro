@@ -32,6 +32,7 @@ class AgentTicketForward extends AgentTicketEmailType
         $ticketAgent,
         $ticketLink,
         $ticketMessages,
+        $ticketSatisfaction,
         $participants,
         $ticketLayout,
         $customFields,
@@ -39,7 +40,7 @@ class AgentTicketForward extends AgentTicketEmailType
         $agentMessage,
         $subject
     ) {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $participants, $ticketLayout, $customFields, $customUserFields);
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction, $participants, $ticketLayout, $customFields, $customUserFields);
 
         $this->agentMessage = $agentMessage;
         $this->subject      = $subject;
