@@ -10,7 +10,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -29,7 +29,7 @@ class VoicemailRecordsController extends CrudController
 {
     use TicketSaveTrait;
 
-    public static $entity     = VoicemailAgentRecording::class;
+    public static $entity     = VoiceMissedAgentCall::class;
     public static $exposeOnly = ['get', 'list', 'count', 'delete'];
 
     /**
@@ -43,13 +43,13 @@ class VoicemailRecordsController extends CrudController
      *
      * @Rest\Put("/{record}/mark_listened")
      *
-     * @param VoicemailAgentRecording $record
+     * @param VoiceMissedAgentCall $record
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function markListenedToAction(VoicemailAgentRecording $record)
+    public function markListenedToAction(VoiceMissedAgentCall $record)
     {
         if ($record->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Unable to update voicemail record');
@@ -75,13 +75,13 @@ class VoicemailRecordsController extends CrudController
      *
      * @Rest\Put("/{record}/create_ticket")
      *
-     * @param VoicemailAgentRecording $record
+     * @param VoiceMissedAgentCall $record
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function createTicketAction(VoicemailAgentRecording $record)
+    public function createTicketAction(VoiceMissedAgentCall $record)
     {
         if ($record->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Unable to create voicemail ticket');
@@ -160,7 +160,7 @@ class VoicemailRecordsController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @param VoicemailAgentRecording $entity
+     * @param VoiceMissedAgentCall $entity
      *
      * @throws \Exception
      */

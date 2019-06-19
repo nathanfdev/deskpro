@@ -15,7 +15,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceBlobAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceTextAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
@@ -1177,7 +1177,7 @@ class TwilioCallbacksController extends BaseController
 
         if (!$recording) {
             // try to get personal agent voicemail
-            $recording = $em->getRepository(VoicemailAgentRecording::class)->findOneBy([
+            $recording = $em->getRepository(VoiceMissedAgentCall::class)->findOneBy([
                 'recordingSid' => $recordingSid,
             ]);
         }

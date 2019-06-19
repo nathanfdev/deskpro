@@ -201,9 +201,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $recordings;
 
     /**
-     * @ORM\OneToOne(targetEntity="VoicemailAgentRecording", mappedBy="phoneCall")
+     * @ORM\OneToOne(targetEntity="VoiceMissedAgentCall", mappedBy="phoneCall")
      *
-     * @var VoicemailAgentRecording
+     * @var VoiceMissedAgentCall
      */
     private $agentVoicemailRecord;
 
@@ -895,7 +895,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoicemailAgentRecording
+     * @return VoiceMissedAgentCall
      */
     public function getAgentVoicemailRecord()
     {
@@ -903,11 +903,11 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoicemailAgentRecording $agentVoicemailRecord
+     * @param VoiceMissedAgentCall $agentVoicemailRecord
      *
      * @return $this
      */
-    public function setAgentVoicemailRecord(VoicemailAgentRecording $agentVoicemailRecord = null)
+    public function setAgentVoicemailRecord(VoiceMissedAgentCall $agentVoicemailRecord = null)
     {
         $this->setModelField('voicemailRecord', $agentVoicemailRecord);
         if ($agentVoicemailRecord) {

@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall as VoicePhoneCallEntity;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -141,7 +141,7 @@ class VoicePhoneCall
     /**
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording")
      *
-     * @var VoicemailAgentRecording
+     * @var VoiceMissedAgentCall
      */
     private $agentVoicemail;
 

@@ -15,7 +15,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceRecording;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -219,12 +219,12 @@ class GoToController extends AbstractController
     }
 
     /**
-     * @param string                  $authCode
-     * @param VoicemailAgentRecording $recording
+     * @param string               $authCode
+     * @param VoiceMissedAgentCall $recording
      *
      * @return string
      */
-    public function agentVoicemailRecordingAction($authCode, VoicemailAgentRecording $recording)
+    public function agentVoicemailRecordingAction($authCode, VoiceMissedAgentCall $recording)
     {
         return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
     }

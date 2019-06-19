@@ -10,7 +10,7 @@ use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
@@ -269,7 +269,7 @@ class RecordingDownloadHelper
         } else {
             // there is no ticket
             // create a personal voicemail
-            $recording = new VoicemailAgentRecording();
+            $recording = new VoiceMissedAgentCall();
             $recording
                 ->setRecordingSid($recordingSid)
                 ->setPhoneCall($phoneCall)
