@@ -6,12 +6,14 @@ import StatusForm from './StatusForm';
 import { toggleUserChat, editAgentProfile } from '../../../Agent/Actions/agentActions';
 import { isVoiceEnabledSelector, isVoiceAvailableSelector } from '../../../Voice/Selectors/client';
 import { userChatEnabledSelector } from '../../../Agent/Selectors/agents';
+import { allQueuesSelector } from '../../../Voice/Selectors/queue';
 
 @connect(state => ({
   me:              meSelector(state),
   voiceAvailable:  isVoiceAvailableSelector(state),
   voiceEnabled:    isVoiceEnabledSelector(state),
-  userChatEnabled: userChatEnabledSelector(state)
+  userChatEnabled: userChatEnabledSelector(state),
+  queues:          allQueuesSelector(state),
 }))
 class StatusFormContainer extends React.Component {
 
@@ -30,11 +32,19 @@ class StatusFormContainer extends React.Component {
     }));
   };
 
+  openQueuesSettings = () => {
+    window.AgentTopBar.closeUserMenu();
+    setTimeout(() => {
+      window.AgentVoiceDropdown.openSettingsTab();
+    }, 1);
+  };
+
   render() {
     return (
       <StatusForm
         {...this.props}
         onChange={this.onChange}
+        openQueuesSettings={this.openQueuesSettings}
       />
     );
   }

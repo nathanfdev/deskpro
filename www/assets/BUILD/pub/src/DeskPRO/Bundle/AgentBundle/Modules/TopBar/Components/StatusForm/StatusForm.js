@@ -17,11 +17,13 @@ const statusChoices = [
 class StatusForm extends React.Component {
 
   static propTypes = {
-    me:              PropTypes.object,
-    voiceAvailable:  PropTypes.bool,
-    voiceEnabled:    PropTypes.bool,
-    userChatEnabled: PropTypes.bool,
-    onChange:        PropTypes.func
+    me:                 PropTypes.object,
+    queues:             PropTypes.object,
+    voiceAvailable:     PropTypes.bool,
+    voiceEnabled:       PropTypes.bool,
+    userChatEnabled:    PropTypes.bool,
+    onChange:           PropTypes.func,
+    openQueuesSettings: PropTypes.func,
   };
 
   constructor(props) {
@@ -66,6 +68,11 @@ class StatusForm extends React.Component {
     });
   }
 
+  openQueuesSettings = (event) => {
+    event.preventDefault();
+    this.props.openQueuesSettings();
+  };
+
   renderSelectValue = option => (
     <span>
       <Isvg src={option.icon} />
@@ -74,9 +81,12 @@ class StatusForm extends React.Component {
   );
 
   render() {
-    const { me, voiceAvailable, voiceEnabled, userChatEnabled } = this.props;
+    const { me, queues, voiceAvailable, voiceEnabled, userChatEnabled } = this.props;
     const { formData } = this.state;
     const canUseForwarding = me.getIn(['agent_data', 'can_use_forwarding']);
+    const myQueues = queues.filter(queue =>
+      queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first()
+    );
 
     return (
       <Fieldset formValue={formData}>
@@ -106,7 +116,10 @@ class StatusForm extends React.Component {
                 </Field>
                 <i className={classNames('ui call icon', formData.value.calls ? 'green' : 'disabled')} />
                 <span className="voice-profile-status-checkbox-title">
-                  Calls
+                  Calls {myQueues.size > 0 &&
+                    <span className="voice-profile-status-checkbox-title-link">
+                      (<a onClick={this.openQueuesSettings}>{myQueues.size} queues</a>)
+                    </span>}
                   {!voiceEnabled &&
                     <span className="voice-profile-status-checkbox-title-disabled">
                       (Use HTTPS for calls)

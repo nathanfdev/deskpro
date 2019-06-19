@@ -21,6 +21,13 @@ class VoiceMenuDropdown extends React.Component {
     recordsCount: PropTypes.number
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      defaultTab: null
+    };
+  }
+
   componentDidMount() {
     const { incomingCall } = this.props;
     window.AgentVoiceDropdown = this;
@@ -127,16 +134,40 @@ class VoiceMenuDropdown extends React.Component {
   };
 
   openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null) => {
-    this.popup.openPopup();
-    setTimeout(() => {
-      this.voiceMenu.changeTab('phone');
+    this.setState({
+      defaultTab: 'phone'
+    }, () => {
+      this.popup.openPopup();
       setTimeout(() => {
-        this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
-        if (ticketId) {
-          this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
-        }
+        this.voiceMenu.changeTab('phone');
+        setTimeout(() => {
+          this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+          if (ticketId) {
+            this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
+          }
+        }, 1);
+
+        setTimeout(() => {
+          this.setState({
+            defaultTab: null
+          });
+        }, 1);
       }, 1);
-    }, 1);
+    });
+  };
+
+  openSettingsTab = () => {
+    this.setState({
+      defaultTab: 'settings'
+    }, () => {
+      this.popup.openPopup();
+      setTimeout(() => {
+        this.voiceMenu.settings.panels.setActiveKey(['0']);
+        this.setState({
+          defaultTab: null
+        });
+      }, 1);
+    });
   };
 
   renderCount = () => {
@@ -160,6 +191,7 @@ class VoiceMenuDropdown extends React.Component {
           content={
             <VoiceMenu
               {...this.props}
+              {...this.state}
               ref={(c) => { this.voiceMenu = c; }}
               openUserMenu={this.openUserMenu}
             />
