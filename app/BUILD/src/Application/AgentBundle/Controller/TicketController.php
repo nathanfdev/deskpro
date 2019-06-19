@@ -4273,48 +4273,6 @@ class TicketController extends AbstractController
 
         $options = $this->in->getArrayValue('options');
 
-        if ($options['fwd_new_ticket'] === 'true') {
-            $this->em->beginTransaction();
-            $doAssignAgent = $options['do_assign_agent'] === 'true';
-            $doAssignTeam  = $options['do_assign_team'] === 'true';
-
-            $ticketManager = $this->container->getTicketManager();
-            $ticketManager->markAsManaged($ticket);
-
-            try {
-                $newTicket = $ticketManager->createTicket();
-                $this->em->commit();
-                $ticket->copyTo($newTicket);
-                $messages = $ticket->getMessages();
-                foreach ($messages as $message) {
-                    $messageCopy     = clone $message;
-                    $messageCopy->id = null;
-                    $messageCopy->setTicket($newTicket);
-                    $this->em->persist($messageCopy);
-                }
-                $ticketManager->markAsUnmanaged($ticket);
-            } catch (\Exception $e) {
-                $ticketManager->markAsUnmanaged($ticket);
-                $this->em->rollback();
-                throw $e;
-            }
-            $this->em->persist($newTicket);
-
-            $this->em->flush();
-
-            $oldTicket = $ticket;
-            $ticket    = $newTicket;
-
-            $ticket->setParentTicket($oldTicket);
-
-            if ($doAssignAgent) {
-                $ticket->setAgentId($options['agent_id']);
-            }
-            if ($doAssignTeam) {
-                $ticket->setAgentTeamId($options['agent_team_id']);
-            }
-        }
-
         foreach ($allRawTo as $rowId => $to) {
             $to = trim($to);
             if (!$to) {
@@ -4405,6 +4363,7 @@ class TicketController extends AbstractController
             return str_replace($accessCodes, '', $body);
         });
 
+        $message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
         $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
         $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
 
@@ -4444,6 +4403,41 @@ class TicketController extends AbstractController
             }
             if ($useMyAddress) {
                 $message->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $fromEmail);
+            }
+        }
+
+        if ($options['fwd_new_ticket'] === 'true') {
+            $this->em->beginTransaction();
+            $doAssignAgent = $options['do_assign_agent'] === 'true';
+            $doAssignTeam  = $options['do_assign_team'] === 'true';
+
+            $ticketManager = $this->container->getTicketManager();
+            $ticketManager->markAsManaged($ticket);
+
+            try {
+                $newTicket = $ticketManager->createTicket();
+                $this->em->commit();
+                $ticket->copyTo($newTicket);
+                $ticketManager->markAsUnmanaged($ticket);
+            } catch (\Exception $e) {
+                $ticketManager->markAsUnmanaged($ticket);
+                $this->em->rollback();
+                throw $e;
+            }
+            $newTicket->setParentTicket($ticket);
+            $this->em->persist($newTicket);
+            $this->em->persist($ticket);
+
+            $this->em->flush();
+
+            $oldTicket = $ticket;
+            $ticket    = $newTicket;
+
+            if ($doAssignAgent) {
+                $ticket->setAgentId($options['agent_id']);
+            }
+            if ($doAssignTeam) {
+                $ticket->setAgentTeamId($options['agent_team_id']);
             }
         }
 
