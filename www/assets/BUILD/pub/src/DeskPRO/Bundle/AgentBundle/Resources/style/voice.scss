@@ -686,18 +686,11 @@ $voice-green-border-color: #47BF61;
       .voice-menu-voicemail-record {
         margin: 20px;
 
-        .voicemail-record-play-icon {
-          font-size: 36px;
+        .voice-missed-call-icon {
           float: left;
-          cursor: pointer;
-          color: $dp-greyscale-450;
-
-          &.voicemail-new-record {
-            color: #4696dc;
-          }
-
-          &.disabled {
-            cursor: default;
+          svg {
+            width: 30px;
+            height: 30px;
           }
         }
 
@@ -705,17 +698,39 @@ $voice-green-border-color: #47BF61;
           margin-left: 45px;
 
           .voicemail-record-date-created, .voicemail-record-duration {
+            display: flex;
+            align-items: center;
             float: right;
             font-size: 12px;
             clear: right;
+          }
+
+          .media-controls {
+            display: flex;
+            align-items: center;
+            padding-right: 10px;
+            button {
+              border: 0;
+              color: #4D96DB !important;
+              padding-right: 5px;
+            }
+            .media-timeline {
+              width: 100px;
+            }
           }
 
           .voicemail-person-name {
             font-size: 14px;
           }
 
+          .voicemail-person-email {
+            font-size: 12px;
+            display: block;
+            color: #CACECF;
+          }
+
           .voice-record-actions {
-            margin-top: 10px;
+            margin-top: 20px;
 
             .voice-record-action {
               a {

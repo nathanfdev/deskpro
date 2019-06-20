@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
-import classNames from 'classnames';
 import EventEmitter from 'eventemitter2';
 import ScrollArea from 'react-scrollbar';
+import Isvg from 'react-inlinesvg';
 import { WaitingFormat } from 'DeskPRO/Component/Timer';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import MediaControls from 'DeskPRO/Component/MediaControls';
 
 const emitter = new EventEmitter();
 
@@ -180,8 +181,8 @@ class MissedCall extends React.Component {
 
   renderContent() {
     const { record, phoneCalls, people, outboundCallsEnabled } = this.props;
-    const { playing } = this.state;
     const phoneCall = phoneCalls.get(record.get('phone_call'));
+    const assetPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img`;
 
     if (!phoneCall) {
       return null;
@@ -192,25 +193,31 @@ class MissedCall extends React.Component {
 
     return (
       <div className="voice-menu-voicemail-record">
-        <i
-          className={classNames(
-            playing ? 'pause' : 'play circle', 'icon voicemail-record-play-icon',
-            { disabled: !recording, 'voicemail-new-record': !record.get('is_listened') }
-          )}
-          onClick={this.playRecording}
-        />
+        {recording
+          ? <Isvg className="voice-missed-call-icon" src={`${assetPath}/topbar/voicemail.svg`} />
+          : <Isvg className="voice-missed-call-icon" src={`${assetPath}/topbar/missed-call.svg`} />}
 
         <div className="voicemail-record-content">
           <div className="voicemail-record-date-created">
             {moment(record.get('date_created')).fromNow()}
           </div>
+          {recording &&
           <div className="voicemail-record-duration">
+            <MediaControls
+              key={`recording_${recording.get('blob_id')}`} recording={recording}
+              withResetButton={false}
+              withDuration={false}
+              withDownload={false}
+            />
             <WaitingFormat value={record.get('duration')} />
-          </div>
+          </div>}
 
           <div className="voicemail-person-name">
             {person && person.get('name')
-              ? <a onClick={this.openPerson}>{person.get('name')} ({person.get('primary_email')})</a>
+              ? <a onClick={this.openPerson}>
+                {person.get('name')}
+                <span className="voicemail-person-email">{person.get('primary_email')}</span>
+              </a>
               : <span>Unknown user</span>
             }
           </div>

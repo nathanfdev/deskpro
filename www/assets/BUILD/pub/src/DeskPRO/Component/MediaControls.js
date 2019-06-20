@@ -9,7 +9,16 @@ import Loader from '@deskpro/react-loader';
 class MediaControls extends React.Component {
 
   static propTypes = {
-    recording: PropTypes.object
+    recording:       PropTypes.object,
+    withResetButton: PropTypes.bool,
+    withDuration:    PropTypes.bool,
+    withDownload:    PropTypes.bool
+  };
+
+  static defaultProps = {
+    withResetButton: true,
+    withDuration:    true,
+    withDownload:    true
   };
 
   constructor(props) {
@@ -113,32 +122,32 @@ class MediaControls extends React.Component {
   };
 
   render() {
-    const { recording } = this.props;
+    const { recording, withResetButton, withDuration, withDownload } = this.props;
     const { playing, duration, currentTime, loaded } = this.state;
 
     return (
       <div className="media-controls">
         <audio ref={(c) => { this.audio = c; }} preload="none" />
-        <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onStepBackward}>
+        {withResetButton && <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onStepBackward}>
           {!loaded ? <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc" /> : <i className="icon step backward" /> }
-        </Button>
+        </Button>}
         <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onPlay}>
           {!loaded ? <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc" /> : <i className={classNames(playing ? 'pause' : 'play', 'icon')} />}
         </Button>
         <div className="media-timeline">
           <Range value={currentTime} onChange={this.onMove} min={0} max={duration} />
         </div>
-        <span className="media-time">
+        {withDuration && <span className="media-time">
           <Duration value={currentTime} /> / { duration ? <Duration value={duration} /> : '??' }
-        </span>
-        <a
+        </span>}
+        {withDownload && <a
           className="media-size"
           href={`${recording.get('download_url')}?dl=1`}
           target="_blank"
           rel="noopener noreferrer"
         >
           <i className="icon download" /> {recording.get('filesize_readable')}
-        </a>
+        </a>}
       </div>
     );
   }
