@@ -6,7 +6,7 @@ import Dialpad from './Dialpad/Dialpad';
 import DialpadContainer from './Dialpad/DialpadContainer';
 import IncomingCall from './IncomingCall/IncomingCall';
 import OutgoingCallContainer from './OutgoingCall/OutgoingCallContainer';
-import VoicemailListContainer from './Voicemail/VoicemailListContainer';
+import MissedCallsListContainer from './MissedCalls/MissedCallsListContainer';
 
 class VoiceMenu extends React.Component {
 
@@ -164,7 +164,7 @@ class VoiceMenu extends React.Component {
           />}
         </div>
         <Tab active={tabName === 'voicemail'}>
-          <VoicemailListContainer />
+          <MissedCallsListContainer />
         </Tab>
         <Tab active={tabName === 'settings'}>
           <Settings me={me} ref={(c) => { this.settings = c; }} />

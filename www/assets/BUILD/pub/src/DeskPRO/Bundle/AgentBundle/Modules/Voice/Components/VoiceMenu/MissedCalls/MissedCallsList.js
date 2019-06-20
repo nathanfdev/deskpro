@@ -8,7 +8,7 @@ import { WaitingFormat } from 'DeskPRO/Component/Timer';
 
 const emitter = new EventEmitter();
 
-class VoicemailList extends React.Component {
+class MissedCallsList extends React.Component {
 
   static propTypes = {
     records: PropTypes.object
@@ -29,7 +29,7 @@ class VoicemailList extends React.Component {
     return (
       <ScrollArea className="voice-menu-voicemail-list">
         {records.toArray().map((record, index) =>
-          <VoicemailRecord
+          <MissedCall
             {...this.props}
             key={index}
             record={record}
@@ -40,26 +40,26 @@ class VoicemailList extends React.Component {
   }
 }
 
-class VoicemailRecord extends React.Component {
+class MissedCall extends React.Component {
 
   static propTypes = {
     record:               PropTypes.object,
     phoneCalls:           PropTypes.object,
     people:               PropTypes.object,
-    onCreateTicket:       PropTypes.func,
-    onCallback:           PropTypes.func,
-    onDelete:             PropTypes.func,
-    onMarkListened:       PropTypes.func,
-    onOpenPerson:         PropTypes.func,
+    createTicket:         PropTypes.func,
+    callBack:             PropTypes.func,
+    deleteRecording:      PropTypes.func,
+    markListened:         PropTypes.func,
+    openPerson:           PropTypes.func,
     outboundCallsEnabled: PropTypes.bool
   };
 
   static defaultProps = {
-    onCreateTicket: () => {},
-    onCallback:     () => {},
-    onDelete:       () => {},
-    onMarkListened: () => {},
-    onOpenPerson:   () => {}
+    createTicket:    () => {},
+    callBack:        () => {},
+    deleteRecording: () => {},
+    markListened:    () => {},
+    openPerson:      () => {}
   };
 
   constructor(props) {
@@ -80,37 +80,37 @@ class VoicemailRecord extends React.Component {
     emitter.off('stopPlaying', this.stopPlaying);
   }
 
-  onCreateTicket = (event) => {
+  createTicket = (event) => {
     event.preventDefault();
 
-    const { record, onCreateTicket } = this.props;
-    onCreateTicket(record);
+    const { record, createTicket } = this.props;
+    createTicket(record);
   };
 
-  onCallback = (event) => {
+  callBack = (event) => {
     event.preventDefault();
 
-    const { record, phoneCalls, onCallback, outboundCallsEnabled } = this.props;
+    const { record, phoneCalls, callBack, outboundCallsEnabled } = this.props;
     const phoneCall = phoneCalls.get(record.get('phone_call'));
 
     if (!outboundCallsEnabled) {
       return;
     }
 
-    onCallback(phoneCall);
+    callBack(phoneCall);
   };
 
-  onDelete = (event) => {
+  deleteRecording = (event) => {
     event.preventDefault();
 
-    const { record, onDelete } = this.props;
-    onDelete(record);
+    const { record, deleteRecording } = this.props;
+    deleteRecording(record);
   };
 
-  onPlay = (event) => {
+  playRecording = (event) => {
     event.preventDefault();
 
-    const { record, onMarkListened } = this.props;
+    const { record, markListened } = this.props;
     const { playing } = this.state;
 
     const recording = record.get('blob');
@@ -127,22 +127,22 @@ class VoicemailRecord extends React.Component {
         playing: true
       });
 
-      onMarkListened(record);
+      markListened(record);
     } else {
       this.stopPlaying();
     }
   };
 
-  onOpenPerson = (event) => {
+  openPerson = (event) => {
     event.preventDefault();
 
-    const { record, phoneCalls, onOpenPerson } = this.props;
+    const { record, phoneCalls, openPerson } = this.props;
     const phoneCall = phoneCalls.get(record.get('phone_call'));
     if (!phoneCall) {
       return;
     }
 
-    onOpenPerson(phoneCall.get('person'));
+    openPerson(phoneCall.get('person'));
   };
 
   stopPlaying = () => {
@@ -175,7 +175,7 @@ class VoicemailRecord extends React.Component {
             playing ? 'pause' : 'play circle', 'icon voicemail-record-play-icon',
             { disabled: !recording, 'voicemail-new-record': !record.get('is_listened') }
           )}
-          onClick={this.onPlay}
+          onClick={this.playRecording}
         />
 
         <div className="voicemail-record-content">
@@ -188,7 +188,7 @@ class VoicemailRecord extends React.Component {
 
           <div className="voicemail-person-name">
             {person && person.get('name')
-              ? <a onClick={this.onOpenPerson}>{person.get('name')} ({person.get('primary_email')})</a>
+              ? <a onClick={this.openPerson}>{person.get('name')} ({person.get('primary_email')})</a>
               : <span>Unknown user</span>
             }
           </div>
@@ -196,13 +196,13 @@ class VoicemailRecord extends React.Component {
 
           <div className="voice-record-actions">
             <span className="voice-record-action">
-              <a onClick={this.onCreateTicket}>
+              <a onClick={this.createTicket}>
                 Create Ticket
               </a>
             </span>
             {outboundCallsEnabled &&
             <span className="voice-record-action">
-              <a onClick={this.onCallback}>
+              <a onClick={this.callBack}>
                 Call Back
               </a>
             </span>}
@@ -218,7 +218,7 @@ class VoicemailRecord extends React.Component {
               </a>
             </span>}
             <span className="voice-record-action">
-              <a onClick={this.onDelete}>
+              <a onClick={this.deleteRecording}>
                 Delete
               </a>
             </span>
@@ -238,4 +238,4 @@ class VoicemailRecord extends React.Component {
   }
 }
 
-export default VoicemailList;
+export default MissedCallsList;

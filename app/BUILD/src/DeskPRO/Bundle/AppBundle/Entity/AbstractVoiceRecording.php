@@ -46,7 +46,7 @@ abstract class AbstractVoiceRecording implements EntityInterface, NotifyProperty
     protected $phoneCall;
 
     /**
-     * @ORM\Column(name="recording_url", type="string", length=255)
+     * @ORM\Column(name="recording_url", type="string", length=255, nullable=true)
      *
      * @var string
      */

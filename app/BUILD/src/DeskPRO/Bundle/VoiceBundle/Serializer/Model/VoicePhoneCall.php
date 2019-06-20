@@ -139,7 +139,7 @@ class VoicePhoneCall
     private $recordings;
 
     /**
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall")
      *
      * @var VoiceMissedAgentCall
      */

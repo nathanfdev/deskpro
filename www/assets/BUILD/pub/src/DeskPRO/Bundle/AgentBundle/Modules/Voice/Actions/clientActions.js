@@ -184,7 +184,7 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.call-ended', (data) => {
           dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });
-        messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+        messageBroker.addMessageListener('agent.voice.missed-call', (event) => {
           const state = getState();
           const me = meSelector(state);
           const data = event.data;
@@ -193,7 +193,7 @@ export const voiceBootstrap = createAction(
             return;
           }
 
-          dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
+          dispatch(addToCollection('VoiceMissedAgentCall', 'all', [data.data]));
 
           if (data.linked.voice_phone_call) {
             dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(data.linked.voice_phone_call)));

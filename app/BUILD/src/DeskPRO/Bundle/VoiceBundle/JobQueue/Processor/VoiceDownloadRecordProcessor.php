@@ -141,7 +141,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 $this->dispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent('agent.voice.voicemail.new-message', [
+                    new LegacySystemEvent('agent.voice.missed-call', [
                         'data'   => $serializedData,
                         'target' => $recording->getAgent()->getId(),
                     ])
