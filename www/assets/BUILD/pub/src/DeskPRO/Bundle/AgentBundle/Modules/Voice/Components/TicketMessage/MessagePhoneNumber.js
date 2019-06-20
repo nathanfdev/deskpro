@@ -56,7 +56,7 @@ class MessagePhoneNumber extends React.PureComponent {
     const nodes = $(element).contents();
 
     $(nodes).each((index, elem) => {
-      const contents = elem.nodeType === 3 ? elem.textContent : elem.innerHTML;
+      const contents = elem.nodeType === 3 ? `${elem.textContent}` : `${elem.innerHTML}`;
       if ($(elem).find('*').length > 0) {
         MessagePhoneNumber.detectPhoneNumbers(elem, country);
       } else {
