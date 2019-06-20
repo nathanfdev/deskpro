@@ -122,12 +122,11 @@ class VoiceMenu extends React.Component {
   }
 
   render() {
-    const { me, outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu } = this.props;
+    const { me, outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu, recordsCount } = this.props;
     const { voiceEnabled, micEnabled, callsEnabled } = this.props;
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
-    const voicemailTitle = this.props.recordsCount > 0 ? `Voicemail (${this.props.recordsCount})` : 'Voicemail';
 
     return (
       <div className="voice-menu">
@@ -140,11 +139,11 @@ class VoiceMenu extends React.Component {
         <div className="tab-menu">
           {!pendingCall &&
           <TabButton
-            tabName="voicemail"
-            title={voicemailTitle}
+            tabName="missed_calls"
+            title={recordsCount > 0 ? <span className="tab-item-title">Missed <span className="tab-item-count">{recordsCount}</span></span> : 'Missed'}
             iconClass="fa-play-circle"
             onClick={this.changeTab}
-            active={tabName === 'voicemail'}
+            active={tabName === 'missed_calls'}
           />}
           {!pendingCall &&
           <TabButton
@@ -163,7 +162,7 @@ class VoiceMenu extends React.Component {
             active={tabName === 'phone'}
           />}
         </div>
-        <Tab active={tabName === 'voicemail'}>
+        <Tab active={tabName === 'missed_calls'}>
           <MissedCallsListContainer />
         </Tab>
         <Tab active={tabName === 'settings'}>
