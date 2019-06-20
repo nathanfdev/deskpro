@@ -26,7 +26,7 @@
            height="{{ captcha_height }}" />
       {% if reload %}
         <script type="text/javascript">
-          function reload_ {{ image_id }}() {
+          function reload_{{ image_id }}() {
             var img = document.getElementById('{{ image_id }}');
             img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
           }
