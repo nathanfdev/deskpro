@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import EventEmitter from 'eventemitter2';
 import ScrollArea from 'react-scrollbar';
 import { WaitingFormat } from 'DeskPRO/Component/Timer';
+import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 
 const emitter = new EventEmitter();
 
@@ -14,28 +15,49 @@ class MissedCallsList extends React.Component {
     records: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      onlyVoicemails: false
+    };
+  }
+
+  toggleOnlyVoicemails = () => {
+    this.setState({
+      onlyVoicemails: !this.state.onlyVoicemails
+    });
+  };
+
   render() {
     const { records } = this.props;
-    if (!records.size) {
-      return (
-        <div className="voice-menu-voicemail-list">
-          <div className="voice-menu-voicemail-list-empty-message">
-            You have no voicemail messages.
-          </div>
-        </div>
-      );
-    }
+    const { onlyVoicemails } = this.state;
+    const filteredRecords = records.filter(record => (onlyVoicemails && record.get('blob')) || !onlyVoicemails);
 
     return (
-      <ScrollArea className="voice-menu-voicemail-list">
-        {records.toArray().map((record, index) =>
-          <MissedCall
-            {...this.props}
-            key={index}
-            record={record}
-          />
-        )}
-      </ScrollArea>
+      <div>
+        <div className="voice-menu-voicemail-list-settings">
+          <Checkbox onChange={this.toggleOnlyVoicemails} value={onlyVoicemails} label="Show only voicemails" />
+        </div>
+        <hr className="full" />
+
+        {filteredRecords.size > 0
+          ? <ScrollArea className="voice-menu-voicemail-list">
+            {filteredRecords.toArray().map((record, index) =>
+              <MissedCall
+                {...this.props}
+                key={index}
+                record={record}
+              />
+            )}
+          </ScrollArea>
+          : <div className="voice-menu-voicemail-list">
+            <div className="voice-menu-voicemail-list-empty-message">
+              You have no missed calls or voicemail messages.
+            </div>
+          </div>
+        }
+
+      </div>
     );
   }
 }
