@@ -1825,7 +1825,7 @@ class Strings
                     return self::convertToUtf8($string, $from_charset, $_mode);
                 }
             }
-        } elseif (function_exists('mb_convert_encoding') && (!$_mode || !in_array('skip_iconv', $_mode))) {
+        } elseif (function_exists('mb_convert_encoding') && (!$_mode || !in_array('skip_mbstring', $_mode))) {
             $new = @mb_convert_encoding($string, 'UTF-8', $from_charset);
             if ($new === false) {
                 if ($from_charset_u == 'US-ASCII') {
