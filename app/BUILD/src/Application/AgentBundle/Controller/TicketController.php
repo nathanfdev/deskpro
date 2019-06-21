@@ -4593,7 +4593,7 @@ class TicketController extends AbstractController
         $message->setPerson($this->person);
         $message->setIpAddress($this->getRequest()->getClientIp());
         $message->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
-        $message->setMessageText($customMessage);
+        $message->setMessageHtml($customMessage);
 
         $ticket->addMessage($message);
 
