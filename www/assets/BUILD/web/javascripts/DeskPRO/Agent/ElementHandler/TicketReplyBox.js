@@ -428,8 +428,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       console.log(self.el.data('fwd-as-new'));
       if (self.el.data('fwd-as-new')) {
 				$('.fwd-as-new', self.el).show();
+				$('.fwd-as-new-hide', self.el).hide();
 			} else {
       	$('.fwd-as-new', self.el).hide();
+				$('.fwd-as-new-hide', self.el).show();
 			}
       replyMode = 'fwd';
       self.getElById('actions_row').hide();
@@ -445,8 +447,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		fwdAsNewCheck.on('click', function() {
 			if (fwdAsNewCheck.prop('checked')) {
 				$('.fwd-as-new', self.el).show();
+				$('.fwd-as-new-hide', self.el).hide();
+				var container = self.getElById('fwd_to_container');
+				var lines = container.find('.to-line');
+				for (var i = lines.length; i > 1; i--) {
+					lines[i-1].remove();
+				}
+				container.find('.fwd_removerow').hide();
 			} else {
 				$('.fwd-as-new', self.el).hide();
+				$('.fwd-as-new-hide', self.el).show();
 			}
 		});
 
