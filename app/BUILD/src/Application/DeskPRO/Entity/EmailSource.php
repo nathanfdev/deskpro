@@ -225,6 +225,26 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return $this
+     */
+    public function setUid($uuid)
+    {
+        $this->uid = $uuid;
+
+        return $this;
+    }
+
+    /**
      * @return EmailAccount
      */
     public function getEmailAccount()
@@ -524,6 +544,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'length'     => 100,
             'nullable'   => true,
             'columnName' => 'uid',
+            'unique'     => true,
         ]);
         $metadata->mapField([
             'fieldName'  => 'object_type',

@@ -86,7 +86,8 @@ fos_rest:
         exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
     view:
         mime_types:
-            { zip: ['application/zip'] }
+            zip: ['application/zip']
+            eml: ['message/rfc822']
         view_response_listener: force
         formats:
             json: true
