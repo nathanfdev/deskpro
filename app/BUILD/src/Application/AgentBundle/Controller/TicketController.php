@@ -4595,13 +4595,13 @@ class TicketController extends AbstractController
 
         $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
 
-        $message = new TicketMessage();
-        $message->setPerson($this->person);
-        $message->setIpAddress($this->getRequest()->getClientIp());
-        $message->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
-        $message->setMessageHtml($customMessage);
+        $ticketMessage = new TicketMessage();
+        $ticketMessage->setPerson($this->person);
+        $ticketMessage->setIpAddress($this->getRequest()->getClientIp());
+        $ticketMessage->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
+        $ticketMessage->setMessageHtml($customMessage);
 
-        $ticket->addMessage($message);
+        $ticket->addMessage($ticketMessage);
 
         $ticketManager->saveTicket($newTicket, $context);
         $this->em->persist($newTicket);
