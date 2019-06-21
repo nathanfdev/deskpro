@@ -28,24 +28,7 @@ export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
 export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
 export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
 
-const filterConnection = (connection, callSid) => {
-  if (!connection) {
-    return false;
-  }
-
-  // filter for twilio
-  if (connection.parameters && connection.parameters.CallSid === callSid) {
-    return true;
-  }
-
-  // filter for plivo
-  if (connection.getCallUUID && connection.getCallUUID() === callSid) {
-    return true;
-  }
-
-  return false;
-};
-
+const filterConnection = (connection, callId) => connection && parseInt(connection.callId, 10) === parseInt(callId, 10);
 const hangupConnection = (connection) => {
   // twilio
   if (connection.disconnect) {
@@ -201,7 +184,7 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.call-ended', (data) => {
           dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });
-        messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+        messageBroker.addMessageListener('agent.voice.missed-call', (event) => {
           const state = getState();
           const me = meSelector(state);
           const data = event.data;
@@ -210,7 +193,7 @@ export const voiceBootstrap = createAction(
             return;
           }
 
-          dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
+          dispatch(addToCollection('VoiceMissedAgentCall', 'all', [data.data]));
 
           if (data.linked.voice_phone_call) {
             dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(data.linked.voice_phone_call)));
@@ -234,7 +217,7 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
           const state = getState();
           const connections = connectionsSelector(state);
-          const connection = connections.filter(c => filterConnection(c, data.call_sid)).first();
+          const connection = connections.filter(c => filterConnection(c, data.call_id)).first();
 
           if (connection) {
             closeIframes();
@@ -252,7 +235,7 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
           const state = getState();
           const connections = connectionsSelector(state);
-          const connection = connections.filter(c => filterConnection(c, data.CallSid)).first();
+          const connection = connections.filter(c => filterConnection(c, data.call_id)).first();
 
           dispatch(resetOutgoingCall());
           if (connection) {
@@ -562,19 +545,18 @@ export const toggleMute = createAction(
 
 export const warmAddAgent = createAction(
   'VOICE_AGENT_ADD',
-  (connection, agent) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_add/${agent.get('id')}`)
+  (callId, agent) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/warm_add/${agent.get('id')}`)
 );
 
 export const warmTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent) => (dispatch, getState) => {
-    const promise = api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
+  (callId, agent) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/warm_transfer/${agent.get('id')}`);
     promise.success(() => {
       const state = getState();
       const phoneCalls = allPhoneCallsSelector(state);
 
-      let phoneCall = phoneCalls.get(connection.callId);
+      let phoneCall = phoneCalls.get(callId);
       if (phoneCall) {
         phoneCall = phoneCall.set('status', 'warm_transfer');
         dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'merge'));
@@ -587,20 +569,20 @@ export const warmTransferToAgent = createAction(
 
 export const coldTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/agent/${agent.get('id')}`)
+  (callId, agent) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/cold_transfer/agent/${agent.get('id')}`)
 );
 
 export const coldTransferToQueue = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, queue) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/queue/${queue.get('id')}`)
+  (callId, queue) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/cold_transfer/queue/${queue.get('id')}`)
 );
 
 export const coldTransferToAutoAttendant = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, autoAttendant) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/auto_attendant/${autoAttendant.get('id')}`)
+  (callId, autoAttendant) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/cold_transfer/auto_attendant/${autoAttendant.get('id')}`)
 );
 
 export const cancelInvite = createAction(

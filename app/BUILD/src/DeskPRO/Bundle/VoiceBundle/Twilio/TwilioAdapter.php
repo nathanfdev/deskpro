@@ -448,7 +448,7 @@ class TwilioAdapter implements VoiceProviderInterface
                 }
             }
         } else {
-            if ($phoneCall->isOutgoingCall()) {
+            if ($phoneCall->enqueuedAsAgent()) {
                 if ($isHold) {
                     $this->transferParticipant($agentParticipant, $holdUrl, 'POST');
                 } else {

@@ -8,7 +8,8 @@ class AgentList extends React.Component {
 
   static propTypes = {
     target:           PropTypes.object,
-    agents:           PropTypes.object,
+    onlineAgents:     PropTypes.object,
+    forwardingAgents: PropTypes.object,
     busyAgents:       PropTypes.array,
     participants:     PropTypes.array,
     onClick:          PropTypes.func,
@@ -25,11 +26,11 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { agents, busyAgents, target, participants, transferDisabled } = this.props;
+    const { onlineAgents, forwardingAgents, busyAgents, target, participants, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
-        {agents.toArray().map((agent, index) =>
+        {onlineAgents.concat(forwardingAgents).toArray().map((agent, index) =>
           <Agent
             transferDisabled={transferDisabled}
             key={index}
@@ -38,6 +39,7 @@ class AgentList extends React.Component {
             active={target && agent === target.target || busyAgents.indexOf(agent.get('id')) !== -1}
             participant={participants.indexOf(agent.get('id')) !== -1}
             onClick={this.onSelect}
+            online={onlineAgents.contains(agent)}
           />
         )}
       </ScrollArea>
@@ -51,6 +53,7 @@ class Agent extends React.Component {
     transferDisabled: PropTypes.bool,
     agent:            PropTypes.object,
     active:           PropTypes.bool,
+    online:           PropTypes.bool,
     busy:             PropTypes.bool,
     participant:      PropTypes.bool,
     onClick:          PropTypes.func
@@ -70,14 +73,19 @@ class Agent extends React.Component {
   };
 
   render() {
-    const { agent, active, busy, participant } = this.props;
+    const { agent, active, online, busy, participant } = this.props;
 
     return (
       <div
         className={classNames('voice-agent-list-item', { active, participant })}
         onClick={this.onClick}
       >
-        <Avatar person={agent} size={24} />
+        <Avatar
+          person={agent}
+          size={24}
+          online={online}
+          withOnlineStatus
+        />
         <span className="agent-name">
           {agent.get('name')}
           {participant && <span className="agent-participant">(participant)</span>}

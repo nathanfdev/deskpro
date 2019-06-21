@@ -190,9 +190,11 @@ class NewExtensionRow extends React.Component {
     const { agent, queues = Immutable.fromJS([]) } = this.props;
     const { formData } = this.state;
     const involvedQueues = [];
-    queues.filter(queue => queue.get('agents').contains(agent.get('id'))).forEach((queue) => {
-      involvedQueues.push({ name: queue.get('name') });
-    });
+    queues
+      .filter(queue => queue.get('agents').map(queueAgent => queueAgent.get('agent')).contains(agent.get('id')))
+      .forEach((queue) => {
+        involvedQueues.push({ name: queue.get('name') });
+      });
 
     return (
       <tr>

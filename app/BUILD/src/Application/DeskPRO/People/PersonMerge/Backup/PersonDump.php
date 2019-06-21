@@ -41,6 +41,7 @@ class PersonDump
         $data                  = [];
         $data['simple_fields'] = $this->getSimpleFields($person);
         $data['custom_data']   = $this->getCustomData($person);
+        $data['contact_data']  = $this->getContactData($person);
         $data['groups']        = $this->getUserGroups($person);
         $data['brands']        = $this->getBrands($person);
         if ($person->isAgent()) {
@@ -61,6 +62,7 @@ class PersonDump
     protected function getSimpleFields(Person $person)
     {
         $fields = [
+            'id',
             'first_name',
             'last_name',
             'name',
@@ -99,6 +101,28 @@ class PersonDump
             ['person_id' => $person->getId()],
             ['person_id' => \PDO::PARAM_INT]
         );
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return array
+     */
+    protected function getContactData(Person $person)
+    {
+        $data             = [];
+        $data['contacts'] = $this->em->getConnection()->fetchAll(
+            'select * from people_contact_data where person_id = :person_id',
+            ['person_id' => $person->getId()],
+            ['person_id' => \PDO::PARAM_INT]
+        );
+        $data['phone_numbers'] = $this->em->getConnection()->fetchAll(
+            'select number, ext, label, region, guessed_type, type from phone_numbers where person_id = :person_id',
+            ['person_id' => $person->getId()],
+            ['person_id' => \PDO::PARAM_INT]
+        );
+
+        return $data;
     }
 
     /**

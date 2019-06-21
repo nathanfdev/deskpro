@@ -10,7 +10,7 @@ use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
@@ -147,6 +147,7 @@ class RecordingDownloadHelper
 
         if ($recordingEnabled) {
             $recording = new VoiceRecording();
+            $recording->setRecordingSid($recordingSid);
             $recording->setDuration($duration);
             $recording->setRecordingUrl($recordingUrl);
 
@@ -254,6 +255,7 @@ class RecordingDownloadHelper
             // found active ticket
             // then don't create a personal voicemail, just a attach as a new recording to existing message
             $recording = new VoiceRecording();
+            $recording->setRecordingSid($recordingSid);
             $recording->setDuration($duration);
             $recording->setRecordingUrl($recordingUrl);
 
@@ -267,8 +269,9 @@ class RecordingDownloadHelper
         } else {
             // there is no ticket
             // create a personal voicemail
-            $recording = new VoicemailAgentRecording();
+            $recording = new VoiceMissedAgentCall();
             $recording
+                ->setRecordingSid($recordingSid)
                 ->setPhoneCall($phoneCall)
                 ->setDuration($duration)
                 ->setRecordingUrl($recordingUrl)
@@ -297,6 +300,7 @@ class RecordingDownloadHelper
     private function voicemailForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, $recordingSid, $recordingUrl, $duration)
     {
         $recording = new VoiceRecording();
+        $recording->setRecordingSid($recordingSid);
         $recording->setDuration($duration);
         $recording->setRecordingUrl($recordingUrl);
 

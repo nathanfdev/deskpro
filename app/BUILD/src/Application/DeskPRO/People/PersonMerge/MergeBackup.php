@@ -82,9 +82,8 @@ class MergeBackup
         if (!$dataStore) {
             throw new \Exception(sprintf('[MergeBackup] Can\'t find Person Merge backup by id: %s', $backupId));
         }
-
         $this->personRestore->restore($person, $dataStore->getData('person', []));
-        $this->personRestore->restore($otherPerson, $dataStore->getData('other_person', []));
+        $this->personRestore->restore($otherPerson, $dataStore->getData('other_person', []), true);
     }
 
     /**

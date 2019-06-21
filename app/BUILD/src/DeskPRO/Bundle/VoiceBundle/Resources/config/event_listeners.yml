@@ -49,9 +49,17 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_task_helper"
-      - "@dp.voice.assets_helper"
       - "@twilio_adapter"
-      - "@router"
+      - "@dp.voice.logger"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
+  dp.voice.listener.voicemail:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\VoicemailListener
+    arguments:
+      - "@dp.voice.voice_task_helper"
+      - "@dp.voice.task_router.storage"
+      - "@service_container"
     tags:
       - { name: dp.voice.event_subscriber }
 

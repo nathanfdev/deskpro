@@ -10,7 +10,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -21,15 +21,15 @@ use Symfony\Component\HttpFoundation\Response;
  * Class VoicemailRecordsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/voicemail_records")
+ * @Rest\Route("/voice_missed_agent_calls")
  * @Feature("voice")
- * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord")
+ * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall")
  */
-class VoicemailRecordsController extends CrudController
+class VoiceMissedAgentCallsController extends CrudController
 {
     use TicketSaveTrait;
 
-    public static $entity     = VoicemailAgentRecording::class;
+    public static $entity     = VoiceMissedAgentCall::class;
     public static $exposeOnly = ['get', 'list', 'count', 'delete'];
 
     /**
@@ -43,13 +43,13 @@ class VoicemailRecordsController extends CrudController
      *
      * @Rest\Put("/{record}/mark_listened")
      *
-     * @param VoicemailAgentRecording $record
+     * @param VoiceMissedAgentCall $record
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function markListenedToAction(VoicemailAgentRecording $record)
+    public function markListenedToAction(VoiceMissedAgentCall $record)
     {
         if ($record->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Unable to update voicemail record');
@@ -73,21 +73,21 @@ class VoicemailRecordsController extends CrudController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/{record}/create_ticket")
+     * @Rest\Put("/{missedAgentCall}/create_ticket")
      *
-     * @param VoicemailAgentRecording $record
+     * @param VoiceMissedAgentCall $missedAgentCall
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function createTicketAction(VoicemailAgentRecording $record)
+    public function createTicketAction(VoiceMissedAgentCall $missedAgentCall)
     {
-        if ($record->getAgent() !== $this->getUser()) {
+        if ($missedAgentCall->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Unable to create voicemail ticket');
         }
 
-        $phoneCall = $record->getPhoneCall();
+        $phoneCall = $missedAgentCall->getPhoneCall();
         if (!$phoneCall) {
             throw $this->createBadRequestException('Voicemail phone call not found');
         }
@@ -114,7 +114,13 @@ class VoicemailRecordsController extends CrudController
 
             $ticket = new Ticket();
             $ticket->disableAutoTicketProcess();
-            $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
+
+            if ($missedAgentCall->getRecordingUrl()) {
+                $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
+            } else {
+                $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
+            }
+
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($this->getUser());
             $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
@@ -124,10 +130,10 @@ class VoicemailRecordsController extends CrudController
         }
 
         // mark the voicemail record as deleted because it's not needed anymore
-        $record->setIsDeleted(true);
+        $missedAgentCall->setIsDeleted(true);
 
         $em = $this->getManager();
-        $em->persist($record);
+        $em->persist($missedAgentCall);
         $em->flush();
 
         return new View($this->wrap($ticket));
@@ -146,7 +152,7 @@ class VoicemailRecordsController extends CrudController
             if ($noBlob) {
                 $qb->andWhere("$alias.blob IS NULL");
             } else {
-                $qb->andWhere("$alias.blob > 0");
+                $qb->andWhere("$alias.blob > 0 OR $alias.recordingUrl IS NULL");
             }
         }
 
@@ -160,7 +166,7 @@ class VoicemailRecordsController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @param VoicemailAgentRecording $entity
+     * @param VoiceMissedAgentCall $entity
      *
      * @throws \Exception
      */

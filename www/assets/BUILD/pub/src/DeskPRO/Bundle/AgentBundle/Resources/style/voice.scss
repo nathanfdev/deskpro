@@ -105,6 +105,25 @@ $voice-green-border-color: #47BF61;
             padding-left: 10px;
             color: $dp-greyscale-450;
           }
+
+          .voice-profile-status-checkbox-title-link {
+            margin-left: 5px;
+          }
+
+          .voice-profile-status-checkbox-sub-checkbox {
+            display: block;
+
+            .ui.checkbox {
+              float: none;
+              margin-top: 10px;
+              margin-left: 50px;
+
+              label {
+                padding-left: 25px;
+                font-size: 14px;
+              }
+            }
+          }
         }
       }
     }
@@ -197,6 +216,25 @@ $voice-green-border-color: #47BF61;
 
           &:last-child {
             border-right: 0;
+          }
+        }
+
+        .tab-item-title {
+          position: relative;
+
+          .tab-item-count {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            display: inline-block;
+            background: #ed4954;
+            width: 12px;
+            height: 12px;
+            line-height: 12px;
+            text-align: center;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 10px;
           }
         }
       }
@@ -633,6 +671,10 @@ $voice-green-border-color: #47BF61;
       }
     }
 
+    .voice-menu-voicemail-list-settings {
+      padding: 10px 20px 5px;
+    }
+
     .voice-menu-voicemail-list {
       max-height: 400px;
 
@@ -644,18 +686,11 @@ $voice-green-border-color: #47BF61;
       .voice-menu-voicemail-record {
         margin: 20px;
 
-        .voicemail-record-play-icon {
-          font-size: 36px;
+        .voice-missed-call-icon {
           float: left;
-          cursor: pointer;
-          color: $dp-greyscale-450;
-
-          &.voicemail-new-record {
-            color: #4696dc;
-          }
-
-          &.disabled {
-            cursor: default;
+          svg {
+            width: 30px;
+            height: 30px;
           }
         }
 
@@ -663,17 +698,39 @@ $voice-green-border-color: #47BF61;
           margin-left: 45px;
 
           .voicemail-record-date-created, .voicemail-record-duration {
+            display: flex;
+            align-items: center;
             float: right;
             font-size: 12px;
             clear: right;
+          }
+
+          .media-controls {
+            display: flex;
+            align-items: center;
+            padding-right: 10px;
+            button {
+              border: 0;
+              color: #4D96DB !important;
+              padding-right: 5px;
+            }
+            .media-timeline {
+              width: 100px;
+            }
           }
 
           .voicemail-person-name {
             font-size: 14px;
           }
 
+          .voicemail-person-email {
+            font-size: 12px;
+            display: block;
+            color: #CACECF;
+          }
+
           .voice-record-actions {
-            margin-top: 10px;
+            margin-top: 20px;
 
             .voice-record-action {
               a {
@@ -922,6 +979,14 @@ $voice-green-border-color: #47BF61;
         }
       }
 
+      .voice-avatar-container {
+        .online-status {
+          top: 0;
+          right: 5px;
+        }
+      }
+
+
       &.active {
         color: $dp-sonic-primary;
         background-color: $dp-morning-sky;
@@ -1162,7 +1227,7 @@ $voice-green-border-color: #47BF61;
       overflow: hidden;
       opacity: 0.2;
 
-      &.active {
+      &.online {
         opacity: 1;
       }
 
@@ -1446,5 +1511,37 @@ $voice-green-border-color: #47BF61;
 
   input {
     padding-left: 50px !important;
+  }
+}
+
+.voice-avatar-container {
+  display: inline-block;
+  position: relative;
+
+  .online-status {
+    background-color: #CB2325;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    display: block;
+    right: -4px;
+    top: -4px;
+    z-index: 10;
+
+    &.online {
+      background-color: #4DBE5F;
+    }
+
+    &.forwarding {
+      background-color: #E9E32A;
+    }
+  }
+
+  .avatar {
+    &.with-online-status {
+      opacity: 1;
+    }
   }
 }

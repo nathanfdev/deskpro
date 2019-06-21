@@ -12,8 +12,9 @@ import DialGrid from '../Common/DialGrid';
 class VoiceControls extends React.Component {
 
   static propTypes = {
-    status: PropTypes.string,
-    baseId: PropTypes.string
+    status:    PropTypes.string,
+    baseId:    PropTypes.string,
+    phoneCall: PropTypes.object
   };
 
   static defaultProps = {
@@ -53,7 +54,7 @@ class VoiceControls extends React.Component {
   };
 
   render() {
-    const { status } = this.props;
+    const { status, phoneCall } = this.props;
 
     switch (status) {
       case 'dialing':
@@ -87,7 +88,7 @@ class VoiceControls extends React.Component {
           <Active
             divRef={(c) => { this.div = c; }}
             {...this.props}
-            ended={status === 'closed'}
+            ended={phoneCall.get('date_ended')}
           />
         );
       default:
@@ -158,6 +159,7 @@ class Active extends React.Component {
     hold:               PropTypes.bool,
     ended:              PropTypes.bool,
     onlineAgents:       PropTypes.object,
+    forwardingAgents:   PropTypes.object,
     queues:             PropTypes.object,
     autoAttendants:     PropTypes.object,
     toggleHold:         PropTypes.func,
@@ -166,6 +168,8 @@ class Active extends React.Component {
     sendDigits:         PropTypes.func,
     divRef:             PropTypes.func,
     participants:       PropTypes.array,
+    me:                 PropTypes.object,
+    connection:         PropTypes.object,
     phoneCall:          PropTypes.object
   };
 
@@ -251,13 +255,18 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType, phoneCall } = this.props;
+    const { onlineAgents, forwardingAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
+    const { me, hold, mute, ended, connection, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
-    const noAgents = !onlineAgents || !onlineAgents.size;
+    const noAgents = !((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
     const noQueues = !queues || !queues.size;
     const noAutoAttendants = !autoAttendants || !autoAttendants.size;
     const isWarmTransfer = phoneCall && phoneCall.get('status') === 'warm_transfer';
     const transferDisabled = ended || (noAgents && noQueues && noAutoAttendants) || isWarmTransfer;
+    const memberOfTheCall = phoneCall && phoneCall.get('participants')
+      .filter(participant => participant.get('person') === me.get('id') && !participant.get('date_left'))
+      .size > 0;
+    const displayButton = connection || memberOfTheCall;
 
     return (
       <div
@@ -265,7 +274,7 @@ class Active extends React.Component {
         className={classNames('voice-controls active', { hold, ended })}
       >
         <Title>
-          Duration: <Timer paused={ended} />
+          Duration: <Timer paused={ended} startTime={phoneCall.get('duration')} />
         </Title>
 
         <span className="voice-controls-recording">
@@ -276,28 +285,32 @@ class Active extends React.Component {
           </span>}
         </span>
 
+        {displayButton &&
         <Button
           ref={(c) => { this.dialpadButton = c; }}
-          className={classNames('basic', { active: dialpadOpened, disabled: ended || isWarmTransfer })}
+          className={classNames('basic', { active: dialpadOpened, disabled: ended || isWarmTransfer || !connection })}
           onClick={this.openDialpad}
         >
           <i className="grid layout icon" />
           Dialpad
-        </Button>
+        </Button>}
+        {displayButton &&
         <Button
           className={classNames('basic', { active: hold, disabled: ended || isWarmTransfer, loading: updatingHold })}
           onClick={this.toggleHold}
         >
           <i className="pause icon" />
           Hold
-        </Button>
+        </Button>}
+        {displayButton &&
         <Button
-          className={classNames('basic', { active: mute, disabled: hold || ended || isWarmTransfer })}
+          className={classNames('basic', { active: mute, disabled: hold || ended || isWarmTransfer || !connection })}
           onClick={this.toggleMute}
         >
           <i className={classNames(mute ? 'mute' : 'unmute', 'icon')} />
           Mute
-        </Button>
+        </Button>}
+        {displayButton &&
         <Button
           ref={(c) => { this.transferButton = c; }}
           className={classNames(
@@ -311,7 +324,8 @@ class Active extends React.Component {
         >
           <i className="share icon" />
           Transfer
-        </Button>
+        </Button>}
+        {displayButton &&
         <Button
           ref={(c) => { this.addButton = c; }}
           className={classNames('basic', { active: addMenuOpened, disabled: transferDisabled })}
@@ -319,14 +333,14 @@ class Active extends React.Component {
         >
           <i className="add icon" />
           Add
-        </Button>
+        </Button>}
+        {displayButton &&
         <Button
-          className={classNames('red', { disabled: ended })}
+          className={classNames('red', { disabled: ended || !connection })}
           onClick={this.endCall}
         >
-          {/* TODO: this is temp solution, that should be {status === 'warm_transfer'} */}
           {participants.length >= 2 ? 'Hang up' : 'End call'}
-        </Button>
+        </Button>}
 
         <Detached
           positionMy="right top"
@@ -336,7 +350,11 @@ class Active extends React.Component {
           zIndex={1000}
         >
           <ClickOut onClickOut={this.closeTransferMenu}>
-            <TransferList {...this.props} closeMenu={this.closeTransferMenu} transferDisabled={transferDisabled} />
+            <TransferList
+              {...this.props}
+              closeMenu={this.closeTransferMenu}
+              transferDisabled={transferDisabled}
+            />
           </ClickOut>
         </Detached>
         <Detached

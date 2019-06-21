@@ -46,15 +46,29 @@ class CallForward extends BaseForm {
     initPhoneCallbacks();
   }
 
+  onChange = (formData, changedFields) => {
+    // forwarding was just enabled, enable forwarding if logged out as well
+    if (changedFields.indexOf('agent_can_use_forwarding') !== -1
+      && formData.value.agent_data.agent_can_use_forwarding
+    ) {
+      changedFields.push('forwarding_logged_out');
+      formData.value.agent_data.forwarding_logged_out = true;
+    }
+
+    this.setState({ formData });
+  };
+
   getDefaultState() {
     const { me } = this.props;
+    const canUseForwarding = me ? me.getIn(['agent_data', 'agent_can_use_forwarding']) : false;
+    const forwardingLoggedOut = me ? me.getIn(['agent_data', 'forwarding_logged_out']) : false;
 
     return {
       agent_data: {
-        agent_can_use_forwarding: me ? me.getIn(['agent_data', 'agent_can_use_forwarding']) : false,
+        agent_can_use_forwarding: canUseForwarding,
         forwarding_number:        (me && me.getIn(['agent_data', 'forwarding_number'])) || '',
         forwarding_ring_timeout:  (me && me.getIn(['agent_data', 'forwarding_ring_timeout'])) || 10,
-        forwarding_logged_out:    me ? me.getIn(['agent_data', 'forwarding_logged_out']) : false,
+        forwarding_logged_out:    canUseForwarding && forwardingLoggedOut,
       }
     };
   }

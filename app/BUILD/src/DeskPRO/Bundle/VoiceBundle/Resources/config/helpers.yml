@@ -73,3 +73,5 @@ services:
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_task_helper"
       - "@brand_aware_settings_resolver"
+      - "@serializer"
+      - "@event_dispatcher"

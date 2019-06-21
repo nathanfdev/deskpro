@@ -44,14 +44,18 @@ class SerializerExtension extends \JMS\Serializer\Twig\SerializerExtension
     /**
      * @param mixed  $value
      * @param array  $includes
+     * @param bool   $inlineSiseloads
      * @param Person $user
      *
      * @return string
      */
-    public function sideloadSerialize($value, array $includes = [], Person $user = null)
+    public function sideloadSerialize($value, array $includes, $inlineSiseloads, Person $user = null)
     {
         $context = new SideloadSerializationContext($includes, $this->container->get('security.token_storage'));
         $context->setUser($user);
+        if ($inlineSiseloads) {
+            $context->setInlineSideloads(true);
+        }
 
         return $this->serializer->serialize(new ApiWrapper($value), 'json', $context);
     }

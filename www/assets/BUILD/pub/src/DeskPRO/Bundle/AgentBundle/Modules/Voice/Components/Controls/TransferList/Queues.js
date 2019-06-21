@@ -76,8 +76,9 @@ class QueueItem extends React.Component {
             <Avatar
               key={index}
               person={agent}
-              active={onlineAgents.contains(agent) || agent === me}
+              online={onlineAgents.contains(agent) || agent === me}
               size={20}
+              withOnlineStatus
             />
           )}
         </div>

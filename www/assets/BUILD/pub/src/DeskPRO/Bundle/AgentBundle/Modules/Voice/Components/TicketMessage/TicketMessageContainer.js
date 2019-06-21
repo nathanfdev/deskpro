@@ -67,7 +67,7 @@ class TicketMessageContainer extends React.Component {
     const { phoneCalls } = this.props;
     const { data } = this.state;
     const message = data.data;
-    const phoneCallId = message.attributes[0].phone_call;
+    const phoneCallId = message.attributes[0].phone_call.id;
 
     // get from record store
     // for active calls
@@ -76,14 +76,14 @@ class TicketMessageContainer extends React.Component {
     }
 
     // get from message data attribute from template
-    return Immutable.fromJS(data.linked.voice_phone_call[phoneCallId]);
+    return Immutable.fromJS(message.attributes[0].phone_call);
   }
 
   getTicket() {
     const { data } = this.state;
     const message = data.data;
 
-    return Immutable.fromJS(data.linked.ticket[message.ticket]);
+    return Immutable.fromJS(message.ticket);
   }
 
   getConnection() {

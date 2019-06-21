@@ -45,6 +45,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const DIRECTION_INBOUND  = 'inbound';
     const DIRECTION_OUTBOUND = 'outbound';
 
+    const ENQUEUED_AS_USER  = 'user';
+    const ENQUEUED_AS_AGENT = 'agent';
+
     const RESTRICTED_NUMBER = '737 874-2833';
     const BLOCKED_NUMBER    = '256-2533';
     const UNKNOWN_NUMBER    = '865-6696';
@@ -198,9 +201,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $recordings;
 
     /**
-     * @ORM\OneToOne(targetEntity="VoicemailAgentRecording", mappedBy="phoneCall")
+     * @ORM\OneToOne(targetEntity="VoiceMissedAgentCall", mappedBy="phoneCall")
      *
-     * @var VoicemailAgentRecording
+     * @var VoiceMissedAgentCall
      */
     private $agentVoicemailRecord;
 
@@ -224,6 +227,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @var ArrayCollection|TicketMessageVoicePhoneCall[]
      */
     private $ticketMessageAttributes;
+
+    /**
+     * @ORM\Column(name="enqueued_as", type="string")
+     *
+     * @var string
+     */
+    private $enqueuedAs;
 
     /**
      * Constructor.
@@ -424,6 +434,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setType($type)
     {
         $this->setModelField('type', $type);
+        $this->setEnqueuedAs($this->isIncomingCall() ? self::ENQUEUED_AS_USER : self::ENQUEUED_AS_AGENT);
 
         return $this;
     }
@@ -884,7 +895,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoicemailAgentRecording
+     * @return VoiceMissedAgentCall
      */
     public function getAgentVoicemailRecord()
     {
@@ -892,11 +903,11 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoicemailAgentRecording $agentVoicemailRecord
+     * @param VoiceMissedAgentCall $agentVoicemailRecord
      *
      * @return $this
      */
-    public function setAgentVoicemailRecord(VoicemailAgentRecording $agentVoicemailRecord = null)
+    public function setAgentVoicemailRecord(VoiceMissedAgentCall $agentVoicemailRecord = null)
     {
         $this->setModelField('voicemailRecord', $agentVoicemailRecord);
         if ($agentVoicemailRecord) {
@@ -936,7 +947,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     {
         $sids = [];
         foreach ($this->callSids as $callSid) {
-            if ($callSid['participant'] === $participantId) {
+            if ((int) $callSid['participant'] === (int) $participantId) {
                 $sids[] = $callSid['callSid'];
             }
         }
@@ -988,6 +999,42 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getTicketMessageAttributes()
     {
         return $this->ticketMessageAttributes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnqueuedAs()
+    {
+        return $this->enqueuedAs;
+    }
+
+    /**
+     * @param string $enqueuedAs
+     *
+     * @return $this
+     */
+    public function setEnqueuedAs($enqueuedAs)
+    {
+        $this->setModelField('enqueuedAs', $enqueuedAs);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function enqueuedAsUser()
+    {
+        return $this->enqueuedAs === self::ENQUEUED_AS_USER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function enqueuedAsAgent()
+    {
+        return $this->enqueuedAs === self::ENQUEUED_AS_AGENT;
     }
 
     /**

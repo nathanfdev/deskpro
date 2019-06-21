@@ -16,6 +16,7 @@ class VoiceSettingsResolver
     const VOICE_AGENT_DEFAULT_BRAND               = 'voice.agent_default_brand';
     const VOICE_GROUP_MISSED_CALL_TICKETS         = 'voice.group_missed_call_tickets';
     const VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT = 'voice.group_missed_call_tickets_timeout';
+    const VOICE_TRANSCRIBE_VOICMAIL               = 'voice.transcribe_voicemail';
     const VOICE_FORWARDING_MACHINE_DETECTION      = 'voice.forwarding_machine_detection';
     const VOICE_FORWARDING_NUMBER_TYPE            = 'voice.forwarding_number_type';
     const VOICE_FORWARDING_NUMBER                 = 'voice.forwarding_number';
@@ -65,6 +66,7 @@ class VoiceSettingsResolver
             ->setForwardingMachineDetection($this->getForwardingMachineDetection())
             ->setForwardingNumberType($this->getForwardingNumberType())
             ->setForwardingNumber($this->getForwardingNumber())
+            ->setTranscribeVoicemail($this->isTranscribeVoicemail())
         ;
 
         return $model;
@@ -132,6 +134,14 @@ class VoiceSettingsResolver
     public function getForwardingNumber()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_FORWARDING_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTranscribeVoicemail()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_TRANSCRIBE_VOICMAIL);
     }
 
     /**

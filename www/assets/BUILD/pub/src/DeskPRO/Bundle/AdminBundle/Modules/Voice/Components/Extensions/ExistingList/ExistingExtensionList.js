@@ -89,9 +89,11 @@ class ExistingExtensionRow extends React.Component {
   render() {
     const { agent, queues = Immutable.fromJS([]) } = this.props;
     const involvedQueues = [];
-    queues.filter(queue => queue.get('agents').contains(agent.get('id'))).forEach((queue) => {
-      involvedQueues.push({ name: queue.get('name') });
-    });
+    queues
+      .filter(queue => queue.get('agents').map(queueAgent => queueAgent.get('agent')).contains(agent.get('id')))
+      .forEach((queue) => {
+        involvedQueues.push({ name: queue.get('name') });
+      });
 
     return (
       <div className="row">

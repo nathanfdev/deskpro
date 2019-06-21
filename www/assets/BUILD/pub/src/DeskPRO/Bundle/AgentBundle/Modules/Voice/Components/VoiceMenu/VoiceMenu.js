@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
-import SettingsContainer from './Settings/SettingsContainer';
+import Settings from './Settings/Settings';
 import Dialpad from './Dialpad/Dialpad';
 import DialpadContainer from './Dialpad/DialpadContainer';
 import IncomingCall from './IncomingCall/IncomingCall';
 import OutgoingCallContainer from './OutgoingCall/OutgoingCallContainer';
-import VoicemailListContainer from './Voicemail/VoicemailListContainer';
+import MissedCallsListContainer from './MissedCalls/MissedCallsListContainer';
 
 class VoiceMenu extends React.Component {
 
@@ -31,15 +31,23 @@ class VoiceMenu extends React.Component {
     voiceEnabled:          PropTypes.bool,
     micEnabled:            PropTypes.bool,
     openUserMenu:          PropTypes.func,
-    recordsCount:          PropTypes.number
+    recordsCount:          PropTypes.number,
+    defaultTab:            PropTypes.string
   };
 
   constructor(props) {
     super(props);
-    const { incomingCall, outgoingCall, outboundCallsEnabled } = this.props;
-    this.state = {
-      tabName: incomingCall || outgoingCall || outboundCallsEnabled ? 'phone' : 'settings'
-    };
+    const { incomingCall, outgoingCall, outboundCallsEnabled, defaultTab } = this.props;
+    let tabName;
+    if (defaultTab) {
+      tabName = defaultTab;
+    } else if (incomingCall || outgoingCall || outboundCallsEnabled) {
+      tabName = 'phone';
+    } else {
+      tabName = 'settings';
+    }
+
+    this.state = { tabName };
   }
 
   componentWillReceiveProps(newProps) {
@@ -114,12 +122,12 @@ class VoiceMenu extends React.Component {
   }
 
   render() {
-    const { outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu } = this.props;
+    const { me, outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu, recordsCount } = this.props;
     const { voiceEnabled, micEnabled, callsEnabled } = this.props;
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
-    const voicemailTitle = this.props.recordsCount > 0 ? `Voicemail (${this.props.recordsCount})` : 'Voicemail';
+
     return (
       <div className="voice-menu">
         <div className="header">
@@ -131,11 +139,11 @@ class VoiceMenu extends React.Component {
         <div className="tab-menu">
           {!pendingCall &&
           <TabButton
-            tabName="voicemail"
-            title={voicemailTitle}
+            tabName="missed_calls"
+            title={recordsCount > 0 ? <span className="tab-item-title">Missed <span className="tab-item-count">{recordsCount}</span></span> : 'Missed'}
             iconClass="fa-play-circle"
             onClick={this.changeTab}
-            active={tabName === 'voicemail'}
+            active={tabName === 'missed_calls'}
           />}
           {!pendingCall &&
           <TabButton
@@ -154,11 +162,11 @@ class VoiceMenu extends React.Component {
             active={tabName === 'phone'}
           />}
         </div>
-        <Tab active={tabName === 'voicemail'}>
-          <VoicemailListContainer />
+        <Tab active={tabName === 'missed_calls'}>
+          <MissedCallsListContainer />
         </Tab>
         <Tab active={tabName === 'settings'}>
-          <SettingsContainer />
+          <Settings me={me} ref={(c) => { this.settings = c; }} />
         </Tab>
         {hasPhoneTab &&
         <Tab active={tabName === 'phone'}>

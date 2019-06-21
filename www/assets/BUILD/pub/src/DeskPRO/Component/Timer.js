@@ -4,14 +4,15 @@ import React from 'react';
 class Timer extends React.Component {
 
   static propTypes = {
-    paused: PropTypes.bool,
-    format: PropTypes.string
+    startTime: PropTypes.number,
+    paused:    PropTypes.bool,
+    format:    PropTypes.string
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      time: 0
+      time: props.startTime || 0
     };
   }
 

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
@@ -11,15 +7,17 @@ use Doctrine\ORM\EntityManager;
 
 class AgentDataService extends AbstractDataService
 {
-    /** @var array|null */
-    protected $online_agent_ids;
-
-    protected $agents_online_status;
+    const ONLINE_AGENTS_TIMEOUT = 360;
 
     /**
-     * @var int
+     * @var array|null
      */
-    protected $agent_timeout = 360;
+    protected $onlineAgentIds;
+
+    /**
+     * @var array
+     */
+    protected $agentsOnlineStatus;
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -44,19 +42,20 @@ class AgentDataService extends AbstractDataService
      */
     public function getOnlineAgentIds()
     {
-        if ($this->online_agent_ids !== null) {
-            return $this->online_agent_ids;
+        if ($this->onlineAgentIds !== null) {
+            return $this->onlineAgentIds;
         }
-        $cutoff = date('Y-m-d H:i:s', time() - $this->agent_timeout);
 
-        $this->online_agent_ids = $this->db->fetchAllKeyValue('
+        $cutoff = date('Y-m-d H:i:s', time() - self::ONLINE_AGENTS_TIMEOUT);
+
+        $this->onlineAgentIds = $this->db->fetchAllKeyValue('
             SELECT DISTINCT s.person_id
             FROM sessions s
             INNER JOIN people p ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0 AND s.date_last > ?
         ', [$cutoff], [], 0, 0);
 
-        return $this->online_agent_ids;
+        return $this->onlineAgentIds;
     }
 
     /**
@@ -71,7 +70,7 @@ class AgentDataService extends AbstractDataService
         $this->getOnlineAgentIds();
         $id = is_object($id_or_agent) ? $id_or_agent->getId() : $id_or_agent;
 
-        return isset($this->online_agent_ids[$id]);
+        return isset($this->onlineAgentIds[$id]);
     }
 
     public function getLastSeen($id_or_agent)
@@ -88,11 +87,11 @@ class AgentDataService extends AbstractDataService
 
     public function getAgentsOnlineStatus()
     {
-        if ($this->agents_online_status !== null) {
-            return $this->agents_online_status;
+        if ($this->agentsOnlineStatus !== null) {
+            return $this->agentsOnlineStatus;
         }
 
-        $cutoff = date('Y-m-d H:i:s', time() - $this->agent_timeout);
+        $cutoff = date('Y-m-d H:i:s', time() - self::ONLINE_AGENTS_TIMEOUT);
 
         $data = $this->db->fetchAllKeyValue('
             SELECT DISTINCT
@@ -103,7 +102,7 @@ class AgentDataService extends AbstractDataService
             WHERE p.is_agent = 1 AND p.is_deleted = 0
         ', [$cutoff], [], 0, 1);
 
-        $this->agents_online_status = [
+        $this->agentsOnlineStatus = [
             'online' => array_values(array_filter(array_keys($data), function ($value) use ($data) {
                 return $data[$value];
             })),
@@ -112,6 +111,6 @@ class AgentDataService extends AbstractDataService
             })),
         ];
 
-        return $this->agents_online_status;
+        return $this->agentsOnlineStatus;
     }
 }
