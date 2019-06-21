@@ -269,27 +269,16 @@ class IncomingEmailController extends BaseController
      *
      * @param $request
      *
-     * @throws \Application\DeskPRO\BlobStorage\BlobStorageException
-     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
-     * @throws \Exception
-     *
-     * @return DTOEmailMessage
+     * @return View
      */
     public function postAction(Request $request)
     {
         $eml = $request->getContent();
 
-        $lengthConstraint = new Assert\Length(['max' => 25 * 1024 * 1024]);
-        $errors           = $this->get('validator')->validate(
-            $eml,
-            [
-                new Assert\Length(['max' => 25 * 1024 * 1024]),
-                new Assert\NotBlank(),
-            ]
-        );
+        $errors = $this->get('validator')->validate($eml, [
+            new Assert\Length(['max' => 25 * 1024 * 1024]),
+            new Assert\NotBlank(),
+        ]);
 
         if ($errors->count() > 0) {
             throw new ValidatorErrorsException($errors);
