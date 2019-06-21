@@ -62,6 +62,7 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
@@ -4473,7 +4474,12 @@ class TicketController extends AbstractController
                 ]
             );
         }
-        $this->container->getMailer()->send($message);
+        $mailer = $this->container->getMailer();
+        if ($mailer instanceof StorageTransportInterface) {
+            $mailer->queueMessage($message);
+        } else {
+            $mailer->send($message);
+        }
 
         foreach ($messagesIds as $messageId) {
             // Log the action
@@ -4628,7 +4634,28 @@ class TicketController extends AbstractController
             'agent_message' => $customMessage,
         ];
 
-        $ticketEmail->send($vars);
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.agent_viewmodel_factory')
+                ->createAgentTicketForwardModel(
+                    $ticket,
+                    $customMessage,
+                    $this->in->getString('subject')
+                );
+
+            $message = $ticketEmail->prepareMailerMessage([], false);
+
+            $message = $this->getContainer()->get('email.email_sender')
+                ->prepareMessage($viewModel, [], $message);
+
+            $mailer = $this->container->getMailer();
+            if ($mailer instanceof StorageTransportInterface) {
+                $mailer->queueMessage($message);
+            } else {
+                $mailer->send($message);
+            }
+        } else {
+            $ticketEmail->send($vars);
+        }
 
         $this->db->insert(
             'tickets_logs',
