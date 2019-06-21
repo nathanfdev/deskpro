@@ -292,11 +292,6 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.email_source:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\EmailSourceHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
   api_serializer.handler.task:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
     tags:

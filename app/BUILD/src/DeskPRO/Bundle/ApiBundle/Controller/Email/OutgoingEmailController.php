@@ -2,35 +2,30 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Email;
 
-use Application\DeskPRO\Email\EmailSource\PropertyMapper;
-use Application\DeskPRO\EmailGateway\Runner;
-use Application\DeskPRO\Entity\EmailSource;
+use Application\EmailBundle\Entity\SendmailSource;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
-use DeskPRO\Component\Util\RandUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class EmailController.
  *
  * @ApiModes({"master_key", "key"})
  * @ApiUserContext("open")
- * @Rest\Route("/incoming-emails")
+ * @Rest\Route("/outgoing-emails")
  * @ApiDoc(
  *     target="all",
  *     section="Email",
- *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\EmailSource"
+ *     output="Application\EmailBundle\Entity\SendmailSource"
  * )
  */
-class IncomingEmailController extends BaseController
+class OutgoingEmailController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -82,77 +77,94 @@ class IncomingEmailController extends BaseController
      *          422="Source status is error",
      *      }
      * )
-     * @Rest\Post("/{uuid}/execute")
+     * @Rest\Post("/{uuid}/send", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param $request
      * @param $uuid
      *
      * @return View
      */
-    public function executeAction(Request $request, $uuid)
+    public function sendAction(Request $request, $uuid)
     {
-        /** @var EmailSource $source */
+        /** @var SendmailSource $source */
         $source  = $this->findEntity($uuid, $request);
         $isForce = $request->query->has('force');
 
         if (!$isForce) {
-            if ($source->getStatus() === EmailSource::STATUS_PROCESSING) {
+            if ($source->getStatus() === SendmailSource::STATUS_PROCESSING) {
                 return View::create(null, Response::HTTP_LOCKED);
-            } elseif ($source->getStatus() === EmailSource::STATUS_COMPLETE) {
+            } elseif ($source->getStatus() === SendmailSource::STATUS_COMPLETE) {
                 return View::create(null, Response::HTTP_NOT_MODIFIED);
             } elseif (in_array($source->getStatus(), [
-                EmailSource::STATUS_REJECTED,
-                EmailSource::STATUS_ERROR,
-                EmailSource::STATUS_REJECTED_SOFT,
+                SendmailSource::STATUS_ERROR,
+                SendmailSource::STATUS_ABORTED,
             ])) {
                 return View::create(null, Response::HTTP_UNPROCESSABLE_ENTITY);
             }
         }
 
-        $runner = new Runner();
+        /** @var \Application\EmailBundle\Queue\QueueProc $proc */
+        $proc = $this->get('email.queue_processor');
+        $proc->process($source->toRecordArray());
 
-        // Previous attempt might've failed with a fatal, so we need to check
-        // if its still in processing state now and potentially cancel it as error'd now
-        if (
-            !$isForce
-            && ($source->getStatus() === EmailSource::STATUS_INSERTED || $source->getStatus() === EmailSource::STATUS_PROCESSING)
-            && $runner->getMaxRetryAttempts() > $source->getExecCount()
-        ) {
-            return View::create(null, Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        // read the raw source to refresh some fields on the email source and adjust the blob size
-        $blob = $source->getBlob();
-
-        //$source->_raw = $this->getContainer()->getBlobStorage()->downloadBlobData($blob);
-        $source->getRawSource();
-        if (empty($source->_raw)) {
-            throw new \Exception('Unexpected empty email source. Maybe downloading failed');
-        }
-        $fs = strlen($source->_raw);
-        if ($fs !== $blob->getFilesize()) {
-            $blob->setFilesize($fs);
-            $this->getContainer()->getEm()->persist($source);
-            $this->getContainer()->getEm()->flush();
-        }
-
-        $accountManager = $this->getContainer()->getEmailAccountManager();
-        $readerFactory  = $this->getContainer()->getEmailEzcReaderFactory();
-
-        $mapper = new PropertyMapper($accountManager, $readerFactory);
-        $reader = $mapper->createReader($source->_raw);
-        $mapper->read($reader, $source);
-        $source->fromArray([
-            'status'      => EmailSource::STATUS_INSERTED,
-            'object_type' => EmailSource::OBJ_TYPE_TICKET,
-        ]);
-
-        $this->getContainer()->getEm()->persist($source);
-        $this->getContainer()->getEm()->flush();
-
-        $runner->executeSource($source, $reader);
+        $this->getManager()->refresh($source);
 
         return View::create($this->wrap($source), Response::HTTP_OK);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Batch send action",
+     *      tags={"CRUD"="#ffa500"},
+     *      parameters={
+     *          {"name"="uuids", "description"="", "dataType"="array", "required"=true}
+     *      }
+     * )
+     *
+     *
+     * @Rest\Post("/batch/send")
+     *
+     * @param $request
+     *
+     * @return View
+     */
+    public function batchSendAction(Request $request)
+    {
+        $uuids   = $request->get('uuids');
+        $isForce = $request->request->has('force');
+        /** @var \Application\EmailBundle\Queue\QueueProc $proc */
+        $proc = $this->get('email.queue_processor');
+
+        $res = [];
+        foreach ($uuids as $uuid) {
+            /** @var SendmailSource $source */
+            $source = $this->getManager()->getRepository(SendmailSource::class)->findOneByUuid($uuid);
+            if (!$source) {
+                continue;
+            }
+
+            if (!$isForce) {
+                if (in_array($source->getStatus(), [
+                    SendmailSource::STATUS_PROCESSING,
+                    SendmailSource::STATUS_COMPLETE,
+                    SendmailSource::STATUS_ERROR,
+                    SendmailSource::STATUS_ABORTED,
+                ])) {
+                    $res[$uuid] = $source->getStatus();
+                    continue;
+                }
+            }
+
+            try {
+                $proc->process($source->toRecordArray());
+                $this->getManager()->refresh($source);
+                $res[$uuid] = $source->getStatus();
+            } catch (\Exception $e) {
+                $res[$uuid] = SendmailSource::STATUS_ERROR;
+            }
+        }
+
+        return View::create($res, Response::HTTP_OK);
     }
 
     /**
@@ -176,9 +188,9 @@ class IncomingEmailController extends BaseController
      */
     public function abortAction(Request $request, $uuid)
     {
-        /** @var EmailSource $source */
+        /** @var SendmailSource $source */
         $source = $this->findEntity($uuid, $request);
-        $source->setStatus(EmailSource::STATUS_REJECTED);
+        $source->setStatus(SendmailSource::STATUS_ABORTED);
 
         $this->persistModel($source);
 
@@ -206,9 +218,9 @@ class IncomingEmailController extends BaseController
      */
     public function retryAction(Request $request, $uuid)
     {
-        /** @var EmailSource $source */
+        /** @var SendmailSource $source */
         $source = $this->findEntity($uuid, $request);
-        $source->setStatus(EmailSource::STATUS_RETRY);
+        $source->setStatus(SendmailSource::STATUS_RETRY);
 
         $this->persistModel($source);
 
@@ -240,14 +252,14 @@ class IncomingEmailController extends BaseController
      */
     public function logAction(Request $request, $uuid)
     {
-        /** @var EmailSource $source */
+        /** @var SendmailSource $source */
         $source = $this->findEntity($uuid, $request);
         $log    = null;
 
-        if ($source->log_blob) {
+        if ($source->getLogBlob()) {
             try {
-                $log = $this->get('blob.storage')->copyBlobRecordToString($source->log_blob);
-                if ($source->log_blob->content_type === 'application/gzip') {
+                $log = $this->get('blob.storage')->copyBlobRecordToString($source->getLogBlob());
+                if ($source->getLogBlob()->content_type === 'application/gzip') {
                     $log = gzdecode($log);
                 }
             } catch (\Exception $e) {
@@ -259,59 +271,6 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Create entity",
-     *      tags={"CRUD"="#ffa500"}
-     * )
-     *
-     *
-     * @Rest\Post("", condition="request.headers.get('Content-Type') matches '#message/rfc822#i'")
-     *
-     * @param $request
-     *
-     * @return View
-     */
-    public function postAction(Request $request)
-    {
-        $eml = $request->getContent();
-
-        $errors = $this->get('validator')->validate($eml, [
-            new Assert\Length(['max' => 25 * 1024 * 1024]),
-            new Assert\NotBlank(),
-        ]);
-
-        if ($errors->count() > 0) {
-            throw new ValidatorErrorsException($errors);
-        }
-
-        $blobStorage = $this->get('blob.storage');
-        $blob        = $blobStorage->createBlobRecordFromString(
-            $eml,
-            'email.eml',
-            'message/rfc822'
-        );
-        $blob->setFilesize(strlen($eml));
-
-        $source         = new EmailSource();
-        $source['blob'] = $blob;
-        $source->fromArray([
-            'uuid'           => RandUtils::uuidV4(),
-            'headers'        => '',
-            'status'         => EmailSource::STATUS_INSERTING,
-            'from_email'     => '',
-            'header_to'      => '',
-            'header_cc'      => '',
-            'header_from'    => '',
-            'header_subject' => '',
-            'object_type'    => EmailSource::OBJ_TYPE_TICKET,
-        ]);
-
-        $this->persistModel($source);
-
-        return View::create($this->wrap($source), Response::HTTP_CREATED);
-    }
-
-    /**
      * @param int     $id
      * @param Request $request
      *
@@ -319,8 +278,8 @@ class IncomingEmailController extends BaseController
      */
     protected function findEntity($id, Request $request)
     {
-        if (!$entity = $this->getManager()->getRepository(EmailSource::class)->findOneByUuid($id)) {
-            throw $this->createNotFoundException($this->createEntityNotFoundExceptionMessage(EmailSource::class, $id));
+        if (!$entity = $this->getManager()->getRepository(SendmailSource::class)->findOneByUuid($id)) {
+            throw $this->createNotFoundException($this->createEntityNotFoundExceptionMessage(SendmailSource::class, $id));
         }
 
         return $entity;

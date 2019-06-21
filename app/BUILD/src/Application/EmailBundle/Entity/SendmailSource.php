@@ -8,11 +8,16 @@
 
 namespace Application\EmailBundle\Entity;
 
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
+/**
+ * @JMS\ExclusionPolicy("all")
+ */
 class SendmailSource implements NotifyPropertyChanged
 {
     /**
@@ -61,16 +66,33 @@ class SendmailSource implements NotifyPropertyChanged
     const ERR_ENQUEUE_FAILED = 'enqueue_failed';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $ref = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $uuid = null;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
      * @var \Application\DeskPRO\Entity\Blob
      */
     protected $blob = null;
@@ -81,11 +103,17 @@ class SendmailSource implements NotifyPropertyChanged
     protected $email_account = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string|null
      */
     protected $context_type = '';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var int|null
      */
     protected $context_id = 0;
@@ -118,6 +146,9 @@ class SendmailSource implements NotifyPropertyChanged
     protected $header_subject = '';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $from_email = null;
@@ -138,6 +169,9 @@ class SendmailSource implements NotifyPropertyChanged
     protected $bcc_emails = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status = 'inserted';
@@ -148,22 +182,34 @@ class SendmailSource implements NotifyPropertyChanged
     protected $options = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_status = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_sent = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_next_attempt = null;
 
     /**
      * When status is error, this is the code that describes the error.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -175,12 +221,18 @@ class SendmailSource implements NotifyPropertyChanged
     protected $log_blob = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;
 
     /**
      * How many times the email has been processed.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -215,6 +267,7 @@ class SendmailSource implements NotifyPropertyChanged
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
+        $this->setUuid(RandUtils::uuidV4());
         $this->num_targets  = 0;
         $this->num_pending  = 0;
         $this->num_complete = 0;
@@ -235,6 +288,26 @@ class SendmailSource implements NotifyPropertyChanged
     public function getRef()
     {
         return $this->ref;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return $this
+     */
+    public function setUuid($uuid)
+    {
+        $this->setModelField('uuid', $uuid);
+
+        return $this;
     }
 
     /**
@@ -658,6 +731,7 @@ class SendmailSource implements NotifyPropertyChanged
 
         $data['id']             = $this->id;
         $data['ref']            = $this->ref;
+        $data['uuid']           = $this->uuid;
         $data['header_to']      = $this->header_to;
         $data['header_from']    = $this->header_from;
         $data['header_subject'] = $this->header_subject;
@@ -711,6 +785,7 @@ class SendmailSource implements NotifyPropertyChanged
         static $scalar_fields = [
             'id',
             'ref',
+            'uuid',
             'context_type',
             'context_id',
             'context_info',
@@ -823,6 +898,14 @@ class SendmailSource implements NotifyPropertyChanged
             'type'       => 'string',
             'length'     => 100,
             'nullable'   => false,
+        ]);
+        $metadata->mapField([
+            'columnName' => 'uuid',
+            'fieldName'  => 'uuid',
+            'type'       => 'string',
+            'length'     => 36,
+            'nullable'   => true,
+            'unique'     => true,
         ]);
         $metadata->mapField([
             'columnName' => 'context_type',
@@ -1021,7 +1104,11 @@ class SendmailSource implements NotifyPropertyChanged
     private $_listeners = [];
     public function addPropertyChangedListener(PropertyChangedListener $listener)
     {
-        $this->setModelField('_listeners[]', $listener);
+        if (empty($this->_listeners['property'])) {
+            $this->_listeners['property'] = [];
+        }
+
+        $this->_listeners['property'][] = $listener;
     }
 
     private function setModelField($field, $value)
@@ -1056,8 +1143,10 @@ class SendmailSource implements NotifyPropertyChanged
 
         $this->$field = $value;
 
-        foreach ($this->_listeners as $listener) {
-            $listener->propertyChanged($this, $field, $old, $value);
+        if (!empty($this->_listeners['property'])) {
+            foreach ($this->_listeners['property'] as $listener) {
+                $listener->propertyChanged($this, $field, $old, $value);
+            }
         }
     }
 }

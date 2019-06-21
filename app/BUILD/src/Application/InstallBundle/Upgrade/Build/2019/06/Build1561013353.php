@@ -10,7 +10,10 @@ class Build1561013353 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_6F9D0D3D539B0606 ON email_sources (uid)');
+        $this->execSlowAlterTable('email_sources', 'ADD uuid VARCHAR(36) DEFAULT NULL AFTER uid');
+        $this->execSlowAlterTable('email_sources', 'ADD UNIQUE INDEX UNIQ_6F9D0D3D539B0606 (uuid)');
+        $this->execSlowAlterTable('sendmail_sources', 'ADD uuid VARCHAR(36) DEFAULT NULL AFTER ref');
+        $this->execSlowAlterTable('sendmail_sources', 'ADD UNIQUE INDEX UNIQ_9195FF45D17F50A6 (uuid)');
     }
 
     public function run()
