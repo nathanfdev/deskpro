@@ -53,7 +53,7 @@ abstract class AbstractViewModelFactory
         $this->container    = $container;
     }
 
-    protected function convertParameter($entity)
+    public function convertParameter($entity)
     {
         if (is_array($entity) || $entity instanceof \Traversable) {
             $result = [];
