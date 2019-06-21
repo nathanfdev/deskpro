@@ -4540,10 +4540,6 @@ class TicketController extends AbstractController
             throw $e;
         }
         $newTicket->setParentTicket($ticket);
-        $this->em->persist($newTicket);
-        $this->em->persist($ticket);
-
-        $this->em->flush();
 
         $oldTicket = $ticket;
         $ticket    = $newTicket;
@@ -4592,6 +4588,12 @@ class TicketController extends AbstractController
         $account = $this->getAccount($ticket);
 
         $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+
+        $ticketManager->saveTicket($newTicket, $context);
+        $this->em->persist($newTicket);
+        $this->em->persist($ticket);
+
+        $this->em->flush();
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->container)
             ->setTicket($ticket)
