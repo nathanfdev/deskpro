@@ -258,61 +258,6 @@ class Translate
     }
 
     /**
-     * Retrieves the languages available for speech synthesis.
-     *
-     * @see http://msdn.microsoft.com/en-us/library/ff512415.aspx
-     *
-     * @param bool $use_local True to use the local cache (dont do a service request)
-     *
-     * @return array
-     */
-    public function getLanguagesForSpeak($use_local = true)
-    {
-        if ($use_local) {
-            $file = __DIR__.'/data/langs_for_speak.php';
-            if (file_exists($file)) {
-                return require $file;
-            }
-        }
-
-        $response = $this->getServiceHttpClient()->get('GetLanguagesForSpeak');
-        $raw_data = $this->xml($response->getBody());
-
-        $data = [];
-        foreach ($raw_data->string as $r) {
-            $data[] = (string) $r;
-        }
-
-        return $data;
-    }
-
-    /**
-     * Returns a wave or mp3 stream of the passed-in text being spoken in the desired language.
-     *
-     * @see http://msdn.microsoft.com/en-us/library/ff512420.aspx
-     *
-     * @param string $text   A string containing a sentence or sentences of the specified language to be spoken for the wave stream. The size of the text to speak must not exceed 2000 characters
-     * @param string $lang   A string representing the supported language code to speak the text in
-     * @param string $format A string specifying the content-type ID
-     * @param string $opt    A string specifying the quality of the audio signals
-     *
-     * @return string
-     */
-    public function speak($text, $lang, $format = self::FORMAT_WAV, $opt = self::OPT_MINSIZE)
-    {
-        $response = $this->getServiceHttpClient()->get('Speak', [
-            RequestOptions::QUERY => [
-                'text'     => $text,
-                'language' => $lang,
-                'format'   => $format,
-                'options'  => $opt,
-            ],
-        ]);
-
-        return $response->getBody();
-    }
-
-    /**
      * Retrieves friendly names for the languages passed in as the parameter languageCodes, and localized using the passed locale language.
      *
      * This will use the local data cache unless a lang code could not be found, then a request against the service is made.
@@ -432,37 +377,6 @@ class Translate
     }
 
     /**
-     * @param array $strings
-     *
-     * @return string
-     */
-    public function createArrayOfStringXmlBody(array $strings)
-    {
-        $body = '<ArrayOfstring xmlns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">';
-        $body .= "\n";
-        foreach ($strings as $s) {
-            $body .= "\t<string>".$this->escapeXml($s)."</string>\n";
-        }
-        $body .= '</ArrayOfstring>';
-
-        return $body;
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    protected function escapeXml($str)
-    {
-        return str_replace(
-            ['&',     '<',    '>',    '"',      "'"],
-            ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'],
-            $str
-        );
-    }
-
-    /**
      * Checks locale to see if its supported and gets the nearest if its not. For example, 'en_US' is not supported
      * specifically but 'en' is.
      *
@@ -494,39 +408,5 @@ class Translate
 
         // No matches, return original which will probably fail
         return $locale;
-    }
-
-    /**
-     * c/p from guzzle.
-     *
-     * @param $body
-     *
-     * @return \SimpleXMLElement
-     */
-    protected function xml($body)
-    {
-        $errorMessage    = null;
-        $internalErrors  = libxml_use_internal_errors(true);
-        $disableEntities = libxml_disable_entity_loader(true);
-        libxml_clear_errors();
-
-        try {
-            $xml = new \SimpleXMLElement((string) $body ?: '<root />', LIBXML_NONET);
-            if ($error = libxml_get_last_error()) {
-                $errorMessage = $error->message;
-            }
-        } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-        }
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($internalErrors);
-        libxml_disable_entity_loader($disableEntities);
-
-        if ($errorMessage) {
-            throw new \RuntimeException('Unable to parse response body into XML: '.$errorMessage);
-        }
-
-        return $xml;
     }
 }
