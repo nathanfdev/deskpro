@@ -4533,15 +4533,18 @@ class TicketController extends AbstractController
         $doAssignTeam  = $options['do_assign_team'] === 'true';
 
         $ticketManager = $this->container->getTicketManager();
-//        $ticketManager->markAsManaged($ticket);
 
         try {
             $newTicket = $ticketManager->createTicket();
             $this->em->commit();
             $ticket->copyTo($newTicket);
-//            $ticketManager->markAsUnmanaged($ticket);
+            foreach ($messages as $message) {
+                $messageCopy     = clone $message;
+                $messageCopy->id = null;
+                $messageCopy->setTicket($newTicket);
+                $this->em->persist($messageCopy);
+            }
         } catch (\Exception $e) {
-            //            $ticketManager->markAsUnmanaged($ticket);
             $this->em->rollback();
             throw $e;
         }
