@@ -14,6 +14,9 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper;
+use DeskPRO\Component\Util\Audio\Wav\AudioFile;
+use DeskPRO\Component\Util\Audio\Wav\IO;
+use DeskPRO\Component\Util\Audio\Wav\Parser;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
@@ -177,6 +180,47 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 if (!empty($data['recording_sid'])) {
                     $this->providerHelper->deleteRecording($phoneCall, $data['recording_sid']);
+                }
+            }
+
+            if ($recording instanceof VoiceRecording) {
+                $phoneCall       = $recording->getPhoneCall();
+                $recordingsCount = $phoneCall->getRecordings()->count();
+                $allDone         = true;
+                if ($recordingsCount > 1) {
+                    foreach ($phoneCall->getRecordings() as $rec) {
+                        $allDone = $allDone && (bool) $rec->getBlob();
+                    }
+                }
+                if ($allDone) {
+                    $newAudioFile = null;
+                    $parser       = new Parser();
+                    $duration     = 0;
+                    foreach ($phoneCall->getRecordings() as $rec) {
+                        $blobString = $this->blobStorage->copyBlobRecordToString($rec->getBlob());
+                        if (!$newAudioFile) {
+                            $newAudioFile = $parser->parseString($blobString);
+                        } else {
+                            /* @var AudioFile $newAudioFile */
+                            $newAudioFile->append($parser->parseString($blobString));
+                        }
+
+                        $duration += $rec->getDuration();
+                    }
+                    $newBlobString = IO::saveAudioToMemory($newAudioFile);
+                    $newBlob       = $this->blobStorage->createBlobRecordFromString(
+                        $newBlobString,
+                        'call_record_'.$phoneCall->getId().'_merged.wav',
+                        'wav'
+                    );
+                    $this->em->persist($newBlob);
+                    $newRecording = new VoiceRecording();
+                    $newRecording
+                        ->setDuration($duration)
+                        ->setBlob($newBlob)
+                        ->setPhoneCall($phoneCall);
+                    $this->em->persist($newRecording);
+                    $this->em->flush();
                 }
             }
 
