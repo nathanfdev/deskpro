@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Email;
 use Application\DeskPRO\Email\EmailSource\PropertyMapper;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -23,30 +22,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiModes({"master_key", "key"})
  * @ApiUserContext("open")
  * @Rest\Route("/incoming-emails")
- * @ApiDoc(
- *     target="all",
- *     section="Email",
- *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\EmailSource"
- * )
  */
 class IncomingEmailController extends BaseController
 {
     /**
-     * @ApiDoc(
-     *      description="Get a resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="We will return such status in case we found your entity",
-     *          404="Not Found error will returned in case we can't find entity with specified ID"
-     *      }
-     * )
      * @Rest\Get("/{uuid}")
      *
      * @param Request $request
@@ -62,25 +41,6 @@ class IncomingEmailController extends BaseController
     /**
      * Process a particular email.
      *
-     * @ApiDoc(
-     *      description="Execute a resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      parameters={
-     *          {"name"="force", "description"="", "dataType"="boolean", "required"=false}
-     *      },
-     *      statusCodes={
-     *          423="Source status is processing",
-     *          304="Source already processed",
-     *          422="Source status is error",
-     *      }
-     * )
      * @Rest\Post("/{uuid}/execute")
      *
      * @param $request
@@ -155,17 +115,6 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Abort",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      }
-     * )
      * @Rest\Post("/{uuid}/abort")
      *
      * @param $request
@@ -185,17 +134,6 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Retry",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      }
-     * )
      * @Rest\Post("/{uuid}/retry")
      *
      * @param $request
@@ -215,21 +153,6 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Get a resource log",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="We will return such status in case we found your entity",
-     *          404="Not Found error will returned in case we can't find entity with specified ID"
-     *      }
-     * )
      * @Rest\Get("/{uuid}/log")
      *
      * @param Request $request
@@ -258,12 +181,6 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Create entity",
-     *      tags={"CRUD"="#ffa500"}
-     * )
-     *
-     *
      * @Rest\Post("/{uuid}", condition="request.headers.get('Content-Type') matches '#message/rfc822#i'")
      *
      * @param $request

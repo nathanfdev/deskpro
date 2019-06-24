@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Email;
 
 use Application\EmailBundle\Entity\SendmailSource;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -19,30 +18,10 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes({"master_key", "key"})
  * @ApiUserContext("open")
  * @Rest\Route("/outgoing-emails")
- * @ApiDoc(
- *     target="all",
- *     section="Email",
- *     output="Application\EmailBundle\Entity\SendmailSource"
- * )
  */
 class OutgoingEmailController extends BaseController
 {
     /**
-     * @ApiDoc(
-     *      description="Get a resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="We will return such status in case we found your entity",
-     *          404="Not Found error will returned in case we can't find entity with specified ID"
-     *      }
-     * )
      * @Rest\Get("/{uuid}")
      *
      * @param Request $request
@@ -58,25 +37,6 @@ class OutgoingEmailController extends BaseController
     /**
      * Process a particular email.
      *
-     * @ApiDoc(
-     *      description="Execute a resource",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      parameters={
-     *          {"name"="force", "description"="", "dataType"="boolean", "required"=false}
-     *      },
-     *      statusCodes={
-     *          423="Source status is processing",
-     *          304="Source already processed",
-     *          422="Source status is error",
-     *      }
-     * )
      * @Rest\Post("/{uuid}/send", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param $request
@@ -113,15 +73,6 @@ class OutgoingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Batch send action",
-     *      tags={"CRUD"="#ffa500"},
-     *      parameters={
-     *          {"name"="uuids", "description"="", "dataType"="array", "required"=true}
-     *      }
-     * )
-     *
-     *
      * @Rest\Post("/batch/send")
      *
      * @param $request
@@ -168,17 +119,6 @@ class OutgoingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Abort",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      }
-     * )
      * @Rest\Post("/{uuid}/abort")
      *
      * @param $request
@@ -198,17 +138,6 @@ class OutgoingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Retry",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      }
-     * )
      * @Rest\Post("/{uuid}/retry")
      *
      * @param $request
@@ -228,21 +157,6 @@ class OutgoingEmailController extends BaseController
     }
 
     /**
-     * @ApiDoc(
-     *      description="Get a resource log",
-     *      tags={"CRUD"="#ffa500"},
-     *      requirements={
-     *          {
-     *              "name"="uuid",
-     *              "description"="The uuid of the resource",
-     *              "dataType"="string"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="We will return such status in case we found your entity",
-     *          404="Not Found error will returned in case we can't find entity with specified ID"
-     *      }
-     * )
      * @Rest\Get("/{uuid}/log")
      *
      * @param Request $request
