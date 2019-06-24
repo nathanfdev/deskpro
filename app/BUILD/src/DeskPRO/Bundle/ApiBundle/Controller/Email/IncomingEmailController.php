@@ -10,7 +10,6 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
-use DeskPRO\Component\Util\RandUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormInterface;
@@ -265,18 +264,21 @@ class IncomingEmailController extends BaseController
      * )
      *
      *
-     * @Rest\Post("", condition="request.headers.get('Content-Type') matches '#message/rfc822#i'")
+     * @Rest\Post("/{uuid}", condition="request.headers.get('Content-Type') matches '#message/rfc822#i'")
      *
      * @param $request
      *
      * @return View
      */
-    public function postAction(Request $request)
+    public function postAction(Request $request, $uuid)
     {
+        if ($this->getManager()->getRepository(EmailSource::class)->findOneByUuid($uuid)) {
+            return View::create(null, Response::HTTP_CONFLICT);
+        }
+
         $eml = $request->getContent();
 
         $errors = $this->get('validator')->validate($eml, [
-            new Assert\Length(['max' => 25 * 1024 * 1024]),
             new Assert\NotBlank(),
         ]);
 
@@ -295,7 +297,7 @@ class IncomingEmailController extends BaseController
         $source         = new EmailSource();
         $source['blob'] = $blob;
         $source->fromArray([
-            'uuid'           => RandUtils::uuidV4(),
+            'uuid'           => $uuid,
             'headers'        => '',
             'status'         => EmailSource::STATUS_INSERTING,
             'from_email'     => '',

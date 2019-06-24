@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
+use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -252,6 +253,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
+        $this->setUuid(RandUtils::uuidV4());
     }
 
     /**
