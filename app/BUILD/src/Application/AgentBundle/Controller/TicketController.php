@@ -4583,9 +4583,13 @@ class TicketController extends AbstractController
 
         if ($doAssignAgent) {
             $ticket->setAgentId($options['agent_id']);
+        } else {
+            $ticket->setAgent(null);
         }
         if ($doAssignTeam) {
             $ticket->setAgentTeamId($options['agent_team_id']);
+        } else {
+            $ticket->setAgentTeam(null);
         }
 
         $account = $this->getAccount($ticket);
@@ -4595,7 +4599,7 @@ class TicketController extends AbstractController
         foreach ($messages as $message) {
             $messageCopy     = clone $message;
             $messageCopy->id = null;
-            $messageCopy->setTicket($newTicket);
+            $messageCopy->setTicket($ticket);
             $this->em->persist($messageCopy);
         }
 
