@@ -145,6 +145,7 @@ class TicketEmail
             'from_email_account',
             'to_person_email',
             'cc_users',
+            'bccs',
             'is_auto',
             'max_attach_size',
             'logger',

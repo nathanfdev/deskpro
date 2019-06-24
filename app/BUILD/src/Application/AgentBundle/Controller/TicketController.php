@@ -4538,12 +4538,6 @@ class TicketController extends AbstractController
             $newTicket = $ticketManager->createTicket();
             $this->em->commit();
             $ticket->copyTo($newTicket);
-            foreach ($messages as $message) {
-                $messageCopy     = clone $message;
-                $messageCopy->id = null;
-                $messageCopy->setTicket($newTicket);
-                $this->em->persist($messageCopy);
-            }
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;
@@ -4598,6 +4592,13 @@ class TicketController extends AbstractController
 
         $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
 
+        foreach ($messages as $message) {
+            $messageCopy     = clone $message;
+            $messageCopy->id = null;
+            $messageCopy->setTicket($newTicket);
+            $this->em->persist($messageCopy);
+        }
+
         $ticketMessage = new TicketMessage();
         $ticketMessage->setPerson($this->person);
         $ticketMessage->setIpAddress($this->getRequest()->getClientIp());
@@ -4607,6 +4608,8 @@ class TicketController extends AbstractController
         $ticket->addMessage($ticketMessage);
 
         $ticketManager->saveTicket($newTicket, $context);
+        $this->em->persist($ticketMessage);
+
         $this->em->persist($newTicket);
         $this->em->persist($ticket);
 
