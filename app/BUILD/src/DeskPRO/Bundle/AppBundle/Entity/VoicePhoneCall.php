@@ -187,6 +187,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $dateStarted;
 
     /**
+     * @ORM\Column(name="date_waiting", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    private $dateWaiting;
+
+    /**
      * @ORM\Column(name="date_ended", type="datetime", nullable=true)
      *
      * @var \DateTime
@@ -245,6 +252,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->ticketMessageAttributes = new ArrayCollection();
         $this->recordings              = new ArrayCollection();
         $this->dateCreated             = new \DateTime();
+        $this->dateWaiting             = new \DateTime();
     }
 
     /**
@@ -760,6 +768,27 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setDateStarted(\DateTime $dateStarted = null)
     {
         $this->setModelField('dateStarted', $dateStarted);
+        $this->setDateWaiting(null);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateWaiting()
+    {
+        return $this->dateWaiting;
+    }
+
+    /**
+     * @param \DateTime $dateWaiting
+     *
+     * @return $this
+     */
+    public function setDateWaiting(\DateTime $dateWaiting = null)
+    {
+        $this->setModelField('dateWaiting', $dateWaiting);
 
         return $this;
     }
@@ -780,6 +809,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setDateEnded(\DateTime $dateEnded = null)
     {
         $this->setModelField('dateEnded', $dateEnded);
+        $this->setDateWaiting(null);
 
         return $this;
     }

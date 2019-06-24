@@ -82,7 +82,7 @@ class CallFrom extends React.Component {
           )}
         </div>
         <div className="call-waiting-time">
-          waiting <Timer format="waiting_time" />
+          waiting <Timer format="waiting_time" startTime={incomingCall.getIn(['phone_call', 'waiting_time'])} />
         </div>
       </div>
     );
