@@ -10,7 +10,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Strings;
 
 /**
  * Templates used in the system.
@@ -250,10 +249,22 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
      */
     public static function getGroupFromName($name)
     {
-        $groupname = Strings::rexplode('.', $name, 2);
-        $groupname = array_shift($groupname);
+        if (!is_string($name)) {
+            return false;
+        }
 
-        return $groupname;
+        $parts = explode('.', $name);
+
+        // foo.bar         => foo
+        // foo.bar.baz     => foo.bar
+        // foo.bar.baz.hoo => foo.bar
+        // portal.articles.view-x-articles.one => portal.articles
+        $name = $parts[0];
+        if (isset($parts[2])) {
+            $name .= '.'.$parts[1];
+        }
+
+        return $name;
     }
 
     //###########################################################################
