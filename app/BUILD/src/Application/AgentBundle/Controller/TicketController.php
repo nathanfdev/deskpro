@@ -4620,7 +4620,8 @@ class TicketController extends AbstractController
             ->setFromName($fromName)
             ->setFromEmailAccount($account)
             ->setMaxAttachSize($this->container->getSetting('core.sendemail_attach_maxsize'))
-            ->setLogger($context->getLogger());
+            ->setLogger($context->getLogger())
+            ->setBccs($bccs);
 
         if (count($ccs) > 0) {
             $emailBuilder->enableUserCc();
@@ -4649,6 +4650,10 @@ class TicketController extends AbstractController
 
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, [], $message);
+
+            foreach ($bccs as $k => $x) {
+                $message->addBcc($k, $x);
+            }
 
             $mailer = $this->container->getMailer();
             if ($mailer instanceof StorageTransportInterface) {
