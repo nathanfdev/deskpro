@@ -192,7 +192,7 @@ class TicketEmailBuilder
 
     /**
      * What type of user the email is intended for. This is a safety feature.
-     * For examlpe, if it's an agent email but the user isn't an agent, we can catch
+     * For example, if it's an agent email but the user isn't an agent, we can catch
      * an error.
      *
      * @return TicketEmailBuilder
@@ -272,6 +272,20 @@ class TicketEmailBuilder
     public function disableUserCc()
     {
         $this->options->set('cc_users', false);
+
+        return $this;
+    }
+
+    /**
+     * On user emails, this will add BCC.
+     *
+     * @param $bccs
+     *
+     * @return $this
+     */
+    public function setBccs($bccs)
+    {
+        $this->options->set('bccs', $bccs);
 
         return $this;
     }

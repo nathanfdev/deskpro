@@ -56,10 +56,13 @@ use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use Application\DeskPRO\Tickets\TicketDisplay;
+use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
@@ -4273,48 +4276,6 @@ class TicketController extends AbstractController
 
         $options = $this->in->getArrayValue('options');
 
-        if ($options['fwd_new_ticket'] === 'true') {
-            $this->em->beginTransaction();
-            $doAssignAgent = $options['do_assign_agent'] === 'true';
-            $doAssignTeam  = $options['do_assign_team'] === 'true';
-
-            $ticketManager = $this->container->getTicketManager();
-            $ticketManager->markAsManaged($ticket);
-
-            try {
-                $newTicket = $ticketManager->createTicket();
-                $this->em->commit();
-                $ticket->copyTo($newTicket);
-                $messages = $ticket->getMessages();
-                foreach ($messages as $message) {
-                    $messageCopy     = clone $message;
-                    $messageCopy->id = null;
-                    $messageCopy->setTicket($newTicket);
-                    $this->em->persist($messageCopy);
-                }
-                $ticketManager->markAsUnmanaged($ticket);
-            } catch (\Exception $e) {
-                $ticketManager->markAsUnmanaged($ticket);
-                $this->em->rollback();
-                throw $e;
-            }
-            $this->em->persist($newTicket);
-
-            $this->em->flush();
-
-            $oldTicket = $ticket;
-            $ticket    = $newTicket;
-
-            $ticket->setParentTicket($oldTicket);
-
-            if ($doAssignAgent) {
-                $ticket->setAgentId($options['agent_id']);
-            }
-            if ($doAssignTeam) {
-                $ticket->setAgentTeamId($options['agent_team_id']);
-            }
-        }
-
         foreach ($allRawTo as $rowId => $to) {
             $to = trim($to);
             if (!$to) {
@@ -4405,6 +4366,10 @@ class TicketController extends AbstractController
             return str_replace($accessCodes, '', $body);
         });
 
+        $message->getHeaders()->get('Message-ID')->setId($ticket->getUniqueEmailMessageId());
+        $message->getHeaders()->addIdHeader('References', $ticket->getEmailReferencesHeader());
+        $message->getHeaders()->addIdHeader('In-Reply-To', $ticket->getEmailReferencesHeader());
+
         foreach ($tos as $k => $x) {
             $message->addTo($k, $x);
         }
@@ -4442,6 +4407,20 @@ class TicketController extends AbstractController
             if ($useMyAddress) {
                 $message->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $fromEmail);
             }
+        }
+
+        if ($options['fwd_new_ticket'] === 'true') {
+            return $this->forwardAsNew(
+                $ticket,
+                $tos,
+                $ccs,
+                $bccs,
+                $fromEmail,
+                $fromName,
+                $customMessage,
+                $messages,
+                $options
+            );
         }
 
         $max  = App::getSetting('core.sendemail_attach_maxsize');
@@ -4495,7 +4474,12 @@ class TicketController extends AbstractController
                 ]
             );
         }
-        $this->container->getMailer()->send($message);
+        $mailer = $this->container->getMailer();
+        if ($mailer instanceof StorageTransportInterface) {
+            $mailer->queueMessage($message);
+        } else {
+            $mailer->send($message);
+        }
 
         foreach ($messagesIds as $messageId) {
             // Log the action
@@ -4529,6 +4513,216 @@ class TicketController extends AbstractController
                 ]
             );
         }
+
+        return $this->createJsonResponse(['success' => true]);
+    }
+
+    protected function forwardAsNew(
+        $ticket,
+        $tos,
+        $ccs,
+        $bccs,
+        $fromEmail,
+        $fromName,
+        $customMessage,
+        $messages,
+        $options
+    ) {
+        $this->em->beginTransaction();
+        $doAssignAgent = $options['do_assign_agent'] === 'true';
+        $doAssignTeam  = $options['do_assign_team'] === 'true';
+
+        $ticketManager = $this->container->getTicketManager();
+
+        try {
+            $newTicket = $ticketManager->createTicket();
+            $this->em->commit();
+            $ticket->copyTo($newTicket);
+            foreach ($messages as $message) {
+                $messageCopy     = clone $message;
+                $messageCopy->id = null;
+                $messageCopy->setTicket($newTicket);
+                $this->em->persist($messageCopy);
+            }
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw $e;
+        }
+        $newTicket->setParentTicket($ticket);
+
+        $oldTicket = $ticket;
+        $ticket    = $newTicket;
+
+        reset($tos);
+        $toEmail = key($tos);
+        $toName  = current($tos);
+
+        $person = $this->em->getRepository(Person::class)->findOneByEmail($toEmail);
+
+        if (!$person) {
+            $person = Person::newContactPerson(['email' => $toEmail, 'name' => $toName]);
+        }
+
+        $ticket->setPerson($person);
+
+        foreach ($ccs as $emailAddress => $name) {
+            $person = $this->em->getRepository(Person::class)->findOneByEmail($emailAddress);
+
+            if (!$person) {
+                $person = new Person();
+                $person->setEmail($emailAddress);
+                if ($name) {
+                    $person->setName($name);
+                }
+            }
+
+            if (!$person->id) {
+                $this->em->persist($person);
+                $this->em->flush();
+            }
+
+            $part = $ticket->addParticipantPerson($person);
+            if ($part) {
+                $this->em->persist($part);
+            }
+        }
+
+        if ($doAssignAgent) {
+            $ticket->setAgentId($options['agent_id']);
+        }
+        if ($doAssignTeam) {
+            $ticket->setAgentTeamId($options['agent_team_id']);
+        }
+
+        $account = $this->getAccount($ticket);
+
+        $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+
+        $ticketMessage = new TicketMessage();
+        $ticketMessage->setPerson($this->person);
+        $ticketMessage->setIpAddress($this->getRequest()->getClientIp());
+        $ticketMessage->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
+        $ticketMessage->setMessageHtml($customMessage);
+
+        $ticket->addMessage($ticketMessage);
+
+        $ticketManager->saveTicket($newTicket, $context);
+        $this->em->persist($newTicket);
+        $this->em->persist($ticket);
+
+        $this->em->flush();
+
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->container)
+            ->setTicket($ticket)
+            ->setToPerson($person)
+            ->setUserMode()
+            ->setTemplateName('DeskPRO:emails_user:ticket-fwd.html.twig')
+            ->setFromName($fromName)
+            ->setFromEmailAccount($account)
+            ->setMaxAttachSize($this->container->getSetting('core.sendemail_attach_maxsize'))
+            ->setLogger($context->getLogger())
+            ->setBccs($bccs);
+
+        if (count($ccs) > 0) {
+            $emailBuilder->enableUserCc();
+        }
+
+        /** @var TicketEmail $ticketEmail */
+        $ticketEmail = $emailBuilder->buildTicketEmail();
+
+        $vars = [
+            'ticket'        => $ticket,
+            'subject'       => $this->in->getString('subject'),
+            'messages'      => $messages,
+            'person'        => $this->getPerson(),
+            'agent_message' => $customMessage,
+        ];
+
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.agent_viewmodel_factory')
+                ->createAgentTicketForwardModel(
+                    $ticket,
+                    $customMessage,
+                    $this->in->getString('subject')
+                );
+
+            $message = $ticketEmail->prepareMailerMessage([], false);
+
+            $message = $this->getContainer()->get('email.email_sender')
+                ->prepareMessage($viewModel, [], $message);
+
+            foreach ($bccs as $k => $x) {
+                $message->addBcc($k, $x);
+            }
+
+            $mailer = $this->container->getMailer();
+            if ($mailer instanceof StorageTransportInterface) {
+                $mailer->queueMessage($message);
+            } else {
+                $mailer->send($message);
+            }
+        } else {
+            $ticketEmail->send($vars);
+        }
+
+        $this->db->insert(
+            'tickets_logs',
+            [
+                'ticket_id'   => $oldTicket->id,
+                'person_id'   => $this->person->id,
+                'action_type' => 'message_forwarded_as_new',
+                'details'     => serialize(
+                    [
+                        'agent_id'       => $this->person->id,
+                        'agent_name'     => $this->person->getDisplayName(),
+                        'to'             => array_keys($tos),
+                        'cc'             => array_keys($ccs),
+                        'bcc'            => array_keys($bccs),
+                        'all_rec_string' => implode(
+                            ', ',
+                            array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                        ),
+                        'to_string'      => implode(', ', array_keys($tos)),
+                        'cc_string'      => implode(', ', array_keys($ccs)),
+                        'bcc_string'     => implode(', ', array_keys($bccs)),
+                        'from_email'     => $fromEmail,
+                        'from_name'      => $fromName,
+                        'custom_message' => $customMessage ?: null,
+                        'new_ticket_id'  => $ticket->id,
+                    ]
+                ),
+                'date_created' => date('Y-m-d H:i:s'),
+            ]
+        );
+        $this->db->insert(
+            'tickets_logs',
+            [
+                'ticket_id'   => $ticket->id,
+                'person_id'   => $this->person->id,
+                'action_type' => 'created_by_forward',
+                'details'     => serialize(
+                    [
+                        'agent_id'       => $this->person->id,
+                        'agent_name'     => $this->person->getDisplayName(),
+                        'to'             => array_keys($tos),
+                        'cc'             => array_keys($ccs),
+                        'bcc'            => array_keys($bccs),
+                        'all_rec_string' => implode(
+                            ', ',
+                            array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                        ),
+                        'to_string'      => implode(', ', array_keys($tos)),
+                        'cc_string'      => implode(', ', array_keys($ccs)),
+                        'bcc_string'     => implode(', ', array_keys($bccs)),
+                        'from_email'     => $fromEmail,
+                        'from_name'      => $fromName,
+                        'custom_message' => $customMessage ?: null,
+                        'old_ticket_id'  => $oldTicket->id,
+                    ]
+                ),
+                'date_created' => date('Y-m-d H:i:s'),
+            ]
+        );
 
         return $this->createJsonResponse(['success' => true]);
     }

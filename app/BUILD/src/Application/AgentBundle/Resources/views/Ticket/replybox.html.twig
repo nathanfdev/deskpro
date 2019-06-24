@@ -192,7 +192,7 @@
 							<div class="label">
 								{{ phrase('agent.general.add') }}:
 							</div>
-							<span data-add="to" class="fwd-control-add" style="cursor: pointer">To</span> |
+							<span class="fwd-as-new-hide"><span data-add="to" class="fwd-control-add" style="cursor: pointer">To</span> |</span>
 							<span data-add="cc" class="fwd-control-add" style="cursor: pointer">CC</span> |
 							<span data-add="cc" data-set-email="{{ ticket.person.getEmailAddress() }}" class="fwd-control-add" title="{{ phrase('agent.tickets.forward_cc_ticket_owner') }}: {{ ticket.person.getDisplayContact() }}" style="cursor: pointer">CC {{ phrase('agent.general.sender') }}</span> |
 							<span data-add="bcc" class="fwd-control-add" style="cursor: pointer">BCC</span>
