@@ -201,6 +201,17 @@ class MissedCall extends React.Component {
           <div className="voicemail-record-date-created">
             {moment(record.get('date_created')).fromNow()}
           </div>
+          <div className="voicemail-person-name">
+            {person && (person.get('name') || person.get('primary_email'))
+              ? <a onClick={this.openPerson}>
+                {person.get('name')}
+                <span className="voicemail-person-email" title={person.get('primary_email')}>
+                  {person.get('primary_email')}
+                </span>
+              </a>
+              : <span>Unknown user</span>
+            }
+          </div>
           {recording &&
           <div className="voicemail-record-duration">
             <MediaControls
@@ -211,16 +222,6 @@ class MissedCall extends React.Component {
             />
             <WaitingFormat value={record.get('duration')} />
           </div>}
-
-          <div className="voicemail-person-name">
-            {person && person.get('name')
-              ? <a onClick={this.openPerson}>
-                {person.get('name')}
-                <span className="voicemail-person-email">{person.get('primary_email')}</span>
-              </a>
-              : <span>Unknown user</span>
-            }
-          </div>
           <div>{phoneCall.get('external_number')}</div>
 
           <div className="voice-record-actions">
@@ -235,6 +236,11 @@ class MissedCall extends React.Component {
                 Call Back
               </a>
             </span>}
+            <span className="voice-record-action">
+              <a onClick={this.deleteRecording}>
+                Delete
+              </a>
+            </span>
             {recording &&
             <span className="voice-record-action">
               <a
@@ -246,11 +252,6 @@ class MissedCall extends React.Component {
                 Download
               </a>
             </span>}
-            <span className="voice-record-action">
-              <a onClick={this.deleteRecording}>
-                Delete
-              </a>
-            </span>
           </div>
         </div>
       </div>
