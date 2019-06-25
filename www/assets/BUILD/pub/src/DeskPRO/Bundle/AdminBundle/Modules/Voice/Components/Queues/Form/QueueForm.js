@@ -52,7 +52,7 @@ class QueueForm extends BaseForm {
       brand:                queue ? queue.get('brand') : null,
       agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
       routing_model:        queue ? queue.get('routing_model') : 'round_robin',
-      max_queue_size:       queue ? queue.get('max_queue_size') : 0,
+      max_queue_size:       queue ? queue.get('max_queue_size') : 1,
       greet_asset:          greetAsset ? greetAsset.toJS() : null,
       loop_asset:           loopAsset ? loopAsset.toJS() : null,
       voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
@@ -68,6 +68,9 @@ class QueueForm extends BaseForm {
   transformSubmitData(data) { // eslint-disable-line
     if (!data.voicemail_timeout) {
       data.voicemail_timeout = 30;
+    }
+    if (!data.max_queue_size) {
+      data.max_queue_size = 1;
     }
 
     return data;

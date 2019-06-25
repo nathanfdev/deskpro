@@ -155,6 +155,8 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="answer_timeout", type="integer")
      *
+     * @Assert\GreaterThanOrEqual("10")
+     *
      * @var int
      */
     private $answerTimeout = 15;
@@ -172,9 +174,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="max_queue_size", type="integer")
      *
+     * @Assert\GreaterThanOrEqual("1")
+     *
      * @var int
      */
-    private $maxQueueSize = 0;
+    private $maxQueueSize = 1;
 
     /**
      * @ORM\Column(name="recording_enabled", type="boolean")
