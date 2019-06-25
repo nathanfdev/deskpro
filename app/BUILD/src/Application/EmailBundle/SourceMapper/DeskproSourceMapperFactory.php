@@ -11,6 +11,7 @@ use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitFactory;
 use Application\EmailBundle\SourceMapper\PendingQueuer\CloudEmailPendingQueuer;
 use Application\EmailBundle\SourceMapper\PendingQueuer\CloudEmailPendingSQSQueuer;
 use Application\EmailBundle\SourceMapper\PendingQueuer\RedisPendingQueuer;
+use Application\EmailBundle\SourceMapper\PendingQueuer\SQSPendingQueuer;
 use Predis;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -90,6 +91,12 @@ class DeskproSourceMapperFactory
             $resolver = $container->get('settings_resolver');
             $apiKey   = $resolver->getGlobalSettings()->get('api_auth.master_key', '');
             $queuer   = CloudEmailPendingSQSQueuer::create($queueUrl, $apiKey);
+
+            $external = new ExternalPendingQueue($source_mapper, $queuer);
+
+            return $external;
+        } elseif ($queueUrl = $env->getConfig('settings.sendmail_sqs_queue')) {
+            $queuer = SQSPendingQueuer::create($queueUrl);
 
             $external = new ExternalPendingQueue($source_mapper, $queuer);
 
