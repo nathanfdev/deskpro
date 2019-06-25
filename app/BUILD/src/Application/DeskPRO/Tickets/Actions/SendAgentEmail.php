@@ -160,7 +160,6 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             && $lastMessage->getAttribute('voice_phone_call')
             && preg_match('/^Voicemail from/', $lastMessage->getMessage())
             && $voiceSettings->isTranscribeVoicemail()
-            && $voiceSettings->isEmailAttachRecording()
             && $voiceSettings->isEmailAttachTranscription()
             && $context->getEventType() === 'newticket'
             && !$context->getVars()->get('run_transcription_processor')
