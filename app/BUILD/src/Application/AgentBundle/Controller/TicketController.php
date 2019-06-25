@@ -4409,20 +4409,6 @@ class TicketController extends AbstractController
             }
         }
 
-        if ($options['fwd_new_ticket'] === 'true') {
-            return $this->forwardAsNew(
-                $ticket,
-                $tos,
-                $ccs,
-                $bccs,
-                $fromEmail,
-                $fromName,
-                $customMessage,
-                $messages,
-                $options
-            );
-        }
-
         $max  = App::getSetting('core.sendemail_attach_maxsize');
         $size = 0;
 
@@ -4450,6 +4436,20 @@ class TicketController extends AbstractController
             }
             $size += (int) $blob->filesize;
             $message->attachBlob($blob, $blob->getDownloadUrl(true), false);
+        }
+
+        if ($options['fwd_new_ticket'] === 'true') {
+            return $this->forwardAsNew(
+                $ticket,
+                $tos,
+                $ccs,
+                $bccs,
+                $fromEmail,
+                $fromName,
+                $customMessage,
+                $messages,
+                $options
+            );
         }
 
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
@@ -4480,6 +4480,8 @@ class TicketController extends AbstractController
         } else {
             $mailer->send($message);
         }
+
+        $this->em->getRepository(Draft::class)->deleteDraft('ticket', $ticket->getId());
 
         foreach ($messagesIds as $messageId) {
             // Log the action
@@ -4514,7 +4516,10 @@ class TicketController extends AbstractController
             );
         }
 
-        return $this->createJsonResponse(['success' => true]);
+        return $this->createJsonResponse([
+            'success'   => true,
+            'close_tab' => $this->in->getString('options.close_tab') === "true"
+        ]);
     }
 
     protected function forwardAsNew(
@@ -4544,6 +4549,7 @@ class TicketController extends AbstractController
         }
         $newTicket->setParentTicket($ticket);
 
+        /** @var Ticket $oldTicket */
         $oldTicket = $ticket;
         $ticket    = $newTicket;
 
@@ -4627,8 +4633,7 @@ class TicketController extends AbstractController
             ->setFromName($fromName)
             ->setFromEmailAccount($account)
             ->setMaxAttachSize($this->container->getSetting('core.sendemail_attach_maxsize'))
-            ->setLogger($context->getLogger())
-            ->setBccs($bccs);
+            ->setLogger($context->getLogger());
 
         if (count($ccs) > 0) {
             $emailBuilder->enableUserCc();
@@ -4672,15 +4677,17 @@ class TicketController extends AbstractController
             $ticketEmail->send($vars);
         }
 
+        $this->em->getRepository(Draft::class)->deleteDraft('ticket', $oldTicket->getId());
+
         $this->db->insert(
             'tickets_logs',
             [
-                'ticket_id'   => $oldTicket->id,
-                'person_id'   => $this->person->id,
+                'ticket_id'   => $oldTicket->getId(),
+                'person_id'   => $this->person->getId(),
                 'action_type' => 'message_forwarded_as_new',
                 'details'     => serialize(
                     [
-                        'agent_id'       => $this->person->id,
+                        'agent_id'       => $this->person->getId(),
                         'agent_name'     => $this->person->getDisplayName(),
                         'to'             => array_keys($tos),
                         'cc'             => array_keys($ccs),
@@ -4704,12 +4711,12 @@ class TicketController extends AbstractController
         $this->db->insert(
             'tickets_logs',
             [
-                'ticket_id'   => $ticket->id,
-                'person_id'   => $this->person->id,
+                'ticket_id'   => $ticket->getId(),
+                'person_id'   => $this->person->getId(),
                 'action_type' => 'created_by_forward',
                 'details'     => serialize(
                     [
-                        'agent_id'       => $this->person->id,
+                        'agent_id'       => $this->person->getId(),
                         'agent_name'     => $this->person->getDisplayName(),
                         'to'             => array_keys($tos),
                         'cc'             => array_keys($ccs),
@@ -4731,7 +4738,13 @@ class TicketController extends AbstractController
             ]
         );
 
-        return $this->createJsonResponse(['success' => true]);
+        return $this->createJsonResponse([
+            'success'        => true,
+            'close_tab'      => $this->in->getString('options.close_tab') === "true",
+            'new_ticket_url' => $this->generateUrl('agent_ticket_view', [
+                'ticket_id' => $ticket->getId()
+            ])
+        ]);
     }
 
     //###########################################################################

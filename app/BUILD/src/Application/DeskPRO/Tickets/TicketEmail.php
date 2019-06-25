@@ -145,7 +145,6 @@ class TicketEmail
             'from_email_account',
             'to_person_email',
             'cc_users',
-            'bccs',
             'is_auto',
             'max_attach_size',
             'logger',
@@ -169,7 +168,6 @@ class TicketEmail
         $this->doCcUsers     = $opt->get('cc_users', false);
         $this->isAuto        = $opt->get('is_auto', false);
         $this->maxAttachSize = $opt->get('max_attach_size', 0);
-        $this->bccs          = $opt->get('bccs', []);
 
         $this->userMode = $opt->get('user_mode');
         $this->headers  = $opt->get('headers', []);
@@ -343,12 +341,6 @@ class TicketEmail
                     $message->addCc($ccEmail, $ccName);
                     $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $ccEmail, $ccName));
                 }
-            }
-        }
-
-        if (count($this->bccs) > 0) {
-            foreach ($this->bccs as $k => $x) {
-                $message->addBcc($k, $x);
             }
         }
 

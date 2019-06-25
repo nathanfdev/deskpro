@@ -277,20 +277,6 @@ class TicketEmailBuilder
     }
 
     /**
-     * On user emails, this will add BCC.
-     *
-     * @param $bccs
-     *
-     * @return $this
-     */
-    public function setBccs($bccs)
-    {
-        $this->options->set('bccs', $bccs);
-
-        return $this;
-    }
-
-    /**
      * If this is an automatic email (e.g., auto-reply), then this will add 'auto' headers
      * to the email. These special headers prevent other automated systems from sending their
      * own auto-replies.
