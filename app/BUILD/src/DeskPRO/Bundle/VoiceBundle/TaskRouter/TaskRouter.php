@@ -137,6 +137,15 @@ class TaskRouter
                     // re-route timeout
                     if ($task->isAssignExpired()) {
                         $task->setDateExpireAssigned(null);
+
+                        // trigger event before removing workers
+                        // so we can get the list of the workers in event handlers
+                        try {
+                            $this->dispatcher->dispatch(TaskRouterEvent::ASSIGN_TIMEOUT, new TaskRouterEvent($task));
+                        } catch (\Exception $e) {
+                            SystemErrorHandler::logException($e);
+                        }
+
                         // remove pending task
                         $workers = $this->storage->getWorkers($task->getWorkerIds());
                         foreach ($workers as $worker) {
@@ -144,12 +153,6 @@ class TaskRouter
 
                             $worker->removePendingTask($task);
                             $this->storage->saveWorker($worker);
-                        }
-
-                        try {
-                            $this->dispatcher->dispatch(TaskRouterEvent::ASSIGN_TIMEOUT, new TaskRouterEvent($task));
-                        } catch (\Exception $e) {
-                            SystemErrorHandler::logException($e);
                         }
 
                         $this->storage->saveTask($task);

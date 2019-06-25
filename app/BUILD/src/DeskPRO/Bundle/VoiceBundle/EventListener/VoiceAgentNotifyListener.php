@@ -75,6 +75,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     {
         return [
             TaskRouterEvent::ASSIGNED                => [['onAssigned'], ['workerBusyHandler']],
+            TaskRouterEvent::ASSIGN_TIMEOUT          => 'onAssignTimeout',
             TaskRouterEvent::ACCEPTED                => 'onAccepted',
             TaskRouterEvent::TASK_CANCELED           => 'onCanceled',
             TaskRouterEvent::REJECTED                => [['onCanceled'], ['workerIdleHandler']],
@@ -127,6 +128,34 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'from_agent_id'      => $task->getAttribute('from_agent_id') ?: null,
                 'phone_call'         => $serializedPhoneCall,
                 'target'             => array_map(function (Worker $worker) {
+                    return $worker->getTypeId();
+                }, $this->storage->getWorkers($task->getWorkerIds())),
+            ]
+        ));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function onAssignTimeout(TaskRouterEvent $event)
+    {
+        $task = $event->getTask();
+        if (!$task) {
+            return;
+        }
+
+        $phoneCall = $this->taskHelper->getPhoneCall($task);
+        if (!$phoneCall) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.incoming-call-timeout',
+            [
+                'call_id' => $phoneCall->getId(),
+                'target'  => array_map(function (Worker $worker) {
                     return $worker->getTypeId();
                 }, $this->storage->getWorkers($task->getWorkerIds())),
             ]

@@ -175,6 +175,9 @@ export const voiceBootstrap = createAction(
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
           }
         });
+        messageBroker.addMessageListener('agent.voice.conference.incoming-call-timeout', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
         messageBroker.addMessageListener('agent.voice.reached-voicemail', (data) => {
           dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });

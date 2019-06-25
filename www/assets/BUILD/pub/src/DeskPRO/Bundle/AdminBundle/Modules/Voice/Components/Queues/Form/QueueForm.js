@@ -60,6 +60,7 @@ class QueueForm extends BaseForm {
       voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
       voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
       voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 15,
+      answer_timeout:       queue ? queue.get('answer_timeout') : 15,
       recording_enabled:    queue ? queue.get('recording_enabled') : true,
     };
   }
@@ -114,6 +115,10 @@ class QueueForm extends BaseForm {
             {formData.value.routing_model === 'least_utilized' &&
             <Field select="max_queue_size" className="queue-size">
               <MaxQueueSize />
+            </Field>}
+            {formData.value.routing_model === 'round_robin' &&
+            <Field select="answer_timeout">
+              <AnswerTimeout />
             </Field>}
             <Field select="greet_asset" className="audio-asset" label="Greet">
               <AudioWidgetFormContainer />
@@ -207,6 +212,19 @@ class RoutingModel extends React.Component {
         <div className="help">
           {help[value]}
         </div>
+      </div>
+    );
+  }
+}
+
+class AnswerTimeout extends React.Component {
+
+  render() {
+    return (
+      <div className="answer-timeout">
+        <span>Agents have at most</span>
+        <Input {...this.props} type="number" />
+        <span>seconds before the call gets re-routed</span>
       </div>
     );
   }

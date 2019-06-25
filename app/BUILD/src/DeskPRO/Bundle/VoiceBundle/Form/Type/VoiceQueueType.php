@@ -96,6 +96,11 @@ class VoiceQueueType extends AbstractType
                     VoiceQueue::ROUTING_MODEL_SIMULRING,
                 ],
             ])
+            ->add('answer_timeout', IntegerType::class, [
+                'required'      => true,
+                'property_path' => 'answerTimeout',
+                'empty_data'    => '15',
+            ])
             ->add('max_queue_size', IntegerType::class, [
                 'required'      => true,
                 'property_path' => 'maxQueueSize',

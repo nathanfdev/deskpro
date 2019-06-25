@@ -546,6 +546,22 @@
     }
   }
 
+  .answer-timeout {
+    padding-top: 10px;
+
+    .input {
+      display: inline-block;
+      width: 50px !important;
+      margin: 0 10px;
+      position: relative;
+
+      input {
+        position: absolute;
+        top: -25px;
+      }
+    }
+  }
+
   .multi-select {
     height: 200px;
 
