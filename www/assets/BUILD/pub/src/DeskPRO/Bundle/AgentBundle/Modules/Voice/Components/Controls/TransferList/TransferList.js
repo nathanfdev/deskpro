@@ -32,6 +32,7 @@ class TransferList extends React.Component {
 
   static propTypes = {
     me:                          PropTypes.object,
+    phoneCall:                   PropTypes.object,
     target:                      PropTypes.object,
     transferDisabled:            PropTypes.bool,
     onlineAgents:                PropTypes.object,
@@ -41,7 +42,6 @@ class TransferList extends React.Component {
     busyAgents:                  PropTypes.array,
     queues:                      PropTypes.object,
     autoAttendants:              PropTypes.object,
-    connection:                  PropTypes.object,
     warmTransferToAgent:         PropTypes.func,
     coldTransferToAgent:         PropTypes.func,
     coldTransferToQueue:         PropTypes.func,
@@ -209,13 +209,13 @@ class TransferList extends React.Component {
   }
 
   render() {
-    const { connection, target } = this.props;
+    const { phoneCall, target } = this.props;
 
     if (target) {
       return (
         <div className="voice-ticket-transfer-list">
           <TransferStatus
-            connection={connection}
+            phoneCall={phoneCall}
             title="Transferring..."
             cancelLabel="Cancel transfer"
             target={target}

@@ -8,7 +8,7 @@ import Avatar from '../Common/Avatar';
 class TransferStatus extends React.Component {
 
   static propTypes = {
-    connection:  PropTypes.object,
+    phoneCall:   PropTypes.object,
     title:       PropTypes.string,
     cancelLabel: PropTypes.string,
     type:        PropTypes.string,
@@ -26,32 +26,24 @@ class TransferStatus extends React.Component {
   componentDidMount() {
     if (window.DeskPRO_Window) {
       const messageBroker = window.DeskPRO_Window.getMessageBroker();
-      messageBroker.addMessageListener('agent.voice.conference.participant-ignore', this.onIgnore);
+      messageBroker.addMessageListener('agent.voice.conference.participant-ignore', (event) => {
+        const { target, phoneCall } = this.props;
+        // call id does not match
+        if (parseInt(phoneCall.get('id'), 10) !== parseInt(event.call_id, 10)) {
+          return;
+        }
+
+        // requesting agent does not match
+        if (target.get('id') !== parseInt(event.agent_id, 10)) {
+          return;
+        }
+
+        this.setState({
+          rejected: true
+        });
+      });
     }
   }
-
-  onIgnore = (event) => {
-    const { target, connection } = this.props;
-
-    // connection was lost
-    if (!connection) {
-      return;
-    }
-
-    // call id does not match
-    if (parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
-      return;
-    }
-
-    // requesting agent does not match
-    if (target.get('id') !== parseInt(event.agent_id, 10)) {
-      return;
-    }
-
-    this.setState({
-      rejected: true
-    });
-  };
 
   cancel = (event) => {
     event.preventDefault();

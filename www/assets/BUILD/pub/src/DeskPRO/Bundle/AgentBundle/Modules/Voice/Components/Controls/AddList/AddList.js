@@ -8,11 +8,11 @@ class AddList extends React.Component {
 
   static propTypes = {
     target:           PropTypes.object,
+    phoneCall:        PropTypes.object,
     onlineAgents:     PropTypes.object,
     forwardingAgents: PropTypes.object,
     busyAgents:       PropTypes.array,
     participants:     PropTypes.array,
-    connection:       PropTypes.object,
     warmAddAgent:     PropTypes.func,
     cancelInvite:     PropTypes.func,
     inviteError:      PropTypes.string
@@ -80,13 +80,13 @@ class AddList extends React.Component {
   }
 
   render() {
-    const { connection, target } = this.props;
+    const { phoneCall, target } = this.props;
 
     if (target) {
       return (
         <div className="voice-ticket-add-list">
           <TransferStatus
-            connection={connection}
+            phoneCall={phoneCall}
             title="Adding..."
             cancelLabel="Cancel add"
             target={target}
