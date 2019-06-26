@@ -1,11 +1,11 @@
 <?php
 
-namespace DpTest\DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DpTest\DeskPRO\Bundle\AppBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DpTest\PortalTestCase;
 use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\RedirectResponse;

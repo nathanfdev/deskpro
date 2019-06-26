@@ -1,11 +1,11 @@
 <?php
 
-namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
+namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
@@ -91,7 +91,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
 
         $response_headers
             ->get(
-                \DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER,
+                \DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER,
                 Argument::type('bool')
             )
             ->willReturn(null);
@@ -153,7 +153,7 @@ class RedirectProtectionListenerSpec extends ObjectBehavior
 
         $response_headers
             ->get(
-                \DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER,
+                \DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER,
                 Argument::type('bool')
             )
             ->willReturn(null);
