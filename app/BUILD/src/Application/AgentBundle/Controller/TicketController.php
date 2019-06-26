@@ -4566,22 +4566,22 @@ class TicketController extends AbstractController
         $ticket->setPerson($person);
 
         foreach ($ccs as $emailAddress => $name) {
-            $person = $this->em->getRepository(Person::class)->findOneByEmail($emailAddress);
+            $participant = $this->em->getRepository(Person::class)->findOneByEmail($emailAddress);
 
-            if (!$person) {
-                $person = new Person();
-                $person->setEmail($emailAddress);
+            if (!$participant) {
+                $participant = new Person();
+                $participant->setEmail($emailAddress);
                 if ($name) {
-                    $person->setName($name);
+                    $participant->setName($name);
                 }
             }
 
-            if (!$person->id) {
-                $this->em->persist($person);
+            if (!$participant->id) {
+                $this->em->persist($participant);
                 $this->em->flush();
             }
 
-            $part = $ticket->addParticipantPerson($person);
+            $part = $ticket->addParticipantPerson($participant);
             if ($part) {
                 $this->em->persist($part);
             }
