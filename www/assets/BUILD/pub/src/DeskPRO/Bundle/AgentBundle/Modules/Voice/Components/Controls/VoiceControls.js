@@ -156,7 +156,6 @@ class Active extends React.Component {
   static propTypes = {
     mute:               PropTypes.bool,
     transferTargetType: PropTypes.string,
-    hold:               PropTypes.bool,
     ended:              PropTypes.bool,
     onlineAgents:       PropTypes.object,
     forwardingAgents:   PropTypes.object,
@@ -167,7 +166,6 @@ class Active extends React.Component {
     endCall:            PropTypes.func,
     sendDigits:         PropTypes.func,
     divRef:             PropTypes.func,
-    participants:       PropTypes.array,
     me:                 PropTypes.object,
     connection:         PropTypes.object,
     phoneCall:          PropTypes.object
@@ -255,8 +253,8 @@ class Active extends React.Component {
   };
 
   render() {
-    const { onlineAgents, forwardingAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType } = this.props;
-    const { me, hold, mute, ended, connection, phoneCall } = this.props;
+    const { onlineAgents, forwardingAgents, queues, autoAttendants, sendDigits, divRef, transferTargetType } = this.props;
+    const { me, mute, ended, connection, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
     const noQueues = !queues || !queues.size;
@@ -267,6 +265,7 @@ class Active extends React.Component {
       .filter(participant => participant.get('person') === me.get('id') && !participant.get('date_left'))
       .size > 0;
     const displayButton = connection || memberOfTheCall;
+    const hold = phoneCall.get('on_hold');
 
     return (
       <div
@@ -339,7 +338,7 @@ class Active extends React.Component {
           className={classNames('red', { disabled: ended || !connection })}
           onClick={this.endCall}
         >
-          {participants.length >= 2 ? 'Hang up' : 'End call'}
+          {phoneCall.get('agent_participants').size >= 2 ? 'Hang up' : 'End call'}
         </Button>}
 
         <Detached

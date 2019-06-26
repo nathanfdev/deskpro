@@ -54,12 +54,10 @@ class VoiceControlsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mute:         false,
-      status:       null,
-      hold:         false,
-      participants: [],
-      inviteError:  null,
-      viewCallId:   null
+      mute:        false,
+      status:      null,
+      inviteError: null,
+      viewCallId:  null
     };
   }
 
@@ -82,7 +80,7 @@ class VoiceControlsContainer extends React.Component {
     });
 
     this.interval = setInterval(() => {
-      const { me } = this.props;
+      const { me, phoneCalls } = this.props;
       const { status } = this.state;
       const connection = this.getConnection();
 
@@ -99,7 +97,8 @@ class VoiceControlsContainer extends React.Component {
       }
 
       if (connectionStatus === 'open') {
-        if (status !== 'active' && this.state.participants.indexOf(me.get('id') !== -1)) {
+        const phoneCall = phoneCalls.get(this.getCallId());
+        if (status !== 'active' && phoneCall && phoneCall.get('agent_participants').contains(me.get('id'))) {
           this.setState({
             status: 'active'
           });
@@ -124,25 +123,6 @@ class VoiceControlsContainer extends React.Component {
     }, 1000);
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
-    messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
-      if (parseInt(this.getCallId(), 10) !== parseInt(event.phone_call.id, 10)) {
-        return;
-      }
-
-      this.setState({
-        participants: event.agent_participants,
-        hold:         !!event.hold
-      });
-    });
-    messageBroker.addMessageListener('agent.voice.conference.hold', (event) => {
-      if (parseInt(this.getCallId(), 10) !== parseInt(event.call_id, 10)) {
-        return;
-      }
-
-      this.setState({
-        hold: !!event.hold
-      });
-    });
     messageBroker.addMessageListener('agent.voice.agent-joined-call', (event) => {
       if (parseInt(this.getCallId(), 10) !== parseInt(event.call_id, 10)) {
         return;
@@ -229,22 +209,18 @@ class VoiceControlsContainer extends React.Component {
   };
 
   toggleHold = () => {
-    const { dispatch } = this.props;
-    const { hold } = this.state;
+    const { dispatch, phoneCalls } = this.props;
     const callId = this.getCallId();
-
-    const promise = callId ? dispatch(toggleHold(callId, !hold)) : null;
-    if (promise) {
-      promise.success(() => {
-        // update hold status right away
-        // don't wait for a browser notification
-        this.setState({
-          hold: !hold
-        });
-      });
+    if (!callId) {
+      return null;
     }
 
-    return promise;
+    const phoneCall = phoneCalls.get(this.getCallId());
+    if (!phoneCall) {
+      return null;
+    }
+
+    return dispatch(toggleHold(callId, !phoneCall.get('on_hold')));
   };
 
   sendInvite = method => (target) => {

@@ -48,6 +48,11 @@ class VoiceProviderHelper implements VoiceProviderInterface
     private $plivoAdapter;
 
     /**
+     * @var VoiceEventHelper
+     */
+    private $voiceEventHelper;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
@@ -60,6 +65,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      * @param TaskRouter               $taskRouter
      * @param TwilioAdapter            $twilioAdapter
      * @param PlivoAdapter             $plivoAdapter
+     * @param VoiceEventHelper         $voiceEventHelper
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
@@ -68,14 +74,16 @@ class VoiceProviderHelper implements VoiceProviderInterface
         TaskRouter               $taskRouter,
         TwilioAdapter            $twilioAdapter,
         PlivoAdapter             $plivoAdapter,
+        VoiceEventHelper         $voiceEventHelper,
         EventDispatcherInterface $dispatcher
     ) {
-        $this->em            = $em;
-        $this->router        = $router;
-        $this->taskRouter    = $taskRouter;
-        $this->twilioAdapter = $twilioAdapter;
-        $this->plivoAdapter  = $plivoAdapter;
-        $this->dispatcher    = $dispatcher;
+        $this->em               = $em;
+        $this->router           = $router;
+        $this->taskRouter       = $taskRouter;
+        $this->twilioAdapter    = $twilioAdapter;
+        $this->plivoAdapter     = $plivoAdapter;
+        $this->voiceEventHelper = $voiceEventHelper;
+        $this->dispatcher       = $dispatcher;
     }
 
     /**
@@ -161,14 +169,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
 
         $this->em->flush();
         $this->getAdapter($phoneCall)->holdEndUser($phoneCall, $isHold);
-
-        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.voice.conference.hold',
-            [
-                'call_id' => $phoneCall->getId(),
-                'hold'    => $isHold,
-            ]
-        ));
+        $this->voiceEventHelper->sendConferenceStatus($phoneCall);
     }
 
     /**

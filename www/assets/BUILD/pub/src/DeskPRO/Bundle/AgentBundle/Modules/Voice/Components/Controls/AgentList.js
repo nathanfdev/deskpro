@@ -11,7 +11,7 @@ class AgentList extends React.Component {
     onlineAgents:     PropTypes.object,
     forwardingAgents: PropTypes.object,
     busyAgents:       PropTypes.array,
-    participants:     PropTypes.array,
+    phoneCall:        PropTypes.object,
     onClick:          PropTypes.func,
     transferDisabled: PropTypes.bool
   };
@@ -26,7 +26,7 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { onlineAgents, forwardingAgents, busyAgents, target, participants, transferDisabled } = this.props;
+    const { onlineAgents, forwardingAgents, busyAgents, target, phoneCall, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
@@ -37,7 +37,7 @@ class AgentList extends React.Component {
             agent={agent}
             busy={busyAgents.indexOf(agent.get('id')) !== -1}
             active={target && agent === target.target || busyAgents.indexOf(agent.get('id')) !== -1}
-            participant={participants.indexOf(agent.get('id')) !== -1}
+            participant={phoneCall.get('agent_participants').contains(agent.get('id'))}
             onClick={this.onSelect}
             online={onlineAgents.contains(agent)}
           />

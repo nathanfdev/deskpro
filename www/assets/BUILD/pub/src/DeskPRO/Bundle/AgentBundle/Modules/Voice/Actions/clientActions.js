@@ -440,7 +440,20 @@ export const makeOutboundCall = createAction(
 
 export const toggleHold = createAction(
   'VOICE_AGENT_TOGGLE_HOLD',
-  (callId, hold) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold })
+  (callId, hold) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
+    promise.success(() => {
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+      const phoneCall = phoneCalls.get(callId);
+
+      if (phoneCall) {
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall.set('on_hold', hold)]), 'replace'));
+      }
+    });
+
+    return promise;
+  }
 );
 
 export const acceptPhoneCall = createAction(

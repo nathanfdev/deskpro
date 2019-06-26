@@ -278,7 +278,7 @@ class VoiceClientPhoneCallController extends BaseController
         $em->flush();
 
         // send conference status
-        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+        $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
