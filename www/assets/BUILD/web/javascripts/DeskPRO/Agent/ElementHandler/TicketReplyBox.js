@@ -1073,7 +1073,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           // Reload message page to show `message forwarded` mark
           // need to call this manually because doTicketUpdate will not update page without new messages
           self.page.loadMessagePage(0, true);
-          console.log(data);
           if (data.close_tab) {
 						self.page.closeSelf();
           	if (data.new_ticket_url) {
