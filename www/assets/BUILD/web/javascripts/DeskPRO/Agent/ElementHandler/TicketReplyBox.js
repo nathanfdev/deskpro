@@ -451,7 +451,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				var container = self.getElById('fwd_to_container');
 				var lines = container.find('.to-line');
 				for (var i = lines.length; i > 1; i--) {
-					lines[i-1].remove();
+					var input = $(lines[i-1]).find('.email-address-input');
+					if (input.data('type') !== 'cc') {
+						lines[i-1].remove();
+					}
 				}
 				container.find('.fwd_removerow').hide();
 			} else {
