@@ -380,7 +380,6 @@ class VoiceClientPhoneCallController extends BaseController
         $ticket = $messageAttribute->getMessage()->getTicket();
 
         // send invite notification
-        $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.participant-invite',
             [
@@ -394,7 +393,7 @@ class VoiceClientPhoneCallController extends BaseController
                 'ticket_id'        => $ticket->getId(),
                 'invite_type'      => 'warm',
                 'phone_call'       => $this->getSerializedPhoneCallData($phoneCall),
-                'expire_timeout'   => $task->getExpireTimeout(),
+                'expire_timeout'   => $this->get('voice_settings_resolver')->getAgentVoicemailTimeout(),
                 'target'           => $agent->getId(),
             ]
         ));
@@ -484,7 +483,6 @@ class VoiceClientPhoneCallController extends BaseController
         $this->get('dp.voice.provider_helper')->holdEndUser($phoneCall, true);
 
         // send transfer notification
-        $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.participant-invite',
             [
@@ -498,7 +496,7 @@ class VoiceClientPhoneCallController extends BaseController
                 'ticket_id'        => $ticket->getId(),
                 'invite_type'      => 'warm',
                 'phone_call'       => $this->getSerializedPhoneCallData($phoneCall),
-                'expire_timeout'   => $task->getExpireTimeout(),
+                'expire_timeout'   => $this->get('voice_settings_resolver')->getAgentVoicemailTimeout(),
                 'target'           => $agent->getId(),
             ]
         ));
