@@ -125,8 +125,7 @@ class VoiceControlsContainer extends React.Component {
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
     messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
-      const connection = this.getConnection();
-      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.phone_call.id, 10)) {
+      if (parseInt(this.getCallId(), 10) !== parseInt(event.phone_call.id, 10)) {
         return;
       }
 
@@ -136,8 +135,7 @@ class VoiceControlsContainer extends React.Component {
       });
     });
     messageBroker.addMessageListener('agent.voice.conference.hold', (event) => {
-      const connection = this.getConnection();
-      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
+      if (parseInt(this.getCallId(), 10) !== parseInt(event.call_id, 10)) {
         return;
       }
 
@@ -146,8 +144,7 @@ class VoiceControlsContainer extends React.Component {
       });
     });
     messageBroker.addMessageListener('agent.voice.agent-joined-call', (event) => {
-      const connection = this.getConnection();
-      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
+      if (parseInt(this.getCallId(), 10) !== parseInt(event.call_id, 10)) {
         return;
       }
 
