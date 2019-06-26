@@ -274,7 +274,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -335,7 +335,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -396,7 +396,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -515,7 +515,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10, 30])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -565,7 +565,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, []);
     }
@@ -616,7 +616,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10, 20])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $taskQueue->getAttribute('answered_chats_counts')->willReturn(null);
 
@@ -669,7 +669,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([20, 10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $taskQueue->getAttribute('answered_chats_counts')->willReturn([
             [
@@ -735,7 +735,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([20, 30])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $taskQueue->getAttribute('answered_chats_counts')->willReturn([
             [

@@ -70,19 +70,20 @@ class TaskRouter
     }
 
     /**
-     * @param Task $task
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getTimeout(Task $task)
+    public function getDateExpire(Task $task)
     {
+        $date = clone $task->getDateCreated();
+
         /** @var WorkflowInterface $workflow */
         $workflow = $this->container->get($this->workflows[$task->getChannel()]);
         if ($workflow) {
-            $workflow->getTimeout($task);
+            $timeout = $workflow->getTimeout($task);
+            $date->modify("+{$timeout} seconds");
         }
 
-        return 0;
+        return $date;
     }
 
     public function evaluate()
@@ -113,10 +114,14 @@ class TaskRouter
                 }
 
                 /** @var WorkflowInterface $workflow */
-                $workflow = $this->container->get($this->workflows[$task->getChannel()]);
+                $workflow   = $this->container->get($this->workflows[$task->getChannel()]);
+                $dateExpire = $this->getDateExpire($task);
+
+                $task->setDateExpire($dateExpire);
+                $this->storage->saveTask($task);
 
                 // check if task is expired
-                if ($workflow->getTimeout($task) <= 0) {
+                if ($dateExpire <= new \DateTime()) {
                     $task->setStatus(Task::STATUS_TIMEOUT);
 
                     // task is timed out, reset workers

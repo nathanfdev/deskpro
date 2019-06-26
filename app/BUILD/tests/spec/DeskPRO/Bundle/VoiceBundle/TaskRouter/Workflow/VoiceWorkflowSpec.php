@@ -282,7 +282,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(15)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(15)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -325,7 +325,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(15)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(15)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1]);
     }

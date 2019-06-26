@@ -276,8 +276,12 @@ class TwilioCallbacksController extends BaseController
         $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $twiml = new Twiml();
 
+        $now        = new \DateTime();
+        $dateExpire = $this->get('dp.voice.task_router')->getDateExpire($task);
+        $timeout    = $dateExpire->getTimestamp() - $now->getTimestamp();
+
         $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl(), [
-            'timeout' => $this->get('dp.voice.task_router')->getTimeout($task),
+            'timeout' => $timeout > 0 ? $timeout : 0,
             'loop'    => 0,
         ]);
 
