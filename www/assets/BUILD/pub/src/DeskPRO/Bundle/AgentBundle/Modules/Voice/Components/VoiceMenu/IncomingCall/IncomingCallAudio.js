@@ -27,13 +27,14 @@ class IncomingCallAudio extends React.Component {
     if (this.sound) {
       this.sound.addEventListener('ended', this.onSoundEnded);
       this.sound.volume = this.props.ringingVolume / 100;
-    }
-    const playPromise = this.sound.play();
-    if (playPromise) {
-      playPromise.catch((e) => {
-        console.log(e);
-        setTimeout(() => { this.playSound(); }, 100);
-      });
+
+      const playPromise = this.sound.play();
+      if (playPromise) {
+        playPromise.catch((e) => {
+          console.log(e);
+          setTimeout(() => { this.playSound(); }, 100);
+        });
+      }
     }
   }
 

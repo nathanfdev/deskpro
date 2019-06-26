@@ -384,4 +384,17 @@ class Task extends AbstractModel
 
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getExpireTimeout()
+    {
+        $expireTimestamp = $this->dateExpire->getTimestamp();
+        if ($this->dateExpireAssigned) {
+            $expireTimestamp = min($expireTimestamp, $this->dateExpireAssigned->getTimestamp());
+        }
+
+        return $expireTimestamp - time();
+    }
 }

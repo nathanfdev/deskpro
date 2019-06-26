@@ -127,6 +127,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'invite_type'        => $task->getAttribute('invite_type') ?: null,
                 'from_agent_id'      => $task->getAttribute('from_agent_id') ?: null,
                 'phone_call'         => $serializedPhoneCall,
+                'expire_timeout'     => $task->getExpireTimeout(),
                 'target'             => array_map(function (Worker $worker) {
                     return $worker->getTypeId();
                 }, $this->storage->getWorkers($task->getWorkerIds())),
