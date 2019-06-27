@@ -17,6 +17,6 @@ services:
   validator.voice_queue_agent_permissions:
     class: DeskPRO\Bundle\VoiceBundle\Validator\Constraints\VoiceQueueAgentPermissionsValidator
     arguments:
-      - "@dp.voice.department_checker"
+      - "@dp.voice.voice_permissions_checker"
     tags:
       - { name: validator.constraint_validator }

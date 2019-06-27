@@ -39,7 +39,7 @@ class QueueListContainer extends React.Component {
     const { dispatch } = this.props;
 
     dispatch(loadAgents());
-    dispatch(loadQueues());
+    dispatch(loadQueues(true));
     dispatch(loadAgentTeams());
 
     const promise = dispatch(loadQueueSettings());

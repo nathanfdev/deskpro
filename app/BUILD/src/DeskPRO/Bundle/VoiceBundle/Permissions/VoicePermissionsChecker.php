@@ -6,9 +6,9 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 
 /**
- * Class DepartmentChecker.
+ * Class VoicePermissionsChecker.
  */
-class DepartmentChecker
+class VoicePermissionsChecker
 {
     /**
      * @param VoiceQueue $queue
@@ -21,6 +21,8 @@ class DepartmentChecker
         $permissionsHelper          = $person->getHelper('AgentPermissions');
         $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
-        return $queue->getDepartment() && in_array($queue->getDepartment()->getId(), $allowedTicketDepartmentIds);
+        return $person->isActiveAgent()
+            && $queue->getDepartment()
+            && in_array($queue->getDepartment()->getId(), $allowedTicketDepartmentIds);
     }
 }
