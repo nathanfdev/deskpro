@@ -39,7 +39,7 @@ class MergeVoiceRecordings extends AbstractJob
             /** @var VoicePhoneCall $phoneCall */
             $allDone = true;
             foreach ($phoneCall->getRecordings() as $recording) {
-                $allDone = $allDone && $recording->getBlob() && $recording->getTranscription();
+                $allDone = $allDone && $recording->getBlob();
             }
             if ($allDone) {
                 $newRecording = $this->mergeRecordings($phoneCall);
