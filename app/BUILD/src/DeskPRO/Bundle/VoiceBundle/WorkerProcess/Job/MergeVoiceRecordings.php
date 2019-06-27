@@ -82,7 +82,7 @@ class MergeVoiceRecordings extends AbstractJob
 
             $duration += $rec->getDuration();
             $newRecording->addVoiceRecordingMetadata($rec);
-            $newRecording->setTranscription($newRecording->getTranscription() ?: ''."\r\n\r\n".$rec->getTranscription());
+            $newRecording->setTranscription($newRecording->getTranscription() ?: ''.$rec->getTranscription() ? "\r\n\r\n".$rec->getTranscription() : '');
             $em->remove($rec);
         }
         $newBlobString = IO::saveAudioToMemory($newAudioFile);
