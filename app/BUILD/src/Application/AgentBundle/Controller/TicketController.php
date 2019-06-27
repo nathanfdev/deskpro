@@ -6385,6 +6385,11 @@ CSS;
             ->getTicketDepartments()
             ->getByIds($this->person->AgentPermissions->getAllowedDepartments('tickets', false, 'assign'));
 
+        // exclude parent departments
+        $departments = array_filter($departments, function (Entity\Department $department) {
+            return !$department->getChildren()->count();
+        });
+
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
         foreach ($brands as $key => $brand) {
