@@ -122,6 +122,10 @@ class CommonController extends AbstractController
 
         $should_display = count($saved_forms) || $langDiff || count($ticketsAwaitingReply);
 
+        if (!$should_display) {
+            return new Response('', 200);
+        }
+
         return $this->renderThemeView('Theme:Common:alerts.html.twig', [
             'user'                   => $user,
             'saved_forms'            => $saved_forms,
@@ -144,6 +148,10 @@ class CommonController extends AbstractController
         $session = $tag_request->getSession();
         if (null !== $session && $session->isStarted()) {
             $flashes = $session->getFlashBag()->all();
+        }
+
+        if (empty($flashes)) {
+            return new Response('', 200);
         }
 
         return $this->renderThemeView(
