@@ -157,8 +157,8 @@ class Active extends React.Component {
     mute:               PropTypes.bool,
     transferTargetType: PropTypes.string,
     ended:              PropTypes.bool,
-    onlineAgents:       PropTypes.object,
-    forwardingAgents:   PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
     queues:             PropTypes.object,
     autoAttendants:     PropTypes.object,
     toggleHold:         PropTypes.func,
@@ -253,10 +253,10 @@ class Active extends React.Component {
   };
 
   render() {
-    const { onlineAgents, forwardingAgents, queues, autoAttendants, sendDigits, divRef, transferTargetType } = this.props;
+    const { onlineAgentIds, forwardingAgentIds, queues, autoAttendants, sendDigits, divRef, transferTargetType } = this.props;
     const { me, mute, ended, connection, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
-    const noAgents = !((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
+    const noAgents = !((onlineAgentIds && onlineAgentIds.size > 0) || (forwardingAgentIds && forwardingAgentIds.size > 0));
     const noQueues = !queues || !queues.size;
     const noAutoAttendants = !autoAttendants || !autoAttendants.size;
     const isWarmTransfer = phoneCall && phoneCall.get('status') === 'warm_transfer';

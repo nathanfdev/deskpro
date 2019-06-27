@@ -11,6 +11,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 use Application\DeskPRO\WorkerProcess\Job;
 use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\CheckVoiceWorkers;
 use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\RunTaskRouter;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\UpdateWorkersOnlineStatus;
 
 /**
  * Class WorkerJobsData.
@@ -365,6 +366,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Background job to evaluate task router',
             'job_class'    => RunTaskRouter::class,
             'run_interval' => RunTaskRouter::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'update_voice_workers_online_status',
+            'worker_group' => 'voice',
+            'title'        => 'Update voice online status',
+            'description'  => 'Background job to update voice activity status for agents who have voice permissions (online, busy, offline)',
+            'job_class'    => UpdateWorkersOnlineStatus::class,
+            'run_interval' => UpdateWorkersOnlineStatus::DEFAULT_INTERVAL,
         ];
 
         //------------------------------

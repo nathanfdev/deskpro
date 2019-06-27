@@ -23,7 +23,7 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
-export const setBusyAgents = createAction('VOICE_AGENT_SET_BUSY_AGENTS');
+export const setOnlineAgents = createAction('VOICE_AGENT_SET_ONLINE_AGENTS');
 export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
 export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
 export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
@@ -266,9 +266,12 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.open-forwarded-ticket', (data) => {
           window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket_id}`, { noToggle: true });
         });
+        messageBroker.addMessageListener('agent.voice.online-status', (event) => {
+          dispatch(setOnlineAgents(Immutable.fromJS(event.online_status)));
+        });
 
-        api.sendGet('DP_API/voice_client/busy_voice_agents').success(({ data }) => {
-          dispatch(setBusyAgents(data));
+        api.sendGet('DP_API/voice_client/online_agents').success(({ data }) => {
+          dispatch(setOnlineAgents(Immutable.fromJS(data)));
         });
       })
       .catch((e) => {
@@ -278,14 +281,18 @@ export const voiceBootstrap = createAction(
         // nothing to do
       });
 
-      const runTaskRouter = () => {
-        api.sendPut('DP_API/voice_client/task_router').then(
-          () => { setTimeout(runTaskRouter, 2000); },
-          () => { setTimeout(runTaskRouter, 2000); }
-        );
-      };
+      // run locally for developing
+      // to avoid running cron
+      if (window.DP_IS_DEBUG) {
+        const runTaskRouter = () => {
+          api.sendPut('DP_API/voice_client/task_router').then(
+            () => { setTimeout(runTaskRouter, 2000); },
+            () => { setTimeout(runTaskRouter, 2000); }
+          );
+        };
 
-      runTaskRouter();
+        runTaskRouter();
+      }
 
       accounts.forEach((account) => {
         const id = account.get('id');

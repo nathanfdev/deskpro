@@ -18,8 +18,7 @@ import {
   cancelInvite,
   checkIsActive
 } from '../../Actions/clientActions';
-import { agentVoicemailTimeoutSelector, busyAgentsSelector, connectionsSelector } from '../../Selectors/client';
-import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
+import { agentVoicemailTimeoutSelector, busyAgentsSelector, connectionsSelector, onlineAgentsSelector, forwardingAgentsSelector } from '../../Selectors/client';
 import { allQueuesSelector } from '../../Selectors/queue';
 import { allAutoAttendantsSelector } from '../../Selectors/autoAttendants';
 import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
@@ -33,15 +32,14 @@ import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
   onlineAgentIds:        onlineAgentsSelector(state),
   phoneCalls:            allPhoneCallsSelector(state),
   agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
-  busyAgents:            busyAgentsSelector(state)
+  busyAgentIds:          busyAgentsSelector(state),
+  forwardingAgentIds:    forwardingAgentsSelector(state)
 }))
 class VoiceControlsContainer extends React.Component {
 
   static propTypes = {
     dispatch:              PropTypes.func,
     me:                    PropTypes.object,
-    agents:                PropTypes.object,
-    onlineAgentIds:        PropTypes.object,
     connections:           PropTypes.object,
     ticketId:              PropTypes.number,
     baseId:                PropTypes.string,
@@ -277,19 +275,8 @@ class VoiceControlsContainer extends React.Component {
   };
 
   render() {
-    const { me, agents, onlineAgentIds, baseId, phoneCalls } = this.props;
+    const { baseId, phoneCalls } = this.props;
     const { viewCallId } = this.state;
-    const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')) && agent !== me);
-    const forwardingAgents = agents.filter((agent) => {
-      const agentData = agent.get('agent_data') || Immutable.fromJS({});
-      const isOnline = onlineAgents.contains(agent);
-
-      return agentData.get('forwarding_number')
-        && agentData.get('can_use_forwarding')
-        && agentData.get('agent_can_use_forwarding')
-        && ((isOnline && !agentData.get('forwarding_logged_out')) || !isOnline)
-        && agent !== me;
-    });
     const connection = this.getConnection();
     const phoneCall = phoneCalls.get(this.getCallId());
 
@@ -305,8 +292,6 @@ class VoiceControlsContainer extends React.Component {
         {...this.props}
         {...this.state}
         phoneCall={phoneCall}
-        onlineAgents={onlineAgents}
-        forwardingAgents={forwardingAgents}
         connection={connection}
         endCall={this.endCall}
         toggleMute={this.toggleMute}

@@ -113,3 +113,10 @@ services:
 
   dp.voice.user_chat_permissions_checker:
     class: DeskPRO\Bundle\VoiceBundle\Permissions\UserChatPermissionsChecker
+
+  dp.voice.worker_activity:
+    class: DeskPRO\Bundle\VoiceBundle\Worker\WorkerActivity
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.worker_helper"

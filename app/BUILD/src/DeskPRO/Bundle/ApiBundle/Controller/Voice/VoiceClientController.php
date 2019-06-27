@@ -10,7 +10,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType;
-use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -112,21 +111,13 @@ class VoiceClientController extends BaseController
     }
 
     /**
-     * @Rest\Get("/busy_voice_agents")
+     * @Rest\Get("/online_agents")
      *
      * @return View
      */
-    public function getBusyAgentsForVoiceAction()
+    public function getOnlineAgentsAction()
     {
-        $busyAgents = [];
-        $workers    = $this->get('dp.voice.task_router.storage')->getOnlineWorkersByType('agent');
-        foreach ($workers as $worker) {
-            if (VoiceWorkflow::workerIsBusy($worker)) {
-                $busyAgents[] = $worker->getTypeId();
-            }
-        }
-
-        return new View($this->wrap($busyAgents));
+        return new View($this->wrap($this->get('dp.voice.worker_activity')->getActiveWorkers()));
     }
 
     /**

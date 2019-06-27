@@ -1,18 +1,12 @@
 import { createSelector } from 'reselect';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { onlineAgentsSelector } from '../../Agent/Selectors/agents';
+import { onlineAgentsSelector } from './client';
 import { outboundNumbersSelector } from './numbers';
 
 export const voiceAgentsSelector = createSelector(
   agentsSelector,
   agents => agents.filter(agent => agent.getIn(['agent_data', 'is_voice_enabled']))
-);
-
-export const voiceParticipantsSelector = createSelector(
-  voiceAgentsSelector,
-  meSelector,
-  (agents, me) => agents.filter(agent => agent !== me)
 );
 
 export const callsForwardingEnabledSelector = createSelector(
