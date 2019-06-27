@@ -870,7 +870,7 @@ class TicketController extends AbstractController
             SELECT log, person
             FROM DeskPRO:TicketLog log
             LEFT JOIN log.person person
-            WHERE log.ticket = ?0 AND log.action_type = 'message_forwarded'
+            WHERE log.ticket = ?0 AND (log.action_type = 'message_forwarded' OR log.action_type = 'message_forwarded_as_new') 
         "
         )->execute([$ticket]);
 
@@ -4409,20 +4409,6 @@ class TicketController extends AbstractController
             }
         }
 
-        if ($options['fwd_new_ticket'] === 'true') {
-            return $this->forwardAsNew(
-                $ticket,
-                $tos,
-                $ccs,
-                $bccs,
-                $fromEmail,
-                $fromName,
-                $customMessage,
-                $messages,
-                $options
-            );
-        }
-
         $max  = App::getSetting('core.sendemail_attach_maxsize');
         $size = 0;
 
@@ -4450,6 +4436,20 @@ class TicketController extends AbstractController
             }
             $size += (int) $blob->filesize;
             $message->attachBlob($blob, $blob->getDownloadUrl(true), false);
+        }
+
+        if ($options['fwd_new_ticket'] === 'true') {
+            return $this->forwardAsNew(
+                $ticket,
+                $tos,
+                $ccs,
+                $bccs,
+                $fromEmail,
+                $fromName,
+                $customMessage,
+                $messages,
+                $options
+            );
         }
 
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
@@ -4480,6 +4480,8 @@ class TicketController extends AbstractController
         } else {
             $mailer->send($message);
         }
+
+        $this->em->getRepository(Draft::class)->deleteDraft('ticket', $ticket->getId());
 
         foreach ($messagesIds as $messageId) {
             // Log the action
@@ -4514,7 +4516,10 @@ class TicketController extends AbstractController
             );
         }
 
-        return $this->createJsonResponse(['success' => true]);
+        return $this->createJsonResponse([
+            'success'   => true,
+            'close_tab' => $this->in->getString('options.close_tab') === 'true',
+        ]);
     }
 
     protected function forwardAsNew(
@@ -4538,18 +4543,13 @@ class TicketController extends AbstractController
             $newTicket = $ticketManager->createTicket();
             $this->em->commit();
             $ticket->copyTo($newTicket);
-            foreach ($messages as $message) {
-                $messageCopy     = clone $message;
-                $messageCopy->id = null;
-                $messageCopy->setTicket($newTicket);
-                $this->em->persist($messageCopy);
-            }
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;
         }
         $newTicket->setParentTicket($ticket);
 
+        /** @var Ticket $oldTicket */
         $oldTicket = $ticket;
         $ticket    = $newTicket;
 
@@ -4566,22 +4566,22 @@ class TicketController extends AbstractController
         $ticket->setPerson($person);
 
         foreach ($ccs as $emailAddress => $name) {
-            $person = $this->em->getRepository(Person::class)->findOneByEmail($emailAddress);
+            $participant = $this->em->getRepository(Person::class)->findOneByEmail($emailAddress);
 
-            if (!$person) {
-                $person = new Person();
-                $person->setEmail($emailAddress);
+            if (!$participant) {
+                $participant = new Person();
+                $participant->setEmail($emailAddress);
                 if ($name) {
-                    $person->setName($name);
+                    $participant->setName($name);
                 }
             }
 
-            if (!$person->id) {
-                $this->em->persist($person);
+            if (!$participant->id) {
+                $this->em->persist($participant);
                 $this->em->flush();
             }
 
-            $part = $ticket->addParticipantPerson($person);
+            $part = $ticket->addParticipantPerson($participant);
             if ($part) {
                 $this->em->persist($part);
             }
@@ -4589,14 +4589,25 @@ class TicketController extends AbstractController
 
         if ($doAssignAgent) {
             $ticket->setAgentId($options['agent_id']);
+        } else {
+            $ticket->setAgent(null);
         }
         if ($doAssignTeam) {
             $ticket->setAgentTeamId($options['agent_team_id']);
+        } else {
+            $ticket->setAgentTeam(null);
         }
 
         $account = $this->getAccount($ticket);
 
         $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+
+        foreach ($messages as $message) {
+            $messageCopy     = clone $message;
+            $messageCopy->id = null;
+            $messageCopy->setTicket($ticket);
+            $this->em->persist($messageCopy);
+        }
 
         $ticketMessage = new TicketMessage();
         $ticketMessage->setPerson($this->person);
@@ -4607,6 +4618,8 @@ class TicketController extends AbstractController
         $ticket->addMessage($ticketMessage);
 
         $ticketManager->saveTicket($newTicket, $context);
+        $this->em->persist($ticketMessage);
+
         $this->em->persist($newTicket);
         $this->em->persist($ticket);
 
@@ -4620,8 +4633,7 @@ class TicketController extends AbstractController
             ->setFromName($fromName)
             ->setFromEmailAccount($account)
             ->setMaxAttachSize($this->container->getSetting('core.sendemail_attach_maxsize'))
-            ->setLogger($context->getLogger())
-            ->setBccs($bccs);
+            ->setLogger($context->getLogger());
 
         if (count($ccs) > 0) {
             $emailBuilder->enableUserCc();
@@ -4665,44 +4677,49 @@ class TicketController extends AbstractController
             $ticketEmail->send($vars);
         }
 
+        $this->em->getRepository(Draft::class)->deleteDraft('ticket', $oldTicket->getId());
+
+        foreach ($messages as $message) {
+            $this->db->insert(
+                'tickets_logs',
+                [
+                    'ticket_id'   => $oldTicket->getId(),
+                    'person_id'   => $this->person->getId(),
+                    'action_type' => 'message_forwarded_as_new',
+                    'details'     => serialize(
+                        [
+                            'message_id'     => $message->getId(),
+                            'agent_id'       => $this->person->getId(),
+                            'agent_name'     => $this->person->getDisplayName(),
+                            'to'             => array_keys($tos),
+                            'cc'             => array_keys($ccs),
+                            'bcc'            => array_keys($bccs),
+                            'all_rec_string' => implode(
+                                ', ',
+                                array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                            ),
+                            'to_string'      => implode(', ', array_keys($tos)),
+                            'cc_string'      => implode(', ', array_keys($ccs)),
+                            'bcc_string'     => implode(', ', array_keys($bccs)),
+                            'from_email'     => $fromEmail,
+                            'from_name'      => $fromName,
+                            'custom_message' => $customMessage ?: null,
+                            'new_ticket_id'  => $ticket->id,
+                        ]
+                    ),
+                    'date_created' => date('Y-m-d H:i:s'),
+                ]
+            );
+        }
         $this->db->insert(
             'tickets_logs',
             [
-                'ticket_id'   => $oldTicket->id,
-                'person_id'   => $this->person->id,
-                'action_type' => 'message_forwarded_as_new',
-                'details'     => serialize(
-                    [
-                        'agent_id'       => $this->person->id,
-                        'agent_name'     => $this->person->getDisplayName(),
-                        'to'             => array_keys($tos),
-                        'cc'             => array_keys($ccs),
-                        'bcc'            => array_keys($bccs),
-                        'all_rec_string' => implode(
-                            ', ',
-                            array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
-                        ),
-                        'to_string'      => implode(', ', array_keys($tos)),
-                        'cc_string'      => implode(', ', array_keys($ccs)),
-                        'bcc_string'     => implode(', ', array_keys($bccs)),
-                        'from_email'     => $fromEmail,
-                        'from_name'      => $fromName,
-                        'custom_message' => $customMessage ?: null,
-                        'new_ticket_id'  => $ticket->id,
-                    ]
-                ),
-                'date_created' => date('Y-m-d H:i:s'),
-            ]
-        );
-        $this->db->insert(
-            'tickets_logs',
-            [
-                'ticket_id'   => $ticket->id,
-                'person_id'   => $this->person->id,
+                'ticket_id'   => $ticket->getId(),
+                'person_id'   => $this->person->getId(),
                 'action_type' => 'created_by_forward',
                 'details'     => serialize(
                     [
-                        'agent_id'       => $this->person->id,
+                        'agent_id'       => $this->person->getId(),
                         'agent_name'     => $this->person->getDisplayName(),
                         'to'             => array_keys($tos),
                         'cc'             => array_keys($ccs),
@@ -4724,7 +4741,13 @@ class TicketController extends AbstractController
             ]
         );
 
-        return $this->createJsonResponse(['success' => true]);
+        return $this->createJsonResponse([
+            'success'        => true,
+            'close_tab'      => $this->in->getString('options.close_tab') === 'true',
+            'new_ticket_url' => $this->generateUrl('agent_ticket_view', [
+                'ticket_id' => $ticket->getId(),
+            ]),
+        ]);
     }
 
     //###########################################################################
