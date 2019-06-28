@@ -18,6 +18,10 @@ class RunTaskRouter extends AbstractJob
      */
     public function run()
     {
+        if (!$this->getContainer()->get('deskpro.feature_flags')->hasVoice()) {
+            return;
+        }
+
         $startTime  = time();
         $taskRouter = $this->getContainer()->get('dp.voice.task_router');
 
