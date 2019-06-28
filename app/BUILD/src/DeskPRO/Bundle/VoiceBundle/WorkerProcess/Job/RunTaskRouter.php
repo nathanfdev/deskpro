@@ -35,7 +35,7 @@ class RunTaskRouter extends AbstractJob
             sleep(2);
 
             // offset + overlap interval
-            if ((time() - $startTime) > self::DEFAULT_INTERVAL + 60) {
+            if ((time() - $startTime) > self::DEFAULT_INTERVAL + 180) {
                 break;
             }
         }
