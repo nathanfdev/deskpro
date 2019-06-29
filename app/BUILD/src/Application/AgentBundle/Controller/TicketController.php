@@ -3056,8 +3056,12 @@ class TicketController extends AbstractController
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
 
-        if (!$macro || (!$macro->is_global && $macro->getPerson() && $macro->getPerson()->getId(
-                ) != $this->person->getId())
+        if (!$macro ||
+            (
+                !$macro->getIsGlobal() &&
+                $macro->getPerson() &&
+                $macro->getPerson()->getId() != $this->person->getId()
+            )
         ) {
             throw $this->createNotFoundException();
         }
@@ -3080,13 +3084,17 @@ class TicketController extends AbstractController
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
 
-        if (!$macro || (!$macro->is_global && $macro->getPerson() && $macro->getPerson()->getId(
-                ) != $this->person->getId())
+        if (!$macro ||
+            (
+                !$macro->getIsGlobal() &&
+                $macro->getPerson() &&
+                $macro->getPerson()->getId() != $this->person->getId()
+            )
         ) {
             throw $this->createNotFoundException();
         }
 
-        $actions_collection = $macro->getActionsCollection($ticket);
+        $actions_collection = $macro->getActionsCollection();
 
         $permission_errors = false;
         $this->db->beginTransaction();
@@ -3138,6 +3146,18 @@ class TicketController extends AbstractController
                     $actions_collection->add($reply_action);
 
                     $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
+                    if ($reply_action instanceof ReplySnippetAction &&
+                        $this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')
+                    ) {
+                        $snippetItems = $reply_action->getSnippetItems();
+
+                        foreach ($snippetItems as $snippetItem) {
+                            $snippetItem->snippet->setUsageCount((int) $snippetItem->snippet->getUsageCount() + 1);
+
+                            $this->em->persist($snippetItem->snippet);
+                        }
+                    }
 
                     $newticket = new NewTicket($this->em, $this->person);
                     $newticket->setValuesFromTicket($ticket);
