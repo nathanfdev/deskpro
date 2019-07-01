@@ -22,22 +22,9 @@ class RunTaskRouter extends AbstractJob
             return;
         }
 
-        $startTime  = time();
-        $taskRouter = $this->getContainer()->get('dp.voice.task_router');
-
-        while (true) {
-            // evaluate task router
-            try {
-                $taskRouter->evaluate();
-            } catch (\Exception $e) {
-            }
-
-            sleep(2);
-
-            // offset + overlap interval
-            if ((time() - $startTime) > self::DEFAULT_INTERVAL + 180) {
-                break;
-            }
+        try {
+            $this->getContainer()->get('dp.voice.task_router')->evaluate();
+        } catch (\Exception $e) {
         }
     }
 }
