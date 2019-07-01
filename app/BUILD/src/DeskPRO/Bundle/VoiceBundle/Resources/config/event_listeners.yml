@@ -80,6 +80,14 @@ services:
     tags:
       - { name: dp.voice.event_subscriber }
 
+
+  dp.voice.listener.last_pending_task_timestamp:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\LastPendingTaskListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
   event_listener.doctrine.twilio_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener
     arguments:

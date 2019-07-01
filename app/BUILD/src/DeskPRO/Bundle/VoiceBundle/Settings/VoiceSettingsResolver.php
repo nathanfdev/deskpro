@@ -22,6 +22,8 @@ class VoiceSettingsResolver
     const VOICE_FORWARDING_MACHINE_DETECTION      = 'voice.forwarding_machine_detection';
     const VOICE_FORWARDING_NUMBER_TYPE            = 'voice.forwarding_number_type';
     const VOICE_FORWARDING_NUMBER                 = 'voice.forwarding_number';
+    const VOICE_LAST_PENDING_VOICE_TASK_TIMESTAMP = 'voice.last_pending_voice_task_timestamp';
+    const VOICE_LAST_PENDING_CHAT_TASK_TIMESTAMP  = 'voice.last_pending_chat_task_timestamp';
     const VOICE_TWILIO_PROXY_USERNAME             = 'voice.twilio_proxy_username';
     const VOICE_TWILIO_PROXY_PASSWORD             = 'voice.twilio_proxy_password';
     const VOICE_TWILIO_PROXY_API_HOST             = 'voice.twilio_proxy_api_host';
@@ -162,6 +164,22 @@ class VoiceSettingsResolver
     public function isEmailAttachTranscription()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_EMAIL_ATTACH_TRANSCRIPTION);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLastVoiceTaskTimestamp()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_LAST_PENDING_VOICE_TASK_TIMESTAMP);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLastChatTaskTimestamp()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_LAST_PENDING_CHAT_TASK_TIMESTAMP);
     }
 
     /**
