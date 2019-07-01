@@ -23,7 +23,7 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
-export const setOnlineAgents = createAction('VOICE_AGENT_SET_ONLINE_AGENTS');
+export const setVoiceOnlineAgents = createAction('VOICE_AGENT_SET_ONLINE_AGENTS');
 export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
 export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
 export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
@@ -266,12 +266,9 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.open-forwarded-ticket', (data) => {
           window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket_id}`, { noToggle: true });
         });
-        messageBroker.addMessageListener('agent.voice.online-status', (event) => {
-          dispatch(setOnlineAgents(Immutable.fromJS(event.online_status)));
-        });
 
         api.sendGet('DP_API/voice_client/online_agents').success(({ data }) => {
-          dispatch(setOnlineAgents(Immutable.fromJS(data)));
+          dispatch(setVoiceOnlineAgents(Immutable.fromJS(data)));
         });
       })
       .catch((e) => {

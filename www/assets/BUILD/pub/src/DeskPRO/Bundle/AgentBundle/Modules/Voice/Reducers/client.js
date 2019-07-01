@@ -55,13 +55,13 @@ export default createReducer(initialState, {
     pushPayloadToCollection('connections'),
     setValue('waitingConnection', false)
   ),
-  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
-  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
-  [actions.resetOutgoingCall]: setValue('outgoingCall', null),
-  [actions.setRingingVolume]:  setFullPayload('ringingVolume'),
-  [actions.waitingConnection]: setValue('waitingConnection', true),
-  [actions.setOnlineAgents]:   setFullPayload('onlineAgents'),
-  [actions.setAgentAsIdle]:    (state, agentId) => {
+  [actions.removeConnection]:     deletePayloadFromCollection('connections'),
+  [actions.setOutgoingCall]:      setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]:    setValue('outgoingCall', null),
+  [actions.setRingingVolume]:     setFullPayload('ringingVolume'),
+  [actions.waitingConnection]:    setValue('waitingConnection', true),
+  [actions.setVoiceOnlineAgents]: setFullPayload('onlineAgents'),
+  [actions.setAgentAsIdle]:       (state, agentId) => {
     const newOnlineStatus = state.get('onlineAgents').map((onlineStatus) => {
       if (onlineStatus.get('agent_id') === agentId) {
         return onlineStatus.set('busy_for_voice', false);
