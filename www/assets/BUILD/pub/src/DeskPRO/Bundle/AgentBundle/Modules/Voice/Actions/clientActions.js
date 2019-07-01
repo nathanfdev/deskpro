@@ -282,7 +282,7 @@ export const voiceBootstrap = createAction(
       // to avoid running cron
       if (window.DP_VOICE_USE_LOCAL_POLLING) {
         const runTaskRouter = () => {
-          api.sendPut('DP_API/voice_client/task_router').then(
+          api.sendPut('DP_API/task_router/evaluate').then(
             () => { setTimeout(runTaskRouter, 2000); },
             () => { setTimeout(runTaskRouter, 2000); }
           );

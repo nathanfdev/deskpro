@@ -62,4 +62,13 @@ class TaskRouterController extends BaseController
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * @Rest\Put("/evaluate")
+     */
+    public function callRouterAction()
+    {
+        // evaluate task router
+        $this->container->get('dp.voice.task_router')->evaluate();
+    }
 }

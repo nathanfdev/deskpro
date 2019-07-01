@@ -102,15 +102,6 @@ class VoiceClientController extends BaseController
     }
 
     /**
-     * @Rest\Put("/task_router")
-     */
-    public function callRouterAction()
-    {
-        // evaluate task router
-        $this->container->get('dp.voice.task_router')->evaluate();
-    }
-
-    /**
      * @Rest\Get("/online_agents")
      *
      * @return View
