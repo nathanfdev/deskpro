@@ -16,11 +16,13 @@
 				<li id="people_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.People"></li>
 			{% endif %}
 
-			{% if brand_app_settings['core.apps_feedback']  %}
+			{% if brand_app_settings['core.apps_feedback'] and app.user.hasPerm('agent_publish.use') %}
 				<li id="feedback_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Feedback"></li>
 			{% endif %}
 
-			<li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish"></li>
+      {% if app.user.hasPerm('agent_publish.use') %}
+        <li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish"></li>
+      {% endif %}
 
 			{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
 				<li id="tasks_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tasks"></li>
