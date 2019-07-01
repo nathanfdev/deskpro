@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class TicketPriority extends AbstractEntityRepository
+class TicketPriority extends AbstractEntityRepository implements TicketBuiltInFieldInterface
 {
     public function countAll()
     {

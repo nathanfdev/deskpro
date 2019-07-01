@@ -9,7 +9,9 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\CustomFields\Form;
 use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Entity\Product;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketPriority;
@@ -20,6 +22,8 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -561,6 +565,70 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
 
         return $this->createSuccessResponse();
+    }
+
+    /**1
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deleteFieldOptionAction(Request $request)
+    {
+        $type = $this->in->getString('type');
+        $step = (int) $this->in->getInt('step');
+
+        if (!$removeIds = $this->in->getArrayValue('ids')) {
+            throw new BadRequestHttpException();
+        }
+
+        if (!$removeIds = array_filter($removeIds, function ($id) {
+            return '!' !== substr($id, 0, 3);
+        })) {
+            throw new BadRequestHttpException();
+        }
+
+        $dataService = $this->get('data.ticket_built_in_fields');
+        switch ($step) {
+            case 1:
+                $hasData = $dataService->getTicketsCountWithFields($type, $removeIds);
+                if (!$hasData) {
+                    $dataService->deleteOptionsById($type, $removeIds);
+
+                    return $this->createSuccessResponse();
+                }
+
+                $all     = $dataService->getAll($type);
+                $options = [];
+                foreach ($all as $option) {
+                    if (
+                        (!$option instanceof Hierarchical || !$option->getChildren()->count())
+                        && !in_array($option->getId(), $removeIds)
+                    ) {
+                        $options[$option->getId()] = $option->getTitle();
+                    }
+                }
+
+                return $this->createJsonResponse([
+                    'success' => true,
+                    'options' => $options ?: null,
+                    'default' => $options ? key($options) : null,
+                ]);
+
+            case 2:
+                if (!$to = $this->in->getInt('update_to')) {
+                    throw new BadRequestHttpException();
+                }
+                $dataService->deleteOptionsById($type, $removeIds, $to);
+
+                return $this->createSuccessResponse();
+
+            case 3:
+                $dataService->deleteOptionsById($type, $removeIds);
+
+                return $this->createSuccessResponse();
+        }
+
+        throw new BadRequestHttpException();
     }
 
     public function convertAction($type)

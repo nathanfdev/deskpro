@@ -8,11 +8,16 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class TicketCategory extends AbstractCategoryRepository
+class TicketCategory extends AbstractCategoryRepository implements TicketBuiltInFieldInterface
 {
     public function countAll()
     {
         return $this->_em->createQuery('SELECT count(c) FROM DeskPRO:TicketCategory c')->getSingleScalarResult();
+    }
+
+    public function getAll()
+    {
+        return $this->getCategories();
     }
 
     public function getCategories()

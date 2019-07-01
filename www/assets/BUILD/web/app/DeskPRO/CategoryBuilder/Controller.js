@@ -95,57 +95,79 @@ define([
 
         // handle delete/update if only field type is defined
         const option = row.data('catId');
-        const $modal = me.$injector.get('$modal');
         try {
           Api = me.$injector.get('Api');
         } catch (error) {
           Api = null;
         }
 
-        if (!doRemoveIds.length || !me.$scope.fieldType || !Api) {
+        if (doRemoveIds.length && me.$scope.isRemoveCallbackDefined()) {
+          return me.$scope.removeCallback({
+            builderCtrl: me,
+            ev: ev,
+            removeIds: doRemoveIds,
+            doRemoveCallback: doRemove
+          });
+        } else if (!doRemoveIds.length || !me.$scope.fieldType || !Api) {
           return doRemove();
         }
-
-        return Api.sendDelete('/custom_fields/option', { step: 1, type: me.$scope.fieldType, ids: doRemoveIds }).then(
-          (res) => {
-            // if nothing to do, just delete
-            if (!res.data.success || (res.data.options == null)) { return doRemove(); }
-
-            return $modal.open({
-              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/` + 'CustomFields/Common/delete-option-modal.html',
-              controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
-                for (const k in res.data.options) {
-                  const v = res.data.options[k];
-                  if (!me.cat_rows[k]) { delete res.data.options[k]; }
-                }
-
-                $scope.dismiss = () => $modalInstance.dismiss();
-                $scope.mode = 0;
-                $scope.options = res.data.options;
-                $scope.update_to = res.data.default;
-                $scope.type = me.$scope.fieldType;
-                $scope.name = row.children('div').children('input').val();
-
-                return $scope.confirm = function () {
-                  if ($scope.mode) {
-                    $scope.busy = true;
-                    const data = {
-                      step:      2,
-                      type:      me.$scope.fieldType,
-                      ids:       removeIds,
-                      update_to: $scope.update_to
-                    };
-                    Api.sendDelete('/custom_fields/option', data);
-                  }
-                  doRemove();
-                  return $scope.dismiss();
-                };
-              }
-              ] });
-          },
-          () => {}
-        );
+        
+        return me.defaultRemoveCallback(me, ev, doRemoveIds, doRemove);
       });
+    }
+
+    /**
+     *
+     * @param object ctrl - CategoryBuilder controller
+     * @param object row - Selected row
+     * @param array removeIds
+     * @param function doRemoveCallback - callback that really remove elements from UI
+     * @returns {unresolved}
+     */
+    defaultRemoveCallback(builderCtrl, ev, removeIds, doRemoveCallback) {
+      const me = this;
+      const Api = me.$injector.get('Api');
+      const $modal = me.$injector.get('$modal');
+      const row = $(ev.target).closest('li');
+      return Api.sendDelete('/custom_fields/option', { step: 1, type: me.$scope.fieldType, ids: removeIds }).then(
+        (res) => {
+          // if nothing to do, just delete
+          if (!res.data.success || (res.data.options == null)) { return doRemoveCallback(); }
+
+          return $modal.open({
+            templateUrl: `${DP_BASE_ADMIN_URL}/load-view/` + 'CustomFields/Common/delete-option-modal.html',
+            controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+              for (const k in res.data.options) {
+                const v = res.data.options[k];
+                if (!me.cat_rows[k]) { delete res.data.options[k]; }
+              }
+
+              $scope.dismiss = () => $modalInstance.dismiss();
+              $scope.mode = 0;
+              $scope.options = res.data.options;
+              $scope.update_to = res.data.default;
+              $scope.type = me.$scope.fieldType;
+              $scope.name = row.children('div').children('input').val();
+
+              return $scope.confirm = function () {
+                if ($scope.mode) {
+                  $scope.busy = true;
+                  const data = {
+                    step:      2,
+                    type:      me.$scope.fieldType,
+                    ids:       removeIds,
+                    update_to: $scope.update_to
+                  };
+                  Api.sendDelete('/custom_fields/option', data);
+                }
+                doRemoveCallback();
+                return $scope.dismiss();
+              };
+            }
+            ] });
+        },
+        () => {}
+      );
     }
 
     updateOrder() {

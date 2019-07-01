@@ -20,6 +20,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
+  data.ticket_built_in_fields:
+    class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketBuiltInFieldsDataService
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_aware_settings_resolver"]
+
   data.articles:
     class: DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]

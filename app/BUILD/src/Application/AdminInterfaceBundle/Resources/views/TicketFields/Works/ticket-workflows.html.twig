@@ -59,7 +59,11 @@
 								<h3>Workflows</h3>
 							</div>
 							<div class="col-lg-10">
-								<dp-category-builder max-depth="0" ng-model="TicketWorks.works"></dp-category-builder>
+								<dp-category-builder 
+                  max-depth="0"
+                  ng-model="TicketWorks.works"
+                  remove-callback="TicketWorks.removeCallback(builderCtrl, ev, removeIds, doRemoveCallback)"
+                ></dp-category-builder>
 							</div>
 						</div>
 

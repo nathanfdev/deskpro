@@ -21,7 +21,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class Product extends CategoryAbstract implements HasPhraseName
+class Product extends CategoryAbstract implements HasPhraseName, TicketBuiltInFieldInterface
 {
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
