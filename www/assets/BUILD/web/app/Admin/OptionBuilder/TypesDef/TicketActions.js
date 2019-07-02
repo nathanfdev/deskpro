@@ -2332,7 +2332,6 @@ define([
                 offset:   options.offset,
                 link:     options.link
               };
-              console.log('VM', vm);
               return vm;
             },
 
@@ -2376,7 +2375,6 @@ define([
               if (value == null) { value = {}; }
               const opt = value.options || {};
               const by_agent_id = `${opt.by_agent_id || data.agents[0].id}`;
-;
               return {
                 type:              'AddJIRAComment',
                 text:              opt.note_text || '',
