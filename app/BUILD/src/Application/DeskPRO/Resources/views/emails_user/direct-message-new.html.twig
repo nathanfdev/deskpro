@@ -1,0 +1,4 @@
+<dp:subject>{{ phrase('portal.email_subjects.direct_message_new') }}</dp:subject>
+
+{% set thread_link_phrase %}<a href="{{ thread_url }}">{{ thread.id }}</a>{% endset %}
+{{ phrase('portal.emails.direct_message_new', {'person': message.author.person.display_name, 'link':thread_link_phrase}, true) }}
