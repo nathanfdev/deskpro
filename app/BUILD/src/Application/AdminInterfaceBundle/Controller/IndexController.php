@@ -8,6 +8,7 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\Template;
 use DpSys\License;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -69,6 +70,11 @@ HTML;
             $this->settings->setSetting('admin_has_loaded', 1);
         }
 
+        $legacyTemplates = [];
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $legacyTemplates = $this->container->getEm()->getRepository(Template::class)->getLegacyTemplates();
+        }
+
         return $this->render('AdminInterfaceBundle:Index:interface.html.twig', [
             'api_token'             => $token,
             'session'               => $this->session->getEntity(),
@@ -77,6 +83,7 @@ HTML;
             'rjs_apps_config'       => $rjs_apps_config,
             'redirect_license'      => defined('DP_BILLING_ERROR'),
             'license_server'        => rtrim(License::getSecureLicServer(), '/'),
+            'legacy_templates'      => $legacyTemplates,
             'is_first_load'         => $is_first_load,
         ]);
     }
