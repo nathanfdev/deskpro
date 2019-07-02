@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -56,7 +57,7 @@ class LastPendingTaskListener implements EventSubscriberInterface
 
         if ($task->getChannel() === VoiceWorkflow::getChannelName()) {
             $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_LAST_PENDING_VOICE_TASK_TIMESTAMP, time());
-        } else {
+        } elseif ($task->getChannel() === ChatWorkflow::getChannelName()) {
             $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_LAST_PENDING_CHAT_TASK_TIMESTAMP, time());
         }
     }

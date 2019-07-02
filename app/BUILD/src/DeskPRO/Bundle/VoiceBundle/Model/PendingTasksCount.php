@@ -50,9 +50,9 @@ class PendingTasksCount
     public function __construct(array $tasks, \DateTime $lastPendingVoiceTask = null, \DateTime $lastPendingChatTask = null)
     {
         foreach ($tasks as $task) {
-            if ($task->getChannel() === VoiceWorkflow::class) {
+            if ($task->getChannel() === VoiceWorkflow::getChannelName()) {
                 ++$this->numPendingVoiceTasks;
-            } elseif ($task->getChannel() === ChatWorkflow::class) {
+            } elseif ($task->getChannel() === ChatWorkflow::getChannelName()) {
                 ++$this->numPendingChatTasks;
             }
         }

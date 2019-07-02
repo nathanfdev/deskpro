@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\VoiceBundle\Model\PendingTasksCount;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
@@ -65,7 +66,8 @@ class TaskRouterController extends BaseController
     }
 
     /**
-     * @Rest\Post("/evaluate")
+     * @ApiUserContext("open")
+     * @Rest\Get("/evaluate")
      */
     public function callRouterAction()
     {
