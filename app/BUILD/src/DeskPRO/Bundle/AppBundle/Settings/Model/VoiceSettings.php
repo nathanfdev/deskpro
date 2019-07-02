@@ -66,6 +66,13 @@ class VoiceSettings
     private $forwardingNumber;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $transcribeVoicemail;
+
+    /**
      * @return int
      */
     public function getAgentVoicemailTimeout()
@@ -221,6 +228,26 @@ class VoiceSettings
     public function setForwardingNumber($forwardingNumber)
     {
         $this->forwardingNumber = $forwardingNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isTranscribeVoicemail()
+    {
+        return $this->transcribeVoicemail;
+    }
+
+    /**
+     * @param bool $transcribeVoicemail
+     *
+     * @return $this
+     */
+    public function setTranscribeVoicemail($transcribeVoicemail)
+    {
+        $this->transcribeVoicemail = $transcribeVoicemail;
 
         return $this;
     }

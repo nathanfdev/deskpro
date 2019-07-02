@@ -6,6 +6,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\DataService\AgentDataService as AppAgentDataService;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -81,11 +82,6 @@ class AgentDataService
      * @var \Application\DeskPRO\DBAL\Connection
      */
     protected $db;
-
-    /**
-     * @var int
-     */
-    protected $agent_timeout = 20;
 
     public static function create(DeskproContainer $container, array $options = null)
     {
@@ -343,7 +339,8 @@ class AgentDataService
         if ($this->online_agent_ids !== null) {
             return $this->online_agent_ids;
         }
-        $cutoff = date('Y-m-d H:i:s', time() - $this->agent_timeout);
+
+        $cutoff = date('Y-m-d H:i:s', time() - AppAgentDataService::ONLINE_AGENTS_TIMEOUT);
 
         $this->online_agent_ids = $this->db->fetchAllKeyValue('
             SELECT DISTINCT s.person_id

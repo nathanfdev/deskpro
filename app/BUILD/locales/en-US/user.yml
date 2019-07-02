@@ -680,6 +680,7 @@ portal.general.related-news: 'Related News'
 portal.general.related-pages: 'Related Pages'
 portal.general.rerender-form: 'Please review this form before you submit it.'
 portal.general.rss_subscribe: 'RSS Feed'
+portal.general.ics_subscribe: 'iCalendar'
 portal.general.search-labels-section-title: 'Search Labels'
 portal.general.search-section-title: Search
 portal.general.search_btn: Search

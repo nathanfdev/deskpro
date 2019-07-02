@@ -146,7 +146,8 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         // Common prefixes
         // Also including FW|FWDxxx here to catch cases where a user uses fwd to reply to an email they just sent.
-        $common_prefix_re = '#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS|TR):\s*#i';
+        // R: - used in Italy
+        $common_prefix_re = '#^(R|RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS|TR):\s*#i';
 
         $extra_join  = '';
         $extra_where = '';

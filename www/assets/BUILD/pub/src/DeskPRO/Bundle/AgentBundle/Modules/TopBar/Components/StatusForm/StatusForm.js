@@ -17,10 +17,13 @@ const statusChoices = [
 class StatusForm extends React.Component {
 
   static propTypes = {
-    voiceAvailable:  PropTypes.bool,
-    voiceEnabled:    PropTypes.bool,
-    userChatEnabled: PropTypes.bool,
-    onChange:        PropTypes.func
+    me:                 PropTypes.object,
+    queues:             PropTypes.object,
+    voiceAvailable:     PropTypes.bool,
+    voiceEnabled:       PropTypes.bool,
+    userChatEnabled:    PropTypes.bool,
+    onChange:           PropTypes.func,
+    openQueuesSettings: PropTypes.func,
   };
 
   constructor(props) {
@@ -56,13 +59,19 @@ class StatusForm extends React.Component {
 
     return createValue({
       value: {
-        status: agentData.get('available_status') || 'offline',
-        chats:  props.userChatEnabled,
-        calls:  agentData.get('agent_calls_enabled')
+        status:     agentData.get('available_status') || 'offline',
+        chats:      props.userChatEnabled,
+        calls:      agentData.get('agent_calls_enabled'),
+        forwarding: agentData.get('agent_can_use_forwarding')
       },
       onChange: this.onChange
     });
   }
+
+  openQueuesSettings = (event) => {
+    event.preventDefault();
+    this.props.openQueuesSettings();
+  };
 
   renderSelectValue = option => (
     <span>
@@ -72,8 +81,12 @@ class StatusForm extends React.Component {
   );
 
   render() {
-    const { voiceAvailable, voiceEnabled, userChatEnabled } = this.props;
+    const { me, queues, voiceAvailable, voiceEnabled, userChatEnabled } = this.props;
     const { formData } = this.state;
+    const canUseForwarding = me.getIn(['agent_data', 'can_use_forwarding']);
+    const myQueues = queues.filter(queue =>
+      queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first()
+    );
 
     return (
       <Fieldset formValue={formData}>
@@ -103,12 +116,21 @@ class StatusForm extends React.Component {
                 </Field>
                 <i className={classNames('ui call icon', formData.value.calls ? 'green' : 'disabled')} />
                 <span className="voice-profile-status-checkbox-title">
-                  Calls
+                  Calls {myQueues.size > 0 &&
+                    <span className="voice-profile-status-checkbox-title-link">
+                      (<a onClick={this.openQueuesSettings}>{myQueues.size} queues</a>)
+                    </span>}
                   {!voiceEnabled &&
                     <span className="voice-profile-status-checkbox-title-disabled">
                       (Use HTTPS for calls)
                     </span>
                   }
+                  {canUseForwarding &&
+                    <div className="voice-profile-status-checkbox-sub-checkbox">
+                      <Field select="forwarding">
+                        <Checkbox label="Forwarding" disabled={!me.getIn(['agent_data', 'forwarding_number'])} />
+                      </Field>
+                    </div>}
                 </span>
               </div>}
           </div>

@@ -112,8 +112,9 @@ class QueueItem extends React.Component {
               <Avatar
                 key={index}
                 person={agent}
-                active={onlineAgents.contains(agent)}
+                online={onlineAgents.contains(agent)}
                 size={20}
+                withOnlineStatus
               />
             )}
             {hiddenQueueAgents.size > 0 &&

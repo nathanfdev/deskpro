@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as JMS;
  * Class VoiceRecording.
  *
  * @ORM\Entity()
- * @ORM\Table(name="voice_recordings")
+ * @ORM\Table(name="voice_recordings", indexes={@ORM\Index(name="recording_sid", columns={"recording_sid"})})
  *
  * @JMS\ExclusionPolicy("all")
  */

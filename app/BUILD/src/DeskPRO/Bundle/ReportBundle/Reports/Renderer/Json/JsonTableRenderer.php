@@ -232,9 +232,8 @@ class JsonTableRenderer extends AbstractJsonRenderer
 
         $selectColumns = $metadata->getSelectColumns();
         $rows          = array_values($rows); // need continuous keys
-
-        $rowsRendered = [];
-        $rowCount     = 0;
+        $rowsRendered  = [];
+        $rowCount      = 0;
 
         foreach ($rows as $rowId => $row) {
             $cells = [];
@@ -264,6 +263,39 @@ class JsonTableRenderer extends AbstractJsonRenderer
             }
 
             ++$rowCount;
+            $rowsRendered[] = $cells;
+        }
+
+        $totalColumns = $metadata->getTotalColumns();
+        if (count($rows) > 2 && $totalColumns) {
+            $cells        = [];
+            $columnTotals = [];
+            foreach ($rows as $row) {
+                foreach ($totalColumns as $id) {
+                    if ($this->getColumnValue($row, $id) === null) {
+                        continue;
+                    }
+
+                    if (!isset($columnTotals[$id])) {
+                        $columnTotals[$id] = 0;
+                    }
+                    $columnTotals[$id] += (float) $this->getColumnValue($row, $id);
+                }
+            }
+
+            $firstRow = reset($rows);
+            $fakeRow  = array_fill_keys(array_keys($firstRow), null);
+            foreach ($columnTotals as $id => $value) {
+                $fakeRow[$id - 1] = $value;
+            }
+
+            foreach ($selectColumns as $column) {
+                if (isset($columnTotals[$column['resultId']])) {
+                    $cells[] = $this->renderCellValue($fakeRow, $column, $metadata);
+                } else {
+                    $cells[] = null;
+                }
+            }
             $rowsRendered[] = $cells;
         }
 

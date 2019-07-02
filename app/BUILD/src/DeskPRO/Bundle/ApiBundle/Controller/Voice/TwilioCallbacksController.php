@@ -15,8 +15,10 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceBlobAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceTextAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
@@ -155,7 +157,7 @@ class TwilioCallbacksController extends BaseController
                             // connect user and agent directly
                             $voiceProviderHelper = $this->get('dp.voice.provider_helper');
 
-                            if ($phoneCall->isOutgoingCall()) {
+                            if ($phoneCall->enqueuedAsAgent()) {
                                 $voiceProviderHelper->transferParticipant(
                                     $phoneCall->getActiveAgentParticipant(),
                                     $this->getCallRoutingCallbackUrl($account, $phoneCall),
@@ -187,6 +189,10 @@ class TwilioCallbacksController extends BaseController
                             $em->flush();
                         }
                     }
+
+                    // send client message
+                    // for real time ui updates
+                    $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
                 } finally {
                     $lock->release();
                     $logger->info(sprintf('[TwilioCallbacks] Unlock phone call, uuid = %s', $callSid));
@@ -217,6 +223,10 @@ class TwilioCallbacksController extends BaseController
 
                 // reject the call
                 $this->get('dp.voice.callbacks_helper')->rejectIncomingPhoneCall($phoneCall, $agent);
+
+                // send client message
+                // for real time ui updates
+                $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
             }
         }
     }
@@ -634,12 +644,21 @@ class TwilioCallbacksController extends BaseController
             ]);
         }
 
-        $twiml->record([
+        $options = [
             'action'                        => $this->getVoicemailEndUrl($account),
             'method'                        => 'POST',
             'recordingStatusCallback'       => $this->getVoicemailRecordingStatusCallbackUrl($account),
             'recordingStatusCallbackMethod' => 'POST',
-        ]);
+        ];
+
+        if ($this->container->get('voice_settings_resolver')->isTranscribeVoicemail()) {
+            $options = array_merge($options, [
+                'transcribe'         => true,
+                'transcribeCallback' => $this->getTranscribeVoicemailCallbackUrl($account),
+            ]);
+        }
+
+        $twiml->record($options);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -790,8 +809,15 @@ class TwilioCallbacksController extends BaseController
             if (!$agentId || !$agent = $this->get('dp.voice.callbacks_helper')->getAgent($agentId)) {
                 throw new \RuntimeException('Agent not found');
             }
-            if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
-                throw new \RuntimeException('Phone call is already accepted');
+
+            if (count($phoneCall->getActiveParticipants()) >= 2) {
+                if (!$this->get('dp.voice.task_router')->joinTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                    throw new \RuntimeException('Unable to join this phone call');
+                }
+            } else {
+                if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                    throw new \RuntimeException('Phone call is already accepted');
+                }
             }
         } catch (\Exception $e) {
             $twiml = new Twiml();
@@ -810,6 +836,7 @@ class TwilioCallbacksController extends BaseController
             new LegacySystemEvent('agent.voice.open-forwarded-ticket', [
                 'call_id'   => $phoneCall->getId(),
                 'ticket_id' => $ticket->getId(),
+                'target'    => $agent->getId(),
             ])
         );
 
@@ -861,7 +888,9 @@ class TwilioCallbacksController extends BaseController
         try {
             $this->getManager()->refresh($phoneCall);
 
-            if ($phoneCall->isWarmAdd()) {
+            if ($phoneCall->isColdTransfer()) {
+                $twiml->redirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
+            } elseif ($phoneCall->isWarmAdd()) {
                 // if it's warm add user and agent are in an active call
                 // so we need to force move into the conference on hang up
                 $logger->info(sprintf(
@@ -882,7 +911,7 @@ class TwilioCallbacksController extends BaseController
                     'endConferenceOnExit'  => false,
                 ]);
             } elseif ($phoneCall->isOnHold()) {
-                if ($phoneCall->isOutgoingCall()) {
+                if ($phoneCall->enqueuedAsAgent()) {
                     $twiml->redirect($this->getHoldMusicCallbackUrl($account));
                 } else {
                     $twiml->redirect($this->getHoldSilentCallbackUrl($account));
@@ -895,6 +924,8 @@ class TwilioCallbacksController extends BaseController
 
                 $twiml->hangup();
             }
+
+            $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
         } finally {
             $lock->release();
         }
@@ -926,7 +957,7 @@ class TwilioCallbacksController extends BaseController
      */
     public function putOnHoldCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
-        if ($phoneCall->isOutgoingCall()) {
+        if ($phoneCall->enqueuedAsAgent()) {
             $waitUrl = $this->getHoldSilentCallbackUrl($account);
         } else {
             $waitUrl = $this->getHoldMusicCallbackUrl($account);
@@ -1114,6 +1145,47 @@ class TwilioCallbacksController extends BaseController
         $response->headers->set('Content-Type', 'text/xml');
 
         return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Transcribe voicemail",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/transcribe_voicemail", name="twilio_transcribe_voicemail_callback")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     */
+    public function transcribeVoicemailAction(Request $request)
+    {
+        $recordingSid      = $request->get('RecordingSid');
+        $transcriptionText = $request->get('TranscriptionText');
+
+        $em = $this->getManager();
+
+        // try to get voicemail from ticket
+        $recording = $em->getRepository(VoiceRecording::class)->findOneBy([
+            'recordingSid' => $recordingSid,
+        ]);
+
+        if (!$recording) {
+            // try to get personal agent voicemail
+            $recording = $em->getRepository(VoiceMissedAgentCall::class)->findOneBy([
+                'recordingSid' => $recordingSid,
+            ]);
+        }
+
+        if ($recording) {
+            $recording->setTranscription($transcriptionText);
+            $em->flush();
+        }
     }
 
     /**
@@ -1385,7 +1457,7 @@ class TwilioCallbacksController extends BaseController
                 } elseif ($phoneCall->isWarmAdd()) {
                     // if it's an outgoing call then user was dialing to the queue
                     // and has a reference to the 'on hangup' callback action
-                    if ($phoneCall->isOutgoingCall()) {
+                    if ($phoneCall->enqueuedAsAgent()) {
                         foreach ($phoneCall->getAgentParticipants() as $participant) {
                             $providerHelper->transferParticipant(
                                 $participant,
@@ -1761,6 +1833,19 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'phoneCall'   => $phoneCall->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     *
+     * @return string
+     */
+    private function getTranscribeVoicemailCallbackUrl(TwilioVoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_transcribe_voicemail_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 

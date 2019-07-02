@@ -1,65 +1,88 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
-import classNames from 'classnames';
 import EventEmitter from 'eventemitter2';
 import ScrollArea from 'react-scrollbar';
+import Isvg from 'react-inlinesvg';
 import { WaitingFormat } from 'DeskPRO/Component/Timer';
+import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import MediaControls from 'DeskPRO/Component/MediaControls';
 
 const emitter = new EventEmitter();
 
-class VoicemailList extends React.Component {
+class MissedCallsList extends React.Component {
 
   static propTypes = {
     records: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      onlyVoicemails: false
+    };
+  }
+
+  toggleOnlyVoicemails = () => {
+    this.setState({
+      onlyVoicemails: !this.state.onlyVoicemails
+    });
+  };
+
   render() {
     const { records } = this.props;
-    if (!records.size) {
-      return (
-        <div className="voice-menu-voicemail-list">
-          <div className="voice-menu-voicemail-list-empty-message">
-            You have no voicemail messages.
-          </div>
-        </div>
-      );
-    }
+    const { onlyVoicemails } = this.state;
+    const filteredRecords = records.filter(record => (onlyVoicemails && record.get('blob')) || !onlyVoicemails);
 
     return (
-      <ScrollArea className="voice-menu-voicemail-list">
-        {records.toArray().map((record, index) =>
-          <VoicemailRecord
-            {...this.props}
-            key={index}
-            record={record}
-          />
-        )}
-      </ScrollArea>
+      <div>
+        <div className="voice-menu-voicemail-list-settings">
+          <Checkbox onChange={this.toggleOnlyVoicemails} value={onlyVoicemails} label="Show only voicemails" />
+        </div>
+        <hr className="full" />
+
+        {filteredRecords.size > 0
+          ? <ScrollArea className="voice-menu-voicemail-list">
+            {filteredRecords.toArray().map((record, index) =>
+              <MissedCall
+                {...this.props}
+                key={index}
+                record={record}
+              />
+            )}
+          </ScrollArea>
+          : <div className="voice-menu-voicemail-list">
+            <div className="voice-menu-voicemail-list-empty-message">
+              You have no missed calls or voicemail messages.
+            </div>
+          </div>
+        }
+
+      </div>
     );
   }
 }
 
-class VoicemailRecord extends React.Component {
+class MissedCall extends React.Component {
 
   static propTypes = {
     record:               PropTypes.object,
     phoneCalls:           PropTypes.object,
     people:               PropTypes.object,
-    onCreateTicket:       PropTypes.func,
-    onCallback:           PropTypes.func,
-    onDelete:             PropTypes.func,
-    onMarkListened:       PropTypes.func,
-    onOpenPerson:         PropTypes.func,
+    createTicket:         PropTypes.func,
+    callBack:             PropTypes.func,
+    deleteRecording:      PropTypes.func,
+    markListened:         PropTypes.func,
+    openPerson:           PropTypes.func,
     outboundCallsEnabled: PropTypes.bool
   };
 
   static defaultProps = {
-    onCreateTicket: () => {},
-    onCallback:     () => {},
-    onDelete:       () => {},
-    onMarkListened: () => {},
-    onOpenPerson:   () => {}
+    createTicket:    () => {},
+    callBack:        () => {},
+    deleteRecording: () => {},
+    markListened:    () => {},
+    openPerson:      () => {}
   };
 
   constructor(props) {
@@ -80,37 +103,37 @@ class VoicemailRecord extends React.Component {
     emitter.off('stopPlaying', this.stopPlaying);
   }
 
-  onCreateTicket = (event) => {
+  createTicket = (event) => {
     event.preventDefault();
 
-    const { record, onCreateTicket } = this.props;
-    onCreateTicket(record);
+    const { record, createTicket } = this.props;
+    createTicket(record);
   };
 
-  onCallback = (event) => {
+  callBack = (event) => {
     event.preventDefault();
 
-    const { record, phoneCalls, onCallback, outboundCallsEnabled } = this.props;
+    const { record, phoneCalls, callBack, outboundCallsEnabled } = this.props;
     const phoneCall = phoneCalls.get(record.get('phone_call'));
 
     if (!outboundCallsEnabled) {
       return;
     }
 
-    onCallback(phoneCall);
+    callBack(phoneCall);
   };
 
-  onDelete = (event) => {
+  deleteRecording = (event) => {
     event.preventDefault();
 
-    const { record, onDelete } = this.props;
-    onDelete(record);
+    const { record, deleteRecording } = this.props;
+    deleteRecording(record);
   };
 
-  onPlay = (event) => {
+  playRecording = (event) => {
     event.preventDefault();
 
-    const { record, onMarkListened } = this.props;
+    const { record, markListened } = this.props;
     const { playing } = this.state;
 
     const recording = record.get('blob');
@@ -127,22 +150,22 @@ class VoicemailRecord extends React.Component {
         playing: true
       });
 
-      onMarkListened(record);
+      markListened(record);
     } else {
       this.stopPlaying();
     }
   };
 
-  onOpenPerson = (event) => {
+  openPerson = (event) => {
     event.preventDefault();
 
-    const { record, phoneCalls, onOpenPerson } = this.props;
+    const { record, phoneCalls, openPerson } = this.props;
     const phoneCall = phoneCalls.get(record.get('phone_call'));
     if (!phoneCall) {
       return;
     }
 
-    onOpenPerson(phoneCall.get('person'));
+    openPerson(phoneCall.get('person'));
   };
 
   stopPlaying = () => {
@@ -158,8 +181,8 @@ class VoicemailRecord extends React.Component {
 
   renderContent() {
     const { record, phoneCalls, people, outboundCallsEnabled } = this.props;
-    const { playing } = this.state;
     const phoneCall = phoneCalls.get(record.get('phone_call'));
+    const assetPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img`;
 
     if (!phoneCall) {
       return null;
@@ -170,25 +193,31 @@ class VoicemailRecord extends React.Component {
 
     return (
       <div className="voice-menu-voicemail-record">
-        <i
-          className={classNames(
-            playing ? 'pause' : 'play circle', 'icon voicemail-record-play-icon',
-            { disabled: !recording, 'voicemail-new-record': !record.get('is_listened') }
-          )}
-          onClick={this.onPlay}
-        />
+        {recording
+          ? <Isvg className="voice-missed-call-icon" src={`${assetPath}/topbar/voicemail.svg`} />
+          : <Isvg className="voice-missed-call-icon" src={`${assetPath}/topbar/missed-call.svg`} />}
 
         <div className="voicemail-record-content">
           <div className="voicemail-record-date-created">
             {moment(record.get('date_created')).fromNow()}
           </div>
+          {recording &&
           <div className="voicemail-record-duration">
+            <MediaControls
+              key={`recording_${recording.get('blob_id')}`} recording={recording}
+              withResetButton={false}
+              withDuration={false}
+              withDownload={false}
+            />
             <WaitingFormat value={record.get('duration')} />
-          </div>
+          </div>}
 
           <div className="voicemail-person-name">
             {person && person.get('name')
-              ? <a onClick={this.onOpenPerson}>{person.get('name')} ({person.get('primary_email')})</a>
+              ? <a onClick={this.openPerson}>
+                {person.get('name')}
+                <span className="voicemail-person-email">{person.get('primary_email')}</span>
+              </a>
               : <span>Unknown user</span>
             }
           </div>
@@ -196,13 +225,13 @@ class VoicemailRecord extends React.Component {
 
           <div className="voice-record-actions">
             <span className="voice-record-action">
-              <a onClick={this.onCreateTicket}>
+              <a onClick={this.createTicket}>
                 Create Ticket
               </a>
             </span>
             {outboundCallsEnabled &&
             <span className="voice-record-action">
-              <a onClick={this.onCallback}>
+              <a onClick={this.callBack}>
                 Call Back
               </a>
             </span>}
@@ -218,7 +247,7 @@ class VoicemailRecord extends React.Component {
               </a>
             </span>}
             <span className="voice-record-action">
-              <a onClick={this.onDelete}>
+              <a onClick={this.deleteRecording}>
                 Delete
               </a>
             </span>
@@ -238,4 +267,4 @@ class VoicemailRecord extends React.Component {
   }
 }
 
-export default VoicemailList;
+export default MissedCallsList;

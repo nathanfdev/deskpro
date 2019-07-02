@@ -32,6 +32,15 @@ class ErrorController extends AbstractController
         $requestStack = $this->get('request_stack');
         $appEnv       = $this->get('deskpro.app_env');
 
+        if ($exception->getStatusCode() === 404 && preg_match("/\.(js|css|ico|svg|gif|png|jpg|jpeg|pdf)$/", $requestStack->getMasterRequest()->getPathInfo())) {
+            // If this is a 404 and it's for a resource type,
+            // then exit early here rather than go through theme rendering.
+            // This is a minor opt that should stay until page rendering performance improves.
+            // It's meant to reduce resource usage caused by common resources being mis-linked
+            // from templates (e.g. someone copy+pasted a custom header with invalid local path to a js file).
+            return new Response($exception->getMessage(), $exception->getStatusCode());
+        }
+
         $reflection = new \ReflectionClass(RequestStack::class);
         $property   = $reflection->getProperty('requests');
         $property->setAccessible(true);

@@ -8,10 +8,10 @@ import TransferStatus from '../TransferStatus';
 import AutoAttendants from './AutoAttendants';
 
 const getDefaultTabName = (props, currentTab) => {
-  const { onlineAgents, queues, autoAttendants } = props;
+  const { onlineAgents, forwardingAgents, queues, autoAttendants } = props;
 
   const availableTabs = [];
-  if (onlineAgents.size > 0) {
+  if ((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0)) {
     availableTabs.push('agents');
   }
   if (queues.size > 0) {
@@ -35,6 +35,7 @@ class TransferList extends React.Component {
     target:                      PropTypes.object,
     transferDisabled:            PropTypes.bool,
     onlineAgents:                PropTypes.object,
+    forwardingAgents:            PropTypes.object,
     participants:                PropTypes.array,
     agents:                      PropTypes.object,
     busyAgents:                  PropTypes.array,
@@ -119,15 +120,19 @@ class TransferList extends React.Component {
   };
 
   renderList() {
-    const { me, agents, busyAgents, queues, autoAttendants, onlineAgents, participants } = this.props;
+    const { me, agents, busyAgents, queues, autoAttendants, onlineAgents, forwardingAgents, participants } = this.props;
     const { inviteError, transferDisabled } = this.props;
     const { tabName, selectedTarget } = this.state;
+
+    const hasAgentsTab = ((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
+    const hasQueuesTab = queues && queues.size > 0;
+    const hasAutoAttendantTab = autoAttendants && autoAttendants.size > 0;
 
     return (
       <div>
         {inviteError && <div className="error-message">{inviteError}</div>}
         <div className="tab-menu">
-          {onlineAgents && onlineAgents.size > 0 &&
+          {hasAgentsTab &&
           <TabButton
             tabName="agents"
             title="Agents online"
@@ -135,7 +140,7 @@ class TransferList extends React.Component {
             onClick={this.changeTab}
             active={tabName === 'agents'}
           />}
-          {queues && queues.size > 0 &&
+          {hasQueuesTab &&
           <TabButton
             tabName="queues"
             title="Queues"
@@ -143,7 +148,7 @@ class TransferList extends React.Component {
             onClick={this.changeTab}
             active={tabName === 'queues'}
           />}
-          {autoAttendants && autoAttendants.size > 0 &&
+          {hasAutoAttendantTab &&
           <TabButton
             tabName="auto_attendants"
             title="Auto-attendants"
@@ -155,7 +160,8 @@ class TransferList extends React.Component {
 
         <Tab active={tabName === 'agents'}>
           <AgentList
-            agents={onlineAgents}
+            onlineAgents={onlineAgents}
+            forwardingAgents={forwardingAgents}
             busyAgents={busyAgents}
             participants={participants}
             target={selectedTarget}
@@ -163,7 +169,7 @@ class TransferList extends React.Component {
             transferDisabled={transferDisabled}
           />
         </Tab>
-        {queues && queues.size > 0 &&
+        {hasQueuesTab &&
         <Tab active={tabName === 'queues'}>
           <Queues
             me={me}
@@ -174,7 +180,7 @@ class TransferList extends React.Component {
             onClick={this.selectQueueTarget}
           />
         </Tab>}
-        {autoAttendants && autoAttendants.size > 0 &&
+        {hasAutoAttendantTab &&
         <Tab active={tabName === 'auto_attendants'}>
           <AutoAttendants
             autoAttendants={autoAttendants}

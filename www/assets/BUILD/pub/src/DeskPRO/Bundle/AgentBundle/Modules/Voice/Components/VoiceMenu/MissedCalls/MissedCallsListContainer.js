@@ -2,48 +2,48 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/people';
-import VoicemailList from './VoicemailList';
-import { deleteVoicemailRecord, markVoicemalRecordAsListened, createVoicemailTicket } from '../../../Actions/voicemailRecordActions';
-import { allVoicemailRecordsSelector, isVoicemailRecordsLoadedSelector } from '../../../Selectors/voicemailRecords';
+import MissedCallsList from './MissedCallsList';
+import { deleteVoiceMissedAgentCall, markVoiceMissedAgentCallAsListened, createVoicemailTicket } from '../../../Actions/voiceMissedAgentCallActions';
+import { allVoiceMissedAgentCallsSelector, isVoiceMissedAgentCallsLoadedSelector } from '../../../Selectors/voicemailRecords';
 import { allPhoneCallsSelector } from '../../../Selectors/phoneCalls';
 import { openDialpad } from '../../../Actions/clientActions';
 import { outboundCallsEnabledSelector } from '../../../Selectors/agents';
 
 @connect(state => ({
-  records:              allVoicemailRecordsSelector(state),
-  recordsLoaded:        isVoicemailRecordsLoadedSelector(state),
+  records:              allVoiceMissedAgentCallsSelector(state),
+  recordsLoaded:        isVoiceMissedAgentCallsLoadedSelector(state),
   phoneCalls:           allPhoneCallsSelector(state),
   people:               allPeopleSelector(state),
   outboundCallsEnabled: outboundCallsEnabledSelector(state)
 }))
-class VoicemailListContainer extends React.Component {
+class MissedCallsListContainer extends React.Component {
 
   static propTypes = {
     dispatch:      PropTypes.func,
     recordsLoaded: PropTypes.bool
   };
 
-  onCallback = (phoneCall) => {
+  callBack = (phoneCall) => {
     const { dispatch } = this.props;
     dispatch(openDialpad(phoneCall.get('external_number')));
   };
 
-  onDelete = (record) => {
+  deleteRecording = (record) => {
     const { dispatch } = this.props;
-    dispatch(deleteVoicemailRecord(record.get('id')));
+    dispatch(deleteVoiceMissedAgentCall(record.get('id')));
   };
 
-  onMarkListened = (record) => {
+  markListened = (record) => {
     const { dispatch } = this.props;
-    dispatch(markVoicemalRecordAsListened(record.get('id')));
+    dispatch(markVoiceMissedAgentCallAsListened(record.get('id')));
   };
 
-  onCreateTicket = (record) => {
+  createTicket = (record) => {
     const { dispatch } = this.props;
     dispatch(createVoicemailTicket(record.get('id')));
   };
 
-  onOpenPerson = (id) => {
+  openPerson = (id) => {
     window.DeskPRO_Window.runPageRoute(`person:/agent/people/${id}`);
   };
 
@@ -60,16 +60,16 @@ class VoicemailListContainer extends React.Component {
     }
 
     return (
-      <VoicemailList
+      <MissedCallsList
         {...this.props}
-        onCallback={this.onCallback}
-        onDelete={this.onDelete}
-        onMarkListened={this.onMarkListened}
-        onOpenPerson={this.onOpenPerson}
-        onCreateTicket={this.onCreateTicket}
+        callBack={this.callBack}
+        deleteRecording={this.deleteRecording}
+        markListened={this.markListened}
+        openPerson={this.openPerson}
+        createTicket={this.createTicket}
       />
     );
   }
 }
 
-export default VoicemailListContainer;
+export default MissedCallsListContainer;

@@ -104,7 +104,7 @@ class TicketsVoter extends AbstractVoter
             }
             $now  = new \DateTime();
             $diff = $now->diff($ticket->getDateResolved());
-            if ($diff->days > $timelimit) {
+            if ($diff->days >= $timelimit) {
                 return false;
             }
         }

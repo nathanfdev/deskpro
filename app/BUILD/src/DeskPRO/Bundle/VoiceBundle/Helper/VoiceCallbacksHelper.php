@@ -319,12 +319,6 @@ class VoiceCallbacksHelper
     {
         // reject task worker
         if ($this->taskRouter->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
-            // if call target is an agent, redirect to voicemail immediately
-            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
-            if ($task && $task->getAttribute('agent')) {
-                $this->transferCallHelper->transferToVoicemail($phoneCall);
-            }
-
             // log that agent rejected the incoming call
             $log = new VoicePhoneCallLog();
             $log->setPerson($agent);
@@ -432,6 +426,7 @@ class VoiceCallbacksHelper
         // get the caller person
         $agent = $this->getAgent($agentId);
         $phoneCall->setData(array_merge($phoneCall->getData(), $details));
+        $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_OUTGOING, $callSid);
 
         // create agent participant
         $participant = new VoicePhoneCallParticipantAgent();
@@ -772,7 +767,8 @@ class VoiceCallbacksHelper
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
             new LegacySystemEvent('agent.voice.outgoing-call-declined', [
-                'CallSid' => $phoneCall->getCallSid(),
+                'call_id'  => $phoneCall->getId(),
+                'call_sid' => $phoneCall->getCallSid(),
             ])
         );
     }

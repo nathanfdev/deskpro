@@ -119,6 +119,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
     this.ticketFields = new DeskPRO.Agent.PageHelper.TicketFields(this);
 
+    this._initVoice();
     this._initMessage(this.wrapper.find('.messages-wrap'));
 
     this.getEl('value_form').find('.language_id').on('change', function() {
@@ -139,7 +140,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
     this._initLabels();
     this._initTicketLocking();
-    this._initVoice();
 
     // Change email menu
     var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -1666,8 +1666,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this.taskListControl.destroy();
       this.taskListControl = null;
     }
-    if (this.controls) {
-      this.controls = null;
+    if (this.voiceControls) {
+      this.voiceControls = null;
       var node = document.getElementById(this.meta.baseId + '_controls_react_container');
       window.AgentLegacyBundle.unmountEmbeddedReactNode(node);
     }
@@ -1944,11 +1944,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     // render react components for specific messages
     var renderVoiceComponent = function($el) {
       var $rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter($el);
+      var messageData = $el.data('message');
+      var phoneCall = messageData.data.attributes[0].phone_call;
+
+      if (phoneCall && !phoneCall.date_ended) {
+        self.voiceControls.setViewCall(phoneCall);
+      }
 
       $el.remove();
       window.AgentLegacyBundle.renderVoiceMessage(
         $rElement.get(0),
-        $el.data('message'),
+        messageData,
         $el.data('message-date-created-fulltime'),
         $el.data('elid')
       );
@@ -2653,21 +2659,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       DeskPRO_Window.TabBar.unlockTab(DeskPRO_Window.TabBar.getTab(self.meta.tabId));
     };
     var node = document.getElementById(this.meta.baseId + '_controls_react_container');
-    this.controls = window.AgentLegacyBundle.renderVoiceControls(
+    self.voiceControls = window.AgentLegacyBundle.renderVoiceControls(
       node,
       parseInt(this.meta.ticket_id, 10),
       onEndCall,
       this.meta.baseId
     );
 
-    if (this.controls.isCallActive()) {
-      console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_FAST);
-      DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_FAST);
+    if (self.voiceControls.isCallActive()) {
+      console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_VOICE);
+      DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_VOICE);
       DeskPRO_Window.TabBar.lockTab(DeskPRO_Window.TabBar.getTab(this.meta.tabId));
     }
 
     this.addEvent('closeTab', function(event) {
-      if (this.controls.isCallActive()) {
+      if (this.voiceControls.isCallActive()) {
         event.deskpro.cancelClose = true;
       }
     }, this);

@@ -425,11 +425,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).show();
       $('.show-reply', self.el).hide();
       $('.show-note', self.el).hide();
-      console.log(self.el.data('fwd-as-new'));
+
       if (self.el.data('fwd-as-new')) {
 				$('.fwd-as-new', self.el).show();
+				$('.fwd-as-new-hide', self.el).hide();
 			} else {
       	$('.fwd-as-new', self.el).hide();
+				$('.fwd-as-new-hide', self.el).show();
 			}
       replyMode = 'fwd';
       self.getElById('actions_row').hide();
@@ -445,8 +447,19 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		fwdAsNewCheck.on('click', function() {
 			if (fwdAsNewCheck.prop('checked')) {
 				$('.fwd-as-new', self.el).show();
+				$('.fwd-as-new-hide', self.el).hide();
+				var container = self.getElById('fwd_to_container');
+				var lines = container.find('.to-line');
+				for (var i = lines.length; i > 1; i--) {
+					var input = $(lines[i-1]).find('.email-address-input');
+					if (input.data('type') !== 'cc') {
+						lines[i-1].remove();
+					}
+				}
+				container.find('.fwd_removerow').hide();
 			} else {
 				$('.fwd-as-new', self.el).hide();
+				$('.fwd-as-new-hide', self.el).show();
 			}
 		});
 
@@ -1012,7 +1025,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				do_assign_agent: self.getElById('agent_sel_check').prop('checked'),
 				agent_id:        self.getElById('agent_sel').val(),
 				do_assign_team:  self.getElById('agent_team_sel_check').prop('checked'),
-				agent_team_id:   self.getElById('agent_team_sel').val()
+				agent_team_id:   self.getElById('agent_team_sel').val(),
+				close_tab:       self.getElById('close_tab_opt').prop('checked')
 			};
 
       var formData = {
@@ -1062,6 +1076,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           // Reload message page to show `message forwarded` mark
           // need to call this manually because doTicketUpdate will not update page without new messages
           self.page.loadMessagePage(0, true);
+          if (data.close_tab) {
+						self.page.closeSelf();
+          	if (data.new_ticket_url) {
+							DeskPRO_Window.runPageRoute('page:' + data.new_ticket_url);
+						}
+					}
           DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
           self.getElById('replybox_replytab_btn').click();
         },

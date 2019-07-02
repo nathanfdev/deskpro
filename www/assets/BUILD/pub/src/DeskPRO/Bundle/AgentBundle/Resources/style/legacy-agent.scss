@@ -342,7 +342,10 @@ $contrast: 5% !default;
     text-align: center;
 
     .voice-menu-icon {
-      font-size: 25px !important;
+      svg {
+        width: 24px;
+        height: 24px;
+      }
     }
   }
   .user {

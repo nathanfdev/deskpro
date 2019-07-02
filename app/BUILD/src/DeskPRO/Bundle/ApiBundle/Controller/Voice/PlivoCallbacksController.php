@@ -25,6 +25,7 @@ use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Plivo\XML\Element;
 use Plivo\XML\Response as PlivoXML;
@@ -605,16 +606,23 @@ class PlivoCallbacksController extends BaseController
                     // workers was just found
                     if (!$hadWorkers && $task->getWorkerIds()) {
                         // forwarding calls
-                        $workers = $this->container->get('dp.voice.task_router.storage')->getWorkers($task->getWorkerIds());
+                        $taskWorkers   = $this->get('dp.voice.task_router.storage')->getWorkers($task->getWorkerIds());
+                        $onlineWorkers = $this->get('dp.voice.task_router.storage')->getOnlineWorkersByType('agent');
 
-                        foreach ($workers as $worker) {
+                        foreach ($taskWorkers as $taskWorker) {
                             /** @var Person $agent */
-                            $agent = $this->getRepository(Person::class)->find($worker->getTypeId());
+                            $agent = $this->getRepository(Person::class)->find($taskWorker->getTypeId());
                             if ($agent && $agent->canForwardCall()) {
-                                // make an outbound call
-                                $callUuid = $this->get('plivo_adapter')->callForwardingNumber($phoneCall, $agent);
-                                if ($callUuid) {
-                                    $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
+                                $isAgentOnline = count(array_filter($onlineWorkers, function (Worker $onlineWorker) use ($taskWorker) {
+                                    return $onlineWorker->getTypeId() === $taskWorker->getTypeId();
+                                })) > 0;
+
+                                if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
+                                    // make an outbound call
+                                    $callUuid = $this->get('plivo_adapter')->callForwardingNumber($phoneCall, $agent);
+                                    if ($callUuid) {
+                                        $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
+                                    }
                                 }
                             }
 

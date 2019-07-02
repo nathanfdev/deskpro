@@ -45,6 +45,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * Handles ticket searches.
@@ -60,6 +61,10 @@ class FeedbackController extends AbstractController
      */
     public function getSectionDataAction()
     {
+        if (!$this->person->hasPerm('agent_publish.use')) {
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
+        }
+
         $selectedBrandId = $this->in->getUInt('brand_id');
         if (!$selectedBrandId) {
             $selectedBrandId = (int) $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');

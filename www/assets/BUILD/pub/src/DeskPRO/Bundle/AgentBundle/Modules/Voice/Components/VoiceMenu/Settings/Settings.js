@@ -46,7 +46,7 @@ class Settings extends React.Component {
 
     return (
       <div>
-        <Accordion {...props} />
+        <Accordion {...props} ref={(c) => { this.panels = c; }} />
         <OnlineAgentsContainer />
       </div>
     );

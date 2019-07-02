@@ -4,17 +4,16 @@ namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
-use DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class TwilioIncomingCallListener.
@@ -37,19 +36,14 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     private $taskHelper;
 
     /**
-     * @var VoiceAssetHelper
-     */
-    private $assetHelper;
-
-    /**
      * @var TwilioAdapter
      */
     private $twilioAdapter;
 
     /**
-     * @var UrlGeneratorInterface
+     * @var LoggerInterface
      */
-    private $router;
+    private $logger;
 
     /**
      * Constructor.
@@ -57,24 +51,21 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
      * @param EntityManager           $em
      * @param StorageAdapterInterface $storageAdapter
      * @param VoiceTaskHelper         $taskHelper
-     * @param VoiceAssetHelper        $assetHelper
      * @param TwilioAdapter           $twilioAdapter
-     * @param UrlGeneratorInterface   $router
+     * @param LoggerInterface         $logger
      */
     public function __construct(
         EntityManager           $em,
         StorageAdapterInterface $storageAdapter,
         VoiceTaskHelper         $taskHelper,
-        VoiceAssetHelper        $assetHelper,
         TwilioAdapter           $twilioAdapter,
-        UrlGeneratorInterface   $router
+        LoggerInterface         $logger
     ) {
         $this->em             = $em;
         $this->storageAdapter = $storageAdapter;
         $this->taskHelper     = $taskHelper;
-        $this->assetHelper    = $assetHelper;
         $this->twilioAdapter  = $twilioAdapter;
-        $this->router         = $router;
+        $this->logger         = $logger;
     }
 
     /**
@@ -84,7 +75,6 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     {
         return [
             TaskRouterEvent::ASSIGNED => 'onAssigned',
-            TaskRouterEvent::TIMEOUT  => 'onTimeout',
         ];
     }
 
@@ -102,6 +92,9 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
         if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
             return;
         }
+        if (!$task->getWorkerIds()) {
+            return;
+        }
 
         $phoneCall = $this->taskHelper->getPhoneCall($task);
         if (!$phoneCall) {
@@ -109,74 +102,50 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
         }
 
         $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof TwilioVoiceAccount) {
+            return;
+        }
 
-        if ($account instanceof TwilioVoiceAccount) {
-            if ($task->getWorkerIds()) {
-                // once workers are found
-                // we can call them and enqueue the user
-                $workers = $this->storageAdapter->getWorkers($task->getWorkerIds());
-                foreach ($workers as $worker) {
-                    /** @var Person $agent */
-                    $agent = $this->em->getRepository(Person::class)->find($worker->getTypeId());
-                    if ($agent) {
-                        if ($agent->canForwardCall()) {
-                            // make an outbound call
-                            $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
-                            if ($callUuid) {
-                                $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
-                            }
+        $this->logger->info(sprintf(
+            '[TwilioIncomingCallListener] Assigned to workers = %s',
+            implode(', ', $task->getWorkerIds())
+        ));
+
+        // once workers are found
+        // we can call them and enqueue the user
+        $taskWorkers   = $this->storageAdapter->getWorkers($task->getWorkerIds());
+        $onlineWorkers = $this->storageAdapter->getOnlineWorkersByType('agent');
+
+        foreach ($taskWorkers as $taskWorker) {
+            /** @var Person $agent */
+            $agent = $this->em->getRepository(Person::class)->find($taskWorker->getTypeId());
+            if ($agent) {
+                if ($agent->canForwardCall()) {
+                    $isAgentOnline = count(array_filter($onlineWorkers, function (Worker $onlineWorker) use ($taskWorker) {
+                        return $onlineWorker->getTypeId() === $taskWorker->getTypeId();
+                    })) > 0;
+
+                    $this->logger->info(sprintf(
+                        '[TwilioIncomingCallListener] Agent #%s is_online = %s',
+                        $agent->getId(), $isAgentOnline ? 'true' : 'false'
+                    ));
+
+                    if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
+                        // make an outbound call
+                        $this->logger->info(sprintf(
+                            '[TwilioIncomingCallListener] Make a forwarding call to agent #%s',
+                            $agent->getId()
+                        ));
+
+                        $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
+                        if ($callUuid) {
+                            $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
                         }
                     }
                 }
-
-                $this->em->flush();
             }
         }
-    }
 
-    /**
-     * @internal
-     *
-     * @param TaskRouterEvent $event
-     */
-    public function onTimeout(TaskRouterEvent $event)
-    {
-        $task = $event->getTask();
-        if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
-            return;
-        }
-
-        $phoneCall = $this->taskHelper->getPhoneCall($task);
-        if (!$phoneCall) {
-            return;
-        }
-
-        $account = $phoneCall->getNumber()->getAccount();
-
-        if ($account instanceof TwilioVoiceAccount) {
-            $userParticipant = $phoneCall->getUserParticipants()->first();
-            if ($userParticipant) {
-                $this->twilioAdapter->transferParticipant(
-                    $userParticipant,
-                    $this->getVoicemailUrl($account, $this->assetHelper->getVoicemailAsset($task->getId())),
-                    'POST'
-                );
-            }
-        }
-    }
-
-    /**
-     * @param TwilioVoiceAccount $account
-     * @param AbstractVoiceAsset $asset
-     *
-     * @return string
-     */
-    private function getVoicemailUrl(TwilioVoiceAccount $account, AbstractVoiceAsset $asset = null)
-    {
-        return $this->router->generate('twilio_voicemail', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'asset'       => $asset ? $asset->getId() : null,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->em->flush();
     }
 }

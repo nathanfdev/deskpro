@@ -11,6 +11,7 @@ namespace deskpro_ms_translator;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
+use Orb\Service\Microsoft\Translate\Translate;
 
 class AgentRequestHandler implements AgentRequestHandlerInterface
 {
@@ -103,7 +104,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $message_translated->lang_code      = $to;
 
         try {
-            $message_translated->message = $api->translate($message_text, $from, $to, 'text/html');
+            $message_translated->message = $api->translate($message_text, $from, $to, Translate::TYPE_HTML);
         } catch (\Exception $e) {
             return $context->createJsonResponse(['error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()]);
         }
@@ -144,7 +145,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         try {
-            $trans_text = $api->translate($message_text, $from, $to, 'text/html');
+            $trans_text = $api->translate($message_text, $from, $to, Translate::TYPE_HTML);
         } catch (\Exception $e) {
             return $context->createJsonResponse(['error_code' => 'no_translate', 'message' => 'Could not translate message', 'exception' => $e->getMessage()]);
         }

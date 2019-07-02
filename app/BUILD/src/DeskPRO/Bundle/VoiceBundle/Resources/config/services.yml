@@ -88,6 +88,7 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@voice_settings_resolver"
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.department_checker"
     tags:
       - { name: dp.voice.task_router_workflow }
 
@@ -100,3 +101,6 @@ services:
       - "@dp.voice.task_router.storage"
     tags:
       - { name: dp.voice.task_router_workflow }
+
+  dp.voice.department_checker:
+    class: DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker

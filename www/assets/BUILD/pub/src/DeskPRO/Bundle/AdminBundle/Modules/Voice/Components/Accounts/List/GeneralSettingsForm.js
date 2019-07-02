@@ -18,6 +18,7 @@ class GeneralSettingsForm extends BaseForm {
     return {
       group_missed_call_tickets:         settings ? settings.get('group_missed_call_tickets') : false,
       group_missed_call_tickets_timeout: settings ? settings.get('group_missed_call_tickets_timeout') : 0,
+      transcribe_voicemail:              settings ? settings.get('transcribe_voicemail') : false,
       forwarding_machine_detection:      settings ? settings.get('forwarding_machine_detection') : false,
       forwarding_number_type:            settings && settings.get('forwarding_number_type') || 'default',
       forwarding_number:                 settings ? settings.get('forwarding_number') : null
@@ -44,6 +45,9 @@ class GeneralSettingsForm extends BaseForm {
           </Field>}
           <Field select="forwarding_machine_detection">
             <Checkbox label="Forwarding Machine Detection (+ve is stops VM pickup, -ve is latency + cost)" />
+          </Field>
+          <Field select="transcribe_voicemail">
+            <Checkbox label="Transcribe voicemail messages. This will insert a text version of the voicemail message into the first message of a ticket." />
           </Field>
           <Field select="forwarding_number_type" label="Number to call from when forward calls to agents">
             <Select choices={forwardingNumberTypeOptions} />

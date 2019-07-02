@@ -7,7 +7,7 @@ use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceRecording;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
@@ -118,8 +118,8 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                     )
                 );
             } elseif (isset($data['voicemail_recording_id'])) {
-                /** @var VoicemailAgentRecording $recording */
-                $recording = $this->em->getRepository(VoicemailAgentRecording::class)->find($data['voicemail_recording_id']);
+                /** @var VoiceMissedAgentCall $recording */
+                $recording = $this->em->getRepository(VoiceMissedAgentCall::class)->find($data['voicemail_recording_id']);
                 if (!$recording) {
                     return;
                 }
@@ -141,7 +141,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 $this->dispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent('agent.voice.voicemail.new-message', [
+                    new LegacySystemEvent('agent.voice.missed-call', [
                         'data'   => $serializedData,
                         'target' => $recording->getAgent()->getId(),
                     ])

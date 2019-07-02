@@ -2,15 +2,15 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { addToCollection, updateCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
-import { allVoicemailRecordsSelector } from '../Selectors/voicemailRecords';
+import { allVoiceMissedAgentCallsSelector } from '../Selectors/voicemailRecords';
 
-export const loadVoicemailRecords = createAction(
-  'VOICE_LOAD_VOICEMAIL_RECORDS',
+export const loadVoiceMissedAgentCalls = createAction(
+  'VOICE_LOAD_VOICE_MISSED_AGENT_CALLS',
   () => (dispatch) => {
-    const promise = repository('VoicemailRecord').loadAll('voice_phone_call, person');
+    const promise = repository('VoiceMissedAgentCall').loadAll('voice_phone_call, person');
     promise.success(({ data, linked }) => {
       if (data) {
-        dispatch(addToCollection('VoicemailRecord', 'all', data));
+        dispatch(addToCollection('VoiceMissedAgentCall', 'all', data));
       }
       if (linked.voice_phone_call) {
         dispatch(addToCollection('VoicePhoneCall', 'all',  Object.values(linked.voice_phone_call)));
@@ -24,13 +24,13 @@ export const loadVoicemailRecords = createAction(
   }
 );
 
-export const markVoicemalRecordAsListened = createAction(
-  'VOICE_MAKR_VOICEMAIL_RECORD_AS_LISTENED',
+export const markVoiceMissedAgentCallAsListened = createAction(
+  'VOICE_MAKR_VOICE_MISSED_AGENT_CALL_AS_LISTENED',
   id => (dispatch, getState) => {
-    const promise = api.sendPut(`DP_API/voicemail_records/${id}/mark_listened`);
+    const promise = api.sendPut(`DP_API/voice_missed_agent_calls/${id}/mark_listened`);
     promise.success(() => {
       const state = getState();
-      const records = allVoicemailRecordsSelector(state);
+      const records = allVoiceMissedAgentCallsSelector(state);
 
       let record = records.get(id);
       if (!record) {
@@ -38,19 +38,19 @@ export const markVoicemalRecordAsListened = createAction(
       }
 
       record = record.set('is_listened', true);
-      dispatch(updateCollection('VoicemailRecord', Immutable.List([record]), 'merge'));
+      dispatch(updateCollection('VoiceMissedAgentCall', Immutable.List([record]), 'merge'));
     });
 
     return promise;
   }
 );
 
-export const deleteVoicemailRecord = createAction(
-  'VOICE_DELETE_VOICEMAIL_RECORD',
+export const deleteVoiceMissedAgentCall = createAction(
+  'VOICE_DELETE_VOICE_MISSED_AGENT_CALL',
   id => (dispatch) => {
-    const promise = repository('VoicemailRecord').remove(id);
+    const promise = repository('VoiceMissedAgentCall').remove(id);
     promise.success(() => {
-      dispatch(removeFromCollection('VoicemailRecord', 'all', [id]));
+      dispatch(removeFromCollection('VoiceMissedAgentCall', 'all', [id]));
     });
 
     return promise;
@@ -58,11 +58,11 @@ export const deleteVoicemailRecord = createAction(
 );
 
 export const createVoicemailTicket = createAction(
-  'VOICE_CREATE_VOICEMAIL_TICKET',
+  'VOICE_CREATE_MISSED_AGENT_CALLL_TICKET',
   id => (dispatch) => {
-    const promise = api.sendPut(`DP_API/voicemail_records/${id}/create_ticket`);
+    const promise = api.sendPut(`DP_API/voice_missed_agent_calls/${id}/create_ticket`);
     promise.success(({ data }) => {
-      dispatch(removeFromCollection('VoicemailRecord', 'all', [id]));
+      dispatch(removeFromCollection('VoiceMissedAgentCall', 'all', [id]));
       window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
     });
 

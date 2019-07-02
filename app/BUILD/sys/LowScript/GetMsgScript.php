@@ -142,15 +142,19 @@ class GetMsgScript extends LowScriptAbstract
             }
             $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
 
-            // every other ping, or if we're opening a write conn anyway
-            $performDbUpdates = !empty($_REQUEST['recent_tabs']) || !empty($_REQUEST['dismiss_alerts']) || ($count && $count % 2 === 0) || $count == 1;
+            // if we're opening a write conn anyway, or every ~25s
+            $updateSessDate = !empty($_REQUEST['recent_tabs'])
+                || !empty($_REQUEST['dismiss_alerts'])
+                || ($count && $count % 5 === 0)
+                || $count == 1
+                || $data['cm_strategy'] !== 'db';
 
             // or if not using db for client msgs, then each poll is already reduced so every one should perform writes
             if ($data['cm_strategy'] != 'db') {
-                $performDbUpdates = true;
+                $updateSessDate = true;
             }
 
-            if ($performDbUpdates) {
+            if ($updateSessDate) {
                 $q = $this->getPdo()->prepare('
                     UPDATE sessions
                     SET date_last = ?
@@ -309,6 +313,12 @@ class GetMsgScript extends LowScriptAbstract
             $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
 
             header('Content-Type: application/json');
+
+            if (!empty($this->pdo)) {
+                // to collect stats
+                header('X-DP-With-DBMaster: 1');
+            }
+
             echo json_encode($data);
         } catch (\Exception $exception) {
             if ($this->dpEnv->isDebug()) {
@@ -532,6 +542,10 @@ class GetMsgScript extends LowScriptAbstract
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
+        if ($configValue = $DP_ENV->getConfig("settings.$name")) {
+            return $configValue;
+        }
+
         if (!$this->_settings) {
             $this->_settings = [];
             $q               = $this->getPdoRead()->prepare('
@@ -544,9 +558,7 @@ class GetMsgScript extends LowScriptAbstract
             }
         }
 
-        if ($DP_ENV->getConfig("settings.$name")) {
-            return $DP_ENV->getConfig("settings.$name");
-        } elseif (isset($this->_settings[$name])) {
+        if (isset($this->_settings[$name])) {
             return $this->_settings[$name];
         }
 

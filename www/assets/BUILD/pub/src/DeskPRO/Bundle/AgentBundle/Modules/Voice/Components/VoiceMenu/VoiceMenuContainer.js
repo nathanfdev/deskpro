@@ -8,8 +8,8 @@ import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
 import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isSecure } from '../../Selectors/client';
 import { allQueuesSelector } from '../../Selectors/queue';
-import { loadVoicemailRecords } from '../../Actions/voicemailRecordActions';
-import { allVoicemailRecordsSelector } from '../../Selectors/voicemailRecords';
+import { loadVoiceMissedAgentCalls } from '../../Actions/voiceMissedAgentCallActions';
+import { allVoiceMissedAgentCallsSelector } from '../../Selectors/voicemailRecords';
 import '../../../../Resources/sounds/incoming-call.mp3';
 import '../../../../Resources/sounds/incoming-call.ogg';
 import '../../../../Resources/sounds/incoming-call.wav';
@@ -29,7 +29,7 @@ import '../../../../Resources/sounds/incoming-call.wav';
   ringingVolume:         ringingVolumeSelector(state),
   agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
   micEnabled:            isVoiceMicEnabled(state),
-  records:               allVoicemailRecordsSelector(state)
+  records:               allVoiceMissedAgentCallsSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {
 
@@ -50,7 +50,7 @@ class VoiceMenuContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(loadVoicemailRecords());
+    this.props.dispatch(loadVoiceMissedAgentCalls());
     const soundsPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/sounds`;
 
     this.preloadIncomingCalls(`${soundsPath}/incoming-call.mp3`, 'mp3');

@@ -8,7 +8,7 @@ use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -311,7 +311,7 @@ class SelectPart
         'voice_phone_call_logs'       => VoicePhoneCallLog::class,
         'voice_queues'                => VoiceQueue::class,
         'voice_queue_agents'          => VoiceQueueAgent::class,
-        'voicemail_records'           => VoicemailAgentRecording::class,
+        'voice_missed_agent_call'     => VoiceMissedAgentCall::class,
     ];
 
     /**
