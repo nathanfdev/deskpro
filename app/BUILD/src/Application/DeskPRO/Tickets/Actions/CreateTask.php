@@ -15,6 +15,7 @@ use Application\DeskPRO\Form\Type\TaskType;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
+use DateInterval;
 
 /**
  * Set the status.
@@ -30,7 +31,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('title', 'creator');
-        $options->addValidNames('date_due', 'public', 'assignee', 'offset', 'link');
+        $options->addValidNames('due_type', 'due_rel_unit', 'due_rel_period', 'date_due', 'public', 'assignee', 'offset', 'link');
 
         return $options;
     }
@@ -56,6 +57,41 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     }
 
     /**
+     * Returns a due date if set.
+     * @return \DateTime or null
+     */
+    private function dueDate() {
+        $dtz = new \DateTimeZone("UTC");
+        $dt = null;
+        $due_type = $this->getActionOption('due_type', 'none');
+        if ($due_type == "rel") {
+            $dt = new \DateTime("now", $dtz);
+            $period = $this->getActionOption('due_rel_period', 0);
+            switch($this->getActionOption('due_rel_unit', 'day')) {
+                case "min":
+                    $dt->modify("+$period second");
+                    break;
+                case "hour":
+                    $dt->modify("+$period hour");
+                    break;
+                case "day":
+                    $dt->modify("+$period day");
+                    break;
+                case "week":
+                    $dt->modify("+$period week");
+                    break;
+                default:
+                    break;
+            }
+        } else if ($due_type == 'abs') {
+            $due_date = $this->getActionOption('date_due', '');
+            $dt = new \DateTime($due_date, $dtz);
+            $dt->setTime(23, 59, 59);
+            $dt->modify((int) $this->getActionOption('offset').'hours');
+        }
+        return $dt;
+    }
+    /**
      * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
@@ -72,11 +108,10 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
             $context->getLogger()->debug('[CreateTask] Wrong creator');
         }
 
-        if ($due_date = $this->getActionOption('date_due', '')) {
-            $due_date = new \DateTime($due_date, new \DateTimeZone('UTC'));
-            $due_date->setTime(23, 59, 59);
-            $due_date->modify((int) $this->getActionOption('offset').'hours');
-            $due_date = $due_date->format('Y-m-d H:i:s');
+        $due_date = '';
+        $dd = $this->dueDate();
+        if ($dd) {
+            $due_date = $dd->format('Y-m-d H:i:s');
         }
 
         $assigned_agent_team = null;

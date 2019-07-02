@@ -7,16 +7,34 @@
 					<table class="display-table spaced" width="100%">
 						<tr>
 							<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
-                                Task Title:
+                               Task Title:
                             </td>
 							<td>
 								<input type="text" ng-model="model.title" class="form-control" />
 							</td>
-						</tr>
+                        </tr>
                         <tr>
-                            <td style="vertical-align: top; white-space: nowrap" nowrap width="100">
-                                Due Date:
+                            <td>Due Date</td>
+                            <td>
+                                <label><input type="radio" ng-model="model.due_type" value="none"> None</label>
+                                <label><input type="radio" ng-model="model.due_type" value="rel"> Relative time</label>
+                                <label><input type="radio" ng-model="model.due_type" value="abs"> On a specific date</label>
                             </td>
+                        </tr>
+                        <tr ng-show="model.due_type === 'rel'">
+                            <td></td>
+                            <td>
+                                <input type="number" ng-min="0" ng-model="model.due_rel_period">
+                                <select name="due-rel-unit" ng-model="model.due_rel_unit">
+                                  <option value="min">Minute(s) later</option>
+                                  <option value="hour">Hour(s) later</option>
+                                  <option value="day">Day(s) later</option>
+                                  <option value="week">Week(s) later</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr ng-show="model.due_type === 'abs'">
+                            <td></td>
                             <td>
                                 <input type="text" class="form-control" style="width: 140px; display: inline-block;"
                                        ng-model="model.date_due"
