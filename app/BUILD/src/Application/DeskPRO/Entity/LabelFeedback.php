@@ -21,16 +21,16 @@ class LabelFeedback extends LabelAssocAbstract
     /**
      * @var \Application\DeskPRO\Entity\Feedback
      */
-    protected $feedback;
+    protected $topic;
 
-    public function getFeedback()
+    public function getTopic()
     {
-        return $this->feedback;
+        return $this->topic;
     }
 
-    public function setFeedback(Feedback $feedback)
+    public function setTopic(Feedback $topic)
     {
-        $this->feedback = $feedback;
+        $this->topic = $topic;
 
         return $this;
     }
@@ -45,7 +45,7 @@ class LabelFeedback extends LabelAssocAbstract
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\LabelFeedback';
         $metadata->setPrimaryTable(
             [
-                'name'    => 'labels_feedback',
+                'name'    => 'labels_community_topics',
                 'indexes' => [
                     'label_idx' => ['columns' => ['label']],
                 ],
@@ -54,14 +54,14 @@ class LabelFeedback extends LabelAssocAbstract
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'feedback',
+                'fieldName'    => 'topic',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
                 'id'           => true,
                 'mappedBy'     => null,
                 'inversedBy'   => 'labels',
                 'joinColumns'  => [
                     0 => [
-                        'name'                 => 'feedback_id',
+                        'name'                 => 'topic_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',

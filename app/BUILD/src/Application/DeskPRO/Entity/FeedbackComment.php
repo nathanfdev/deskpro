@@ -27,11 +27,11 @@ class FeedbackComment extends CommentAbstract
      *
      * @var Feedback
      */
-    protected $feedback;
+    protected $topic;
 
-    public function getFeedback()
+    public function getTopic()
     {
-        return $this->feedback;
+        return $this->topic;
     }
 
     //###########################################################################
@@ -43,7 +43,7 @@ class FeedbackComment extends CommentAbstract
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackComment';
         $metadata->setPrimaryTable([
-            'name'    => 'feedback_comments',
+            'name'    => 'community_topic_comments',
             'indexes' => [
                 'status_idx' => ['columns' => ['status', 'is_reviewed']],
             ],
@@ -138,13 +138,13 @@ class FeedbackComment extends CommentAbstract
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
-            'fieldName'    => 'feedback',
+            'fieldName'    => 'topic',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
             'inversedBy'   => 'comments',
             'joinColumns'  => [
                 [
-                    'name'                 => 'feedback_id',
+                    'name'                 => 'topic_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',

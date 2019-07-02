@@ -137,7 +137,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         $metadata->addEntityListener(Events::preUpdate, FeedbackCategoryListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackCategory';
-        $metadata->setPrimaryTable(['name' => 'feedback_categories']);
+        $metadata->setPrimaryTable(['name' => 'community_channels']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -236,11 +236,11 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                     'merge',
                 ],
                 'joinTable' => [
-                    'name'        => 'feedback_category2usergroup',
+                    'name'        => 'community_channels2usergroup',
                     'schema'      => null,
                     'joinColumns' => [
                         0 => [
-                            'name'                 => 'category_id',
+                            'name'                 => 'community_channel_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'columnDefinition'     => null,

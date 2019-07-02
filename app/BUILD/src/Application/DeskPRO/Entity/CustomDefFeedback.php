@@ -123,7 +123,7 @@ class CustomDefFeedback extends CustomDefAbstract
         $metadata->addEntityListener(Events::preUpdate, CustomDefFeedbackListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefFeedback';
-        $metadata->setPrimaryTable(['name' => 'custom_def_feedback']);
+        $metadata->setPrimaryTable(['name' => 'custom_def_community_topic']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [

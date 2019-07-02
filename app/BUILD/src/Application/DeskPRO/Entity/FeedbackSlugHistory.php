@@ -30,7 +30,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var Feedback
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * The slug.
@@ -45,12 +45,12 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * @param Feedback $feedback the content
+     * @param Feedback $topic    the content
      * @param string   $old_slug the slug to put in history
      */
-    public function __construct(Feedback $feedback, $old_slug)
+    public function __construct(Feedback $topic, $old_slug)
     {
-        $this->setContent($feedback);
+        $this->setContent($topic);
         $this->setSlug($old_slug);
         $this->setModelField('date_created', new \DateTime());
     }
@@ -68,15 +68,15 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getContent()
     {
-        return $this->feedback;
+        return $this->topic;
     }
 
     /**
-     * @param Feedback $feedback
+     * @param Feedback $topic
      */
-    public function setContent(Feedback $feedback)
+    public function setContent(Feedback $topic)
     {
-        $this->setModelField('feedback', $feedback);
+        $this->setModelField('topic', $topic);
     }
 
     /**
@@ -103,7 +103,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackSlugHistory';
-        $metadata->setPrimaryTable(['name' => 'feedback_slug_history']);
+        $metadata->setPrimaryTable(['name' => 'community_topic_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -134,7 +134,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
             'unique'     => true,
         ]);
         $metadata->mapManyToOne([
-            'fieldName'    => 'feedback',
+            'fieldName'    => 'topic',
             'targetEntity' => 'Application\DeskPRO\Entity\Feedback',
             'cascade'      => [
                 0 => 'remove',
@@ -144,7 +144,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
             'inversedBy'  => 'slug_history',
             'joinColumns' => [
                 [
-                    'name'                 => 'feedback_id',
+                    'name'                 => 'topic_id',
                     'referencedColumnName' => 'id',
                     'onDelete'             => 'cascade',
                     'nullable'             => false,

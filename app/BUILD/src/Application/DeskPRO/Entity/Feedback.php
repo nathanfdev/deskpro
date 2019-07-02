@@ -727,7 +727,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
         $metadata->setPrimaryTable(
             [
-                'name'    => 'feedback',
+                'name'    => 'community_topics',
                 'indexes' => [
                     'date_published_idx'    => ['columns' => [0 => 'date_published']],
                     'date_updated_idx'      => ['columns' => ['date_updated']],

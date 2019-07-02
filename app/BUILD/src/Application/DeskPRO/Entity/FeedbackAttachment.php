@@ -33,7 +33,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var \Application\DeskPRO\Entity\Feedback
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * Who created the attachment.
@@ -105,13 +105,13 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param Feedback $feedback
+     * @param Feedback $topic
      *
      * @return $this
      */
-    public function setFeedback(Feedback $feedback)
+    public function setTopic(Feedback $topic)
     {
-        $this->setModelField('feedback', $feedback);
+        $this->setModelField('topic', $topic);
 
         return $this;
     }
@@ -124,7 +124,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackAttachment';
-        $metadata->setPrimaryTable(['name' => 'feedback_attachments']);
+        $metadata->setPrimaryTable(['name' => 'community_topic_attachments']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField([
             'fieldName'  => 'id',
@@ -145,13 +145,13 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
-            'fieldName'    => 'feedback',
+            'fieldName'    => 'topic',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
             'inversedBy'   => 'attachments',
             'joinColumns'  => [
                 [
-                    'name'                 => 'feedback_id',
+                    'name'                 => 'topic_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',

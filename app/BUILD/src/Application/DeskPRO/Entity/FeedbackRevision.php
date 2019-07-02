@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class FeedbackRevision extends RevisionAbstract
 {
-    protected $feedback;
+    protected $topic;
 
     /**
      * @var string
@@ -36,7 +36,7 @@ class FeedbackRevision extends RevisionAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackRevision';
-        $metadata->setPrimaryTable(['name' => 'feedback_revisions']);
+        $metadata->setPrimaryTable(['name' => 'community_topic_revisions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField([
             'fieldName'  => 'title',
@@ -82,13 +82,13 @@ class FeedbackRevision extends RevisionAbstract
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
-            'fieldName'    => 'feedback',
+            'fieldName'    => 'topic',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
             'inversedBy'   => 'revisions',
             'joinColumns'  => [
                 [
-                    'name'                 => 'feedback_id',
+                    'name'                 => 'topic_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',

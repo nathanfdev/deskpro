@@ -26,7 +26,7 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var \Application\DeskPRO\Entity\Feedback
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * @var bool
@@ -34,11 +34,11 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $root_category;
 
     /**
-     * @param Feedback $feedback
+     * @param Feedback $topic
      */
-    public function setFeedback(Feedback $feedback = null)
+    public function setTopic(Feedback $topic = null)
     {
-        $this->setModelField('feedback', $feedback);
+        $this->setModelField('topic', $topic);
     }
 
     /**
@@ -79,7 +79,7 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackSubscription';
         $metadata->setPrimaryTable(
             [
-                'name'    => 'feedback_subscriptions',
+                'name'    => 'community_topic_subscriptions',
                 'indexes' => [
                     'root_category_idx' => ['columns' => ['root_category']],
                 ],
@@ -119,13 +119,13 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
         );
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'feedback',
+                'fieldName'    => 'topic',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
                     0 => [
-                        'name'                 => 'feedback_id',
+                        'name'                 => 'topic_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'cascade',

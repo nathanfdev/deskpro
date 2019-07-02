@@ -245,7 +245,7 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
         $metadata->addEntityListener(Events::preUpdate, FeedbackStatusCategoryListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackStatusCategory';
-        $metadata->setPrimaryTable(['name' => 'feedback_status_categories']);
+        $metadata->setPrimaryTable(['name' => 'community_topic_status_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [

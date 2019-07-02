@@ -109,7 +109,7 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'              => 'custom_data_feedback',
+                'name'              => 'custom_data_community_topic',
                 'uniqueConstraints' => [],
             ]
         );

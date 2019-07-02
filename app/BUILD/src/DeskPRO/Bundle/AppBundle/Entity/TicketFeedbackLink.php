@@ -20,15 +20,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFeedbackLinkRepository")
- * @ORM\Table(name="ticket_feedback_links", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="ticket_feedback_links_unique", columns={"ticket_id", "feedback_id"})
+ * @ORM\Table(name="ticket_community_topics_links", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="ticket_community_topics_links_unique", columns={"ticket_id", "topic_id"})
  * })
  *
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  *
  * @JMS\ExclusionPolicy("ALL")
  *
- * @UniqueEntity(fields={"ticket", "feedback"}, errorPath="feedback")
+ * @UniqueEntity(fields={"ticket", "topic"}, errorPath="topic")
  */
 class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
 {
@@ -63,7 +63,7 @@ class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Feedback")
-     * @ORM\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
+     * @ORM\JoinColumn(name="topic_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      *
      * @Assert\NotNull()
      *
@@ -72,7 +72,7 @@ class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
      *
      * @var Feedback
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
@@ -134,19 +134,19 @@ class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
     /**
      * @return Feedback
      */
-    public function getFeedback()
+    public function getTopic()
     {
-        return $this->feedback;
+        return $this->topic;
     }
 
     /**
-     * @param Feedback $feedback
+     * @param Feedback $topic
      *
      * @return $this
      */
-    public function setFeedback(Feedback $feedback = null)
+    public function setTopic(Feedback $topic = null)
     {
-        $this->setModelField('feedback', $feedback);
+        $this->setModelField('topic', $topic);
 
         return $this;
     }
