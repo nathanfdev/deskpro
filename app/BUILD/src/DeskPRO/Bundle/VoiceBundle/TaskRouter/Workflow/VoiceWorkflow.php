@@ -230,6 +230,7 @@ class VoiceWorkflow implements WorkflowInterface
                     }, $leastUtilizedWorkers);
 
                     $task->setWorkersIds($workerIds);
+                    $task->setDateExpireAssignedOffset($voiceQueue->getAnswerTimeout());
 
                     break;
                 case VoiceQueue::ROUTING_MODEL_SIMULRING:

@@ -119,7 +119,7 @@ class QueueForm extends BaseForm {
             <Field select="max_queue_size" className="queue-size">
               <MaxQueueSize />
             </Field>}
-            {formData.value.routing_model === 'round_robin' &&
+            {['round_robin', 'least_utilized'].indexOf(formData.value.routing_model) !== -1 &&
             <Field select="answer_timeout">
               <AnswerTimeout />
             </Field>}

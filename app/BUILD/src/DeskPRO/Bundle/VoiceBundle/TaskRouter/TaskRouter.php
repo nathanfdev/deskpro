@@ -154,10 +154,13 @@ class TaskRouter
                         // remove pending task
                         $workers = $this->storage->getWorkers($task->getWorkerIds());
                         foreach ($workers as $worker) {
-                            $task->removeWorker($worker);
-
                             $worker->removePendingTask($task);
                             $this->storage->saveWorker($worker);
+
+                            // task was rejected by timeout
+                            // don't assign this task to worker again
+                            $task->addRejectedBy($worker);
+                            $task->removeWorker($worker);
                         }
 
                         $this->storage->saveTask($task);
