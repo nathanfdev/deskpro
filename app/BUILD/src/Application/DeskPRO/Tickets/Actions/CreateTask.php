@@ -15,7 +15,6 @@ use Application\DeskPRO\Form\Type\TaskType;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
-use DateInterval;
 
 /**
  * Set the status.
@@ -58,37 +57,40 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
 
     /**
      * Returns a due date if set.
+     *
      * @return \DateTime or null
      */
-    private function dueDate() {
-        $dtz = new \DateTimeZone("UTC");
-        $dt = null;
+    private function dueDate()
+    {
+        $dtz      = new \DateTimeZone('UTC');
+        $dt       = null;
         $due_type = $this->getActionOption('due_type', 'none');
-        if ($due_type == "rel") {
-            $dt = new \DateTime("now", $dtz);
+        if ($due_type == 'rel') {
+            $dt     = new \DateTime('now', $dtz);
             $period = $this->getActionOption('due_rel_period', 0);
-            switch($this->getActionOption('due_rel_unit', 'day')) {
-                case "min":
+            switch ($this->getActionOption('due_rel_unit', 'day')) {
+                case 'min':
                     $dt->modify("+$period second");
                     break;
-                case "hour":
+                case 'hour':
                     $dt->modify("+$period hour");
                     break;
-                case "day":
+                case 'day':
                     $dt->modify("+$period day");
                     break;
-                case "week":
+                case 'week':
                     $dt->modify("+$period week");
                     break;
                 default:
                     break;
             }
-        } else if ($due_type == 'abs') {
+        } elseif ($due_type == 'abs') {
             $due_date = $this->getActionOption('date_due', '');
-            $dt = new \DateTime($due_date, $dtz);
+            $dt       = new \DateTime($due_date, $dtz);
             $dt->setTime(23, 59, 59);
             $dt->modify((int) $this->getActionOption('offset').'hours');
         }
+
         return $dt;
     }
     /**
@@ -109,7 +111,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         }
 
         $due_date = '';
-        $dd = $this->dueDate();
+        $dd       = $this->dueDate();
         if ($dd) {
             $due_date = $dd->format('Y-m-d H:i:s');
         }
