@@ -1642,7 +1642,7 @@ class TicketSearch extends SearcherAbstract
                                 if (!is_array($choice)) {
                                     $choice = explode(',', $choice);
                                 }
-                                $wheres[] = $this->_choiceMatch("$join_name.feedback_id", $op, $choice, true);
+                                $wheres[] = $this->_choiceMatch("$join_name.topic_id", $op, $choice, true);
                                 break;
                         }
 

@@ -44,7 +44,7 @@ class ObjectUrlGenerator
             return $object->getUrlSlug();
         } elseif ($object instanceof \Application\DeskPRO\Entity\CommunityTopic) {
             if ($context == 'agent') {
-                $params['feedback_id'] = $object['id'];
+                $params['communityTopicId'] = $object['id'];
 
                 return $this->generator->generate('agent_feedback_view', $params);
             }

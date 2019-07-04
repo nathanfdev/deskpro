@@ -257,7 +257,7 @@
 {######################################################################## #}
 
 <% if (group.type == 'feedback') { var item = result; %>
-<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_feedback_view', {'feedback_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_feedback_view', {'communityTopicId': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>

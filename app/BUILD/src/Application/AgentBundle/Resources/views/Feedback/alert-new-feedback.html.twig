@@ -2,7 +2,7 @@
 	class="inside feedback feedback-row-{{ feedback.id }}"
 	data-class-id="feedback-row-{{ ticket.id }}"
 	data-type="feedback"
-	data-route="page:{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}"
+	data-route="page:{{ path('agent_feedback_view', {'communityTopicId': feedback.id}) }}"
 	data-route-notabreload="1"
 >
 	<div class="dismiss"><i class="fas fa-ban"></i></div>

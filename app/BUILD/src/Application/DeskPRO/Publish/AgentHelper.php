@@ -485,9 +485,9 @@ class AgentHelper implements PersonContextInterface
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'table'        => 'feedback_comments',
+                'table'        => 'community_topic_comments',
                 'entity'       => CommunityTopicComment::class,
-                'id_field'     => 'feedback_id',
+                'id_field'     => 'topic_id',
             ],
             'topics' => [
                 'content_type'   => 'topics',

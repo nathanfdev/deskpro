@@ -423,7 +423,7 @@ class PublishController extends AbstractController
                 $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
                 break;
             case 'feedback':
-                $objectUrl = $this->get('router')->generate('agent_feedback_view', ['feedback_id' => $comment->getObject()->getId()]);
+                $objectUrl = $this->get('router')->generate('agent_feedback_view', ['communityTopicId' => $comment->getObject()->getId()]);
                 break;
             default:
                 $objectUrl = null;
