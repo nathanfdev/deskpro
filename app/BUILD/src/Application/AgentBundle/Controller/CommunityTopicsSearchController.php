@@ -10,9 +10,9 @@ use DeskPRO\Component\Util\ListUtils;
 use Orb\Util\Arrays;
 
 /**
- * Handles Feedback search json response.
+ * Handles CommunityTopic search json response.
  */
-class FeedbackSearchController extends AbstractController
+class CommunityTopicsSearchController extends AbstractController
 {
     public function quickSearchAction()
     {

@@ -301,7 +301,7 @@ class MainController extends AbstractController
                     break;
 
                 case 'feedback_section':
-                    $data[$name] = json_decode($this->forward('AgentBundle:Feedback:getSectionData')->getContent());
+                    $data[$name] = json_decode($this->forward('AgentBundle:CommunityTopics:getSectionData')->getContent());
                     break;
 
                 case 'publish_section':

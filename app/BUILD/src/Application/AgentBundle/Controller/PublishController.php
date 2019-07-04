@@ -583,7 +583,7 @@ class PublishController extends AbstractController
         ]);
     }
 
-    public function listValidatingFeedbackCommentsAction()
+    public function listValidatingCommunityTopicsCommentsAction()
     {
         $this->publishHelper->setEnabledTypes(['feedback']);
 
