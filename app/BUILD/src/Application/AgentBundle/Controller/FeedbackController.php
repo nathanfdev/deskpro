@@ -13,7 +13,7 @@ use Application\AgentBundle\Validator\NewFeedbackValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
@@ -77,7 +77,7 @@ class FeedbackController extends AbstractController
         /* @var FeedbackCategoryRepository $feedbackCategoryRepository */
         /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
         /* @var FeedbackCommentRepository $feedbackCommentRepository */
-        $feedbackRepository               = $this->em->getRepository(Feedback::class);
+        $feedbackRepository               = $this->em->getRepository(CommunityTopic::class);
         $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
         $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
         $feedbackCommentRepository        = $this->em->getRepository(FeedbackComment::class);
@@ -139,7 +139,7 @@ class FeedbackController extends AbstractController
         $perPage = 25;
 
         /** @var \Application\DeskPRO\EntityRepository\Feedback $feedbackRepository */
-        $feedbackRepository = $this->em->getRepository(Feedback::class);
+        $feedbackRepository = $this->em->getRepository(CommunityTopic::class);
         $pageinfo           = $total           = null;
 
         $currentPage = $this->in->getUInt('page') ?: 1;
@@ -153,7 +153,7 @@ class FeedbackController extends AbstractController
         $contentValidating = $feedbackRepository->getAwaitingValidation($perPage, $offset);
         $info              = [];
         foreach ($contentValidating as $feedback) {
-            /* @var Feedback $feedback */
+            /* @var CommunityTopic $feedback */
             $lastRevision = $feedback->getRevisions()->current();
             $info[]       = [
                 'info' => [
@@ -747,10 +747,10 @@ class FeedbackController extends AbstractController
      */
     public function mergeOverlayAction($feedback_id, $other_feedback_id = 0)
     {
-        $feedback = $this->em->find(Feedback::class, $feedback_id);
+        $feedback = $this->em->find(CommunityTopic::class, $feedback_id);
 
         if ($other_feedback_id && $other_feedback_id != $feedback_id) {
-            $otherFeedback = $this->em->find(Feedback::class, $other_feedback_id);
+            $otherFeedback = $this->em->find(CommunityTopic::class, $other_feedback_id);
         } else {
             $otherFeedback = false;
         }
@@ -1137,7 +1137,7 @@ class FeedbackController extends AbstractController
 
         foreach ($data as $type => $ids) {
             $reason           = $this->in->getString('reason');
-            $results          = $this->em->getRepository(Feedback::class)->getByIds($ids);
+            $results          = $this->em->getRepository(CommunityTopic::class)->getByIds($ids);
             $feedbackModerate = new FeedbackModerate($this->container, $this->person);
             foreach ($results as $feedback) {
                 if ($action === 'approve') {
@@ -1158,7 +1158,7 @@ class FeedbackController extends AbstractController
      */
     public function nextValidatingFeedbackAction($feedbackId)
     {
-        $feedback = $this->em->find(Feedback::class, $feedbackId);
+        $feedback = $this->em->find(CommunityTopic::class, $feedbackId);
         if (!$feedback) {
             return $this->createJsonpResponse(['success' => false]);
         }
@@ -1174,15 +1174,15 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @param Feedback $current
+     * @param CommunityTopic $current
      *
-     * @return Feedback
+     * @return CommunityTopic
      */
-    private function getNextValidationFeedback(Feedback $current)
+    private function getNextValidationFeedback(CommunityTopic $current)
     {
         /** @var FeedbackRepository $feedbackRepository */
-        $feedbackRepository = $this->em->getRepository(Feedback::class);
-        /** @var Feedback[] $awaitingValidation */
+        $feedbackRepository = $this->em->getRepository(CommunityTopic::class);
+        /** @var CommunityTopic[] $awaitingValidation */
         $awaitingValidation = $feedbackRepository->getAwaitingValidation(1000);
         while (current($awaitingValidation)) {
             if ($current->getId() !== current($awaitingValidation)->getId()) {
@@ -1208,11 +1208,11 @@ class FeedbackController extends AbstractController
         $this->em->beginTransaction();
 
         /** @var FeedbackRepository $feedbackRepository */
-        $feedbackRepository = $this->em->getRepository(Feedback::class);
+        $feedbackRepository = $this->em->getRepository(CommunityTopic::class);
         $feedbackCollection = $feedbackRepository->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
 
         foreach ($feedbackCollection as $feedback) {
-            /* @var Feedback $feedback */
+            /* @var CommunityTopic $feedback */
             switch ($action) {
                 case 'set-status':
                     $feedback->setStatusCode($this->in->getString('status'));
@@ -1415,7 +1415,7 @@ class FeedbackController extends AbstractController
         }
     }
 
-    protected function _sendAgentCreatedFeedbackForUserNotification(Feedback $feedback)
+    protected function _sendAgentCreatedFeedbackForUserNotification(CommunityTopic $feedback)
     {
         if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->get('email.user_viewmodel_factory')
@@ -1438,15 +1438,15 @@ class FeedbackController extends AbstractController
     /**
      * @param $feedbackId
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     *@throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
-     * @return Feedback
+     * @return CommunityTopic
      */
     private function getFeedback($feedbackId)
     {
-        if (!$feedback = $this->em->find(Feedback::class, $feedbackId)) {
+        if (!$feedback = $this->em->find(CommunityTopic::class, $feedbackId)) {
             throw $this->createNotFoundException();
         }
 
@@ -1472,11 +1472,11 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $feedback
      *
      * @return null|Response
      */
-    private function checkPermissions(Feedback $feedback)
+    private function checkPermissions(CommunityTopic $feedback)
     {
         /** @var PublishChecker $publishChecker */
         $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');

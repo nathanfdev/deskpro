@@ -14,14 +14,14 @@ use Doctrine\ORM\Query\Expr;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
-class Feedback extends AbstractEntityRepository
+class CommunityTopic extends AbstractEntityRepository
 {
     //###########################################################################
     // Counters
     //###########################################################################
 
     /**
-     * Count the number of feedback that are awaiting validation.
+     * Count the number of community topics that are awaiting validation.
      *
      * @return int
      */
@@ -48,7 +48,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of feedback that are 'active', grouped by status category as key.
+     * Count the number of community topics that are 'active', grouped by status category as key.
      * The key 0 will be used as the total.
      *
      * @param int $brandId
@@ -66,7 +66,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of feedback that are 'active', grouped by status category as key.
+     * Count the number of community topics that are 'active', grouped by status category as key.
      * The key 0 will be used as the total.
      *
      * @param int $brandId
@@ -84,7 +84,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of hidden feedback, groupbed by hidden_status as key.
+     * Count the number of hidden community topics, groupbed by hidden_status as key.
      * The key 'hidden' will be used as the total.
      *
      * @param int $brandId
@@ -104,7 +104,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of feedback that are new.
+     * Count the number of community topics that are new.
      *
      * @return int
      */
@@ -118,7 +118,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of non-hidden feedback in all categories, grouped by category ID key.
+     * Count the number of non-hidden community topics in all categories, grouped by category ID key.
      * Each parent category has the sum of all children.
      *
      * @return array
@@ -156,7 +156,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of feedback in a status category.
+     * Count the number of community topics in a status category.
      *
      * @param $category
      *
@@ -172,7 +172,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Count the number of feedback in a status category.
+     * Count the number of community topics in a status category.
      *
      * @param $category
      *
@@ -202,7 +202,7 @@ class Feedback extends AbstractEntityRepository
     }
 
     /**
-     * Get a collection of feedback by ID. If $person_context
+     * Get a collection of community topics by ID. If $person_context
      * is supplied, only articles that this person is able to view will be returned.
      *
      * @return array
@@ -214,22 +214,22 @@ class Feedback extends AbstractEntityRepository
         }
 
         if ($person_context) {
-            $feedback = $this->getEntityManager()->createQuery("
+            $communityTopics = $this->getEntityManager()->createQuery("
                 SELECT i
-                FROM DeskPRO:Feedback i INDEX BY i.id
+                FROM DeskPRO:CommunityTopic i INDEX BY i.id
                 WHERE i.id IN (?0) AND i.status != 'hidden'
                 ORDER BY i.id DESC
             ")->execute([$ids]);
         } else {
-            $feedback = $this->getEntityManager()->createQuery('
+            $communityTopics = $this->getEntityManager()->createQuery('
                 SELECT i
-                FROM DeskPRO:Feedback i INDEX BY i.id
+                FROM DeskPRO:CommunityTopic i INDEX BY i.id
                 WHERE i.id IN (?0)
                 ORDER BY i.id DESC
             ')->execute([$ids]);
         }
 
-        return $feedback;
+        return $communityTopics;
     }
 
     public function getByResultIds(array $ids)
@@ -238,22 +238,22 @@ class Feedback extends AbstractEntityRepository
             return [];
         }
 
-        $unsorted_feedback = $this->getEntityManager()->createQuery('
+        $unsortedCommunityTopics = $this->getEntityManager()->createQuery('
             SELECT i
-            FROM DeskPRO:Feedback i INDEX BY i.id
+            FROM DeskPRO:CommunityTopic i INDEX BY i.id
             WHERE i.id IN (?0)
             ORDER BY i.id DESC
         ')->execute([$ids]);
 
-        $feedback = [];
+        $communityTopics = [];
 
         foreach ($ids as $id) {
-            if (isset($unsorted_feedback[$id])) {
-                $feedback[$id] = $unsorted_feedback[$id];
+            if (isset($unsortedCommunityTopics[$id])) {
+                $communityTopics[$id] = $unsortedCommunityTopics[$id];
             }
         }
 
-        return $feedback;
+        return $communityTopics;
     }
 
     public function getFeedback($status, $node = false, $sort = 'id', $num = 10)
@@ -268,22 +268,22 @@ class Feedback extends AbstractEntityRepository
         if ($node) {
             $node_ids = $node->getTreeIds(true);
 
-            $feedback = $this->getEntityManager()->createQuery("
+            $communityTopics = $this->getEntityManager()->createQuery("
                 SELECT i
-                FROM DeskPRO:Feedback i
+                FROM DeskPRO:CommunityTopic i
                 WHERE i.category IN (?0) AND i.status = ?1
                 ORDER BY i.$sort DESC
             ")->setMaxResults($num)->execute([$node_ids, $status]);
         } else {
-            $feedback = $this->getEntityManager()->createQuery("
+            $communityTopics = $this->getEntityManager()->createQuery("
                 SELECT i
-                FROM DeskPRO:Feedback i
+                FROM DeskPRO:CommunityTopic i
                 WHERE i.status = ?0
                 ORDER BY i.$sort DESC
             ")->setMaxResults($num)->execute([$status]);
         }
 
-        return $feedback;
+        return $communityTopics;
     }
 
     public function countNotClosedNotHidden()
@@ -291,7 +291,7 @@ class Feedback extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery(
             "
                         SELECT COUNT(n) as cc
-                        FROM DeskPRO:Feedback n
+                        FROM DeskPRO:CommunityTopic n
                         WHERE n.status != 'closed' AND n.status != 'hidden'
                     "
         )->getSingleScalarResult();
@@ -300,53 +300,53 @@ class Feedback extends AbstractEntityRepository
     public function getNewest($status, $num = 10, $node = false)
     {
         if (!$status) {
-            $feedback = $this->getEntityManager()->createQuery("
+            $communityTopics = $this->getEntityManager()->createQuery("
                 SELECT i
-                FROM DeskPRO:Feedback i INDEX BY i.id
+                FROM DeskPRO:CommunityTopic i INDEX BY i.id
                 WHERE i.status != 'closed' AND i.status != 'hidden'
                 ORDER BY i.id DESC
             ")->setMaxResults($num)->execute();
 
-            return $feedback;
+            return $communityTopics;
         }
 
         if (Numbers::isInteger($status)) {
             if ($node) {
-                $cat_ids  = $node->getTreeIds(true);
-                $feedback = $this->getEntityManager()->createQuery('
+                $cat_ids         = $node->getTreeIds(true);
+                $communityTopics = $this->getEntityManager()->createQuery('
                     SELECT i
-                    FROM DeskPRO:Feedback i INDEX BY i.id
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
                     WHERE i.status_category = ?0 AND i.category IN (?1)
                     ORDER BY i.id DESC
                 ')->setMaxResults($num)->execute([$status, $cat_ids]);
             } else {
-                $feedback = $this->getEntityManager()->createQuery('
+                $communityTopics = $this->getEntityManager()->createQuery('
                     SELECT i
-                    FROM DeskPRO:Feedback i INDEX BY i.id
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
                     WHERE i.status_category = ?0
                     ORDER BY i.id DESC
                 ')->setMaxResults($num)->execute([$status]);
             }
         } else {
             if ($node) {
-                $cat_ids  = $node->getTreeIds(true);
-                $feedback = $this->getEntityManager()->createQuery('
+                $cat_ids         = $node->getTreeIds(true);
+                $communityTopics = $this->getEntityManager()->createQuery('
                     SELECT i
-                    FROM DeskPRO:Feedback i INDEX BY i.id
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
                     WHERE i.status = ?0 AND i.category IN (?1)
                     ORDER BY i.id DESC
                 ')->setMaxResults($num)->execute([$status, $cat_ids]);
             } else {
-                $feedback = $this->getEntityManager()->createQuery('
+                $communityTopics = $this->getEntityManager()->createQuery('
                     SELECT i
-                    FROM DeskPRO:Feedback i INDEX BY i.id
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
                     WHERE i.status = ?0
                     ORDER BY i.id DESC
                 ')->setMaxResults($num)->execute([$status]);
             }
         }
 
-        return $feedback;
+        return $communityTopics;
     }
 
     public function getReportAssociations()

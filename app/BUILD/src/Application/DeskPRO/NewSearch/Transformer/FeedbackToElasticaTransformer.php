@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Elastica\Document;
 
 /**
@@ -14,7 +14,7 @@ class FeedbackToElasticaTransformer extends AbstractToElasticaTransformer
     /**
      * {@inheritdoc}
      *
-     * @param Feedback $object
+     * @param CommunityTopic $object
      */
     public function transform($object, array $fields)
     {
@@ -33,7 +33,7 @@ class FeedbackToElasticaTransformer extends AbstractToElasticaTransformer
             SELECT word
             FROM search_sticky_result
             WHERE object_type = ? AND object_id = ?
-        ', ['DeskPRO:Feedback', $object->getId()]);
+        ', ['DeskPRO:CommunityTopic', $object->getId()]);
         if ($sticky_words) {
             $document->set('sticky_words', $sticky_words);
         }

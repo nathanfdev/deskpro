@@ -8,8 +8,8 @@ namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
@@ -394,19 +394,19 @@ class Structure implements PersonContextInterface
             $searcher = new FeedbackSearch();
             $searcher->setPersonContext($person_context);
             $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_NEW);
+            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', CommunityTopic::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
             $searcher = new FeedbackSearch();
             $searcher->setPersonContext($person_context);
             $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_ACTIVE);
+            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', CommunityTopic::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
             $searcher = new FeedbackSearch();
             $searcher->setPersonContext($person_context);
             $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_CLOSED);
+            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', CommunityTopic::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 
             $cat_counts['all'] = array_sum($cat_counts);

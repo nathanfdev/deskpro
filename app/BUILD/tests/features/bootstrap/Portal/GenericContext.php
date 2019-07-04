@@ -9,10 +9,10 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\News;
@@ -311,8 +311,8 @@ class GenericContext extends BasePortalContext
                     'id' => 1,
                 ]);
 
-                $content = new Feedback();
-                $content->setStatus(Feedback::STATUS_ACTIVE);
+                $content = new CommunityTopic();
+                $content->setStatus(CommunityTopic::STATUS_ACTIVE);
                 $content->setCategory($fcat);
                 $content->setStatusCategory($fstatus_cat);
                 $content->title = 'Example Feedback';
@@ -460,7 +460,7 @@ class GenericContext extends BasePortalContext
             case 'news':
                 return News::class;
             case 'feedback':
-                return Feedback::class;
+                return CommunityTopic::class;
         }
     }
 }

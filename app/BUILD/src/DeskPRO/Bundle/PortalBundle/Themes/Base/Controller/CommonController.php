@@ -4,8 +4,8 @@ namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
@@ -206,7 +206,7 @@ class CommonController extends AbstractController
      * @param $content_type
      * @param $content_id
      *
-     * @return Article|Download|Feedback|News|null
+     * @return Article|Download|CommunityTopic|News|null
      */
     protected function extractContent($content_type, $content_id)
     {
@@ -221,7 +221,7 @@ class CommonController extends AbstractController
             case News::CONTENT_TYPE:
                 $content = $this->getNewsDataService()->getPost($content_id);
                 break;
-            case Feedback::CONTENT_TYPE:
+            case CommunityTopic::CONTENT_TYPE:
                 $content = $this->getFeedbackDataService()->getItem($content_id);
                 break;
         }

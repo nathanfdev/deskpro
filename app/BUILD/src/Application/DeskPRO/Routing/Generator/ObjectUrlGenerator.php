@@ -42,7 +42,7 @@ class ObjectUrlGenerator
             }
 
             return $object->getUrlSlug();
-        } elseif ($object instanceof \Application\DeskPRO\Entity\Feedback) {
+        } elseif ($object instanceof \Application\DeskPRO\Entity\CommunityTopic) {
             if ($context == 'agent') {
                 $params['feedback_id'] = $object['id'];
 

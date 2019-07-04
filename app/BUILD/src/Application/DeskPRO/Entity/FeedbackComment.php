@@ -25,7 +25,7 @@ class FeedbackComment extends CommentAbstract
      * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
      * @JMS\Groups({"list", "details"})
      *
-     * @var Feedback
+     * @var CommunityTopic
      */
     protected $topic;
 
@@ -139,7 +139,7 @@ class FeedbackComment extends CommentAbstract
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'topic',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopic',
             'mappedBy'     => null,
             'inversedBy'   => 'comments',
             'joinColumns'  => [

@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Feedback revisions.
  */
-class FeedbackRevision extends RevisionAbstract
+class CommunityTopicRevision extends RevisionAbstract
 {
     protected $community_topic;
 
@@ -35,7 +35,7 @@ class FeedbackRevision extends RevisionAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackRevision';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicRevision';
         $metadata->setPrimaryTable(['name' => 'community_topic_revisions']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField([
@@ -83,7 +83,7 @@ class FeedbackRevision extends RevisionAbstract
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'community_topic',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopic',
             'mappedBy'     => null,
             'inversedBy'   => 'revisions',
             'joinColumns'  => [

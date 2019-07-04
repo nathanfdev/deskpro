@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\ContentSearch\Fetcher;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\CommunityTopic;
 
 class FeedbackFetcher extends AbstractFetcher
 {
@@ -25,9 +26,9 @@ class FeedbackFetcher extends AbstractFetcher
     public function getEntities(array $related_ids, $all = false)
     {
         if ($all) {
-            return App::getEntityRepository('DeskPRO:Feedback')->getByIds($related_ids);
+            return App::getEntityRepository(CommunityTopic::class)->getByIds($related_ids);
         } else {
-            return App::getEntityRepository('DeskPRO:Feedback')->getByIdsWithContext($related_ids, $this->person);
+            return App::getEntityRepository(CommunityTopic::class)->getByIdsWithContext($related_ids, $this->person);
         }
     }
 }

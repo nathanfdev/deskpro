@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AttachmentCollectionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
@@ -46,7 +46,7 @@ class FeedbackAttachmentCollectionType extends AbstractType
                 },
             ])
             ->setRequired('feedback')
-            ->setAllowedTypes('feedback', Feedback::class)
+            ->setAllowedTypes('feedback', CommunityTopic::class)
         ;
     }
 }

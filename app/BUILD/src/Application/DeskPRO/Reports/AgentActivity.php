@@ -6,8 +6,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopicRevision;
 use Application\DeskPRO\Entity\DownloadRevision;
-use Application\DeskPRO\Entity\FeedbackRevision;
 use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
@@ -311,7 +311,7 @@ class AgentActivity
             'news'     => NewsRevision::class,
             'article'  => ArticleRevision::class,
             'download' => DownloadRevision::class,
-            'feedback' => FeedbackRevision::class,
+            'feedback' => CommunityTopicRevision::class,
         ];
         $countsHourly = [];
 

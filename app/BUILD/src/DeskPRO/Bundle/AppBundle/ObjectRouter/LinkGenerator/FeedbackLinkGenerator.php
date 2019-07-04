@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -34,13 +34,13 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
      */
     public function supports($object, $type, $context)
     {
-        return $object instanceof Feedback;
+        return $object instanceof CommunityTopic;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param Feedback $object
+     * @param CommunityTopic $object
      */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {

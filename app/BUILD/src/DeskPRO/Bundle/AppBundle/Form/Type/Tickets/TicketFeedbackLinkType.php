@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
@@ -44,7 +44,7 @@ class TicketFeedbackLinkType extends AbstractType
     {
         $builder
             ->add('feedback', EntityType::class, [
-                'class'    => Feedback::class,
+                'class'    => CommunityTopic::class,
                 'required' => true,
             ])
             ->add('is_subscribe_ticket_owner', ApiBooleanType::class, [

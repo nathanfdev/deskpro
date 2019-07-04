@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Entity\CommunityTopic as FeedbackEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\FeedbackSearch;

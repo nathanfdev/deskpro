@@ -416,7 +416,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             $cat = $content->getCategory();
         } elseif ($content instanceof Entity\Download) {
             $cat = $content->getCategory();
-        } elseif ($content instanceof Entity\Feedback) {
+        } elseif ($content instanceof Entity\CommunityTopic) {
             $cat = $content->getCategory();
         } else {
             throw new \InvalidArgumentException('the get_secure_cats twig function requires one of: Article, Download, News, Feedback, but did not get one');

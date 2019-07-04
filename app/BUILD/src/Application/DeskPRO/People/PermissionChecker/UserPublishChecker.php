@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
 
@@ -122,11 +122,11 @@ class UserPublishChecker extends AbstractChecker
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      *
      * @return bool
      */
-    public function canViewFeedback(Feedback $feedback, HttpSession $user_session = null)
+    public function canViewFeedback(CommunityTopic $feedback, HttpSession $user_session = null)
     {
         if (!$this->person->hasPerm('feedback.use')) {
             return false;

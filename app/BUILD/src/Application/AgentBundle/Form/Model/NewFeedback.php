@@ -9,7 +9,7 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
@@ -66,7 +66,7 @@ class NewFeedback
     /** @var bool */
     public $is_subscribe_ticket_participants = false;
 
-    /** @var Feedback */
+    /** @var CommunityTopic */
     protected $_feedback;
 
     /**
@@ -95,7 +95,7 @@ class NewFeedback
     {
         $this->em->beginTransaction();
 
-        $feedback = new Feedback();
+        $feedback = new CommunityTopic();
         $feedback->setBrand($this->brand);
         $feedback->person = $this->getPersonForFeedback();
         $feedback->setStatusCode($this->status_code);

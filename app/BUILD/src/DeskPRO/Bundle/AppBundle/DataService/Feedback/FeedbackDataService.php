@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\Person;
@@ -74,7 +74,7 @@ class FeedbackDataService extends AbstractDataService
             ],
             function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
-                $qb->select('f')->from('DeskPRO:Feedback', 'f');
+                $qb->select('f')->from(CommunityTopic::class, 'f');
 
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
@@ -100,13 +100,13 @@ class FeedbackDataService extends AbstractDataService
                 // "all","active","closed"
                 switch ($filter->getStatus()) {
                     case FeedbackFilter::STATUS_ALL:
-                        $valid_status = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED];
+                        $valid_status = [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED];
                         break;
                     case FeedbackFilter::STATUS_ACTIVE:
-                        $valid_status = [Feedback::STATUS_ACTIVE];
+                        $valid_status = [CommunityTopic::STATUS_ACTIVE];
                         break;
                     case FeedbackFilter::STATUS_CLOSED:
-                        $valid_status = [Feedback::STATUS_CLOSED];
+                        $valid_status = [CommunityTopic::STATUS_CLOSED];
                         break;
                     default:
                         $valid_status = [];
@@ -165,9 +165,9 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @param int|null|Feedback $item
+     * @param int|null|CommunityTopic $item
      *
-     * @return null|Feedback
+     * @return null|CommunityTopic
      */
     public function getItem($item)
     {
@@ -183,7 +183,7 @@ class FeedbackDataService extends AbstractDataService
                     return;
                 }
 
-                if ($item instanceof Feedback) { // already have what you seek
+                if ($item instanceof CommunityTopic) { // already have what you seek
                     return $item;
                 }
 
@@ -255,7 +255,7 @@ class FeedbackDataService extends AbstractDataService
      */
     public function getItemsRepo()
     {
-        return $this->em->getRepository('DeskPRO:Feedback');
+        return $this->em->getRepository('DeskPRO:CommunityTopic');
     }
 
     /**

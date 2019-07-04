@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
@@ -121,11 +121,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $feedback
      *
      * @return AgentNewFeedback
      */
-    public function createAgentNewFeedbackModel(Feedback $feedback)
+    public function createAgentNewFeedbackModel(CommunityTopic $feedback)
     {
         $person    = $feedback->getPerson();
         $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);

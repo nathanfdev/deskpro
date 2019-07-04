@@ -9,10 +9,10 @@ namespace DeskPRO\Bundle\PortalBundle\Helper;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
@@ -231,7 +231,7 @@ class ContentSubscriptionsHelper
 
         if (
             'feedback' === $input
-            || is_object($input) && Feedback::class === get_class($input)
+            || is_object($input) && CommunityTopic::class === get_class($input)
         ) {
             return 'feedback_subscriptions';
         }
@@ -274,7 +274,7 @@ class ContentSubscriptionsHelper
 
         if (
             'feedback' === $input
-            || is_object($input) && Feedback::class === get_class($input)
+            || is_object($input) && CommunityTopic::class === get_class($input)
         ) {
             return 'feedback_id';
         }

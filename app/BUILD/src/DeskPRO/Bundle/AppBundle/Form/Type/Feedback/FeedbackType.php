@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\Person;
@@ -69,9 +69,9 @@ class FeedbackType extends AbstractType
                 'required'          => false,
                 'choices_as_values' => true,
                 'choices'           => [
-                    Feedback::STATUS_ACTIVE,
-                    Feedback::STATUS_CLOSED,
-                    Feedback::STATUS_HIDDEN,
+                    CommunityTopic::STATUS_ACTIVE,
+                    CommunityTopic::STATUS_CLOSED,
+                    CommunityTopic::STATUS_HIDDEN,
                 ],
             ])
             ->add('labels', LabelsCollectionType::class, [
@@ -101,7 +101,7 @@ class FeedbackType extends AbstractType
         $resolver
             ->setRequired('person')
             ->setDefaults([
-                'data_class'      => Feedback::class,
+                'data_class'      => CommunityTopic::class,
                 'agent_interface' => false,
             ])
             ->setAllowedTypes('person', Person::class)
@@ -121,7 +121,7 @@ class FeedbackType extends AbstractType
             return;
         }
 
-        if (in_array($data['status'], [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED])) {
+        if (in_array($data['status'], [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED])) {
             $form->add('status_category', EntityType::class, [
                 'required'      => true,
                 'class'         => FeedbackStatusCategory::class,
@@ -141,19 +141,19 @@ class FeedbackType extends AbstractType
             if (!isset($data['status_category'])) {
                 $data['status_category'] = null;
             }
-        } elseif ($data['status'] === Feedback::STATUS_HIDDEN) {
+        } elseif ($data['status'] === CommunityTopic::STATUS_HIDDEN) {
             $form->add('hidden_status', ChoiceType::class, [
                 'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => [
-                    Feedback::STATUS_PUBLISHED,
-                    Feedback::STATUS_ARCHIVED,
-                    Feedback::STATUS_HIDDEN,
-                    Feedback::HIDDEN_STATUS_UNPUBLISHED,
-                    Feedback::HIDDEN_STATUS_DELETED,
-                    Feedback::HIDDEN_STATUS_SPAM,
-                    Feedback::HIDDEN_STATUS_DRAFT,
-                    Feedback::HIDDEN_STATUS_PENDING,
+                    CommunityTopic::STATUS_PUBLISHED,
+                    CommunityTopic::STATUS_ARCHIVED,
+                    CommunityTopic::STATUS_HIDDEN,
+                    CommunityTopic::HIDDEN_STATUS_UNPUBLISHED,
+                    CommunityTopic::HIDDEN_STATUS_DELETED,
+                    CommunityTopic::HIDDEN_STATUS_SPAM,
+                    CommunityTopic::HIDDEN_STATUS_DRAFT,
+                    CommunityTopic::HIDDEN_STATUS_PENDING,
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),

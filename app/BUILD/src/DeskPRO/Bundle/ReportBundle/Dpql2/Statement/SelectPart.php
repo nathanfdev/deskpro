@@ -235,7 +235,7 @@ class SelectPart
         'download_comments'           => 'DeskPRO:DownloadComment',
         'email_accounts'              => 'DeskPRO:EmailAccount',
         'email_sources'               => 'DeskPRO:EmailSource',
-        'feedback'                    => 'DeskPRO:Feedback',
+        'feedback'                    => 'DeskPRO:CommunityTopic',
         'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
         'feedback_categories'         => 'DeskPRO:FeedbackCategory',
         'feedback_comments'           => 'DeskPRO:FeedbackComment',

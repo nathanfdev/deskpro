@@ -145,7 +145,7 @@ class StickyWordSearch implements PersonContextInterface
                 case 'article':  return 'DeskPRO:Article';
                 case 'news':     return 'DeskPRO:News';
                 case 'download': return 'DeskPRO:Download';
-                case 'feedback': return 'DeskPRO:Feedback';
+                case 'feedback': return 'DeskPRO:CommunityTopic';
                 case 'topic':    return 'DeskPRO:Topic';
                 default: return $t;
             }
@@ -169,11 +169,11 @@ class StickyWordSearch implements PersonContextInterface
         //------------------------------
 
         $check_ids = [
-            'DeskPRO:Article'  => [],
-            'DeskPRO:News'     => [],
-            'DeskPRO:Download' => [],
-            'DeskPRO:Feedback' => [],
-            'DeskPRO:Topic'    => [],
+            'DeskPRO:Article'        => [],
+            'DeskPRO:News'           => [],
+            'DeskPRO:Download'       => [],
+            'DeskPRO:CommunityTopic' => [],
+            'DeskPRO:Topic'          => [],
         ];
 
         if (empty($check_ids)) {
@@ -205,11 +205,11 @@ class StickyWordSearch implements PersonContextInterface
                 $search->addTerm(DownloadSearch::TERM_ID, DownloadSearch::OP_CONTAINS, $check_ids['DeskPRO:Download']);
                 $valid_ids['DeskPRO:Download'] = $search->getMatches();
             }
-            if ($check_ids['DeskPRO:Feedback']) {
+            if ($check_ids['DeskPRO:CommunityTopic']) {
                 $search = new FeedbackSearch();
                 $search->setPersonContext($this->person_context);
-                $search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:Feedback']);
-                $valid_ids['DeskPRO:Feedback'] = $search->getMatches();
+                $search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:CommunityTopic']);
+                $valid_ids['DeskPRO:CommunityTopic'] = $search->getMatches();
             }
             if ($check_ids['DeskPRO:Topic']) {
                 $search = new TopicSearch();

@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -25,12 +25,12 @@ class FeedbackMerge implements PersonContextInterface
     protected $person;
 
     /**
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $feedback;
 
     /**
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $other_feedback;
 
@@ -40,13 +40,13 @@ class FeedbackMerge implements PersonContextInterface
     protected $em;
 
     /**
-     * @param \Application\DeskPRO\Entity\Person   $person_performer
-     * @param \Application\DeskPRO\Entity\Feedback $feedback         The base feedback, this is the one that will still exist at the end
-     * @param \Application\DeskPRO\Entity\Feedback $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
+     * @param \Application\DeskPRO\Entity\Person         $person_performer
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback         The base feedback, this is the one that will still exist at the end
+     * @param \Application\DeskPRO\Entity\CommunityTopic $other_feedback   The other feedback, the one that will be merged into $feedback and then deleted
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct(Person $person_performer, Feedback $feedback, Feedback $other_feedback)
+    public function __construct(Person $person_performer, CommunityTopic $feedback, CommunityTopic $other_feedback)
     {
         $this->em = App::getOrm();
 

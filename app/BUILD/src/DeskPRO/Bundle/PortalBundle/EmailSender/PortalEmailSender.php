@@ -9,7 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
@@ -168,7 +168,7 @@ class PortalEmailSender
         }
     }
 
-    public function sendNewFeedbackEmail(Feedback $feedback)
+    public function sendNewFeedbackEmail(CommunityTopic $feedback)
     {
         $person = $feedback->getPerson();
 

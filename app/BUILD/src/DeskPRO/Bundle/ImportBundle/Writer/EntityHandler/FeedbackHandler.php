@@ -27,7 +27,7 @@ class FeedbackHandler extends AbstractEntityHandler
      */
     public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
-        /** @var Entity\Feedback $entity */
+        /** @var Entity\CommunityTopic $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getFeedbackMapper(), $model);
         $entity
             ->setTitle($model->getTitle())

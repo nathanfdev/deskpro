@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Entity\CommunityTopic as FeedbackEntity;
 use JMS\Serializer\Annotation as JMS;
 
 class FeedbackCsv extends Feedback
@@ -43,7 +43,7 @@ class FeedbackCsv extends Feedback
     /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      */
     public function __construct(FeedbackEntity $feedback)
     {

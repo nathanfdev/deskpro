@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
@@ -19,7 +20,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\ImportMap;
@@ -219,7 +219,7 @@ class MapperRegistry
      */
     public function getFeedbackMapper()
     {
-        return $this->getMapper(Feedback::class);
+        return $this->getMapper(CommunityTopic::class);
     }
 
     /**

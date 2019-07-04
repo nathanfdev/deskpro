@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -16,7 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Table that implements Many2Many connection between Tickets and Feedback.
+ * Table that implements Many2Many connection between Tickets and CommunityTopic.
  *
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFeedbackLinkRepository")
@@ -62,15 +62,15 @@ class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
     protected $ticket;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Feedback")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CommunityTopic")
      * @ORM\JoinColumn(name="topic_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      *
      * @Assert\NotNull()
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopic>")
      *
-     * @var Feedback
+     * @var CommunityTopic
      */
     protected $topic;
 
@@ -132,7 +132,7 @@ class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Feedback
+     * @return CommunityTopic
      */
     public function getTopic()
     {
@@ -140,11 +140,11 @@ class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param Feedback $topic
+     * @param CommunityTopic $topic
      *
      * @return $this
      */
-    public function setTopic(Feedback $topic = null)
+    public function setTopic(CommunityTopic $topic = null)
     {
         $this->setModelField('topic', $topic);
 

@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Notifications\NewFeedbackNotification;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -69,7 +69,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class FeedbackController extends AbstractFeedbackController
 {
-    public static $entity      = Feedback::class;
+    public static $entity      = CommunityTopic::class;
     public static $type        = FeedbackType::class;
     public static $sortOptions = [
         'date_created' => 'date_created',

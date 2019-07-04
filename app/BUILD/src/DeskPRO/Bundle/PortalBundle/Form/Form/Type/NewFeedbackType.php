@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
@@ -151,7 +151,7 @@ class NewFeedbackType extends AbstractType
             ->setRequired('person')
             ->setAllowedTypes('person', Person::class)
             ->setDefaults([
-                'data_class' => Feedback::class,
+                'data_class' => CommunityTopic::class,
             ])
         ;
     }

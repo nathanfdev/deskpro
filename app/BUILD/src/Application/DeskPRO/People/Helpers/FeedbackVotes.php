@@ -139,7 +139,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
         $ids = [];
 
         foreach ($feedback as $i) {
-            if ($i instanceof \Application\DeskPRO\Entity\Feedback) {
+            if ($i instanceof \Application\DeskPRO\Entity\CommunityTopic) {
                 $ids[] = $i->getId();
             } else {
                 $ids[] = (int) $i;

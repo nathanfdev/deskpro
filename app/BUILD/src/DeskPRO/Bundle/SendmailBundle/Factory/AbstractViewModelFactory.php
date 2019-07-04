@@ -7,8 +7,8 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
@@ -85,7 +85,7 @@ abstract class AbstractViewModelFactory
             case Download::class:
                 $handler = $this->container->get('api_serializer.handler.download');
                 break;
-            case Feedback::class:
+            case CommunityTopic::class:
                 $handler = $this->container->get('api_serializer.handler.feedback');
                 break;
             case FeedbackComment::class:

@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
@@ -101,7 +101,7 @@ class FeedbackController extends AbstractController
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options, Feedback $item)
+    public function commentsAction(TagRequest $tag_request, array $options, CommunityTopic $item)
     {
         $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
 

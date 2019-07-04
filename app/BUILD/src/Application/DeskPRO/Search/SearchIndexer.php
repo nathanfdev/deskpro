@@ -12,8 +12,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -57,7 +57,7 @@ class SearchIndexer
                         return 'fos_elastica.object_persister.deskpro.news';
                     case $object instanceof Download:
                         return 'fos_elastica.object_persister.deskpro.download';
-                    case $object instanceof Feedback:
+                    case $object instanceof CommunityTopic:
                         return 'fos_elastica.object_persister.deskpro.feedback';
                     case $object instanceof Ticket:
                         return 'fos_elastica.object_persister.deskpro.ticket';
@@ -114,7 +114,7 @@ class SearchIndexer
                 case $object instanceof Article:
                 case $object instanceof News:
                 case $object instanceof Download:
-                case $object instanceof Feedback:
+                case $object instanceof CommunityTopic:
                     App::getContainer()->getSearchAdapter()->updateObjectsInIndex([$object]);
                     break;
             }
@@ -124,7 +124,7 @@ class SearchIndexer
                 case $object instanceof Article:
                 case $object instanceof News:
                 case $object instanceof Download:
-                case $object instanceof Feedback:
+                case $object instanceof CommunityTopic:
                     App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex([$object]);
                     break;
             }

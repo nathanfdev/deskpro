@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
@@ -41,26 +41,26 @@ class FeedbackSubscriptions extends AbstractJob
         // Find Feedback
         //------------------------------
 
-        /** @var Feedback[] $published */
+        /** @var CommunityTopic[] $published */
         $published = $this->getContainer()->getEm()->createQuery('
             SELECT f
             FROM DeskPRO:Feedback f INDEX BY f.id
             WHERE f.status IN (:statuses) AND f.date_published > :date
             ORDER BY f.date_published DESC
         ')->setMaxResults(250)->execute(['date' => $lastDate, 'statuses' => [
-            Feedback::STATUS_ACTIVE,
-            Feedback::STATUS_CLOSED,
+            CommunityTopic::STATUS_ACTIVE,
+            CommunityTopic::STATUS_CLOSED,
         ]]);
 
-        /** @var Feedback[] $updated */
+        /** @var CommunityTopic[] $updated */
         $updated = $this->getContainer()->getEm()->createQuery('
             SELECT f
             FROM DeskPRO:Feedback f INDEX BY f.id
             WHERE f.status IN (:statuses) AND (f.date_updated > :date OR f.date_last_comment > :date)
             ORDER BY f.date_updated DESC
         ')->setMaxResults(250)->execute(['date' => $lastDate, 'statuses' => [
-            Feedback::STATUS_ACTIVE,
-            Feedback::STATUS_CLOSED,
+            CommunityTopic::STATUS_ACTIVE,
+            CommunityTopic::STATUS_CLOSED,
         ]]);
 
         if (!$updated && !$published) {
@@ -155,7 +155,7 @@ class FeedbackSubscriptions extends AbstractJob
             $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
             $personUgs[] = 1; // Everyone
 
-            /** @var Feedback $feedback */
+            /** @var CommunityTopic $feedback */
             foreach ($feedbacks as $feedback) {
                 $add    = false;
                 $cat    = $feedback->getCategory();

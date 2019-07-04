@@ -128,11 +128,11 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
     /**
      * @param string $name
      *
-     * @return Entity\Feedback
+     * @return Entity\CommunityTopic
      */
     private function getBaseEntity($name = 'title')
     {
-        return $this->em()->getRepository(Entity\Feedback::class)->findOneBy([
+        return $this->em()->getRepository(Entity\CommunityTopic::class)->findOneBy([
             'title' => $name,
         ]);
     }

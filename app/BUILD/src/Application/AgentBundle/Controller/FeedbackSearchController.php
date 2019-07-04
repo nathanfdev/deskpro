@@ -3,7 +3,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use DeskPRO\Component\Util\ListUtils;
 use Orb\Util\Arrays;
@@ -45,14 +45,14 @@ class FeedbackSearchController extends AbstractController
         $output = [];
 
         if (ctype_digit($q)) {
-            $feedbackById = App::getEntityRepository(Feedback::class)->find($q);
+            $feedbackById = App::getEntityRepository(CommunityTopic::class)->find($q);
             if ($feedbackById) {
                 $results = ListUtils::filterOutValues($results, [$feedbackById->getId()]);
                 array_unshift($output, $this->formatFeedbackResultRow($feedbackById));
             }
         }
 
-        foreach (App::getEntityRepository(Feedback::class)->getByIds($results, true) as $feedback) {
+        foreach (App::getEntityRepository(CommunityTopic::class)->getByIds($results, true) as $feedback) {
             //@TODO: prefetch Feedback Categories and StatusCategories
             $output[] = $this->formatFeedbackResultRow($feedback);
         }
@@ -60,7 +60,7 @@ class FeedbackSearchController extends AbstractController
         return $this->createJsonResponse($output);
     }
 
-    private function formatFeedbackResultRow(Feedback $feedback)
+    private function formatFeedbackResultRow(CommunityTopic $feedback)
     {
         return [
             'id'    => $feedback->id,

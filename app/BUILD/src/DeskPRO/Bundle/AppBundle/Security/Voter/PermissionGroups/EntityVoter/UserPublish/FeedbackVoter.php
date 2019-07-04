@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
@@ -16,7 +16,7 @@ class FeedbackVoter extends AbstractUserPublishVoter
      */
     public static function getEntityClass()
     {
-        return Feedback::class;
+        return CommunityTopic::class;
     }
 
     /**
@@ -28,7 +28,7 @@ class FeedbackVoter extends AbstractUserPublishVoter
             return false;
         }
 
-        /** @var Feedback $feedback */
+        /** @var CommunityTopic $feedback */
         $feedback = $context->getParent();
         if ($feedback) {
             if (!$this->getUserPublishChecker($user)->canViewFeedback($feedback)) {

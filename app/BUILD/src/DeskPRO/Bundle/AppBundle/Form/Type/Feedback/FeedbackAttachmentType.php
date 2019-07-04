@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\WebAttachmentType;
 use Symfony\Component\Form\AbstractType;
@@ -50,7 +50,7 @@ class FeedbackAttachmentType extends AbstractType
                 'data_class' => FeedbackAttachment::class,
             ])
             ->setRequired('feedback')
-            ->setAllowedTypes('feedback', Feedback::class)
+            ->setAllowedTypes('feedback', CommunityTopic::class)
         ;
     }
 
@@ -64,7 +64,7 @@ class FeedbackAttachmentType extends AbstractType
         $form = $event->getForm();
         $data = $event->getData();
 
-        /** @var Feedback $feedback */
+        /** @var CommunityTopic $feedback */
         $feedback = $form->getConfig()->getOption('feedback');
         if ($data instanceof FeedbackAttachment) {
             $feedback->addAttachment($data);

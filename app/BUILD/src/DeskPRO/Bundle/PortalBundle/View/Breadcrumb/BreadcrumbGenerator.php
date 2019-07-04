@@ -9,9 +9,9 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -254,7 +254,7 @@ class BreadcrumbGenerator
         return $this->createBuilder()->addFeedback()->done();
     }
 
-    public function buildFeedbackView(Feedback $a)
+    public function buildFeedbackView(CommunityTopic $a)
     {
         return $this->createBuilder()->addFeedback()
             ->addFeedbackView($a)

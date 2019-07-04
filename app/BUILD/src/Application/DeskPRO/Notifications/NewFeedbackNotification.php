@@ -7,18 +7,18 @@
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 class NewFeedbackNotification extends AbstractAgentNotification
 {
     /**
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $feedback;
 
-    public function __construct(Feedback $feedback)
+    public function __construct(CommunityTopic $feedback)
     {
         parent::__construct();
         $this->feedback = $feedback;

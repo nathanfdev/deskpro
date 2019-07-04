@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
  * @AgentLinkRoute("agent_feedback_view", route_param_map={"feedback_id": "id"})
  */
-class Feedback extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
+class CommunityTopic extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
     const CONTENT_TYPE = 'feedback';
 
@@ -684,7 +684,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
     /**
      * @param string $value
      *
-     * @return Feedback $this
+     * @return CommunityTopic $this
      */
     public function setHiddenStatus($value = null)
     {
@@ -724,7 +724,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $metadata->addEntityListener(Events::prePersist, FeedbackListener::class, 'prePersist');
         $metadata->addEntityListener(Events::preUpdate, FeedbackListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopic';
         $metadata->setPrimaryTable(
             [
                 'name'    => 'community_topics',
@@ -956,7 +956,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'revisions',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopicRevision',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'community_topic',
             ]

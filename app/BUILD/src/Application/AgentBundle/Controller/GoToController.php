@@ -4,8 +4,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -144,11 +144,11 @@ class GoToController extends AbstractController
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $feedback
      *
      * @return RedirectResponse
      */
-    public function feedbackIdAction(Feedback $feedback)
+    public function feedbackIdAction(CommunityTopic $feedback)
     {
         return $this->redirect($this->getBasePath().'#app.feedback,fb_content,i:'.$feedback->getId());
     }

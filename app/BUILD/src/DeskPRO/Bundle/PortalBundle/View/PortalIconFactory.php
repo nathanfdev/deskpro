@@ -9,8 +9,8 @@ namespace DeskPRO\Bundle\PortalBundle\View;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsAttachment;
@@ -103,7 +103,7 @@ class PortalIconFactory
             return $this->makeNewsIcon($content);
         } elseif ($content instanceof NewsAttachment) {
             return $this->makeFileIcon($content->getBlob());
-        } elseif ($content instanceof Feedback) {
+        } elseif ($content instanceof CommunityTopic) {
             return $this->makeFeedbackIcon($content);
         } elseif ($content instanceof Topic) {
             return $this->makeTopicIcon($content);
@@ -173,11 +173,11 @@ class PortalIconFactory
     /**
      * Will return HTML representing an icon for any feedback.
      *
-     * @param Feedback $feedback
+     * @param CommunityTopic $feedback
      *
      * @return string
      */
-    public function makeFeedbackIcon(Feedback $feedback)
+    public function makeFeedbackIcon(CommunityTopic $feedback)
     {
         return '<i class="far fa-file-alt"></i>';
     }

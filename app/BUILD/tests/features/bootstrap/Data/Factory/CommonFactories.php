@@ -4,6 +4,7 @@ namespace DpBehat\Data\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -14,7 +15,6 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
@@ -279,11 +279,11 @@ class CommonFactories
     /**
      * @param array $data
      *
-     * @return Feedback
+     * @return CommunityTopic
      */
     public static function feedback(array $data)
     {
-        $feedback = new Feedback();
+        $feedback = new CommunityTopic();
         if (isset($data['date_created'])) {
             $feedback->date_created = new \DateTime($data['date_created']);
             unset($data['date_created']);

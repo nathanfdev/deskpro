@@ -9,7 +9,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
@@ -143,7 +143,7 @@ class FeedbackController extends AbstractController
         $ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
-        $feedback = App::getEntityRepository('DeskPRO:Feedback')->getByIds($page_ids, true);
+        $feedback = App::getEntityRepository('DeskPRO:CommunityTopic')->getByIds($page_ids, true);
 
         return $this->createApiResponse([
             'page'     => $page,
@@ -217,7 +217,7 @@ class FeedbackController extends AbstractController
     public function newFeedbackAction()
     {
         $errors   = [];
-        $feedback = new Feedback();
+        $feedback = new CommunityTopic();
 
         $title = $this->in->getString('title');
         if ($title) {
@@ -1224,7 +1224,7 @@ class FeedbackController extends AbstractController
         return $this->createApiResponse(['categories' => $this->getApiData($children)]);
     }
 
-    protected function _insertFeedbackAttachments(Feedback $feedback)
+    protected function _insertFeedbackAttachments(CommunityTopic $feedback)
     {
         $attachments = $this->request->files->get('attach');
         if (!is_array($attachments)) {
@@ -1245,7 +1245,7 @@ class FeedbackController extends AbstractController
         }
     }
 
-    protected function _addFeedbackAttachment($blob_id, Feedback $feedback)
+    protected function _addFeedbackAttachment($blob_id, CommunityTopic $feedback)
     {
         if ($blob_id instanceof \Application\DeskPRO\Entity\Blob) {
             $blob = $blob_id;
@@ -1283,13 +1283,13 @@ class FeedbackController extends AbstractController
     /**
      * @param int $id
      *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     *@throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
-     * @return \Application\DeskPRO\Entity\Feedback
+     * @return \Application\DeskPRO\Entity\CommunityTopic
      */
     protected function _getFeedbackOr404($id, $check_perm = false)
     {
-        $feedback = $this->em->getRepository('DeskPRO:Feedback')->findOneById($id);
+        $feedback = $this->em->getRepository('DeskPRO:CommunityTopic')->findOneById($id);
 
         if (!$feedback) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no feedback with ID $id");

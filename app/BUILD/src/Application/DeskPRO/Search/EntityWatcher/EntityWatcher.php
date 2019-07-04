@@ -12,6 +12,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDataArticle;
 use Application\DeskPRO\Entity\CustomDataChat;
 use Application\DeskPRO\Entity\CustomDataFeedback;
@@ -19,7 +20,6 @@ use Application\DeskPRO\Entity\CustomDataOrganization;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\LabelArticle;
 use Application\DeskPRO\Entity\LabelDownload;
 use Application\DeskPRO\Entity\LabelFeedback;
@@ -45,7 +45,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         LabelArticle::class           => 1,
         Download::class               => 1,
         LabelDownload::class          => 1,
-        Feedback::class               => 1,
+        CommunityTopic::class         => 1,
         LabelFeedback::class          => 1,
         News::class                   => 1,
         LabelNews::class              => 1,

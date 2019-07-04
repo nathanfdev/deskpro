@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\CustomFields\FeedbackFieldManager;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
@@ -19,7 +19,7 @@ class FeedbackCollection
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\Entity\Feedback[]
+     * @var \Application\DeskPRO\Entity\CommunityTopic[]
      */
     protected $feedbacks;
 
@@ -50,7 +50,7 @@ class FeedbackCollection
     /**
      * Get the full array of feedback.
      *
-     * @return \Application\DeskPRO\Entity\Feedback[]
+     * @return \Application\DeskPRO\Entity\CommunityTopic[]
      */
     public function getFeedback()
     {
@@ -76,11 +76,11 @@ class FeedbackCollection
     /**
      * Get a display array for a feedback.
      *
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      *
      * @return array
      */
-    public function getDisplayArrayForFeedback(Feedback $feedback)
+    public function getDisplayArrayForFeedback(CommunityTopic $feedback)
     {
         $custom_data   = $this->getDataForFeedback($feedback);
         $user_category = $this->getUserCategory($feedback);
@@ -132,11 +132,11 @@ class FeedbackCollection
     /**
      * Get data for a specific feedback.
      *
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      *
      * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
      */
-    public function getDataForFeedback(Feedback $feedback)
+    public function getDataForFeedback(CommunityTopic $feedback)
     {
         $all_data = $this->getCustomData();
 
@@ -146,11 +146,11 @@ class FeedbackCollection
     /**
      * Get the user category title.
      *
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      *
      * @return \Application\DeskPRO\Feedback\UserCategory|null
      */
-    public function getUserCategory(Feedback $feedback)
+    public function getUserCategory(CommunityTopic $feedback)
     {
         if (array_key_exists($feedback->getId(), $this->user_cats)) {
             return $this->user_cats[$feedback->getId()];

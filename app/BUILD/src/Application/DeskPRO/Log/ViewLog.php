@@ -8,8 +8,8 @@ namespace Application\DeskPRO\Log;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\HttpFoundation\Session;
@@ -50,7 +50,7 @@ class ViewLog
             $type = PageViewLog::TYPE_DOWNLOAD;
         } elseif ($object instanceof News) {
             $type = PageViewLog::TYPE_NEWS;
-        } elseif ($object instanceof Feedback) {
+        } elseif ($object instanceof CommunityTopic) {
             $type = PageViewLog::TYPE_FEEDBACK;
         }
 

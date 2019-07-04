@@ -24,7 +24,7 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $topic;
 
@@ -34,9 +34,9 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $root_category;
 
     /**
-     * @param Feedback $topic
+     * @param CommunityTopic $topic
      */
-    public function setTopic(Feedback $topic = null)
+    public function setTopic(CommunityTopic $topic = null)
     {
         $this->setModelField('topic', $topic);
     }
@@ -120,7 +120,7 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'topic',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopic',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [

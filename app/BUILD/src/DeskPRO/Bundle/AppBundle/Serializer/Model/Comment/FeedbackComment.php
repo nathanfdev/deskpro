@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Comment;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackComment as CommentEntity;
 use JMS\Serializer\Annotation as JMS;
 
@@ -14,7 +14,7 @@ class FeedbackComment extends CommentAbstract
      * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
      * @JMS\Groups({"list", "details"})
      *
-     * @var Feedback
+     * @var CommunityTopic
      */
     protected $feedback;
 

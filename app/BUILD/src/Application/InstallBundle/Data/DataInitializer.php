@@ -99,10 +99,10 @@ class DataInitializer
             return;
         }
         $types = [
-            ['article',   'articles',  'DeskPRO:Article'],
-            ['download',  'downloads', 'DeskPRO:Download'],
-            ['feedback',  'feedback',  'DeskPRO:Feedback'],
-            ['news',      'news',      'DeskPRO:News'],
+            ['article', 'articles', 'DeskPRO:Article'],
+            ['download', 'downloads', 'DeskPRO:Download'],
+            ['feedback', 'community_topics', 'DeskPRO:CommunityTopic'],
+            ['news', 'news', 'DeskPRO:News'],
         ];
 
         foreach ($types as $t) {

@@ -14,7 +14,7 @@ use Application\DeskPRO\Search\Indexer\Document;
 
 class Feedback extends AbstractContentType
 {
-    const ENTITY_NAME = 'DeskPRO:Feedback';
+    const ENTITY_NAME = 'DeskPRO:CommunityTopic';
 
     public function objectToDocument($feedback)
     {

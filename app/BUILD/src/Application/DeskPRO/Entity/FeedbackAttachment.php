@@ -31,7 +31,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
      *
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $topic;
 
@@ -105,11 +105,11 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param Feedback $topic
+     * @param CommunityTopic $topic
      *
      * @return $this
      */
-    public function setTopic(Feedback $topic)
+    public function setTopic(CommunityTopic $topic)
     {
         $this->setModelField('topic', $topic);
 
@@ -146,7 +146,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'topic',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopic',
             'mappedBy'     => null,
             'inversedBy'   => 'attachments',
             'joinColumns'  => [

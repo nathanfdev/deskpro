@@ -6,8 +6,8 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
@@ -161,12 +161,12 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback $feedback
-     * @param Person   $agent
+     * @param CommunityTopic $feedback
+     * @param Person         $agent
      *
      * @return FeedbackApproved
      */
-    public function createFeedbackApprovedModel(Feedback $feedback, Person $agent)
+    public function createFeedbackApprovedModel(CommunityTopic $feedback, Person $agent)
     {
         $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
@@ -174,23 +174,23 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback $feedback
-     * @param Person   $agent
-     * @param string   $reason
+     * @param CommunityTopic $feedback
+     * @param Person         $agent
+     * @param string         $reason
      *
      * @return FeedbackDisapproved
      */
-    public function createFeedbackDisapprovedModel(Feedback $feedback, Person $agent, $reason)
+    public function createFeedbackDisapprovedModel(CommunityTopic $feedback, Person $agent, $reason)
     {
         return $this->convertParameters(FeedbackDisapproved::class, [$feedback, $agent, $reason]);
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $feedback
      *
      * @return FeedbackNew
      */
-    public function createFeedbackNewModel(Feedback $feedback)
+    public function createFeedbackNewModel(CommunityTopic $feedback)
     {
         return $this->convertParameters(FeedbackNew::class, [$feedback]);
     }
@@ -208,7 +208,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
         return $this->convertParameters(FeedbackNewComment::class, [$comment, $feedback, $feedbackLink]);
     }
 
-    public function createFeedbackUpdatedModel(Feedback $feedback)
+    public function createFeedbackUpdatedModel(CommunityTopic $feedback)
     {
         $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
@@ -216,7 +216,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback[] $updatedFeedback
+     * @param CommunityTopic[] $updatedFeedback
      *
      * @return FeedbackSubscription
      */
@@ -229,11 +229,11 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $feedback
      *
      * @return FeedbackCreatedForUser
      */
-    public function createFeedbackCreatedForUserModel(Feedback $feedback)
+    public function createFeedbackCreatedForUserModel(CommunityTopic $feedback)
     {
         return $this->convertParameters(FeedbackCreatedForUser::class, [$feedback]);
     }

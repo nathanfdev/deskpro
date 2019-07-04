@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
@@ -774,7 +775,7 @@ class PublishController extends AbstractController
                 $entity_name = 'DeskPRO:News';
                 break;
             case 'feedback':
-                $entity_name = 'DeskPRO:Feedback';
+                $entity_name = CommunityTopic::class;
                 break;
             case 'topics':
                 $entity_name = 'DeskPRO:Topic';

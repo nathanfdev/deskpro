@@ -673,7 +673,7 @@ JS;
                     break;
 
                 case 'feedback':
-                    $feedback = $this->em->find('DeskPRO:Feedback', $this->in->getUint('object_id'));
+                    $feedback = $this->em->find(Entity\CommunityTopic::class, $this->in->getUint('object_id'));
 
                     $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
                     $attach['blob']   = $blob;

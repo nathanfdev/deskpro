@@ -3,8 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDefFeedback;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\LabelDef;
@@ -47,24 +47,24 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
     /**
      * @var string[]
      */
-    private $statuses = [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED, Feedback::STATUS_HIDDEN];
+    private $statuses = [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED, CommunityTopic::STATUS_HIDDEN];
 
     /**
      * @var array
      */
     private $statusesCategories = [
-        Feedback::STATUS_ACTIVE => ['Gathering Feedback', 'Planning', 'Started', 'Under Review'],
-        Feedback::STATUS_CLOSED => ['Completed', 'Duplicate', 'Declined'],
+        CommunityTopic::STATUS_ACTIVE => ['Gathering Feedback', 'Planning', 'Started', 'Under Review'],
+        CommunityTopic::STATUS_CLOSED => ['Completed', 'Duplicate', 'Declined'],
     ];
 
     /**
      * @var string[]
      */
     private $hiddenStatuses = [
-        Feedback::HIDDEN_STATUS_DELETED,
-        Feedback::HIDDEN_STATUS_UNPUBLISHED,
-        Feedback::HIDDEN_STATUS_SPAM,
-        Feedback::HIDDEN_STATUS_DRAFT,
+        CommunityTopic::HIDDEN_STATUS_DELETED,
+        CommunityTopic::HIDDEN_STATUS_UNPUBLISHED,
+        CommunityTopic::HIDDEN_STATUS_SPAM,
+        CommunityTopic::HIDDEN_STATUS_DRAFT,
     ];
 
     /**
@@ -111,11 +111,11 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
         $this->activeStatuses = $this->fetchIds(
             self::TABLE_FEEDBACK_STATUS_CATEGORIES,
-            [['field' => 'status_type', 'value' => Feedback::STATUS_ACTIVE]]
+            [['field' => 'status_type', 'value' => CommunityTopic::STATUS_ACTIVE]]
         );
         $this->closedStatuses = $this->fetchIds(
             self::TABLE_FEEDBACK_STATUS_CATEGORIES,
-            [['field' => 'status_type', 'value' => Feedback::STATUS_CLOSED]]
+            [['field' => 'status_type', 'value' => CommunityTopic::STATUS_CLOSED]]
         );
 
         $this->loadFeedback();
@@ -220,15 +220,15 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
     {
         $values['status'] = $this->faker->randomElement($this->statuses);
         switch ($values['status']) {
-            case Feedback::STATUS_ACTIVE:
+            case CommunityTopic::STATUS_ACTIVE:
                 $values['hidden_status']      = null;
                 $values['status_category_id'] = $this->faker->randomElement($this->activeStatuses);
                 break;
-            case Feedback::STATUS_CLOSED:
+            case CommunityTopic::STATUS_CLOSED:
                 $values['hidden_status']      = null;
                 $values['status_category_id'] = $this->faker->randomElement($this->closedStatuses);
                 break;
-            case Feedback::STATUS_HIDDEN:
+            case CommunityTopic::STATUS_HIDDEN:
                 $values['hidden_status']      = $this->faker->randomElement($this->hiddenStatuses);
                 $values['status_category_id'] = null;
                 break;
@@ -318,8 +318,8 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         $batch = [];
         foreach ($this->feedback as $id) {
             $num_comments = rand(self::MIN_FEEDBACK_COMMENTS, self::MAX_FEEDBACK_COMMENTS);
-            /** @var Feedback $feedback */
-            $feedback = $this->manager->getRepository('DeskPRO:Feedback')->find($id);
+            /** @var CommunityTopic $feedback */
+            $feedback = $this->manager->getRepository('DeskPRO:CommunityTopic')->find($id);
             if (!$feedback->isReviewed()) {
                 continue;
             }

@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -28,7 +29,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
@@ -484,7 +484,7 @@ class ObjectsManager
             'AgentChat'                        => [$this, 'find', AgentChat::class],
             'AgentChatParticipant'             => [$this, 'find', AgentChatParticipant::class],
             'AgentChatMessage'                 => [$this, 'find', AgentChatMessage::class],
-            'Feedback'                         => [$this, 'find', Feedback::class],
+            'Feedback'                         => [$this, 'find', CommunityTopic::class],
             'FeedbackSubscription'             => [$this, 'find', FeedbackSubscription::class],
             'FeedbackStatusCategory'           => [$this, 'find', FeedbackStatusCategory::class],
             'FeedbackCategory'                 => [$this, 'find', FeedbackCategory::class],

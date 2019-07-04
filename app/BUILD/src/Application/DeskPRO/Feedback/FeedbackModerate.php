@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Translate;
@@ -93,18 +93,18 @@ class FeedbackModerate implements PersonContextInterface
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      *
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
      */
-    public function approveFeedback(Feedback $feedback)
+    public function approveFeedback(CommunityTopic $feedback)
     {
         $becameReviewed = false;
-        if ($feedback->getStatus() === Feedback::STATUS_HIDDEN) {
+        if ($feedback->getStatus() === CommunityTopic::STATUS_HIDDEN) {
             $statusCategory = $this->feedbackDataService->getFeedbackFirstStatusCategoryByType();
             $feedback
-                ->setStatus(Feedback::STATUS_ACTIVE)
+                ->setStatus(CommunityTopic::STATUS_ACTIVE)
                 ->setStatusCategory($statusCategory);
         } else {
             $becameReviewed = true;
@@ -145,13 +145,13 @@ class FeedbackModerate implements PersonContextInterface
     }
 
     /**
-     * @param Feedback $feedback
-     * @param string   $reason
+     * @param CommunityTopic $feedback
+     * @param string         $reason
      *
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
      */
-    public function disapproveFeedback(Feedback $feedback, $reason = '')
+    public function disapproveFeedback(CommunityTopic $feedback, $reason = '')
     {
         if (!$reason) {
             $reason = null;

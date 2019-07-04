@@ -4,8 +4,8 @@ namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -270,7 +270,7 @@ class QuickSearchContext
         return [
             self::TYPE_ARTICLE           => Article::class,
             self::TYPE_DOWNLOAD          => Download::class,
-            self::TYPE_FEEDBACK          => Feedback::class,
+            self::TYPE_FEEDBACK          => CommunityTopic::class,
             self::TYPE_NEWS              => News::class,
             self::TYPE_TICKET            => Ticket::class,
             self::TYPE_PERSON            => Person::class,

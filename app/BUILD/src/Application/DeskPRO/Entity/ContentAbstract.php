@@ -645,11 +645,7 @@ abstract class ContentAbstract extends DomainObject
         }
 
         $ent   = $this->getEntityName().'Revision';
-        $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
-        // TODO REMOVE!
-        if ($field == 'feedback') {
-            $field = 'community_topic';
-        }
+        $field = Strings::camelCaseToUnderscore((str_replace('DeskPRO:', '', $this->getEntityName())));
 
         $revs = App::getOrm()->createQuery(
             "

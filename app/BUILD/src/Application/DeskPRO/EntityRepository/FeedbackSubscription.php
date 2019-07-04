@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Entity\CommunityTopic as FeedbackEntity;
 
 class FeedbackSubscription extends AbstractEntityRepository
 {

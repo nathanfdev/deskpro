@@ -10,8 +10,8 @@ namespace Application\DeskPRO\Search\Adapter;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Search\Searcher\Mysql\AgentCombinedSearcher;
@@ -32,7 +32,7 @@ class MysqlAdapter extends AbstractAdapter
     {
         $this->addContentTypeMap(Article::class, 'article');
         $this->addContentTypeMap(Download::class, 'download');
-        $this->addContentTypeMap(Feedback::class, 'feedback');
+        $this->addContentTypeMap(CommunityTopic::class, 'feedback');
         $this->addContentTypeMap(News::class, 'news');
         $this->addContentTypeMap(Topic::class, 'topic');
     }

@@ -12,8 +12,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
@@ -1939,7 +1939,7 @@ class TemplatingExtension extends \Twig_Extension
                 $object = $em->getRepository(News::class)->find($id);
                 break;
             case 'feedback':
-                $object = $em->getRepository(Feedback::class)->find($id);
+                $object = $em->getRepository(CommunityTopic::class)->find($id);
                 break;
             case 'download':
                 $object = $em->getRepository(Download::class)->find($id);

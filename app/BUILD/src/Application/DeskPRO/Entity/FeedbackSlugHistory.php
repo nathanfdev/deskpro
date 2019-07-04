@@ -28,7 +28,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The content.
      *
-     * @var Feedback
+     * @var CommunityTopic
      */
     protected $topic;
 
@@ -45,10 +45,10 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
-     * @param Feedback $topic    the content
-     * @param string   $old_slug the slug to put in history
+     * @param CommunityTopic $topic    the content
+     * @param string         $old_slug the slug to put in history
      */
-    public function __construct(Feedback $topic, $old_slug)
+    public function __construct(CommunityTopic $topic, $old_slug)
     {
         $this->setContent($topic);
         $this->setSlug($old_slug);
@@ -72,9 +72,9 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @param Feedback $topic
+     * @param CommunityTopic $topic
      */
-    public function setContent(Feedback $topic)
+    public function setContent(CommunityTopic $topic)
     {
         $this->setModelField('topic', $topic);
     }
@@ -135,7 +135,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'topic',
-            'targetEntity' => 'Application\DeskPRO\Entity\Feedback',
+            'targetEntity' => 'Application\DeskPRO\Entity\CommunityTopic',
             'cascade'      => [
                 0 => 'remove',
                 1 => 'persist',

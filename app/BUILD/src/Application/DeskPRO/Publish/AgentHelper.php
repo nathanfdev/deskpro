@@ -6,10 +6,10 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\GlossaryWord;
@@ -582,9 +582,9 @@ class AgentHelper implements PersonContextInterface
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'entity'       => Feedback::class,
-                'id_field'     => 'feedback_id',
-                'rev_table'    => 'feedback_revisions',
+                'entity'       => CommunityTopic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'community_topic_revisions',
             ],
             'topics' => [
                 'content_type' => 'topics',
@@ -662,9 +662,9 @@ class AgentHelper implements PersonContextInterface
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'entity'       => Feedback::class,
-                'id_field'     => 'feedback_id',
-                'rev_table'    => 'feedback_revisions',
+                'entity'       => CommunityTopic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'community_topic_revisions',
             ],
             'topics' => [
                 'content_type' => 'topics',
@@ -733,9 +733,9 @@ class AgentHelper implements PersonContextInterface
             ],
             'feedback' => [
                 'content_type' => 'feedback',
-                'entity'       => Feedback::class,
-                'id_field'     => 'feedback_id',
-                'rev_table'    => 'feedback_revisions',
+                'entity'       => CommunityTopic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'community_topic_revisions',
             ],
             'topics' => [
                 'content_type' => 'topics',
@@ -808,7 +808,7 @@ class AgentHelper implements PersonContextInterface
                 return News::class;
                 break;
             case self::FEEDBACK:
-                return Feedback::class;
+                return CommunityTopic::class;
                 break;
             case self::TOPICS:
                 return Topic::class;

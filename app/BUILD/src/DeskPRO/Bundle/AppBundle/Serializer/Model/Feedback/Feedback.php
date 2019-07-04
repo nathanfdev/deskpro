@@ -90,9 +90,9 @@ class Feedback extends ContentAbstract
     /**
      * Constructor.
      *
-     * @param \Application\DeskPRO\Entity\Feedback $entity
+     * @param \Application\DeskPRO\Entity\CommunityTopic $entity
      */
-    public function __construct(\Application\DeskPRO\Entity\Feedback $entity)
+    public function __construct(\Application\DeskPRO\Entity\CommunityTopic $entity)
     {
         parent::__construct($entity);
 

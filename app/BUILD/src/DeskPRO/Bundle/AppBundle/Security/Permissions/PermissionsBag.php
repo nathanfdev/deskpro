@@ -8,9 +8,9 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
@@ -156,7 +156,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
             return in_array($contentOrCategory->getId(), $this->getAllowedArticleCategories());
 
             // FEEDBACK
-        } elseif ($contentOrCategory instanceof Feedback) {
+        } elseif ($contentOrCategory instanceof CommunityTopic) {
             $categoryId = $contentOrCategory->getCategoryId();
             if ($categoryId) {
                 return in_array($categoryId, $this->getAllowedFeedbackCategoryIds());

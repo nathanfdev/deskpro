@@ -2,9 +2,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback;
 
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefFeedback;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionParamsType;
@@ -45,7 +45,7 @@ class FeedbackMassActionParamsType extends AbstractType
     {
         $this->em                    = $em;
         $this->defaultStatusCategory = $this->em->getRepository(FeedbackStatusCategory::class)->findOneBy(
-            ['status_type' => Feedback::STATUS_ACTIVE],
+            ['status_type' => CommunityTopic::STATUS_ACTIVE],
             ['display_order' => 'ASC']
         );
     }
@@ -80,10 +80,10 @@ class FeedbackMassActionParamsType extends AbstractType
                 'property_path'     => 'hidden_status',
                 'choices_as_values' => true,
                 'choices'           => [
-                    Feedback::HIDDEN_STATUS_DELETED,
-                    Feedback::HIDDEN_STATUS_DRAFT,
-                    Feedback::HIDDEN_STATUS_SPAM,
-                    Feedback::HIDDEN_STATUS_UNPUBLISHED,
+                    CommunityTopic::HIDDEN_STATUS_DELETED,
+                    CommunityTopic::HIDDEN_STATUS_DRAFT,
+                    CommunityTopic::HIDDEN_STATUS_SPAM,
+                    CommunityTopic::HIDDEN_STATUS_UNPUBLISHED,
                 ],
             ])
             ->add('add_labels', CollectionType::class, [
@@ -112,7 +112,7 @@ class FeedbackMassActionParamsType extends AbstractType
     {
         $resolver->setDefaults([
             'actions'    => ['approve', 'delete'],
-            'data_class' => Feedback::class,
+            'data_class' => CommunityTopic::class,
         ]);
     }
 
@@ -133,7 +133,7 @@ class FeedbackMassActionParamsType extends AbstractType
     {
         $form = $event->getForm();
         $data = $event->getData();
-        if (!$data instanceof Feedback) {
+        if (!$data instanceof CommunityTopic) {
             return;
         }
 
@@ -183,10 +183,10 @@ class FeedbackMassActionParamsType extends AbstractType
 
         // actions
         if (BaseMassActionParamsType::hasAction($event, 'approve')) {
-            if ($data->getStatus() === Feedback::STATUS_HIDDEN) {
+            if ($data->getStatus() === CommunityTopic::STATUS_HIDDEN) {
                 $data
                     ->setHiddenStatus()
-                    ->setStatus(Feedback::STATUS_ACTIVE)
+                    ->setStatus(CommunityTopic::STATUS_ACTIVE)
                     ->setStatusCategory($this->defaultStatusCategory)
                 ;
             }
@@ -196,8 +196,8 @@ class FeedbackMassActionParamsType extends AbstractType
 
         if (BaseMassActionParamsType::hasAction($event, 'delete')) {
             $data
-                ->setStatus(Feedback::STATUS_HIDDEN)
-                ->setHiddenStatus(Feedback::HIDDEN_STATUS_DELETED)
+                ->setStatus(CommunityTopic::STATUS_HIDDEN)
+                ->setHiddenStatus(CommunityTopic::HIDDEN_STATUS_DELETED)
                 ->setIsReviewed(true)
             ;
         }

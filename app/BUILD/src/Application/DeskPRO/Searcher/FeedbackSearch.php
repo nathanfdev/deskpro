@@ -64,7 +64,7 @@ class FeedbackSearch extends SearcherAbstract
             return [];
         }
 
-        return App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($ids);
+        return App::getEntityRepository('DeskPRO:CommunityTopic')->getByResultIds($ids);
     }
 
     /**

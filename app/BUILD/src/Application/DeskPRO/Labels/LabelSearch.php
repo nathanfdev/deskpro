@@ -146,7 +146,7 @@ class LabelSearch
             ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
-                $results['feedback'] = $this->em->getRepository('DeskPRO:Feedback')->getByIds($ids, true);
+                $results['feedback'] = $this->em->getRepository('DeskPRO:CommunityTopic')->getByIds($ids, true);
             }
         }
 

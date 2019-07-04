@@ -8,6 +8,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class FeedbackRevision extends AbstractRevisionRepository
+class CommunityTopicRevision extends AbstractRevisionRepository
 {
 }

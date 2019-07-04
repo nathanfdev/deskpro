@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDefFeedback;
-use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
@@ -47,7 +47,7 @@ abstract class AbstractFeedbackController extends CrudController
     protected function applyFeedbackListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $context = new RequestQueryContext($qb, $alias, $request);
-        LabelHelper::applyLabelFilters($context, Feedback::class);
+        LabelHelper::applyLabelFilters($context, CommunityTopic::class);
 
         $category = $request->get('category');
         if (!empty($category)) {

@@ -19,7 +19,7 @@ class LabelFeedback extends LabelAssocAbstract
     const LABEL_TYPENAME = 'feedback';
 
     /**
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $topic;
 
@@ -28,7 +28,7 @@ class LabelFeedback extends LabelAssocAbstract
         return $this->topic;
     }
 
-    public function setTopic(Feedback $topic)
+    public function setTopic(CommunityTopic $topic)
     {
         $this->topic = $topic;
 
@@ -55,7 +55,7 @@ class LabelFeedback extends LabelAssocAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'topic',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopic',
                 'id'           => true,
                 'mappedBy'     => null,
                 'inversedBy'   => 'labels',

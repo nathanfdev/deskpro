@@ -18,7 +18,7 @@ class LabelDef extends AbstractEntityRepository
         'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
         'deals'         => ['table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'],
         'downloads'     => ['table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'],
-        'feedback'      => ['table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'],
+        'feedback'      => ['table' => 'labels_community_topics',   'entity' => 'DeskPRO:LabelFeedback'],
         'chat'          => ['table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'],
         'news'          => ['table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'],
         'organizations' => ['table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'],

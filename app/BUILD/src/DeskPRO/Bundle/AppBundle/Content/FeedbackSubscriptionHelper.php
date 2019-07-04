@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Content;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackSubscription;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -38,13 +38,13 @@ class FeedbackSubscriptionHelper
     }
 
     /**
-     * @param Feedback $feedback
-     * @param Ticket   $ticket
-     * @param bool     $isSubscribeOwner
-     * @param bool     $isSubscribeParticipants
+     * @param CommunityTopic $feedback
+     * @param Ticket         $ticket
+     * @param bool           $isSubscribeOwner
+     * @param bool           $isSubscribeParticipants
      */
     public function subscribeTicketPersons(
-        Feedback $feedback,
+        CommunityTopic $feedback,
         Ticket $ticket,
         $isSubscribeOwner,
         $isSubscribeParticipants)
@@ -72,10 +72,10 @@ class FeedbackSubscriptionHelper
     }
 
     /**
-     * @param Feedback $feedback
-     * @param Person[] $persons
+     * @param CommunityTopic $feedback
+     * @param Person[]       $persons
      */
-    public function subscribePersons(Feedback $feedback, $persons)
+    public function subscribePersons(CommunityTopic $feedback, $persons)
     {
         if (!count($persons)) {
             return;
@@ -106,10 +106,10 @@ class FeedbackSubscriptionHelper
     }
 
     /**
-     * @param Feedback $feedback
-     * @param Person   $person
+     * @param CommunityTopic $feedback
+     * @param Person         $person
      */
-    public function unsubscribePerson(Feedback $feedback, Person $person)
+    public function unsubscribePerson(CommunityTopic $feedback, Person $person)
     {
         $subscriptions = $this->em->getRepository(FeedbackSubscription::class)
             ->findBy([

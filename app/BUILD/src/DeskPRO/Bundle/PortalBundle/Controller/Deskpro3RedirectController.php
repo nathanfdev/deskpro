@@ -73,7 +73,7 @@ class Deskpro3RedirectController extends AbstractController
             $id    = Strings::extractRegexMatch('#^([0-9]+)#', $ideaStr);
             $newId = $this->getNewId('dp3_ideaid_'.$id);
             if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:Feedback', $newId);
+                $obj = $this->getEm()->find('DeskPRO:CommunityTopic', $newId);
                 if ($obj) {
                     return $this->redirectToRoute('portal_feedback_view', ['slug' => $obj->getUrlSlug()], 301);
                 }

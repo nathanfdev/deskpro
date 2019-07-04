@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\PageViewLog;
@@ -88,12 +88,12 @@ class FeedbackController extends AbstractController
         // true if auto-submit SavedFormController wants us to definitely rerender
         $rerenderingSaved = $request->attributes->get('rerender-form', false);
         $permissionBag    = $this->getPermissionBagForCurrentUser();
-        $newFeedback      = new Feedback();
+        $newFeedback      = new CommunityTopic();
         $newFeedback->setIsReviewed(false);
         if (!$permissionBag->hasPermission('feedback.no_submit_validate')) {
-            $newFeedback->setStatus(Feedback::STATUS_HIDDEN);
+            $newFeedback->setStatus(CommunityTopic::STATUS_HIDDEN);
         } else {
-            $newFeedback->setStatus(Feedback::STATUS_ACTIVE);
+            $newFeedback->setStatus(CommunityTopic::STATUS_ACTIVE);
             $newFeedback->setStatusCategory($this->getDefaultStatusCategory());
         }
         $newFeedback->setPerson($person);
@@ -232,15 +232,15 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @param Feedback $newFeedback
-     * @param Person   $person
-     * @param Request  $request
+     * @param CommunityTopic $newFeedback
+     * @param Person         $person
+     * @param Request        $request
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
+     *@throws \Doctrine\ORM\OptimisticLockException
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function acceptNewFeedback(Feedback $newFeedback, Person $person, Request $request)
+    protected function acceptNewFeedback(CommunityTopic $newFeedback, Person $person, Request $request)
     {
         $this->getEm()->persist($newFeedback);
         $this->getEm()->flush();
@@ -383,7 +383,7 @@ class FeedbackController extends AbstractController
 
         // setup and render an initial form that posts to /feedback
         $person      = $this->getUser() ?: new PersonGuest();
-        $newFeedback = new Feedback();
+        $newFeedback = new CommunityTopic();
         $newFeedback->setPerson($person);
         $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
             'person' => $person,
@@ -413,13 +413,13 @@ class FeedbackController extends AbstractController
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")
      *
-     * @param Request  $request
-     * @param Feedback $item
-     * @param string   $visitor_id
+     * @param Request        $request
+     * @param CommunityTopic $item
+     * @param string         $visitor_id
      *
      * @return Response
      */
-    public function viewAction(Request $request, Feedback $item, $visitor_id)
+    public function viewAction(Request $request, CommunityTopic $item, $visitor_id)
     {
         if (!$item->isVisibleOnPortal()) {
             throw $this->createNotFoundException('this feedback item is hidden');
@@ -485,7 +485,7 @@ class FeedbackController extends AbstractController
                 'item'               => $item,
                 'is_subscribed'      => $isSubscribed,
                 'content_id'         => $item->getId(),
-                'content_type'       => Feedback::CONTENT_TYPE,
+                'content_type'       => CommunityTopic::CONTENT_TYPE,
                 'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
                 'page_title'         => $this->createPageTitle()->feedback($item),
                 'breadcrumbs'        => $breadcrumbs,
@@ -504,14 +504,14 @@ class FeedbackController extends AbstractController
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @AutoPostOnGetRequest()
      *
-     * @param Request  $request
-     * @param Feedback $item
-     * @param string   $visitor_id
-     * @param string   $up_or_down
+     * @param Request        $request
+     * @param CommunityTopic $item
+     * @param string         $visitor_id
+     * @param string         $up_or_down
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|JsonResponse
      */
-    public function feedbackRateAction(Request $request, Feedback $item, $visitor_id, $up_or_down)
+    public function feedbackRateAction(Request $request, CommunityTopic $item, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_FEEDBACK')) {
             throw $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
@@ -564,11 +564,11 @@ class FeedbackController extends AbstractController
      * @Security("is_granted('USE_FEEDBACK') and is_granted('SUBSCRIBE_FEEDBACK', item)")
      * @AutoPostOnGetRequest()
      *
-     * @param Feedback $item
+     * @param CommunityTopic $item
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function articleSubscriptionAction(Feedback $item)
+    public function articleSubscriptionAction(CommunityTopic $item)
     {
         if (!$item->isVisibleOnPortal()) {
             throw $this->createNotFoundException('this feedback item is hidden');

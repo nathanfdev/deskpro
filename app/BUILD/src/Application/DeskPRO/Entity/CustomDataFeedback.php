@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataFeedback extends CustomDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\Feedback
+     * @var \Application\DeskPRO\Entity\CommunityTopic
      */
     protected $topic;
 
@@ -38,7 +38,7 @@ class CustomDataFeedback extends CustomDataAbstract
     }
 
     /**
-     * @return Feedback
+     * @return CommunityTopic
      */
     public function getFeedback()
     {
@@ -92,7 +92,7 @@ class CustomDataFeedback extends CustomDataAbstract
     /**
      * {@inheritdoc}
      *
-     * @return Feedback
+     * @return CommunityTopic
      */
     public function getOwner()
     {
@@ -149,7 +149,7 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'topic',
-                'targetEntity' => Feedback::class,
+                'targetEntity' => CommunityTopic::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [

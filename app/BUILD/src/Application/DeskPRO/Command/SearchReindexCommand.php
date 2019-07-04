@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Entity\CommunityTopic;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,8 +38,8 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
                 break;
 
             case 'feedback':
-                $entity = 'DeskPRO:Feedback';
-                $table  = 'feedback';
+                $entity = CommunityTopic::class;
+                $table  = 'community_topics';
                 break;
 
             case 'news':

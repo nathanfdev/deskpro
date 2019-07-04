@@ -9,10 +9,10 @@ namespace Application\DeskPRO\ContentRevision;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleRevision;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicRevision;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadRevision;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackRevision;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\Person;
@@ -196,8 +196,8 @@ class Util
                 return 'download';
                 break;
 
-            case Feedback::class:
-            case FeedbackRevision::class:
+            case CommunityTopic::class:
+            case CommunityTopicRevision::class:
                 return 'feedback';
                 break;
 
@@ -239,11 +239,11 @@ class Util
                 }
                 break;
 
-            case Feedback::class:
+            case CommunityTopic::class:
                 if ($entity_name) {
                     return 'DeskPRO:FeedbackRevision';
                 } else {
-                    return FeedbackRevision::class;
+                    return CommunityTopicRevision::class;
                 }
                 break;
 

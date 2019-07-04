@@ -734,7 +734,7 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => \Application\DeskPRO\Entity\Feedback::class,
+                            'model'                         => \Application\DeskPRO\Entity\CommunityTopic::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
