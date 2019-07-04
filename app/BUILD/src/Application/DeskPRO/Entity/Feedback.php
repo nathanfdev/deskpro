@@ -71,11 +71,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
     protected $hidden_status = null;
 
     /**
-     * Category the feedback belongs to.
+     * Channel the feedback belongs to.
      *
      * @var FeedbackCategory
      */
-    protected $category;
+    protected $channel;
 
     /**
      * Revisions of this feedback.
@@ -945,11 +945,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         );
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'category',
+                'fieldName'    => 'channel',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => [0 => ['name' => 'category_id', 'referencedColumnName' => 'id']],
+                'joinColumns'  => [0 => ['name' => 'channel_id', 'referencedColumnName' => 'id']],
                 'dpApi'        => true,
             ]
         );
@@ -958,7 +958,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'fieldName'    => 'revisions',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'feedback',
+                'mappedBy'     => 'topic',
             ]
         );
         $metadata->mapOneToMany(
@@ -967,7 +967,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'targetEntity' => FeedbackComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
-                'mappedBy'     => 'feedback',
+                'mappedBy'     => 'topic',
             ]
         );
         $metadata->mapOneToMany(
@@ -975,7 +975,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'fieldName'     => 'labels',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelFeedback',
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'      => 'feedback',
+                'mappedBy'      => 'topic',
                 'orphanRemoval' => true,
             ]
         );
@@ -984,7 +984,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'fieldName'     => 'custom_data',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'      => 'feedback',
+                'mappedBy'      => 'topic',
                 'orphanRemoval' => true,
                 'dpApi'         => true,
             ]
@@ -1030,7 +1030,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'fieldName'    => 'attachments',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'feedback',
+                'mappedBy'     => 'topic',
                 'dpApi'        => true,
                 'dpApiDeep'    => true,
                 'dpApiPrimary' => true,
@@ -1041,7 +1041,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'fieldName'    => 'slug_history',
                 'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'feedback',
+                'mappedBy'     => 'topic',
             ]
         );
         $metadata->mapManyToOne(

@@ -11,10 +11,10 @@ class TicketFeedbackLinkRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('tfl');
         $qb
-            ->select('tfl', 'feedback', 'category', 'status_category')
-            ->leftJoin('tfl.feedback', 'feedback')
-            ->leftJoin('feedback.category', 'category')
-            ->leftJoin('feedback.status_category', 'status_category')
+            ->select('tfl', 'topic', 'channel', 'status_category')
+            ->leftJoin('tfl.topic', 'topic')
+            ->leftJoin('topic.channel', 'channel')
+            ->leftJoin('topic.status_category', 'status_category')
             ->where('tfl.ticket = :ticket')
             ->setParameter('ticket', $ticket)
         ;

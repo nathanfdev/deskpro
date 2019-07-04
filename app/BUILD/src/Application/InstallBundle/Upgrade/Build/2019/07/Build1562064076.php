@@ -40,6 +40,12 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'ALTER TABLE community_channels2usergroup CHANGE COLUMN category_id community_channel_id INT(11) NOT NULL;');
 
         // update indexes
+
+        $this->execDbQuery('default', 'ALTER TABLE community_topics DROP FOREIGN KEY FK_D229445812469DE2');
+        $this->execDbQuery('default', 'DROP INDEX IDX_E03CB3CA12469DE2 ON community_topics');
+        $this->execDbQuery('default', 'ALTER TABLE community_topics CHANGE category_id channel_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE community_topics ADD CONSTRAINT FK_E03CB3CA72F5A1AA FOREIGN KEY (channel_id) REFERENCES community_channels (id)');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_E03CB3CA72F5A1AA ON community_topics (channel_id)');
         $this->execDbQuery('default', 'ALTER TABLE community_channels DROP FOREIGN KEY FK_66FE683244F5D008');
         $this->execDbQuery('default', 'ALTER TABLE community_channels DROP FOREIGN KEY FK_66FE6832727ACA70');
         $this->execDbQuery('default', 'DROP INDEX uniq_66fe6832989d9b62 ON community_channels');
