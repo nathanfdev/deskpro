@@ -455,6 +455,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED);
         $queue->getActiveAgentsPeople()->willReturn([$person2, $person3, $person4]);
+        $queue->getAnswerTimeout()->willReturn(15);
 
         $permissionsChecker->canBeMemberOfVoiceQueue($queue, $person2)->willReturn(true);
         $permissionsChecker->canBeMemberOfVoiceQueue($queue, $person3)->willReturn(true);
@@ -464,6 +465,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $taskHelper->getWorkerAgent($task)->willReturn(null);
 
         $task->setWorkersIds([40, 20])->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(15)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker2, $worker3, $worker4]);
     }
