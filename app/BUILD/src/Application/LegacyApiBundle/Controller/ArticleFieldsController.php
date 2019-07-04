@@ -53,21 +53,24 @@ class ArticleFieldsController extends AbstractController implements ProtectedCon
     /**
      * @param $id
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getCustomFieldAction($id)
     {
         $field = $this->em->find(CustomDefArticle::class, $id);
-        if (!$field || $field->parent) {
+        if (!$field || $field->getParent()) {
             throw $this->createNotFoundException();
         }
 
-        $data          = [];
-        $data['field'] = $field->toApiData();
+        $aliasListHelper = new Form\AliasListHelper();
+
+        $data = [
+            'field' => array_merge($field->toApiData(), [
+                'alias' => (string) $aliasListHelper->findAdminAlias($field),
+            ]),
+        ];
 
         return $this->createApiResponse($data);
     }
@@ -102,6 +105,13 @@ class ArticleFieldsController extends AbstractController implements ProtectedCon
         }
 
         $post = $this->in->getAll('req');
+
+        // there is no separate api to change a single alias, must change all aliases
+        // so we either add or remove the new alias to/from the list of existing aliases
+        if ($id && array_key_exists('alias', $post)) {
+            $aliasListHelper = new Form\AliasListHelper();
+            $post['alias']   = $aliasListHelper->changeAdminAlias($field, $post['alias']);
+        }
 
         $container = $this->getContainer();
         $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());

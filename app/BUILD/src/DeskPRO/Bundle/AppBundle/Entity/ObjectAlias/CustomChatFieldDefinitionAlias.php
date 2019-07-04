@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
-use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -10,21 +10,21 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\Repository")
  * @JMS\ExclusionPolicy("all")
  */
-class CustomPeopleFieldDefinitionAlias extends AbstractAlias
+class CustomChatFieldDefinitionAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefPerson", inversedBy="aliases")
-     * @ORM\JoinColumn(name="custom_def_people_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefChat", inversedBy="aliases")
+     * @ORM\JoinColumn(name="custom_def_chat_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefPerson>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefChat>")
      *
-     * @var CustomDefPerson
+     * @var CustomDefChat
      */
     private $object;
 
     /**
-     * @return CustomDefPerson
+     * @return CustomDefChat
      */
     public function getObject()
     {
@@ -32,9 +32,9 @@ class CustomPeopleFieldDefinitionAlias extends AbstractAlias
     }
 
     /**
-     * @param CustomDefPerson $object
+     * @param CustomDefChat $object
      */
-    public function setObject(CustomDefPerson $object)
+    public function setObject(CustomDefChat $object)
     {
         $this->object = $object;
     }
@@ -60,7 +60,7 @@ class CustomPeopleFieldDefinitionAlias extends AbstractAlias
      */
     public function getObjectType()
     {
-        return CustomDefPerson::class;
+        return CustomDefChat::class;
     }
 
     /**
