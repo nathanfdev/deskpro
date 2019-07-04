@@ -137,11 +137,11 @@ class LabelSearch
 
         if (in_array('feedback', $this->search_types)) {
             $ids = $this->db->fetchAllCol("
-                SELECT labels_feedback.feedback_id
-                FROM labels_feedback
-                LEFT JOIN feedback ON feedback.id = labels_feedback.feedback_id
-                WHERE labels_feedback.label = ? AND (feedback.hidden_status NOT IN('spam', 'deleted') OR feedback.hidden_status IS NULL)
-                ORDER BY labels_feedback.feedback_id DESC
+                SELECT labels_community_topics.topic_id
+                FROM labels_community_topics
+                LEFT JOIN community_topics ON community_topics.id = labels_community_topics.topic_id
+                WHERE labels_community_topics.label = ? AND (community_topics.hidden_status NOT IN('spam', 'deleted') OR community_topics.hidden_status IS NULL)
+                ORDER BY labels_community_topics.topic_id DESC
                 LIMIT ?
             ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 

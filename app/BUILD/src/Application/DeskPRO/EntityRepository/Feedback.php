@@ -29,19 +29,19 @@ class Feedback extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT COUNT(*)
-            FROM feedback
+            FROM community_topics
             WHERE is_reviewed = 0
         ');
     }
 
     public function getAwaitingValidation($limit, $offset = 0)
     {
-        $qb = $this->createQueryBuilder('f');
+        $qb = $this->createQueryBuilder('ct');
         $qb
-            ->where($qb->expr()->eq('f.is_reviewed', 0))
+            ->where($qb->expr()->eq('ct.is_reviewed', 0))
             ->setFirstResult($offset)
             ->setMaxResults($limit)
-            ->orderBy('f.date_created', 'ASC')
+            ->orderBy('ct.date_created', 'ASC')
         ;
 
         return $qb->getQuery()->getResult();
@@ -59,7 +59,7 @@ class Feedback extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(status_category_id, 0), COUNT(*) as count
-            FROM feedback
+            FROM community_topics
             WHERE status = 'active' AND brand_id = ?
             GROUP BY status_category_id WITH ROLLUP
         ", [$brandId]);
@@ -77,7 +77,7 @@ class Feedback extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(status_category_id, 0), COUNT(*) as count
-            FROM feedback
+            FROM community_topics
             WHERE status = 'closed' AND brand_id = ?
             GROUP BY status_category_id WITH ROLLUP
         ", [$brandId]);
@@ -97,7 +97,7 @@ class Feedback extends AbstractEntityRepository
         // in the UI we generally show validating separately
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
-            FROM feedback
+            FROM community_topics
             WHERE status = ? AND brand_id = ?
             GROUP BY hidden_status WITH ROLLUP
         ", ['hidden', $brandId]);
@@ -112,7 +112,7 @@ class Feedback extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->fetchColumn("
             SELECT COUNT(*)
-            FROM feedback
+            FROM community_topics
             WHERE status = 'new'
         ");
     }
@@ -134,11 +134,11 @@ class Feedback extends AbstractEntityRepository
          */
 
         $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-            SELECT category_id, COUNT(*)
-            FROM feedback
+            SELECT channel_id, COUNT(*)
+            FROM community_topics
             WHERE status != 'hidden'
-            GROUP BY category_id
-            ORDER BY category_id ASC
+            GROUP BY channel_id
+            ORDER BY channel_id ASC
         ");
 
         foreach ($counts as $cat_id => &$count) {
@@ -166,8 +166,8 @@ class Feedback extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT COUNT(*)
-            FROM feedback
-            WHERE category_id = ?
+            FROM community_topics
+            WHERE channel_id = ?
         ', [$category->id]);
     }
 
@@ -182,7 +182,7 @@ class Feedback extends AbstractEntityRepository
     {
         return $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT COUNT(*)
-            FROM feedback
+            FROM community_topics
             WHERE status_category_id = ?
         ', [$category->id]);
     }

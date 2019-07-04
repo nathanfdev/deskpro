@@ -164,7 +164,7 @@ class CategoryHierarchy
             if ($this->table_name == 'departments') {
                 $select = 'id, parent_id, title, user_title';
             }
-            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'feedback_categories'])) {
+            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'community_channels'])) {
                 $select = 'id, parent_id, title, brand_id';
             }
 
@@ -430,8 +430,8 @@ class CategoryHierarchy
     {
         return App::getDb()->fetchAllCol('
             SELECT DISTINCT c.id
-            FROM feedback_categories c
-            LEFT JOIN feedback_categories AS c2 ON (c2.parent_id = c.id)
+            FROM community_channels c
+            LEFT JOIN community_channels AS c2 ON (c2.parent_id = c.id)
             WHERE c2.id IS NULL
         ');
     }

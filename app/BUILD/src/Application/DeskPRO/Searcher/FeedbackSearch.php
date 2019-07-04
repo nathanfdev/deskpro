@@ -44,9 +44,9 @@ class FeedbackSearch extends SearcherAbstract
     {
         $db = App::getDbRead('search.filter.feedback');
 
-        $feedback_ids = $db->fetchAllCol($this->getSql($limit));
+        $topic_ids = $db->fetchAllCol($this->getSql($limit));
 
-        return $feedback_ids;
+        return $topic_ids;
     }
 
     /**
@@ -80,7 +80,7 @@ class FeedbackSearch extends SearcherAbstract
             return '0';
         }
 
-        $where = '(feedback.status != \'hidden\')';
+        $where = '(community_topics.status != \'hidden\')';
 
         $dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
         if (!$dis_ids) {
@@ -89,7 +89,7 @@ class FeedbackSearch extends SearcherAbstract
 
         $dis_ids = implode(',', $dis_ids);
 
-        return '('.$where.' AND feedback.category_id NOT IN('.$dis_ids.'))';
+        return '('.$where.' AND community_topics.channel_id NOT IN('.$dis_ids.'))';
     }
 
     /**
@@ -99,7 +99,7 @@ class FeedbackSearch extends SearcherAbstract
      */
     public function getCount()
     {
-        $sql      = 'SELECT COUNT(*) FROM feedback ';
+        $sql      = 'SELECT COUNT(*) FROM community_topics ';
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
 
@@ -111,7 +111,7 @@ class FeedbackSearch extends SearcherAbstract
             if (is_array($j)) {
                 $sql .= $j[1].' ';
             } else {
-                $sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
+                $sql .= "LEFT JOIN $j ON $j.topic_id = community_topics.id ";
             }
         }
 
@@ -126,9 +126,9 @@ class FeedbackSearch extends SearcherAbstract
         //------------------------------
 
         if ($this->include_hidden) {
-            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
+            $sql .= "WHERE (community_topics.hidden_status IS NULL OR community_topics.hidden_status NOT IN ('temp')) AND ";
         } else {
-            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
+            $sql .= "WHERE (community_topics.hidden_status IS NULL OR community_topics.hidden_status NOT IN ('temp', 'deleted')) AND ";
         }
         $where_perm = $this->getPermWhere();
         if ($where_perm) {
@@ -152,7 +152,7 @@ class FeedbackSearch extends SearcherAbstract
      */
     public function getSql(array $limit = null)
     {
-        $sql = 'SELECT feedback.id FROM feedback ';
+        $sql = 'SELECT community_topics.id FROM community_topics ';
 
         $parts    = $this->getSqlParts();
         $order_by = $this->getOrderByPart();
@@ -165,7 +165,7 @@ class FeedbackSearch extends SearcherAbstract
             if (is_array($j)) {
                 $sql .= $j[1].' ';
             } else {
-                $sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
+                $sql .= "LEFT JOIN $j ON $j.topic_id = community_topics.id ";
             }
         }
 
@@ -181,9 +181,9 @@ class FeedbackSearch extends SearcherAbstract
         //------------------------------
 
         if ($this->include_hidden) {
-            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
+            $sql .= "WHERE (community_topics.hidden_status IS NULL OR community_topics.hidden_status NOT IN ('temp')) AND ";
         } else {
-            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
+            $sql .= "WHERE (community_topics.hidden_status IS NULL OR community_topics.hidden_status NOT IN ('temp', 'deleted')) AND ";
         }
         $where_perm = $this->getPermWhere();
         if ($where_perm) {
@@ -195,7 +195,7 @@ class FeedbackSearch extends SearcherAbstract
             $sql .= '1';
         }
 
-        $sql .= ' GROUP BY feedback.id ';
+        $sql .= ' GROUP BY community_topics.id ';
         $sql .= $order_by;
 
         if ($limit) {
@@ -231,7 +231,7 @@ class FeedbackSearch extends SearcherAbstract
         switch ($type) {
             case 'id':
             case 'date_created':
-                $order_by = "ORDER BY feedback.date_published $dir";
+                $order_by = "ORDER BY community_topics.date_published $dir";
                 break;
 
             case 'i-voted':
@@ -243,16 +243,16 @@ class FeedbackSearch extends SearcherAbstract
                 }
 
                 if ($this->person->id) {
-                    $join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
+                    $join = "LEFT JOIN ratings ON (ratings.object_id = community_topics.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
                 } else {
-                    $order_by = "ORDER BY feedback.date_published $dir";
+                    $order_by = "ORDER BY community_topics.date_published $dir";
 
                     return $order_by;
                 }
 
                 $order_by = [
                     $join,
-                    'ORDER BY ratings.date_created DESC, feedback.id DESC',
+                    'ORDER BY ratings.date_created DESC, community_topics.id DESC',
                 ];
                 break;
 
@@ -262,7 +262,7 @@ class FeedbackSearch extends SearcherAbstract
 
             case 'most-voted':
             case 'num_ratings':
-                $order_by = "ORDER BY feedback.num_ratings $dir";
+                $order_by = "ORDER BY community_topics.num_ratings $dir";
                 break;
         }
 
@@ -297,25 +297,25 @@ class FeedbackSearch extends SearcherAbstract
                         if (!is_array($choice)) {
                             $choice = [$choice];
                         }
-                        $wheres[] = $this->_choiceMatch('feedback.id', 'is', $choice);
+                        $wheres[] = $this->_choiceMatch('community_topics.id', 'is', $choice);
                     } else {
-                        $wheres[] = $this->_rangeMatch('feedback.id', $op, $choice, true);
+                        $wheres[] = $this->_rangeMatch('community_topics.id', $op, $choice, true);
                     }
                     break;
 
                 case self::TERM_HIDDEN_STATUS:
                     if ($op == 'not') {
-                        $wheres[] = '(feedback.hidden_status IS NULL OR '.$this->_stringMatch('feedback.hidden_status', $op, $choice).')';
+                        $wheres[] = '(community_topics.hidden_status IS NULL OR '.$this->_stringMatch('community_topics.hidden_status', $op, $choice).')';
                     } else {
-                        $wheres[] = $this->_stringMatch('feedback.hidden_status', $op, $choice);
+                        $wheres[] = $this->_stringMatch('community_topics.hidden_status', $op, $choice);
                     }
                     break;
 
                 case self::TERM_DELETED:
                     if ($op == self::OP_IS) {
-                        $wheres[] = 'feedback.hidden_status = \'deleted\'';
+                        $wheres[] = 'community_topics.hidden_status = \'deleted\'';
                     } else {
-                        $wheres[] = 'feedback.hidden_status != \'deleted\' OR feedback.hidden_status IS NULL';
+                        $wheres[] = 'community_topics.hidden_status != \'deleted\' OR community_topics.hidden_status IS NULL';
                     }
                     break;
 
@@ -352,13 +352,13 @@ class FeedbackSearch extends SearcherAbstract
 
                     $part_where = [];
                     if ($cats) {
-                        $part_where[] = $this->_choiceMatch('feedback.status_category_id', $op, $cats);
+                        $part_where[] = $this->_choiceMatch('community_topics.status_category_id', $op, $cats);
                     }
                     if ($types) {
-                        $part_where[] = $this->_stringMatch('feedback.status', $op, $types);
+                        $part_where[] = $this->_stringMatch('community_topics.status', $op, $types);
                     }
                     if ($hidden_types) {
-                        $part_where[] = "(feedback.status = 'hidden' AND ".$this->_stringMatch('feedback.hidden_status', $op, $types).')';
+                        $part_where[] = "(community_topics.status = 'hidden' AND ".$this->_stringMatch('community_topics.hidden_status', $op, $types).')';
                     }
 
                     if ($hidden_types) {
@@ -381,8 +381,8 @@ class FeedbackSearch extends SearcherAbstract
                     }
 
                     $w   = [];
-                    $w[] = '('.$this->_stringSearch('feedback.title', $op, $string, $type).')';
-                    $w[] = '('.$this->_stringSearch('feedback.content', $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch('community_topics.title', $op, $string, $type).')';
+                    $w[] = '('.$this->_stringSearch('community_topics.content', $op, $string, $type).')';
 
                     $wheres[] = implode(' OR ', $w);
                     break;
@@ -402,7 +402,7 @@ class FeedbackSearch extends SearcherAbstract
 
                     $ids = array_unique($ids);
 
-                    $wheres[] = $this->_choiceMatch('feedback.category_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('community_topics.category_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
                         $titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array) $choice);
@@ -415,7 +415,7 @@ class FeedbackSearch extends SearcherAbstract
                     $ids = (array) $choice;
                     $ids = array_unique($ids);
 
-                    $wheres[] = $this->_choiceMatch('feedback.brand_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('community_topics.brand_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Brand', $op, $choice, function ($choice) {
                         $titles = App::getEntityRepository('DeskPRO:Brand')->getNames((array) $choice);
@@ -428,7 +428,7 @@ class FeedbackSearch extends SearcherAbstract
                     $ids = (array) $choice;
                     $ids = array_unique($ids);
 
-                    $wheres[] = $this->_choiceMatch('feedback.status_category_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('community_topics.status_category_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Status Category', $op, $choice, function ($choice) {
                         $titles = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getNames((array) $choice);
@@ -438,7 +438,7 @@ class FeedbackSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_NUM_RATINGS:
-                    $wheres[] = $this->_rangeMatch('feedback.num_ratings', $op, $choice);
+                    $wheres[] = $this->_rangeMatch('community_topics.num_ratings', $op, $choice);
                     break;
 
                 case self::TERM_DATE_CREATED:
@@ -459,30 +459,30 @@ class FeedbackSearch extends SearcherAbstract
                     switch ($op) {
                         case self::OP_IS:
                             $joins[] = [
-                                'labels_feedback',
-                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)",
+                                'labels_community_topics',
+                                "LEFT JOIN labels_community_topics AS $join_name ON ($join_name.topic_id = community_topics.id)",
                             ];
                             $wheres[] = "$join_name.label = ".$db->quote($choice);
                             break;
                         case self::OP_NOT:
                             $joins[] = [
-                                'labels_feedback',
-                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label = '.$db->quote($choice).')",
+                                'labels_community_topics',
+                                "LEFT JOIN labels_community_topics AS $join_name ON ($join_name.topic_id = community_topics.id AND $join_name.label = '.$db->quote($choice).')",
                             ];
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;
                         case self::OP_CONTAINS:
                             $joins[] = [
-                                'labels_feedback',
-                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)",
+                                'labels_community_topics',
+                                "LEFT JOIN labels_community_topics AS $join_name ON ($join_name.topic_id = community_topics.id)",
                             ];
                             $wheres[] = "$join_name.label IN ($choices_in)";
                             break;
 
                         case self::OP_NOTCONTAINS:
                             $joins[] = [
-                                'labels_feedback',
-                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label IN ($choices_in)",
+                                'labels_community_topics',
+                                "LEFT JOIN labels_community_topics AS $join_name ON ($join_name.topic_id = community_topics.id AND $join_name.label IN ($choices_in)",
                             ];
                             $wheres[] = "$join_name.person_id IS NULL";
                             break;

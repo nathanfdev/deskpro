@@ -104,7 +104,7 @@ class FeedbackController extends AbstractController
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        $labelLister      = new LabelLister('feedback');
+        $labelLister      = new LabelLister('community_topics');
         $feedbackTagIndex = $labelLister->getIndexList();
 
         $data = [
