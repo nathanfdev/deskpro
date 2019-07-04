@@ -7,7 +7,6 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
-//use Behatch\Context\BaseContext;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
