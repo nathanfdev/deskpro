@@ -187,13 +187,13 @@ class CommunityTopicsController extends AbstractController
     //###########################################################################
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @return Response
      */
-    public function viewAction($communityTopic_id)
+    public function viewAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         /** @var PublishChecker $publishChecker */
         /* @var SearchLogRepository $searchLogRepository */
@@ -275,13 +275,13 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @return Response
      */
-    public function whoVotedAction($communityTopic_id)
+    public function whoVotedAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         $communityTopic_votes = $communityTopic->votes->toArray();
 
@@ -333,15 +333,15 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function ajaxSaveEditablesAction($communityTopic_id)
+    public function ajaxSaveEditablesAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         /** @var PublishChecker $publishChecker */
         $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
@@ -378,7 +378,7 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      * @param $category_id
      *
      * @throws \Doctrine\ORM\ORMException
@@ -388,9 +388,9 @@ class CommunityTopicsController extends AbstractController
      *
      * @return Response
      */
-    public function ajaxUpdateCategoryAction($communityTopic_id, $category_id)
+    public function ajaxUpdateCategoryAction($communityTopicId, $category_id)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
         $cat            = $this->em->find(CommunityChannel::class, $category_id);
         $communityTopic->setCategory($cat);
 
@@ -411,16 +411,16 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      * @param $status_code
      *
      * @throws \Exception
      *
      * @return null|Response
      */
-    public function ajaxUpdateStatusAction($communityTopic_id, $status_code)
+    public function ajaxUpdateStatusAction($communityTopicId, $status_code)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         if ($response = $this->checkPermissions($communityTopic)) {
             return $response;
@@ -444,15 +444,15 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @throws \Exception
      *
      * @return null|Response
      */
-    public function ajaxSaveCustomFieldsAction($communityTopic_id)
+    public function ajaxSaveCustomFieldsAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         if ($response = $this->checkPermissions($communityTopic)) {
             return $response;
@@ -486,13 +486,13 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @return null|Response
      */
-    public function ajaxSaveLabelsAction($communityTopic_id)
+    public function ajaxSaveLabelsAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         if ($response = $this->checkPermissions($communityTopic)) {
             return $response;
@@ -508,16 +508,16 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
      *
      * @return Response
      */
-    public function ajaxSaveCommentAction($communityTopic_id)
+    public function ajaxSaveCommentAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         if (!$this->in->getString('content')) {
             throw $this->createNotFoundException();
@@ -551,7 +551,7 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -559,9 +559,9 @@ class CommunityTopicsController extends AbstractController
      *
      * @return Response
      */
-    public function ajaxSaveAction($communityTopic_id)
+    public function ajaxSaveAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         $rev    = null;
         $action = $this->in->getString('action');
@@ -690,13 +690,13 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @return Response
      */
-    public function ajaxSubscribePersonAction($communityTopic_id)
+    public function ajaxSubscribePersonAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
             throw $this->createNotFoundException(sprintf(
@@ -711,13 +711,13 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $communityTopic_id
+     * @param $communityTopicId
      *
      * @return Response
      */
-    public function ajaxUnsubscribePersonAction($communityTopic_id)
+    public function ajaxUnsubscribePersonAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
 
         if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
             throw $this->createNotFoundException(sprintf(
@@ -736,8 +736,8 @@ class CommunityTopicsController extends AbstractController
     //###########################################################################
 
     /**
-     * @param     $communityTopic_id
-     * @param int $other_feedback_id
+     * @param     $communityTopicId
+     * @param int $otherCommunityTopicId
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -745,12 +745,12 @@ class CommunityTopicsController extends AbstractController
      *
      * @return Response
      */
-    public function mergeOverlayAction($communityTopic_id, $other_feedback_id = 0)
+    public function mergeOverlayAction($communityTopicId, $otherCommunityTopicId = 0)
     {
-        $communityTopic = $this->em->find(CommunityTopic::class, $communityTopic_id);
+        $communityTopic = $this->em->find(CommunityTopic::class, $communityTopicId);
 
-        if ($other_feedback_id && $other_feedback_id != $communityTopic_id) {
-            $otherFeedback = $this->em->find(CommunityTopic::class, $other_feedback_id);
+        if ($otherCommunityTopicId && $otherCommunityTopicId != $communityTopicId) {
+            $otherFeedback = $this->em->find(CommunityTopic::class, $otherCommunityTopicId);
         } else {
             $otherFeedback = false;
         }
@@ -767,17 +767,17 @@ class CommunityTopicsController extends AbstractController
     /**
      * Merge a ticket interface.
      *
-     * @param $communityTopic_id
-     * @param $other_feedback_id
+     * @param $communityTopicId
+     * @param $otherCommunityTopicId
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function mergeAction($communityTopic_id, $other_feedback_id)
+    public function mergeAction($communityTopicId, $otherCommunityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopic_id);
-        $otherFeedback  = $this->getFeedback($other_feedback_id);
+        $communityTopic = $this->getFeedback($communityTopicId);
+        $otherFeedback  = $this->getFeedback($otherCommunityTopicId);
 
         /** @var PublishChecker $publishChecker */
         $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');

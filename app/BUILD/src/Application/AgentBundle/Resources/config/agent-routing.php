@@ -2109,7 +2109,7 @@ $collection->create('agent_feedback_new_save', [
 ]);
 
 $collection->create('agent_feedback_view', [
-    'path'       => '/feedback/view/{feedback_id}',
+    'path'       => '/feedback/view/{communityTopicId}',
     'controller' => 'AgentBundle:CommunityTopics:view',
     'options'    => ['fragment_name' => 'i'],
 ]);
@@ -2120,78 +2120,78 @@ $collection->create('agent_feedback_comparerevs', [
 ]);
 
 $collection->create('agent_feedback_ajaxsavecustomfields', [
-    'path'         => '/feedback/view/{feedback_id}/ajax-save-custom-fields',
+    'path'         => '/feedback/view/{communityTopicId}/ajax-save-custom-fields',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxSaveCustomFields',
-    'requirements' => ['feedback_id' => '\\d+'],
+    'requirements' => ['communityTopicId' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_who_voted', [
-    'path'       => '/feedback/view/{feedback_id}/who-voted',
+    'path'       => '/feedback/view/{communityTopicId}/who-voted',
     'controller' => 'AgentBundle:CommunityTopics:whoVoted',
 ]);
 
 $collection->create('agent_feedback_save', [
-    'path'         => '/feedback/view/{feedback_id}/ajax-save',
+    'path'         => '/feedback/view/{communityTopicId}/ajax-save',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxSave',
-    'requirements' => ['news_id' => '\\d+'],
+    'requirements' => ['communityTopicId' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_subscribe_person', [
-    'path'         => '/feedback/{feedback_id}/ajax-subscribe-person',
+    'path'         => '/feedback/{communityTopicId}/ajax-subscribe-person',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxSubscribePerson',
-    'requirements' => ['feedback_id' => '\\d+'],
+    'requirements' => ['communityTopicId' => '\\d+'],
     'methods'      => ['POST'],
 ]);
 
 $collection->create('agent_feedback_unsubscribe_person', [
-    'path'         => '/feedback/{feedback_id}/ajax-unsubscribe-person',
+    'path'         => '/feedback/{communityTopicId}/ajax-unsubscribe-person',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxUnsubscribePerson',
-    'requirements' => ['feedback_id' => '\\d+'],
+    'requirements' => ['communityTopicId' => '\\d+'],
     'methods'      => ['POST'],
 ]);
 
 $collection->create('agent_feedback_ajax_labels_save', [
-    'path'         => '/feedback/{feedback_id}/ajax-save-labels',
+    'path'         => '/feedback/{communityTopicId}/ajax-save-labels',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxSaveLabels',
     'requirements' => ['news_id' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_ajax_save_comment', [
-    'path'         => '/feedback/view/{feedback_id}/ajax-save-comment',
+    'path'         => '/feedback/view/{communityTopicId}/ajax-save-comment',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxSaveComment',
     'requirements' => ['news_id' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_ajaxsavecomment', [
-    'path'       => '/feedback/view/{feedback_id}/ajax-save-comment',
+    'path'       => '/feedback/view/{communityTopicId}/ajax-save-comment',
     'controller' => 'AgentBundle:CommunityTopics:ajaxSaveComment',
 ]);
 
 $collection->create('agent_feedback_ajaxsaveeditables', [
-    'path'       => '/feedback/view/{feedback_id}/ajax-save-editables',
+    'path'       => '/feedback/view/{communityTopicId}/ajax-save-editables',
     'controller' => 'AgentBundle:CommunityTopics:ajaxSaveEditables',
 ]);
 
 $collection->create('agent_feedback_ajaxupdatecat', [
-    'path'       => '/feedback/view/{feedback_id}/ajax-update-category/{category_id}',
+    'path'       => '/feedback/view/{communityTopicId}/ajax-update-category/{category_id}',
     'controller' => 'AgentBundle:CommunityTopics:ajaxUpdateCategory',
 ]);
 
 $collection->create('agent_feedback_ajaxupdatestatus', [
-    'path'       => '/feedback/view/{feedback_id}/ajax-update-status/{status_code}',
+    'path'       => '/feedback/view/{communityTopicId}/ajax-update-status/{status_code}',
     'controller' => 'AgentBundle:CommunityTopics:ajaxUpdateStatus',
 ]);
 
 $collection->create('agent_feedback_merge_overlay', [
-    'path'         => '/feedback/merge-overlay/{feedback_id}/{other_feedback_id}',
+    'path'         => '/feedback/merge-overlay/{communityTopicId}/{otherCommunityTopicId}',
     'controller'   => 'AgentBundle:CommunityTopics:mergeOverlay',
-    'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
+    'requirements' => ['communityTopicId' => '\\d+', 'otherCommunityTopicId' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_merge', [
-    'path'         => '/feedback/merge/{feedback_id}/{other_feedback_id}',
+    'path'         => '/feedback/merge/{communityTopicId}/{otherCommunityTopicId}',
     'controller'   => 'AgentBundle:CommunityTopics:merge',
-    'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
+    'requirements' => ['communityTopicId' => '\\d+', 'otherCommunityTopicId' => '\\d+'],
 ]);
 
 $collection->create('agent_topic_new', [
