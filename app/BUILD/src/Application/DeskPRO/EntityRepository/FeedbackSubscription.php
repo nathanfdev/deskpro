@@ -17,16 +17,16 @@ class FeedbackSubscription extends AbstractEntityRepository
      *
      * @return array
      */
-    public function getSubscribedPersonIds($feedback)
+    public function getSubscribedPersonIds($topic)
     {
-        if ($feedback instanceof FeedbackEntity) {
-            $feedback = $feedback->id;
+        if ($topic instanceof FeedbackEntity) {
+            $topic = $topic->id;
         }
 
         $query = $this->getEntityManager()->createQuery(
-            'SELECT DISTINCT IDENTITY(fs.person) FROM DeskPRO:FeedbackSubscription fs WHERE fs.feedback = :feedback'
+            'SELECT DISTINCT IDENTITY(cts.person) FROM DeskPRO:FeedbackSubscription cts WHERE cts.topic = :topic'
         );
-        $query->setParameter('feedback', $feedback);
+        $query->setParameter('topic', $topic);
 
         return array_map('current', $query->getResult());
     }

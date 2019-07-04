@@ -67,7 +67,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var \Application\DeskPRO\Entity\Feedback
      */
-    protected $feedback = null;
+    protected $topic = null;
 
     /**
      * @var \Application\DeskPRO\Entity\News
@@ -92,9 +92,9 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
         } elseif ($content_object instanceof News) {
             $sub->news = $content_object;
         } elseif ($content_object instanceof Feedback) {
-            $sub->feedback = $content_object;
+            $sub->topic = $content_object;
         } else {
-            throw new \InvalidArgumentException('$content_object must be Article, Download, News or Feedback. Got `'.get_class($content_object).'`');
+            throw new \InvalidArgumentException('$content_object must be Article, Download, News or Community Topic. Got `'.get_class($content_object).'`');
         }
 
         return $sub;
@@ -144,7 +144,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(['fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
         $metadata->mapManyToOne(['fieldName' => 'article', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Article', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
         $metadata->mapManyToOne(['fieldName' => 'download', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'download_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
-        $metadata->mapManyToOne(['fieldName' => 'feedback', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'feedback_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
+        $metadata->mapManyToOne(['fieldName' => 'topic', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'topic_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
         $metadata->mapManyToOne(['fieldName' => 'news', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News', 'mappedBy' => null, 'inversedBy' => null, 'joinColumns' => [0 => ['name' => 'news_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => null]]]);
     }
 }

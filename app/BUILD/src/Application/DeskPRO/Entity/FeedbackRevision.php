@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class FeedbackRevision extends RevisionAbstract
 {
-    protected $topic;
+    protected $community_topic;
 
     /**
      * @var string
@@ -82,13 +82,13 @@ class FeedbackRevision extends RevisionAbstract
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
-            'fieldName'    => 'topic',
+            'fieldName'    => 'community_topic',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Feedback',
             'mappedBy'     => null,
             'inversedBy'   => 'revisions',
             'joinColumns'  => [
                 [
-                    'name'                 => 'topic_id',
+                    'name'                 => 'community_topic_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'cascade',

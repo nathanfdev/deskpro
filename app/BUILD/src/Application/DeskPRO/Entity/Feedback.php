@@ -263,33 +263,33 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
 
     public function getCategoryId()
     {
-        return $this->category['id'];
+        return $this->channel['id'];
     }
 
     /**
      * Set a category.
      *
-     * @param FeedbackCategory $category
+     * @param FeedbackCategory $channel
      *
      * @return $this
      */
-    public function setCategory(FeedbackCategory $category = null)
+    public function setCategory(FeedbackCategory $channel = null)
     {
-        $this->setModelField('category', $category);
+        $this->setModelField('channel', $channel);
 
         return $this;
     }
 
     public function setCategoryId($id)
     {
-        $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
+        $this->setModelField('channel', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
 
         return $this;
     }
 
     public function getCategoryName()
     {
-        return $this->category->getFullTitle();
+        return $this->channel->getFullTitle();
     }
 
     /**
@@ -410,7 +410,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
     {
         $path = [];
 
-        $cat = $this->category;
+        $cat = $this->channel;
 
         if ($cat) {
             $path[] = $cat;
@@ -670,7 +670,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
 
     public function getCategory()
     {
-        return $this->category;
+        return $this->channel;
     }
 
     protected function addSlugHistory($oldSlug)
@@ -958,7 +958,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'fieldName'    => 'revisions',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'topic',
+                'mappedBy'     => 'community_topic',
             ]
         );
         $metadata->mapOneToMany(

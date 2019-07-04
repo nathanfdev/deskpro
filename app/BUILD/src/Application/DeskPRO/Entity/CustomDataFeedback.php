@@ -20,7 +20,7 @@ class CustomDataFeedback extends CustomDataAbstract
     /**
      * @var \Application\DeskPRO\Entity\Feedback
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * @var CustomDefFeedback
@@ -34,7 +34,7 @@ class CustomDataFeedback extends CustomDataAbstract
 
     public function getFeedbackId()
     {
-        return $this->feedback['id'];
+        return $this->topic['id'];
     }
 
     /**
@@ -42,7 +42,7 @@ class CustomDataFeedback extends CustomDataAbstract
      */
     public function getFeedback()
     {
-        return $this->feedback;
+        return $this->topic;
     }
 
     /**
@@ -96,7 +96,7 @@ class CustomDataFeedback extends CustomDataAbstract
      */
     public function getOwner()
     {
-        return $this->feedback;
+        return $this->topic;
     }
 
     //###########################################################################
@@ -148,12 +148,12 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'feedback',
+                'fieldName'    => 'topic',
                 'targetEntity' => Feedback::class,
                 'inversedBy'   => 'custom_data',
                 'joinColumns'  => [
                     0 => [
-                        'name'                 => 'feedback_id',
+                        'name'                 => 'topic_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => false,
                         'onDelete'             => 'cascade',

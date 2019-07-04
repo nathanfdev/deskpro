@@ -26,7 +26,7 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'RENAME TABLE ticket_feedback_links TO ticket_community_topics_links');
 
         // change columns
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions CHANGE COLUMN feedback_id topic_id INT(11) NULL DEFAULT NULL AFTER id;');
+        $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions CHANGE COLUMN feedback_id community_topic_id INT(11) NULL DEFAULT NULL AFTER id;');
         $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic ALTER feedback_id DROP DEFAULT;');
         $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic CHANGE COLUMN feedback_id topic_id INT(11) NOT NULL AFTER id;');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_subscriptions CHANGE COLUMN feedback_id topic_id INT(11) NULL DEFAULT NULL AFTER person_id;');
@@ -38,12 +38,22 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'ALTER TABLE ticket_community_topics_links ALTER feedback_id DROP DEFAULT;');
         $this->execDbQuery('default', 'ALTER TABLE ticket_community_topics_links CHANGE COLUMN feedback_id topic_id INT(11) NOT NULL AFTER ticket_id;');
         $this->execDbQuery('default', 'ALTER TABLE community_channels2usergroup CHANGE COLUMN category_id community_channel_id INT(11) NOT NULL;');
+        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic CHANGE feedback_id topic_id INT NOT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE content_subscriptions CHANGE feedback_id topic_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE community_topics CHANGE category_id channel_id INT DEFAULT NULL');
 
         // update indexes
 
+        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic DROP FOREIGN KEY FK_9D9E37CBD249A887');
+        $this->execDbQuery('default', 'DROP INDEX IDX_9D9E37CBD249A887 ON custom_data_community_topic');
+        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic ADD CONSTRAINT FK_9D9E37CB1F55203D FOREIGN KEY (topic_id) REFERENCES community_topics (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_9D9E37CB1F55203D ON custom_data_community_topic (topic_id)');
+        $this->execDbQuery('default', 'ALTER TABLE content_subscriptions DROP FOREIGN KEY FK_5FADAC10D249A887');
+        $this->execDbQuery('default', 'DROP INDEX IDX_5FADAC10D249A887 ON content_subscriptions');
+        $this->execDbQuery('default', 'ALTER TABLE content_subscriptions ADD CONSTRAINT FK_5FADAC101F55203D FOREIGN KEY (topic_id) REFERENCES community_topics (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_5FADAC101F55203D ON content_subscriptions (topic_id)');
         $this->execDbQuery('default', 'ALTER TABLE community_topics DROP FOREIGN KEY FK_D229445812469DE2');
         $this->execDbQuery('default', 'DROP INDEX IDX_E03CB3CA12469DE2 ON community_topics');
-        $this->execDbQuery('default', 'ALTER TABLE community_topics CHANGE category_id channel_id INT DEFAULT NULL');
         $this->execDbQuery('default', 'ALTER TABLE community_topics ADD CONSTRAINT FK_E03CB3CA72F5A1AA FOREIGN KEY (channel_id) REFERENCES community_channels (id)');
         $this->execDbQuery('default', 'CREATE INDEX IDX_E03CB3CA72F5A1AA ON community_topics (channel_id)');
         $this->execDbQuery('default', 'ALTER TABLE community_channels DROP FOREIGN KEY FK_66FE683244F5D008');
@@ -72,7 +82,6 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'CREATE INDEX IDX_9ACCE956217BBB47 ON community_topic_comments (person_id)');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_comments ADD CONSTRAINT FK_10D03D58217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_comments ADD CONSTRAINT FK_10D03D58D249A887 FOREIGN KEY (topic_id) REFERENCES community_topics (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_subscriptions DROP FOREIGN KEY FK_10EA54AA217BBB47');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_subscriptions DROP FOREIGN KEY FK_10EA54AAD249A887');
         $this->execDbQuery('default', 'DROP INDEX idx_10ea54aa217bbb47 ON community_topic_subscriptions');
@@ -122,11 +131,11 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions DROP FOREIGN KEY FK_37F57C3E217BBB47');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions DROP FOREIGN KEY FK_37F57C3ED249A887');
         $this->execDbQuery('default', 'DROP INDEX idx_37f57c3ed249a887 ON community_topic_revisions');
-        $this->execDbQuery('default', 'CREATE INDEX IDX_D0C74DED1F55203D ON community_topic_revisions (topic_id)');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_D0C74DED1F55203D ON community_topic_revisions (community_topic_id)');
         $this->execDbQuery('default', 'DROP INDEX idx_37f57c3e217bbb47 ON community_topic_revisions');
         $this->execDbQuery('default', 'CREATE INDEX IDX_D0C74DED217BBB47 ON community_topic_revisions (person_id)');
         $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions ADD CONSTRAINT FK_37F57C3E217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL');
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions ADD CONSTRAINT FK_37F57C3ED249A887 FOREIGN KEY (topic_id) REFERENCES community_topics (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions ADD CONSTRAINT FK_37F57C3ED249A887 FOREIGN KEY (community_topic_id) REFERENCES community_topics (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE custom_def_community_topic DROP FOREIGN KEY FK_CC9CDDD844F5D008');
         $this->execDbQuery('default', 'ALTER TABLE custom_def_community_topic DROP FOREIGN KEY FK_CC9CDDD8727ACA70');
         $this->execDbQuery('default', 'ALTER TABLE custom_def_community_topic DROP FOREIGN KEY FK_CC9CDDD87987212D');
@@ -147,10 +156,6 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'ALTER TABLE community_topic_slug_history ADD CONSTRAINT FK_F0FF9966D249A887 FOREIGN KEY (topic_id) REFERENCES community_topics (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic DROP FOREIGN KEY FK_92E9C37FD249A887');
         $this->execDbQuery('default', 'DROP INDEX IDX_92E9C37FD249A887 ON custom_data_community_topic');
-        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic DROP FOREIGN KEY FK_92E9C37F3F6A6D56');
-        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic DROP FOREIGN KEY FK_92E9C37F443707B0');
-        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic CHANGE topic_id feedback_id INT NOT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic ADD CONSTRAINT FK_9D9E37CBD249A887 FOREIGN KEY (feedback_id) REFERENCES community_topics (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'CREATE INDEX IDX_9D9E37CBD249A887 ON custom_data_community_topic (feedback_id)');
         $this->execDbQuery('default', 'DROP INDEX idx_92e9c37f443707b0 ON custom_data_community_topic');
         $this->execDbQuery('default', 'CREATE INDEX IDX_9D9E37CB443707B0 ON custom_data_community_topic (field_id)');

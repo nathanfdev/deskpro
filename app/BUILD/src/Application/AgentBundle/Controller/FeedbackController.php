@@ -236,7 +236,7 @@ class FeedbackController extends AbstractController
 
         //@TODO: related entities fetching optimization
         $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
-        $ticketFeedbackLinks = $feedbackRepo->findByFeedback($feedback);
+        $ticketFeedbackLinks = $feedbackRepo->findByTopic($feedback);
 
         //@TODO: select only needed data to display persons
         $subscribedIds = $this->em->getRepository('DeskPRO:FeedbackSubscription')->getSubscribedPersonIds($feedback);
