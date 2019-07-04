@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 class OutgoingEmailController extends BaseController
 {
     /**
-     * @Rest\Get("/{uuid}")
+     * @Rest\Get("/{uuid}", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param Request $request
      * @param string  $uuid
@@ -37,7 +37,9 @@ class OutgoingEmailController extends BaseController
     /**
      * Process a particular email.
      *
-     * @Rest\Post("/{uuid}/send", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
+     * @Rest\Post("/{uuid}/send",
+     *  requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"}
+     * )
      *
      * @param $request
      * @param $uuid
@@ -91,6 +93,7 @@ class OutgoingEmailController extends BaseController
             /** @var SendmailSource $source */
             $source = $this->getManager()->getRepository(SendmailSource::class)->findOneByUuid($uuid);
             if (!$source) {
+                $res[$uuid] = SendmailSource::STATUS_ERROR;
                 continue;
             }
 
@@ -119,7 +122,9 @@ class OutgoingEmailController extends BaseController
     }
 
     /**
-     * @Rest\Post("/{uuid}/abort")
+     * @Rest\Post("/{uuid}/abort",
+     *  requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"}
+     * )
      *
      * @param $request
      * @param $uuid
@@ -138,7 +143,9 @@ class OutgoingEmailController extends BaseController
     }
 
     /**
-     * @Rest\Post("/{uuid}/retry")
+     * @Rest\Post("/{uuid}/retry",
+     *  requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"}
+     * )
      *
      * @param $request
      * @param $uuid

@@ -27,27 +27,18 @@ class SQSPendingQueuer implements PendingQueuerInterface
      *
      * @return SQSPendingQueuer
      */
-    public static function create($queueUrl)
+    public static function create($region, $queueUrl, $endpoint = null)
     {
-        $region        = null;
-        $urlComponents = parse_url($queueUrl, PHP_URL_HOST);
-        if (!empty($urlComponents) && preg_match('/sqs\.([^.]+).+/', $urlComponents, $matches)) {
-            $region = $matches[1];
-        }
-
-        if (empty($region)) {
-            throw new \Exception(
-            'could not resolve the region from the queue url. '.
-            'Make sure the url is in the format https://sqs.<region>.amazonaws.com/<aws_account_id>/<queue_name>'
-            );
-        }
-
-        $provider  = CredentialProvider::defaultProvider();
-        $sqsClient = new SqsClient([
+        $provider = CredentialProvider::defaultProvider();
+        $params   = [
             'version'     => '2012-11-05',
             'credentials' => $provider,
             'region'      => $region,
-        ]);
+        ];
+        if ($endpoint) {
+            $params['endpoint'] = $endpoint;
+        }
+        $sqsClient = new SqsClient($params);
 
         return new self($sqsClient, $queueUrl);
     }
@@ -75,16 +66,14 @@ class SQSPendingQueuer implements PendingQueuerInterface
      */
     public function pushAll()
     {
-        foreach ($this->data_items as $d) {
-            $this->client->sendMessage([
-                'DelaySeconds' => 0,
-    //            'MessageAttributes' => [
-    //                // ...
-    //            ],
-                'MessageBody'            => json_encode($d),
-                'MessageDeduplicationId' => $d['dpc_site_id'],
-                'MessageGroupId'         => 'sites',
-                'QueueUrl'               => $this->queueUrl, // REQUIRED
+        // According to API doc
+        // > sendMessageBatch Delivers up to ten messages to the specified queue
+        $chunks = array_chunk($this->data_items, 10);
+
+        foreach ($chunks as $chunk) {
+            $this->client->sendMessageBatch([
+                'QueueUrl' => $this->queueUrl,
+                'Entries'  => $chunk,
             ]);
         }
     }
@@ -102,6 +91,9 @@ class SQSPendingQueuer implements PendingQueuerInterface
             $data['dpc_site_id'] = DPC_SITE_ID;
         }
 
-        $this->data_items[] = $data;
+        $this->data_items[] = [
+            'Id'          => $source['uuid'],
+            'MessageBody' => json_encode($data),
+        ];
     }
 }

@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class IncomingEmailController extends BaseController
 {
     /**
-     * @Rest\Get("/{uuid}")
+     * @Rest\Get("/{uuid}", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param Request $request
      * @param string  $uuid
@@ -41,7 +41,7 @@ class IncomingEmailController extends BaseController
     /**
      * Process a particular email.
      *
-     * @Rest\Post("/{uuid}/execute")
+     * @Rest\Post("/{uuid}/execute", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param $request
      * @param $uuid
@@ -75,7 +75,7 @@ class IncomingEmailController extends BaseController
         if (
             !$isForce
             && ($source->getStatus() === EmailSource::STATUS_INSERTED || $source->getStatus() === EmailSource::STATUS_PROCESSING)
-            && $runner->getMaxRetryAttempts() > $source->getExecCount()
+            && $runner->getMaxRetryAttempts() < $source->getExecCount()
         ) {
             return View::create(null, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -83,7 +83,6 @@ class IncomingEmailController extends BaseController
         // read the raw source to refresh some fields on the email source and adjust the blob size
         $blob = $source->getBlob();
 
-        //$source->_raw = $this->getContainer()->getBlobStorage()->downloadBlobData($blob);
         $source->getRawSource();
         if (empty($source->_raw)) {
             throw new \Exception('Unexpected empty email source. Maybe downloading failed');
@@ -115,7 +114,7 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @Rest\Post("/{uuid}/abort")
+     * @Rest\Post("/{uuid}/abort", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param $request
      * @param $uuid
@@ -134,7 +133,7 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @Rest\Post("/{uuid}/retry")
+     * @Rest\Post("/{uuid}/retry", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param $request
      * @param $uuid
@@ -153,7 +152,7 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @Rest\Get("/{uuid}/log")
+     * @Rest\Get("/{uuid}/log", requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"})
      *
      * @param Request $request
      * @param string  $uuid
@@ -181,7 +180,10 @@ class IncomingEmailController extends BaseController
     }
 
     /**
-     * @Rest\Post("/{uuid}", condition="request.headers.get('Content-Type') matches '#message/rfc822#i'")
+     * @Rest\Post("/{uuid}",
+     *  condition="request.headers.get('Content-Type') matches '#message/rfc822#i'",
+     *  requirements={"uuid"="^[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}$"}
+     * )
      *
      * @param $request
      *
@@ -203,6 +205,7 @@ class IncomingEmailController extends BaseController
             throw new ValidatorErrorsException($errors);
         }
 
+        // Save blob
         $blobStorage = $this->get('blob.storage');
         $blob        = $blobStorage->createBlobRecordFromString(
             $eml,
@@ -211,12 +214,13 @@ class IncomingEmailController extends BaseController
         );
         $blob->setFilesize(strlen($eml));
 
+        // Save EmailSource
         $source         = new EmailSource();
         $source['blob'] = $blob;
         $source->fromArray([
             'uuid'           => $uuid,
             'headers'        => '',
-            'status'         => EmailSource::STATUS_INSERTING,
+            'status'         => EmailSource::STATUS_INSERTED,
             'from_email'     => '',
             'header_to'      => '',
             'header_cc'      => '',

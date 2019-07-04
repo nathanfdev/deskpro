@@ -61,8 +61,13 @@ class DeskproSourceMapperFactory
         $env = $container->get('deskpro.app_env');
 
         if ($queueUrl = $env->getConfig('settings.sendmail_sqs_queue')) {
-            $queuer = SQSPendingQueuer::create($queueUrl);
+            $region   = $env->getConfig('settings.sendmail_sqs_region');
+            $endpoint = $env->getConfig('settings.sendmail_sqs_endpoint');
 
+            if (!$region) {
+                throw new \InvalidArgumentException('`settings.sendmail_sqs_region` must be defined to initialize SQSPendingQueuer');
+            }
+            $queuer   = SQSPendingQueuer::create($region, $queueUrl, $endpoint);
             $external = new ExternalPendingQueue($source_mapper, $queuer);
 
             return $external;
