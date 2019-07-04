@@ -12,7 +12,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
-use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackStatusCategoryListener;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicStatusCategoryListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -241,8 +241,8 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->addEntityListener(Events::prePersist, FeedbackStatusCategoryListener::class, 'prePersist');
-        $metadata->addEntityListener(Events::preUpdate, FeedbackStatusCategoryListener::class, 'preUpdate');
+        $metadata->addEntityListener(Events::prePersist, CommunityTopicStatusCategoryListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, CommunityTopicStatusCategoryListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory';
         $metadata->setPrimaryTable(['name' => 'community_topic_status_categories']);

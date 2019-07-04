@@ -80,25 +80,25 @@ services:
       - { name: doctrine.entity_listener }
 
   event_listener.doctrine.feedback:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackListener
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
   event_listener.doctrine.feedback_category:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackCategoryListener
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityChannelListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
   event_listener.doctrine.feedback_status_category:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackStatusCategoryListener
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicStatusCategoryListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
   event_listener.doctrine.custom_def_feedback:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefFeedbackListener
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }

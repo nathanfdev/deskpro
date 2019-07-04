@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
-use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefFeedbackListener;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -119,8 +119,8 @@ class CustomDefCommunityTopic extends CustomDefAbstract
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->addEntityListener(Events::prePersist, CustomDefFeedbackListener::class, 'prePersist');
-        $metadata->addEntityListener(Events::preUpdate, CustomDefFeedbackListener::class, 'preUpdate');
+        $metadata->addEntityListener(Events::prePersist, CustomDefCommunityTopicListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, CustomDefCommunityTopicListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefCommunityTopic';
         $metadata->setPrimaryTable(['name' => 'custom_def_community_topic']);

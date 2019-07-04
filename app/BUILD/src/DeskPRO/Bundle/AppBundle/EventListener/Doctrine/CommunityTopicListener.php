@@ -2,14 +2,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
-use Application\DeskPRO\Entity\CustomDefCommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopic;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /**
- * Class CustomDefFeedbackListener.
+ * Class CommunityTopicListener.
  */
-class CustomDefFeedbackListener
+class CommunityTopicListener
 {
     /**
      * @var BrandStack
@@ -27,18 +27,18 @@ class CustomDefFeedbackListener
     }
 
     /**
-     * @param CustomDefCommunityTopic $entity
+     * @param CommunityTopic $entity
      */
-    public function prePersist(CustomDefCommunityTopic $entity)
+    public function prePersist(CommunityTopic $entity)
     {
         $this->verifyBrand($entity);
     }
 
     /**
-     * @param CustomDefCommunityTopic $entity
-     * @param LifecycleEventArgs      $args
+     * @param CommunityTopic     $entity
+     * @param LifecycleEventArgs $args
      */
-    public function preUpdate(CustomDefCommunityTopic $entity, LifecycleEventArgs $args)
+    public function preUpdate(CommunityTopic $entity, LifecycleEventArgs $args)
     {
         $this->verifyBrand($entity);
 
@@ -48,14 +48,10 @@ class CustomDefFeedbackListener
     }
 
     /**
-     * @param CustomDefCommunityTopic $entity
+     * @param CommunityTopic $entity
      */
-    private function verifyBrand(CustomDefCommunityTopic $entity)
+    private function verifyBrand(CommunityTopic $entity)
     {
-        if ($entity->getParent()) {
-            $entity->setBrand($entity->getParent()->getBrand());
-        }
-
         if (!$entity->getBrand()) {
             $brand = $this->brandStack->getActive()->getBrand();
             if ($brand) {

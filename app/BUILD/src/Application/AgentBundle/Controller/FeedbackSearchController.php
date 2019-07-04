@@ -4,6 +4,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\EntityRepository\CommunityTopic as CommunityTopicRepository;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use DeskPRO\Component\Util\ListUtils;
 use Orb\Util\Arrays;
@@ -32,7 +33,7 @@ class FeedbackSearchController extends AbstractController
 
         $searcher = new FeedbackSearch();
         $searcher->setPerson($this->person);
-        $searcher->setOrderBy('feedback.date_created');
+        $searcher->setOrderBy('community_topics.date_created');
         $searcher->addTerm('deleted', 'not', 1);
         $searcher->addTerm('query', 'is', [
             'query' => $q,
@@ -48,25 +49,27 @@ class FeedbackSearchController extends AbstractController
             $feedbackById = App::getEntityRepository(CommunityTopic::class)->find($q);
             if ($feedbackById) {
                 $results = ListUtils::filterOutValues($results, [$feedbackById->getId()]);
-                array_unshift($output, $this->formatFeedbackResultRow($feedbackById));
+                array_unshift($output, $this->formatCommunityTopicResultRow($feedbackById));
             }
         }
 
-        foreach (App::getEntityRepository(CommunityTopic::class)->getByIds($results, true) as $feedback) {
-            //@TODO: prefetch Feedback Categories and StatusCategories
-            $output[] = $this->formatFeedbackResultRow($feedback);
+        /** @var CommunityTopicRepository $entityRepository */
+        $entityRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(CommunityTopic::class);
+        foreach ($entityRepository->getByIds($results, true) as $feedback) {
+            //@TODO: prefetch Community Channels and StatusCategories
+            $output[] = $this->formatCommunityTopicResultRow($feedback);
         }
 
         return $this->createJsonResponse($output);
     }
 
-    private function formatFeedbackResultRow(CommunityTopic $feedback)
+    private function formatCommunityTopicResultRow(CommunityTopic $communityTopic)
     {
         return [
-            'id'    => $feedback->id,
-            'value' => $feedback->id,
-            'title' => $feedback->title,
-            'type'  => $feedback->category ? $feedback->category->title : '',
+            'id'    => $communityTopic->getId(),
+            'value' => $communityTopic->getId(),
+            'title' => $communityTopic->getTitle(),
+            'type'  => $communityTopic->getCategory() ? $communityTopic->getCategory()->getTitle() : '',
             //'status'  => $feedback->status_category ? $feedback->status_category->title : ''
         ];
     }

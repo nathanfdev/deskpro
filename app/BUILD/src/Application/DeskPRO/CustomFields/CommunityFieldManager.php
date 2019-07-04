@@ -6,7 +6,7 @@
 
 namespace Application\DeskPRO\CustomFields;
 
-class FeedbackFieldManager extends FieldManager
+class CommunityFieldManager extends FieldManager
 {
     /**
      * Get the category field if it exists and has options.

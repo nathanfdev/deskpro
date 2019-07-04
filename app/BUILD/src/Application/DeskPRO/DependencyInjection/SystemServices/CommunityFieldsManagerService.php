@@ -8,14 +8,14 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\CustomFields\FeedbackFieldManager;
+use Application\DeskPRO\CustomFields\CommunityFieldManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class FeedbackFieldsManagerService
+class CommunityFieldsManagerService
 {
     public static function create(DeskproContainer $container)
     {
-        $m = new FeedbackFieldManager(
+        $m = new CommunityFieldManager(
             $container->get('doctrine.orm.entity_manager'),
             [
                 'entity_class'      => 'Application\\DeskPRO\\Entity\\CustomDefCommunityTopic',

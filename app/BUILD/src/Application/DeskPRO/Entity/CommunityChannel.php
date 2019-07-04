@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
-use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackCategoryListener;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityChannelListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
@@ -133,8 +133,8 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->addEntityListener(Events::prePersist, FeedbackCategoryListener::class, 'prePersist');
-        $metadata->addEntityListener(Events::preUpdate, FeedbackCategoryListener::class, 'preUpdate');
+        $metadata->addEntityListener(Events::prePersist, CommunityChannelListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, CommunityChannelListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityChannel';
         $metadata->setPrimaryTable(['name' => 'community_channels']);

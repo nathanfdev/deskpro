@@ -202,7 +202,7 @@ class FeedbackController extends AbstractController
         /* @var SearchStickyResultRepository $searchStickyResultRepository */
         /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
         $publishChecker                         = $this->person->getPermissionsManager()->get('PublishChecker');
-        $fieldManager                           = $this->container->getSystemService('feedback_fields_manager');
+        $fieldManager                           = $this->container->getSystemService('community_fields_manager');
         $searchLogRepository                    = $this->em->getRepository(SearchLog::class);
         $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
         $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
@@ -461,7 +461,7 @@ class FeedbackController extends AbstractController
         $this->em->beginTransaction();
 
         try {
-            $fieldManager     = $this->container->getSystemService('feedback_fields_manager');
+            $fieldManager     = $this->container->getSystemService('community_fields_manager');
             $postCustomFields = $this->request->request->get('custom_fields', []);
             if (!empty($postCustomFields)) {
                 $fieldManager->saveFormToObject($postCustomFields, $feedback);

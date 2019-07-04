@@ -6,7 +6,7 @@
 
 namespace Application\DeskPRO\Feedback;
 
-use Application\DeskPRO\CustomFields\FeedbackFieldManager;
+use Application\DeskPRO\CustomFields\CommunityFieldManager;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
@@ -29,7 +29,7 @@ class FeedbackCollection
     protected $feedback_data;
 
     /**
-     * @var \Application\DeskPRO\CustomFields\FeedbackFieldManager
+     * @var \Application\DeskPRO\CustomFields\CommunityFieldManager
      */
     protected $feedback_fm;
 
@@ -38,7 +38,7 @@ class FeedbackCollection
      */
     protected $user_cats = [];
 
-    public function __construct(array $feedbacks, EntityManager $em, FeedbackFieldManager $feedback_fm)
+    public function __construct(array $feedbacks, EntityManager $em, CommunityFieldManager $feedback_fm)
     {
         $feedbacks = Arrays::keyFromData($feedbacks, 'id');
 

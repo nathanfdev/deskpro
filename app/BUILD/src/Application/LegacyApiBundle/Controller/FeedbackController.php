@@ -269,7 +269,7 @@ class FeedbackController extends AbstractController
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
             $field         = $this->_getUserCategoryField();
-            $field_manager = $this->container->getSystemService('feedback_fields_manager');
+            $field_manager = $this->container->getSystemService('community_fields_manager');
             $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
         }
 
@@ -437,7 +437,7 @@ class FeedbackController extends AbstractController
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
             $field         = $this->_getUserCategoryField();
-            $field_manager = $this->container->getSystemService('feedback_fields_manager');
+            $field_manager = $this->container->getSystemService('community_fields_manager');
             $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
         }
 

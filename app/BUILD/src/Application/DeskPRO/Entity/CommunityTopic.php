@@ -12,7 +12,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
-use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackListener;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -721,8 +721,8 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->addEntityListener(Events::prePersist, FeedbackListener::class, 'prePersist');
-        $metadata->addEntityListener(Events::preUpdate, FeedbackListener::class, 'preUpdate');
+        $metadata->addEntityListener(Events::prePersist, CommunityTopicListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, CommunityTopicListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopic';
         $metadata->setPrimaryTable(
