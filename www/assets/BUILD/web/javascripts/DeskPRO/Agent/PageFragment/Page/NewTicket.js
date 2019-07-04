@@ -1067,12 +1067,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				this.doScrollBottom = false;
 			}
 		}
-		if (!this.getEl('person_id').val() && !this.isNote && !this.newUser) {
+		if (!this.getEl('person_id').val() && !this.isNote && !this.newUserValid) {
 			this.getEl('newticket').addClass('select-user-error');
 			this.getEl('newticket').removeClass('no-user-email-error');
 			this.wrapper.find('.submit-trigger').attr('disabled', 'disabled');
 			this.wrapper.find('.status-menu-trigger').attr('disabled', 'disabled');
-		} else if (!this.getEl('person_email').val() && !this.isNote && !this.newUser) {
+		} else if (!this.getEl('person_email').val() && !this.isNote && !this.newUserValid) {
 			this.getEl('newticket').addClass('no-user-email-error');
 			this.getEl('newticket').removeClass('select-user-error');
 			this.wrapper.find('.submit-trigger').attr('disabled', 'disabled');
@@ -1312,6 +1312,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			success: function(html) {
 				self.placeUserRow(html);
 				self.newUser = false;
+				self.newUserValid = false;
 				self.updateUi();
 				if (!person_id) {
 					self.getEl('person_id').val('');
@@ -1377,12 +1378,19 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var e = $('input.email', userfields);
 		if (e && e[0]) {
+      self.newUserValid = false;
 			var fnCheck = function() {
 				self.newUser = true;
-				if (e.val() && e.val().indexOf('@') !== -1) {
+        var $email = $('input.email', userfields);
+				if ($email.val() && /(.+)@(.+)/.test($email.val())) {
+          self.newUserValid = true;
 					self.clearErrorCode('person_email_address');
 					self.clearErrorCode('person_no_user');
-				}
+				} else {
+          self.newUserValid = false;
+        }
+
+        self.updateUi();
 			};
 			fnCheck();
 			e.on('change', fnCheck);
@@ -2179,7 +2187,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
 						self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
 							$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
-							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
+							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']).trigger('change');
 							$('input[name="newticket[person][phone_number]"]', $form).val(map['newticket[person][phone_number]']);
 						});
 					}
