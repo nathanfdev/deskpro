@@ -9,10 +9,10 @@ namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -196,7 +196,7 @@ class PageTitleGenerator
 
         $section_title = $this->phrase('portal.feedback.section-title');
 
-        if ($content_or_cat instanceof FeedbackCategory) {
+        if ($content_or_cat instanceof CommunityChannel) {
             $builder->prependSection(
                 $this->getCategorySection($content_or_cat, $section_title)
             );

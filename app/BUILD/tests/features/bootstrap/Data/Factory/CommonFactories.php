@@ -8,8 +8,8 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefDownload;
-use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -134,7 +134,7 @@ class CommonFactories
             'organization' => CustomDefOrganization::class,
             'person'       => CustomDefPerson::class,
             'conversation' => CustomDefChat::class,
-            'feedback'     => CustomDefFeedback::class,
+            'feedback'     => CustomDefCommunityTopic::class,
             'download'     => CustomDefDownload::class,
             'billing'      => CustomDefBilling::class,
         ];

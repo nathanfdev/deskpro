@@ -2,13 +2,13 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\ImportBundle\Model\FeedbackCustomDef;
 
 /**
  * Custom def ticket record mapper.
  *
- * Class CustomDefFeedback
+ * Class CustomDefFeedbackMapper
  */
 class CustomDefFeedbackMapper extends AbstractContainerMapper implements CustomDefMapperInterface
 {
@@ -17,7 +17,7 @@ class CustomDefFeedbackMapper extends AbstractContainerMapper implements CustomD
      */
     public static function getMapperEntityClass()
     {
-        return CustomDefFeedback::class;
+        return CustomDefCommunityTopic::class;
     }
 
     /**

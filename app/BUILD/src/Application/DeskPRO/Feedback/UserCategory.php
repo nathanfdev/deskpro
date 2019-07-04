@@ -6,28 +6,28 @@
 
 namespace Application\DeskPRO\Feedback;
 
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 
 class UserCategory
 {
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     * @var \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
     protected $field;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback|null
+     * @var \Application\DeskPRO\Entity\CustomDefCommunityTopic|null
      */
     protected $sub_field;
 
-    public function __construct(CustomDefFeedback $field, CustomDefFeedback $sub_field = null)
+    public function __construct(CustomDefCommunityTopic $field, CustomDefCommunityTopic $sub_field = null)
     {
         $this->field     = $field;
         $this->sub_field = $sub_field;
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
     public function getField()
     {
@@ -35,7 +35,7 @@ class UserCategory
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic|null
      */
     public function getSubField()
     {

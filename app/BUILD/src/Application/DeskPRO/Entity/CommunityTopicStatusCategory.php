@@ -25,12 +25,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Feedback status types for accepted/declined statuses.
+ * CommunityTopic status types for accepted/declined statuses.
  *
  * @JMS\ExclusionPolicy("all")
  * @PortalLinkCustom()
  */
-class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasValidationMetadataInterface
+class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName, HasValidationMetadataInterface
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
@@ -104,9 +104,9 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
     }
 
     /**
-     * @return FeedBackStatusCategory
+     * @return CommunityTopicStatusCategory
      */
-    public static function createFeedbackStatusCategory()
+    public static function createCommunityTopicStatusCategory()
     {
         $status_category = new self();
 
@@ -244,7 +244,7 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
         $metadata->addEntityListener(Events::prePersist, FeedbackStatusCategoryListener::class, 'prePersist');
         $metadata->addEntityListener(Events::preUpdate, FeedbackStatusCategoryListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackStatusCategory';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory';
         $metadata->setPrimaryTable(['name' => 'community_topic_status_categories']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(

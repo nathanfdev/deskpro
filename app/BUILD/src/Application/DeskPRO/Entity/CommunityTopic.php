@@ -59,7 +59,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * Category the feedback belongs to.
      *
-     * @var FeedbackStatusCategory
+     * @var CommunityTopicStatusCategory
      */
     protected $status_category = null;
 
@@ -73,7 +73,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * Channel the feedback belongs to.
      *
-     * @var FeedbackCategory
+     * @var CommunityChannel
      */
     protected $channel;
 
@@ -176,11 +176,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
      *
      * @param int $field_id
      *
-     * @return CustomDataFeedback
+     * @return CustomDataCommunityTopic
      */
     public function getCustomDataForField($field_id)
     {
-        if ($field_id instanceof CustomDefFeedback) {
+        if ($field_id instanceof CustomDefCommunityTopic) {
             $field_id = $field_id['id'];
         }
 
@@ -194,9 +194,9 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     }
 
     /**
-     * @param CustomDataFeedback $data
+     * @param CustomDataCommunityTopic $data
      */
-    public function addCustomData(CustomDataFeedback $data)
+    public function addCustomData(CustomDataCommunityTopic $data)
     {
         $this->custom_data->add($data);
         $data['feedback'] = $this;
@@ -204,13 +204,13 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     }
 
     /**
-     * @param CustomDataFeedback[] $data
+     * @param CustomDataCommunityTopic[] $data
      */
     public function setCustomData($data)
     {
         $this->custom_data = $data;
         foreach ($data as $datum) {
-            /* @var CustomDataFeedback $datum */
+            /* @var CustomDataCommunityTopic $datum */
             $datum->feedback = $this;
         }
 
@@ -269,11 +269,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * Set a category.
      *
-     * @param FeedbackCategory $channel
+     * @param CommunityChannel $channel
      *
      * @return $this
      */
-    public function setCategory(FeedbackCategory $channel = null)
+    public function setCategory(CommunityChannel $channel = null)
     {
         $this->setModelField('channel', $channel);
 
@@ -282,7 +282,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
 
     public function setCategoryId($id)
     {
-        $this->setModelField('channel', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
+        $this->setModelField('channel', App::getEntityRepository('DeskPRO:CommunityChannel')->find($id));
 
         return $this;
     }
@@ -297,7 +297,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
      */
     public function getCustomDataSelection()
     {
-        /* @var \Application\DeskPRO\Entity\CustomDataFeedback $data */
+        /* @var \Application\DeskPRO\Entity\CustomDataCommunityTopic $data */
         if (!$data = $this->custom_data->last()) {
             return;
         }
@@ -357,7 +357,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
             case self::STATUS_CLOSED:
                 $this['status'] = $status;
                 if ($sub_status) {
-                    $status_cat = App::findEntity('DeskPRO:FeedbackStatusCategory', $sub_status);
+                    $status_cat = App::findEntity('DeskPRO:CommunityTopicStatusCategory', $sub_status);
                     $this->setModelField('status_category', $status_cat);
                     $this->setModelField('date_updated', new \DateTime());
                 } else {
@@ -544,7 +544,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     }
 
     /**
-     * @return ArrayCollection|CustomDataFeedback[]
+     * @return ArrayCollection|CustomDataCommunityTopic[]
      */
     public function getCustomData()
     {
@@ -562,9 +562,9 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * Add an attachment.
      *
-     * @param FeedbackAttachment $attach
+     * @param CommunityTopicAttachment $attach
      */
-    public function addAttachment(FeedbackAttachment $attach)
+    public function addAttachment(CommunityTopicAttachment $attach)
     {
         $this->attachments->add($attach);
         $attach->feedback = $this;
@@ -618,7 +618,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     }
 
     /**
-     * @return FeedbackStatusCategory
+     * @return CommunityTopicStatusCategory
      */
     public function getStatusCategory()
     {
@@ -626,9 +626,9 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     }
 
     /**
-     * @param FeedbackStatusCategory $status_category
+     * @param CommunityTopicStatusCategory $status_category
      */
-    public function setStatusCategory(FeedbackStatusCategory $status_category = null)
+    public function setStatusCategory(CommunityTopicStatusCategory $status_category = null)
     {
         $this->setModelField('status_category', $status_category);
         $this->setModelField('date_updated', new \DateTime());
@@ -675,7 +675,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
 
     protected function addSlugHistory($oldSlug)
     {
-        $history = new FeedbackSlugHistory($this, $oldSlug);
+        $history = new CommunityTopicSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
@@ -928,7 +928,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'status_category',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackStatusCategory',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopicStatusCategory',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -946,7 +946,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'channel',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityChannel',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [0 => ['name' => 'channel_id', 'referencedColumnName' => 'id']],
@@ -964,7 +964,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'comments',
-                'targetEntity' => FeedbackComment::class,
+                'targetEntity' => CommunityTopicComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'mappedBy'     => 'topic',
@@ -982,7 +982,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'custom_data',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataCommunityTopic',
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'topic',
                 'orphanRemoval' => true,
@@ -1028,7 +1028,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'attachments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopicAttachment',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'topic',
                 'dpApi'        => true,
@@ -1039,7 +1039,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'slug_history',
-                'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
+                'targetEntity' => 'Application\DeskPRO\Entity\CommunityTopicSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'topic',
             ]

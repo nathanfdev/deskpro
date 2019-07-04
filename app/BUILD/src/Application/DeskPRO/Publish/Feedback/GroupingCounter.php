@@ -109,8 +109,8 @@ class GroupingCounter
                 'hidden' => ['title' => 'Hidden'],
             ];
 
-            $active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-            $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+            $active_status_cats = App::getEntityRepository('DeskPRO:CommunityTopicStatusCategory')->getActiveCategories();
+            $closed_status_cats = App::getEntityRepository('DeskPRO:CommunityTopicStatusCategory')->getClosedCategories();
 
             foreach ($active_status_cats as $cat) {
                 $titles['active.'.$cat['id']]                       = ['title' => $cat['title']];
@@ -124,7 +124,7 @@ class GroupingCounter
 
         switch ($this->grouping1) {
             case 'category_id':
-                $group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames();
+                $group1_structure = App::getEntityRepository('DeskPRO:CommunityChannel')->getFullNames();
                 break;
 
             case 'status':
@@ -141,7 +141,7 @@ class GroupingCounter
         if ($this->grouping2) {
             switch ($this->grouping2) {
                 case 'category_id':
-                    $group1_structure = App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames();
+                    $group1_structure = App::getEntityRepository('DeskPRO:CommunityChannel')->getFullNames();
                     break;
 
                 case 'status':
@@ -331,7 +331,7 @@ class GroupingCounter
         $titles = null;
         switch ($field) {
             case 'category_id':
-                $titles = App::getOrm()->getRepository('DeskPRO:FeedbackCategory')->getFullNames();
+                $titles = App::getOrm()->getRepository('DeskPRO:CommunityChannel')->getFullNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 
@@ -344,8 +344,8 @@ class GroupingCounter
                     'hidden' => 'Hidden',
                 ];
 
-                $active_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-                $closed_status_cats = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+                $active_status_cats = App::getEntityRepository('DeskPRO:CommunityTopicStatusCategory')->getActiveCategories();
+                $closed_status_cats = App::getEntityRepository('DeskPRO:CommunityTopicStatusCategory')->getClosedCategories();
 
                 foreach ($active_status_cats as $cat) {
                     $titles['active.'.$cat['id']] = 'Active > '.$cat['title'];

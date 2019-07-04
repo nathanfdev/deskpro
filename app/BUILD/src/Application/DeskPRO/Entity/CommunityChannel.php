@@ -26,7 +26,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  *
  * @PortalLinkCustom()
  */
-class FeedbackCategory extends CategoryAbstract implements HasValidationMetadataInterface
+class CommunityChannel extends CategoryAbstract implements HasValidationMetadataInterface
 {
     protected $parent;
 
@@ -71,7 +71,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     }
 
     /**
-     * @return FeedbackCategory
+     * @return CommunityChannel
      */
     public static function createFeedbackCategory()
     {
@@ -136,7 +136,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         $metadata->addEntityListener(Events::prePersist, FeedbackCategoryListener::class, 'prePersist');
         $metadata->addEntityListener(Events::preUpdate, FeedbackCategoryListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackCategory';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityChannel';
         $metadata->setPrimaryTable(['name' => 'community_channels']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
@@ -207,7 +207,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityChannel',
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -222,7 +222,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityChannel',
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -236,7 +236,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                     'merge',
                 ],
                 'joinTable' => [
-                    'name'        => 'community_channels2usergroup',
+                    'name'        => 'community_channel2usergroup',
                     'schema'      => null,
                     'joinColumns' => [
                         0 => [

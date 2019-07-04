@@ -16,15 +16,15 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * A custom field definition.
  *
- * @property CustomDefFeedback $parent
- * @property int               $display_order
- * @property string            $title
- * @property string            $sys_name
+ * @property CustomDefCommunityTopic $parent
+ * @property int                     $display_order
+ * @property string                  $title
+ * @property string                  $sys_name
  */
-class CustomDefFeedback extends CustomDefAbstract
+class CustomDefCommunityTopic extends CustomDefAbstract
 {
     /**
-     * @var CustomDefFeedback
+     * @var CustomDefCommunityTopic
      */
     protected $parent = null;
 
@@ -60,11 +60,11 @@ class CustomDefFeedback extends CustomDefAbstract
     /**
      * Set parent.
      *
-     * @param CustomDefFeedback $parent
+     * @param CustomDefCommunityTopic $parent
      *
      * @return $this
      */
-    public function setParent(CustomDefFeedback $parent = null)
+    public function setParent(CustomDefCommunityTopic $parent = null)
     {
         $this->setModelField('parent', $parent);
 
@@ -72,7 +72,7 @@ class CustomDefFeedback extends CustomDefAbstract
     }
 
     /**
-     * @return CustomDefFeedback
+     * @return CustomDefCommunityTopic
      */
     public static function createFeedbackCategory()
     {
@@ -122,7 +122,7 @@ class CustomDefFeedback extends CustomDefAbstract
         $metadata->addEntityListener(Events::prePersist, CustomDefFeedbackListener::class, 'prePersist');
         $metadata->addEntityListener(Events::preUpdate, CustomDefFeedbackListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefFeedback';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefCommunityTopic';
         $metadata->setPrimaryTable(['name' => 'custom_def_community_topic']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
@@ -275,7 +275,7 @@ class CustomDefFeedback extends CustomDefAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefCommunityTopic',
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -292,7 +292,7 @@ class CustomDefFeedback extends CustomDefAbstract
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefCommunityTopic',
                 'cascade'      => [
                     0 => 'remove',
                     1 => 'persist',

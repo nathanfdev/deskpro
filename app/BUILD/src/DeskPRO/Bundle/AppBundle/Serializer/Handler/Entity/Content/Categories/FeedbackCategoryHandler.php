@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories\FeedbackCategory as FeedbackCategoryModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
@@ -14,7 +14,7 @@ class FeedbackCategoryHandler extends AbstractCategoryHandler
     /**
      * {@inheritdoc}
      *
-     * @param \Application\DeskPRO\Entity\FeedbackCategory $entity
+     * @param \Application\DeskPRO\Entity\CommunityChannel $entity
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
@@ -29,6 +29,6 @@ class FeedbackCategoryHandler extends AbstractCategoryHandler
      */
     public static function getClassNames()
     {
-        return FeedbackCategory::class;
+        return CommunityChannel::class;
     }
 }

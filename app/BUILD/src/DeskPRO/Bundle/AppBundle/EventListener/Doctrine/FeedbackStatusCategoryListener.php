@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
@@ -27,18 +27,18 @@ class FeedbackStatusCategoryListener
     }
 
     /**
-     * @param FeedbackStatusCategory $entity
+     * @param CommunityTopicStatusCategory $entity
      */
-    public function prePersist(FeedbackStatusCategory $entity)
+    public function prePersist(CommunityTopicStatusCategory $entity)
     {
         $this->verifyBrand($entity);
     }
 
     /**
-     * @param FeedbackStatusCategory $entity
-     * @param LifecycleEventArgs     $args
+     * @param CommunityTopicStatusCategory $entity
+     * @param LifecycleEventArgs           $args
      */
-    public function preUpdate(FeedbackStatusCategory $entity, LifecycleEventArgs $args)
+    public function preUpdate(CommunityTopicStatusCategory $entity, LifecycleEventArgs $args)
     {
         $this->verifyBrand($entity);
 
@@ -48,9 +48,9 @@ class FeedbackStatusCategoryListener
     }
 
     /**
-     * @param FeedbackStatusCategory $entity
+     * @param CommunityTopicStatusCategory $entity
      */
-    private function verifyBrand(FeedbackStatusCategory $entity)
+    private function verifyBrand(CommunityTopicStatusCategory $entity)
     {
         if (!$entity->getBrand()) {
             $brand = $this->brandStack->getActive()->getBrand();

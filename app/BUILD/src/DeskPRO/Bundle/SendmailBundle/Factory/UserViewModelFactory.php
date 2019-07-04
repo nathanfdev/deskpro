@@ -7,8 +7,8 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -196,11 +196,11 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param FeedbackComment $comment
+     * @param CommunityTopicComment $comment
      *
      * @return FeedbackNewComment
      */
-    public function createFeedbackNewCommentModel(FeedbackComment $comment)
+    public function createFeedbackNewCommentModel(CommunityTopicComment $comment)
     {
         $feedback     = $comment->getFeedback();
         $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);

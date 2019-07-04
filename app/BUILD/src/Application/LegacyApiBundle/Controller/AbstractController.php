@@ -496,7 +496,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (sizeof($errors) > 0) {
             foreach ($errors as $error) {
-                $result[] = $error->getPropertyPath() . ' : ' . $error->getMessage();
+                $result[] = $error->getPropertyPath().' : '.$error->getMessage();
             }
         }
 
@@ -640,7 +640,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         // For feedback we also notify everyone involved
-        if ($comment instanceof \Application\DeskPRO\Entity\FeedbackComment) {
+        if ($comment instanceof \Application\DeskPRO\Entity\CommunityTopicComment) {
             $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
             $commenting->newCommentNotify($comment);
         }

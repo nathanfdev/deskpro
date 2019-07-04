@@ -14,12 +14,14 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\CommunityTopicComment;
+use Application\DeskPRO\Entity\CustomDataCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefDownload;
-use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -29,8 +31,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\FeedbackSubscription;
 use Application\DeskPRO\Entity\GlossaryWord;
@@ -301,7 +301,7 @@ class ObjectsManager
             'CustomDefFeedback'                => [Factory\CommonFactories::class, 'customDef', 'feedback'],
             'CustomDefDownload'                => [Factory\CommonFactories::class, 'customDef', 'download'],
             'CustomDefBilling'                 => [Factory\CommonFactories::class, 'customDef', 'billing'],
-            'CustomDataFeedback'               => [Factory\SimpleFactory::class, 'create', CustomDataFeedback::class],
+            'CustomDataFeedback'               => [Factory\SimpleFactory::class, 'create', CustomDataCommunityTopic::class],
             'CustomFieldDefinition'            => [Factory\SimpleFactory::class, 'create', CustomFieldDefinition::class],
             'CustomPerUserDef'                 => [Factory\CommonFactories::class, 'customPerDef', Person::class],
             'CustomPerOrgDef'                  => [Factory\CommonFactories::class, 'customPerDef', Organization::class],
@@ -310,9 +310,9 @@ class ObjectsManager
             'DownloadCategory'                 => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
             'Feedback'                         => [Factory\CommonFactories::class, 'feedback'],
             'FeedbackSubscription'             => [Factory\SimpleFactory::class, 'create', FeedbackSubscription::class],
-            'FeedbackCategory'                 => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
+            'FeedbackCategory'                 => [Factory\SimpleFactory::class, 'create', CommunityChannel::class],
             'FeedbackStatusCategory'           => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
-            'FeedbackComment'                  => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
+            'FeedbackComment'                  => [Factory\SimpleFactory::class, 'create', CommunityTopicComment::class],
             'GlossaryWord'                     => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
             'GlossaryWordDefinition'           => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                             => [Factory\SimpleFactory::class, 'create', News::class],
@@ -460,10 +460,10 @@ class ObjectsManager
             'CustomDefOrganization'            => [$this, 'find', CustomDefOrganization::class],
             'CustomDefPerson'                  => [$this, 'find', CustomDefPerson::class],
             'CustomDefChat'                    => [$this, 'find', CustomDefChat::class],
-            'CustomDefFeedback'                => [$this, 'find', CustomDefFeedback::class],
+            'CustomDefFeedback'                => [$this, 'find', CustomDefCommunityTopic::class],
             'CustomDefDownload'                => [$this, 'find', CustomDefDownload::class],
             'CustomDefBilling'                 => [$this, 'find', CustomDefBilling::class],
-            'CustomDataFeedback'               => [$this, 'find', CustomDataFeedback::class],
+            'CustomDataFeedback'               => [$this, 'find', CustomDataCommunityTopic::class],
             'CustomFieldDefinition'            => [$this, 'find', CustomFieldDefinition::class],
             'CustomPerUserDef'                 => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
             'CustomPerOrgDef'                  => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Organization::class]],
@@ -487,8 +487,8 @@ class ObjectsManager
             'Feedback'                         => [$this, 'find', CommunityTopic::class],
             'FeedbackSubscription'             => [$this, 'find', FeedbackSubscription::class],
             'FeedbackStatusCategory'           => [$this, 'find', FeedbackStatusCategory::class],
-            'FeedbackCategory'                 => [$this, 'find', FeedbackCategory::class],
-            'FeedbackComment'                  => [$this, 'find', FeedbackComment::class],
+            'FeedbackCategory'                 => [$this, 'find', CommunityChannel::class],
+            'FeedbackComment'                  => [$this, 'find', CommunityTopicComment::class],
             'LabelDef'                         => [$this, 'find', LabelDef::class],
             'LabelFeedback'                    => [$this, 'find', LabelFeedback::class],
             'LabelTicket'                      => [$this, 'find', LabelTicket::class],

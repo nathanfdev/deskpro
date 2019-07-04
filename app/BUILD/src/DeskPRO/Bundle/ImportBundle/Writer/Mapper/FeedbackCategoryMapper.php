@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Writer\Mapper;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 
 /**
  * Feedback category record mapper.
@@ -16,6 +16,6 @@ class FeedbackCategoryMapper extends AbstractCategoryMapper
      */
     public static function getMapperEntityClass()
     {
-        return FeedbackCategory::class;
+        return CommunityChannel::class;
     }
 }

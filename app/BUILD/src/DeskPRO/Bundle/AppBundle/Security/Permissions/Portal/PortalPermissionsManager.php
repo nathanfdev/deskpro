@@ -7,7 +7,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -260,7 +260,7 @@ class PortalPermissionsManager
             'chat'         => $this->fetchFields(CustomDefChat::class),
             'article'      => $this->fetchFields(CustomDefArticle::class),
             'ticket'       => $this->fetchFields(CustomDefTicket::class),
-            'feedback'     => $this->fetchFields(CustomDefFeedback::class),
+            'feedback'     => $this->fetchFields(CustomDefCommunityTopic::class),
             'person'       => $this->fetchFields(CustomDefPerson::class),
             'organization' => $this->fetchFields(CustomDefOrganization::class),
         ];

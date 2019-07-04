@@ -444,11 +444,11 @@ class PhraseData
         //TODO: need a feedback service
         $em = App::getOrm();
 
-        $phrase_group = 'obj_feedbackstatuscategory';
+        $phrase_group = 'obj_CommunityTopicStatusCategory';
 
         $all_statuses = $em->createQuery('
             SELECT s
-            FROM DeskPRO:FeedbackStatusCategory s
+            FROM DeskPRO:CommunityTopicStatusCategory s
             ORDER BY s.display_order ASC
         ')->getResult();
 
@@ -496,7 +496,7 @@ class PhraseData
 
         $all_types = $em->createQuery('
             SELECT s
-            FROM DeskPRO:FeedbackCategory s
+            FROM DeskPRO:CommunityChannel s
             ORDER BY s.display_order ASC
         ')->getResult();
 

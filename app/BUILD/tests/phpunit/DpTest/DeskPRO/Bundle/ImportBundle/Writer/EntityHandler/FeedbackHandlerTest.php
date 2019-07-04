@@ -96,7 +96,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
 
     public function test_default_category()
     {
-        $category = new Entity\FeedbackCategory();
+        $category = new Entity\CommunityChannel();
         $category->setRealTitle('cat');
 
         $this->em()->persist($category);

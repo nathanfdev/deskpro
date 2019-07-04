@@ -4,10 +4,10 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsLoader;
@@ -63,7 +63,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         $everyone   = $this->getUsergroup(Usergroup::EVERYONE);
         $registered = $this->getUsergroup(Usergroup::REGISTERED);
 
-        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category1 */
+        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $category1 */
         $category1 = new $entityClass();
         $category1->setTitle('feedbackCategory 1');
         $category1->addUsergroup($everyone);
@@ -72,7 +72,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         }
         $em->persist($category1);
 
-        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category2 */
+        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $category2 */
         $category2 = new $entityClass();
         $category2->setTitle('feedbackCategory 2');
         $category2->addUsergroup($registered);
@@ -81,7 +81,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         }
         $em->persist($category2);
 
-        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category3 */
+        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $category3 */
         $category3 = new $entityClass();
         $category3->setTitle('feedbackCategory 3');
         $category3->addUsergroup($everyone);
@@ -123,7 +123,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
     public function loadAllCategoriesProvider()
     {
         return [
-            [FeedbackCategory::class, 'getAllowedFeedbackCategories'],
+            [CommunityChannel::class, 'getAllowedFeedbackCategories'],
             [NewsCategory::class, 'getAllowedNewsCategories'],
             [ArticleCategory::class, 'getAllowedArticleCategories'],
             [DownloadCategory::class, 'getAllowedDownloadCategories'],

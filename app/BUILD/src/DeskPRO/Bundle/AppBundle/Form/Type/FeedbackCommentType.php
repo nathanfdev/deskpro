@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,7 +42,7 @@ class FeedbackCommentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => FeedbackComment::class,
+            'data_class' => CommunityTopicComment::class,
         ]);
     }
 }

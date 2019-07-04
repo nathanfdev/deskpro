@@ -675,7 +675,7 @@ JS;
                 case 'feedback':
                     $feedback = $this->em->find(Entity\CommunityTopic::class, $this->in->getUint('object_id'));
 
-                    $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                    $attach           = new \Application\DeskPRO\Entity\CommunityTopicAttachment();
                     $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 

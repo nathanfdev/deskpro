@@ -6,7 +6,7 @@
 
 namespace Application\DeskPRO\FeedbackTypes;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Doctrine\ORM\EntityManager;
 
 class FeedbackTypes
@@ -17,7 +17,7 @@ class FeedbackTypes
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\Entity\FeedbackCategory[]
+     * @var \Application\DeskPRO\Entity\CommunityChannel[]
      */
     protected $feedback_types;
 
@@ -35,7 +35,7 @@ class FeedbackTypes
             return;
         }
 
-        $this->feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getAll();
+        $this->feedback_types = $this->em->getRepository('DeskPRO:CommunityChannel')->getAll();
     }
 
     /**
@@ -50,15 +50,15 @@ class FeedbackTypes
     /**
      * @param int $id
      *
-     * @return \Application\DeskPRO\Entity\FeedbackCategory
+     * @return \Application\DeskPRO\Entity\CommunityChannel
      */
     public function getById($id)
     {
-        return $this->em->getRepository('DeskPRO:FeedbackCategory')->get($id);
+        return $this->em->getRepository('DeskPRO:CommunityChannel')->get($id);
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
+     * @param \Application\DeskPRO\Entity\CommunityChannel|int $feedback_type
      *
      * @return array
      */
@@ -68,11 +68,11 @@ class FeedbackTypes
             $feedback_type = $this->getById($feedback_type);
         }
 
-        return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), false);
+        return $this->em->getRepository('DeskPRO:CommunityChannel')->getUserGroups($feedback_type->getId(), false);
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\FeedbackCategory|int $feedback_type
+     * @param \Application\DeskPRO\Entity\CommunityChannel|int $feedback_type
      *
      * @return array
      */
@@ -82,11 +82,11 @@ class FeedbackTypes
             $feedback_type = $this->getById($feedback_type);
         }
 
-        return $this->em->getRepository('DeskPRO:FeedbackCategory')->getUserGroups($feedback_type->getId(), true);
+        return $this->em->getRepository('DeskPRO:CommunityChannel')->getUserGroups($feedback_type->getId(), true);
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackCategory[]
+     * @return \Application\DeskPRO\Entity\CommunityChannel[]
      */
     public function getAll()
     {
@@ -106,11 +106,11 @@ class FeedbackTypes
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackCategory
+     * @return \Application\DeskPRO\Entity\CommunityChannel
      */
     public function createNew()
     {
-        return FeedbackCategory::createFeedbackCategory();
+        return CommunityChannel::createFeedbackCategory();
     }
 
     /**
@@ -120,7 +120,7 @@ class FeedbackTypes
     {
         $x = 10;
 
-        $feedback_types = $this->em->getRepository('DeskPRO:FeedbackCategory')->getByIds($newOrders);
+        $feedback_types = $this->em->getRepository('DeskPRO:CommunityChannel')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
             if (!isset($feedback_types[$id])) {

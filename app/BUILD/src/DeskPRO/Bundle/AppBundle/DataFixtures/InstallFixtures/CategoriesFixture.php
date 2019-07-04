@@ -3,8 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
@@ -68,7 +68,7 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         //------------------------------
 
         foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
-            $cat = new FeedbackCategory();
+            $cat = new CommunityChannel();
             $cat->setTitle($title);
             $manager->persist($cat);
 

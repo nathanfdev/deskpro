@@ -23,7 +23,7 @@ class NewFeedbackValidator extends AbstractValidator
             $this->addError('category_id.invalid');
         }
 
-        $cat = App::getOrm()->find('DeskPRO:FeedbackCategory', $feedback->category_id);
+        $cat = App::getOrm()->find('DeskPRO:CommunityChannel', $feedback->category_id);
         if (!$cat) {
             $this->addError('category_id.invalid');
         }

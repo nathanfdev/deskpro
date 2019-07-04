@@ -13,16 +13,16 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Comments on feedback.
+ * Comments on community topics.
  */
-class FeedbackComment extends CommentAbstract
+class CommunityTopicComment extends CommentAbstract
 {
     const OBJ_PROP = 'feedback';
 
     /**
-     * Feedback this comment belongs to.
+     * CommunityTopic this comment belongs to.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopic>")
      * @JMS\Groups({"list", "details"})
      *
      * @var CommunityTopic
@@ -41,7 +41,7 @@ class FeedbackComment extends CommentAbstract
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackComment';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicComment';
         $metadata->setPrimaryTable([
             'name'    => 'community_topic_comments',
             'indexes' => [

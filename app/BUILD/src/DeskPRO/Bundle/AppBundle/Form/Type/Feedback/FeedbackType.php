@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
 
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
@@ -124,7 +124,7 @@ class FeedbackType extends AbstractType
         if (in_array($data['status'], [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED])) {
             $form->add('status_category', EntityType::class, [
                 'required'      => true,
-                'class'         => FeedbackStatusCategory::class,
+                'class'         => CommunityTopicStatusCategory::class,
                 'query_builder' => function (EntityRepository $er) use ($data) {
                     return $er
                         ->createQueryBuilder('c')

@@ -10,13 +10,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * History of slugs.
  */
-class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
+class CommunityTopicSlugHistory extends DomainObject
 {
     /**
      * The unique ID.
@@ -102,7 +103,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackSlugHistory';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicSlugHistory';
         $metadata->setPrimaryTable(['name' => 'community_topic_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(

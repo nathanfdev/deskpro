@@ -142,7 +142,7 @@ class CommunityTopic extends AbstractEntityRepository
         ");
 
         foreach ($counts as $cat_id => &$count) {
-            $cat_childs = App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($cat_id, false);
+            $cat_childs = App::getEntityRepository('DeskPRO:CommunityChannel')->getIdsInTree($cat_id, false);
             if ($cat_childs) {
                 foreach ($cat_childs as $child_cat_id) {
                     if (isset($counts[$child_cat_id])) {

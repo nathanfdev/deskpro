@@ -5,9 +5,9 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\EntityRepository\Traits\ClearSlugHistoryTrait;
 
 /**
- * Class FeedbackSlugHistory.
+ * Class CommunityTopicSlugHistory.
  */
-class FeedbackSlugHistory extends AbstractEntityRepository
+class CommunityTopicSlugHistory extends AbstractEntityRepository
 {
     use ClearSlugHistoryTrait;
 
@@ -16,6 +16,6 @@ class FeedbackSlugHistory extends AbstractEntityRepository
      */
     protected function getEntityFieldName()
     {
-        return 'feedback_id';
+        return 'topic_id';
     }
 }

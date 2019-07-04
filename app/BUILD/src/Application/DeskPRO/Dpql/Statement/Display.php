@@ -183,7 +183,7 @@ class Display
         'email_sources'               => 'DeskPRO:EmailSource',
         'community_topics'            => 'DeskPRO:CommunityTopic',
         'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
-        'feedback_categories'         => 'DeskPRO:FeedbackCategory',
+        'feedback_categories'         => 'DeskPRO:CommunityChannel',
         'feedback_comments'           => 'DeskPRO:FeedbackComment',
         'glossary_words'              => 'DeskPRO:GlossaryWord',
         'glossary_word_definitions'   => 'DeskPRO:GlossaryWordDefinition',

@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
@@ -64,7 +64,7 @@ use Symfony\Component\HttpFoundation\Request;
 class FeedbackAllCommentsController extends AbstractFeedbackController
 {
     public static $exposeOnly  = ['get', 'list', 'count', 'put', 'delete'];
-    public static $entity      = FeedbackComment::class;
+    public static $entity      = CommunityTopicComment::class;
     public static $type        = FeedbackCommentType::class;
     public static $listOrder   = 'asc';
     public static $sortOptions = [

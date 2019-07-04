@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\FeedbackCategories;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Doctrine\ORM\EntityManager;
 
 class FeedbackCategories
@@ -18,12 +18,12 @@ class FeedbackCategories
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback[]
+     * @var \Application\DeskPRO\Entity\CustomDefCommunityTopic[]
      */
     protected $parent_category;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback[]
+     * @var \Application\DeskPRO\Entity\CustomDefCommunityTopic[]
      */
     protected $feedback_categories;
 
@@ -71,7 +71,7 @@ class FeedbackCategories
     /**
      * @param int $id
      *
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
     public function getById($id)
     {
@@ -79,7 +79,7 @@ class FeedbackCategories
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback[]
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic[]
      */
     public function getAll()
     {
@@ -99,11 +99,11 @@ class FeedbackCategories
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
     public function createNew()
     {
-        return CustomDefFeedback::createFeedbackCategory();
+        return CustomDefCommunityTopic::createFeedbackCategory();
     }
 
     /**
@@ -116,7 +116,7 @@ class FeedbackCategories
         $this->parent_category[$brand->getId()] = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getCategoryField($brand);
 
         if (!$this->parent_category[$brand->getId()]) {
-            $this->parent_category[$brand->getId()]                = new CustomDefFeedback();
+            $this->parent_category[$brand->getId()]                = new CustomDefCommunityTopic();
             $this->parent_category[$brand->getId()]->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
             $this->parent_category[$brand->getId()]->setBrand($brand);
             $this->parent_category[$brand->getId()]->title       = 'Category';
@@ -131,7 +131,7 @@ class FeedbackCategories
     /**
      * @param Brand $brand
      *
-     * @return CustomDefFeedback
+     * @return CustomDefCommunityTopic
      */
     public function getParentCategory(Brand $brand = null)
     {

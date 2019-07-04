@@ -4,9 +4,9 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\CustomDefFeedback;
-use Application\DeskPRO\Entity\FeedbackComment;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicComment;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\LabelDef;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -126,12 +126,12 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
 
     private function loadFeedbackChoices()
     {
-        $customCatDef = $this->manager->getRepository(CustomDefFeedback::class)->findOneBy([
+        $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
             'sys_name' => 'cat',
         ]);
 
         foreach ($this->categories as $order => $title) {
-            $customCatChoice = new CustomDefFeedback();
+            $customCatChoice = new CustomDefCommunityTopic();
             $customCatChoice
                 ->setParent($customCatDef)
                 ->setTitle($title)
@@ -154,7 +154,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
             $i = 0;
             foreach ($titles as $title) {
                 $i += 10;
-                $cat = new FeedbackStatusCategory();
+                $cat = new CommunityTopicStatusCategory();
                 $cat
                     ->setStatusType($status)
                     ->setTitle($title)
@@ -275,7 +275,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
 
     private function loadFeedbackCategories()
     {
-        $customCatDef = $this->manager->getRepository(CustomDefFeedback::class)->findOneBy([
+        $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
             'sys_name' => 'cat',
         ]);
 
@@ -336,9 +336,9 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
                     'ip_address'  => $this->faker->ipv4,
                     'status'      => $this->faker->randomElement(
                         [
-                            FeedbackComment::STATUS_VISIBLE,
-                            FeedbackComment::STATUS_HIDDEN,
-                            FeedbackComment::STATUS_DELETED,
+                            CommunityTopicComment::STATUS_VISIBLE,
+                            CommunityTopicComment::STATUS_HIDDEN,
+                            CommunityTopicComment::STATUS_DELETED,
                         ]
                     ),
                     'date_created' => $dateCreated,
@@ -353,7 +353,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
 
     private function setCommentReviewed(array $values)
     {
-        $values['is_reviewed'] = $values['status'] === FeedbackComment::STATUS_HIDDEN ? 0 : 1;
+        $values['is_reviewed'] = $values['status'] === CommunityTopicComment::STATUS_HIDDEN ? 0 : 1;
 
         return $values;
     }

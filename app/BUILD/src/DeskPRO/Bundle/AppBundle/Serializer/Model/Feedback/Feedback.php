@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
-use Application\DeskPRO\Entity\CustomDataFeedback;
-use Application\DeskPRO\Entity\FeedbackAttachment;
+use Application\DeskPRO\Entity\CommunityTopicAttachment;
+use Application\DeskPRO\Entity\CustomDataCommunityTopic;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
@@ -15,9 +15,9 @@ class Feedback extends ContentAbstract
     /**
      * Category the feedback belongs to.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackStatusCategory>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopicStatusCategory>")
      *
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory
+     * @var \Application\DeskPRO\Entity\CommunityTopicStatusCategory
      */
     protected $statusCategory = null;
 
@@ -25,9 +25,9 @@ class Feedback extends ContentAbstract
      * Category the feedback belongs to.
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackCategory>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityChannel>")
      *
-     * @var \Application\DeskPRO\Entity\FeedbackCategory
+     * @var \Application\DeskPRO\Entity\CommunityChannel
      */
     protected $category;
 
@@ -47,7 +47,7 @@ class Feedback extends ContentAbstract
      * @JMS\Expose()
      * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataFeedback>>")
      *
-     * @var CustomDataFeedback[]
+     * @var CustomDataCommunityTopic[]
      */
     protected $fields;
 
@@ -83,7 +83,7 @@ class Feedback extends ContentAbstract
      *
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\FeedbackAttachment>>")
      *
-     * @var FeedbackAttachment[]
+     * @var CommunityTopicAttachment[]
      */
     protected $attachments;
 

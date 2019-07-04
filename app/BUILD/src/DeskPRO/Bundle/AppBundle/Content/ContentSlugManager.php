@@ -5,10 +5,10 @@ namespace DeskPRO\Bundle\AppBundle\Content;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleSlugHistory;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicSlugHistory;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadSlugHistory;
-use Application\DeskPRO\Entity\FeedbackSlugHistory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsSlugHistory;
 use Application\DeskPRO\Entity\Topic;
@@ -229,7 +229,7 @@ class ContentSlugManager
             case News::CONTENT_TYPE:
                 return $this->getEm()->getRepository(NewsSlugHistory::class);
             case CommunityTopic::CONTENT_TYPE:
-                return $this->getEm()->getRepository(FeedbackSlugHistory::class);
+                return $this->getEm()->getRepository(CommunityTopicSlugHistory::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(DownloadSlugHistory::class);
             case Topic::CONTENT_TYPE:

@@ -6,9 +6,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
 
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
@@ -213,7 +213,7 @@ class FeedbackDataService extends AbstractDataService
     /**
      * @param Person $person
      *
-     * @return FeedbackCategory[]
+     * @return CommunityChannel[]
      */
     public function getFeedbackCategoriesForPerson(Person $person)
     {
@@ -229,29 +229,29 @@ class FeedbackDataService extends AbstractDataService
     /**
      * @param $status_category
      *
-     * @return FeedbackStatusCategory
+     * @return CommunityTopicStatusCategory
      */
-    public function getFeedbackStatusCategory($status_category)
+    public function getCommunityTopicStatusCategory($status_category)
     {
-        if ($status_category instanceof FeedbackStatusCategory) {
+        if ($status_category instanceof CommunityTopicStatusCategory) {
             return $status_category;
         }
 
-        return $this->getFeedbackStatusCategoryRepo()->find($status_category);
+        return $this->getCommunityTopicStatusCategoryRepo()->find($status_category);
     }
 
     /**
      * @param string $type status category type
      *
-     * @return FeedbackStatusCategory
+     * @return CommunityTopicStatusCategory
      */
-    public function getFeedbackFirstStatusCategoryByType($type = FeedbackStatusCategory::STATUS_ACTIVE)
+    public function getFeedbackFirstStatusCategoryByType($type = CommunityTopicStatusCategory::STATUS_ACTIVE)
     {
-        return $this->getFeedbackStatusCategoryRepo()->findOneBy(['status_type' => $type], ['display_order' => 'ASC']);
+        return $this->getCommunityTopicStatusCategoryRepo()->findOneBy(['status_type' => $type], ['display_order' => 'ASC']);
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\Feedback
+     * @return \Application\DeskPRO\EntityRepository\CommunityTopic
      */
     public function getItemsRepo()
     {
@@ -259,26 +259,26 @@ class FeedbackDataService extends AbstractDataService
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\FeedbackStatusCategory
+     * @return \Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory
      */
-    public function getFeedbackStatusCategoryRepo()
+    public function getCommunityTopicStatusCategoryRepo()
     {
-        return $this->em->getRepository('DeskPRO:FeedbackStatusCategory');
+        return $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory');
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\FeedbackCategory
+     * @return \Application\DeskPRO\EntityRepository\CommunityChannel
      */
     public function getFeedbackCategoryRepo()
     {
-        return $this->em->getRepository('DeskPRO:FeedbackCategory');
+        return $this->em->getRepository('DeskPRO:CommunityChannel');
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\FeedbackComment
+     * @return \Application\DeskPRO\EntityRepository\CommunityTopicComment
      */
     public function getItemCommetRepo()
     {
-        return $this->em->getRepository('DeskPRO:FeedbackComment');
+        return $this->em->getRepository('DeskPROBundle:CommunityTopicComment');
     }
 }

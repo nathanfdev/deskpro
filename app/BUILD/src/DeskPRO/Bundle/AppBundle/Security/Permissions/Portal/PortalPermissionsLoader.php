@@ -3,9 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
@@ -93,7 +93,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedFeedbackCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(FeedbackCategory::class, $userGroups);
+        return $this->getAllowedCategories(CommunityChannel::class, $userGroups);
     }
 
     /**

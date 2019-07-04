@@ -156,7 +156,7 @@
 
 <div id="deskpro_window_feedback_templates" style="display: none;">
 	<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
-        {% for cat in app.getDataService('FeedbackCategory').getRootNodes(selected_brand_id) %}
+        {% for cat in app.getDataService('CommunityChannel').getRootNodes(selected_brand_id) %}
             {% if last_with_child %}
 				<li class="sep">-</li>
             {% endif %}

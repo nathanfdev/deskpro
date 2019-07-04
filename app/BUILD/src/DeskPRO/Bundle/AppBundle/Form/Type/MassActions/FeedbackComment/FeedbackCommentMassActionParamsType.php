@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\FeedbackComment;
 
-use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionParamsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,7 +38,7 @@ class FeedbackCommentMassActionParamsType extends AbstractType
     {
         $resolver->setDefaults([
             'actions'    => ['approve', 'delete'],
-            'data_class' => FeedbackComment::class,
+            'data_class' => CommunityTopicComment::class,
         ]);
     }
 
@@ -50,16 +50,16 @@ class FeedbackCommentMassActionParamsType extends AbstractType
     public function onPostSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (!$data instanceof FeedbackComment) {
+        if (!$data instanceof CommunityTopicComment) {
             return;
         }
 
         if (BaseMassActionParamsType::hasAction($event, 'approve')) {
-            $data->setStatus(FeedbackComment::STATUS_VISIBLE);
+            $data->setStatus(CommunityTopicComment::STATUS_VISIBLE);
         }
 
         if (BaseMassActionParamsType::hasAction($event, 'delete')) {
-            $data->setStatus(FeedbackComment::STATUS_DELETED);
+            $data->setStatus(CommunityTopicComment::STATUS_DELETED);
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -226,7 +226,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackCategories()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['all'];
@@ -237,7 +237,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackRootCategories()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['hierarchy'];
@@ -250,7 +250,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackCategoryIds()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['ids'];
@@ -263,7 +263,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackCategory($id)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         if (!isset($this->context_category_data[$ent]['all'][$id])) {
@@ -280,7 +280,7 @@ class Structure implements PersonContextInterface
      */
     public function hasFeedbackCategory($id)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return isset($this->context_category_data[$ent]['all'][$id]);
@@ -296,7 +296,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackCategoryNames($sep = ' > ', $include_tops = true)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->_getFullNames([], $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
@@ -307,7 +307,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackCategoryHelper()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['helper'];
@@ -315,7 +315,7 @@ class Structure implements PersonContextInterface
 
     public function getFeedbackStatusCounts($category = null, Person $person_context = null)
     {
-        $ent = 'DeskPRO:FeedbackStatusCategory';
+        $ent = 'DeskPRO:CommunityTopicStatusCategory';
 
         if ($category) {
             $id = 'status.counts.'.$ent.'.'.$category->id.'.'.$person_context->getUsergroupSetKey();
@@ -379,7 +379,7 @@ class Structure implements PersonContextInterface
      */
     public function getFeedbackCategoryCounts(Person $person_context = null)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $id  = 'categories.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         $this->loadCategories($ent);
 
@@ -698,7 +698,7 @@ class Structure implements PersonContextInterface
     {
         if ($obj instanceof ArticleCategory) {
             return $this->getArticleCategoryHelper();
-        } elseif ($obj instanceof FeedbackCategory) {
+        } elseif ($obj instanceof CommunityChannel) {
             return $this->getFeedbackCategoryHelper();
         } elseif ($obj instanceof DownloadCategory) {
             return $this->getDownloadCategoryHelper();
@@ -879,7 +879,7 @@ class Structure implements PersonContextInterface
             case 'DeskPRO:ArticleCategory':  $perm_manager = $this->person_context->PermissionsManager->get('ArticleCategories'); break;
             case 'DeskPRO:DownloadCategory': $perm_manager = $this->person_context->PermissionsManager->get('DownloadCategories'); break;
             case 'DeskPRO:NewsCategory':     $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories'); break;
-            case 'DeskPRO:FeedbackCategory': $perm_manager = $this->person_context->PermissionsManager->get('FeedbackCategories'); break;
+            case 'DeskPRO:CommunityChannel': $perm_manager = $this->person_context->PermissionsManager->get('FeedbackCategories'); break;
         }
 
         // They're allowed to see it all

@@ -6,12 +6,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
@@ -486,7 +486,7 @@ class AgentHelper implements PersonContextInterface
             'feedback' => [
                 'content_type' => 'feedback',
                 'table'        => 'feedback_comments',
-                'entity'       => FeedbackComment::class,
+                'entity'       => CommunityTopicComment::class,
                 'id_field'     => 'feedback_id',
             ],
             'topics' => [
@@ -841,7 +841,7 @@ class AgentHelper implements PersonContextInterface
                 return NewsCategory::class;
                 break;
             case self::FEEDBACK:
-                return FeedbackCategory::class;
+                return CommunityChannel::class;
                 break;
             case self::TOPICS:
                 return Guide::class;

@@ -2,11 +2,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback;
 
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\CustomDataFeedback;
-use Application\DeskPRO\Entity\CustomDefFeedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\CustomDataCommunityTopic;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionParamsType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -32,7 +32,7 @@ class FeedbackMassActionParamsType extends AbstractType
     private $em;
 
     /**
-     * @var FeedbackStatusCategory
+     * @var CommunityTopicStatusCategory
      */
     private $defaultStatusCategory;
 
@@ -44,7 +44,7 @@ class FeedbackMassActionParamsType extends AbstractType
     public function __construct(EntityManager $em)
     {
         $this->em                    = $em;
-        $this->defaultStatusCategory = $this->em->getRepository(FeedbackStatusCategory::class)->findOneBy(
+        $this->defaultStatusCategory = $this->em->getRepository(CommunityTopicStatusCategory::class)->findOneBy(
             ['status_type' => CommunityTopic::STATUS_ACTIVE],
             ['display_order' => 'ASC']
         );
@@ -57,15 +57,15 @@ class FeedbackMassActionParamsType extends AbstractType
     {
         $builder
             ->add('set_type', EntityType::class, [
-                'class'         => FeedbackCategory::class,
+                'class'         => CommunityChannel::class,
                 'property_path' => 'category',
             ])
             ->add('set_status_category', EntityType::class, [
-                'class'         => FeedbackStatusCategory::class,
+                'class'         => CommunityTopicStatusCategory::class,
                 'property_path' => 'status_category',
             ])
             ->add('set_category', EntityType::class, [
-                'class'         => CustomDefFeedback::class,
+                'class'         => CustomDefCommunityTopic::class,
                 'mapped'        => false,
                 'query_builder' => function (EntityRepository $er) {
                     return $er
@@ -157,17 +157,17 @@ class FeedbackMassActionParamsType extends AbstractType
         }
 
         // category
-        /** @var CustomDefFeedback $categoryChoice */
+        /** @var CustomDefCommunityTopic $categoryChoice */
         $categoryChoice = $form->get('set_category')->getData();
         if ($categoryChoice) {
             $categoryDef = $categoryChoice->getParent();
             if ($categoryDef) {
-                /** @var CustomDataFeedback[]|ArrayCollection $customData */
-                $customData = $data->getCustomData()->filter(function (CustomDataFeedback $customData) use ($categoryDef) {
+                /** @var CustomDataCommunityTopic[]|ArrayCollection $customData */
+                $customData = $data->getCustomData()->filter(function (CustomDataCommunityTopic $customData) use ($categoryDef) {
                     return $customData->getRootField() === $categoryDef;
                 });
 
-                /* @var CustomDataFeedback $item */
+                /* @var CustomDataCommunityTopic $item */
                 if ($customData->count()) {
                     $item = $customData->first();
                 } else {

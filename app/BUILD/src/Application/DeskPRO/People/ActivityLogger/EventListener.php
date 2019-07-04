@@ -5,8 +5,8 @@ namespace Application\DeskPRO\People\ActivityLogger;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -84,7 +84,7 @@ class EventListener implements EventSubscriber
                 }
                 break;
 
-            case $entity instanceof FeedbackComment:
+            case $entity instanceof CommunityTopicComment:
                 /* @var $entity CommentAbstract */
                 if ($entity->person) {
                     $this->queue->enqueue(new NewCommentFeedback($entity->person, $entity));

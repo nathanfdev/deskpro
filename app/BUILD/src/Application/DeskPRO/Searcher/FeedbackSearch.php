@@ -396,7 +396,7 @@ class FeedbackSearch extends SearcherAbstract
                         $ids = $base_ids;
                     } else {
                         foreach ($base_ids as $id) {
-                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($id, true));
+                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:CommunityChannel')->getIdsInTree($id, true));
                         }
                     }
 
@@ -405,7 +405,7 @@ class FeedbackSearch extends SearcherAbstract
                     $wheres[] = $this->_choiceMatch('community_topics.category_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
-                        $titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array) $choice);
+                        $titles = App::getEntityRepository('DeskPRO:CommunityChannel')->getNames((array) $choice);
 
                         return $titles;
                     });
@@ -431,7 +431,7 @@ class FeedbackSearch extends SearcherAbstract
                     $wheres[] = $this->_choiceMatch('community_topics.status_category_id', $op, $ids);
 
                     $this->summary[] = $this->_choiceSummary('Status Category', $op, $choice, function ($choice) {
-                        $titles = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getNames((array) $choice);
+                        $titles = App::getEntityRepository('DeskPRO:CommunityTopicStatusCategory')->getNames((array) $choice);
 
                         return $titles;
                     });

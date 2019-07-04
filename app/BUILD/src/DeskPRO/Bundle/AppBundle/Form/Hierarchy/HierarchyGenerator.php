@@ -5,10 +5,10 @@ namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
@@ -410,7 +410,7 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
+                $recursive = function (CommunityChannel $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
                     $hierarchy->addNode($parent);
                     foreach ($cat->getChildren() as $child) {
                         $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));

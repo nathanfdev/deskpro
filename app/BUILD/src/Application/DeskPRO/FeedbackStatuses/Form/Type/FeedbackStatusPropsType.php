@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\FeedbackStatuses\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +30,7 @@ class FeedbackStatusPropsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => FeedbackStatusCategory::class,
+            'data_class' => CommunityTopicStatusCategory::class,
         ]);
     }
 

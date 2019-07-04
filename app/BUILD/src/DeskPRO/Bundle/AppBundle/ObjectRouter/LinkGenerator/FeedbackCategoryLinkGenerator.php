@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
@@ -37,7 +37,7 @@ class FeedbackCategoryLinkGenerator implements LinkGeneratorInterface
      */
     public function supports($object, $type, $context)
     {
-        return $object instanceof FeedbackCategory || $object instanceof FeedbackStatusCategory;
+        return $object instanceof CommunityChannel || $object instanceof CommunityTopicStatusCategory;
     }
 
     /**
@@ -47,9 +47,9 @@ class FeedbackCategoryLinkGenerator implements LinkGeneratorInterface
     {
         $filter = new FeedbackFilter();
 
-        if ($object instanceof FeedbackCategory) {
+        if ($object instanceof CommunityChannel) {
             $filter->setTypes([$object->getId()]);
-        } elseif ($object instanceof FeedbackStatusCategory) {
+        } elseif ($object instanceof CommunityTopicStatusCategory) {
             $filter->setStatus($object->getStatusType());
             $filter->setStatusCategories([$object->getId()]);
         }

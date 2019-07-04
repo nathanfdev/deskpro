@@ -11,7 +11,7 @@ class FeedbackFieldManager extends FieldManager
     /**
      * Get the category field if it exists and has options.
      *
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic|null
      */
     public function getUserCategoryField()
     {

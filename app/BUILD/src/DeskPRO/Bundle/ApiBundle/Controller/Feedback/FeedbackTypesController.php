@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -15,12 +15,12 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/feedback_types")
- * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\FeedbackCategory")
+ * @ApiDoc(target="all", section="Feedback", output="Application\DeskPRO\Entity\CommunityChannel")
  */
 class FeedbackTypesController extends CrudController
 {
     public static $exposeOnly = ['get', 'list', 'count'];
-    public static $entity     = FeedbackCategory::class;
+    public static $entity     = CommunityChannel::class;
     public static $listSort   = 'title';
     public static $listOrder  = 'asc';
 }

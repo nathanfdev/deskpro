@@ -8,16 +8,17 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Feedback attachments.
+ * CommunityTopic attachments.
  *
  * @JMS\ExclusionPolicy("all")
  */
-class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
+class CommunityTopicAttachment extends DomainObject
 {
     /**
      * @JMS\Expose()
@@ -29,7 +30,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopic>")
      *
      * @var \Application\DeskPRO\Entity\CommunityTopic
      */
@@ -123,7 +124,7 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackAttachment';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicAttachment';
         $metadata->setPrimaryTable(['name' => 'community_topic_attachments']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField([

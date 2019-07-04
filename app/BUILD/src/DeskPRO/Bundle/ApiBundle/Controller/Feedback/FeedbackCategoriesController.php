@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -28,7 +28,7 @@ class FeedbackCategoriesController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
-     *     output="Application\DeskPRO\Entity\FeedbackCategory"
+     *     output="Application\DeskPRO\Entity\CommunityChannel"
      * )
      *
      * @Rest\Get("")
@@ -41,7 +41,7 @@ class FeedbackCategoriesController extends BaseController
         $qb = $this->getManager()->createQueryBuilder();
         $qb
             ->select('def.id', 'def.title')
-            ->from(CustomDefFeedback::class, 'def')
+            ->from(CustomDefCommunityTopic::class, 'def')
             ->join('def.parent', 'parent')
             ->addSelect('def.title as title')
             ->addSelect('def.id as group_name')

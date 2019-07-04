@@ -17,12 +17,12 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Class FeedbackCategory.
+ * Class CommunityChannel.
  *
  * @method array getFlatHierarchy()
  * @method array getInHierarchy()
  */
-class FeedbackCategory extends AbstractCategoryRepository
+class CommunityChannel extends AbstractCategoryRepository
 {
     /** @var array|null */
     protected $all_cats = null;
@@ -46,9 +46,9 @@ class FeedbackCategory extends AbstractCategoryRepository
             $this,
             $this->getEntityName(),
             $this->getClassMetadata(),
-            'DeskPRO:FeedbackComment',
-            'feedback_comments',
-            'feedback_id'
+            'DeskPRO:CommunityTopicComment',
+            'community_topic_comments',
+            'topic_id'
         );
 
         return $this->_comment_helper;
@@ -56,7 +56,7 @@ class FeedbackCategory extends AbstractCategoryRepository
 
     public function getPermissionTableName()
     {
-        return 'feedback_category2usergroup';
+        return 'community_channel2usergroup';
     }
 
     /**
@@ -104,7 +104,7 @@ class FeedbackCategory extends AbstractCategoryRepository
     {
         return $this->getEntityManager()->createQuery('
             SELECT c
-            FROM DeskPRO:FeedbackCategory c INDEX BY c.id
+            FROM DeskPRO:CommunityChannel c INDEX BY c.id
             ORDER BY c.display_order ASC
         ')->execute();
     }
@@ -121,7 +121,7 @@ class FeedbackCategory extends AbstractCategoryRepository
             $this->getEntityManager()
             ->createQuery(
                 'SELECT u.id, u.title
-                FROM DeskPRO:FeedbackCategory c
+                FROM DeskPRO:CommunityChannel c
                 JOIN c.usergroups u
                 WHERE c.id = :id AND u.is_agent_group = :agent_only'
             )

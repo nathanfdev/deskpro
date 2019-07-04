@@ -21,9 +21,9 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Draft;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
@@ -5584,7 +5584,7 @@ class TicketController extends AbstractController
             case 'news':
                 return NewsComment::class;
             case 'feedback':
-                return FeedbackComment::class;
+                return CommunityTopicComment::class;
         }
     }
 

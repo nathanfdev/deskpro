@@ -233,7 +233,7 @@ class FeedbackController extends AbstractController
             $errors['content'] = ['required_field.content', 'content is required'];
         }
 
-        $status_cat = $this->em->find('DeskPRO:FeedbackStatusCategory', $this->in->getUint('status_category_id'));
+        $status_cat = $this->em->find('DeskPRO:CommunityTopicStatusCategory', $this->in->getUint('status_category_id'));
         if ($status_cat) {
             $feedback->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
         } else {
@@ -244,7 +244,7 @@ class FeedbackController extends AbstractController
             $feedback->setStatusCode($status);
         }
 
-        $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUint('category_id'));
+        $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUint('category_id'));
         if ($cat) {
             $feedback->category = $cat;
         }
@@ -407,7 +407,7 @@ class FeedbackController extends AbstractController
 
         $category_id = $this->in->getUint('category_id');
         if ($category_id) {
-            $cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
+            $cat = $this->em->find('DeskPRO:CommunityChannel', $category_id);
             if ($cat) {
                 $feedback->category = $cat;
             }
@@ -415,7 +415,7 @@ class FeedbackController extends AbstractController
 
         $status_category_id = $this->in->getUint('status_category_id');
         if ($status_category_id) {
-            $status_cat = $this->em->find('DeskPRO:FeedbackStatusCategory', $this->in->getUint('status_category_id'));
+            $status_cat = $this->em->find('DeskPRO:CommunityTopicStatusCategory', $this->in->getUint('status_category_id'));
             if ($status_cat) {
                 $feedback->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
             }
@@ -588,7 +588,7 @@ class FeedbackController extends AbstractController
 
         $status = $this->in->getString('status');
 
-        $comment                 = new \Application\DeskPRO\Entity\FeedbackComment();
+        $comment                 = new \Application\DeskPRO\Entity\CommunityTopicComment();
         $comment->feedback       = $feedback;
         $comment->person         = $person ?: $this->person;
         $comment['content']      = $content;
@@ -1186,7 +1186,7 @@ class FeedbackController extends AbstractController
      */
     public function getCategoriesAction()
     {
-        $categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getFlatHierarchy();
+        $categories = $this->em->getRepository('DeskPRO:CommunityChannel')->getFlatHierarchy();
 
         return $this->createApiResponse(['categories' => $categories]);
     }
@@ -1202,7 +1202,7 @@ class FeedbackController extends AbstractController
      */
     public function getStatusCategoriesAction()
     {
-        $categories = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->findAll();
+        $categories = $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->findAll();
 
         return $this->createApiResponse(['categories' => $this->getApiData($categories)]);
     }
@@ -1254,7 +1254,7 @@ class FeedbackController extends AbstractController
         }
 
         if ($blob) {
-            $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
+            $attach           = new \Application\DeskPRO\Entity\CommunityTopicAttachment();
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
@@ -1269,7 +1269,7 @@ class FeedbackController extends AbstractController
     /**
      * @param Brand $brand
      *
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
     protected function _getUserCategoryField(Brand $brand = null)
     {

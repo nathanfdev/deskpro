@@ -105,7 +105,7 @@ class NewFeedback
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
             : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
-        $cat                = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
+        $cat                = $this->em->find('DeskPRO:CommunityChannel', $this->category_id);
         $feedback->category = $cat;
         $this->em->persist($feedback);
         $this->em->flush();
@@ -118,7 +118,7 @@ class NewFeedback
         if ($this->attach_ids) {
             $attachBlobs = $this->em->getRepository(Blob::class)->findBy(['id' => $this->attach_ids]);
             foreach ($attachBlobs as $blob) {
-                $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                $attach = new \Application\DeskPRO\Entity\CommunityTopicAttachment();
                 $attach->setPerson($feedback->getPerson())->setFeedback($feedback)->setBlob($blob->setIsTemp(false));
                 $feedback->addAttachment($attach);
                 $this->em->persist($attach);

@@ -10,8 +10,8 @@ namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -490,7 +490,7 @@ class CategoryHierarchy
             ArticleCategory::class,
             DownloadCategory::class,
             NewsCategory::class,
-            FeedbackCategory::class,
+            CommunityChannel::class,
         ];
 
         if (in_array($this->class->name, $brandRelatedCategories)) {

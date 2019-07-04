@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Custom data.
  */
-class CustomDataFeedback extends CustomDataAbstract
+class CustomDataCommunityTopic extends CustomDataAbstract
 {
     /**
      * @var \Application\DeskPRO\Entity\CommunityTopic
@@ -23,12 +23,12 @@ class CustomDataFeedback extends CustomDataAbstract
     protected $topic;
 
     /**
-     * @var CustomDefFeedback
+     * @var CustomDefCommunityTopic
      */
     protected $field;
 
     /**
-     * @var CustomDefFeedback
+     * @var CustomDefCommunityTopic
      */
     protected $root_field;
 
@@ -48,11 +48,11 @@ class CustomDataFeedback extends CustomDataAbstract
     /**
      * Set a field.
      *
-     * @param CustomDefFeedback $field
+     * @param CustomDefCommunityTopic $field
      *
      * @return $this
      */
-    public function setField(CustomDefFeedback $field = null)
+    public function setField(CustomDefCommunityTopic $field = null)
     {
         $this->setModelField('field', $field);
 
@@ -70,11 +70,11 @@ class CustomDataFeedback extends CustomDataAbstract
     /**
      * Set a root field.
      *
-     * @param CustomDefFeedback $field
+     * @param CustomDefCommunityTopic $field
      *
      * @return $this
      */
-    public function setRootField(CustomDefFeedback $field = null)
+    public function setRootField(CustomDefCommunityTopic $field = null)
     {
         $this->setModelField('root_field', $field);
 
@@ -165,7 +165,7 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'field',
-                'targetEntity' => CustomDefFeedback::class,
+                'targetEntity' => CustomDefCommunityTopic::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -182,7 +182,7 @@ class CustomDataFeedback extends CustomDataAbstract
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'root_field',
-                'targetEntity' => CustomDefFeedback::class,
+                'targetEntity' => CustomDefCommunityTopic::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [

@@ -237,7 +237,7 @@ class SelectPart
         'email_sources'               => 'DeskPRO:EmailSource',
         'feedback'                    => 'DeskPRO:CommunityTopic',
         'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
-        'feedback_categories'         => 'DeskPRO:FeedbackCategory',
+        'feedback_categories'         => 'DeskPRO:CommunityChannel',
         'feedback_comments'           => 'DeskPRO:FeedbackComment',
         'glossary_words'              => 'DeskPRO:GlossaryWord',
         'glossary_word_definitions'   => 'DeskPRO:GlossaryWordDefinition',

@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\FeedbackTypes\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -46,7 +46,7 @@ class FeedbackTypePropsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => FeedbackCategory::class,
+            'data_class' => CommunityChannel::class,
         ]);
     }
 

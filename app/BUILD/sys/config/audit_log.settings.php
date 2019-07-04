@@ -12,7 +12,7 @@ use Application\DeskPRO\Entity\CustomDataProduct;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefProduct;
@@ -177,7 +177,7 @@ return [
         ],
     ],
 
-    CustomDefFeedback::class => [
+    CustomDefCommunityTopic::class => [
         AuditListener::ALL => [
             'fields' => ['parent', 'title', 'description', 'options', 'is_enabled'],
         ],

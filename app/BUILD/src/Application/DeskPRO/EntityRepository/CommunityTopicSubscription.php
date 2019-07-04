@@ -8,23 +8,23 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\CommunityTopic as FeedbackEntity;
+use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
 
-class FeedbackSubscription extends AbstractEntityRepository
+class CommunityTopicSubscription extends AbstractEntityRepository
 {
     /**
-     * @param FeedbackEntity|int $feedback
+     * @param CommunityTopicEntity|int $feedback
      *
      * @return array
      */
     public function getSubscribedPersonIds($topic)
     {
-        if ($topic instanceof FeedbackEntity) {
-            $topic = $topic->id;
+        if ($topic instanceof CommunityTopicEntity) {
+            $topic = $topic->getId();
         }
 
         $query = $this->getEntityManager()->createQuery(
-            'SELECT DISTINCT IDENTITY(cts.person) FROM DeskPRO:FeedbackSubscription cts WHERE cts.topic = :topic'
+            'SELECT DISTINCT IDENTITY(cts.person) FROM DeskPRO:CommunityTopicSubscription cts WHERE cts.topic = :topic'
         );
         $query->setParameter('topic', $topic);
 

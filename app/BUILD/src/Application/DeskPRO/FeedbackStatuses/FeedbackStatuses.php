@@ -6,7 +6,7 @@
 
 namespace Application\DeskPRO\FeedbackStatuses;
 
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Doctrine\ORM\EntityManager;
 
 class FeedbackStatuses
@@ -17,12 +17,12 @@ class FeedbackStatuses
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory[]
+     * @var \Application\DeskPRO\Entity\CommunityTopicStatusCategory[]
      */
     protected $active_statuses;
 
     /**
-     * @var \Application\DeskPRO\Entity\FeedbackStatusCategory[]
+     * @var \Application\DeskPRO\Entity\CommunityTopicStatusCategory[]
      */
     protected $closed_statuses;
 
@@ -40,8 +40,8 @@ class FeedbackStatuses
             return;
         }
 
-        $this->active_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getActiveCategories();
-        $this->closed_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getClosedCategories();
+        $this->active_statuses = $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->getActiveCategories();
+        $this->closed_statuses = $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->getClosedCategories();
     }
 
     /**
@@ -57,15 +57,15 @@ class FeedbackStatuses
     /**
      * @param int $id
      *
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
+     * @return \Application\DeskPRO\Entity\CommunityTopicStatusCategory
      */
     public function getById($id)
     {
-        return $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->get($id);
+        return $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->get($id);
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
+     * @return \Application\DeskPRO\Entity\CommunityTopicStatusCategory[]
      */
     public function getAll()
     {
@@ -75,7 +75,7 @@ class FeedbackStatuses
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
+     * @return \Application\DeskPRO\Entity\CommunityTopicStatusCategory[]
      */
     public function getActiveStatuses()
     {
@@ -85,7 +85,7 @@ class FeedbackStatuses
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory[]
+     * @return \Application\DeskPRO\Entity\CommunityTopicStatusCategory[]
      */
     public function getClosedStatuses()
     {
@@ -105,11 +105,11 @@ class FeedbackStatuses
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
+     * @return \Application\DeskPRO\Entity\CommunityTopicStatusCategory
      */
     public function createNew()
     {
-        return FeedbackStatusCategory::createFeedbackStatusCategory();
+        return CommunityTopicStatusCategory::createCommunityTopicStatusCategory();
     }
 
     /**
@@ -119,7 +119,7 @@ class FeedbackStatuses
     {
         $x = 10;
 
-        $feedback_statuses = $this->em->getRepository('DeskPRO:FeedbackStatusCategory')->getByIds($newOrders);
+        $feedback_statuses = $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
             if (!isset($feedback_statuses[$id])) {

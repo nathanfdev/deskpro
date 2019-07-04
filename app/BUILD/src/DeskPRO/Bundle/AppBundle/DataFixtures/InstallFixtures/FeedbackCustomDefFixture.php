@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -29,7 +29,7 @@ class FeedbackCustomDefFixture extends AbstractDpFixture implements OrderedFixtu
     {
         $brands = $manager->getRepository(Brand::class)->findAll();
         foreach ($brands as $brand) {
-            $customCatDef = new CustomDefFeedback();
+            $customCatDef = new CustomDefCommunityTopic();
             $customCatDef
                 ->setBrand($brand)
                 ->setSysName('cat')

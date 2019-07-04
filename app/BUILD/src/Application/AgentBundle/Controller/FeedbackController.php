@@ -13,20 +13,20 @@ use Application\AgentBundle\Validator\NewFeedbackValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackComment;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicComment;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\EntityRepository\Feedback as FeedbackRepository;
-use Application\DeskPRO\EntityRepository\FeedbackCategory as FeedbackCategoryRepository;
-use Application\DeskPRO\EntityRepository\FeedbackComment as FeedbackCommentRepository;
-use Application\DeskPRO\EntityRepository\FeedbackStatusCategory as FeedbackStatusCategoryRepository;
+use Application\DeskPRO\EntityRepository\CommunityChannel as CommunityChannelRepository;
+use Application\DeskPRO\EntityRepository\CommunityTopic as CommunityTopicRepository;
+use Application\DeskPRO\EntityRepository\CommunityTopicComment as CommunityTopicCommentRepository;
+use Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory as CommunityTopicStatusCategoryRepository;
 use Application\DeskPRO\EntityRepository\PersonPref as PersonPrefRepository;
 use Application\DeskPRO\EntityRepository\SearchLog as SearchLogRepository;
 use Application\DeskPRO\EntityRepository\SearchStickyResult as SearchStickyResultRepository;
@@ -73,31 +73,31 @@ class FeedbackController extends AbstractController
             $selectedBrandId = $this->get('brand_stack')->getDefaultBrand()->getId();
         }
 
-        /** @var FeedbackRepository $feedbackRepository */
-        /* @var FeedbackCategoryRepository $feedbackCategoryRepository */
-        /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
-        /* @var FeedbackCommentRepository $feedbackCommentRepository */
-        $feedbackRepository               = $this->em->getRepository(CommunityTopic::class);
-        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
-        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
-        $feedbackCommentRepository        = $this->em->getRepository(FeedbackComment::class);
+        /** @var CommunityTopicRepository $CommunityTopicRepository */
+        /* @var CommunityChannelRepository $CommunityChannelRepository */
+        /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        /* @var CommunityTopicCommentRepository $CommunityTopicCommentRepository */
+        $CommunityTopicRepository               = $this->em->getRepository(CommunityTopic::class);
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+        $CommunityTopicCommentRepository        = $this->em->getRepository(CommunityTopicComment::class);
 
         $counts = [
-            'feedback_awaiting_validation' => $feedbackRepository->countAwaitingValidation(),
-            'comments_awaiting_validation' => $feedbackCommentRepository->countAwaitingValidation(),
+            'feedback_awaiting_validation' => $CommunityTopicRepository->countAwaitingValidation(),
+            'comments_awaiting_validation' => $CommunityTopicCommentRepository->countAwaitingValidation(),
         ];
 
         $statusCounts = [
-            'active' => $feedbackRepository->countActiveGrouped($selectedBrandId),
-            'closed' => $feedbackRepository->countClosedGrouped($selectedBrandId),
-            'hidden' => $feedbackRepository->countHiddenGrouped($selectedBrandId),
+            'active' => $CommunityTopicRepository->countActiveGrouped($selectedBrandId),
+            'closed' => $CommunityTopicRepository->countClosedGrouped($selectedBrandId),
+            'hidden' => $CommunityTopicRepository->countHiddenGrouped($selectedBrandId),
         ];
 
-        $categoryCounts = $feedbackRepository->countAllCategoriesGrouped();
+        $categoryCounts = $CommunityTopicRepository->countAllCategoriesGrouped();
 
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($selectedBrandId);
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($selectedBrandId);
-        $feedbackCategories     = array_filter($feedbackCategoryRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
+        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
+        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
+        $feedbackCategories     = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
             return $category['brand_id'] === $selectedBrandId;
         });
 
@@ -138,19 +138,19 @@ class FeedbackController extends AbstractController
     {
         $perPage = 25;
 
-        /** @var \Application\DeskPRO\EntityRepository\Feedback $feedbackRepository */
-        $feedbackRepository = $this->em->getRepository(CommunityTopic::class);
-        $pageinfo           = $total           = null;
+        /** @var \Application\DeskPRO\EntityRepository\Feedback $CommunityTopicRepository */
+        $CommunityTopicRepository = $this->em->getRepository(CommunityTopic::class);
+        $pageinfo                 = $total                 = null;
 
         $currentPage = $this->in->getUInt('page') ?: 1;
         $offset      = (($currentPage - 1 >= 0) ? $currentPage - 1 : 1) * $perPage;
 
         if (!@$_REQUEST['_partial']) {
-            $total    = $feedbackRepository->countAwaitingValidation();
+            $total    = $CommunityTopicRepository->countAwaitingValidation();
             $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
         }
 
-        $contentValidating = $feedbackRepository->getAwaitingValidation($perPage, $offset);
+        $contentValidating = $CommunityTopicRepository->getAwaitingValidation($perPage, $offset);
         $info              = [];
         foreach ($contentValidating as $feedback) {
             /* @var CommunityTopic $feedback */
@@ -198,16 +198,16 @@ class FeedbackController extends AbstractController
         /** @var PublishChecker $publishChecker */
         /* @var SearchLogRepository $searchLogRepository */
         /* @var PersonPrefRepository $personPrefRepository */
-        /* @var FeedbackCategoryRepository $feedbackCategoryRepository */
+        /* @var CommunityChannelRepository $CommunityChannelRepository */
         /* @var SearchStickyResultRepository $searchStickyResultRepository */
-        /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
-        $publishChecker                   = $this->person->getPermissionsManager()->get('PublishChecker');
-        $fieldManager                     = $this->container->getSystemService('feedback_fields_manager');
-        $searchLogRepository              = $this->em->getRepository(SearchLog::class);
-        $personPrefRepository             = $this->em->getRepository(PersonPref::class);
-        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
-        $searchStickyResultRepository     = $this->em->getRepository(SearchStickyResult::class);
-        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+        /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        $publishChecker                         = $this->person->getPermissionsManager()->get('PublishChecker');
+        $fieldManager                           = $this->container->getSystemService('feedback_fields_manager');
+        $searchLogRepository                    = $this->em->getRepository(SearchLog::class);
+        $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $searchStickyResultRepository           = $this->em->getRepository(SearchStickyResult::class);
+        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
         $customFields        = $fieldManager->getDisplayArrayForObject($feedback);
         $feedbackComments    = [];
@@ -228,9 +228,9 @@ class FeedbackController extends AbstractController
         $relatedContent         = $relatedFinder->getRelatedEntities(true);
         $feedbackRevisions      = $feedback->getRevisions();
         $stickySearchWords      = $searchStickyResultRepository->getWordsForObject($feedback);
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($feedback->getBrand());
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($feedback->getBrand());
-        $feedbackCategories     = array_filter($feedbackCategoryRepository->getInHierarchy(), function ($category) use ($feedback) {
+        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($feedback->getBrand());
+        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($feedback->getBrand());
+        $feedbackCategories     = array_filter($CommunityChannelRepository->getInHierarchy(), function ($category) use ($feedback) {
             return $feedback->getBrand() && $category['brand_id'] === $feedback->getBrand()->getId();
         });
 
@@ -239,7 +239,7 @@ class FeedbackController extends AbstractController
         $ticketFeedbackLinks = $feedbackRepo->findByTopic($feedback);
 
         //@TODO: select only needed data to display persons
-        $subscribedIds = $this->em->getRepository('DeskPRO:FeedbackSubscription')->getSubscribedPersonIds($feedback);
+        $subscribedIds = $this->em->getRepository('DeskPRO:CommunityTopicSubscription')->getSubscribedPersonIds($feedback);
         // limit to 250
         $subscribedIds     = array_slice($subscribedIds, 0, 250);
         $subscribedPersons = $this->em->getRepository('DeskPRO:Person')->findById($subscribedIds);
@@ -296,7 +296,7 @@ class FeedbackController extends AbstractController
 
     public function ajaxGetCategoriesByBrandAction($brand_id)
     {
-        $feedbackCategories = array_filter($this->em->getRepository(FeedbackCategory::class)->getFlatHierarchy(), function ($category) use ($brand_id) {
+        $feedbackCategories = array_filter($this->em->getRepository(CommunityChannel::class)->getFlatHierarchy(), function ($category) use ($brand_id) {
             return $category['brand_id'] === (int) $brand_id;
         });
 
@@ -314,10 +314,10 @@ class FeedbackController extends AbstractController
 
     public function ajaxGetStatusesByBrandAction($brand_id)
     {
-        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($brand_id);
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($brand_id);
+        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($brand_id);
+        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($brand_id);
 
         return $this->render('AgentBundle:Common:select-feedback-status.html.twig', [
             'name'               => 'newfeedback[status_code]',
@@ -391,7 +391,7 @@ class FeedbackController extends AbstractController
     public function ajaxUpdateCategoryAction($feedback_id, $category_id)
     {
         $feedback = $this->getFeedback($feedback_id);
-        $cat      = $this->em->find(FeedbackCategory::class, $category_id);
+        $cat      = $this->em->find(CommunityChannel::class, $category_id);
         $feedback->setCategory($cat);
 
         $this->em->transactional(
@@ -523,7 +523,7 @@ class FeedbackController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $comment = new FeedbackComment();
+        $comment = new CommunityTopicComment();
         $comment
             ->setIsReviewed(true)
             ->setContent($this->in->getString('content'))
@@ -657,7 +657,7 @@ class FeedbackController extends AbstractController
                 break;
 
             case 'category':
-                $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUInt('category_id'));
+                $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('category_id'));
                 if ($cat) {
                     $feedback['category'] = $cat;
                     $data['category_id']  = $cat['id'];
@@ -864,7 +864,7 @@ class FeedbackController extends AbstractController
             $resultHelper = $topResultHelper;
         }
 
-        $cat = $this->em->find('DeskPRO:FeedbackCategory', $category_id);
+        $cat = $this->em->find('DeskPRO:CommunityChannel', $category_id);
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('status')->setIds($topResultHelper->getFeedbackIds());
@@ -1043,15 +1043,15 @@ class FeedbackController extends AbstractController
 
         $brandId = isset($templateVars['brand_id']) ? $templateVars['brand_id'] : null;
 
-        /** @var FeedbackCategoryRepository $feedbackCategoryRepository */
-        /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
-        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
-        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+        /** @var CommunityChannelRepository $CommunityChannelRepository */
+        /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
         // Options for the filter form
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($brandId);
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($brandId);
-        $feedbackCategories     = array_filter($feedbackCategoryRepository->getFlatHierarchy(), function ($category) use ($brandId) {
+        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($brandId);
+        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($brandId);
+        $feedbackCategories     = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($brandId) {
             return $category['brand_id'] === $brandId;
         });
 
@@ -1180,10 +1180,10 @@ class FeedbackController extends AbstractController
      */
     private function getNextValidationFeedback(CommunityTopic $current)
     {
-        /** @var FeedbackRepository $feedbackRepository */
-        $feedbackRepository = $this->em->getRepository(CommunityTopic::class);
+        /** @var CommunityTopicRepository $CommunityTopicRepository */
+        $CommunityTopicRepository = $this->em->getRepository(CommunityTopic::class);
         /** @var CommunityTopic[] $awaitingValidation */
-        $awaitingValidation = $feedbackRepository->getAwaitingValidation(1000);
+        $awaitingValidation = $CommunityTopicRepository->getAwaitingValidation(1000);
         while (current($awaitingValidation)) {
             if ($current->getId() !== current($awaitingValidation)->getId()) {
                 return current($awaitingValidation);
@@ -1207,9 +1207,9 @@ class FeedbackController extends AbstractController
     {
         $this->em->beginTransaction();
 
-        /** @var FeedbackRepository $feedbackRepository */
-        $feedbackRepository = $this->em->getRepository(CommunityTopic::class);
-        $feedbackCollection = $feedbackRepository->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+        /** @var CommunityTopicRepository $CommunityTopicRepository */
+        $CommunityTopicRepository = $this->em->getRepository(CommunityTopic::class);
+        $feedbackCollection       = $CommunityTopicRepository->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
 
         foreach ($feedbackCollection as $feedback) {
             /* @var CommunityTopic $feedback */
@@ -1219,7 +1219,7 @@ class FeedbackController extends AbstractController
                     break;
 
                 case 'set-category':
-                    $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->in->getUInt('category_id'));
+                    $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('category_id'));
                     if ($cat) {
                         $feedback->setCategory($cat);
                     }
@@ -1316,15 +1316,15 @@ class FeedbackController extends AbstractController
         }
 
         /** @var PersonPrefRepository $personPrefRepository */
-         /* @var FeedbackCategoryRepository       $feedbackCategoryRepository */
-         /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
-        $personPrefRepository             = $this->em->getRepository(PersonPref::class);
-        $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
-        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+         /* @var CommunityChannelRepository       $CommunityChannelRepository */
+         /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($selectedBrandId);
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($selectedBrandId);
-        $feedbackCategories     = array_filter($feedbackCategoryRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
+        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
+        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
+        $feedbackCategories     = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
             return $category['brand_id'] === $selectedBrandId;
         });
 

@@ -9,10 +9,12 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicAttachment;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -20,8 +22,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\FeedbackAttachment;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -229,7 +229,7 @@ class MapperRegistry
      */
     public function getFeedbackAttachmentMapper()
     {
-        return $this->getMapper(FeedbackAttachment::class);
+        return $this->getMapper(CommunityTopicAttachment::class);
     }
 
     /**
@@ -239,7 +239,7 @@ class MapperRegistry
      */
     public function getFeedbackCustomDefMapper()
     {
-        return $this->getMapper(CustomDefFeedback::class);
+        return $this->getMapper(CustomDefCommunityTopic::class);
     }
 
     /**
@@ -249,7 +249,7 @@ class MapperRegistry
      */
     public function getFeedbackCategoryMapper()
     {
-        return $this->getMapper(FeedbackCategory::class);
+        return $this->getMapper(CommunityChannel::class);
     }
 
     /**

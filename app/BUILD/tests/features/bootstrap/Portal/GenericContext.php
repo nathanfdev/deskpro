@@ -9,11 +9,11 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -303,7 +303,7 @@ class GenericContext extends BasePortalContext
                 $em->persist($blob);
                 break;
             case 'feedback':
-                $fcat = $em->getRepository(FeedbackCategory::class)->findOneBy([
+                $fcat = $em->getRepository(CommunityChannel::class)->findOneBy([
                     'id' => 1,
                 ]);
 
@@ -446,7 +446,7 @@ class GenericContext extends BasePortalContext
             case 'news':
                 return NewsCategory::class;
             case 'feedback':
-                return FeedbackCategory::class;
+                return CommunityChannel::class;
         }
     }
 

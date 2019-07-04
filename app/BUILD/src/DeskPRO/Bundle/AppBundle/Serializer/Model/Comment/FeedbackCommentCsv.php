@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Comment;
 
-use Application\DeskPRO\Entity\FeedbackComment as CommentEntity;
+use Application\DeskPRO\Entity\CommunityTopicComment as CommentEntity;
 use JMS\Serializer\Annotation as JMS;
 
 class FeedbackCommentCsv extends FeedbackComment

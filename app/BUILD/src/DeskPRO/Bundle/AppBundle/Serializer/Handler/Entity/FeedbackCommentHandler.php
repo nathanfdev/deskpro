@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\FeedbackComment as FeedbackCommentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\FeedbackCommentCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -12,11 +12,11 @@ class FeedbackCommentHandler extends AbstractEntityHandler
     /**
      * {@inheritdoc}
      *
-     * @param FeedbackComment $entity
+     * @param CommunityTopicComment $entity
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        $serializerClass = $context->getMappedClass(FeedbackComment::class);
+        $serializerClass = $context->getMappedClass(CommunityTopicComment::class);
 
         if ($serializerClass === FeedbackCommentCsv::class) {
             return new FeedbackCommentCsv($entity);
@@ -30,6 +30,6 @@ class FeedbackCommentHandler extends AbstractEntityHandler
      */
     public static function getClassNames()
     {
-        return FeedbackComment::class;
+        return CommunityTopicComment::class;
     }
 }

@@ -22,6 +22,6 @@ class FeedbackCategories extends BasicTreeCategoryPermission
 
     protected function getCategoryEntity()
     {
-        return 'DeskPRO:FeedbackCategory';
+        return 'DeskPRO:CommunityChannel';
     }
 }

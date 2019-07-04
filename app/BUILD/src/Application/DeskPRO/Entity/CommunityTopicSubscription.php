@@ -8,10 +8,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
+class CommunityTopicSubscription extends DomainObject
 {
     /**
      * @var int
@@ -76,7 +77,7 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackSubscription';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicSubscription';
         $metadata->setPrimaryTable(
             [
                 'name'    => 'community_topic_subscriptions',

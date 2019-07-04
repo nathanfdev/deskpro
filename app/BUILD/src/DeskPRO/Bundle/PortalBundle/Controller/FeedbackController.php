@@ -3,8 +3,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\FeedbackComment;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicComment;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
@@ -430,7 +430,7 @@ class FeedbackController extends AbstractController
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
             $formHandler = $this->get('form_handler.comment');
-            $comment     = new FeedbackComment();
+            $comment     = new CommunityTopicComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $newCommentForm = $formHandler->createForm($comment, $request);
@@ -627,13 +627,13 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
+     * @return \Application\DeskPRO\Entity\CommunityTopicStatusCategory
      */
     protected function getDefaultStatusCategory()
     {
         $feedbackDataService   = $this->getFeedbackDataService();
         $defaultStatusCategory = $feedbackDataService->getFeedbackFirstStatusCategoryByType(
-            FeedbackStatusCategory::STATUS_ACTIVE
+            CommunityTopicStatusCategory::STATUS_ACTIVE
         );
 
         return $defaultStatusCategory;
@@ -653,7 +653,7 @@ class FeedbackController extends AbstractController
         }
 
         $statusCategories       = [];
-        $statusCategoriesEntity = $this->getRepo('DeskPRO:FeedbackStatusCategory')->findBy(
+        $statusCategoriesEntity = $this->getRepo('DeskPRO:CommunityTopicStatusCategory')->findBy(
             ['status_type' => FeedbackFilter::$statuses]
         );
         foreach ($statusCategoriesEntity as $statusCategory) {

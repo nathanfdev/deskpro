@@ -10,7 +10,7 @@ namespace Application\DeskPRO\Feedback;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 
@@ -158,7 +158,7 @@ class FeedbackMerge implements PersonContextInterface
 
     public function mergeDescription()
     {
-        $comment = new FeedbackComment();
+        $comment = new CommunityTopicComment();
 
         $comment->person       = $this->other_feedback->person;
         $comment->content      = $this->other_feedback->content;

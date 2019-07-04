@@ -7,7 +7,7 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefProduct;
@@ -116,7 +116,7 @@ class ReportsWidgetService
         $groupParams['user_custom_fields']     = $this->customFields(CustomDefPerson::class, $addReportLevel);
         $groupParams['article_custom_fields']  = $this->customFields(CustomDefArticle::class, $addReportLevel);
         $groupParams['chat_custom_fields']     = $this->customFields(CustomDefChat::class, $addReportLevel);
-        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefFeedback::class, $addReportLevel);
+        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefCommunityTopic::class, $addReportLevel);
         $groupParams['billing_custom_fields']  = $this->customFields(CustomDefBilling::class, $addReportLevel);
         $groupParams['product_custom_fields']  = $this->customFields(CustomDefProduct::class, $addReportLevel);
 

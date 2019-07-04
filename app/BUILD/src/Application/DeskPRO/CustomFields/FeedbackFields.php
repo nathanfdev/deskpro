@@ -11,6 +11,6 @@ namespace Application\DeskPRO\CustomFields;
  */
 class FeedbackFields extends AbstractFields
 {
-    const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefFeedback';
-    const ENTITY_NAME  = 'DeskPRO:CustomDefFeedback';
+    const ENTITY_CLASS = 'Application\\DeskPRO\\Entity\\CustomDefCommunityTopic';
+    const ENTITY_NAME  = 'DeskPRO:CustomDefCommunityTopic';
 }

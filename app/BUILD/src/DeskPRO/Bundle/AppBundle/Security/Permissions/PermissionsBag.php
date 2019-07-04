@@ -8,10 +8,10 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -163,7 +163,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
             }
 
             return false;
-        } elseif ($contentOrCategory instanceof FeedbackCategory) {
+        } elseif ($contentOrCategory instanceof CommunityChannel) {
             return in_array($contentOrCategory->getId(), $this->getAllowedFeedbackCategoryIds());
 
             // DOWNLOAD

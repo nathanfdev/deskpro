@@ -2,19 +2,19 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class CustomDefFeedback extends CustomDefAbstract
+class CustomDefCommunityTopic extends CustomDefAbstract
 {
     /**
      * @param Brand $brand
      *
-     * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
+     * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic|null
      */
     public function getCategoryField(\Application\DeskPRO\Entity\Brand $brand)
     {
         return $this->_em
             ->createQuery("
                 SELECT f
-                FROM DeskPRO:CustomDefFeedback f
+                FROM DeskPRO:CustomDefCommunityTopic f
                 WHERE f.sys_name = 'cat' AND f.brand = :brand
             ")
             ->setParameter('brand', $brand)
@@ -24,11 +24,11 @@ class CustomDefFeedback extends CustomDefAbstract
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\CustomDefFeedback $parent_category
+     * @param \Application\DeskPRO\Entity\CustomDefCommunityTopic $parent_category
      *
      * @return array
      */
-    public function getAllFlatData(\Application\DeskPRO\Entity\CustomDefFeedback $parent_category)
+    public function getAllFlatData(\Application\DeskPRO\Entity\CustomDefCommunityTopic $parent_category)
     {
         $hierarchy = [];
 

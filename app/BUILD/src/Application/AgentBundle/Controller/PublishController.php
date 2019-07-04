@@ -13,10 +13,10 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -452,7 +452,7 @@ class PublishController extends AbstractController
             case 'news':
                 return NewsComment::class;
             case 'feedback':
-                return FeedbackComment::class;
+                return CommunityTopicComment::class;
             default:
                 return '';
         }

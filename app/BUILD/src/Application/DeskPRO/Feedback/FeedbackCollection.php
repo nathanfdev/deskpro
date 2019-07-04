@@ -24,7 +24,7 @@ class FeedbackCollection
     protected $feedbacks;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDataFeedback[]
+     * @var \Application\DeskPRO\Entity\CustomDataCommunityTopic[]
      */
     protected $feedback_data;
 
@@ -97,7 +97,7 @@ class FeedbackCollection
     /**
      * Get an array of all custom data on feedback.
      *
-     * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
+     * @return \Application\DeskPRO\Entity\CustomDataCommunityTopic[]
      */
     public function getCustomData()
     {
@@ -134,7 +134,7 @@ class FeedbackCollection
      *
      * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
      *
-     * @return \Application\DeskPRO\Entity\CustomDataFeedback[]
+     * @return \Application\DeskPRO\Entity\CustomDataCommunityTopic[]
      */
     public function getDataForFeedback(CommunityTopic $feedback)
     {

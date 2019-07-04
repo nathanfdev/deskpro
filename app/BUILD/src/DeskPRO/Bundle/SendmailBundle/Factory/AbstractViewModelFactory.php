@@ -8,8 +8,8 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -88,7 +88,7 @@ abstract class AbstractViewModelFactory
             case CommunityTopic::class:
                 $handler = $this->container->get('api_serializer.handler.feedback');
                 break;
-            case FeedbackComment::class:
+            case CommunityTopicComment::class:
                 $handler = $this->container->get('api_serializer.handler.feedback_comment');
                 break;
             case LayoutField::class:

@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories;
 
-use Application\DeskPRO\Entity\FeedbackCategory as FeedbackCategoryEntity;
+use Application\DeskPRO\Entity\CommunityChannel as FeedbackCategoryEntity;
 use Application\DeskPRO\Entity\Usergroup;
 use JMS\Serializer\Annotation as JMS;
 
@@ -14,18 +14,18 @@ class FeedbackCategory extends CategoryAbstract
     /**
      * Category`s parent.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\FeedbackCategory>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityChannel>")
      *
-     * @var \Application\DeskPRO\Entity\FeedbackCategory
+     * @var \Application\DeskPRO\Entity\CommunityChannel
      */
     protected $parent;
 
     /**
      * Category`s children.
      *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\FeedbackCategory>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\CommunityChannel>>")
      *
-     * @var \Application\DeskPRO\Entity\FeedbackCategory[]
+     * @var \Application\DeskPRO\Entity\CommunityChannel[]
      */
     protected $children;
 

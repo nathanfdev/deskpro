@@ -18,10 +18,10 @@ class FeedbackFieldsManagerService
         $m = new FeedbackFieldManager(
             $container->get('doctrine.orm.entity_manager'),
             [
-                'entity_class'      => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-                'entity_name'       => 'DeskPRO:CustomDefFeedback',
-                'data_entity_class' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
-                'data_entity_name'  => 'DeskPRO:CustomDataFeedback',
+                'entity_class'      => 'Application\\DeskPRO\\Entity\\CustomDefCommunityTopic',
+                'entity_name'       => 'DeskPRO:CustomDefCommunityTopic',
+                'data_entity_class' => 'Application\\DeskPRO\\Entity\\CustomDataCommunityTopic',
+                'data_entity_name'  => 'DeskPRO:CustomDataCommunityTopic',
             ]
         );
 
