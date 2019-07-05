@@ -20,12 +20,13 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
      * @param null|string $query
      * @param null|string $sort
      * @param array       $limitTypes
+     *
      * @return array|mixed
      */
     public function quickSearch($query = null, $sort = null, array $limitTypes = [])
     {
         // check if we need to proceed
-        if (! $this->proceedWithSearch($query)) {
+        if (!$this->proceedWithSearch($query)) {
             return array_map(function ($object) {
                 return [$object => []];
             }, array_keys($this->objects));
@@ -47,7 +48,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                 $entityRepository = $this->getEntityManager()
                     ->getRepository($this->objects[$matcher['object']]);
 
-                /**
+                /*
                  * For tickets search we use custom logic in order to utilize
                  * findTicketRef(), SearchTicketRef() and findTicketId() methods,
                  * and check ticket permissions for logged in user if any.
@@ -63,11 +64,11 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                      */
                     $entity = $entityRepository->findOneBy(
                         [
-                            $matcher['field'] => $matcher['param']
+                            $matcher['field'] => $matcher['param'],
                         ]
                     );
 
-                    /**
+                    /*
                      * Add to results set if it's not null
                      *
                      * @todo: maybe better use instanceof, but this will
@@ -109,7 +110,6 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
         }
         $result_meta = [];
         $people_top  = false;
-
 
         //------------------------------
         // ID based
@@ -439,6 +439,10 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
                 $results['twitter'] = $q;
             }
         }
+
+        // Support old code. Check also: AbstractSearchManager::handleResult
+        $results['chat_conversation'] = $results['chat'];
+        unset($results['chat']);
 
         return [$results, $result_meta, $people_top];
     }
