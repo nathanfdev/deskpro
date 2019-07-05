@@ -1,4 +1,3 @@
-@new
 Feature: /outgoing-emails endpoint
   To process outgoing emails
   As an API user
