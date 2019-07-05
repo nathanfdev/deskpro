@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class TicketWorkflow extends AbstractEntityRepository
+class TicketWorkflow extends AbstractEntityRepository implements TicketBuiltInFieldInterface
 {
     public function countAll()
     {

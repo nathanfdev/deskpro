@@ -1211,6 +1211,52 @@ class Ticket extends AbstractEntityRepository
     }
 
     /**
+     * Select ticket count by TicketCategory|Priority|Workflow|Product
+     * Also takes children into count.
+     *
+     * @param string $fieldName
+     * @param []     $fieldIds
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return int
+     */
+    public function getCountByTicketFieldIds($fieldName, $fieldIds)
+    {
+        if (!in_array($fieldName, ['priority', 'category', 'workflow', 'product'])) {
+            throw new \InvalidArgumentException(sprintf('Wrong field name `%s`', $fieldName));
+        }
+
+        $qb = $this
+            ->createQueryBuilder('ticket')
+            ->select('COUNT(ticket)')
+            ->innerJoin('ticket.'.$fieldName, 'field')
+            ->where('field.id IN (:fieldIds)');
+        if (!in_array($fieldName, ['workflow', 'priority'])) {
+            $qb->orWhere('field.parent IN (:fieldIds)');
+        }
+        $qb->setParameter('fieldIds', $fieldIds);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
+
+    /**
+     * @param string $fieldName
+     * @param array  $fromIds
+     * @param int    $toId
+     */
+    public function updateTicketFieldsTo($fieldName, $fromIds, $toId)
+    {
+        $con = $this->_em->getConnection();
+        $q   = sprintf('update tickets set %s_id = :to where %s_id in (:ids)', $fieldName, $fieldName);
+        $con->executeQuery(
+            $q,
+            ['ids' => $fromIds, 'to' => $toId],
+            ['ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT]
+        );
+    }
+
+    /**
      * @param $number
      *
      * @return TicketEntity|null

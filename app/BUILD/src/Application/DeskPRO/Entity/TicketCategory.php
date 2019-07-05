@@ -23,7 +23,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical
+class TicketCategory extends DomainObject implements HasPhraseName, Hierarchical, TicketBuiltInFieldInterface
 {
     /**
      * The unique ID.
