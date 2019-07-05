@@ -112,13 +112,14 @@ class Person extends DomainObject implements
     LabelsOwner,
     GroupSequenceProviderInterface
 {
-    const CREATED_WEB_PERSON     = 'web.person';
-    const CREATED_WEB_AGENT      = 'web.agent';
-    const CREATED_WEB_USERSOURCE = 'web.usersource';
-    const CREATED_GATEWAT_PERSON = 'gateway.person';
-    const CREATED_WEB_API        = 'web.api';
-    const CREATED_PHONE_INBOUND  = 'phone.inbound';
-    const CREATED_PHONE_OUTBOUND = 'phone.outbound';
+    const CREATED_WEB_PERSON      = 'web.person';
+    const CREATED_WEB_AGENT       = 'web.agent';
+    const CREATED_WEB_USERSOURCE  = 'web.usersource';
+    const CREATED_GATEWAT_PERSON  = 'gateway.person';
+    const CREATED_WEB_API         = 'web.api';
+    const CREATED_PHONE_INBOUND   = 'phone.inbound';
+    const CREATED_PHONE_OUTBOUND  = 'phone.outbound';
+    const CREATED_USERSOURCE_SYNC = 'usersource.sync';
 
     const EVENT_PRE_CREATE  = 'person.pre_create';
     const EVENT_POST_CREATE = 'person.post_create';
