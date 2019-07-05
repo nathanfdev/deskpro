@@ -315,7 +315,7 @@ END)
 
                     $linkLookup = $repository->getTableName().'.'.$part;
 
-                    if (isset(self::$_autoLink[$linkLookup])) {
+                    if (!$statement->isSubQuery() && isset(self::$_autoLink[$linkLookup])) {
                         $lookup = self::$_autoLink[$linkLookup];
 
                         if ($section == 'split') {
