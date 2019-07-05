@@ -19,6 +19,8 @@ use JMS\Serializer\Annotation as JMS;
  *     "custom_def_ticket" = "CustomTicketFieldDefinitionAlias",
  *     "custom_def_organization" = "CustomOrganizationFieldDefinitionAlias",
  *     "custom_def_people" = "CustomPeopleFieldDefinitionAlias",
+ *     "custom_def_article" = "CustomArticleFieldDefinitionAlias",
+ *     "custom_def_chat" = "CustomChatFieldDefinitionAlias",
  *     "ticket_triggers" = "TicketTriggerAlias"
  * })
  * @JMS\ExclusionPolicy("all")
@@ -33,7 +35,7 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
-     * @var integer
+     * @var int
      */
     private $id;
 
@@ -101,7 +103,7 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
     /**
      * @param AppInstance $app
      */
-    public function setAppInstance( AppInstance $app)
+    public function setAppInstance(AppInstance $app)
     {
         $this->appInstance = $app;
     }
@@ -127,7 +129,8 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
 
     /**
      * @param mixed $object
-     * @return boolean
+     *
+     * @return bool
      */
     abstract public function tryAndSetObject($object);
 }
