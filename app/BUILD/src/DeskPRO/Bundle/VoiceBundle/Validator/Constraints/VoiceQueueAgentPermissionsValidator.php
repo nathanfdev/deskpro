@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Validator\Constraints;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
-use DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker;
+use DeskPRO\Bundle\VoiceBundle\Permissions\VoicePermissionsChecker;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -14,16 +14,16 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class VoiceQueueAgentPermissionsValidator extends ConstraintValidator
 {
     /**
-     * @var DepartmentChecker
+     * @var VoicePermissionsChecker
      */
     private $departmentChecker;
 
     /**
      * Constructor.
      *
-     * @param DepartmentChecker $departmentChecker
+     * @param VoicePermissionsChecker $departmentChecker
      */
-    public function __construct(DepartmentChecker $departmentChecker)
+    public function __construct(VoicePermissionsChecker $departmentChecker)
     {
         $this->departmentChecker = $departmentChecker;
     }

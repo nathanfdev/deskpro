@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\WorkerHelper;
-use DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker;
+use DeskPRO\Bundle\VoiceBundle\Permissions\VoicePermissionsChecker;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
@@ -38,9 +38,9 @@ class VoiceWorkflow implements WorkflowInterface
     private $storage;
 
     /**
-     * @var DepartmentChecker
+     * @var VoicePermissionsChecker
      */
-    private $departmentChecker;
+    private $permissionsChecker;
 
     /**
      * Constructor.
@@ -49,20 +49,20 @@ class VoiceWorkflow implements WorkflowInterface
      * @param VoiceTaskHelper         $taskHelper
      * @param VoiceSettingsResolver   $settingsResolver
      * @param StorageAdapterInterface $storage
-     * @param DepartmentChecker       $departmentChecker
+     * @param VoicePermissionsChecker $permissionsChecker
      */
     public function __construct(
         WorkerHelper            $workerHelper,
         VoiceTaskHelper         $taskHelper,
         VoiceSettingsResolver   $settingsResolver,
         StorageAdapterInterface $storage,
-        DepartmentChecker       $departmentChecker
+        VoicePermissionsChecker $permissionsChecker
     ) {
-        $this->workerHelper      = $workerHelper;
-        $this->taskHelper        = $taskHelper;
-        $this->settingsResolver  = $settingsResolver;
-        $this->storage           = $storage;
-        $this->departmentChecker = $departmentChecker;
+        $this->workerHelper       = $workerHelper;
+        $this->taskHelper         = $taskHelper;
+        $this->settingsResolver   = $settingsResolver;
+        $this->storage            = $storage;
+        $this->permissionsChecker = $permissionsChecker;
     }
 
     /**
@@ -162,7 +162,7 @@ class VoiceWorkflow implements WorkflowInterface
         if ($voiceQueue) {
             $queueAgentIds = [];
             foreach ($voiceQueue->getActiveAgentsPeople() as $agent) {
-                if ($this->departmentChecker->canBeMemberOfVoiceQueue($voiceQueue, $agent)) {
+                if ($this->permissionsChecker->canBeMemberOfVoiceQueue($voiceQueue, $agent)) {
                     $queueAgentIds[] = $agent->getId();
                 }
             }

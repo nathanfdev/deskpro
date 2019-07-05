@@ -30,6 +30,13 @@ services:
   api_serializer.handler.voice_queue:
     class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\VoiceQueueHandler
     arguments:
-      - "@dp.voice.department_checker"
+      - "@dp.voice.voice_permissions_checker"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.user_chat_queue:
+    class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\UserChatQueueHandler
+    arguments:
+      - "@dp.voice.user_chat_permissions_checker"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
