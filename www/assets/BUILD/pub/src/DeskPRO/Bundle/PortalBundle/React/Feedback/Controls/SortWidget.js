@@ -30,7 +30,11 @@ export class SortWidget extends React.Component {
       'most-views-asc':      portalPhrases.get('portal.general.prop_views_asc')
     };
 
-    const selectedSort = { id: `${filter.sort}-filter.sort_direction`, title: 'Sort' };
+    const selectedSort = {
+      id:    `${filter.sort}-filter.sort_direction`,
+      title: portalPhrases.get('portal.general.sort')
+    };
+
     if (sorts[selectedSort.id]) {
       selectedSort.title = sorts[selectedSort.id];
     }
