@@ -152,8 +152,19 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      */
     protected $message = '';
 
-    public static function createSnippetTicketLog(TicketMessage $ticketMessage, Person $person, SnippetTranslation $snippetTranslation)
-    {
+    /**
+     * @param TicketMessage      $ticketMessage
+     * @param Person             $person
+     * @param SnippetTranslation $snippetTranslation
+     *
+     * @return SnippetUseLog
+     * @throws \Exception
+     */
+    public static function createSnippetTicketLog(
+        TicketMessage $ticketMessage,
+        Person $person,
+        SnippetTranslation $snippetTranslation
+    ) {
         $log = new self();
         $log->setSnippet($snippetTranslation->getSnippet());
         $log->setLanguage($snippetTranslation->getLanguage());
