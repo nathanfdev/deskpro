@@ -4,7 +4,9 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsChecker;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +31,7 @@ class PeopleController extends AbstractApiController
     public function getOnlineAgentsAction(Request $request)
     {
         $defaultDepartmentId = $request->query->getInt('default_department');
+        $defaultQueueId      = $this->get('chat_settings_resolver')->getDefaultQueue();
         $agentIds            = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
         $userDepartmentIds   = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedChatDepartmentIds();
         $brand               = $this->getBrandContainer()->getBrand();
@@ -36,8 +39,32 @@ class PeopleController extends AbstractApiController
             return $department->getId();
         })->getValues();
 
+        /** @var UserChatQueue[] $chatQueues */
+        $chatQueues = $this->getManager()->getRepository(UserChatQueue::class)->findAll();
+        /** @var Department[] $chatDepartments */
+        $chatDepartments = $this->getManager()->getRepository(Department::class)->findBy([
+            'is_chat_enabled' => true,
+        ]);
+
+        $queueTargetsChecker = new UserChatQueueTargetsChecker();
+        $defaultChatQueues   = array_filter($chatQueues, function (UserChatQueue $chatQueue) use ($defaultQueueId) {
+            return $defaultQueueId && $chatQueue->getId() === (int) $defaultQueueId;
+        });
+
+        $defaultChatQueue = reset($defaultChatQueues);
+        if (!$defaultChatQueue && count($chatQueues) > 0) {
+            $defaultChatQueue = $chatQueues[0];
+        }
+
         $agents = $this->getPersonRepository()->findBy(['id' => $agentIds]);
-        $agents = array_filter($agents, function (Person $agent) use ($brandDepartmentIds, $userDepartmentIds, $defaultDepartmentId) {
+        $agents = array_filter($agents, function (Person $agent) use (
+            $brandDepartmentIds,
+            $userDepartmentIds,
+            $defaultDepartmentId,
+            $chatDepartments,
+            $defaultChatQueue,
+            $queueTargetsChecker
+        ) {
             $agent->loadHelper('AgentPermissions');
             $agentDepartmentIds = $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat');
 
@@ -51,6 +78,26 @@ class PeopleController extends AbstractApiController
             }
 
             if ($defaultDepartmentId && !in_array($defaultDepartmentId, $allowedDepartmentIds)) {
+                return false;
+            }
+
+            $agentDepartments = array_filter($chatDepartments, function (Department $department) use ($allowedDepartmentIds) {
+                return in_array($department->getId(), $allowedDepartmentIds);
+            });
+
+            $hasQueueDepartment = false;
+            foreach ($agentDepartments as $department) {
+                $chatQueue = $department->getChatQueue();
+                if (!$chatQueue) {
+                    $chatQueue = $defaultChatQueue;
+                }
+                if ($queueTargetsChecker->isAgentMemberOfChatQueue($chatQueue, $agent)) {
+                    $hasQueueDepartment = true;
+                    break;
+                }
+            }
+
+            if (!$hasQueueDepartment) {
                 return false;
             }
 
