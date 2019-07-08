@@ -166,21 +166,33 @@
                             These templates let you put HTML code at the very top or very bottom of the page.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            <div>
-                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
-                                    Edit Header
-                                </a>
+                            {% if app.hasBeta('template_editor') %}
+                                <div>
+                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-header.html.twig'}") }}">
+                                        Edit Header
+                                    </a>
 
-                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-footer.html.twig'}") }}">
-                                    Edit Footer
-                                </a>
-                            </div>
-                            <br />
-                            <div style="margin-top: 4px;">
-                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
-                                    Edit Head Include
-                                </a>
-                            </div>
+                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-footer.html.twig'}") }}">
+                                        Edit Footer
+                                    </a>
+                                </div>
+                                <br />
+                                <div style="margin-top: 4px;">
+                                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Internal:custom-head-include.html.twig'}") }}">
+                                        Edit Head Include
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div>
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-header.html.twig')">Edit Header</button>
+
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-footer.html.twig')">Edit Footer</button>
+                                </div>
+                                <br />
+                                <div style="margin-top: 4px;">
+                                    <button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Internal:custom-head-include.html.twig')">Edit Head Include</button>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -190,9 +202,13 @@
                             Edit the homepage template to add or remove elements from the main portal homepage.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
-                                Edit Homepage Template
-                            </a>
+                            {% if app.hasBeta('template_editor') %}
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:home.html.twig'}") }}">
+                                    Edit Homepage Template
+                                </a>
+                            {% else %}
+                                <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:home.html.twig')">Edit Homepage Template</button></div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -202,9 +218,13 @@
                             Edit the sidebar template to add or remove elements from the site-wide sidebar.
                         </p>
                         <div style="text-align: center; padding-top: 8px;">
-                            <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:sidebar.html.twig'}") }}">
-                                Edit Sidebar Template
-                            </a>
+                            {% if app.hasBeta('template_editor') %}
+                                <a class="btn btn-default" href="{{ ng_href('portal.templates_editor.edit', "{name: 'Theme:Portal:sidebar.html.twig'}") }}">
+                                    Edit Sidebar Template
+                                </a>
+                            {% else %}
+                                <div style="text-align: center; padding-top: 8px;"><button class="btn btn-default" ng-click="Portal.openTemplateEditor('Theme:Portal:sidebar.html.twig')">Edit Sidebar Template</button></div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -273,9 +293,11 @@
                             ng-change="Portal.editTemplate()"
                             ng-options="t.value as t.name group by t.group for t in Portal.template_options">
                     </select>
-                    <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
-                        Open template editor
-                    </a>
+                    {% if app.hasBeta('template_editor') %}
+                        <a class="btn btn-default" href="{{ ng_href('portal.templates_editor') }}">
+                            Open template editor
+                        </a>
+                    {% endif %}
                 </div>
 
                 <div ng-show="Portal.selected_template">Loading template...</div>
