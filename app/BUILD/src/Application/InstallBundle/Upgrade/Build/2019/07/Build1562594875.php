@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1561542169 extends AbstractBuild implements OnlineBuildInterface
+class Build1562594875 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -10,7 +10,7 @@ class Build1561542169 extends AbstractBuild implements OnlineBuildInterface
 
     public function runAlters()
     {
-        $this->execDbQuery('voice', 'ALTER TABLE voice_tasks ADD date_expire DATETIME DEFAULT NULL, DROP timeout');
+        $this->execDbQuery('default', 'ALTER TABLE voice_phone_calls ADD date_waiting DATETIME DEFAULT NULL');
     }
 
     public function run()
