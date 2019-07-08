@@ -34,11 +34,6 @@ class Task extends AbstractModel
     protected $acceptedWorkerId;
 
     /**
-     * @var int
-     */
-    protected $timeout;
-
-    /**
      * @var string
      */
     protected $status = self::STATUS_PENDING;
@@ -62,6 +57,11 @@ class Task extends AbstractModel
      * @var \DateTime
      */
     protected $dateExpireAssigned;
+
+    /**
+     * @var \DateTime
+     */
+    protected $dateExpire;
 
     /**
      * Constructor.
@@ -175,26 +175,6 @@ class Task extends AbstractModel
     public function setAcceptedWorkerId($acceptedWorkerId)
     {
         $this->acceptedWorkerId = $acceptedWorkerId;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * @param int $timeout
-     *
-     * @return $this
-     */
-    public function setTimeout($timeout)
-    {
-        $this->timeout = $timeout;
 
         return $this;
     }
@@ -364,12 +344,57 @@ class Task extends AbstractModel
      *
      * @return $this
      */
-    public function setDateExpireOffset($offset)
+    public function setDateExpireAssignedOffset($offset)
     {
         if ($offset) {
             $this->setDateExpireAssigned(new \DateTime('+'.$offset.' seconds'));
         }
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDateExpireAssignedOffset()
+    {
+        if ($this->dateExpireAssigned) {
+            return time() - $this->dateExpireAssigned->getTimestamp();
+        }
+
+        return 0;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateExpire()
+    {
+        return $this->dateExpire;
+    }
+
+    /**
+     * @param \DateTime $dateExpire
+     *
+     * @return $this
+     */
+    public function setDateExpire($dateExpire)
+    {
+        $this->dateExpire = $dateExpire;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpireTimeout()
+    {
+        $expireTimestamp = $this->dateExpire->getTimestamp();
+        if ($this->dateExpireAssigned) {
+            $expireTimestamp = min($expireTimestamp, $this->dateExpireAssigned->getTimestamp());
+        }
+
+        return $expireTimestamp - time();
     }
 }

@@ -7,6 +7,7 @@ import { DragDropContextProvider } from 'react-dnd';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Twig from 'twig';
+import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
@@ -37,6 +38,7 @@ import { StatusMenuContainer as TicketStatusMenuContainer } from './Modules/Tick
 import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
 import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
+import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
 
 class AgentLegacyApp {
 
@@ -126,7 +128,11 @@ class AgentLegacyApp {
 
       if (hasPusher) {
         setInterval(() => {
-          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`);
+          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`).success((data) => {
+            if (data.task_router_workers) {
+              this.store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(data)));
+            }
+          });
         }, 10000);
       }
     }

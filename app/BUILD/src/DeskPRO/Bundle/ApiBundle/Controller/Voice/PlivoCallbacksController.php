@@ -716,7 +716,7 @@ class PlivoCallbacksController extends BaseController
         // call id could be empty, e.g. for record event
         if ($callSid) {
             $start = microtime(true);
-            $callbacksHelper->sendConferenceStatus($phoneCall);
+            $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
             $logger->info(sprintf('[PlivoCallbacks] Sending conference status took %.3fs', microtime(true) - $start));
         }
     }

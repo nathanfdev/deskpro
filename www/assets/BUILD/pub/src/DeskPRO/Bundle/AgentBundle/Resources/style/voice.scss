@@ -695,7 +695,7 @@ $voice-green-border-color: #47BF61;
         }
 
         .voicemail-record-content {
-          margin-left: 45px;
+          margin-left: 35px;
 
           .voicemail-record-date-created, .voicemail-record-duration {
             display: flex;
@@ -712,34 +712,70 @@ $voice-green-border-color: #47BF61;
             button {
               border: 0;
               color: #4D96DB !important;
-              padding-right: 5px;
+              margin: -2px 0 0 0;
+              padding: 0 5px 0 0;
             }
             .media-timeline {
               width: 100px;
+
+              input[type=range]::-ms-track {
+                height: 3px;
+                margin-top: -7px;
+              }
+              input[type=range]::-moz-range-track {
+                height: 3px;
+                margin-top: -7px;
+              }
+              input[type=range]::-webkit-slider-runnable-track {
+                height: 3px;
+                margin-top: -7px;
+              }
+
+              input[type=range]::-webkit-slider-thumb {
+                margin-top: -5px;
+                width: 15px;
+                height: 15px;
+              }
+
+              input[type=range]::-moz-range-thumb {
+                margin-top: -5px;
+                width: 15px;
+                height: 15px;
+              }
             }
           }
 
           .voicemail-person-name {
             font-size: 14px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-right: 5px;
           }
 
           .voicemail-person-email {
             font-size: 12px;
             display: block;
-            color: #CACECF;
+            color: #767b7b;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-right: 5px;
           }
 
           .voice-record-actions {
-            margin-top: 20px;
+            margin-top: 5px;
 
             .voice-record-action {
-              a {
-                font-size: 12px;
-                text-decoration: underline;
+              margin: 0 10px;
+
+              &:first-child {
+                margin-left: 0;
               }
 
-              &:not(:first-child):before {
-                content: " | ";
+              a {
+                font-size: 11px;
+                text-decoration: underline;
               }
             }
           }

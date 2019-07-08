@@ -5,7 +5,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\VoiceBundle\Model\PendingTasksCount;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -61,5 +63,26 @@ class TaskRouterController extends BaseController
         $this->get('dp.voice.task_router')->updateLastWorkerActivity('agent', $person->getId());
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiUserContext("open")
+     * @Rest\Get("/evaluate")
+     */
+    public function callRouterAction()
+    {
+        // evaluate task router
+        $this->container->get('dp.voice.task_router')->evaluate();
+
+        $voiceSettings = $this->get('voice_settings_resolver');
+
+        $lastVoiceTaskTimestamp = $voiceSettings->getLastVoiceTaskTimestamp();
+        $lastChatTaskTimestamp  = $voiceSettings->getLastChatTaskTimestamp();
+
+        return new View($this->wrap(new PendingTasksCount(
+            $this->get('dp.voice.task_router.storage')->getActiveTasks(),
+            $lastVoiceTaskTimestamp ? new \DateTime('@'.$lastVoiceTaskTimestamp) : null,
+            $lastChatTaskTimestamp ? new \DateTime('@'.$lastChatTaskTimestamp) : null
+        )));
     }
 }

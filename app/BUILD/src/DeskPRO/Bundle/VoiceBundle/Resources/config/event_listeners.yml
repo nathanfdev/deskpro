@@ -63,10 +63,28 @@ services:
     tags:
       - { name: dp.voice.event_subscriber }
 
+  dp.voice.listener.cancel_forwarding_calls:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\CancelForwardingCallsListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@dp.voice.voice_task_helper"
+      - "@dp.voice.task_router.storage"
+      - "@service_container"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
   dp.voice.listener.worker_last_call_at:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\WorkerLastCallAtListener
     arguments:
       - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
+
+  dp.voice.listener.last_pending_task_timestamp:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\LastPendingTaskListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: dp.voice.event_subscriber }
 

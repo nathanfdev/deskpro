@@ -332,7 +332,7 @@ class RecordingDownloadHelper
         $ticketMessage = new TicketMessage();
         $ticketMessage->setPerson($phoneCall->getPerson());
         $ticketMessage->addAttribute($ticketMessageCall);
-        $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
+        $ticketMessage->setMessage('Voicemail from '.$phoneCall->getExternalNumber());
         $ticketMessage->setAsAgentNote(true);
 
         // try to get last ticket

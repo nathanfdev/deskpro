@@ -78,17 +78,12 @@ class VoiceWorkflow implements WorkflowInterface
      */
     public function getTimeout(Task $task)
     {
-        $now   = new \DateTime();
         $queue = $this->taskHelper->getVoiceQueue($task);
         if ($queue) {
-            $timeout = $queue->getVoicemailTimeout();
+            return $queue->getVoicemailTimeout();
         } else {
-            $timeout = $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout();
+            return $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout();
         }
-
-        $offset = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
-
-        return $timeout - $offset;
     }
 
     /**
@@ -205,6 +200,7 @@ class VoiceWorkflow implements WorkflowInterface
                         foreach ($roundRobinList as $num => $agentId) {
                             if (in_array($agentId, $availableWorkerAgentIds) && isset($workerToAgentMap[$agentId])) {
                                 $task->setWorkersIds([$workerToAgentMap[$agentId]]);
+                                $task->setDateExpireAssignedOffset($voiceQueue->getAnswerTimeout());
 
                                 // worker was fetched push to the end of the list
                                 unset($roundRobinList[$num]);
@@ -234,6 +230,7 @@ class VoiceWorkflow implements WorkflowInterface
                     }, $leastUtilizedWorkers);
 
                     $task->setWorkersIds($workerIds);
+                    $task->setDateExpireAssignedOffset($voiceQueue->getAnswerTimeout());
 
                     break;
                 case VoiceQueue::ROUTING_MODEL_SIMULRING:

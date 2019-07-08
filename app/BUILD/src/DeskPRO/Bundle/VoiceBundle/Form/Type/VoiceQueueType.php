@@ -96,9 +96,15 @@ class VoiceQueueType extends AbstractType
                     VoiceQueue::ROUTING_MODEL_SIMULRING,
                 ],
             ])
+            ->add('answer_timeout', IntegerType::class, [
+                'required'      => true,
+                'property_path' => 'answerTimeout',
+                'empty_data'    => '15',
+            ])
             ->add('max_queue_size', IntegerType::class, [
                 'required'      => true,
                 'property_path' => 'maxQueueSize',
+                'empty_data'    => '1',
             ])
             ->add('recording_enabled', ApiBooleanType::class, [
                 'required'      => false,
@@ -106,7 +112,6 @@ class VoiceQueueType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -118,27 +123,6 @@ class VoiceQueueType extends AbstractType
         $resolver->setDefaults([
             'data_class' => VoiceQueue::class,
         ]);
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSubmit(FormEvent $event)
-    {
-        $data = $event->getData();
-
-        // set task queue max size
-        if (isset($data['routing_model'])) {
-            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_ROUND_ROBIN) {
-                $data['max_queue_size'] = 1;
-            } elseif ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_SIMULRING) {
-                $data['max_queue_size'] = 50;
-            }
-        }
-
-        $event->setData($data);
     }
 
     /**

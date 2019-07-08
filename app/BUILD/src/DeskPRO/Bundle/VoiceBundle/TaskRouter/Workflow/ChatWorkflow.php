@@ -80,12 +80,7 @@ class ChatWorkflow implements WorkflowInterface
      */
     public function getTimeout(Task $task)
     {
-        $now = new \DateTime();
-
-        $timeout = $this->settingsResolver->getAgentChatTimeout();
-        $offset  = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
-
-        return $timeout - $offset;
+        return $this->settingsResolver->getAgentChatTimeout();
     }
 
     /**
@@ -222,7 +217,7 @@ class ChatWorkflow implements WorkflowInterface
 
                         if ($workersIds) {
                             $task->setWorkersIds($workersIds);
-                            $task->setDateExpireOffset($chatQueue->getAnswerTimeout());
+                            $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                             // worker was fetched push to the end of the list
                             unset($order[$num]);
@@ -294,7 +289,7 @@ class ChatWorkflow implements WorkflowInterface
                 }
 
                 $task->setWorkersIds($workerIds);
-                $task->setDateExpireOffset($chatQueue->getAnswerTimeout());
+                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                 break;
             case UserChatQueue::ROUTING_MODEL_SIMULRING:
@@ -311,7 +306,7 @@ class ChatWorkflow implements WorkflowInterface
                 }
 
                 $task->setWorkersIds($workersIds);
-                $task->setDateExpireOffset($chatQueue->getAnswerTimeout());
+                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                 break;
         }

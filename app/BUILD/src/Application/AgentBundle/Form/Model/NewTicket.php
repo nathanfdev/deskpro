@@ -281,10 +281,12 @@ class NewTicket
 
         if (!$person) {
             if ($this->_person_context->hasPerm('agent_people.create')) {
-                $person                = new Person();
-                $email_obj             = $person->addEmailAddressString($this->person->email_address);
-                $person->primary_email = $email_obj;
+                $person = new Person();
 
+                if ($this->person->email_address) {
+                    $emailObj = $person->addEmailAddressString($this->person->email_address);
+                    $person->setPrimaryEmail($emailObj);
+                }
                 if ($this->person->phoneNumber) {
                     $person->setPrimaryPhoneNumber(PersonPhoneNumber::createEntity($this->person->phoneNumber));
                 }

@@ -2,16 +2,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { voiceAgentsSelector, voiceOnlineAgentsSelector } from '../../../Selectors/agents';
+import { voiceAgentsSelector } from '../../../Selectors/agents';
 import { loadQueues, updateQueue, loadAverageWaitingTime } from '../../../Actions/queueActions';
 import { allQueuesSelector } from '../../../Selectors/queue';
+import { onlineAgentsSelector, forwardingAgentsSelector } from '../../../Selectors/client';
 import Queues from './Queues';
 
 @connect(state => ({
-  me:           meSelector(state),
-  queues:       allQueuesSelector(state),
-  agents:       voiceAgentsSelector(state),
-  onlineAgents: voiceOnlineAgentsSelector(state)
+  me:                 meSelector(state),
+  queues:             allQueuesSelector(state),
+  agents:             voiceAgentsSelector(state),
+  onlineAgentIds:     onlineAgentsSelector(state),
+  forwardingAgentIds: forwardingAgentsSelector(state)
 }))
 class QueuesContainer extends React.Component {
 

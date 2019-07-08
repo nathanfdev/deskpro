@@ -20,6 +20,8 @@ class GeneralSettingsForm extends BaseForm {
       group_missed_call_tickets_timeout: settings ? settings.get('group_missed_call_tickets_timeout') : 0,
       transcribe_voicemail:              settings ? settings.get('transcribe_voicemail') : false,
       forwarding_machine_detection:      settings ? settings.get('forwarding_machine_detection') : false,
+      email_attach_recording:            settings ? settings.get('email_attach_recording') : false,
+      email_attach_transcription:        settings ? settings.get('email_attach_transcription') : false,
       forwarding_number_type:            settings && settings.get('forwarding_number_type') || 'default',
       forwarding_number:                 settings ? settings.get('forwarding_number') : null
     };
@@ -46,9 +48,18 @@ class GeneralSettingsForm extends BaseForm {
           <Field select="forwarding_machine_detection">
             <Checkbox label="Forwarding Machine Detection (+ve is stops VM pickup, -ve is latency + cost)" />
           </Field>
+          <Field select="email_attach_recording">
+            <Checkbox label="Attach the call recording as an audio attachment." />
+          </Field>
           <Field select="transcribe_voicemail">
             <Checkbox label="Transcribe voicemail messages. This will insert a text version of the voicemail message into the first message of a ticket." />
           </Field>
+          {formData.value.transcribe_voicemail &&
+          <div className="voice-transcription-settings">
+            <Field select="email_attach_transcription">
+              <Checkbox label="Attach the transcript" />
+            </Field>
+          </div>}
           <Field select="forwarding_number_type" label="Number to call from when forward calls to agents">
             <Select choices={forwardingNumberTypeOptions} />
           </Field>

@@ -217,7 +217,7 @@ security:
             anonymous: ~
             methods: [GET]
         api_anonymous_voice:
-            pattern: ^/api/v2/(twilio_callbacks|plivo_callbacks)
+            pattern: ^/api/v2/(twilio_callbacks|plivo_callbacks|task_router/evaluate)
             stateless: true
             anonymous: ~
         api_anonymous:

@@ -15,7 +15,7 @@ const initialState = {
   incomingCalls:     [],
   outgoingCall:      null,
   connections:       [],
-  busyAgents:        [],
+  onlineAgents:      [],
   ringingVolume,
 };
 
@@ -55,12 +55,32 @@ export default createReducer(initialState, {
     pushPayloadToCollection('connections'),
     setValue('waitingConnection', false)
   ),
-  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
-  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
-  [actions.resetOutgoingCall]: setValue('outgoingCall', null),
-  [actions.setRingingVolume]:  setFullPayload('ringingVolume'),
-  [actions.setBusyAgents]:     setFullPayload('busyAgents'),
-  [actions.setAgentAsIdle]:    deletePayloadFromCollection('busyAgents'),
-  [actions.setAgentAsBusy]:    pushPayloadToCollection('busyAgents'),
-  [actions.waitingConnection]: setValue('waitingConnection', true)
+  [actions.removeConnection]:     deletePayloadFromCollection('connections'),
+  [actions.setOutgoingCall]:      setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]:    setValue('outgoingCall', null),
+  [actions.setRingingVolume]:     setFullPayload('ringingVolume'),
+  [actions.waitingConnection]:    setValue('waitingConnection', true),
+  [actions.setVoiceOnlineAgents]: setFullPayload('onlineAgents'),
+  [actions.setAgentAsIdle]:       (state, agentId) => {
+    const newOnlineStatus = state.get('onlineAgents').map((onlineStatus) => {
+      if (onlineStatus.get('agent_id') === agentId) {
+        return onlineStatus.set('busy_for_voice', false);
+      }
+
+      return onlineStatus;
+    });
+
+    return state.set('onlineAgents', newOnlineStatus);
+  },
+  [actions.setAgentAsBusy]: (state, agentId) => {
+    const newOnlineStatus = state.get('onlineAgents').map((onlineStatus) => {
+      if (onlineStatus.get('agent_id') === agentId) {
+        return onlineStatus.set('busy_for_voice', true);
+      }
+
+      return onlineStatus;
+    });
+
+    return state.set('onlineAgents', newOnlineStatus);
+  }
 });

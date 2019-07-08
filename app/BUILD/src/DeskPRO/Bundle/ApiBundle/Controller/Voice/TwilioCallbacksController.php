@@ -192,7 +192,7 @@ class TwilioCallbacksController extends BaseController
 
                     // send client message
                     // for real time ui updates
-                    $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+                    $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
                 } finally {
                     $lock->release();
                     $logger->info(sprintf('[TwilioCallbacks] Unlock phone call, uuid = %s', $callSid));
@@ -226,7 +226,7 @@ class TwilioCallbacksController extends BaseController
 
                 // send client message
                 // for real time ui updates
-                $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+                $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
             }
         }
     }
@@ -276,8 +276,12 @@ class TwilioCallbacksController extends BaseController
         $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $twiml = new Twiml();
 
+        $now        = new \DateTime();
+        $dateExpire = $this->get('dp.voice.task_router')->getDateExpire($task);
+        $timeout    = $dateExpire->getTimestamp() - $now->getTimestamp();
+
         $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl(), [
-            'timeout' => $this->get('dp.voice.task_router')->getTimeout($task),
+            'timeout' => $timeout > 0 ? $timeout : 0,
             'loop'    => 0,
         ]);
 
@@ -343,7 +347,7 @@ class TwilioCallbacksController extends BaseController
 
                 // send client message
                 // for real time ui updates
-                $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+                $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
             }
         } finally {
             $lock->release();
@@ -730,7 +734,7 @@ class TwilioCallbacksController extends BaseController
 
         $dial->queue($phoneCall->getQueueName());
         $this->get('dp.voice.callbacks_helper')->logConferenceStart($phoneCall, $request->request->all());
-        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+        $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -925,7 +929,7 @@ class TwilioCallbacksController extends BaseController
                 $twiml->hangup();
             }
 
-            $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+            $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
         } finally {
             $lock->release();
         }
@@ -969,7 +973,7 @@ class TwilioCallbacksController extends BaseController
             'waitUrlMethod' => 'POST',
         ]);
 
-        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+        $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1008,7 +1012,7 @@ class TwilioCallbacksController extends BaseController
         ]);
 
         $dial->queue($phoneCall->getQueueName());
-        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+        $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1266,7 +1270,7 @@ class TwilioCallbacksController extends BaseController
                     ])
                 );
 
-                $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+                $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
             } else {
                 $twiml->hangup();
             }
@@ -1487,13 +1491,7 @@ class TwilioCallbacksController extends BaseController
                     }
 
                     $this->getManager()->flush();
-                    $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-                        'agent.voice.conference.hold',
-                        [
-                            'call_id' => $phoneCall->getId(),
-                            'hold'    => false,
-                        ]
-                    ));
+                    $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
                 }
             }
         }

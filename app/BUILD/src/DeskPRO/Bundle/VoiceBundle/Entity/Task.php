@@ -43,13 +43,6 @@ class Task extends AbstractEntity
     protected $acceptedWorker;
 
     /**
-     * @ORM\Column(name="timeout", type="integer", nullable=true)
-     *
-     * @var int
-     */
-    protected $timeout;
-
-    /**
      * @ORM\Column(name="status", type="string")
      *
      * @var string
@@ -83,6 +76,13 @@ class Task extends AbstractEntity
      * @var \DateTime
      */
     protected $dateExpireAssigned;
+
+    /**
+     * @ORM\Column(name="date_expire", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    protected $dateExpire;
 
     /**
      * @return string
@@ -160,26 +160,6 @@ class Task extends AbstractEntity
     public function setAcceptedWorker($acceptedWorker)
     {
         $this->setModelField('acceptedWorker', $acceptedWorker);
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTimeout()
-    {
-        return $this->timeout;
-    }
-
-    /**
-     * @param int $timeout
-     *
-     * @return $this
-     */
-    public function setTimeout($timeout)
-    {
-        $this->setModelField('timeout', $timeout);
 
         return $this;
     }
@@ -280,6 +260,26 @@ class Task extends AbstractEntity
     public function setDateExpireAssigned(\DateTime $dateExpireAssigned = null)
     {
         $this->dateExpireAssigned = $dateExpireAssigned;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateExpire()
+    {
+        return $this->dateExpire;
+    }
+
+    /**
+     * @param \DateTime $dateExpire
+     *
+     * @return $this
+     */
+    public function setDateExpire(\DateTime $dateExpire = null)
+    {
+        $this->dateExpire = $dateExpire;
 
         return $this;
     }

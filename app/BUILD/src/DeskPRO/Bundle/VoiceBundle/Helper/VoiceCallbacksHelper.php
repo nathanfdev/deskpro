@@ -10,7 +10,6 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendantDialNumber;
@@ -24,8 +23,6 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
@@ -795,41 +792,6 @@ class VoiceCallbacksHelper
             $participant->setMemberId($memberId);
             $this->em->flush();
         }
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     *
-     * @throws \Exception
-     */
-    public function sendConferenceStatus(VoicePhoneCall $phoneCall)
-    {
-        // send client message
-        // for real time ui updates
-        $statusParams = [];
-
-        // phone call
-        $context = new SideloadSerializationContext();
-        $context->setIncludes(['recording_enabled']);
-        $context->setInlineSideloads(true);
-
-        $statusParams['phone_call'] = $this->serializer->toArray(new ApiWrapper($phoneCall), $context)['data'];
-        unset($statusParams['phone_call']['ticket']);
-
-        // is conference on hold
-        $statusParams['hold'] = $phoneCall->getUserParticipants()->count()
-            ? $phoneCall->getUserParticipants()->first()->isOnHold()
-            : false;
-
-        // all active participants
-        $statusParams['agent_participants'] = $phoneCall->getActiveAgentParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) {
-            return $participant->getPerson()->getId();
-        })->getValues();
-
-        $this->dispatcher->dispatch(
-            LegacySystemEvent::EVENT_NAME,
-            new LegacySystemEvent('agent.voice.conference.status', $statusParams)
-        );
     }
 
     /**

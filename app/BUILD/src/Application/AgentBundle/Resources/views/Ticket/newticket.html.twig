@@ -489,14 +489,6 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 		<h4>{{ phrase('agent.tickets.billing') }}</h4>
 	</header>
 	<section class="ticketreply">
-		<div class="ticket-select-user-overlay">
-			<strong class="ticket-select-user-message">
-				{{ phrase('agent.tickets.error_reply_select_user') }}
-			</strong>
-			<strong class="ticket-no-email-message">
-				{{ phrase('agent.tickets.error_reply_no_email') }}
-			</strong>
-		</div>
 		<article id="{{baseId}}_headerbox_box_billing" class="headerbox">
 			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table billing-form" id="{{ baseId }}_billing_form">
 				<tr>

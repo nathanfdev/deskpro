@@ -3,13 +3,15 @@
 namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
-use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class GetMsgScript extends LowScriptAbstract
 {
+    use VoiceTaskRouterTrait;
+
     protected $_person_id;
     protected $_session_id;
 
@@ -154,6 +156,7 @@ class GetMsgScript extends LowScriptAbstract
                 $updateSessDate = true;
             }
 
+            $this->pingTaskRouterWorker($this->_person_id);
             if ($updateSessDate) {
                 $q = $this->getPdo()->prepare('
                     UPDATE sessions
@@ -162,8 +165,6 @@ class GetMsgScript extends LowScriptAbstract
                 ');
 
                 $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
-
-                $this->pingTaskRouterWorker();
             }
 
             if (!empty($_REQUEST['recent_tabs'])) {
@@ -311,6 +312,22 @@ class GetMsgScript extends LowScriptAbstract
             }
             $data['action_alerts'] = array_values($data['action_alerts']);
             $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
+
+            if ($this->getSetting('beta_features.voice')) {
+                $q = $this->getPdoRead()->prepare('
+                    SELECT COUNT(*)
+                    FROM agent_data a
+                    JOIN people p ON p.agent_data_id = a.id
+                    WHERE p.id = ? AND is_voice_enabled = 1 AND available_status = ? AND agent_calls_enabled = 1
+                    LIMIT 1
+                ');
+                $q->execute([$agent_session['person_id'], Worker::ACTIVITY_IDLE]);
+
+                $hasVoice = $q->fetchColumn(0);
+                if ($hasVoice) {
+                    $data['task_router_workers'] = $this->getVoiceWorkersActivity();
+                }
+            }
 
             header('Content-Type: application/json');
 
@@ -699,28 +716,5 @@ SQL;
         }
 
         return $data;
-    }
-
-    protected function pingTaskRouterWorker()
-    {
-        // todo support other storages
-        $q = $this->getPdoRead()->prepare('
-            SELECT a.available_status
-            FROM agent_data a
-            JOIN people p ON p.agent_data_id = a.id
-            WHERE p.id = ?
-        ');
-
-        $q->execute([$this->_person_id]);
-
-        $status = $q->fetchColumn();
-        if ($status === AgentData::AVAILABLE_STATUS_IDLE) {
-            $q = $this->getVoicePdo()->prepare('
-            UPDATE voice_workers
-            SET date_last_active = ?
-            WHERE type = ? AND type_id = ?
-        ');
-            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $this->_person_id]);
-        }
     }
 }
