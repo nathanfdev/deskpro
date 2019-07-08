@@ -7,7 +7,7 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
-use Behatch\Context\BaseContext;
+use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +25,9 @@ class RestContext extends BaseContext
     {
         // we need to pass them as $_SERVER...
         $name = str_replace('-', '_', strtoupper(trim($name)));
-        $name = 'HTTP_'.$name;
+        if (!in_array($name, ['CONTENT_TYPE'])) {
+            $name = 'HTTP_'.$name;
+        }
 
         if (!$isJson) {
             $value = DataContext::replace($value);
@@ -176,6 +178,10 @@ class RestContext extends BaseContext
         $url      = DataContext::replace($url);
         $filePath = DataContext::replace($filePath);
 
+        if (!file_exists($filePath) && file_exists($this->getTestDir($filePath))) {
+            $filePath = $this->getTestDir($filePath);
+        }
+
         /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
         $client = $this->getSession()->getDriver()->getClient();
 
@@ -208,7 +214,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $content = DataContext::replace($body->getRaw(), true);
+        $content        = DataContext::replace($body->getRaw(), true);
         $encodedContent = json_encode(json_decode($content));
 
         $client->request($method, $this->locatePath($url), [], [], $this->server_params, $encodedContent);
@@ -223,7 +229,7 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Saves the last created id as a different alias so it can be reused when multiple requests fire in same scenario
+     * Saves the last created id as a different alias so it can be reused when multiple requests fire in same scenario.
      *
      * @Given I save the last created id as :alias
      */
@@ -408,9 +414,9 @@ class RestContext extends BaseContext
         }
 
         $dataBinary = '';
-        $content = $request->getContent();
-        if (! empty($content)) {
-            $content = str_replace("\n", "\\\n", $content);
+        $content    = $request->getContent();
+        if (!empty($content)) {
+            $content    = str_replace("\n", "\\\n", $content);
             $dataBinary = "--data-binary '$content'";
         }
 

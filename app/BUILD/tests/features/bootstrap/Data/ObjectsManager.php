@@ -28,6 +28,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -88,6 +89,7 @@ use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
+use Application\EmailBundle\Entity\SendmailSource;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
@@ -308,6 +310,8 @@ class ObjectsManager
             'Department'                       => [Factory\CommonFactories::class, 'department'],
             'Download'                         => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'                 => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
+            'EmailSource'                      => [Factory\CommonFactories::class, 'emailSource'],
+            'SendmailSource'                   => [Factory\CommonFactories::class, 'sendmailSource'],
             'Feedback'                         => [Factory\CommonFactories::class, 'feedback'],
             'FeedbackSubscription'             => [Factory\SimpleFactory::class, 'create', FeedbackSubscription::class],
             'FeedbackCategory'                 => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
@@ -427,6 +431,8 @@ class ObjectsManager
             'Agent'                            => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                            => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
             'AgentData'                        => [$this, 'find', AgentData::class],
+            'EmailSource'                      => [$this, 'find', EmailSource::class],
+            'SendmailSource'                   => [$this, 'find', SendmailSource::class],
             'Task'                             => [$this, 'find', Task::class],
             'TaskComment'                      => [$this, 'find', TaskComment::class],
             'Ticket'                           => [$this, 'find', Ticket::class],

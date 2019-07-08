@@ -11,7 +11,8 @@ use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 class DecodeRequestBodyListener extends BodyListener
 {
     private $nonDecodableContentTypeNames = [
-        'zip'
+        'zip',
+        'eml',
     ];
 
     /**
@@ -28,7 +29,6 @@ class DecodeRequestBodyListener extends BodyListener
         ArrayNormalizerInterface $arrayNormalizer = null,
         $normalizeForms = false
     ) {
-
         parent::__construct($decoderProvider, $throwExceptionOnUnsupportedContentType, $arrayNormalizer, $normalizeForms);
     }
 
@@ -49,6 +49,7 @@ class DecodeRequestBodyListener extends BodyListener
         }
 
         $requestFormatName = $request->getFormat($contentType);
+
         return !in_array($requestFormatName, $this->nonDecodableContentTypeNames);
     }
 }
