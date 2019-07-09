@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
+import Modal from 'DeskPRO/Component/Semantic/Modal';
+import { Button } from '@deskpro/react-components';
 import { getPhoneCountryName, getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { Input, Form, Field, Checkbox, Radio, CountryCodeSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
@@ -12,20 +14,69 @@ import NumberTargetSelect from '../../Common/NumberTarget/NumberTargetSelect';
 class NumberForm extends BaseForm {
 
   static propTypes = {
-    number:       PropTypes.object,
-    onReturnBack: PropTypes.func.isRequired,
-    onSubmit:     PropTypes.func,
-    onDelete:     PropTypes.func
+    number:        PropTypes.object,
+    returnBack:    PropTypes.func,
+    onSubmit:      PropTypes.func,
+    disableNumber: PropTypes.func,
+    deleteNumber:  PropTypes.func,
   };
 
-  onCancel = (event) => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      confirmDisabling: false,
+      confirmDeletion:  false
+    };
+  }
+
+  cancel = (event) => {
     event.preventDefault();
     this.props.onReturnBack();
   };
 
-  onDelete = (event) => {
+  showDisableConfirmation = (event) => {
     event.preventDefault();
-    this.props.onDelete();
+    this.setState({
+      confirmDisabling: true
+    });
+  };
+
+  performDisable = (event) => {
+    event.preventDefault();
+    this.props.disableNumber();
+    this.setState({
+      confirmDisabling: false
+    });
+  };
+
+  rejectDisable = (event) => {
+    event.preventDefault();
+    this.setState({
+      confirmDisabling: false
+    });
+  };
+
+  showDeleteConfirmation = (event) => {
+    event.preventDefault();
+    this.setState({
+      confirmDeletion: true
+    });
+  };
+
+  performDelete = (event) => {
+    event.preventDefault();
+    this.props.deleteNumber();
+    this.setState({
+      confirmDeletion: false
+    });
+  };
+
+  rejectDelete = (event) => {
+    event.preventDefault();
+    this.setState({
+      confirmDeletion: false
+    });
   };
 
   getDefaultState() {
@@ -48,14 +99,63 @@ class NumberForm extends BaseForm {
   }
 
   render() {
-    const { number, onReturnBack } = this.props;
-    const { formData, saving } = this.state;
+    const { number, returnBack } = this.props;
+    const { formData, saving, confirmDisabling, confirmDeletion } = this.state;
     const countryName = getPhoneCountryName(number.get('number'));
     const countryCode = getPhoneCountryCode(number.get('number'));
 
     return (
       <div className="page">
-        <BackButton onClick={onReturnBack} />
+        <Modal
+          isOpen={confirmDisabling}
+          title="Are you sure you want to disable this number?"
+          contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '220px', width: '30%' }}
+        >
+          <h2>
+            <p>
+              {'A disabled number will be removed from queues and targets.'}
+              {'The number won\'t be able to accept  or make calls.'}
+            </p>
+            <p>
+              You will still retain ownership over the number and will continue
+              to pay the rental fee. You can re-enable the number at any time
+              in the future.
+            </p>
+          </h2>
+          <div>
+            <span style={{ float: 'left' }}>
+              <Button size="large" type="secondary" onClick={this.rejectDisable}>Decline</Button>
+            </span>
+            <span style={{ float: 'right' }}>
+              <Button size="large" type="cta" onClick={this.performDisable}>
+                {'Yes, I\'m sure I want to disable this number'}
+              </Button>
+            </span>
+          </div>
+        </Modal>
+        <Modal
+          isOpen={confirmDeletion}
+          title="Are you sure you want to delete this number?"
+          contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '180px', width: '30%' }}
+        >
+          <h2>
+            Deleting the number will remove it from the helpdesk and
+            release it from your control. You will no longer have to pay
+            the rental fee for the number, but it will be made available
+            for anyone else to purchase.
+          </h2>
+          <div>
+            <span style={{ float: 'left' }}>
+              <Button size="large" type="secondary" onClick={this.rejectDelete}>Decline</Button>
+            </span>
+            <span style={{ float: 'right' }}>
+              <Button size="large" type="cta" onClick={this.performDelete}>
+                {'Yes, I\'m sure I want to delete and release the number'}
+              </Button>
+            </span>
+          </div>
+        </Modal>
+        <BackButton onClick={returnBack} />
         <SectionHeader title={number.get('id') ? 'Update number' : 'Create number'} dividing />
 
         <div className="twilio-number-form">
@@ -121,12 +221,16 @@ class NumberForm extends BaseForm {
               </button>
               <button
                 className={classNames('ui basic button cancel-button', { disabled: saving })}
-                onClick={this.onCancel}
+                onClick={this.cancel}
               >
                 Cancel
               </button>
               {number.get('id') &&
-              <span className="voice-delete-button" onClick={this.onDelete}>
+              <span className="voice-delete-button" onClick={this.showDisableConfirmation}>
+                Disable this number
+              </span>}
+              {number.get('id') &&
+              <span className="voice-delete-button" onClick={this.showDeleteConfirmation}>
                 Delete this number
               </span>}
             </Fieldset>

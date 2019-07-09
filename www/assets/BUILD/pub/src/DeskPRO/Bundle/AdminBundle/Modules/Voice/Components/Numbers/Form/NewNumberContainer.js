@@ -36,10 +36,6 @@ class NewNumberContainer extends React.Component {
     dispatch(loadAutoAttendants());
   }
 
-  onReturnBack = () => {
-    replaceRoute('/voice_channel/numbers');
-  };
-
   onSubmit = (data) => {
     const { location, dispatch } = this.props;
     const query = location.query;
@@ -59,6 +55,10 @@ class NewNumberContainer extends React.Component {
     return promise;
   };
 
+  returnBack = () => {
+    replaceRoute('/voice_channel/numbers');
+  };
+
   render() {
     const { location, queuesLoaded, agentsLoaded, autoAttendantsLoaded } = this.props;
     const number = Immutable.fromJS(location.query);
@@ -71,9 +71,8 @@ class NewNumberContainer extends React.Component {
       <NumberForm
         {...this.state}
         number={number}
-        onReturnBack={this.onReturnBack}
+        returnBack={this.returnBack}
         onSubmit={this.onSubmit}
-        onDelete={this.onDelete}
       />
     );
   }

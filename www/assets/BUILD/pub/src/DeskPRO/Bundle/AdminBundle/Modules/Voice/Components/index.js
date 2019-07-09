@@ -3,7 +3,6 @@ import Numbers from './Numbers/List/NumberListContainer';
 import NewNumber from './Numbers/Form/NewNumberContainer';
 import EditNumber from './Numbers/Form/EditNumberContainer';
 import AvailableNumbers from './Numbers/Search/AvailableNumbers/AvailableListContainer';
-import ExistingNumbers from './Numbers/Search/ExistingNumbers/ExistingListContainer';
 import Queues from './Queues/List/QueueListContainer';
 import NewQueue from './Queues/Form/NewQueueContainer';
 import EditQueue from './Queues/Form/EditQueueContainer';
@@ -23,7 +22,6 @@ export {
   NewNumber,
   EditNumber,
   AvailableNumbers,
-  ExistingNumbers,
   Queues,
   NewQueue,
   EditQueue,

@@ -178,34 +178,21 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     filters={
-     *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"}
-     *     },
      *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate"
      * )
      *
      * @Rest\Get("/{account}/existing_numbers")
      *
      * @param TwilioVoiceAccount $account
-     * @param Request            $request
      *
      * @return View
      */
-    public function getExistingNumbersAction(TwilioVoiceAccount $account, Request $request)
+    public function getExistingNumbersAction(TwilioVoiceAccount $account)
     {
         if ($this->get('deskpro.app_env')->isQa() || in_array($this->get('deskpro.app_env')->getEnvId(), ['dev', 'test'])) {
-            $page   = $request->query->getInt('page', 1);
-            $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);
-
-            $view = new View($this->wrap($result->getRecords(), [
-                'page_num' => $result->getPageNum(),
-                'has_next' => $result->hasNext(),
-            ]));
+            $view = new View($this->wrap($this->get('twilio_adapter')->getExistingPhoneNumbers($account)));
         } else {
-            $view = new View($this->wrap([], [
-                'page_num' => 1,
-                'has_next' => false,
-            ]));
+            $view = new View($this->wrap([]));
         }
 
         return $view;
@@ -310,5 +297,18 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         }
 
         return new View($this->wrap($account), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Rest\Post("/{account}/release_number/{sid}", requirements={"id"="[\w\d]+"})
+     *
+     * @param TwilioVoiceAccount $account
+     * @param string             $sid
+     * @param Request            $request
+     */
+    public function releaseAction(TwilioVoiceAccount $account, $sid, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupContext($request));
+        $this->get('twilio_adapter')->releaseNumber($account, $sid);
     }
 }
