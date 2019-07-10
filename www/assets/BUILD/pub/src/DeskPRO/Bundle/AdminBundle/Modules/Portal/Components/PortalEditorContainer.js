@@ -35,7 +35,7 @@ class PortalEditorContainer extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
 
-    dispatch(actions.updateTemplateCode(''));
+    dispatch(actions.unselectTemplate());
 
     dispatch(actions.loadTemplates());
 
@@ -228,6 +228,8 @@ class PortalEditor extends React.Component {
                   className="phrases-button"
                   disabled={textareaDisabled}
                   ref={(c) => { this.phrasesMenu = c; }}
+                  positionMy="left top-1px"
+                  positionAt="left bottom"
                 >
                   <PhrasesMenuContainer
                     closeMenu={this.closePhrasesMenu}

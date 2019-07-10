@@ -431,7 +431,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Get("/email_phrases/{group}/{languageId}")
-     * @Feature("email_templates")
      *
      * @param $languageId
      *

@@ -727,5 +727,24 @@
 .dp-portal-editor {
   .editor {
     width: 100%;
+    .header {
+      height: 39px;
+      & > div:first-child {
+        padding: 0;
+      }
+    }
+    .dp-code-editor {
+      height: calc(100% - 79px);
+      .ui.dimmer {
+        top:39px !important;
+        height: calc(100% - 79px);
+      }
+    }
+    .footer {
+      height: 40px;
+      .dp-button {
+        margin-right: 5px;
+      }
+    }
   }
 }
