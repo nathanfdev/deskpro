@@ -16,7 +16,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
@@ -56,22 +56,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property Product                              $product
  * @property Person                               $person
  * @property PersonEmail                          $person_email
- * @property Person                               $agent
- * @property AgentTeam                            $agent_team
- * @property Organization                         $organization
- * @property ChatConversation                     $linked_chat
- * @property TicketAttachment[]|ArrayCollection   $attachments
- * @property TicketAccessCode[]|ArrayCollection   $access_codes
- * @property TicketMessage[]|ArrayCollection      $messages
- * @property TicketSms[]                          $sms_messages
- * @property TicketFeedbackLink[]|ArrayCollection $topic_links
- * @property CustomDataTicket[]|ArrayCollection   $custom_data
- * @property LabelTicket[]                        $labels
- * @property string                               $sent_to_address
- * @property EmailAccount                         $email_account
- * @property string                               $email_account_address
- * @property string                               $creation_system
- * @property string                               $creation_system_option
+ * @property Person                                     $agent
+ * @property AgentTeam                                  $agent_team
+ * @property Organization                               $organization
+ * @property ChatConversation                           $linked_chat
+ * @property TicketAttachment[]|ArrayCollection         $attachments
+ * @property TicketAccessCode[]|ArrayCollection         $access_codes
+ * @property TicketMessage[]|ArrayCollection            $messages
+ * @property TicketSms[]                                $sms_messages
+ * @property TicketCommunityTopicLink[]|ArrayCollection $topic_links
+ * @property CustomDataTicket[]|ArrayCollection         $custom_data
+ * @property LabelTicket[]                              $labels
+ * @property string                                     $sent_to_address
+ * @property EmailAccount                               $email_account
+ * @property string                                     $email_account_address
+ * @property string                                     $creation_system
+ * @property string                                     $creation_system_option
  * @property string                               $ticket_hash
  * @property string                               $status
  * @property TicketStatus                         $ticket_status
@@ -287,7 +287,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $sms_messages;
 
     /**
-     * @var TicketFeedbackLink[]|ArrayCollection
+     * @var TicketCommunityTopicLink[]|ArrayCollection
      */
     protected $topic_links;
 
@@ -1799,7 +1799,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return TicketFeedbackLink[]|ArrayCollection
+     * @return TicketCommunityTopicLink[]|ArrayCollection
      */
     public function getTopicLinks()
     {
@@ -1809,9 +1809,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Add a TicketFeedbackLink to this ticket.
      *
-     * @param TicketFeedbackLink $feedbackLink
+     * @param TicketCommunityTopicLink $feedbackLink
      */
-    public function addTopicLink(TicketFeedbackLink $topicLink)
+    public function addTopicLink(TicketCommunityTopicLink $topicLink)
     {
         if ($this->topic_links->contains($topicLink)) {
             return;
@@ -1835,11 +1835,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @param TicketFeedbackLink $topicLink
+     * @param TicketCommunityTopicLink $topicLink
      *
      * @return $this
      */
-    public function removeFeedbackLink(TicketFeedbackLink $topicLink)
+    public function removeFeedbackLink(TicketCommunityTopicLink $topicLink)
     {
         $this->topic_links->removeElement($topicLink);
         $this->_onPropertyChanged('topic_links', null, $this->topic_links);
@@ -5555,7 +5555,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'topic_links',
-                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketFeedbackLink',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketCommunityTopicLink',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

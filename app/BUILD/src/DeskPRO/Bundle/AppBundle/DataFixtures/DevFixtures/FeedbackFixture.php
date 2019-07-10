@@ -17,12 +17,12 @@ use Doctrine\Common\Persistence\ObjectManager;
  */
 class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
-    const NUM_FEEDBACK            = 100;
-    const MIN_FEEDBACK_COMMENTS   = 1;
-    const MAX_FEEDBACK_COMMENTS   = 5;
-    const NUM_LABELS              = 30;
-    const MIN_LABELS_PER_FEEDBACK = 0;
-    const MAX_LABELS_PER_FEEDBACK = 5;
+    const NUM_TOPICS           = 100;
+    const MIN_TOPICS_COMMENTS  = 1;
+    const MAX_TOPICS_COMMENTS  = 5;
+    const NUM_LABELS           = 30;
+    const MIN_LABELS_PER_TOPIC = 0;
+    const MAX_LABELS_PER_TOPIC = 5;
 
     /**
      * @var int[]
@@ -42,7 +42,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
     /**
      * @var int[]
      */
-    private $feedback = [];
+    private $communityTopics = [];
 
     /**
      * @var string[]
@@ -70,7 +70,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
     /**
      * @var string[]
      */
-    private $categories = ['Windows', 'Linux', 'Mac'];
+    private $communityChannels = ['Windows', 'Linux', 'Mac'];
 
     /**
      * @var string[]
@@ -101,36 +101,36 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->loadFeedbackChoices();
+        $this->loadCommunityTopicChoices();
         $this->loadStatusCategories();
         $this->loadLabels();
         $this->manager->flush();
 
         $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
-        $this->types          = $this->fetchIds(self::TABLE_FEEDBACK_CATEGORIES);
+        $this->types          = $this->fetchIds(self::TABLE_COMMUNITY_CHANNELS);
         $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
         $this->activeStatuses = $this->fetchIds(
-            self::TABLE_FEEDBACK_STATUS_CATEGORIES,
+            self::TABLE_COMMUNITY_TOPICS_STATUS_CATEGORIES,
             [['field' => 'status_type', 'value' => CommunityTopic::STATUS_ACTIVE]]
         );
         $this->closedStatuses = $this->fetchIds(
-            self::TABLE_FEEDBACK_STATUS_CATEGORIES,
+            self::TABLE_COMMUNITY_TOPICS_STATUS_CATEGORIES,
             [['field' => 'status_type', 'value' => CommunityTopic::STATUS_CLOSED]]
         );
 
-        $this->loadFeedback();
-        $this->loadFeedbackCategories();
-        $this->loadFeedbackLabels();
-        $this->loadFeedbackComments();
+        $this->loadCommunityTopics();
+        $this->loadCommunityChannels();
+        $this->loadCommunityLabels();
+        $this->loadCommunityTopicComments();
     }
 
-    private function loadFeedbackChoices()
+    private function loadCommunityTopicChoices()
     {
         $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
             'sys_name' => 'cat',
         ]);
 
-        foreach ($this->categories as $order => $title) {
+        foreach ($this->communityChannels as $order => $title) {
             $customCatChoice = new CustomDefCommunityTopic();
             $customCatChoice
                 ->setParent($customCatDef)
@@ -167,7 +167,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
 
     private function loadLabels()
     {
-        $label_type = LabelDef::TYPE_FEEDBACK;
+        $label_type = LabelDef::TYPE_COMMUNITY;
         $this->faker->unique(true);
 
         $batch = [];
@@ -190,14 +190,14 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$label_type]);
     }
 
-    private function loadFeedback()
+    private function loadCommunityTopics()
     {
         /** @var Brand $brand */
         $brand = $this->getReference('brand');
 
         $i     = 0;
         $batch = [];
-        while ($i++ < self::NUM_FEEDBACK) {
+        while ($i++ < self::NUM_TOPICS) {
             $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
             $values      = [
                 'content'      => $this->faker->realText(300),
@@ -212,8 +212,8 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
             $values  = $this->setTitleAndSlug($values);
             $batch[] = $values;
         }
-        $this->db->batchInsert(self::TABLE_FEEDBACK, $batch, true);
-        $this->feedback = $this->fetchIds(self::TABLE_FEEDBACK);
+        $this->db->batchInsert(self::TABLE_COMMUNITY_TOPICS, $batch, true);
+        $this->communityTopics = $this->fetchIds(self::TABLE_COMMUNITY_TOPICS);
     }
 
     private function setStatus(array $values)
@@ -273,7 +273,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         return ceil($values['total_rating'] / sqrt($days));
     }
 
-    private function loadFeedbackCategories()
+    private function loadCommunityChannels()
     {
         $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
             'sys_name' => 'cat',
@@ -282,59 +282,59 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         $batch = [];
         $ids   = $customCatDef->getChoiceIds();
 
-        foreach ($this->feedback as $feedbackId) {
+        foreach ($this->communityTopics as $topicId) {
             $batch[] = [
-                'feedback_id'   => $feedbackId,
+                'topic_id   '   => $topicId,
                 'root_field_id' => $customCatDef->getId(),
                 'field_id'      => $ids[array_rand($ids)],
                 'value'         => 1,
             ];
         }
 
-        $this->db->batchInsert(self::TABLE_CUSTOM_DATA_FEEDBACK, $batch, true);
+        $this->db->batchInsert(self::TABLE_CUSTOM_DATA_COMMUNITY_TOPIC, $batch, true);
     }
 
-    private function loadFeedbackLabels()
+    private function loadCommunityLabels()
     {
         $batch = [];
-        foreach ($this->feedback as $id) {
-            $num = rand(self::MIN_LABELS_PER_FEEDBACK, self::MAX_LABELS_PER_FEEDBACK);
+        foreach ($this->communityTopics as $id) {
+            $num = rand(self::MIN_LABELS_PER_TOPIC, self::MAX_LABELS_PER_TOPIC);
             if ($num) {
                 $labels = (array) array_rand($this->labels, $num);
                 foreach ($labels as $key) {
                     $batch[] = [
-                        'feedback_id' => $id,
-                        'label'       => $this->labels[$key],
+                        'topic_id' => $id,
+                        'label'    => $this->labels[$key],
                     ];
                 }
             }
         }
 
-        $this->db->batchInsert(self::TABLE_LABELS_FEEDBACK, $batch, true);
+        $this->db->batchInsert(self::TABLE_LABELS_COMMUNITY_TOPICS, $batch, true);
     }
 
-    private function loadFeedbackComments()
+    private function loadCommunityTopicComments()
     {
         $batch = [];
-        foreach ($this->feedback as $id) {
-            $num_comments = rand(self::MIN_FEEDBACK_COMMENTS, self::MAX_FEEDBACK_COMMENTS);
-            /** @var CommunityTopic $feedback */
-            $feedback = $this->manager->getRepository('DeskPRO:CommunityTopic')->find($id);
-            if (!$feedback->isReviewed()) {
+        foreach ($this->communityTopics as $id) {
+            $num_comments = rand(self::MIN_TOPICS_COMMENTS, self::MAX_TOPICS_COMMENTS);
+            /** @var CommunityTopic $communityTopic */
+            $communityTopic = $this->manager->getRepository('DeskPRO:CommunityTopic')->find($id);
+            if (!$communityTopic->isReviewed()) {
                 continue;
             }
-            $feedback->setNumComments($num_comments);
-            $this->manager->persist($feedback);
+            $communityTopic->setNumComments($num_comments);
+            $this->manager->persist($communityTopic);
 
             $i = 0;
             while ($i++ < $num_comments) {
                 $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
                 $values      = [
-                    'content'     => $this->faker->realText(300),
-                    'feedback_id' => $id,
-                    'person_id'   => $this->faker->randomElement($this->people),
-                    'ip_address'  => $this->faker->ipv4,
-                    'status'      => $this->faker->randomElement(
+                    'content'    => $this->faker->realText(300),
+                    'topic_id'   => $id,
+                    'person_id'  => $this->faker->randomElement($this->people),
+                    'ip_address' => $this->faker->ipv4,
+                    'status'     => $this->faker->randomElement(
                         [
                             CommunityTopicComment::STATUS_VISIBLE,
                             CommunityTopicComment::STATUS_HIDDEN,
@@ -347,7 +347,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
                 $batch[] = $values;
             }
         }
-        $this->db->batchInsert(self::TABLE_FEEDBACK_COMMENTS, $batch, true);
+        $this->db->batchInsert(self::TABLE_COMMUNITY_TOPICS, $batch, true);
         $this->manager->flush();
     }
 

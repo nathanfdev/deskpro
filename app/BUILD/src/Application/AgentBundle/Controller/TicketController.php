@@ -65,7 +65,7 @@ use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -370,7 +370,7 @@ class TicketController extends AbstractController
         //------------------------------
         // Linked Feedback
         //------------------------------
-        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $feedbackRepo        = $this->em->getRepository(TicketCommunityTopicLink::class);
         $ticketFeedbackLinks = $feedbackRepo->findByTicketAndJoinFeedbackData($ticket);
 
         //------------------------------

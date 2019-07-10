@@ -15,7 +15,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Content\FeedbackSubscriptionHelper;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use Doctrine\ORM\EntityManager;
 
 class NewFeedback
@@ -153,7 +153,7 @@ class NewFeedback
             return;
         }
 
-        $link = new TicketFeedbackLink();
+        $link = new TicketCommunityTopicLink();
         $link->setPerson($this->_person_context);
         $link->setFeedback($this->_feedback);
         $this->linked_ticket->addFeedbackLink($link);

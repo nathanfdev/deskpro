@@ -5,17 +5,17 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityRepository;
 
-class TicketFeedbackLinkRepository extends EntityRepository
+class TicketCommunityTopicLinkRepository extends EntityRepository
 {
     public function findByTicketAndJoinFeedbackData(Ticket $ticket)
     {
-        $qb = $this->createQueryBuilder('tfl');
+        $qb = $this->createQueryBuilder('tctl');
         $qb
-            ->select('tfl', 'topic', 'channel', 'status_category')
-            ->leftJoin('tfl.topic', 'topic')
+            ->select('tctl', 'topic', 'channel', 'status_category')
+            ->leftJoin('tctl.topic', 'topic')
             ->leftJoin('topic.channel', 'channel')
             ->leftJoin('topic.status_category', 'status_category')
-            ->where('tfl.ticket = :ticket')
+            ->where('tctl.ticket = :ticket')
             ->setParameter('ticket', $ticket)
         ;
 

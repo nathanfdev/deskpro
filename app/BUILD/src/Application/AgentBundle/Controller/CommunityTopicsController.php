@@ -37,7 +37,7 @@ use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
@@ -235,7 +235,7 @@ class CommunityTopicsController extends AbstractController
         });
 
         //@TODO: related entities fetching optimization
-        $communityTopicRepo  = $this->em->getRepository(TicketFeedbackLink::class);
+        $communityTopicRepo  = $this->em->getRepository(TicketCommunityTopicLink::class);
         $ticketFeedbackLinks = $communityTopicRepo->findByTopic($communityTopic);
 
         //@TODO: select only needed data to display persons

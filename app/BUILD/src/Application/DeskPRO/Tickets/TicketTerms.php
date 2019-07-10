@@ -1150,7 +1150,7 @@ class TicketTerms
                             return false;
                         }
                         $choiseFeedbackIds = array_map('trim', $choiseFeedbackIds);
-                        $ticketFeedbackIds = App::getEntityRepository('AppBundle:TicketFeedbackLink')
+                        $ticketFeedbackIds = App::getEntityRepository('TicketCommunityTopicLink')
                             ->getFeedbackIdsByTicket($ticket);
                         if (!array_intersect($choiseFeedbackIds, $ticketFeedbackIds)) {
                             return false;

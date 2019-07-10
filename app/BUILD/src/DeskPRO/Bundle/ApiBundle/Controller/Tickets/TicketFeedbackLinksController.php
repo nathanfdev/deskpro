@@ -6,7 +6,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Form\FormInterface;
@@ -35,7 +35,7 @@ class TicketFeedbackLinksController extends AbstractTicketsCrudSubController
     use TicketSaveTrait;
     use TicketAwarePersistModelTrait { persistModel as protected traitPersistModel; }
 
-    public static $entity         = TicketFeedbackLink::class;
+    public static $entity         = TicketCommunityTopicLink::class;
     public static $type           = TicketFeedbackLinkType::class;
     public static $parentProperty = 'ticket';
     public static $listSort       = 'id';
@@ -80,7 +80,7 @@ class TicketFeedbackLinksController extends AbstractTicketsCrudSubController
     /**
      * {@inheritdoc}
      *
-     * @param TicketFeedbackLink $entity
+     * @param TicketCommunityTopicLink $entity
      */
     protected function deleteEntity($entity)
     {

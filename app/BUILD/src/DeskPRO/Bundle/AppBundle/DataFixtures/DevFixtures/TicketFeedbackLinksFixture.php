@@ -72,6 +72,6 @@ class TicketFeedbackLinksFixture extends AbstractDpFixture implements OrderedFix
             }
         }
 
-        $this->db->batchInsert(self::TABLE_TICKET_FEEDBACK_LINKS, $batch);
+        $this->db->batchInsert(self::TABLE_TICKET_COMMUNITY_TOPICS_LINKS, $batch);
     }
 }

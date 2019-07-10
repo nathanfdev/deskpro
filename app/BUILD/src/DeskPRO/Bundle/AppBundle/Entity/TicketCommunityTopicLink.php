@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Table that implements Many2Many connection between Tickets and CommunityTopic.
  *
  *
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFeedbackLinkRepository")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository")
  * @ORM\Table(name="ticket_community_topics_links", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="ticket_community_topics_links_unique", columns={"ticket_id", "topic_id"})
  * })
@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(fields={"ticket", "topic"}, errorPath="topic")
  */
-class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
+class TicketCommunityTopicLink implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 

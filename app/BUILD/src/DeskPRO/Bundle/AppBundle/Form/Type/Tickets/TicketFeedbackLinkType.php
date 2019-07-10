@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -74,7 +74,7 @@ class TicketFeedbackLinkType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => TicketFeedbackLink::class,
+                'data_class' => TicketCommunityTopicLink::class,
                 'ticket'     => null,
                 'person'     => null,
             ])

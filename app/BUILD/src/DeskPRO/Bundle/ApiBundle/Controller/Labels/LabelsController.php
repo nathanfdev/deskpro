@@ -79,7 +79,7 @@ class LabelsController extends BaseController
                 $labelType = LabelDef::TYPE_ORGS;
                 break;
             case 'feedback':
-                $labelType = LabelDef::TYPE_FEEDBACK;
+                $labelType = LabelDef::TYPE_COMMUNITY;
                 break;
             case 'news':
                 $labelType = LabelDef::TYPE_NEWS;
