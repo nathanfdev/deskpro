@@ -46,7 +46,7 @@ class ObjectUrlGenerator
             if ($context == 'agent') {
                 $params['communityTopicId'] = $object['id'];
 
-                return $this->generator->generate('agent_feedback_view', $params);
+                return $this->generator->generate('agent_community_topic_view', $params);
             }
 
             return $object->getUrlSlug();

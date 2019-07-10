@@ -66,13 +66,13 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'space', navigateListPane('check'));
 
 		// Create-type
-		if (DeskPRO_Window.newTicketLoader)        $(document).bind('keydown', 't', this.showNewTicket.bind(this));
-		if (DeskPRO_Window.newArticleLoader)       $(document).bind('keydown', 'a', this.showNewArticle.bind(this));
-		if (DeskPRO_Window.newNewsLoader)          $(document).bind('keydown', 'n', this.showNewNews.bind(this));
-		if (DeskPRO_Window.newDownloadLoader)      $(document).bind('keydown', 'd', this.showNewDownload.bind(this));
-		if (DeskPRO_Window.newFeedbackLoader)      $(document).bind('keydown', 'i', this.showNewFeedback.bind(this));
-		if (DeskPRO_Window.newPersonLoader)        $(document).bind('keydown', 'p', this.showNewPerson.bind(this));
-		if (DeskPRO_Window.newOrganizationLoader)  $(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
+		if (DeskPRO_Window.newTicketLoader)         $(document).bind('keydown', 't', this.showNewTicket.bind(this));
+		if (DeskPRO_Window.newArticleLoader)        $(document).bind('keydown', 'a', this.showNewArticle.bind(this));
+		if (DeskPRO_Window.newNewsLoader)           $(document).bind('keydown', 'n', this.showNewNews.bind(this));
+		if (DeskPRO_Window.newDownloadLoader)       $(document).bind('keydown', 'd', this.showNewDownload.bind(this));
+		if (DeskPRO_Window.newCommunityTopicLoader) $(document).bind('keydown', 'i', this.showNewCommunityTopic.bind(this));
+		if (DeskPRO_Window.newPersonLoader)         $(document).bind('keydown', 'p', this.showNewPerson.bind(this));
+		if (DeskPRO_Window.newOrganizationLoader)   $(document).bind('keydown', 'o', this.showNewOrganization.bind(this));
 		$(document).bind('keydown', 'k', this.showNewTask.bind(this));
 
 		this.boundShortkuts = {};
@@ -169,7 +169,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		if (except != 'newArticleLoader' && DeskPRO_Window.newArticleLoader && DeskPRO_Window.newArticleLoader.isOpen()) return true;
 		if (except != 'newNewsLoader' && DeskPRO_Window.newNewsLoader && DeskPRO_Window.newNewsLoader.isOpen()) return true;
 		if (except != 'newDownloadLoader' && DeskPRO_Window.newDownloadLoader && DeskPRO_Window.newDownloadLoader.isOpen()) return true;
-		if (except != 'newFeedbackLoader' && DeskPRO_Window.newFeedbackLoader && DeskPRO_Window.newFeedbackLoader.isOpen()) return true;
+		if (except != 'newCommunityTopicLoader' && DeskPRO_Window.newCommunityTopicLoader && DeskPRO_Window.newCommunityTopicLoader.isOpen()) return true;
 		if (except != 'newPersonLoader' && DeskPRO_Window.newPersonLoader && DeskPRO_Window.newPersonLoader.isOpen()) return true;
 		if (except != 'newOrganizationLoader' && DeskPRO_Window.newOrganizationLoader && DeskPRO_Window.newOrganizationLoader.isOpen()) return true;
 		if (except != 'newTaskLoader' && DeskPRO_Window.newTaskLoader && DeskPRO_Window.newTaskLoader.isOpen()) return true;
@@ -202,9 +202,9 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		if (this.isPaused || this.hasModalOpen('newDownloadLoader')) return;
 		DeskPRO_Window.newDownloadLoader.toggle();
 	},
-	showNewFeedback: function(ev) {
-		if (this.isPaused || this.hasModalOpen('newFeedbackLoader')) return;
-		DeskPRO_Window.newFeedbackLoader.toggle();
+	showNewCommunityTopic: function(ev) {
+		if (this.isPaused || this.hasModalOpen('newCommunityTopicLoader')) return;
+		DeskPRO_Window.newCommunityTopicLoader.toggle();
 	},
 	showNewPerson: function(ev) {
 		if (this.isPaused || this.hasModalOpen('newPersonLoader')) return;

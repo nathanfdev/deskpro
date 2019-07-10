@@ -54,7 +54,7 @@
                     {% for content in related %}
                         <li>
                             {{ content_icon(content) }}
-                            <a href="{{ path('portal_feedback_view', { slug: content.slug }) }}">
+                            <a href="{{ path('portal_community_topic_view', { slug: content.slug }) }}">
                                 {{ content.realTitle }}
                             </a>
                         </li>

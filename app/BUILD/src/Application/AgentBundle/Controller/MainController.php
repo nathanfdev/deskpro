@@ -300,7 +300,7 @@ class MainController extends AbstractController
                     $data[$name] = json_decode($this->forward('AgentBundle:PeopleSearch:getSectionData')->getContent());
                     break;
 
-                case 'feedback_section':
+                case 'community_section':
                     $data[$name] = json_decode($this->forward('AgentBundle:CommunityTopics:getSectionData')->getContent());
                     break;
 

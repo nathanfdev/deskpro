@@ -6253,7 +6253,7 @@ CSS;
         return $this->render('AgentBundle:Ticket:link.html.twig');
     }
 
-    public function linkExistingFeedbackOverlayAction($ticket_id)
+    public function linkExistingCommunityTopicOverlayAction($ticket_id)
     {
         try {
             $ticket = $this->getTicketOr404($ticket_id);
@@ -6267,8 +6267,8 @@ CSS;
             }
         }
 
-        $exludeIds = $ticket->getFeedbackLinks()->map(function ($e) {
-            return $e->getFeedback()->getId();
+        $exludeIds = $ticket->getTopicLinks()->map(function ($e) {
+            return $e->getTopic()->getId();
         })->toArray();
 
         return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [

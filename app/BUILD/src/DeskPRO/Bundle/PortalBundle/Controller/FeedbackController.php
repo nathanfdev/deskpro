@@ -407,7 +407,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/view/{slug}", name="portal_feedback_view")
+     * @Route("/feedback/view/{slug}", name="portal_community_topic_view")
      * @Route("/feedback/view/{slug}", name="user_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
@@ -525,14 +525,14 @@ class FeedbackController extends AbstractController
                     [
                         'error'    => $this->phrase('portal.feedback.error_login'),
                         'redirect' => $this->generateUrl('portal_login', [
-                            '_destination' => $this->generateUrl('portal_feedback_view', ['slug' => $item->getSlug()]),
+                            '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $item->getSlug()]),
                         ]),
                     ]
                 );
             } else {
                 $this->addFlash('notice', $this->phrase('portal.flashes.feedback_login'));
 
-                return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_feedback_view', ['slug' => $item->getSlug()])]);
+                return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $item->getSlug()])]);
             }
         }
         if (!$item->isVisibleOnPortal()) {
@@ -554,7 +554,7 @@ class FeedbackController extends AbstractController
         } else {
             $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
-            return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
+            return $this->redirectToRoute('portal_community_topic_view', ['slug' => $item->getSlug()]);
         }
     }
 
@@ -585,7 +585,7 @@ class FeedbackController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_feedback_view', ['slug' => $item->getSlug()]);
+        return $this->redirectToRoute('portal_community_topic_view', ['slug' => $item->getSlug()]);
     }
 
     /**

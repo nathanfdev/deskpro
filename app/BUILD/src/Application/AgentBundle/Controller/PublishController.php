@@ -423,7 +423,7 @@ class PublishController extends AbstractController
                 $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
                 break;
             case 'feedback':
-                $objectUrl = $this->get('router')->generate('agent_feedback_view', ['communityTopicId' => $comment->getObject()->getId()]);
+                $objectUrl = $this->get('router')->generate('agent_community_topic_view', ['communityTopicId' => $comment->getObject()->getId()]);
                 break;
             default:
                 $objectUrl = null;
@@ -1175,7 +1175,7 @@ class PublishController extends AbstractController
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
                 break;
             case 'feedback':
-                $url = $this->generateUrl('agent_feedback_category', ['category_id' => $cat->getId()]);
+                $url = $this->generateUrl('agent_community_channels', ['$channelId' => $cat->getId()]);
                 break;
         }
 

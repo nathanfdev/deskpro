@@ -292,10 +292,10 @@ export class SideBar extends React.PureComponent {
       menus.push({
         className: 'feedback',
         label:     <FormattedMessage id="agent.general.feedback" />,
-        link:      '/agent/#app.feedback',
+        link:      '/agent/#app.community',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
-          window.DeskPRO_Window.switchToSection('feedback_section');
+          window.DeskPRO_Window.switchToSection('community_section');
           closeIframes();
         }
       });

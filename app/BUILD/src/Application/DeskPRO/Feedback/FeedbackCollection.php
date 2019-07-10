@@ -112,9 +112,9 @@ class FeedbackCollection
 
             $results = $this->em->createQuery('
                 SELECT d
-                FROM DeskPRO:CustomDataFeedback d
+                FROM DeskPRO:CustomDataCommunityTopic d
                 LEFT JOIN d.field AS field
-                WHERE d.feedback IN (?0)
+                WHERE d.topic IN (?0)
             ')->setParameter(0, $ids)->execute();
 
             foreach ($results as $data) {

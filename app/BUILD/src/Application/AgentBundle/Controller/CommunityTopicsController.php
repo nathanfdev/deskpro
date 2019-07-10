@@ -294,7 +294,7 @@ class CommunityTopicsController extends AbstractController
         );
     }
 
-    public function ajaxGetCategoriesByBrandAction($brand_id)
+    public function ajaxGetChannelsByBrandAction($brand_id)
     {
         $communityChannels = array_filter($this->em->getRepository(CommunityChannel::class)->getFlatHierarchy(), function ($category) use ($brand_id) {
             return $category['brand_id'] === (int) $brand_id;
@@ -379,7 +379,7 @@ class CommunityTopicsController extends AbstractController
 
     /**
      * @param $communityTopicId
-     * @param $category_id
+     * @param $channelId
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -388,10 +388,10 @@ class CommunityTopicsController extends AbstractController
      *
      * @return Response
      */
-    public function ajaxUpdateCategoryAction($communityTopicId, $category_id)
+    public function ajaxUpdateChannelAction($communityTopicId, $channelId)
     {
         $communityTopic = $this->getFeedback($communityTopicId);
-        $cat            = $this->em->find(CommunityChannel::class, $category_id);
+        $cat            = $this->em->find(CommunityChannel::class, $channelId);
         $communityTopic->setCategory($cat);
 
         $this->em->transactional(
@@ -660,7 +660,7 @@ class CommunityTopicsController extends AbstractController
                 $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('category_id'));
                 if ($cat) {
                     $communityTopic['category'] = $cat;
-                    $data['category_id']        = $cat['id'];
+                    $data['channel_id']         = $cat['id'];
                 }
                 break;
         }
@@ -834,17 +834,21 @@ class CommunityTopicsController extends AbstractController
     /**
      * A shortcut to run a filter on a category.
      *
-     * @param  $category_id
+     * @param int $channelId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
      */
-    public function categoryListAction($category_id)
+    public function channelsListAction($channelId)
     {
         $topResultHelper = FeedbackResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
-                    'category' => ['type' => 'category', 'op' => 'is', 'category' => $category_id],
+                    'category' => ['type' => 'category', 'op' => 'is', 'category' => $channelId],
                     'status'   => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
                 ],
             ]
@@ -855,7 +859,7 @@ class CommunityTopicsController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
-                        'category' => ['type' => 'category', 'op' => 'is', 'category' => $category_id],
+                        'category' => ['type' => 'category', 'op' => 'is', 'category' => $channelId],
                         'status'   => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
                     ],
                 ]
@@ -864,7 +868,7 @@ class CommunityTopicsController extends AbstractController
             $resultHelper = $topResultHelper;
         }
 
-        $cat = $this->em->find('DeskPRO:CommunityChannel', $category_id);
+        $cat = $this->em->find('DeskPRO:CommunityChannel', $channelId);
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('status')->setIds($topResultHelper->getFeedbackIds());
@@ -901,7 +905,7 @@ class CommunityTopicsController extends AbstractController
             [
                 'list_type'    => 'category',
                 'brand_id'     => $cat->getBrand() ? $cat->getBrand()->getId() : null,
-                'category_id'  => $category_id,
+                'category_id'  => $channelId,
                 'page_title'   => $cat->getFullTitle(),
                 'grouped'      => $grouped,
                 'grouped_info' => $grouped_info,
@@ -1001,7 +1005,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         $grouping = new GroupingCounter();
-        $grouping->setGrouping('category_id');
+        $grouping->setGrouping('channel_id');
         $grouping->setIds($topResultHelper->getFeedbackIds());
         $grouped = $grouping->getDisplayArray();
 
@@ -1060,12 +1064,12 @@ class CommunityTopicsController extends AbstractController
                 'date_created',
                 'category',
             ];
-        $userCatField = $this->container->getSystemService('FeedbackFieldsManager')->getUserCategoryField();
+        $userCatField = $this->container->getSystemService('CommunityFieldsManager')->getUserCategoryField();
 
         $communityTopic_collection = new FeedbackCollection(
             $communityTopic,
             $this->container->getEm(),
-            $this->container->getSystemService('FeedbackFieldsManager')
+            $this->container->getSystemService('CommunityFieldsManager')
         );
 
         $display = $communityTopic_collection->getDisplayArray();

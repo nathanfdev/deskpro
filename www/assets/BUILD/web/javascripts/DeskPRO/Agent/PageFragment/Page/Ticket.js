@@ -646,7 +646,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     });
 
     this.linkExistingFeedback = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback(this, {
-      loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-feedback-overlay",
+      loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-community-topics-overlay",
       saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/feedback_links",
       reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
     });
@@ -2520,7 +2520,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             break;
 
           case 'link_new_feedback':
-            DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(self.meta.ticket_id);
+            DeskPRO_Window.newCommunityTopicLoader.newLinkedFeedback(self.meta.ticket_id);
             break;
 
           case 'kb-pending':
@@ -3342,7 +3342,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         break;
 
       case 'link_new_feedback':
-        DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
+        DeskPRO_Window.newCommunityTopicLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
         break;
 
       case 'fwd':

@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.FeedbackSearch = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.CommunitySearch = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initPage: function(el) {

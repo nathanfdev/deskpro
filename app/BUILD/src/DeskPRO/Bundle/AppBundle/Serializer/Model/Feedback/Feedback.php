@@ -45,7 +45,7 @@ class Feedback extends ContentAbstract
      * Custom ticket fields.
      *
      * @JMS\Expose()
-     * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataFeedback>>")
+     * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataCommunityTopic>>")
      *
      * @var CustomDataCommunityTopic[]
      */

@@ -7,10 +7,10 @@
 {% block top %}
 	<script>
 		{% if single_type == 'feedback' %}
-			pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.FeedbackCommentsValidating';
+			pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.CommunityCommentsValidating';
 			pageMeta.singleType = 'feedback';
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_validatingcomments') }}';
-			pageMeta.resetUrl = '{{ path('agent_feedback_validatingcomments')  }}';
+			pageMeta.url_fragment = '{{ url_fragment('agent_community_validatingcomments') }}';
+			pageMeta.resetUrl = '{{ path('agent_community_validatingcomments')  }}';
 		{% else %}
 			pageMeta.url_fragment = '{{ url_fragment('agent_publish_validatingcomments') }}';
 			pageMeta.resetUrl = '{{ path('agent_publish_validatingcomments') }}';
@@ -57,7 +57,7 @@
 				{{ phrase('agent.general.page_x_of_y', {page: pageinfo.cursor, num_pages: pageinfo.last}) }}
 
 			</div>
-			{% set routeName = (single_type == 'feedback') ? 'agent_feedback_validatingcomments' : 'agent_publish_validatingcomments' %}
+			{% set routeName = (single_type == 'feedback') ? 'agent_community_validatingcomments' : 'agent_publish_validatingcomments' %}
 			{% if pageinfo.last > 1 %}
 				<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
 					<li class="prev" data-route="listpane:{{ path(routeName, {type: type, page: pageinfo.prev}) }}"></li>

@@ -5,7 +5,7 @@
 			class="row-item feedback feedback-{{feedback.id}} feedback-{{feedback.id}} related-is-linkable"
 			data-content-type="feedback"
 			data-content-id="{{ feedback.id }}"
-			data-route="feedback:{{ path('agent_feedback_view', {'communityTopicId': feedback.id}) }}"
+			data-route="feedback:{{ path('agent_community_topic_view', {'communityTopicId': feedback.id}) }}"
 			data-route-title="@selector(a.feedback-title)"
 			data-route-openclass="open"
 		>

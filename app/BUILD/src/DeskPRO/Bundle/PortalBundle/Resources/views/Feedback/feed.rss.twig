@@ -17,8 +17,8 @@
             <item>
                 <title>{{ item.title }}</title>
                 <description>{{ item.content }}</description>
-                <link>{{ url('portal_feedback_view', { slug: item.slug }) }}</link>
-                <guid>{{ url('portal_feedback_view', { slug: item.id }) }}</guid>
+                <link>{{ url('portal_community_topic_view', { slug: item.slug }) }}</link>
+                <guid>{{ url('portal_community_topic_view', { slug: item.id }) }}</guid>
                 <pubDate>{{ item.date_published|date('r') }}</pubDate>
             </item>
         {% endfor %}

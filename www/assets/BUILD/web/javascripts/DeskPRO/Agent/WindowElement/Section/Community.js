@@ -1,17 +1,17 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.Section');
 
-DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
+DeskPRO.Agent.WindowElement.Section.Community = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
-		this.buttonEl = $('#feedback_section');
+		this.buttonEl = $('#community_section');
 		var self = this;
 
-		this.urlFragmentName = 'feedback';
+		this.urlFragmentName = 'community';
 
 		this.setSectionElement($('<section id="feedback_outline"></section>'));
 
-		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
+		DeskPRO_Window.getSectionData('community_section', this._initSection.bind(this));
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-feedback', this.reload, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.feedback-status-update', this.reload, this);
@@ -26,7 +26,7 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 	},
 
 	reload: function() {
-		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this), {
+		DeskPRO_Window.getSectionData('community_section', this._initSection.bind(this), {
 			brand_id: $('#feedback_brand_id').val()
 		});
 	},

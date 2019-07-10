@@ -7,8 +7,8 @@
     <form>
       <div
         class="feedback-finder"
-        data-element-handler="DeskPRO.Agent.ElementHandler.FeedbackSearchBox"
-        data-search-url="{{ path('agent_feedbacksearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
+        data-element-handler="DeskPRO.Agent.ElementHandler.CommunitySearchBox"
+        data-search-url="{{ path('agent_communitysearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
         data-highlight-term="1"
         data-touch-focus="1"
         data-search-param="term"

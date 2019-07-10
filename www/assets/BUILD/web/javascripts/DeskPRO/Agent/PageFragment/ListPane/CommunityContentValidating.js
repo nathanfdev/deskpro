@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.CommunityContentValidating = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initPage: function(el) {
@@ -41,7 +41,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating = new Orb.Class({
 
 				var sendFn = function() {
 					$.ajax({
-						url: BASE_URL + 'agent/feedback/validating-mass-actions/' + action,
+						url: BASE_URL + 'agent/community/validating-mass-actions/' + action,
 						data: data,
 						type: 'POST',
 						dataType: 'json',
@@ -96,6 +96,6 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackContentValidating = new Orb.Class({
 			DeskPRO_Window.util.modCountEl($('#validation-list-header-count', self.wrapper), '-', el.length);
 			DeskPRO_Window.util.modCountEl($('#feedback_validating_count'), '-', el.length);
 		}
-		DeskPRO_Window.sections.feedback_section.recountBadge();
+		DeskPRO_Window.sections.community_section.recountBadge();
 	}
 });

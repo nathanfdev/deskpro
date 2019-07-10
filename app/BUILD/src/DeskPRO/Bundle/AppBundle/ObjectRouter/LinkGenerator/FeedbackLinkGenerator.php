@@ -46,16 +46,16 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
     {
         switch ($type) {
             case 'vote_up':
-                $route = 'portal_feedback_vote_up';
+                $route = 'portal_community_topic_vote_up';
                 break;
             case 'vote_down':
-                $route = 'portal_feedback_vote_down';
+                $route = 'portal_community_topic_vote_down';
                 break;
             case 'toggle_subscription':
-                $route = 'portal_feedback_toggle_subscription';
+                $route = 'portal_community_topic_toggle_subscription';
                 break;
             default:
-                $route = "{$context}_feedback_view";
+                $route = "{$context}_community_topic_view";
         }
 
         // Use feedback_id instead slug for 'agent' context
@@ -64,7 +64,7 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
             : $object->getSlug();
 
         $routeKey = ObjectRouter::CONTEXT_AGENT === $context
-            ? 'feedback_id'
+            ? 'communityTopicId'
             : 'slug';
 
         return $this->urlGenerator->generate(

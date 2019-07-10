@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
+DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	initializeProperties: function() {
@@ -134,7 +134,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 				}
 
 				$.ajax({
-					url: BASE_URL + 'agent/feedback/filter/mass-actions/' + action,
+					url: BASE_URL + 'agent/community/filter/mass-actions/' + action,
 					data: postData,
 					type: 'POST',
 					dataType: 'json',
@@ -146,7 +146,7 @@ DeskPRO.Agent.PageFragment.ListPane.FeedbackFilter = new Orb.Class({
 						self.selectionBar.checkNone();
 
 						DeskPRO_Window.runPageRoute('listpane:' + self.meta.routeUrl);
-						DeskPRO_Window.sections.feedback_section.reload();
+						DeskPRO_Window.sections.community_section.reload();
 					}
 				});
 			}

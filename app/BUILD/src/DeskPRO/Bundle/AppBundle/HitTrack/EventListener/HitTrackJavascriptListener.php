@@ -89,7 +89,7 @@ JS;
                 'type'   => HitRecord::PAGETYPE_ARTICLE,
                 'object' => 'article',
             ],
-            'portal_feedback_view' => [
+            'portal_community_topic_view' => [
                 'type'   => HitRecord::PAGETYPE_FEEDBACK,
                 'object' => 'item',
             ],

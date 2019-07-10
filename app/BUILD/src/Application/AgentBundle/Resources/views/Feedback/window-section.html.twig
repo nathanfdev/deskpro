@@ -14,13 +14,13 @@
 				<article>
 					<ul class="nav-list">
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_validatingcontent') }}">
+							<div class="item" data-route="listpane:{{ path('agent_community_validatingcontent') }}">
 								<h3>{{ phrase('agent.feedback.feedback_to_review') }}</h3>
 								<em class="counter list-counter" id="feedback_validating_count">{{ counts.feedback_awaiting_validation|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_validatingcomments') }}">
+							<div class="item" data-route="listpane:{{ path('agent_community_validatingcomments') }}">
 								<h3>{{ phrase('agent.publish.comments_to_validate') }}</h3>
 								<em class="counter list-counter" id="feedback_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</em>
 							</div>
@@ -55,14 +55,14 @@
 				<section id="feedback_outline_status" class="deskpro-tab-item">
 					<ul class="nav-list nav-list-small">
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'active', 'brand_id': selected_brand_id}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'active', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.feedback.status_active') }}</h3>
 								<em class="counter list-counter" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								{% for cat in active_status_cats %}
 									<li class="is-nav-item">
-										<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
+										<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
 											<h3>{{ cat.title }}</h3>
 											<em class="counter list-counter" id="feedback_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</em>
 										</div>
@@ -71,14 +71,14 @@
 							</ul>
 						</li>
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'closed', 'brand_id': selected_brand_id}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'closed', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.feedback.status_closed') }}</h3>
 								<em class="counter list-counter" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								{% for cat in closed_status_cats %}
 									<li class="is-nav-item">
-										<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
+										<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
 											<h3>{{ cat.title }}</h3>
 											<em class="counter list-counter" id="feedback_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</em>
 										</div>
@@ -87,19 +87,19 @@
 							</ul>
 						</li>
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden', 'brand_id': selected_brand_id}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.general.hidden') }}</h3>
 								<em class="counter list-counter" id="feedback_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								<li class="is-nav-item">
-									<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.deleted', 'brand_id': selected_brand_id}) }}">
+									<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden.deleted', 'brand_id': selected_brand_id}) }}">
 										<h3>{{ phrase('agent.general.deleted') }}</h3>
 										<em class="counter list-counter" id="feedback_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</em>
 									</div>
 								</li>
 								<li class="is-nav-item">
-									<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.spam', 'brand_id': selected_brand_id}) }}">
+									<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden.spam', 'brand_id': selected_brand_id}) }}">
 										<h3>{{ phrase('agent.general.spam') }}</h3>
 										<em class="counter list-counter" id="feedback_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</em>
 									</div>
@@ -115,7 +115,7 @@
 								class="is-nav-item"
 								data-usergroup-ids="{{ feedback_cats_usergroups[cat.id]|default([])|join(',') }}"
 							>
-								<div class="item" {% if cat.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_feedback_category', {'category_id':cat.id}) }}">
+								<div class="item" {% if cat.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':cat.id}) }}">
 									<h3>{{ cat.title }}</h3>
 									<em class="counter list-counter" id="feedback_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</em>
 								</div>
@@ -133,7 +133,7 @@
 										<td class="labels">
 											<ul>
 												{% for label in labels %}
-													<li class="is-nav-item"><span data-route="listpane:{{ path('agent_feedback_label', {'label': label, 'brand_id': selected_brand_id}) }}">{{label}}</span></li>
+													<li class="is-nav-item"><span data-route="listpane:{{ path('agent_community_label', {'label': label, 'brand_id': selected_brand_id}) }}">{{label}}</span></li>
 												{% endfor %}
 											</ul>
 										</td>

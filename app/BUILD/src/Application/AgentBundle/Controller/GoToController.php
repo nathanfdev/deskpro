@@ -144,13 +144,13 @@ class GoToController extends AbstractController
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $topic
      *
      * @return RedirectResponse
      */
-    public function feedbackIdAction(CommunityTopic $feedback)
+    public function communityTopicAction(CommunityTopic $topic)
     {
-        return $this->redirect($this->getBasePath().'#app.feedback,fb_content,i:'.$feedback->getId());
+        return $this->redirect($this->getBasePath().'#app.feedback,fb_content,i:'.$topic->getId());
     }
 
     /**

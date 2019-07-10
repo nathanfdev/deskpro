@@ -1,7 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
 
-DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
+DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	initPage: function() {

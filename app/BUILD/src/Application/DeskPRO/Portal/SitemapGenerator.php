@@ -333,7 +333,7 @@ class SitemapGenerator
         foreach ($feedback as $f) {
             if ($f->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_feedback_view', ['slug' => $f->getSlug()], RouterInterface::ABSOLUTE_URL),
+                    'loc'        => $this->router->generate('portal_community_topic_view', ['slug' => $f->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'weekly',
                 ];
             }

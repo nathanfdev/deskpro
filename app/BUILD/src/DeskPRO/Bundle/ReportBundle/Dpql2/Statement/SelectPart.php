@@ -214,7 +214,7 @@ class SelectPart
         'chat_messages'               => 'DeskPRO:ChatMessage',
         'custom_data_article'         => 'DeskPRO:CustomDataArticle',
         'custom_data_chat'            => 'DeskPRO:CustomDataChat',
-        'custom_data_feedback'        => 'DeskPRO:CustomDataFeedback',
+        'custom_data_feedback'        => 'DeskPRO:CustomDataCommunityTopic',
         'custom_data_organizations'   => 'DeskPRO:CustomDataOrganization',
         'custom_data_person'          => 'DeskPRO:CustomDataPerson',
         'custom_data_product'         => 'DeskPRO:CustomDataProduct',

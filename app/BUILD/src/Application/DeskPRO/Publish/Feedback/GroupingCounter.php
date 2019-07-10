@@ -14,7 +14,7 @@ class GroupingCounter
     /** @var string */
     protected $grouping1 = 'status';
     /** @var string */
-    protected $grouping2 = 'category_id';
+    protected $grouping2 = 'channel_id';
     /** @var int|null */
     protected $this_person_id = null;
     /** @var array */
@@ -123,7 +123,7 @@ class GroupingCounter
         };
 
         switch ($this->grouping1) {
-            case 'category_id':
+            case 'channel_id':
                 $group1_structure = App::getEntityRepository('DeskPRO:CommunityChannel')->getFullNames();
                 break;
 
@@ -140,7 +140,7 @@ class GroupingCounter
 
         if ($this->grouping2) {
             switch ($this->grouping2) {
-                case 'category_id':
+                case 'channel_id':
                     $group1_structure = App::getEntityRepository('DeskPRO:CommunityChannel')->getFullNames();
                     break;
 
@@ -196,15 +196,15 @@ class GroupingCounter
         $db        = App::getDb();
 
         if ($grouping1 == 'status') {
-            $grouping1 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
+            $grouping1 = "IF(community_topics.status_category_id, CONCAT(community_topics.status, '.', community_topics.status_category_id), community_topics.status)";
         } else {
-            $grouping1 = $db->quoteIdentifier('feedback.'.$grouping1);
+            $grouping1 = $db->quoteIdentifier('community_topics.'.$grouping1);
         }
 
         if ($grouping2 == 'status') {
-            $grouping2 = "IF(feedback.status_category_id, CONCAT(feedback.status, '.', feedback.status_category_id), feedback.status)";
+            $grouping2 = "IF(community_topics.status_category_id, CONCAT(community_topics.status, '.', community_topics.status_category_id), community_topics.status)";
         } else {
-            $grouping2 = $db->quoteIdentifier('feedback.'.$grouping2);
+            $grouping2 = $db->quoteIdentifier('community_topics.'.$grouping2);
         }
 
         $select_fields[] = "COALESCE($grouping1, 0) AS field1";
@@ -214,18 +214,18 @@ class GroupingCounter
         }
         $select_fields[] = 'COUNT(*) AS total';
 
-        $where = "WHERE (feedback.status != 'hidden')";
+        $where = "WHERE (community_topics.status != 'hidden')";
         if (is_array($this->ids)) {
             if (empty($this->ids)) {
                 return [];
             }
 
-            $where = 'WHERE feedback.id IN('.implode(',', $this->ids).')';
+            $where = 'WHERE community_topics.id IN('.implode(',', $this->ids).')';
         }
 
         $sql = '
             SELECT '.implode(', ', $select_fields)."
-            FROM feedback
+            FROM community_topics
             $where
             $group_by WITH ROLLUP
         ";
@@ -330,7 +330,7 @@ class GroupingCounter
     {
         $titles = null;
         switch ($field) {
-            case 'category_id':
+            case 'channel_id':
                 $titles = App::getOrm()->getRepository('DeskPRO:CommunityChannel')->getFullNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;

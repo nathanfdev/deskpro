@@ -25,12 +25,12 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug":"slug"})
- * @PortalLinkRoute("portal_feedback_view", route_param_map={"slug": "id"}, type="permalink")
- * @PortalLinkRoute("portal_feedback_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
- * @PortalLinkRoute("portal_feedback_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
- * @PortalLinkRoute("portal_feedback_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
- * @AgentLinkRoute("agent_feedback_view", route_param_map={"feedback_id": "id"})
+ * @PortalLinkRoute("portal_community_topic_view", route_param_map={"slug":"slug"})
+ * @PortalLinkRoute("portal_community_topic_view", route_param_map={"slug": "id"}, type="permalink")
+ * @PortalLinkRoute("portal_community_topic_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
+ * @PortalLinkRoute("portal_community_topic_vote_up",       route_param_map={"slug":"slug"}, type="vote_up")
+ * @PortalLinkRoute("portal_community_topic_vote_down", route_param_map={"slug":"slug"}, type="vote_down")
+ * @AgentLinkRoute("agent_community_topic_view", route_param_map={"communityTopicId": "id"})
  */
 class CommunityTopic extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {

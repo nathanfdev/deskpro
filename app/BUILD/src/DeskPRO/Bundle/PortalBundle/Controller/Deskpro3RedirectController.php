@@ -75,7 +75,7 @@ class Deskpro3RedirectController extends AbstractController
             if ($newId) {
                 $obj = $this->getEm()->find('DeskPRO:CommunityTopic', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('portal_feedback_view', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_community_topic_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }

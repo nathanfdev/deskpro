@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
-DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
+DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
@@ -97,7 +97,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		var wrapper = this.wrapper;
 
 		$.ajax({
-			url: BASE_URL + 'agent/feedback/new/save',
+			url: BASE_URL + 'agent/community/topic/new/save',
 			type: 'POST',
 			data: formData,
 			dataType: 'json',
@@ -115,7 +115,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 				}
 
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/community/topic/view/' + data.feedback_id);
 					this.markForReload();
 					this.closeSelf();
 				} else {
@@ -150,7 +150,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
     var brand_id = brand_select.val();
     var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
     $.ajax({
-      url: BASE_URL + 'agent/feedback/categories/brand/'+brand_id,
+      url: BASE_URL + 'agent/community/channels/brand/'+brand_id,
       type: 'GET',
       context: this,
       success: function(result) {
@@ -166,7 +166,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
     var brand_id = brand_select.val();
     var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.status_id');
     $.ajax({
-      url: BASE_URL + 'agent/feedback/statuses/brand/'+brand_id,
+      url: BASE_URL + 'agent/community/statuses/brand/'+brand_id,
       type: 'GET',
       context: this,
       success: function(result) {
