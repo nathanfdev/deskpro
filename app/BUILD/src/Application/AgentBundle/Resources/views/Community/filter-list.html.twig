@@ -64,13 +64,13 @@
 
 {% block pane_content %}
 
-	{% include 'AgentBundle:Feedback:filter-display-options.html.twig' %}
-	{% include 'AgentBundle:Feedback:filter-control-bar.html.twig' %}
-	{% include 'AgentBundle:Feedback:filter-grouping-bar.html.twig' %}
-	{% include 'AgentBundle:Feedback:filter-massactions-bar.html.twig' %}
+	{% include 'AgentBundle:Community:filter-display-options.html.twig' %}
+	{% include 'AgentBundle:Community:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:Community:filter-grouping-bar.html.twig' %}
+	{% include 'AgentBundle:Community:filter-massactions-bar.html.twig' %}
 
 	<section class="feedback-simple-list list-listing">
-		{% include 'AgentBundle:Feedback:filter-page.html.twig' %}
+		{% include 'AgentBundle:Community:filter-page.html.twig' %}
 	</section>
 
 	{% if not feedback|length %}

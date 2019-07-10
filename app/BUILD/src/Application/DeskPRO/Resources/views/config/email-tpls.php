@@ -113,7 +113,7 @@ return [
         'typeId'      => 'agent',
         'groupId'     => 'general',
         'subGroupId'  => 'primary',
-        'name'        => 'DeskPRO:emails_agent:new-feedback.html.twig',
+        'name'        => 'DeskPRO:emails_agent:new-community-topic.html.twig',
         'newTemplate' => 'SendmailBundle:emails_agent:new_feedback.html.twig',
         'viewModel'   => 'AgentNewFeedback',
     ],

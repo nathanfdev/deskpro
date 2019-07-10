@@ -109,7 +109,7 @@ class CommunityTopicsController extends AbstractController
 
         $data = [
             'section_html' => $this->renderView(
-                'AgentBundle:Feedback:window-section.html.twig',
+                'AgentBundle:Community:window-section.html.twig',
                 [
                     'counts'             => $counts,
                     'status_counts'      => $statusCounts,
@@ -250,7 +250,7 @@ class CommunityTopicsController extends AbstractController
         ];
 
         return $this->render(
-            'AgentBundle:Feedback:view.html.twig',
+            'AgentBundle:Community:view.html.twig',
             [
                 'feedback'              => $communityTopic,
                 'feedback_comments'     => $communityTopicComments,
@@ -286,7 +286,7 @@ class CommunityTopicsController extends AbstractController
         $communityTopic_votes = $communityTopic->votes->toArray();
 
         return $this->render(
-            'AgentBundle:Feedback:view-who-voted.html.twig',
+            'AgentBundle:Community:view-who-voted.html.twig',
             [
                 'feedback'       => $communityTopic,
                 'feedback_votes' => $communityTopic_votes,
@@ -477,7 +477,7 @@ class CommunityTopicsController extends AbstractController
         $customFields = $fieldManager->getDisplayArrayForObject($communityTopic);
 
         return $this->render(
-            'AgentBundle:Feedback:view-customfields-rendered-rows.html.twig',
+            'AgentBundle:Community:view-customfields-rendered-rows.html.twig',
             [
                 'feedback'      => $communityTopic,
                 'custom_fields' => $customFields,
@@ -543,7 +543,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         return $this->render(
-            'AgentBundle:Feedback:view-comment.html.twig',
+            'AgentBundle:Community:view-comment.html.twig',
             [
                 'comment' => $comment,
             ]
@@ -647,7 +647,7 @@ class CommunityTopicsController extends AbstractController
                 $this->get('attachment_helper')->processInlineBlobs($content, $inlineBlobIds);
 
                 $data['content_html'] = $this->renderView(
-                    'AgentBundle:Feedback:view-content-tab.html.twig',
+                    'AgentBundle:Community:view-content-tab.html.twig',
                     ['feedback' => $communityTopic]
                 );
 
@@ -756,7 +756,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         return $this->render(
-            'AgentBundle:Feedback:merge-overlay.html.twig',
+            'AgentBundle:Community:merge-overlay.html.twig',
             [
                 'feedback'       => $communityTopic,
                 'other_feedback' => $otherFeedback,
@@ -1034,7 +1034,7 @@ class CommunityTopicsController extends AbstractController
     public function renderList(FeedbackResults $resultsHelper, $template = null, array $templateVars = [])
     {
         if (!$template) {
-            $template = 'AgentBundle:Feedback:filter-list.html.twig';
+            $template = 'AgentBundle:Community:filter-list.html.twig';
         }
 
         $result_cache   = $resultsHelper->getResultCache();
@@ -1252,7 +1252,7 @@ class CommunityTopicsController extends AbstractController
         $diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:FeedbackRevision', $rev_old_id, $rev_new_id);
 
         return $this->render(
-            'AgentBundle:Feedback:compare-revs.html.twig',
+            'AgentBundle:Community:compare-revs.html.twig',
             [
                 'rendered_content_diff' => $diff_info['rendered_content_diff'],
                 'rendered_title_diff'   => $diff_info['rendered_title_diff'],
@@ -1337,7 +1337,7 @@ class CommunityTopicsController extends AbstractController
         $state  = $personPrefRepository->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
         return $this->render(
-            'AgentBundle:Feedback:newfeedback.html.twig',
+            'AgentBundle:Community:new-community-topic.html.twig',
             [
                 'ticket'              => $ticket,
                 'message'             => $message,

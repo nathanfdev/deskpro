@@ -9,13 +9,12 @@ use Orb\Util\Strings;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 /**
- * Trait ExtractsMatchersFromQuery
- * @package Application\DeskPRO\NewSearch\Manager\Traits
+ * Trait ExtractsMatchersFromQuery.
  */
 trait ExtractsMatchersFromQuery
 {
     /**
-     * Permalinks, links with slugs and ticket links with refcodes
+     * Permalinks, links with slugs and ticket links with refcodes.
      *
      * Articles:
      * - Permalink with ID (agent) : http://support.deskpro.com/agent/go/article/4
@@ -54,7 +53,7 @@ trait ExtractsMatchersFromQuery
      */
 
     /**
-     * Fragments for opened object
+     * Fragments for opened object.
      *
      * Pairs of fragment code -> object:
      * a.o => article
@@ -64,7 +63,7 @@ trait ExtractsMatchersFromQuery
      * d.o => download
      * http://support.deskpro.com//agent/#app.publish,downloads:1,i:17,a:1,n:1,d.o:7,vis:7
      * i.o => feedback
-     * http://support.deskpro.com//agent/#app.feedback,fb_content,i.o:17,vis:7
+     * http://support.deskpro.com//agent/#app.community,fb_content,i.o:17,vis:7
      * n.o => news
      * http://support.deskpro.com//agent/#app.publish,news:1,i:17,a:1,n.o:1,vis:7
      * o.o => organization
@@ -79,6 +78,7 @@ trait ExtractsMatchersFromQuery
 
     /**
      * @param string $query
+     *
      * @return array
      */
     protected function extractMatchersFromQuery($query)
@@ -92,7 +92,7 @@ trait ExtractsMatchersFromQuery
             'i' => 'feedback',
             'c' => 'chat',
             'p' => 'person',
-            'o' => 'organization'
+            'o' => 'organization',
         ];
 
         // stub
@@ -108,12 +108,12 @@ trait ExtractsMatchersFromQuery
             // search the framgment first
             // eg.: https://support.deskpro.com/agent/#app.tickets,inbox:agent,t:109346,t:108966,t:108169,p.o:65264,vis:7
             $fragment = $url->getFragment()->get();
-            if (! is_null($fragment)) {
+            if (!is_null($fragment)) {
                 $keys = implode('|', array_keys($matcherFragmentMap));
                 if (false !== (bool) preg_match_all("/[{$keys}]\.o:\d*/", $fragment, $matches)) {
                     foreach (array_unique($matches[0]) as $match) {
                         list($mapper, $id) = explode(':', $match);
-                        $matchers[] = [
+                        $matchers[]        = [
                             'object' => $matcherFragmentMap[explode('.', $mapper)[0]],
                             'param'  => $id,
                             'field'  => 'id',
@@ -137,9 +137,9 @@ trait ExtractsMatchersFromQuery
             // agent permalinks (/agent/go/<object>/<param>)
             if (false !== strpos($clpath, 'agent/go')) {
                 try {
-                    $params  = $router->match($clpath);
+                    $params = $router->match($clpath);
                     foreach ($params as $key => $val) {
-                        if (! Strings::startsWith('_', $key)) {
+                        if (!Strings::startsWith('_', $key)) {
                             $matchers[] = [
                                 'object' => $rwpath->toArray()[2],
                                 'field'  => $key,
@@ -154,9 +154,9 @@ trait ExtractsMatchersFromQuery
             // ticket user links
             if (false !== strpos($clpath, 'tickets')) {
                 try {
-                    $params  = $router->match($clpath);
+                    $params = $router->match($clpath);
                     foreach ($params as $key => $val) {
-                        if (! Strings::startsWith('_', $key)) {
+                        if (!Strings::startsWith('_', $key)) {
                             if ($key === 'ticket_ref') {
                                 if (Numbers::isInteger($val)) {
                                     $key = 'id';
@@ -187,9 +187,9 @@ trait ExtractsMatchersFromQuery
             foreach ($matrix as $object => $pattern) {
                 if (false !== strpos($rwpath, $pattern)) {
                     try {
-                        $params  = $router->match($clpath);
+                        $params = $router->match($clpath);
                         foreach ($params as $key => $val) {
-                            if (! Strings::startsWith('_', $key)) {
+                            if (!Strings::startsWith('_', $key)) {
                                 if ($key === 'slug' && Numbers::isInteger($val)) {
                                     $key = 'id';
                                     $val = (int) $val;
