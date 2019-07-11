@@ -4,7 +4,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataService\Feedback;
+namespace DeskPRO\Bundle\AppBundle\DataService\Community;
 
 use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class FeedbackDataService extends AbstractDataService
+class CommunityDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -245,7 +245,7 @@ class FeedbackDataService extends AbstractDataService
      *
      * @return CommunityTopicStatusCategory
      */
-    public function getFeedbackFirstStatusCategoryByType($type = CommunityTopicStatusCategory::STATUS_ACTIVE)
+    public function getCommunityFirstStatusCategoryByType($type = CommunityTopicStatusCategory::STATUS_ACTIVE)
     {
         return $this->getCommunityTopicStatusCategoryRepo()->findOneBy(['status_type' => $type], ['display_order' => 'ASC']);
     }

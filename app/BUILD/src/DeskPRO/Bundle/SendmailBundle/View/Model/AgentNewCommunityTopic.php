@@ -2,20 +2,20 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
 
-class AgentNewFeedback extends EmailBaseType
+class AgentNewCommunityTopic extends EmailBaseType
 {
     /**
      * The feedback.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic")
      *
-     * @var Feedback
+     * @var CommunityTopic
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * The feedback.
@@ -35,11 +35,11 @@ class AgentNewFeedback extends EmailBaseType
      */
     protected $loginLink;
 
-    protected $templateFile = 'emails_agent:new_feedback.html.twig';
+    protected $templateFile = 'emails_agent:new_community_topic.html.twig';
 
-    public function __construct(Feedback $feedback, Person $person, $loginLink)
+    public function __construct(CommunityTopic $topic, Person $person, $loginLink)
     {
-        $this->feedback  = $feedback;
+        $this->topic     = $topic;
         $this->person    = $person;
         $this->loginLink = $loginLink;
     }

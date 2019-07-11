@@ -16,19 +16,19 @@ class NewFeedbackNotification extends AbstractAgentNotification
     /**
      * @var \Application\DeskPRO\Entity\CommunityTopic
      */
-    protected $feedback;
+    protected $communityTopic;
 
-    public function __construct(CommunityTopic $feedback)
+    public function __construct(CommunityTopic $communityTopic)
     {
         parent::__construct();
-        $this->feedback = $feedback;
+        $this->communityTopic = $communityTopic;
     }
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->feedback->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
+        if ($this->communityTopic->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
             return true;
-        } elseif ($this->feedback->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
+        } elseif ($this->communityTopic->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
             return true;
         }
 
@@ -37,9 +37,9 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->feedback->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
+        if ($this->communityTopic->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
             return true;
-        } elseif ($this->feedback->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
+        } elseif ($this->communityTopic->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
             return true;
         }
 
@@ -48,22 +48,25 @@ class NewFeedbackNotification extends AbstractAgentNotification
 
     public function send()
     {
-        $this->sendBrowserNotifications('AgentBundle:Community:alert-new-community-topic.html.twig', ['feedback' => $this->feedback, 'notify_data' => ['notify_type' => 'new_feedback']]);
+        $this->sendBrowserNotifications(
+            'AgentBundle:Community:alert-new-community-topic.html.twig',
+            ['topic' => $this->communityTopic, 'notify_data' => ['notify_type' => 'new_topic']]
+        );
         if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = App::$container->get('email.agent_viewmodel_factory')
-                ->createAgentNewFeedbackModel($this->feedback);
+                ->createAgentNewCommunityTopicModel($this->communityTopic);
             $this->sendNewEmailNotifications($viewModel);
         } else {
             $this->sendEmailNotifications(
                 'DeskPRO:emails_agent:new-community-topic.html.twig',
-                ['feedback' => $this->feedback]
+                ['topic' => $this->communityTopic]
             );
         }
 
         $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.ui.new-feedback',
+            'agent.ui.new-community-topic',
             [
-                'feedback_id' => $this->feedback->getId(),
+                'topic_id' => $this->communityTopic->getId(),
             ]
         ));
     }

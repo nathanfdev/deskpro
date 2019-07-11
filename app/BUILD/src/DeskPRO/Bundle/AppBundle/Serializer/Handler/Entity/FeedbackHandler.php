@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CommunityTopic;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback as SerializedFeedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic as SerializedFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;

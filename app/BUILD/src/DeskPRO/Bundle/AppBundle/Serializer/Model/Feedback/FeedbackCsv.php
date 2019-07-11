@@ -3,9 +3,10 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
 use Application\DeskPRO\Entity\CommunityTopic as FeedbackEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic;
 use JMS\Serializer\Annotation as JMS;
 
-class FeedbackCsv extends Feedback
+class FeedbackCsv extends CommunityTopic
 {
     /**
      * Author's name.

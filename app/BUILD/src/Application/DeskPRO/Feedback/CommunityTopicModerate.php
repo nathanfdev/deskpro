@@ -13,13 +13,12 @@ use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Translate;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SwiftMailer\MailerUtils;
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
-use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use Doctrine\ORM\EntityManager;
 use DpSys\Features;
 
-class FeedbackModerate implements PersonContextInterface
+class CommunityTopicModerate implements PersonContextInterface
 {
     /**
      * @var Mailer
@@ -42,9 +41,9 @@ class FeedbackModerate implements PersonContextInterface
     protected $personContext;
 
     /**
-     * @var FeedbackDataService
+     * @var CommunityDataService
      */
-    protected $feedbackDataService;
+    protected $communityDataService;
 
     /**
      * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
@@ -75,7 +74,7 @@ class FeedbackModerate implements PersonContextInterface
         $this->mailer               = $container->getMailer();
         $this->em                   = $container->getEm();
         $this->translator           = $container->getTranslator();
-        $this->feedbackDataService  = $container->get('data.feedback');
+        $this->communityDataService = $container->get('data.community');
         $this->featureFlags         = $container->get('deskpro.feature_flags');
         $this->userViewmodelFactory = $container->get('email.user_viewmodel_factory');
         $this->mailerUtils          = $container->get('mailer.utils');
@@ -93,27 +92,27 @@ class FeedbackModerate implements PersonContextInterface
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\CommunityTopic $feedback
+     * @param \Application\DeskPRO\Entity\CommunityTopic $communityTopic
      *
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
      */
-    public function approveFeedback(CommunityTopic $feedback)
+    public function approveFeedback(CommunityTopic $communityTopic)
     {
         $becameReviewed = false;
-        if ($feedback->getStatus() === CommunityTopic::STATUS_HIDDEN) {
-            $statusCategory = $this->feedbackDataService->getFeedbackFirstStatusCategoryByType();
-            $feedback
+        if ($communityTopic->getStatus() === CommunityTopic::STATUS_HIDDEN) {
+            $statusCategory = $this->communityDataService->getCommunityFirstStatusCategoryByType();
+            $communityTopic
                 ->setStatus(CommunityTopic::STATUS_ACTIVE)
                 ->setStatusCategory($statusCategory);
         } else {
             $becameReviewed = true;
-            $feedback->setIsReviewed(true);
+            $communityTopic->setIsReviewed(true);
         }
 
         $this->em->getConnection()->beginTransaction();
         try {
-            $this->em->persist($feedback);
+            $this->em->persist($communityTopic);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -123,21 +122,21 @@ class FeedbackModerate implements PersonContextInterface
 
         if ($becameReviewed) {
             $this->brandStack->pushTemporary(
-                $feedback->getBrand(),
-                function () use ($feedback) {
+                $communityTopic->getBrand(),
+                function () use ($communityTopic) {
                     if ($this->featureFlags->hasBeta('email_templates')) {
-                        $viewModel = $this->userViewmodelFactory->createFeedbackApprovedModel($feedback, $this->personContext);
-                        $this->mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
+                        $viewModel = $this->userViewmodelFactory->createCommunityTopicApprovedModel($communityTopic, $this->personContext);
+                        $this->mailerUtils->sendModelWithPersonContext($communityTopic->getPerson(), $viewModel, ['to' => $communityTopic->getPerson()]);
                     } else {
                         $vars = [
-                            'feedback' => $feedback,
-                            'agent'    => $this->personContext,
+                            'topic' => $communityTopic,
+                            'agent' => $this->personContext,
                         ];
                         $message = $this->mailer->createMessage();
-                        $message->setToPerson($feedback->getPerson());
-                        $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
+                        $message->setToPerson($communityTopic->getPerson());
+                        $message->setTemplate('DeskPRO:emails_user:community-topic-approved.html.twig', $vars);
 
-                        $this->mailerUtils->sendWithPersonContext($message, $feedback->getPerson(), $feedback->getBrand());
+                        $this->mailerUtils->sendWithPersonContext($message, $communityTopic->getPerson(), $communityTopic->getBrand());
                     }
                 }
             );
@@ -145,13 +144,13 @@ class FeedbackModerate implements PersonContextInterface
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      * @param string         $reason
      *
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
      */
-    public function disapproveFeedback(CommunityTopic $feedback, $reason = '')
+    public function disapproveFeedback(CommunityTopic $communityTopic, $reason = '')
     {
         if (!$reason) {
             $reason = null;
@@ -159,7 +158,7 @@ class FeedbackModerate implements PersonContextInterface
 
         $this->em->getConnection()->beginTransaction();
         try {
-            $this->em->remove($feedback);
+            $this->em->remove($communityTopic);
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -168,22 +167,22 @@ class FeedbackModerate implements PersonContextInterface
         }
 
         $this->brandStack->pushTemporary(
-            $feedback->getBrand(),
-            function () use ($feedback, $reason) {
+            $communityTopic->getBrand(),
+            function () use ($communityTopic, $reason) {
                 if ($this->featureFlags->hasBeta('email_templates')) {
-                    $viewModel = $this->userViewmodelFactory->createFeedbackDisapprovedModel($feedback, $this->personContext, $reason);
-                    $this->mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
+                    $viewModel = $this->userViewmodelFactory->createCommunityTopicDisapprovedModel($communityTopic, $this->personContext, $reason);
+                    $this->mailerUtils->sendModelWithPersonContext($communityTopic->getPerson(), $viewModel, ['to' => $communityTopic->getPerson()]);
                 } else {
                     $vars = [
-                        'feedback' => $feedback,
-                        'agent'    => $this->personContext,
-                        'reason'   => $reason,
+                        'topic'  => $communityTopic,
+                        'agent'  => $this->personContext,
+                        'reason' => $reason,
                     ];
                     $message = $this->mailer->createMessage();
-                    $message->setToPerson($feedback->getPerson());
-                    $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
+                    $message->setToPerson($communityTopic->getPerson());
+                    $message->setTemplate('DeskPRO:emails_user:community-topic-disapproved.html.twig', $vars);
 
-                    $this->mailerUtils->sendWithPersonContext($message, $feedback->getPerson(), $feedback->getBrand());
+                    $this->mailerUtils->sendWithPersonContext($message, $communityTopic->getPerson(), $communityTopic->getBrand());
                 }
             }
         );

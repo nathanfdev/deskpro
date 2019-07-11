@@ -13,8 +13,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
+use DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -45,14 +45,14 @@ class HierarchyGenerator
     private $em;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
+     * @var DepartmentDataService
      */
     private $departmentDataService;
 
     /**
-     * @var FeedbackDataService
+     * @var CommunityDataService
      */
-    private $feedbackDataService;
+    private $communityDataService;
 
     /**
      * @var LanguageManager
@@ -69,20 +69,20 @@ class HierarchyGenerator
      *
      * @param EntityManager         $em
      * @param DepartmentDataService $departmentDataService
-     * @param FeedbackDataService   $feedbackDataService
+     * @param CommunityDataService  $communityDataService
      * @param LanguageManager       $languageManager
      * @param BrandStack            $brandStack
      */
     public function __construct(
         EntityManager         $em,
         DepartmentDataService $departmentDataService,
-        FeedbackDataService   $feedbackDataService,
+        CommunityDataService  $communityDataService,
         LanguageManager       $languageManager,
         BrandStack            $brandStack
     ) {
         $this->em                    = $em;
         $this->departmentDataService = $departmentDataService;
-        $this->feedbackDataService   = $feedbackDataService;
+        $this->communityDataService  = $communityDataService;
         $this->languageManager       = $languageManager;
         $this->brandStack            = $brandStack;
     }
@@ -389,15 +389,15 @@ class HierarchyGenerator
      */
     public function generateForFeedbackCategories(Person $person)
     {
-        $feedback_data_service = $this->feedbackDataService;
+        $communityDataService = $this->communityDataService;
 
         return $this->generateAndCache(
             [
                 'generateForFeedbackCategories',
                 $person,
             ],
-            function () use ($feedback_data_service, $person) {
-                $categories = $feedback_data_service->getFeedbackCategoriesForPerson($person);
+            function () use ($communityDataService, $person) {
+                $categories = $communityDataService->getFeedbackCategoriesForPerson($person);
                 $rootNodes = [];
                 foreach ($categories as $category) {
                     if ($category->getParent()) {

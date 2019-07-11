@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Community;
 
 use Application\DeskPRO\Entity\CommunityTopicAttachment;
 use Application\DeskPRO\Entity\CustomDataCommunityTopic;
@@ -10,7 +10,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class Feedback.
  */
-class Feedback extends ContentAbstract
+class CommunityTopic extends ContentAbstract
 {
     /**
      * Category the feedback belongs to.

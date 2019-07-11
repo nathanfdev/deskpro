@@ -1,6 +1,6 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
-	{{ phrase('agent.feedback.new_feedback') }}	{{ feedback.title }} {% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+	{{ phrase('agent.feedback.new_feedback') }}	{{ topic.title }} {% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
 
 <html>
@@ -14,15 +14,15 @@
 
 	<container>
 		{{ phrase('agent.feedback.user_submitted_new_feedback', {name: person.display_contact }) }}
-		{% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+		{% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 
 		<br /><br />
 
-		{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#app.community,i:{{ feedback.id }}">{{ login_link }}#app.community,fb_content,i:{{ feedback.id }}</a>
+		{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#app.community,i:{{ topic.id }}">{{ login_link }}#app.community,fb_content,i:{{ topic.id }}</a>
 
 		<br /><br />
 
-		{{ feedback.content|raw }}
+		{{ topic.content|raw }}
 	</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

@@ -18,7 +18,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
-use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewFeedback;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewCommunityTopic;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
@@ -123,14 +123,14 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     /**
      * @param CommunityTopic $feedback
      *
-     * @return AgentNewFeedback
+     * @return AgentNewCommunityTopic
      */
-    public function createAgentNewFeedbackModel(CommunityTopic $feedback)
+    public function createAgentNewCommunityTopicModel(CommunityTopic $communityTopic)
     {
-        $person    = $feedback->getPerson();
+        $person    = $communityTopic->getPerson();
         $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(AgentNewFeedback::class, [$feedback, $person, $loginLink]);
+        return $this->convertParameters(AgentNewCommunityTopic::class, [$communityTopic, $person, $loginLink]);
     }
 
     /**

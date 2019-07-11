@@ -95,7 +95,7 @@ class FeedbackController extends AbstractController
      *          "item":{"Application\DeskPRO\Entity\Feedback","int","string"}
      *      },
      *      attribute_expressions={
-     *          "item": "service('data.feedback').getItem(options['item'])"
+     *          "item": "service('data.community').getItem(options['item'])"
      *      }
      * )
      *
@@ -103,7 +103,7 @@ class FeedbackController extends AbstractController
      */
     public function commentsAction(TagRequest $tag_request, array $options, CommunityTopic $item)
     {
-        $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
+        $comments = $this->getCommunityDataService()->getItemComments($item, $this->getUser());
 
         return $this->renderThemeView('Theme:Common:comments.html.twig', [
             'comments' => $comments,

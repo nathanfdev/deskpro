@@ -239,7 +239,7 @@ class PortalSupportExtension extends \Twig_Extension
                 }
                 break;
             case 'feedback':
-                if ($sec->isGranted('USE_FEEDBACK') && $this->container->get('data.feedback')->hasAny()) {
+                if ($sec->isGranted('USE_FEEDBACK') && $this->container->get('data.community')->hasAny()) {
                     return true;
                 }
                 break;

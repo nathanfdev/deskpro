@@ -20,16 +20,16 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentApproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentDeleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\CommentNew;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicApproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicCreatedForUser;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicDisapproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicNew;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicNewComment;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicSubscription;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CommunityTopicUpdated;
 use DeskPRO\Bundle\SendmailBundle\View\Model\DownloadSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailTooBig;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailValidation;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackApproved;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackCreatedForUser;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackDisapproved;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNew;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNewComment;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackSubscription;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackUpdated;
 use DeskPRO\Bundle\SendmailBundle\View\Model\GatewayAutoresponseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\KbSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\LoginAlert;
@@ -161,81 +161,94 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      * @param Person         $agent
      *
-     * @return FeedbackApproved
+     * @return CommunityTopicApproved
      */
-    public function createFeedbackApprovedModel(CommunityTopic $feedback, Person $agent)
+    public function createCommunityTopicApprovedModel(CommunityTopic $communityTopic, Person $agent)
     {
-        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $communityTopicLink = $this->router->generate('user_community_topic_view', ['slug' => $communityTopic->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(FeedbackApproved::class, [$feedback, $agent, $feedbackLink]);
+        return $this->convertParameters(CommunityTopicApproved::class, [$communityTopic, $agent, $communityTopicLink]);
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      * @param Person         $agent
      * @param string         $reason
      *
-     * @return FeedbackDisapproved
+     * @return CommunityTopicDisapproved
      */
-    public function createFeedbackDisapprovedModel(CommunityTopic $feedback, Person $agent, $reason)
+    public function createCommunityTopicDisapprovedModel(CommunityTopic $communityTopic, Person $agent, $reason)
     {
-        return $this->convertParameters(FeedbackDisapproved::class, [$feedback, $agent, $reason]);
+        return $this->convertParameters(CommunityTopicDisapproved::class, [$communityTopic, $agent, $reason]);
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      *
-     * @return FeedbackNew
+     * @return CommunityTopicNew
      */
-    public function createFeedbackNewModel(CommunityTopic $feedback)
+    public function createCommunityTopicNewModel(CommunityTopic $communityTopic)
     {
-        return $this->convertParameters(FeedbackNew::class, [$feedback]);
+        return $this->convertParameters(CommunityTopicNew::class, [$communityTopic]);
     }
 
     /**
      * @param CommunityTopicComment $comment
      *
-     * @return FeedbackNewComment
+     * @return CommunityTopicNewComment
      */
-    public function createFeedbackNewCommentModel(CommunityTopicComment $comment)
+    public function createCommunityTopicNewCommentModel(CommunityTopicComment $comment)
     {
-        $feedback     = $comment->getFeedback();
-        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $communityTopic     = $comment->getTopic();
+        $communityTopicLink = $this->router->generate(
+            'user_community_topic_view',
+            ['slug' => $communityTopic->getSlug()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-        return $this->convertParameters(FeedbackNewComment::class, [$comment, $feedback, $feedbackLink]);
-    }
-
-    public function createFeedbackUpdatedModel(CommunityTopic $feedback)
-    {
-        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        return $this->convertParameters(FeedbackUpdated::class, [$feedback, $feedbackLink]);
+        return $this->convertParameters(CommunityTopicNewComment::class, [$comment, $communityTopic, $communityTopicLink]);
     }
 
     /**
-     * @param CommunityTopic[] $updatedFeedback
+     * @param CommunityTopic $communityTopic
      *
-     * @return FeedbackSubscription
+     * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      */
-    public function createFeedbackSubscriptionModel(array $updatedFeedback)
+    public function createCommunityTopicUpdatedModel(CommunityTopic $communityTopic)
+    {
+        $communityTopicLink = $this->router->generate('user_community_topic_view', ['slug' => $communityTopic->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(CommunityTopicUpdated::class, [$communityTopic, $communityTopicLink]);
+    }
+
+    /**
+     * @param CommunityTopic[] $updatedTopics
+     *
+     * @throws \Exception
+     *
+     * @return CommunityTopicSubscription
+     */
+    public function createCommunityTopicsSubscriptionModel(array $updatedTopics)
     {
         $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
         $unsubscribeUrl = $this->router->generate('portal_community_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(FeedbackSubscription::class, [$portalHome, $unsubscribeUrl, $updatedFeedback]);
+        return $this->convertParameters(CommunityTopicSubscription::class, [$portalHome, $unsubscribeUrl, $updatedTopics]);
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      *
-     * @return FeedbackCreatedForUser
+     * @return CommunityTopicCreatedForUser
      */
-    public function createFeedbackCreatedForUserModel(CommunityTopic $feedback)
+    public function createCommunityTopicCreatedForUserModel(CommunityTopic $communityTopic)
     {
-        return $this->convertParameters(FeedbackCreatedForUser::class, [$feedback]);
+        return $this->convertParameters(CommunityTopicCreatedForUser::class, [$communityTopic]);
     }
 
     /**

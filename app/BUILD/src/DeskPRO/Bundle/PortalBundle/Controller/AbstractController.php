@@ -348,11 +348,11 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService
      */
-    public function getFeedbackDataService()
+    public function getCommunityDataService()
     {
-        return $this->get('data.feedback');
+        return $this->get('data.community');
     }
 
     /**

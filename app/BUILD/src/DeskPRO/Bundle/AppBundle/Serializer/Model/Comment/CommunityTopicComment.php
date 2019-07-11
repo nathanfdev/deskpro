@@ -6,17 +6,17 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment as CommentEntity;
 use JMS\Serializer\Annotation as JMS;
 
-class FeedbackComment extends CommentAbstract
+class CommunityTopicComment extends CommentAbstract
 {
     /**
      * Feedback this comment belongs to.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopic>")
      * @JMS\Groups({"list", "details"})
      *
      * @var CommunityTopic
      */
-    protected $feedback;
+    protected $topic;
 
     /**
      * Constructor.
@@ -26,6 +26,6 @@ class FeedbackComment extends CommentAbstract
     public function __construct($entity)
     {
         parent::__construct($entity);
-        $this->feedback = $entity->getFeedback();
+        $this->topic = $entity->getTopic();
     }
 }

@@ -1,0 +1,10 @@
+<dp:subject>{{ phrase('user.email_subjects.feedback_created_for_user') }}</dp:subject>
+{{ phrase('user.emails.greeting', {'to_name': topic.person.display_name}) }}
+
+<br/><br/>
+
+{{ phrase('user.emails.feedback_created_for_user', {'title':topic.title, 'agentName':app.user.display_name}) }}
+
+<a href="{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}">
+	{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}
+</a>

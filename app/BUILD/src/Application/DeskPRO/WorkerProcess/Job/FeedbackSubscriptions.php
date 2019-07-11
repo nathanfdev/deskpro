@@ -194,7 +194,7 @@ class FeedbackSubscriptions extends AbstractJob
 
             if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->getContainer()->get('email.user_viewmodel_factory')
-                    ->createFeedbackSubscriptionModel($updatedItems);
+                    ->createCommunityTopicsSubscriptionModel($updatedItems);
                 $this->getContainer()->get('email.email_sender')
                     ->send($viewModel, ['to' => $person]);
             } else {

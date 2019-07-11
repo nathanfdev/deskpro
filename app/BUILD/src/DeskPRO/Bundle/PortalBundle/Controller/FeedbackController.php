@@ -189,7 +189,7 @@ class FeedbackController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $feedbackTypes = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedbackTypes = $this->get('data.community')->getFeedbackCategoriesForPerson($person);
 
         // JS INITIAL DATA
 
@@ -354,7 +354,7 @@ class FeedbackController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $feedbackTypes = $this->get('data.feedback')->getFeedbackCategoriesForPerson($person);
+        $feedbackTypes = $this->get('data.community')->getFeedbackCategoriesForPerson($person);
         $filterJs      = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
         $pageOptions = [
@@ -410,7 +410,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Route("/feedback/view/{slug}", name="portal_community_topic_view")
-     * @Route("/feedback/view/{slug}", name="user_feedback_view")
+     * @Route("/feedback/view/{slug}", name="user_community_topic_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")

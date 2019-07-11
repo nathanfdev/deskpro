@@ -30,9 +30,9 @@ use Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory as Communi
 use Application\DeskPRO\EntityRepository\PersonPref as PersonPrefRepository;
 use Application\DeskPRO\EntityRepository\SearchLog as SearchLogRepository;
 use Application\DeskPRO\EntityRepository\SearchStickyResult as SearchStickyResultRepository;
+use Application\DeskPRO\Feedback\CommunityTopicModerate;
 use Application\DeskPRO\Feedback\FeedbackCollection;
 use Application\DeskPRO\Feedback\FeedbackMerge;
-use Application\DeskPRO\Feedback\FeedbackModerate;
 use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
@@ -1114,7 +1114,7 @@ class CommunityTopicsController extends AbstractController
         $communityTopic = $this->getFeedback($topicId);
 
         if ($communityTopic) {
-            $communityTopicModerate = new FeedbackModerate($this->container, $this->person);
+            $communityTopicModerate = new CommunityTopicModerate($this->container, $this->person);
             if ($action === 'approve') {
                 $communityTopicModerate->approveFeedback($communityTopic);
             } elseif ($action === 'disapprove') {
@@ -1142,7 +1142,7 @@ class CommunityTopicsController extends AbstractController
         foreach ($data as $type => $ids) {
             $reason                 = $this->in->getString('reason');
             $results                = $this->em->getRepository(CommunityTopic::class)->getByIds($ids);
-            $communityTopicModerate = new FeedbackModerate($this->container, $this->person);
+            $communityTopicModerate = new CommunityTopicModerate($this->container, $this->person);
             foreach ($results as $communityTopic) {
                 if ($action === 'approve') {
                     $communityTopicModerate->approveFeedback($communityTopic);

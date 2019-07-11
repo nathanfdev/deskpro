@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/feedback")
- * @ApiDoc(target="all", section="Feedback", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
+ * @ApiDoc(target="all", section="Community" output="DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic")
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
