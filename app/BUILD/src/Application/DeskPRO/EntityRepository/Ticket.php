@@ -1257,11 +1257,12 @@ class Ticket extends AbstractEntityRepository
     }
 
     /**
-     * @param $number
+     * @param string         $number
+     * @param \DateTime|null $fromDate
      *
      * @return TicketEntity|null
      */
-    public function getLastTicketForNumber($number)
+    public function getLastTicketForNumber($number, \DateTime $fromDate = null)
     {
         $qb = $this
             ->createQueryBuilder('t')
@@ -1272,6 +1273,7 @@ class Ticket extends AbstractEntityRepository
                 'p.externalNumber = :number',
                 't.status IN (:statuses)'
             )
+            ->orderBy('p.dateCreated', 'DESC')
             ->setParameter('number', $number)
             ->setParameter('statuses', [
                 TicketStatus::STATUS_TYPE_AWAITING_USER,
@@ -1279,6 +1281,11 @@ class Ticket extends AbstractEntityRepository
             ])
             ->setMaxResults(1)
         ;
+
+        if ($fromDate) {
+            $qb->andWhere('p.dateCreated > :from_date');
+            $qb->setParameter('from_date', $fromDate);
+        }
 
         return $qb->getQuery()->getOneOrNullResult();
     }

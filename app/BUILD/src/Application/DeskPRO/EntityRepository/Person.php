@@ -751,7 +751,7 @@ class Person extends AbstractEntityRepository
     {
         $person = null;
         if ($number) {
-            // select person by phone number by last activity
+            // select person by ticket last activity
             $qb = $this->_em->createQueryBuilder();
             $qb
                 ->select('p')
@@ -764,7 +764,7 @@ class Person extends AbstractEntityRepository
                 ->setParameter('number', $number)
             ;
 
-            $person = $qb->getQuery()->getSingleResult();
+            $person = $qb->getQuery()->getOneOrNullResult();
 
             // select first existing person by phone number
             if (!$person) {
