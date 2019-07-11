@@ -161,9 +161,9 @@
       padding: 10px;
       div {
         display: inline-block;
-        &.right.floated {
-          float: right;
-        }
+      }
+      .right.floated {
+        float: right;
       }
     }
   }
@@ -311,6 +311,11 @@
     }
     button:last-of-type {
       margin-right: 0;
+      float: right;
+    }
+    button.floated.right {
+      margin-right: 0;
+      margin-left: 5px;
       float: right;
     }
   }

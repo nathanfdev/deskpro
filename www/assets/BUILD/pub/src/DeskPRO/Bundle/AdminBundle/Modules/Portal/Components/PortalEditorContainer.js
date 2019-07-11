@@ -10,6 +10,8 @@ import { TemplatesMenuContainer } from './Menus/TemplatesMenu';
 import * as actions from '../Actions/templatesActions';
 import { MediaMenuContainer } from '../../../../../Component/CMEditor/Menus/MediaMenu';
 import { PhrasesMenuContainer } from '../../EmailTemplates/Components/Menus/PhrasesMenu';
+import {fromJS} from 'immutable';
+import {replaceRoute} from '../../../Services/history';
 
 @connect(state => ({
   portalEditor: state.Portal.templates
@@ -27,7 +29,11 @@ class PortalEditorContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      saveSubmit:    false,
+      undoSubmit:    false,
+      resetSubmit:   false,
       currentWidget: null,
+      editor:        null,
     };
   }
 
@@ -40,14 +46,22 @@ class PortalEditorContainer extends React.Component {
     dispatch(actions.loadTemplates());
 
     if (this.props.params.name) {
-      dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'))).then((value) => {
-        dispatch(actions.updateTemplateCode(value));
+      dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'))).then((template) => {
+        dispatch(actions.setTemplate(template));
       });
     }
     dispatch(actions.loadPhrases(
       'user',
       this.props.portalEditor.get('currentLanguage')
     ));
+  }
+
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        editor: this.editor.editor.bodyEditor
+      });
+    }, 100);
   }
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
@@ -69,14 +83,55 @@ class PortalEditorContainer extends React.Component {
     }
   };
 
+  setTemplateValue = (name, code) => {
+    this.props.dispatch(actions.setExtraTemplate({ name, code }));
+  };
+
+  saveTemplate = () => {
+    this.setState({
+      saveSubmit: true
+    });
+
+    const name = this.props.params.name.replace('|', '/');
+
+    const template = {
+      code: this.props.portalEditor.getIn(['template', 'template_code', 'code'])
+    };
+
+    const promises = [];
+    promises.push(this.props.dispatch(actions.saveTemplate(name, template)));
+
+    const extraTemplates = this.props.portalEditor.getIn(['template', 'extra_templates'], fromJS({})).toObject();
+
+    Object.keys(extraTemplates).forEach((key) => {
+      promises.push(this.props.dispatch(actions.saveTemplate(key, { code: extraTemplates[key] })));
+    });
+    Promise.all(promises).then(
+      () => {
+        this.setState({
+          saveSubmit: false
+        });
+        this.props.dispatch(actions.cleanExtraTemplates());
+      }
+    );
+  };
+
+  changeTemplateCode = (value) => {
+    this.props.dispatch(actions.updateTemplateCode(value));
+  };
+
+  insertPhrase = (phrase) => {
+    this.state.editor.getCodeMirror().replaceSelection(phrase);
+  };
+
   loadTemplate = name => new Promise((resolve) => {
     const template = this.props.portalEditor.getIn(['template', 'extra_templates', name], null);
     if (template !== null) {
       resolve(template);
     } else {
-      this.props.dispatch(actions.loadTemplate(name)).then((code) => {
-        this.props.dispatch(actions.setExtraTemplate({ name, code }));
-        resolve(code);
+      this.props.dispatch(actions.loadTemplate(name)).then((template) => {
+        this.props.dispatch(actions.setExtraTemplate({ name, code: template.original_code.code }));
+        resolve(template.original_code.code);
       });
     }
   });
@@ -93,16 +148,29 @@ class PortalEditorContainer extends React.Component {
     }
   });
 
+  close = () => {
+    replaceRoute(`/portal/${this.props.params.brandId}/portal_editor`);
+  };
+
   render() {
+    const name = this.props.params.name ? this.props.params.name.replace('|', '/') : '';
     return (
       <PortalEditor
         portalEditor={this.props.portalEditor}
-        name={this.props.params.name.replace('|', '/')}
+        name={name}
         brandId={this.props.params.brandId}
         loadTagInfo={this.loadTagInfo}
         loadTemplate={this.loadTemplate}
+        setTemplateValue={this.setTemplateValue}
         setCurrentWidget={this.setCurrentWidget}
         getPhraseTranslations={this.getPhraseTranslations}
+        insertPhrase={this.insertPhrase}
+        changeTemplateCode={this.changeTemplateCode}
+        saveTemplate={this.saveTemplate}
+        close={this.close}
+        saveSubmit={this.state.saveSubmit}
+        undoSubmit={this.state.undoSubmit}
+        resetSubmit={this.state.resetSubmit}
         ref={(c) => { this.editor = c; }}
       />
     );
@@ -116,6 +184,8 @@ class PortalEditor extends React.Component {
     portalEditor:           PropTypes.object,
     loadTagInfo:            PropTypes.func,
     loadTemplate:           PropTypes.func,
+    setTemplateValue:       PropTypes.func,
+    changeTemplateCode:     PropTypes.func,
     setCurrentWidget:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     deleteTemplate:         PropTypes.func,
@@ -125,6 +195,7 @@ class PortalEditor extends React.Component {
     insertAttachmentAsLink: PropTypes.func,
     insertInlineImage:      PropTypes.func,
     insertPhrase:           PropTypes.func,
+    close:                  PropTypes.func,
     saveSubmit:             PropTypes.bool,
     undoSubmit:             PropTypes.bool,
     resetSubmit:            PropTypes.bool,
@@ -171,12 +242,39 @@ class PortalEditor extends React.Component {
     }
   };
 
+  setTemplateValue = (name, code) => {
+    this.props.setTemplateValue(name, code);
+    this.checkChanges();
+  };
+
   compileProps = (portalEditor) => {
     this.setState({
       templateType:     'block',
       templateCode:     portalEditor.getIn(['template', 'template_code', 'code'], ''),
       textareaDisabled: !portalEditor.get('template')
     });
+  };
+
+  handleChange = (value) => {
+    if (this.props.portalEditor.get('template')) {
+      this.props.changeTemplateCode(value);
+      this.checkChanges();
+    }
+  };
+
+  checkChanges = () => {
+    const code = this.props.portalEditor.getIn(['template', 'original_code', 'code'], '');
+    const extraTemplates = this.props.portalEditor.getIn(['template', 'extra_templates'], fromJS({}));
+
+    if (code !== this.state.templateCode || extraTemplates.size) {
+      this.setState({
+        contentChanged: true
+      });
+    } else {
+      this.setState({
+        contentChanged: false
+      });
+    }
   };
 
   render() {
@@ -246,12 +344,14 @@ class PortalEditor extends React.Component {
           <Editor
             body={templateCode}
             disabled={textareaDisabled}
+            changeTemplateBody={this.handleChange}
             ref={(c) => { this.editor = c; }}
             phrases={this.props.portalEditor.get('phrases')}
             getPhraseTranslations={this.props.getPhraseTranslations}
             loadTagInfo={this.props.loadTagInfo}
             loadTemplate={this.props.loadTemplate}
             setCurrentWidget={this.props.setCurrentWidget}
+            setTemplateValue={this.setTemplateValue}
           />
           <div className="footer">
             <Button
@@ -295,6 +395,14 @@ class PortalEditor extends React.Component {
                 Reset template
               </ConfirmButton>
             }
+            <Button
+              size="medium"
+              className={classNames('right floated')}
+              disabled={contentChanged}
+              onClick={this.props.close}
+            >
+              Close
+            </Button>
           </div>
         </div>
       </div>

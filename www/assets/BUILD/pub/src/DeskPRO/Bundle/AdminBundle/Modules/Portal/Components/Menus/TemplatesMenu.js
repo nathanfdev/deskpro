@@ -25,7 +25,7 @@ export class TemplatesMenuContainer extends React.Component {
     this.props.dispatch(actions.loadTemplate(template.get('value'))).then(
       (data) => {
         replaceRoute(`/portal/${this.props.brandId}/templates_editor/${template.get('value').replace('/', '|')}`);
-        this.props.dispatch(actions.updateTemplateCode(data));
+        this.props.dispatch(actions.setTemplate(data));
       }
     );
     setTimeout(() => this.props.closeMenu(), 100);

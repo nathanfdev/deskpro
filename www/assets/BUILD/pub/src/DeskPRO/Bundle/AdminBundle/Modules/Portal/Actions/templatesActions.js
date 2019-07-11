@@ -81,7 +81,15 @@ export const loadTemplate = createAction(
     repository('PortalTemplates').loadTemplate(name).then((promise) => {
       const res = promise.getData();
 
-      resolve(res.source);
+      const template = {
+        original_code: {
+          code: res.source,
+        },
+        template_code: {
+          code: res.source,
+        }
+      };
+      resolve(template);
     });
   })
 );
