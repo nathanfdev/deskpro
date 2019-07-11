@@ -27,7 +27,7 @@
             "description": "Operations about Downloads"
         },
         {
-            "path": "/feedback",
+            "path": "/community",
             "description": "Operations about Feedbacks"
         },
         {

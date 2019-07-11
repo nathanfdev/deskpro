@@ -419,7 +419,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			trigger: $('.merge', this.getEl('action_buttons')),
 			overlayUrl: BASE_URL + 'agent/community/topic/merge-overlay/{id}/{other}',
 			mergeUrl: BASE_URL + 'agent/community/topic/merge/{id}/{other}',
-			loadRoute: 'feedback:' + BASE_URL + 'agent/community/topic/view/{id}'
+			loadRoute: 'community:' + BASE_URL + 'agent/community/topic/view/{id}'
 		});
 		this.ownObject(this.merge);
 	},

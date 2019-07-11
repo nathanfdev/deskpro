@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
 
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
-use Application\DeskPRO\Entity\LabelFeedback;
+use Application\DeskPRO\Entity\LabelCommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
@@ -76,7 +76,7 @@ class FeedbackType extends AbstractType
             ])
             ->add('labels', LabelsCollectionType::class, [
                 'required'       => false,
-                'labels_class'   => LabelFeedback::class,
+                'labels_class'   => LabelCommunityTopic::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'feedback',
             ])

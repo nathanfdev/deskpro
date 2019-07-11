@@ -441,7 +441,6 @@ class PhraseData
      */
     public function getFeedbackStatusPhrases(Language $language = null)
     {
-        //TODO: need a feedback service
         $em = App::getOrm();
 
         $phrase_group = 'obj_CommunityTopicStatusCategory';

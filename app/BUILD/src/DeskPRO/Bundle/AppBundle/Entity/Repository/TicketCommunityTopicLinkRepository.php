@@ -3,11 +3,12 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use Doctrine\ORM\EntityRepository;
 
 class TicketCommunityTopicLinkRepository extends EntityRepository
 {
-    public function findByTicketAndJoinFeedbackData(Ticket $ticket)
+    public function findByTicketAndJoinCommunityTopicData(Ticket $ticket)
     {
         $qb = $this->createQueryBuilder('tctl');
         $qb
@@ -27,12 +28,14 @@ class TicketCommunityTopicLinkRepository extends EntityRepository
      *
      * @return array
      */
-    public function getFeedbackIdsByTicket(Ticket $ticket)
+    public function getCommunityTopicIdsByTicket(Ticket $ticket)
     {
-        $feedbackLinks = $this->findByTicket($ticket);
+        /** @var TicketCommunityTopicLink[] $communityTopicLinks */
+        $communityTopicLinks = $this->findByTicket($ticket);
 
-        return array_map(function ($feedbackLink) {
-            return $feedbackLink->getFeedback()->getId();
-        }, $feedbackLinks);
+        return array_map(function ($communityTopicLink) {
+            /* @var TicketCommunityTopicLink $communityTopicLink */
+            return $communityTopicLink->getTopic()->getId();
+        }, $communityTopicLinks);
     }
 }

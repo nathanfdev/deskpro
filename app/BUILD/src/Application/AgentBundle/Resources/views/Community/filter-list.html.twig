@@ -24,7 +24,7 @@
 		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.CommunityFilter';
 		{% if list_type == 'category' %}
 			pageMeta.refreshUrl = '{{ path('agent_community_channels', {'channelId': category_id}) }}';
-			pageMeta.url_fragment = '{{ url_fragment('agent_community_channels', {'channel': category}) }}';
+			pageMeta.url_fragment = '{{ url_fragment('agent_community_channels', {'channel': channel}) }}';
 		{% elseif list_type == 'status' %}
 			pageMeta.refreshUrl = '{{ path('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) }}?';
 			pageMeta.url_fragment = '{{ url_fragment('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) }}';
@@ -32,7 +32,7 @@
 			pageMeta.refreshUrl = '{{ path('agent_community_label', {'label': label, 'brand_id': selected_brand_id}) }}?';
 			pageMeta.url_fragment = '{{ url_fragment('agent_community_topic_status', {'label': label, 'brand_id': selected_brand_id}) }}';
 		{% elseif list_type == 'validating' %}
-			pageMeta.refreshUrl = '{{ path('agent_feedback_validating') }}?';
+			pageMeta.refreshUrl = '{{ path('agent_community_validatingcontent') }}?';
 		{% else %}
 			pageMeta.refreshUrl = '{{ path('agent_community_filter') }}?cache_id={{cache_id}}';
 		{% endif %}

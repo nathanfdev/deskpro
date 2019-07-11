@@ -185,5 +185,7 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function run()
     {
+        $this->execDbQuery('default', "UPDATE `ratings` SET `object_type` = 'community_topic' where `object_type` = 'feedback'");
+        $this->execDbQuery('default', "UPDATE `label_defs` SET `label_type` = 'community' where `label_type` = 'feedback'");
     }
 }

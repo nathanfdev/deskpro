@@ -36,7 +36,7 @@
                     {% elseif object_type == 'Topic' %}
 						<a href="{{ login_link }}#app.publish,validating_comments,m.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,m.o={{ object.id }}</a>
                     {% elseif object_type == 'Feedback' %}
-						<a href="{{ login_link }}#app.publish,fb_comments,i.o:{{ object.id }}">{{ login_link }}#app.publish,fb_comments,i.o={{ object.id }}</a>
+						<a href="{{ login_link }}#app.publish,ct_comments,i.o:{{ object.id }}">{{ login_link }}#app.publish,ct_comments,i.o={{ object.id }}</a>
 					{% else %}
 						<a href="{{ login_link }}#app.publish,validating_comments">{{ login_link }}#app.publish,validating_comments</a>
 					{% endif %}

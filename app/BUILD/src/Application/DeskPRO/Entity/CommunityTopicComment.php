@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation as JMS;
  */
 class CommunityTopicComment extends CommentAbstract
 {
-    const OBJ_PROP = 'feedback';
+    const OBJ_PROP = 'topic';
 
     /**
      * CommunityTopic this comment belongs to.

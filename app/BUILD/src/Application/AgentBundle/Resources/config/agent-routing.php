@@ -1628,13 +1628,13 @@ $collection->create('agent_publish_validatingcontent', [
 $collection->create('agent_community_validatingcontent', [
     'path'       => '/community/content/validating',
     'controller' => 'AgentBundle:CommunityTopics:listValidatingContent',
-    'options'    => ['fragment_type' => 'list', 'fragment_name' => 'fb_content'],
+    'options'    => ['fragment_type' => 'list', 'fragment_name' => 'ct_content'],
 ]);
 
 $collection->create('agent_community_validatingcomments', [
     'path'       => '/community/comments/validating',
     'controller' => 'AgentBundle:Publish:listValidatingCommunityTopicsComments',
-    'options'    => ['fragment_type' => 'list', 'fragment_name' => 'fb_comments'],
+    'options'    => ['fragment_type' => 'list', 'fragment_name' => 'ct_comments'],
 ]);
 
 $collection->create(

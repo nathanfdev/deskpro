@@ -6,10 +6,13 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\AgentBundle\Controller\Helper\FeedbackResults;
-use Application\AgentBundle\Form\Model\NewFeedback;
-use Application\AgentBundle\Form\Type\NewFeedback as NewFeedbackTypeOld;
-use Application\AgentBundle\Validator\NewFeedbackValidator;
+use Application\AgentBundle\Controller\Helper\CommunityTopicsResults;
+use Application\AgentBundle\Form\Model\NewCommunityTopic;
+use Application\AgentBundle\Form\Type\NewCommunityTopic as NewCommunityTopicTypeOld;
+use Application\AgentBundle\Validator\NewCommunityTopicValidator;
+use Application\DeskPRO\Community\CommunityTopicModerate;
+use Application\DeskPRO\Community\CommunityTopicsCollection;
+use Application\DeskPRO\Community\CommunityTopicsMerge;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
@@ -30,15 +33,12 @@ use Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory as Communi
 use Application\DeskPRO\EntityRepository\PersonPref as PersonPrefRepository;
 use Application\DeskPRO\EntityRepository\SearchLog as SearchLogRepository;
 use Application\DeskPRO\EntityRepository\SearchStickyResult as SearchStickyResultRepository;
-use Application\DeskPRO\Feedback\CommunityTopicModerate;
-use Application\DeskPRO\Feedback\FeedbackCollection;
-use Application\DeskPRO\Feedback\FeedbackMerge;
 use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PermissionChecker\PublishChecker;
-use Application\DeskPRO\Publish\Feedback\GroupingCounter;
+use Application\DeskPRO\Publish\Community\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityTopicLinkGenerator;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -75,11 +75,11 @@ class CommunityTopicsController extends AbstractController
 
         /** @var CommunityTopicRepository $communityTopicRepository */
         /* @var CommunityChannelRepository $CommunityChannelRepository */
-        /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         /* @var CommunityTopicCommentRepository $CommunityTopicCommentRepository */
         $communityTopicRepository               = $this->em->getRepository(CommunityTopic::class);
         $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
-        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+        $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
         $CommunityTopicCommentRepository        = $this->em->getRepository(CommunityTopicComment::class);
 
         $counts = [
@@ -95,8 +95,8 @@ class CommunityTopicsController extends AbstractController
 
         $categoryCounts = $communityTopicRepository->countAllCategoriesGrouped();
 
-        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
-        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
         $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
             return $category['brand_id'] === $selectedBrandId;
         });
@@ -168,8 +168,7 @@ class CommunityTopicsController extends AbstractController
 
         $tpl = @$_REQUEST['_partial']
             ? 'AgentBundle:Publish:validating-content-page.html.twig'
-            : 'AgentBundle:Publish:validating-content.html.twig'
-        ;
+            : 'AgentBundle:Publish:validating-content.html.twig';
 
         return $this->render(
             $tpl,
@@ -193,21 +192,21 @@ class CommunityTopicsController extends AbstractController
      */
     public function viewAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         /** @var PublishChecker $publishChecker */
         /* @var SearchLogRepository $searchLogRepository */
         /* @var PersonPrefRepository $personPrefRepository */
         /* @var CommunityChannelRepository $CommunityChannelRepository */
         /* @var SearchStickyResultRepository $searchStickyResultRepository */
-        /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         $publishChecker                         = $this->person->getPermissionsManager()->get('PublishChecker');
         $fieldManager                           = $this->container->getSystemService('community_fields_manager');
         $searchLogRepository                    = $this->em->getRepository(SearchLog::class);
         $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
         $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
         $searchStickyResultRepository           = $this->em->getRepository(SearchStickyResult::class);
-        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+        $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
         $customFields              = $fieldManager->getDisplayArrayForObject($communityTopic);
         $communityTopicComments    = [];
@@ -219,24 +218,24 @@ class CommunityTopicsController extends AbstractController
             }
         }
 
-        $state        = $personPrefRepository->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
-        $category     = $communityTopic->getCategory();
-        $categoryPath = $category->getTreeParents();
+        $state       = $personPrefRepository->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+        $channel     = $communityTopic->getCategory();
+        $channelPath = $channel->getTreeParents();
 
         $ratedSearches           = $searchLogRepository->getRatedSearchesFor('feedback', $communityTopic['id'], 'counted');
         $relatedFinder           = new RelatedContentFinder($this->person, $communityTopic);
         $relatedContent          = $relatedFinder->getRelatedEntities(true);
         $communityTopicRevisions = $communityTopic->getRevisions();
         $stickySearchWords       = $searchStickyResultRepository->getWordsForObject($communityTopic);
-        $activeStatusCategories  = $CommunityTopicStatusCategoryRepository->getActiveCategories($communityTopic->getBrand());
-        $closedStatusCategories  = $CommunityTopicStatusCategoryRepository->getClosedCategories($communityTopic->getBrand());
-        $communityChannels       = array_filter($CommunityChannelRepository->getInHierarchy(), function ($category) use ($communityTopic) {
-            return $communityTopic->getBrand() && $category['brand_id'] === $communityTopic->getBrand()->getId();
+        $activeStatusCategories  = $communityTopicStatusCategoryRepository->getActiveCategories($communityTopic->getBrand());
+        $closedStatusCategories  = $communityTopicStatusCategoryRepository->getClosedCategories($communityTopic->getBrand());
+        $communityChannels       = array_filter($CommunityChannelRepository->getInHierarchy(), function ($channel) use ($communityTopic) {
+            return $communityTopic->getBrand() && $channel['brand_id'] === $communityTopic->getBrand()->getId();
         });
 
         //@TODO: related entities fetching optimization
-        $communityTopicRepo  = $this->em->getRepository(TicketCommunityTopicLink::class);
-        $ticketFeedbackLinks = $communityTopicRepo->findByTopic($communityTopic);
+        $communityTopicLinksRepo    = $this->em->getRepository(TicketCommunityTopicLink::class);
+        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($communityTopic);
 
         //@TODO: select only needed data to display persons
         $subscribedIds = $this->em->getRepository('DeskPRO:CommunityTopicSubscription')->getSubscribedPersonIds($communityTopic);
@@ -252,24 +251,23 @@ class CommunityTopicsController extends AbstractController
         return $this->render(
             'AgentBundle:Community:view.html.twig',
             [
-                'feedback'              => $communityTopic,
-                'feedback_comments'     => $communityTopicComments,
-                'feedback_revisions'    => $communityTopicRevisions,
-                'state'                 => $state,
-                'category'              => $category,
-                'category_path'         => $categoryPath,
-                'custom_fields'         => $customFields,
-                'rated_searches'        => $ratedSearches,
-                'related_content'       => $relatedContent,
-                'sticky_search_words'   => $stickySearchWords,
-                'feedback_categories'   => $communityChannels,
-                'active_status_cats'    => $activeStatusCategories,
-                'closed_status_cats'    => $closedStatusCategories,
-                'ticket_feedback_links' => $ticketFeedbackLinks,
-                'subscribed_persons'    => $subscribedPersons,
-                'perms'                 => $perms,
-                'permalink'             => $this->get('object_router')
-                    ->getPortalUrl($communityTopic, FeedbackLinkGenerator::TYPE_PERMALINK),
+                'topic'                         => $communityTopic,
+                'topic_comments'                => $communityTopicComments,
+                'topic_revisions'               => $communityTopicRevisions,
+                'state'                         => $state,
+                'channel'                       => $channel,
+                'channel_path'                  => $channelPath,
+                'custom_fields'                 => $customFields,
+                'rated_searches'                => $ratedSearches,
+                'related_content'               => $relatedContent,
+                'sticky_search_words'           => $stickySearchWords,
+                'community_channels'            => $communityChannels,
+                'active_status_cats'            => $activeStatusCategories,
+                'closed_status_cats'            => $closedStatusCategories,
+                'ticket_community_topics_links' => $ticketCommunityTopicsLinks,
+                'subscribed_persons'            => $subscribedPersons,
+                'perms'                         => $perms,
+                'permalink'                     => $this->get('object_router')->getPortalUrl($communityTopic, CommunityTopicLinkGenerator::TYPE_PERMALINK),
             ]
         );
     }
@@ -281,7 +279,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function whoVotedAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         $communityTopic_votes = $communityTopic->votes->toArray();
 
@@ -314,10 +312,10 @@ class CommunityTopicsController extends AbstractController
 
     public function ajaxGetStatusesByBrandAction($brand_id)
     {
-        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+        $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($brand_id);
-        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($brand_id);
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($brand_id);
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($brand_id);
 
         return $this->render('AgentBundle:Common:select-feedback-status.html.twig', [
             'name'               => 'newfeedback[status_code]',
@@ -341,7 +339,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function ajaxSaveEditablesAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         /** @var PublishChecker $publishChecker */
         $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
@@ -381,16 +379,16 @@ class CommunityTopicsController extends AbstractController
      * @param $communityTopicId
      * @param $channelId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
     public function ajaxUpdateChannelAction($communityTopicId, $channelId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
         $cat            = $this->em->find(CommunityChannel::class, $channelId);
         $communityTopic->setCategory($cat);
 
@@ -420,7 +418,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function ajaxUpdateStatusAction($communityTopicId, $status_code)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         if ($response = $this->checkPermissions($communityTopic)) {
             return $response;
@@ -452,7 +450,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function ajaxSaveCustomFieldsAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         if ($response = $this->checkPermissions($communityTopic)) {
             return $response;
@@ -492,7 +490,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function ajaxSaveLabelsAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         if ($response = $this->checkPermissions($communityTopic)) {
             return $response;
@@ -510,14 +508,14 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      *
      * @return Response
      */
     public function ajaxSaveCommentAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         if (!$this->in->getString('content')) {
             throw $this->createNotFoundException();
@@ -553,15 +551,15 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
     public function ajaxSaveAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         $rev    = null;
         $action = $this->in->getString('action');
@@ -696,7 +694,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function ajaxSubscribePersonAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
             throw $this->createNotFoundException(sprintf(
@@ -705,7 +703,7 @@ class CommunityTopicsController extends AbstractController
             ));
         }
 
-        $this->get('feedback_subscription_helper')->subscribePersons($communityTopic, [$person]);
+        $this->get('community_subscription_helper')->subscribePersons($communityTopic, [$person]);
 
         return $this->createJsonResponse(['success' => 1]);
     }
@@ -717,7 +715,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function ajaxUnsubscribePersonAction($communityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
+        $communityTopic = $this->getTopic($communityTopicId);
 
         if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
             throw $this->createNotFoundException(sprintf(
@@ -726,7 +724,7 @@ class CommunityTopicsController extends AbstractController
             ));
         }
 
-        $this->get('feedback_subscription_helper')->unsubscribePerson($communityTopic, $person);
+        $this->get('community_subscription_helper')->unsubscribePerson($communityTopic, $person);
 
         return $this->createJsonResponse(['success' => 1]);
     }
@@ -739,9 +737,9 @@ class CommunityTopicsController extends AbstractController
      * @param     $communityTopicId
      * @param int $otherCommunityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -750,16 +748,16 @@ class CommunityTopicsController extends AbstractController
         $communityTopic = $this->em->find(CommunityTopic::class, $communityTopicId);
 
         if ($otherCommunityTopicId && $otherCommunityTopicId != $communityTopicId) {
-            $otherFeedback = $this->em->find(CommunityTopic::class, $otherCommunityTopicId);
+            $otherCommunityTopic = $this->em->find(CommunityTopic::class, $otherCommunityTopicId);
         } else {
-            $otherFeedback = false;
+            $otherCommunityTopic = false;
         }
 
         return $this->render(
             'AgentBundle:Community:merge-overlay.html.twig',
             [
-                'feedback'       => $communityTopic,
-                'other_feedback' => $otherFeedback,
+                'topic'       => $communityTopic,
+                'other_topic' => $otherCommunityTopic,
             ]
         );
     }
@@ -776,24 +774,24 @@ class CommunityTopicsController extends AbstractController
      */
     public function mergeAction($communityTopicId, $otherCommunityTopicId)
     {
-        $communityTopic = $this->getFeedback($communityTopicId);
-        $otherFeedback  = $this->getFeedback($otherCommunityTopicId);
+        $communityTopic      = $this->getTopic($communityTopicId);
+        $otherCommunityTopic = $this->getTopic($otherCommunityTopicId);
 
         /** @var PublishChecker $publishChecker */
         $publishChecker = $this->person->getPermissionsManager()->get('PublishChecker');
 
         if (!$publishChecker->canEdit($communityTopic)
-            || !$publishChecker->canEdit($otherFeedback)
-            || !$publishChecker->canDelete($otherFeedback)
+            || !$publishChecker->canEdit($otherCommunityTopic)
+            || !$publishChecker->canDelete($otherCommunityTopic)
         ) {
             return $this->createJsonResponse(['success' => false]);
         }
 
-        $old_feedback_id = $otherFeedback['id'];
+        $old_feedback_id = $otherCommunityTopic['id'];
 
         try {
             $this->em->beginTransaction();
-            $merge = new FeedbackMerge($this->person, $communityTopic, $otherFeedback);
+            $merge = new CommunityTopicsMerge($this->person, $communityTopic, $otherCommunityTopic);
             $merge->merge();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -822,7 +820,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function filterListAction()
     {
-        $resultHelper = FeedbackResults::newFromRequest($this);
+        $resultHelper = CommunityTopicsResults::newFromRequest($this);
 
         return $this->renderList(
             $resultHelper,
@@ -836,15 +834,15 @@ class CommunityTopicsController extends AbstractController
      *
      * @param int $channelId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
     public function channelsListAction($channelId)
     {
-        $topResultHelper = FeedbackResults::newFromRequest(
+        $topResultHelper = CommunityTopicsResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
@@ -855,7 +853,7 @@ class CommunityTopicsController extends AbstractController
         );
 
         if ($this->in->getString('subgroup')) {
-            $resultHelper = FeedbackResults::newFromRequest(
+            $resultHelper = CommunityTopicsResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -871,7 +869,7 @@ class CommunityTopicsController extends AbstractController
         $cat = $this->em->find('DeskPRO:CommunityChannel', $channelId);
 
         $grouping = new GroupingCounter();
-        $grouping->setGrouping('status')->setIds($topResultHelper->getFeedbackIds());
+        $grouping->setGrouping('status')->setIds($topResultHelper->getTopicIds());
         $grouped      = $grouping->getDisplayArray();
         $grouped_info = [];
 
@@ -905,7 +903,7 @@ class CommunityTopicsController extends AbstractController
             [
                 'list_type'    => 'category',
                 'brand_id'     => $cat->getBrand() ? $cat->getBrand()->getId() : null,
-                'category_id'  => $channelId,
+                'channel_id'   => $channelId,
                 'page_title'   => $cat->getFullTitle(),
                 'grouped'      => $grouped,
                 'grouped_info' => $grouped_info,
@@ -925,7 +923,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function labelListAction($brand_id, $label)
     {
-        $resultHelper = FeedbackResults::newFromRequest(
+        $resultHelper = CommunityTopicsResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
@@ -963,7 +961,7 @@ class CommunityTopicsController extends AbstractController
 
         if (strpos($status, '.') !== false) {
             list($status, $v_status) = explode('.', $status);
-            $topResultHelper         = FeedbackResults::newFromRequest(
+            $topResultHelper         = CommunityTopicsResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -974,7 +972,7 @@ class CommunityTopicsController extends AbstractController
                 ]
             );
         } else {
-            $topResultHelper = FeedbackResults::newFromRequest(
+            $topResultHelper = CommunityTopicsResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -986,7 +984,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         if ($this->in->getString('subgroup')) {
-            $resultHelper = FeedbackResults::newFromRequest(
+            $resultHelper = CommunityTopicsResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -1006,7 +1004,7 @@ class CommunityTopicsController extends AbstractController
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('channel_id');
-        $grouping->setIds($topResultHelper->getFeedbackIds());
+        $grouping->setIds($topResultHelper->getTopicIds());
         $grouped = $grouping->getDisplayArray();
 
         return $this->renderList(
@@ -1025,13 +1023,13 @@ class CommunityTopicsController extends AbstractController
     /**
      * This takes a result helper and just handles rendering it.
      *
-     * @param FeedbackResults $resultsHelper
-     * @param string          $template
-     * @param array           $templateVars
+     * @param CommunityTopicsResults $resultsHelper
+     * @param string                 $template
+     * @param array                  $templateVars
      *
      * @return Response
      */
-    public function renderList(FeedbackResults $resultsHelper, $template = null, array $templateVars = [])
+    public function renderList(CommunityTopicsResults $resultsHelper, $template = null, array $templateVars = [])
     {
         if (!$template) {
             $template = 'AgentBundle:Community:filter-list.html.twig';
@@ -1039,7 +1037,7 @@ class CommunityTopicsController extends AbstractController
 
         $result_cache   = $resultsHelper->getResultCache();
         $page           = $this->in->getUInt('p') ?: ($page = $this->in->getUInt('page') ?: 1);
-        $communityTopic = $resultsHelper->getFeedbackForPage($page);
+        $communityTopic = $resultsHelper->getTopicsForPage($page);
 
         if ($this->in->getBool('is_partial')) {
             $template = str_replace('.html.twig', '-part.html.twig', $template);
@@ -1048,13 +1046,13 @@ class CommunityTopicsController extends AbstractController
         $brandId = isset($templateVars['brand_id']) ? $templateVars['brand_id'] : null;
 
         /** @var CommunityChannelRepository $CommunityChannelRepository */
-        /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
-        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+        $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
         // Options for the filter form
-        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($brandId);
-        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($brandId);
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($brandId);
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($brandId);
         $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($brandId) {
             return $category['brand_id'] === $brandId;
         });
@@ -1066,13 +1064,13 @@ class CommunityTopicsController extends AbstractController
             ];
         $userCatField = $this->container->getSystemService('CommunityFieldsManager')->getUserCategoryField();
 
-        $communityTopic_collection = new FeedbackCollection(
+        $communityTopicCollection = new CommunityTopicsCollection(
             $communityTopic,
             $this->container->getEm(),
             $this->container->getSystemService('CommunityFieldsManager')
         );
 
-        $display = $communityTopic_collection->getDisplayArray();
+        $display = $communityTopicCollection->getDisplayArray();
 
         return $this->render(
             $template,
@@ -1111,18 +1109,18 @@ class CommunityTopicsController extends AbstractController
         if (!$this->person->hasPerm('agent_publish.validate')) {
             throw $this->createNotFoundException();
         }
-        $communityTopic = $this->getFeedback($topicId);
+        $communityTopic = $this->getTopic($topicId);
 
         if ($communityTopic) {
             $communityTopicModerate = new CommunityTopicModerate($this->container, $this->person);
             if ($action === 'approve') {
-                $communityTopicModerate->approveFeedback($communityTopic);
+                $communityTopicModerate->approveCommunityTopic($communityTopic);
             } elseif ($action === 'disapprove') {
-                $communityTopicModerate->disapproveFeedback($communityTopic, $this->in->getString('reason'));
+                $communityTopicModerate->disapproveCommunityTopic($communityTopic, $this->in->getString('reason'));
             }
         }
 
-        $next = $this->getNextValidationFeedback($communityTopic);
+        $next = $this->getNextValidationCommunityTopic($communityTopic);
 
         return $this->createJsonResponse(
             [
@@ -1145,9 +1143,9 @@ class CommunityTopicsController extends AbstractController
             $communityTopicModerate = new CommunityTopicModerate($this->container, $this->person);
             foreach ($results as $communityTopic) {
                 if ($action === 'approve') {
-                    $communityTopicModerate->approveFeedback($communityTopic);
+                    $communityTopicModerate->approveCommunityTopic($communityTopic);
                 } elseif ($action === 'disapprove') {
-                    $communityTopicModerate->disapproveFeedback($communityTopic, $reason);
+                    $communityTopicModerate->disapproveCommunityTopic($communityTopic, $reason);
                 }
             }
         }
@@ -1167,7 +1165,7 @@ class CommunityTopicsController extends AbstractController
             return $this->createJsonpResponse(['success' => false]);
         }
 
-        $next = $this->getNextValidationFeedback($communityTopic);
+        $next = $this->getNextValidationCommunityTopic($communityTopic);
 
         return $this->createJsonResponse(
             [
@@ -1182,7 +1180,7 @@ class CommunityTopicsController extends AbstractController
      *
      * @return CommunityTopic
      */
-    private function getNextValidationFeedback(CommunityTopic $current)
+    private function getNextValidationCommunityTopic(CommunityTopic $current)
     {
         /** @var CommunityTopicRepository $communityTopicRepository */
         $communityTopicRepository = $this->em->getRepository(CommunityTopic::class);
@@ -1201,9 +1199,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $action
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -1320,14 +1318,14 @@ class CommunityTopicsController extends AbstractController
         }
 
         /** @var PersonPrefRepository $personPrefRepository */
-         /* @var CommunityChannelRepository       $CommunityChannelRepository */
-         /* @var CommunityTopicStatusCategoryRepository $CommunityTopicStatusCategoryRepository */
+        /* @var CommunityChannelRepository $CommunityChannelRepository */
+        /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
         $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
-        $CommunityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
+        $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
-        $activeStatusCategories = $CommunityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
-        $closedStatusCategories = $CommunityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
+        $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
+        $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
         $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
             return $category['brand_id'] === $selectedBrandId;
         });
@@ -1360,14 +1358,14 @@ class CommunityTopicsController extends AbstractController
      */
     public function newCommunityTopicSaveAction(Request $request)
     {
-        $newfeedback = new NewFeedback(
+        $newfeedback = new NewCommunityTopic(
             $this->getDoctrine()->getManager(),
             $this->person,
             $this->get('ticket_manager'),
-            $this->get('feedback_subscription_helper')
+            $this->get('community_subscription_helper')
         );
 
-        $formType = new NewFeedbackTypeOld();
+        $formType = new NewCommunityTopicTypeOld();
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
 
         if ($request->getMethod() == 'POST') {
@@ -1379,7 +1377,7 @@ class CommunityTopicsController extends AbstractController
             $form->submit($data);
             $form->isValid();
 
-            $validator = new NewFeedbackValidator();
+            $validator = new NewCommunityTopicValidator();
             if (!$validator->isValid($newfeedback)) {
                 return $this->createJsonResponse(
                     [
@@ -1390,7 +1388,7 @@ class CommunityTopicsController extends AbstractController
             }
 
             $newfeedback->save();
-            $communityTopic = $newfeedback->getFeedback();
+            $communityTopic = $newfeedback->getTopic();
 
             /** @var PersonPrefRepository $personPrefRepository */
             $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
@@ -1400,7 +1398,7 @@ class CommunityTopicsController extends AbstractController
             );
 
             if ($communityTopic->getPerson()->getId() !== $this->person->getId()) {
-                $this->_sendAgentCreatedFeedbackForUserNotification($communityTopic);
+                $this->_sendAgentCreatedCommunityTopicForUserNotification($communityTopic);
             }
 
             return $this->createJsonResponse(
@@ -1419,11 +1417,13 @@ class CommunityTopicsController extends AbstractController
         }
     }
 
-    protected function _sendAgentCreatedFeedbackForUserNotification(CommunityTopic $communityTopic)
+    protected function _sendAgentCreatedCommunityTopicForUserNotification(CommunityTopic $communityTopic)
     {
         if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            //TODO previously here was the call of a unexisting method
+            // UserViewModelFactory::createAgentCreatedNewFeedbackForUser
             $viewModel = $this->get('email.user_viewmodel_factory')
-                ->createAgentCreatedNewFeedbackForUserModel($communityTopic);
+                ->createCommunityTopicNewModel($communityTopic);
             $this->get('email.email_sender')
                 ->send($viewModel, ['to' => $communityTopic->getPerson()->getEmail()]);
         } else {
@@ -1432,8 +1432,9 @@ class CommunityTopicsController extends AbstractController
                 $communityTopic->getPerson()->getEmail(),
                 $communityTopic->getPerson()->getDisplayName()
             );
+            // unexisting template also
             $message->setTemplate('DeskPRO:emails_user:new-feedback-created-for-user.html.twig', [
-                    'feedback' => $communityTopic,
+                'topic' => $communityTopic,
             ]);
             $this->container->getMailer()->send($message);
         }
@@ -1442,13 +1443,13 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     *@throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return CommunityTopic
      */
-    private function getFeedback($communityTopicId)
+    private function getTopic($communityTopicId)
     {
         if (!$communityTopic = $this->em->find(CommunityTopic::class, $communityTopicId)) {
             throw $this->createNotFoundException();
@@ -1460,9 +1461,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $ticketId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Ticket
      */

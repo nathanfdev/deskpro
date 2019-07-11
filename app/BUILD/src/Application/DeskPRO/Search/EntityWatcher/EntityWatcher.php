@@ -21,8 +21,8 @@ use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\LabelArticle;
+use Application\DeskPRO\Entity\LabelCommunityTopic;
 use Application\DeskPRO\Entity\LabelDownload;
-use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\LabelNews;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\ObjectLang;
@@ -46,7 +46,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         Download::class                 => 1,
         LabelDownload::class            => 1,
         CommunityTopic::class           => 1,
-        LabelFeedback::class            => 1,
+        LabelCommunityTopic::class      => 1,
         News::class                     => 1,
         LabelNews::class                => 1,
         Ticket::class                   => 1,
@@ -221,7 +221,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
             return $entity->getNews();
         } elseif ($entity instanceof LabelDownload) {
             return $entity->getDownload();
-        } elseif ($entity instanceof LabelFeedback) {
+        } elseif ($entity instanceof LabelCommunityTopic) {
             return $entity->getFeedback();
         } elseif ($entity instanceof TicketMessage) {
             return $entity->getTicket();

@@ -8,7 +8,7 @@ use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
-use Application\DeskPRO\Notifications\NewFeedbackNotification;
+use Application\DeskPRO\Notifications\NewCommunityTopicNotification;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
@@ -40,9 +40,9 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Route("/feedback.{_format}", name="portal_community", defaults={"_format":"html"},
+     * @Route("/community.{_format}", name="portal_community", defaults={"_format":"html"},
      *     requirements={"_format":"html|rss"})
-     * @Route("/feedback", name="user_feedback_home")
+     * @Route("/community", name="user_feedback_home")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
      *
@@ -254,7 +254,7 @@ class FeedbackController extends AbstractController
             $destination = $this->generateUrl('portal_community');
         }
 
-        $notify = new NewFeedbackNotification($newFeedback);
+        $notify = new NewCommunityTopicNotification($newFeedback);
         $notify->send();
 
         $this->getEmailSender()->sendNewFeedbackEmail($newFeedback);
@@ -288,7 +288,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/browse/{filter_uri}", name="portal_community_browse", defaults={"query_path":""},
+     * @Route("/community/browse/{filter_uri}", name="portal_community_browse", defaults={"query_path":""},
      *     requirements={"filter_uri":".*"})
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
@@ -383,7 +383,7 @@ class FeedbackController extends AbstractController
             );
         }
 
-        // setup and render an initial form that posts to /feedback
+        // setup and render an initial form that posts to /community
         $person      = $this->getUser() ?: new PersonGuest();
         $newFeedback = new CommunityTopic();
         $newFeedback->setPerson($person);
@@ -409,8 +409,8 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/view/{slug}", name="portal_community_topic_view")
-     * @Route("/feedback/view/{slug}", name="user_community_topic_view")
+     * @Route("/community/view/{slug}", name="portal_community_topic_view")
+     * @Route("/community/view/{slug}", name="user_community_topic_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      * @PageHttpCache(content="item")
@@ -501,8 +501,8 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/view/{slug}/vote-up", name="portal_community_topic_vote_up", defaults={"up_or_down":"up"})
-     * @Route("/feedback/view/{slug}/vote-down", name="portal_community_topic_vote_down", defaults={"up_or_down":"down"})
+     * @Route("/community/view/{slug}/vote-up", name="portal_community_topic_vote_up", defaults={"up_or_down":"up"})
+     * @Route("/community/view/{slug}/vote-down", name="portal_community_topic_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @AutoPostOnGetRequest()
      *
@@ -561,7 +561,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/view/{slug}/toggle-subscription", name="portal_community_topic_toggle_subscription")
+     * @Route("/community/view/{slug}/toggle-subscription", name="portal_community_topic_toggle_subscription")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('SUBSCRIBE_FEEDBACK', item)")
      * @AutoPostOnGetRequest()
@@ -591,7 +591,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/root/toggle-subscription", name="portal_community_root_toggle_subscription")
+     * @Route("/community/root/toggle-subscription", name="portal_community_root_toggle_subscription")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
      * @AutoPostOnGetRequest()
      */
@@ -612,7 +612,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/items/subscriptions/unsubscribe", name="portal_community_unsubscribe_all")
+     * @Route("/community/items/subscriptions/unsubscribe", name="portal_community_unsubscribe_all")
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore

@@ -11,8 +11,8 @@ namespace Application\DeskPRO\Search;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Application\DeskPRO\Searcher\TopicSearch;
 use Doctrine\DBAL\Connection;
@@ -206,9 +206,9 @@ class StickyWordSearch implements PersonContextInterface
                 $valid_ids['DeskPRO:Download'] = $search->getMatches();
             }
             if ($check_ids['DeskPRO:CommunityTopic']) {
-                $search = new FeedbackSearch();
+                $search = new CommunitySearch();
                 $search->setPersonContext($this->person_context);
-                $search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:CommunityTopic']);
+                $search->addTerm(CommunitySearch::TERM_ID, CommunitySearch::OP_CONTAINS, $check_ids['DeskPRO:CommunityTopic']);
                 $valid_ids['DeskPRO:CommunityTopic'] = $search->getMatches();
             }
             if ($check_ids['DeskPRO:Topic']) {

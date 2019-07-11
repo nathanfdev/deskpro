@@ -1,5 +1,5 @@
 @new
-Feature: /feedback_types endpoint
+Feature: /community_channels endpoint
   To retrieve info about feedback types
   As an API user
   I want an endpoint for feedback types
@@ -14,7 +14,7 @@ Feature: /feedback_types endpoint
       | fc1 | Feature  | feature  |
       | fc2 | Question | question |
       | fc3 | Garbage  | garbage  |
-    When I send a GET request to "/api/v2/feedback_types"
+    When I send a GET request to "/api/v2/community_channels"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist

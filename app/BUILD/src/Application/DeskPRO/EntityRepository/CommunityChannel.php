@@ -9,10 +9,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\CommunityTopic as FeedbackEntity;
+use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
-use Application\DeskPRO\Searcher\FeedbackSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -136,22 +136,22 @@ class CommunityChannel extends AbstractCategoryRepository
         foreach ($this->children() as $c) {
             $cat_counts = [];
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', FeedbackEntity::STATUS_NEW);
+            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', FeedbackEntity::STATUS_ACTIVE);
+            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', FeedbackEntity::STATUS_CLOSED);
+            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 
             $cat_counts['all'] = array_sum($cat_counts);

@@ -38,7 +38,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
             return postData.display_orders.push(feedback_type_id);
           });
 
-          const promise = this.Api.sendPostJson('/feedback_types/display_order', postData);
+          const promise = this.Api.sendPostJson('/community_channels/display_order', postData);
           return this.pingElement('display_orders');
         }
       };
@@ -109,7 +109,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     */
 
     deleteFeedbackType(feedback_type, move_to) {
-      return this.Api.sendDelete(`/feedback_types/${feedback_type.id}`, {
+      return this.Api.sendDelete(`/community_channels/${feedback_type.id}`, {
         move_to
       }).success(() => {
         this.FeedbackTypesData.remove(feedback_type.id);

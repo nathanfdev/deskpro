@@ -2,14 +2,14 @@
 
 namespace DpTest\DeskPRO\Bundle\ImportBundle\Model;
 
-use DeskPRO\Bundle\ImportBundle\Model\Feedback;
+use DeskPRO\Bundle\ImportBundle\Model\CommunityTopic;
 
 /**
  * Class FeedbackTest.
  */
 class FeedbackTest extends AbstractModelTest
 {
-    protected static $modelClass = Feedback::class;
+    protected static $modelClass = CommunityTopic::class;
 
     public function test_required_params_validation()
     {

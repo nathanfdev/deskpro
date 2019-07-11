@@ -74,7 +74,7 @@ class CustomDefCommunityTopic extends CustomDefAbstract
     /**
      * @return CustomDefCommunityTopic
      */
-    public static function createFeedbackCategory()
+    public static function createCommunityTopicCustomChannel()
     {
         $category = new self();
 

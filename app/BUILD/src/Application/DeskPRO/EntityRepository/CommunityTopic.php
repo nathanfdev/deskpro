@@ -256,7 +256,7 @@ class CommunityTopic extends AbstractEntityRepository
         return $communityTopics;
     }
 
-    public function getFeedback($status, $node = false, $sort = 'id', $num = 10)
+    public function getTopic($status, $node = false, $sort = 'id', $num = 10)
     {
         if ($sort == 'date') {
             $sort = 'id';

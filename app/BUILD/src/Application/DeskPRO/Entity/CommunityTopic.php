@@ -90,7 +90,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection|LabelFeedback[]
+     * @var \Doctrine\Common\Collections\ArrayCollection|LabelCommunityTopic[]
      */
     protected $labels;
 
@@ -442,14 +442,14 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * @param string $value
      *
-     * @return LabelFeedback
+     * @return LabelCommunityTopic
      */
     public function addLabelByString($value)
     {
         if ($ret = $this->findLabelByString($value)) {
             return $ret;
         }
-        $label           = new LabelFeedback();
+        $label           = new LabelCommunityTopic();
         $label->label    = $value;
         $label->feedback = $this;
         $this->labels->add($label);
@@ -461,11 +461,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * @param string $value
      *
-     * @return LabelFeedback|null
+     * @return LabelCommunityTopic|null
      */
     public function findLabelByString($value)
     {
-        $x        = new LabelFeedback();
+        $x        = new LabelCommunityTopic();
         $x->label = $value;
 
         foreach ($this->labels as $l) {
@@ -516,7 +516,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * {@inheritdoc}
      *
-     * @return LabelFeedback[]|ArrayCollection
+     * @return LabelCommunityTopic[]|ArrayCollection
      */
     public function getLabels()
     {
@@ -671,6 +671,18 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     public function getCategory()
     {
         return $this->channel;
+    }
+
+    public function getChannel()
+    {
+        return $this->channel;
+    }
+
+    public function setChannel(CommunityChannel $channel)
+    {
+        $this->setModelField('channel', $channel);
+
+        return $this;
     }
 
     protected function addSlugHistory($oldSlug)
@@ -973,7 +985,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'labels',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelFeedback',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelCommunityTopic',
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'topic',
                 'orphanRemoval' => true,

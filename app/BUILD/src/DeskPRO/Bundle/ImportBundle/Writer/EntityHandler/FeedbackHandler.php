@@ -17,13 +17,13 @@ class FeedbackHandler extends AbstractEntityHandler
      */
     public static function getModelClass()
     {
-        return Model\Feedback::class;
+        return Model\CommunityTopic::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param Model\Feedback $model
+     * @param Model\CommunityTopic $model
      */
     public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
@@ -60,7 +60,7 @@ class FeedbackHandler extends AbstractEntityHandler
         }
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getFeedbackCustomDefMapper(), $model, $entity);
-        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelFeedback::class);
+        $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelCommunityTopic::class);
 
         // persist basic entity
         $this->persister->persistAndFlush($entity, $model);

@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDataCommunityTopic extends CustomDataAbstract
 {
     /**
-     * @var \Application\DeskPRO\Entity\CommunityTopic
+     * @var CommunityTopic
      */
     protected $topic;
 

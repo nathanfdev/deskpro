@@ -15,8 +15,8 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Doctrine\ORM\EntityManager;
 use Orb\Doctrine\Common\Cache\PreloadedMysqlCache;
@@ -391,22 +391,22 @@ class Structure implements PersonContextInterface
         foreach ($this->getFeedbackCategories() as $c) {
             $cat_counts = [];
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', CommunityTopic::STATUS_NEW);
+            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', CommunityTopic::STATUS_ACTIVE);
+            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', CommunityTopic::STATUS_CLOSED);
+            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 
             $cat_counts['all'] = array_sum($cat_counts);

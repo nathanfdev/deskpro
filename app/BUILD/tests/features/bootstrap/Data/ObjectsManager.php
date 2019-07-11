@@ -37,8 +37,8 @@ use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\LabelChatConversation;
+use Application\DeskPRO\Entity\LabelCommunityTopic;
 use Application\DeskPRO\Entity\LabelDef;
-use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\LabelTicket;
@@ -351,7 +351,7 @@ class ObjectsManager
             'LabelTicket'                      => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelPerson'                      => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
             'LabelDef'                         => [Factory\SimpleFactory::class, 'create', LabelDef::class],
-            'LabelFeedback'                    => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
+            'LabelFeedback'                    => [Factory\SimpleFactory::class, 'create', LabelCommunityTopic::class],
             'LabelTask'                        => [Factory\SimpleFactory::class, 'create', LabelTask::class],
             'LabelChatConversation'            => [Factory\SimpleFactory::class, 'create', LabelChatConversation::class],
             'Brand'                            => [Factory\SimpleFactory::class, 'create', Brand::class],
@@ -490,7 +490,7 @@ class ObjectsManager
             'FeedbackCategory'                 => [$this, 'find', CommunityChannel::class],
             'FeedbackComment'                  => [$this, 'find', CommunityTopicComment::class],
             'LabelDef'                         => [$this, 'find', LabelDef::class],
-            'LabelFeedback'                    => [$this, 'find', LabelFeedback::class],
+            'LabelFeedback'                    => [$this, 'find', LabelCommunityTopic::class],
             'LabelTicket'                      => [$this, 'find', LabelTicket::class],
             'LabelTask'                        => [$this, 'find', LabelTask::class],
             'LabelPerson'                      => [$this, 'find', LabelPerson::class],

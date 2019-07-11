@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class FeedbackSettingsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/settings/brands/{brand}/portal/feedback")
+ * @Rest\Route("/settings/brands/{brand}/portal/community")
  */
 class FeedbackSettingsController extends AbstractBrandAwareSettingsController
 {

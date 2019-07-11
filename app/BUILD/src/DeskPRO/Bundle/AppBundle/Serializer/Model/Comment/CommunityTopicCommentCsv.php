@@ -15,46 +15,46 @@ class CommunityTopicCommentCsv extends CommunityTopicComment
     protected $person;
 
     /**
-     * ID of feedback this comment belongs to.
+     * ID of community topic this comment belongs to.
      *
      * @JMS\Type("integer")
      */
-    private $feedbackId;
+    private $topicId;
 
     /**
-     * Title of feedback this comment belongs to.
+     * Title of community topic this comment belongs to.
      *
      * @JMS\Type("string")
      */
     private $title;
 
     /**
-     * Content of feedback this comment belongs to.
+     * Content of community topic this comment belongs to.
      *
      * @JMS\Type("string")
      */
-    private $feedbackContent;
+    private $topicContent;
 
     /**
-     * Status of feedback this comment belongs to.
+     * Status of community topic this comment belongs to.
      *
      * @JMS\Type("string")
      */
-    private $feedbackStatus;
+    private $communityTopicStatus;
 
     /**
-     * Hidden status of feedback this comment belongs to.
+     * Hidden status of community topic this comment belongs to.
      *
      * @JMS\Type("string")
      */
     private $hiddenStatus;
 
     /**
-     * Category of feedback this comment belongs to.
+     * Channel of community topic this comment belongs to.
      *
      * @JMS\Type("string")
      */
-    private $category;
+    private $channel;
 
     /**
      * Constructor.
@@ -64,14 +64,14 @@ class CommunityTopicCommentCsv extends CommunityTopicComment
     public function __construct($entity)
     {
         parent::__construct($entity);
-        $this->person          = $entity->getPerson() ? $entity->getPerson()->getName() : '';
-        $this->content         = mb_substr($entity->getContent(), 0, 50);
-        $this->feedbackId      = $this->feedback->getId();
-        $this->title           = $this->feedback->getTitle();
-        $this->feedbackContent = mb_substr($this->feedback->getRealContent(), 0, 50);
-        $this->feedbackStatus  = $this->feedback->getStatusCategory() ? $this->feedback->getStatusCategory()
+        $this->person               = $entity->getPerson() ? $entity->getPerson()->getName() : '';
+        $this->content              = mb_substr($entity->getContent(), 0, 50);
+        $this->topicId              = $this->topic->getId();
+        $this->title                = $this->topic->getTitle();
+        $this->topicContent         = mb_substr($this->topic->getRealContent(), 0, 50);
+        $this->communityTopicStatus = $this->topic->getStatusCategory() ? $this->topic->getStatusCategory()
             ->getTitle() : '';
-        $this->hiddenStatus = $this->feedback->getHiddenStatus() ?: '';
-        $this->category     = $this->feedback->getCategory() ? $this->feedback->getCategory()->getTitle() : '';
+        $this->hiddenStatus = $this->topic->getHiddenStatus() ?: '';
+        $this->channel      = $this->topic->getCategory() ? $this->topic->getCategory()->getTitle() : '';
     }
 }

@@ -25,7 +25,7 @@
 			{% elseif get_type(comment.getObject()) == 'Topic' %}
 				<a href="{{ url_full('agent') }}#app.publish,validating_comments,m.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,m.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Feedback' %}
-				<a href="{{ url_full('agent') }}#app.publish,fb_comments,i.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,fb_comments,i.o={{ comment.getObject().getId() }}</a>
+				<a href="{{ url_full('agent') }}#app.publish,ct_comments,i.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,ct_comments,i.o={{ comment.getObject().getId() }}</a>
 			{% else %}
 				<a href="{{ url_full('agent') }}#app.publish,validating_comments">{{ url_full('agent') }}#app.publish,validating_comments</a>
 			{% endif %}

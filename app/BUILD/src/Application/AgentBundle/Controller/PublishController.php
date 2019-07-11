@@ -30,8 +30,8 @@ use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
@@ -1244,7 +1244,7 @@ class PublishController extends AbstractController
                 break;
 
             case 'feedback':
-                $searcher = new FeedbackSearch();
+                $searcher = new CommunitySearch();
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'FeedbackResults';
                 $cats   = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');

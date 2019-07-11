@@ -1,19 +1,19 @@
 {% import 'AgentBundle:Common:optionbox-macros.html.twig' as optionbox %}
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.CommunityTopicView';
-pageMeta.title = {{feedback.title|json_encode|raw}};
-pageMeta.feedback_id = {{feedback.id}};
-pageMeta.url_fragment  = '{{ url_fragment('agent_community_topic_view', {'communityTopicId': feedback.id}) }}';
-pageMeta.url  = '{{ path('agent_community_topic_view', {'communityTopicId': feedback.id}) }}';
-pageMeta.obj_code = 'feedback_{{ feedback.id }}';
+pageMeta.title = {{topic.title|json_encode|raw}};
+pageMeta.feedback_id = {{topic.id}};
+pageMeta.url_fragment  = '{{ url_fragment('agent_community_topic_view', {'communityTopicId': topic.id}) }}';
+pageMeta.url  = '{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}';
+pageMeta.obj_code = 'feedback_{{ topic.id }}';
 
 pageMeta.permalink = '{{ permalink }}';
-pageMeta.labelsSaveUrl = '{{ path('agent_community_ajax_labels_save', {'communityTopicId': feedback.id}) }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_community_ajax_labels_save', {'communityTopicId': topic.id}) }}';
 
 pageMeta.canEdit   = {% if not perms.can_edit %}false{% else %}true{% endif %};
 pageMeta.canDelete = {% if not perms.can_delete %}false{% else %}true{% endif %};
 
-{% if not feedback.is_reviewed %}
+{% if not topic.is_reviewed %}
 pageMeta.isValidating = true;
 {% endif %}
 
@@ -22,23 +22,23 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content full-page page-feedback-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
 <div class="dp-page-content">
-<div class="delete-notice" {% if feedback.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+<div class="delete-notice" {% if topic.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.feedback.feedback_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
-<div class="spam-notice" {% if feedback.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
+<div class="spam-notice" {% if topic.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.feedback.status_closed') }}</button>
 </div>
 
-{% if not feedback.is_reviewed %}
+{% if not topic.is_reviewed %}
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
 <header class="page-header">
-	<h4 class="id-number">#{{ feedback.id }}</h4>
+	<h4 class="id-number">#{{ topic.id }}</h4>
 	<h1>
-		<span id="{{baseId}}_showname">{{ feedback.title }}</span>
-		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ feedback.title }}" /></span>
+		<span id="{{baseId}}_showname">{{ topic.title }}</span>
+		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ topic.title }}" /></span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>
@@ -49,29 +49,29 @@ pageMeta.baseId = '{{ baseId }}';
 			class="dpe_select dpe_select_noborder"
 			data-select-width="auto"
 			data-placeholder="{{ phrase('agent.general.add_a_label') }}"
-			value="{% for label in feedback.labels %}{{ label.label }},{% endfor %}"
+			value="{% for label in topic.labels %}{{ label.label }},{% endfor %}"
 			data-allow-new="{% if app.user.hasPerm('agent_publish.feedback_create_labels') %}1{% endif %}"
 		/>
 	</div>
 	<br class="clear" />
 	<div class="meta-line flat">
 		<div style="float:left;position: relative;top:1px;">
-			{% if not(feedback.is_reviewed == 0 and feedback.status == 'hidden') %}
+			{% if not(topic.is_reviewed == 0 and topic.status == 'hidden') %}
 				<select name="status" id="{{baseId}}_status">
 					<optgroup label="{{ phrase('agent.feedback.status_active') }}">
 						{% for cat in active_status_cats %}
-							<option value="active.{{cat.id}}" {% if feedback.status_code == 'active.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
+							<option value="active.{{cat.id}}" {% if topic.status_code == 'active.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
 						{% endfor %}
 					</optgroup>
 					<optgroup label="{{ phrase('agent.feedback.status_closed') }}">
 						{% for cat in closed_status_cats %}
-							<option value="closed.{{cat.id}}" {% if feedback.status_code == 'closed.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
+							<option value="closed.{{cat.id}}" {% if topic.status_code == 'closed.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
 						{% endfor %}
 					</optgroup>
 				</select>
 			{% endif %}
 		</div>
-		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.general.type') }}: <span id="{{baseId}}_cat_label">{{ feedback.category.full_title }}</span></span></div>
+		<div class="category" id="{{baseId}}_cat_trigger"><span>{{ phrase('agent.general.type') }}: <span id="{{baseId}}_cat_label">{{ topic.channel.full_title }}</span></span></div>
 	</div>
 	<br class="clear" />
 </header>
@@ -82,11 +82,11 @@ pageMeta.baseId = '{{ baseId }}';
         <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
             <ul>
                 <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
-                {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
+                {% if ticket_community_topics_links|length and app.user.hasPerm('agent_tickets.use') %}
                     <li data-tab-for="#{{ baseId }}_linked_tickets_wrap"><i
                           class="fas fa-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
                           id="{{ baseId }}_linked_tickets_count"
-                          data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
+                          data-count="{{ ticket_community_topics_links|length }}">{{ ticket_community_topics_links|length }}</span>)
                     </li>
                 {% endif %}
                   <li data-tab-for="#{{ baseId }}_subscribed_persons_wrap"><i
@@ -105,7 +105,7 @@ pageMeta.baseId = '{{ baseId }}';
 
           <dt>{{ phrase('agent.publish.slug') }}</dt>
           <dd>
-            <span id="{{ baseId }}_slug">{{ feedback.slug }}</span>
+            <span id="{{ baseId }}_slug">{{ topic.slug }}</span>
             <button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
               {{ phrase('agent.publish.slug_edit') }}
             </button>
@@ -115,15 +115,15 @@ pageMeta.baseId = '{{ baseId }}';
           <dd>
             <span class="link-look who-voted-trigger">
                         {% set phrase_part %}
-                        <span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span>
+                        <span id="{{baseId}}_num_votes">{{ topic.num_ratings }}</span>
                         {% endset %}
-                        {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}, true) }}
+                        {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':topic.num_ratings}, true) }}
                     </span>
           </dd>
 
           <dt>{{ phrase('agent.general.author') }}:</dt>
           <dd>
-            {% for author in feedback.authors %}
+            {% for author in topic.authors %}
               <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': author.id}) }}">
                 <span class="text" style="background: url({{ author.getPictureUrl(15) }}) no-repeat 0 50%; padding-left: 18px;">
                   {{ author.getNameWithTitle() }}
@@ -151,7 +151,7 @@ pageMeta.baseId = '{{ baseId }}';
             {% if custom_fields|length %}
               <button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>
             {% endif %}
-            <button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
+            <button class="clean-white delete delete-type nodelete-hide" {% if topic.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
             <span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
             <button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
               {{ phrase('agent.general.copy_permalink') }}
@@ -164,7 +164,7 @@ pageMeta.baseId = '{{ baseId }}';
           <li class="elm no-choice">{{ phrase('agent.feedback.merge_howto') }}</li>
         </ul>
       </article>
-      {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
+      {% if ticket_community_topics_links|length and app.user.hasPerm('agent_tickets.use') %}
         <article id="{{ baseId }}_linked_tickets_wrap">
             {% include 'AgentBundle:Community:linked-tickets.html.twig' %}
         </article>
@@ -181,8 +181,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav id="{{baseId}}_bodytabs">
 			<ul>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_content_tab">{{ phrase('agent.general.description') }}</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab">{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{feedback_comments|length|default(0)}}</span>)</li>
-				<li class="tab-trigger" data-tab-for="#{{baseId}}_revs">{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{feedback.revisions|length|default(0)}}</span>)</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_comments_tab">{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{topic_comments|length|default(0)}}</span>)</li>
+				<li class="tab-trigger" data-tab-for="#{{baseId}}_revs">{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{topic.revisions|length|default(0)}}</span>)</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_related_content">{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</li>
 				<li class="tab-trigger" data-tab-for="#{{baseId}}_searchtab">{{ phrase('agent.general.search') }}</li>
 			</ul>
@@ -212,7 +212,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div class="feedback-comments">
 					<div class="full-tab-content">
 						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
-							{% for comment in feedback_comments %}
+							{% for comment in topic_comments %}
 								{% set comment_num = loop.index %}
 								{% include 'AgentBundle:Community:view-comment.html.twig' %}
 							{% endfor %}
@@ -288,12 +288,12 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
-		<input type="text" name="title" value="{{ feedback.title }}"/>
+		<input type="text" name="title" value="{{ topic.title }}"/>
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
 
-{{ optionbox.category_ob(feedback_categories, phrase('agent.general.type'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
+{{ optionbox.category_ob(community_channels, phrase('agent.general.type'), phrase('agent.general.apply'), {'id': baseId ~ '_cat_ob'}) }}
 
 {# scroll containers #}
 </div>

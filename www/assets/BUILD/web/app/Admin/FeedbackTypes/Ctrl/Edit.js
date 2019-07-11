@@ -26,7 +26,7 @@ define([
 
       if (this.$stateParams.id) {
         promises.push(this.Api.sendDataGet({
-          feedback_type: `/feedback_types/${this.$stateParams.id}`,
+          feedback_type: `/community_channels/${this.$stateParams.id}`,
         }).then((result) => {
           this.feedback_type = result.data.feedback_type.feedback_type;
           const ids = _.pluck(this.feedback_type.usergroups, 'id');
@@ -67,10 +67,10 @@ define([
 
       if (this.feedback_type.id) {
         is_new = false;
-        promise = this.Api.sendPostJson(`/feedback_types/${this.feedback_type.id}`, { feedback_type: this.feedback_type });
+        promise = this.Api.sendPostJson(`/community_channels/${this.feedback_type.id}`, { feedback_type: this.feedback_type });
       } else {
         is_new = true;
-        promise = this.Api.sendPutJson('/feedback_types', { feedback_type: this.feedback_type });
+        promise = this.Api.sendPutJson('/community_channels', { feedback_type: this.feedback_type });
       }
 
       promise.success((result) => {

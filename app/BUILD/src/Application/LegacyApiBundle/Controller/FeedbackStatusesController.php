@@ -6,9 +6,9 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Community\CommunityStatusEdit;
+use Application\DeskPRO\Community\Form\Type\CommunityStatusType;
 use Application\DeskPRO\Exception\ValidationException;
-use Application\DeskPRO\FeedbackStatuses\FeedbackStatusEdit;
-use Application\DeskPRO\FeedbackStatuses\Form\Type\FeedbackStatusType;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
@@ -41,7 +41,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
         /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_statuses = $this->container->getSystemService('community_statuses');
 
         $active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
         $closed_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getClosedStatuses()));
@@ -65,7 +65,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
         /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_statuses = $this->container->getSystemService('community_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
         if (!$feedback_status) {
@@ -84,7 +84,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
         /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_statuses = $this->container->getSystemService('community_statuses');
 
         if ($id) {
             $feedback_status = $feedback_statuses->getById($id);
@@ -96,11 +96,11 @@ class FeedbackStatusesController extends AbstractController implements Protected
             $feedback_status = $feedback_statuses->createNew();
         }
 
-        $feedback_status_edit = new FeedbackStatusEdit($feedback_status);
+        $feedback_status_edit = new CommunityStatusEdit($feedback_status);
 
         $postData = $this->in->getAll('post');
 
-        $form = $this->createForm(new FeedbackStatusType(), $feedback_status_edit, ['cascade_validation' => true]);
+        $form = $this->createForm(new CommunityStatusType(), $feedback_status_edit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
 
         if ($form->isValid()) {
@@ -129,7 +129,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
         /*
          * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
          */
-        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        $feedback_statuses = $this->container->getSystemService('community_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
         if (!$feedback_status) {
@@ -183,8 +183,8 @@ class FeedbackStatusesController extends AbstractController implements Protected
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /** @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses $feedback_statuses */
-        $feedback_statuses = $this->container->getSystemService('feedback_statuses');
+        /** @var \Application\DeskPRO\Community\CommunityStatuses $feedback_statuses */
+        $feedback_statuses = $this->container->getSystemService('community_statuses');
         $feedback_statuses->updateDisplayOrders($display_orders);
 
         return $this->createSuccessResponse();

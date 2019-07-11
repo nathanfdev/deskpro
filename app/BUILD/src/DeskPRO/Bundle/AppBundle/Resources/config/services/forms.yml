@@ -172,8 +172,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.ticket_feedback_link:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType
+  form.ticket_community_topic_link:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCommunityTopicLinkType
     arguments: ["@brand_aware_settings_resolver"]
     tags:
       - { name: form.type }

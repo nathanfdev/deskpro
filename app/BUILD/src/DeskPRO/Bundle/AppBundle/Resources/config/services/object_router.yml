@@ -110,7 +110,7 @@ services:
 
   object_router.link_generator.feedback:
     public: false
-    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityTopicLinkGenerator
     arguments:
       - "@router"
 

@@ -1809,7 +1809,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Add a TicketFeedbackLink to this ticket.
      *
-     * @param TicketCommunityTopicLink $feedbackLink
+     * @param TicketCommunityTopicLink $topicLink
      */
     public function addTopicLink(TicketCommunityTopicLink $topicLink)
     {
@@ -1839,7 +1839,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @return $this
      */
-    public function removeFeedbackLink(TicketCommunityTopicLink $topicLink)
+    public function removeTopicLink(TicketCommunityTopicLink $topicLink)
     {
         $this->topic_links->removeElement($topicLink);
         $this->_onPropertyChanged('topic_links', null, $this->topic_links);

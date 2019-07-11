@@ -37,7 +37,7 @@ class CommunityTopic extends ContentAbstract
      * @JMS\Groups({"labels"})
      * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelFeedback>>")
      *
-     * @var \Application\DeskPRO\Entity\LabelFeedback
+     * @var \Application\DeskPRO\Entity\LabelCommunityTopic
      */
     protected $labels;
 

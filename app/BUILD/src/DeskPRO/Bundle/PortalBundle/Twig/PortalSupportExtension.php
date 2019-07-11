@@ -174,7 +174,7 @@ class PortalSupportExtension extends \Twig_Extension
      * Check if the current user can rate a certain content entity.
      *
      * @param string $name
-     * @param $object (Atricle/Download/Feedback/News)
+     * @param $object (Atricle/Download/community/News)
      *
      * @return bool
      */

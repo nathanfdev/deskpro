@@ -24,7 +24,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
 
     public function test_validation()
     {
-        $this->writer->writeModel(new Model\Feedback());
+        $this->writer->writeModel(new Model\CommunityTopic());
         $this->assertTrue($this->loggerHandler->hasErrorRecords());
     }
 
@@ -112,11 +112,11 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
     }
 
     /**
-     * @return Model\Feedback
+     * @return Model\CommunityTopic
      */
     private function createBaseModel()
     {
-        $model = new Model\Feedback();
+        $model = new Model\CommunityTopic();
         $model->setOid(1);
         $model->setTitle('title');
         $model->setContent('content');

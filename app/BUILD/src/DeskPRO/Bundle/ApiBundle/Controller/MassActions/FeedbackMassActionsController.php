@@ -11,7 +11,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * Class FeedbackMassActionsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/mass_actions/feedback")
+ * @Rest\Route("/mass_actions/community")
  * @ApiDoc(target="all", section="Mass actions")
  * @ApiDoc(
  *     target="massAction",

@@ -35,7 +35,7 @@ define([
         return deferred.promise;
       }
 
-      const http_def = this.Api.sendGet('/feedback_types').success((data, status, headers, config) => {
+      const http_def = this.Api.sendGet('/community_channels').success((data, status, headers, config) => {
         this._setListData(data.types);
         return deferred.resolve(this.recs);
       }

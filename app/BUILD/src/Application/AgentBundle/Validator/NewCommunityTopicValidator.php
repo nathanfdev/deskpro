@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * DeskPRO.
+ */
+
+namespace Application\AgentBundle\Validator;
+
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Validator\AbstractValidator;
+
+class NewCommunityTopicValidator extends AbstractValidator
+{
+    /**
+     * @param \Application\AgentBundle\Form\Model\NewCommunityTopic $feedback
+     *
+     * @return bool
+     */
+    protected function checkIsValid($feedback)
+    {
+        if (!$feedback->channel_id) {
+            $this->addError('category_id.invalid');
+        }
+
+        $cat = App::getOrm()->find('DeskPRO:CommunityChannel', $feedback->channel_id);
+        if (!$cat) {
+            $this->addError('category_id.invalid');
+        }
+
+        if (!$feedback->title) {
+            $this->addError('title.missing');
+        }
+
+        if (empty(trim(Strings::stripTags($feedback->content)))) {
+            $this->addError('content.missing');
+        }
+
+        if (!$feedback->status_code) {
+            $this->addError('status.invalid');
+        }
+
+        if ($this->errors) {
+            return false;
+        }
+
+        return true;
+    }
+}

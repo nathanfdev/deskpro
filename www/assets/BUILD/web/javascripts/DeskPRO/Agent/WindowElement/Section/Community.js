@@ -13,7 +13,7 @@ DeskPRO.Agent.WindowElement.Section.Community = new Orb.Class({
 
 		DeskPRO_Window.getSectionData('community_section', this._initSection.bind(this));
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-feedback', this.reload, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.new-community-topic', this.reload, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.feedback-status-update', this.reload, this);
 		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
 			var el = $('article.' + info.typename + '-' + info.contentId);

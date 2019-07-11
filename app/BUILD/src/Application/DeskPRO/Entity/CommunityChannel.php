@@ -28,8 +28,14 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  */
 class CommunityChannel extends CategoryAbstract implements HasValidationMetadataInterface
 {
+    /**
+     * @var CommunityChannel
+     */
     protected $parent;
 
+    /**
+     * @var CommunityChannel[]
+     */
     protected $children;
 
     /**
@@ -73,7 +79,7 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
     /**
      * @return CommunityChannel
      */
-    public static function createFeedbackCategory()
+    public static function createCommunityChannel()
     {
         $category = new self();
 

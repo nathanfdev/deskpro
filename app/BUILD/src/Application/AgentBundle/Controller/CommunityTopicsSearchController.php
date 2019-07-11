@@ -5,7 +5,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\EntityRepository\CommunityTopic as CommunityTopicRepository;
-use Application\DeskPRO\Searcher\FeedbackSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use DeskPRO\Component\Util\ListUtils;
 use Orb\Util\Arrays;
 
@@ -31,7 +31,7 @@ class CommunityTopicsSearchController extends AbstractController
             return $this->createJsonResponse([]);
         }
 
-        $searcher = new FeedbackSearch();
+        $searcher = new CommunitySearch();
         $searcher->setPerson($this->person);
         $searcher->setOrderBy('community_topics.date_created');
         $searcher->addTerm('deleted', 'not', 1);

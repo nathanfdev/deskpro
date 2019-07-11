@@ -30,9 +30,9 @@ trait ExtractsMatchersFromQuery
      * - Permalink with ID (user)  : http://support.deskpro.com/en/downloads/files/6
      *
      * Feedbacks:
-     * - Permalink with ID (agent) : http://support.deskpro.com/agent/go/feedback/4
-     * - Permalink with SLUG (user): http://support.deskpro.com/en/feedback/view/ut-ut-et-at-in
-     * - Permalink with ID (user)  : http://support.deskpro.com/en/feedback/view/4
+     * - Permalink with ID (agent) : http://support.deskpro.com/agent/go/community/4
+     * - Permalink with SLUG (user): http://support.deskpro.com/en/community/view/ut-ut-et-at-in
+     * - Permalink with ID (user)  : http://support.deskpro.com/en/community/view/4
      *
      * News:
      * - Permalink with ID (agent) : http://support.deskpro.com/agent/go/news/1
@@ -63,7 +63,7 @@ trait ExtractsMatchersFromQuery
      * d.o => download
      * http://support.deskpro.com//agent/#app.publish,downloads:1,i:17,a:1,n:1,d.o:7,vis:7
      * i.o => feedback
-     * http://support.deskpro.com//agent/#app.community,fb_content,i.o:17,vis:7
+     * http://support.deskpro.com//agent/#app.community,ct_content,i.o:17,vis:7
      * n.o => news
      * http://support.deskpro.com//agent/#app.publish,news:1,i:17,a:1,n.o:1,vis:7
      * o.o => organization
@@ -127,7 +127,7 @@ trait ExtractsMatchersFromQuery
              * Eg.:
              * - http://support.deskpro.com/agent/go/ticket/524
              * - http://support.deskpro.com/en/tickets/54ZZ0HLYO5EEPWB
-             * - http://support.deskpro.com/en/feedback/view/ut-ut-et-at-in
+             * - http://support.deskpro.com/en/community/view/ut-ut-et-at-in
              * - etc.
              */
             $router = $this->container->get('dp.dynamic_context_router');

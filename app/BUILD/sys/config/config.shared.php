@@ -739,7 +739,7 @@ $container->loadFromExtension(
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.feedback_to_elastica_transformer'],
-                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\FeedbackRepository::class,
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\CommunityRepository::class,
                         ],
                     ],
                     'topic' => [
