@@ -40,7 +40,7 @@ class PortalEditorContainer extends React.Component {
     dispatch(actions.loadTemplates());
 
     if (this.props.params.name) {
-      dispatch(actions.loadTemplate(this.props.params.name)).then((value) => {
+      dispatch(actions.loadTemplate(this.props.params.name.replace('|', '/'))).then((value) => {
         dispatch(actions.updateTemplateCode(value));
       });
     }
@@ -97,7 +97,7 @@ class PortalEditorContainer extends React.Component {
     return (
       <PortalEditor
         portalEditor={this.props.portalEditor}
-        name={this.props.params.name}
+        name={this.props.params.name.replace('|', '/')}
         brandId={this.props.params.brandId}
         loadTagInfo={this.loadTagInfo}
         loadTemplate={this.loadTemplate}

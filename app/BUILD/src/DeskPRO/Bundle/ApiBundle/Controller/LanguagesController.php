@@ -520,7 +520,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Get("/translations/{phraseName}")
-     * @Feature("email_templates")
      *
      * @param $phraseName
      *
