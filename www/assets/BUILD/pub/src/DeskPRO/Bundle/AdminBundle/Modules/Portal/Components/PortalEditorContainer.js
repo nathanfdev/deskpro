@@ -212,6 +212,8 @@ class PortalEditor extends React.Component {
                   className="media-button"
                   disabled={textareaDisabled}
                   ref={(c) => { this.mediaMenu = c; }}
+                  positionMy="right top-1px"
+                  positionAt="right bottom"
                 >
                   <MediaMenuContainer
                     closeMenu={this.closeMediaMenu}
@@ -228,13 +230,14 @@ class PortalEditor extends React.Component {
                   className="phrases-button"
                   disabled={textareaDisabled}
                   ref={(c) => { this.phrasesMenu = c; }}
-                  positionMy="left top-1px"
-                  positionAt="left bottom"
+                  positionMy="right top-1px"
+                  positionAt="right bottom"
                 >
                   <PhrasesMenuContainer
                     closeMenu={this.closePhrasesMenu}
                     languages={window.DP_ENABLED_LANGS}
                     insertPhrase={this.props.insertPhrase}
+                    data={this.props.portalEditor}
                   />
                 </DropDownMenu>
               </div>

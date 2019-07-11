@@ -847,6 +847,7 @@ class EmailTemplatesEditor extends React.Component {
                     closeMenu={this.closePhrasesMenu}
                     languages={window.DP_ENABLED_LANGS}
                     insertPhrase={this.props.insertPhrase}
+                    data={this.props.emailTemplates}
                   />
                 </DropDownMenu>
               </div>

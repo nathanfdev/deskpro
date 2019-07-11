@@ -316,10 +316,10 @@
   }
 }
 .editor-dropdown-menu {
-    .ui.bottom.left.popup:before {
-      display: none;
-    }
-    .ui.bottom.left.popup .menu-button-cover {
+  .ui.bottom.left.popup:before {
+    display: none;
+  }
+  .ui.bottom.left.popup .menu-button-cover {
     left: 1px;
     width: 50px;
     transform: rotate(0deg);
@@ -328,6 +328,20 @@
     z-index: 2;
     top: 0;
     height: 1px;
+  }
+  .ui.bottom.right.popup .menu-button-cover {
+    left: auto;
+    right: 1px;
+    width: 50px;
+    transform: rotate(0deg);
+    position: absolute;
+    background: #FFFFFF;
+    z-index: 2;
+    top: 0;
+    height: 1px;
+  }
+  .ui.popup {
+    max-width: none;
   }
   user-select: none;
   &.active {
