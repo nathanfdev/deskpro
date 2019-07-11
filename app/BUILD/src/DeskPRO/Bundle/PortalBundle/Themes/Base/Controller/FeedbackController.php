@@ -74,7 +74,7 @@ class FeedbackController extends AbstractController
         $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedFeedbackCategoryIds();
 
         return $this->renderThemeView(
-            sprintf('Theme:Feedback:FeedbackList/%s.html.twig', $options['style']),
+            sprintf('Theme:Community:CommunityTopicsList/%s.html.twig', $options['style']),
             [
                 'pager'              => $pager,
                 'show_category_link' => $options['show_category_link'],

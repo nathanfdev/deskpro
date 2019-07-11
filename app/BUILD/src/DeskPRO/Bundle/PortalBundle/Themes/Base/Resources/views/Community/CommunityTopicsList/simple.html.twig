@@ -17,7 +17,7 @@
 
     {% if show_category_link and pager|length > 0 %}
         <div class="list-meta">
-            <a href="{{ path('portal_feedback') }}">
+            <a href="{{ path('portal_community') }}">
                 {{ phrase('portal.feedback.view-x-feedback', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
             </a>
         </div>

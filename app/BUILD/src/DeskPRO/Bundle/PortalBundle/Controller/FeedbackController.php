@@ -40,7 +40,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Route("/feedback.{_format}", name="portal_feedback", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/feedback.{_format}", name="portal_community", defaults={"_format":"html"},
+     *     requirements={"_format":"html|rss"})
      * @Route("/feedback", name="user_feedback_home")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
@@ -75,13 +76,13 @@ class FeedbackController extends AbstractController
                 $person
             );
 
-            return $this->render('PortalBundle:Feedback:feed.rss.twig', [
+            return $this->render('PortalBundle:Community:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => null,
                 'page_title' => $this->createPageTitle()->feedback(),
             ]);
         }
-        $rssLink = $this->generateUrl('portal_feedback', ['_format' => 'rss']);
+        $rssLink = $this->generateUrl('portal_community', ['_format' => 'rss']);
 
         // NEW FEEDBACK FORM
 
@@ -99,7 +100,7 @@ class FeedbackController extends AbstractController
         $newFeedback->setPerson($person);
         $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
             'person'                => $person,
-            'action'                => $this->generateUrl('portal_feedback'),
+            'action'                => $this->generateUrl('portal_community'),
             'saved_form_subrequest' => $request->attributes->has('saved-form'),
             // next to allow extra fields if its saved form because name/email etc will be on origin form,
             // but not this one now that the user is logged-in
@@ -159,7 +160,7 @@ class FeedbackController extends AbstractController
                         $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $savedForm);
                         $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
 
-                        return $this->redirectToRoute('portal_feedback');
+                        return $this->redirectToRoute('portal_community');
                     }
                 }
 
@@ -205,7 +206,7 @@ class FeedbackController extends AbstractController
         // RENDER THEME
 
         return $this->renderThemeView(
-            'Theme:Feedback:index.html.twig',
+            'Theme:Community:index.html.twig',
             [
                 'page'               => $page,
                 'feedback_types'     => $feedbackTypes,
@@ -250,7 +251,7 @@ class FeedbackController extends AbstractController
             $destination = $this->getObjectRouter()->getPortalPath($newFeedback);
         } else {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
-            $destination = $this->generateUrl('portal_feedback');
+            $destination = $this->generateUrl('portal_community');
         }
 
         $notify = new NewFeedbackNotification($newFeedback);
@@ -277,7 +278,7 @@ class FeedbackController extends AbstractController
     {
         $check = new SubmitFeedbackAbuseCheck($person, $ip);
         if ($withResponse) {
-            $check->setResponse($this->redirectToRoute('portal_feedback', ['lockout' => 'feedback']));
+            $check->setResponse($this->redirectToRoute('portal_community', ['lockout' => 'feedback']));
         } else {
             $check->markAsCheckOnly();
         }
@@ -287,7 +288,8 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/browse/{filter_uri}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"filter_uri":".*"})
+     * @Route("/feedback/browse/{filter_uri}", name="portal_community_browse", defaults={"query_path":""},
+     *     requirements={"filter_uri":".*"})
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
@@ -327,12 +329,12 @@ class FeedbackController extends AbstractController
             if (strlen($generatedUri) < 1) {
                 // actually, in this case, it is all the defaults, so go back to the index
                 return $this->redirectToRoute(
-                    'portal_feedback',
+                    'portal_community',
                     ['page' => $page]
                 );
             }
 
-            return $this->redirectToRoute('portal_feedback_browse', [
+            return $this->redirectToRoute('portal_community_browse', [
                 'filter_uri' => $generatedUri,
                 'page'       => $page,
             ], Response::HTTP_MOVED_PERMANENTLY);
@@ -376,7 +378,7 @@ class FeedbackController extends AbstractController
 
         if ($request->isXmlHttpRequest()) {
             return $this->renderThemeView(
-                'Theme:Feedback:items_ajax_partial.html.twig',
+                'Theme:Community:items_ajax_partial.html.twig',
                 $pageOptions
             );
         }
@@ -387,7 +389,7 @@ class FeedbackController extends AbstractController
         $newFeedback->setPerson($person);
         $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
             'person' => $person,
-            'action' => $this->generateUrl('portal_feedback'),
+            'action' => $this->generateUrl('portal_community'),
         ]);
 
         $pageOptions = array_merge($pageOptions, [
@@ -401,7 +403,7 @@ class FeedbackController extends AbstractController
         // RENDER THEME
 
         return $this->renderThemeView(
-            'Theme:Feedback:index.html.twig',
+            'Theme:Community:index.html.twig',
             $pageOptions
         );
     }
@@ -480,7 +482,7 @@ class FeedbackController extends AbstractController
         // RENDER THEME
 
         return $this->renderThemeView(
-            'Theme:Feedback:view.html.twig',
+            'Theme:Community:view.html.twig',
             [
                 'item'               => $item,
                 'is_subscribed'      => $isSubscribed,
@@ -499,8 +501,8 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/view/{slug}/vote-up", name="portal_feedback_vote_up", defaults={"up_or_down":"up"})
-     * @Route("/feedback/view/{slug}/vote-down", name="portal_feedback_vote_down", defaults={"up_or_down":"down"})
+     * @Route("/feedback/view/{slug}/vote-up", name="portal_community_topic_vote_up", defaults={"up_or_down":"up"})
+     * @Route("/feedback/view/{slug}/vote-down", name="portal_community_topic_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @AutoPostOnGetRequest()
      *
@@ -559,7 +561,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/view/{slug}/toggle-subscription", name="portal_feedback_toggle_subscription")
+     * @Route("/feedback/view/{slug}/toggle-subscription", name="portal_community_topic_toggle_subscription")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('SUBSCRIBE_FEEDBACK', item)")
      * @AutoPostOnGetRequest()
@@ -589,11 +591,11 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/root/toggle-subscription", name="portal_feedback_root_toggle_subscription")
+     * @Route("/feedback/root/toggle-subscription", name="portal_community_root_toggle_subscription")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
      * @AutoPostOnGetRequest()
      */
-    public function articleRootCategorySubscriptionAction()
+    public function communityRootChannelSubscriptionAction()
     {
         $person              = $this->getUser();
         $subscriptionsHelper = $this->getSubscriptionsHelper();
@@ -606,18 +608,18 @@ class FeedbackController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_feedback');
+        return $this->redirectToRoute('portal_community');
     }
 
     /**
-     * @Route("/feedback/items/subscriptions/unsubscribe", name="portal_feedback_unsubscribe_all")
+     * @Route("/feedback/items/subscriptions/unsubscribe", name="portal_community_unsubscribe_all")
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
      * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
      * @AutoPostOnGetRequest()
      */
-    public function feedbackUnsubscribeAllAction()
+    public function communityUnsubscribeAllAction()
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('feedback', $this->getUser());
 

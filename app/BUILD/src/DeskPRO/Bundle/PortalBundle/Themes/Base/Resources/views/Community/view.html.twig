@@ -8,7 +8,7 @@
     <article class="feedback main-feedback" id="feedback_view">
         {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
         <div class="feedback-item">
-            {%  include 'Theme:Feedback:items_controls_partial.html.twig' with {'item': item} %}
+            {%  include 'Theme:Community:items_controls_partial.html.twig' with {'item': item} %}
             <div class="feedback-item-content">
                 <span class="feedback-status">
                     {% if item.status_category %}

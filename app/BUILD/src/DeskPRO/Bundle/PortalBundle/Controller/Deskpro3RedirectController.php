@@ -80,7 +80,7 @@ class Deskpro3RedirectController extends AbstractController
             }
         }
 
-        return $this->redirectToRoute('portal_feedback', [], 301);
+        return $this->redirectToRoute('portal_community', [], 301);
     }
 
     //###########################################################################

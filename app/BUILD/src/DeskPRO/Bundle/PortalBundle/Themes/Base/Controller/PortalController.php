@@ -120,7 +120,7 @@ class PortalController extends AbstractController
             if ($extendedOptions['can_view_tickets_link']) {
                 $extendedOptions['first_link'] = $this->get('router')->generate('portal_new_ticket');
             } elseif ($extendedOptions['can_use_feedback']) {
-                $extendedOptions['first_link'] = $this->get('router')->generate('portal_feedback');
+                $extendedOptions['first_link'] = $this->get('router')->generate('portal_community');
             } elseif ($extendedOptions['can_use_chat']) {
                 // this is very, very dirty hack
                 $extendedOptions['first_link'] = "javascript: window.dp_loader.postMessage({type: 'openWidget'}, '*');";

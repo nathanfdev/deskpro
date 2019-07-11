@@ -123,7 +123,7 @@ class SitemapGenerator
         ];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_feedback', [], RouterInterface::ABSOLUTE_URL),
+            'loc'        => $this->router->generate('portal_community', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
@@ -314,7 +314,7 @@ class SitemapGenerator
         $items = [];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_feedback', [], RouterInterface::ABSOLUTE_URL),
+            'loc'        => $this->router->generate('portal_community', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 

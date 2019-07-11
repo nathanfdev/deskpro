@@ -58,7 +58,7 @@ class FeedbackCategoryLinkGenerator implements LinkGeneratorInterface
         $filter_uri = $uri_helper->generateUriSegment($filter);
 
         return $this->urlGenerator->generate(
-            'portal_feedback_browse',
+            'portal_community_browse',
             array_merge([
                 'filter_uri' => $filter_uri,
                 'brand'      => $object->getBrand(),

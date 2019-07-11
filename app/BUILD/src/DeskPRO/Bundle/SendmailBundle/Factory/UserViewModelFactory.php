@@ -223,7 +223,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createFeedbackSubscriptionModel(array $updatedFeedback)
     {
         $portalHome     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
-        $unsubscribeUrl = $this->router->generate('portal_feedback_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $unsubscribeUrl = $this->router->generate('portal_community_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->convertParameters(FeedbackSubscription::class, [$portalHome, $unsubscribeUrl, $updatedFeedback]);
     }

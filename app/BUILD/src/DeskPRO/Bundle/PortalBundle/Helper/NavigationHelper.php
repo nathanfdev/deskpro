@@ -19,7 +19,7 @@ class NavigationHelper
         0b00010 => 'portal_kb',
         0b00100 => 'portal_news',
         0b01000 => 'portal_downloads',
-        0b10000 => 'portal_feedback',
+        0b10000 => 'portal_community',
     ];
 
     public function __construct(AuthorizationCheckerInterface $authorizationChecker)

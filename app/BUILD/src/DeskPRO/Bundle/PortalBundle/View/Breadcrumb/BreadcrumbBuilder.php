@@ -357,7 +357,7 @@ class BreadcrumbBuilder
     public function addFeedback()
     {
         $this->b->add(
-            $this->url_generator->generate('portal_feedback'),
+            $this->url_generator->generate('portal_community'),
             Breadcrumbs::FEEDBACK,
             ['phrase' => 'portal.general.nav-feedback']
         );
