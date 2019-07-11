@@ -72,7 +72,7 @@ class TemplatesMenu extends React.Component {
   };
 
   getRightPanel = () => {
-    const { selectedLeft } = this.state;
+    const { selectedLeft, filter } = this.state;
     if (!selectedLeft) {
       return null;
     }
@@ -81,15 +81,17 @@ class TemplatesMenu extends React.Component {
       <MenuWrapper className={classNames('right-panel')}>
         <Menu title={selectedLeft.get('title')}>
           {
-            templates.map(template =>
-              <MenuItem
-                key={template.get('value')}
-                icon="code"
-                className="template"
-                onClick={() => this.props.selectTemplate(template)}
-              >
-                {template.get('name')}
-              </MenuItem>
+            templates
+              .filter(template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1)
+              .map(template =>
+                <MenuItem
+                  key={template.get('value')}
+                  icon="code"
+                  className="template"
+                  onClick={() => this.props.selectTemplate(template)}
+                >
+                  {template.get('name')}
+                </MenuItem>
             ).toArray()
           }
         </Menu>
@@ -98,18 +100,30 @@ class TemplatesMenu extends React.Component {
   };
 
   getGroups = () => {
+    const { filter } = this.state;
     if (!this.props.templates) {
       return null;
     }
-    return this.props.templates.toSeq().map((template, group) => (
-      <MenuItem
-        key={`template${group}`}
-        label={group}
-        icon="folder open"
-        className={classNames({ active: this.isActive(template) })}
-        onClick={() => this.setActive(template)}
-      />
+    return this.props.templates.toSeq()
+      .filter(group =>
+        !filter || group.get('templates')
+          .find(template => template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1)
+      )
+      .map((template, group) => (
+        <MenuItem
+          key={`template${group}`}
+          label={group}
+          icon="folder open"
+          className={classNames({ active: this.isActive(template) })}
+          onClick={() => this.setActive(template)}
+        />
       )).toArray();
+  };
+
+  updateFilter = (value) => {
+    this.setState({
+      filter: value
+    });
   };
 
   isActive = item => item === this.state.selectedLeft;
