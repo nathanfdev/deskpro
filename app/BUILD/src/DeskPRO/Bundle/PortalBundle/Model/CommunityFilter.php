@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Model;
 
-class FeedbackFilter
+class CommunityFilter
 {
     const STATUS_ALL    = 'all';
     const STATUS_ACTIVE = 'active';

@@ -108,7 +108,7 @@ class PreviewFakeDataFactory
                     case 'newNews':
                     case 'updatedNews':
                         return $this->manager->getRepository(News::class)->findBy([], [], 10);
-                    case 'updatedFeedback':
+                    case 'updatedCommunityTopic':
                         return $this->manager->getRepository(CommunityTopic::class)->findBy([], [], 10);
                     case 'task':
                         return $this->manager->getRepository(Task::class)->findBy([], [], 10);

@@ -5,8 +5,8 @@ namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
-use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * for security and to increment count + redirect
  * this avoids both security and the download increment, so be careful with the "serve" type on Downloads!
  */
-class FeedbackCategoryLinkGenerator implements LinkGeneratorInterface
+class CommunityChannelLinkGenerator implements LinkGeneratorInterface
 {
     /**
      * @var UrlGeneratorInterface
@@ -45,7 +45,7 @@ class FeedbackCategoryLinkGenerator implements LinkGeneratorInterface
      */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
 
         if ($object instanceof CommunityChannel) {
             $filter->setTypes([$object->getId()]);
@@ -54,7 +54,7 @@ class FeedbackCategoryLinkGenerator implements LinkGeneratorInterface
             $filter->setStatusCategories([$object->getId()]);
         }
 
-        $uri_helper = new FeedbackFilterUriHelper();
+        $uri_helper = new CommunityFilterUriHelper();
         $filter_uri = $uri_helper->generateUriSegment($filter);
 
         return $this->urlGenerator->generate(

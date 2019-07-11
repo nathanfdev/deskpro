@@ -13,7 +13,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -52,14 +52,14 @@ class CommunityDataService extends AbstractDataService
     }
 
     /**
-     * @param                $page
-     * @param                $max_per_page
-     * @param FeedbackFilter $filter
-     * @param Person         $person
+     * @param                 $page
+     * @param                 $max_per_page
+     * @param CommunityFilter $filter
+     * @param Person          $person
      *
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter, Person $person)
+    public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person)
     {
         $em                  = $this->em;
         $permissions_manager = $this->permissions_manager;
@@ -79,7 +79,7 @@ class CommunityDataService extends AbstractDataService
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
                 $permissions_bag = $permissions_manager->getPortalPermissionsBag($person);
-                $allowed_types = $permissions_bag->getAllowedFeedbackCategoryIds();
+                $allowed_types = $permissions_bag->getAllowedCommunityChannelIds();
                 $requested_types = $filter->getTypes();
                 $types = [];
                 if (null === $requested_types) {
@@ -99,13 +99,13 @@ class CommunityDataService extends AbstractDataService
                 // status
                 // "all","active","closed"
                 switch ($filter->getStatus()) {
-                    case FeedbackFilter::STATUS_ALL:
+                    case CommunityFilter::STATUS_ALL:
                         $valid_status = [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED];
                         break;
-                    case FeedbackFilter::STATUS_ACTIVE:
+                    case CommunityFilter::STATUS_ACTIVE:
                         $valid_status = [CommunityTopic::STATUS_ACTIVE];
                         break;
-                    case FeedbackFilter::STATUS_CLOSED:
+                    case CommunityFilter::STATUS_CLOSED:
                         $valid_status = [CommunityTopic::STATUS_CLOSED];
                         break;
                     default:
@@ -133,19 +133,19 @@ class CommunityDataService extends AbstractDataService
                 // sort
                 // "date", "most-popular", "highest-rating", "most-discussed", "most-viewed"
                 switch ($filter->getSort()) {
-                    case FeedbackFilter::SORT_POPULARITY:
+                    case CommunityFilter::SORT_POPULARITY:
                         $qb->orderBy('f.total_rating*5/DATE_DIFF(CURRENT_TIMESTAMP(),f.date_created)',
                             $filter->getSortDirection());
                         $qb->addOrderBy('f.date_created',
                             $filter->getSortDirection());
                         break;
-                    case FeedbackFilter::SORT_RATING:
+                    case CommunityFilter::SORT_RATING:
                         $qb->orderBy('f.total_rating', $filter->getSortDirection());
                         break;
-                    case FeedbackFilter::SORT_COMMENTS:
+                    case CommunityFilter::SORT_COMMENTS:
                         $qb->orderBy('f.num_comments', $filter->getSortDirection());
                         break;
-                    case FeedbackFilter::SORT_VIEWS:
+                    case CommunityFilter::SORT_VIEWS:
                         $qb->orderBy('f.view_count', $filter->getSortDirection());
                         break;
                     default:
@@ -215,13 +215,13 @@ class CommunityDataService extends AbstractDataService
      *
      * @return CommunityChannel[]
      */
-    public function getFeedbackCategoriesForPerson(Person $person)
+    public function getCommunityChannelsForPerson(Person $person)
     {
         $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
 
-        return $this->getFeedbackCategoryRepo()->findBy(
+        return $this->getCommunityChannelsRepo()->findBy(
             [
-                'id' => $permissions_bag->getAllowedFeedbackCategoryIds(),
+                'id' => $permissions_bag->getAllowedCommunityChannelIds(),
             ]
         );
     }
@@ -269,7 +269,7 @@ class CommunityDataService extends AbstractDataService
     /**
      * @return \Application\DeskPRO\EntityRepository\CommunityChannel
      */
-    public function getFeedbackCategoryRepo()
+    public function getCommunityChannelsRepo()
     {
         return $this->em->getRepository('DeskPRO:CommunityChannel');
     }

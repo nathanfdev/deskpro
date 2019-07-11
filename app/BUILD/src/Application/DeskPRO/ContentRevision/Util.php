@@ -241,7 +241,7 @@ class Util
 
             case CommunityTopic::class:
                 if ($entity_name) {
-                    return 'DeskPRO:FeedbackRevision';
+                    return 'DeskPRO:CommunityTopicRevision';
                 } else {
                     return CommunityTopicRevision::class;
                 }

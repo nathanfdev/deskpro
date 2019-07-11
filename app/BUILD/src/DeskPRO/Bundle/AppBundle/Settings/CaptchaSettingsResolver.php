@@ -9,11 +9,11 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings;
  */
 class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver implements AntiAbuseSettingsAwareInterface
 {
-    const TICKETS  = 'user.captcha.tickets';
-    const COMMENTS = 'user.captcha.comments';
-    const FEEDBACK = 'user.captcha.feedback';
-    const REGISTER = 'user.captcha.register';
-    const SHARING  = 'user.captcha.sharing';
+    const TICKETS   = 'user.captcha.tickets';
+    const COMMENTS  = 'user.captcha.comments';
+    const COMMUNITY = 'user.captcha.community';
+    const REGISTER  = 'user.captcha.register';
+    const SHARING   = 'user.captcha.sharing';
 
     const USE_RECAPTCHA        = 'core.use_recaptcha2';
     const RECAPTCHA_SITE_KEY   = 'core.recaptcha2_site_key';
@@ -33,7 +33,7 @@ class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver impleme
             ->setRecaptcha2SecretKey($this->getSetting(self::RECAPTCHA_SECRET_KEY))
             ->setTickets($this->getSetting(self::TICKETS))
             ->setComments($this->getSetting(self::COMMENTS))
-            ->setFeedback($this->getSetting(self::FEEDBACK))
+            ->setCommunity($this->getSetting(self::FEEDBACK))
             ->setRegister($this->getSetting(self::REGISTER))
             ->setSharing($this->getSetting(self::SHARING))
         ;

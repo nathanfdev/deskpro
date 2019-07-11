@@ -24,7 +24,7 @@ interface SearchContextInterface
     /**
      * @return int[]
      */
-    public function getFeedbackCategoryIds();
+    public function getCommunityChannelIds();
 
     /**
      * @return int[]

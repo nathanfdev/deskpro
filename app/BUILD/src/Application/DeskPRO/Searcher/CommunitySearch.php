@@ -76,13 +76,13 @@ class CommunitySearch extends SearcherAbstract
             return '';
         }
 
-        if (!$this->person->hasPerm('feedback.use')) {
+        if (!$this->person->hasPerm('community.use')) {
             return '0';
         }
 
         $where = '(community_topics.status != \'hidden\')';
 
-        $dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
+        $dis_ids = $this->person->PermissionsManager->CommunityChannels->getDisallowedCategories();
         if (!$dis_ids) {
             return $where;
         }

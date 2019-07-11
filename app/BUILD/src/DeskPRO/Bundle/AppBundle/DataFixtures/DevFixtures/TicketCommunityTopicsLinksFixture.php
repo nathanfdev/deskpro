@@ -6,10 +6,10 @@ use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class TicketFeedbackLinksFixture extends AbstractDpFixture implements OrderedFixtureInterface
+class TicketCommunityTopicsLinksFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
-    const FEEDBACK_PER_TICKET_MIN = 0;
-    const FEEDBACK_PER_TICKET_MAX = 5;
+    const TOPICS_PER_TICKET_MIN = 0;
+    const TOPICS_PER_TICKET_MAX = 5;
 
     /**
      * @var int[]
@@ -24,7 +24,7 @@ class TicketFeedbackLinksFixture extends AbstractDpFixture implements OrderedFix
     /**
      * @var int[]
      */
-    private $feedbackIds;
+    private $topicIds;
 
     /**
      * {@inheritdoc}
@@ -42,30 +42,30 @@ class TicketFeedbackLinksFixture extends AbstractDpFixture implements OrderedFix
         $this->manager = $manager;
 
         $this->initIds();
-        $this->loadTicketFeedbackLink();
+        $this->loadTicketCommunityTopicsLink();
     }
 
     private function initIds()
     {
-        $this->agentIds    = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
-        $this->ticketIds   = $this->fetchIds(self::TABLE_TICKETS);
-        $this->feedbackIds = $this->fetchIds(self::TABLE_FEEDBACK);
+        $this->agentIds  = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 1]]);
+        $this->ticketIds = $this->fetchIds(self::TABLE_TICKETS);
+        $this->topicIds  = $this->fetchIds(self::TABLE_COMMUNITY_TOPICS);
     }
 
-    private function loadTicketFeedbackLink()
+    private function loadTicketCommunityTopicsLink()
     {
         $batch = [];
 
         shuffle($this->ticketIds);
 
         foreach ($this->ticketIds as $ticketId) {
-            $feedbackPerTicket = $this->faker->numberBetween(self::FEEDBACK_PER_TICKET_MIN, self::FEEDBACK_PER_TICKET_MAX);
-            $feedbackIds       = $this->faker->randomElements($this->feedbackIds, $feedbackPerTicket);
+            $communityTopicsPerTicket = $this->faker->numberBetween(self::TOPICS_PER_TICKET_MIN, self::TOPICS_PER_TICKET_MAX);
+            $communityTopicIds        = $this->faker->randomElements($this->topicIds, $communityTopicsPerTicket);
 
-            foreach ($feedbackIds as $feedbackId) {
+            foreach ($communityTopicIds as $communityTopicId) {
                 $batch[] = [
                     'ticket_id'    => $ticketId,
-                    'feedback_id'  => $feedbackId,
+                    'topic_id'     => $communityTopicId,
                     'person_id'    => $this->faker->randomElement($this->agentIds),
                     'date_created' => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 ];

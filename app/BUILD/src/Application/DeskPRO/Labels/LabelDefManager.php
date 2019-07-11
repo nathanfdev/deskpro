@@ -31,7 +31,7 @@ class LabelDefManager
         'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
         'deals'         => ['table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'],
         'downloads'     => ['table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'],
-        'feedback'      => ['table' => 'labels_community_topics',   'entity' => 'DeskPRO:LabelFeedback'],
+        'community'     => ['table' => 'labels_community_topics',   'entity' => 'DeskPRO:LabelCommunityTopic'],
         'chat'          => ['table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'],
         'news'          => ['table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'],
         'organizations' => ['table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'],

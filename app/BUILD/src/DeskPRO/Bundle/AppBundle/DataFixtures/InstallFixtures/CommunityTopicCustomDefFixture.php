@@ -10,9 +10,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Class FeedbackCustomDefFixture.
+ * Class CommunityTopicCustomDefFixture.
  */
-class FeedbackCustomDefFixture extends AbstractDpFixture implements OrderedFixtureInterface
+class CommunityTopicCustomDefFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     /**
      * {@inheritdoc}
@@ -32,8 +32,8 @@ class FeedbackCustomDefFixture extends AbstractDpFixture implements OrderedFixtu
             $customCatDef = new CustomDefCommunityTopic();
             $customCatDef
                 ->setBrand($brand)
-                ->setSysName('cat')
-                ->setTitle('Category')
+                ->setSysName('chan')
+                ->setTitle('Channel')
                 ->setDescription('e.g., maybe Windows, Mac, Linux.')
                 ->setHandlerClass(Choice::class)
             ;

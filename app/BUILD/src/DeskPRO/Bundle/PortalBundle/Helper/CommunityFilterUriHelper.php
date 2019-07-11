@@ -6,18 +6,18 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 
-class FeedbackFilterUriHelper
+class CommunityFilterUriHelper
 {
     /**
      * @param $filter_uri
      *
-     * @return FeedbackFilter
+     * @return CommunityFilter
      */
-    public function extractFeedbackFilter($filter_uri)
+    public function extractCommunityFilter($filter_uri)
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
 
         $segments = explode('/', $filter_uri);
 
@@ -53,10 +53,10 @@ class FeedbackFilterUriHelper
                     $filter->setSortDirection($parts[1]);
                 }
             } elseif ($categories = $this->getIntArrayFromCsv($segment)) {
-                $filter->setStatus(FeedbackFilter::STATUS_ACTIVE);
+                $filter->setStatus(CommunityFilter::STATUS_ACTIVE);
                 $filter->setStatusCategories($categories);
             } else {
-                throw new \InvalidArgumentException('could not parse feedback uri segment "'.$segment.'"');
+                throw new \InvalidArgumentException('could not parse community uri segment "'.$segment.'"');
             }
         }
 
@@ -68,7 +68,7 @@ class FeedbackFilterUriHelper
         $segment = $this->filterSegment($segment);
 
         if (strlen($segment)) {
-            foreach (FeedbackFilter::$statuses as $status) {
+            foreach (CommunityFilter::$statuses as $status) {
                 if ($status === substr($segment, 0, strlen($status))) {
                     return true;
                 }
@@ -125,7 +125,7 @@ class FeedbackFilterUriHelper
         $parts = $this->getSortParts($segment);
 
         if (count($parts) && strlen($parts[0])) {
-            foreach (FeedbackFilter::$sorts as $sort) {
+            foreach (CommunityFilter::$sorts as $sort) {
                 if ($sort === substr($parts[0], 0, strlen($sort))) {
                     return true;
                 }
@@ -146,8 +146,8 @@ class FeedbackFilterUriHelper
 
         if (count($parts) === 2) {
             if (!in_array($parts[1], [
-                FeedbackFilter::SORT_DIRECTION_DESC,
-                FeedbackFilter::SORT_DIRECTION_ASC,
+                CommunityFilter::SORT_DIRECTION_DESC,
+                CommunityFilter::SORT_DIRECTION_ASC,
             ])) {
                 return [$parts[0].'-'.$parts[1]];
             }
@@ -165,9 +165,9 @@ class FeedbackFilterUriHelper
         return $parts;
     }
 
-    public function generateUriSegment(FeedbackFilter $filter)
+    public function generateUriSegment(CommunityFilter $filter)
     {
-        $defaults = FeedbackFilter::getDefaultValues();
+        $defaults = CommunityFilter::getDefaultValues();
 
         // default requires no url
         if ($filter->toArray() == $defaults) {

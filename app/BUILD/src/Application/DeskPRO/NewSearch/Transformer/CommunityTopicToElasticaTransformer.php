@@ -7,9 +7,9 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Elastica\Document;
 
 /**
- * Class FeedbackToElasticaTransformer.
+ * Class CommunityTopicToElasticaTransformer.
  */
-class FeedbackToElasticaTransformer extends AbstractToElasticaTransformer
+class CommunityTopicToElasticaTransformer extends AbstractToElasticaTransformer
 {
     /**
      * {@inheritdoc}

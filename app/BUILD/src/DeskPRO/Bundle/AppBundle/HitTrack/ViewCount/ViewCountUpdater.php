@@ -28,7 +28,7 @@ class ViewCountUpdater
         $this->_updateTable('articles',  $views->getArticleViews());
         $this->_updateTable('news',      $views->getNewsViews());
         $this->_updateTable('downloads', $views->getDownloadViews());
-        $this->_updateTable('feedback',  $views->getFeedbackViews());
+        $this->_updateTable('community_topics',  $views->getCommunityViews());
     }
 
     /**

@@ -115,7 +115,7 @@ return [
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_agent:new-community-topic.html.twig',
         'newTemplate' => 'SendmailBundle:emails_agent:new_feedback.html.twig',
-        'viewModel'   => 'AgentNewFeedback',
+        'viewModel'   => 'AgentNewCommunityTopic',
     ],
     [
         'typeId'      => 'agent',
@@ -479,7 +479,7 @@ return [
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:feedback-subscription.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:feedback_subscription.html.twig',
-        'viewModel'   => 'FeedbackSubscription',
+        'viewModel'   => 'CommunityTopicSubscription',
     ],
     [
         'typeId'      => 'user',
@@ -507,47 +507,47 @@ return [
     ],
 
     //--------------------
-    // Feedback
+    // Community
     //--------------------
     [
         'typeId'      => 'user',
-        'groupId'     => 'feedback',
+        'groupId'     => 'community',
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:feedback-approved.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:feedback_approved.html.twig',
-        'viewModel'   => 'FeedbackApproved',
+        'viewModel'   => 'CommunityTopicApproved',
     ],
     [
         'typeId'      => 'user',
-        'groupId'     => 'feedback',
+        'groupId'     => 'community',
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:feedback-disapproved.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:feedback_disapproved.html.twig',
-        'viewModel'   => 'FeedbackDisapproved',
+        'viewModel'   => 'CommunityTopicDisapproved',
     ],
     [
         'typeId'      => 'user',
-        'groupId'     => 'feedback',
+        'groupId'     => 'community',
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:feedback-new.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:feedback_new.html.twig',
-        'viewModel'   => 'FeedbackNew',
+        'viewModel'   => 'CommunityTopicNew',
     ],
     [
         'typeId'      => 'user',
-        'groupId'     => 'feedback',
+        'groupId'     => 'community',
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:feedback-new-comment.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:feedback_new_comment.html.twig',
-        'viewModel'   => 'FeedbackNewComment',
+        'viewModel'   => 'CommunityTopicNewComment',
     ],
     [
         'typeId'      => 'user',
-        'groupId'     => 'feedback',
+        'groupId'     => 'community',
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:feedback-updated.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:feedback_updated.html.twig',
-        'viewModel'   => 'FeedbackUpdated',
+        'viewModel'   => 'CommunityTopicUpdated',
     ],
 
     //--------------------

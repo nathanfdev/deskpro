@@ -13,9 +13,9 @@ use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
- * Class FeedbackFixture.
+ * Class CommunityTopicsFixture.
  */
-class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterface
+class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     const NUM_TOPICS           = 100;
     const MIN_TOPICS_COMMENTS  = 1;
@@ -53,7 +53,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
      * @var array
      */
     private $statusesCategories = [
-        CommunityTopic::STATUS_ACTIVE => ['Gathering Feedback', 'Planning', 'Started', 'Under Review'],
+        CommunityTopic::STATUS_ACTIVE => ['Gathering Topics', 'Planning', 'Started', 'Under Review'],
         CommunityTopic::STATUS_CLOSED => ['Completed', 'Duplicate', 'Declined'],
     ];
 

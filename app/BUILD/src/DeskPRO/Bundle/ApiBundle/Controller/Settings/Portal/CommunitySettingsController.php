@@ -6,9 +6,9 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\FeedbackSettingsType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\CommunitySettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\CommunitySettings;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -16,12 +16,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class FeedbackSettingsController.
+ * Class CommunitySettingsController.
  *
  * @ApiModes("all")
  * @Rest\Route("/settings/brands/{brand}/portal/community")
  */
-class FeedbackSettingsController extends AbstractBrandAwareSettingsController
+class CommunitySettingsController extends AbstractBrandAwareSettingsController
 {
     /**
      * @ApiDoc(
@@ -31,7 +31,7 @@ class FeedbackSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings"
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\CommunitySettings"
      * )
      *
      * @Rest\Get("")
@@ -57,7 +57,7 @@ class FeedbackSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\FeedbackSettingsType"
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\CommunitySettingsType"
      *     },
      *     noOutput=true
      *)
@@ -78,11 +78,11 @@ class FeedbackSettingsController extends AbstractBrandAwareSettingsController
     /**
      * {@inheritdoc}
      *
-     * @return FeedbackSettings
+     * @return CommunitySettings
      */
     protected function getModel(Brand $brand)
     {
-        return $this->get('portal_settings_resolver')->getFeedbackSettings($brand);
+        return $this->get('portal_settings_resolver')->getCommunitySettings($brand);
     }
 
     /**
@@ -90,22 +90,22 @@ class FeedbackSettingsController extends AbstractBrandAwareSettingsController
      */
     protected function getType()
     {
-        return FeedbackSettingsType::class;
+        return CommunitySettingsType::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param FeedbackSettings $model
+     * @param CommunitySettings $model
      */
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
         $brand = $model->getBrand();
         $this
             ->getSettingRepository()
-            ->updateSetting(PortalSettingsResolver::APPS_FEEDBACK, $model->isEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::TAB_FEEDBACK, $model->isTabEnabled(), $brand)
-            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_FEEDBACK, $model->isSubscriptions(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_COMMUNITY, $model->isEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::TAB_COMMUNITY, $model->isTabEnabled(), $brand)
+            ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_COMMUNITY, $model->isSubscriptions(), $brand)
         ;
     }
 }

@@ -437,7 +437,7 @@ class SearchController extends AbstractController
             'article'  => PortalSettingsResolver::APPS_KB,
             'news'     => PortalSettingsResolver::APPS_NEWS,
             'download' => PortalSettingsResolver::APPS_DOWNLOADS,
-            'feedback' => PortalSettingsResolver::APPS_FEEDBACK,
+            'feedback' => PortalSettingsResolver::APPS_COMMUNITY,
             'topic'    => PortalSettingsResolver::APPS_GUIDES,
         ];
 

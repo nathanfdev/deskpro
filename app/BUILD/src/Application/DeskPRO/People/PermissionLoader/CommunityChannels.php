@@ -13,7 +13,7 @@ namespace Application\DeskPRO\People\PermissionLoader;
  *
  * @deprecated use new PermissionsManager to get the PermissionsBag instead of people helpers
  */
-class FeedbackCategories extends BasicTreeCategoryPermission
+class CommunityChannels extends BasicTreeCategoryPermission
 {
     protected function getCategoryPermissionEntity()
     {

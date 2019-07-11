@@ -1,15 +1,15 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\CommunityTopic;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionsType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackMassActionsType.
+ * Class CommunityTopicMassActionsType.
  */
-class FeedbackMassActionsType extends AbstractType
+class CommunityTopicMassActionsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -25,7 +25,7 @@ class FeedbackMassActionsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'params_class' => FeedbackMassActionParamsType::class,
+            'params_class' => CommunityTopicMassActionParamsType::class,
         ]);
     }
 }

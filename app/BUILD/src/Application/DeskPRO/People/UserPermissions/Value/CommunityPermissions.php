@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\People\UserPermissions\Value;
 
-class FeedbackPermissions implements PermissionValueInterface
+class CommunityPermissions implements PermissionValueInterface
 {
     /** @var bool */
     public $use = false;

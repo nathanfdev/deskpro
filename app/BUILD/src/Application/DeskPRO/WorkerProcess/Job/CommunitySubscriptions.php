@@ -12,22 +12,22 @@ use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
 /**
- * Sends feedback notifications to users with subscriptions.
+ * Sends community topics notifications to users with subscriptions.
  */
-class FeedbackSubscriptions extends AbstractJob
+class CommunitySubscriptions extends AbstractJob
 {
     const DEFAULT_INTERVAL = 7200;
 
     public function run()
     {
-        $lastTime = $this->getContainer()->getSetting('user.feedback_subscriptions_last');
+        $lastTime = $this->getContainer()->getSetting('user.community_topic_subscriptions_last');
 
         $this->getContainer()->getDb()->replace('settings', [
-            'name'  => 'user.feedback_subscriptions_last',
+            'name'  => 'user.community_topic_subscriptions_last',
             'value' => time(),
         ]);
 
-        if (!$this->getCrossBrandSetting('user.feedback_subscriptions')) {
+        if (!$this->getCrossBrandSetting('user.community_topic_subscriptions')) {
             return;
         }
 
@@ -38,15 +38,15 @@ class FeedbackSubscriptions extends AbstractJob
         $lastDate = new \DateTime("@$lastTime");
 
         //------------------------------
-        // Find Feedback
+        // Find Community Topics
         //------------------------------
 
         /** @var CommunityTopic[] $published */
         $published = $this->getContainer()->getEm()->createQuery('
-            SELECT f
-            FROM DeskPRO:Feedback f INDEX BY f.id
-            WHERE f.status IN (:statuses) AND f.date_published > :date
-            ORDER BY f.date_published DESC
+            SELECT ct
+            FROM DeskPRO:CommunityTopic ct INDEX BY ct.id
+            WHERE f.status IN (:statuses) AND ct.date_published > :date
+            ORDER BY ct.date_published DESC
         ')->setMaxResults(250)->execute(['date' => $lastDate, 'statuses' => [
             CommunityTopic::STATUS_ACTIVE,
             CommunityTopic::STATUS_CLOSED,
@@ -54,17 +54,17 @@ class FeedbackSubscriptions extends AbstractJob
 
         /** @var CommunityTopic[] $updated */
         $updated = $this->getContainer()->getEm()->createQuery('
-            SELECT f
-            FROM DeskPRO:Feedback f INDEX BY f.id
-            WHERE f.status IN (:statuses) AND (f.date_updated > :date OR f.date_last_comment > :date)
-            ORDER BY f.date_updated DESC
+            SELECT ct
+            FROM DeskPRO:CommunityTopic f INDEX BY ct.id
+            WHERE ct.status IN (:statuses) AND (ct.date_updated > :date OR ct.date_last_comment > :date)
+            ORDER BY ct.date_updated DESC
         ')->setMaxResults(250)->execute(['date' => $lastDate, 'statuses' => [
             CommunityTopic::STATUS_ACTIVE,
             CommunityTopic::STATUS_CLOSED,
         ]]);
 
         if (!$updated && !$published) {
-            $this->logStatus('No new news feedbacks');
+            $this->logStatus('No new community topics');
 
             return;
         }
@@ -72,64 +72,64 @@ class FeedbackSubscriptions extends AbstractJob
         //------------------------------
         // Get subscriptions
         //------------------------------
-        $publishedFeedbackIds = [];
-        $updatedFeedbackIds   = [];
+        $publishedCommunityTopicIds = [];
+        $updatedCommunityTopicIds   = [];
 
         foreach ($published as $a) {
-            $publishedFeedbackIds[] = $a->getId();
+            $publishedCommunityTopicIds[] = $a->getId();
         }
         foreach ($updated as $a) {
-            $updatedFeedbackIds[] = $a->getId();
+            $updatedCommunityTopicIds[] = $a->getId();
         }
 
-        $publishedFeedbackIds = array_unique($publishedFeedbackIds);
-        $updatedFeedbackIds   = array_unique($updatedFeedbackIds);
+        $publishedCommunityTopicIds = array_unique($publishedCommunityTopicIds);
+        $updatedCommunityTopicIds   = array_unique($updatedCommunityTopicIds);
 
-        $rootSubs     = [];
-        $feedbackSubs = [];
+        $rootSubs  = [];
+        $topicsubs = [];
 
-        if ($publishedFeedbackIds) {
+        if ($publishedCommunityTopicIds) {
             $rootSubs = $this->getContainer()->getDb()->fetchAllGrouped('
                 SELECT person_id, root_category
-                FROM feedback_subscriptions
+                FROM community_topic_subscriptions
                 WHERE root_category = 1
             ', [], 'person_id', null, 'root_category', [Connection::PARAM_INT_ARRAY]);
         }
 
-        if ($updatedFeedbackIds) {
-            $feedbackSubs = $this->getContainer()->getDb()->fetchAllGrouped('
-                SELECT person_id, feedback_id
-                FROM feedback_subscriptions
-                WHERE feedback_id IN (?)
-            ', [$updatedFeedbackIds], 'person_id', null, 'feedback_id', [Connection::PARAM_INT_ARRAY]);
+        if ($updatedCommunityTopicIds) {
+            $topicsubs = $this->getContainer()->getDb()->fetchAllGrouped('
+                SELECT person_id, topic_id
+                FROM community_topic_subscriptions
+                WHERE topic_id IN (?)
+            ', [$updatedCommunityTopicIds], 'person_id', null, 'topic_id', [Connection::PARAM_INT_ARRAY]);
         }
 
         //------------------------------
         // Sort subscriptions into users
         //------------------------------
 
-        $userToFeedback = [];
+        $userToTopic = [];
 
         foreach ($rootSubs as $personId => $root) {
-            foreach ($published as $feedback) {
-                $userToFeedback[$personId][$feedback->getId()] = $feedback;
+            foreach ($published as $topic) {
+                $userToTopic[$personId][$topic->getId()] = $topic;
             }
         }
 
-        foreach ($feedbackSubs as $personId => $aids) {
+        foreach ($topicsubs as $personId => $aids) {
             foreach ($aids as $aid) {
                 if (!isset($updated[$aid])) {
                     continue;
                 }
 
-                if (!isset($userToFeedback[$personId])) {
-                    $userToFeedback[$personId] = [];
+                if (!isset($userToTopic[$personId])) {
+                    $userToTopic[$personId] = [];
                 }
-                $userToFeedback[$personId][$aid] = $updated[$aid];
+                $userToTopic[$personId][$aid] = $updated[$aid];
             }
         }
 
-        if (!$userToFeedback) {
+        if (!$userToTopic) {
             return;
         }
 
@@ -141,45 +141,45 @@ class FeedbackSubscriptions extends AbstractJob
             SELECT person_id, usergroup_id
             FROM person2usergroups
             WHERE person_id IN (?)
-        ', [array_keys($userToFeedback)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
+        ', [array_keys($userToTopic)], 'person_id', null, 'usergroup_id', [Connection::PARAM_INT_ARRAY]);
 
         $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
-            FROM feedback_category2usergroup
-        ', [], 'category_id', null, 'usergroup_id');
+            FROM community_channel2usergroup
+        ', [], 'channel_id', null, 'usergroup_id');
 
-        $allUserToFeedback = $userToFeedback;
-        $userToFeedback    = [];
+        $allUserToCommunityTopics = $userToTopic;
+        $userToTopic              = [];
 
-        foreach ($allUserToFeedback as $personId => $feedbacks) {
+        foreach ($allUserToCommunityTopics as $personId => $topics) {
             $personUgs   = isset($userGroupMembers[$personId]) ? $userGroupMembers[$personId] : [];
             $personUgs[] = 1; // Everyone
 
-            /** @var CommunityTopic $feedback */
-            foreach ($feedbacks as $feedback) {
+            /** @var CommunityTopic $topic */
+            foreach ($topics as $topic) {
                 $add    = false;
-                $cat    = $feedback->getCategory();
+                $cat    = $topic->getCategory();
                 $catUgs = isset($catGroups[$cat->getId()]) ? $catGroups[$cat->getId()] : [];
                 if (Arrays::isIn($personUgs, $catUgs)) {
                     $add = true;
                 }
 
                 if ($add) {
-                    if (!isset($userToFeedback[$personId])) {
-                        $userToFeedback[$personId] = [];
+                    if (!isset($userToTopic[$personId])) {
+                        $userToTopic[$personId] = [];
                     }
-                    $userToFeedback[$personId][$feedback->getId()] = $feedback;
+                    $userToTopic[$personId][$topic->getId()] = $topic;
                 }
             }
         }
 
-        unset($allUserToFeedback);
+        unset($allUserToCommunityTopics);
 
         //------------------------------
         // Now send the emails (they are queued)
         //------------------------------
 
-        foreach ($userToFeedback as $personId => $feedbacks) {
+        foreach ($userToTopic as $personId => $topics) {
             /** @var Person $person */
             $person = $this->getContainer()->getEm()->find(Person::class, $personId);
             if (!$person) {
@@ -188,8 +188,8 @@ class FeedbackSubscriptions extends AbstractJob
 
             $updatedItems = [];
 
-            foreach ($feedbacks as $feedback) {
-                $updatedItems[] = $feedback;
+            foreach ($topics as $topic) {
+                $updatedItems[] = $topic;
             }
 
             if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
@@ -215,8 +215,8 @@ class FeedbackSubscriptions extends AbstractJob
             $this->getContainer()->getEm()->detach($person);
         }
 
-        if ($userToFeedback) {
-            $this->logStatus('Send '.count($userToFeedback).' notifications');
+        if ($userToTopic) {
+            $this->logStatus('Send '.count($userToTopic).' notifications');
         }
     }
 }

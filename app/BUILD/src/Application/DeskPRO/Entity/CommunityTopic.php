@@ -529,7 +529,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $this->_label_manager = new LabelManager($this, 'DeskPRO:LabelFeedback');
+            $this->_label_manager = new LabelManager($this, 'DeskPRO:LabelCommunityTopic');
         }
 
         return $this->_label_manager;

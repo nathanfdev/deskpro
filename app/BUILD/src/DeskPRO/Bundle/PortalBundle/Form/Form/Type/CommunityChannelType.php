@@ -11,7 +11,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class FeedbackCategoryType.
  */
-class FeedbackCategoryType extends AbstractType
+class CommunityChannelType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class FeedbackCategoryType extends AbstractType
                     /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchyGenerator */
                     $hierarchyGenerator = $options['hierarchy_generator'];
 
-                    return $hierarchyGenerator->generateForFeedbackCategories($options['person'])->getChoiceLoader();
+                    return $hierarchyGenerator->generateForCommunityChannels($options['person'])->getChoiceLoader();
                 },
             ])
         ;

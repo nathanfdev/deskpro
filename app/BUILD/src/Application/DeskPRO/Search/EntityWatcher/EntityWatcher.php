@@ -222,7 +222,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         } elseif ($entity instanceof LabelDownload) {
             return $entity->getDownload();
         } elseif ($entity instanceof LabelCommunityTopic) {
-            return $entity->getFeedback();
+            return $entity->getTopic();
         } elseif ($entity instanceof TicketMessage) {
             return $entity->getTicket();
         } elseif ($entity instanceof PersonEmail) {
@@ -252,7 +252,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         } elseif ($entity instanceof CustomDataPerson) {
             return $entity->getPerson();
         } elseif ($entity instanceof CustomDataCommunityTopic) {
-            return $entity->getFeedback();
+            return $entity->getTopic();
         } elseif ($entity instanceof CustomDataOrganization) {
             return $entity->getOrganization();
         } elseif ($entity instanceof CustomDataArticle) {

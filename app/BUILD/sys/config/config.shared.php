@@ -510,7 +510,7 @@ $container->setDefinition('deskpro.search.download_to_elastica_transformer', $de
 
 // deskpro.search.feedback_to_elastica_transformer
 $definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\FeedbackToElasticaTransformer');
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\CommunityTopicToElasticaTransformer');
 $container->setDefinition('deskpro.search.feedback_to_elastica_transformer', $definition);
 
 // deskpro.search.topic_to_elastica_transformer

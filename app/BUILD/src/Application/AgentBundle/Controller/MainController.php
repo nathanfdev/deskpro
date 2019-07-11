@@ -755,7 +755,7 @@ class MainController extends AbstractController
             PortalSettingsResolver::APPS_KB        => false,
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
-            PortalSettingsResolver::APPS_FEEDBACK  => false,
+            PortalSettingsResolver::APPS_COMMUNITY => false,
             PortalSettingsResolver::APPS_GUIDES    => false,
             'core.apps_tasks'                      => false,
         ];

@@ -197,12 +197,12 @@ class WorkerJobsData extends AbstractDefaultData
         ];
 
         $jobs[] = [
-            'id'           => 'feedback_subscriptions',
-            'worker_group' => 'feedback_subscriptions',
-            'title'        => 'Feedback Subscriptions',
-            'description'  => 'Sends notifications to users who are subscribed to feedback items',
-            'job_class'    => Job\FeedbackSubscriptions::class,
-            'run_interval' => Job\FeedbackSubscriptions::DEFAULT_INTERVAL,
+            'id'           => 'communnity_subscriptions',
+            'worker_group' => 'communnity_subscriptions',
+            'title'        => 'Community Subscriptions',
+            'description'  => 'Sends notifications to users who are subscribed to community topics',
+            'job_class'    => Job\CommunitySubscriptions::class,
+            'run_interval' => Job\CommunitySubscriptions::DEFAULT_INTERVAL,
         ];
 
         $jobs[] = [

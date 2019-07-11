@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\CommunityTopic;
-use Application\DeskPRO\Entity\FeedbackSubscription;
+use Application\DeskPRO\Entity\CommunityTopicSubscription;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketParticipant;
@@ -38,13 +38,13 @@ class CommunitySubscriptionHelper
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      * @param Ticket         $ticket
      * @param bool           $isSubscribeOwner
      * @param bool           $isSubscribeParticipants
      */
     public function subscribeTicketPersons(
-        CommunityTopic $feedback,
+        CommunityTopic $communityTopic,
         Ticket $ticket,
         $isSubscribeOwner,
         $isSubscribeParticipants)
@@ -68,20 +68,20 @@ class CommunitySubscriptionHelper
             );
         }
 
-        $this->subscribePersons($feedback, $persons);
+        $this->subscribePersons($communityTopic, $persons);
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      * @param Person[]       $persons
      */
-    public function subscribePersons(CommunityTopic $feedback, $persons)
+    public function subscribePersons(CommunityTopic $communityTopic, $persons)
     {
         if (!count($persons)) {
             return;
         }
 
-        $subscribedIds = $this->em->getRepository(FeedbackSubscription::class)->getSubscribedPersonIds($feedback);
+        $subscribedIds = $this->em->getRepository(CommunityTopicSubscription::class)->getSubscribedPersonIds($communityTopic);
 
         foreach ($persons as $person) {
             if (in_array($person->getId(), $subscribedIds)) {
@@ -94,11 +94,11 @@ class CommunitySubscriptionHelper
             // @TODO: optimize permission check for each person
             if ($this->portalPermissionsManager
                     ->getPermissionsBagForPerson($person)
-                    ->hasContentCategoryAccess($feedback)) {
-                $feedbackSubscription = new FeedbackSubscription();
-                $feedbackSubscription->setFeedback($feedback);
-                $feedbackSubscription->setPerson($person);
-                $this->em->persist($feedbackSubscription);
+                    ->hasContentCategoryAccess($communityTopic)) {
+                $communityTopicSubscription = new CommunityTopicSubscription();
+                $communityTopicSubscription->setTopic($communityTopic);
+                $communityTopicSubscription->setPerson($person);
+                $this->em->persist($communityTopicSubscription);
             }
         }
 
@@ -106,15 +106,15 @@ class CommunitySubscriptionHelper
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      * @param Person         $person
      */
-    public function unsubscribePerson(CommunityTopic $feedback, Person $person)
+    public function unsubscribePerson(CommunityTopic $communityTopic, Person $person)
     {
-        $subscriptions = $this->em->getRepository(FeedbackSubscription::class)
+        $subscriptions = $this->em->getRepository(CommunityTopicSubscription::class)
             ->findBy([
-                'feedback' => $feedback,
-                'person'   => $person,
+                'topic'  => $communityTopic,
+                'person' => $person,
             ]);
 
         foreach ($subscriptions as $subscription) {

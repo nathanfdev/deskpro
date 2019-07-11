@@ -32,15 +32,15 @@ class CustomDataCommunityTopic extends CustomDataAbstract
      */
     protected $root_field;
 
-    public function getFeedbackId()
+    public function getTopicId()
     {
-        return $this->topic['id'];
+        return $this->topic->getId();
     }
 
     /**
      * @return CommunityTopic
      */
-    public function getFeedback()
+    public function getTopic()
     {
         return $this->topic;
     }

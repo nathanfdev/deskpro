@@ -98,7 +98,7 @@ class SitemapGenerator
         $this->items = array_merge(
             $this->getSiteItems(),
             $this->getArticleItems(),
-            $this->getFeedbackItems(),
+            $this->getCommunityTopics(),
             $this->getDownloadItems(),
             $this->getNewsItems()
         );
@@ -304,9 +304,9 @@ class SitemapGenerator
     /**
      * @return array
      */
-    protected function getFeedbackItems()
+    protected function getCommunityTopics()
     {
-        $cat_ids = $this->structure->getFeedbackCategoryIds();
+        $cat_ids = $this->structure->getCommunityChannelsIds();
         if (!$cat_ids) {
             return [];
         }
@@ -322,18 +322,18 @@ class SitemapGenerator
         // Downloads
         //------------------------------
 
-        $feedback = $this->em->createQuery(
+        $communityTopics = $this->em->createQuery(
             '
             SELECT PARTIAL feedback.{id,slug,title}
-            FROM DeskPRO:Feedback feedback
-            WHERE feedback.hidden_status IS NULL AND feedback.category IN (?0)
+            FROM DeskPRO:CommunityTopic topic
+            WHERE topic.hidden_status IS NULL AND topic.channel IN (?0)
         '
         )->execute([$cat_ids]);
 
-        foreach ($feedback as $f) {
-            if ($f->getSlug()) {
+        foreach ($communityTopics as $ct) {
+            if ($ct->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_community_topic_view', ['slug' => $f->getSlug()], RouterInterface::ABSOLUTE_URL),
+                    'loc'        => $this->router->generate('portal_community_topic_view', ['slug' => $ct->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'weekly',
                 ];
             }

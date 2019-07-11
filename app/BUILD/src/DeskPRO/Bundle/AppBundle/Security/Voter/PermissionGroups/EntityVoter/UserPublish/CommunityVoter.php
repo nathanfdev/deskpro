@@ -7,9 +7,9 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class FeedbackVoter.
+ * Class CommunityVoter.
  */
-class FeedbackVoter extends AbstractUserPublishVoter
+class CommunityVoter extends AbstractUserPublishVoter
 {
     /**
      * {@inheritdoc}
@@ -24,14 +24,14 @@ class FeedbackVoter extends AbstractUserPublishVoter
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('feedback.use')) {
+        if (!$user->hasPerm('community.use')) {
             return false;
         }
 
         /** @var CommunityTopic $feedback */
         $feedback = $context->getParent();
         if ($feedback) {
-            if (!$this->getUserPublishChecker($user)->canViewFeedback($feedback)) {
+            if (!$this->getUserPublishChecker($user)->canViewCommunityTopic($feedback)) {
                 return false;
             }
             if (!$this->checkModify($attribute, $user, $feedback)) {

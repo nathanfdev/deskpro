@@ -11,8 +11,8 @@ namespace Application\DeskPRO\People\UserPermissions;
 use Application\DeskPRO\People\PermissionsSetInterface;
 use Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions;
 use Application\DeskPRO\People\UserPermissions\Value\ChatPermissions;
+use Application\DeskPRO\People\UserPermissions\Value\CommunityPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\DownloadPermissions;
-use Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\GuidesPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\NewsPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\TicketPermissions;
@@ -31,7 +31,7 @@ class UserPermissions implements PermissionsSetInterface
     public $chat;
 
     /**
-     * @var \Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions
+     * @var \Application\DeskPRO\People\UserPermissions\Value\CommunityPermissions
      */
     public $feedback;
 
@@ -72,7 +72,7 @@ class UserPermissions implements PermissionsSetInterface
     {
         $this->ticket   = new TicketPermissions();
         $this->chat     = new ChatPermissions();
-        $this->feedback = new FeedbackPermissions();
+        $this->feedback = new CommunityPermissions();
         $this->article  = new ArticlePermissions();
         $this->download = new DownloadPermissions();
         $this->news     = new NewsPermissions();

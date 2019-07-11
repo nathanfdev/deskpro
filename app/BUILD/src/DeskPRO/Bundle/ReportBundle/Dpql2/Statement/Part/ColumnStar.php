@@ -185,7 +185,7 @@ class ColumnStar extends AbstractPart
                     case 'Article':
                         $type = CustomDefArticle::class;
                         break;
-                    case 'Feedback':
+                    case 'CommunityTopic':
                         $type = CustomDefCommunityTopic::class;
                         break;
                     case 'Organization':

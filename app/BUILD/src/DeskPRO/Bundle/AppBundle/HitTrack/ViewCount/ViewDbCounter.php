@@ -89,7 +89,7 @@ class ViewDbCounter implements ViewCounterInterface
                     $views->registerDownloadViews($r['page_id'], $r['num']);
                     break;
                 case HitRecord::PAGETYPE_FEEDBACK:
-                    $views->registerFeedbackViews($r['page_id'], $r['num']);
+                    $views->registerCommunityViews($r['page_id'], $r['num']);
                     break;
             }
         }

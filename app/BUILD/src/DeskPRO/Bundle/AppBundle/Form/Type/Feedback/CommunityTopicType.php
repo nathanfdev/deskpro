@@ -12,7 +12,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackCategoryType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommunityChannelType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -26,9 +26,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class FeedbackType.
+ * Class CommunityTopicType.
  */
-class FeedbackType extends AbstractType
+class CommunityTopicType extends AbstractType
 {
     /**
      * @var CustomFieldManager
@@ -61,7 +61,7 @@ class FeedbackType extends AbstractType
                 'person'   => $options['person'],
                 'required' => false,
             ])
-            ->add('category', FeedbackCategoryType::class, [
+            ->add('category', CommunityChannelType::class, [
                 'person'   => $options['person'],
                 'required' => true,
             ])
@@ -78,7 +78,7 @@ class FeedbackType extends AbstractType
                 'required'       => false,
                 'labels_class'   => LabelCommunityTopic::class,
                 'labels_owner'   => $builder->getData(),
-                'owner_property' => 'feedback',
+                'owner_property' => 'topic',
             ])
             ->add('fields', CombinedType::class, [
                 'required'       => false,
@@ -176,7 +176,7 @@ class FeedbackType extends AbstractType
      */
     private function getCustomDataFields(array $options)
     {
-        $defs   = $this->fieldManager->getAvailableFeedbackDefs();
+        $defs   = $this->fieldManager->getAvailableCommunityDefs();
         $fields = [];
 
         foreach ($defs as $def) {

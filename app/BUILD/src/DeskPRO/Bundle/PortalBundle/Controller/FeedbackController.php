@@ -12,16 +12,16 @@ use Application\DeskPRO\Notifications\NewCommunityTopicNotification;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType;
-use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
+use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -61,7 +61,7 @@ class FeedbackController extends AbstractController
         // RSS
 
         if ('rss' === $_format) {
-            $filter = new FeedbackFilter([
+            $filter = new CommunityFilter([
                 'status'            => $request->query->get('status', 'all'),
                 'status_categories' => $request->query->get('status_categories', []),
                 'types'             => $request->query->get('types', []),
@@ -189,11 +189,11 @@ class FeedbackController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $feedbackTypes = $this->get('data.community')->getFeedbackCategoriesForPerson($person);
+        $feedbackTypes = $this->get('data.community')->getCommunityChannelsForPerson($person);
 
         // JS INITIAL DATA
 
-        $filter             = new FeedbackFilter(); // get the defaults$allowed_types_parsed = array();
+        $filter             = new CommunityFilter(); // get the defaults$allowed_types_parsed = array();
         $allowedTypesParsed = [];
         foreach ($feedbackTypes as $cat) {
             $allowedTypesParsed[] = $cat->getId();
@@ -272,11 +272,11 @@ class FeedbackController extends AbstractController
      * @param string $ip
      * @param bool   $withResponse
      *
-     * @return SubmitFeedbackAbuseCheck
+     * @return SubmitCommunityTopicAbuseCheck
      */
     public function submitNewFeedbackAbuseCheck($person, $ip, $withResponse = true)
     {
-        $check = new SubmitFeedbackAbuseCheck($person, $ip);
+        $check = new SubmitCommunityTopicAbuseCheck($person, $ip);
         if ($withResponse) {
             $check->setResponse($this->redirectToRoute('portal_community', ['lockout' => 'feedback']));
         } else {
@@ -305,8 +305,8 @@ class FeedbackController extends AbstractController
         $person = $this->getUser() ?: new PersonGuest();
 
         try {
-            $uriHelper = new FeedbackFilterUriHelper();
-            $filter    = $uriHelper->extractFeedbackFilter($filter_uri);
+            $uriHelper = new CommunityFilterUriHelper();
+            $filter    = $uriHelper->extractCommunityFilter($filter_uri);
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
@@ -314,7 +314,7 @@ class FeedbackController extends AbstractController
         // SECURITY
         // a permissions check, if the user can't see one of these filtered "types" (i.e. FeedbackCategory)
         $permissionsBag       = $this->getPermissionBag($person);
-        $allowed_category_ids = $permissionsBag->getAllowedFeedbackCategoryIds();
+        $allowed_category_ids = $permissionsBag->getAllowedCommunityChannelIds();
         foreach ($filter->getTypes() as $type) {
             if (!in_array($type, $allowed_category_ids)) {
                 throw new AccessDeniedException(
@@ -354,7 +354,7 @@ class FeedbackController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $feedbackTypes = $this->get('data.community')->getFeedbackCategoriesForPerson($person);
+        $feedbackTypes = $this->get('data.community')->getCommunityChannelsForPerson($person);
         $filterJs      = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
         $pageOptions = [
@@ -647,7 +647,7 @@ class FeedbackController extends AbstractController
      *
      * @return string
      */
-    public function generateFilterJs(FeedbackFilter $filter, array $feedbackTypes, $page)
+    public function generateFilterJs(CommunityFilter $filter, array $feedbackTypes, $page)
     {
         $allowedTypesParsed = [];
         foreach ($feedbackTypes as $cat) {
@@ -656,7 +656,7 @@ class FeedbackController extends AbstractController
 
         $statusCategories       = [];
         $statusCategoriesEntity = $this->getRepo('DeskPRO:CommunityTopicStatusCategory')->findBy(
-            ['status_type' => FeedbackFilter::$statuses]
+            ['status_type' => CommunityFilter::$statuses]
         );
         foreach ($statusCategoriesEntity as $statusCategory) {
             $statusType = $statusCategory->getStatusType();
@@ -673,11 +673,11 @@ class FeedbackController extends AbstractController
         $theArray = [
             'filter'    => array_merge($filter->toArray(), ['page' => $page]),
             'available' => [
-                'status'            => $this->transArray(FeedbackFilter::$statuses_translated),
+                'status'            => $this->transArray(CommunityFilter::$statuses_translated),
                 'status_categories' => $statusCategories,
                 'types'             => $allowedTypesParsed,
-                'sorts'             => $this->transArray(FeedbackFilter::$sorts_translated),
-                'sort_directions'   => $this->transArray(FeedbackFilter::$sort_directions_translated),
+                'sorts'             => $this->transArray(CommunityFilter::$sorts_translated),
+                'sort_directions'   => $this->transArray(CommunityFilter::$sort_directions_translated),
             ],
         ];
 

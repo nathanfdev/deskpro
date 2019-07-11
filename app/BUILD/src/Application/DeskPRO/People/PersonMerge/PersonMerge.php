@@ -112,7 +112,7 @@ class PersonMerge implements PersonContextInterface
             $this->_mergeArticles();
             $this->_mergeChats();
             $this->_mergeDownloads();
-            $this->_mergeFeedback();
+            $this->_mergeCommunityTopics();
             $this->_mergeNews();
             $this->_mergeTasks();
             $this->_mergePhoneCalls();
@@ -262,7 +262,7 @@ class PersonMerge implements PersonContextInterface
         }
     }
 
-    protected function _mergeFeedback()
+    protected function _mergeCommunityTopics()
     {
         $simple_tables = [
             'community_topics',

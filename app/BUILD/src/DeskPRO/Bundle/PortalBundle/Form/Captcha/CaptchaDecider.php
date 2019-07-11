@@ -13,7 +13,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -73,7 +73,7 @@ class CaptchaDecider
 
     public function shouldRequireFeedbackCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_FEEDBACK, 'user.captcha.feedback');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC, 'user.captcha.feedback');
     }
 
     public function shouldRequireCommentCaptchaForCurrentPerson()
@@ -118,8 +118,8 @@ class CaptchaDecider
             case AntiAbuse::ACTION_REGISTER:
                 $check = new RegistrationAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
                 break;
-            case AntiAbuse::ACTION_SUBMIT_FEEDBACK:
-                $check = new SubmitFeedbackAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
+            case AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC:
+                $check = new SubmitCommunityTopicAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());
                 break;
             case AntiAbuse::ACTION_SUBMIT_TICKET:
                 $check = new SubmitTicketAbuseCheck($this->getCurrentPerson(), $this->getRequestIp());

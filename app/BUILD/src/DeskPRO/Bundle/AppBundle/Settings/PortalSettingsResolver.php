@@ -8,8 +8,8 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSett
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitLockoutGroup;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\CommunitySettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GuidesSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
@@ -25,7 +25,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const HELPDESK_NAME = 'core.deskpro_name';
     const HELPDESK_URL  = 'core.deskpro_url';
 
-    const APPS_FEEDBACK  = 'core.apps_feedback';
+    const APPS_COMMUNITY = 'core.apps_community';
     const APPS_KB        = 'core.apps_kb';
     const APPS_NEWS      = 'core.apps_news';
     const APPS_DOWNLOADS = 'core.apps_downloads';
@@ -38,13 +38,13 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const SHOW_RATINGS_MIN_VOTES = 'user.show_ratings_min_votes';
     const PUBLISH_COMMENTS       = 'user.publish_comments';
 
-    const TAB_FEEDBACK  = 'user.portal_tab_feedback';
+    const TAB_COMMUNITY = 'user.portal_tab_community';
     const TAB_KB        = 'user.portal_tab_articles';
     const TAB_NEWS      = 'user.portal_tab_news';
     const TAB_DOWNLOADS = 'user.portal_tab_downloads';
     const TAB_GUIDES    = 'user.portal_tab_guides';
 
-    const SUBSCRIPTION_FEEDBACK  = 'user.feedback_subscriptions';
+    const SUBSCRIPTION_COMMUNITY = 'user.community_subscriptions';
     const SUBSCRIPTION_KB        = 'user.kb_subscriptions';
     const SUBSCRIPTION_NEWS      = 'user.news_subscriptions';
     const SUBSCRIPTION_DOWNLOADS = 'user.downloads_subscriptions';
@@ -123,7 +123,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
 
         $this->setRateLimitOptionsGroup($userRateLimit->getLoginSettings(), 'rate_limit.login'.$userType);
         $this->setRateLimitOptionsGroup($userRateLimit->getSubmitTicket(), 'rate_limit.submit_ticket'.$userType);
-        $this->setRateLimitOptionsGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getSubmitCommunityTopic(), 'rate_limit.submit_community_topic'.$userType);
         $this->setRateLimitOptionsGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);
         $this->setRateLimitOptionsGroup($userRateLimit->getUploadAttachment(), 'rate_limit.upload_attachment'.$userType);
         $this->setRateLimitOptionsGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);
@@ -144,7 +144,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setDeskproName($this->getSetting(self::HELPDESK_NAME, $brand))
             ->setDeskproUrl($this->getSetting(self::HELPDESK_URL, $brand))
             ->setBrandSlug($brand->getSlug())
-            ->setAppsFeedback($this->getSetting(self::APPS_FEEDBACK, $brand))
+            ->setAppsCommunity($this->getSetting(self::APPS_COMMUNITY, $brand))
             ->setAppsKb($this->getSetting(self::APPS_KB, $brand))
             ->setAppsNews($this->getSetting(self::APPS_NEWS, $brand))
             ->setAppsDownloads($this->getSetting(self::APPS_DOWNLOADS, $brand))
@@ -183,16 +183,16 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     /**
      * @param Brand $brand
      *
-     * @return FeedbackSettings
+     * @return CommunitySettings
      */
-    public function getFeedbackSettings(Brand $brand = null)
+    public function getCommunitySettings(Brand $brand = null)
     {
         $brand = $brand ?: $this->settingsResolver->getActiveBrand();
-        $model = new FeedbackSettings();
+        $model = new CommunitySettings();
         $model
-            ->setEnabled($this->getSetting(self::APPS_FEEDBACK, $brand))
-            ->setTabEnabled($this->getSetting(self::TAB_FEEDBACK, $brand))
-            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_FEEDBACK, $brand))
+            ->setEnabled($this->getSetting(self::APPS_COMMUNITY, $brand))
+            ->setTabEnabled($this->getSetting(self::TAB_COMMUNITY, $brand))
+            ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_COMMUNITY, $brand))
             ->setBrand($brand)
         ;
 

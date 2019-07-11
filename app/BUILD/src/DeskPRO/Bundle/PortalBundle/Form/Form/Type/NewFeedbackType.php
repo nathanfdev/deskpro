@@ -91,8 +91,8 @@ class NewFeedbackType extends AbstractType
             ])
         ;
 
-        if ($this->hierarchyGenerator->generateForFeedbackCategories($options['person'])->countSelectable() > 0) {
-            $builder->add('category', FeedbackCategoryType::class, [
+        if ($this->hierarchyGenerator->generateForCommunityChannels($options['person'])->countSelectable() > 0) {
+            $builder->add('category', CommunityChannelType::class, [
                 'person'      => $options['person'],
                 'empty_value' => $this->phrase('portal.forms.label_select'),
                 'constraints' => [
@@ -185,7 +185,7 @@ class NewFeedbackType extends AbstractType
     protected function getCustomDataForms()
     {
         $forms = [];
-        $defs  = $this->fieldManager->getAvailableFeedbackDefs();
+        $defs  = $this->fieldManager->getAvailableCommunityDefs();
 
         foreach ($defs as $def) {
             $def->setTitle($this->phrase("portal.feedback.form_custom_{$def->sys_name}"));

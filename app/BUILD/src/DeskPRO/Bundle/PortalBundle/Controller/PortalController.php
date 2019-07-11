@@ -92,7 +92,7 @@ class PortalController extends AbstractController
      */
     public function homeAction()
     {
-        $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedFeedbackCategoryIds();
+        $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedCommunityChannelIds();
         if (!$this->getUser() && $this->canUseNothing()) {
             return $this->redirectToRoute('portal_login');
         }

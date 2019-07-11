@@ -44,17 +44,17 @@ abstract class AbstractCommunityController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function applyFeedbackListFilters(QueryBuilder $qb, $alias, Request $request)
+    protected function applyCommunityListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $context = new RequestQueryContext($qb, $alias, $request);
         LabelHelper::applyLabelFilters($context, CommunityTopic::class);
 
-        $category = $request->get('category');
-        if (!empty($category)) {
+        $channel = $request->get('channel');
+        if (!empty($channel)) {
             $qb
-                ->leftJoin("$alias.category", 'category')
-                ->andWhere('category.title IN (:category_title)')
-                ->setParameter('category_title', $category)
+                ->leftJoin("$alias.channel", 'channel')
+                ->andWhere('channel.title IN (:channel_title)')
+                ->setParameter('channel_title', $channel)
             ;
         }
 
@@ -67,18 +67,18 @@ abstract class AbstractCommunityController extends CrudController
             ;
         }
 
-        $customCategory = $request->get('custom_category');
-        if (!empty($customCategory)) {
+        $customChannel = $request->get('custom_category');
+        if (!empty($customChannel)) {
             $qb
-                ->join("$alias.custom_data", 'customCat')
-                ->join('customCat.field', 'def')
-                ->andWhere('def.title IN (:custom_category)')
-                ->setParameter('custom_category', $customCategory)
+                ->join("$alias.custom_data", 'customChan')
+                ->join('customChan.field', 'def')
+                ->andWhere('def.title IN (:custom_channel)')
+                ->setParameter('custom_channel', $customChannel)
             ;
         }
 
         ListHelper::applyInListFilter($context, 'status');
         ListHelper::applyInListFilter($context, 'hidden_status');
-        CustomDataHelper::applyCustomDataFilters($context, 'feedback', CustomDefCommunityTopic::class);
+        CustomDataHelper::applyCustomDataFilters($context, 'community', CustomDefCommunityTopic::class);
     }
 }

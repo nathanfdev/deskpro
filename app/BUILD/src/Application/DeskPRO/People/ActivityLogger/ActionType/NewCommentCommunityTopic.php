@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
-class NewCommentFeedback extends NewCommentAbstract
+class NewCommentCommunityTopic extends NewCommentAbstract
 {
     public function getDetails()
     {

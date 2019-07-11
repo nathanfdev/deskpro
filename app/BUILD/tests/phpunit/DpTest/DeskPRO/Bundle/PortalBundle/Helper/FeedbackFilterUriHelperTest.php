@@ -6,42 +6,42 @@
 
 namespace DpTest\DeskPRO\Bundle\PortalBundle\Helper;
 
-use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DpTest\DeskProTestCase;
 
 class FeedbackFilterUriHelperTest extends DeskProTestCase
 {
     public function testExtractNoPath()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('');
+        $filter = $helper->extractCommunityFilter('');
 
-        $this->assertEquals(FeedbackFilter::getDefaultValues(), $filter->toArray());
+        $this->assertEquals(CommunityFilter::getDefaultValues(), $filter->toArray());
 
-        $filter = $helper->extractFeedbackFilter('/');
+        $filter = $helper->extractCommunityFilter('/');
 
-        $this->assertEquals(FeedbackFilter::getDefaultValues(), $filter->toArray());
+        $this->assertEquals(CommunityFilter::getDefaultValues(), $filter->toArray());
     }
 
     public function testStatus()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('active');
+        $filter = $helper->extractCommunityFilter('active');
 
-        $this->assertEquals(FeedbackFilter::getDefaultValues(), $filter->toArray());
+        $this->assertEquals(CommunityFilter::getDefaultValues(), $filter->toArray());
     }
 
     public function testStatusCategories()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('active-2,3');
+        $filter = $helper->extractCommunityFilter('active-2,3');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'status'            => 'active',
                 'status_categories' => [2, 3],
@@ -53,12 +53,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testTypes()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('type-5,8,10,100');
+        $filter = $helper->extractCommunityFilter('type-5,8,10,100');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'types' => [5, 8, 10, 100],
             ]
@@ -69,12 +69,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testSort()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('most-discussed-asc');
+        $filter = $helper->extractCommunityFilter('most-discussed-asc');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'sort'           => 'most-discussed',
                 'sort_direction' => 'asc',
@@ -86,12 +86,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testCouple()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('closed-7,8/highest-rating');
+        $filter = $helper->extractCommunityFilter('closed-7,8/highest-rating');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'status'            => 'closed',
                 'status_categories' => [7, 8],
@@ -104,12 +104,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testDefaultSort()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('/type-8/date');
+        $filter = $helper->extractCommunityFilter('/type-8/date');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'types' => [8],
             ]
@@ -120,12 +120,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testMultiple()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('closed-7,8/type-8/most-popular-asc');
+        $filter = $helper->extractCommunityFilter('closed-7,8/type-8/most-popular-asc');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'types'             => [8],
                 'status'            => 'closed',
@@ -140,12 +140,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testMultipleNotInOrder()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
-        $filter = $helper->extractFeedbackFilter('/type-8/most-popular-asc/closed-7,8');
+        $filter = $helper->extractCommunityFilter('/type-8/most-popular-asc/closed-7,8');
 
         $expected = array_merge(
-            FeedbackFilter::getDefaultValues(),
+            CommunityFilter::getDefaultValues(),
             [
                 'types'             => [8],
                 'status'            => 'closed',
@@ -160,19 +160,19 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testExceptionOnInvalidSegment()
     {
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->setExpectedException('\InvalidArgumentException');
 
-        $filter = $helper->extractFeedbackFilter('/doesnt-make-sense');
+        $filter = $helper->extractCommunityFilter('/doesnt-make-sense');
     }
 
     // generating uri segments
 
     public function testGenerateUriSegment()
     {
-        $filter = new FeedbackFilter();
-        $helper = new FeedbackFilterUriHelper();
+        $filter = new CommunityFilter();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals('', $helper->generateUriSegment($filter));
     }
@@ -185,10 +185,10 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
      */
     public function testGenerateUriSegmentStatus($status, $expected)
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
         $filter->setStatus($status);
 
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals($expected, $helper->generateUriSegment($filter));
     }
@@ -211,11 +211,11 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
      */
     public function testGenerateUriSegmentSort($orderBy, $orderDir, $expected)
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
         $filter->setSort($orderBy);
         $filter->setSortDirection($orderDir);
 
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals($expected, $helper->generateUriSegment($filter));
     }
@@ -243,12 +243,12 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
      */
     public function testGenerateUriSegmentStatusSort($status, $orderBy, $orderDir, $expected)
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
         $filter->setStatus($status);
         $filter->setSort($orderBy);
         $filter->setSortDirection($orderDir);
 
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals($expected, $helper->generateUriSegment($filter));
     }
@@ -276,11 +276,11 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
      */
     public function testGenerateUriSegmentStatusCategories($status, array $categories, $expected)
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
         $filter->setStatus('active');
         $filter->setStatusCategories([5, 6]);
 
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals('5,6', $helper->generateUriSegment($filter));
     }
@@ -296,27 +296,27 @@ class FeedbackFilterUriHelperTest extends DeskProTestCase
 
     public function testGenerateUriSegmentMultiple()
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
         $filter->setStatus('active');
         $filter->setStatusCategories([5, 6]);
         $filter->setTypes([15]);
         $filter->setSort('most-views');
         $filter->setSortDirection('asc');
 
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals('5,6/type-15/most-views-asc', $helper->generateUriSegment($filter));
     }
 
     public function testGenerateUriSegmentFew()
     {
-        $filter = new FeedbackFilter();
+        $filter = new CommunityFilter();
         $filter->setStatus('closed');
         $filter->setStatusCategories([1001]);
         $filter->setSort('date');
         $filter->setSortDirection('asc');
 
-        $helper = new FeedbackFilterUriHelper();
+        $helper = new CommunityFilterUriHelper();
 
         $this->assertEquals('closed-1001/date-asc', $helper->generateUriSegment($filter));
     }

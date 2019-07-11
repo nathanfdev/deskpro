@@ -13,7 +13,7 @@ use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -51,7 +51,7 @@ class FeedbackController extends AbstractController
     {
         $person = $this->getUser() ?: new PersonGuest();
 
-        $filter = new FeedbackFilter([
+        $filter = new CommunityFilter([
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
             'types'             => $options['types'],
@@ -71,7 +71,7 @@ class FeedbackController extends AbstractController
         }
 
         $types   = $filter->getTypes();
-        $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedFeedbackCategoryIds();
+        $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedCommunityChannelIds();
 
         return $this->renderThemeView(
             sprintf('Theme:Community:CommunityTopicsList/%s.html.twig', $options['style']),

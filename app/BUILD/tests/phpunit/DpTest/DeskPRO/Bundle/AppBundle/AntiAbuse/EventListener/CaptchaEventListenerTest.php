@@ -7,7 +7,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
@@ -45,7 +45,7 @@ class CaptchaEventListenerTest extends PortalTestCase
         return [
             [AntiAbuse::ACTION_LOGIN, new LoginAbuseCheck($person_email, $ip)],
             [AntiAbuse::ACTION_SUBMIT_COMMENT, new SubmitCommentAbuseCheck($person_email, $ip)],
-            [AntiAbuse::ACTION_SUBMIT_FEEDBACK, new SubmitFeedbackAbuseCheck($person_email, $ip)],
+            [AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC, new SubmitCommunityTopicAbuseCheck($person_email, $ip)],
             [AntiAbuse::ACTION_SUBMIT_TICKET, new SubmitTicketAbuseCheck($person_email, $ip)],
             [AntiAbuse::ACTION_TOKEN_EXCHANGE, new TokenExchangeAbuseCheck($person_email, $ip)],
         ];

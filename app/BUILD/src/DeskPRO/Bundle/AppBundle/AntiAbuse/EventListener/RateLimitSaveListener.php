@@ -25,14 +25,14 @@ class RateLimitSaveListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            AntiAbuse::getEventName(AntiAbuse::ACTION_REGISTER)        => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_RESET_PASSWORD)  => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMENT)  => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_FEEDBACK) => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_TICKET)   => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_TOKEN_EXCHANGE)  => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_UPLOAD)          => 'saveRateLimit',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SHARE_CONTENT)   => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_REGISTER)               => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_RESET_PASSWORD)         => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMENT)         => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC) => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_TICKET)          => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_TOKEN_EXCHANGE)         => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_UPLOAD)                 => 'saveRateLimit',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SHARE_CONTENT)          => 'saveRateLimit',
         ];
     }
 

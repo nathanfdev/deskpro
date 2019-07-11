@@ -58,16 +58,16 @@ class Views
     }
 
     /**
-     * @param int $feedback_id
+     * @param int $topic_id
      * @param int $num
      */
-    public function registerFeedbackViews($feedback_id, $num = 1)
+    public function registerCommunityViews($topic_id, $num = 1)
     {
-        if (!isset($this->map['feedback'][$feedback_id])) {
-            $this->map['feedback'][$feedback_id] = 0;
+        if (!isset($this->map['community'][$topic_id])) {
+            $this->map['community'][$topic_id] = 0;
         }
 
-        $this->map['feedback'][$feedback_id] += $num;
+        $this->map['community'][$topic_id] += $num;
     }
 
     /**
@@ -97,8 +97,8 @@ class Views
     /**
      * @return array
      */
-    public function getFeedbackViews()
+    public function getCommunityViews()
     {
-        return $this->map['feedback'];
+        return $this->map['community'];
     }
 }

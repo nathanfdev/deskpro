@@ -90,7 +90,7 @@ class CustomFieldManager
     /**
      * @return CustomDefCommunityTopic[]
      */
-    public function getAvailableFeedbackDefs()
+    public function getAvailableCommunityDefs()
     {
         return $this->getAvailableCustomDefs(CustomDefCommunityTopic::class);
     }

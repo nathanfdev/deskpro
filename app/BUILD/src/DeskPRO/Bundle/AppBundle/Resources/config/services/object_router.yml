@@ -102,13 +102,13 @@ services:
       - "@object_router.annotation_config"
 
 
-  object_router.link_generator.feedback_category:
+  object_router.link_generator.community_channel:
     public: false
-    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackCategoryLinkGenerator
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityChannelLinkGenerator
     arguments:
       - "@router"
 
-  object_router.link_generator.feedback:
+  object_router.link_generator.community_topic:
     public: false
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityTopicLinkGenerator
     arguments:

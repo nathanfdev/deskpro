@@ -185,7 +185,7 @@ class ReportBuilder extends AbstractEntityRepository
             'kb'        => 'Knowledgebase',
             'news'      => 'News',
             'downloads' => 'Downloads',
-            'feedback'  => 'Feedback',
+            'community' => 'Community',
             'tasks'     => 'Tasks',
             'twitter'   => 'Twitter',
         ];

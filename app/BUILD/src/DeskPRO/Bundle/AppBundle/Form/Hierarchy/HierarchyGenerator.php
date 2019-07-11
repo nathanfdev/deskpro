@@ -387,17 +387,17 @@ class HierarchyGenerator
      *
      * @return Hierarchy
      */
-    public function generateForFeedbackCategories(Person $person)
+    public function generateForCommunityChannels(Person $person)
     {
         $communityDataService = $this->communityDataService;
 
         return $this->generateAndCache(
             [
-                'generateForFeedbackCategories',
+                'generateForCommunityChannels',
                 $person,
             ],
             function () use ($communityDataService, $person) {
-                $categories = $communityDataService->getFeedbackCategoriesForPerson($person);
+                $categories = $communityDataService->getCommunityChannelsForPerson($person);
                 $rootNodes = [];
                 foreach ($categories as $category) {
                     if ($category->getParent()) {

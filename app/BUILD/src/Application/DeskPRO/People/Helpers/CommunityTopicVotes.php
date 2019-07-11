@@ -10,15 +10,17 @@ namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
+use Orb\Helper\ShortCallableInterface;
 
 /**
- * Helps figure out this users votes on feedback and how many votes remain.
+ * Helps figure out this users votes on community topic and how many votes remain.
  */
-class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
+class CommunityTopicVotes implements ShortCallableInterface
 {
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $person;
 
@@ -33,15 +35,15 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     protected $num_votes_remaining = null;
 
     /**
-     * Number of votes cast on specific feedback.
+     * Number of votes cast on a specific community topic.
      *
      * @var array
      */
-    protected $feedback_votes = [];
+    protected $communityTopicVotes = [];
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
-     * @param array                              $options
+     * @param Person $person
+     * @param array  $options
      */
     public function __construct(Person $person, array $options)
     {
@@ -75,7 +77,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
             $num_votes = App::getDb()->fetchColumn("
                 SELECT SUM(rating)
                 FROM ratings
-                WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' #AND is_returned = 0
+                WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'community_topic' #AND is_returned = 0
             ", [$this->person['id'], null]);
         } else {
             $num_votes = 0;
@@ -88,58 +90,58 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
     }
 
     /**
-     * Get how many votes this user has cast on a specific feedback.
+     * Get how many votes this user has cast on a specific community topic.
      *
-     * @param Feedback|int $feedback An Feedback or an feedback ID
+     * @param CommunityTopic|int $communityTopic An CommunityTopic or an community topic ID
      *
      * @return int
      */
-    public function getVotesOnFeedback($feedback)
+    public function getVotesOnCommunityTopic($communityTopic)
     {
-        $feedback_id = $feedback;
-        if (is_object($feedback_id) or is_array($feedback_id)) {
-            $feedback_id = $feedback_id['id'];
+        $communityTopicId = $communityTopic;
+        if (is_object($communityTopicId) or is_array($communityTopicId)) {
+            $communityTopicId = $communityTopicId['id'];
         }
 
         // Already know it
-        if (isset($this->feedback_votes[$feedback_id])) {
-            return $this->feedback_votes[$feedback_id];
+        if (isset($this->communityTopicVotes[$communityTopicId])) {
+            return $this->communityTopicVotes[$communityTopicId];
         }
 
         if ($this->person['id']) {
             $num_votes_this = App::getDb()->fetchColumn("
                 SELECT rating
                 FROM ratings
-                WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id = ?
-            ", [$this->person['id'], null, $feedback_id]);
+                WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'community_topic' AND object_id = ?
+            ", [$this->person['id'], null, $communityTopicId]);
         } elseif ($this->visitor) {
             $num_votes_this = App::getDb()->fetchColumn("
                 SELECT rating
                 FROM ratings
-                WHERE visitor_id = ? AND object_type = 'feedback' AND object_id = ?
-            ", [$this->visitor['id'], $feedback_id]);
+                WHERE visitor_id = ? AND object_type = 'community_topic' AND object_id = ?
+            ", [$this->visitor['id'], $communityTopicId]);
         } else {
             $num_votes_this = 0;
         }
 
-        $this->feedback_votes[$feedback_id] = $num_votes_this;
+        $this->communityTopicVotes[$communityTopicId] = $num_votes_this;
 
-        return $this->feedback_votes[$feedback_id];
+        return $this->communityTopicVotes[$communityTopicId];
     }
 
     /**
-     * Get vote status on a bunch of feedback.
+     * Get vote status on a bunch of community topics.
      *
-     * @param array $feedback
+     * @param array $communityTopic
      *
      * @return array
      */
-    public function getVotesOnFeedbackCollection(array $feedback)
+    public function getVotesOnCommunityTopicsCollection(array $communityTopic)
     {
         $ids = [];
 
-        foreach ($feedback as $i) {
-            if ($i instanceof \Application\DeskPRO\Entity\CommunityTopic) {
+        foreach ($communityTopic as $i) {
+            if ($i instanceof CommunityTopic) {
                 $ids[] = $i->getId();
             } else {
                 $ids[] = (int) $i;
@@ -147,42 +149,42 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
         }
 
         if (!$ids) {
-            return $this->feedback_votes;
+            return $this->communityTopicVotes;
         }
 
         if ($this->person['id']) {
             $vote_info = App::getDb()->fetchAllKeyValue("
                 SELECT object_id, rating
                 FROM ratings
-                WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id IN (?)
+                WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'community_topic' AND object_id IN (?)
             ",
-            [$this->person['id'], null, $ids],
-            [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
+                [$this->person['id'], null, $ids],
+                [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         } elseif ($this->visitor) {
             $vote_info = App::getDb()->fetchAllKeyValue("
                 SELECT object_id, rating
                 FROM ratings
-                WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN (?)
+                WHERE visitor_id = ? AND object_type = 'community_topic' AND object_id IN (?)
             ",
-            [null, $ids],
-            [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
+                [null, $ids],
+                [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         } else {
             $vote_info = array_combine($ids, array_fill(0, count($ids), 0));
         }
 
         foreach ($vote_info as $k => $v) {
-            $this->feedback_votes[$k] = $v;
+            $this->communityTopicVotes[$k] = $v;
         }
 
-        return $this->feedback_votes;
+        return $this->communityTopicVotes;
     }
 
     public function getShortCallableNames()
     {
         return [
-            'getFeedbackVotesRemaining' => 'getVotesRemaining',
-            'getFeedbackVotesUsed'      => 'getVotesUsed',
-            'FeedbackVotes'             => '_getthis',
+            'getCommunityTopicVotesRemaining' => 'getVotesRemaining',
+            'getCommunityTopicVotesUsed'      => 'getVotesUsed',
+            'CommunityTopicVotes'             => '_getthis',
         ];
     }
 

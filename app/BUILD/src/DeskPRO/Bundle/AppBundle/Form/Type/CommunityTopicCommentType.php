@@ -13,9 +13,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackCommentType.
+ * Class CommunityTopicCommentType.
  */
-class FeedbackCommentType extends AbstractType
+class CommunityTopicCommentType extends AbstractType
 {
     /**
      * {@inheritdoc}

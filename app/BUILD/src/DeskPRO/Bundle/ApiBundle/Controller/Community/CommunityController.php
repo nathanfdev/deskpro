@@ -6,7 +6,7 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Notifications\NewCommunityTopicNotification;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\CommunityTopicType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -70,7 +70,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CommunityController extends AbstractCommunityController
 {
     public static $entity      = CommunityTopic::class;
-    public static $type        = FeedbackType::class;
+    public static $type        = CommunityTopicType::class;
     public static $sortOptions = [
         'date_created' => 'date_created',
         'total_rating' => 'total_rating',
@@ -105,7 +105,7 @@ class CommunityController extends AbstractCommunityController
     {
         $this->applyNotReviewedFilters($qb, $alias, $request);
         $this->applyDateCreatedFilters($qb, $alias, $request);
-        $this->applyFeedbackListFilters($qb, $alias, $request);
+        $this->applyCommunityListFilters($qb, $alias, $request);
 
         $qb->groupBy("$alias.id");
     }

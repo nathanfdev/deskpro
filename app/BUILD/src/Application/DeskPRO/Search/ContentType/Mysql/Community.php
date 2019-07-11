@@ -12,24 +12,24 @@ use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\ContentType\AbstractContentType;
 use Application\DeskPRO\Search\Indexer\Document;
 
-class Feedback extends AbstractContentType
+class Community extends AbstractContentType
 {
     const ENTITY_NAME = 'DeskPRO:CommunityTopic';
 
-    public function objectToDocument($feedback)
+    public function objectToDocument($communityTopic)
     {
         $data                 = [];
-        $data['id']           = $feedback['id'];
-        $data['content_type'] = 'feedback';
-        $data['content']      = $feedback['title']."\n".$feedback['content']."\n";
+        $data['id']           = $communityTopic['id'];
+        $data['content_type'] = 'community';
+        $data['content']      = $communityTopic['title']."\n".$communityTopic['content']."\n";
 
-        foreach ($feedback->getLabelManager()->getLabelsArray() as $label) {
+        foreach ($communityTopic->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);
             $data['content'] .= " $label ";
         }
 
-        if ($feedback->category) {
-            $data['category_id'] = $feedback->category->id;
+        if ($communityTopic->category) {
+            $data['channel_id'] = $communityTopic->category->id;
         }
 
         $doc = Document::newFromArray($data);

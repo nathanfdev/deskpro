@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\FeedbackComment;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\CommunityTopicComment;
 
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionParamsType;
@@ -11,9 +11,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackCommentMassActionParamsType.
+ * Class CommunityTopicCommentMassActionParamsType.
  */
-class FeedbackCommentMassActionParamsType extends AbstractType
+class CommunityTopicCommentMassActionParamsType extends AbstractType
 {
     /**
      * {@inheritdoc}

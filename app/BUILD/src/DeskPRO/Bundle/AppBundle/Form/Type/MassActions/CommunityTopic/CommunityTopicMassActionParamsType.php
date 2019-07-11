@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\CommunityTopic;
 
 use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
@@ -22,9 +22,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackMassActionParamsType.
+ * Class CommunityTopicMassActionParamsType.
  */
-class FeedbackMassActionParamsType extends AbstractType
+class CommunityTopicMassActionParamsType extends AbstractType
 {
     /**
      * @var EntityManager

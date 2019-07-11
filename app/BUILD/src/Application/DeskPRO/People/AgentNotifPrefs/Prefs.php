@@ -339,7 +339,7 @@ class Prefs
      *
      * @return array
      */
-    public function getFeedbackNotifyTypes($type)
+    public function getCommunityNotifyTypes($type)
     {
         return [
             'new_feedback',
