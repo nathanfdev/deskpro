@@ -1030,11 +1030,11 @@ return [
     'rate_limit.submit_comment.lockout_time' => 15 * 60, // 15 min
     'rate_limit.submit_comment.response'     => 'captcha',
 
-    'rate_limit.submit_feedback.enabled'      => true,
-    'rate_limit.submit_feedback.limit'        => 3,
-    'rate_limit.submit_feedback.time'         => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.response'     => 'captcha',
+    'rate_limit.submit_community_topic.enabled'      => true,
+    'rate_limit.submit_community_topic.limit'        => 3,
+    'rate_limit.submit_community_topic.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.response'     => 'captcha',
 
     'rate_limit.submit_ticket.enabled'      => true,
     'rate_limit.submit_ticket.limit'        => 3,
@@ -1060,11 +1060,11 @@ return [
     'rate_limit.submit_comment.guest.lockout_time' => 15 * 60, // 15 min
     'rate_limit.submit_comment.guest.response'     => 'captcha',
 
-    'rate_limit.submit_feedback.guest.enabled'      => true,
-    'rate_limit.submit_feedback.guest.limit'        => 3,
-    'rate_limit.submit_feedback.guest.time'         => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.guest.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.guest.response'     => 'captcha',
+    'rate_limit.submit_community_topic.guest.enabled'      => true,
+    'rate_limit.submit_community_topic.guest.limit'        => 3,
+    'rate_limit.submit_community_topic.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.guest.response'     => 'captcha',
 
     'rate_limit.submit_ticket.guest.enabled'      => true,
     'rate_limit.submit_ticket.guest.limit'        => 3,

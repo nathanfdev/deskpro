@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { FeedbackForm } from './FeedbackForm';
 import { FeedbackFilter } from '../React/Feedback/FeedbackFilter';
-import $ from 'jquery';
 
 export class FeedbackPage extends PageWidget {
 
@@ -16,6 +16,6 @@ export class FeedbackPage extends PageWidget {
     $interactiveFilterSection.hide();
 
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter($interactiveFilterSection);
-    ReactDOM.render(React.createElement(FeedbackFilter, { filter_data: window.FEEDBACK_FILTER_STATE }), this.$rElement.get(0));
+    ReactDOM.render(React.createElement(FeedbackFilter, { filter_data: window.COMMUNITY_FILTER_STATE }), this.$rElement.get(0));
   }
 }

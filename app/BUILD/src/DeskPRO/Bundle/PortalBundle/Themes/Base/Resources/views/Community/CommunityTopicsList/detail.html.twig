@@ -1,50 +1,50 @@
-{% for item in pager %}
+{% for topic in pager %}
 <div class="feedback-item feedback-list-item">
-  {%  include 'Theme:Community:items_controls_partial.html.twig' with {'item': item} %}
+  {%  include 'Theme:Community:topics_controls_partial.html.twig' with {'topic': topic} %}
 
   <div class="feedback-item-content">
     <span class="feedback-status">
-      {% if item.status_category %}
-      <a href="{{ portal_path(item.status_category) }}" data-id="{{ item.status_category.id }}">
-        <i class="far fa-eye"></i> {{ object_phrase(item.status_category) }}
+      {% if topic.status_category %}
+      <a href="{{ portal_path(topic.status_category) }}" data-id="{{ topic.status_category.id }}">
+        <i class="far fa-eye"></i> {{ object_phrase(topic.status_category) }}
       </a>
       {% else %}
-        {{ item.status }}
+        {{ topic.status }}
       {% endif %}
     </span>
 
     <span class="feedback-item-type">
-      <a href="{{ portal_path(item.category) }}" class="feedback-category" data-id="{{ item.category.id }}">{{ object_phrase(item.category) }}</a>
+      <a href="{{ portal_path(topic.channel) }}" class="feedback-category" data-id="{{ topic.channel.id }}">{{ object_phrase(topic.channel) }}</a>
     </span>
 
     <h1>
-      <a href="{{ portal_path(item) }}">{{ item.title }}</a>
+      <a href="{{ portal_path(topic) }}">{{ topic.title }}</a>
     </h1>
 
     <div class="comment">
-      <p>{{ item.getContentHtml()|html_content_preview(350) }}</p>
+      <p>{{ topic.getContentHtml()|html_content_preview(350) }}</p>
     </div>
 
       <div class="article-meta">
         {{ phrase('portal.general.by_2') }}
-        <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ item.person.display_name }}
-         {{ phrase('portal.general.on') }} {{ item.date_published ? item.date_published|date('day') : item.date_created|date('day') }}
+        <span style="background: url({{ avatar_url(topic.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ topic.person.display_name }}
+         {{ phrase('portal.general.on') }} {{ topic.date_published ? topic.date_published|date('day') : topic.date_created|date('day') }}
 
-      {% if item.calc_num_comments > 0 %}
+      {% if topic.calc_num_comments > 0 %}
         <hr>
-      <span><a href="{{ portal_path(item) }}#comments"><i class="fas fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
+      <span><a href="{{ portal_path(topic) }}#comments"><i class="fas fa-comment"></i> {{ phrase('portal.general.comments-count', {count: topic.calc_num_comments}) }}</a></span>
       {% endif %}
 
-      {% if item.getCustomDataSelection() %}
+      {% if topic.getCustomDataSelection() %}
         <hr>
-      <span><i class="fas fa-inbox"></i> {{ item.getCustomDataSelection().title }}</span>
+      <span><i class="fas fa-inbox"></i> {{ topic.getCustomDataSelection().title }}</span>
       {% endif %}
 
-      {% if item.labels|length %}
+      {% if topic.labels|length %}
         <hr>
       <span>
         <i class="fas fa-tags"></i>
-        {% for l in item.labels %}
+        {% for l in topic.labels %}
         <a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
         {% endfor %}
       </span>

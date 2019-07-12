@@ -481,10 +481,10 @@ class CategoryHierarchy
         $qb   = $conn->createQueryBuilder();
 
         $tbl = $conn->quoteIdentifier($permission_table_name);
-        $qb->select('t.category_id');
+        $qb->select("t.{$this->repos->getCategoryField()}");
         $qb->from($tbl, 't');
         $qb->andWhere($qb->expr()->in('t.usergroup_id', $usergroup_ids));
-        $qb->groupBy('t.category_id');
+        $qb->groupBy("t.{$this->repos->getCategoryField()}");
 
         $brandRelatedCategories = [
             ArticleCategory::class,
@@ -501,7 +501,7 @@ class CategoryHierarchy
             if ($currentBrand && $currentBrand->getId()) {
                 $tableName = $this->repos->getTableName();
 
-                $qb->innerJoin('t', $tableName, 'c', 'c.id = t.category_id');
+                $qb->innerJoin('t', $tableName, 'c', "c.id = t.{$this->repos->getCategoryField()}");
                 $qb->andWhere($qb->expr()->eq('c.brand_id', $currentBrand->getId()));
             }
         }

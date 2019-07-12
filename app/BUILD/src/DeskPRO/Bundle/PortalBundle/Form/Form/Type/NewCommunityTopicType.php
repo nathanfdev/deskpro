@@ -92,7 +92,7 @@ class NewCommunityTopicType extends AbstractType
         ;
 
         if ($this->hierarchyGenerator->generateForCommunityChannels($options['person'])->countSelectable() > 0) {
-            $builder->add('category', CommunityChannelType::class, [
+            $builder->add('channel', CommunityChannelType::class, [
                 'person'      => $options['person'],
                 'empty_value' => $this->phrase('portal.forms.label_select'),
                 'constraints' => [

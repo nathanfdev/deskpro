@@ -230,10 +230,10 @@ class ContentSubscriptionsHelper
         }
 
         if (
-            'feedback' === $input
+            'community' === $input
             || is_object($input) && CommunityTopic::class === get_class($input)
         ) {
-            return 'feedback_subscriptions';
+            return 'community_topic_subscriptions';
         }
 
         if (

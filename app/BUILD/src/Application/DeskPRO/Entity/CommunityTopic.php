@@ -261,9 +261,19 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $this->recalculatePopularity();
     }
 
-    public function getCategoryId()
+    public function getChannelId()
     {
         return $this->channel['id'];
+    }
+
+    public function getCategory()
+    {
+        return $this->channel;
+    }
+
+    protected function getParentAttributeName()
+    {
+        return 'topic';
     }
 
     /**

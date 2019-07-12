@@ -251,7 +251,7 @@ export class OmniSearch extends React.Component {
               </a>}
 
             {window.DESKPRO_CAN_USE_FEEDBACK &&
-              <a href={portalUrlGenerator.path('/feedback')}>
+              <a href={portalUrlGenerator.path('/community')}>
                 <i className="fas fa-list" />
                 <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
               </a>}

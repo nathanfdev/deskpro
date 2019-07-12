@@ -59,6 +59,11 @@ class CommunityChannel extends AbstractCategoryRepository
         return 'community_channel2usergroup';
     }
 
+    public function getCategoryField()
+    {
+        return 'community_channel_id';
+    }
+
     /**
      * Get an array of categories.
      *

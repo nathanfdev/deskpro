@@ -43,7 +43,7 @@ class CommunityTopicsController extends AbstractController
      * @Route("/community.{_format}", name="portal_community", defaults={"_format":"html"},
      *     requirements={"_format":"html|rss"})
      * @Route("/community", name="user_community_home")
-     * @Security("is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('USE_COMMUNITY')")
      * @PageHttpCache()
      *
      * @param Request $request
@@ -184,7 +184,7 @@ class CommunityTopicsController extends AbstractController
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
             // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
         }
 
         // FILTER CATEGORIES
@@ -291,7 +291,7 @@ class CommunityTopicsController extends AbstractController
      * @Route("/community/browse/{filter_uri}", name="portal_community_browse", defaults={"query_path":""},
      *     requirements={"filter_uri":".*"})
      * @Method("GET")
-     * @Security("is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('USE_COMMUNITY')")
      * @PageHttpCache()
      *
      * @param Request $request
@@ -349,7 +349,7 @@ class CommunityTopicsController extends AbstractController
         $isSubscribed = false;
         if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
             // waiting info regarding article category subscriptions
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('feedback', $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
         }
 
         // FILTER CATEGORIES
@@ -412,7 +412,7 @@ class CommunityTopicsController extends AbstractController
      * @Route("/community/view/{slug}", name="portal_community_topic_view")
      * @Route("/community/view/{slug}", name="user_community_topic_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('VIEW_COMMUNITY', item)")
      * @PageHttpCache(content="item")
      *
      * @param Request        $request
@@ -464,7 +464,7 @@ class CommunityTopicsController extends AbstractController
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.feedback_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_FEEDBACK, $item)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_COMMUNITY, $item)
         ) {
             // waiting on info on the kb subs
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($item, $this->getUser());
@@ -515,7 +515,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function feedbackRateAction(Request $request, CommunityTopic $item, $visitor_id, $up_or_down)
     {
-        if (!$this->isGranted('USE_FEEDBACK')) {
+        if (!$this->isGranted('USE_COMMUNITY')) {
             throw $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
         }
         if (!$this->isGranted('RATE_FEEDBACK', $item)) {
@@ -563,7 +563,7 @@ class CommunityTopicsController extends AbstractController
     /**
      * @Route("/community/view/{slug}/toggle-subscription", name="portal_community_topic_toggle_subscription")
      * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_FEEDBACK') and is_granted('SUBSCRIBE_FEEDBACK', item)")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('SUBSCRIBE_COMMUNITY', item)")
      * @AutoPostOnGetRequest()
      *
      * @param CommunityTopic $item
@@ -592,7 +592,7 @@ class CommunityTopicsController extends AbstractController
 
     /**
      * @Route("/community/root/toggle-subscription", name="portal_community_root_toggle_subscription")
-     * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
      * @AutoPostOnGetRequest()
      */
     public function communityRootChannelSubscriptionAction()
@@ -600,11 +600,11 @@ class CommunityTopicsController extends AbstractController
         $person              = $this->getUser();
         $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptionsHelper->isSubscribedRootCategory('feedback', $person)) {
+        if ($subscriptionsHelper->isSubscribedRootCategory('community', $person)) {
             $subscriptionsHelper->unsubscribeFromRootCategory('feedback', $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
         } else {
-            $subscriptionsHelper->subscribeToRootCategory('feedback', $person);
+            $subscriptionsHelper->subscribeToRootCategory('community', $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
         }
 
@@ -616,7 +616,7 @@ class CommunityTopicsController extends AbstractController
      * NOTE: we don't check if they have access to this content, because we might
      *       let someone UN-subscribe from all even if they don't have access to some
      *       of the categories anymore
-     * @Security("is_granted('ROLE_USER') and is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
      * @AutoPostOnGetRequest()
      */
     public function communityUnsubscribeAllAction()

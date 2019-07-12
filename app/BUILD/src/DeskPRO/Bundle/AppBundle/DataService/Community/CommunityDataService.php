@@ -46,7 +46,8 @@ class CommunityDataService extends AbstractDataService
         return $this->generateAndCache(
             ['hasAny'],
             function () use ($em) {
-                return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM feedback LIMIT 1') ? true : false;
+                return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM community_topics LIMIT 1') ? true :
+                    false;
             }
         );
     }
@@ -74,7 +75,7 @@ class CommunityDataService extends AbstractDataService
             ],
             function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
-                $qb->select('f')->from(CommunityTopic::class, 'f');
+                $qb->select('ct')->from(CommunityTopic::class, 'ct');
 
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
@@ -111,45 +112,45 @@ class CommunityDataService extends AbstractDataService
                     default:
                         $valid_status = [];
                 }
-                $qb->where('f.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
+                $qb->where('ct.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
 
-                // status_categories (feedback->status_category)
+                // status_categories (community_topic->status_category)
                 // array(6,1,4)
                 if (count($status_categories = $filter->getStatusCategories())) {
-                    $qb->andWhere('f.status_category IN (:status_categories)')->setParameter(
+                    $qb->andWhere('ct.status_category IN (:status_categories)')->setParameter(
                         'status_categories',
                         $status_categories
                     );
                 }
 
                 // types
-                // array(1,3,5) $feedback->category
+                // array(1,3,5) $community_topic->chanel
                 if (count($types = $filter->getTypes())) {
-                    $qb->andWhere('f.category IN (:types)')->setParameter('types', $types);
+                    $qb->andWhere('ct.channel IN (:types)')->setParameter('types', $types);
                 } else {
-                    $qb->andWhere('f.category = 0');
+                    $qb->andWhere('ct.channel = 0');
                 }
 
                 // sort
                 // "date", "most-popular", "highest-rating", "most-discussed", "most-viewed"
                 switch ($filter->getSort()) {
                     case CommunityFilter::SORT_POPULARITY:
-                        $qb->orderBy('f.total_rating*5/DATE_DIFF(CURRENT_TIMESTAMP(),f.date_created)',
+                        $qb->orderBy('ct.total_rating*5/DATE_DIFF(CURRENT_TIMESTAMP(),ct.date_created)',
                             $filter->getSortDirection());
-                        $qb->addOrderBy('f.date_created',
+                        $qb->addOrderBy('ct.date_created',
                             $filter->getSortDirection());
                         break;
                     case CommunityFilter::SORT_RATING:
-                        $qb->orderBy('f.total_rating', $filter->getSortDirection());
+                        $qb->orderBy('ct.total_rating', $filter->getSortDirection());
                         break;
                     case CommunityFilter::SORT_COMMENTS:
-                        $qb->orderBy('f.num_comments', $filter->getSortDirection());
+                        $qb->orderBy('ct.num_comments', $filter->getSortDirection());
                         break;
                     case CommunityFilter::SORT_VIEWS:
-                        $qb->orderBy('f.view_count', $filter->getSortDirection());
+                        $qb->orderBy('ct.view_count', $filter->getSortDirection());
                         break;
                     default:
-                        $qb->orderBy('f.date_created', $filter->getSortDirection());
+                        $qb->orderBy('ct.date_created', $filter->getSortDirection());
                 }
 
                 // sort direction

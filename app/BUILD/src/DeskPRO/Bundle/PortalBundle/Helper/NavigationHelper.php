@@ -34,7 +34,7 @@ class NavigationHelper
             $articles   = ((int) $this->authorizationChecker->isGranted('USE_ARTICLES')) << 1;
             $news       = ((int) $this->authorizationChecker->isGranted('USE_NEWS')) << 2;
             $downloads  = ((int) $this->authorizationChecker->isGranted('USE_DOWNLOADS')) << 3;
-            $feedback   = ((int) $this->authorizationChecker->isGranted('USE_FEEDBACK')) << 4;
+            $feedback   = ((int) $this->authorizationChecker->isGranted('USE_COMMUNITY')) << 4;
             $this->mask = 0b00000 | $tickets | $articles | $news | $downloads | $feedback;
         }
 

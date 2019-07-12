@@ -157,9 +157,9 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
 
             // COMMUNITY
         } elseif ($contentOrCategory instanceof CommunityTopic) {
-            $categoryId = $contentOrCategory->getCategoryId();
-            if ($categoryId) {
-                return in_array($categoryId, $this->getAllowedCommunityChannelIds());
+            $channelId = $contentOrCategory->getChannelId();
+            if ($channelId) {
+                return in_array($channelId, $this->getAllowedCommunityChannelIds());
             }
 
             return false;

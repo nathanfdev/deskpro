@@ -36,7 +36,7 @@ export default class Publishing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeDrawer: 'feedback'
+      activeDrawer: 'community'
     };
   }
 
@@ -54,15 +54,15 @@ export default class Publishing extends React.Component {
     if (results.feedback && results.feedback.length) {
       drawers.push(
         <Drawer
-          key="feedback"
+          key="community"
           heading={
             <span>
               <Icon name={faThumbsUp} size="m" fixedWidth /> Feedback
               &nbsp;<span className="count">{results.feedback.length}</span>
             </span>
           }
-          opened={activeDrawer === 'feedback'}
-          onClick={selected => this.onSelect(selected, 'feedback')}
+          opened={activeDrawer === 'community'}
+          onClick={selected => this.onSelect(selected, 'community')}
         >
           <Feedback feedback={results.feedback} />
         </Drawer>

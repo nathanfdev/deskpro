@@ -1,0 +1,24 @@
+<div class="feedback-item-controls" ref="feedbacktopicControls">
+    <a
+        {% if (not topic.isClosed) %}
+        href="{{ portal_path(topic, user_up_voted(topic) ? 'vote_down' : 'vote_up') }}"
+        data-vote-up-url="{{ portal_path(topic, 'vote_up') }}"
+        data-vote-down-url="{{ portal_path(topic, 'vote_down') }}"
+        title="{{ phrase('portal.feedback.btn-vote') }}"
+        {% endif %}
+       class="i-agree {% if user_up_voted(topic) %} agreed{% endif %}{% if topic.isClosed %} closed{% endif %}{% if not topic.can_rate %} rate_forbidden{% endif %}"
+       rel="noindex, nofollow"
+    >
+        <i class="fas fa-thumbs-up"></i>
+        <div>
+            {% if topic.isClosed %}
+                {{ phrase('portal.feedback.btn-closed') }}
+            {% else %}
+                {{ phrase('portal.feedback.btn-vote') }}
+            {% endif %}
+        </div>
+        <span class="counter-wrapper">
+          <span class="counter">{{ topic.total_rating }}</span>
+        </span>
+    </a>
+</div>

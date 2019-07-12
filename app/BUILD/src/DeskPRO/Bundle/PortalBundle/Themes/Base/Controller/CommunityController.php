@@ -45,7 +45,7 @@ class CommunityController extends AbstractController
      *      }
      * )
      *
-     * @Security("is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('USE_COMMUNITY')")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -99,7 +99,7 @@ class CommunityController extends AbstractController
      *      }
      * )
      *
-     * @Security("is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('USE_COMMUNITY')")
      */
     public function commentsAction(TagRequest $tag_request, array $options, CommunityTopic $item)
     {

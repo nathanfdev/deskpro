@@ -27,7 +27,7 @@ export const preserveData = createAction(
 );
 export const deleteFeedback = createAction(
   'EXTEND_DELETE_FEEDBACK',
-  params => api.sendPost('DP_API/cloud/delete_feedback', params)
+  params => api.sendPost('DP_API/cloud/delete_community_topic', params)
 );
 export const submitQuestion = createAction(
   'EXTEND_SUBMIT_QUESTION',
