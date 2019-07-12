@@ -222,7 +222,7 @@ class CommonController extends AbstractController
                 $content = $this->getNewsDataService()->getPost($content_id);
                 break;
             case CommunityTopic::CONTENT_TYPE:
-                $content = $this->getFeedbackDataService()->getItem($content_id);
+                $content = $this->getCommunityDataService()->getItem($content_id);
                 break;
         }
 

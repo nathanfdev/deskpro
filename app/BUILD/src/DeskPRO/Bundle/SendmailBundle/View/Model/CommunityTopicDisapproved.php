@@ -38,7 +38,7 @@ class CommunityTopicDisapproved extends EmailBaseType
     protected $templateFile = 'emails_user:community_topic_disapproved.html.twig';
 
     /**
-     * FeedbackDisapproved constructor.
+     * CommunityTopicDisapproved constructor.
      *
      * @param CommunityTopic $topic
      * @param Person         $agent

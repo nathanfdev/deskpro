@@ -7,7 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackCommentMassActionsType.
+ * Class CommunityTopicCommentMassActionsType.
  */
 class CommunityTopicCommentMassActionsType extends AbstractType
 {

@@ -5,11 +5,11 @@ namespace DeskPRO\Bundle\ImportBundle\Writer\Mapper;
 use Application\DeskPRO\Entity\CommunityChannel;
 
 /**
- * Feedback category record mapper.
+ * Community channel record mapper.
  *
- * Class FeedbackCategory
+ * Class CommunityChannelMapper
  */
-class FeedbackCategoryMapper extends AbstractCategoryMapper
+class CommunityChannelMapper extends AbstractCategoryMapper
 {
     /**
      * {@inheritdoc}

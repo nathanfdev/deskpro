@@ -5,9 +5,9 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class FeedbackPermissionSettings.
+ * Class CommunityPermissionSettings.
  */
-class FeedbackPermissionSettings
+class CommunityPermissionSettings
 {
     /**
      * @JMS\Type("boolean")

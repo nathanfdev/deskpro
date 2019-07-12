@@ -185,7 +185,7 @@ services:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.feedback_comments:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackCommentsVoter
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\CommunityTopicCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 

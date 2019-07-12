@@ -86,7 +86,7 @@ class CommunityController extends AbstractCommunityController
      *
      * @Rest\Get("/csv")
      * @SerializerView(mapping={
-     *     "Application\DeskPRO\Entity\Feedback": "DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackCsv"
+     *     "Application\DeskPRO\Entity\CommunityTopic": "DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopicCsv"
      * })
      *
      * @param Request $request

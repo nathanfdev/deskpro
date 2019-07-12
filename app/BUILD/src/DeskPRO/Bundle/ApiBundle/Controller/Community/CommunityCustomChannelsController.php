@@ -10,10 +10,10 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
 /**
- * Class FeedbackCategoriesController.
+ * Class CommunityCustomChannelsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/community_categories")
+ * @Rest\Route("/community_custom_channels")
  */
 class CommunityCustomChannelsController extends BaseController
 {

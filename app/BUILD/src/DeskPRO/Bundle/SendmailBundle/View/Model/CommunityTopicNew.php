@@ -19,7 +19,7 @@ class CommunityTopicNew extends EmailBaseType
     protected $templateFile = 'emails_user:community_topic_new.html.twig';
 
     /**
-     * FeedbackNew constructor.
+     * CommunityTopicNew constructor.
      *
      * @param CommunityTopic $communityTopic
      */

@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/community_comments")
- * @ApiDoc(target="all", section="Community", output="Application\DeskPRO\Entity\FeedbackComment")
+ * @ApiDoc(target="all", section="Community", output="Application\DeskPRO\Entity\CommunityTopicComment")
  * @ApiDoc(
  *      target="listAction",
  *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
@@ -54,9 +54,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CommunityTopicCommentType",
  *      "options"={
- *          "data"="Application\DeskPRO\Entity\FeedbackComment"
+ *          "data"="Application\DeskPRO\Entity\CommunityTopicComment"
  *      }
  *     }
  * )
@@ -77,7 +77,7 @@ class CommunityTopicAllCommentsController extends AbstractCommunityController
      *
      * @Rest\Get("/csv")
      * @SerializerView(mapping={
-     *     "Application\DeskPRO\Entity\FeedbackComment": "DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\FeedbackCommentCsv"
+     *     "Application\DeskPRO\Entity\CommunityTopicComment": "DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommunityTopicCommentCsv"
      * })
      *
      * @param Request $request

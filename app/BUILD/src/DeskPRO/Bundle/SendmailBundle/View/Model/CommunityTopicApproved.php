@@ -38,7 +38,7 @@ class CommunityTopicApproved extends EmailBaseType
     protected $templateFile = 'emails_user:community_topic_approved.html.twig';
 
     /**
-     * FeedbackApproved constructor.
+     * CommunityTopicApproved constructor.
      *
      * @param CommunityTopic $topic
      * @param Person         $agent

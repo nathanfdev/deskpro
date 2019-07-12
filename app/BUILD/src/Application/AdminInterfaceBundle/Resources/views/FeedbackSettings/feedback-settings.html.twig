@@ -4,7 +4,7 @@
 
 			<section class="dp-paneblock dp-listpane">
 				<header>
-					<h3>Feedback Settings</h3>
+					<h3>Community Settings</h3>
 				</header>
 				<article>
 					<ul class="dp-item-list">
@@ -20,26 +20,26 @@
 			<section class="dp-paneblock dp-panelink">
 				<a href="{{ ng_href('portal.feedback_statuses') }}">
 					<em><i class="fas fa-chevron-down"></i></em>
-					<h3>Feedback Statuses</h3>
+					<h3>Community Statuses</h3>
 				</a>
 			</section>
 
 			<section class="dp-paneblock dp-panelink">
 				<a href="{{ ng_href('portal.feedback_types') }}">
 					<em><i class="fas fa-chevron-down"></i></em>
-					<h3>Feedback Types</h3>
+					<h3>Community Channels</h3>
 				</a>
 			</section>
 			<section class="dp-paneblock dp-panelink">
 				<a href="{{ ng_href('portal.feedback_categories') }}">
 					<em><i class="fas fa-chevron-down"></i></em>
-					<h3>Feedback Categories</h3>
+					<h3>Community Custom Channels</h3>
 				</a>
 			</section>
 			<section class="dp-paneblock dp-panelink">
 				<a href="{{ ng_href('portal.feedback_labels') }}">
 					<em><i class="fas fa-chevron-down"></i></em>
-					<h3>Feedback Labels</h3>
+					<h3>Community Topics Labels</h3>
 				</a>
 			</section>
 		</div>
@@ -49,7 +49,7 @@
 		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Ctrl.save()">
 			<section class="dp-paneblock dp-listpane">
 				<header>
-					<h3>Feedback Settings</h3>
+					<h3>Community Settings</h3>
 				</header>
 
 				<article>
@@ -58,16 +58,16 @@
 							<div class="labels-group">
 								<label>
 									<input type="radio" ng-model="settings.enabled" ng-value="true" />
-									<h4>Enable the Feedback section</h4>
+									<h4>Enable the Community section</h4>
 								<span class="help-block" ng-show="settings.enabled">
-									<p>Enable the feedback section.</p>
+									<p>Enable the community section.</p>
 								</span>
 								</label>
 								<label>
 									<input type="radio" ng-model="settings.enabled" ng-value="false" />
-									<h4>Disable the Feedback section</h4>
+									<h4>Disable the Community section</h4>
 								<span class="help-block" ng-show="!settings.enabled">
-									Disable the feedback section.
+									Disable the community section.
 								</span>
 								</label>
 							</div>
@@ -79,11 +79,11 @@
 						<div class="form-group">
 							<label>
 								<input type="checkbox" ng-model="settings.tab_enabled" />
-								<h4>Enable the Feedback tab in the portal tab bar</h4>
+								<h4>Enable the Community tab in the portal tab bar</h4>
 							<span class="help-block">
 								<p>
-									Enable the Feedback tab in the navigation tab bar? When not checked, the Feedback tab will not be visible
-									but the Feedback section will still be active (e.g., you could create your own link to the feedback URL).
+									Enable the Community tab in the navigation tab bar? When not checked, the Community tab will not be visible
+									but the Community section will still be active (e.g., you could create your own link to the community URL).
 								</p>
 								<p>
 									Use the <a href="{{ ng_href('portal.portal_editor') }}">Portal Editor</a> to re-order items in the tab bar.
@@ -96,10 +96,10 @@
 						<div class="form-group">
 							<label>
 								<input type="checkbox" ng-model="settings.subscriptions" />
-								<h4>Enable Feedback subscriptions</h4>
+								<h4>Enable Community subscriptions</h4>
 							<span class="help-block">
 								<p>
-									Allow users to subscribe to Feedback items.
+									Allow users to subscribe to Community topics.
 								</p>
 							</span>
 							</label>

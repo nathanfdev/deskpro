@@ -6,13 +6,13 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Exporting feedback custom def entity.
+ * Exporting community topic custom def entity.
  *
- * Class FeedbackCustomDef
+ * Class CommunityTopicCustomDef
  *
  * @Assert\GroupSequenceProvider
  */
-class FeedbackCustomDef extends AbstractCustomDef
+class CommunityTopicCustomDef extends AbstractCustomDef
 {
     /**
      * @var string

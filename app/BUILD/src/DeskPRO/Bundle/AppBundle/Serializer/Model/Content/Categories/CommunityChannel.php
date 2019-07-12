@@ -2,14 +2,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories;
 
-use Application\DeskPRO\Entity\CommunityChannel as FeedbackCategoryEntity;
+use Application\DeskPRO\Entity\CommunityChannel as CommunityChannelEntity;
 use Application\DeskPRO\Entity\Usergroup;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class FeedbackCategory.
+ * Class CommunityChannel.
  */
-class FeedbackCategory extends CategoryAbstract
+class CommunityChannel extends CategoryAbstract
 {
     /**
      * Category`s parent.
@@ -41,9 +41,9 @@ class FeedbackCategory extends CategoryAbstract
     /**
      * Constructor.
      *
-     * @param FeedbackCategoryEntity $entity
+     * @param CommunityChannelEntity $entity
      */
-    public function __construct(FeedbackCategoryEntity $entity)
+    public function __construct(CommunityChannelEntity $entity)
     {
         parent::__construct($entity);
 

@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * @ApiModes("all")
  */
-class FeedbackStatusesController extends AbstractController implements ProtectedControllerInterface
+class CommunityStatusesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
      * {@inheritdoc}
@@ -38,9 +38,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function listAction()
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
-         */
         $feedback_statuses = $this->container->getSystemService('community_statuses');
 
         $active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
@@ -62,9 +59,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function getAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
-         */
         $feedback_statuses = $this->container->getSystemService('community_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 
@@ -81,9 +75,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function saveAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
-         */
         $feedback_statuses = $this->container->getSystemService('community_statuses');
 
         if ($id) {
@@ -126,9 +117,6 @@ class FeedbackStatusesController extends AbstractController implements Protected
 
     public function removeAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackStatuses\FeedbackStatuses
-         */
         $feedback_statuses = $this->container->getSystemService('community_statuses');
         $feedback_status   = $feedback_statuses->getById($id);
 

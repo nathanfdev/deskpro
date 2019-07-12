@@ -213,41 +213,41 @@ class MapperRegistry
     }
 
     /**
-     * Returns the feedback mapper.
+     * Returns community topic mapper.
      *
      * @return CommonMapper
      */
-    public function getFeedbackMapper()
+    public function getCommunityTopicMapper()
     {
         return $this->getMapper(CommunityTopic::class);
     }
 
     /**
-     * Returns the feedback custom def mapper.
+     * Returns community custom def mapper.
      *
      * @return CommonMapper
      */
-    public function getFeedbackAttachmentMapper()
+    public function getCommunityTopicAttachmentMapper()
     {
         return $this->getMapper(CommunityTopicAttachment::class);
     }
 
     /**
-     * Returns the feedback custom def mapper.
+     * Returns communitycustom def mapper.
      *
-     * @return CustomDefFeedbackMapper
+     * @return CustomDefCommunityMapper
      */
-    public function getFeedbackCustomDefMapper()
+    public function getCommunityCustomDefMapper()
     {
         return $this->getMapper(CustomDefCommunityTopic::class);
     }
 
     /**
-     * Returns the feedback category mapper.
+     * Returns community channel mapper.
      *
-     * @return FeedbackCategoryMapper
+     * @return CommunityChannelMapper
      */
-    public function getFeedbackCategoryMapper()
+    public function getCommunityChannelMapper()
     {
         return $this->getMapper(CommunityChannel::class);
     }

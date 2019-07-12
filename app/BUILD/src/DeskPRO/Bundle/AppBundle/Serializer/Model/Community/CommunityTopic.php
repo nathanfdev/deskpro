@@ -8,12 +8,12 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class Feedback.
+ * Class CommunityTopic.
  */
 class CommunityTopic extends ContentAbstract
 {
     /**
-     * Category the feedback belongs to.
+     * Category the community topic belongs to.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopicStatusCategory>")
      *
@@ -35,7 +35,7 @@ class CommunityTopic extends ContentAbstract
      * String array of labels associated with this news.
      *
      * @JMS\Groups({"labels"})
-     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelFeedback>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelCommunityTopic>>")
      *
      * @var \Application\DeskPRO\Entity\LabelCommunityTopic
      */
@@ -81,7 +81,7 @@ class CommunityTopic extends ContentAbstract
     /**
      * Items attached to the content.
      *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\FeedbackAttachment>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\CommunityTopicAttachment>>")
      *
      * @var CommunityTopicAttachment[]
      */

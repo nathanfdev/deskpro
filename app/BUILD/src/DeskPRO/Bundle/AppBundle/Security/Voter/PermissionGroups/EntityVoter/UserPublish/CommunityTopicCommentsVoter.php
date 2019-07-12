@@ -8,9 +8,9 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Permiss
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class FeedbackCommentsVoter.
+ * Class CommunityTopicCommentsVoter.
  */
-class FeedbackCommentsVoter implements PermissionGroupEntityVoterInterface
+class CommunityTopicCommentsVoter implements PermissionGroupEntityVoterInterface
 {
     /**
      * {@inheritdoc}

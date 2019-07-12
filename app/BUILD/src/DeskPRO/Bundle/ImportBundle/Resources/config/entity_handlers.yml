@@ -14,8 +14,8 @@ services:
     tags:
       - { name: dp.importer.writer.entity_handler }
 
-  dp.importer.writer.entity_handler.feedback_custom_def:
-    class: DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\FeedbackCustomDefHandler
+  dp.importer.writer.entity_handler.community_topic_custom_def:
+    class: DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\CommunityTopicCustomDefHandler
     arguments:
       - "@dp.importer.writer.mapper_registry"
       - "@dp.importer.writer.helper_registry"
@@ -24,8 +24,8 @@ services:
     tags:
       - { name: dp.importer.writer.entity_handler, priority: 10 }
 
-  dp.importer.writer.entity_handler.feedback:
-    class: DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\FeedbackHandler
+  dp.importer.writer.entity_handler.community_topic:
+    class: DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\CommunityTopic
     arguments:
       - "@dp.importer.writer.mapper_registry"
       - "@dp.importer.writer.helper_registry"

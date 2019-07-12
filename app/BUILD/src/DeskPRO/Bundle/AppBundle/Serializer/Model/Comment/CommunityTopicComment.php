@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as JMS;
 class CommunityTopicComment extends CommentAbstract
 {
     /**
-     * Feedback this comment belongs to.
+     * CommunityTopic this comment belongs to.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopic>")
      * @JMS\Groups({"list", "details"})

@@ -4,15 +4,15 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CommunityTopic;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic as SerializedFeedback;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\FeedbackCsv;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic as SerializedCommunityTopic;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopicCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 
 /**
- * Class FeedbackHandler.
+ * Class CommunityTopicHandler.
  */
-class FeedbackHandler extends AbstractEntityHandler
+class CommunityTopicHandler extends AbstractEntityHandler
 {
     /**
      * @var EntityManager
@@ -56,13 +56,13 @@ class FeedbackHandler extends AbstractEntityHandler
     {
         $serializerClass = $context->getMappedClass(CommunityTopic::class);
 
-        if ($serializerClass === FeedbackCsv::class) {
-            return new FeedbackCsv($entity);
+        if ($serializerClass === CommunityTopicCsv::class) {
+            return new CommunityTopicCsv($entity);
         }
 
         $this->ids[] = $entity->getId();
 
-        $entity = new SerializedFeedback($entity);
+        $entity = new SerializedCommunityTopic($entity);
         $entity->setCommentsCount(new CallbackDeferredProperty([$this, 'getCommentsCount'], [$entity]));
 
         return $entity;
@@ -71,11 +71,11 @@ class FeedbackHandler extends AbstractEntityHandler
     /**
      * @internal
      *
-     * @param SerializedFeedback $model
+     * @param SerializedCommunityTopic $model
      *
      * @return int
      */
-    public function getCommentsCount(SerializedFeedback $model)
+    public function getCommentsCount(SerializedCommunityTopic $model)
     {
         if (!$model->getId()) {
             return 0;
@@ -84,12 +84,12 @@ class FeedbackHandler extends AbstractEntityHandler
         if (!isset($this->commentCounts[$model->getId()])) {
             $qb = $this->em->createQueryBuilder();
             $qb
-                ->select('count(c.id) as value', 'f.id')
-                ->from(CommunityTopic::class, 'f')
-                ->leftJoin('f.comments', 'c')
-                ->where('f.id IN (:ids)')
+                ->select('count(c.id) as value', 'ct.id')
+                ->from(CommunityTopic::class, 'ct')
+                ->leftJoin('ct.comments', 'c')
+                ->where('ct.id IN (:ids)')
                 ->setParameter('ids', $this->ids)
-                ->groupBy('f.id');
+                ->groupBy('ct.id');
 
             $result = $qb->getQuery()->getResult();
             foreach ($result as $count) {

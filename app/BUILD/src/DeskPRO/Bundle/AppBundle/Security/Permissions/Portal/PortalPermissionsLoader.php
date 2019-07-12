@@ -91,7 +91,7 @@ class PortalPermissionsLoader
      *
      * @return mixed
      */
-    public function getAllowedFeedbackCategories(array $userGroups)
+    public function getAllowedCommunityChannels(array $userGroups)
     {
         return $this->getAllowedCategories(CommunityChannel::class, $userGroups);
     }

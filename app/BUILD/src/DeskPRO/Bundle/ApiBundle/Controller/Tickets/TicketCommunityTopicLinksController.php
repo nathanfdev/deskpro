@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class TicketFeedbackLinksController.
+ * Class TicketCommunityTopicLinksController.
  *
  * @ApiModes("all")
  * @Rest\Route("/tickets/{parentId}/community_topic_links")

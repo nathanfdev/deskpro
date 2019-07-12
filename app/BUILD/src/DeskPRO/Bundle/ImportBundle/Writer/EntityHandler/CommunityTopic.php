@@ -6,11 +6,11 @@ use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\ImportBundle\Model;
 
 /**
- * DeskPRO feedback importer.
+ * DeskPRO community topics importer.
  *
- * Class Feedback
+ * Class CommunityTopic
  */
-class FeedbackHandler extends AbstractEntityHandler
+class CommunityTopic extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ class FeedbackHandler extends AbstractEntityHandler
     public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\CommunityTopic $entity */
-        $entity = $this->findOrCreateEntity($this->mappers->getFeedbackMapper(), $model);
+        $entity = $this->findOrCreateEntity($this->mappers->getCommunityTopicMapper(), $model);
         $entity
             ->setTitle($model->getTitle())
             ->setContent($model->getContent())
@@ -48,18 +48,18 @@ class FeedbackHandler extends AbstractEntityHandler
         }
 
         // update feedback category
-        if ($model->getCategory()) {
+        if ($model->getChannel()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
-                $this->mappers->getFeedbackCategoryMapper(),
+                $this->mappers->getCommunityChannelMapper(),
                 $model->getCategory(),
                 $brandName
             ));
         } else {
             // use default category
-            $entity->setCategory($this->mappers->getFeedbackCategoryMapper()->getDefaultCategory());
+            $entity->setCategory($this->mappers->getCommunityChannelMapper()->getDefaultCategory());
         }
 
-        $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getFeedbackCustomDefMapper(), $model, $entity);
+        $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getCommunityCustomDefMapper(), $model, $entity);
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelCommunityTopic::class);
 
         // persist basic entity
@@ -68,7 +68,7 @@ class FeedbackHandler extends AbstractEntityHandler
         // persist others related entities which contains own oids
         foreach ($model->getAttachments() as $attachmentModel) {
             $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
-                $this->mappers->getFeedbackAttachmentMapper(), $attachmentModel, $entity
+                $this->mappers->getCommunityTopicAttachmentMapper(), $attachmentModel, $entity
             );
         }
     }

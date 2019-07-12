@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CommunityTopic extends ContentAbstract implements HighlightableModelInterface, LabelsOwner
 {
-    const CONTENT_TYPE = 'feedback';
+    const CONTENT_TYPE = 'community';
 
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';

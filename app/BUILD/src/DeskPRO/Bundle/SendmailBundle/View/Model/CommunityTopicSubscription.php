@@ -28,7 +28,7 @@ class CommunityTopicSubscription extends UserEmailBaseType
     protected $templateFile = 'emails_user:community_topics_subscription.html.twig';
 
     /**
-     * FeedbackSubscription constructor.
+     * CommunityTopicSubscription constructor.
      *
      * @param string           $portalHome
      * @param string           $unsubscribeUrl

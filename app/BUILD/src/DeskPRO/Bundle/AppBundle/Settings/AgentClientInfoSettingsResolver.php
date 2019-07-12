@@ -13,8 +13,8 @@ use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CommunitySettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMSettings;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\PublishSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\TasksSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields\TicketGroupFieldSettings;
@@ -94,7 +94,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setTickets($this->getTicketsSettings())
             ->setChat($this->getChatSettings())
             ->setCrm($this->getCrmSettings())
-            ->setFeedback($this->getFeedbackSettings())
+            ->setCommunity($this->getCommunitySettings())
             ->setPublish($this->getPublishSettings())
             ->setTasks($this->getTasksSettings())
         ;
@@ -360,11 +360,11 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
-     * @return FeedbackSettings
+     * @return CommunitySettings
      */
-    public function getFeedbackSettings()
+    public function getCommunitySettings()
     {
-        $model = new FeedbackSettings();
+        $model = new CommunitySettings();
         $model->setEnabled($this->hasPerm('core.apps_feedback'));
 
         $permissions = $model->getPermissions();

@@ -2866,7 +2866,7 @@ $collection->create(
     'api_community_topics_post',
     [
         'path'       => '/community',
-        'controller' => 'LegacyApiBundle:CommunityTopics:newFeedback',
+        'controller' => 'LegacyApiBundle:CommunityTopics:newCommunityTopic',
         'methods'    => ['POST'],
     ]
 );
@@ -3349,7 +3349,8 @@ $label_types = [
     ['route' => 'ticket', 'route_url' => 'ticket', 'controller' => 'TicketLabels'],
     ['route' => 'person', 'route_url' => 'person', 'controller' => 'PersonLabels'],
     ['route' => 'org', 'route_url' => 'org', 'controller' => 'OrgLabels'],
-    ['route' => 'feedback', 'route_url' => 'feedback', 'controller' => 'FeedbackLabels'],
+    // TODO this doesn't seem to work
+    ['route' => 'community', 'route_url' => 'community', 'controller' => 'CommunityLabels'],
     ['route' => 'chat', 'route_url' => 'chat', 'controller' => 'ChatLabels'],
     ['route' => 'kb', 'route_url' => 'kb', 'controller' => 'KbLabels'],
     ['route' => 'news', 'route_url' => 'news', 'controller' => 'NewsLabels'],
@@ -5280,14 +5281,14 @@ $collection->create(
 );
 
 //#######################################################################################################################
-// Feedback Statuses
+// Community Statuses
 //#######################################################################################################################
 
 $collection->create(
     'api_community_statuses',
     [
         'path'       => '/community_statuses',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:list',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:list',
         'methods'    => ['GET'],
     ]
 );
@@ -5296,7 +5297,7 @@ $collection->create(
     'api_community_statuses_order',
     [
         'path'       => '/community_statuses/display_order',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:saveDisplayOrder',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
@@ -5305,7 +5306,7 @@ $collection->create(
     'api_community_statuses_get',
     [
         'path'       => '/community_statuses/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:get',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:get',
         'methods'    => ['GET'],
     ]
 );
@@ -5314,7 +5315,7 @@ $collection->create(
     'api_community_statuses_create',
     [
         'path'       => '/community_statuses',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:save',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
@@ -5324,7 +5325,7 @@ $collection->create(
     'api_community_statuses_save',
     [
         'path'       => '/community_statuses/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:save',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:save',
         'methods'    => ['POST'],
     ]
 );
@@ -5333,13 +5334,13 @@ $collection->create(
     'api_community_statuses_delete',
     [
         'path'       => '/community_statuses/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:remove',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:remove',
         'methods'    => ['DELETE'],
     ]
 );
 
 //#######################################################################################################################
-// Feedback Types
+// Community Channels
 //#######################################################################################################################
 
 $collection->create(
@@ -5398,13 +5399,13 @@ $collection->create(
 );
 
 //#######################################################################################################################
-// Feedback Categories
+// Community custom channels
 //#######################################################################################################################
 
 $collection->create(
     'api_community_channels_custom',
     [
-        'path'       => '/community_categories',
+        'path'       => '/community_custom_channels',
         'controller' => 'LegacyApiBundle:CommunityChannelsCustom:list',
         'methods'    => ['GET'],
     ]
@@ -5413,7 +5414,7 @@ $collection->create(
 $collection->create(
     'api_community_channels_custom_order',
     [
-        'path'       => '/community_categories/display_order',
+        'path'       => '/community_custom_channels/display_order',
         'controller' => 'LegacyApiBundle:CommunityChannelsCustom:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
@@ -5422,7 +5423,7 @@ $collection->create(
 $collection->create(
     'api_community_channels_custom_get',
     [
-        'path'       => '/community_categories/{id}',
+        'path'       => '/community_custom_channels/{id}',
         'controller' => 'LegacyApiBundle:CommunityChannelsCustom:get',
         'methods'    => ['GET'],
     ]
@@ -5431,7 +5432,7 @@ $collection->create(
 $collection->create(
     'api_community_channels_custom_create',
     [
-        'path'       => '/community_categories',
+        'path'       => '/community_custom_channels',
         'controller' => 'LegacyApiBundle:CommunityChannelsCustom:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
@@ -5441,7 +5442,7 @@ $collection->create(
 $collection->create(
     'api_community_channels_custom_save',
     [
-        'path'       => '/community_categories/{id}',
+        'path'       => '/community_custom_channels/{id}',
         'controller' => 'LegacyApiBundle:CommunityChannelsCustom:save',
         'methods'    => ['POST'],
     ]
@@ -5450,7 +5451,7 @@ $collection->create(
 $collection->create(
     'api_community_channels_custom_delete',
     [
-        'path'       => '/community_categories/{id}',
+        'path'       => '/community_custom_channels/{id}',
         'controller' => 'LegacyApiBundle:CommunityChannelsCustom:remove',
         'methods'    => ['DELETE'],
     ]

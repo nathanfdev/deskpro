@@ -3,21 +3,21 @@
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_settings') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
-			<h3>Feedback Settings</h3>
+			<h3>Community Settings</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_statuses') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
-			<h3>Feedback Statuses</h3>
+			<h3>Community Statuses</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_types') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
-			<h3>Feedback Types</h3>
+			<h3>Community Channels</h3>
 		</a>
 	</section>
 
@@ -60,19 +60,19 @@
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_labels') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
-			<h3>Feedback Labels</h3>
+			<h3>Community Topics Labels</h3>
 		</a>
 	</section>
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>Categories are an optional way to organize incoming feedback.</h1>
-		<p>If you enter categories, users will be required to select one when submitting feedback.</p>
+		<h1>Custom channels are an optional way to organize incoming community topics.</h1>
+		<p>If you enter community channels, users will be required to select one when submitting community topics.</p>
 	</header>
 	<article>
 		<section>
-			<p>Examples of possible uses for the category field:</p>
+			<p>Examples of possible uses for the custom channel field:</p>
 			<ul>
 				<li>Mobile/Desktop</li>
 				<li>Delivery/Set-up/Usage</li>
@@ -82,7 +82,7 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-			<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Feedback categories</a></li>
+			<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Community Custom Channels</a></li>
 			</ul>
 	</section>
 	</article>

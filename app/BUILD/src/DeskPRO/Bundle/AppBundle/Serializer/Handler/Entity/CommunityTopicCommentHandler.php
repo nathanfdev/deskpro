@@ -3,11 +3,11 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CommunityTopicComment;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommunityTopicComment as FeedbackCommentModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommunityTopicComment as CommunityTopicCommentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommunityTopicCommentCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-class FeedbackCommentHandler extends AbstractEntityHandler
+class CommunityTopicCommentHandler extends AbstractEntityHandler
 {
     /**
      * {@inheritdoc}
@@ -22,7 +22,7 @@ class FeedbackCommentHandler extends AbstractEntityHandler
             return new CommunityTopicCommentCsv($entity);
         }
 
-        return new FeedbackCommentModel($entity);
+        return new CommunityTopicCommentModel($entity);
     }
 
     /**

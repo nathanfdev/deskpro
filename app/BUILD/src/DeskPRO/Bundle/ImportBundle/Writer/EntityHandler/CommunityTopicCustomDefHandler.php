@@ -5,16 +5,16 @@ namespace DeskPRO\Bundle\ImportBundle\Writer\EntityHandler;
 use DeskPRO\Bundle\ImportBundle\Model;
 
 /**
- * Class FeedbackCustomDef.
+ * Class CommunityTopicCustomDefHandler.
  */
-class FeedbackCustomDefHandler extends AbstractCustomDefHandler
+class CommunityTopicCustomDefHandler extends AbstractCustomDefHandler
 {
     /**
      * {@inheritdoc}
      */
     public static function getModelClass()
     {
-        return Model\FeedbackCustomDef::class;
+        return Model\CommunityTopicCustomDef::class;
     }
 
     /**
@@ -22,6 +22,6 @@ class FeedbackCustomDefHandler extends AbstractCustomDefHandler
      */
     protected function getCustomDefMapper()
     {
-        return $this->mappers->getFeedbackCustomDefMapper();
+        return $this->mappers->getCommunityCustomDefMapper();
     }
 }

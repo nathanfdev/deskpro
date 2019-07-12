@@ -92,66 +92,13 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/communitys",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Creates a new feedback.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="title",
-     *				description="Title of the feedback. ",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="content",
-     *				description="Content of the feedback. Marked up using HTML.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="category_id",
-     *				description="Category of the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="label[]",
-     *				description="Comma seperated list of Labels to apply to the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="status",
-     *				description="Status of the feedback. Defaults to new if not overridden by this or status_category_id.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="status_category_id",
-     *				description="Status category of the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="user_category_id",
-     *				description="User category of the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		)
-     * 	)
-     * ).
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function newFeedbackAction()
+    public function newCommunityTopicAction()
     {
         $errors   = [];
         $feedback = new CommunityTopic();
@@ -227,7 +174,7 @@ class CommunityTopicsController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackAction($communityTopicId)
+    public function getCommunityTopicAction($communityTopicId)
     {
         $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 

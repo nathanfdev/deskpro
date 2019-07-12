@@ -11,7 +11,7 @@ class CommunityTopicNewComment extends EmailBaseType
     /**
      * The new comment.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\FeedbackComment")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Comment\CommunityTopicComment")
      *
      * @var CommunityTopicComment
      */
@@ -38,7 +38,7 @@ class CommunityTopicNewComment extends EmailBaseType
     protected $templateFile = 'emails_user:community_topic_new_comment.html.twig';
 
     /**
-     * FeedbackNewComment constructor.
+     * CommunityTopicNewComment constructor.
      *
      * @param CommunityTopicComment $comment
      * @param CommunityTopic        $communityTopic

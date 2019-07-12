@@ -5,14 +5,14 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class FeedbackSettings.
+ * Class CommunitySettings.
  */
-class FeedbackSettings extends AbstractAppSettings
+class CommunitySettings extends AbstractAppSettings
 {
     /**
-     * @var FeedbackPermissionSettings
+     * @var CommunityPermissionSettings
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackPermissionSettings")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CommunityPermissionSettings")
      */
     private $permissions;
 
@@ -21,11 +21,11 @@ class FeedbackSettings extends AbstractAppSettings
      */
     public function __construct()
     {
-        $this->permissions = new FeedbackPermissionSettings();
+        $this->permissions = new CommunityPermissionSettings();
     }
 
     /**
-     * @return FeedbackPermissionSettings
+     * @return CommunityPermissionSettings
      */
     public function getPermissions()
     {

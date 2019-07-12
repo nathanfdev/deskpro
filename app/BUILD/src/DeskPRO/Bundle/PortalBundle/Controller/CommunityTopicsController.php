@@ -137,7 +137,7 @@ class CommunityTopicsController extends AbstractController
                             $attachment->setPerson($person);
                         }
 
-                        return $this->acceptNewFeedback($newCommunityTopic, $person, $request);
+                        return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request);
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
                         $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
@@ -166,7 +166,7 @@ class CommunityTopicsController extends AbstractController
 
                 $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
 
-                return $this->acceptNewFeedback($newCommunityTopic, $person, $request);
+                return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request);
             }
         }
 
@@ -241,7 +241,7 @@ class CommunityTopicsController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function acceptNewFeedback(CommunityTopic $newCommunityTopic, Person $person, Request $request)
+    protected function acceptNewCommunityTopic(CommunityTopic $newCommunityTopic, Person $person, Request $request)
     {
         $this->getEm()->persist($newCommunityTopic);
         $this->getEm()->flush();
@@ -312,7 +312,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         // SECURITY
-        // a permissions check, if the user can't see one of these filtered "types" (i.e. FeedbackCategory)
+        // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityChannel)
         $permissionsBag       = $this->getPermissionBag($person);
         $allowed_category_ids = $permissionsBag->getAllowedCommunityChannelIds();
         foreach ($filter->getTypes() as $type) {
