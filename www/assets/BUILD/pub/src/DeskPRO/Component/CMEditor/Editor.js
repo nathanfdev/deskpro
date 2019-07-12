@@ -158,6 +158,9 @@ class Editor extends React.Component {
       extendedSubject = true;
       bodyStyle.height = 'calc(100% - 205px)';
     }
+    if (this.props.phrases.size === 0) {
+      return null;
+    }
     return (
       <div className={classNames('dp-code-editor', { disabled })}>
         <div className={classNames('ui dimmer inverted', { active: disabled })}>

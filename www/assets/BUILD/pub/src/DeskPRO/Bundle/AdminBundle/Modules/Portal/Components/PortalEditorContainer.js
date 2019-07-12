@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { fromJS } from 'immutable';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 import { Button, ConfirmButton, Icon } from '@deskpro/react-components';
 import Editor from 'DeskPRO/Component/CMEditor/Editor';
@@ -10,8 +11,7 @@ import { TemplatesMenuContainer } from './Menus/TemplatesMenu';
 import * as actions from '../Actions/templatesActions';
 import { MediaMenuContainer } from '../../../../../Component/CMEditor/Menus/MediaMenu';
 import { PhrasesMenuContainer } from '../../EmailTemplates/Components/Menus/PhrasesMenu';
-import {fromJS} from 'immutable';
-import {replaceRoute} from '../../../Services/history';
+import { replaceRoute } from '../../../Services/history';
 
 @connect(state => ({
   portalEditor: state.Portal.templates
@@ -129,9 +129,9 @@ class PortalEditorContainer extends React.Component {
     if (template !== null) {
       resolve(template);
     } else {
-      this.props.dispatch(actions.loadTemplate(name)).then((template) => {
-        this.props.dispatch(actions.setExtraTemplate({ name, code: template.original_code.code }));
-        resolve(template.original_code.code);
+      this.props.dispatch(actions.loadTemplate(name)).then((t) => {
+        this.props.dispatch(actions.setExtraTemplate({ name, code: t.original_code.code }));
+        resolve(t.original_code.code);
       });
     }
   });
@@ -224,6 +224,11 @@ class PortalEditor extends React.Component {
     this.compileProps(nextProps.portalEditor);
   }
 
+  setTemplateValue = (name, code) => {
+    this.props.setTemplateValue(name, code);
+    this.checkChanges();
+  };
+
   closeMediaMenu = () => {
     if (this.mediaMenu) {
       this.mediaMenu.closeMenu();
@@ -240,11 +245,6 @@ class PortalEditor extends React.Component {
     if (this.templateMenu) {
       this.templateMenu.closeMenu();
     }
-  };
-
-  setTemplateValue = (name, code) => {
-    this.props.setTemplateValue(name, code);
-    this.checkChanges();
   };
 
   compileProps = (portalEditor) => {

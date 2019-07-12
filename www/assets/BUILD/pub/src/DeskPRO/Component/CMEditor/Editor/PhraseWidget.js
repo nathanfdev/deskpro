@@ -73,7 +73,7 @@ class PhrasePopup extends React.Component {
             <textarea
               id={`phrase_${language.locale}`}
               name={`phrase_${language.locale}`}
-              value={this.state.translations[language.locale]}
+              value={this.state.translations[language.locale] || ''}
               onChange={(event) => { this.handleChangeTranslation(event, language.locale); }}
             />
           </div>
