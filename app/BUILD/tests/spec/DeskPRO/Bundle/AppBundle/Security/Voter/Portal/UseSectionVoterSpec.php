@@ -82,7 +82,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(
             [
                 UseSectionVoter::USE_ARTICLES,
-                UseSectionVoter::USE_FEEDBACK,
+                UseSectionVoter::USE_COMMUNITY,
                 UseSectionVoter::USE_CHAT,
                 UseSectionVoter::USE_DOWNLOADS,
                 UseSectionVoter::USE_NEWS,
@@ -195,13 +195,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->getAllowedGuides()->willReturn([]);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $token);
-        $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyDeniedVote(UseSectionVoter::USE_COMMUNITY, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
-        $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyDeniedVote(UseSectionVoter::USE_COMMUNITY, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_GUIDES, $guest_token);
@@ -233,13 +233,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->get('guides.use')->willReturn(true);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $guest_token);
@@ -281,13 +281,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->getAllowedGuides()->willReturn([1, 2]);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $guest_token);

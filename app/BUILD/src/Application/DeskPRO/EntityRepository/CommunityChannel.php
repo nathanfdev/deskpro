@@ -138,19 +138,19 @@ class CommunityChannel extends AbstractCategoryRepository
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 

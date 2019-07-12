@@ -36,9 +36,6 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function listAction()
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
-         */
         $feedback_categories = $this->container->getSystemService('community_channels_custom');
 
         return $this->createApiResponse(
@@ -54,9 +51,6 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function getAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
-         */
         $feedback_categories = $this->container->getSystemService('community_channels_custom');
         $feedback_category   = $feedback_categories->getById($id);
 
@@ -79,9 +73,6 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function saveAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
-         */
         $feedback_categories = $this->container->getSystemService('community_channels_custom');
 
         if ($id) {
@@ -141,9 +132,6 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function removeAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
-         */
         $feedback_categories = $this->container->getSystemService('community_channels_custom');
         $feedback_category   = $feedback_categories->getById($id);
 
@@ -199,9 +187,6 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /*
-         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories
-         */
         $feedback_categories = $this->container->getSystemService('community_channels_custom');
         $feedback_categories->updateDisplayOrders($display_orders);
 

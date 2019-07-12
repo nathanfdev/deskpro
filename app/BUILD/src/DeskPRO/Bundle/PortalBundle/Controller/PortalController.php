@@ -92,7 +92,7 @@ class PortalController extends AbstractController
      */
     public function homeAction()
     {
-        $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedCommunityChannelIds();
+        $allowedCommunityChannelIds = $this->getPermissionBagForCurrentUser()->getAllowedCommunityChannelIds();
         if (!$this->getUser() && $this->canUseNothing()) {
             return $this->redirectToRoute('portal_login');
         }
@@ -104,7 +104,7 @@ class PortalController extends AbstractController
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
                 'page_title'    => $this->createPageTitle()->homepage(),
-                'feedbackTypes' => $allowedFeedbackTypes,
+                'feedbackTypes' => $allowedCommunityChannelIds,
             ]
         );
     }

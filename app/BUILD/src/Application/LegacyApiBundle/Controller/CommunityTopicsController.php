@@ -14,92 +14,26 @@ use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\EntityRepository\Rating as RatingRepository;
 use Application\DeskPRO\Searcher\CommunitySearch;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * SWG\Resource(
- * 	resourcePath="/community",
- * 	description="Operations about Feedbacks",
- * 	basePath="/api"
- * ).
- *
- * @ApiModes("all")
+ * Class CommunityTopicsController.
  */
 class CommunityTopicsController extends AbstractController
 {
     /**
-     * SWG\Api(
-     * 	path="/community",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Search for feedbacks matching criteria",
-     * 		notes="Returns list of feedbacks that matched.",
-     *		type="array",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="category_id[]",
-     *				description="Comma seperated IDs of categories to search in",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="category_id_specific[]",
-     *				description="Comma seperated IDs of categories to search in",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="date_created_end",
-     *				description="Requires the feedback to have been created before this date. Must be specified as a Unix timestamp.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="date_created_start",
-     *				description="Requires the feedback to have been created after this date. Must be specified as a Unix timestamp.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="label[]",
-     *				description="Requires the feedback to have this label.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="status[]",
-     *				description="Requires the feedback to be in this status. Possible values: new, active, closed, hidden.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="status_category_id[]",
-     *				description="Requires the feedback to be in this status category.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		)
-     * 	)
-     * ).
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function searchAction()
     {
         $search_map = [
-            'category_id'          => CommunitySearch::TERM_CATEGORY,
-            'category_id_specific' => CommunitySearch::TERM_CATEGORY_SPECIFIC,
-            'label'                => CommunitySearch::TERM_LABEL,
-            'status'               => CommunitySearch::TERM_STATUS,
-            'status_category_id'   => CommunitySearch::TERM_STATUS_CATEGORY,
+            'channel_id'          => CommunitySearch::TERM_CHANNEL,
+            'channel_id_specific' => CommunitySearch::TERM_CHANNEL_SPECIFIC,
+            'label'               => CommunitySearch::TERM_LABEL,
+            'status'              => CommunitySearch::TERM_STATUS,
+            'status_category_id'  => CommunitySearch::TERM_STATUS_CATEGORY,
         ];
 
         $terms = [];
@@ -258,7 +192,7 @@ class CommunityTopicsController extends AbstractController
 
         $feedback->person = $this->person;
 
-        $this->_insertFeedbackAttachments($feedback);
+        $this->_insertCommunityTopicAttachments($feedback);
 
         $this->em->persist($feedback);
         $this->em->flush();
@@ -271,7 +205,7 @@ class CommunityTopicsController extends AbstractController
 
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
-            $field         = $this->_getUserCategoryField();
+            $field         = $this->_getCustomCommunityChannelField();
             $field_manager = $this->container->getSystemService('community_fields_manager');
             $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
         }
@@ -286,124 +220,51 @@ class CommunityTopicsController extends AbstractController
         );
     }
 
-    //Gets information about specific feedback
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets a feedback by feedback ID.",
-     * 		notes="Information about the feedback by feedback ID.",
-     *		type="Feedback",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * Gets information about specific community topic.
+     *
+     * @param int $communityTopicId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackAction($feedback_id)
+    public function getFeedbackAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
-        return $this->createApiResponse(['feedback' => $feedback->toApiData()]);
+        return $this->createApiResponse(['feedback' => $communityTopic->toApiData()]);
     }
 
     /**
-     * SWG\Api(
-     * 	path="/communitys/{feedback_id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Updates a Feedback by feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback the needs to be updated.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="title",
-     *				description="Title of the feedback. ",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="content",
-     *				description="Content of the feedback. Marked up using HTML.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="category_id",
-     *				description="Category of the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="label[]",
-     *				description="Comma seperated list of Labels to apply to the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="status",
-     *				description="Status of the feedback. Defaults to new if not overridden by this or status_category_id.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="status_category_id",
-     *				description="Status category of the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="user_category_id",
-     *				description="User category of the feedback.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		)
-     * 	)
-     * ).
+     * @param $communityTopicId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function postFeedbackAction($feedback_id)
+    public function postCommunityTopicAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
 
         $revs = [];
 
         $title = $this->in->getString('title');
         if ($title) {
-            $feedback->title = $title;
+            $communityTopic->title = $title;
 
-            $rev        = ContentRevisionUtil::findOrCreate($feedback, 'title', $this->person);
-            $rev->title = $feedback->title;
+            $rev        = ContentRevisionUtil::findOrCreate($communityTopic, 'title', $this->person);
+            $rev->title = $communityTopic->title;
 
             $revs['title'] = $rev;
         }
 
         $content = $this->in->getString('content');
-        if ($content && $content != $feedback->content) {
-            $feedback->content = $this->in->getHtml('content');
+        if ($content && $content != $communityTopic->content) {
+            $communityTopic->content = $this->in->getHtml('content');
 
-            $rev          = ContentRevisionUtil::findOrCreate($feedback, ['content'], $this->person);
-            $rev->content = $feedback->content;
+            $rev          = ContentRevisionUtil::findOrCreate($communityTopic, ['content'], $this->person);
+            $rev->content = $communityTopic->content;
 
             $revs['content'] = $rev;
         }
@@ -412,7 +273,7 @@ class CommunityTopicsController extends AbstractController
         if ($category_id) {
             $cat = $this->em->find('DeskPRO:CommunityChannel', $category_id);
             if ($cat) {
-                $feedback->category = $cat;
+                $communityTopic->category = $cat;
             }
         }
 
@@ -420,150 +281,89 @@ class CommunityTopicsController extends AbstractController
         if ($status_category_id) {
             $status_cat = $this->em->find('DeskPRO:CommunityTopicStatusCategory', $this->in->getUint('status_category_id'));
             if ($status_cat) {
-                $feedback->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
+                $communityTopic->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
             }
         } else {
             $status = $this->in->getString('status');
             if ($status) {
-                $feedback->setStatusCode($status);
+                $communityTopic->setStatusCode($status);
             }
         }
 
-        $this->_insertFeedbackAttachments($feedback);
+        $this->_insertCommunityTopicAttachments($communityTopic);
 
         foreach ($revs as $rev) {
             $this->em->persist($rev);
         }
-        $this->em->persist($feedback);
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
-            $field         = $this->_getUserCategoryField();
+            $field         = $this->_getCustomCommunityChannelField();
             $field_manager = $this->container->getSystemService('community_fields_manager');
-            $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
+            $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $communityTopic, true);
         }
 
         return $this->createSuccessResponse();
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}",
-     * 	SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Deletes a Feedback by ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function deleteFeedbackAction($feedback_id)
+    public function deleteCommunityTopicAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id, 'delete');
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId, 'delete');
 
-        $feedback->status_code = 'hidden.deleted';
-        $this->em->persist($feedback);
+        $communityTopic->status_code = 'hidden.deleted';
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         return $this->createSuccessResponse();
     }
 
     /**
-     * @param $feedback_id
+     * @param int $communityTopicId
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackVotesAction($feedback_id)
+    public function getCommunityTopicVotesAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
         /** @var RatingRepository $ratingRepository */
         $ratingRepository = App::getEntityRepository(Rating::class);
-        $votes            = $ratingRepository->getRatingsFor('community_topic', $feedback->getId());
+        $votes            = $ratingRepository->getRatingsFor('community_topic', $communityTopic->getId());
 
         return $this->createApiResponse(['votes' => $this->getApiData($votes)]);
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/comments",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets the comments for feedback",
-     * 		notes="Information about the comments by Feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackCommentsAction($feedback_id)
+    public function getCommunityTopicCommentsAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comments = $this->em->getRepository(CommunityTopicComment::class)->getComments($feedback);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
+        $comments       = $this->em->getRepository(CommunityTopicComment::class)->getComments($communityTopic);
 
         return $this->createApiResponse(['comments' => $this->getApiData($comments)]);
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/comments",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Add a comment for a feedback entry.",
-     * 		notes="Creates a feedback comment by feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="content",
-     *				description="Text of the comment.",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="person_id",
-     *				description=" ID of the person that owns the comment. If not provided, defaults to the agent making the request.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="status",
-     *				description="Status of the comment. Defaults to visible.",
-     *				paramType="query",
-     *				required=false,
-     *				type="string"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function newFeedbackCommentAction($feedback_id)
+    public function newFeedbackCommentAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
         $content = $this->in->getString('content');
         if (!$content) {
@@ -579,7 +379,7 @@ class CommunityTopicsController extends AbstractController
         $status = $this->in->getString('status');
 
         $comment                 = new \Application\DeskPRO\Entity\CommunityTopicComment();
-        $comment->feedback       = $feedback;
+        $comment->topic          = $communityTopic;
         $comment->person         = $person ?: $this->person;
         $comment['content']      = $content;
         $comment['status']       = $status ?: 'visible';
@@ -593,44 +393,23 @@ class CommunityTopicsController extends AbstractController
             ['id' => $comment->id],
             $this->generateUrl(
                 'api_community_topic_comments_get_comment',
-                ['feedback_id' => $feedback->id, 'comment_id' => $comment->id],
+                ['communityTopicId' => $communityTopic->id, 'comment_id' => $comment->id],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/comments/{comment_id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets info about a specific feedback comment",
-     * 		notes="Information about a specific feedback comment by Feedback ID and Comment ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="comment_id",
-     *				description="ID of the Feedback Comment that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     * @param int $commentId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackCommentAction($feedback_id, $comment_id)
+    public function getCommunityTopicCommentAction($communityTopicId, $commentId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comment  = $this->em->getRepository(CommunityTopicComment::class)->find($comment_id);
-        if (!$comment || $comment->feedback->id != $feedback->id) {
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
+        $comment        = $this->em->getRepository(CommunityTopicComment::class)->find($commentId);
+        if (!$comment || $comment->topic->id != $communityTopic->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -638,50 +417,18 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/comments/{comment_id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Updates a feedback comment",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="comment_id",
-     *				description="ID of the Feedback Comment that needs to be updated.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="content",
-     *				description="New Text of the Comment.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="status",
-     *				description="Status of the comment.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     * @param int $commentId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function postFeedbackCommentAction($feedback_id, $comment_id)
+    public function postCommunityTopicCommentAction($communityTopicId, $commentId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comment  = $this->em->getRepository(CommunityTopicComment::class)->find($comment_id);
-        if (!$comment || $comment->feedback->id != $feedback->id) {
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
+        $comment        = $this->em->getRepository(CommunityTopicComment::class)->find($commentId);
+        if (!$comment || $comment->topic->id != $communityTopic->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -708,37 +455,18 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/comments/{comment_id}",
-     * 	SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="DELETE a specific feedback comment",
-     * 		notes="DELETE a specific feedback comment by Feedback ID and Comment ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="comment_id",
-     *				description="ID of the Feedback Comment that needs to be deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     * @param int $commentId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function deleteFeedbackCommentAction($feedback_id, $comment_id)
+    public function deleteCommunityTopicCommentAction($communityTopicId, $commentId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
-        $comment  = $this->em->getRepository(CommunityTopicComment::class)->find($comment_id);
-        if (!$comment || $comment->feedback->id != $feedback->id) {
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
+        $comment        = $this->em->getRepository(CommunityTopicComment::class)->find($commentId);
+        if (!$comment || $comment->topic->id != $communityTopic->id) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
@@ -751,46 +479,28 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/merge/{other_feedback_id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Merges the two feedback records",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the first Feedback",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="other_feedback_id",
-     *				description="ID of the second Feedback",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     * @param int $otherCommunityTopicId
+     *
+     * @throws \Exception
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function mergeFeedbackAction($feedback_id, $other_feedback_id)
+    public function mergeCommunityTopicsAction($communityTopicId, $otherCommunityTopicId)
     {
-        $feedback       = $this->_getFeedbackOr404($feedback_id, 'edit');
-        $other_feedback = $this->_getFeedbackOr404($other_feedback_id, 'edit');
+        $communityTopic      = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
+        $otherCommunityTopic = $this->_getCommunityTopicOr404($otherCommunityTopicId, 'edit');
 
-        if (!$this->person->PermissionsManager->PublishChecker->canEdit($feedback)
-            || !$this->person->PermissionsManager->PublishChecker->canEdit($other_feedback)
-            || !$this->person->PermissionsManager->PublishChecker->canDelete($other_feedback)
+        if (!$this->person->PermissionsManager->PublishChecker->canEdit($communityTopic)
+            || !$this->person->PermissionsManager->PublishChecker->canEdit($otherCommunityTopic)
+            || !$this->person->PermissionsManager->PublishChecker->canDelete($otherCommunityTopic)
         ) {
             throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
         }
 
         try {
             $this->em->beginTransaction();
-            $merge = new \Application\DeskPRO\Community\CommunityTopicsMerge($this->person, $feedback, $other_feedback);
+            $merge = new \Application\DeskPRO\Community\CommunityTopicsMerge($this->person, $communityTopic, $otherCommunityTopic);
             $merge->merge();
             $this->em->commit();
         } catch (\Exception $e) {
@@ -803,69 +513,29 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/attachments",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets information about a feedback record's attachments",
-     * 		notes="Information about a feedback record's attachments by Feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackAttachmentsAction($feedback_id)
+    public function getCommunityTopicAttachmentsAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
-        return $this->createApiResponse(['attachments' => $this->getApiData($feedback->attachments)]);
+        return $this->createApiResponse(['attachments' => $this->getApiData($communityTopic->attachments)]);
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/attachments",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Adds an attachment to a feedback record.",
-     * 		notes="Adds an attachment to a feedback record by feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="file",
-     *				description="Attached file to include with the feedback. See the API Basics for more information on sending files to the API. Required if no attach_id is provided.",
-     *				paramType="body",
-     *				required=true,
-     *				type="string"
-     *			),
-     *			SWG\Parameter(
-     *				name="attach_id",
-     *				description="The ID of an already uploaded file to include with the feedback. Required if no attach value is provided.",
-     *				paramType="query",
-     *				required=false,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function newFeedbackAttachmentAction($feedback_id)
+    public function newComunityTopicAttachmentAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
 
         $file = $this->request->files->get('attach');
         if (is_array($file)) {
@@ -891,53 +561,33 @@ class CommunityTopicsController extends AbstractController
             }
         }
 
-        $attach = $this->_addFeedbackAttachment($blob, $feedback);
+        $attach = $this->_addCommunityTopicAttachment($blob, $communityTopic);
 
-        $this->em->persist($feedback);
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         return $this->createApiCreateResponse(
             ['id' => $attach->id],
             $this->generateUrl(
-                'api_feedback_feedback_attachment',
-                ['feedback_id' => $feedback->id, 'attachment_id' => $attach->id],
+                'api_community_topic_attachment_get',
+                ['feedback_id' => $communityTopic->id, 'attachment_id' => $attach->id],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/attachments/{attachment_id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Determines if a feedback record has an attachment",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="attachment_id",
-     *				description="ID of the Feedback Comment that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     * @param int $attachmentId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackAttachmentAction($feedback_id, $attachment_id)
+    public function getCommunityTopicAttachmentAction($communityTopicId, $attachmentId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
-        $exists   = false;
-        foreach ($feedback->attachments as $attachment) {
-            if ($attachment->id == $attachment_id) {
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
+        $exists         = false;
+        foreach ($communityTopic->attachments as $attachment) {
+            if ($attachment->id == $attachmentId) {
                 $exists = true;
                 break;
             }
@@ -947,157 +597,83 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/attachments/{attachment_id}",
-     * 	SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Removes a feedback attachment",
-     * 		notes="Removes a feedback attachment by Feedback ID and Attachment ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="attachment_id",
-     *				description="ID of the Feedback Comment that needs to be deleted.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     * @param int $attachmentId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function deleteFeedbackAttachmentAction($feedback_id, $attachment_id)
+    public function deleteCommunityTopicAttachmentAction($communityTopicId, $attachmentId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
-        foreach ($feedback->attachments as $k => $attachment) {
-            if ($attachment->id == $attachment_id) {
-                $feedback->attachments->remove($k);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
+        foreach ($communityTopic->attachments as $k => $attachment) {
+            if ($attachment->id == $attachmentId) {
+                $communityTopic->attachments->remove($k);
                 $this->em->remove($attachment);
                 break;
             }
         }
 
-        $this->em->persist($feedback);
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         return $this->createSuccessResponse();
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/labels",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets the labels for feedback",
-     * 		notes="Information about a feedback record's labels by Feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the Feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackLabelsAction($feedback_id)
+    public function getCommunityTopicLabelsAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
-        return $this->createApiResponse(['labels' => $this->getApiData($feedback->labels)]);
+        return $this->createApiResponse(['labels' => $this->getApiData($communityTopic->labels)]);
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/labels",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Add a label for a feedback entry.",
-     * 		notes="Creates a feedback label by feedback ID.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="label",
-     *				description="Label to add.",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int $communityTopicId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function postFeedbackLabelsAction($feedback_id)
+    public function postCommunityTopicLabelsAction($communityTopicId)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
-        $label    = $this->in->getString('label');
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
+        $label          = $this->in->getString('label');
 
         if ($label === '') {
             return $this->createApiErrorResponse('required_field', "Field 'label' missing or empty");
         }
 
-        $feedback->getLabelManager()->addLabel($label);
-        $this->em->persist($feedback);
+        $communityTopic->getLabelManager()->addLabel($label);
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         return $this->createApiCreateResponse(
             ['label' => $label],
             $this->generateUrl(
-                'api_feedback_feedback_label',
-                ['feedback_id' => $feedback->id, 'label' => $label],
+                'api_community_topic_label',
+                ['communityTopicId' => $communityTopic->id, 'label' => $label],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/labels/{label}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Determines if feedback has a label.",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="label",
-     *				description="Label to search for",
-     *				paramType="path",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param int    $communityTopicId
+     * @param string $label
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getFeedbackLabelAction($feedback_id, $label)
+    public function getCommunityTopicLabelAction($communityTopicId, $label)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id);
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
-        if ($feedback->getLabelManager()->hasLabel($label)) {
+        if ($communityTopic->getLabelManager()->hasLabel($label)) {
             return $this->createApiResponse(['exists' => true]);
         } else {
             return $this->createApiResponse(['exists' => false]);
@@ -1105,34 +681,16 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/{feedback_id}/labels/{label}",
-     * 	SWG\Operation(
-     * 		method="DELETE",
-     * 		summary="Removes a label from feedback",
-     *		SWG\Parameters (
-     *			SWG\Parameter(
-     *				name="feedback_id",
-     *				description="ID of the feedback that needs to be searched.",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *			SWG\Parameter(
-     *				name="label",
-     *				description="Label that needs to be deleted",
-     *				paramType="path",
-     *				required=true,
-     *				type="string"
-     *			)
-     *		),
-     *		SWG\ResponseMessage(code=404, message="Feedback not found")
-     * 	)
-     * ).
+     * @param $communityTopicId
+     * @param $label
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Application\LegacyApiBundle\HttpFoundation\JsonResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function deleteFeedbackLabelAction($feedback_id, $label)
+    public function deleteCommunityTopicLabelAction($communityTopicId, $label)
     {
-        $feedback = $this->_getFeedbackOr404($feedback_id, 'edit');
+        $feedback = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
 
         $feedback->getLabelManager()->removeLabel($label);
         $this->em->persist($feedback);
@@ -1142,13 +700,7 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/validating-comments",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets feedback comments that are awaiting validation."
-     * 	)
-     * ).
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getValidatingCommentsAction()
     {
@@ -1166,29 +718,17 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/categories",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available feedback categories."
-     * 	)
-     * ).
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getCategoriesAction()
+    public function getChannelsAction()
     {
-        $categories = $this->em->getRepository('DeskPRO:CommunityChannel')->getFlatHierarchy();
+        $channels = $this->em->getRepository('DeskPRO:CommunityChannel')->getFlatHierarchy();
 
-        return $this->createApiResponse(['categories' => $categories]);
+        return $this->createApiResponse(['categories' => $channels]);
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/status-categories",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available feedback status categories."
-     * 	)
-     * ).
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function getStatusCategoriesAction()
     {
@@ -1198,23 +738,17 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * SWG\Api(
-     * 	path="/community/user-categories",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Gets available feedback user categories."
-     * 	)
-     * ).
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getUserCategoriesAction()
+    public function getCustomChannelsAction()
     {
-        $field    = $this->_getUserCategoryField();
+        $field    = $this->_getCustomCommunityChannelField();
         $children = $field->getAllChildren();
 
         return $this->createApiResponse(['categories' => $this->getApiData($children)]);
     }
 
-    protected function _insertFeedbackAttachments(CommunityTopic $feedback)
+    protected function _insertCommunityTopicAttachments(CommunityTopic $feedback)
     {
         $attachments = $this->request->files->get('attach');
         if (!is_array($attachments)) {
@@ -1226,16 +760,16 @@ class CommunityTopicsController extends AbstractController
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $blob = $accept->accept($file);
-                $this->_addFeedbackAttachment($blob, $feedback);
+                $this->_addCommunityTopicAttachment($blob, $feedback);
             }
         }
 
         foreach ($this->in->getCleanValueArray('attach_id') as $blob_id) {
-            $this->_addFeedbackAttachment($blob_id, $feedback);
+            $this->_addCommunityTopicAttachment($blob_id, $feedback);
         }
     }
 
-    protected function _addFeedbackAttachment($blob_id, CommunityTopic $feedback)
+    protected function _addCommunityTopicAttachment($blob_id, CommunityTopic $feedback)
     {
         if ($blob_id instanceof \Application\DeskPRO\Entity\Blob) {
             $blob = $blob_id;
@@ -1261,7 +795,7 @@ class CommunityTopicsController extends AbstractController
      *
      * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
-    protected function _getUserCategoryField(Brand $brand = null)
+    protected function _getCustomCommunityChannelField(Brand $brand = null)
     {
         if (!$brand) {
             $brand = $this->get('default_brand_finder')->getDefaultBrand();
@@ -1275,26 +809,26 @@ class CommunityTopicsController extends AbstractController
      *
      *@throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
-     * @return \Application\DeskPRO\Entity\CommunityTopic
+     * @return CommunityTopic
      */
-    protected function _getFeedbackOr404($id, $check_perm = false)
+    protected function _getCommunityTopicOr404($id, $check_perm = false)
     {
-        $feedback = $this->em->getRepository('DeskPRO:CommunityTopic')->findOneById($id);
+        $communityTopic = $this->em->getRepository(CommunityTopic::class)->findOneById($id);
 
-        if (!$feedback) {
+        if (!$communityTopic) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no feedback with ID $id");
         }
 
         if ($check_perm) {
-            if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($feedback)) {
+            if ($check_perm == 'edit' && !$this->person->PermissionsManager->PublishChecker->canEdit($communityTopic)) {
                 throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
 
-            if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($feedback)) {
+            if ($check_perm == 'delete' && !$this->person->PermissionsManager->PublishChecker->canDelete($communityTopic)) {
                 throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
             }
         }
 
-        return $feedback;
+        return $communityTopic;
     }
 }

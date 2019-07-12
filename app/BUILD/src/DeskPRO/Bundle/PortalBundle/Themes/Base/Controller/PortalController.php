@@ -88,17 +88,17 @@ class PortalController extends AbstractController
             try {
                 $canViewTicketsLink = $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK);
                 $canUseChat         = $chatEnabled && $this->isGranted(UseSectionVoter::USE_CHAT);
-                $canUseFeedback     = $this->isGranted(UseSectionVoter::USE_FEEDBACK);
+                $canUseCommunity    = $this->isGranted(UseSectionVoter::USE_COMMUNITY);
             } catch (AuthenticationException $e) {
                 $canViewTicketsLink = false;
                 $canUseChat         = false;
-                $canUseFeedback     = false;
+                $canUseCommunity    = false;
             }
 
             $extendedOptions = [
                 'can_view_tickets_link' => $canViewTicketsLink,
                 'can_use_chat'          => $canUseChat,
-                'can_use_feedback'      => $canUseFeedback,
+                'can_use_community'     => $canUseCommunity,
             ];
 
             $extendedOptions = array_merge(
@@ -119,7 +119,7 @@ class PortalController extends AbstractController
 
             if ($extendedOptions['can_view_tickets_link']) {
                 $extendedOptions['first_link'] = $this->get('router')->generate('portal_new_ticket');
-            } elseif ($extendedOptions['can_use_feedback']) {
+            } elseif ($extendedOptions['can_use_community']) {
                 $extendedOptions['first_link'] = $this->get('router')->generate('portal_community');
             } elseif ($extendedOptions['can_use_chat']) {
                 // this is very, very dirty hack

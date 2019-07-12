@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\NewSearch\Repository;
 
 /**
- * Feedback Repository.
+ * Community Repository.
  */
 class CommunityRepository extends AbstractRepository
 {

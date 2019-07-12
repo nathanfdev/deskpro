@@ -55,7 +55,7 @@ class PortalTabsHelper
                     break;
                 case 'feedback':
                     if ($this->getBrandSetting('user.portal_tab_feedback')
-                        && $this->auth_checker->isGranted(UseSectionVoter::USE_FEEDBACK)) {
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_COMMUNITY)) {
                         $tabs[] = $tab_type;
                     }
                     break;

@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Feedback categories. (These are referred to in code/urls as "types").
+ * Community channels.
  *
  * @JMS\ExclusionPolicy("all")
  *

@@ -71,9 +71,9 @@ class CaptchaDecider
         $this->anti_abuse            = $anti_abuse;
     }
 
-    public function shouldRequireFeedbackCaptchaForCurrentPerson()
+    public function shouldRequireCommunityCaptchaForCurrentPerson()
     {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC, 'user.captcha.feedback');
+        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC, 'user.captcha.community');
     }
 
     public function shouldRequireCommentCaptchaForCurrentPerson()

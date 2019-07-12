@@ -11,18 +11,18 @@ use Orb\Util\Util;
 
 class CommunitySearch extends SearcherAbstract
 {
-    const TERM_ID                = 'id';
-    const TERM_STATUS            = 'status';
-    const TERM_BRAND             = 'brand';
-    const TERM_DELETED           = 'deleted';
-    const TERM_HIDDEN_STATUS     = 'hidden_status';
-    const TERM_CATEGORY          = 'category';
-    const TERM_CATEGORY_SPECIFIC = 'category_specific';
-    const TERM_STATUS_CATEGORY   = 'status_category';
-    const TERM_NUM_RATINGS       = 'num_ratings';
-    const TERM_DATE_CREATED      = 'date_created';
-    const TERM_LABEL             = 'label';
-    const TERM_QUERY             = 'query';
+    const TERM_ID               = 'id';
+    const TERM_STATUS           = 'status';
+    const TERM_BRAND            = 'brand';
+    const TERM_DELETED          = 'deleted';
+    const TERM_HIDDEN_STATUS    = 'hidden_status';
+    const TERM_CHANNEL          = 'channel';
+    const TERM_CHANNEL_SPECIFIC = 'channel_specific';
+    const TERM_STATUS_CATEGORY  = 'status_category';
+    const TERM_NUM_RATINGS      = 'num_ratings';
+    const TERM_DATE_CREATED     = 'date_created';
+    const TERM_LABEL            = 'label';
+    const TERM_QUERY            = 'query';
 
     const ORDER_ID          = 'id';
     const ORDER_DATE        = 'id';
@@ -387,12 +387,12 @@ class CommunitySearch extends SearcherAbstract
                     $wheres[] = implode(' OR ', $w);
                     break;
 
-                case self::TERM_CATEGORY:
-                case self::TERM_CATEGORY_SPECIFIC:
+                case self::TERM_CHANNEL:
+                case self::TERM_CHANNEL_SPECIFIC:
                     $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
                     $ids      = [];
 
-                    if ($term == self::TERM_CATEGORY_SPECIFIC) {
+                    if ($term == self::TERM_CHANNEL_SPECIFIC) {
                         $ids = $base_ids;
                     } else {
                         foreach ($base_ids as $id) {

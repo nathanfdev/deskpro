@@ -249,15 +249,15 @@ class BreadcrumbGenerator
     // Feedback
     //####################################################################################################################
 
-    public function buildFeedback()
+    public function buildCommunity()
     {
-        return $this->createBuilder()->addFeedback()->done();
+        return $this->createBuilder()->addCommunity()->done();
     }
 
-    public function buildFeedbackView(CommunityTopic $a)
+    public function buildCommunityView(CommunityTopic $a)
     {
-        return $this->createBuilder()->addFeedback()
-            ->addFeedbackView($a)
+        return $this->createBuilder()->addCommunity()
+            ->addCommunityView($a)
             ->done();
     }
 

@@ -191,8 +191,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.feedback:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType
+  form.community_topic:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Community\CommunityTopicType
     arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type }
@@ -404,8 +404,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.mass_actions.feedback_params:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback\FeedbackMassActionParamsType
+  form.mass_actions.community_topic_params:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\CommunityTopic\CommunityTopicMassActionParamsType
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:

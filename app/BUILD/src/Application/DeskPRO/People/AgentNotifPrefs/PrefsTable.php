@@ -60,9 +60,9 @@ class PrefsTable
     /**
      * @return array
      */
-    public function buildFeedbackTable()
+    public function buildCommunityTable()
     {
-        return $this->buildAppTable('feedback');
+        return $this->buildAppTable('community');
     }
 
     /**

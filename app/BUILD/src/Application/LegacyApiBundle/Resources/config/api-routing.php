@@ -2875,8 +2875,8 @@ $collection->create(
     'api_community_topic_view',
     [
         'path'         => '/community/{feedback_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedback',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopic',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -2884,9 +2884,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_post',
     [
-        'path'         => '/community/{feedback_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:postFeedback',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:postCommunityTopic',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
@@ -2894,9 +2894,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_delete',
     [
-        'path'         => '/community/{feedback_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteFeedback',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopic',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
@@ -2904,9 +2904,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_votes',
     [
-        'path'         => '/community/{feedback_id}/votes',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackVotes',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/votes',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicVotes',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -2914,9 +2914,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_comments_view',
     [
-        'path'         => '/community/{feedback_id}/comments',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackComments',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicComments',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -2924,9 +2924,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_comments_new',
     [
-        'path'         => '/community/{feedback_id}/comments',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:newFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:newCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
@@ -2934,9 +2934,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_comments_get_comment',
     [
-        'path'         => '/community/{feedback_id}/comments/{comment_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+', 'comment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments/{commentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+', 'commentId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -2944,9 +2944,9 @@ $collection->create(
 $collection->create(
     'api_community_topics_comments_post_comment',
     [
-        'path'         => '/community/{feedback_id}/comments/{comment_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:postFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+', 'comment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments/{commentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:postCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+', 'commentId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
@@ -2954,9 +2954,9 @@ $collection->create(
 $collection->create(
     'api_community_topics_comments_delete_comment',
     [
-        'path'         => '/community/{feedback_id}/comments/{comment_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+', 'comment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments/{commentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+', 'commentId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
@@ -2964,9 +2964,9 @@ $collection->create(
 $collection->create(
     'api_community_topics_merge',
     [
-        'path'         => '/community/{feedback_id}/merge/{other_feedback_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:mergeFeedback',
-        'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/merge/{otherCommunityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:mergeCommunityTopics',
+        'requirements' => ['communityTopicId' => '\\d+', 'otherCommunityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
@@ -2974,9 +2974,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_attachments',
     [
-        'path'         => '/community/{feedback_id}/attachments',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackAttachments',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicAttachments',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -2984,9 +2984,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_attachments_post',
     [
-        'path'         => '/community/{feedback_id}/attachments',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:newFeedbackAttachment',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:newComunityTopicAttachment',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
@@ -2994,9 +2994,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_attachment_get',
     [
-        'path'         => '/community/{feedback_id}/attachments/{attachment_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackAttachment',
-        'requirements' => ['feedback_id' => '\\d+', 'attachment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments/{attachmentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicAttachment',
+        'requirements' => ['communityTopicId' => '\\d+', 'attachmentId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -3004,9 +3004,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_attachment_delete',
     [
-        'path'         => '/community/{feedback_id}/attachments/{attachment_id}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteFeedbackAttachment',
-        'requirements' => ['feedback_id' => '\\d+', 'attachment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments/{attachmentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopicAttachment',
+        'requirements' => ['communityTopicId' => '\\d+', 'attachmentId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
@@ -3014,9 +3014,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_labels',
     [
-        'path'         => '/community/{feedback_id}/labels',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackLabels',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicLabels',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -3024,9 +3024,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_labels_post',
     [
-        'path'         => '/community/{feedback_id}/labels',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:postFeedbackLabels',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:postCommunityTopicLabels',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
@@ -3034,9 +3034,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_label',
     [
-        'path'         => '/community/{feedback_id}/labels/{label}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:getFeedbackLabel',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels/{label}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicLabel',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
@@ -3044,9 +3044,9 @@ $collection->create(
 $collection->create(
     'api_community_topic_label_delete',
     [
-        'path'         => '/community/{feedback_id}/labels/{label}',
-        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteFeedbackLabel',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels/{label}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopicLabel',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
@@ -3064,7 +3064,7 @@ $collection->create(
     'api_community_channels_custom',
     [
         'path'       => '/community/categories',
-        'controller' => 'LegacyApiBundle:CommunityTopics:getCategories',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getChannels',
         'methods'    => ['GET'],
     ]
 );
@@ -3082,7 +3082,7 @@ $collection->create(
     'api_community_user_categories',
     [
         'path'       => '/community/user-categories',
-        'controller' => 'LegacyApiBundle:CommunityTopics:getUserCategories',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getCustomChannels',
         'methods'    => ['GET'],
     ]
 );

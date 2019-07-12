@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class UseSectionVoter extends AbstractVoter
 {
     const USE_ARTICLES      = 'USE_ARTICLES';
-    const USE_FEEDBACK      = 'USE_FEEDBACK';
+    const USE_COMMUNITY     = 'USE_COMMUNITY';
     const USE_CHAT          = 'USE_CHAT';
     const USE_DOWNLOADS     = 'USE_DOWNLOADS';
     const USE_NEWS          = 'USE_NEWS';
@@ -28,7 +28,7 @@ class UseSectionVoter extends AbstractVoter
     {
         return in_array($attribute, [
             self::USE_ARTICLES,
-            self::USE_FEEDBACK,
+            self::USE_COMMUNITY,
             self::USE_GUIDES,
             self::USE_CHAT,
             self::USE_DOWNLOADS,
@@ -56,7 +56,7 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_ARTICLES:
                 return $this->getActiveBrandSetting('core.apps_kb')
                     && ($permissionBag->get('articles.use') || $permissionBag->getAllowedArticleCategories());
-            case static::USE_FEEDBACK:
+            case static::USE_COMMUNITY:
                 return $this->getActiveBrandSetting('core.apps_feedback')
                     && ($permissionBag->get('community.use') || $permissionBag->getAllowedCommunityChannelIds());
             case static::USE_GUIDES:

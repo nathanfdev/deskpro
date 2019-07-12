@@ -38,17 +38,13 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function listAction()
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
-         */
         $communityChannels = $this->container->getSystemService('community_channels');
 
         return $this->createApiResponse(
             [
                  'types' => $this->getApiData(Arrays::flatten($communityChannels->getAll())),
             ]
-    // get
-);
+        );
     }
 
 //##################################################################################################################
@@ -56,9 +52,6 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function getAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
-         */
         $communityChannels = $this->container->getSystemService('community_channels');
         $communityChannel  = $communityChannels->getById($id);
 
@@ -82,9 +75,6 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function saveAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
-         */
         $communityChannels = $this->container->getSystemService('community_channels');
 
         if ($id) {
@@ -123,9 +113,6 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function removeAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
-         */
         $communityChannels = $this->container->getSystemService('community_channels');
         $communityChannel  = $communityChannels->getById($id);
 
@@ -180,9 +167,6 @@ class CommunityChannelsController extends AbstractController implements Protecte
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        /*
-         * @var \Application\DeskPRO\FeedbackTypes\FeedbackTypes
-         */
         $communityChannels = $this->container->getSystemService('community_channels');
         $communityChannels->updateDisplayOrders($display_orders);
 

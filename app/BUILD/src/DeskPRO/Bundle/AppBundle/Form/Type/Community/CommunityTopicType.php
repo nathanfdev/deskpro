@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Community;
 
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;

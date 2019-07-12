@@ -105,10 +105,10 @@ class CommunityTopicsResults
             /*
              * Usually search forms terms are keyed arbitrarily (usually numerically).
              * The keys are discarded when read in by the RuleBuilder class above.
-             * But in the FeedbackController and template, we set specific keys
+             * But in the CommunityTopicsController and template, we set specific keys
              * for terms so the values can be easily plugged back into the form.
              *
-             * (See FeedbackController setting 'specific_terms', and the 'filter-searhc-form' template)
+             * (See CommunityTopicsController setting 'specific_terms', and the 'filter-searhc-form' template)
              *
              * Usually search forms are made with the RuleBuilder JS widget, which
              * adds terms dynamically. But when we want a static form and just want

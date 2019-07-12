@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType;
 use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -35,14 +35,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * Class FeedbackController.
+ * Class CommunityTopicsController.
  */
-class FeedbackController extends AbstractController
+class CommunityTopicsController extends AbstractController
 {
     /**
      * @Route("/community.{_format}", name="portal_community", defaults={"_format":"html"},
      *     requirements={"_format":"html|rss"})
-     * @Route("/community", name="user_feedback_home")
+     * @Route("/community", name="user_community_home")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
      *
@@ -69,7 +69,7 @@ class FeedbackController extends AbstractController
                 'sort_direction'    => $request->query->get('sort_direction', 'desc'),
             ]);
 
-            $pager = $this->getFeedbackDataService()->getItemsPager(
+            $pager = $this->getCommunityDataService()->getItemsPager(
                 $page,
                 $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $filter,
@@ -87,18 +87,18 @@ class FeedbackController extends AbstractController
         // NEW FEEDBACK FORM
 
         // true if auto-submit SavedFormController wants us to definitely rerender
-        $rerenderingSaved = $request->attributes->get('rerender-form', false);
-        $permissionBag    = $this->getPermissionBagForCurrentUser();
-        $newFeedback      = new CommunityTopic();
-        $newFeedback->setIsReviewed(false);
+        $rerenderingSaved  = $request->attributes->get('rerender-form', false);
+        $permissionBag     = $this->getPermissionBagForCurrentUser();
+        $newCommunityTopic = new CommunityTopic();
+        $newCommunityTopic->setIsReviewed(false);
         if (!$permissionBag->hasPermission('feedback.no_submit_validate')) {
-            $newFeedback->setStatus(CommunityTopic::STATUS_HIDDEN);
+            $newCommunityTopic->setStatus(CommunityTopic::STATUS_HIDDEN);
         } else {
-            $newFeedback->setStatus(CommunityTopic::STATUS_ACTIVE);
-            $newFeedback->setStatusCategory($this->getDefaultStatusCategory());
+            $newCommunityTopic->setStatus(CommunityTopic::STATUS_ACTIVE);
+            $newCommunityTopic->setStatusCategory($this->getDefaultStatusCategory());
         }
-        $newFeedback->setPerson($person);
-        $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
+        $newCommunityTopic->setPerson($person);
+        $form = $this->createForm(NewCommunityTopicType::class, $newCommunityTopic, [
             'person'                => $person,
             'action'                => $this->generateUrl('portal_community'),
             'saved_form_subrequest' => $request->attributes->has('saved-form'),
@@ -132,15 +132,15 @@ class FeedbackController extends AbstractController
                         $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
 
                         // since the guest is set on the form, we need to update all of the associations
-                        $newFeedback->setPerson($person);
-                        foreach ($newFeedback->getAttachments() as $attachment) {
+                        $newCommunityTopic->setPerson($person);
+                        foreach ($newCommunityTopic->getAttachments() as $attachment) {
                             $attachment->setPerson($person);
                         }
 
-                        return $this->acceptNewFeedback($newFeedback, $person, $request);
+                        return $this->acceptNewFeedback($newCommunityTopic, $person, $request);
                     } catch (LoginRequiredException $e) {
                         $person = $e->getPerson();
-                        $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
+                        $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
 
                         if ($person instanceof PersonGuest) {
                             $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmail(), $person->getDisplayName());
@@ -154,7 +154,7 @@ class FeedbackController extends AbstractController
                             return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_FEEDBACK, $person, $form, $request);
                         }
                     } catch (EmailValidationRequiredException $e) {
-                        $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
+                        $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
 
                         $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                         $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $savedForm);
@@ -164,9 +164,9 @@ class FeedbackController extends AbstractController
                     }
                 }
 
-                $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
+                $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
 
-                return $this->acceptNewFeedback($newFeedback, $person, $request);
+                return $this->acceptNewFeedback($newCommunityTopic, $person, $request);
             }
         }
 
@@ -177,7 +177,7 @@ class FeedbackController extends AbstractController
 
         // BREADCRUMBS
 
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunity();
 
         // SUBSCRIPTION
 
@@ -201,7 +201,7 @@ class FeedbackController extends AbstractController
         $filter->setTypes($allowedTypesParsed);
         $filterJs = $this->generateFilterJs($filter, $feedbackTypes, $page);
 
-        $check = $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp(), false);
+        $check = $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp(), false);
 
         // RENDER THEME
 
@@ -233,7 +233,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @param CommunityTopic $newFeedback
+     * @param CommunityTopic $newCommunityTopic
      * @param Person         $person
      * @param Request        $request
      *
@@ -241,23 +241,23 @@ class FeedbackController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function acceptNewFeedback(CommunityTopic $newFeedback, Person $person, Request $request)
+    protected function acceptNewFeedback(CommunityTopic $newCommunityTopic, Person $person, Request $request)
     {
-        $this->getEm()->persist($newFeedback);
+        $this->getEm()->persist($newCommunityTopic);
         $this->getEm()->flush();
 
-        if ($newFeedback->isVisibleOnPortal()) {
+        if ($newCommunityTopic->isVisibleOnPortal()) {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_posted'));
-            $destination = $this->getObjectRouter()->getPortalPath($newFeedback);
+            $destination = $this->getObjectRouter()->getPortalPath($newCommunityTopic);
         } else {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
             $destination = $this->generateUrl('portal_community');
         }
 
-        $notify = new NewCommunityTopicNotification($newFeedback);
+        $notify = new NewCommunityTopicNotification($newCommunityTopic);
         $notify->send();
 
-        $this->getEmailSender()->sendNewFeedbackEmail($newFeedback);
+        $this->getEmailSender()->sendNewCommunityTopicEmail($newCommunityTopic);
 
         $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
         if ($redirect) {
@@ -274,7 +274,7 @@ class FeedbackController extends AbstractController
      *
      * @return SubmitCommunityTopicAbuseCheck
      */
-    public function submitNewFeedbackAbuseCheck($person, $ip, $withResponse = true)
+    public function submitNewCommunityTopicAbuseCheck($person, $ip, $withResponse = true)
     {
         $check = new SubmitCommunityTopicAbuseCheck($person, $ip);
         if ($withResponse) {
@@ -342,7 +342,7 @@ class FeedbackController extends AbstractController
 
         // BREADCRUMBS
 
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedback();
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunity();
 
         // SUBSCRIPTION
 
@@ -384,10 +384,10 @@ class FeedbackController extends AbstractController
         }
 
         // setup and render an initial form that posts to /community
-        $person      = $this->getUser() ?: new PersonGuest();
-        $newFeedback = new CommunityTopic();
-        $newFeedback->setPerson($person);
-        $form = $this->createForm(NewFeedbackType::class, $newFeedback, [
+        $person            = $this->getUser() ?: new PersonGuest();
+        $newCommunityTopic = new CommunityTopic();
+        $newCommunityTopic->setPerson($person);
+        $form = $this->createForm(NewCommunityTopicType::class, $newCommunityTopic, [
             'person' => $person,
             'action' => $this->generateUrl('portal_community'),
         ]);
@@ -448,7 +448,7 @@ class FeedbackController extends AbstractController
 
         // BREADCRUMBS
 
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildFeedbackView($item);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunityView($item);
 
         // RATING
 
@@ -633,8 +633,8 @@ class FeedbackController extends AbstractController
      */
     protected function getDefaultStatusCategory()
     {
-        $feedbackDataService   = $this->getFeedbackDataService();
-        $defaultStatusCategory = $feedbackDataService->getFeedbackFirstStatusCategoryByType(
+        $communityDataService  = $this->getCommunityDataService();
+        $defaultStatusCategory = $communityDataService->getCommunityFirstStatusCategoryByType(
             CommunityTopicStatusCategory::STATUS_ACTIVE
         );
 

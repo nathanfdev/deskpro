@@ -1807,7 +1807,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * Add a TicketFeedbackLink to this ticket.
+     * Add a TicketCommunityTopicLink to this ticket.
      *
      * @param TicketCommunityTopicLink $topicLink
      */

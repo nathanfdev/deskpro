@@ -216,7 +216,7 @@ class Structure implements PersonContextInterface
     }
 
     //###################################################################################################################
-    // Feedback Fetchers
+    // Community Fetchers
     //###################################################################################################################
 
     /**
@@ -393,19 +393,19 @@ class Structure implements PersonContextInterface
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CATEGORY, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 

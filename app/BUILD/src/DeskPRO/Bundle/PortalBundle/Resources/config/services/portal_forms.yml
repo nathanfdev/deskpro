@@ -83,7 +83,7 @@ services:
       - { name: form.type, alias: comment }
 
   form.new_feedback:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType
     arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager", "@form_hierarchy_generator"]
     tags:
       - { name: form.type }

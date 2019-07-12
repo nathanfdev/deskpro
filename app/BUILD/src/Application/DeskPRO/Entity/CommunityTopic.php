@@ -668,11 +668,6 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         return $this->attachments;
     }
 
-    public function getCategory()
-    {
-        return $this->channel;
-    }
-
     public function getChannel()
     {
         return $this->channel;

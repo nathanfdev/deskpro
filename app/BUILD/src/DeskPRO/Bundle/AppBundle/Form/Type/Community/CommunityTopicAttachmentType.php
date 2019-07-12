@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Community;
 
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicAttachment;
@@ -12,9 +12,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackAttachmentType.
+ * Class CommunityTopicAttachmentType.
  */
-class FeedbackAttachmentType extends AbstractType
+class CommunityTopicAttachmentType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -37,7 +37,7 @@ class FeedbackAttachmentType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'feedback_attachment';
+        return 'community_topic_attachment';
     }
 
     /**
@@ -49,8 +49,8 @@ class FeedbackAttachmentType extends AbstractType
             ->setDefaults([
                 'data_class' => CommunityTopicAttachment::class,
             ])
-            ->setRequired('feedback')
-            ->setAllowedTypes('feedback', CommunityTopic::class)
+            ->setRequired('topic')
+            ->setAllowedTypes('topic', CommunityTopic::class)
         ;
     }
 
@@ -64,10 +64,10 @@ class FeedbackAttachmentType extends AbstractType
         $form = $event->getForm();
         $data = $event->getData();
 
-        /** @var CommunityTopic $feedback */
-        $feedback = $form->getConfig()->getOption('feedback');
+        /** @var CommunityTopic $topic */
+        $topic = $form->getConfig()->getOption('topic');
         if ($data instanceof CommunityTopicAttachment) {
-            $feedback->addAttachment($data);
+            $topic->addAttachment($data);
         }
     }
 }

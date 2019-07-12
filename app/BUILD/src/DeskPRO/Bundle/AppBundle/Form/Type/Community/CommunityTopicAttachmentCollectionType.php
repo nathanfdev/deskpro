@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Feedback;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Community;
 
 use Application\DeskPRO\Entity\CommunityTopic;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AttachmentCollectionType;
@@ -9,9 +9,9 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class FeedbackAttachmentCollectionType.
+ * Class CommunityTopicAttachmentCollectionType.
  */
-class FeedbackAttachmentCollectionType extends AbstractType
+class CommunityTopicAttachmentCollectionType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class FeedbackAttachmentCollectionType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'feedback_attachment_collection';
+        return 'community_topic_attachment_collection';
     }
 
     /**
@@ -36,17 +36,17 @@ class FeedbackAttachmentCollectionType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'entry_type'    => FeedbackAttachmentType::class,
+                'entry_type'    => CommunityTopicAttachmentType::class,
                 'entry_options' => function (Options $options) {
                     return [
-                        'feedback' => $options['feedback'],
-                        'person'   => $options['person'],
-                        'label'    => false,
+                        'topic'  => $options['topic'],
+                        'person' => $options['person'],
+                        'label'  => false,
                     ];
                 },
             ])
-            ->setRequired('feedback')
-            ->setAllowedTypes('feedback', CommunityTopic::class)
+            ->setRequired('topic')
+            ->setAllowedTypes('topic', CommunityTopic::class)
         ;
     }
 }

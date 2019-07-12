@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * Feedback revisions.
+ * Community topics revisions.
  */
 class CommunityTopicRevision extends RevisionAbstract
 {

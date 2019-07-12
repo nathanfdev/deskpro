@@ -17,11 +17,11 @@ use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
-class FeedbackController extends AbstractController
+class CommunityController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_list_simple", default_options={"style":"simple"}, esi=true)
-     * @Tag(name="feedback_list_detail", default_options={"style":"detail", "show_pager":true}, allow_route_params=true)
+     * @Tag(name="community_list_simple", default_options={"style":"simple"}, esi=true)
+     * @Tag(name="community_list_detail", default_options={"style":"detail", "show_pager":true}, allow_route_params=true)
      * @TagHttpCache()
      *
      * @TagOptions(
@@ -59,7 +59,7 @@ class FeedbackController extends AbstractController
             'sort_direction'    => $options['sort_direction'],
         ]);
 
-        $pager = $this->getFeedbackDataService()->getItemsPager(
+        $pager = $this->getCommunityDataService()->getItemsPager(
             (int) $options['page'],
             (int) $options['count'],
             $filter,
@@ -85,14 +85,14 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_comments")
+     * @Tag(name="community_topic_comments")
      *
      * @TagOptions(
      *      defaults={
      *          "item": null
      *      },
      *      allowed_types={
-     *          "item":{"Application\DeskPRO\Entity\Feedback","int","string"}
+     *          "item":{"Application\DeskPRO\Entity\CommunityTopic","int","string"}
      *      },
      *      attribute_expressions={
      *          "item": "service('data.community').getItem(options['item'])"

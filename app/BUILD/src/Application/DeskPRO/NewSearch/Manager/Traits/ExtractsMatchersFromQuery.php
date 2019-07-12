@@ -29,7 +29,7 @@ trait ExtractsMatchersFromQuery
      * - Permalink with SLUG (user): http://support.deskpro.com/en/downloads/files/sint-qui-id-cum-vel
      * - Permalink with ID (user)  : http://support.deskpro.com/en/downloads/files/6
      *
-     * Feedbacks:
+     * Community topics:
      * - Permalink with ID (agent) : http://support.deskpro.com/agent/go/community/4
      * - Permalink with SLUG (user): http://support.deskpro.com/en/community/view/ut-ut-et-at-in
      * - Permalink with ID (user)  : http://support.deskpro.com/en/community/view/4

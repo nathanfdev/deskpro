@@ -6,7 +6,7 @@ use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Notifications\NewCommunityTopicNotification;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\CommunityTopicType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Community\CommunityTopicType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  *         {"name"="hidden_status", "dataType"="integer", "pattern"="unpublished|deleted|spam|draft", "description"="limit with hidden_status"},
  *         {"name"="status_category", "pattern"="\w|[\w]", "description"="filter by status category", "dataType"="string[]"},
  *         {"name"="channel", "pattern"="\w|[\w]", "description"="channel title, or titles array", "dataType"="string[]"},
- *         {"name"="custom_category", "pattern"="\w|[\w]", "description"="filter by custom category", "dataType"="string[]"},
+ *         {"name"="custom_channel", "pattern"="\w|[\w]", "description"="filter by custom channel", "dataType"="string[]"},
  *         {"name"="labels_mode", "pattern"="any|all", "description"="how to load labels", "dataType"="string"},
  *         {"name"="label", "pattern"="\w,\w...\w", "description"="select feedback with given lables", "dataType"="string"},
  *         {"name"="no_labels", "pattern"="1", "description"="select feedback have no label", "dataType"="boolean"},
@@ -46,22 +46,22 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="listAction",
  *     filters={
- *         {"name"="order_by", "pattern"="date_created|total_rating|num_ratings|id|title|status|category|person", "description"="how to order result", "dataType"="string"},
+ *         {"name"="order_by", "pattern"="date_created|total_rating|num_ratings|id|title|status|channel|person", "description"="how to order result", "dataType"="string"},
  *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
  *     }
  * )
  * @ApiDoc(
  *     target="countAction",
  *     filters={
- *         {"name"="group_by", "pattern"="status_category|hidden_status|category|custom_category", "description"="how to group counts", "dataType"="boolean"}
+ *         {"name"="group_by", "pattern"="status_category|hidden_status|channel|custom_channel", "description"="how to group counts", "dataType"="boolean"}
  *     }
  * )
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Coomunity\CommunityTopicType",
  *      "options"={
- *          "data"="Application\DeskPRO\Entity\Feedback",
+ *          "data"="Application\DeskPRO\Entity\CommunityTopic",
  *          "person"="Application\DeskPRO\Entity\Person"
  *      }
  *     }
@@ -77,7 +77,7 @@ class CommunityController extends AbstractCommunityController
         'num_ratings'  => 'num_ratings',
         'title'        => 'title',
         'status'       => 'status',
-        'category'     => ['join' => 'category', 'as' => 'c', 'sort' => 'c.id'],
+        'channel'      => ['join' => 'channel', 'as' => 'c', 'sort' => 'c.id'],
         'person'       => ['join' => 'person', 'as' => 'p', 'sort' => 'p.id'],
     ];
 
@@ -125,7 +125,7 @@ class CommunityController extends AbstractCommunityController
                     ->groupBy('group_name');
 
                 break;
-            case 'custom_category':
+            case 'custom_channel':
                 $qb
                     ->join("{$alias}.custom_data", 'customCat')
                     ->join('customCat.field', 'def')
@@ -137,11 +137,11 @@ class CommunityController extends AbstractCommunityController
                     ->groupBy('group_name');
 
                 break;
-            case 'category':
+            case 'channel':
                 $qb
-                    ->join("{$alias}.category", 'category')
-                    ->addSelect('category.title as title')
-                    ->addSelect('category.id as group_name')
+                    ->join("{$alias}.channel", 'channel')
+                    ->addSelect('channel.title as title')
+                    ->addSelect('channel.id as group_name')
                     ->groupBy('group_name');
 
                 break;
@@ -168,7 +168,7 @@ class CommunityController extends AbstractCommunityController
 
         $view = parent::handleForm($model, $request, $options);
 
-        // if no exception has been the feedback has been created
+        // if no exception has been thown when community topic has been created
         $notify = new NewCommunityTopicNotification($model);
         $notify->send();
 

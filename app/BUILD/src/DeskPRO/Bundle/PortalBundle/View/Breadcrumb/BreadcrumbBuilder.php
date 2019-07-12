@@ -351,25 +351,25 @@ class BreadcrumbBuilder
     }
 
     //####################################################################################################################
-    // Feedback
+    // Community
     //####################################################################################################################
 
-    public function addFeedback()
+    public function addCommunity()
     {
         $this->b->add(
             $this->url_generator->generate('portal_community'),
-            Breadcrumbs::FEEDBACK,
+            Breadcrumbs::COMMUNITY,
             ['phrase' => 'portal.general.nav-feedback']
         );
 
         return $this;
     }
 
-    public function addFeedbackView(CommunityTopic $a)
+    public function addCommunityView(CommunityTopic $a)
     {
         $this->b->add(
             $this->object_router->getPortalPath($a),
-            Breadcrumbs::FEEDBACK_VIEW,
+            Breadcrumbs::COMMUNITY_VIEW,
             $a
         );
 

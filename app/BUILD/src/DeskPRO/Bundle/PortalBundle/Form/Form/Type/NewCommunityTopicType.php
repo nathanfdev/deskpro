@@ -9,8 +9,8 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Community\CommunityTopicAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -27,9 +27,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 
 /**
- * Class NewFeedbackType.
+ * Class NewCommunityTopicType.
  */
-class NewFeedbackType extends AbstractType
+class NewCommunityTopicType extends AbstractType
 {
     /**
      * @var CaptchaDecider
@@ -105,9 +105,9 @@ class NewFeedbackType extends AbstractType
             ->add('custom_data', CombinedType::class, [
                 'forms' => $this->getCustomDataForms(),
             ])
-            ->add('attachments', FeedbackAttachmentCollectionType::class, [
-                'person'   => $options['person'],
-                'feedback' => $builder->getData(),
+            ->add('attachments', CommunityTopicAttachmentCollectionType::class, [
+                'person' => $options['person'],
+                'topic'  => $builder->getData(),
             ])
             ->add('more_attachments', SubmitType::class, [
                 'validation_groups' => false,
@@ -131,7 +131,7 @@ class NewFeedbackType extends AbstractType
         }
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            if ($this->captchaDecider->shouldRequireFeedbackCaptchaForCurrentPerson()) {
+            if ($this->captchaDecider->shouldRequireCommunityCaptchaForCurrentPerson()) {
                 $event->getForm()->add('captcha', DpCaptchaType::class, [
                     'mapped'         => false,
                     'error_bubbling' => false,
