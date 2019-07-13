@@ -790,7 +790,7 @@
                                 data-tab-for="#{{ baseId }}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
                             {% if app.getSetting('core_tickets.enable_feedback') and app.getSetting('core_tickets.feedback_agents_read') and ticket.date_feedback_rating %}
                                 <li data-list-type="feedback" data-tab-for="#{{ baseId }}_messages_wrap">
-                                    {{ phrase('agent.tickets.ticket_community') }} <span
+                                    {{ phrase('agent.tickets.ticket_feedback') }} <span
                                           class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
                                 </li>
                             {% endif %}

@@ -6,7 +6,7 @@
 				<div class="panel-body">
 					<div class="form-group">
 						<div class="col-lg-3">
-							<h3>{{ phrase('adm.community_categories.title') }} *</h3>
+							<h3>{{ phrase('adm.community_custom_channels.title') }} *</h3>
 						</div>
 						<div class="col-lg-9">
 							<div class="inner-group" dp-error-class="form_props.title">
@@ -14,7 +14,7 @@
 									   ng-model="CommunityCustomChannelsEdit.community_custom_channel.title" style="width: 50%;"
 									   required autofocus dp-server-validation="title.not_blank">
 							<span class="help-block">
-								{{ phrase('adm.community_categories.title_explain') }}
+								{{ phrase('adm.community_custom_channels.title_explain') }}
 							</span>
 							</div>
 						</div>
@@ -34,7 +34,7 @@
 								<option value="{{ ng_var('category.id') }}" ng-repeat="category in CommunityCustomChannelsEdit.community_custom_channels_parent_list">{{ ng_var('category.title') }}</option>
 							</select>
 						<span class="help-block">
-							{{ phrase('adm.community_categories.parent_explain') }}
+							{{ phrase('adm.community_custom_channels.parent_explain') }}
 						</span>
 						</div>
 					</div>
@@ -54,7 +54,7 @@
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
 							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
-								{{ phrase('adm.community_categories.title_error') }}
+								{{ phrase('adm.community_custom_channels.title_error') }}
 							</li>
 						</ul>
 					</div>

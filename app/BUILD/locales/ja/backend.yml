@@ -22,23 +22,23 @@ adm.custom_fields.specific_user_fields: ユーザ単位フィールド
 adm.custom_fields.ticket_fields: チケットフィールド
 adm.custom_fields.title_error: 有効なタイトルを入力する必要があります
 adm.custom_fields.user_fields: ユーザフィールド
-adm.community_categories.delete_feedback_categories_moved: 現在、このフィードバックカテゴリの下にある全てのフィードバックは、次の場所に移動されます：
-adm.community_categories.delete_feedback_category: フィードバックカテゴリ削除
-adm.community_categories.delete_feedback_category_confirm: このフィードバックカテゴリを削除してもよろしいですか？
-adm.community_categories.new_category: 新しいフィードバックカテゴリ
-adm.community_categories.parent_explain: 親カテゴリを設定することで、このカテゴリは子カテゴリになります。これは、使いやすいフィードバック構造を作成するのに役立つ組織的な機能です。
-adm.community_categories.title: タイトル
-adm.community_categories.title_error: 有効なタイトルを入力する必要があります
-adm.community_categories.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
-adm.community_types.delete_feedback_type: フィードバックタイプ削除
-adm.community_types.delete_feedback_type_confirm: このフィードバックタイプを削除してもよろしいですか？
-adm.community_types.delete_feedback_types_moved: このフィードバックタイプのしたにあるフィードバックは、次の場所に移動されます：
-adm.community_types.no_delete_last: 少なくとも1つのフィードバックタイプが常に存在する必要があります。最後のフィードバックタイプは削除できません。
-adm.community_types.title: タイトル
-adm.community_types.title_error: 有効なタイトルを入力する必要があります
-adm.community_types.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
-adm.community_types.usergroups: ユーザグループ
-adm.community_types.usergroups_explain: これらは、このフィードバックタイプが属するユーザグループです。
+adm.community_categories.delete_communuty_custom_channels_moved: 現在、このフィードバックカテゴリの下にある全てのフィードバックは、次の場所に移動されます：
+adm.community_categories.delete_cummunity_custom_channel: フィードバックカテゴリ削除
+adm.community_categories.delete_cummunity_custom_channel_confirm: このフィードバックカテゴリを削除してもよろしいですか？
+adm.community_custom_channels.new_channel: 新しいフィードバックカテゴリ
+adm.community_custom_channels.parent_explain: 親カテゴリを設定することで、このカテゴリは子カテゴリになります。これは、使いやすいフィードバック構造を作成するのに役立つ組織的な機能です。
+adm.community_custom_channels.title: タイトル
+adm.community_custom_channels.title_error: 有効なタイトルを入力する必要があります
+adm.community_custom_channels.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
+adm.community_channels.delete_community_channel: フィードバックタイプ削除
+adm.community_channels.delete_community_channel_confirm: このフィードバックタイプを削除してもよろしいですか？
+adm.community_channels.delete_community_channels_moved: このフィードバックタイプのしたにあるフィードバックは、次の場所に移動されます：
+adm.community_channels.no_delete_last: 少なくとも1つのフィードバックタイプが常に存在する必要があります。最後のフィードバックタイプは削除できません。
+adm.community_channels.title: タイトル
+adm.community_channels.title_error: 有効なタイトルを入力する必要があります
+adm.community_channels.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
+adm.community_channels.usergroups: ユーザグループ
+adm.community_channels.usergroups_explain: これらは、このフィードバックタイプが属するユーザグループです。
 adm.general.count_custom_fields:
   other: '{{count}} Custom Fields'
 adm.general.count_labels:
@@ -50,15 +50,15 @@ adm.general.x_departments:
 adm.general.x_email_bans:
   other: '{{count}} Email Bans'
 adm.general.x_community_active_statuses:
-  other: '{{count}} Feedback Active Statuses'
+  other: '{{count}} Community Active Statuses'
 adm.general.x_community_custom_channels:
-  other: '{{count}} Feedback Categories'
+  other: '{{count}} Community Custom Channels'
 adm.general.x_community_closed_statuses:
-  other: '{{count}} Feedback Closed Statuses'
+  other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
-  other: '{{count}} Feedback Statuses'
+  other: '{{count}} Community Statuses'
 adm.general.x_community_channels:
-  other: '{{count}} Feedback Types'
+  other: '{{count}} Community Channels'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'
 adm.general.x_ticket_escalations:
@@ -422,7 +422,7 @@ admin.community.count_active_statuses:
   other: '{{count}}アクティブステータス'
 admin.community.count_closed_statuses:
   other: '{{count}}クローズステータス'
-admin.community.count_feedback:
+admin.community.count_community_topics:
   other: '{{count}}フィードバック'
 admin.community.create_new_category: 新しいカテゴリを作成
 admin.community.create_new_status: 新しいステータスを作成
@@ -431,9 +431,9 @@ admin.community.delete_status: ステータス削除
 admin.community.edit_status: ステータス編集
 admin.community.explain_active_status: アクティブステータスとは、レビューされたが、実装されていないか、または決定されていない、フィードバックに割り当てられたステータスのことです。
 admin.community.explain_closed_status: クローズステータスとは、フィードバックに割り当てられた状態であり終了している状態です。ユーザは、クローズされたフィードバックに対して投票やコメントをすることはできません。
-admin.community.feedback_categories: フィードバックカテゴリ
-admin.community.feedback_statuses: フィードバックステータス
-admin.community.feedback_using_this_category: このカテゴリを使用したフィードバック
+admin.community.community_channels: フィードバックカテゴリ
+admin.community.community_statuses: フィードバックステータス
+admin.community.community_topics_using_this_category: このカテゴリを使用したフィードバック
 admin.community.notice_has_children: このカテゴリには子カテゴリが存在します。まず、子カテゴリを削除してから削除してください。
 admin.community.notice_parent_selected: 注：選択した親カテゴリは、現在トップレベルのカテゴリです。この子カテゴリを作成することにより、既存のフィードバックが移動されます。
 admin.community.status_type: ステータスタイプ
@@ -929,7 +929,7 @@ admin.tickets.embed_in_website: あなたのWebサイトに埋め込む
 admin.tickets.embed_ticket_form_websites: 新しいチケットフォームを任意のWebページに埋め込みます。フォームを表示する場所にコードをコピーして貼り付けます。
 admin.tickets.enable_alternative_for_x: '{{subphrase}}の代替レイアウトを有効にする'
 admin.tickets.enable_custom_layouts_department: 部門ごとにカスタムレイアウトを有効にする
-admin.tickets.enable_ticket_community: チケットフィードバックを有効にしますか？
+admin.tickets.enable_ticket_feedback: チケットフィードバックを有効にしますか？
 admin.tickets.enter_optional_description: このトリガーが作成された経緯を必要に応じて入力してください
 admin.tickets.event: イベント
 admin.tickets.explain_departments: 部門は、ヘルプデスクで別のものを扱う区分けを編成します。例えば、セールス＆サポート。
@@ -1442,18 +1442,18 @@ agent.community.any_category: 任意のカテゴリ
 agent.community.any_status: 任意のステータス
 agent.community.count_votes:
   other: '{{display_count}} votes'
-agent.community.feedback_deleted: このフィードバックは削除されました
-agent.community.feedback_to_review: レビューフィードバック
+agent.community.community_topic_deleted: このフィードバックは削除されました
+agent.community.community_topics_to_review: レビューフィードバック
 agent.community.least_voted_on_top: 少なくとも上に投票した
 agent.community.list_title:
   other: 1投稿
-agent.community.merge_feedback: マージフィードバック
-agent.community.merge_feedback_note: マージされたフィードバックの説明が、保持されたフィードバックのコメントとして追加されます。
-agent.community.merge_feedback_submit: これら2つのフィードバック投稿をマージする
+agent.community.merge_community_topics: マージフィードバック
+agent.community.merge_community_topics_note: マージされたフィードバックの説明が、保持されたフィードバックのコメントとして追加されます。
+agent.community.merge_community_topics_submit: これら2つのフィードバック投稿をマージする
 agent.community.merge_howto: マージする追加のフィードバックタブを開く
-agent.community.new_feedback: 新しいフィードバック：
+agent.community.new_community_topic: 新しいフィードバック：
 agent.community.newest_on_top: 最新の上に
-agent.community.no_feedback_cats_error: タイプは定義されていません。フィードバックセクションにタイプを追加する前に、管理インターフェイスからタイプを定義する必要があります。
+agent.community.no_community_channels_error: タイプは定義されていません。フィードバックセクションにタイプを追加する前に、管理インターフェイスからタイプを定義する必要があります。
 agent.community.no_labels_explain: いずれのフィードバックにもラベル付けしていませんフィードバック投稿を表示して、ラベルを追加します。
 agent.community.oldest_on_top: 最古の上に
 agent.community.popularity_least_most: 人気度（昇順）
@@ -1469,8 +1469,8 @@ agent.community.subscribe_user: 購読ユーザ
 agent.community.subscribed_users: 購読ユーザ
 agent.community.top_voted_on_top: 上に投票されたトップ
 agent.community.update_filter: フィルタ更新
-agent.community.user_submitted_new_feedback: '{{name}}が新しいフィードバックを投稿しました'
-agent.community.vote_for_this_feedback: このフィードバックに投票してください
+agent.community.user_submitted_new_community_topic: '{{name}}が新しいフィードバックを投稿しました'
+agent.community.vote_for_this_community_topic: このフィードバックに投票してください
 agent.community.votes_least_most: 投票（昇順）
 agent.community.votes_most_least: 投票（降順）
 agent.follow_up.add_follow_up: フォローアップを追加
@@ -1557,7 +1557,7 @@ agent.interface.keyboard_shortcuts: キーボードショートカット
 agent.interface.major_items_appear_here: チケット、ユーザ、組織、記事、ニュース、ダウンロード、フィードバックはここで開きます。
 agent.interface.open_new_article_form: 新しい記事フォームを開く
 agent.interface.open_new_download_form: 新しいダウンロードフォームを開く
-agent.interface.open_new_community_form: 新しフィードバックフォームを開く
+agent.interface.open_new_community_topic_form: 新しフィードバックフォームを開く
 agent.interface.open_new_news_form: 新しいニュースフォームを開く
 agent.interface.open_new_organization_form: 新しい組織フォームを開く
 agent.interface.open_new_person_form: 新しい個人フォームを開く
@@ -1896,8 +1896,8 @@ agent.settings.notif_my_events: 自分のイベント
 agent.settings.notif_my_own_actions: 自分のアクション
 agent.settings.notif_new_comment: 新しいコメントが提出されました
 agent.settings.notif_new_comment_validate: 検証が必要な新しいコメントが提出されました
-agent.settings.notif_new_community: 新しいフィードバック提出
-agent.settings.notif_new_community_validate: 検証が必要な新しいフィードバックが提出されました
+agent.settings.notif_new_community_topic: 新しいフィードバック提出
+agent.settings.notif_new_community_topic_validate: 検証が必要な新しいフィードバックが提出されました
 agent.settings.notif_new_user: 新しいユーザーが登録されました
 agent.settings.notif_notes_with_mentions_smart: オフラインの場合のみメールを送信する、オンラインの場合はエージェントのIM経由でメッセージを送信する
 agent.settings.notif_task_assigned: タスクが割り当てられている
@@ -2001,7 +2001,7 @@ agent.snippets.set_as_draft: ドラフトとして設定
 agent.snippets.set_as_published: 公開として設定
 agent.snippets.shortcut_code: ショートカットコード
 agent.snippets.shortcut_code_info: 'このコードをチケット返信ボックスに入力すると、スニペットが自動的に挿入されます。例えば、''standard-response''のショートカットコードでは、''%standard-response%''と入力するだけでスニペットマネージャを開くことなくスニペットを挿入することができます。'
-agent.snippets.show_only_with_community: フィードバックのみで履歴を表示する
+agent.snippets.show_only_with_community_topic: フィードバックのみで履歴を表示する
 agent.snippets.snippet_created: スニペットが作成されました
 agent.snippets.snippet_is_draft: これはドラフトです
 agent.snippets.specific_departments: 特定部門
@@ -2162,7 +2162,7 @@ agent.tickets.filter_all: 全てのチケット
 agent.tickets.filter_participant: 私がフォローするチケット
 agent.tickets.filter_results: フィルタ結果
 agent.tickets.filter_unassigned: 未割り当てのチケット
-agent.tickets.find_community: フィードバックを探す
+agent.tickets.find_community_topic: フィードバックを探す
 agent.tickets.find_other_ip_addy: このIPアドレスから送信された他のチケットを検索する
 agent.tickets.find_ticket: チケットを探す
 agent.tickets.first_agent_reply: 最初のエージェント返信
@@ -2204,7 +2204,7 @@ agent.tickets.lc_update: 更新
 agent.tickets.link_existing_community: 既存のフィードバックをリンク
 agent.tickets.link_existing_community_subscr_owner: 'チケット所有者（{{name}}/{{email}}）をフィードバックに登録'
 agent.tickets.link_existing_community_subscr_part:
-  other: 'Subscribed ({{count}}) Ticket Participants to Feedback'
+  other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.link_existing_ticket: 既存チケットをリンク
 agent.tickets.link_existing_ticket_make_below: チケットを親チケットの下に配置する
 agent.tickets.linked_community: リンクされたフィードバック
@@ -2256,7 +2256,7 @@ agent.tickets.log_newreply_followup: フォローアップで返信する
 agent.tickets.log_note_deleted: 削除されたメモ
 agent.tickets.log_on_article: '記事「{{title}}（ID {{id}}）」'
 agent.tickets.log_on_download: 'ダウンロード「{{title}}（ID {{id}}）」'
-agent.tickets.log_on_community: 'フィードバック「{{title}}（ID {{id}}）」'
+agent.tickets.log_on_community_topic: 'フィードバック「{{title}}（ID {{id}}）」'
 agent.tickets.log_on_news: 'ニュース「{{title}}（ID {{id}}）」'
 agent.tickets.log_original_contents: オリジナル内容を記録
 agent.tickets.log_selected_option: '選択： '
@@ -2275,7 +2275,7 @@ agent.tickets.log_update_system: システムによる更新
 agent.tickets.log_update_user: ユーザによる更新
 agent.tickets.log_update_user_reply: ユーザからの返信
 agent.tickets.log_user_changed_email_pref: ユーザのメールアドレス設定が変更されました
-agent.tickets.log_user_set_community_rating_to: ユーザが設定したフィードバック評価
+agent.tickets.log_user_set_feedback_rating_to: ユーザが設定したフィードバック評価
 agent.tickets.log_view_all_data: 古いデータを表示
 agent.tickets.log_without_custom_message: カスタムメッセージを入力しませんでした。
 agent.tickets.log_written_by: '{{name}} （ID {{id}}）によって書かれています'
@@ -2432,7 +2432,7 @@ agent.tickets.subject_changed: 件名変更
 agent.tickets.teams_action: 'チーム：{{teams}}'
 agent.tickets.text_body: 本文
 agent.tickets.ticket_changes: チケット変更
-agent.tickets.ticket_community: チケットフィードバック
+agent.tickets.ticket_feedback: チケットフィードバック
 agent.tickets.ticket_field_name: 'チケット項目：{{field}}'
 agent.tickets.ticket_is_deleted: チケットが削除されました
 agent.tickets.ticket_is_marked_as_spam: このチケットはスパムとしてマークされています。

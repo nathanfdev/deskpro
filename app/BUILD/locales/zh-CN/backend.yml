@@ -17,15 +17,15 @@ adm.general.x_departments:
 adm.general.x_email_bans:
   other: '{{count}} Email Bans'
 adm.general.x_community_active_statuses:
-  other: '{{count}} Feedback Active Statuses'
+  other: '{{count}} Community Active Statuses'
 adm.general.x_community_custom_channels:
-  other: '{{count}} Feedback Categories'
+  other: '{{count}} Community Custom Channels'
 adm.general.x_community_closed_statuses:
-  other: '{{count}} Feedback Closed Statuses'
+  other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
-  other: '{{count}} Feedback Statuses'
+  other: '{{count}} Community Statuses'
 adm.general.x_community_channels:
-  other: '{{count}} Feedback Types'
+  other: '{{count}} Community Channels'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'
 adm.general.x_ticket_escalations:
@@ -80,7 +80,7 @@ admin.community.count_active_statuses:
   other: '{{count}} active statuses'
 admin.community.count_closed_statuses:
   other: '{{count}} closed statuses'
-admin.community.count_feedback:
+admin.community.count_community_topics:
   other: '{{count}} feedback'
 admin.general.count_custom_fields:
   other: '{{count}} Custom Fields'
@@ -370,18 +370,18 @@ agent.community.any_category: 任何类别
 agent.community.any_status: 任何状态
 agent.community.count_votes:
   other: '{{display_count}} votes'
-agent.community.feedback_deleted: 反馈已被删除
-agent.community.feedback_to_review: "反馈以供审核\n"
+agent.community.community_topic_deleted: 反馈已被删除
+agent.community.community_topics_to_review: "反馈以供审核\n"
 agent.community.least_voted_on_top: "最少投票在上面\n"
 agent.community.list_title:
   other: '{{count}} Submissions'
-agent.community.merge_feedback: "合并反馈\n"
-agent.community.merge_feedback_note: "来自合并反馈的描述将被添加为评论以保持反馈\n"
-agent.community.merge_feedback_submit: 合并这两个反馈提交
+agent.community.merge_community_topics: "合并反馈\n"
+agent.community.merge_community_topics_note: "来自合并反馈的描述将被添加为评论以保持反馈\n"
+agent.community.merge_community_topics_submit: 合并这两个反馈提交
 agent.community.merge_howto: "打开其他反馈标签以进行合并\n"
-agent.community.new_feedback: 新反馈
+agent.community.new_community_topic: 新反馈
 agent.community.newest_on_top: 最新的在上面
-agent.community.no_feedback_cats_error: "没有定义类型。在可以向反馈部分添加类型之前，需要从管理界面中定义类型。\n"
+agent.community.no_community_channels_error: "没有定义类型。在可以向反馈部分添加类型之前，需要从管理界面中定义类型。\n"
 agent.community.no_labels_explain: "您尚未标记任何反馈。查看提交的意见反馈，为其添加标签。\n"
 agent.community.oldest_on_top: 最久的在上面
 agent.community.popularity_least_most: '受欢迎层度（最少 最多）'
@@ -395,8 +395,8 @@ agent.community.status_new: 新
 agent.community.status_spam: 垃圾邮件
 agent.community.top_voted_on_top: 最多投票在上面
 agent.community.update_filter: 更新我的分类
-agent.community.user_submitted_new_feedback: '提交新的反馈{{name}}'
-agent.community.vote_for_this_feedback: "投票给这个反馈\n"
+agent.community.user_submitted_new_community_topic: '提交新的反馈{{name}}'
+agent.community.vote_for_this_community_topic: "投票给这个反馈\n"
 agent.community.votes_least_most: '投票（最少 最多）'
 agent.community.votes_most_least: '投票（最多 最少）'
 agent.general.24x7: 全天候
@@ -915,7 +915,7 @@ agent.general.phone: 电话
 agent.general.phone_number: 电话号码
 agent.general.phrase: "短语\n"
 agent.general.please_wait: 请稍等
-agent.general.popular_community_only: "仅限热门反馈\n"
+agent.general.popular_community_topics_only: "仅限热门反馈\n"
 agent.general.popularity: 人气
 agent.general.position: 位置
 agent.general.prev: 上一页
@@ -1183,7 +1183,7 @@ agent.interface.keyboard_shortcuts: 键盘快捷键
 agent.interface.major_items_appear_here: "任务，用户，组织，文章，新闻，下载和反馈在这里打开。\n"
 agent.interface.open_new_article_form: "打开新文章表单\n"
 agent.interface.open_new_download_form: "打开新的下载表单\n"
-agent.interface.open_new_community_form: "打开新的反馈表单\n"
+agent.interface.open_new_community_topic_form: "打开新的反馈表单\n"
 agent.interface.open_new_news_form: "打开新的新闻形式\n"
 agent.interface.open_new_organization_form: "打开新组织表单\n"
 agent.interface.open_new_person_form: "打开新人表单\n"
@@ -1453,7 +1453,7 @@ agent.publish.move_to: 转移到
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}}发现此下载有帮助，{{down_votes}}发现此下载没有帮助'
 agent.publish.new_comment_on: '对{{name}}的新评论'
 agent.publish.new_comment_submitted_by: '{{name}}提交了一条新评论'
-agent.publish.new_community_by: '{{name}}的新反馈'
+agent.publish.new_community_topic_by: '{{name}}的新反馈'
 agent.publish.new_post: 最新帖子
 agent.publish.news_comments: "新的评论\n"
 agent.publish.news_list_title:
@@ -1574,8 +1574,8 @@ agent.settings.notif_my_events: 我的活动
 agent.settings.notif_my_own_actions: 我自己的操作
 agent.settings.notif_new_comment: 提交新评论
 agent.settings.notif_new_comment_validate: 提交需要验证的新评论
-agent.settings.notif_new_community: 新反馈提交
-agent.settings.notif_new_community_validate: 提交需要验证的新反馈
+agent.settings.notif_new_community_topic: 新反馈提交
+agent.settings.notif_new_community_topic_validate: 提交需要验证的新反馈
 agent.settings.notif_new_user: 新用户已注册
 agent.settings.notif_notes_with_mentions: 带@mentions的注释
 agent.settings.notif_notes_with_mentions_always: 始终通过代理IM电子邮件和发送消息
@@ -1663,7 +1663,7 @@ agent.tickets.count_charges:
 agent.tickets.count_users:
   other: '{{count}} users'
 agent.tickets.link_existing_community_subscr_part:
-  other: 'Subscribed ({{count}}) Ticket Participants to Feedback'
+  other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.list_title:
   other: '{{count}} Tickets'
 agent.tickets.send_flood_warning_action: "发送电子邮件警告用户正在充斥系统\n"
@@ -1737,7 +1737,7 @@ agent.tickets.subscribed_tickets: 已订阅的来单
 agent.tickets.teams_action: '团队：{{teams}}'
 agent.tickets.text_body: 文本主体
 agent.tickets.ticket_changes: 来单改变
-agent.tickets.ticket_community: 来单反馈
+agent.tickets.ticket_feedback: 来单反馈
 agent.tickets.ticket_field_name: '来单域：{{field}}'
 agent.tickets.ticket_is_deleted: 来单已被删除
 agent.tickets.ticket_is_marked_as_spam: 标记这来单为垃圾邮件

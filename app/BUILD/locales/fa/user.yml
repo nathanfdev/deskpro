@@ -30,7 +30,7 @@ portal.account.login-remember: 'در حساب باقی میمانید؟'
 portal.account.login-saved-add_email: "ایمیل اضافه شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-comment: "نظر شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-form: '{{type}} شما هنوز ارسال نشده است لطفا برای ادامه وارد شوید.'
-portal.account.login-saved-new_community: "بازخورد جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-saved-new_community_topic: "بازخورد جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-new_ticket: "پیام جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-register: "ثبت نام شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-stay-logged-in: 'در حساب باقی میمانید؟'
@@ -306,7 +306,7 @@ portal.community.sort_views: بازدید
 portal.community.status_active: 'ایتم های باز'
 portal.community.status_all: 'همه موارد'
 portal.community.status_closed: 'آیتم های بسته شده'
-portal.community.submit_feedback: 'ارسال انتقاد و پیشنهاد'
+portal.community.submit_community_topic: 'ارسال انتقاد و پیشنهاد'
 portal.flashes.article_cat_subscribe: 'شما با موفقیت به این دسته اضافه شده اید. هنگامی که مقالات جدید ارسال می شود، شما مطلع خواهید شد.'
 portal.flashes.article_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
 portal.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
@@ -326,8 +326,8 @@ portal.flashes.community_unsubscribe: 'شما با موفقیت این مورد 
 portal.flashes.community_unsubscribe_everything: 'شما همه اعلانهای بازخورد لغو شده اید'
 portal.flashes.guest_content_must_verify: "قبل از اینکه محتوای خود را ارسال کنید لازم است آدرس ایمیل  را تایید بفرمایید.\nلطفا صندوق ورودی ایمیل خود را چک کنید و ما لینک تایید  حساب رو برای شما ارسال می کنیم."
 portal.flashes.guest_new_ticket_must_verify: "قبل از اینکه بتوانیم پیام خود را بپذیریم، باید آدرس ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را بررسی کنید ما یک پیوند تأیید را برای شما ارسال کرده ایم.\n"
-portal.flashes.new_community_awaiting_review: "از نظرات شما متشکریم پس از بررسی عامل، در پورتال پشتیبانی ما قابل مشاهده خواهد بود.\n"
-portal.flashes.new_community_posted: 'از نظرات شما متشکریم'
+portal.flashes.new_community_topic_awaiting_review: "از نظرات شما متشکریم پس از بررسی عامل، در پورتال پشتیبانی ما قابل مشاهده خواهد بود.\n"
+portal.flashes.new_community_topic_posted: 'از نظرات شما متشکریم'
 portal.flashes.news_cat_subscribe: "شما با موفقیت به این دسته متصل شده اید. شما از پست های جدید مطلع خواهید شد.\n"
 portal.flashes.news_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
 portal.flashes.news_subscribe: "شما با موفقیت به این مقاله خبری مشترکید. وقتی نظرات جدیدی به شما اطلاع داده می شود، مطلع خواهید شد\n"
@@ -335,7 +335,7 @@ portal.flashes.news_unsubscribe: 'شما با موفقیت این مقاله خ�
 portal.flashes.news_unsubscribe_everything: 'شما  همه اطلاعیه های مقاله خبری را لغو کرده اید'
 portal.flashes.rating_thanks: 'از نظرات شما متشکریم'
 portal.flashes.ticket_created: "پیام شما ارسال شده است. با تشکر!\n"
-portal.flashes.ticket_community_thank_you: 'از نظرات شما متشکریم'
+portal.flashes.ticket_feedback_thank_you: 'از نظرات شما متشکریم'
 portal.flashes.ticket_participant_add_unknown_error: "هنگام تلاش برای افزودن مشارکت کننده شما مشکلی پیش آمد. لطفا دوباره تلاش کنید.\n"
 portal.flashes.ticket_participant_already_error: "فردی که سعی کردید به عنوان یک شرکت کننده اضافه کنید، در حال حاضر یک شرکت کننده در این پیام است.\n"
 portal.flashes.ticket_participant_email_error: 'لطفا یک ایمیل معتبر برای شرکت کننده خود وارد کنید و دوباره امتحان کنید.'
@@ -643,11 +643,11 @@ user.email_subjects.download_sub_new: 'دانلود های جدید'
 user.email_subjects.download_sub_new_and_updated: 'دانلودهای جدید و بروز رسانی شده'
 user.email_subjects.download_sub_updated: 'دانلودهای بروز رسانی شده'
 user.email_subjects.email_new-confirm: 'اعتبار سنجی آدرس ایمیل شما'
-user.email_subjects.community_created_for_user: 'از نظرات شما متشکریم'
-user.email_subjects.community_new: 'با تشکر از شما برای ارسال نظرات خود'
-user.email_subjects.community_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
-user.email_subjects.community_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
-user.email_subjects.community_new-disapproved: 'نظرات شما رد شده است'
+user.email_subjects.community_topic_created_for_user: 'از نظرات شما متشکریم'
+user.email_subjects.community_topic_new: 'با تشکر از شما برای ارسال نظرات خود'
+user.email_subjects.community_topic_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
+user.email_subjects.community_topic_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'نظرات شما رد شده است'
 user.email_subjects.community_sub_updated: 'بازخورد به روز شده '
 user.email_subjects.community_updated: 'نظرات شما به روز رسانی: {{title}}'
 user.email_subjects.kb_sub_new: 'مقاله جدید'
@@ -667,7 +667,7 @@ user.email_subjects.ticket-rate: 'به پاسخ ما امتیاز دهید'
 user.emails.chat_transcript: 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .'
 user.emails.comment_approved: 'نظر شما منتشر شده است.'
 user.emails.comment_deleted: 'نظر شما برای بهبود به صفحه مورد استفاده قرار گرفت .'
-user.emails.community_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
+user.emails.community-topic_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
 user.emails.greeting: '{{to_name}} عزیز,'
 user.emails.kb-explain: "شما این ایمیل را دریافت می کنید زیرا شما در مرکز آموزش ما در\n       <a href=\"{{deskpro_url}}\">{{deskpro_url}}</a>.<br />\n      آیا تمایل به دریافت ایمیل ها ندارید؟\n      <a href=\"{{unsubscribe_url}}\"></a>\n\n\n"
 user.emails.kb-new-articles:
@@ -704,7 +704,7 @@ user.error.not-found-title: 'یافت نشد'
 user.error.permission-denied: 'با عرض پوزش ، اقدام شما در حالا انجام برای شما مجاز نمی باشد.'
 user.error.permission-denied-title: 'انجام این کار برای شما امکان پذیر نیست'
 user.error.server-error: 'یک خطای سرور وجود دارد که مانع از صفحه در حال بارگذاری می شود. لطفا دوباره سعی کنید.'
-user.community.submit_feedback: 'ارسال انتقاد و پیشنهاد'
+user.community.submit_community_topic: 'ارسال انتقاد و پیشنهاد'
 user.general.label_captcha: 'کد تایید'
 user.general.page: صفحه
 user.lang.lang_title: فارسی

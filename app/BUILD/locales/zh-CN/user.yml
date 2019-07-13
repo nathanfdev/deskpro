@@ -30,7 +30,7 @@ portal.account.login-remember: 保持登录状态？
 portal.account.login-saved-add_email: 您的添加电子邮件尚未提交。请登录访问更多内容。
 portal.account.login-saved-comment: 您的评论尚未提交。请登录访问更多内容。
 portal.account.login-saved-form: 您的（文字）还没有提交，请登录然后继续
-portal.account.login-saved-new_community: 您的新反馈尚未提交。请登录访问更多内容。
+portal.account.login-saved-new_community_topic: 您的新反馈尚未提交。请登录访问更多内容。
 portal.account.login-saved-new_ticket: 您的新机票尚未提交。请登录访问更多内容。
 portal.account.login-saved-register: 您的注册尚未提交。请登录访问更多内容。
 portal.account.login-stay-logged-in: 保持登录状态？
@@ -80,7 +80,7 @@ portal.account.submit-saved-add_email: 您的添加电子邮件尚未提交，�
 portal.account.submit-saved-comment: 您的评论尚未提交，但我们已为您保存。
 portal.account.submit-saved-form: 您的（TYPE）还没有提交，但是我们已经替您保存了。
 portal.account.submit-saved-form-go: 请点击这里自动重新提交表格。
-portal.account.submit-saved-new_community: 您的新反馈尚未提交，但我们已为您保存。
+portal.account.submit-saved-new_community_topic: 您的新反馈尚未提交，但我们已为您保存。
 portal.account.submit-saved-new_ticket: 您的新机票尚未提交，但我们已为您保存。
 portal.account.submit-saved-register: 您的注册尚未提交，但我们已为您保存。
 portal.account.tickets-lockout: 您已经提交了很多评论，账户已被锁住。请稍后再试。
@@ -268,20 +268,20 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
 portal.emails.email-too-big: '您的邮件"{{subject}}" 因为内容过大被拒绝接受。帮助中心能接受的邮件最大内容为{{max_size}}。请删除大的附件并重试。'
 portal.emails.end_greeting: '致意，<br /><br />{{site_name}}'
-portal.emails.community-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
-portal.emails.community-updated-items:
+portal.emails.community-topics-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
+portal.emails.community-topics-updated:
   other: 1条更新的反馈项目
-portal.emails.community_agent-validation: 请注意，只有我们的代理核准您的反馈后，您的反馈才会公开显示在我们的支持门户上。
-portal.emails.community_approved: 我们想通知您，您的反馈已获得批准，现已在我们的支持门户网站上公开显示。
-portal.emails.community_closed: '您提交的反馈信息“{{title}}”已经关闭：{{status}}'
-portal.emails.community_disapproved: 我们想通知您，您的反馈已被拒绝，不会公开显示在我们的支持门户网站上。
-portal.emails.community_disapproved-reason: '您的反馈已被拒绝但是不会公开显示在我们的客户支持门户上{{姓名}}因为以下的原因。'
-portal.emails.community_new-comment: '{{name}}发布了新的评论：'
-portal.emails.community_published: '您提交的反馈{{题目}}已经通过审核，即将显示在我们的客户支持门户上。'
-portal.emails.community_thank-you: '感谢您的反馈“{{title}}”'
-portal.emails.community_updated: '您提交的反馈信息“{{title}}”已经更新。新的状态是“{{status}}”'
-portal.emails.community_validate-email: 请点击下面的链接验证您的邮箱
-portal.emails.community_votes:
+portal.emails.community-topic_agent-validation: 请注意，只有我们的代理核准您的反馈后，您的反馈才会公开显示在我们的支持门户上。
+portal.emails.community_topic_approved: 我们想通知您，您的反馈已获得批准，现已在我们的支持门户网站上公开显示。
+portal.emails.community_topic_closed: '您提交的反馈信息“{{title}}”已经关闭：{{status}}'
+portal.emails.community-topic_disapproved: 我们想通知您，您的反馈已被拒绝，不会公开显示在我们的支持门户网站上。
+portal.emails.community-topic_disapproved-reason: '您的反馈已被拒绝但是不会公开显示在我们的客户支持门户上{{姓名}}因为以下的原因。'
+portal.emails.community-topic_new-comment: '{{name}}发布了新的评论：'
+portal.emails.community-topic_published: '您提交的反馈{{题目}}已经通过审核，即将显示在我们的客户支持门户上。'
+portal.emails.community-topic_thank-you: '感谢您的反馈“{{title}}”'
+portal.emails.community-topic_updated: '您提交的反馈信息“{{title}}”已经更新。新的状态是“{{status}}”'
+portal.emails.community-topic_validate-email: 请点击下面的链接验证您的邮箱
+portal.emails.community-topic_votes:
   other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
 portal.emails.greeting: '亲爱的{{to_name}}，'
 portal.emails.kb-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了有关我们的知识库文章的更新。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有知识库通知</a>。'
@@ -370,7 +370,7 @@ portal.community.module_forbidden: 您无权访问此模块
 portal.community.no_matching: 没有匹配的反馈
 portal.community.none: 没有回复
 portal.community.rate_forbidden: 您不能投票
-portal.community.recent-feedback: 最近反馈
+portal.community.recent-community_topics: 最近反馈
 portal.community.search-title: 反馈
 portal.community.section-desc: '这些反馈项目是由像您这样的客户提交的; 我们鼓励您讨论并同意您的投票，如果想法尚未列出，请提交您自己的反馈。'
 portal.community.section-title: 反馈
@@ -382,8 +382,8 @@ portal.community.sort_views: 看法
 portal.community.status_active: 打开项目
 portal.community.status_all: 所有项目
 portal.community.status_closed: 已关闭项目
-portal.community.submit_feedback: 提交反馈
-portal.community.view-x-feedback:
+portal.community.submit_community_topic: 提交反馈
+portal.community.view-x-community-topics:
   other: 查看1个反馈
 portal.flashes.article_cat_subscribe: '您已成功订阅此类文章。 当新文章发布时，您将收到通知。'
 portal.flashes.article_cat_unsubscribe: 您已成功取消订阅此类文章。
@@ -404,8 +404,8 @@ portal.flashes.community_unsubscribe: 您已成功取消订阅此反馈项目。
 portal.flashes.community_unsubscribe_everything: 您已取消订阅所有反馈通知
 portal.flashes.guest_content_must_verify: '在我们发布您的内容之前，您必须验证您的电子邮件。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
 portal.flashes.guest_new_ticket_must_verify: '在我们接受您的帮助请求之前，我们必须验证您的电子邮件地址。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
-portal.flashes.new_community_awaiting_review: '感谢您的反馈意见。 它将在代理审查后在我们的支持门户上可见。'
-portal.flashes.new_community_posted: 感谢您的反馈意见。
+portal.flashes.new_community_topic_awaiting_review: '感谢您的反馈意见。 它将在代理审查后在我们的支持门户上可见。'
+portal.flashes.new_community_topic_posted: 感谢您的反馈意见。
 portal.flashes.news_cat_subscribe: '您已成功订阅此类别。 您将收到新帖子的通知。'
 portal.flashes.news_cat_unsubscribe: 您已成功取消订阅此类别。
 portal.flashes.news_subscribe: '您已成功订阅此新闻文章。 当有新评论时，您会收到通知。'
@@ -413,7 +413,7 @@ portal.flashes.news_unsubscribe: 您已成功取消订阅此新闻文章。
 portal.flashes.news_unsubscribe_everything: 您已取消订阅所有新闻文章通知
 portal.flashes.rating_thanks: 感谢您的反馈意见！
 portal.flashes.ticket_created: '您的帮助请求已提交。 谢谢！'
-portal.flashes.ticket_community_thank_you: 谢谢您的反馈！
+portal.flashes.ticket_feedback_thank_you: 谢谢您的反馈！
 portal.flashes.ticket_participant_add: '我们已将{{name}}（{{email}}）添加为此故障单的参与者。'
 portal.flashes.ticket_participant_add_unknown_error: 尝试添加参与者时出现问题。请再试一次。
 portal.flashes.ticket_participant_already_error: 您尝试添加为参与者的人已经是此故障单的参与者。
@@ -861,11 +861,11 @@ user.email_subjects.download_sub_new_and_updated: 新的和更新的下载
 user.email_subjects.download_sub_updated: 更新的下载
 user.email_subjects.email-too-big: '您的电子邮件“{{subject}}”未被接受'
 user.email_subjects.email_new-confirm: 请验证您的电子邮件地址
-user.email_subjects.community_created_for_user: 谢谢您的反馈
-user.email_subjects.community_new: 感谢您提交反馈
-user.email_subjects.community_new-approved: 您的反馈已获得批准
-user.email_subjects.community_new-comment: '有关于“{{title}}”的新评论'
-user.email_subjects.community_new-disapproved: 抱歉，您的反馈已被拒绝
+user.email_subjects.community_topic_created_for_user: 谢谢您的反馈
+user.email_subjects.community_topic_new: 感谢您提交反馈
+user.email_subjects.community_topic_new-approved: 您的反馈已获得批准
+user.email_subjects.community_topic_new-comment: '有关于“{{title}}”的新评论'
+user.email_subjects.community_topic_new-disapproved: 抱歉，您的反馈已被拒绝
 user.email_subjects.community_sub_updated: 更新的反馈
 user.email_subjects.community_updated: '您的反馈已更新：{{title}}'
 user.email_subjects.kb_sub_new: 新文章
@@ -900,17 +900,17 @@ user.emails.email-too-big: '您的电子邮件“{{subject}}”未被接受，�
 user.emails.community-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的新闻。<br />不想再收到这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有反馈通知。</a>'
 user.emails.community-updated-items:
   other: 1条更新反馈项
-user.emails.community_agent-validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
-user.emails.community_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
-user.emails.community_closed: '您提交的反馈“{{title}}”已关闭：{{status}}'
-user.emails.community_created_for_user: '感谢您最近的反馈“{{title}}”。 {{agentName}}已创建新的反馈项，因此您可以及时了解我们的进度：'
-user.emails.community_disapproved: 谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。
-user.emails.community_disapproved-reason: '谨此通知您，很抱歉，由于以下原因{{name}}，您的反馈已被拒绝，不会公开显示在我们的网站上。 '
-user.emails.community_new-comment: '{{name}}发表了新评论：'
-user.emails.community_published: '您提交的反馈“{{title}}”已经过验证，现在将显示在我们的网站上。'
-user.emails.community_thank-you: '感谢您提交意见回馈「{{title}}」'
-user.emails.community_updated: '您提交的反馈“{{title}}”已更新。 它的状态现在是：“{{status}}”'
-user.emails.community_votes:
+user.emails.community-topic_agent-validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
+user.emails.community-topic_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
+user.emails.community-topic_closed: '您提交的反馈“{{title}}”已关闭：{{status}}'
+user.emails.community-topic_created_for_user: '感谢您最近的反馈“{{title}}”。 {{agentName}}已创建新的反馈项，因此您可以及时了解我们的进度：'
+user.emails.community-topic_disapproved: 谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。
+user.emails.community-topic_disapproved-reason: '谨此通知您，很抱歉，由于以下原因{{name}}，您的反馈已被拒绝，不会公开显示在我们的网站上。 '
+user.emails.community-topic_new-comment: '{{name}}发表了新评论：'
+user.emails.community-topic_published: '您提交的反馈“{{title}}”已经过验证，现在将显示在我们的网站上。'
+user.emails.community-topic_thank-you: '感谢您提交意见回馈「{{title}}」'
+user.emails.community-topic_updated: '您提交的反馈“{{title}}”已更新。 它的状态现在是：“{{status}}”'
+user.emails.community-topic_votes:
   other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
 user.emails.greeting: '亲爱的{{to_name}}，'
 user.emails.kb-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的知识库。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有知识库通知</a>。'
@@ -993,7 +993,7 @@ user.error.permission-denied: 很抱歉，您尝试执行的操作是不允许�
 user.error.permission-denied-login: '您目前已登出。 <a href="{{login_url}}">登录</a>，然后重试。'
 user.error.permission-denied-title: 您不能这样做
 user.error.server-error: '很抱歉，服务器发生错误，无法载入网页。 请再试一次。'
-user.community.submit_feedback: 提交反馈
+user.community.submit_community_topic: 提交反馈
 user.general.deskpro: 桌面软件
 user.general.helpdesk_by: '<strong>{{deskpro}}</strong>服务系统软件'
 user.general.label_captcha: 确认码

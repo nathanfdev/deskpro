@@ -93,14 +93,14 @@ portal.emails.download-updated-downloads:
   few: '{{count}} Updated Downloads'
   many: '{{count}} Updated Downloads'
   other: '{{count}} Updated Downloads'
-portal.emails.community-updated-items:
+portal.emails.community-topics-updated:
   zero: '{{count}} Updated Feedback Items'
   one: '1 Updated Feedback Item'
   two: '{{count}} Updated Feedback Items'
   few: '{{count}} Updated Feedback Items'
   many: '{{count}} Updated Feedback Items'
   other: '{{count}} Updated Feedback Items'
-portal.emails.community_votes:
+portal.emails.community-topic_votes:
   zero: 'Your community currently has <strong>{{count}}</strong> votes. View your feedback online at:'
   one: 'Your community currently has <strong>1</strong> vote. View your feedback online at:'
   two: 'Your community currently has <strong>{{count}}</strong> votes. View your feedback online at:'
@@ -142,7 +142,7 @@ portal.emails.tickets_ommitted:
   few: '{{count}} messages have been omitted'
   many: '{{count}} messages have been omitted'
   other: '{{count}} messages have been omitted'
-portal.community.view-x-feedback:
+portal.community.view-x-community-topics:
   zero: 'View {{count}} feedback'
   one: 'View 1 feedback'
   two: 'View {{count}} feedback'
@@ -247,7 +247,7 @@ user.emails.community-updated-items:
   few: '{{count}} Updated Feedback Items'
   many: '{{count}} Updated Feedback Items'
   other: '{{count}} Updated Feedback Items'
-user.emails.community_votes:
+user.emails.community-topic_votes:
   zero: 'Your community currently has <strong>{{count}}</strong> votes. View your feedback online at:'
   one: 'Your community currently has <strong>1</strong> vote. View your feedback online at:'
   two: 'Your community currently has <strong>{{count}}</strong> votes. View your feedback online at:'

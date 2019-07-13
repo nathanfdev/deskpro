@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('user.email_subjects.community_new-disapproved') }}</dp:subject>
+<dp:subject>{{ phrase('user.email_subjects.community_topic_new-disapproved') }}</dp:subject>
 {{ phrase('user.emails.feedback_thank-you', {'title':topic.title}) }}
 
 <br /><br />
@@ -8,5 +8,5 @@
 	<br /><br />
 	{{ reason }}
 {% else %}
-	{{ phrase('user.emails.community_disapproved') }}
+	{{ phrase('user.emails.community-topic_disapproved') }}
 {% endif %}

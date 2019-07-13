@@ -85,18 +85,18 @@ portal.emails.download-new-downloads:
 portal.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
 portal.emails.email-too-big: '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.'
-portal.emails.community-updated-items:
+portal.emails.community-topics-updated:
   other: '{{count}} Updated Feedback Items'
-portal.emails.community_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
-portal.emails.community_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
-portal.emails.community_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
-portal.emails.community_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
-portal.emails.community_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
-portal.emails.community_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
-portal.emails.community_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
-portal.emails.community_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
-portal.emails.community_validate-email: '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.'
-portal.emails.community_votes:
+portal.emails.community_topic_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
+portal.emails.community_topic_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
+portal.emails.community-topic_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
+portal.emails.community-topic_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
+portal.emails.community-topic_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
+portal.emails.community-topic_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
+portal.emails.community-topic_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
+portal.emails.community-topic_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
+portal.emails.community-topic_validate-email: '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.'
+portal.emails.community-topic_votes:
   other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
 portal.emails.greeting: '{{to_name}}님께,'
 portal.emails.kb-explain: '이 이메일은 지식베이스를 <a href="{{deskpro_url}}">{{deskpro_url}}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{unsubscribe_url}}"> 를 클릭해 구독을 취소해주십시오.</a>'
@@ -142,8 +142,8 @@ portal.community.form_title: 제목
 portal.community.form_custom_cat: 범주
 portal.community.search-title: 피드백
 portal.community.section-title: 피드백
-portal.community.submit_feedback: '피드백 작성하기'
-portal.community.view-x-feedback:
+portal.community.submit_community_topic: '피드백 작성하기'
+portal.community.view-x-community-topics:
   other: 'View {{count}} feedback'
 portal.forms.error_password_min_length:
   other: 'Minimum of {{count}} characters'
@@ -317,10 +317,10 @@ user.email_subjects.comment-approved: '코멘트가 승인 되었습니다'
 user.email_subjects.comment-deleted: '저희 상담원들이 고객님의 코멘트를 읽었습니다'
 user.email_subjects.email-too-big: '이메일 "{{subject}}" 이 수락되지않았습니다'
 user.email_subjects.email_new-confirm: '이메일 주소를 확인해주십시오'
-user.email_subjects.community_new: '피드백을 남겨주셔서 감사합니다'
-user.email_subjects.community_new-approved: '피드백이 승인되었습니다'
-user.email_subjects.community_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
-user.email_subjects.community_new-disapproved: '등록요청 글이 거절되었습니다'
+user.email_subjects.community_topic_new: '피드백을 남겨주셔서 감사합니다'
+user.email_subjects.community_topic_new-approved: '피드백이 승인되었습니다'
+user.email_subjects.community_topic_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
+user.email_subjects.community_topic_new-disapproved: '등록요청 글이 거절되었습니다'
 user.email_subjects.community_updated: '피드백이 업데이트 되었습니다: {{title}}'
 user.email_subjects.kb_sub_new: '새 글들'
 user.email_subjects.kb_sub_new_and_updated: '새로 업데이트 된 글들'
@@ -343,16 +343,16 @@ user.emails.download-updated-downloads:
 user.emails.email-too-big: '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.'
 user.emails.community-updated-items:
   other: '{{count}} Updated Feedback Items'
-user.emails.community_agent-validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
-user.emails.community_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
-user.emails.community_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
-user.emails.community_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
-user.emails.community_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
-user.emails.community_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
-user.emails.community_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
-user.emails.community_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
-user.emails.community_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
-user.emails.community_votes:
+user.emails.community-topic_agent-validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
+user.emails.community-topic_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
+user.emails.community-topic_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
+user.emails.community-topic_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
+user.emails.community-topic_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
+user.emails.community-topic_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
+user.emails.community-topic_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
+user.emails.community-topic_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
+user.emails.community-topic_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
+user.emails.community-topic_votes:
   other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
 user.emails.greeting: '{{to_name}}님께,'
 user.emails.kb-explain: '이 이메일은 지식베이스를 <a href="{{deskpro_url}}">{{deskpro_url}}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{unsubscribe_url}}"> 를 클릭해 구독을 취소해주십시오.</a>'
@@ -423,7 +423,7 @@ user.error.permission-denied: '죄송합니다. 요청하신 작업은 허가되
 user.error.permission-denied-login: '로그아웃 되셨습니다. <a href="{{login_url}}"> 로그인하시고 </a> 다시 시도 해 주십시오.'
 user.error.permission-denied-title: '요청하신 작업에 대한 권한이 없습니다.'
 user.error.server-error: '페이지를 로딩 하는데 서버 오류가 있었습니다. 다시 시도 해주십시오.'
-user.community.submit_feedback: '피드백 작성하기'
+user.community.submit_community_topic: '피드백 작성하기'
 user.general.deskpro: DeskPro
 user.general.label_captcha: '등록 번호'
 user.general.page: 페이지

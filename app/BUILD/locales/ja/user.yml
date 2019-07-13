@@ -71,18 +71,18 @@ portal.emails.download-new-downloads:
   other: '{{count}} New Downloads'
 portal.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
-portal.emails.community-updated-items:
+portal.emails.community-topics-updated:
   other: '{{count}} Updated Feedback Items'
-portal.emails.community_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
-portal.emails.community_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
-portal.emails.community_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
-portal.emails.community_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
-portal.emails.community_new-comment: '{{name}}からの新しいコメント:'
-portal.emails.community_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
-portal.emails.community_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
-portal.emails.community_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
-portal.emails.community_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
-portal.emails.community_votes:
+portal.emails.community_topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
+portal.emails.community_topic_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
+portal.emails.community-topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
+portal.emails.community-topic_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
+portal.emails.community-topic_new-comment: '{{name}}からの新しいコメント:'
+portal.emails.community-topic_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
+portal.emails.community-topic_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
+portal.emails.community-topic_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+portal.emails.community-topic_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
+portal.emails.community-topic_votes:
   other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
 portal.emails.greeting: '{{to_name}}様'
 portal.emails.kb-new-articles:
@@ -119,9 +119,9 @@ portal.community.btn-vote: 同意
 portal.community.search-title: フィードバック
 portal.community.section-desc: 他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。
 portal.community.section-title: フィードバック
-portal.community.submit_feedback: フィードバックを送信
+portal.community.submit_community_topic: フィードバックを送信
 portal.community.form_custom_cat: カテゴリー
-portal.community.view-x-feedback:
+portal.community.view-x-community-topics:
   other: 'View {{count}} feedback'
 portal.forms.error_password_min_length:
   other: 'Minimum of {{count}} characters'
@@ -284,10 +284,10 @@ user.email_subjects.comment-approved: コメントは承認されました。
 user.email_subjects.comment-deleted: あなたのコメントはエージェントにより確認されました。
 user.email_subjects.email-too-big: 'あなたのメール "{{subject}}" は受理されませんでした。'
 user.email_subjects.email_new-confirm: メールアドレスを認証してください。
-user.email_subjects.community_new: フィードバックを頂きありがとうございました。
-user.email_subjects.community_new-approved: フィードバックは承認されました。
-user.email_subjects.community_new-comment: '"{{title}}"に新着コメントがあります。'
-user.email_subjects.community_new-disapproved: フィードバックは承認されませんでした。
+user.email_subjects.community_topic_new: フィードバックを頂きありがとうございました。
+user.email_subjects.community_topic_new-approved: フィードバックは承認されました。
+user.email_subjects.community_topic_new-comment: '"{{title}}"に新着コメントがあります。'
+user.email_subjects.community_topic_new-disapproved: フィードバックは承認されませんでした。
 user.email_subjects.community_updated: 'フィードバックが更新されました：{{title}}'
 user.email_subjects.kb_sub_new: 新しい記事
 user.email_subjects.kb_sub_new_and_updated: 新しい記事と更新情報
@@ -311,16 +311,16 @@ user.emails.download-updated-downloads:
 user.emails.email-too-big: 'あなたのメール "{{subject}}" はサイズが大きすぎるため、受理されませんでした。 受付可能なメールのサイズは最大 {{max_size}} です。添付ファイルを削除して、再度送信してください。'
 user.emails.community-updated-items:
   other: '{{count}} Updated Feedback Items'
-user.emails.community_agent-validation: フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。
-user.emails.community_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
-user.emails.community_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
-user.emails.community_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
-user.emails.community_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
-user.emails.community_new-comment: '{{name}}からの新しいコメント:'
-user.emails.community_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
-user.emails.community_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
-user.emails.community_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
-user.emails.community_votes:
+user.emails.community-topic_agent-validation: フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。
+user.emails.community-topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
+user.emails.community-topic_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
+user.emails.community-topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
+user.emails.community-topic_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
+user.emails.community-topic_new-comment: '{{name}}からの新しいコメント:'
+user.emails.community-topic_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
+user.emails.community-topic_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
+user.emails.community-topic_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+user.emails.community-topic_votes:
   other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
 user.emails.greeting: '{{to_name}}様'
 user.emails.kb-new-articles:
@@ -386,7 +386,7 @@ user.error.permission-denied: 申し訳ございませんが、その動作は�
 user.error.permission-denied-login: 'ログアウトされています。 <a href="{{login_url}}">ログイン</a> してからもう一度やり直してください。'
 user.error.permission-denied-title: その動作は許可されていません。
 user.error.server-error: サーバエラーによりページは正しく表示されませんでした。もう一度やり直してください。
-user.community.submit_feedback: フィードバックを送信
+user.community.submit_community_topic: フィードバックを送信
 user.general.deskpro: SupportSTAR
 user.general.label_captcha: 確認コード
 user.general.page: ページ

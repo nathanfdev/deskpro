@@ -694,7 +694,7 @@
 		</ul>
 	</div>
 {% elseif log.action_type == 'feedback_rating' %}
-	{{ phrase('agent.tickets.log_user_set_community_rating_to') }} {{ log.details.rating }}
+	{{ phrase('agent.tickets.log_user_set_feedback_rating_to') }} {{ log.details.rating }}
 {% elseif log.action_type == 'person_email_changed' %}
 	{{ phrase('agent.tickets.log_user_changed_email_pref') }}:
 	{% if log.details.new %}
