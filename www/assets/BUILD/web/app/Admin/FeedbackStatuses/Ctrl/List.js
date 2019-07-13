@@ -127,8 +127,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         this.ngApply();
 
         // if currently viewing the deleted feedback status, then should need to switch state
-        if ((this.$state.current.name === 'portal.feedback_statuses.edit') && (parseInt(this.$state.params.id) === feedback_status.id)) {
-          return this.$state.go('portal.feedback_statuses');
+        if ((this.$state.current.name === 'portal.community_statuses.edit') && (parseInt(this.$state.params.id) === feedback_status.id)) {
+          return this.$state.go('portal.community_statuses');
         }
       });
     }

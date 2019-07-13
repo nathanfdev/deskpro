@@ -1,7 +1,7 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active" data-tab-id="pane-content-main"><i class="far icon-dp-feedback"></i> {{ phrase('agent.chrome.nav_feedback') }}</li>
+	<li class="tab active" data-tab-id="pane-content-main"><i class="far icon-dp-feedback"></i> {{ phrase('agent.chrome.nav_community') }}</li>
 {% endblock %}
 {% block pane_content %}
 	<div class="pane-content pane-content-main">
@@ -15,7 +15,7 @@
 					<ul class="nav-list">
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_validatingcontent') }}">
-								<h3>{{ phrase('agent.feedback.feedback_to_review') }}</h3>
+								<h3>{{ phrase('agent.community.community_to_review') }}</h3>
 								<em class="counter list-counter" id="feedback_validating_count">{{ counts.community_topics_awaiting_validation|default(0) }}</em>
 							</div>
 						</li>
@@ -56,7 +56,7 @@
 					<ul class="nav-list nav-list-small">
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'active', 'brand_id': selected_brand_id}) }}">
-								<h3>{{ phrase('agent.feedback.status_active') }}</h3>
+								<h3>{{ phrase('agent.community.status_active') }}</h3>
 								<em class="counter list-counter" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
@@ -72,7 +72,7 @@
 						</li>
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'closed', 'brand_id': selected_brand_id}) }}">
-								<h3>{{ phrase('agent.feedback.status_closed') }}</h3>
+								<h3>{{ phrase('agent.community.status_closed') }}</h3>
 								<em class="counter list-counter" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
@@ -141,7 +141,7 @@
 								{% endfor %}
 							</table>
 						{% else %}
-						<aside class="source-info-explain">{{ phrase('agent.feedback.no_labels_explain') }}</aside>
+						<aside class="source-info-explain">{{ phrase('agent.community.no_labels_explain') }}</aside>
 						{% endif %}
 					</section>
 				</section>
@@ -178,12 +178,12 @@
 				class="status-new"
 				data-status-type="new"
 				data-option-value="new"
-		>{{ phrase('agent.feedback.status_new') }}</li>
+		>{{ phrase('agent.community.status_new') }}</li>
 		<li
 				class="section-title status-active"
 				data-status-type="active"
 				data-option-value="active"
-		>{{ phrase('agent.feedback.status_active') }}</li>
+		>{{ phrase('agent.community.status_active') }}</li>
         {% for cat in active_status_cats %}
 			<li
 					class="status-{{cat.id}}"
@@ -195,7 +195,7 @@
 				class="section-title status-closed"
 				data-status-type="closed"
 				data-option-value="closed"
-		>{{ phrase('agent.feedback.status_closed') }}</li>
+		>{{ phrase('agent.community.status_closed') }}</li>
         {% for cat in closed_status_cats %}
 			<li
 					class="status-{{cat.id}}"

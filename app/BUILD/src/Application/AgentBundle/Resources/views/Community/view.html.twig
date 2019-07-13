@@ -23,11 +23,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="layout-content full-page page-feedback-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
 <div class="dp-page-content">
 <div class="delete-notice" {% if topic.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.feedback.feedback_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
+	{{ phrase('agent.community.community_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 <div class="spam-notice" {% if topic.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.feedback.status_closed') }}</button>
+	{{ phrase('agent.general.record_marked_spam') }} <button class="clean-gray xxx-small unspam">{{ phrase('agent.community.status_closed') }}</button>
 </div>
 
 {% if not topic.is_reviewed %}
@@ -58,12 +58,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<div style="float:left;position: relative;top:1px;">
 			{% if not(topic.is_reviewed == 0 and topic.status == 'hidden') %}
 				<select name="status" id="{{baseId}}_status">
-					<optgroup label="{{ phrase('agent.feedback.status_active') }}">
+					<optgroup label="{{ phrase('agent.community.status_active') }}">
 						{% for cat in active_status_cats %}
 							<option value="active.{{cat.id}}" {% if topic.status_code == 'active.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
 						{% endfor %}
 					</optgroup>
-					<optgroup label="{{ phrase('agent.feedback.status_closed') }}">
+					<optgroup label="{{ phrase('agent.community.status_closed') }}">
 						{% for cat in closed_status_cats %}
 							<option value="closed.{{cat.id}}" {% if topic.status_code == 'closed.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>
 						{% endfor %}
@@ -90,7 +90,7 @@ pageMeta.baseId = '{{ baseId }}';
                     </li>
                 {% endif %}
                   <li data-tab-for="#{{ baseId }}_subscribed_persons_wrap"><i
-                        class="fas fa-link"></i> {{ phrase('agent.feedback.subscribed_users') }}
+                        class="fas fa-link"></i> {{ phrase('agent.community.subscribed_users') }}
                         {% if subscribed_persons|length %}
                           (<span id="{{ baseId }}_subscribed_persons_count"
                                  data-count="{{ subscribed_persons|length }}">{{ subscribed_persons|length }}</span>)
@@ -161,7 +161,7 @@ pageMeta.baseId = '{{ baseId }}';
         </div>
 
         <ul id="{{baseId}}_merge_menu" style="display: none;">
-          <li class="elm no-choice">{{ phrase('agent.feedback.merge_howto') }}</li>
+          <li class="elm no-choice">{{ phrase('agent.community.merge_howto') }}</li>
         </ul>
       </article>
       {% if ticket_community_topics_links|length and app.user.hasPerm('agent_tickets.use') %}

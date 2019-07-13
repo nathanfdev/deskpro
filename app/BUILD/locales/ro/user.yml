@@ -62,12 +62,12 @@ portal.email_subjects.comment-deleted: 'Comentariul dumneavoastra a fost citit d
 portal.email_subjects.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat'
 portal.email_subjects.email_new-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
 portal.email_subjects.email_primary-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
-portal.email_subjects.feedback_new: 'Multumim pentru feedback'
-portal.email_subjects.feedback_new-approved: 'Feedback-ul dumneavoastra a fost aprobat'
-portal.email_subjects.feedback_new-comment: 'A fost postat un nou comentariu la "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Va multumim pentru feedback(necesita validare)'
-portal.email_subjects.feedback_new-disapproved: 'Feedback-ul dumneavoastra a fost respins'
-portal.email_subjects.feedback_updated: 'Feedback-ul dumneavoastra a fost actualizat: {{title}}'
+portal.email_subjects.community_new: 'Multumim pentru feedback'
+portal.email_subjects.community_new-approved: 'Feedback-ul dumneavoastra a fost aprobat'
+portal.email_subjects.community_new-comment: 'A fost postat un nou comentariu la "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Va multumim pentru feedback(necesita validare)'
+portal.email_subjects.community_new-disapproved: 'Feedback-ul dumneavoastra a fost respins'
+portal.email_subjects.community_updated: 'community-ul dumneavoastra a fost actualizat: {{title}}'
 portal.email_subjects.password_agent-reset: 'Un agent v-a resetat parola'
 portal.email_subjects.password_reset: 'Resetare parola'
 portal.email_subjects.register-welcome: 'Va multumim ca v-ati inregistrat'
@@ -89,23 +89,23 @@ portal.emails.download-updated-downloads:
   few: '{{count}} Updated Downloads'
   other: '{{count}} Updated Downloads'
 portal.emails.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat deoarece este prea mare. Dimensiunea maxima acceptata de Helpdesk-ul nostru este {{max_size}}. Va rugam sa renuntati la atasamente si sa incercati din nou.'
-portal.emails.feedback-updated-items:
+portal.emails.community-updated-items:
   one: '1 Updated Feedback Item'
   few: '{{count}} Updated Feedback Items'
   other: '{{count}} Updated Feedback Items'
-portal.emails.feedback_approved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
-portal.emails.feedback_closed: 'Feedback-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}'
-portal.emails.feedback_disapproved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
-portal.emails.feedback_disapproved-reason: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:'
-portal.emails.feedback_new-comment: '{{name}} a adaugat un nou comentariu:'
-portal.emails.feedback_published: 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.'
-portal.emails.feedback_thank-you: 'Va multumim pentru feedback-ul "{{title}}"'
-portal.emails.feedback_updated: 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"'
-portal.emails.feedback_validate-email: 'Va rugam sa validati adresa dumneavoastra de email dand click pe urmatorul link:'
-portal.emails.feedback_votes:
-  one: 'Feedback-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:'
-  few: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
-  other: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+portal.emails.community_approved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
+portal.emails.community_closed: 'community-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}'
+portal.emails.community_disapproved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
+portal.emails.community_disapproved-reason: 'Va trimitem acest email pentru a va anunta ca community-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:'
+portal.emails.community_new-comment: '{{name}} a adaugat un nou comentariu:'
+portal.emails.community_published: 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.'
+portal.emails.community_thank-you: 'Va multumim pentru feedback-ul "{{title}}"'
+portal.emails.community_updated: 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"'
+portal.emails.community_validate-email: 'Va rugam sa validati adresa dumneavoastra de email dand click pe urmatorul link:'
+portal.emails.community_votes:
+  one: 'community-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:'
+  few: ' community-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+  other: ' community-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
 portal.emails.greeting: 'Draga {{to_name}},'
 portal.emails.kb-new-articles:
   one: '1 New Knowledgebase Article'
@@ -153,12 +153,12 @@ portal.emails.tickets_ommitted:
   other: ' {{count}} mesaje au fost omise'
 portal.emails.view_full_history_online: 'Vedeti intregul tichet online'
 portal.error.404-title: 'Nu a fost gasit'
-portal.feedback.attachments: Atasamente
-portal.feedback.btn-closed: Inchis
-portal.feedback.btn-vote: 'Sunt de acord'
-portal.feedback.section-desc: 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.'
-portal.feedback.submit_feedback: 'Trimite feedback'
-portal.feedback.view-x-feedback:
+portal.community.attachments: Atasamente
+portal.community.btn-closed: Inchis
+portal.community.btn-vote: 'Sunt de acord'
+portal.community.section-desc: 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.'
+portal.community.submit_feedback: 'Trimite feedback'
+portal.community.view-x-feedback:
   one: 'View 1 feedback'
   few: 'View {{count}} feedback'
   other: 'View {{count}} feedback'
@@ -226,13 +226,13 @@ portal.general.rated-negative: 'Ati marcat aceasta pagina ca ne fiind de ajutor'
 portal.general.rated-positive: 'Ati marcat aceasta pagina ca fiind de ajutor'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} din {{vote_count}} persoane au gasit aceasta pagina ca fiind de ajutor'
 portal.general.related-downloads: 'Fisiere legate'
-portal.general.related-feedback: 'Feedback legat de'
+portal.general.related-community: 'Feedback legat de'
 portal.general.related-news: 'Stiri cu referire la'
 portal.general.search-labels-section-title: 'Cauta etichete'
 portal.general.search-section-title: Cautare
 portal.general.search_btn: Cautare
 portal.general.share-this: Distribuie
-portal.general.submit-feedback: 'Trimite Feedback'
+portal.general.submit-community: 'Trimite Feedback'
 portal.news.section-title: Stiri
 portal.news.view-as-agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
 portal.news.view-x-news:
@@ -244,7 +244,7 @@ portal.sidebar.agents_x_online:
   few: '{{count}} online'
   other: '{{count}} online'
 portal.sidebar.news_title: Stiri
-portal.tickets.feedback_message_leave_comment: 'Optional, puteti lasa un comentariu'
+portal.tickets.community_message_leave_comment: 'Optional, puteti lasa un comentariu'
 portal.tickets.guest-thanks-section-title: 'Va multumim'
 portal.tickets.guest_thank_you_title: 'Va multumim'
 portal.tickets.list_agent: 'Agentul asignat'
@@ -275,7 +275,7 @@ portal.tickets.timeline_marked_resolved: Rezolvat
 portal.tickets.view_btn_edit: Editare
 portal.tickets.view_label_your_name: 'Numele dumneavoastra'
 portal.tickets.view_unassigned: Neasignat
-portal.feedback.form_custom_cat: Categorie
+portal.community.form_custom_cat: Categorie
 user.chat.email: 'Adresa dumneavoastra de Email'
 user.chat.ended-no-agent: 'Pentru moment toti operatorii nostri sunt ocupati. Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.'
 user.chat.error: 'Eroare chat'
@@ -347,11 +347,11 @@ user.email_subjects.comment-approved: 'Comentariul dumneavoastra a fost aprobat'
 user.email_subjects.comment-deleted: 'Comentariul dumneavoastra a fost citit de agentii nostri'
 user.email_subjects.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat'
 user.email_subjects.email_new-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
-user.email_subjects.feedback_new: 'Multumim pentru feedback'
-user.email_subjects.feedback_new-approved: 'Feedback-ul dumneavoastra a fost aprobat'
-user.email_subjects.feedback_new-comment: 'A fost postat un nou comentariu la "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Feedback-ul dumneavoastra a fost respins'
-user.email_subjects.feedback_updated: 'Feedback-ul dumneavoastra a fost actualizat: {{title}}'
+user.email_subjects.community_new: 'Multumim pentru feedback'
+user.email_subjects.community_new-approved: 'Feedback-ul dumneavoastra a fost aprobat'
+user.email_subjects.community_new-comment: 'A fost postat un nou comentariu la "{{title}}"'
+user.email_subjects.community_new-disapproved: 'Feedback-ul dumneavoastra a fost respins'
+user.email_subjects.community_updated: 'community-ul dumneavoastra a fost actualizat: {{title}}'
 user.email_subjects.password_agent-reset: 'Un agent v-a resetat parola'
 user.email_subjects.password_reset: 'Resetare parola'
 user.email_subjects.register-welcome: 'Va multumim ca v-ati inregistrat'
@@ -370,23 +370,23 @@ user.emails.download-updated-downloads:
   few: '{{count}} Updated Downloads'
   other: '{{count}} Updated Downloads'
 user.emails.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat deoarece este prea mare. Dimensiunea maxima acceptata de Helpdesk-ul nostru este {{max_size}}. Va rugam sa renuntati la atasamente si sa incercati din nou.'
-user.emails.feedback-updated-items:
+user.emails.community-updated-items:
   one: '1 Updated Feedback Item'
   few: '{{count}} Updated Feedback Items'
   other: '{{count}} Updated Feedback Items'
-user.emails.feedback_agent-validation: 'Va informam ca feedback-ul dumneavoastra nu va fi facut public pe site-ul nostru pana cand va fi revizuit de unul dintre agentii nostri.'
-user.emails.feedback_approved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
-user.emails.feedback_closed: 'Feedback-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}'
-user.emails.feedback_disapproved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
-user.emails.feedback_disapproved-reason: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:'
-user.emails.feedback_new-comment: '{{name}} a adaugat un nou comentariu:'
-user.emails.feedback_published: 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.'
-user.emails.feedback_thank-you: 'Va multumim pentru feedback-ul "{{title}}"'
-user.emails.feedback_updated: 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Feedback-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:'
-  few: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
-  other: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+user.emails.community_agent-validation: 'Va informam ca feedback-ul dumneavoastra nu va fi facut public pe site-ul nostru pana cand va fi revizuit de unul dintre agentii nostri.'
+user.emails.community_approved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
+user.emails.community_closed: 'community-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}'
+user.emails.community_disapproved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
+user.emails.community_disapproved-reason: 'Va trimitem acest email pentru a va anunta ca community-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:'
+user.emails.community_new-comment: '{{name}} a adaugat un nou comentariu:'
+user.emails.community_published: 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.'
+user.emails.community_thank-you: 'Va multumim pentru feedback-ul "{{title}}"'
+user.emails.community_updated: 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"'
+user.emails.community_votes:
+  one: 'community-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:'
+  few: ' community-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+  other: ' community-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
 user.emails.greeting: 'Draga {{to_name}},'
 user.emails.kb-new-articles:
   one: '1 New Article'
@@ -476,7 +476,7 @@ user.error.permission-denied: 'Ne cerem scuze, actiunea pe care doriti sa o face
 user.error.permission-denied-login: 'Momentan sunteti delogat.  <a href="{{login_url}}">Logati-va </a> si incercati din nou.'
 user.error.permission-denied-title: 'Nu aveti voie sa faceti acesta actiune'
 user.error.server-error: 'Datorita unei erori pagina nu s-a incarcat. Va rugam sa incercati din nou.'
-user.feedback.submit_feedback: 'Trimite feedback'
+user.community.submit_feedback: 'Trimite feedback'
 user.general.helpdesk_by: 'Helpdesk software creat de <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Cod de confirmare'
 user.general.page: Pagina
@@ -506,7 +506,7 @@ user.profile.register_password_require_num_uppercase:
   one: 'At least {{count}} uppercase character'
   few: 'At least {{count}} uppercase characters'
   other: 'At least {{count}} uppercase characters'
-user.tickets.feedback_message_leave_comment: 'Optional, puteti lasa un comentariu'
+user.tickets.community_message_leave_comment: 'Optional, puteti lasa un comentariu'
 user.tickets.fields_category: Categorie
 user.tickets.fields_department: Departament
 user.tickets.fields_priority: Prioritate

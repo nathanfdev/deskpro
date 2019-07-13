@@ -62,35 +62,35 @@ adm.general.x_email_bans:
   few: '{{count}} Email Bans'
   many: '{{count}} Email Bans'
   other: '{{count}} Email Bans'
-adm.general.x_feedback_active_statuses:
+adm.general.x_community_active_statuses:
   zero: '{{count}} Feedback Active Statuses'
   one: '{{count}} Feedback Active Status'
   two: '{{count}} Feedback Active Statuses'
   few: '{{count}} Feedback Active Statuses'
   many: '{{count}} Feedback Active Statuses'
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_feedback_categories:
+adm.general.x_community_categories:
   zero: '{{count}} Feedback Categories'
   one: '{{count}} Feedback Category'
   two: '{{count}} Feedback Categories'
   few: '{{count}} Feedback Categories'
   many: '{{count}} Feedback Categories'
   other: '{{count}} Feedback Categories'
-adm.general.x_feedback_closed_statuses:
+adm.general.x_community_closed_statuses:
   zero: '{{count}} Feedback Closed Statuses'
   one: '{{count}} Feedback Closed Status'
   two: '{{count}} Feedback Closed Statuses'
   few: '{{count}} Feedback Closed Statuses'
   many: '{{count}} Feedback Closed Statuses'
   other: '{{count}} Feedback Closed Statuses'
-adm.general.x_feedback_statuses:
+adm.general.x_community_statuses:
   zero: '{{count}} Feedback Statuses'
   one: '{{count}} Feedback Status'
   two: '{{count}} Feedback Statuses'
   few: '{{count}} Feedback Statuses'
   many: '{{count}} Feedback Statuses'
   other: '{{count}} Feedback Statuses'
-adm.general.x_feedback_types:
+adm.general.x_community_types:
   zero: '{{count}} Feedback Types'
   one: '{{count}} Feedback Type'
   two: '{{count}} Feedback Types'
@@ -280,21 +280,21 @@ admin.departments.count_tickets:
   few: '{1} is 1 ticket'
   many: '{1} is 1 ticket'
   other: '{1} is 1 ticket'
-admin.feedback.count_active_statuses:
+admin.community.count_active_statuses:
   zero: '{{count}} active statuses'
   one: '{{count}} active status'
   two: '{{count}} active statuses'
   few: '{{count}} active statuses'
   many: '{{count}} active statuses'
   other: '{{count}} active statuses'
-admin.feedback.count_closed_statuses:
+admin.community.count_closed_statuses:
   zero: '{{count}} closed statuses'
   one: '{{count}} closed status'
   two: '{{count}} closed statuses'
   few: '{{count}} closed statuses'
   many: '{{count}} closed statuses'
   other: '{{count}} closed statuses'
-admin.feedback.count_feedback:
+admin.community.count_feedback:
   zero: '{{count}} feedback'
   one: '{{count}} feedback'
   two: '{{count}} feedback'
@@ -588,7 +588,7 @@ agent.chrome.chat_sign-in: 'الدخول للمحادثة'
 agent.chrome.chat_sign-out: 'خروج من المحادثة'
 agent.chrome.create_new-article: 'مقالة الجديدة'
 agent.chrome.create_new-download: 'تنزيلات جديدة'
-agent.chrome.create_new-feedback: 'تغذية راجعة جديدة'
+agent.chrome.create_new-community: 'تغذية راجعة جديدة'
 agent.chrome.create_new-news: 'اخبار جديدة مرسلة'
 agent.chrome.create_new-organization: 'منظمة جديدة'
 agent.chrome.create_new-person: 'شخص جديد'
@@ -614,7 +614,7 @@ agent.chrome.link_logout: الخروج
 agent.chrome.link_preferences: التفضيلات
 agent.chrome.nav_admin_settings: 'اعدادات المشرف'
 agent.chrome.nav_agentchat: 'مقدم خدمة IM'
-agent.chrome.nav_feedback: 'تغذية راجعة'
+agent.chrome.nav_community: 'تغذية راجعة'
 agent.chrome.nav_publish: النشر
 agent.chrome.nav_reports: التقارير
 agent.chrome.nav_search: البحث
@@ -632,7 +632,7 @@ agent.chrome.quicksearch_title: 'شريط البحث السريع'
 agent.chrome.quicksearch_title-articles: مقالات
 agent.chrome.quicksearch_title-chat: محادثة
 agent.chrome.quicksearch_title-downloads: التنزيلات
-agent.chrome.quicksearch_title-feedback: 'التغذية الراجعة'
+agent.chrome.quicksearch_title-community: 'التغذية الراجعة'
 agent.chrome.quicksearch_title-news: الاخبار
 agent.chrome.quicksearch_title-orgs: المنظمات
 agent.chrome.quicksearch_title-people: الاشخاص
@@ -768,49 +768,49 @@ agent.emails.view_your_tasks: 'استعرض مهامك'
 agent.emails.view_your_teams_tasks: 'اظهر مهام فريقك'
 agent.emails.view_your_tweets: 'استعرض تغريداتك'
 agent.emails.your_initial_password: 'كلمة مرورك الاولية'
-agent.feedback.any_category: 'اي تصنيف'
-agent.feedback.any_status: 'اي حالة'
-agent.feedback.count_votes:
+agent.community.any_category: 'اي تصنيف'
+agent.community.any_status: 'اي حالة'
+agent.community.count_votes:
   zero: '{{display_count}} votes'
   one: '{{display_count}} vote'
   two: '{{display_count}} votes'
   few: '{{display_count}} votes'
   many: '{{display_count}} votes'
   other: '{{display_count}} votes'
-agent.feedback.feedback_deleted: 'تم حذف الملاحظة'
-agent.feedback.feedback_to_review: 'اعادة النظر في  التغذية الراجعة'
-agent.feedback.least_voted_on_top: 'اقل التصويتات  في الاعلى'
-agent.feedback.list_title:
+agent.community.feedback_deleted: 'تم حذف الملاحظة'
+agent.community.feedback_to_review: 'اعادة النظر في  التغذية الراجعة'
+agent.community.least_voted_on_top: 'اقل التصويتات  في الاعلى'
+agent.community.list_title:
   zero: '1 التسليم'
   one: '{{count}} التسليم'
   two: '{{count}} التسليم'
   few: '{{count}} التسليم'
   many: '{{count}} التسليم'
   other: '{{count}} التسليم'
-agent.feedback.merge_feedback: 'ادمج الملاحظات'
-agent.feedback.merge_feedback_note: 'الوصف الناتج عن الدمج سيضاف كتعليق  لما تبقى'
-agent.feedback.merge_feedback_submit: 'ادمخ هاتين الملاحظتين'
-agent.feedback.merge_howto: 'افتح علامة تبويب اضافية للدمج'
-agent.feedback.new_feedback: 'تغذية راجعة جديدة'
-agent.feedback.newest_on_top: 'الاحدث في الاعلى'
-agent.feedback.no_feedback_cats_error: 'لا توجد انماط معرفة. تحتاج الى تعريف نمط من واجهة المشرف قبل ان تتمكن من اضافة انماط لقسم الملاحظات'
-agent.feedback.no_labels_explain: 'لم تقم بتسمية ولصق اي ملاحظات بعد  اظهر الملاحظات لتسميتها ولصقها'
-agent.feedback.oldest_on_top: 'الاقدم في الاعلى'
-agent.feedback.popularity_least_most: 'الشائع ( الاكثر   الاقل)'
-agent.feedback.popularity_most_least: 'الشائع ( الاقل    الاكثر'
-agent.feedback.showing_results: 'اظهار النتائج'
-agent.feedback.status_active: نشط
-agent.feedback.status_closed: مقفل
-agent.feedback.status_deleted: محذوف
-agent.feedback.status_hidden: مخفي
-agent.feedback.status_new: جديد
-agent.feedback.status_spam: 'البريد العشوائي'
-agent.feedback.top_voted_on_top: 'افضل المصوتين في الاعلى'
-agent.feedback.update_filter: 'تحديث المرشحات'
-agent.feedback.user_submitted_new_feedback: '{{name}}  ارسل ملاحظة جديدة'
-agent.feedback.vote_for_this_feedback: 'التصويت لهذه  التغذية الراجعة'
-agent.feedback.votes_least_most: 'المصوتين ( الاقل - الاكثر )'
-agent.feedback.votes_most_least: 'الاصوات ( اكثر - اقل )'
+agent.community.merge_feedback: 'ادمج الملاحظات'
+agent.community.merge_feedback_note: 'الوصف الناتج عن الدمج سيضاف كتعليق  لما تبقى'
+agent.community.merge_feedback_submit: 'ادمخ هاتين الملاحظتين'
+agent.community.merge_howto: 'افتح علامة تبويب اضافية للدمج'
+agent.community.new_feedback: 'تغذية راجعة جديدة'
+agent.community.newest_on_top: 'الاحدث في الاعلى'
+agent.community.no_feedback_cats_error: 'لا توجد انماط معرفة. تحتاج الى تعريف نمط من واجهة المشرف قبل ان تتمكن من اضافة انماط لقسم الملاحظات'
+agent.community.no_labels_explain: 'لم تقم بتسمية ولصق اي ملاحظات بعد  اظهر الملاحظات لتسميتها ولصقها'
+agent.community.oldest_on_top: 'الاقدم في الاعلى'
+agent.community.popularity_least_most: 'الشائع ( الاكثر   الاقل)'
+agent.community.popularity_most_least: 'الشائع ( الاقل    الاكثر'
+agent.community.showing_results: 'اظهار النتائج'
+agent.community.status_active: نشط
+agent.community.status_closed: مقفل
+agent.community.status_deleted: محذوف
+agent.community.status_hidden: مخفي
+agent.community.status_new: جديد
+agent.community.status_spam: 'البريد العشوائي'
+agent.community.top_voted_on_top: 'افضل المصوتين في الاعلى'
+agent.community.update_filter: 'تحديث المرشحات'
+agent.community.user_submitted_new_feedback: '{{name}}  ارسل ملاحظة جديدة'
+agent.community.vote_for_this_feedback: 'التصويت لهذه  التغذية الراجعة'
+agent.community.votes_least_most: 'المصوتين ( الاقل - الاكثر )'
+agent.community.votes_most_least: 'الاصوات ( اكثر - اقل )'
 agent.general.24x7: 7x24
 agent.general.actions: الاجراءات
 agent.general.activity_stream: 'تدفق الانشطة'
@@ -979,7 +979,7 @@ agent.general.create_article: 'انشاء مقالة'
 agent.general.create_content: 'أنشأ محتوى'
 agent.general.create_deal: 'انشأ صفقة'
 agent.general.create_download: 'انشاء تنزيل'
-agent.general.create_feedback: 'أنشأ تغذية راجعة'
+agent.general.create_community: 'أنشأ تغذية راجعة'
 agent.general.create_news: 'انشاء بريد اخبار جديد'
 agent.general.create_status: 'أنشا حالة'
 agent.general.create_ticket: 'انشاء تذكرة'
@@ -1094,7 +1094,7 @@ agent.general.facebook: 'الفيس بوك'
 agent.general.failed: فشل
 agent.general.failure: الفشل
 agent.general.favorite: المفضل
-agent.general.feedback: 'التغذية الراجعة'
+agent.general.community: 'التغذية الراجعة'
 agent.general.field_name: 'الحقل{{field}}'
 agent.general.field_name_title: 'اسم الحقل'
 agent.general.field_type_choice: 'الاختيارات المحددة مسبقا'
@@ -1267,7 +1267,7 @@ agent.general.new: جديد
 agent.general.new_article: 'مقالة جديدة'
 agent.general.new_comment: 'تعليق جديد'
 agent.general.new_download: 'تحميل جديد'
-agent.general.new_feedback: 'ملاحظة جديدة'
+agent.general.new_community: 'ملاحظة جديدة'
 agent.general.new_filter: 'تصفية جيدة'
 agent.general.new_note: 'ملاحظة جديدة'
 agent.general.new_organization: 'منظمة جديدة'
@@ -1344,7 +1344,7 @@ agent.general.phone: الهاتف
 agent.general.phone_number: 'رقم الهاتف'
 agent.general.phrase: العبارة
 agent.general.please_wait: 'فضلا انتظر'
-agent.general.popular_feedback_only: 'الملاحظات الشائعة فقط'
+agent.general.popular_community_only: 'الملاحظات الشائعة فقط'
 agent.general.popularity: الشائعة
 agent.general.position: مكانة
 agent.general.prev: السابق
@@ -1385,7 +1385,7 @@ agent.general.registered_views: 'المشاهدات المسجلة'
 agent.general.related_articles: 'المقالات ذات العلاقة'
 agent.general.related_content: 'مواضيع ذات صلة'
 agent.general.related_downloads: 'تنزيلات ذات صلة'
-agent.general.related_feedback: 'تغذية راجعة ذات صلة'
+agent.general.related_community: 'تغذية راجعة ذات صلة'
 agent.general.related_news: 'اخبار ذات صلة'
 agent.general.relative_time: 'الوقت المقارب'
 agent.general.remove: ازالة
@@ -1646,7 +1646,7 @@ agent.interface.keyboard_shortcuts: 'اختصار لوحة المفاتيح'
 agent.interface.major_items_appear_here: 'من هنا يمكنك فتح التذاكر المستخدمين المنظمات المقالات الاخبار التنزيلات والملاحظات'
 agent.interface.open_new_article_form: 'افتح نموذج مقالة جديدة'
 agent.interface.open_new_download_form: 'افتح نموذج تنزيلات جديدة'
-agent.interface.open_new_feedback_form: 'افتح نموذج ملاحظات جديدة'
+agent.interface.open_new_community_form: 'افتح نموذج ملاحظات جديدة'
 agent.interface.open_new_news_form: 'افتح نموذج اخبار'
 agent.interface.open_new_organization_form: 'افتح نموذج منظمة جديدة'
 agent.interface.open_new_person_form: 'افتحح نموذج  شخص جديد'
@@ -1890,8 +1890,8 @@ agent.prefs.apps_login_attempt: 'في أي وقت يتم استخدام حساب
 agent.prefs.apps_login_attempt_fail: 'في أي وقت حسابي يتم استخدامه للدخول و بيانات التسجيل غير صحيحة'
 agent.prefs.apps_new_comment: 'ملاحظة جديدة تم ارسالها'
 agent.prefs.apps_new_comment_validate: 'ملاحظة جديدة تم ارسالها و تحتاج الى اعتماد'
-agent.prefs.apps_new_feedback: 'ارسال تغذية راجعة جديدة'
-agent.prefs.apps_new_feedback_validate: 'تغذية راجعة جديدة أرسلت و بحاجه الى توثيق'
+agent.prefs.apps_new_community: 'ارسال تغذية راجعة جديدة'
+agent.prefs.apps_new_community_validate: 'تغذية راجعة جديدة أرسلت و بحاجه الى توثيق'
 agent.prefs.apps_new_user: 'مستخدم جديد سجل'
 agent.prefs.apps_task_assign_self: 'مهمة تم تعينها لي'
 agent.prefs.apps_task_assign_team: 'مهمة معينه لفريق الدعم الخاص بي'
@@ -2184,7 +2184,7 @@ agent.publish.move_to: 'انتقل الى'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}}وجدوا هذا المستند المحمل مفيد , {{down_votes}}وجدو هذا المستند المحمل غير مفيد'
 agent.publish.new_comment_on: 'تعليق  جديد حول {{name}}'
 agent.publish.new_comment_submitted_by: 'تم ارسال تعليق جديد بواسطة  {{name}}'
-agent.publish.new_feedback_by: 'تغذية راجعة  جديدة بواسطة  {{name}}'
+agent.publish.new_community_by: 'تغذية راجعة  جديدة بواسطة  {{name}}'
 agent.publish.new_post: 'مقال جديد'
 agent.publish.news_comments: 'التعليقات على الاخبار'
 agent.publish.news_list_title:
@@ -2284,7 +2284,7 @@ agent.search.simple: بسيط
 agent.search.type_article: مقال
 agent.search.type_chat_conversation: محادثات
 agent.search.type_download: تحميل
-agent.search.type_feedback: 'تغذية راجعة'
+agent.search.type_community: 'تغذية راجعة'
 agent.search.type_news: أخبار
 agent.search.type_organization: منظمات
 agent.search.type_person: أشخاص
@@ -2342,8 +2342,8 @@ agent.settings.notif_my_events: احداثي
 agent.settings.notif_my_own_actions: 'اجراءتي الشخصية'
 agent.settings.notif_new_comment: 'تم ارسال تعيلق جديد'
 agent.settings.notif_new_comment_validate: 'تم تسليم تعليق جديدوبحاجة الى مصادقة'
-agent.settings.notif_new_feedback: 'تسليم تغذية راجعة جديدة'
-agent.settings.notif_new_feedback_validate: 'ملاحظة جديدة سُلمت بحاجة الى مصادقة'
+agent.settings.notif_new_community: 'تسليم تغذية راجعة جديدة'
+agent.settings.notif_new_community_validate: 'ملاحظة جديدة سُلمت بحاجة الى مصادقة'
 agent.settings.notif_new_user: 'مستخدم جديد قام بالتسجيل'
 agent.settings.notif_notes_with_mentions: 'ملاحظات مع @ مذكورة'
 agent.settings.notif_notes_with_mentions_always: 'قم دائما بارسال الرسائل والبريد عبر  مقدم خدمة الرسائل الفورية'
@@ -2608,7 +2608,7 @@ agent.tickets.lc_new_reply: 'رد جديد'
 agent.tickets.lc_new_ticket: 'تذكرة جديدة'
 agent.tickets.lc_new_ticket_agent: 'تذكرة جديدة بواسطة مقدم الخدمة'
 agent.tickets.lc_update: حَدث
-agent.tickets.link_existing_feedback_subscr_part:
+agent.tickets.link_existing_community_subscr_part:
   zero: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   one: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   two: 'Subscribed ({{count}}) Ticket Participants to Feedback'
@@ -2646,7 +2646,7 @@ agent.tickets.log_new_web_user_widget: 'تذكرة جديدة من مستخدم 
 agent.tickets.log_note_deleted: 'ملاحظة حذفت'
 agent.tickets.log_on_article: 'عند المقال "{{title}} (المعرف {{id}})'
 agent.tickets.log_on_download: 'عند تحميل "{{title}} (بالمعرف ID{{id}})'
-agent.tickets.log_on_feedback: 'في التغذية الراجعة "{{title}} (المعرف ID{{id}})'
+agent.tickets.log_on_community: 'في التغذية الراجعة "{{title}} (المعرف ID{{id}})'
 agent.tickets.log_on_news: 'في الاخبار "{{title}} (المعرف ID{{id}})'
 agent.tickets.log_selected_option: 'تم اختياره:'
 agent.tickets.log_sent_from: 'أرسلت من {{email}}'
@@ -2807,7 +2807,7 @@ agent.tickets.subscribed_tickets: 'التذاكر المدفوع اشتراكه�
 agent.tickets.teams_action: '{{teams}} الفِرق'
 agent.tickets.text_body: النص
 agent.tickets.ticket_changes: 'تغييرات التذكرة'
-agent.tickets.ticket_feedback: 'التغذية الراجعة لتذكرة طلب الخدمة'
+agent.tickets.ticket_community: 'التغذية الراجعة لتذكرة طلب الخدمة'
 agent.tickets.ticket_field_name: 'حقل التذكرة {{field}}'
 agent.tickets.ticket_is_deleted: 'تم حذف التذكرة'
 agent.tickets.ticket_is_marked_as_spam: 'هذه التذكرة عملت كبريد عشوائي.'

@@ -516,16 +516,16 @@ class CommunityTopicsController extends AbstractController
     public function communityRateAction(Request $request, CommunityTopic $item, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_COMMUNITY')) {
-            throw $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
+            throw $this->createAccessDeniedException($this->phrase('portal.community.module_forbidden'));
         }
         if (!$this->isGranted('RATE_FEEDBACK', $item)) {
             if ($this->getUser()) {
-                throw $this->createAccessDeniedException($this->phrase('portal.feedback.rate_forbidden'));
+                throw $this->createAccessDeniedException($this->phrase('portal.community.rate_forbidden'));
             }
             if ($request->getContentType() == 'json') {
                 return new JsonResponse(
                     [
-                        'error'    => $this->phrase('portal.feedback.error_login'),
+                        'error'    => $this->phrase('portal.community.error_login'),
                         'redirect' => $this->generateUrl('portal_login', [
                             '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $item->getSlug()]),
                         ]),
@@ -538,7 +538,7 @@ class CommunityTopicsController extends AbstractController
             }
         }
         if (!$item->isVisibleOnPortal()) {
-            throw $this->createNotFoundException($this->phrase('portal.feedback.error_hidden'));
+            throw $this->createNotFoundException($this->phrase('portal.community.error_hidden'));
         }
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;

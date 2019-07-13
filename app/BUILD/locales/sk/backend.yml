@@ -43,27 +43,27 @@ adm.general.x_email_bans:
   few: '{{count}} Email Bans'
   many: '{{count}} Email Bans'
   other: '{{count}} Email Bans'
-adm.general.x_feedback_active_statuses:
+adm.general.x_community_active_statuses:
   one: '{{count}} Feedback Active Status'
   few: '{{count}} Feedback Active Statuses'
   many: '{{count}} Feedback Active Statuses'
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_feedback_categories:
+adm.general.x_community_categories:
   one: '{{count}} Feedback Category'
   few: '{{count}} Feedback Categories'
   many: '{{count}} Feedback Categories'
   other: '{{count}} Feedback Categories'
-adm.general.x_feedback_closed_statuses:
+adm.general.x_community_closed_statuses:
   one: '{{count}} Feedback Closed Status'
   few: '{{count}} Feedback Closed Statuses'
   many: '{{count}} Feedback Closed Statuses'
   other: '{{count}} Feedback Closed Statuses'
-adm.general.x_feedback_statuses:
+adm.general.x_community_statuses:
   one: '{{count}} Feedback Status'
   few: '{{count}} Feedback Statuses'
   many: '{{count}} Feedback Statuses'
   other: '{{count}} Feedback Statuses'
-adm.general.x_feedback_types:
+adm.general.x_community_types:
   one: '{{count}} Feedback Type'
   few: '{{count}} Feedback Types'
   many: '{{count}} Feedback Types'
@@ -193,17 +193,17 @@ admin.departments.count_tickets:
   few: '{1} is 1 ticket'
   many: '{1} is 1 ticket'
   other: '{1} is 1 ticket'
-admin.feedback.count_active_statuses:
+admin.community.count_active_statuses:
   one: '{{count}} active status'
   few: '{{count}} active statuses'
   many: '{{count}} active statuses'
   other: '{{count}} active statuses'
-admin.feedback.count_closed_statuses:
+admin.community.count_closed_statuses:
   one: '{{count}} closed status'
   few: '{{count}} closed statuses'
   many: '{{count}} closed statuses'
   other: '{{count}} closed statuses'
-admin.feedback.count_feedback:
+admin.community.count_feedback:
   one: '{{count}} feedback'
   few: '{{count}} feedback'
   many: '{{count}} feedback'
@@ -419,7 +419,7 @@ agent.chrome.chat_sign-in: 'Prihlásiť sado konverzácie'
 agent.chrome.chat_sign-out: 'Odhlásiť sa z konverzácie'
 agent.chrome.create_new-article: 'Nový článok'
 agent.chrome.create_new-download: 'Nové stiahnutie'
-agent.chrome.create_new-feedback: 'Nová spätná väzba'
+agent.chrome.create_new-community: 'Nová spätná väzba'
 agent.chrome.create_new-news: 'Nová novinka'
 agent.chrome.create_new-organization: 'Nová organizácia'
 agent.chrome.create_new-person: 'Nová osoba'
@@ -445,7 +445,7 @@ agent.chrome.link_logout: 'Odhlásiť sa'
 agent.chrome.link_preferences: Preferencie
 agent.chrome.nav_admin_settings: 'Administrátorské nastavenia'
 agent.chrome.nav_agentchat: 'Operátorské IM'
-agent.chrome.nav_feedback: 'Spätná väzba'
+agent.chrome.nav_community: 'Spätná väzba'
 agent.chrome.nav_publish: Publikovať
 agent.chrome.nav_reports: Reporty
 agent.chrome.nav_search: Hľadať
@@ -462,7 +462,7 @@ agent.chrome.quicksearch_title: 'Bar rýchleho vyhľadávania'
 agent.chrome.quicksearch_title-articles: Články
 agent.chrome.quicksearch_title-chat: Konverzácia
 agent.chrome.quicksearch_title-downloads: Stiahnutia
-agent.chrome.quicksearch_title-feedback: 'Spätná väzba'
+agent.chrome.quicksearch_title-community: 'Spätná väzba'
 agent.chrome.quicksearch_title-news: Novinky
 agent.chrome.quicksearch_title-orgs: Organizácie
 agent.chrome.quicksearch_title-people: Ľudia
@@ -582,44 +582,44 @@ agent.emails.view_your_tasks: 'Zobraziť Vaše úlohy'
 agent.emails.view_your_teams_tasks: 'Zobraziť úlohy Vášho teamu'
 agent.emails.view_your_tweets: 'Zobraziť Vaše tweety'
 agent.emails.your_initial_password: 'Vaše počiatočné heslo'
-agent.feedback.any_category: 'Hocijaká kategória'
-agent.feedback.any_status: 'Hocijaký status'
-agent.feedback.count_votes:
+agent.community.any_category: 'Hocijaká kategória'
+agent.community.any_status: 'Hocijaký status'
+agent.community.count_votes:
   one: '{{display_count}} vote'
   few: '{{display_count}} votes'
   many: '{{display_count}} votes'
   other: '{{display_count}} votes'
-agent.feedback.feedback_deleted: 'Táto spätná väzba bola odstránená'
-agent.feedback.feedback_to_review: 'Spätná väzba na preskúmanie'
-agent.feedback.least_voted_on_top: 'Najmenej hodnotené na vrchu'
-agent.feedback.list_title:
+agent.community.feedback_deleted: 'Táto spätná väzba bola odstránená'
+agent.community.feedback_to_review: 'Spätná väzba na preskúmanie'
+agent.community.least_voted_on_top: 'Najmenej hodnotené na vrchu'
+agent.community.list_title:
   one: '1 podanie'
   few: '{{count}} podaní'
   many: '{{count}} podaní'
   other: '{{count}} podaní'
-agent.feedback.merge_feedback: 'Spojiť spätnú väzbu'
-agent.feedback.merge_feedback_note: 'Opis zo spojenej spätnej väzby bude pridaný ako komentár do ponechanej spätnej väzby.'
-agent.feedback.merge_feedback_submit: 'Spojiť tieto podania dvoch spätných väzieb'
-agent.feedback.merge_howto: 'Otvoriť ďalšie okno spätnej väzby pre spojenie'
-agent.feedback.new_feedback: 'Nová spätná väzba:'
-agent.feedback.newest_on_top: 'Najnovšie na vrchu'
-agent.feedback.no_feedback_cats_error: 'Nie sú definované žiadne typy. Prv, než budete vedieť pridávať typy do sekcie spätných väzieb, musíte definovať typ v administrátorskom rozhraní.'
-agent.feedback.no_labels_explain: 'Zatiaľ ste neoštítkovali žiadnu spätnú väzbu.  Zobraziť podanie spätnej väzby pre jej oštítkovanie.'
-agent.feedback.oldest_on_top: 'Najstaršie na vrchu'
-agent.feedback.popularity_least_most: 'Popularita (Najmenej-Najviac)'
-agent.feedback.popularity_most_least: 'Popularita (Najviac-Najmenej)'
-agent.feedback.showing_results: 'Zobrazuje výsledky'
-agent.feedback.status_active: Aktívne
-agent.feedback.status_closed: Uzavreté
-agent.feedback.status_deleted: Zmazané
-agent.feedback.status_hidden: Skryté
-agent.feedback.status_new: Nové
-agent.feedback.top_voted_on_top: 'Najviac hodnotené na vrchu'
-agent.feedback.update_filter: 'Aktualizovať filter'
-agent.feedback.user_submitted_new_feedback: '{{name}} potvrdil novú spätnú väzbu'
-agent.feedback.vote_for_this_feedback: 'Hlasuj pre túto spätnú väzbu'
-agent.feedback.votes_least_most: 'Hlasy (Najmenej-Najviac)'
-agent.feedback.votes_most_least: 'Hlasy (Najviac-Najmenej)'
+agent.community.merge_feedback: 'Spojiť spätnú väzbu'
+agent.community.merge_feedback_note: 'Opis zo spojenej spätnej väzby bude pridaný ako komentár do ponechanej spätnej väzby.'
+agent.community.merge_feedback_submit: 'Spojiť tieto podania dvoch spätných väzieb'
+agent.community.merge_howto: 'Otvoriť ďalšie okno spätnej väzby pre spojenie'
+agent.community.new_feedback: 'Nová spätná väzba:'
+agent.community.newest_on_top: 'Najnovšie na vrchu'
+agent.community.no_feedback_cats_error: 'Nie sú definované žiadne typy. Prv, než budete vedieť pridávať typy do sekcie spätných väzieb, musíte definovať typ v administrátorskom rozhraní.'
+agent.community.no_labels_explain: 'Zatiaľ ste neoštítkovali žiadnu spätnú väzbu.  Zobraziť podanie spätnej väzby pre jej oštítkovanie.'
+agent.community.oldest_on_top: 'Najstaršie na vrchu'
+agent.community.popularity_least_most: 'Popularita (Najmenej-Najviac)'
+agent.community.popularity_most_least: 'Popularita (Najviac-Najmenej)'
+agent.community.showing_results: 'Zobrazuje výsledky'
+agent.community.status_active: Aktívne
+agent.community.status_closed: Uzavreté
+agent.community.status_deleted: Zmazané
+agent.community.status_hidden: Skryté
+agent.community.status_new: Nové
+agent.community.top_voted_on_top: 'Najviac hodnotené na vrchu'
+agent.community.update_filter: 'Aktualizovať filter'
+agent.community.user_submitted_new_feedback: '{{name}} potvrdil novú spätnú väzbu'
+agent.community.vote_for_this_feedback: 'Hlasuj pre túto spätnú väzbu'
+agent.community.votes_least_most: 'Hlasy (Najmenej-Najviac)'
+agent.community.votes_most_least: 'Hlasy (Najviac-Najmenej)'
 agent.general.actions: Akcie
 agent.general.activity_stream: 'Prúd aktivít'
 agent.general.add: Pridať
@@ -772,7 +772,7 @@ agent.general.create_article: 'Vytvoriť nový clánok'
 agent.general.create_content: 'Vytvoriť obsah'
 agent.general.create_deal: 'Vytvoriť dohodu'
 agent.general.create_download: 'Vytvoriť stiahnutie'
-agent.general.create_feedback: 'Vytvoriť spätnú väzbu'
+agent.general.create_community: 'Vytvoriť spätnú väzbu'
 agent.general.create_news: 'Vytvoriť nový príspevok'
 agent.general.create_status: 'Vytvoriť status'
 agent.general.create_ticket: 'Vytvoriť tiket'
@@ -878,7 +878,7 @@ agent.general.existing_picture: 'Existujúci obrázok'
 agent.general.failed: Zlyhalo
 agent.general.failure: Zlyhanie
 agent.general.favorite: Obľúbené
-agent.general.feedback: 'Spätná väzba'
+agent.general.community: 'Spätná väzba'
 agent.general.field_name: 'Pole: {{field}}'
 agent.general.field_name_title: 'Názov poľa'
 agent.general.field_type_choice: 'Pred-defnované možnosti'
@@ -1036,7 +1036,7 @@ agent.general.new: Nové
 agent.general.new_article: 'Nový článok'
 agent.general.new_comment: 'Nový komentár'
 agent.general.new_download: 'Nové stiahnutie'
-agent.general.new_feedback: 'Nová spätná väzba'
+agent.general.new_community: 'Nová spätná väzba'
 agent.general.new_filter: 'Nový filter'
 agent.general.new_note: 'Nová poznámka'
 agent.general.new_organization: 'Nová organizácia'
@@ -1110,7 +1110,7 @@ agent.general.person_id: 'Užívateľské ID'
 agent.general.phone: Telefón
 agent.general.phrase: Fráza
 agent.general.please_wait: 'Prosím čakajte'
-agent.general.popular_feedback_only: 'Iba populárna spätná väzba'
+agent.general.popular_community_only: 'Iba populárna spätná väzba'
 agent.general.popularity: Popularita
 agent.general.position: Pozícia
 agent.general.prev: Predchádzajúce
@@ -1149,7 +1149,7 @@ agent.general.registered_views: 'Registrované zobrazenia'
 agent.general.related_articles: 'Podobné články'
 agent.general.related_content: 'Podobný obsah'
 agent.general.related_downloads: 'Podobné stiahnutia'
-agent.general.related_feedback: 'Podobná spätná väzba'
+agent.general.related_community: 'Podobná spätná väzba'
 agent.general.related_news: 'Podobné novinky'
 agent.general.relative_time: 'Relatívny čas'
 agent.general.remove: Odstrániť
@@ -1384,7 +1384,7 @@ agent.interface.keyboard_shortcuts: 'Klávesové skratky'
 agent.interface.major_items_appear_here: 'Tikety, užívatelia, organizácie, články, novinky. stiahnutia a spätné väzby sa otvárajú tu.'
 agent.interface.open_new_article_form: 'Otvoriť formulár nového článku'
 agent.interface.open_new_download_form: 'Otvoriť formulár nového stiahnutia'
-agent.interface.open_new_feedback_form: 'Otvoriť formulár novej spätnej väzby'
+agent.interface.open_new_community_form: 'Otvoriť formulár novej spätnej väzby'
 agent.interface.open_new_news_form: 'Otvoriť formulár novej novinky'
 agent.interface.open_new_organization_form: 'Otvoriť formulár novej organiácie'
 agent.interface.open_new_person_form: 'Otvoriť formulár novej osoby'
@@ -1662,7 +1662,7 @@ agent.publish.move_to: 'Presunúť do'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} označili toto stiahnutie ako nápomocné, {{down_votes}} označili, že im to nepomohlo'
 agent.publish.new_comment_on: 'Nový koment na {{name}}'
 agent.publish.new_comment_submitted_by: 'Nový komentár bol potvrdený užívateľom {{name}}'
-agent.publish.new_feedback_by: 'Nová spätná väzba od {{name}}'
+agent.publish.new_community_by: 'Nová spätná väzba od {{name}}'
 agent.publish.new_post: 'Nový Post'
 agent.publish.news_comments: 'Nový Komentár'
 agent.publish.news_list_title:
@@ -1801,8 +1801,8 @@ agent.settings.notif_my_events: 'Moje udalosti'
 agent.settings.notif_my_own_actions: 'Moje vykonané akcie'
 agent.settings.notif_new_comment: 'Nový komentár bol postúpený'
 agent.settings.notif_new_comment_validate: 'Nový komentár bol odovzdaný, ktorý potrebuje overenie'
-agent.settings.notif_new_feedback: 'Novo podaná spätná väzba'
-agent.settings.notif_new_feedback_validate: 'Nová spätná väzba bola odovzdaná, ktorá potrebuje overenie'
+agent.settings.notif_new_community: 'Novo podaná spätná väzba'
+agent.settings.notif_new_community_validate: 'Nová spätná väzba bola odovzdaná, ktorá potrebuje overenie'
 agent.settings.notif_new_user: 'Nový užívateľ registrovaný'
 agent.settings.notif_notes_with_mentions: 'Poznámky so @zmienkou'
 agent.settings.notif_notes_with_mentions_always: 'Vždy e-mailovať a zasielať správu konverzácie'
@@ -2051,7 +2051,7 @@ agent.tickets.lc_new_reply: 'nová odpoveď'
 agent.tickets.lc_new_ticket: 'nový ticket'
 agent.tickets.lc_new_ticket_agent: 'nový ticket operátorom'
 agent.tickets.lc_update: aktualizácia
-agent.tickets.link_existing_feedback_subscr_part:
+agent.tickets.link_existing_community_subscr_part:
   one: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   few: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   many: 'Subscribed ({{count}}) Ticket Participants to Feedback'
@@ -2080,7 +2080,7 @@ agent.tickets.log_new_web_user_widget: 'Nový tiket užívateľa cez widget str�
 agent.tickets.log_note_deleted: 'Poznámka zmazaná'
 agent.tickets.log_on_article: 'v článku "{{title}}" (ID {{id}})'
 agent.tickets.log_on_download: 'na stiahnutí "{{title}}" (ID {{id}})'
-agent.tickets.log_on_feedback: 'na spätnej väzbe "{{title}}" (ID {{id}})'
+agent.tickets.log_on_community: 'na spätnej väzbe "{{title}}" (ID {{id}})'
 agent.tickets.log_on_news: 'na novinke "{{title}}" (ID {{id}})'
 agent.tickets.log_sent_from: 'Zaslané z e-mailu {{email}}'
 agent.tickets.log_sla_added: 'SLA priadaná'
@@ -2228,7 +2228,7 @@ agent.tickets.subscribed_tickets: 'Odoberané Tickety'
 agent.tickets.teams_action: 'Teamy: {{teams}}'
 agent.tickets.text_body: 'Text Tela'
 agent.tickets.ticket_changes: 'Zmeny Ticketu'
-agent.tickets.ticket_feedback: 'Spätná väzba Ticketu'
+agent.tickets.ticket_community: 'Spätná väzba Ticketu'
 agent.tickets.ticket_field_name: 'Pole tiketu: {{field}}'
 agent.tickets.ticket_is_deleted: 'ticket je zmazaný'
 agent.tickets.ticket_is_marked_as_spam: 'Tento Ticket bol označený ako SPAM.'

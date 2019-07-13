@@ -117,19 +117,19 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_feedback') }}</td>
+				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_community') }}</td>
 				<td>
 					{{ _self.perm_toggle('feedback', 'submit') }}
 				</td>
 			</tr>
 			<tr>
-				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_feedback_no_review') }}</td>
+				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_community_no_review') }}</td>
 				<td>
 					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
+				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_community') }}</td>
 				<td>
 					{{ _self.perm_toggle('feedback', 'rate') }}
 				</td>
@@ -138,7 +138,7 @@
 			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
+					<td width="100%">{{ phrase('admin.user_groups.submit_community_comments') }}</td>
 					<td>
 						{{ _self.perm_toggle('feedback', 'comment') }}
 					</td>

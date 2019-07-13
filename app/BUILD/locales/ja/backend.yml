@@ -22,23 +22,23 @@ adm.custom_fields.specific_user_fields: ユーザ単位フィールド
 adm.custom_fields.ticket_fields: チケットフィールド
 adm.custom_fields.title_error: 有効なタイトルを入力する必要があります
 adm.custom_fields.user_fields: ユーザフィールド
-adm.feedback_categories.delete_feedback_categories_moved: 現在、このフィードバックカテゴリの下にある全てのフィードバックは、次の場所に移動されます：
-adm.feedback_categories.delete_feedback_category: フィードバックカテゴリ削除
-adm.feedback_categories.delete_feedback_category_confirm: このフィードバックカテゴリを削除してもよろしいですか？
-adm.feedback_categories.new_category: 新しいフィードバックカテゴリ
-adm.feedback_categories.parent_explain: 親カテゴリを設定することで、このカテゴリは子カテゴリになります。これは、使いやすいフィードバック構造を作成するのに役立つ組織的な機能です。
-adm.feedback_categories.title: タイトル
-adm.feedback_categories.title_error: 有効なタイトルを入力する必要があります
-adm.feedback_categories.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
-adm.feedback_types.delete_feedback_type: フィードバックタイプ削除
-adm.feedback_types.delete_feedback_type_confirm: このフィードバックタイプを削除してもよろしいですか？
-adm.feedback_types.delete_feedback_types_moved: このフィードバックタイプのしたにあるフィードバックは、次の場所に移動されます：
-adm.feedback_types.no_delete_last: 少なくとも1つのフィードバックタイプが常に存在する必要があります。最後のフィードバックタイプは削除できません。
-adm.feedback_types.title: タイトル
-adm.feedback_types.title_error: 有効なタイトルを入力する必要があります
-adm.feedback_types.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
-adm.feedback_types.usergroups: ユーザグループ
-adm.feedback_types.usergroups_explain: これらは、このフィードバックタイプが属するユーザグループです。
+adm.community_categories.delete_feedback_categories_moved: 現在、このフィードバックカテゴリの下にある全てのフィードバックは、次の場所に移動されます：
+adm.community_categories.delete_feedback_category: フィードバックカテゴリ削除
+adm.community_categories.delete_feedback_category_confirm: このフィードバックカテゴリを削除してもよろしいですか？
+adm.community_categories.new_category: 新しいフィードバックカテゴリ
+adm.community_categories.parent_explain: 親カテゴリを設定することで、このカテゴリは子カテゴリになります。これは、使いやすいフィードバック構造を作成するのに役立つ組織的な機能です。
+adm.community_categories.title: タイトル
+adm.community_categories.title_error: 有効なタイトルを入力する必要があります
+adm.community_categories.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
+adm.community_types.delete_feedback_type: フィードバックタイプ削除
+adm.community_types.delete_feedback_type_confirm: このフィードバックタイプを削除してもよろしいですか？
+adm.community_types.delete_feedback_types_moved: このフィードバックタイプのしたにあるフィードバックは、次の場所に移動されます：
+adm.community_types.no_delete_last: 少なくとも1つのフィードバックタイプが常に存在する必要があります。最後のフィードバックタイプは削除できません。
+adm.community_types.title: タイトル
+adm.community_types.title_error: 有効なタイトルを入力する必要があります
+adm.community_types.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
+adm.community_types.usergroups: ユーザグループ
+adm.community_types.usergroups_explain: これらは、このフィードバックタイプが属するユーザグループです。
 adm.general.count_custom_fields:
   other: '{{count}} Custom Fields'
 adm.general.count_labels:
@@ -49,15 +49,15 @@ adm.general.x_departments:
   other: '{{count}} Departments'
 adm.general.x_email_bans:
   other: '{{count}} Email Bans'
-adm.general.x_feedback_active_statuses:
+adm.general.x_community_active_statuses:
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_feedback_categories:
+adm.general.x_community_categories:
   other: '{{count}} Feedback Categories'
-adm.general.x_feedback_closed_statuses:
+adm.general.x_community_closed_statuses:
   other: '{{count}} Feedback Closed Statuses'
-adm.general.x_feedback_statuses:
+adm.general.x_community_statuses:
   other: '{{count}} Feedback Statuses'
-adm.general.x_feedback_types:
+adm.general.x_community_types:
   other: '{{count}} Feedback Types'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'
@@ -96,7 +96,7 @@ adm.settings.reset_demo_descriptions_apps: 全てのDeskproアプリ（Gravatar�
 adm.settings.reset_demo_descriptions_departments: 全てのカスタム部門を削除し、デフォルトに戻します（サポート部門と営業部門のみ）。
 adm.settings.reset_demo_descriptions_downloads: 全てのダウンロードファイルを削除します。
 adm.settings.reset_demo_descriptions_escalations: 全てのエスカレーションとSLAを削除します。
-adm.settings.reset_demo_descriptions_feedback: 全てのフィードバック項目を削除します。
+adm.settings.reset_demo_descriptions_community: 全てのフィードバック項目を削除します。
 adm.settings.reset_demo_descriptions_fields: 全てのカスタムチケット、ユーザー、組織、チャットフィールドを削除します。カテゴリ、優先度、ワークフロー、製品の値を削除し、これらのフィールドを無効にします。
 adm.settings.reset_demo_descriptions_filters: 全てのカスタムフィルタを削除します。
 adm.settings.reset_demo_descriptions_kb: 全てのナレッジベース記事を削除します。
@@ -115,7 +115,7 @@ adm.settings.reset_demo_titles_apps: アプリリセット
 adm.settings.reset_demo_titles_departments: 部門リセット
 adm.settings.reset_demo_titles_downloads: パージダウンロード
 adm.settings.reset_demo_titles_escalations: エスカレーションとSLAのパージ
-adm.settings.reset_demo_titles_feedback: パージフィードバック
+adm.settings.reset_demo_titles_community: パージフィードバック
 adm.settings.reset_demo_titles_fields: フィールドリセット
 adm.settings.reset_demo_titles_filters: フィルタリセット
 adm.settings.reset_demo_titles_kb: KBパージ
@@ -259,7 +259,7 @@ admin.custom_fields.explain_multi_line_box: これは、説明や注釈などの
 admin.custom_fields.explain_one_line_box: これは、シンプルな1行のテキストボックスです。
 admin.custom_fields.explain_predefined_options: これは、ドロップダウン選択メニュー、ラジオボタンまたはチェックボックスとして表示させる事前定義されたオプションのセットです。
 admin.custom_fields.explain_toggle: このフィールドは、ユーザがチェックまたはチェック解除できる単一のチェックボックスとして表示されます。
-admin.custom_fields.feedback_fields: フィードバックフィールド
+admin.custom_fields.community_fields: フィードバックフィールド
 admin.custom_fields.field_type: フィールドタイプ
 admin.custom_fields.fields: フィールド
 admin.custom_fields.how_to_display_the_options: オプションの表示方法
@@ -310,8 +310,8 @@ admin.emailtpl_desc.deskpro_emails_agent_new-agent-chat-message_html_twig_desc: 
 admin.emailtpl_desc.deskpro_emails_agent_new-agent-chat-message_html_twig_title: 新しいチャットメッセージ
 admin.emailtpl_desc.deskpro_emails_agent_new-comment_html_twig_desc: このメールは、記事、ニュース、またはダウンロードに関する新しいユーザのコメントを通知するためにエージェントに送信されます。
 admin.emailtpl_desc.deskpro_emails_agent_new-comment_html_twig_title: 新しいユーザコメント
-admin.emailtpl_desc.deskpro_emails_agent_new-feedback_html_twig_desc: このメールは、新しいユーザからのフィードバック提出を通知するためにエージェントに送信されます。
-admin.emailtpl_desc.deskpro_emails_agent_new-feedback_html_twig_title: 新しいフィードバック
+admin.emailtpl_desc.deskpro_emails_agent_new-community_html_twig_desc: このメールは、新しいユーザからのフィードバック提出を通知するためにエージェントに送信されます。
+admin.emailtpl_desc.deskpro_emails_agent_new-community_html_twig_title: 新しいフィードバック
 admin.emailtpl_desc.deskpro_emails_agent_new-registration_html_twig_desc: このメールは、新しいユーザ登録を通知するためにエージェントに送信されます。
 admin.emailtpl_desc.deskpro_emails_agent_new-registration_html_twig_title: 新規登録
 admin.emailtpl_desc.deskpro_emails_agent_new-reply-agent_html_twig_desc: このメールは、別のエージェントの新しい返信を通知するためにエージェントに送信されます。
@@ -340,18 +340,18 @@ admin.emailtpl_desc.deskpro_emails_user_email-too-big_html_twig_desc: このメ�
 admin.emailtpl_desc.deskpro_emails_user_email-too-big_html_twig_title: メールが大きすぎます
 admin.emailtpl_desc.deskpro_emails_user_email-validation_html_twig_desc: このメールは、ユーザにメールアドレスの検証を依頼するために送信されます。
 admin.emailtpl_desc.deskpro_emails_user_email-validation_html_twig_title: メールの検証
-admin.emailtpl_desc.deskpro_emails_user_feedback-approved_html_twig_desc: このメールは、エージェントが投稿を承認したときにユーザに送信されます。
-admin.emailtpl_desc.deskpro_emails_user_feedback-approved_html_twig_title: フィードバック承認済み
-admin.emailtpl_desc.deskpro_emails_user_feedback-disapproved_html_twig_desc: このメールは、エージェントが検証を待っている投稿のうち1つを削除すると、ユーザに送信されます。
-admin.emailtpl_desc.deskpro_emails_user_feedback-disapproved_html_twig_title: フィードバック削除済み
-admin.emailtpl_desc.deskpro_emails_user_feedback-new-comment_html_twig_desc: このメールは、投稿に新しいコメントが追加されたときにユーザに送信されます。
-admin.emailtpl_desc.deskpro_emails_user_feedback-new-comment_html_twig_title: 新しいフィードバックコメント通知
-admin.emailtpl_desc.deskpro_emails_user_feedback-new_html_twig_desc: このメールは、フィードバック提出を感謝するためにユーザに送信されます。メールの確認が有効になっている場合、このメールにはユーザがクリックする必要のある確認リンクも含まれています。
-admin.emailtpl_desc.deskpro_emails_user_feedback-new_html_twig_title: 新しいフィードバックの確認
-admin.emailtpl_desc.deskpro_emails_user_feedback-subscription_html_twig_desc: このメールは、申し込みされたカテゴリの新しいフィードバックを通知するためにユーザに送信されます。
-admin.emailtpl_desc.deskpro_emails_user_feedback-subscription_html_twig_title: 新しいフィードバック
-admin.emailtpl_desc.deskpro_emails_user_feedback-updated_html_twig_desc: このメールは、エージェントが投稿を更新するとユーザに送信されます。例えば、あるエージェントが完了したとマークした場合などです。
-admin.emailtpl_desc.deskpro_emails_user_feedback-updated_html_twig_title: フィードバック更新通知
+admin.emailtpl_desc.deskpro_emails_user_community-approved_html_twig_desc: このメールは、エージェントが投稿を承認したときにユーザに送信されます。
+admin.emailtpl_desc.deskpro_emails_user_community-approved_html_twig_title: フィードバック承認済み
+admin.emailtpl_desc.deskpro_emails_user_community-disapproved_html_twig_desc: このメールは、エージェントが検証を待っている投稿のうち1つを削除すると、ユーザに送信されます。
+admin.emailtpl_desc.deskpro_emails_user_community-disapproved_html_twig_title: フィードバック削除済み
+admin.emailtpl_desc.deskpro_emails_user_community-new-comment_html_twig_desc: このメールは、投稿に新しいコメントが追加されたときにユーザに送信されます。
+admin.emailtpl_desc.deskpro_emails_user_community-new-comment_html_twig_title: 新しいフィードバックコメント通知
+admin.emailtpl_desc.deskpro_emails_user_community-new_html_twig_desc: このメールは、フィードバック提出を感謝するためにユーザに送信されます。メールの確認が有効になっている場合、このメールにはユーザがクリックする必要のある確認リンクも含まれています。
+admin.emailtpl_desc.deskpro_emails_user_community-new_html_twig_title: 新しいフィードバックの確認
+admin.emailtpl_desc.deskpro_emails_user_community-subscription_html_twig_desc: このメールは、申し込みされたカテゴリの新しいフィードバックを通知するためにユーザに送信されます。
+admin.emailtpl_desc.deskpro_emails_user_community-subscription_html_twig_title: 新しいフィードバック
+admin.emailtpl_desc.deskpro_emails_user_community-updated_html_twig_desc: このメールは、エージェントが投稿を更新するとユーザに送信されます。例えば、あるエージェントが完了したとマークした場合などです。
+admin.emailtpl_desc.deskpro_emails_user_community-updated_html_twig_title: フィードバック更新通知
 admin.emailtpl_desc.deskpro_emails_user_gateway-autoresponse-warn_html_twig_desc: この警告メールは、短い時間内で大量のメールを送信したときにユーザに送信されます。
 admin.emailtpl_desc.deskpro_emails_user_gateway-autoresponse-warn_html_twig_title: 自動応答警告
 admin.emailtpl_desc.deskpro_emails_user_kb-subscription_html_twig_desc: このメールは、申し込みされたカテゴリの新しい記事を通知するためにユーザに送信されます。
@@ -409,34 +409,34 @@ admin.emailtpl_desc.deskpro_emails_user_ticket-participant_html_twig_desc: こ�
 admin.emailtpl_desc.deskpro_emails_user_ticket-participant_html_twig_title: チケット新規参加者
 admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_desc: これはチケットが解決された後にユーザに送信され、サポートの評価とフィードバックの送信を依頼するメールです。
 admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_title: チケット評価リクエスト
-admin.feedback.active_status: アクティブステータス
-admin.feedback.active_statuses: アクティブステータス
-admin.feedback.back_to_categories: '&larr; カテゴリに戻る'
-admin.feedback.back_to_list: '&larr; リストに戻る'
-admin.feedback.cannot_delete_last_category: 最後のカテゴリは削除できません。
-admin.feedback.cannot_delete_last_status: 最後のステータスは削除できません。
-admin.feedback.closed_status: クローズステータス
-admin.feedback.closed_statuses: クローズステータス
-admin.feedback.confirm_delete_this: このステータスを削除してもよろしいですか？
-admin.feedback.count_active_statuses:
+admin.community.active_status: アクティブステータス
+admin.community.active_statuses: アクティブステータス
+admin.community.back_to_categories: '&larr; カテゴリに戻る'
+admin.community.back_to_list: '&larr; リストに戻る'
+admin.community.cannot_delete_last_category: 最後のカテゴリは削除できません。
+admin.community.cannot_delete_last_status: 最後のステータスは削除できません。
+admin.community.closed_status: クローズステータス
+admin.community.closed_statuses: クローズステータス
+admin.community.confirm_delete_this: このステータスを削除してもよろしいですか？
+admin.community.count_active_statuses:
   other: '{{count}}アクティブステータス'
-admin.feedback.count_closed_statuses:
+admin.community.count_closed_statuses:
   other: '{{count}}クローズステータス'
-admin.feedback.count_feedback:
+admin.community.count_feedback:
   other: '{{count}}フィードバック'
-admin.feedback.create_new_category: 新しいカテゴリを作成
-admin.feedback.create_new_status: 新しいステータスを作成
-admin.feedback.delete_category: カテゴリ削除
-admin.feedback.delete_status: ステータス削除
-admin.feedback.edit_status: ステータス編集
-admin.feedback.explain_active_status: アクティブステータスとは、レビューされたが、実装されていないか、または決定されていない、フィードバックに割り当てられたステータスのことです。
-admin.feedback.explain_closed_status: クローズステータスとは、フィードバックに割り当てられた状態であり終了している状態です。ユーザは、クローズされたフィードバックに対して投票やコメントをすることはできません。
-admin.feedback.feedback_categories: フィードバックカテゴリ
-admin.feedback.feedback_statuses: フィードバックステータス
-admin.feedback.feedback_using_this_category: このカテゴリを使用したフィードバック
-admin.feedback.notice_has_children: このカテゴリには子カテゴリが存在します。まず、子カテゴリを削除してから削除してください。
-admin.feedback.notice_parent_selected: 注：選択した親カテゴリは、現在トップレベルのカテゴリです。この子カテゴリを作成することにより、既存のフィードバックが移動されます。
-admin.feedback.status_type: ステータスタイプ
+admin.community.create_new_category: 新しいカテゴリを作成
+admin.community.create_new_status: 新しいステータスを作成
+admin.community.delete_category: カテゴリ削除
+admin.community.delete_status: ステータス削除
+admin.community.edit_status: ステータス編集
+admin.community.explain_active_status: アクティブステータスとは、レビューされたが、実装されていないか、または決定されていない、フィードバックに割り当てられたステータスのことです。
+admin.community.explain_closed_status: クローズステータスとは、フィードバックに割り当てられた状態であり終了している状態です。ユーザは、クローズされたフィードバックに対して投票やコメントをすることはできません。
+admin.community.feedback_categories: フィードバックカテゴリ
+admin.community.feedback_statuses: フィードバックステータス
+admin.community.feedback_using_this_category: このカテゴリを使用したフィードバック
+admin.community.notice_has_children: このカテゴリには子カテゴリが存在します。まず、子カテゴリを削除してから削除してください。
+admin.community.notice_parent_selected: 注：選択した親カテゴリは、現在トップレベルのカテゴリです。この子カテゴリを作成することにより、既存のフィードバックが移動されます。
+admin.community.status_type: ステータスタイプ
 admin.gateway.account_information: アカウント情報
 admin.gateway.add_account: アカウント追加
 admin.gateway.add_email_gateway: メールゲートウェイ追加
@@ -702,7 +702,7 @@ admin.portal.integrations: 統合
 admin.portal.loading_editor: エディタをロード中
 admin.portal.manage_articles: 記事管理
 admin.portal.manage_downloads: ダウンロード管理
-admin.portal.manage_feedback: フィードバック管理
+admin.portal.manage_community: フィードバック管理
 admin.portal.manage_news: ニュース管理
 admin.portal.portal_editor: ポータルエディタ
 admin.portal.portal_is_disabled: 'ポータルは現在無効になっています。これは、{{url}}にあなたのパブリックフェイスWebサイトをオフにしたことを意味します。'
@@ -773,7 +773,7 @@ admin.settings.email_rate_limiting_help2: 'このレート制限フィルタで�
 admin.settings.email_rate_limiting_help3: エージェントからの返信メールにはこの制限が適用されないことに注意してください。
 admin.settings.email_rate_limiting_reject: メッセージを拒否する
 admin.settings.enable_new_comments_captcha: 新しいコメントでCAPTCHAを有効にする
-admin.settings.enable_new_feedback_captcha: 新しいフィードバックでCAPTCHAを有効にする
+admin.settings.enable_new_community_captcha: 新しいフィードバックでCAPTCHAを有効にする
 admin.settings.enable_new_tickets_captcha: 新しいチケットでCAPTCHAを有効にする
 admin.settings.enable_portal: ポータルを有効にする
 admin.settings.enable_registration_captcha: 登録時にCAPTCHAを有効にする
@@ -798,7 +798,7 @@ admin.settings.portal_login_rate_limit_agent: エージェントアカウント�
 admin.settings.portal_login_rate_limit_guest: ログインフォームのレート制限
 admin.settings.portal_login_rate_limit_user: ユーザーアカウントのレート制限
 admin.settings.portal_rate_limit_comment_attempted: ユーザーがコメントを送信した後
-admin.settings.portal_rate_limit_feedback_attempted: ユーザーがフィードバック項目を送信した後
+admin.settings.portal_rate_limit_community_attempted: ユーザーがフィードバック項目を送信した後
 admin.settings.portal_rate_limit_forgot_password_attempted: ユーザーが「パスワードを忘れた」フォームを使用した後
 admin.settings.portal_rate_limit_header: レート制限
 admin.settings.portal_rate_limit_ip_whitelist: ホワイトリストIPアドレス
@@ -929,7 +929,7 @@ admin.tickets.embed_in_website: あなたのWebサイトに埋め込む
 admin.tickets.embed_ticket_form_websites: 新しいチケットフォームを任意のWebページに埋め込みます。フォームを表示する場所にコードをコピーして貼り付けます。
 admin.tickets.enable_alternative_for_x: '{{subphrase}}の代替レイアウトを有効にする'
 admin.tickets.enable_custom_layouts_department: 部門ごとにカスタムレイアウトを有効にする
-admin.tickets.enable_ticket_feedback: チケットフィードバックを有効にしますか？
+admin.tickets.enable_ticket_community: チケットフィードバックを有効にしますか？
 admin.tickets.enter_optional_description: このトリガーが作成された経緯を必要に応じて入力してください
 admin.tickets.event: イベント
 admin.tickets.explain_departments: 部門は、ヘルプデスクで別のものを扱う区分けを編成します。例えば、セールス＆サポート。
@@ -1251,7 +1251,7 @@ agent.chrome.chat_sign-in: チャットにサインインする
 agent.chrome.chat_sign-out: チャットからサインアウトする
 agent.chrome.create_new-article: 新しい記事
 agent.chrome.create_new-download: 新しいダウンロード
-agent.chrome.create_new-feedback: 新しいフィードバック
+agent.chrome.create_new-community: 新しいフィードバック
 agent.chrome.create_new-news: 新しいニュースポスト
 agent.chrome.create_new-organization: 新しい組織
 agent.chrome.create_new-person: 新しい個人
@@ -1277,7 +1277,7 @@ agent.chrome.link_logout: ログアウト
 agent.chrome.link_preferences: 設定
 agent.chrome.nav_admin_settings: 管理者の設定
 agent.chrome.nav_agentchat: エージェントIM
-agent.chrome.nav_feedback: フィードバック
+agent.chrome.nav_community: フィードバック
 agent.chrome.nav_publish: 公開する
 agent.chrome.nav_reports: レポート
 agent.chrome.nav_search: 検索
@@ -1296,7 +1296,7 @@ agent.chrome.quicksearch_title: クイック検索バー
 agent.chrome.quicksearch_title-articles: 記事
 agent.chrome.quicksearch_title-chat: チャット
 agent.chrome.quicksearch_title-downloads: ダウンロード
-agent.chrome.quicksearch_title-feedback: フィードバック
+agent.chrome.quicksearch_title-community: フィードバック
 agent.chrome.quicksearch_title-news: ニュース
 agent.chrome.quicksearch_title-orgs: 組織
 agent.chrome.quicksearch_title-people: 人
@@ -1438,41 +1438,41 @@ agent.emails.whitelist_ip_note: 'IPアドレスが確認されると、アカウ
 agent.emails.whitelist_ip_subject: 'DeskPROログインの確認 - 新しいIPアドレス'
 agent.emails.whitelist_ip_validation_link: これが有効なログイン試行であれば、次のリンクをクリックして新しいIPアドレスを確認してください：
 agent.emails.your_initial_password: あなたの最初のパスワード
-agent.feedback.any_category: 任意のカテゴリ
-agent.feedback.any_status: 任意のステータス
-agent.feedback.count_votes:
+agent.community.any_category: 任意のカテゴリ
+agent.community.any_status: 任意のステータス
+agent.community.count_votes:
   other: '{{display_count}} votes'
-agent.feedback.feedback_deleted: このフィードバックは削除されました
-agent.feedback.feedback_to_review: レビューフィードバック
-agent.feedback.least_voted_on_top: 少なくとも上に投票した
-agent.feedback.list_title:
+agent.community.feedback_deleted: このフィードバックは削除されました
+agent.community.feedback_to_review: レビューフィードバック
+agent.community.least_voted_on_top: 少なくとも上に投票した
+agent.community.list_title:
   other: 1投稿
-agent.feedback.merge_feedback: マージフィードバック
-agent.feedback.merge_feedback_note: マージされたフィードバックの説明が、保持されたフィードバックのコメントとして追加されます。
-agent.feedback.merge_feedback_submit: これら2つのフィードバック投稿をマージする
-agent.feedback.merge_howto: マージする追加のフィードバックタブを開く
-agent.feedback.new_feedback: 新しいフィードバック：
-agent.feedback.newest_on_top: 最新の上に
-agent.feedback.no_feedback_cats_error: タイプは定義されていません。フィードバックセクションにタイプを追加する前に、管理インターフェイスからタイプを定義する必要があります。
-agent.feedback.no_labels_explain: いずれのフィードバックにもラベル付けしていませんフィードバック投稿を表示して、ラベルを追加します。
-agent.feedback.oldest_on_top: 最古の上に
-agent.feedback.popularity_least_most: 人気度（昇順）
-agent.feedback.popularity_most_least: 人気度（降順）
-agent.feedback.showing_results: 結果を表示
-agent.feedback.status_active: アクティブ
-agent.feedback.status_closed: クローズ
-agent.feedback.status_deleted: 削除済み
-agent.feedback.status_hidden: 非表示
-agent.feedback.status_new: 新しい
-agent.feedback.status_spam: スパム
-agent.feedback.subscribe_user: 購読ユーザ
-agent.feedback.subscribed_users: 購読ユーザ
-agent.feedback.top_voted_on_top: 上に投票されたトップ
-agent.feedback.update_filter: フィルタ更新
-agent.feedback.user_submitted_new_feedback: '{{name}}が新しいフィードバックを投稿しました'
-agent.feedback.vote_for_this_feedback: このフィードバックに投票してください
-agent.feedback.votes_least_most: 投票（昇順）
-agent.feedback.votes_most_least: 投票（降順）
+agent.community.merge_feedback: マージフィードバック
+agent.community.merge_feedback_note: マージされたフィードバックの説明が、保持されたフィードバックのコメントとして追加されます。
+agent.community.merge_feedback_submit: これら2つのフィードバック投稿をマージする
+agent.community.merge_howto: マージする追加のフィードバックタブを開く
+agent.community.new_feedback: 新しいフィードバック：
+agent.community.newest_on_top: 最新の上に
+agent.community.no_feedback_cats_error: タイプは定義されていません。フィードバックセクションにタイプを追加する前に、管理インターフェイスからタイプを定義する必要があります。
+agent.community.no_labels_explain: いずれのフィードバックにもラベル付けしていませんフィードバック投稿を表示して、ラベルを追加します。
+agent.community.oldest_on_top: 最古の上に
+agent.community.popularity_least_most: 人気度（昇順）
+agent.community.popularity_most_least: 人気度（降順）
+agent.community.showing_results: 結果を表示
+agent.community.status_active: アクティブ
+agent.community.status_closed: クローズ
+agent.community.status_deleted: 削除済み
+agent.community.status_hidden: 非表示
+agent.community.status_new: 新しい
+agent.community.status_spam: スパム
+agent.community.subscribe_user: 購読ユーザ
+agent.community.subscribed_users: 購読ユーザ
+agent.community.top_voted_on_top: 上に投票されたトップ
+agent.community.update_filter: フィルタ更新
+agent.community.user_submitted_new_feedback: '{{name}}が新しいフィードバックを投稿しました'
+agent.community.vote_for_this_feedback: このフィードバックに投票してください
+agent.community.votes_least_most: 投票（昇順）
+agent.community.votes_most_least: 投票（降順）
 agent.follow_up.add_follow_up: フォローアップを追加
 agent.follow_up.cancel_if_reply: ユーザが返信する場合はフォローアップをキャンセル
 agent.follow_up.error_agent: 割り当てるエージェントを選択する必要があります
@@ -1557,7 +1557,7 @@ agent.interface.keyboard_shortcuts: キーボードショートカット
 agent.interface.major_items_appear_here: チケット、ユーザ、組織、記事、ニュース、ダウンロード、フィードバックはここで開きます。
 agent.interface.open_new_article_form: 新しい記事フォームを開く
 agent.interface.open_new_download_form: 新しいダウンロードフォームを開く
-agent.interface.open_new_feedback_form: 新しフィードバックフォームを開く
+agent.interface.open_new_community_form: 新しフィードバックフォームを開く
 agent.interface.open_new_news_form: 新しいニュースフォームを開く
 agent.interface.open_new_organization_form: 新しい組織フォームを開く
 agent.interface.open_new_person_form: 新しい個人フォームを開く
@@ -1839,7 +1839,7 @@ agent.search.simple: シンプル
 agent.search.type_article: 記事
 agent.search.type_chat_conversation: チャット
 agent.search.type_download: ダウンロード
-agent.search.type_feedback: フィードバック
+agent.search.type_community: フィードバック
 agent.search.type_news: ニュース
 agent.search.type_organization: 組織
 agent.search.type_person: 人
@@ -1896,8 +1896,8 @@ agent.settings.notif_my_events: 自分のイベント
 agent.settings.notif_my_own_actions: 自分のアクション
 agent.settings.notif_new_comment: 新しいコメントが提出されました
 agent.settings.notif_new_comment_validate: 検証が必要な新しいコメントが提出されました
-agent.settings.notif_new_feedback: 新しいフィードバック提出
-agent.settings.notif_new_feedback_validate: 検証が必要な新しいフィードバックが提出されました
+agent.settings.notif_new_community: 新しいフィードバック提出
+agent.settings.notif_new_community_validate: 検証が必要な新しいフィードバックが提出されました
 agent.settings.notif_new_user: 新しいユーザーが登録されました
 agent.settings.notif_notes_with_mentions_smart: オフラインの場合のみメールを送信する、オンラインの場合はエージェントのIM経由でメッセージを送信する
 agent.settings.notif_task_assigned: タスクが割り当てられている
@@ -1980,7 +1980,7 @@ agent.snippets.content_change: コンテンツ変更
 agent.snippets.departments: 部門
 agent.snippets.draft_status: ドラフトステータス
 agent.snippets.edit_snippet: スニペット編集
-agent.snippets.feedback: フィードバック：
+agent.snippets.community: フィードバック：
 agent.snippets.helpdesk_default: ヘルプデスクデフォルト
 agent.snippets.insert_variable: 変数の挿入
 agent.snippets.learn_more_about_vars: 変数の詳細
@@ -2001,7 +2001,7 @@ agent.snippets.set_as_draft: ドラフトとして設定
 agent.snippets.set_as_published: 公開として設定
 agent.snippets.shortcut_code: ショートカットコード
 agent.snippets.shortcut_code_info: 'このコードをチケット返信ボックスに入力すると、スニペットが自動的に挿入されます。例えば、''standard-response''のショートカットコードでは、''%standard-response%''と入力するだけでスニペットマネージャを開くことなくスニペットを挿入することができます。'
-agent.snippets.show_only_with_feedback: フィードバックのみで履歴を表示する
+agent.snippets.show_only_with_community: フィードバックのみで履歴を表示する
 agent.snippets.snippet_created: スニペットが作成されました
 agent.snippets.snippet_is_draft: これはドラフトです
 agent.snippets.specific_departments: 特定部門
@@ -2098,7 +2098,7 @@ agent.tickets.count_charges:
   other: '{{count}} charges'
 agent.tickets.count_users:
   other: 1ユーザ
-agent.tickets.create_linked_feedback: リンクされたフィードバックを作成
+agent.tickets.create_linked_community: リンクされたフィードバックを作成
 agent.tickets.create_linked_ticket: リンクされたチケットを作成
 agent.tickets.create_new_pending_article: 新しい保留記事を作成
 agent.tickets.create_task_action: 'タスク{{title}}を作成'
@@ -2162,7 +2162,7 @@ agent.tickets.filter_all: 全てのチケット
 agent.tickets.filter_participant: 私がフォローするチケット
 agent.tickets.filter_results: フィルタ結果
 agent.tickets.filter_unassigned: 未割り当てのチケット
-agent.tickets.find_feedback: フィードバックを探す
+agent.tickets.find_community: フィードバックを探す
 agent.tickets.find_other_ip_addy: このIPアドレスから送信された他のチケットを検索する
 agent.tickets.find_ticket: チケットを探す
 agent.tickets.first_agent_reply: 最初のエージェント返信
@@ -2201,13 +2201,13 @@ agent.tickets.lc_new_reply: 新しい返信
 agent.tickets.lc_new_ticket: 新しいチケット
 agent.tickets.lc_new_ticket_agent: エージェントによる新しいチケット
 agent.tickets.lc_update: 更新
-agent.tickets.link_existing_feedback: 既存のフィードバックをリンク
-agent.tickets.link_existing_feedback_subscr_owner: 'チケット所有者（{{name}}/{{email}}）をフィードバックに登録'
-agent.tickets.link_existing_feedback_subscr_part:
+agent.tickets.link_existing_community: 既存のフィードバックをリンク
+agent.tickets.link_existing_community_subscr_owner: 'チケット所有者（{{name}}/{{email}}）をフィードバックに登録'
+agent.tickets.link_existing_community_subscr_part:
   other: 'Subscribed ({{count}}) Ticket Participants to Feedback'
 agent.tickets.link_existing_ticket: 既存チケットをリンク
 agent.tickets.link_existing_ticket_make_below: チケットを親チケットの下に配置する
-agent.tickets.linked_feedback: リンクされたフィードバック
+agent.tickets.linked_community: リンクされたフィードバック
 agent.tickets.linked_tickets: リンクされたチケット
 agent.tickets.linking_with_chat: チャットとのリンク：
 agent.tickets.linking_with_ticket: チケットとのリンク：
@@ -2229,8 +2229,8 @@ agent.tickets.log_email_sent_aborted: メールは送信されませんでした
 agent.tickets.log_email_sent_error: エラーのため、メールは送信されませんでした
 agent.tickets.log_email_sent_retry: 現在メールを送信中です
 agent.tickets.log_email_sent_success: メールが正常に送信されました
-agent.tickets.log_feedback_link_added: フィードバックリンクが追加されました
-agent.tickets.log_feedback_link_removed: フィードバックリンクが削除されました
+agent.tickets.log_community_link_added: フィードバックリンクが追加されました
+agent.tickets.log_community_link_removed: フィードバックリンクが削除されました
 agent.tickets.log_followup_created: '{{date_to_run}}の新たなフォローアップ#{{id}}'
 agent.tickets.log_followup_removed: 'フォローアップ#{{id}}が削除されました'
 agent.tickets.log_from_message: メッセージから
@@ -2256,7 +2256,7 @@ agent.tickets.log_newreply_followup: フォローアップで返信する
 agent.tickets.log_note_deleted: 削除されたメモ
 agent.tickets.log_on_article: '記事「{{title}}（ID {{id}}）」'
 agent.tickets.log_on_download: 'ダウンロード「{{title}}（ID {{id}}）」'
-agent.tickets.log_on_feedback: 'フィードバック「{{title}}（ID {{id}}）」'
+agent.tickets.log_on_community: 'フィードバック「{{title}}（ID {{id}}）」'
 agent.tickets.log_on_news: 'ニュース「{{title}}（ID {{id}}）」'
 agent.tickets.log_original_contents: オリジナル内容を記録
 agent.tickets.log_selected_option: '選択： '
@@ -2275,7 +2275,7 @@ agent.tickets.log_update_system: システムによる更新
 agent.tickets.log_update_user: ユーザによる更新
 agent.tickets.log_update_user_reply: ユーザからの返信
 agent.tickets.log_user_changed_email_pref: ユーザのメールアドレス設定が変更されました
-agent.tickets.log_user_set_feedback_rating_to: ユーザが設定したフィードバック評価
+agent.tickets.log_user_set_community_rating_to: ユーザが設定したフィードバック評価
 agent.tickets.log_view_all_data: 古いデータを表示
 agent.tickets.log_without_custom_message: カスタムメッセージを入力しませんでした。
 agent.tickets.log_written_by: '{{name}} （ID {{id}}）によって書かれています'
@@ -2432,7 +2432,7 @@ agent.tickets.subject_changed: 件名変更
 agent.tickets.teams_action: 'チーム：{{teams}}'
 agent.tickets.text_body: 本文
 agent.tickets.ticket_changes: チケット変更
-agent.tickets.ticket_feedback: チケットフィードバック
+agent.tickets.ticket_community: チケットフィードバック
 agent.tickets.ticket_field_name: 'チケット項目：{{field}}'
 agent.tickets.ticket_is_deleted: チケットが削除されました
 agent.tickets.ticket_is_marked_as_spam: このチケットはスパムとしてマークされています。
@@ -2764,7 +2764,7 @@ api.oauth.error_not_found: OAuthクライアントがみつかりません。
 api.oauth.error_not_redirect_uri: 「redirect_uri」パラメータは提供されていません。
 reports.labels.agents: エージェント
 reports.labels.chat: チャット
-reports.labels.feedback: フィードバック
+reports.labels.community: フィードバック
 reports.labels.kb: ナレッジベース
 reports.labels.person: 個人
 reports.labels.resolved: 解決済み

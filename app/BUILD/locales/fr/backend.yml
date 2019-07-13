@@ -80,7 +80,7 @@ agent.chrome.chat_sign-in: 'Se connecter au Chat'
 agent.chrome.chat_sign-out: 'Se déconnecter du Chat'
 agent.chrome.create_new-article: 'Nouvel article'
 agent.chrome.create_new-download: 'Nouveau téléchargement'
-agent.chrome.create_new-feedback: 'Nouveau feedback'
+agent.chrome.create_new-community: 'Nouveau feedback'
 agent.chrome.create_new-news: 'Nouveau post'
 agent.chrome.create_new-organization: 'Nouvelle organisation'
 agent.chrome.create_new-person: 'Nouvelle personne'
@@ -244,37 +244,37 @@ agent.emails.view_your_tasks: 'Voir vos tâches'
 agent.emails.view_your_teams_tasks: 'Voir les tâches de votre équipe'
 agent.emails.view_your_tweets: 'Voir vos tweets'
 agent.emails.your_initial_password: 'Votre mot de passe d''origine'
-agent.feedback.any_category: 'Toutes les catégories'
-agent.feedback.any_status: 'Tous les statuts'
-agent.feedback.feedback_deleted: 'Ce feedback a été supprimé'
-agent.feedback.feedback_to_review: 'Feedback à évaluation'
-agent.feedback.least_voted_on_top: 'Les moins votés d''abord'
-agent.feedback.list_title:
+agent.community.any_category: 'Toutes les catégories'
+agent.community.any_status: 'Tous les statuts'
+agent.community.feedback_deleted: 'Ce feedback a été supprimé'
+agent.community.feedback_to_review: 'Feedback à évaluation'
+agent.community.least_voted_on_top: 'Les moins votés d''abord'
+agent.community.list_title:
   one: '1 dépôt'
   other: '{{count}} dépôts'
-agent.feedback.merge_feedback: 'Fusionner le Feedback'
-agent.feedback.merge_feedback_note: 'La description du feedback fusionné sera ajoutée en commentaire au feedback maintenu.'
-agent.feedback.merge_feedback_submit: 'Fusionner ces deux feedbacks'
-agent.feedback.merge_howto: 'Ouvrir un autre onglet feedback pour fusionner'
-agent.feedback.new_feedback: 'Nouveau feedback:'
-agent.feedback.newest_on_top: 'Les plus récents d''abord'
-agent.feedback.no_feedback_cats_error: 'Aucun type défini. Avant de pouvoir ajouter des types à la section feedback, vous devez définir un type via l''interface administrateur.'
-agent.feedback.no_labels_explain: 'Vous n''avez pas encore mis de label sur les feedbacks. Voir un feedback pour y ajouter des labels.'
-agent.feedback.oldest_on_top: 'Les plus anciens d''abord'
-agent.feedback.popularity_least_most: 'Popularité (le moins-le plus)'
-agent.feedback.popularity_most_least: 'Popularité (le plus-le moins)'
-agent.feedback.showing_results: 'Montrer les résultats'
-agent.feedback.status_active: Actif
-agent.feedback.status_closed: Cloturé
-agent.feedback.status_deleted: Supprimé
-agent.feedback.status_hidden: Caché
-agent.feedback.status_new: Nouveau
-agent.feedback.top_voted_on_top: 'Les mieux votés d''abord'
-agent.feedback.update_filter: 'Mettre à jour filtre'
-agent.feedback.user_submitted_new_feedback: '{{name}} a déposé un nouveau feedback'
-agent.feedback.vote_for_this_feedback: 'Voter pour ce feedback'
-agent.feedback.votes_least_most: 'Votes (moins-plus)'
-agent.feedback.votes_most_least: 'Votes (plus-moins)'
+agent.community.merge_feedback: 'Fusionner le Feedback'
+agent.community.merge_feedback_note: 'La description du feedback fusionné sera ajoutée en commentaire au feedback maintenu.'
+agent.community.merge_feedback_submit: 'Fusionner ces deux feedbacks'
+agent.community.merge_howto: 'Ouvrir un autre onglet feedback pour fusionner'
+agent.community.new_feedback: 'Nouveau community:'
+agent.community.newest_on_top: 'Les plus récents d''abord'
+agent.community.no_feedback_cats_error: 'Aucun type défini. Avant de pouvoir ajouter des types à la section feedback, vous devez définir un type via l''interface administrateur.'
+agent.community.no_labels_explain: 'Vous n''avez pas encore mis de label sur les feedbacks. Voir un feedback pour y ajouter des labels.'
+agent.community.oldest_on_top: 'Les plus anciens d''abord'
+agent.community.popularity_least_most: 'Popularité (le moins-le plus)'
+agent.community.popularity_most_least: 'Popularité (le plus-le moins)'
+agent.community.showing_results: 'Montrer les résultats'
+agent.community.status_active: Actif
+agent.community.status_closed: Cloturé
+agent.community.status_deleted: Supprimé
+agent.community.status_hidden: Caché
+agent.community.status_new: Nouveau
+agent.community.top_voted_on_top: 'Les mieux votés d''abord'
+agent.community.update_filter: 'Mettre à jour filtre'
+agent.community.user_submitted_new_feedback: '{{name}} a déposé un nouveau feedback'
+agent.community.vote_for_this_feedback: 'Voter pour ce feedback'
+agent.community.votes_least_most: 'Votes (moins-plus)'
+agent.community.votes_most_least: 'Votes (plus-moins)'
 agent.general.24x7: 24/7
 agent.general.activity_stream: 'Fil d''activité'
 agent.general.add: Ajouter
@@ -421,7 +421,7 @@ agent.general.create_a_new_person: 'Créer une nouvelle personne'
 agent.general.create_article: 'Créer un article'
 agent.general.create_content: 'Créer du contenu'
 agent.general.create_download: 'Créer un téléchargement'
-agent.general.create_feedback: 'Donner un feedback'
+agent.general.create_community: 'Donner un feedback'
 agent.general.create_news: 'Créer une nouvelle actualité'
 agent.general.create_status: 'Créer un statut'
 agent.general.create_ticket: 'Créer un ticket'
@@ -529,7 +529,7 @@ agent.general.existing_picture: 'Image existante'
 agent.general.failed: échoué
 agent.general.failure: Echec
 agent.general.favorite: Favori
-agent.general.feedback: Remarque
+agent.general.community: Remarque
 agent.general.field_name: 'Champ : {{field}}'
 agent.general.field_name_title: 'Nom du champs'
 agent.general.field_type_choice: 'Choix prédéfinis'
@@ -688,7 +688,7 @@ agent.general.new: Nouveau
 agent.general.new_article: 'Nouvel article'
 agent.general.new_comment: 'Nouveau commentaire'
 agent.general.new_download: 'Nouveau téléchargement'
-agent.general.new_feedback: 'Nouveau feedback'
+agent.general.new_community: 'Nouveau feedback'
 agent.general.new_filter: 'Nouveau filtre'
 agent.general.new_note: 'Nouvelle note'
 agent.general.new_organization: 'Nouvelle organisation'
@@ -757,7 +757,7 @@ agent.general.phone: Téléphone
 agent.general.phone_number: 'Numéro de téléphone'
 agent.general.phrase: expression
 agent.general.please_wait: 'Veuillez patienter'
-agent.general.popular_feedback_only: 'Feedback populaire seulement'
+agent.general.popular_community_only: 'Feedback populaire seulement'
 agent.general.popularity: Popularité
 agent.general.position: Fonction
 agent.general.prev: Préc.
@@ -797,7 +797,7 @@ agent.general.registered_views: 'Modes enregistrés'
 agent.general.related_articles: 'Articles liés'
 agent.general.related_content: 'Contenu lié'
 agent.general.related_downloads: 'Téléchargements liés'
-agent.general.related_feedback: 'Feedback lié'
+agent.general.related_community: 'Feedback lié'
 agent.general.related_news: 'Actualités liées'
 agent.general.relative_time: 'Temps relatif'
 agent.general.remove: Retirer
@@ -1030,7 +1030,7 @@ agent.interface.keyboard_shortcuts: 'Raccourcis clavier'
 agent.interface.major_items_appear_here: 'Les tickets, utilisateurs, organisations, articles, actualités, téléchargements et feedback s''ouvrent ici.'
 agent.interface.open_new_article_form: 'Ouvrir un formulaire pour un nouvel article'
 agent.interface.open_new_download_form: 'Ouvrir un formulaire pour un nouveau téléchargement'
-agent.interface.open_new_feedback_form: 'Ouvrir un formulaire pour un nouveau feedback'
+agent.interface.open_new_community_form: 'Ouvrir un formulaire pour un nouveau feedback'
 agent.interface.open_new_news_form: 'Ouvrir un formulaire pour une nouvelle actualité'
 agent.interface.open_new_organization_form: 'Ouvrir un formulaire pour une nouvelle organisation'
 agent.interface.open_new_person_form: 'Ouvrir un nouveau formulaire utilisateur'
@@ -1300,7 +1300,7 @@ agent.publish.move_to: 'Aller à'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} ont trouvé ce téléchargement utile, {{down_votes}} ont trouvé ce téléchargement inutile'
 agent.publish.new_comment_on: 'Nouveau commentaire sur {{name}}'
 agent.publish.new_comment_submitted_by: 'Un nouveau commentaire a été soumis par {{name}}'
-agent.publish.new_feedback_by: 'Nouveau feedback par {{name}}'
+agent.publish.new_community_by: 'Nouveau feedback par {{name}}'
 agent.publish.new_post: 'Nouveau post'
 agent.publish.news_comments: 'Commentaires d''une actualité'
 agent.publish.news_list_title:
@@ -1378,7 +1378,7 @@ agent.search.number_of_tickets: 'Nombre de tickets'
 agent.search.person_id: 'ID personne'
 agent.search.select: Sélectionner
 agent.search.type_download: Télécharger
-agent.search.type_feedback: Remarques
+agent.search.type_community: Remarques
 agent.search.type_news: Actualités
 agent.search.type_organization: Organisations
 agent.search.type_person: Utilisateurs
@@ -1434,8 +1434,8 @@ agent.settings.notif_my_events: 'Mes évènements'
 agent.settings.notif_my_own_actions: 'Mes actions'
 agent.settings.notif_new_comment: 'Un nouveau commentaire a été soumis'
 agent.settings.notif_new_comment_validate: 'Un nouveau commentaire a été soumis et requiert une validation'
-agent.settings.notif_new_feedback: 'Nouveau feedback soumis'
-agent.settings.notif_new_feedback_validate: 'Nouveau feedback soumis à valider'
+agent.settings.notif_new_community: 'Nouveau feedback soumis'
+agent.settings.notif_new_community_validate: 'Nouveau feedback soumis à valider'
 agent.settings.notif_new_user: 'Un nouvel utilisateur enregistré'
 agent.settings.notif_notes_with_mentions: 'Notes avec @mentions'
 agent.settings.notif_notes_with_mentions_always: 'Toujours envoyer un email et un message via le chat Agent'
@@ -1693,7 +1693,7 @@ agent.tickets.log_new_web_user_widget: 'Nouveau ticket par utilisateur via widge
 agent.tickets.log_note_deleted: 'Note supprimée'
 agent.tickets.log_on_article: 'sur l''article "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'sur téléchargement "{{title}} (ID {{id}})'
-agent.tickets.log_on_feedback: 'sur le feedback "{{title}} (ID {{id}})'
+agent.tickets.log_on_community: 'sur le feedback "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'sur l''actualité "{{title}} (ID {{id}})'
 agent.tickets.log_sent_from: 'Envoyé depuis {{email}}'
 agent.tickets.log_sla_added: 'SLA ajouté'
@@ -1839,7 +1839,7 @@ agent.tickets.subscribed_tickets: 'Tickets avec abonnés'
 agent.tickets.teams_action: 'Equipes : {{teams}}'
 agent.tickets.text_body: 'Corps du texte'
 agent.tickets.ticket_changes: 'Modifications ticket'
-agent.tickets.ticket_feedback: 'Feedback du ticket'
+agent.tickets.ticket_community: 'Feedback du ticket'
 agent.tickets.ticket_field_name: 'Champ du ticket : {{field}}'
 agent.tickets.ticket_is_deleted: 'Le ticket est supprimé'
 agent.tickets.ticket_is_marked_as_spam: 'Ce ticket a été signalé comme spam.'

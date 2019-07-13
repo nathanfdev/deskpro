@@ -194,7 +194,7 @@ class PageTitleGenerator
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
-        $section_title = $this->phrase('portal.feedback.section-title');
+        $section_title = $this->phrase('portal.community.section-title');
 
         if ($content_or_cat instanceof CommunityChannel) {
             $builder->prependSection(

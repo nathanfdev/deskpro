@@ -269,10 +269,10 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.user_rate_limit.submit_community_topic.enabled" />
-                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_community_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.user_rate_limit.submit_community_topic.enabled">
-                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
+                                {{ phrase('admin.settings.portal_rate_limit_community_attempted') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_community_topic.limit" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.user_rate_limit.submit_community_topic.time" class="form-control" style="width: 60px;" />
@@ -455,10 +455,10 @@
                         <div class="inner-group">
                             <label>
                                 <input type="checkbox" ng-model="settings.guest_rate_limit.submit_community_topic.enabled" />
-                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_community_rate_limit') }}</h4>
                             </label>
                             <div ng-show="settings.guest_rate_limit.submit_community_topic.enabled">
-                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
+                                {{ phrase('admin.settings.portal_rate_limit_community_attempted') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_community_topic.limit" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_community_topic.time" class="form-control" style="width: 60px;" />

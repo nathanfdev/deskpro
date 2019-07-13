@@ -4,10 +4,10 @@
 		{{ phrase('agent.general.order_by') }}: <select name="order_by" class="sel-order-by">
 			<option class="date" value="date_created:desc">{{ phrase('agent.general.date_created_newestoldest') }}</option>
 			<option value="date_created:desc">{{ phrase('agent.general.date_created_oldestnewest') }}</option>
-			<option class="popularity" value="popularity:desc">{{ phrase('agent.feedback.popularity_most_least') }}</option>
-			<option value="popularity:desc">{{ phrase('agent.feedback.popularity_least_most') }}</option>
-			<option class="votes" value="num_ratings:desc">{{ phrase('agent.feedback.votes_most_least') }}</option>
-			<option value="num_ratings:desc">{{ phrase('agent.feedback.votes_least_most') }}</option>
+			<option class="popularity" value="popularity:desc">{{ phrase('agent.community.popularity_most_least') }}</option>
+			<option value="popularity:desc">{{ phrase('agent.community.popularity_least_most') }}</option>
+			<option class="votes" value="num_ratings:desc">{{ phrase('agent.community.votes_most_least') }}</option>
+			<option value="num_ratings:desc">{{ phrase('agent.community.votes_least_most') }}</option>
 		</select>
 	</div>
 {% endblock %}

@@ -12,13 +12,13 @@
             {% endfor %}
         </ul>
     {% else %}
-        <strong>{{ phrase('portal.feedback.none') }}</strong>
+        <strong>{{ phrase('portal.community.none') }}</strong>
     {% endif %}
 
     {% if show_category_link and pager|length > 0 %}
         <div class="list-meta">
             <a href="{{ path('portal_community') }}">
-                {{ phrase('portal.feedback.view-x-feedback', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
+                {{ phrase('portal.community.view-x-feedback', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
             </a>
         </div>
     {% endif %}

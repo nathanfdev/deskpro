@@ -1,8 +1,8 @@
-<dp:subject>{{ phrase('portal.email_subjects.feedback_new') }}</dp:subject>
+<dp:subject>{{ phrase('portal.email_subjects.community_new') }}</dp:subject>
 {{ phrase('portal.emails.feedback_thank-you', {'title':topic.title}) }}
 
 <br /><br />
 
 {% if topic.status == 'hidden' and not topic.is_reviewed %}
-{{ phrase('user.emails.feedback_agent-validation') }}
+{{ phrase('user.emails.community_agent-validation') }}
 {% endif %}

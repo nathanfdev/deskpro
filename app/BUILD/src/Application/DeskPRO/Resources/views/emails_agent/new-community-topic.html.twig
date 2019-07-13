@@ -1,6 +1,6 @@
 {{ set_tplvar('agent_notification_footer', 'notify') }}
 <dp:subject>
-	{{ phrase('agent.feedback.new_feedback') }}	{{ topic.title }} {% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+	{{ phrase('agent.community.new_community') }}	{{ topic.title }} {% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
 {{ phrase('agent.feedback.user_submitted_new_feedback', {name: topic.person.getDisplayContact() }) }}
 {% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}

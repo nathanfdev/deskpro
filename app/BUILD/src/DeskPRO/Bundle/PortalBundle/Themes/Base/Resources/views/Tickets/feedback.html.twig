@@ -34,9 +34,9 @@
                             <label class="title" style="text-align: left" for="feedback_rating_n">{{ phrase('portal.tickets.rate-negative') }}</label>
                         </div>
                     </div>
-                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.community_message_leave_comment') }}">{{ feedback.message }}</textarea>
                     <br />
-                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>
+                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.community.submit_community') }}</button>
                 </form>
             {% else %}
                 {# this is shown when clicking an email link, #}
@@ -44,10 +44,10 @@
 
                 <form action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
                     <input type="hidden" name="rating" value="{{ feedback.rating }}" />
-                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.community_message_leave_comment') }}">{{ feedback.message }}</textarea>
 
                     <br />
-                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>
+                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.community.submit_community') }}</button>
                 </form>
             {% endif %}
         </article>
@@ -126,9 +126,9 @@
 
                                       {#</span>#}
                                   {#</label>#}
-                                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>#}
+                                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.community_message_leave_comment') }}">{{ feedback.message }}</textarea>#}
 
-                                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>#}
+                                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.community.submit_community') }}</button>#}
 
                       {#</form>#}
           {#{% else %}#}
@@ -137,10 +137,10 @@
               {#<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">#}
                   {#&#123;&#35;{{ form_token() }}&#35;&#125;#}
                   {#<input type="hidden" name="rating" value="{{ feedback.rating }}" />#}
-                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('user.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>#}
+                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('user.tickets.community_message_leave_comment') }}">{{ feedback.message }}</textarea>#}
 
                   {#<br />#}
-                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('user.feedback.submit_feedback') }}</button>#}
+                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('user.community.submit_community') }}</button>#}
               {#</form>#}
           {#{% endif %}#}
     {#</article>#}

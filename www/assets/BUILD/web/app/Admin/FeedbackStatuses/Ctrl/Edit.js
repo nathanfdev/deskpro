@@ -67,9 +67,9 @@ define([
         this.skipDirtyState();
 
         if (is_new) {
-          return this.$state.go('portal.feedback_statuses.gocreate', { type: this.statusType });
+          return this.$state.go('portal.community_statuses.gocreate', { type: this.statusType });
         }
-        return this.$state.go('portal.feedback_statuses');
+        return this.$state.go('portal.community_statuses');
       });
       promise.error((info, code) => {
         this.stopSpinner('saving_feedback_status', true);

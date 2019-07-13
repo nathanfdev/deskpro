@@ -43,27 +43,27 @@ adm.general.x_email_bans:
   few: '{{count}} Email Bans'
   many: '{{count}} Email Bans'
   other: '{{count}} Email Bans'
-adm.general.x_feedback_active_statuses:
+adm.general.x_community_active_statuses:
   one: '{{count}} Feedback Active Status'
   few: '{{count}} Feedback Active Statuses'
   many: '{{count}} Feedback Active Statuses'
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_feedback_categories:
+adm.general.x_community_categories:
   one: '{{count}} Feedback Category'
   few: '{{count}} Feedback Categories'
   many: '{{count}} Feedback Categories'
   other: '{{count}} Feedback Categories'
-adm.general.x_feedback_closed_statuses:
+adm.general.x_community_closed_statuses:
   one: '{{count}} Feedback Closed Status'
   few: '{{count}} Feedback Closed Statuses'
   many: '{{count}} Feedback Closed Statuses'
   other: '{{count}} Feedback Closed Statuses'
-adm.general.x_feedback_statuses:
+adm.general.x_community_statuses:
   one: '{{count}} Feedback Status'
   few: '{{count}} Feedback Statuses'
   many: '{{count}} Feedback Statuses'
   other: '{{count}} Feedback Statuses'
-adm.general.x_feedback_types:
+adm.general.x_community_types:
   one: '{{count}} Feedback Type'
   few: '{{count}} Feedback Types'
   many: '{{count}} Feedback Types'
@@ -193,17 +193,17 @@ admin.departments.count_tickets:
   few: '{1} is 1 ticket'
   many: '{1} is 1 ticket'
   other: '{1} is 1 ticket'
-admin.feedback.count_active_statuses:
+admin.community.count_active_statuses:
   one: '{{count}} active status'
   few: '{{count}} active statuses'
   many: '{{count}} active statuses'
   other: '{{count}} active statuses'
-admin.feedback.count_closed_statuses:
+admin.community.count_closed_statuses:
   one: '{{count}} closed status'
   few: '{{count}} closed statuses'
   many: '{{count}} closed statuses'
   other: '{{count}} closed statuses'
-admin.feedback.count_feedback:
+admin.community.count_feedback:
   one: '{{count}} feedback'
   few: '{{count}} feedback'
   many: '{{count}} feedback'
@@ -420,7 +420,7 @@ agent.chrome.chat_sign-in: 'Войти в чат'
 agent.chrome.chat_sign-out: 'Выйти из чата'
 agent.chrome.create_new-article: 'Новая статья'
 agent.chrome.create_new-download: 'Новая загрузка'
-agent.chrome.create_new-feedback: 'Новое предложение'
+agent.chrome.create_new-community: 'Новое предложение'
 agent.chrome.create_new-news: 'Новая новость'
 agent.chrome.create_new-organization: 'Новая организация'
 agent.chrome.create_new-person: 'Новый пользователь'
@@ -446,7 +446,7 @@ agent.chrome.link_logout: Выйти
 agent.chrome.link_preferences: Настройки
 agent.chrome.nav_admin_settings: Администрирование
 agent.chrome.nav_agentchat: 'IM агента'
-agent.chrome.nav_feedback: Предложения
+agent.chrome.nav_community: Предложения
 agent.chrome.nav_publish: Опубликованное
 agent.chrome.nav_reports: Отчеты
 agent.chrome.nav_search: Поиск
@@ -464,7 +464,7 @@ agent.chrome.quicksearch_title: 'Панель быстрого поиска'
 agent.chrome.quicksearch_title-articles: Статьи
 agent.chrome.quicksearch_title-chat: Чат
 agent.chrome.quicksearch_title-downloads: Загрузки
-agent.chrome.quicksearch_title-feedback: 'Обратная связь'
+agent.chrome.quicksearch_title-community: 'Обратная связь'
 agent.chrome.quicksearch_title-news: Новости
 agent.chrome.quicksearch_title-orgs: Организации
 agent.chrome.quicksearch_title-people: Пользователи
@@ -597,45 +597,45 @@ agent.emails.view_your_tasks: 'Показать ваши задачи'
 agent.emails.view_your_teams_tasks: 'Показать задачи вашей команды'
 agent.emails.view_your_tweets: 'Просмотреть ваши твиты'
 agent.emails.your_initial_password: 'Ваш изначальный пароль'
-agent.feedback.any_category: 'Любая категория'
-agent.feedback.any_status: 'Любой статус'
-agent.feedback.count_votes:
+agent.community.any_category: 'Любая категория'
+agent.community.any_status: 'Любой статус'
+agent.community.count_votes:
   one: '{{display_count}} vote'
   few: '{{display_count}} votes'
   many: '{{display_count}} votes'
   other: '{{display_count}} votes'
-agent.feedback.feedback_deleted: 'Предложение удалено'
-agent.feedback.feedback_to_review: 'Предложение для просмотра'
-agent.feedback.least_voted_on_top: 'Наименее проголосовавший сверху'
-agent.feedback.list_title:
+agent.community.feedback_deleted: 'Предложение удалено'
+agent.community.feedback_to_review: 'Предложение для просмотра'
+agent.community.least_voted_on_top: 'Наименее проголосовавший сверху'
+agent.community.list_title:
   one: '1 зависимость'
   few: '{{count}} зависимостей'
   many: '{{count}} зависимостей'
   other: '{{count}} зависимостей'
-agent.feedback.merge_feedback: 'Объединить предложения'
-agent.feedback.merge_feedback_note: 'Описание предложения при объединении будет добавлено к сохраненному предложению.'
-agent.feedback.merge_feedback_submit: 'Объединить эти зависимые предложения'
-agent.feedback.merge_howto: 'Откройте дополнительную вкладку обратной связи, чтобы объединить'
-agent.feedback.new_feedback: 'Новый отзыв:'
-agent.feedback.newest_on_top: 'Новые сверху'
-agent.feedback.no_feedback_cats_error: 'Определенных типов нет. Прежде чем добавлять типы в раздел отзывов, вам нужно определить тип из интерфейса администратора.'
-agent.feedback.no_labels_explain: 'Вы еще не пометили обратную связь. Просмотрите заявку на отзыв, чтобы добавить к ней ярлыки.'
-agent.feedback.oldest_on_top: 'Старые сверху'
-agent.feedback.popularity_least_most: 'Популярность (по возрастанию)'
-agent.feedback.popularity_most_least: 'Популярность (по убыванию)'
-agent.feedback.showing_results: 'Показаны результаты'
-agent.feedback.status_active: Активный
-agent.feedback.status_closed: Закрыт
-agent.feedback.status_deleted: Удален
-agent.feedback.status_hidden: Скрыт
-agent.feedback.status_new: Новый
-agent.feedback.status_spam: Спам
-agent.feedback.top_voted_on_top: 'Лучшие проголосовавшие вверху'
-agent.feedback.update_filter: 'Обновить фильтр'
-agent.feedback.user_submitted_new_feedback: '{{name}} добавил новый отзыв'
-agent.feedback.vote_for_this_feedback: 'Проголосуйте за этот отзыв'
-agent.feedback.votes_least_most: 'Голоса (по возрастанию)'
-agent.feedback.votes_most_least: 'Голоса (по убыванию)'
+agent.community.merge_feedback: 'Объединить предложения'
+agent.community.merge_feedback_note: 'Описание предложения при объединении будет добавлено к сохраненному предложению.'
+agent.community.merge_feedback_submit: 'Объединить эти зависимые предложения'
+agent.community.merge_howto: 'Откройте дополнительную вкладку обратной связи, чтобы объединить'
+agent.community.new_feedback: 'Новый отзыв:'
+agent.community.newest_on_top: 'Новые сверху'
+agent.community.no_feedback_cats_error: 'Определенных типов нет. Прежде чем добавлять типы в раздел отзывов, вам нужно определить тип из интерфейса администратора.'
+agent.community.no_labels_explain: 'Вы еще не пометили обратную связь. Просмотрите заявку на отзыв, чтобы добавить к ней ярлыки.'
+agent.community.oldest_on_top: 'Старые сверху'
+agent.community.popularity_least_most: 'Популярность (по возрастанию)'
+agent.community.popularity_most_least: 'Популярность (по убыванию)'
+agent.community.showing_results: 'Показаны результаты'
+agent.community.status_active: Активный
+agent.community.status_closed: Закрыт
+agent.community.status_deleted: Удален
+agent.community.status_hidden: Скрыт
+agent.community.status_new: Новый
+agent.community.status_spam: Спам
+agent.community.top_voted_on_top: 'Лучшие проголосовавшие вверху'
+agent.community.update_filter: 'Обновить фильтр'
+agent.community.user_submitted_new_feedback: '{{name}} добавил новый отзыв'
+agent.community.vote_for_this_feedback: 'Проголосуйте за этот отзыв'
+agent.community.votes_least_most: 'Голоса (по возрастанию)'
+agent.community.votes_most_least: 'Голоса (по убыванию)'
 agent.general.24x7: 24х7
 agent.general.actions: Действия
 agent.general.activity_stream: 'Лента активности'
@@ -799,7 +799,7 @@ agent.general.create_article: 'Создать статью'
 agent.general.create_content: 'Создать содержимое'
 agent.general.create_deal: 'Создать сделку'
 agent.general.create_download: 'Создать загрузку'
-agent.general.create_feedback: 'Создать предложение'
+agent.general.create_community: 'Создать предложение'
 agent.general.create_news: 'Создать новость'
 agent.general.create_status: 'Создать статус'
 agent.general.create_ticket: 'Создать тикет'
@@ -912,7 +912,7 @@ agent.general.existing_picture: 'Существующее изображение
 agent.general.failed: 'Не удалось'
 agent.general.failure: Отказ
 agent.general.favorite: Избранное
-agent.general.feedback: Предложения
+agent.general.community: Предложения
 agent.general.field_name: 'Поле: {{field}}'
 agent.general.field_name_title: 'Имя поля'
 agent.general.field_type_choice: 'Предустановленные варианты'
@@ -1079,7 +1079,7 @@ agent.general.new: Новый
 agent.general.new_article: 'Новая статья'
 agent.general.new_comment: 'Новый комментарий'
 agent.general.new_download: 'Новая загрузка'
-agent.general.new_feedback: 'Новое предложение'
+agent.general.new_community: 'Новое предложение'
 agent.general.new_filter: 'Новый фильтр'
 agent.general.new_note: 'Новое примечание'
 agent.general.new_organization: 'Новая организация'
@@ -1156,7 +1156,7 @@ agent.general.phone: 'Номер телефона'
 agent.general.phone_number: 'Номер телефона'
 agent.general.phrase: Фраза
 agent.general.please_wait: 'Пожалуйста, подождите...'
-agent.general.popular_feedback_only: 'Только популярные предложения'
+agent.general.popular_community_only: 'Только популярные предложения'
 agent.general.popularity: Популярность
 agent.general.position: Положение
 agent.general.prev: Предыдущее
@@ -1197,7 +1197,7 @@ agent.general.registered_views: 'Зарегистрированные просм
 agent.general.related_articles: 'Статьи по теме'
 agent.general.related_content: 'Содержимое по теме'
 agent.general.related_downloads: 'Загрузки по теме'
-agent.general.related_feedback: 'Предложения по теме'
+agent.general.related_community: 'Предложения по теме'
 agent.general.related_news: 'Новости по теме'
 agent.general.relative_time: 'Относительное время'
 agent.general.remove: Удалить
@@ -1451,7 +1451,7 @@ agent.interface.keyboard_shortcuts: 'Сочетания клавиш'
 agent.interface.major_items_appear_here: 'Тикеты, пользователи, организации, новости, загрузки и предложения открыты здесь.'
 agent.interface.open_new_article_form: 'Открыть форму новой статьи'
 agent.interface.open_new_download_form: 'Открыть форму новой загрузки'
-agent.interface.open_new_feedback_form: 'Открыть форму нового предложения'
+agent.interface.open_new_community_form: 'Открыть форму нового предложения'
 agent.interface.open_new_news_form: 'Открыть форму новой новости'
 agent.interface.open_new_organization_form: 'Открыть форму новой организации'
 agent.interface.open_new_person_form: 'Открыть форму нового пользователя'
@@ -1680,8 +1680,8 @@ agent.prefs.apps_login_attempt: 'Всякий раз, когда моя учет
 agent.prefs.apps_login_attempt_fail: 'Всякий раз, когда моя учетная запись используется для входа в систему, а учетные данные неверны'
 agent.prefs.apps_new_comment: 'Новый комментарий добавлен'
 agent.prefs.apps_new_comment_validate: 'Будет добавлен новый комментарий, требующий проверки.'
-agent.prefs.apps_new_feedback: 'Новая обратная связь'
-agent.prefs.apps_new_feedback_validate: 'Получена новая обратная связь, требующая проверки'
+agent.prefs.apps_new_community: 'Новая обратная связь'
+agent.prefs.apps_new_community_validate: 'Получена новая обратная связь, требующая проверки'
 agent.prefs.apps_new_user: 'Новый зарегистрированный пользователь'
 agent.prefs.apps_task_assign_self: 'Задача назначена мне'
 agent.prefs.apps_task_assign_team: 'Задача назначена моей команде'
@@ -1902,7 +1902,7 @@ agent.publish.missing_translation: 'Отсутствует перевод'
 agent.publish.move_to: 'Переместить в'
 agent.publish.new_comment_on: 'Новый комментарий к {{name}}'
 agent.publish.new_comment_submitted_by: 'Новый комментарий был добавлен {{name}}'
-agent.publish.new_feedback_by: 'Новая обратная связь от {{name}}'
+agent.publish.new_community_by: 'Новая обратная связь от {{name}}'
 agent.publish.new_post: 'Новое сообщение'
 agent.publish.news_comments: 'Комментарии к Новостям'
 agent.publish.news_list_title:
@@ -1996,7 +1996,7 @@ agent.search.simple: Простой
 agent.search.type_article: Статья
 agent.search.type_chat_conversation: Чаты
 agent.search.type_download: Загрузки
-agent.search.type_feedback: 'Обратная связь'
+agent.search.type_community: 'Обратная связь'
 agent.search.type_news: Новости
 agent.search.type_organization: Организации
 agent.search.type_person: Пользователи
@@ -2054,8 +2054,8 @@ agent.settings.notif_my_events: 'Мои события'
 agent.settings.notif_my_own_actions: 'Мои собственные действия'
 agent.settings.notif_new_comment: 'Новый комментарий добавлен'
 agent.settings.notif_new_comment_validate: 'Будет добавлен новый комментарий, требующий проверки.'
-agent.settings.notif_new_feedback: 'Новый отзыв добавлен'
-agent.settings.notif_new_feedback_validate: 'Будет добавлен новый отзыв, требующий проверки.'
+agent.settings.notif_new_community: 'Новый отзыв добавлен'
+agent.settings.notif_new_community_validate: 'Будет добавлен новый отзыв, требующий проверки.'
 agent.settings.notif_new_user: 'Новый пользователь зарегистрирован'
 agent.settings.notif_notes_with_mentions: 'Заметки с @mentions'
 agent.settings.notif_notes_with_mentions_always: 'Всегда отправлять email и отправлять сообщения через IM-агент'
@@ -2311,7 +2311,7 @@ agent.tickets.lc_new_reply: 'новый ответ'
 agent.tickets.lc_new_ticket: 'новый тикет'
 agent.tickets.lc_new_ticket_agent: 'Новый тикет от агента'
 agent.tickets.lc_update: обновить
-agent.tickets.link_existing_feedback_subscr_part:
+agent.tickets.link_existing_community_subscr_part:
   one: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   few: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   many: 'Subscribed ({{count}}) Ticket Participants to Feedback'
@@ -2345,7 +2345,7 @@ agent.tickets.log_new_web_user_widget: 'Новый тикет от пользо�
 agent.tickets.log_note_deleted: 'Примечание удалено'
 agent.tickets.log_on_article: 'по статьям "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'по загрузкам "{{title}} (ID {{id}})'
-agent.tickets.log_on_feedback: 'по обратной связи "{{title}} (ID {{id}})'
+agent.tickets.log_on_community: 'по обратной связи "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'по новостям "{{title}} (ID {{id}})'
 agent.tickets.log_selected_option: 'выбрано:'
 agent.tickets.log_sent_from: 'Отправлять от {{email}}'
@@ -2504,7 +2504,7 @@ agent.tickets.subscribed_tickets: 'Подписанные тикеты'
 agent.tickets.teams_action: 'Команды: {{teams}}'
 agent.tickets.text_body: Текст
 agent.tickets.ticket_changes: 'Изменения в тикетах'
-agent.tickets.ticket_feedback: 'Отзывы о тикетах'
+agent.tickets.ticket_community: 'Отзывы о тикетах'
 agent.tickets.ticket_field_name: 'Поле тикета {{field}}'
 agent.tickets.ticket_is_deleted: 'Тикет удален'
 agent.tickets.ticket_is_marked_as_spam: 'Этот тикет отмечен как спам.'

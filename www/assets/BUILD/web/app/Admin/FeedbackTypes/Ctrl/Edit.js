@@ -84,9 +84,9 @@ define([
         this.skipDirtyState();
 
         if (is_new) {
-          return this.$state.go('portal.feedback_types.gocreate');
+          return this.$state.go('portal.community_channels.gocreate');
         }
-        return this.$state.go('portal.feedback_types');
+        return this.$state.go('portal.community_channels');
       });
       promise.error((info, code) => {
         this.stopSpinner('saving_feedback_type', true);

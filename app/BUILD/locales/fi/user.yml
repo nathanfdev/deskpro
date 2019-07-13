@@ -92,12 +92,12 @@ portal.email_subjects.comment-deleted: 'Edustajamme on lukenut kommenttisi'
 portal.email_subjects.email-too-big: 'Sähköpostiosoitteesi "{{subject}}" hylättiin'
 portal.email_subjects.email_new-confirm: 'Vahvista sähköpostiosoitteesi'
 portal.email_subjects.email_primary-confirm: 'Vahvista sähköpostiosoitteesi'
-portal.email_subjects.feedback_new: 'Kiitos lähettämästäsi palautteesta'
-portal.email_subjects.feedback_new-approved: 'Palautteesi hyväskyttiin'
-portal.email_subjects.feedback_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Kiitos lähettämästäsi palautteesta (vahvistus vaaditaan)'
-portal.email_subjects.feedback_new-disapproved: 'Palautteesi hylättiin'
-portal.email_subjects.feedback_updated: 'Palautteesi ladattiin: {{title}}'
+portal.email_subjects.community_new: 'Kiitos lähettämästäsi palautteesta'
+portal.email_subjects.community_new-approved: 'Palautteesi hyväskyttiin'
+portal.email_subjects.community_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Kiitos lähettämästäsi palautteesta (vahvistus vaaditaan)'
+portal.email_subjects.community_new-disapproved: 'Palautteesi hylättiin'
+portal.email_subjects.community_updated: 'Palautteesi ladattiin: {{title}}'
 portal.email_subjects.kb_sub_new: 'Uudet artikkelit'
 portal.email_subjects.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'
 portal.email_subjects.kb_sub_updated: 'Päivitetyt artikkelit'
@@ -116,16 +116,16 @@ portal.emails.comment_thank-you: 'Kiitos kommentistasi {{link}}.'
 portal.emails.comment_validate-email: 'Vahvistathan sähköpostiosoitteesi tästä linkistä:'
 portal.emails.do-not-reply: 'Ethän vastaa tähän sähköpostiin. Viesti on lähetetty automaattisesti järjestelmästämme ja vastauksia ei lueta.'
 portal.emails.email-too-big: 'Sähköpostiviestisi "{{subject}}" on liian suuri. Maksimi koko viesteille järjestelmässä on {{max_size}}. POistathan liitteet ja yrität uudelleen.'
-portal.emails.feedback_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
-portal.emails.feedback_closed: 'Lähettämäsi palaute "{{title}}" on suljettu: {{status}}'
-portal.emails.feedback_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
-portal.emails.feedback_disapproved-reason: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme. {{name}} perustelee päätöstä:'
-portal.emails.feedback_new-comment: '{{name}} julkaisi uuden kommentin:'
-portal.emails.feedback_published: 'Lähettämäsi palaute "{{title}}" on hyväksytty ja julkaistaan sivuillamme.'
-portal.emails.feedback_thank-you: 'Kiitos lähettämästäsi palautteesta "{{title}}"'
-portal.emails.feedback_updated: 'Lähettämäsi palaute "{{title}}" on päivitetty ja on tallennettu uudella statuksella "{{status}}"'
-portal.emails.feedback_validate-email: 'Vahvistathan sähköpostiosoitteesi tästä linkistä:'
-portal.emails.feedback_votes:
+portal.emails.community_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
+portal.emails.community_closed: 'Lähettämäsi palaute "{{title}}" on suljettu: {{status}}'
+portal.emails.community_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
+portal.emails.community_disapproved-reason: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme. {{name}} perustelee päätöstä:'
+portal.emails.community_new-comment: '{{name}} julkaisi uuden kommentin:'
+portal.emails.community_published: 'Lähettämäsi palaute "{{title}}" on hyväksytty ja julkaistaan sivuillamme.'
+portal.emails.community_thank-you: 'Kiitos lähettämästäsi palautteesta "{{title}}"'
+portal.emails.community_updated: 'Lähettämäsi palaute "{{title}}" on päivitetty ja on tallennettu uudella statuksella "{{status}}"'
+portal.emails.community_validate-email: 'Vahvistathan sähköpostiosoitteesi tästä linkistä:'
+portal.emails.community_votes:
   one: 'Palautteellasi on <strong>1</strong> ääntä. Katso palautteesi:'
   other: 'Palautteellasi on <strong>{{count}}</strong> ääntä. Katso palautteesi:'
 portal.emails.greeting: 'Hyvä {{to_name}},'
@@ -164,15 +164,15 @@ portal.emails.tickets_ommitted:
   other: '{{count}} viestiä huomioimatta'
 portal.emails.view_full_history_online: 'Tarkastele tukipyyntöä online tilassa'
 portal.error.404-title: 'Ei löytynyt.'
-portal.feedback.attachments: Liitetiedostot
-portal.feedback.btn-closed: Suljettu
-portal.feedback.btn-vote: 'Samaa mieltä'
-portal.feedback.form_title: Aihe
-portal.feedback.form_custom_cat: Kategoria
-portal.feedback.search-title: Palaute
-portal.feedback.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
-portal.feedback.section-title: Palaute
-portal.feedback.submit_feedback: 'Lähetä palaute'
+portal.community.attachments: Liitetiedostot
+portal.community.btn-closed: Suljettu
+portal.community.btn-vote: 'Samaa mieltä'
+portal.community.form_title: Aihe
+portal.community.form_custom_cat: Kategoria
+portal.community.search-title: Palaute
+portal.community.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
+portal.community.section-title: Palaute
+portal.community.submit_feedback: 'Lähetä palaute'
 portal.forms.error_password_forbid_reuse: 'Et voi käyttää aikaisempaa salasanaasi'
 portal.forms.error_password_min_length:
   one: 'Vähintään {{count}} merkkiä'
@@ -202,7 +202,7 @@ portal.general.delete: Poista
 portal.general.everything: Kaikki
 portal.general.nav-downloads: Lataukset
 portal.general.nav-downloads-desc: 'Selaa latauksiamme'
-portal.general.nav-feedback: Palaute
+portal.general.nav-community: Palaute
 portal.general.nav-kb: Tietokanta
 portal.general.nav-kb-desc: 'Lue tuki artikkeleita'
 portal.general.nav-news: Uutiset
@@ -217,18 +217,18 @@ portal.general.rated-negative: 'Merkitsit sivun hyödyttömäksi'
 portal.general.rated-positive: 'Merkitsit sivun hyödylliseksi'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} / {{vote_count}} pitää tätä sivua hyödyllisenä'
 portal.general.related-downloads: 'Samanlaisia tiedostoja'
-portal.general.related-feedback: 'Vastaava palaute'
+portal.general.related-community: 'Vastaava palaute'
 portal.general.related-news: 'Samanlaisia uutisia'
 portal.general.search-labels-section-title: 'Etsi nimikkeitä'
 portal.general.search-section-title: Etsi
 portal.general.search_btn: Etsi
 portal.general.share-this: Jaa
 portal.general.show: Näytä
-portal.general.submit-feedback: 'Lähetä palaute'
+portal.general.submit-community: 'Lähetä palaute'
 portal.news.section-title: Uutiset
 portal.news.view-as-agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 portal.sidebar.news_title: Uutiset
-portal.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
+portal.tickets.community_message_leave_comment: 'Vapaaehtoinen kommentti'
 portal.tickets.guest-thanks-section-title: Kiitos
 portal.tickets.guest_thank_you_title: Kiitos
 portal.tickets.list_agent: 'Liitetty tukihenkilö'
@@ -328,11 +328,11 @@ user.email_subjects.comment-approved: 'Kommenttisi hyväksyttiin'
 user.email_subjects.comment-deleted: 'Asiantuntijamme on lukenut kommenttisi'
 user.email_subjects.email-too-big: 'Sähköpostiosoitteesi "{{subject}}" hylättiin'
 user.email_subjects.email_new-confirm: 'Vahvista sähköpostiosoitteesi'
-user.email_subjects.feedback_new: 'Kiitos lähettämästäsi palautteesta'
-user.email_subjects.feedback_new-approved: 'Palautteesi hyväskyttiin'
-user.email_subjects.feedback_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Palautteesi hylättiin'
-user.email_subjects.feedback_updated: 'Palautteesi ladattiin: {{title}}'
+user.email_subjects.community_new: 'Kiitos lähettämästäsi palautteesta'
+user.email_subjects.community_new-approved: 'Palautteesi hyväskyttiin'
+user.email_subjects.community_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
+user.email_subjects.community_new-disapproved: 'Palautteesi hylättiin'
+user.email_subjects.community_updated: 'Palautteesi ladattiin: {{title}}'
 user.email_subjects.kb_sub_new: 'Uudet artikkelit'
 user.email_subjects.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'
 user.email_subjects.kb_sub_updated: 'Päivitetyt artikkelit'
@@ -348,16 +348,16 @@ user.emails.comment_approved: 'Kommenttisi on julkaistu.'
 user.emails.comment_deleted: 'Kommenttiasi käytettiin sivumme parantamiseen.'
 user.emails.comment_thank-you: 'Kiitos kommentistasi {{link}}.'
 user.emails.email-too-big: 'Sähköpostiviestisi "{{subject}}" on liian suuri. Maksimi koko viesteille järjestelmässä on {{max_size}}. POistathan liitteet ja yrität uudelleen.'
-user.emails.feedback_agent-validation: 'Huomioithan että palautteesi näkyy julkisena vasta kun se on esiluettu.'
-user.emails.feedback_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
-user.emails.feedback_closed: 'Lähettämäsi palaute "{{title}}" on suljettu: {{status}}'
-user.emails.feedback_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
-user.emails.feedback_disapproved-reason: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme. {{name}} perustelee päätöstä:'
-user.emails.feedback_new-comment: '{{name}} julkaisi uuden kommentin:'
-user.emails.feedback_published: 'Lähettämäsi palaute "{{title}}" on hyväksytty ja julkaistaan sivuillamme.'
-user.emails.feedback_thank-you: 'Kiitos lähettämästäsi palautteesta "{{title}}"'
-user.emails.feedback_updated: 'Lähettämäsi palaute "{{title}}" on päivitetty ja on tallennettu uudella statuksella "{{status}}"'
-user.emails.feedback_votes:
+user.emails.community_agent-validation: 'Huomioithan että palautteesi näkyy julkisena vasta kun se on esiluettu.'
+user.emails.community_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
+user.emails.community_closed: 'Lähettämäsi palaute "{{title}}" on suljettu: {{status}}'
+user.emails.community_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
+user.emails.community_disapproved-reason: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme. {{name}} perustelee päätöstä:'
+user.emails.community_new-comment: '{{name}} julkaisi uuden kommentin:'
+user.emails.community_published: 'Lähettämäsi palaute "{{title}}" on hyväksytty ja julkaistaan sivuillamme.'
+user.emails.community_thank-you: 'Kiitos lähettämästäsi palautteesta "{{title}}"'
+user.emails.community_updated: 'Lähettämäsi palaute "{{title}}" on päivitetty ja on tallennettu uudella statuksella "{{status}}"'
+user.emails.community_votes:
   one: 'Palautteellasi on <strong>1</strong> ääntä. Katso palautteesi:'
   other: 'Palautteellasi on <strong>{{count}}</strong> ääntä. Katso palautteesi:'
 user.emails.greeting: 'Hyvä {{to_name}},'
@@ -427,7 +427,7 @@ user.error.permission-denied: 'Valitettavasti yrittämäsi toiminto ei ole salli
 user.error.permission-denied-login: 'Olet kirjautunut ulos. <a href="{{login_url}}">Kirjaudu sisään</a> ja yritä uudelleen.'
 user.error.permission-denied-title: 'Toimenpide ei ole sallittu'
 user.error.server-error: 'Palvelimessa oli virhe joka esti sivun latautumisen. Ole hyvä ja yritä uudelleen.'
-user.feedback.submit_feedback: 'Lähetä palaute'
+user.community.submit_feedback: 'Lähetä palaute'
 user.general.helpdesk_by: 'Tukiohjelmisto <strong>{{deskpro}}</strong>'
 user.general.label_captcha: Vahvistuskoodi
 user.general.page: Sivu
@@ -462,7 +462,7 @@ user.profile.register_password_min_length:
   one: 'Vähintään {{count}} merkkiä'
   other: 'Vähintään{{count}} merkkiä'
 user.profile.register_password_unused: 'Et voi käyttää aikaisempaa salasanaasi'
-user.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
+user.tickets.community_message_leave_comment: 'Vapaaehtoinen kommentti'
 user.tickets.fields_category: Kategoria
 user.tickets.fields_department: Osasto
 user.tickets.fields_priority: Ensisijainen

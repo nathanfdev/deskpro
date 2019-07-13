@@ -86,7 +86,7 @@
             {% if can_use_community() and feedback_results %}
                 <div class="search-result-category-wrapper" id="feedback_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></div>
+                    <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.community.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></div>
                     <ul class="dpx-dynamic-search-results" data-type="feedback" data-next="{{ feedback_info.next ? 1 : 0 }}">
                         {% for result_set in feedback_results %}
                             {{ search_macros.search_result(result_set) }}

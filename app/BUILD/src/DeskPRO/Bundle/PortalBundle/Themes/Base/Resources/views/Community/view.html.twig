@@ -58,7 +58,7 @@
 
                 <div class="attached">
                     {% if topic.attachments|length > 0 %}
-                        <h3>{{ phrase('portal.feedback.attachments') }}</h3>
+                        <h3>{{ phrase('portal.community.attachments') }}</h3>
                         {% for attachment in topic.attachments %}
                             <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
                                 {% if attachment.blob.is_image %}

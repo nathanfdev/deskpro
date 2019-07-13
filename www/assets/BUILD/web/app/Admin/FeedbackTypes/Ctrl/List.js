@@ -116,8 +116,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         this.ngApply();
 
         // if currently viewing the deleted feedback type, then should need to switch state
-        if ((this.$state.current.name === 'portal.feedback_types.edit') && (parseInt(this.$state.params.id) === feedback_type.id)) {
-          return this.$state.go('portal.feedback_types');
+        if ((this.$state.current.name === 'portal.community_channels.edit') && (parseInt(this.$state.params.id) === feedback_type.id)) {
+          return this.$state.go('portal.community_channels');
         }
       });
     }

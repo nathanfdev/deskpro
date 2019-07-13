@@ -4,7 +4,7 @@
         href="{{ portal_path(topic, user_up_voted(topic) ? 'vote_down' : 'vote_up') }}"
         data-vote-up-url="{{ portal_path(topic, 'vote_up') }}"
         data-vote-down-url="{{ portal_path(topic, 'vote_down') }}"
-        title="{{ phrase('portal.feedback.btn-vote') }}"
+        title="{{ phrase('portal.community.btn-vote') }}"
         {% endif %}
        class="i-agree {% if user_up_voted(topic) %} agreed{% endif %}{% if topic.isClosed %} closed{% endif %}{% if not topic.can_rate %} rate_forbidden{% endif %}"
        rel="noindex, nofollow"
@@ -12,9 +12,9 @@
         <i class="fas fa-thumbs-up"></i>
         <div>
             {% if topic.isClosed %}
-                {{ phrase('portal.feedback.btn-closed') }}
+                {{ phrase('portal.community.btn-closed') }}
             {% else %}
-                {{ phrase('portal.feedback.btn-vote') }}
+                {{ phrase('portal.community.btn-vote') }}
             {% endif %}
         </div>
         <span class="counter-wrapper">

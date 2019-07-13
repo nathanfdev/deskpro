@@ -8,7 +8,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 			<ul>
 				<li class="on" data-tab-for="#settingswin_other_notifications_chats">{{ phrase('agent.general.chats') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_tasks">{{ phrase('agent.general.tasks') }}</li>
-				<li data-tab-for="#settingswin_other_notifications_feedback">{{ phrase('agent.general.feedback') }}</li>
+				<li data-tab-for="#settingswin_other_notifications_feedback">{{ phrase('agent.general.community') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_publish">{{ phrase('agent.general.publish') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_crm">{{ phrase('agent.general.crm') }}</li>
 				<li data-tab-for="#settingswin_other_notifications_account">{{ phrase('agent.general.my_account') }}</li>
@@ -82,13 +82,13 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.OtherNotificat
 				</thead>
 				<tbody>
 					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_new_feedback') }}</td>
+						<td class="title">{{ phrase('agent.settings.notif_new_community') }}</td>
 						<td class="prop"><input type="checkbox" name="my_prefs[new_feedback.email]" value="1" {% if my_prefs['new_feedback.email'] %}checked="checked"{% endif %} /></td>
 						<td class="prop"><input type="checkbox" name="my_prefs[new_feedback.alert]" value="1" {% if my_prefs['new_feedback.alert'] %}checked="checked"{% endif %} /></td>
 					</tr>
 
 					<tr>
-						<td class="title">{{ phrase('agent.settings.notif_new_feedback_validate') }}</td>
+						<td class="title">{{ phrase('agent.settings.notif_new_community_validate') }}</td>
 						<td class="prop"><input type="checkbox" name="my_prefs[new_feedback_validate.email]" value="1" {% if my_prefs['new_feedback_validate.email'] %}checked="checked"{% endif %} /></td>
 						<td class="prop"><input type="checkbox" name="my_prefs[new_feedback_validate.alert]" value="1" {% if my_prefs['new_feedback_validate.alert'] %}checked="checked"{% endif %} /></td>
 					</tr>

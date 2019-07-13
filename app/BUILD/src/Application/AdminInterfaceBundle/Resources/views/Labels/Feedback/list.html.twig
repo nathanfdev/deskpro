@@ -1,14 +1,14 @@
 {% extends 'AdminInterfaceBundle:Labels:layout.html.twig' %}
 {% block listpane_content %}
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('portal.feedback_settings') }}">
+		<a href="{{ ng_href('portal.community_settings') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Community Settings</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('portal.feedback_statuses') }}">
+		<a href="{{ ng_href('portal.community_statuses') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Community Statuses</h3>
 		</a>
@@ -27,5 +27,5 @@
 		</a>
 	</section>
 
-	{% include 'AdminInterfaceBundle:Labels:Common/list-section.html.twig' with {prefix: 'portal.feedback_labels', name: 'Feedback Labels'} %}
+	{% include 'AdminInterfaceBundle:Labels:Common/list-section.html.twig' with {prefix: 'portal.community_labels', name: 'Community Labels'} %}
 {% endblock %}

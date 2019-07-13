@@ -6,8 +6,8 @@
             <description>{{ brand_setting('core.deskpro_name')|e }} - {{ category.full_title }}</description>
             <link>{{ url('portal_community', { slug: category.slug }) }}</link>
         {% else %}
-            <title>{{ brand_setting('core.deskpro_name')|e }} - {{ phrase('portal.feedback.section-title') }}</title>
-            <description>{{ brand_setting('core.deskpro_name')|e }} - {{ phrase('portal.feedback.section-title') }}</description>
+            <title>{{ brand_setting('core.deskpro_name')|e }} - {{ phrase('portal.community.section-title') }}</title>
+            <description>{{ brand_setting('core.deskpro_name')|e }} - {{ phrase('portal.community.section-title') }}</description>
             <link>{{ url('portal_community') }}</link>
         {% endif %}
         <lastBuildDate>{{ 'now'|date('r') }}</lastBuildDate>

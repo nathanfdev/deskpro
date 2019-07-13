@@ -10,7 +10,7 @@
           {% if app.hasBeta('guides') and can_use_guides() %}<li class="item-guides"><a href="{{ path('portal_guides') }}"><i class="fas fa-book"></i> {{ phrase('portal.general.nav-guides') }}</a></li>{% endif %}
           {% if can_use_news() %}<li class="item-news"><a href="{{ path('portal_news') }}"><i class="far fa-file-alt"></i> {{ phrase('portal.general.nav-news') }}</a></li>{% endif %}
           {% if can_use_downloads() %}<li class="item-downloads"><a href="{{ path('portal_downloads') }}"><i class="fas fa-cloud-download-alt"></i> {{ phrase('portal.general.nav-downloads') }}</a></li>{% endif %}
-          {% if can_use_community() %}<li class="item-feedback"><a href="{{ path('portal_community') }}"><i class="far fa-list-alt"></i> {{ phrase('portal.general.nav-feedback') }}</a></li>{% endif %}
+          {% if can_use_community() %}<li class="item-feedback"><a href="{{ path('portal_community') }}"><i class="far fa-list-alt"></i> {{ phrase('portal.general.nav-community') }}</a></li>{% endif %}
           {% if can_view_tickets_link() %}<li class="item-newticket"><a href="{{ path('portal_new_ticket') }}"><i class="fas fa-comments"></i> {{ phrase('portal.general.nav-newticket') }}</a></li>{% endif %}
         </ul>
       </div>

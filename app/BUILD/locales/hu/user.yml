@@ -50,12 +50,12 @@ portal.email_subjects.comment-confirmation: 'Köszönjük hozzászólását'
 portal.email_subjects.comment-deleted: 'Munkatársunk ellenőrizte hozzászólását'
 portal.email_subjects.email_new-confirm: 'Erősítse meg e-mail címét'
 portal.email_subjects.email_primary-confirm: 'Erősítse meg e-mail címét'
-portal.email_subjects.feedback_new: 'Köszönjük visszajelzését'
-portal.email_subjects.feedback_new-approved: 'A visszajelzése jóváhagyásra került'
-portal.email_subjects.feedback_new-comment: 'Új hozzászólás érkezett: {{title}}'
-portal.email_subjects.feedback_new-confirm: 'Köszönjük visszajelzését (jóváhagyás szükséges)'
-portal.email_subjects.feedback_new-disapproved: 'Visszajelzése elutasításra került'
-portal.email_subjects.feedback_updated: 'Visszajelzése frissítésre került: {{title}}'
+portal.email_subjects.community_new: 'Köszönjük visszajelzését'
+portal.email_subjects.community_new-approved: 'A visszajelzése jóváhagyásra került'
+portal.email_subjects.community_new-comment: 'Új hozzászólás érkezett: {{title}}'
+portal.email_subjects.community_new-confirm: 'Köszönjük visszajelzését (jóváhagyás szükséges)'
+portal.email_subjects.community_new-disapproved: 'Visszajelzése elutasításra került'
+portal.email_subjects.community_updated: 'Visszajelzése frissítésre került: {{title}}'
 portal.email_subjects.password_agent-reset: 'Jelszavát alaphelyzetbe állítottuk'
 portal.email_subjects.password_reset: Jelszócsere
 portal.email_subjects.re: 'Válasz: {{subject}}'
@@ -69,16 +69,16 @@ portal.emails.comment_approved: 'Hozzászólása publikálásra került.'
 portal.emails.comment_thank-you: 'Köszönjük hozzászólását. ({{link}})'
 portal.emails.comment_validate-email: 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:'
 portal.emails.do-not-reply: 'Ez egy automata üzenet. kérjük ne válaszoljon rá, mert a válaszként küldött üzeneteket rendszerünk olvasás és ellenőrzés nélkül törli!'
-portal.emails.feedback_approved: 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.'
-portal.emails.feedback_closed: '"{{title}}" tárgyú visszajelzése lezárásra került: {{status}}'
-portal.emails.feedback_disapproved: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.'
-portal.emails.feedback_disapproved-reason: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került {{name}} munkatársunk által a következő okból:'
-portal.emails.feedback_new-comment: '{{name}} új hozzászólást küldött'
-portal.emails.feedback_published: '"{{title}}" tárgyú visszajelzése ellenőrzésre került, és megjelent weboldalunkon.'
-portal.emails.feedback_thank-you: 'Köszönjük "{{title}}" tárgyú visszajelzését'
-portal.emails.feedback_updated: '"{{title}}" tárgyú visszajelzése frissítésre és {{status}} státusz besorolásba került.'
-portal.emails.feedback_validate-email: 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:'
-portal.emails.feedback_votes:
+portal.emails.community_approved: 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.'
+portal.emails.community_closed: '"{{title}}" tárgyú visszajelzése lezárásra került: {{status}}'
+portal.emails.community_disapproved: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.'
+portal.emails.community_disapproved-reason: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került {{name}} munkatársunk által a következő okból:'
+portal.emails.community_new-comment: '{{name}} új hozzászólást küldött'
+portal.emails.community_published: '"{{title}}" tárgyú visszajelzése ellenőrzésre került, és megjelent weboldalunkon.'
+portal.emails.community_thank-you: 'Köszönjük "{{title}}" tárgyú visszajelzését'
+portal.emails.community_updated: '"{{title}}" tárgyú visszajelzése frissítésre és {{status}} státusz besorolásba került.'
+portal.emails.community_validate-email: 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:'
+portal.emails.community_votes:
   one: 'Visszajelzésére eddig <strong>1</strong> szavazat érkezett. Tekintse meg online:'
   other: 'Visszajelzésére eddig <strong>{{count}}</strong> szavazat érkezett. Tekintse meg online:'
 portal.emails.greeting: 'Tisztelt {{to_name}}!'
@@ -106,16 +106,16 @@ portal.emails.tickets_ommitted:
   other: '{{count}} üzenet kimaradt'
 portal.emails.view_full_history_online: 'Online megtekintés'
 portal.error.404-title: 'Nincs találat'
-portal.feedback.attachments: Mellékletek
-portal.feedback.btn-closed: Lezárt
-portal.feedback.btn-vote: Egyetértek
-portal.feedback.form_i_have_a: 'Új téma:'
-portal.feedback.search-title: Ötlettár
-portal.feedback.section-desc: 'Ezeken az oldalakon olyan ötleteket, javaslatokat, hibabejelentéseket és visszajelzéseket talál, amelyeket az Önhöz hasonló ügyfeleinktől kaptunk. Kérjük, segítse Ön is munkánkat észrevételeivel! Böngésszen a mások által beküldött kérések, kérdések és észrevételek között; szóljon hozzá egy témához, vagy csak adjon le egy szavazatot azokra a bejegyzésekre, amelyekkel egyetért. Amennyiben az Ön ötlete még nem szerepel a listán, kérjük ne habozzon megosztani velünk - küldjön be új témát!'
-portal.feedback.section-title: Ötlettár
-portal.feedback.sort_comments: 'Hozzászólás?'
-portal.feedback.submit_feedback: 'Visszajelzés küldése'
-portal.feedback.form_custom_cat: Kategória
+portal.community.attachments: Mellékletek
+portal.community.btn-closed: Lezárt
+portal.community.btn-vote: Egyetértek
+portal.community.form_i_have_a: 'Új téma:'
+portal.community.search-title: Ötlettár
+portal.community.section-desc: 'Ezeken az oldalakon olyan ötleteket, javaslatokat, hibabejelentéseket és visszajelzéseket talál, amelyeket az Önhöz hasonló ügyfeleinktől kaptunk. Kérjük, segítse Ön is munkánkat észrevételeivel! Böngésszen a mások által beküldött kérések, kérdések és észrevételek között; szóljon hozzá egy témához, vagy csak adjon le egy szavazatot azokra a bejegyzésekre, amelyekkel egyetért. Amennyiben az Ön ötlete még nem szerepel a listán, kérjük ne habozzon megosztani velünk - küldjön be új témát!'
+portal.community.section-title: Ötlettár
+portal.community.sort_comments: 'Hozzászólás?'
+portal.community.submit_feedback: 'Visszajelzés küldése'
+portal.community.form_custom_cat: Kategória
 portal.flashes.comment_thank_you: 'Köszönjük hozzászólását'
 portal.forms.label_category: Típus
 portal.forms.label_department: Részleg
@@ -141,7 +141,7 @@ portal.general.delete: Törlés
 portal.general.everything: Minden
 portal.general.nav-downloads: Letöltések
 portal.general.nav-downloads-desc: 'Letölthető fájlok és dokumentumok'
-portal.general.nav-feedback: Ötlettár
+portal.general.nav-community: Ötlettár
 portal.general.nav-kb: Tudásbázis
 portal.general.nav-kb-desc: 'Gyakori kérdések és válaszok'
 portal.general.nav-login: Bejelentkezés
@@ -158,17 +158,17 @@ portal.general.rated-negative: 'Ön korábban nem találta hasznosnak ennek az o
 portal.general.rated-positive: 'Ön korábban hasznosnak találta ennek az oldalnak a tartalmát.'
 portal.general.rating_x_of_y_found_helpful: 'Összesen {{vote_count}} értékelés érkezett be, ebből {{vote_up}} találta hasznosnak ennek az oldalnak a tartalmát.'
 portal.general.related-downloads: 'Kapcsolódó fájlok'
-portal.general.related-feedback: 'Kapcsolódó témák'
+portal.general.related-community: 'Kapcsolódó témák'
 portal.general.related-news: 'Kapcsolódó hírek'
 portal.general.search-labels-section-title: 'Címkék keresése'
 portal.general.search-section-title: Keresés
 portal.general.search_btn: Keresés
 portal.general.share-this: Megosztás
-portal.general.submit-feedback: 'Üzenet beküldése'
+portal.general.submit-community: 'Üzenet beküldése'
 portal.news.section-title: Hírek
 portal.news.view-as-agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 portal.sidebar.news_title: Hírek
-portal.tickets.feedback_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
+portal.tickets.community_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
 portal.tickets.guest-thanks-section-title: Köszönjük
 portal.tickets.guest_thank_you_title: Köszönjük
 portal.tickets.list_agent: 'Hozzárendelt munkatárs'
@@ -258,11 +258,11 @@ user.email_subjects.chat_transcript: 'Beszélgetés összefoglaló'
 user.email_subjects.comment-approved: 'A hozzászólása jóváhagyásra került'
 user.email_subjects.comment-deleted: 'Munkatársunk ellenőrizte hozzászólását'
 user.email_subjects.email_new-confirm: 'Erősítse meg e-mail címét'
-user.email_subjects.feedback_new: 'Köszönjük visszajelzését'
-user.email_subjects.feedback_new-approved: 'A visszajelzése jóváhagyásra került'
-user.email_subjects.feedback_new-comment: 'Új hozzászólás érkezett: {{title}}'
-user.email_subjects.feedback_new-disapproved: 'Visszajelzése elutasításra került'
-user.email_subjects.feedback_updated: 'Visszajelzése frissítésre került: {{title}}'
+user.email_subjects.community_new: 'Köszönjük visszajelzését'
+user.email_subjects.community_new-approved: 'A visszajelzése jóváhagyásra került'
+user.email_subjects.community_new-comment: 'Új hozzászólás érkezett: {{title}}'
+user.email_subjects.community_new-disapproved: 'Visszajelzése elutasításra került'
+user.email_subjects.community_updated: 'Visszajelzése frissítésre került: {{title}}'
 user.email_subjects.password_agent-reset: 'Jelszavát alaphelyzetbe állítottuk'
 user.email_subjects.password_reset: Jelszócsere
 user.email_subjects.re: 'Válasz: {{subject}}'
@@ -273,16 +273,16 @@ user.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkáj�
 user.emails.comment_approved: 'Hozzászólása publikálásra került.'
 user.emails.comment_deleted: 'Hozzászólását felhasználtuk tartalmunk fejlesztéséhez.'
 user.emails.comment_thank-you: 'Köszönjük hozzászólását. ({{link}})'
-user.emails.feedback_agent-validation: 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.'
-user.emails.feedback_approved: 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.'
-user.emails.feedback_closed: '"{{title}}" tárgyú visszajelzése lezárásra került: {{status}}'
-user.emails.feedback_disapproved: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.'
-user.emails.feedback_disapproved-reason: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került {{name}} munkatársunk által a következő okból:'
-user.emails.feedback_new-comment: '{{name}} új hozzászólást küldött'
-user.emails.feedback_published: '"{{title}}" tárgyú visszajelzése ellenőrzésre került, és megjelent weboldalunkon.'
-user.emails.feedback_thank-you: 'Köszönjük "{{title}}" tárgyú visszajelzését'
-user.emails.feedback_updated: '"{{title}}" tárgyú visszajelzése frissítésre és {{status}} státusz besorolásba került.'
-user.emails.feedback_votes:
+user.emails.community_agent-validation: 'Köszönjük, hogy Ön is hozzájárul munkánk sikeréhez. Üzenetének tartalmát munkatársaink ellenőrizni fogják annak érdekében, hogy kiszűrjék a nem helyénvaló bejegyzéseket oldalainkról. Az ellenőrzés rövid időn belül megtörténik.'
+user.emails.community_approved: 'Tájékoztatjuk, hogy visszajelzése publikálásra került weboldalunkon.'
+user.emails.community_closed: '"{{title}}" tárgyú visszajelzése lezárásra került: {{status}}'
+user.emails.community_disapproved: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került.'
+user.emails.community_disapproved-reason: 'Sajnálattal tájékoztatjuk, hogy visszajelzésének publikálása elutasításra került {{name}} munkatársunk által a következő okból:'
+user.emails.community_new-comment: '{{name}} új hozzászólást küldött'
+user.emails.community_published: '"{{title}}" tárgyú visszajelzése ellenőrzésre került, és megjelent weboldalunkon.'
+user.emails.community_thank-you: 'Köszönjük "{{title}}" tárgyú visszajelzését'
+user.emails.community_updated: '"{{title}}" tárgyú visszajelzése frissítésre és {{status}} státusz besorolásba került.'
+user.emails.community_votes:
   one: 'Visszajelzésére eddig <strong>1</strong> szavazat érkezett. Tekintse meg online:'
   other: 'Visszajelzésére eddig <strong>{{count}}</strong> szavazat érkezett. Tekintse meg online:'
 user.emails.greeting: 'Tisztelt {{to_name}}!'
@@ -340,7 +340,7 @@ user.error.permission-denied: 'Az Ön által végrehajtani kívánt művelet nem
 user.error.permission-denied-login: 'Kijelentkezett rendszerünkből. <a href="{{login_url}}">Jelentkezzen be</a> és próbálja meg újra!'
 user.error.permission-denied-title: 'Önnek nincs megfelelő engedélye'
 user.error.server-error: 'Szerverünk hibájából az oldal nem töltődött be teljesen. Kérjük próbálja meg újra!'
-user.feedback.submit_feedback: 'Visszajelzés küldése'
+user.community.submit_feedback: 'Visszajelzés küldése'
 user.general.helpdesk_by: 'Helpdesk megoldás: <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Ellenőrző kód'
 user.general.page: Oldal
@@ -350,7 +350,7 @@ user.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolv
 user.profile.choose_email: 'Válassza ki a használni kívánt e-mail címet'
 user.profile.or_connect_with: 'Bejelentkezés ezzel:'
 user.profile.register: Regisztráljon
-user.tickets.feedback_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
+user.tickets.community_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
 user.tickets.fields_category: Kategória
 user.tickets.fields_department: Részleg
 user.tickets.fields_priority: Prioritás

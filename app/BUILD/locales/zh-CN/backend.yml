@@ -16,15 +16,15 @@ adm.general.x_departments:
   other: '{{count}} Departments'
 adm.general.x_email_bans:
   other: '{{count}} Email Bans'
-adm.general.x_feedback_active_statuses:
+adm.general.x_community_active_statuses:
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_feedback_categories:
+adm.general.x_community_categories:
   other: '{{count}} Feedback Categories'
-adm.general.x_feedback_closed_statuses:
+adm.general.x_community_closed_statuses:
   other: '{{count}} Feedback Closed Statuses'
-adm.general.x_feedback_statuses:
+adm.general.x_community_statuses:
   other: '{{count}} Feedback Statuses'
-adm.general.x_feedback_types:
+adm.general.x_community_types:
   other: '{{count}} Feedback Types'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'
@@ -76,11 +76,11 @@ admin.departments.count_chats:
   other: '{1} 1 chat'
 admin.departments.count_tickets:
   other: '{1} is 1 ticket'
-admin.feedback.count_active_statuses:
+admin.community.count_active_statuses:
   other: '{{count}} active statuses'
-admin.feedback.count_closed_statuses:
+admin.community.count_closed_statuses:
   other: '{{count}} closed statuses'
-admin.feedback.count_feedback:
+admin.community.count_feedback:
   other: '{{count}} feedback'
 admin.general.count_custom_fields:
   other: '{{count}} Custom Fields'
@@ -202,7 +202,7 @@ agent.chrome.chat_sign-in: 登入开始聊天
 agent.chrome.chat_sign-out: 登出聊天
 agent.chrome.create_new-article: 新文章
 agent.chrome.create_new-download: 新下载
-agent.chrome.create_new-feedback: 新的反馈
+agent.chrome.create_new-community: 新的反馈
 agent.chrome.create_new-news: 新的新闻发布
 agent.chrome.create_new-organization: "新的组织\n"
 agent.chrome.create_new-person: 新人
@@ -225,7 +225,7 @@ agent.chrome.link_logout: 登出
 agent.chrome.link_preferences: 优先
 agent.chrome.nav_admin_settings: 管理员设置
 agent.chrome.nav_agentchat: '代理 即时通信'
-agent.chrome.nav_feedback: 反馈
+agent.chrome.nav_community: 反馈
 agent.chrome.nav_people: 客户关系管理
 agent.chrome.nav_publish: 发表
 agent.chrome.nav_reports: 报告
@@ -244,7 +244,7 @@ agent.chrome.quicksearch_title-articles: 文章
 agent.chrome.quicksearch_title-chat: 聊天
 agent.chrome.quicksearch_title-crm: 客户关系管理
 agent.chrome.quicksearch_title-downloads: 下载
-agent.chrome.quicksearch_title-feedback: 反馈
+agent.chrome.quicksearch_title-community: 反馈
 agent.chrome.quicksearch_title-news: 新闻
 agent.chrome.quicksearch_title-orgs: 组织
 agent.chrome.quicksearch_title-people: 人们
@@ -366,39 +366,39 @@ agent.emails.view_your_tasks: 查看您的任务
 agent.emails.view_your_teams_tasks: 查看您团队的任务
 agent.emails.view_your_tweets: 查看您的推文
 agent.emails.your_initial_password: 您的初始密码
-agent.feedback.any_category: 任何类别
-agent.feedback.any_status: 任何状态
-agent.feedback.count_votes:
+agent.community.any_category: 任何类别
+agent.community.any_status: 任何状态
+agent.community.count_votes:
   other: '{{display_count}} votes'
-agent.feedback.feedback_deleted: 反馈已被删除
-agent.feedback.feedback_to_review: "反馈以供审核\n"
-agent.feedback.least_voted_on_top: "最少投票在上面\n"
-agent.feedback.list_title:
+agent.community.feedback_deleted: 反馈已被删除
+agent.community.feedback_to_review: "反馈以供审核\n"
+agent.community.least_voted_on_top: "最少投票在上面\n"
+agent.community.list_title:
   other: '{{count}} Submissions'
-agent.feedback.merge_feedback: "合并反馈\n"
-agent.feedback.merge_feedback_note: "来自合并反馈的描述将被添加为评论以保持反馈\n"
-agent.feedback.merge_feedback_submit: 合并这两个反馈提交
-agent.feedback.merge_howto: "打开其他反馈标签以进行合并\n"
-agent.feedback.new_feedback: 新反馈
-agent.feedback.newest_on_top: 最新的在上面
-agent.feedback.no_feedback_cats_error: "没有定义类型。在可以向反馈部分添加类型之前，需要从管理界面中定义类型。\n"
-agent.feedback.no_labels_explain: "您尚未标记任何反馈。查看提交的意见反馈，为其添加标签。\n"
-agent.feedback.oldest_on_top: 最久的在上面
-agent.feedback.popularity_least_most: '受欢迎层度（最少 最多）'
-agent.feedback.popularity_most_least: '受欢迎层度（最多 最少 ）'
-agent.feedback.showing_results: 显示结果
-agent.feedback.status_active: 活跃的
-agent.feedback.status_closed: 关闭
-agent.feedback.status_deleted: 已删除
-agent.feedback.status_hidden: "隐藏\n"
-agent.feedback.status_new: 新
-agent.feedback.status_spam: 垃圾邮件
-agent.feedback.top_voted_on_top: 最多投票在上面
-agent.feedback.update_filter: 更新我的分类
-agent.feedback.user_submitted_new_feedback: '提交新的反馈{{name}}'
-agent.feedback.vote_for_this_feedback: "投票给这个反馈\n"
-agent.feedback.votes_least_most: '投票（最少 最多）'
-agent.feedback.votes_most_least: '投票（最多 最少）'
+agent.community.merge_feedback: "合并反馈\n"
+agent.community.merge_feedback_note: "来自合并反馈的描述将被添加为评论以保持反馈\n"
+agent.community.merge_feedback_submit: 合并这两个反馈提交
+agent.community.merge_howto: "打开其他反馈标签以进行合并\n"
+agent.community.new_feedback: 新反馈
+agent.community.newest_on_top: 最新的在上面
+agent.community.no_feedback_cats_error: "没有定义类型。在可以向反馈部分添加类型之前，需要从管理界面中定义类型。\n"
+agent.community.no_labels_explain: "您尚未标记任何反馈。查看提交的意见反馈，为其添加标签。\n"
+agent.community.oldest_on_top: 最久的在上面
+agent.community.popularity_least_most: '受欢迎层度（最少 最多）'
+agent.community.popularity_most_least: '受欢迎层度（最多 最少 ）'
+agent.community.showing_results: 显示结果
+agent.community.status_active: 活跃的
+agent.community.status_closed: 关闭
+agent.community.status_deleted: 已删除
+agent.community.status_hidden: "隐藏\n"
+agent.community.status_new: 新
+agent.community.status_spam: 垃圾邮件
+agent.community.top_voted_on_top: 最多投票在上面
+agent.community.update_filter: 更新我的分类
+agent.community.user_submitted_new_feedback: '提交新的反馈{{name}}'
+agent.community.vote_for_this_feedback: "投票给这个反馈\n"
+agent.community.votes_least_most: '投票（最少 最多）'
+agent.community.votes_most_least: '投票（最多 最少）'
 agent.general.24x7: 全天候
 agent.general.actions: 行动
 agent.general.activity_stream: "活动流\n"
@@ -550,7 +550,7 @@ agent.general.create_article: 创建文章
 agent.general.create_content: 创建内容
 agent.general.create_deal: 创建交易
 agent.general.create_download: 创建下载
-agent.general.create_feedback: 创建反馈
+agent.general.create_community: 创建反馈
 agent.general.create_news: 创建新消息
 agent.general.create_status: 创建状态
 agent.general.create_ticket: 创建来单
@@ -664,7 +664,7 @@ agent.general.facebook: 脸书
 agent.general.failed: 失败
 agent.general.failure: 失败
 agent.general.favorite: 收藏
-agent.general.feedback: 反馈
+agent.general.community: 反馈
 agent.general.field_name: '域：{{field}}'
 agent.general.field_name_title: 字段名
 agent.general.field_type_choice: 预定义选项
@@ -839,7 +839,7 @@ agent.general.new: 新的
 agent.general.new_article: 新文章
 agent.general.new_comment: 新评论
 agent.general.new_download: 新的下载
-agent.general.new_feedback: 新的反馈
+agent.general.new_community: 新的反馈
 agent.general.new_filter: 新的分类
 agent.general.new_note: 新的笔记
 agent.general.new_organization: 新的组织
@@ -915,7 +915,7 @@ agent.general.phone: 电话
 agent.general.phone_number: 电话号码
 agent.general.phrase: "短语\n"
 agent.general.please_wait: 请稍等
-agent.general.popular_feedback_only: "仅限热门反馈\n"
+agent.general.popular_community_only: "仅限热门反馈\n"
 agent.general.popularity: 人气
 agent.general.position: 位置
 agent.general.prev: 上一页
@@ -955,7 +955,7 @@ agent.general.registered_views: "注册视图\n"
 agent.general.related_articles: "相关文章\n"
 agent.general.related_content: "相关内容\n"
 agent.general.related_downloads: "相关下载\n"
-agent.general.related_feedback: 相关反馈
+agent.general.related_community: 相关反馈
 agent.general.related_news: 相关新闻
 agent.general.relative_time: "相对时间\n"
 agent.general.remove: 移除
@@ -1183,7 +1183,7 @@ agent.interface.keyboard_shortcuts: 键盘快捷键
 agent.interface.major_items_appear_here: "任务，用户，组织，文章，新闻，下载和反馈在这里打开。\n"
 agent.interface.open_new_article_form: "打开新文章表单\n"
 agent.interface.open_new_download_form: "打开新的下载表单\n"
-agent.interface.open_new_feedback_form: "打开新的反馈表单\n"
+agent.interface.open_new_community_form: "打开新的反馈表单\n"
 agent.interface.open_new_news_form: "打开新的新闻形式\n"
 agent.interface.open_new_organization_form: "打开新组织表单\n"
 agent.interface.open_new_person_form: "打开新人表单\n"
@@ -1453,7 +1453,7 @@ agent.publish.move_to: 转移到
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}}发现此下载有帮助，{{down_votes}}发现此下载没有帮助'
 agent.publish.new_comment_on: '对{{name}}的新评论'
 agent.publish.new_comment_submitted_by: '{{name}}提交了一条新评论'
-agent.publish.new_feedback_by: '{{name}}的新反馈'
+agent.publish.new_community_by: '{{name}}的新反馈'
 agent.publish.new_post: 最新帖子
 agent.publish.news_comments: "新的评论\n"
 agent.publish.news_list_title:
@@ -1574,8 +1574,8 @@ agent.settings.notif_my_events: 我的活动
 agent.settings.notif_my_own_actions: 我自己的操作
 agent.settings.notif_new_comment: 提交新评论
 agent.settings.notif_new_comment_validate: 提交需要验证的新评论
-agent.settings.notif_new_feedback: 新反馈提交
-agent.settings.notif_new_feedback_validate: 提交需要验证的新反馈
+agent.settings.notif_new_community: 新反馈提交
+agent.settings.notif_new_community_validate: 提交需要验证的新反馈
 agent.settings.notif_new_user: 新用户已注册
 agent.settings.notif_notes_with_mentions: 带@mentions的注释
 agent.settings.notif_notes_with_mentions_always: 始终通过代理IM电子邮件和发送消息
@@ -1662,7 +1662,7 @@ agent.tickets.count_charges:
   other: '{{count}} charges'
 agent.tickets.count_users:
   other: '{{count}} users'
-agent.tickets.link_existing_feedback_subscr_part:
+agent.tickets.link_existing_community_subscr_part:
   other: 'Subscribed ({{count}}) Ticket Participants to Feedback'
 agent.tickets.list_title:
   other: '{{count}} Tickets'
@@ -1737,7 +1737,7 @@ agent.tickets.subscribed_tickets: 已订阅的来单
 agent.tickets.teams_action: '团队：{{teams}}'
 agent.tickets.text_body: 文本主体
 agent.tickets.ticket_changes: 来单改变
-agent.tickets.ticket_feedback: 来单反馈
+agent.tickets.ticket_community: 来单反馈
 agent.tickets.ticket_field_name: '来单域：{{field}}'
 agent.tickets.ticket_is_deleted: 来单已被删除
 agent.tickets.ticket_is_marked_as_spam: 标记这来单为垃圾邮件

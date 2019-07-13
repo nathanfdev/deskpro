@@ -468,7 +468,7 @@ class LanguagesController extends CrudController
                     'user.defaults.*',
                     'portal.downloads.*',
                     'user.downloads.*',
-                    'portal.feedback.*',
+                    'portal.community.*',
                     'user.feedback.*',
                     'portal.flashes.*',
                     'portal.forms.*',

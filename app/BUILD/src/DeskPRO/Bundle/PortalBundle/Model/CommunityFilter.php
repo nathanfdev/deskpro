@@ -28,9 +28,9 @@ class CommunityFilter
     ];
 
     public static $statuses_translated = [
-        self::STATUS_ALL    => 'portal.feedback.status_all',
-        self::STATUS_ACTIVE => 'portal.feedback.status_active',
-        self::STATUS_CLOSED => 'portal.feedback.status_closed',
+        self::STATUS_ALL    => 'portal.community.status_all',
+        self::STATUS_ACTIVE => 'portal.community.status_active',
+        self::STATUS_CLOSED => 'portal.community.status_closed',
     ];
 
     public static $sorts = [
@@ -42,11 +42,11 @@ class CommunityFilter
     ];
 
     public static $sorts_translated = [
-        self::SORT_POPULARITY => 'portal.feedback.sort_popularity',
-        self::SORT_RATING     => 'portal.feedback.sort_rating',
-        self::SORT_DATE       => 'portal.feedback.sort_date',
-        self::SORT_COMMENTS   => 'portal.feedback.sort_comments',
-        self::SORT_VIEWS      => 'portal.feedback.sort_views',
+        self::SORT_POPULARITY => 'portal.community.sort_popularity',
+        self::SORT_RATING     => 'portal.community.sort_rating',
+        self::SORT_DATE       => 'portal.community.sort_date',
+        self::SORT_COMMENTS   => 'portal.community.sort_comments',
+        self::SORT_VIEWS      => 'portal.community.sort_views',
     ];
 
     public static $sort_directions = [
@@ -55,8 +55,8 @@ class CommunityFilter
     ];
 
     public static $sort_directions_translated = [
-        self::SORT_DIRECTION_ASC  => 'portal.feedback.dir_asc',
-        self::SORT_DIRECTION_DESC => 'portal.feedback.dir_desc',
+        self::SORT_DIRECTION_ASC  => 'portal.community.dir_asc',
+        self::SORT_DIRECTION_DESC => 'portal.community.dir_desc',
     ];
 
     protected $status;

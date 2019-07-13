@@ -7,7 +7,7 @@
             <div class="quick-jump">
                 <a href="{{ path('portal_community_browse', { filter_uri: 'all/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
                         {% if status == 'all' %} class="active"{% endif %}>
-                    {{ phrase('portal.feedback.filter_all_items') }}
+                    {{ phrase('portal.community.filter_all_items') }}
                 </a>
             </div>
         </li>
@@ -16,7 +16,7 @@
             <div class="quick-jump">
                 <a href="{{ path('portal_community_browse', { filter_uri: 'active/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
                         {% if status == 'active' %} class="active"{% endif %}>
-                    {{ phrase('portal.feedback.filter_open_items') }}
+                    {{ phrase('portal.community.filter_open_items') }}
                 </a>
             </div>
         </li>
@@ -25,7 +25,7 @@
             <div class="quick-jump">
                 <a href="{{ path('portal_community_browse', { filter_uri: 'closed/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
                         {% if status == 'closed' %} class="active"{% endif %}>
-                    {{ phrase('portal.feedback.filter_closed_items') }}
+                    {{ phrase('portal.community.filter_closed_items') }}
                 </a>
             </div>
         </li>

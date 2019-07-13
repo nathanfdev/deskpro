@@ -43,27 +43,27 @@ adm.general.x_email_bans:
   few: '{{count}} Email Bans'
   many: '{{count}} Email Bans'
   other: '{{count}} Email Bans'
-adm.general.x_feedback_active_statuses:
+adm.general.x_community_active_statuses:
   one: '{{count}} Feedback Active Status'
   few: '{{count}} Feedback Active Statuses'
   many: '{{count}} Feedback Active Statuses'
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_feedback_categories:
+adm.general.x_community_categories:
   one: '{{count}} Feedback Category'
   few: '{{count}} Feedback Categories'
   many: '{{count}} Feedback Categories'
   other: '{{count}} Feedback Categories'
-adm.general.x_feedback_closed_statuses:
+adm.general.x_community_closed_statuses:
   one: '{{count}} Feedback Closed Status'
   few: '{{count}} Feedback Closed Statuses'
   many: '{{count}} Feedback Closed Statuses'
   other: '{{count}} Feedback Closed Statuses'
-adm.general.x_feedback_statuses:
+adm.general.x_community_statuses:
   one: '{{count}} Feedback Status'
   few: '{{count}} Feedback Statuses'
   many: '{{count}} Feedback Statuses'
   other: '{{count}} Feedback Statuses'
-adm.general.x_feedback_types:
+adm.general.x_community_types:
   one: '{{count}} Feedback Type'
   few: '{{count}} Feedback Types'
   many: '{{count}} Feedback Types'
@@ -193,17 +193,17 @@ admin.departments.count_tickets:
   few: '{1} is 1 ticket'
   many: '{1} is 1 ticket'
   other: '{1} is 1 ticket'
-admin.feedback.count_active_statuses:
+admin.community.count_active_statuses:
   one: '{{count}} active status'
   few: '{{count}} active statuses'
   many: '{{count}} active statuses'
   other: '{{count}} active statuses'
-admin.feedback.count_closed_statuses:
+admin.community.count_closed_statuses:
   one: '{{count}} closed status'
   few: '{{count}} closed statuses'
   many: '{{count}} closed statuses'
   other: '{{count}} closed statuses'
-admin.feedback.count_feedback:
+admin.community.count_feedback:
   one: '{{count}} feedback'
   few: '{{count}} feedback'
   many: '{{count}} feedback'
@@ -420,7 +420,7 @@ agent.chrome.chat_sign-in: 'Zaloguj do czata'
 agent.chrome.chat_sign-out: 'Wyloguj z czata'
 agent.chrome.create_new-article: 'Nowy Artykuł'
 agent.chrome.create_new-download: 'Nowe Pobieranie'
-agent.chrome.create_new-feedback: 'Nowa Informacja Zwrotna'
+agent.chrome.create_new-community: 'Nowa Informacja Zwrotna'
 agent.chrome.create_new-news: 'Nowy Wpis z Nowościami'
 agent.chrome.create_new-organization: 'Nowa Organizacja'
 agent.chrome.create_new-person: 'Nowy Kontakt'
@@ -446,7 +446,7 @@ agent.chrome.link_logout: Wyloguj
 agent.chrome.link_preferences: Preferencje
 agent.chrome.nav_admin_settings: 'Ustawienia Administratora'
 agent.chrome.nav_agentchat: 'IM Agenta'
-agent.chrome.nav_feedback: 'Informacja Zwrotna'
+agent.chrome.nav_community: 'Informacja Zwrotna'
 agent.chrome.nav_publish: Publikuj
 agent.chrome.nav_reports: Raporty
 agent.chrome.nav_search: Szukaj
@@ -463,7 +463,7 @@ agent.chrome.quicksearch_title: 'Pasek szybkiego wyszukiwania'
 agent.chrome.quicksearch_title-articles: Artykuły
 agent.chrome.quicksearch_title-chat: Czat
 agent.chrome.quicksearch_title-downloads: Pobrania
-agent.chrome.quicksearch_title-feedback: 'Informacja Zwrotna'
+agent.chrome.quicksearch_title-community: 'Informacja Zwrotna'
 agent.chrome.quicksearch_title-news: Aktualności
 agent.chrome.quicksearch_title-orgs: Organizacje
 agent.chrome.quicksearch_title-people: Osoby
@@ -595,44 +595,44 @@ agent.emails.view_your_tasks: 'Zobacz swoje zadania'
 agent.emails.view_your_teams_tasks: 'Zobacz zadania swojego zespołu'
 agent.emails.view_your_tweets: 'Zobacz swoje tweety'
 agent.emails.your_initial_password: 'Twoje hasło początkowe'
-agent.feedback.any_category: 'Jakakolwiek Kategoria'
-agent.feedback.any_status: 'Jakikolwiek Status'
-agent.feedback.count_votes:
+agent.community.any_category: 'Jakakolwiek Kategoria'
+agent.community.any_status: 'Jakikolwiek Status'
+agent.community.count_votes:
   one: '{{display_count}} vote'
   few: '{{display_count}} votes'
   many: '{{display_count}} votes'
   other: '{{display_count}} votes'
-agent.feedback.feedback_deleted: 'Ta informacja zwrotna została usunięta'
-agent.feedback.feedback_to_review: 'Informacja zwrotna do wglądu'
-agent.feedback.least_voted_on_top: 'Ostatnio głosowane na górze'
-agent.feedback.list_title:
+agent.community.feedback_deleted: 'Ta informacja zwrotna została usunięta'
+agent.community.feedback_to_review: 'Informacja zwrotna do wglądu'
+agent.community.least_voted_on_top: 'Ostatnio głosowane na górze'
+agent.community.list_title:
   one: '1 oddany'
   few: '{{count}} oddane'
   many: '{{count}} oddane'
   other: '{{count}} oddane'
-agent.feedback.merge_feedback: 'Scal informacje zwrotne'
-agent.feedback.merge_feedback_note: 'Opis ze scalonej informacji zwrotnej zostanie dodany jako komentarz, aby zachować informacje.'
-agent.feedback.merge_feedback_submit: 'Scal te dwie przesłane informacje zwrotne'
-agent.feedback.merge_howto: 'Otwórz dodatkowe zakładki informacji zwrotnych do scalenia'
-agent.feedback.new_feedback: 'Nowa Informacja Zwrotna:'
-agent.feedback.newest_on_top: 'Najnowsze na górze'
-agent.feedback.no_feedback_cats_error: 'Brak zdefiniowanych typów. Zanim będziesz mógł dodać typ do informacji zwrotnej, musisz zdefiniować typ w Interfejsie Administratora.'
-agent.feedback.no_labels_explain: 'Nie przypisałeś etykiety do żadnej informacji zwrotnej. Zobacz przesłane informacje zwrotne aby dodać do nich etykiety.'
-agent.feedback.oldest_on_top: 'Najstarsze na górze'
-agent.feedback.popularity_least_most: 'Popularność (Najmniejsza-Największa)'
-agent.feedback.popularity_most_least: 'Popularność (Największa-Najmniejsza)'
-agent.feedback.showing_results: 'Pokazywanie rezultatów'
-agent.feedback.status_active: Aktywne
-agent.feedback.status_closed: Zamknięte
-agent.feedback.status_deleted: Usunięto
-agent.feedback.status_hidden: Ukryte
-agent.feedback.status_new: Nowe
-agent.feedback.top_voted_on_top: 'Najlepiej ocenione na górze'
-agent.feedback.update_filter: 'Aktualizuj Filtr'
-agent.feedback.user_submitted_new_feedback: '{{name}} zamieścił nową informację zwrotną'
-agent.feedback.vote_for_this_feedback: 'Oceń tą informację zwrotną'
-agent.feedback.votes_least_most: 'Ocenione (Najmniej-Najwięcej)'
-agent.feedback.votes_most_least: 'Ocenione (Najwięcej-Najmniej)'
+agent.community.merge_feedback: 'Scal informacje zwrotne'
+agent.community.merge_feedback_note: 'Opis ze scalonej informacji zwrotnej zostanie dodany jako komentarz, aby zachować informacje.'
+agent.community.merge_feedback_submit: 'Scal te dwie przesłane informacje zwrotne'
+agent.community.merge_howto: 'Otwórz dodatkowe zakładki informacji zwrotnych do scalenia'
+agent.community.new_feedback: 'Nowa Informacja Zwrotna:'
+agent.community.newest_on_top: 'Najnowsze na górze'
+agent.community.no_feedback_cats_error: 'Brak zdefiniowanych typów. Zanim będziesz mógł dodać typ do informacji zwrotnej, musisz zdefiniować typ w Interfejsie Administratora.'
+agent.community.no_labels_explain: 'Nie przypisałeś etykiety do żadnej informacji zwrotnej. Zobacz przesłane informacje zwrotne aby dodać do nich etykiety.'
+agent.community.oldest_on_top: 'Najstarsze na górze'
+agent.community.popularity_least_most: 'Popularność (Najmniejsza-Największa)'
+agent.community.popularity_most_least: 'Popularność (Największa-Najmniejsza)'
+agent.community.showing_results: 'Pokazywanie rezultatów'
+agent.community.status_active: Aktywne
+agent.community.status_closed: Zamknięte
+agent.community.status_deleted: Usunięto
+agent.community.status_hidden: Ukryte
+agent.community.status_new: Nowe
+agent.community.top_voted_on_top: 'Najlepiej ocenione na górze'
+agent.community.update_filter: 'Aktualizuj Filtr'
+agent.community.user_submitted_new_feedback: '{{name}} zamieścił nową informację zwrotną'
+agent.community.vote_for_this_feedback: 'Oceń tą informację zwrotną'
+agent.community.votes_least_most: 'Ocenione (Najmniej-Najwięcej)'
+agent.community.votes_most_least: 'Ocenione (Najwięcej-Najmniej)'
 agent.general.actions: Akcje
 agent.general.activity_stream: 'Ciąg aktywności'
 agent.general.add: Dodaj
@@ -794,7 +794,7 @@ agent.general.create_article: 'Utwórz Artykuł'
 agent.general.create_content: 'Utwórz Zawartość'
 agent.general.create_deal: 'Utwórz Umowę'
 agent.general.create_download: 'Utwórz Pobranie'
-agent.general.create_feedback: 'Utwórz Informację Zwrotną'
+agent.general.create_community: 'Utwórz Informację Zwrotną'
 agent.general.create_news: 'Utwórz Nowy Wpis'
 agent.general.create_status: 'Utwórz Status'
 agent.general.create_ticket: 'Utwórz Zgłoszenie'
@@ -906,7 +906,7 @@ agent.general.existing_picture: 'Istniejący Obrazek'
 agent.general.failed: Niepowodzenie
 agent.general.failure: Niepowodzenie
 agent.general.favorite: Ulubione
-agent.general.feedback: 'Informacja Zwrotna'
+agent.general.community: 'Informacja Zwrotna'
 agent.general.field_name: 'Pole: {{field}}'
 agent.general.field_name_title: 'Pole Imię'
 agent.general.field_type_choice: 'Elementy predefiniowane'
@@ -1075,7 +1075,7 @@ agent.general.new: Nowe
 agent.general.new_article: 'Nowy Artykuł'
 agent.general.new_comment: 'Nowy Komentarz'
 agent.general.new_download: 'Nowe Pobieranie'
-agent.general.new_feedback: 'Nowa Informacja Zwrotna'
+agent.general.new_community: 'Nowa Informacja Zwrotna'
 agent.general.new_filter: 'Nowy Filtr'
 agent.general.new_note: 'Nowa Notatka'
 agent.general.new_organization: 'Nowa Organizacja'
@@ -1152,7 +1152,7 @@ agent.general.phone: Telefon
 agent.general.phone_number: 'Numer telefonu'
 agent.general.phrase: Fraza
 agent.general.please_wait: 'Proszę czekać'
-agent.general.popular_feedback_only: 'Tylko popularne informacje zwrotne'
+agent.general.popular_community_only: 'Tylko popularne informacje zwrotne'
 agent.general.popularity: Popularność
 agent.general.position: Pozycja
 agent.general.prev: Poprz.
@@ -1193,7 +1193,7 @@ agent.general.registered_views: 'Zarejestrowane Obejrzenia'
 agent.general.related_articles: 'Pokrewne Artykuły'
 agent.general.related_content: 'Pokrewna Zawartość'
 agent.general.related_downloads: 'Pokrewne Pobrania'
-agent.general.related_feedback: 'Pokrewne Informacje Zwrotne'
+agent.general.related_community: 'Pokrewne Informacje Zwrotne'
 agent.general.related_news: 'Pokrewne Nowości'
 agent.general.relative_time: 'Czas relatywny'
 agent.general.remove: Usuń
@@ -1439,7 +1439,7 @@ agent.interface.keyboard_shortcuts: 'Skróty klawiaturowe'
 agent.interface.major_items_appear_here: 'Tu otwierają się Zgłoszenia, Użytkownicy, Artykuły, Nowości, Pobierania oraz Informacje Zwrotne.'
 agent.interface.open_new_article_form: 'Otwórz formularz nowego artykułu'
 agent.interface.open_new_download_form: 'Otwórz formularz nowego pobierania'
-agent.interface.open_new_feedback_form: 'Otwórz formularz nowej informacji zwrotnej'
+agent.interface.open_new_community_form: 'Otwórz formularz nowej informacji zwrotnej'
 agent.interface.open_new_news_form: 'Otwórz formularz nowego Newsa (Nowości)'
 agent.interface.open_new_organization_form: 'Otwórz formularz nowej organizacji'
 agent.interface.open_new_person_form: 'Otwórz formularz nowej osoby'
@@ -1662,8 +1662,8 @@ agent.prefs.apps_login_attempt: 'Kiedykolwiek moje konto jest użyte do logowani
 agent.prefs.apps_login_attempt_fail: 'Kiedykolwiek moje konto jest użyte do logowania i dane logowanie są błędne'
 agent.prefs.apps_new_comment: 'Dodano nowy komentarz'
 agent.prefs.apps_new_comment_validate: 'Dodano nowy komentarz wymagający akceptacji'
-agent.prefs.apps_new_feedback: 'Dodano nową informację zwrotną'
-agent.prefs.apps_new_feedback_validate: 'Dodano nową informację zwrotną wymagającą akceptacji'
+agent.prefs.apps_new_community: 'Dodano nową informację zwrotną'
+agent.prefs.apps_new_community_validate: 'Dodano nową informację zwrotną wymagającą akceptacji'
 agent.prefs.apps_new_user: 'Nowy użytkownik zarejestrowany'
 agent.prefs.apps_task_assign_self: 'Zadanie jest przydzielone do mnie'
 agent.prefs.apps_task_assign_team: 'Zadanie jest przydzielone do mojego zespołu'
@@ -1939,7 +1939,7 @@ agent.publish.move_to: 'Przenieś do'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} uznało za pomocne, {{down_votes}} uznało za niepomocne'
 agent.publish.new_comment_on: 'Nowy komentarz dla {{name}}'
 agent.publish.new_comment_submitted_by: 'Nowy komentarz od {{name}}'
-agent.publish.new_feedback_by: 'Nowa informacja zwrotna od {{name}}'
+agent.publish.new_community_by: 'Nowa informacja zwrotna od {{name}}'
 agent.publish.new_post: 'Nowy Wpis'
 agent.publish.news_comments: 'Nowe Komentarze'
 agent.publish.news_list_title:
@@ -2032,7 +2032,7 @@ agent.search.simple: Proste
 agent.search.type_article: Artykuł
 agent.search.type_chat_conversation: Czaty
 agent.search.type_download: Pobieranie
-agent.search.type_feedback: 'Informacja zwrotna'
+agent.search.type_community: 'Informacja zwrotna'
 agent.search.type_news: Nowości
 agent.search.type_organization: Organizacje
 agent.search.type_person: Osoby
@@ -2090,8 +2090,8 @@ agent.settings.notif_my_events: 'Moje Wydarzenia'
 agent.settings.notif_my_own_actions: 'Moje własne działania'
 agent.settings.notif_new_comment: 'Dodano nowy komentarz'
 agent.settings.notif_new_comment_validate: 'Dodano nowy komentarz wymagający akceptacji'
-agent.settings.notif_new_feedback: 'Dodano nową informację zwrotną'
-agent.settings.notif_new_feedback_validate: 'Dodano nową informację zwrotną wymagającą akceptacji'
+agent.settings.notif_new_community: 'Dodano nową informację zwrotną'
+agent.settings.notif_new_community_validate: 'Dodano nową informację zwrotną wymagającą akceptacji'
 agent.settings.notif_new_user: 'Nowy użytkownik się zarejestrował'
 agent.settings.notif_notes_with_mentions: 'Notatki z @wzmiankami'
 agent.settings.notif_notes_with_mentions_always: 'Zawsze wysyłając email, wyślij wiadomość poprzez IM Agenta'
@@ -2346,7 +2346,7 @@ agent.tickets.lc_new_reply: 'nowa odpowiedź'
 agent.tickets.lc_new_ticket: 'nowe zgłoszenie'
 agent.tickets.lc_new_ticket_agent: 'nowe zgłoszenia wg agenta'
 agent.tickets.lc_update: aktualizuj
-agent.tickets.link_existing_feedback_subscr_part:
+agent.tickets.link_existing_community_subscr_part:
   one: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   few: 'Subscribed ({{count}}) Ticket Participants to Feedback'
   many: 'Subscribed ({{count}}) Ticket Participants to Feedback'
@@ -2380,7 +2380,7 @@ agent.tickets.log_new_web_user_widget: 'Nowe zgłoszenie wg użytkownika poprzez
 agent.tickets.log_note_deleted: 'Notatka usunięta'
 agent.tickets.log_on_article: 'w artykule "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'w pobraniu "{{title}} (ID {{id}})'
-agent.tickets.log_on_feedback: 'w informacji zwrotnej "{{title}} (ID {{id}})'
+agent.tickets.log_on_community: 'w informacji zwrotnej "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'w nowościach "{{title}} (ID {{id}})'
 agent.tickets.log_selected_option: 'wybrane: '
 agent.tickets.log_sent_from: 'Wysłane z {{email}}'
@@ -2536,7 +2536,7 @@ agent.tickets.subscribed_tickets: 'Zgłoszenia subskrybowane'
 agent.tickets.teams_action: 'Zespoły: {{teams}}'
 agent.tickets.text_body: Treść
 agent.tickets.ticket_changes: 'Zmiany Zgłoszenia'
-agent.tickets.ticket_feedback: 'Informacja zwrotna Zgłoszenia'
+agent.tickets.ticket_community: 'Informacja zwrotna Zgłoszenia'
 agent.tickets.ticket_field_name: 'Pole Zgłoszenia: {{field}}'
 agent.tickets.ticket_is_deleted: 'Zgłoszenie jest usunięte'
 agent.tickets.ticket_is_marked_as_spam: 'To zgłoszenie zostało oznaczone jako spam.'

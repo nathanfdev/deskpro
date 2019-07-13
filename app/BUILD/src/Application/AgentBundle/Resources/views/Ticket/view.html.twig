@@ -388,7 +388,7 @@
                                 </li>{% endif %}
                             {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                                 <li data-tab-for="#{{ baseId }}_linked_feedback_wrap"><i
-                                      class="fas fa-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
+                                      class="fas fa-link"></i> {{ phrase('agent.tickets.linked_community') }} (<span
                                       id="{{ baseId }}_linked_feedback_count"
                                       data-count="{{ ticket_community_topics_links|length }}">{{ ticket_community_topics_links|length }}</span>)
                                 </li>
@@ -747,8 +747,8 @@
                 <li data-action="link_existing_ticket">{{ phrase('agent.tickets.link_existing_ticket') }}</li>
             {% endif %}
             {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-              <li data-action="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>
-              <li data-action="link_existing_feedback">{{ phrase('agent.tickets.link_existing_feedback') }}</li>
+              <li data-action="link_new_feedback">{{ phrase('agent.tickets.create_linked_community') }}</li>
+              <li data-action="link_existing_feedback">{{ phrase('agent.tickets.link_existing_community') }}</li>
             {% endif %}
             <li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
             <li><a target="_blank"
@@ -790,7 +790,7 @@
                                 data-tab-for="#{{ baseId }}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
                             {% if app.getSetting('core_tickets.enable_feedback') and app.getSetting('core_tickets.feedback_agents_read') and ticket.date_feedback_rating %}
                                 <li data-list-type="feedback" data-tab-for="#{{ baseId }}_messages_wrap">
-                                    {{ phrase('agent.tickets.ticket_feedback') }} <span
+                                    {{ phrase('agent.tickets.ticket_community') }} <span
                                           class="feedback-rating feedback-{{ ticket.feedback_rating_type }}">{% if ticket.feedback_rating == 1 %}☺{% elseif ticket.feedback_rating == -1 %}☹{% else %}&mdash;{% endif %}</span>
                                 </li>
                             {% endif %}
@@ -1120,7 +1120,7 @@
                 {% if app.user.hasPerm('agent_tickets.create') %}
                     <li data-option-id="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
                 {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-                    <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>{% endif %}
+                    <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_community') }}</li>{% endif %}
                 <li class="edit"
                     data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
                 <li
