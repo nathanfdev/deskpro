@@ -51,13 +51,13 @@ adm.general.x_email_bans:
   other: '{{count}} Email Bans'
 adm.general.x_community_active_statuses:
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_community_categories:
+adm.general.x_community_custom_channels:
   other: '{{count}} Feedback Categories'
 adm.general.x_community_closed_statuses:
   other: '{{count}} Feedback Closed Statuses'
 adm.general.x_community_statuses:
   other: '{{count}} Feedback Statuses'
-adm.general.x_community_types:
+adm.general.x_community_channels:
   other: '{{count}} Feedback Types'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'

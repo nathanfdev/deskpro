@@ -1,9 +1,9 @@
 define([
   'Admin/Main/DataService/EntityManager',
 
-  'Admin/FeedbackStatuses/DataService/FeedbackStatuses',
-  'Admin/FeedbackTypes/DataService/FeedbackTypes',
-  'Admin/FeedbackCategories/DataService/FeedbackCategories',
+  'Admin/CommunityStatuses/DataService/CommunityStatuses',
+  'Admin/CommunityChannels/DataService/CommunityChannels',
+  'Admin/CommunityCustomChannels/DataService/CommunityCustomChannels',
   'Admin/ChannelSms/DataService/SmsAccounts',
   'Admin/Brand/DataService/Brands',
   'Admin/ChannelFacebook/DataService/FacebookPages',
@@ -17,9 +17,9 @@ define([
   'Admin/Main/Service/DataServiceManager',
 ], (
 	Admin_Main_DataService_EntityManager,
-	Admin_FeedbackStatuses_DataService_FeedbackStatuses,
-	Admin_FeedbackTypes_DataService_FeedbackTypes,
-	Admin_FeedbackCategories_DataService_FeedbackCategories,
+	Admin_CommunityStatuses_DataService_CommunityStatuses,
+	Admin_CommunityChannels_DataService_CommunityChannels,
+	Admin_CommunityCustomChannels_DataService_CommunityCustomChannels,
 	Admin_ChannelSms_DataService_SmsAccounts,
 	Admin_Brand_DataService_Brands,
 	Admin_ChannelFacebook_DataService_FacebookPages,
@@ -36,13 +36,13 @@ define([
   Module.service('em', [() => new Admin_Main_DataService_EntityManager()
   ]);
 
-  Module.service('FeedbackStatusesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_FeedbackStatuses_DataService_FeedbackStatuses(em, Api, $q)
+  Module.service('CommunityStatusesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityStatuses_DataService_CommunityStatuses(em, Api, $q)
   ]);
 
-  Module.service('FeedbackTypesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_FeedbackTypes_DataService_FeedbackTypes(em, Api, $q)
+  Module.service('CommunityChannelsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityChannels_DataService_CommunityChannels(em, Api, $q)
   ]);
 
-  Module.service('FeedbackCategoriesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_FeedbackCategories_DataService_FeedbackCategories(em, Api, $q)
+  Module.service('CommunityCustomChannelsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityCustomChannels_DataService_CommunityCustomChannels(em, Api, $q)
   ]);
 
   Module.service('SmsAccountsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_ChannelSms_DataService_SmsAccounts(em, Api, $q)

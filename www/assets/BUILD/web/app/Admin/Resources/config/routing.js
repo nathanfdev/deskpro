@@ -1886,13 +1886,13 @@ define(function() {
   });
 
   // ###
-  // # Feedback::Settings
+  // # Community::Settings
   // ###
   routes.push({
     id:           'portal.community_settings',
     url:          '/community/settings',
-    templateName: 'FeedbackSettings/feedback-settings.html',
-    controller:   'Admin_FeedbackSettings_Ctrl_FeedbackSettings'
+    templateName: 'CommunitySettings/community-settings.html',
+    controller:   'Admin_CommunitySettings_Ctrl_CommunitySettings'
   });
 
   // ###
@@ -1901,8 +1901,8 @@ define(function() {
   routes.push({
     id:           'portal.community_statuses',
     url:          '/community/statuses',
-    templateName: 'FeedbackStatuses/list.html',
-    controller:   'Admin_FeedbackStatuses_Ctrl_List'
+    templateName: 'CommunityStatuses/list.html',
+    controller:   'Admin_CommunityStatuses_Ctrl_List'
   });
 
   routes.push({
@@ -1915,15 +1915,15 @@ define(function() {
   routes.push({
     id:           'portal.community_statuses.create',
     url:          '/create/{type:(?:active|closed)}',
-    templateName: 'FeedbackStatuses/edit.html',
-    controller:   'Admin_FeedbackStatuses_Ctrl_Edit'
+    templateName: 'CommunityStatuses/edit.html',
+    controller:   'Admin_CommunityStatuses_Ctrl_Edit'
   });
 
   routes.push({
     id:           'portal.community_statuses.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'FeedbackStatuses/edit.html',
-    controller:   'Admin_FeedbackStatuses_Ctrl_Edit'
+    templateName: 'CommunityStatuses/edit.html',
+    controller:   'Admin_CommunityStatuses_Ctrl_Edit'
   });
 
   // ###
@@ -1932,8 +1932,8 @@ define(function() {
   routes.push({
     id:           'portal.community_channels',
     url:          '/community/channels',
-    templateName: 'FeedbackTypes/list.html',
-    controller:   'Admin_FeedbackTypes_Ctrl_List'
+    templateName: 'CommunityChannels/list.html',
+    controller:   'Admin_CommunityChannels_Ctrl_List'
   });
 
   routes.push({
@@ -1946,15 +1946,15 @@ define(function() {
   routes.push({
     id:           'portal.community_channels.create',
     url:          '/create/',
-    templateName: 'FeedbackTypes/edit.html',
-    controller:   'Admin_FeedbackTypes_Ctrl_Edit'
+    templateName: 'CommunityChannels/edit.html',
+    controller:   'Admin_CommunityChannels_Ctrl_Edit'
   });
 
   routes.push({
     id:           'portal.community_channels.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'FeedbackTypes/edit.html',
-    controller:   'Admin_FeedbackTypes_Ctrl_Edit'
+    templateName: 'CommunityChannels/edit.html',
+    controller:   'Admin_CommunityChannels_Ctrl_Edit'
   });
 
   // ###
@@ -1963,8 +1963,8 @@ define(function() {
   routes.push({
     id:           'portal.community_custom_channels',
     url:          '/community/custom_channels',
-    templateName: 'FeedbackCategories/list.html',
-    controller:   'Admin_FeedbackCategories_Ctrl_List'
+    templateName: 'CommunityCustomChannels/list.html',
+    controller:   'Admin_CommunityCustomChannels_Ctrl_List'
   });
 
   routes.push({
@@ -1977,15 +1977,15 @@ define(function() {
   routes.push({
     id:           'portal.community_custom_channels.create',
     url:          '/create/',
-    templateName: 'FeedbackCategories/edit.html',
-    controller:   'Admin_FeedbackCategories_Ctrl_Edit'
+    templateName: 'CommunityCustomChannels/edit.html',
+    controller:   'Admin_CommunityCustomChannels_Ctrl_Edit'
   });
 
   routes.push({
     id:           'portal.community_custom_channels.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'FeedbackCategories/edit.html',
-    controller:   'Admin_FeedbackCategories_Ctrl_Edit'
+    templateName: 'CommunityCustomChannels/edit.html',
+    controller:   'Admin_CommunityCustomChannels_Ctrl_Edit'
   });
 
   // ###

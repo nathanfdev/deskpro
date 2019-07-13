@@ -502,7 +502,7 @@ adm.general.x_email_bans:
 adm.general.x_community_active_statuses:
   one: '{{count}} Feedback Active Status'
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_community_categories:
+adm.general.x_community_custom_channels:
   one: '{{count}} Feedback Category'
   other: '{{count}} Feedback Categories'
 adm.general.x_community_closed_statuses:
@@ -511,7 +511,7 @@ adm.general.x_community_closed_statuses:
 adm.general.x_community_statuses:
   one: '{{count}} Feedback Status'
   other: '{{count}} Feedback Statuses'
-adm.general.x_community_types:
+adm.general.x_community_channels:
   one: '{{count}} Feedback Type'
   other: '{{count}} Feedback Types'
 adm.general.x_ip_bans:

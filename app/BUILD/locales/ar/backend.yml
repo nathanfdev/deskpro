@@ -69,7 +69,7 @@ adm.general.x_community_active_statuses:
   few: '{{count}} Feedback Active Statuses'
   many: '{{count}} Feedback Active Statuses'
   other: '{{count}} Feedback Active Statuses'
-adm.general.x_community_categories:
+adm.general.x_community_custom_channels:
   zero: '{{count}} Feedback Categories'
   one: '{{count}} Feedback Category'
   two: '{{count}} Feedback Categories'
@@ -90,7 +90,7 @@ adm.general.x_community_statuses:
   few: '{{count}} Feedback Statuses'
   many: '{{count}} Feedback Statuses'
   other: '{{count}} Feedback Statuses'
-adm.general.x_community_types:
+adm.general.x_community_channels:
   zero: '{{count}} Feedback Types'
   one: '{{count}} Feedback Type'
   two: '{{count}} Feedback Types'
