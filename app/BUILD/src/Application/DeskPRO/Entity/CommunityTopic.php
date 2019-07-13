@@ -211,7 +211,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $this->custom_data = $data;
         foreach ($data as $datum) {
             /* @var CustomDataCommunityTopic $datum */
-            $datum->feedback = $this;
+            $datum->topic = $this;
         }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
@@ -459,9 +459,9 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         if ($ret = $this->findLabelByString($value)) {
             return $ret;
         }
-        $label           = new LabelCommunityTopic();
-        $label->label    = $value;
-        $label->feedback = $this;
+        $label        = new LabelCommunityTopic();
+        $label->label = $value;
+        $label->topic = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', null, $this->labels);
 
@@ -577,7 +577,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     public function addAttachment(CommunityTopicAttachment $attach)
     {
         $this->attachments->add($attach);
-        $attach->feedback = $this;
+        $attach->topic = $this;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = [])

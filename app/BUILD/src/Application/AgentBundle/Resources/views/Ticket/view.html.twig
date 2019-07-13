@@ -386,11 +386,11 @@
                                       id="{{ baseId }}_linked_count"
                                       data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)
                                 </li>{% endif %}
-                            {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                            {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                                 <li data-tab-for="#{{ baseId }}_linked_feedback_wrap"><i
                                       class="fas fa-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
                                       id="{{ baseId }}_linked_feedback_count"
-                                      data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
+                                      data-count="{{ ticket_community_topics_links|length }}">{{ ticket_community_topics_links|length }}</span>)
                                 </li>
                             {% endif %}
                             {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
@@ -650,7 +650,7 @@
                     <article id="{{ baseId }}_linked_wrap">
                         {% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
                     </article>
-                    {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                    {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                       <article id="{{ baseId }}_linked_feedback_wrap">
                           {% include 'AgentBundle:Ticket:linked-feedback.html.twig' %}
                       </article>

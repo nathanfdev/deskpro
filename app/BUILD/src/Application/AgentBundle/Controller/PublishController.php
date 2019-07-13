@@ -1243,11 +1243,11 @@ class PublishController extends AbstractController
                 $cats   = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
                 break;
 
-            case 'feedback':
+            case 'community':
                 $searcher = new CommunitySearch();
                 $searcher->addTerm('deleted', 'not', 1);
-                $helper = 'FeedbackResults';
-                $cats   = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');
+                $helper = 'CommunityTopicResults';
+                $cats   = $this->in->getCleanValueArray('community_channels', 'uint', 'discard');
                 break;
 
             default:

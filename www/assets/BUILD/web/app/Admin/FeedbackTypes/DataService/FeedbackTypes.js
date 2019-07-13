@@ -53,11 +53,21 @@ define([
     */
 
     remove(id) {
-      const model = this.em.getById('feedback_type', id);
+      const model = this.em.getById('community_channel', id);
+
+
+
+
+
+
+
+
+
+
 
       if (model != null) {
         this.recs.remove(id);
-        this.em.removeById('feedback_type', 'id');
+        this.em.removeById('community_channel', 'id');
       }
 
       return this._updateOrderOfData();
@@ -68,7 +78,7 @@ define([
   * with new model provided. Or adds it to the list if it doesnt exist.
   */
     updateModel(model) {
-      const new_model = this.em.createEntity('feedback_type', 'id', model);
+      const new_model = this.em.createEntity('community_channel', 'id', model);
       this.recs.set(new_model.id, new_model);
 
       this._updateOrderOfData();
@@ -77,8 +87,8 @@ define([
     }
 
     /*
-    * Returns list of feedback_types where feedback of specified feedback_type could be moved to
-  * @param model - specified feedback_type model
+    * Returns list of community_channels where feedback of specified community_channel could be moved to
+  * @param model - specified community_channel model
     * @return array
     */
 
@@ -103,7 +113,7 @@ define([
       return (() => {
         const result = [];
         for (const rec of Array.from(raw_recs)) {
-          const model = this.em.createEntity('feedback_type', 'id', rec);
+          const model = this.em.createEntity('community_channel', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));
         }

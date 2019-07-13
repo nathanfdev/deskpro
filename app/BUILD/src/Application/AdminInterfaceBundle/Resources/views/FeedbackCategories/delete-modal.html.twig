@@ -8,14 +8,14 @@
 			{{ phrase('adm.feedback_categories.delete_feedback_category_confirm') }}
 		</p>
 
-		<p ng-if="move_feedback_categories_list">
+		<p ng-if="move_community_channels_list">
 			{{ phrase('adm.feedback_categories.delete_feedback_categories_moved') }}
 		</p>
 
-		<p style="margin-bottom: 0;" ng-if="move_feedback_categories_list">
+		<p style="margin-bottom: 0;" ng-if="move_community_channels_list">
 			<select ui-select2 ng-model="model.move_to" style="width: 240px">
-				<option value="{{ ng_var('category.id') }}" ng-repeat="category in move_feedback_categories_list">
-                    {{ ng_var('category.title') }}
+				<option value="{{ ng_var('channel.id') }}" ng-repeat="channel in move_community_channels_list">
+                    {{ ng_var('channel.title') }}
                 </option>
 			</select>
 		</p>

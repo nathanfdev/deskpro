@@ -13,7 +13,7 @@ use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\UI\RuleBuilder;
 use Orb\Util\Arrays;
 
-class CommunityTopicsResults
+class CommunityTopicResults
 {
     /**
      * @var AbstractController
@@ -44,7 +44,7 @@ class CommunityTopicsResults
      * @param  $controller
      * @param array $options
      *
-     * @return CommunityTopicsResults
+     * @return CommunityTopicResults
      */
     public static function newFromRequest($controller, array $options = [])
     {
@@ -125,7 +125,7 @@ class CommunityTopicsResults
     }
 
     /**
-     * @return \Application\AgentBundle\Controller\Helper\CommunityTopicsResults
+     * @return \Application\AgentBundle\Controller\Helper\CommunityTopicResults
      */
     public static function newFromResultCache($controller, ResultCache $resultCache)
     {

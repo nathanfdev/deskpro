@@ -6,7 +6,7 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\AgentBundle\Controller\Helper\CommunityTopicsResults;
+use Application\AgentBundle\Controller\Helper\CommunityTopicResults;
 use Application\AgentBundle\Form\Model\NewCommunityTopic;
 use Application\AgentBundle\Form\Type\NewCommunityTopic as NewCommunityTopicTypeOld;
 use Application\AgentBundle\Validator\NewCommunityTopicValidator;
@@ -379,10 +379,10 @@ class CommunityTopicsController extends AbstractController
      * @param $communityTopicId
      * @param $channelId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
@@ -508,8 +508,8 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Exception
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -551,9 +551,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
@@ -737,9 +737,9 @@ class CommunityTopicsController extends AbstractController
      * @param     $communityTopicId
      * @param int $otherCommunityTopicId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
@@ -787,7 +787,7 @@ class CommunityTopicsController extends AbstractController
             return $this->createJsonResponse(['success' => false]);
         }
 
-        $old_feedback_id = $otherCommunityTopic['id'];
+        $oldCommunityTopicId = $otherCommunityTopic['id'];
 
         try {
             $this->em->beginTransaction();
@@ -804,7 +804,7 @@ class CommunityTopicsController extends AbstractController
             [
                 'success' => true,
                 'id'      => $communityTopic->getId(),
-                'old_id'  => $old_feedback_id,
+                'old_id'  => $oldCommunityTopicId,
             ]
         );
     }
@@ -820,7 +820,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function filterListAction()
     {
-        $resultHelper = CommunityTopicsResults::newFromRequest($this);
+        $resultHelper = CommunityTopicResults::newFromRequest($this);
 
         return $this->renderList(
             $resultHelper,
@@ -834,15 +834,15 @@ class CommunityTopicsController extends AbstractController
      *
      * @param int $channelId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
     public function channelsListAction($channelId)
     {
-        $topResultHelper = CommunityTopicsResults::newFromRequest(
+        $topResultHelper = CommunityTopicResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
@@ -853,7 +853,7 @@ class CommunityTopicsController extends AbstractController
         );
 
         if ($this->in->getString('subgroup')) {
-            $resultHelper = CommunityTopicsResults::newFromRequest(
+            $resultHelper = CommunityTopicResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -923,7 +923,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function labelListAction($brand_id, $label)
     {
-        $resultHelper = CommunityTopicsResults::newFromRequest(
+        $resultHelper = CommunityTopicResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
@@ -961,7 +961,7 @@ class CommunityTopicsController extends AbstractController
 
         if (strpos($status, '.') !== false) {
             list($status, $v_status) = explode('.', $status);
-            $topResultHelper         = CommunityTopicsResults::newFromRequest(
+            $topResultHelper         = CommunityTopicResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -972,7 +972,7 @@ class CommunityTopicsController extends AbstractController
                 ]
             );
         } else {
-            $topResultHelper = CommunityTopicsResults::newFromRequest(
+            $topResultHelper = CommunityTopicResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -984,7 +984,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         if ($this->in->getString('subgroup')) {
-            $resultHelper = CommunityTopicsResults::newFromRequest(
+            $resultHelper = CommunityTopicResults::newFromRequest(
                 $this,
                 [
                     'specific_terms' => [
@@ -1023,13 +1023,13 @@ class CommunityTopicsController extends AbstractController
     /**
      * This takes a result helper and just handles rendering it.
      *
-     * @param CommunityTopicsResults $resultsHelper
-     * @param string                 $template
-     * @param array                  $templateVars
+     * @param CommunityTopicResults $resultsHelper
+     * @param string                $template
+     * @param array                 $templateVars
      *
      * @return Response
      */
-    public function renderList(CommunityTopicsResults $resultsHelper, $template = null, array $templateVars = [])
+    public function renderList(CommunityTopicResults $resultsHelper, $template = null, array $templateVars = [])
     {
         if (!$template) {
             $template = 'AgentBundle:Community:filter-list.html.twig';
@@ -1199,9 +1199,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $action
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
@@ -1267,10 +1267,10 @@ class CommunityTopicsController extends AbstractController
      */
     public function newCommunityTopicAction()
     {
-        $ticket                = null;
-        $message               = null;
-        $attachments           = [];
-        $communityTopic_person = $this->person;
+        $ticket              = null;
+        $message             = null;
+        $attachments         = [];
+        $communityTopiPerson = $this->person;
 
         if ($this->in->getUInt('ticket_id')) {
             $ticket = $this->getTicket($this->in->getUInt('ticket_id'));
@@ -1285,7 +1285,7 @@ class CommunityTopicsController extends AbstractController
                 $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
             }
 
-            $communityTopic_person = $ticket->getPerson();
+            $communityTopiPerson = $ticket->getPerson();
         }
 
         if ($message && count($message->attachments)) {
@@ -1337,16 +1337,16 @@ class CommunityTopicsController extends AbstractController
         return $this->render(
             'AgentBundle:Community:new-community-topic.html.twig',
             [
-                'ticket'              => $ticket,
-                'message'             => $message,
-                'feedback_person'     => $communityTopic_person,
-                'attachments'         => $attachments,
-                'feedback_categories' => $communityChannels,
-                'active_status_cats'  => $activeStatusCategories,
-                'closed_status_cats'  => $closedStatusCategories,
-                'state'               => $state,
-                'brands'              => $brands,
-                'selected_brand_id'   => $selectedBrandId,
+                'ticket'             => $ticket,
+                'message'            => $message,
+                'topic_person'       => $communityTopiPerson,
+                'attachments'        => $attachments,
+                'community_channels' => $communityChannels,
+                'active_status_cats' => $activeStatusCategories,
+                'closed_status_cats' => $closedStatusCategories,
+                'state'              => $state,
+                'brands'             => $brands,
+                'selected_brand_id'  => $selectedBrandId,
             ]
         );
     }
@@ -1358,7 +1358,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function newCommunityTopicSaveAction(Request $request)
     {
-        $newfeedback = new NewCommunityTopic(
+        $newCommunityTopic = new NewCommunityTopic(
             $this->getDoctrine()->getManager(),
             $this->person,
             $this->get('ticket_manager'),
@@ -1366,7 +1366,7 @@ class CommunityTopicsController extends AbstractController
         );
 
         $formType = new NewCommunityTopicTypeOld();
-        $form     = $this->get('form.factory')->create($formType, $newfeedback);
+        $form     = $this->get('form.factory')->create($formType, $newCommunityTopic);
 
         if ($request->getMethod() == 'POST') {
             $data            = $request->get($form->getName()) ?: [];
@@ -1378,7 +1378,7 @@ class CommunityTopicsController extends AbstractController
             $form->isValid();
 
             $validator = new NewCommunityTopicValidator();
-            if (!$validator->isValid($newfeedback)) {
+            if (!$validator->isValid($newCommunityTopic)) {
                 return $this->createJsonResponse(
                     [
                         'error'       => true,
@@ -1387,8 +1387,8 @@ class CommunityTopicsController extends AbstractController
                 );
             }
 
-            $newfeedback->save();
-            $communityTopic = $newfeedback->getTopic();
+            $newCommunityTopic->save();
+            $communityTopic = $newCommunityTopic->getTopic();
 
             /** @var PersonPrefRepository $personPrefRepository */
             $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
@@ -1443,9 +1443,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return CommunityTopic
      */
@@ -1461,9 +1461,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $ticketId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Ticket
      */

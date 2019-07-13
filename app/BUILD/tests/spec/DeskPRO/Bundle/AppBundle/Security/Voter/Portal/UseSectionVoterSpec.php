@@ -73,7 +73,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(false);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(false);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(false);
@@ -167,7 +167,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
@@ -215,7 +215,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
@@ -253,7 +253,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);

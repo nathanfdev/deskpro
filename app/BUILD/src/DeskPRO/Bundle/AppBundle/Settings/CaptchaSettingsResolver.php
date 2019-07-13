@@ -33,7 +33,7 @@ class CaptchaSettingsResolver extends AbstractBrandAwareSettingsResolver impleme
             ->setRecaptcha2SecretKey($this->getSetting(self::RECAPTCHA_SECRET_KEY))
             ->setTickets($this->getSetting(self::TICKETS))
             ->setComments($this->getSetting(self::COMMENTS))
-            ->setCommunity($this->getSetting(self::FEEDBACK))
+            ->setCommunity($this->getSetting(self::COMMUNITY))
             ->setRegister($this->getSetting(self::REGISTER))
             ->setSharing($this->getSetting(self::SHARING))
         ;

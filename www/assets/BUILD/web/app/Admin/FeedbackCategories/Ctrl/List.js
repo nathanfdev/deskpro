@@ -26,20 +26,20 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           $list.find('li').each(function () {
             x += 10;
-            const feedback_category_id = parseInt($(this).data('id'));
+            const community_custom_channel_id = parseInt($(this).data('id'));
 
-            if (feedback_category_id) {
-              const feedback_category = em.getById('feedback_category', feedback_category_id);
+            if (community_custom_channel_id) {
+              const community_custom_channel = em.getById('community_custom_channel', community_custom_channel_id);
 
-              if (feedback_category) {
-                feedback_category.display_order = x;
+              if (community_custom_channel) {
+                community_custom_channel.display_order = x;
               }
             }
 
-            return postData.display_orders.push(feedback_category_id);
+            return postData.display_orders.push(community_custom_channel_id);
           });
 
-          this.Api.sendPostJson('/feedback_categories/display_order', postData);
+          this.Api.sendPostJson('/community_custom_channels/display_order', postData);
           return this.pingElement('display_orders');
         }
       };

@@ -17,7 +17,7 @@ class CommunityChannelType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('feedback_type', CommunityChannelPropsType::class);
+        $builder->add('communityChannel', CommunityChannelPropsType::class);
     }
 
     /**

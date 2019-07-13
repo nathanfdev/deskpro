@@ -256,7 +256,7 @@
 {# Community #}
 {######################################################################## #}
 
-<% if (group.type == 'feedback') { var item = result; %>
+<% if (group.type == 'community') { var item = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_community_topic_view', {'communityTopicId': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">

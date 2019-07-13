@@ -35,8 +35,8 @@
 		<input type="hidden" name="terms[category][op]" value="is" />
 		<select name="terms[category][category]">
 			<option value="DP_DISCARD_TERM">{{ phrase('agent.feedback.any_category') }}</option>
-			{% for cat in feedback_cats %}
-				<option {% if filter_form.category.category == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">{% if cat.depth %}{% for x in 1..cat.depth%}--{% endfor %} {% endif %}{{ cat.title }}</option>
+			{% for channel in community_channels %}
+				<option {% if filter_form.category.category == channel.id %}selected="selected"{% endif %} value="{{channel.id}}">{% if channel.depth %}{% for x in 1..channel.depth%}--{% endfor %} {% endif %}{{ channel.title }}</option>
 			{% endfor %}
 		</select>
 

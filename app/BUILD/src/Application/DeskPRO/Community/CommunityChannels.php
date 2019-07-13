@@ -19,7 +19,7 @@ class CommunityChannels
     /**
      * @var \Application\DeskPRO\Entity\CommunityChannel[]
      */
-    protected $feedback_types;
+    protected $communityChannels;
 
     public function __construct(EntityManager $em)
     {
@@ -31,11 +31,11 @@ class CommunityChannels
      */
     private function preload()
     {
-        if ($this->feedback_types !== null) {
+        if ($this->communityChannels !== null) {
             return;
         }
 
-        $this->feedback_types = $this->em->getRepository('DeskPRO:CommunityChannel')->getAll();
+        $this->communityChannels = $this->em->getRepository('DeskPRO:CommunityChannel')->getAll();
     }
 
     /**
@@ -44,7 +44,7 @@ class CommunityChannels
      */
     public function reset()
     {
-        $this->feedback_types = null;
+        $this->communityChannels = null;
     }
 
     /**
@@ -58,31 +58,31 @@ class CommunityChannels
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\CommunityChannel|int $feedback_type
+     * @param \Application\DeskPRO\Entity\CommunityChannel|int $communityChannel
      *
      * @return array
      */
-    public function getNonAgentUserGroups($feedback_type)
+    public function getNonAgentUserGroups($communityChannel)
     {
-        if (is_int($feedback_type)) {
-            $feedback_type = $this->getById($feedback_type);
+        if (is_int($communityChannel)) {
+            $communityChannel = $this->getById($communityChannel);
         }
 
-        return $this->em->getRepository('DeskPRO:CommunityChannel')->getUserGroups($feedback_type->getId(), false);
+        return $this->em->getRepository('DeskPRO:CommunityChannel')->getUserGroups($communityChannel->getId(), false);
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\CommunityChannel|int $feedback_type
+     * @param \Application\DeskPRO\Entity\CommunityChannel|int $communityChannel
      *
      * @return array
      */
-    public function getAgentUserGroups($feedback_type)
+    public function getAgentUserGroups($communityChannel)
     {
-        if (is_int($feedback_type)) {
-            $feedback_type = $this->getById($feedback_type);
+        if (is_int($communityChannel)) {
+            $communityChannel = $this->getById($communityChannel);
         }
 
-        return $this->em->getRepository('DeskPRO:CommunityChannel')->getUserGroups($feedback_type->getId(), true);
+        return $this->em->getRepository('DeskPRO:CommunityChannel')->getUserGroups($communityChannel->getId(), true);
     }
 
     /**
@@ -92,7 +92,7 @@ class CommunityChannels
     {
         $this->preload();
 
-        return $this->feedback_types;
+        return $this->communityChannels;
     }
 
     /**
@@ -102,7 +102,7 @@ class CommunityChannels
     {
         $this->preload();
 
-        return count($this->feedback_types);
+        return count($this->communityChannels);
     }
 
     /**
@@ -120,17 +120,17 @@ class CommunityChannels
     {
         $x = 10;
 
-        $feedback_types = $this->em->getRepository('DeskPRO:CommunityChannel')->getByIds($newOrders);
+        $communityChannels = $this->em->getRepository('DeskPRO:CommunityChannel')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
-            if (!isset($feedback_types[$id])) {
+            if (!isset($communityChannels[$id])) {
                 continue;
             }
 
-            $feedback_type                = $feedback_types[$id];
-            $feedback_type->display_order = $x;
+            $communityChannel                = $communityChannels[$id];
+            $communityChannel->display_order = $x;
 
-            $this->em->persist($feedback_type);
+            $this->em->persist($communityChannel);
 
             $x += 10;
         }

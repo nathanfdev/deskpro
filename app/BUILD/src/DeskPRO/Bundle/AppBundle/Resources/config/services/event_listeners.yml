@@ -97,7 +97,7 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.custom_def_feedback:
+  event_listener.doctrine.custom_def_community_topic:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener
     arguments: ["@brand_stack"]
     tags:

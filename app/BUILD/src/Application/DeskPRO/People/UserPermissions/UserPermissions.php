@@ -33,7 +33,7 @@ class UserPermissions implements PermissionsSetInterface
     /**
      * @var \Application\DeskPRO\People\UserPermissions\Value\CommunityPermissions
      */
-    public $feedback;
+    public $community;
 
     /**
      * @var \Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions
@@ -70,13 +70,13 @@ class UserPermissions implements PermissionsSetInterface
 
     public function __construct()
     {
-        $this->ticket   = new TicketPermissions();
-        $this->chat     = new ChatPermissions();
-        $this->feedback = new CommunityPermissions();
-        $this->article  = new ArticlePermissions();
-        $this->download = new DownloadPermissions();
-        $this->news     = new NewsPermissions();
-        $this->guide    = new GuidesPermissions();
+        $this->ticket    = new TicketPermissions();
+        $this->chat      = new ChatPermissions();
+        $this->community = new CommunityPermissions();
+        $this->article   = new ArticlePermissions();
+        $this->download  = new DownloadPermissions();
+        $this->news      = new NewsPermissions();
+        $this->guide     = new GuidesPermissions();
     }
 
     /**

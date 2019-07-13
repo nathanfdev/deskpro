@@ -39,7 +39,7 @@
 		{% if cache_id %}
 			pageMeta.cache_id = {{cache_id}};
 		{% endif %}
-		{% if not feedback %}
+		{% if not community_topics %}
 			pageMeta.noResults = true;
 		{% endif %}
 		pageMeta.baseId = '{{ tplvars.baseId }}';
@@ -73,13 +73,13 @@
 		{% include 'AgentBundle:Community:filter-page.html.twig' %}
 	</section>
 
-	{% if not feedback|length %}
+	{% if not community_topics|length %}
 		<section class="list-listing no-results">
 			<p>{{ phrase('agent.general.there_are_no_results') }}</p>
 		</section>
 	{% endif %}
 
-	{% if feedback|length %}
+	{% if community_topics|length %}
 		<footer class="results-nav">
 			<div class="cursor">
 				{{ phrase('agent.feedback.showing_results') }}

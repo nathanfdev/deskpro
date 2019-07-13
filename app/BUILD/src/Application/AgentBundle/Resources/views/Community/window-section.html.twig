@@ -16,7 +16,7 @@
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_validatingcontent') }}">
 								<h3>{{ phrase('agent.feedback.feedback_to_review') }}</h3>
-								<em class="counter list-counter" id="feedback_validating_count">{{ counts.feedback_awaiting_validation|default(0) }}</em>
+								<em class="counter list-counter" id="feedback_validating_count">{{ counts.community_topics_awaiting_validation|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item">
@@ -110,14 +110,14 @@
 				</section>
 				<section id="feedback_outline_category" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.categroies">
 					<ul class="nav-list nav-list-small">
-						{% for cat in feedback_cats %}
+						{% for channel in community_channels %}
 							<li
 								class="is-nav-item"
-								data-usergroup-ids="{{ feedback_cats_usergroups[cat.id]|default([])|join(',') }}"
+								data-usergroup-ids="{{ community_channels_usergroups[channel.id]|default([])|join(',') }}"
 							>
-								<div class="item" {% if cat.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':cat.id}) }}">
-									<h3>{{ cat.title }}</h3>
-									<em class="counter list-counter" id="feedback_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</em>
+								<div class="item" {% if channel.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':channel.id}) }}">
+									<h3>{{ channel.title }}</h3>
+									<em class="counter list-counter" id="feedback_cat_{{channel.id}}_count">{{ category_counts[channel.id]|default(0) }}</em>
 								</div>
 							</li>
 						{% endfor %}
@@ -125,9 +125,9 @@
 				</section>
 				<section id="feedback_outline_labels" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.labels">
 					<section class="labels-list" style="border-top:none;">
-						{% if feedback_tag_index|length %}
+						{% if community_tag_index|length %}
 							<table>
-								{% for letter,labels in feedback_tag_index %}
+								{% for letter,labels in community_tag_index %}
 									<tr>
 										<td class="letter">{{ letter }}</td>
 										<td class="labels">
@@ -156,18 +156,18 @@
 
 <div id="deskpro_window_feedback_templates" style="display: none;">
 	<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
-        {% for cat in app.getDataService('CommunityChannel').getRootNodes(selected_brand_id) %}
+        {% for channel in app.getDataService('CommunityChannel').getRootNodes(selected_brand_id) %}
             {% if last_with_child %}
 				<li class="sep">-</li>
             {% endif %}
-            {% if cat.children|length %}
-				<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
-                {% for subcat in cat.children %}
-					<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
+            {% if channel.children|length %}
+				<li data-category-id="{{channel.id}}" class="section-title channel-{{channel.id}}">{{channel.title}}</li>
+                {% for subchannel in channel.children %}
+					<li data-category-id="{{subchannel.id}}" data-parent-id="{{channel.id}}" class="channel-{{channel.id}} channel-{{subchannel.id}}">{{subchannel.title}}</li>
                 {% endfor %}
                 {% set last_with_child = true %}
             {% else %}
-				<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
+				<li data-category-id="{{channel.id}}" class="channel-{{channel.id}}">{{channel.title}}</li>
                 {% set last_with_child = false %}
             {% endif %}
         {% endfor %}

@@ -189,5 +189,8 @@ class Build1562064076 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', "UPDATE `label_defs` SET `label_type` = 'community' where `label_type` = 'feedback'");
         $this->execDbQuery('default', "UPDATE `content_search_attribute` SET `object_type` = 'community', `attribute_id` = 'channel_id' where `object_type` = 'feedback'");
         $this->execDbQuery('default', "UPDATE `permissions` SET `name` = REPLACE(`name`, 'feedback.', 'community.') WHERE `name` LIKE \"%feedback.%\"");
+        $this->execDbQuery('default', "UPDATE `settings` SET `name` = REPLACE(`name`, 'feedback', 'community') WHERE `name` LIKE \"%feedback%\"");
+        $this->execDbQuery('default', "UPDATE `settings_brand` SET `name` = REPLACE(`name`, 'feedback', 'community') WHERE `name` LIKE \"%feedback%\"");
+        $this->execDbQuery('default', "UPDATE `hit_record` SET `page_type` = 'deskpro.community_view' WHERE `name` = 'deskpro.feedback_view' ");
     }
 }

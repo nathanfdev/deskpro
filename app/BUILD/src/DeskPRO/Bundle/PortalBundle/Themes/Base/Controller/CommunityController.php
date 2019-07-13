@@ -67,7 +67,7 @@ class CommunityController extends AbstractController
         );
 
         foreach ($pager as $item) {
-            $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
+            $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $item);
         }
 
         $types   = $filter->getTypes();

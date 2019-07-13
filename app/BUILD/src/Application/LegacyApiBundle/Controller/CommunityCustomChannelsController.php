@@ -16,7 +16,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class CommunityChannelsCustomController extends AbstractController implements ProtectedControllerInterface
+class CommunityCustomChannelsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
      * {@inheritdoc}
@@ -36,11 +36,11 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function listAction()
     {
-        $feedback_categories = $this->container->getSystemService('community_channels_custom');
+        $communityChannels = $this->container->getSystemService('community_channels_custom');
 
         return $this->createApiResponse(
             [
-                 'feedback_categories' => $feedback_categories->getAll(),
+                'community_custom_channels' => $communityChannels->getAll(),
             ]
         );
     }
@@ -51,18 +51,18 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function getAction($id)
     {
-        $feedback_categories = $this->container->getSystemService('community_channels_custom');
-        $feedback_category   = $feedback_categories->getById($id);
+        $communityChannelsCustomService = $this->container->getSystemService('community_channels_custom');
+        $communityChannel               = $communityChannelsCustomService->getById($id);
 
-        if (!$feedback_category) {
+        if (!$communityChannel) {
             throw $this->createNotFoundException();
         }
 
-        $returnedData = $this->getApiData($feedback_category);
+        $returnedData = $this->getApiData($communityChannel);
 
         return $this->createApiResponse(
             [
-                 'feedback_category' => $returnedData,
+                'community_custom_channel' => $returnedData,
             ]
         );
     }
@@ -73,16 +73,16 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function saveAction($id)
     {
-        $feedback_categories = $this->container->getSystemService('community_channels_custom');
+        $customCommunityChannelsService = $this->container->getSystemService('community_channels_custom');
 
         if ($id) {
-            $feedback_category = $feedback_categories->getById($id);
+            $customCommunityChannel = $customCommunityChannelsService->getById($id);
 
-            if (!$feedback_category) {
+            if (!$customCommunityChannel) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $feedback_category = $feedback_categories->createNew();
+            $customCommunityChannel = $customCommunityChannelsService->createNew();
         }
 
         $this->em->getConnection()->beginTransaction();
@@ -93,22 +93,22 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
             // @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
 
             $parent_id =
-                isset($postData['feedback_category']['options']) ?
-                $postData['feedback_category']['options']['parent_id'] : '';
+                isset($postData['community_custom_channel']['options']) ?
+                    $postData['community_custom_channel']['options']['parent_id'] : '';
 
             $brand = null;
-            if (!empty($postData['feedback_category']['brand'])) {
-                $brand = $this->em->getRepository(Brand::class)->find($postData['feedback_category']['brand']);
+            if (!empty($postData['community_custom_channel']['brand'])) {
+                $brand = $this->em->getRepository(Brand::class)->find($postData['community_custom_channel']['brand']);
             }
             if (!$brand) {
                 $brand = $this->get('default_brand_finder')->getDefaultBrand();
             }
 
-            $feedback_category->title  = $postData['feedback_category']['title'];
-            $feedback_category->parent = $feedback_categories->getParentCategory($brand);
-            $feedback_category->setOption('parent_id', $parent_id);
+            $customCommunityChannel->title  = $postData['community_custom_channel']['title'];
+            $customCommunityChannel->parent = $customCommunityChannelsService->getParentCategory($brand);
+            $customCommunityChannel->setOption('parent_id', $parent_id);
 
-            $this->em->persist($feedback_category);
+            $this->em->persist($customCommunityChannel);
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -119,9 +119,9 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
         return $this->createApiResponse(
             [
-                 'success' => true,
-                 'id'      => $feedback_category->getId(),
-                 'brand'   => $feedback_category->getBrand() ? $feedback_category->getBrand()->getId() : null,
+                'success' => true,
+                'id'      => $customCommunityChannel->getId(),
+                'brand'   => $customCommunityChannel->getBrand() ? $customCommunityChannel->getBrand()->getId() : null,
             ]
         );
     }
@@ -132,42 +132,42 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function removeAction($id)
     {
-        $feedback_categories = $this->container->getSystemService('community_channels_custom');
-        $feedback_category   = $feedback_categories->getById($id);
+        $customCommunityChannelsService = $this->container->getSystemService('community_channels_custom');
+        $customCommunityChannel         = $customCommunityChannelsService->getById($id);
 
-        if (!$feedback_category) {
+        if (!$customCommunityChannel) {
             throw $this->createNotFoundException();
         }
 
-        $move_to                   = $this->in->getUint('move_to');
-        $move_to_feedback_category = $feedback_categories->getById($move_to);
+        $moveTo                 = $this->in->getUint('move_to');
+        $moveToCommunityChannel = $customCommunityChannelsService->getById($moveTo);
 
-        $skip_moving = false;
+        $skipMoving = false;
 
-        if (!$move_to_feedback_category) {
-            $skip_moving = true;
+        if (!$moveToCommunityChannel) {
+            $skipMoving = true;
         }
 
-        if (!$skip_moving && $move_to_feedback_category->getId() == $feedback_category->getId()) {
+        if (!$skipMoving && $moveToCommunityChannel->getId() == $customCommunityChannel->getId()) {
             throw ValidationException::create(
-                'feedback_type.remove.move_feedback_categories',
-                'You must choose a different feedback category'
+                'community_channel.remove.move_custom_community_channel',
+                'You must choose a different community channel'
             );
         }
 
-        $old_id = $feedback_category->getId();
+        $oldId = $customCommunityChannel->getId();
 
         $this->db->beginTransaction();
 
         try {
-            if (!$skip_moving) {
+            if (!$skipMoving) {
                 $this->db->executeUpdate(
                     'UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?',
-                    [$move_to, $old_id]
+                    [$moveTo, $oldId]
                 );
             }
 
-            $this->em->remove($feedback_category);
+            $this->em->remove($customCommunityChannel);
             $this->em->flush();
 
             $this->db->commit();
@@ -176,7 +176,7 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
             throw $e;
         }
 
-        return $this->createSuccessResponse(['old_id' => $old_id]);
+        return $this->createSuccessResponse(['old_id' => $oldId]);
     }
 
     //###################################################################################################################
@@ -185,10 +185,10 @@ class CommunityChannelsCustomController extends AbstractController implements Pr
 
     public function saveDisplayOrderAction()
     {
-        $display_orders = $this->in->getArrayOfUInts('display_orders');
+        $displayOrders = $this->in->getArrayOfUInts('display_orders');
 
-        $feedback_categories = $this->container->getSystemService('community_channels_custom');
-        $feedback_categories->updateDisplayOrders($display_orders);
+        $customCommunityChannelsService = $this->container->getSystemService('community_channels_custom');
+        $customCommunityChannelsService->updateDisplayOrders($displayOrders);
 
         return $this->createSuccessResponse();
     }

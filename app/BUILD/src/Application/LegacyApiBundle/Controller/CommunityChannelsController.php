@@ -42,7 +42,7 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
         return $this->createApiResponse(
             [
-                 'types' => $this->getApiData(Arrays::flatten($communityChannels->getAll())),
+                'types' => $this->getApiData(Arrays::flatten($communityChannels->getAll())),
             ]
         );
     }
@@ -64,7 +64,7 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
         return $this->createApiResponse(
             [
-                 'feedback_type' => $returnedData,
+                'feedback_type' => $returnedData,
             ]
         );
     }
@@ -101,9 +101,9 @@ class CommunityChannelsController extends AbstractController implements Protecte
         }
 
         return $this->createApiResponse([
-             'success' => true,
-             'id'      => $communityChannel->getId(),
-             'brand'   => $communityChannel->getBrand() ? $communityChannel->getBrand()->getId() : null,
+            'success' => true,
+            'id'      => $communityChannel->getId(),
+            'brand'   => $communityChannel->getBrand() ? $communityChannel->getBrand()->getId() : null,
         ]);
     }
 
@@ -120,17 +120,17 @@ class CommunityChannelsController extends AbstractController implements Protecte
             throw $this->createNotFoundException();
         }
 
-        $move_to               = $this->in->getUint('move_to');
-        $move_to_feedback_type = $communityChannels->getById($move_to);
+        $move_to                   = $this->in->getUint('move_to');
+        $move_to_community_channel = $communityChannels->getById($move_to);
 
-        if (!$move_to_feedback_type) {
+        if (!$move_to_community_channel) {
             throw ValidationException::create(
                 'feedback_type.remove.move_feedback_types',
                 'You must select a feedback type to move existing feedback into'
             );
         }
 
-        if ($move_to_feedback_type->getId() == $communityChannel->getId()) {
+        if ($move_to_community_channel->getId() == $communityChannel->getId()) {
             throw ValidationException::create(
                 'feedback_type.remove.move_feedback_types',
                 'You must choose a different feedback type'

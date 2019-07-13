@@ -51,7 +51,7 @@ class ViewLog
         } elseif ($object instanceof News) {
             $type = PageViewLog::TYPE_NEWS;
         } elseif ($object instanceof CommunityTopic) {
-            $type = PageViewLog::TYPE_FEEDBACK;
+            $type = PageViewLog::TYPE_COMMUNITY;
         }
 
         if (!$type) {

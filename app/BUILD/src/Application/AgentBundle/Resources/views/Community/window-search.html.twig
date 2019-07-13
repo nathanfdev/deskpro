@@ -38,9 +38,9 @@
 		</div>
 		<div class="input-row-body add-to-search">
 			<div class="cat-select-type cat-select-articles">
-				<select class="dp-select-widget-simple" name="feedback_categories[]" multiple="multiple" data-target-menu="auto">
-					{% for cat in feedback_cats %}
-						{{ _self.render_cat_option(cat, '', 0) }}
+				<select class="dp-select-widget-simple" name="community_channels[]" multiple="multiple" data-target-menu="auto">
+					{% for channel in community_channels %}
+						{{ _self.render_cat_option(channel, '', 0) }}
 					{% endfor %}
 				</select>
 			</div>

@@ -1129,7 +1129,7 @@ class TicketTerms
                 }
                 break;
 
-            case TicketSearch::TERM_FEEDBACK_LINKS:
+            case TicketSearch::TERM_COMMUNITY_TOPIC_LINKS:
 
                 switch ($op) {
                     case self::OP_ISSET:

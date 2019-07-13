@@ -57,7 +57,7 @@ class UseSectionVoter extends AbstractVoter
                 return $this->getActiveBrandSetting('core.apps_kb')
                     && ($permissionBag->get('articles.use') || $permissionBag->getAllowedArticleCategories());
             case static::USE_COMMUNITY:
-                return $this->getActiveBrandSetting('core.apps_feedback')
+                return $this->getActiveBrandSetting('core.apps_community')
                     && ($permissionBag->get('community.use') || $permissionBag->getAllowedCommunityChannelIds());
             case static::USE_GUIDES:
                 return $this->getActiveBrandSetting('core.apps_guides')

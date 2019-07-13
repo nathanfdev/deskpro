@@ -27,22 +27,22 @@
 	{% if results|length %}
 	<section class="feedback-simple-list list-listing">
 		<section class="search-results page-set" data-page="{{ page }}">
-			{% for feedback in results %}
+			{% for topic in results %}
 				<article
-					class="row-item feedback feedback-{{feedback.id}} feedback-{{feedback.id}} related-is-linkable"
+					class="row-item feedback feedback-{{topic.id}} feedback-{{topic.id}} related-is-linkable"
 					data-content-type="feedback"
-					data-content-id="{{ feedback.id }}"
-					data-route="page:{{ path('agent_community_topic_view', {'communityTopicId': feedback.id}) }}"
+					data-content-id="{{ topic.id }}"
+					data-route="page:{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}"
 					data-route-title="@selector(a.feedback-title)"
 					data-route-openclass="open"
 				>
 					<div class="top-row">
 						<div class="top-row-left">
 							<span class="votes">
-								{{ feedback.num_ratings|default(0) }}
+								{{ topic.num_ratings|default(0) }}
 							</span>
 							<h3>
-								<a class="feedback-title click-through">{{ feedback.title }}</a>
+								<a class="feedback-title click-through">{{ topic.title }}</a>
 							</h3>
 						</div>
 						<div class="top-row-right visible-related-content-controls">
@@ -56,15 +56,15 @@
 						<ul>
 							<li>
 								<span class="prop-title">{{ phrase('agent.general.category') }}</span>
-								<span class="prop-val">{{ feedback.category.full_title }}</span>
+								<span class="prop-val">{{ topic.category.full_title }}</span>
 							</li>
 							<li>
 								<span class="prop-title">{{ phrase('agent.general.author') }}</span>
-								<span class="prop-val">{{ feedback.person.display_name }} {% if feedback.person.primary_email_address %}({{ feedback.person.primary_email_address }}){% endif %}</span>
+								<span class="prop-val">{{ topic.person.display_name }} {% if topic.person.primary_email_address %}({{ topic.person.primary_email_address }}){% endif %}</span>
 							</li>
 							<li>
 								<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
-								<span class="prop-val">{{ feedback.date_created|date('day')}}</span>
+								<span class="prop-val">{{ topic.date_created|date('day')}}</span>
 							</li>
 						</ul>
 						<br class="clear" />

@@ -828,8 +828,8 @@ class LegacyTermsTransformer
             case 'person_is_disabled':
                 return new Terms\FilterUserIsDisabled($op, $options);
 
-            case 'feedback_links':
-                return new Terms\FilterFeedbackLinks($op, $options);
+            case 'community_topic_links':
+                return new Terms\FilterCommunityTopicsLinks($op, $options);
 
             case 'person_organization_manager':
                 return new Terms\FilterUserIsManager($op, $options);

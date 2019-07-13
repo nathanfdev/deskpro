@@ -15,8 +15,8 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
      */
     public function setUp()
     {
-        $this->clearTable('feedback');
-        $this->clearTable('feedback_categories');
+        $this->clearTable('community_topics');
+        $this->clearTable('community_channels');
         $this->clearTable('people');
 
         parent::setUp();

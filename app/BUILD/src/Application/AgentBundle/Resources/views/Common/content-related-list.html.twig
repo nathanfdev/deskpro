@@ -1,5 +1,5 @@
 <section class="linked-content">
-	<div class="no-related-content" {% if related_content.articles or related_content.news or related_content.downloads or related_content.feedback%}style="display: none"{% endif %}>
+	<div class="no-related-content" {% if related_content.articles or related_content.news or related_content.downloads or related_content.community_topics%}style="display: none"{% endif %}>
 		{{ phrase('agent.publish.no_related_explain') }}
 	</div>
 	<div class="articles related-section" {% if not related_content.articles %}style="display: none"{% endif %}>
@@ -36,10 +36,10 @@
 		</ul>
 	</div>
 
-    <div class="feedback related-section" {% if not related_content.feedback %}style="display: none"{% endif %}>
+    <div class="feedback related-section" {% if not related_content.community_topics %}style="display: none"{% endif %}>
 		<h4>{{ phrase('agent.general.related_feedback') }}</h4>
 		<ul class="related-list">
-			{% for feedback in related_content.feedback %}
+			{% for topic in related_content.community_topics %}
 				<li class="related-content feedback-{{topic.id}}" data-content-type="feedback" data-content-id="{{ topic.id }}">
 					<button class="clean-white small remove noedit-hide">{{ phrase('agent.general.remove') }}</button>
 					<a class="link-title link-route with-route" data-route="page:{{ object_path_agent(topic) }}">{{ topic.title }}</a>

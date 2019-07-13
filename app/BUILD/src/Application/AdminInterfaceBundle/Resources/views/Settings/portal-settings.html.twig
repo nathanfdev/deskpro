@@ -69,9 +69,9 @@
 					</div>
 
 					<div class="col-half omega">
-						<div ng-class="{'widget-preview': Ctrl.settings.apps_feedback, 'widget-preview-disabled': !Ctrl.settings.apps_feedback}">
+						<div ng-class="{'widget-preview': Ctrl.settings.apps_community, 'widget-preview-disabled': !Ctrl.settings.apps_community}">
 							<div class="widget-header">
-								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_feedback" />
+								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_community" />
 								<span class="title">Community</span>
 								<a class="control" href="{{ ng_href('portal.feedback_settings') }}">Manage  <i class="fas fa-cog"></i></a>
 							</div>

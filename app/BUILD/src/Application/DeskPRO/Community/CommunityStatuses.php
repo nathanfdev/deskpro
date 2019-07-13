@@ -121,17 +121,17 @@ class CommunityStatuses
     {
         $x = 10;
 
-        $feedback_statuses = $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->getByIds($newOrders);
+        $communityStatuses = $this->em->getRepository('DeskPRO:CommunityTopicStatusCategory')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
-            if (!isset($feedback_statuses[$id])) {
+            if (!isset($communityStatuses[$id])) {
                 continue;
             }
 
-            $feedback_status                = $feedback_statuses[$id];
-            $feedback_status->display_order = $x;
+            $communityStatus                = $communityStatuses[$id];
+            $communityStatus->display_order = $x;
 
-            $this->em->persist($feedback_status);
+            $this->em->persist($communityStatus);
 
             $x += 10;
         }

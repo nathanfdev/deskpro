@@ -37,8 +37,8 @@ define([
         return deferred.promise;
       }
 
-      this.Api.sendGet('/feedback_categories').success((data, status, headers, config) => {
-        this._setListData(data.feedback_categories);
+      this.Api.sendGet('/community_custom_channels').success((data, status, headers, config) => {
+        this._setListData(data.community_custom_channels);
         return deferred.resolve(this.recs);
       }
 
@@ -56,11 +56,11 @@ define([
     */
 
     remove(id) {
-      const model = this.em.getById('feedback_category', id);
+      const model = this.em.getById('community_custom_channel', id);
 
       if (model != null) {
         this.recs.remove(id);
-        this.em.removeById('feedback_category', 'id');
+        this.em.removeById('community_custom_channel', 'id');
       }
 
       return this._updateOrderOfData();
@@ -84,15 +84,15 @@ define([
       // this is due to the reason that in list it's stored as parent_id while in form it's stored in options.parent_id
       model.parent_id = model.options.parent_id;
 
-      const new_model = this.em.createEntity('feedback_category', 'id', model);
+      const new_model = this.em.createEntity('community_custom_channel', 'id', model);
       this.recs.set(new_model.id, new_model);
 
       return this._updateOrderOfData();
     }
 
     /*
-     * Returns list of feedback_categories where feedback of specified feedback_category could be moved to
-     * @param model - specified feedback_category model
+     * Returns list of community_custom_channels where feedback of specified community_custom_channel could be moved to
+     * @param model - specified community_custom_channel model
      * @return array
      */
     getListOfMovables(model) {
@@ -154,7 +154,7 @@ define([
       return (() => {
         const result = [];
         for (const rec of Array.from(raw_recs)) {
-          const model = this.em.createEntity('feedback_category', 'id', rec);
+          const model = this.em.createEntity('community_custom_channel', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));
         }

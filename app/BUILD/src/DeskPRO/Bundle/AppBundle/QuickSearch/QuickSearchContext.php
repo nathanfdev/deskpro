@@ -23,7 +23,7 @@ class QuickSearchContext
 {
     const TYPE_ARTICLE           = 'article';
     const TYPE_DOWNLOAD          = 'download';
-    const TYPE_FEEDBACK          = 'feedback';
+    const TYPE_COMMUNITY         = 'community';
     const TYPE_NEWS              = 'news';
     const TYPE_TICKET            = 'ticket';
     const TYPE_TOPIC             = 'topic';
@@ -270,7 +270,7 @@ class QuickSearchContext
         return [
             self::TYPE_ARTICLE           => Article::class,
             self::TYPE_DOWNLOAD          => Download::class,
-            self::TYPE_FEEDBACK          => CommunityTopic::class,
+            self::TYPE_COMMUNITY         => CommunityTopic::class,
             self::TYPE_NEWS              => News::class,
             self::TYPE_TICKET            => Ticket::class,
             self::TYPE_PERSON            => Person::class,

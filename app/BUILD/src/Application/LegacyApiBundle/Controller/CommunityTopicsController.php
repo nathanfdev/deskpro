@@ -68,7 +68,7 @@ class CommunityTopicsController extends AbstractController
             $extra['order_by'] = $order_by;
         }
 
-        $result_cache = $this->getApiSearchResult('feedback', $terms, $extra, $this->in->getUint('cache_id'), new CommunitySearch());
+        $result_cache = $this->getApiSearchResult('communityTopic', $terms, $extra, $this->in->getUint('cache_id'), new CommunitySearch());
 
         $page = $this->in->getUint('page');
         if (!$page) {
@@ -79,15 +79,15 @@ class CommunityTopicsController extends AbstractController
 
         $ids = $result_cache->results;
 
-        $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
-        $feedback = App::getEntityRepository('DeskPRO:CommunityTopic')->getByIds($page_ids, true);
+        $pageIds        = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
+        $communityTopic = App::getEntityRepository('DeskPRO:CommunityTopic')->getByIds($pageIds, true);
 
         return $this->createApiResponse([
-            'page'     => $page,
-            'per_page' => $per_page,
-            'total'    => count($ids),
-            'cache_id' => $result_cache->id,
-            'feedback' => $this->getApiData($feedback),
+            'page'           => $page,
+            'per_page'       => $per_page,
+            'total'          => count($ids),
+            'cache_id'       => $result_cache->id,
+            'communityTopic' => $this->getApiData($communityTopic),
         ]);
     }
 
@@ -100,53 +100,53 @@ class CommunityTopicsController extends AbstractController
      */
     public function newCommunityTopicAction()
     {
-        $errors   = [];
-        $feedback = new CommunityTopic();
+        $errors         = [];
+        $communityTopic = new CommunityTopic();
 
         $title = $this->in->getString('title');
         if ($title) {
-            $feedback->title = $title;
+            $communityTopic->title = $title;
         } else {
             $errors['title'] = ['required_field.title', 'title is required'];
         }
 
         $content = $this->in->getHtml('content');
         if ($content) {
-            $feedback->content = $content;
+            $communityTopic->content = $content;
         } else {
             $errors['content'] = ['required_field.content', 'content is required'];
         }
 
         $status_cat = $this->em->find('DeskPRO:CommunityTopicStatusCategory', $this->in->getUint('status_category_id'));
         if ($status_cat) {
-            $feedback->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
+            $communityTopic->setStatusCode($status_cat->status_type.'.'.$status_cat->id);
         } else {
             $status = $this->in->getString('status');
             if (!$status) {
                 $status = 'new';
             }
-            $feedback->setStatusCode($status);
+            $communityTopic->setStatusCode($status);
         }
 
         $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUint('category_id'));
         if ($cat) {
-            $feedback->category = $cat;
+            $communityTopic->category = $cat;
         }
 
         if ($errors) {
             return $this->createApiMultipleErrorResponse($errors);
         }
 
-        $feedback->person = $this->person;
+        $communityTopic->person = $this->person;
 
-        $this->_insertCommunityTopicAttachments($feedback);
+        $this->_insertCommunityTopicAttachments($communityTopic);
 
-        $this->em->persist($feedback);
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         $labels = $this->in->getCleanValueArray('label', 'string', 'discard');
         if ($labels) {
-            $feedback->getLabelManager()->setLabelsArray($labels, $this->em);
+            $communityTopic->getLabelManager()->setLabelsArray($labels, $this->em);
             $this->em->flush();
         }
 
@@ -154,14 +154,14 @@ class CommunityTopicsController extends AbstractController
         if ($user_category_id) {
             $field         = $this->_getCustomCommunityChannelField();
             $field_manager = $this->container->getSystemService('community_fields_manager');
-            $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $feedback, true);
+            $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $communityTopic, true);
         }
 
         return $this->createApiCreateResponse(
-            ['id' => $feedback->id],
+            ['id' => $communityTopic->id],
             $this->generateUrl(
                 'api_community_topic_view',
-                ['feedback_id' => $feedback->id],
+                ['feedback_id' => $communityTopic->id],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
@@ -308,7 +308,7 @@ class CommunityTopicsController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function newFeedbackCommentAction($communityTopicId)
+    public function newCommunityTopicCommentAction($communityTopicId)
     {
         $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
@@ -637,10 +637,10 @@ class CommunityTopicsController extends AbstractController
      */
     public function deleteCommunityTopicLabelAction($communityTopicId, $label)
     {
-        $feedback = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
+        $communityTopic = $this->_getCommunityTopicOr404($communityTopicId, 'edit');
 
-        $feedback->getLabelManager()->removeLabel($label);
-        $this->em->persist($feedback);
+        $communityTopic->getLabelManager()->removeLabel($label);
+        $this->em->persist($communityTopic);
         $this->em->flush();
 
         return $this->createSuccessResponse();
@@ -695,7 +695,7 @@ class CommunityTopicsController extends AbstractController
         return $this->createApiResponse(['categories' => $this->getApiData($children)]);
     }
 
-    protected function _insertCommunityTopicAttachments(CommunityTopic $feedback)
+    protected function _insertCommunityTopicAttachments(CommunityTopic $communityTopic)
     {
         $attachments = $this->request->files->get('attach');
         if (!is_array($attachments)) {
@@ -707,16 +707,16 @@ class CommunityTopicsController extends AbstractController
             $error = $accept->getError($file, 'agent');
             if (!$error) {
                 $blob = $accept->accept($file);
-                $this->_addCommunityTopicAttachment($blob, $feedback);
+                $this->_addCommunityTopicAttachment($blob, $communityTopic);
             }
         }
 
         foreach ($this->in->getCleanValueArray('attach_id') as $blob_id) {
-            $this->_addCommunityTopicAttachment($blob_id, $feedback);
+            $this->_addCommunityTopicAttachment($blob_id, $communityTopic);
         }
     }
 
-    protected function _addCommunityTopicAttachment($blob_id, CommunityTopic $feedback)
+    protected function _addCommunityTopicAttachment($blob_id, CommunityTopic $communityTopic)
     {
         if ($blob_id instanceof \Application\DeskPRO\Entity\Blob) {
             $blob = $blob_id;
@@ -729,7 +729,7 @@ class CommunityTopicsController extends AbstractController
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            $feedback->addAttachment($attach);
+            $communityTopic->addAttachment($attach);
 
             return $attach;
         } else {

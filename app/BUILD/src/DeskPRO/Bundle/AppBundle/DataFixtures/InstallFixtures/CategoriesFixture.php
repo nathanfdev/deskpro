@@ -73,7 +73,7 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
             $manager->persist($cat);
 
             $id = str_replace(' ', '_', strtolower($title));
-            $this->setReference('feedback_category_'.$id, $cat);
+            $this->setReference('community_custom_channel_'.$id, $cat);
         }
 
         $manager->flush();

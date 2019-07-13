@@ -20,11 +20,11 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const TYPE_NEW_FEEDBACK = 'new_feedback';
-    const TYPE_REGISTER     = 'register';
-    const TYPE_ADD_EMAIL    = 'add_email';
-    const TYPE_COMMENT      = 'comment';
-    const TYPE_NEW_TICKET   = 'new_ticket';
+    const TYPE_NEW_COMMUNITY_TOPIC = 'new_community_topic';
+    const TYPE_REGISTER            = 'register';
+    const TYPE_ADD_EMAIL           = 'add_email';
+    const TYPE_COMMENT             = 'comment';
+    const TYPE_NEW_TICKET          = 'new_ticket';
 
     const INTENTION_VERIFY_EMAIL = 'verify_email';
     const INTENTION_LOGIN        = 'login';
@@ -167,7 +167,7 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
         switch ($this->data_type) {
             case self::TYPE_COMMENT:
                 return 'comment';
-            case self::TYPE_NEW_FEEDBACK:
+            case self::TYPE_NEW_COMMUNITY_TOPIC:
                 return 'new feedback';
             case self::TYPE_NEW_TICKET:
                 return 'new ticket';

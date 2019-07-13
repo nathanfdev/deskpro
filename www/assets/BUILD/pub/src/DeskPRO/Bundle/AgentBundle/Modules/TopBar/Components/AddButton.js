@@ -93,7 +93,7 @@ class AddButton extends React.Component {
   };
 
   addFeedback = () => {
-    window.DeskPRO_Window.newFeedbackLoader.toggle();
+    window.DeskPRO_Window.newCommunityTopicLoader.toggle();
     this.closePopup();
   };
 

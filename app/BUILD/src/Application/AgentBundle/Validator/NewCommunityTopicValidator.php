@@ -13,30 +13,30 @@ use Orb\Validator\AbstractValidator;
 class NewCommunityTopicValidator extends AbstractValidator
 {
     /**
-     * @param \Application\AgentBundle\Form\Model\NewCommunityTopic $feedback
+     * @param \Application\AgentBundle\Form\Model\NewCommunityTopic $communityTopic
      *
      * @return bool
      */
-    protected function checkIsValid($feedback)
+    protected function checkIsValid($communityTopic)
     {
-        if (!$feedback->channel_id) {
+        if (!$communityTopic->channel_id) {
             $this->addError('category_id.invalid');
         }
 
-        $cat = App::getOrm()->find('DeskPRO:CommunityChannel', $feedback->channel_id);
+        $cat = App::getOrm()->find('DeskPRO:CommunityChannel', $communityTopic->channel_id);
         if (!$cat) {
             $this->addError('category_id.invalid');
         }
 
-        if (!$feedback->title) {
+        if (!$communityTopic->title) {
             $this->addError('title.missing');
         }
 
-        if (empty(trim(Strings::stripTags($feedback->content)))) {
+        if (empty(trim(Strings::stripTags($communityTopic->content)))) {
             $this->addError('content.missing');
         }
 
-        if (!$feedback->status_code) {
+        if (!$communityTopic->status_code) {
             $this->addError('status.invalid');
         }
 

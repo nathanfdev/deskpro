@@ -318,9 +318,9 @@ return [
     'core.apps_kb' => 1,
 
     /*
-     * Enable feedback?
+     * Enable community?
      */
-    'core.apps_feedback' => 1,
+    'core.apps_community' => 1,
 
     /*
      * Enable agent tasks?

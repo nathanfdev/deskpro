@@ -11,11 +11,11 @@ define([
     }
 
     init() {
-      this.feedback_category = {};
-      this.feedback_categories_parent_list = {};
+      this.community_custom_channel = {};
+      this.community_custom_channels_parent_list = {};
 
       this.addManagedListener(this.FeedbackCategoriesData.recs, 'changed', () => {
-        this.feedback_categories_parent_list = this.FeedbackCategoriesData.getListOfParents(this.feedback_category);
+        this.community_custom_channels_parent_list = this.FeedbackCategoriesData.getListOfParents(this.community_custom_channel);
         return this.ngApply();
       });
     }
@@ -25,15 +25,15 @@ define([
         this.FeedbackCategoriesData.loadList(),
         this.$stateParams.id ?
           this.Api.sendDataGet({
-            feedback_category: `/feedback_categories/${this.$stateParams.id}`
+            community_custom_channel: `/community_custom_channels/${this.$stateParams.id}`
           }) : undefined
       ];
 
       const promise = this.$q.all(requests).then((result) => {
         if (this.$stateParams.id) {
-          this.feedback_category = result[1].data.feedback_category.feedback_category;
+          this.community_custom_channel = result[1].data.community_custom_channel.community_custom_channel;
         }
-        return this.feedback_categories_parent_list = this.FeedbackCategoriesData.getListOfParents(this.feedback_category);
+        return this.community_custom_channels_parent_list = this.FeedbackCategoriesData.getListOfParents(this.community_custom_channel);
       });
 
       return promise;
@@ -46,40 +46,40 @@ define([
     */
     saveForm() {
       let promise;
-      this.feedback_category.brand = this.$stateParams.brandId;
+      this.community_custom_channel.brand = this.$stateParams.brandId;
 
       if (!this.$scope.form_props.$valid) {
         return;
       }
 
-      const is_new = !this.feedback_category.id;
+      const is_new = !this.community_custom_channel.id;
 
-      this.startSpinner('saving_feedback_category');
+      this.startSpinner('saving_community_custom_channel');
 
       if (is_new) {
-        promise = this.Api.sendPutJson('/feedback_categories', { feedback_category: this.feedback_category });
+        promise = this.Api.sendPutJson('/community_custom_channels', { community_custom_channel: this.community_custom_channel });
       } else {
-        promise = this.Api.sendPostJson(`/feedback_categories/${this.feedback_category.id}`, { feedback_category: this.feedback_category });
+        promise = this.Api.sendPostJson(`/community_custom_channels/${this.community_custom_channel.id}`, { community_custom_channel: this.community_custom_channel });
       }
 
       promise.success((result) => {
-        this.feedback_category.id = result.id;
-        this.feedback_category.brand = result.brand;
+        this.community_custom_channel.id = result.id;
+        this.community_custom_channel.brand = result.brand;
 
-        this.stopSpinner('saving_feedback_category', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_feedback_category')));
+        this.stopSpinner('saving_community_custom_channel', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_community_custom_channel')));
 
-        this.FeedbackCategoriesData.updateModel(this.feedback_category);
+        this.FeedbackCategoriesData.updateModel(this.community_custom_channel);
 
         this.skipDirtyState();
 
         if (is_new) {
-          return this.$state.go('portal.feedback_categories.gocreate');
+          return this.$state.go('portal.community_custom_channels.gocreate');
         }
-        return this.$state.go('portal.feedback_categories');
+        return this.$state.go('portal.community_custom_channels');
       });
 
       promise.error((info, code) => {
-        this.stopSpinner('saving_feedback_category', true);
+        this.stopSpinner('saving_community_custom_channel', true);
         return this.applyErrorResponseToView(info);
       });
 
@@ -89,24 +89,24 @@ define([
 
     showDelete() {
       let inst;
-      const id = this.feedback_category != null ? this.feedback_category.id : undefined;
+      const id = this.community_custom_channel != null ? this.community_custom_channel.id : undefined;
       if (!id) { return; }
 
-      if (this.FeedbackCategoriesData.hasChildren(this.feedback_category)) {
+      if (this.FeedbackCategoriesData.hasChildren(this.community_custom_channel)) {
         return this.showAlert('You cannot delete a category with sub-categories. Move or delete the sub-categories first.');
       }
 
-      const list = this.FeedbackCategoriesData.getListOfMovables(this.feedback_category);
+      const list = this.FeedbackCategoriesData.getListOfMovables(this.community_custom_channel);
 
-      const deleteStart = move_to => this.Api.sendDelete(`/feedback_categories/${id}?move_to=${move_to || 0}`).then(() => {
+      const deleteStart = move_to => this.Api.sendDelete(`/community_custom_channels/${id}?move_to=${move_to || 0}`).then(() => {
         this.FeedbackCategoriesData.remove(id);
-        return this.$state.go('portal.feedback_categories');
+        return this.$state.go('portal.community_custom_channels');
       });
 
       return inst = this.$modal.open({
         templateUrl: this.getTemplatePath('FeedbackCategories/delete-modal.html'),
         controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
-          $scope.move_feedback_categories_list = list;
+          $scope.move_community_channels_list = list;
           $scope.model = { move_to: (list[0] != null ? list[0].id : undefined) };
           $scope.dismiss = () => $modalInstance.dismiss();
           return $scope.confirm = () => deleteStart($scope.model.move_to).then(() => $modalInstance.dismiss());

@@ -17,7 +17,7 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string name
  */
-class FilterFeedbackLinks extends AbstractFilterTerm
+class FilterCommunityTopicsLinks extends AbstractFilterTerm
 {
     /**
      * {@inheritdoc}

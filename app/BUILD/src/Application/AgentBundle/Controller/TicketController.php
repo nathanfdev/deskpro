@@ -441,9 +441,9 @@ class TicketController extends AbstractController
             'custom_person_fields' => $custom_person_fields,
             'custom_org_fields'    => $custom_org_fields,
 
-            'show_related_content'  => $show_related_content,
-            'linked_tickets'        => $linked_tickets,
-            'ticket_feedback_links' => $ticketCommunityTopicsLinks,
+            'show_related_content'          => $show_related_content,
+            'linked_tickets'                => $linked_tickets,
+            'ticket_community_topics_links' => $ticketCommunityTopicsLinks,
 
             'ticket_messages_block' => $ticket_messages_block,
 

@@ -28,13 +28,13 @@ class CommunityVoter extends AbstractUserPublishVoter
             return false;
         }
 
-        /** @var CommunityTopic $feedback */
-        $feedback = $context->getParent();
-        if ($feedback) {
-            if (!$this->getUserPublishChecker($user)->canViewCommunityTopic($feedback)) {
+        /** @var CommunityTopic $communityTopic */
+        $communityTopic = $context->getParent();
+        if ($communityTopic) {
+            if (!$this->getUserPublishChecker($user)->canViewCommunityTopic($communityTopic)) {
                 return false;
             }
-            if (!$this->checkModify($attribute, $user, $feedback)) {
+            if (!$this->checkModify($attribute, $user, $communityTopic)) {
                 return false;
             }
         }

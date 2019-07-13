@@ -14,7 +14,7 @@
 									<input type="text"
 										   class="form-control"
 										   name="title"
-										   ng-model="FeedbackTypesEdit.feedback_type.title"
+										   ng-model="FeedbackTypesEdit.community_channel.title"
 										   dp-server-validation="title.not_blank"
 										   style="width: 50%;"
 										   autofocus required>
@@ -56,18 +56,18 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="FeedbackTypesEdit.feedback_type.id" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div class="dp-delete-control" ng-if="FeedbackTypesEdit.community_channel.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.FeedbackTypesList.startDelete(FeedbackTypesEdit.feedback_type);">
+								ng-click="$event.preventDefault(); $parent.FeedbackTypesList.startDelete(FeedbackTypesEdit.community_channel);">
 							Delete
 						</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_feedback_type">
+						<div dp-hide-spinning="saving_community_channel">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
 						</div>
-						<div dp-show-spinning="saving_feedback_type">
+						<div dp-show-spinning="saving_community_channel">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>
@@ -75,5 +75,5 @@
 			</footer>
 		</section>
 	</form>
-	<div dp-register-message="saved_feedback_type">{{ ng_var('FeedbackTypesEdit.feedback_type.title') }} was saved successfully</div>
+	<div dp-register-message="saved_community_channel">{{ ng_var('FeedbackTypesEdit.community_channel.title') }} was saved successfully</div>
 {% endblock %}

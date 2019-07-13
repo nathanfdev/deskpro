@@ -19,7 +19,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <form id="{{baseId}}_newfeedback" class="keybound-submit">
 
-<input type="hidden" name="newfeedback[linked_ticket]" id="{{baseId}}_linked_ticket" value="{% if ticket %}{{ ticket.id }}{% endif %}" />
+<input type="hidden" name="newcommunitytopic[linked_ticket]" id="{{baseId}}_linked_ticket" value="{% if ticket %}{{ ticket.id }}{% endif %}" />
 
 {% if ticket %}
   <div class="pending-info" id="{{baseId}}_linked_ticket_section">
@@ -30,16 +30,16 @@ pageMeta.baseId = '{{ baseId }}';
         {% if brand_setting('user.feedback_subscriptions') %}
           <br class="clear" />
           <div style="display: block;">
-            <input type="checkbox" id="{{baseId}}_is_subscribe_owner" name="newfeedback[is_subscribe_ticket_owner]" checked="checked">
+            <input type="checkbox" id="{{baseId}}_is_subscribe_owner" name="newcommunitytopic[is_subscribe_ticket_owner]" checked="checked">
             <label for="{{baseId}}_is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
           </div>
           <div style="display: block;">
-            <input type="checkbox" id="{{baseId}}_is_subscribe_participants" name="newfeedback[is_subscribe_ticket_participants]">
+            <input type="checkbox" id="{{baseId}}_is_subscribe_participants" name="newcommunitytopic[is_subscribe_ticket_participants]">
             <label for="{{baseId}}_is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
           </div>
         {% else %}
-          <input type="hidden" id="{{baseId}}_is_subscribe_owner" name="newfeedback[is_subscribe_ticket_owner]">
-          <input type="hidden" id="{{baseId}}_is_subscribe_participants" name="newfeedback[is_subscribe_ticket_participants]">
+          <input type="hidden" id="{{baseId}}_is_subscribe_owner" name="newcommunitytopic[is_subscribe_ticket_owner]">
+          <input type="hidden" id="{{baseId}}_is_subscribe_participants" name="newcommunitytopic[is_subscribe_ticket_participants]">
         {% endif %}
       </div>
       <br class="clear" />
@@ -51,7 +51,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
         <div class="col">
             <h4>{{ phrase('agent.general.brand') }}</h4>
-            <select name="newfeedback[brand]" id="new_feedback_brand_id">
+            <select name="newcommunitytopic[brand]" id="new_feedback_brand_id">
                 {% for brand in brands %}
                     <option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
                         {{ brand.name }}
@@ -62,35 +62,35 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4>{{ phrase('agent.general.type') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
-				'name': 'newfeedback[category_id]',
+				'name': 'newcommunitytopic[category_id]',
 				'id': baseId ~ '_cat',
 				'add_classname': 'category_id',
 				'add_attr': '',
-				'categories': feedback_categories,
-				'selected': state.newfeedback.category_id|default(0)
+				'categories': community_channels,
+				'selected': state.newcommunitytopic.channel_id|default(0)
 			} %}
 			<div class="error-message category_id">{{ phrase('agent.general.choose_a_type') }}</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
-			{% include 'AgentBundle:Common:select-feedback-status.html.twig' with {'name': 'newfeedback[status_code]', 'add_classname': 'status_id'} %}
+			{% include 'AgentBundle:Common:select-community-topic-status.html.twig' with {'name': 'newcommunitytopic[status_code]', 'add_classname': 'status_id'} %}
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.labels') }}</h4>
       <div class="tags-wrap article-tags" style="width:250px">
-        <input type="text" value="{% for label in state.newfeedback.labels %}{{label.label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
+        <input type="text" value="{% for label in state.newcommunitytopic.labels %}{{label.label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
       </div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.attachments') }}</h4>
-      {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newfeedback[attach_ids][]'} %}
+      {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newcommunitytopic[attach_ids][]'} %}
       <div class="file-input">
         <input type="file" name="file-upload" multiple="multiple" />
       </div>
       <ul class="files file-list">
         {% for attachment in attachments %}
           <li class="in" style="height: 18px;">
-            <input type="hidden" name="newfeedback[attach_ids][]" value="{{ attachment.blob.id }}">
+            <input type="hidden" name="newcommunitytopic[attach_ids][]" value="{{ attachment.blob.id }}">
             <em class="remove-attach-trigger"></em>
             <label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>&nbsp;{{ attachment.filesize_readable }}</span></label>
           </li>
@@ -115,7 +115,7 @@ pageMeta.baseId = '{{ baseId }}';
         data-position-bound="#{{baseId}}_userselect"
       >
         <input type="text" name="person_input_choice" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_feedback') }}" style="width: 80%;" />
-        <input type="hidden" name="newfeedback[person][id]" value="{{ feedback_person.id }}" class="person-id" id="{{baseId}}_person_id" />
+        <input type="hidden" name="newcommunitytopic[person][id]" value="{{ topic_person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
         <script type="text/x-deskpro-tmpl" class="user-row-tpl">
           <li>
@@ -144,10 +144,10 @@ pageMeta.baseId = '{{ baseId }}';
     </div>
     <div>
       <span id="{{baseId}}_user_choice">
-          <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': feedback_person.id}) }}">
+          <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': topic_person.id}) }}">
             <span class="text">
-              <span class="user-name">{{feedback_person.display_name}}</span>
-              (<span class="user-email">{{feedback_person.email}}</span>)
+              <span class="user-name">{{topic_person.display_name}}</span>
+              (<span class="user-email">{{topic_person.email}}</span>)
             </span>
           </a>
       </span>
@@ -159,7 +159,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="text" name="newfeedback[title]" id="{{baseId}}_title" value="{% if ticket %}{{ ticket.subject }}{% else %}{{ state.newfeedback.title }}{% endif %}" style="width: 80%;" />
+		<input type="text" name="newcommunitytopic[title]" id="{{baseId}}_title" value="{% if ticket %}{{ ticket.subject }}{% else %}{{ state.newcommunitytopic.title }}{% endif %}" style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.general.enter_a_title') }}</div>
 	</div>
 </div>
@@ -167,7 +167,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section">
 	<div class="content" style="padding-right: 10px;">
 		<h4>{{ phrase('agent.general.description') }}</h4>
-		<textarea type="text" name="newfeedback[content]" id="{{baseId}}_content">{% if message %}{{message.getMessageHtml()}}{% else %}{{ state.newfeedback.content }}{% endif %}</textarea>
+		<textarea type="text" name="newcommunitytopic[content]" id="{{baseId}}_content">{% if message %}{{message.getMessageHtml()}}{% else %}{{ state.newcommunitytopic.content }}{% endif %}</textarea>
         <div class="error-message content">{{ phrase('agent.general.enter_a_content') }}</div>
 	</div>
 </div>

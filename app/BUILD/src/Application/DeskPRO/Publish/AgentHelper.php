@@ -31,7 +31,7 @@ class AgentHelper implements PersonContextInterface
     const ARTICLES  = 'articles';
     const DOWNLOADS = 'downloads';
     const NEWS      = 'news';
-    const FEEDBACK  = 'feedback';
+    const COMMUNITY = 'community';
     const TOPICS    = 'topics';
 
     /** @var array */
@@ -807,7 +807,7 @@ class AgentHelper implements PersonContextInterface
             case self::NEWS:
                 return News::class;
                 break;
-            case self::FEEDBACK:
+            case self::COMMUNITY:
                 return CommunityTopic::class;
                 break;
             case self::TOPICS:
@@ -840,7 +840,7 @@ class AgentHelper implements PersonContextInterface
             case self::NEWS:
                 return NewsCategory::class;
                 break;
-            case self::FEEDBACK:
+            case self::COMMUNITY:
                 return CommunityChannel::class;
                 break;
             case self::TOPICS:

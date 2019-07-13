@@ -27,7 +27,7 @@ class PublishPermissions implements PermissionValueInterface
     /** @var bool */
     public $news_create_labels = false;
     /** @var bool */
-    public $feedback_create_labels = false;
+    public $community_create_labels = false;
     /** @var bool */
     public $can_insert_html = false;
 

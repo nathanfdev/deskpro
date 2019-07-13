@@ -14,11 +14,11 @@ class CommunityChannelEdit
     /**
      * @var \Application\DeskPRO\Entity\CommunityChannel
      */
-    public $feedback_type;
+    public $communityChannel;
 
-    public function __construct(CommunityChannel $feedback_type)
+    public function __construct(CommunityChannel $communityChannel)
     {
-        $this->feedback_type = $feedback_type;
+        $this->communityChannel = $communityChannel;
     }
 
     /**
@@ -26,7 +26,7 @@ class CommunityChannelEdit
      */
     public function save(EntityManager $em)
     {
-        $em->persist($this->feedback_type);
+        $em->persist($this->communityChannel);
         $em->flush();
     }
 }

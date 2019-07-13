@@ -77,7 +77,7 @@ class CommunityChannel extends AbstractCategoryRepository
 
         $this->all_cats = App::getDb()->fetchAllKeyed('
             SELECT id, parent_id title
-            FROM feedback_categories
+            FROM community_channels
             ORDER BY display_order DESC
         ', [], 'id');
 

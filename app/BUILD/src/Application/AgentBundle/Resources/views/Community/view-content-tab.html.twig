@@ -23,8 +23,8 @@
 					<br />
 				</div>
 			{% endif %}
-			<textarea class="edit-content-field" name="feedback[content]" rows="5" cols="50">{{ state.topic.content|default(feedback.content) }}</textarea>
-			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newfeedback[attach][]'} %}
+			<textarea class="edit-content-field" name="feedback[content]" rows="5" cols="50">{{ state.topic.content|default(topic.content) }}</textarea>
+			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newcommunitytopic[attach][]'} %}
 			<h6>{{ phrase('agent.general.attachments') }}</h6>
 			<div class="file-input">
 				<input type="file" name="file-upload" multiple="multiple" />

@@ -190,7 +190,7 @@ class PageTitleGenerator
         return (string) $builder;
     }
 
-    public function feedback($content_or_cat = null)
+    public function community($content_or_cat = null)
     {
         $builder = $this->createHelpdeskTitleBuilder();
 

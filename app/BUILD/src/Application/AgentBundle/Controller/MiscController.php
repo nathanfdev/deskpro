@@ -672,16 +672,16 @@ JS;
 
                     break;
 
-                case 'feedback':
-                    $feedback = $this->em->find(Entity\CommunityTopic::class, $this->in->getUint('object_id'));
+                case 'community_topic':
+                    $communityTopic = $this->em->find(Entity\CommunityTopic::class, $this->in->getUint('object_id'));
 
                     $attach           = new \Application\DeskPRO\Entity\CommunityTopicAttachment();
                     $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
-                    $feedback->addAttachment($attach);
+                    $communityTopic->addAttachment($attach);
                     $this->em->persist($attach);
-                    $this->em->persist($feedback);
+                    $this->em->persist($communityTopic);
                     $this->em->flush();
 
                     break;

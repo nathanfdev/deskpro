@@ -10,7 +10,7 @@
       <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
       <th width="10">&nbsp;</th>
     </tr>
-    {% for tctl in ticket_feedback_links %}
+    {% for tctl in ticket_community_topics_links %}
       <tr class="linked-feedback">
         <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_community_topic_view', {communityTopicId: tctl.topic.id}) }}">{{ tctl.topic.id }}</a></td>
         <td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_community_topic_view', {communityTopicId: tctl.topic.id}) }}">{{ tctl.topic.title }}</a></td>

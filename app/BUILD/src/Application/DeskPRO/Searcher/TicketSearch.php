@@ -64,7 +64,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_SENT_TO_ADDRESS       = 'sent_to_address';
     const TERM_DAY_CREATED           = 'day_created';
     const TERM_FEEDBACK_RATING       = 'feedback_rating';
-    const TERM_FEEDBACK_LINKS        = 'feedback_links';
+    const TERM_COMMUNITY_TOPIC_LINKS = 'community_topic_links';
     const TERM_SLA                   = 'sla';
     const TERM_SLA_STATUS            = 'sla_status';
     const TERM_SLA_COMPLETED         = 'sla_completed';
@@ -1624,11 +1624,11 @@ class TicketSearch extends SearcherAbstract
                         }
 
                         break;
-                    case self::TERM_FEEDBACK_LINKS:
+                    case self::TERM_COMMUNITY_TOPIC_LINKS:
 
                         $joins[] = [
-                            'ticket_feedback_links',
-                            "LEFT JOIN ticket_feedback_links AS $join_name ON ($join_name.ticket_id = tickets.id)",
+                            'ticket_community_topics_links',
+                            "LEFT JOIN ticket_community_topics_links AS $join_name ON ($join_name.ticket_id = tickets.id)",
                         ];
 
                         switch ($op) {

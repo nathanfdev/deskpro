@@ -100,12 +100,12 @@ if (!empty($results['article'])) {
 	}
 }
 
-if (!empty($results['feedback'])) {
-	$OUTPUT['feedback'] = array();
-	foreach ($results['feedback'] as $r) {
-		$OUTPUT['feedback'][] = array(
+if (!empty($results['community_topics'])) {
+	$OUTPUT['community_topics'] = array();
+	foreach ($results['community_topics'] as $r) {
+		$OUTPUT['community_topics'][] = array(
 			'id' => $r->id,
-			'type' => 'feedback',
+			'type' => 'community_topics',
 			'title' => htmlspecialchars($r->title),
 			'route' => 'page:' . $router->generate('agent_community_topic_view', array('communityTopicId' => $r->id))
 		);

@@ -46,18 +46,18 @@ class CommunityTopicsSearchController extends AbstractController
         $output = [];
 
         if (ctype_digit($q)) {
-            $feedbackById = App::getEntityRepository(CommunityTopic::class)->find($q);
-            if ($feedbackById) {
-                $results = ListUtils::filterOutValues($results, [$feedbackById->getId()]);
-                array_unshift($output, $this->formatCommunityTopicResultRow($feedbackById));
+            $communityTopicsById = App::getEntityRepository(CommunityTopic::class)->find($q);
+            if ($communityTopicsById) {
+                $results = ListUtils::filterOutValues($results, [$communityTopicsById->getId()]);
+                array_unshift($output, $this->formatCommunityTopicResultRow($communityTopicsById));
             }
         }
 
         /** @var CommunityTopicRepository $entityRepository */
         $entityRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(CommunityTopic::class);
-        foreach ($entityRepository->getByIds($results, true) as $feedback) {
+        foreach ($entityRepository->getByIds($results, true) as $topic) {
             //@TODO: prefetch Community Channels and StatusCategories
-            $output[] = $this->formatCommunityTopicResultRow($feedback);
+            $output[] = $this->formatCommunityTopicResultRow($topic);
         }
 
         return $this->createJsonResponse($output);

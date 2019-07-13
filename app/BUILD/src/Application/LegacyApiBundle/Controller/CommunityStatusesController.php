@@ -38,16 +38,16 @@ class CommunityStatusesController extends AbstractController implements Protecte
 
     public function listAction()
     {
-        $feedback_statuses = $this->container->getSystemService('community_statuses');
+        $communityStatuses = $this->container->getSystemService('community_statuses');
 
-        $active_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getActiveStatuses()));
-        $closed_statuses = $this->getApiData(Arrays::flatten($feedback_statuses->getClosedStatuses()));
+        $activeStatuses = $this->getApiData(Arrays::flatten($communityStatuses->getActiveStatuses()));
+        $closedStatuses = $this->getApiData(Arrays::flatten($communityStatuses->getClosedStatuses()));
 
         return $this->createApiResponse(
             [
                  'statuses' => [
-                     'active_statuses' => $active_statuses,
-                     'closed_statuses' => $closed_statuses,
+                     'active_statuses' => $activeStatuses,
+                     'closed_statuses' => $closedStatuses,
                  ],
             ]
         );
@@ -59,14 +59,14 @@ class CommunityStatusesController extends AbstractController implements Protecte
 
     public function getAction($id)
     {
-        $feedback_statuses = $this->container->getSystemService('community_statuses');
-        $feedback_status   = $feedback_statuses->getById($id);
+        $communityStatusesService = $this->container->getSystemService('community_statuses');
+        $communityStatus          = $communityStatusesService->getById($id);
 
-        if (!$feedback_status) {
+        if (!$communityStatus) {
             throw $this->createNotFoundException();
         }
 
-        return $this->createApiResponse(['feedback_status' => $this->getApiData($feedback_status)]);
+        return $this->createApiResponse(['community_status' => $this->getApiData($communityStatus)]);
     }
 
     //###################################################################################################################
@@ -75,38 +75,38 @@ class CommunityStatusesController extends AbstractController implements Protecte
 
     public function saveAction($id)
     {
-        $feedback_statuses = $this->container->getSystemService('community_statuses');
+        $communityStatusesService = $this->container->getSystemService('community_statuses');
 
         if ($id) {
-            $feedback_status = $feedback_statuses->getById($id);
+            $communityStatus = $communityStatusesService->getById($id);
 
-            if (!$feedback_status) {
+            if (!$communityStatus) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $feedback_status = $feedback_statuses->createNew();
+            $communityStatus = $communityStatusesService->createNew();
         }
 
-        $feedback_status_edit = new CommunityStatusEdit($feedback_status);
+        $communityStatusEdit = new CommunityStatusEdit($communityStatus);
 
         $postData = $this->in->getAll('post');
 
-        $form = $this->createForm(new CommunityStatusType(), $feedback_status_edit, ['cascade_validation' => true]);
-        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_status'), true);
+        $form = $this->createForm(new CommunityStatusType(), $communityStatusEdit, ['cascade_validation' => true]);
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_status'), true);
 
         if ($form->isValid()) {
-            $feedback_status_edit->save($this->em);
+            $communityStatusEdit->save($this->em);
         } else {
             return $this->createApiValidationErrorResponse(
-                $this->container->getValidator()->validate($feedback_status)
+                $this->container->getValidator()->validate($communityStatus)
             );
         }
 
         return $this->createApiResponse(
             [
                  'success' => true,
-                 'id'      => $feedback_status->getId(),
-                 'brand'   => $feedback_status->getBrand() ? $feedback_status->getBrand()->getId() : null,
+                 'id'      => $communityStatus->getId(),
+                 'brand'   => $communityStatus->getBrand() ? $communityStatus->getBrand()->getId() : null,
             ]
         );
     }
@@ -117,41 +117,41 @@ class CommunityStatusesController extends AbstractController implements Protecte
 
     public function removeAction($id)
     {
-        $feedback_statuses = $this->container->getSystemService('community_statuses');
-        $feedback_status   = $feedback_statuses->getById($id);
+        $communityStatusesService = $this->container->getSystemService('community_statuses');
+        $communityStatus          = $communityStatusesService->getById($id);
 
-        if (!$feedback_status) {
+        if (!$communityStatus) {
             throw $this->createNotFoundException();
         }
 
-        $move_to                 = $this->in->getUint('move_to');
-        $move_to_feedback_status = $feedback_statuses->getById($move_to);
+        $moveTo                = $this->in->getUint('move_to');
+        $moveToCommunityStatus = $communityStatusesService->getById($moveTo);
 
-        if (!$move_to_feedback_status) {
+        if (!$moveToCommunityStatus) {
             throw ValidationException::create(
-                'feedback_status.remove.move_feedback_statuses',
-                'You must select a feedback status to move existing feedback into'
+                'community_status.remove.move_community_statuses',
+                'You must select a community status to move existing community topic into'
             );
         }
 
-        if ($move_to_feedback_status->getId() == $feedback_status->getId()) {
+        if ($moveToCommunityStatus->getId() == $communityStatus->getId()) {
             throw ValidationException::create(
-                'feedback_status.remove.move_feedback_statuses',
-                'You must choose a different feedback status'
+                'community_status.remove.move_community_statuses',
+                'You must choose a different community status'
             );
         }
 
-        $old_id = $feedback_status->getId();
+        $old_id = $communityStatus->getId();
 
         $this->db->beginTransaction();
 
         try {
             $this->db->executeUpdate(
-                'UPDATE feedback SET status_category_id = ? WHERE status_category_id = ?',
-                [$move_to, $old_id]
+                'UPDATE community_topics SET status_category_id = ? WHERE status_category_id = ?',
+                [$moveTo, $old_id]
             );
 
-            $this->em->remove($feedback_status);
+            $this->em->remove($communityStatus);
             $this->em->flush();
 
             $this->db->commit();
@@ -169,11 +169,11 @@ class CommunityStatusesController extends AbstractController implements Protecte
 
     public function saveDisplayOrderAction()
     {
-        $display_orders = $this->in->getArrayOfUInts('display_orders');
+        $displayOrders = $this->in->getArrayOfUInts('display_orders');
 
-        /** @var \Application\DeskPRO\Community\CommunityStatuses $feedback_statuses */
-        $feedback_statuses = $this->container->getSystemService('community_statuses');
-        $feedback_statuses->updateDisplayOrders($display_orders);
+        /** @var \Application\DeskPRO\Community\CommunityStatuses $communityStatusesService */
+        $communityStatusesService = $this->container->getSystemService('community_statuses');
+        $communityStatusesService->updateDisplayOrders($displayOrders);
 
         return $this->createSuccessResponse();
     }

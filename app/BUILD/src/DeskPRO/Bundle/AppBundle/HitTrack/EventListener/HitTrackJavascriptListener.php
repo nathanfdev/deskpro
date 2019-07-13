@@ -90,7 +90,7 @@ JS;
                 'object' => 'article',
             ],
             'portal_community_topic_view' => [
-                'type'   => HitRecord::PAGETYPE_FEEDBACK,
+                'type'   => HitRecord::PAGETYPE_COMMUNITY,
                 'object' => 'item',
             ],
             'portal_downloads_view' => [

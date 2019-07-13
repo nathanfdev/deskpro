@@ -79,7 +79,7 @@ class CommunityTopicsController extends AbstractController
             return $this->render('PortalBundle:Community:feed.rss.twig', [
                 'pager'      => $pager,
                 'category'   => null,
-                'page_title' => $this->createPageTitle()->feedback(),
+                'page_title' => $this->createPageTitle()->community(),
             ]);
         }
         $rssLink = $this->generateUrl('portal_community', ['_format' => 'rss']);
@@ -143,7 +143,7 @@ class CommunityTopicsController extends AbstractController
                         $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
 
                         if ($person instanceof PersonGuest) {
-                            $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmail(), $person->getDisplayName());
+                            $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmail(), $person->getDisplayName());
 
                             return new RedirectResponse(
                                 $this->container->get('router')->generate('portal_login', [
@@ -151,13 +151,13 @@ class CommunityTopicsController extends AbstractController
                                 ])
                             );
                         } else {
-                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_FEEDBACK, $person, $form, $request);
+                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $person, $form, $request);
                         }
                     } catch (EmailValidationRequiredException $e) {
                         $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
 
-                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
-                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_FEEDBACK, $savedForm);
+                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
                         $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
 
                         return $this->redirectToRoute('portal_community');
@@ -189,17 +189,17 @@ class CommunityTopicsController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $feedbackTypes = $this->get('data.community')->getCommunityChannelsForPerson($person);
+        $communityChannels = $this->get('data.community')->getCommunityChannelsForPerson($person);
 
         // JS INITIAL DATA
 
         $filter             = new CommunityFilter(); // get the defaults$allowed_types_parsed = array();
         $allowedTypesParsed = [];
-        foreach ($feedbackTypes as $cat) {
+        foreach ($communityChannels as $cat) {
             $allowedTypesParsed[] = $cat->getId();
         }
         $filter->setTypes($allowedTypesParsed);
-        $filterJs = $this->generateFilterJs($filter, $feedbackTypes, $page);
+        $filterJs = $this->generateFilterJs($filter, $communityChannels, $page);
 
         $check = $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp(), false);
 
@@ -209,7 +209,7 @@ class CommunityTopicsController extends AbstractController
             'Theme:Community:index.html.twig',
             [
                 'page'               => $page,
-                'feedback_types'     => $feedbackTypes,
+                'community_channels' => $communityChannels,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination'    => true,
                 'status'             => $filter->getStatus(),
@@ -222,7 +222,7 @@ class CommunityTopicsController extends AbstractController
                 'user'               => $this->getUser(),
                 'rerendering_saved'  => $rerenderingSaved,
                 'breadcrumbs'        => $breadcrumbs,
-                'page_title'         => $this->createPageTitle()->feedback(),
+                'page_title'         => $this->createPageTitle()->community(),
                 'rss_link'           => $rssLink,
                 'filter_js'          => $filterJs,
                 'is_subscribed'      => $isSubscribed,
@@ -354,26 +354,26 @@ class CommunityTopicsController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $feedbackTypes = $this->get('data.community')->getCommunityChannelsForPerson($person);
-        $filterJs      = $this->generateFilterJs($filter, $feedbackTypes, $page);
+        $communityChannels = $this->get('data.community')->getCommunityChannelsForPerson($person);
+        $filterJs          = $this->generateFilterJs($filter, $communityChannels, $page);
 
         $pageOptions = [
-            'page'              => $page,
-            'feedback_types'    => $feedbackTypes,
-            'count'             => $this->getBrandSetting('portal.per_page_content'),
-            'show_pagination'   => true,
-            'status'            => $filter->getStatus(),
-            'status_categories' => $filter->getStatusCategories(),
-            'types'             => $filter->getTypes(),
-            'sort'              => $filter->getSort(),
-            'sort_direction'    => $filter->getSortDirection(),
-            'breadcrumbs'       => $breadcrumbs,
-            'page_title'        => $this->createPageTitle()->feedback(),
-            'filter_js'         => $filterJs,
-            'rerendering_saved' => false, // wont happen here because we always rerender on index
-            'is_subscribed'     => $isSubscribed,
-            'lockout'           => $request->get('lockout', false),
-            'lockout_time'      => 0,
+            'page'               => $page,
+            'community_channels' => $communityChannels,
+            'count'              => $this->getBrandSetting('portal.per_page_content'),
+            'show_pagination'    => true,
+            'status'             => $filter->getStatus(),
+            'status_categories'  => $filter->getStatusCategories(),
+            'types'              => $filter->getTypes(),
+            'sort'               => $filter->getSort(),
+            'sort_direction'     => $filter->getSortDirection(),
+            'breadcrumbs'        => $breadcrumbs,
+            'page_title'         => $this->createPageTitle()->community(),
+            'filter_js'          => $filterJs,
+            'rerendering_saved'  => false, // wont happen here because we always rerender on index
+            'is_subscribed'      => $isSubscribed,
+            'lockout'            => $request->get('lockout', false),
+            'lockout_time'       => 0,
         ];
 
         if ($request->isXmlHttpRequest()) {
@@ -430,7 +430,7 @@ class CommunityTopicsController extends AbstractController
         // COMMENT FORM
 
         $newCommentForm = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK, $item)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $item)) {
             $formHandler = $this->get('form_handler.comment');
             $comment     = new CommunityTopicComment();
             $comment->setVisitorId($visitor_id);
@@ -453,7 +453,7 @@ class CommunityTopicsController extends AbstractController
         // RATING
 
         $rating         = $this->findContentRating($item, $visitor_id);
-        $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_FEEDBACK, $item);
+        $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $item);
 
         // NUM RATINGS
 
@@ -476,7 +476,7 @@ class CommunityTopicsController extends AbstractController
 
         // REGISTERED PAGE VIEW LOG
         if ($person = $this->getUser()) {
-            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_FEEDBACK, $item->getId());
+            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_COMMUNITY, $item->getId());
         }
 
         // RENDER THEME
@@ -489,7 +489,7 @@ class CommunityTopicsController extends AbstractController
                 'content_id'         => $item->getId(),
                 'content_type'       => CommunityTopic::CONTENT_TYPE,
                 'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'page_title'         => $this->createPageTitle()->feedback($item),
+                'page_title'         => $this->createPageTitle()->community($item),
                 'breadcrumbs'        => $breadcrumbs,
                 'rating'             => $rating,
                 'show_rating_counts' => $showRatingCounts,
@@ -513,7 +513,7 @@ class CommunityTopicsController extends AbstractController
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|JsonResponse
      */
-    public function feedbackRateAction(Request $request, CommunityTopic $item, $visitor_id, $up_or_down)
+    public function communityRateAction(Request $request, CommunityTopic $item, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_COMMUNITY')) {
             throw $this->createAccessDeniedException($this->phrase('portal.feedback.module_forbidden'));
@@ -643,14 +643,14 @@ class CommunityTopicsController extends AbstractController
 
     /**
      * @param $filter
-     * @param $feedbackTypes
+     * @param $communityChannels
      *
      * @return string
      */
-    public function generateFilterJs(CommunityFilter $filter, array $feedbackTypes, $page)
+    public function generateFilterJs(CommunityFilter $filter, array $communityChannels, $page)
     {
         $allowedTypesParsed = [];
-        foreach ($feedbackTypes as $cat) {
+        foreach ($communityChannels as $cat) {
             $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 

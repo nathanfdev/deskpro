@@ -66,19 +66,19 @@ class Column extends AbstractPart
      * @var array
      */
     protected static $_tableResolver = [
-        'agent_teams'                => ['id', 'name'],
-        'article_categories'         => ['id', 'title'],
-        'download_categories'        => ['id', 'title'],
-        'feedback_categories'        => ['id', 'title'],
-        'news_categories'            => ['id', 'title'],
-        'brands'                     => ['id', 'name'],
-        'custom_field_definition'    => ['id', 'title'],
-        'departments'                => ['id', 'title'],
-        'feedback_status_categories' => ['id', 'title'],
-        'labels_tickets'             => ['label', 'label'],
-        'languages'                  => ['id', 'title'],
-        'organizations'              => ['id', 'name', 'organization'],
-        'people'                     => ['id', '
+        'agent_teams'                       => ['id', 'name'],
+        'article_categories'                => ['id', 'title'],
+        'download_categories'               => ['id', 'title'],
+        'community_channels'                => ['id', 'title'],
+        'news_categories'                   => ['id', 'title'],
+        'brands'                            => ['id', 'name'],
+        'custom_field_definition'           => ['id', 'title'],
+        'departments'                       => ['id', 'title'],
+        'community_topic_status_categories' => ['id', 'title'],
+        'labels_tickets'                    => ['label', 'label'],
+        'languages'                         => ['id', 'title'],
+        'organizations'                     => ['id', 'name', 'organization'],
+        'people'                            => ['id', '
 (CASE
     WHEN (LENGTH(%1$s.first_name) > 0 AND LENGTH(%1$s.last_name) > 0) THEN CONCAT(%1$s.first_name, \' \', %1$s.last_name)
     WHEN LENGTH(%1$s.name) > 0 THEN %1$s.name
@@ -139,12 +139,12 @@ END)
      * @param array                $parts
      */
     public function __construct(
-        DpqlStatementFactory     $statementFactory,
-        DpqlFuncRegistry         $dpqlFuncRegistry,
-        EntityManager            $em,
-        Connection               $connection,
-        CustomDataHelper         $customDataHelper,
-        array                    $parts
+        DpqlStatementFactory $statementFactory,
+        DpqlFuncRegistry $dpqlFuncRegistry,
+        EntityManager $em,
+        Connection $connection,
+        CustomDataHelper $customDataHelper,
+        array $parts
     ) {
         $this->statementFactory = $statementFactory;
         $this->dpqlFuncRegistry = $dpqlFuncRegistry;
