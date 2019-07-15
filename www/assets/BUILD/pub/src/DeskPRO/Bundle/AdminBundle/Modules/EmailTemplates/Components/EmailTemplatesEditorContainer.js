@@ -9,9 +9,9 @@ import { ConfirmButton, Button, Icon } from '@deskpro/react-components';
 import CodeMirror from 'DeskPRO/Component/CMEditor/CodeMirror';
 import Editor from 'DeskPRO/Component/CMEditor/Editor';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
-import { MediaMenuContainer } from 'DeskPRO/Component/CMEditor/Menus/MediaMenu';
 import DropDownMenu from 'DeskPRO/Component/CMEditor/Menus/DropDownMenu';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
+import { MediaMenuContainer } from './Menus/MediaMenu';
 import { PhrasesMenuContainer } from './Menus/PhrasesMenu';
 import { VariablesMenuContainer } from './Menus/VariablesMenu';
 import LanguageSelector from './Menus/LanguageSelector';
@@ -85,14 +85,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        editor: this.editor.editor.bodyEditor
-      });
-    }, 100);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.emailTemplates.get('phrases') !== this.props.emailTemplates.get('phrases')) {
       const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
@@ -114,6 +106,12 @@ class EmailTemplatesEditorContainer extends React.Component {
       this.state.currentWidget.closePopup();
     }
   }
+
+  setEditor = (editor) => {
+    this.setState({
+      editor
+    });
+  };
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
 
@@ -524,6 +522,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       setTemplateValue={this.setTemplateValue}
       getPhraseTranslations={this.getPhraseTranslations}
       savePhraseTranslations={this.savePhraseTranslations}
+      setEditor={this.setEditor}
       previewSubmit={this.state.previewSubmit}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
@@ -566,6 +565,7 @@ class EmailTemplatesEditor extends React.Component {
     setCurrentWidget:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
+    setEditor:              PropTypes.func,
     previewSubmit:          PropTypes.bool,
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
@@ -887,6 +887,7 @@ class EmailTemplatesEditor extends React.Component {
             savePhraseTranslations={this.props.savePhraseTranslations}
             setCurrentWidget={this.props.setCurrentWidget}
             setTemplateValue={this.setTemplateValue}
+            setEditor={this.props.setEditor}
           />
           <div className="footer">
             <Button

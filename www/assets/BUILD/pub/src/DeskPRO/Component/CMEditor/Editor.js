@@ -20,6 +20,7 @@ class Editor extends React.Component {
     savePhraseTranslations: PropTypes.func,
     setCurrentWidget:       PropTypes.func,
     setTemplateValue:       PropTypes.func,
+    setEditor:              PropTypes.func,
     phrases:                PropTypes.object,
   };
   static defaultProps = {
@@ -27,6 +28,7 @@ class Editor extends React.Component {
     disabled: false,
     changeTemplateBody() {},
     changeTemplateSubject() {},
+    setEditor() {},
   };
 
   constructor(props) {
@@ -141,12 +143,12 @@ class Editor extends React.Component {
   };
 
   handleSubjectChange = (cm, change) => {
-    this.props.changeTemplateSubject(cm.getValue());
+    this.props.changeTemplateSubject(cm.getValue(), change);
     this.addMarks(cm, change, this.props.setCurrentWidget);
   };
 
   handleBodyChange = (cm, change) => {
-    this.props.changeTemplateBody(cm.getValue());
+    this.props.changeTemplateBody(cm.getValue(), change);
     this.addMarks(cm, change, this.props.setCurrentWidget);
   };
 
@@ -161,6 +163,9 @@ class Editor extends React.Component {
     if (this.props.phrases.size === 0) {
       return null;
     }
+    setTimeout(() => {
+      this.props.setEditor(this.bodyEditor);
+    }, 100);
     return (
       <div className={classNames('dp-code-editor', { disabled })}>
         <div className={classNames('ui dimmer inverted', { active: disabled })}>

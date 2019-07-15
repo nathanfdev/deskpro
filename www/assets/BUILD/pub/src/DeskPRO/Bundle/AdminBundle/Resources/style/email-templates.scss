@@ -421,6 +421,9 @@
       transform: rotate(315deg);
     }
   }
+  .ui.popup {
+    max-width: none;
+  }
 }
 .variables {
   width: 780px;
@@ -766,4 +769,7 @@
       }
     }
   }
+}
+.assets-menu {
+  padding: 20px;
 }

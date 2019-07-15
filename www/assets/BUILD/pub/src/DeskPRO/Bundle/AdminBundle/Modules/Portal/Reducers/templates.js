@@ -5,8 +5,7 @@ import * as actions from '../Actions/templatesActions';
 
 const initialState = {
   info:            {},
-  inlineImages:    {},
-  attachments:     {},
+  assets:          {},
   phrases:         {},
   template:        {},
   currentLanguage: window.DP_PERSON_LANG_CODE,
@@ -15,11 +14,8 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.loadAttachments]: async({
-    success: setFullPayload('attachments')
-  }),
-  [actions.loadInlineImages]: async({
-    success: setFullPayload('inlineImages')
+  [actions.loadAssets]: async({
+    success: setFullPayload('assets')
   }),
   [actions.loadPhrases]: async({
     success: setFullPayload('phrases')
@@ -45,6 +41,7 @@ export default createReducer(initialState, {
   [actions.deletePreview]:           state => state.delete('preview'),
   [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),
   [actions.updateTemplateCode]:      (state, payload) => state.setIn(['template', 'template_code', 'code'], payload),
+  [actions.saveTemplate]:            (state, payload) => state.setIn(['template', 'original_code', 'code'], payload),
   [actions.cleanState]:              state => state.delete('template').delete('preview').delete('currentTemplate'),
   [actions.cleanExtraTemplates]:     state => state.deleteIn(['template', 'extra_templates'])
 });

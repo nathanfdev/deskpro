@@ -12,17 +12,6 @@ export const deleteAsset = createAction(
 
 export const deletePreview = createAction('PORTAL_TEMPLATES_DELETE_PREVIEW');
 
-export const loadAttachments = createAction(
-  'PORTAL_TEMPLATES_LOAD_ATTACHMENTS',
-  () => new Promise((resolve) => {
-    repository('PortalTemplates').getFiles('attachment').then((promise) => {
-      const res = promise.getData();
-
-      resolve(res.data);
-    });
-  })
-);
-
 export const loadExampleTicket = createAction(
   'PORTAL_TEMPLATES_EXAMPLE_TICKET',
   ticketId => new Promise((resolve) => {
@@ -34,10 +23,10 @@ export const loadExampleTicket = createAction(
   })
 );
 
-export const loadInlineImages = createAction(
-  'PORTAL_TEMPLATES_LOAD_INLINE_IMAGES',
+export const loadAssets = createAction(
+  'PORTAL_TEMPLATES_LOAD_ASSETS',
   () => new Promise((resolve) => {
-    repository('PortalTemplates').getFiles('inline-image').then((promise) => {
+    repository('PortalTemplates').loadAssets().then((promise) => {
       const res = promise.getData();
 
       resolve(res.data);
@@ -188,8 +177,8 @@ export const saveCustomPhrase = createAction(
 export const saveTemplate = createAction(
   'PORTAL_TEMPLATES_SAVE_TEMPLATE',
   (name, template) => new Promise((resolve, reject) => {
-    repository('PortalTemplates').saveTemplate(name, template).then((promise) => {
-      resolve(promise.getData());
+    repository('PortalTemplates').saveTemplate(name, template).then(() => {
+      resolve(template);
     }, (err) => {
       reject(err.data);
     });

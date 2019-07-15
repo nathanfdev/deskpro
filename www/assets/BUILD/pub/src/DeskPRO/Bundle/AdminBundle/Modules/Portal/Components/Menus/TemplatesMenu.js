@@ -120,10 +120,20 @@ class TemplatesMenu extends React.Component {
       )).toArray();
   };
 
-  updateFilter = (value) => {
+  updateFilter = (filter) => {
     this.setState({
-      filter: value
+      filter
     });
+    if (this.state.selectedLeft && this.state.selectedLeft.get('templates').filter(template => !filter || template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1).size === 0) {
+      const selectedLeft = this.props.templates.toSeq()
+        .filter(group =>
+          !filter || group.get('templates')
+            .find(template => template.get('name').toLowerCase().indexOf(filter.toLowerCase()) !== -1)
+        ).first();
+      this.setState({
+        selectedLeft
+      });
+    }
   };
 
   isActive = item => item === this.state.selectedLeft;

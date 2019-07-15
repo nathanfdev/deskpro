@@ -29,8 +29,8 @@ class PortalTemplatesRepository extends ApiRepository {
     return this.api.sendGet(`DP_API/${this.url}/view_model/variables/${viewModel}`);
   }
 
-  getFiles(type) {
-    return this.api.sendGet(`DP_API/${this.url}/email_assets/${type}`);
+  loadAssets() {
+    return this.api.sendGet('/portal/api/style/edit-theme-set/assets');
   }
 
   deleteAsset(themeSetAssetId) {

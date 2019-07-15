@@ -8,8 +8,8 @@ import { Button, ConfirmButton, Icon } from '@deskpro/react-components';
 import Editor from 'DeskPRO/Component/CMEditor/Editor';
 import DropDownMenu from 'DeskPRO/Component/CMEditor/Menus/DropDownMenu';
 import { TemplatesMenuContainer } from './Menus/TemplatesMenu';
+import { AssetsMenuContainer } from './Menus/AssetsMenu';
 import * as actions from '../Actions/templatesActions';
-import { MediaMenuContainer } from '../../../../../Component/CMEditor/Menus/MediaMenu';
 import { PhrasesMenuContainer } from '../../EmailTemplates/Components/Menus/PhrasesMenu';
 import { replaceRoute } from '../../../Services/history';
 
@@ -43,6 +43,7 @@ class PortalEditorContainer extends React.Component {
 
     dispatch(actions.unselectTemplate());
 
+    dispatch(actions.loadAssets());
     dispatch(actions.loadTemplates());
 
     if (this.props.params.name) {
@@ -56,13 +57,11 @@ class PortalEditorContainer extends React.Component {
     ));
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        editor: this.editor.editor.bodyEditor
-      });
-    }, 100);
-  }
+  setEditor = (editor) => {
+    this.setState({
+      editor
+    });
+  };
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
 
@@ -120,6 +119,17 @@ class PortalEditorContainer extends React.Component {
     this.props.dispatch(actions.updateTemplateCode(value));
   };
 
+  insertInlineImage = (file) => {
+    const tag = `<img src="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="" />`;
+    this.state.editor.getCodeMirror().replaceSelection(tag);
+  };
+
+  insertAssetAsLink = (e, file) => {
+    e.stopPropagation();
+    const tag = `<a href="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}">${file.get('name')}</a>`;
+    this.state.editor.getCodeMirror().replaceSelection(tag);
+  };
+
   insertPhrase = (phrase) => {
     this.state.editor.getCodeMirror().replaceSelection(phrase);
   };
@@ -164,10 +174,13 @@ class PortalEditorContainer extends React.Component {
         setTemplateValue={this.setTemplateValue}
         setCurrentWidget={this.setCurrentWidget}
         getPhraseTranslations={this.getPhraseTranslations}
+        insertAsset={this.insertInlineImage}
+        insertAssetAsLink={this.insertAssetAsLink}
         insertPhrase={this.insertPhrase}
         changeTemplateCode={this.changeTemplateCode}
         saveTemplate={this.saveTemplate}
         close={this.close}
+        setEditor={this.setEditor}
         saveSubmit={this.state.saveSubmit}
         undoSubmit={this.state.undoSubmit}
         resetSubmit={this.state.resetSubmit}
@@ -179,26 +192,26 @@ class PortalEditorContainer extends React.Component {
 
 class PortalEditor extends React.Component {
   static propTypes = {
-    name:                   PropTypes.string,
-    brandId:                PropTypes.string,
-    portalEditor:           PropTypes.object,
-    loadTagInfo:            PropTypes.func,
-    loadTemplate:           PropTypes.func,
-    setTemplateValue:       PropTypes.func,
-    changeTemplateCode:     PropTypes.func,
-    setCurrentWidget:       PropTypes.func,
-    getPhraseTranslations:  PropTypes.func,
-    deleteTemplate:         PropTypes.func,
-    saveTemplate:           PropTypes.func,
-    resetTemplate:          PropTypes.func,
-    insertAttachment:       PropTypes.func,
-    insertAttachmentAsLink: PropTypes.func,
-    insertInlineImage:      PropTypes.func,
-    insertPhrase:           PropTypes.func,
-    close:                  PropTypes.func,
-    saveSubmit:             PropTypes.bool,
-    undoSubmit:             PropTypes.bool,
-    resetSubmit:            PropTypes.bool,
+    name:                  PropTypes.string,
+    brandId:               PropTypes.string,
+    portalEditor:          PropTypes.object,
+    loadTagInfo:           PropTypes.func,
+    loadTemplate:          PropTypes.func,
+    setTemplateValue:      PropTypes.func,
+    changeTemplateCode:    PropTypes.func,
+    setCurrentWidget:      PropTypes.func,
+    getPhraseTranslations: PropTypes.func,
+    deleteTemplate:        PropTypes.func,
+    saveTemplate:          PropTypes.func,
+    resetTemplate:         PropTypes.func,
+    insertAsset:           PropTypes.func,
+    insertAssetAsLink:     PropTypes.func,
+    insertPhrase:          PropTypes.func,
+    close:                 PropTypes.func,
+    setEditor:             PropTypes.func,
+    saveSubmit:            PropTypes.bool,
+    undoSubmit:            PropTypes.bool,
+    resetSubmit:           PropTypes.bool,
   };
 
   constructor(props) {
@@ -258,15 +271,16 @@ class PortalEditor extends React.Component {
   handleChange = (value) => {
     if (this.props.portalEditor.get('template')) {
       this.props.changeTemplateCode(value);
-      this.checkChanges();
+      this.checkChanges(value);
     }
   };
 
-  checkChanges = () => {
+  checkChanges = (value = null) => {
     const code = this.props.portalEditor.getIn(['template', 'original_code', 'code'], '');
     const extraTemplates = this.props.portalEditor.getIn(['template', 'extra_templates'], fromJS({}));
 
-    if (code !== this.state.templateCode || extraTemplates.size) {
+    const newCode = value || this.state.templateCode;
+    if (code !== newCode || extraTemplates.size) {
       this.setState({
         contentChanged: true
       });
@@ -313,11 +327,10 @@ class PortalEditor extends React.Component {
                   positionMy="right top-1px"
                   positionAt="right bottom"
                 >
-                  <MediaMenuContainer
+                  <AssetsMenuContainer
                     closeMenu={this.closeMediaMenu}
-                    insertAttachment={this.props.insertAttachment}
-                    insertAttachmentAsLink={this.props.insertAttachmentAsLink}
-                    insertInlineImage={this.props.insertInlineImage}
+                    insertAsset={this.props.insertAsset}
+                    insertAssetAsLink={this.props.insertAssetAsLink}
                   />
                 </DropDownMenu>
               </div>
@@ -352,6 +365,7 @@ class PortalEditor extends React.Component {
             loadTemplate={this.props.loadTemplate}
             setCurrentWidget={this.props.setCurrentWidget}
             setTemplateValue={this.setTemplateValue}
+            setEditor={this.props.setEditor}
           />
           <div className="footer">
             <Button
@@ -398,7 +412,6 @@ class PortalEditor extends React.Component {
             <Button
               size="medium"
               className={classNames('right floated')}
-              disabled={contentChanged}
               onClick={this.props.close}
             >
               Close

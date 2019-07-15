@@ -7,13 +7,17 @@ class ImageMenuItem extends React.Component {
   static propTypes    = {
     url:          PropTypes.string,
     label:        PropTypes.string,
+    position:     PropTypes.string,
     onClick:      PropTypes.func,
     deleteFile:   PropTypes.func,
     downloadFile: PropTypes.func,
+    insertAsLink: PropTypes.func,
     className:    PropTypes.string
   };
   static defaultProps = {
     onClick() {},
+    insertAsLink: null,
+    position:     'right'
   };
 
   componentWillUnmount() {
@@ -41,19 +45,21 @@ class ImageMenuItem extends React.Component {
       window.clearTimeout(this.toolTipTimeOutId);
       this.toolTipTimeOutId = undefined;
     }
-    if (this.templatePopup) {
-      this.templatePopup.closePopup();
-    }
+    setTimeout(() => {
+      if (this.templatePopup) {
+        this.templatePopup.closePopup();
+      }
+    }, 500);
   };
 
   render() {
     let positionMy;
     let positionAt;
-    if (window.document.documentElement.clientWidth > 1750) {
-      positionMy = 'left top-15px';
+    if (window.document.documentElement.clientWidth > 1750 && this.props.position === 'right') {
+      positionMy = 'left top-12px';
       positionAt = 'right top';
     } else {
-      positionMy = 'right top-15px';
+      positionMy = 'right top-12px';
       positionAt = 'left top';
     }
     return (
@@ -76,6 +82,7 @@ class ImageMenuItem extends React.Component {
           <span className="filename" title={this.props.label}>{this.props.label}</span>
           <i onClick={this.props.downloadFile} className="download icon" title="Download" />
           <i onClick={this.props.deleteFile} className="remove icon" title="Remove" />
+          {this.props.insertAsLink && <i onClick={this.props.insertAsLink} className="linkify icon" title="Insert Link" />}
         </MenuItem>
       </PopUp>
     );
