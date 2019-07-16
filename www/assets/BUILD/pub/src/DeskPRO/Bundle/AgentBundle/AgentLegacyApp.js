@@ -17,7 +17,7 @@ import { AgentList } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Components/A
 import { AgentOnboardingContainer }  from 'DeskPRO/Bundle/AgentBundle/Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Archive/ArchiveFiles';
 import { GuideTreeContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/List/GuideTree';
-import { EditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/Editor/Editor';
+import { MarkdownEditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/MarkdownEditor/Editor';
 import VoiceControlsContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import MessagePhoneNumber from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/MessagePhoneNumber';
@@ -305,7 +305,7 @@ class AgentLegacyApp {
     );
   }
 
-  renderContentEditor(
+  renderMarkdownEditor(
     node,
     value,
     inputType,
@@ -319,7 +319,7 @@ class AgentLegacyApp {
             locale={this.locale}
             messages={agentPhrases.getPhrases()}
           >
-            <EditorContainer
+            <MarkdownEditorContainer
               value={value}
               inputType={inputType}
               save={save}
