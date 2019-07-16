@@ -511,6 +511,9 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type, $metadata);
                     };
+                } elseif ($field && $field->isCurrencyType()) {
+                    $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['value']));
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
                 } elseif ($field && $section === 'group' && $field->isChoiceType()) {
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'id']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
@@ -530,7 +533,12 @@ END)
                     $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
                 }
 
-                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), $preppedPrint ? $preppedPrint->sql() : false, $renderer);
+                return new Prepared(
+                    $prepped->sql(),
+                    $this->_prettifyColumnName($field ? $field->getTitle() : $name),
+                    $preppedPrint ? $preppedPrint->sql() : false,
+                    $renderer ?: $prepped->renderer()
+                );
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = $this->statementFactory->createFunctionCall('if', [
                     $this->statementFactory->createColumn(array_merge($this->parts, ['parent', 'id'])),
