@@ -228,7 +228,9 @@
                         <div>
                             <label><input type="checkbox" value="{{ id }}" name="usergroup_ids[]"
                                           class="ug-check ug-check-{{ id }}"
-                                          {% if person.isMemberOfUsergroup(id) %}checked="checked"{% endif %} /> {{ name }}
+                                          {% if person.isMemberOfUsergroup(id) %} checked="checked"{% endif %}
+                                          {% if id in person_org_usergroups_ids %} disabled="disabled"{% endif %} /> {{ name }}
+                                {% if id in person_org_usergroups_ids %}<span class="contact-list-item-help">(granted via organisation usergroup)</span>{% endif %}
                             </label>
                         </div>
                     {% endfor %}
