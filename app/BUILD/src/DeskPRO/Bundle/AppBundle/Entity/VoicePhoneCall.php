@@ -102,7 +102,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
-     * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @Assert\NotNull()
      *
