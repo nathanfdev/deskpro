@@ -13,7 +13,7 @@ use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * API access to feedback comments.
+ * API access to email templates.
  *
  * @ApiModes("all")
  * @Feature("email_templates")

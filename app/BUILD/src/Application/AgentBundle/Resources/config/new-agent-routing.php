@@ -70,7 +70,7 @@ $collection->create(
 $collection->create(
     'react_agent_feedback',
     [
-        'path'       => '/community',
+        'path'       => '/feedback',
         'controller' => 'AgentBundle:AgentChrome:agentChrome',
     ]
 )

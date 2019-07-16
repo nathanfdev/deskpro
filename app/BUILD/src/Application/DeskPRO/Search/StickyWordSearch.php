@@ -125,7 +125,7 @@ class StickyWordSearch implements PersonContextInterface
      *
      * @return array
      */
-    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'feedback', 'topic'])
+    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'community', 'topic'])
     {
         $words = $this->getWordsFromQuery($query);
 
@@ -145,7 +145,7 @@ class StickyWordSearch implements PersonContextInterface
                 case 'article':  return 'DeskPRO:Article';
                 case 'news':     return 'DeskPRO:News';
                 case 'download': return 'DeskPRO:Download';
-                case 'feedback': return 'DeskPRO:CommunityTopic';
+                case 'community': return 'DeskPRO:CommunityTopic';
                 case 'topic':    return 'DeskPRO:Topic';
                 default: return $t;
             }

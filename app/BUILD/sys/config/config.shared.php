@@ -717,7 +717,7 @@ $container->loadFromExtension(
                             'repository'                    => \Application\DeskPRO\NewSearch\Repository\DownloadRepository::class,
                         ],
                     ],
-                    'feedback' => [
+                    'community' => [
                         'mappings' => [
                             'title'        => ['analyzer' => 'title_content_analyzer'],
                             'labels'       => ['analyzer' => 'title_content_analyzer'],
@@ -728,7 +728,7 @@ $container->loadFromExtension(
                             'sticky_words' => [],
                             'content'      => ['analyzer' => 'text_content_analyzer'],
                             'status'       => [],
-                            'category_id'  => ['type' => 'integer'],
+                            'channel_id'   => ['type' => 'integer'],
                             'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                             'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                         ],

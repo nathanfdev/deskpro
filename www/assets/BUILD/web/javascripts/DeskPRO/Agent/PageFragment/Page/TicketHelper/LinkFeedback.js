@@ -54,7 +54,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
 		var wrapper = this.overlay.getWrapper();
 
 		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
-    wrapper.find('.feedback-finder').bind('feedbacksearchboxclick', function(ev, feedbackId, title, sb) {
+    wrapper.find('.feedback-finder').bind('communitysearchboxclick', function(ev, feedbackId, title, sb) {
 			var footerEl = self.overlay.getWrapper().find('.overlay-footer').addClass('loading');
 
 			var isSubscribeOwner = wrapper.find("#is_subscribe_owner").is(":checked");
@@ -83,7 +83,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
 					success: function(data) {
 
             // remove tabs with linked feedback, they are outdated
-            DeskPRO_Window.getTabWatcher().findTabType('feedback').forEach(function(tab) {
+            DeskPRO_Window.getTabWatcher().findTabType('community').forEach(function(tab) {
               if (feedbackId == tab.page.getMetaData('feedback_id')) {
                 DeskPRO_Window.TabBar.removeTabById(tab.id);
               }

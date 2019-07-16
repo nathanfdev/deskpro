@@ -12,9 +12,9 @@ class NewCommentCommunityTopic extends NewCommentAbstract
 {
     public function getDetails()
     {
-        $details                   = parent::getDetails();
-        $details['feedback_id']    = $this->comment->topic['id'];
-        $details['feedback_title'] = $this->comment->topic['title'];
+        $details                          = parent::getDetails();
+        $details['topic_id']              = $this->comment->topic['id'];
+        $details['community_topic_title'] = $this->comment->topic['title'];
 
         return $details;
     }

@@ -26,9 +26,9 @@ class NewCommunityTopicNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $person)
     {
-        if ($this->communityTopic->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.alert')) {
+        if ($this->communityTopic->getStatus() == 'hidden' && $person->getPref('agent_notif.new_community_validate.alert')) {
             return true;
-        } elseif ($this->communityTopic->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.alert')) {
+        } elseif ($this->communityTopic->getStatus() != 'hidden' && $person->getPref('agent_notif.new_community.alert')) {
             return true;
         }
 
@@ -37,9 +37,9 @@ class NewCommunityTopicNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $person)
     {
-        if ($this->communityTopic->getStatus() == 'hidden' && $person->getPref('agent_notif.new_feedback_validate.email')) {
+        if ($this->communityTopic->getStatus() == 'hidden' && $person->getPref('agent_notif.new_community_validate.email')) {
             return true;
-        } elseif ($this->communityTopic->getStatus() != 'hidden' && $person->getPref('agent_notif.new_feedback.email')) {
+        } elseif ($this->communityTopic->getStatus() != 'hidden' && $person->getPref('agent_notif.new_community.email')) {
             return true;
         }
 

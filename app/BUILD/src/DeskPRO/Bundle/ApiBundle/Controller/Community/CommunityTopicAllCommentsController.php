@@ -14,15 +14,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * API access to feedback comments.
+ * API access to community topic comments.
  *
  * @ApiModes("all")
  * @Rest\Route("/community_comments")
  * @ApiDoc(target="all", section="Community", output="Application\DeskPRO\Entity\CommunityTopicComment")
  * @ApiDoc(
  *      target="listAction",
- *      tags={"feedback"="#4422bb", "comments"="#22aa22"},
- *      description="get list of feedback comments",
+ *      tags={"community"="#4422bb", "comments"="#22aa22"},
+ *      description="get list of community topic comments",
  *      statusCodes={
  *          200="Returned if everything is ok",
  *          400="Returned if your filters was invalid"
@@ -42,10 +42,10 @@ use Symfony\Component\HttpFoundation\Request;
  *          {"name"="created_from", "dataType"="datetime", "description"="a datetime string to search comments since"},
  *          {"name"="created_to", "dataType"="datetime", "description"="a datetime string to search comments until"},
  *          {
- *              "name"="feedback_field.{id}",
+ *              "name"="community_topic_field.{id}",
  *              "description"="
- *                  Custom feedback field filter. To filter by a custom field with ID=1 you need to add
- *                  ?feedback_field.1=value to the query string",
+ *                  Custom community topic field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?community_topic_field.1=value to the query string",
  *              "dataType"="string",
  *              "pattern"="\d+|\w"
  *          }
@@ -69,7 +69,7 @@ class CommunityTopicAllCommentsController extends AbstractCommunityController
     public static $listOrder   = 'asc';
     public static $sortOptions = [
         'date_created' => 'date_created',
-        'total_rating' => 'feedback.total_rating',
+        'total_rating' => 'topic.total_rating',
     ];
 
     /**
@@ -94,13 +94,13 @@ class CommunityTopicAllCommentsController extends AbstractCommunityController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->join("$alias.feedback", 'feedback');
+        $qb->join("$alias.topic", 'topic');
 
         $this->applyNotReviewedFilters($qb, $alias, $request);
         $this->applyDateCreatedFilters($qb, $alias, $request);
-        $this->applyCommunityListFilters($qb, 'feedback', $request);
+        $this->applyCommunityListFilters($qb, 'topic', $request);
 
-        ListHelper::applyInListFilter(new RequestQueryContext($qb, 'feedback', $request), 'id', 'feedback_ids');
+        ListHelper::applyInListFilter(new RequestQueryContext($qb, 'topic', $request), 'id', 'topic_ids');
     }
 
     /**
@@ -108,10 +108,10 @@ class CommunityTopicAllCommentsController extends AbstractCommunityController
      */
     protected function applyListGroupBy(QueryBuilder $qb, $alias, $groupBy, Request $request)
     {
-        if ($groupBy === 'feedback') {
+        if ($groupBy === 'topic') {
             $qb
-                ->addSelect('feedback.title as title')
-                ->addSelect('feedback.id as group_name')
+                ->addSelect('topic.title as title')
+                ->addSelect('topic.id as group_name')
                 ->groupBy('group_name')
             ;
         }

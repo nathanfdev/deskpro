@@ -42,7 +42,7 @@ class CommunityTopicApproved extends EmailBaseType
      *
      * @param CommunityTopic $topic
      * @param Person         $agent
-     * @param string         $feedbackLink
+     * @param string         $communityTopicLink
      */
     public function __construct(CommunityTopic $topic, Person $agent, $communityTopicLink)
     {

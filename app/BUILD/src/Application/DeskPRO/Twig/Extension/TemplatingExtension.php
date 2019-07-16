@@ -1938,7 +1938,7 @@ class TemplatingExtension extends \Twig_Extension
             case 'news':
                 $object = $em->getRepository(News::class)->find($id);
                 break;
-            case 'feedback':
+            case 'community':
                 $object = $em->getRepository(CommunityTopic::class)->find($id);
                 break;
             case 'download':

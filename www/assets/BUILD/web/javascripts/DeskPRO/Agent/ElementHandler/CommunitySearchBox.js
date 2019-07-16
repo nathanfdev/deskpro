@@ -60,12 +60,12 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 
 				var current = $('li.on', self.resultsList);
 				if (current.length) {
-					var feedbackId = current.data('feedback-id');
-					var title  = $.trim($('.feedback-title', current).text());
+					var feedbackId = current.data('community-topic-id');
+					var title  = $.trim($('.community-topic-title', current).text());
 
 					self.termInput.val(title);
 
-					self.el.trigger('feedbacksearchboxclick', [feedbackId, title, self]);
+					self.el.trigger('communitysearchboxclick', [feedbackId, title, self]);
 				}
 
 			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
@@ -130,7 +130,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 			var title = $.trim($('.feedback-title', this).text());
       self.termInput.val(title);
 
-			self.el.trigger('feedbacksearchboxclick', [feedbackId, title, self]);
+			self.el.trigger('communitysearchboxclick', [feedbackId, title, self]);
 		});
 
 		//------------------------------

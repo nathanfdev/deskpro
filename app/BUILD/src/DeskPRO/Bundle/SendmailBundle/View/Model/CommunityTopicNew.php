@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as JMS;
 class CommunityTopicNew extends EmailBaseType
 {
     /**
-     * The feedback.
+     * The community topic.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic")
      *

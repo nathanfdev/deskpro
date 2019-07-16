@@ -368,7 +368,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model->setEnabled($this->hasPerm('core.apps_community'));
 
         $permissions = $model->getPermissions();
-        $permissions->setCreateLabels($this->hasPerm('agent_publish.feedback_create_labels'));
+        $permissions->setCreateLabels($this->hasPerm('agent_publish.community_create_labels'));
 
         return $model;
     }

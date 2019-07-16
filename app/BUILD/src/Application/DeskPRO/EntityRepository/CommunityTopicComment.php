@@ -10,5 +10,5 @@ namespace Application\DeskPRO\EntityRepository;
 
 class CommunityTopicComment extends CommentAbstract
 {
-    const FIELD = 'feedback';
+    const FIELD = 'topic';
 }

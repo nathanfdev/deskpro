@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as JMS;
 class AgentNewCommunityTopic extends EmailBaseType
 {
     /**
-     * The feedback.
+     * The community topic.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic")
      *
@@ -18,7 +18,7 @@ class AgentNewCommunityTopic extends EmailBaseType
     protected $topic;
 
     /**
-     * The feedback.
+     * The person posted the topic.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *

@@ -1,15 +1,15 @@
 <dp:subject>{{ phrase('user.email_subjects.community_updated') }}</dp:subject>
 {% if show == 'validated' %}
-	{{ phrase('user.emails.feedback_published', {'title':topic.title}) }}
+	{{ phrase('user.emails.community-topic_published', {'title':topic.title}) }}
 {% elseif show == 'closed' %}
-	{{ phrase('user.emails.feedback_closed', {'title':topic.title, 'status':topic.status_category.title}) }}
+	{{ phrase('user.emails.community-topic_closed', {'title':topic.title, 'status':topic.status_category.title}) }}
 {% elseif show == 'closed' %}
-	{{ phrase('user.emails.feedback_updated', {'title': topic.title, 'status':topic.status_category.title}) }}
+	{{ phrase('user.emails.community-topic_updated', {'title': topic.title, 'status':topic.status_category.title}) }}
 {% endif %}
 
 <br /><br />
 
-{{ phrase('user.emails.feedback_votes', {'count': topic.votes}) }}
+{{ phrase('user.emails.community-topic_votes', {'count': topic.votes}) }}
 <a href="{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}">
 	{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}
 </a>

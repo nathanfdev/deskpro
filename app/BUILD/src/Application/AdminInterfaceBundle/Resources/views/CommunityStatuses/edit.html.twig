@@ -15,7 +15,7 @@
 											type="text"
 											class="form-control"
 											name="title"
-											ng-model="CommunityStatusesEdit.feedback_status.title"
+											ng-model="CommunityStatusesEdit.community_status.title"
 											dp-server-validation="title.not_blank,title.length"
 											style="width: 50%;" autofocus required>
 								<span class="help-block">
@@ -41,19 +41,19 @@
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="CommunityStatusesEdit.feedback_status.id"
+					<div class="dp-delete-control" ng-if="CommunityStatusesEdit.community_status.id"
                          ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.CommunityStatusesList.startDelete(CommunityStatusesEdit.feedback_status);">
+								ng-click="$event.preventDefault(); $parent.CommunityStatusesList.startDelete(CommunityStatusesEdit.community_status);">
 							Delete
 						</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_feedback_status">
+						<div dp-hide-spinning="saving_community_status">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
 						</div>
-						<div dp-show-spinning="saving_feedback_status">
+						<div dp-show-spinning="saving_community_status">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>
@@ -61,5 +61,5 @@
 			</footer>
 		</section>
 	</form>
-	<div dp-register-message="saved_feedback_status">{{ ng_var('CommunityStatusesEdit.feedback_status.title') }} was saved successfully</div>
+	<div dp-register-message="saved_community_status">{{ ng_var('CommunityStatusesEdit.community_status.title') }} was saved successfully</div>
 {% endblock %}

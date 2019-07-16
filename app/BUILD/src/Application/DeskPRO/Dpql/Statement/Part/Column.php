@@ -56,18 +56,18 @@ class Column extends AbstractPart
     ELSE CONCAT(\'ID-\', %1$s.id)
 END)
 ', 'person'],
-        'products'                 => ['id', 'title'],
-        'slas'                     => ['id', 'title'],
-        'tickets'                  => ['id', 'subject', 'ticket'],
-        'ticket_categories'        => ['id', 'title'],
-        'ticket_priorities'        => ['id', 'title'],
-        'ticket_workflows'         => ['id', 'title'],
-        'custom_def_article'       => ['id', 'title'],
-        'custom_def_chat'          => ['id', 'title'],
-        'custom_def_feedback'      => ['id', 'title'],
-        'custom_def_organizations' => ['id', 'title'],
-        'custom_def_ticket'        => ['id', 'title'],
-        'custom_def_people'        => ['id', 'title'],
+        'products'                   => ['id', 'title'],
+        'slas'                       => ['id', 'title'],
+        'tickets'                    => ['id', 'subject', 'ticket'],
+        'ticket_categories'          => ['id', 'title'],
+        'ticket_priorities'          => ['id', 'title'],
+        'ticket_workflows'           => ['id', 'title'],
+        'custom_def_article'         => ['id', 'title'],
+        'custom_def_chat'            => ['id', 'title'],
+        'custom_def_community_topic' => ['id', 'title'],
+        'custom_def_organizations'   => ['id', 'title'],
+        'custom_def_ticket'          => ['id', 'title'],
+        'custom_def_people'          => ['id', 'title'],
     ];
 
     /**
@@ -78,15 +78,15 @@ END)
     ];
 
     protected static $_conditionResolver = [
-        'custom_data_article'       => '%1$s.root_field_id = %2$s',
-        'custom_data_feedback'      => '%1$s.root_field_id = %2$s',
-        'custom_data_organizations' => '%1$s.root_field_id = %2$s',
-        'custom_data_person'        => '%1$s.root_field_id = %2$s',
-        'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
-        'custom_data_billing'       => '%1$s.root_field_id = %2$s',
-        'custom_data_chat'          => '%1$s.root_field_id = %2$s',
-        'custom_field_data'         => '%1$s.root_definition_id = %2$s',
-        'ticket_slas'               => '%1$s.sla_id = %2$s',
+        'custom_data_article'         => '%1$s.root_field_id = %2$s',
+        'custom_data_community_topic' => '%1$s.root_field_id = %2$s',
+        'custom_data_organizations'   => '%1$s.root_field_id = %2$s',
+        'custom_data_person'          => '%1$s.root_field_id = %2$s',
+        'custom_data_ticket'          => '%1$s.root_field_id = %2$s',
+        'custom_data_billing'         => '%1$s.root_field_id = %2$s',
+        'custom_data_chat'            => '%1$s.root_field_id = %2$s',
+        'custom_field_data'           => '%1$s.root_definition_id = %2$s',
+        'ticket_slas'                 => '%1$s.sla_id = %2$s',
     ];
 
     /**

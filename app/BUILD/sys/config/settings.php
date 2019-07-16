@@ -917,7 +917,7 @@ return [
     'user.kb_subscriptions'         => true,
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
-    'user.feedback_subscriptions'   => true,
+    'user.community_subscriptions'  => true,
     'user.kb_categories_with_tree'  => true,
 
     //###################################################################################################################

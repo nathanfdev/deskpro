@@ -45,8 +45,8 @@ class LabelDef extends AbstractEntityRepository
                 $label_type = 'people';
                 break;
 
-            case 'feedback':
-                $label_type = 'feedback';
+            case 'community':
+                $label_type = 'community';
                 break;
 
             case 'news':
@@ -132,8 +132,8 @@ class LabelDef extends AbstractEntityRepository
                 return 'labels_tickets';
             case 'articles':
                 return 'labels_articles';
-            case 'feedback':
-                return 'labels_feedback';
+            case 'community':
+                return 'labels_community_topics';
             case 'downloads':
                 return 'labels_downloads';
             case 'news':

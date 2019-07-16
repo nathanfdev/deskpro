@@ -308,10 +308,10 @@ class AgentActivity
     private function getRevisionsForAgent($agent, $date)
     {
         $items = [
-            'news'     => NewsRevision::class,
-            'article'  => ArticleRevision::class,
-            'download' => DownloadRevision::class,
-            'feedback' => CommunityTopicRevision::class,
+            'news'      => NewsRevision::class,
+            'article'   => ArticleRevision::class,
+            'download'  => DownloadRevision::class,
+            'community' => CommunityTopicRevision::class,
         ];
         $countsHourly = [];
 

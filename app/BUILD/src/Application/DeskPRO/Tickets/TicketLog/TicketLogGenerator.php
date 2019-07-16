@@ -465,13 +465,13 @@ class TicketLogGenerator
                 return $logSet;
                 break;
 
-            case 'feedback_link':
+            case 'topic_links':
                 $logSet = [];
 
                 if ($new) {
                     $m                      = $new;
                     $logData                = [];
-                    $logData['action_type'] = 'feedback_link_added';
+                    $logData['action_type'] = 'community_topic_link_added';
                     $logData['id_after']    = $m->getId();
                     $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
                     $logSet[]               = $logData;
@@ -480,7 +480,7 @@ class TicketLogGenerator
                 if ($old) {
                     $m                      = $old;
                     $logData                = [];
-                    $logData['action_type'] = 'feedback_link_removed';
+                    $logData['action_type'] = 'community_topic_link_added';
                     $logData['id_before']   = $m->getId();
                     $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
                     $logSet[]               = $logData;

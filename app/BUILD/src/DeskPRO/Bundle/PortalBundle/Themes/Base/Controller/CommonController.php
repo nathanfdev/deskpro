@@ -169,7 +169,7 @@ class CommonController extends AbstractController
      * @TagOptions(
      *      required={"content_type", "content_id"},
      *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
-     *      allowed_values={"content_type":{"article","news","download","feedback"}}
+     *      allowed_values={"content_type":{"article","news","download","community"}}
      * )
      *
      * @param array $options

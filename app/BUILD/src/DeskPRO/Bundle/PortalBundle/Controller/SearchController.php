@@ -157,7 +157,7 @@ class SearchController extends AbstractController
             return $this->redirectToRoute('portal_search_labels', ['type' => $type, 'label' => $label]);
         }
 
-        if (!$type or !in_array($type, ['all', 'articles', 'feedback', 'downloads', 'news'])) {
+        if (!$type or !in_array($type, ['all', 'articles', 'community', 'downloads', 'news'])) {
             $type = 'all';
         }
 
@@ -167,13 +167,13 @@ class SearchController extends AbstractController
 
         switch ($type) {
             case 'all':
-                $searchTypes = ['article', 'feedback', 'download', 'news'];
+                $searchTypes = ['article', 'community', 'download', 'news'];
                 break;
             case 'articles':
                 $searchTypes = ['article'];
                 break;
-            case 'feedback':
-                $searchTypes = ['feedback'];
+            case 'community':
+                $searchTypes = ['community'];
                 break;
             case 'downloads':
                 $searchTypes = ['download'];
@@ -249,7 +249,7 @@ class SearchController extends AbstractController
             );
         }
 
-        $allowedTypes = ['article', 'news', 'download', 'feedback', 'topic'];
+        $allowedTypes = ['article', 'news', 'download', 'community', 'topic'];
 
         if (null === $contentType) {
             $contentType = $allowedTypes;
@@ -389,7 +389,7 @@ class SearchController extends AbstractController
         } elseif ($r instanceof Entity\Download) {
             $type = 'download';
         } elseif ($r instanceof Entity\CommunityTopic) {
-            $type = 'feedback';
+            $type = 'community';
         } elseif ($r instanceof Entity\Topic) {
             $type = 'topic';
         } elseif ($r instanceof Entity\Ticket) {
@@ -419,7 +419,7 @@ class SearchController extends AbstractController
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
-        $allowedSearchTypes = ['article', 'news', 'download', 'feedback', 'topic', 'ticket', 'chat_conversation'];
+        $allowedSearchTypes = ['article', 'news', 'download', 'community', 'topic', 'ticket', 'chat_conversation'];
         if (!$limitTypesArray = $types) {
             $limitTypesArray = $allowedSearchTypes;
         }
@@ -434,11 +434,11 @@ class SearchController extends AbstractController
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
 
         $appSettings = [
-            'article'  => PortalSettingsResolver::APPS_KB,
-            'news'     => PortalSettingsResolver::APPS_NEWS,
-            'download' => PortalSettingsResolver::APPS_DOWNLOADS,
-            'feedback' => PortalSettingsResolver::APPS_COMMUNITY,
-            'topic'    => PortalSettingsResolver::APPS_GUIDES,
+            'article'   => PortalSettingsResolver::APPS_KB,
+            'news'      => PortalSettingsResolver::APPS_NEWS,
+            'download'  => PortalSettingsResolver::APPS_DOWNLOADS,
+            'community' => PortalSettingsResolver::APPS_COMMUNITY,
+            'topic'     => PortalSettingsResolver::APPS_GUIDES,
         ];
 
         $limitTypesArray = array_filter($limitTypesArray,

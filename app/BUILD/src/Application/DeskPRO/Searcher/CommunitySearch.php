@@ -42,7 +42,7 @@ class CommunitySearch extends SearcherAbstract
      */
     public function getMatches(array $limit = null)
     {
-        $db = App::getDbRead('search.filter.feedback');
+        $db = App::getDbRead('search.filter.community');
 
         $topic_ids = $db->fetchAllCol($this->getSql($limit));
 
@@ -140,7 +140,7 @@ class CommunitySearch extends SearcherAbstract
             $sql .= '1';
         }
 
-        $count = App::getDbRead('search.filter.feedback')->fetchColumn($sql);
+        $count = App::getDbRead('search.filter.community')->fetchColumn($sql);
 
         return $count;
     }
@@ -243,7 +243,7 @@ class CommunitySearch extends SearcherAbstract
                 }
 
                 if ($this->person->id) {
-                    $join = "LEFT JOIN ratings ON (ratings.object_id = community_topics.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
+                    $join = "LEFT JOIN ratings ON (ratings.object_id = community_topics.id AND ratings.object_type = 'community' AND ratings.person_id = {$this->person->id})";
                 } else {
                     $order_by = "ORDER BY community_topics.date_published $dir";
 
@@ -276,7 +276,7 @@ class CommunitySearch extends SearcherAbstract
      */
     public function getSqlParts()
     {
-        $db = App::getDbRead('search.filter.feedback');
+        $db = App::getDbRead('search.filter.community');
 
         $wheres = [];
         $joins  = [];

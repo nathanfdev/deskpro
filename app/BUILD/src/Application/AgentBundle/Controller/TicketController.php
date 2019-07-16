@@ -5585,7 +5585,7 @@ class TicketController extends AbstractController
                 return DownloadComment::class;
             case 'news':
                 return NewsComment::class;
-            case 'feedback':
+            case 'community':
                 return CommunityTopicComment::class;
         }
     }
@@ -6273,7 +6273,7 @@ CSS;
             return $e->getTopic()->getId();
         })->toArray();
 
-        return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [
+        return $this->render('AgentBundle:Ticket:link-community-topic.html.twig', [
             'ticket'    => $ticket,
             'exludeIds' => $exludeIds,
         ]);

@@ -362,7 +362,7 @@ class CommentFormHandler
         } elseif ($content instanceof News) {
             return 'news';
         } elseif ($content instanceof CommunityTopic) {
-            return 'feedback';
+            return 'community';
         } elseif ($content instanceof Topic) {
             return 'topic';
         }

@@ -353,11 +353,11 @@ class CommunityTopic extends AbstractEntityRepository
     {
         return [
             'views' => [
-                'conditions'   => '%1$s.page_type = "deskpro.feedback_view" AND %1$s.page_id = %2$s.id',
+                'conditions'   => '%1$s.page_type = "deskpro.community_view" AND %1$s.page_id = %2$s.id',
                 'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\HitRecord',
             ],
             'ratings' => [
-                'conditions'   => '%1$s.object_type = \'feedback\' AND %1$s.object_id = %2$s.id',
+                'conditions'   => '%1$s.object_type = \'community\' AND %1$s.object_id = %2$s.id',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
             ],
         ];

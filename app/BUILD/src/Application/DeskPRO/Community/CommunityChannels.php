@@ -27,7 +27,7 @@ class CommunityChannels
     }
 
     /**
-     * Loads feedback statuses data from the database.
+     * Loads community channels data from the database.
      */
     private function preload()
     {

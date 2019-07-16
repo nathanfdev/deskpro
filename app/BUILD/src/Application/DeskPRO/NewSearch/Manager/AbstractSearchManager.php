@@ -49,7 +49,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
         'article'      => 'DeskPRO:Article',
         'chat'         => 'DeskPRO:ChatConversation',
         'download'     => 'DeskPRO:Download',
-        'feedback'     => 'DeskPRO:CommunityTopic',
+        'community'    => 'DeskPRO:CommunityTopic',
         'news'         => 'DeskPRO:News',
         'organization' => 'DeskPRO:Organization',
         'person'       => 'DeskPRO:Person',

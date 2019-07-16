@@ -6,7 +6,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
 	initializeProperties: function() {
 		this.parent();
-		this.TYPENAME = 'newfeedback';
+		this.TYPENAME = 'newcomunitytopic';
 		this.allowDupe = true;
 	},
 
@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'newnews',
-			listenOn: this.getEl('newfeedback')
+			listenOn: this.getEl('newcomunitytopic')
 		});
 		this.ownObject(this.stateSaver);
 
@@ -269,7 +269,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
     window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - contentHeight, 150),
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
-      formname:							'newfeedback'
+      formname:							'newcomunitytopic'
 		});
 
     txt.on('froalaEditor.keypress', function () {
@@ -288,8 +288,8 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
     // Labels
     self.labelsInput = new DeskPRO.UI.LabelsInput({
-      type: 'feedback',
-      fieldName: 'newfeedback[labels]',
+      type: 'community',
+      fieldName: 'newcomunitytopic[labels]',
       input: $(".tags-wrap.article-tags input", self.wrapper),
       onChange: function() {
         if (self.stateSaver) {

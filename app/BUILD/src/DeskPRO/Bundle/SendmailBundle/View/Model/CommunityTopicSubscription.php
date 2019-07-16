@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as JMS;
 class CommunityTopicSubscription extends UserEmailBaseType
 {
     /**
-     * The updated feedback.
+     * The updated topics.
      *
      * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic>")
      *
@@ -17,7 +17,7 @@ class CommunityTopicSubscription extends UserEmailBaseType
     protected $updatedTopics;
 
     /**
-     * Link to unsubscribe to feedback items.
+     * Link to unsubscribe to community topics.
      *
      * @JMS\Type("string")
      *

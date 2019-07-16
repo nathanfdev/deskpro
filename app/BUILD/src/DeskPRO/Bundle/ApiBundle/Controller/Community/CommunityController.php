@@ -13,7 +13,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * API access to feedback.
+ * API access to community.
  *
  * @ApiModes("all")
  * @Rest\Route("/community")
@@ -21,23 +21,23 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
- *         {"name"="awaiting_validation", "pattern"="1", "description"="select feedback awaiting validation only", "dataType"="boolean"},
+ *         {"name"="awaiting_validation", "pattern"="1", "description"="select community topics awaiting validation only", "dataType"="boolean"},
  *         {"name"="status", "pattern"="active|closed|hidden", "description"="filter by status", "dataType"="string"},
  *         {"name"="hidden_status", "dataType"="integer", "pattern"="unpublished|deleted|spam|draft", "description"="limit with hidden_status"},
  *         {"name"="status_category", "pattern"="\w|[\w]", "description"="filter by status category", "dataType"="string[]"},
  *         {"name"="channel", "pattern"="\w|[\w]", "description"="channel title, or titles array", "dataType"="string[]"},
  *         {"name"="custom_channel", "pattern"="\w|[\w]", "description"="filter by custom channel", "dataType"="string[]"},
  *         {"name"="labels_mode", "pattern"="any|all", "description"="how to load labels", "dataType"="string"},
- *         {"name"="label", "pattern"="\w,\w...\w", "description"="select feedback with given lables", "dataType"="string"},
- *         {"name"="no_labels", "pattern"="1", "description"="select feedback have no label", "dataType"="boolean"},
+ *         {"name"="label", "pattern"="\w,\w...\w", "description"="select community topics with given lables", "dataType"="string"},
+ *         {"name"="no_labels", "pattern"="1", "description"="select community topics have no label", "dataType"="boolean"},
  *         {"name"="ids", "pattern"="\d,\d...\d", "description"="comma separated ids list", "dataType"="string"},
  *         {"name"="created_from", "pattern"="YYYY-mm-dd H:i:s", "description"="limit by date, interval`s start", "dataType"="date"},
  *         {"name"="created_to", "pattern"="YYYY-mm-dd H:i:s", "description"="limit by date, interval`s end", "dataType"="date"},
  *         {
- *              "name"="feedback_field.{id}",
+ *              "name"="community_topic_field.{id}",
  *              "description"="
- *                  Custom feedback field filter. To filter by a custom field with ID=1 you need to add
- *                  ?feedback_field.1=value to the query string",
+ *                  Custom community topic field filter. To filter by a custom field with ID=1 you need to add
+ *                  ?community_topic_field.1=value to the query string",
  *              "dataType"="string",
  *              "pattern"="\d+|\w"
  *          }

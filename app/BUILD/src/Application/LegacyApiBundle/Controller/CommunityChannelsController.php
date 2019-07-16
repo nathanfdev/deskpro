@@ -64,7 +64,7 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
         return $this->createApiResponse(
             [
-                'feedback_type' => $returnedData,
+                'community_channel' => $returnedData,
             ]
         );
     }
@@ -92,7 +92,7 @@ class CommunityChannelsController extends AbstractController implements Protecte
         $communityChannel_edit = new CommunityChannelEdit($communityChannel);
 
         $form = $this->createForm(CommunityChannelType::class, $communityChannel_edit, ['cascade_validation' => true]);
-        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'feedback_type'), true);
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_channel'), true);
 
         if ($form->isValid()) {
             $communityChannel_edit->save($this->em);
@@ -125,15 +125,15 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
         if (!$move_to_community_channel) {
             throw ValidationException::create(
-                'feedback_type.remove.move_feedback_types',
-                'You must select a feedback type to move existing feedback into'
+                'community_channel.remove.move_community_channels',
+                'You must select a community channel to move existing community topics into'
             );
         }
 
         if ($move_to_community_channel->getId() == $communityChannel->getId()) {
             throw ValidationException::create(
-                'feedback_type.remove.move_feedback_types',
-                'You must choose a different feedback type'
+                'community_channel.remove.move_community_channels',
+                'You must choose a different community channels'
             );
         }
 
@@ -143,7 +143,7 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
         try {
             $this->db->executeUpdate(
-                'UPDATE feedback SET category_id = ? WHERE category_id = ?',
+                'UPDATE community_topics SET channel_id = ? WHERE channel_id = ?',
                 [$move_to, $old_id]
             );
 

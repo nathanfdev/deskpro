@@ -324,7 +324,7 @@ class SitemapGenerator
 
         $communityTopics = $this->em->createQuery(
             '
-            SELECT PARTIAL feedback.{id,slug,title}
+            SELECT PARTIAL community_topics.{id,slug,title}
             FROM DeskPRO:CommunityTopic topic
             WHERE topic.hidden_status IS NULL AND topic.channel IN (?0)
         '

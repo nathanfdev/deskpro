@@ -396,7 +396,7 @@ class App
         'custom_fields.people'        => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
         'custom_fields.tickets'       => 'Application\\DeskPRO\\CustomFields\\TicketFields',
         'custom_fields.articles'      => 'Application\\DeskPRO\\CustomFields\\ArticleFields',
-        'custom_fields.feedback'      => 'Application\\DeskPRO\\CustomFields\\CommunityFields',
+        'custom_fields.community'     => 'Application\\DeskPRO\\CustomFields\\CommunityFields',
         'custom_fields.organizations' => 'Application\\DeskPRO\\CustomFields\\OrganizationFields',
         'custom_fields.products'      => 'Application\\DeskPRO\\CustomFields\\ProductFields',
         'custom_fields.util'          => 'Application\\DeskPRO\\CustomFields\\Util',

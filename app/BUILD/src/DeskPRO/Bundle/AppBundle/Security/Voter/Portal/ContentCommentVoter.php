@@ -56,7 +56,7 @@ class ContentCommentVoter extends AbstractVoter
             case static::COMMENT_ARTICLE:
                 return $permissionsBag->get('articles.comment') && $permitted;
             case static::COMMENT_COMMUNITY:
-                return $permissionsBag->get('feedback.comment') && $permitted;
+                return $permissionsBag->get('community.comment') && $permitted;
             case static::COMMENT_DOWNLOAD:
                 return $permissionsBag->get('downloads.comment') && $permitted;
             case static::COMMENT_NEWS:

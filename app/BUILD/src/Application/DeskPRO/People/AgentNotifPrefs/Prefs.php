@@ -28,13 +28,13 @@ class Prefs
 
     /** @var array */
     public static $apps = [
-        'chat'     => 1,
-        'task'     => 1,
-        'twitter'  => 1,
-        'feedback' => 1,
-        'publish'  => 1,
-        'crm'      => 1,
-        'account'  => 1,
+        'chat'      => 1,
+        'task'      => 1,
+        'twitter'   => 1,
+        'community' => 1,
+        'publish'   => 1,
+        'crm'       => 1,
+        'account'   => 1,
     ];
 
     public function __construct()
@@ -342,8 +342,8 @@ class Prefs
     public function getCommunityNotifyTypes($type)
     {
         return [
-            'new_feedback',
-            'new_feedback_validate',
+            'new_community',
+            'new_community_validate',
         ];
     }
 

@@ -13,7 +13,7 @@ use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
 class CommunityTopicSubscription extends AbstractEntityRepository
 {
     /**
-     * @param CommunityTopicEntity|int $feedback
+     * @param CommunityTopicEntity|int $topic
      *
      * @return array
      */

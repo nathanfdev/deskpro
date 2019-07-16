@@ -2874,7 +2874,7 @@ $collection->create(
 $collection->create(
     'api_community_topic_view',
     [
-        'path'         => '/community/{feedback_id}',
+        'path'         => '/community/{communityTopicId}',
         'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopic',
         'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],

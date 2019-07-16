@@ -198,7 +198,7 @@ class Util
 
             case CommunityTopic::class:
             case CommunityTopicRevision::class:
-                return 'feedback';
+                return 'community';
                 break;
 
             case Topic::class:

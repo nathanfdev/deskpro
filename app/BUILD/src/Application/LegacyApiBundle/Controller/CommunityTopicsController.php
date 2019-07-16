@@ -161,7 +161,7 @@ class CommunityTopicsController extends AbstractController
             ['id' => $communityTopic->id],
             $this->generateUrl(
                 'api_community_topic_view',
-                ['feedback_id' => $communityTopic->id],
+                ['topic_id' => $communityTopic->id],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
@@ -178,7 +178,7 @@ class CommunityTopicsController extends AbstractController
     {
         $communityTopic = $this->_getCommunityTopicOr404($communityTopicId);
 
-        return $this->createApiResponse(['feedback' => $communityTopic->toApiData()]);
+        return $this->createApiResponse(['topic' => $communityTopic->toApiData()]);
     }
 
     /**
@@ -517,7 +517,7 @@ class CommunityTopicsController extends AbstractController
             ['id' => $attach->id],
             $this->generateUrl(
                 'api_community_topic_attachment_get',
-                ['feedback_id' => $communityTopic->id, 'attachment_id' => $attach->id],
+                ['topic_id' => $communityTopic->id, 'attachment_id' => $attach->id],
                 UrlGeneratorInterface::ABSOLUTE_URL
             )
         );
@@ -652,7 +652,7 @@ class CommunityTopicsController extends AbstractController
     public function getValidatingCommentsAction()
     {
         $comments   = $this->em->getRepository(CommunityTopicComment::class)->getValidatingComments();
-        $entity_key = 'feedback';
+        $entity_key = 'community_topic';
         $output     = [];
         foreach ($comments as $key => $value) {
             $output[$key] = $value->toApiData(false, true);
@@ -763,7 +763,7 @@ class CommunityTopicsController extends AbstractController
         $communityTopic = $this->em->getRepository(CommunityTopic::class)->findOneById($id);
 
         if (!$communityTopic) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no feedback with ID $id");
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no topic with ID $id");
         }
 
         if ($check_perm) {

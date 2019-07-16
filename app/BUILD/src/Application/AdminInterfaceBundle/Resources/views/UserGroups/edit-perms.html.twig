@@ -13,7 +13,7 @@
 		<ul>
 			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fas fa-envelope"></i> Tickets</a></li>
 			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fas fa-comment"></i> Chat</a></li>
-			<li dp-tab-btn="main.perms.feedback"><a href="#"><i class="fas fa-inbox"></i> Community</a></li>
+			<li dp-tab-btn="main.perms.community"><a href="#"><i class="fas fa-inbox"></i> Community</a></li>
 			<li dp-tab-btn="main.perms.articles"><a href="#"><i class="fas fa-file-alt"></i> Articles</a></li>
 			<li dp-tab-btn="main.perms.guides"><a href="#"><i class="fas fa-book"></i> Guides</a></li>
 			<li dp-tab-btn="main.perms.downloads"><a href="#"><i class="fas fa-download"></i> Downloads</a></li>
@@ -106,32 +106,32 @@
 
 	{# /CHAT PERMISSIONS #}
 
-	{# FEEDBACK PERMISSIONS #}
+	{# COMMUNITY PERMISSIONS #}
 
-	<table class="table table-hover" dp-tab-body="main.perms.feedback">
+	<table class="table table-hover" dp-tab-body="main.perms.community">
 		<tbody>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_use_community') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'use') }}
+					{{ _self.perm_toggle('community', 'use') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_community_topics') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'submit') }}
+					{{ _self.perm_toggle('community', 'submit') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_community_topics_no_review') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
+					{{ _self.perm_toggle('community', 'no_submit_validate') }}
 				</td>
 			</tr>
 			<tr>
 				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_community_topics') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'rate') }}
+					{{ _self.perm_toggle('community', 'rate') }}
 				</td>
 			</tr>
 
@@ -140,7 +140,7 @@
 				<tr>
 					<td width="100%">{{ phrase('admin.user_groups.submit_community_topics_comments') }}</td>
 					<td>
-						{{ _self.perm_toggle('feedback', 'comment') }}
+						{{ _self.perm_toggle('community', 'comment') }}
 					</td>
 				</tr>
 
@@ -151,7 +151,7 @@
 				<tr>
 					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
 					<td>
-						{{ _self.perm_toggle('feedback', 'no_comment_validate') }}
+						{{ _self.perm_toggle('community', 'no_comment_validate') }}
 					</td>
 				</tr>
 

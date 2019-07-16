@@ -17,7 +17,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 <div class="form-outer">
 
-<form id="{{baseId}}_newfeedback" class="keybound-submit">
+<form id="{{baseId}}_newcomunitytopic" class="keybound-submit">
 
 <input type="hidden" name="newcommunitytopic[linked_ticket]" id="{{baseId}}_linked_ticket" value="{% if ticket %}{{ ticket.id }}{% endif %}" />
 
@@ -27,15 +27,15 @@ pageMeta.baseId = '{{ baseId }}';
       <div class="col">
         <h4>{{ phrase('agent.tickets.linking_with_ticket') }} {{ ticket.subject }}</h4>
 
-        {% if brand_setting('user.feedback_subscriptions') %}
+        {% if brand_setting('user.community_subscriptions') %}
           <br class="clear" />
           <div style="display: block;">
             <input type="checkbox" id="{{baseId}}_is_subscribe_owner" name="newcommunitytopic[is_subscribe_ticket_owner]" checked="checked">
-            <label for="{{baseId}}_is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+            <label for="{{baseId}}_is_subscribe_owner">{{ phrase('agent.tickets.link_existing_community_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
           </div>
           <div style="display: block;">
             <input type="checkbox" id="{{baseId}}_is_subscribe_participants" name="newcommunitytopic[is_subscribe_ticket_participants]">
-            <label for="{{baseId}}_is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
+            <label for="{{baseId}}_is_subscribe_participants">{{ phrase('agent.tickets.link_existing_community_subscr_part', {'count': ticket.participants.count}) }}</label>
           </div>
         {% else %}
           <input type="hidden" id="{{baseId}}_is_subscribe_owner" name="newcommunitytopic[is_subscribe_ticket_owner]">

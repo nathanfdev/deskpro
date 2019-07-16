@@ -15,7 +15,7 @@ class CommunityStatusType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('feedback_status', new CommunityStatusPropsType());
+        $builder->add('community_status', new CommunityStatusPropsType());
     }
 
     public function configureOptions(OptionsResolver $resolver)

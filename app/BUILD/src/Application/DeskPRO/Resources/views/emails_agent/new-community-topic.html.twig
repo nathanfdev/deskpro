@@ -2,7 +2,7 @@
 <dp:subject>
 	{{ phrase('agent.community.new_community') }}	{{ topic.title }} {% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 </dp:subject>
-{{ phrase('agent.feedback.user_submitted_new_feedback', {name: topic.person.getDisplayContact() }) }}
+{{ phrase('agent.community.user_submitted_new_community_topic', {name: topic.person.getDisplayContact() }) }}
 {% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 
 <br /><br />

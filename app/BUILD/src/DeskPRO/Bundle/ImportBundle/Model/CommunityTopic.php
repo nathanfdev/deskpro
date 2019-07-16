@@ -158,7 +158,7 @@ class CommunityTopic implements PersonAwareInterface, LabelAwareModelInterface, 
     }
 
     /**
-     * Set feedback popularity.
+     * Set community topic popularity.
      *
      * @param int $popularity
      *

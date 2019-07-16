@@ -1133,26 +1133,26 @@ class TicketTerms
 
                 switch ($op) {
                     case self::OP_ISSET:
-                        if (!$ticket->feedback_links->count()) {
+                        if (!$ticket->topic_links->count()) {
                             return false;
                         }
                         break;
                     case self::OP_NOT_ISSET:
-                        if ($ticket->feedback_links->count()) {
+                        if ($ticket->topic_links->count()) {
                             return false;
                         }
                         break;
                     case self::OP_IS:
-                        $choiseFeedbackIds = isset($choice['feedback_links'])
-                            ? explode(',', $choice['feedback_links'])
+                        $choiceTopicIds = isset($choice['topic_links'])
+                            ? explode(',', $choice['topic_links'])
                             : '';
-                        if (!$choiseFeedbackIds) {
+                        if (!$choiceTopicIds) {
                             return false;
                         }
-                        $choiseFeedbackIds = array_map('trim', $choiseFeedbackIds);
-                        $ticketFeedbackIds = App::getEntityRepository('TicketCommunityTopicLink')
-                            ->getFeedbackIdsByTicket($ticket);
-                        if (!array_intersect($choiseFeedbackIds, $ticketFeedbackIds)) {
+                        $choiceTopicIds           = array_map('trim', $choiceTopicIds);
+                        $ticketCommunityTopicsIds = App::getEntityRepository('TicketCommunityTopicLink')
+                            ->getCommunityTopicIdsByTicket($ticket);
+                        if (!array_intersect($choiceTopicIds, $ticketCommunityTopicsIds)) {
                             return false;
                         }
                         break;

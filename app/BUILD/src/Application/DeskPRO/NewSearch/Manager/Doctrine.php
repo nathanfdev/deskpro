@@ -96,7 +96,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
         $results = [
             'article'           => [],
             'download'          => [],
-            'feedback'          => [],
+            'community'         => [],
             'news'              => [],
             'ticket'            => [],
             'person'            => [],
@@ -209,11 +209,11 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
             $where   = implode(' AND ', $where);
 
             foreach ([
-                         'article'  => 'articles',
-                         'download' => 'downloads',
-                         'feedback' => 'community_topics',
-                         'news'     => 'news',
-                         'topic'    => 'topics',
+                         'article'   => 'articles',
+                         'download'  => 'downloads',
+                         'community' => 'community_topics',
+                         'news'      => 'news',
+                         'topic'     => 'topics',
                      ] as $type => $table) {
                 $ids = $this->container->getDbRead()->fetchAllCol("
                     SELECT id
@@ -418,7 +418,7 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
 
             $label_search = new \Application\DeskPRO\Labels\LabelSearch($this->em);
 
-            $search_types = ['article', 'download', 'feedback', 'news', 'ticket'];
+            $search_types = ['article', 'download', 'community', 'news', 'ticket'];
 
             if ($this->person->hasPerm('agent_people.use')) {
                 $search_types[] = 'organization';

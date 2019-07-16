@@ -18,13 +18,13 @@ use FOS\RestBundle\View\View;
 class CommunityCustomChannelsController extends BaseController
 {
     /**
-     * Fetch feedback categories list.
+     * Fetch community custom channels list.
      * Proper output coming soon.
      *
      * @ApiDoc(
      *     section="Community",
-     *     resourceDescription="Operations about feedback",
-     *     description="get list of feedback categories",
+     *     resourceDescription="Operations about community custom channels",
+     *     description="get list of community custom channels",
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },

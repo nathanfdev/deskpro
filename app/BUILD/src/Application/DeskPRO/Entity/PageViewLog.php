@@ -131,7 +131,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
                 case 'news':
                     $type = self::TYPE_NEWS;
                     break;
-                case 'feedback':
+                case 'community':
                     $type = self::TYPE_COMMUNITY;
                     break;
             }
@@ -172,7 +172,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
             case self::TYPE_ARTICLE: return 'article';
             case self::TYPE_DOWNLOAD: return 'download';
             case self::TYPE_NEWS: return 'news';
-            case self::TYPE_COMMUNITY: return 'feedback';
+            case self::TYPE_COMMUNITY: return 'community';
         }
 
         throw new \InvalidArgumentException("Invalid type id. Got:`$type`");

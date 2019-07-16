@@ -1996,7 +1996,7 @@ define(function() {
     url:          '/community/labels',
     templateName: 'Labels/Feedback/list.html',
     controller:   'Admin_Labels_Ctrl_List',
-    data:         { type: 'feedback' }
+    data:         { type: 'community' }
   });
 
   routes.push({
@@ -2004,7 +2004,7 @@ define(function() {
     url:          '/create/',
     templateName: 'Labels/Feedback/edit.html',
     controller:   'Admin_Labels_Ctrl_Edit',
-    data:         { type: 'feedback' }
+    data:         { type: 'community' }
   });
 
   routes.push({
@@ -2019,7 +2019,7 @@ define(function() {
     url:          '/{label:.*}/',
     templateName: 'Labels/Feedback/edit.html',
     controller:   'Admin_Labels_Ctrl_Edit',
-    data:         { type: 'feedback' }
+    data:         { type: 'community' }
   });
 
   // ###

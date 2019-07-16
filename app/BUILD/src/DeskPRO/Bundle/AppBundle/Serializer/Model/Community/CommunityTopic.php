@@ -22,7 +22,7 @@ class CommunityTopic extends ContentAbstract
     protected $statusCategory = null;
 
     /**
-     * Category the feedback belongs to.
+     * Community channel the topic belongs to.
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityChannel>")

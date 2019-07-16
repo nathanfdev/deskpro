@@ -5,11 +5,11 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 	initializeProperties: function() {
 		this.parent();
-		this.TYPENAME = 'feedback';
+		this.TYPENAME = 'community_topic';
 	},
 
 	getAlertId: function() {
-		return 'feedback-row-' + this.meta.feedback_id;
+		return 'feedback-row-' + this.meta.topic_id;
 	},
 
 	initPage: function(el) {
@@ -17,7 +17,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 
-		this.feedback_id = this.getMetaData('feedback_id');
+		this.topic_id = this.getMetaData('topic_id');
 
 		this._initBasic();
 		if (this.meta.canEdit) {
@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			if (this.meta.isValidating) {
 				this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
 					typename: 'community',
-					contentId: this.feedback_id,
+					contentId: this.topic_id,
 					singleTyle: 'community_topic'
 				});
 				this.ownObject(this.validatingEdit);
@@ -44,13 +44,13 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		}
 
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
-			typename: 'feedback',
-			content_id: this.feedback_id,
+			typename: 'community',
+			content_id: this.topic_id,
 			listEl: $('section.linked-content:first', this.wrapper),
 			disabled: !this.meta.canEdit,
 			onContentLinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/community/topic/view/' + self.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/community/topic/view/' + self.topic_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'add-related' },
 					context: this,
@@ -59,7 +59,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			},
 			onContentUnlinked: function(typename, content_id) {
 				$.ajax({
-					url: BASE_URL + 'agent/community/topic/view/' + self.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/community/topic/view/' + self.topic_id + '/ajax-save',
 					type: 'POST',
 					data: { content_type: typename, content_id: content_id, action: 'remove-related' },
 					context: this,
@@ -78,7 +78,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			triggerElement: $('.who-voted-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/publish/rating-who-voted/community/' + this.feedback_id
+				url: BASE_URL + 'agent/publish/rating-who-voted/community/' + this.topic_id
 			}
 		});
 		this.ownObject(this.whoVotedOverlay);
@@ -114,7 +114,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
-				url: BASE_URL + 'agent/community/topic/view/' + self.meta.feedback_id + '/ajax-save-custom-fields',
+				url: BASE_URL + 'agent/community/topic/view/' + self.meta.topic_id + '/ajax-save-custom-fields',
 				type: 'POST',
 				data: formData,
 				dataType: 'html',
@@ -162,7 +162,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			});
 
 			$.ajax({
-				url: BASE_URL + 'agent/community/topic/view/' + self.feedback_id + '/ajax-save',
+				url: BASE_URL + 'agent/community/topic/view/' + self.topic_id + '/ajax-save',
 				type: 'POST',
 				data: postData,
 				success: function(data) {
@@ -185,14 +185,14 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			this.getEl('status').on('change', function() {
 				var catId = $(this).val();
 				$.ajax({
-					url: BASE_URL + 'agent/community/topic/view/' + self.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/community/topic/view/' + self.topic_id + '/ajax-save',
 					type: 'POST',
 					data: {action: 'status', status: catId},
 					context: self,
 					dataType: 'json',
 					success: function() {
-						DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.feedback-status-update', {
-							feedback_id: self.feedback_id,
+						DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.community_topic-status-update', {
+							topic_id: self.topic_id,
 							new_status: catId
 						});
 					}
@@ -205,7 +205,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		DP.select(this.getEl('status'));
 
 		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
-			ajaxSaveUrl: BASE_URL + 'agent/community/topic/view/' + self.feedback_id + '/ajax-save'
+			ajaxSaveUrl: BASE_URL + 'agent/community/topic/view/' + self.topic_id + '/ajax-save'
 		});
 		this.deleteHelper.undeleteBtn.on('click', function() {
 			self.getEl('status').find('option').first().prop('selected', true).trigger('change');
@@ -256,7 +256,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 			$(this).closest('tr').hide();
 			$.ajax({
-				url: BASE_URL + 'agent/community/topic/' + self.feedback_id + '/ajax-unsubscribe-person',
+				url: BASE_URL + 'agent/community/topic/' + self.topic_id + '/ajax-unsubscribe-person',
 				type: 'POST',
 				context: this,
 				data: {person_id: personId},
@@ -321,7 +321,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 				}
 				if ($(info.tabContent).is('.feedback-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
-						url: BASE_URL + 'agent/community/topic/view/' + this.feedback_id + '/view-revisions',
+						url: BASE_URL + 'agent/community/topic/view/' + this.topic_id + '/view-revisions',
 						type: 'GET',
 						dataType: 'html',
 						context: self,
@@ -350,7 +350,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'agent/community/topic/view/' + this.feedback_id + '/ajax-save',
+			url: BASE_URL + 'agent/community/topic/view/' + this.topic_id + '/ajax-save',
 			type: 'POST',
 			data: {action: action},
 			context: this,
@@ -380,7 +380,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 					self.getEl('cat_label').text(title);
 
 					$.ajax({
-						url: BASE_URL + 'agent/community/topic/view/' + self.feedback_id + '/ajax-save',
+						url: BASE_URL + 'agent/community/topic/view/' + self.topic_id + '/ajax-save',
 						type: 'POST',
 						data: { action: 'category', category_id: catId },
 						dataType: 'json'
@@ -412,9 +412,9 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		});
 
 		this.merge = new DeskPRO.Agent.Widget.Merge({
-			tabType: 'feedback',
-			metaId: self.meta.feedback_id,
-			metaIdName: 'feedback_id',
+			tabType: 'community',
+			metaId: self.meta.topic_id,
+			metaIdName: 'topic_id',
 			menu: this.getEl('merge_menu'),
 			trigger: $('.merge', this.getEl('action_buttons')),
 			overlayUrl: BASE_URL + 'agent/community/topic/merge-overlay/{id}/{other}',
@@ -431,7 +431,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 	_initLabels: function() {
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'feedback',
+			type: 'community',
 			input: this.getEl('labels_input'),
 			onChange: this.saveLabels.bind(this)
 		});
@@ -471,8 +471,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		this.hasInitSearchTab = true;
 
 		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
-			contentType: 'feedback',
-			contentId: this.meta.feedback_id,
+			contentType: 'community',
+			contentId: this.meta.topic_id,
 			element: this.getEl('stickysearch_input')
 		});
 		this.ownObject(this.stickyWords);
@@ -516,7 +516,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		}
 
 		$.ajax({
-			url: BASE_URL + 'agent/community/topic/view/' + this.getMetaData('feedback_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/community/topic/view/' + this.getMetaData('topic_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -581,7 +581,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
       });
 
 			$.ajax({
-				url: BASE_URL + 'agent/community/topic/view/' + this.feedback_id + '/ajax-save',
+				url: BASE_URL + 'agent/community/topic/view/' + this.topic_id + '/ajax-save',
 				type: 'POST',
 				context: this,
 				data: data,
@@ -638,7 +638,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			var list = $('.file-list', this.wrapper);
 
 			DeskPRO_Window.util.fileupload(this.wrapper, {
-				url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=feedback&object_id=' + this.meta.feedback_id,
+				url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=feedback&object_id=' + this.meta.topic_id,
 				page: this
 			});
 
@@ -648,7 +648,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 				var blob_id = $(this).data('blob-id');
 				$.ajax({
-					url: BASE_URL + 'agent/community/topic/view/' + self.meta.feedback_id + '/ajax-save',
+					url: BASE_URL + 'agent/community/topic/view/' + self.meta.topic_id + '/ajax-save',
 					type: 'POST',
 					data: {action: 'remove-blob', blob_id: blob_id},
 					context: self,
@@ -731,7 +731,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 	_initEditSlug: function() {
 		var slugEl = this.getEl('slug');
-		var id = this.meta.feedback_id;
+		var id = this.meta.topic_id;
 
 		this.getEl('editslug').on('click', function(ev) {
 			Orb.cancelEvent(ev);
@@ -760,7 +760,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 	_initSubscribedUsers: function() {
     var self = this;
-    
+
 		this.getEl('subscribe_searchbox').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
 			self.getEl('subscribe_person_name').text(name);
 			self.getEl('subscribe_person_email').text(email);
@@ -779,7 +779,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			self.getEl('subscribe_person_row_named').hide();
 			self.getEl('subscribe_person_row').show();
 		};
-    
+
 		this.getEl('subscribe_person_cancel_btn').on('click', function() {
       closeSubscribePersonRow();
 		});
@@ -787,13 +787,13 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		this.getEl('subscribe_person_btn').on('click', function() {
 			var personId = self.getEl('subscribe_person_id').val();
 			$.ajax({
-				url: BASE_URL + 'agent/community/topic/' + self.feedback_id + '/ajax-subscribe-person',
+				url: BASE_URL + 'agent/community/topic/' + self.topic_id + '/ajax-subscribe-person',
 				data: { person_id: personId },
 				type: 'POST',
 				context: this,
         dataType: 'json',
         success: function(data) {
-          DeskPRO_Window.loadPage(BASE_URL + 'agent/community/topic/view/' + self.feedback_id, {ignoreExist:true});
+          DeskPRO_Window.loadPage(BASE_URL + 'agent/community/topic/view/' + self.topic_id, {ignoreExist:true});
           self.closeSelf();
         },
         error: function(xhr, textStatus, errorThrown) {

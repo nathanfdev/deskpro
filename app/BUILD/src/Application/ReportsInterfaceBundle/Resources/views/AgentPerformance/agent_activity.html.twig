@@ -46,7 +46,7 @@
                                                 {% elseif type == 'download' %}
                                                     ({{ minute_display }}) Created download revision in
                                                     <a href="{{ app.request.getBaseUrl() }}/agent/#app.publish,d:{{log.id}}">{{ log.title }}</a>
-                                                {% elseif type == 'feedback' %}
+                                                {% elseif type == 'community' %}
                                                     ({{ minute_display }}) Created community topic revision in
                                                     <a href="{{ app.request.getBaseUrl() }}/agent/#app.community,a:{{log.id}}">{{ log.title }}</a>
                                                 {% endif %}

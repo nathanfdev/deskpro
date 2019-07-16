@@ -302,17 +302,17 @@ WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved =
 GROUP BY ${ticket}',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date","type":"dates"}]',
             ],
-        'feedback-views-date-x-grouped-date' => [
-                'title'         => 'Number of feedback views ${date} grouped by date',
-                'labels'        => 'feedback',
+        'community-topics-views-date-x-grouped-date' => [
+                'title'         => 'Number of community topics views ${date} grouped by date',
+                'labels'        => 'community',
                 'description'   => '',
                 'display_types' => 'table,simple_lines',
                 'display_order' => 40,
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Views\'
-FROM feedback
-WHERE feedback.views.date_created = ${date}
-GROUP BY DPQL_ALIAS(DPQL_DATE(feedback.views.date_created), \'Date\')',
+FROM community_topics
+WHERE community_topics.views.date_created = ${date}
+GROUP BY DPQL_ALIAS(DPQL_DATE(community_topics.views.date_created), \'Date\')',
                 'variables' => '[{"name":"date","type":"dates"}]',
             ],
         'most-active-tickets-status-created-date' => [
@@ -423,57 +423,57 @@ WHERE chat_conversations.date_created = ${date} AND chat_conversations.is_agent 
 GROUP BY ${chat}',
                 'variables' => '[{"name":"chat","type":"fields","field_type":"chats","table":"chat_conversations","default":"department"},{"name":"date","type":"dates"}]',
             ],
-        'number-feedback-com-created-date-group-by-feedback' => [
-                'title'         => 'Number of feedback comments created ${date} grouped by feedback ${feedback}',
-                'labels'        => 'feedback',
+        'number-community-topics-com-created-date-group-by-community-topic' => [
+                'title'         => 'Number of community topics comments created ${date} grouped by topic ${topic}',
+                'labels'        => 'community',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 30,
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Comments Created\'
-FROM feedback_comments
-WHERE feedback_comments.date_created = ${date}
-GROUP BY ${feedback}',
-                'variables' => '[{"name":"feedback","type":"fields","field_type":"feedback","table":"feedback_comments.feedback","default":"type"},{"name":"date","type":"dates"}]',
+FROM community_topic_comments
+WHERE community_topic_comments.date_created = ${date}
+GROUP BY ${topic}',
+                'variables' => '[{"name":"topic","type":"fields","field_type":"community","table":"community_topics_comments.topic","default":"type"},{"name":"date","type":"dates"}]',
             ],
-        'number-feedback-comments-created-date-group-by-x' => [
-                'title'         => 'Number of feedback comments created ${date} grouped by ${feedback_comment}',
-                'labels'        => 'feedback',
+        'number-community-topics-comments-created-date-group-by-x' => [
+                'title'         => 'Number of community-topics comments created ${date} grouped by ${topic_comment}',
+                'labels'        => 'community',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 20,
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Comments Created\'
-FROM feedback_comments
-WHERE feedback_comments.date_created = ${date}
-GROUP BY ${feedback_comment}',
-                'variables' => '[{"name":"feedback_comment","type":"fields","field_type":"feedback_comments","table":"feedback_comments","default":"none"},{"name":"date","type":"dates"}]',
+FROM community_topic_comments
+WHERE community_topic_comments.date_created = ${date}
+GROUP BY ${topic_comment}',
+                'variables' => '[{"name":"topic_comment","type":"fields","field_type":"community_topic_comments","table":"community_topic_comments","default":"none"},{"name":"date","type":"dates"}]',
             ],
-        'number-feedback-created-date-group-by-x' => [
-                'title'         => 'Number of feedback entries created ${date} grouped by ${feedback}',
-                'labels'        => 'feedback',
+        'number-community-topics-created-date-group-by-x' => [
+                'title'         => 'Number of community topics created ${date} grouped by ${topic}',
+                'labels'        => 'community',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 10,
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Entries Created\'
-FROM feedback
-WHERE feedback.date_created = ${date}
-GROUP BY ${feedback}',
-                'variables' => '[{"name":"feedback","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date","type":"dates"}]',
+FROM community_topics
+WHERE community_topics.date_created = ${date}
+GROUP BY ${topic}',
+                'variables' => '[{"name":"topic","type":"fields","field_type":"community","table":"community_topics","default":"type"},{"name":"date","type":"dates"}]',
             ],
-        'number-feedback-votes-submitted-date-x-group-y' => [
-                'title'         => 'Number of feedback votes submitted ${date} grouped by ${feedback}',
-                'labels'        => 'feedback',
+        'number-community-topic-votes-submitted-date-x-group-y' => [
+                'title'         => 'Number of community topic votes submitted ${date} grouped by ${topic}',
+                'labels'        => 'community',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 60,
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Ratings\'
-FROM feedback
-WHERE feedback.ratings.date_created = ${date}
-GROUP BY ${feedback}',
-                'variables' => '[{"name":"feedback","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date","type":"dates"}]',
+FROM community_topics
+WHERE community_topics.ratings.date_created = ${date}
+GROUP BY ${topic}',
+                'variables' => '[{"name":"topic","type":"fields","field_type":"community","table":"community_topics","default":"type"},{"name":"date","type":"dates"}]',
             ],
         'number-ticket-messages-written-agent-day' => [
                 'title'         => 'Number of ticket messages written ${date} per agent per [day]',
@@ -677,17 +677,17 @@ GROUP BY articles.id
 ORDER BY DPQL_COUNT() DESC',
                 'variables' => '[{"name":"date","type":"dates"}]',
             ],
-        'number-views-per-feedback-date-x' => [
-                'title'         => 'Number of views per feedback entry ${date}',
-                'labels'        => 'feedback,agents',
+        'number-views-per-community-topic-date-x' => [
+                'title'         => 'Number of views per community topic entry ${date}',
+                'labels'        => 'community,agents',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 50,
                 'query'         => '
-SELECT feedback.title, DPQL_COUNT() AS \'Views\'
-FROM feedback
-WHERE feedback.views.date_created = ${date}
-GROUP BY feedback.id
+SELECT community_topics.title, DPQL_COUNT() AS \'Views\'
+FROM community_topics
+WHERE community_topics.views.date_created = ${date}
+GROUP BY community_topics.id
 ORDER BY DPQL_COUNT() DESC',
                 'variables' => '[{"name":"date","type":"dates"}]',
             ],

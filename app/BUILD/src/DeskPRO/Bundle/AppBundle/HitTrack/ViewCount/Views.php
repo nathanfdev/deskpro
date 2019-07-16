@@ -12,10 +12,10 @@ class Views
      * @var array
      */
     private $map = [
-        'article'  => [],
-        'download' => [],
-        'news'     => [],
-        'feedback' => [],
+        'article'   => [],
+        'download'  => [],
+        'news'      => [],
+        'community' => [],
     ];
 
     /**

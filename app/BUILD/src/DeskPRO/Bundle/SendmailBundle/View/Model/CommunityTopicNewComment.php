@@ -42,7 +42,7 @@ class CommunityTopicNewComment extends EmailBaseType
      *
      * @param CommunityTopicComment $comment
      * @param CommunityTopic        $communityTopic
-     * @param                       $feedbackLink
+     * @param                       $communityTopicLink
      */
     public function __construct(CommunityTopicComment $comment, CommunityTopic $communityTopic, $communityTopicLink)
     {

@@ -8,7 +8,7 @@ use JMS\Serializer\Annotation as JMS;
 class CommunityTopicUpdated extends EmailBaseType
 {
     /**
-     * The feedback that has been approved.
+     * The community topic that has been approved.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic")
      *

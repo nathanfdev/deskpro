@@ -296,7 +296,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function makeFeedbackIcon($feedback)
     {
-        return $this->container->get('icon_factory')->makeFeedbackIcon($feedback);
+        return $this->container->get('icon_factory')->makeCommunityTopicIcon($feedback);
     }
 
     /**

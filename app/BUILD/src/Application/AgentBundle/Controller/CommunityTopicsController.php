@@ -83,8 +83,8 @@ class CommunityTopicsController extends AbstractController
         $CommunityTopicCommentRepository        = $this->em->getRepository(CommunityTopicComment::class);
 
         $counts = [
-            'feedback_awaiting_validation' => $communityTopicRepository->countAwaitingValidation(),
-            'comments_awaiting_validation' => $CommunityTopicCommentRepository->countAwaitingValidation(),
+            'community_topics_awaiting_validation' => $communityTopicRepository->countAwaitingValidation(),
+            'comments_awaiting_validation'         => $CommunityTopicCommentRepository->countAwaitingValidation(),
         ];
 
         $statusCounts = [
@@ -111,15 +111,15 @@ class CommunityTopicsController extends AbstractController
             'section_html' => $this->renderView(
                 'AgentBundle:Community:window-section.html.twig',
                 [
-                    'counts'             => $counts,
-                    'status_counts'      => $statusCounts,
-                    'category_counts'    => $categoryCounts,
-                    'feedback_cats'      => $communityChannels,
-                    'active_status_cats' => $activeStatusCategories,
-                    'closed_status_cats' => $closedStatusCategories,
-                    'feedback_tag_index' => $communityTopicTagIndex,
-                    'brands'             => $brands,
-                    'selected_brand_id'  => $selectedBrandId,
+                    'counts'                    => $counts,
+                    'status_counts'             => $statusCounts,
+                    'category_counts'           => $categoryCounts,
+                    'community_channels'        => $communityChannels,
+                    'active_status_cats'        => $activeStatusCategories,
+                    'closed_status_cats'        => $closedStatusCategories,
+                    'community_topic_tag_index' => $communityTopicTagIndex,
+                    'brands'                    => $brands,
+                    'selected_brand_id'         => $selectedBrandId,
                 ]
             ),
         ];
@@ -157,7 +157,7 @@ class CommunityTopicsController extends AbstractController
             $lastRevision = $communityTopic->getRevisions()->current();
             $info[]       = [
                 'info' => [
-                    'content_type' => 'feedback',
+                    'content_type' => 'community_topic',
                     'content_id'   => $communityTopic->getId(),
                     'revision_id'  => $lastRevision ? $lastRevision->getId() : null,
                     'date_created' => $communityTopic->getDateCreated()->format('Y-m-d H:i:s'),
@@ -173,7 +173,7 @@ class CommunityTopicsController extends AbstractController
         return $this->render(
             $tpl,
             [
-                'single_type'        => 'feedback',
+                'single_type'        => 'community_topic',
                 'content_validating' => $info,
                 'total'              => $total,
                 'pageinfo'           => $pageinfo,
@@ -218,11 +218,11 @@ class CommunityTopicsController extends AbstractController
             }
         }
 
-        $state       = $personPrefRepository->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+        $state       = $personPrefRepository->getPrefForPersonId('agent.ui.state.editcommunity', $this->person->id);
         $channel     = $communityTopic->getCategory();
         $channelPath = $channel->getTreeParents();
 
-        $ratedSearches           = $searchLogRepository->getRatedSearchesFor('feedback', $communityTopic['id'], 'counted');
+        $ratedSearches           = $searchLogRepository->getRatedSearchesFor('community', $communityTopic['id'], 'counted');
         $relatedFinder           = new RelatedContentFinder($this->person, $communityTopic);
         $relatedContent          = $relatedFinder->getRelatedEntities(true);
         $communityTopicRevisions = $communityTopic->getRevisions();
@@ -286,8 +286,8 @@ class CommunityTopicsController extends AbstractController
         return $this->render(
             'AgentBundle:Community:view-who-voted.html.twig',
             [
-                'feedback'       => $communityTopic,
-                'feedback_votes' => $communityTopic_votes,
+                'community_topic'       => $communityTopic,
+                'community_topic_votes' => $communityTopic_votes,
             ]
         );
     }
@@ -299,7 +299,7 @@ class CommunityTopicsController extends AbstractController
         });
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
-            'name'             => 'newfeedback[category_id]',
+            'name'             => 'newcomunitytopic[category_id]',
             'id'               => '_cat',
             'add_classname'    => 'category_id',
             'add_attr'         => '',
@@ -317,8 +317,8 @@ class CommunityTopicsController extends AbstractController
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($brand_id);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($brand_id);
 
-        return $this->render('AgentBundle:Common:select-feedback-status.html.twig', [
-            'name'               => 'newfeedback[status_code]',
+        return $this->render('AgentBundle:Common:select-community-topic-status.html.twig', [
+            'name'               => 'newcomunitytopic[status_code]',
             'id'                 => '_cat',
             'add_classname'      => 'status_id',
             'add_attr'           => '',
@@ -368,9 +368,9 @@ class CommunityTopicsController extends AbstractController
 
         return $this->createJsonResponse(
             [
-                'success'     => true,
-                'feedback_id' => $communityTopic->getId(),
-                'html'        => $ret,
+                'success'            => true,
+                'community_topic_id' => $communityTopic->getId(),
+                'html'               => $ret,
             ]
         );
     }
@@ -402,8 +402,8 @@ class CommunityTopicsController extends AbstractController
 
         return $this->createJsonResponse(
             [
-                'success'     => true,
-                'feedback_id' => $communityTopic['id'],
+                'success'            => true,
+                'community_topic_id' => $communityTopic['id'],
             ]
         );
     }
@@ -435,8 +435,8 @@ class CommunityTopicsController extends AbstractController
 
         return $this->createJsonResponse(
             [
-                'success'     => true,
-                'feedback_id' => $communityTopic->getId(),
+                'success'            => true,
+                'community_topic_id' => $communityTopic->getId(),
             ]
         );
     }
@@ -477,8 +477,8 @@ class CommunityTopicsController extends AbstractController
         return $this->render(
             'AgentBundle:Community:view-customfields-rendered-rows.html.twig',
             [
-                'feedback'      => $communityTopic,
-                'custom_fields' => $customFields,
+                'community_topic' => $communityTopic,
+                'custom_fields'   => $customFields,
             ]
         );
     }
@@ -633,7 +633,7 @@ class CommunityTopicsController extends AbstractController
             case 'content':
                 /** @var PersonPrefRepository $personPrefRepository */
                 $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
-                $personPrefRepository->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
+                $personPrefRepository->deletePrefForPersonId('agent.ui.state.editcommunity', $this->person->id);
 
                 $content = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
@@ -646,7 +646,7 @@ class CommunityTopicsController extends AbstractController
 
                 $data['content_html'] = $this->renderView(
                     'AgentBundle:Community:view-content-tab.html.twig',
-                    ['feedback' => $communityTopic]
+                    ['community_topic' => $communityTopic]
                 );
 
                 $rev            = ContentRevisionUtil::findOrCreate($communityTopic, ['content'], $this->person);
@@ -1057,7 +1057,7 @@ class CommunityTopicsController extends AbstractController
             return $category['brand_id'] === $brandId;
         });
 
-        $displayFields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0')
+        $displayFields = $this->person->getPref('agent.ui.community-filter-display-fields.0')
             ?: [
                 'date_created',
                 'category',
@@ -1080,13 +1080,13 @@ class CommunityTopicsController extends AbstractController
                     'cache'              => $result_cache,
                     'cache_id'           => $result_cache['id'],
                     'result_ids'         => $result_cache['results'],
-                    'feedback'           => $communityTopic,
+                    'community_topic'    => $communityTopic,
                     'num_results'        => $result_cache['num_results'],
                     'per_page'           => 50,
                     'criteria'           => $result_cache['criteria'],
                     'user_cat_field'     => $userCatField,
                     'cur_page'           => $page,
-                    'feedback_cats'      => $communityChannels,
+                    'community_channels' => $communityChannels,
                     'active_status_cats' => $activeStatusCategories,
                     'closed_status_cats' => $closedStatusCategories,
                     'display_fields'     => $displayFields,
@@ -1247,7 +1247,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function compareRevisionsAction($rev_old_id, $rev_new_id)
     {
-        $diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:FeedbackRevision', $rev_old_id, $rev_new_id);
+        $diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:CommunityTopicRevision', $rev_old_id, $rev_new_id);
 
         return $this->render(
             'AgentBundle:Community:compare-revs.html.twig',
@@ -1332,7 +1332,7 @@ class CommunityTopicsController extends AbstractController
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
-        $state  = $personPrefRepository->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+        $state  = $personPrefRepository->getPrefForPersonId('agent.ui.state.newcomunitytopic', $this->person->id);
 
         return $this->render(
             'AgentBundle:Community:new-community-topic.html.twig',
@@ -1393,7 +1393,7 @@ class CommunityTopicsController extends AbstractController
             /** @var PersonPrefRepository $personPrefRepository */
             $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
             $personPrefRepository->deletePrefForPersonId(
-                'agent.ui.state.newfeedback',
+                'agent.ui.state.newcomunitytopic',
                 $this->person->id
             );
 
@@ -1403,9 +1403,9 @@ class CommunityTopicsController extends AbstractController
 
             return $this->createJsonResponse(
                 [
-                    'success'      => true,
-                    'feedback_id'  => $communityTopic['id'],
-                    'feedback_url' => $this->get('object_router')->getPortalUrl($communityTopic),
+                    'success'             => true,
+                    'community_topic_id'  => $communityTopic['id'],
+                    'community_topic_url' => $this->get('object_router')->getPortalUrl($communityTopic),
                 ]
             );
         } else {
@@ -1433,7 +1433,7 @@ class CommunityTopicsController extends AbstractController
                 $communityTopic->getPerson()->getDisplayName()
             );
             // unexisting template also
-            $message->setTemplate('DeskPRO:emails_user:new-feedback-created-for-user.html.twig', [
+            $message->setTemplate('DeskPRO:emails_user:new-community-topic-created-for-user.html.twig', [
                 'topic' => $communityTopic,
             ]);
             $this->container->getMailer()->send($message);

@@ -459,9 +459,9 @@ class LegacyTermsTransformer
                     ],
                 ];
 
-            case 'FilterFeedbackLinks':
+            case 'FilterCommunityTopicsLinks':
                 return [
-                    'type'    => 'feedback_links',
+                    'type'    => 'topic_links',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
                 ];

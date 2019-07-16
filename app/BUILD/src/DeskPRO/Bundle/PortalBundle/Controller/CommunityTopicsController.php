@@ -84,14 +84,14 @@ class CommunityTopicsController extends AbstractController
         }
         $rssLink = $this->generateUrl('portal_community', ['_format' => 'rss']);
 
-        // NEW FEEDBACK FORM
+        // NEW COMMUNITY TOPIC FORM
 
         // true if auto-submit SavedFormController wants us to definitely rerender
         $rerenderingSaved  = $request->attributes->get('rerender-form', false);
         $permissionBag     = $this->getPermissionBagForCurrentUser();
         $newCommunityTopic = new CommunityTopic();
         $newCommunityTopic->setIsReviewed(false);
-        if (!$permissionBag->hasPermission('feedback.no_submit_validate')) {
+        if (!$permissionBag->hasPermission('community.no_submit_validate')) {
             $newCommunityTopic->setStatus(CommunityTopic::STATUS_HIDDEN);
         } else {
             $newCommunityTopic->setStatus(CommunityTopic::STATUS_ACTIVE);
@@ -182,7 +182,7 @@ class CommunityTopicsController extends AbstractController
         // SUBSCRIPTION
 
         $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
+        if ($this->getUser() && $this->getBrandSetting('user.community_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
         }
@@ -278,7 +278,7 @@ class CommunityTopicsController extends AbstractController
     {
         $check = new SubmitCommunityTopicAbuseCheck($person, $ip);
         if ($withResponse) {
-            $check->setResponse($this->redirectToRoute('portal_community', ['lockout' => 'feedback']));
+            $check->setResponse($this->redirectToRoute('portal_community', ['lockout' => 'community']));
         } else {
             $check->markAsCheckOnly();
         }
@@ -347,7 +347,7 @@ class CommunityTopicsController extends AbstractController
         // SUBSCRIPTION
 
         $isSubscribed = false;
-        if ($this->getUser() && $this->getBrandSetting('user.feedback_subscriptions', false)) {
+        if ($this->getUser() && $this->getBrandSetting('user.community_subscriptions', false)) {
             // waiting info regarding article category subscriptions
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
         }
@@ -463,7 +463,7 @@ class CommunityTopicsController extends AbstractController
 
         $isSubscribed = false;
         if (
-            $this->getBrandSetting('user.feedback_subscriptions', false)
+            $this->getBrandSetting('user.community_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_COMMUNITY, $item)
         ) {
             // waiting on info on the kb subs
@@ -601,7 +601,7 @@ class CommunityTopicsController extends AbstractController
         $subscriptionsHelper = $this->getSubscriptionsHelper();
 
         if ($subscriptionsHelper->isSubscribedRootCategory('community', $person)) {
-            $subscriptionsHelper->unsubscribeFromRootCategory('feedback', $person);
+            $subscriptionsHelper->unsubscribeFromRootCategory('community', $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_unsubscribe'));
         } else {
             $subscriptionsHelper->subscribeToRootCategory('community', $person);
@@ -621,7 +621,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function communityUnsubscribeAllAction()
     {
-        $this->getSubscriptionsHelper()->unsubscribeFromAll('feedback', $this->getUser());
+        $this->getSubscriptionsHelper()->unsubscribeFromAll('community', $this->getUser());
 
         $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe_everything'));
 

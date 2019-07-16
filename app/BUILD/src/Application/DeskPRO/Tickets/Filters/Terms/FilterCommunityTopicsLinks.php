@@ -13,7 +13,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
- * Filters based on ticket feedback links.
+ * Filters based on ticket community topics links.
  *
  * @option string name
  */
@@ -26,7 +26,7 @@ class FilterCommunityTopicsLinks extends AbstractFilterTerm
     {
         $options = new CheckedOptionsArray();
         $options->addValidNames(
-            'feedback_links'
+            'topic_links'
         );
 
         return $options;

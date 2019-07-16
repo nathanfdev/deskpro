@@ -135,8 +135,8 @@
 				{{ phrase('agent.tickets.log_on_download', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
 			{% elseif log.details.via_comment.comment_type == 'news' %}
 				{{ phrase('agent.tickets.log_on_news', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
-			{% elseif log.details.via_comment.comment_type == 'feedback' %}
-				{{ phrase('agent.tickets.log_on_feedback', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
+			{% elseif log.details.via_comment.comment_type == 'community' %}
+				{{ phrase('agent.tickets.log_on_community_topic', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
 			{% endif %}
 		</div>
 	{% endif %}
@@ -766,11 +766,11 @@
     {% if log.details.removed %}
         {{ phrase('agent.general.problems_removed') }}: <span class="new-val">{{ log.details.removed|join(', ') }}</span>
     {% endif %}
-{% elseif log.action_type == 'feedback_link_added' %}
-	<span class="type">{{ phrase('agent.tickets.log_community_link_added') }}</span>
+{% elseif log.action_type == 'community_topic_link_added' %}
+	<span class="type">{{ phrase('agent.tickets.log_community_topic_link_added') }}</span>
 	<span class="new-val">{{ phrase('agent.general.id') }} {{log.id_after}}</span>
-{% elseif log.action_type == 'feedback_link_removed' %}
-	<span class="type">{{ phrase('agent.tickets.log_community_link_removed') }}</span>
+{% elseif log.action_type == 'community_topic_link_removed' %}
+	<span class="type">{{ phrase('agent.tickets.log_community_topic_link_removed') }}</span>
 	<span class="old-val">{{ phrase('agent.general.id') }} {{log.id_before}}</span>
 {% elseif log.action_type == 'task_created' %}
 	<span class="type">{{ phrase('agent.tasks.task_created') }}</span>

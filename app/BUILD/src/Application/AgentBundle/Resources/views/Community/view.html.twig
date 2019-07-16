@@ -5,7 +5,7 @@ pageMeta.title = {{topic.title|json_encode|raw}};
 pageMeta.topic_id = {{topic.id}};
 pageMeta.url_fragment  = '{{ url_fragment('agent_community_topic_view', {'communityTopicId': topic.id}) }}';
 pageMeta.url  = '{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}';
-pageMeta.obj_code = 'feedback_{{ topic.id }}';
+pageMeta.obj_code = 'community_{{ topic.id }}';
 
 pageMeta.permalink = '{{ permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_community_ajax_labels_save', {'communityTopicId': topic.id}) }}';

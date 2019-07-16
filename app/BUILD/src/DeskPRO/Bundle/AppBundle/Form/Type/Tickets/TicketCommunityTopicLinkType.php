@@ -119,9 +119,9 @@ class TicketCommunityTopicLinkType extends AbstractType
 
     public function validateCommunityTopicSubscriptionEnabled($value, ExecutionContextInterface $context)
     {
-        if ($value && !$this->settingsResolver->getSetting('user.feedback_subscriptions')) {
+        if ($value && !$this->settingsResolver->getSetting('user.community_subscriptions')) {
             $context->buildViolation('api.error_codes.option_depends_from_setting')
-                ->setParameter('setting', 'user.feedback_subscriptions')
+                ->setParameter('setting', 'user.community_subscriptions')
                 ->setCode('option_depends_from_setting')
                 ->addViolation();
         }

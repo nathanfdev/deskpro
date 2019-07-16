@@ -730,7 +730,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         if (type == 'messages') {
           self.getEl('messages_wrap').removeClass('show-log');
           self.getEl('messages_wrap').find('article.content-message').show();
-        } else if (type == 'feedback') {
+        } else if (type == 'community') {
           self.getEl('messages_wrap').removeClass('show-log');
           self.getEl('messages_wrap').find('article.content-message').show().not('article.with-feedback').hide();
         } else if (type == 'log') {

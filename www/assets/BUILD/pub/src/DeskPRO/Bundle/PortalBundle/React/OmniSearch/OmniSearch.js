@@ -188,9 +188,9 @@ export class OmniSearch extends React.Component {
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-feedback')}
-            nameApi="feedback"
+            nameApi="community"
             nameIcon="fas fa-comments"
-            initialResult={'feedback' in data ? data.feedback : {}}
+            initialResult={'community' in data ? data.community : {}}
             q={this.state.searchQuery}
           />
           <OmniSearchResultSection

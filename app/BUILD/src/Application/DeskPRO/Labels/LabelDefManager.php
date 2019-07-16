@@ -154,7 +154,7 @@ class LabelDefManager
         }
 
         // Non-admin defined
-        $types = ['articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations'];
+        $types = ['articles', 'downloads', 'community_topics', 'news', 'organizations', 'people', 'tickets', 'chat_conversations'];
         $parts = [];
         foreach ($types as $t) {
             $parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";

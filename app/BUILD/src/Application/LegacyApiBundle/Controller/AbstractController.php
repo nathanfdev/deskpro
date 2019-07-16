@@ -639,7 +639,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
         }
         // TODO this code will throw an error cause FeedbackCommenting doesn't exist
-        // For feedback we also notify everyone involved
+        // For community topics we also notify everyone involved
         if ($comment instanceof \Application\DeskPRO\Entity\CommunityTopicComment) {
             $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
             $commenting->newCommentNotify($comment);

@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\People\PermissionLoader;
 
 /**
- * Loads feedback category permissions.
+ * Loads community channels permissions.
  *
  * @deprecated use new PermissionsManager to get the PermissionsBag instead of people helpers
  */

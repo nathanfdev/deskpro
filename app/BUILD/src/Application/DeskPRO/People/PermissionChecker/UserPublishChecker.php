@@ -134,12 +134,12 @@ class UserPublishChecker extends AbstractChecker
 
         // Only agents can view non-published
         if ($communityTopic->getStatus() == 'hidden' && !$this->person->is_agent) {
-            // But still show the user their own submitted feedback
+            // But still show the user their own submitted community topic
             if ($communityTopic->getPerson() && $communityTopic->getPerson()->getId() == $this->person->getId()) {
                 return true;
             }
             if ($user_session) {
-                $submittedCommunityTopic = $user_session->get('submitted_feedback');
+                $submittedCommunityTopic = $user_session->get('submitted_community_topic');
                 if (is_array($submittedCommunityTopic) && in_array($communityTopic->getId(), $submittedCommunityTopic)) {
                     return true;
                 }

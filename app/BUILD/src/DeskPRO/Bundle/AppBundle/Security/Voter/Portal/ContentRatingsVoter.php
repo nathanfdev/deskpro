@@ -44,7 +44,7 @@ class ContentRatingsVoter extends AbstractVoter
             case static::RATE_ARTICLE:
                 return $permission_bag->get('articles.rate') && $permitted;
             case static::RATE_COMMUNITY:
-                return $permission_bag->get('feedback.rate') && $permitted;
+                return $permission_bag->get('community.rate') && $permitted;
             case static::RATE_DOWNLOAD:
                 return $permission_bag->get('downloads.rate') && $permitted;
             case static::RATE_NEWS:

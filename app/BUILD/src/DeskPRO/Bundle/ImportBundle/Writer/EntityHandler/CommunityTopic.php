@@ -47,7 +47,7 @@ class CommunityTopic extends AbstractEntityHandler
             $entity->setDatePublished($entity->getDateCreated());
         }
 
-        // update feedback category
+        // update community topic channel
         if ($model->getChannel()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getCommunityChannelMapper(),

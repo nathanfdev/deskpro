@@ -83,7 +83,7 @@ class CommunityTopicResults
 
             $orderBy = $controller->in->getString('order_by');
             if (!$orderBy) {
-                $orderBy = $controller->person->getPref('agent.ui.feedback-filter-order-by.0');
+                $orderBy = $controller->person->getPref('agent.ui.community-filter-order-by.0');
             }
 
             if ($orderBy) {

@@ -8,7 +8,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     init() {
       this.$scope.brand_id = this.$stateParams.brandId;
-      this.feedback_types = [];
+      this.community_channels = [];
       this.brands = [];
 
       return this.sortedListOptions = {
@@ -25,17 +25,17 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           $list.find('li').each(function () {
             x += 10;
-            const feedback_type_id = parseInt($(this).data('id'));
+            const community_channel_id = parseInt($(this).data('id'));
 
-            if (feedback_type_id) {
-              const feedback_type = em.getById('feedback_type', feedback_type_id);
+            if (community_channel_id) {
+              const community_channel = em.getById('community_channel', community_channel_id);
 
-              if (feedback_type) {
-                feedback_type.display_order = x;
+              if (community_channel) {
+                community_channel.display_order = x;
               }
             }
 
-            return postData.display_orders.push(feedback_type_id);
+            return postData.display_orders.push(community_channel_id);
           });
 
           const promise = this.Api.sendPostJson('/community_channels/display_order', postData);
@@ -57,10 +57,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     initialLoad() {
       const promises = [];
       promises.push(this.CommunityChannelsData.loadList().then((recs) => {
-        this.feedback_types = this.sort(recs.values());
+        this.community_channels = this.sort(recs.values());
 
         return this.addManagedListener(this.CommunityChannelsData.recs, 'changed', () => {
-          this.feedback_types = this.sort(this.CommunityChannelsData.recs.values());
+          this.community_channels = this.sort(this.CommunityChannelsData.recs.values());
           return this.ngApply();
         });
       })
@@ -73,20 +73,20 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   * Show the delete dlg
   */
 
-    startDelete(feedback_type) {
-      const move_feedback_types_list = this.CommunityChannelsData.getListOfMovables(feedback_type);
+    startDelete(community_channel) {
+      const move_community_channels_list = this.CommunityChannelsData.getListOfMovables(community_channel);
 
-      if (!move_feedback_types_list.length) {
+      if (!move_community_channels_list.length) {
         this.showAlert('@no_delete_last');
         return;
       }
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('CommunityChannels/delete-modal.html'),
-        controller:  ['$scope', '$modalInstance', 'move_feedback_types_list', function ($scope, $modalInstance, move_feedback_types_list) {
-          $scope.move_feedback_types_list = move_feedback_types_list;
+        controller:  ['$scope', '$modalInstance', 'move_community_channels_list', function ($scope, $modalInstance, move_community_channels_list) {
+          $scope.move_community_channels_list = move_community_channels_list;
           $scope.selected = {
-            move_to_id: move_feedback_types_list[0].id
+            move_to_id: move_community_channels_list[0].id
           };
 
           $scope.confirm = () => $modalInstance.close($scope.selected.move_to_id);
@@ -95,28 +95,28 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         }
         ],
         resolve: {
-          move_feedback_types_list: () => move_feedback_types_list
+          move_community_channels_list: () => move_community_channels_list
         }
       });
 
-      return inst.result.then(move_to => this.deleteFeedbackType(feedback_type, move_to));
+      return inst.result.then(move_to => this.deleteFeedbackType(community_channel, move_to));
     }
 
     /*
     * Actually do the delete
-  * @param feedback_type - feedback type we want to delete
+  * @param community_channel - feedback type we want to delete
   * @param move_to - to what type feedback should be moved
     */
 
-    deleteFeedbackType(feedback_type, move_to) {
-      return this.Api.sendDelete(`/community_channels/${feedback_type.id}`, {
+    deleteFeedbackType(community_channel, move_to) {
+      return this.Api.sendDelete(`/community_channels/${community_channel.id}`, {
         move_to
       }).success(() => {
-        this.CommunityChannelsData.remove(feedback_type.id);
+        this.CommunityChannelsData.remove(community_channel.id);
         this.ngApply();
 
         // if currently viewing the deleted feedback type, then should need to switch state
-        if ((this.$state.current.name === 'portal.community_channels.edit') && (parseInt(this.$state.params.id) === feedback_type.id)) {
+        if ((this.$state.current.name === 'portal.community_channels.edit') && (parseInt(this.$state.params.id) === community_channel.id)) {
           return this.$state.go('portal.community_channels');
         }
       });

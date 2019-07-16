@@ -212,7 +212,7 @@ class PortalSupportExtension extends \Twig_Extension
     }
 
     /**
-     * Check if there is any content to show for: articles, news, downloads, feedback.
+     * Check if there is any content to show for: articles, news, downloads, community.
      *
      * @param string $name
      *
@@ -238,7 +238,7 @@ class PortalSupportExtension extends \Twig_Extension
                     return true;
                 }
                 break;
-            case 'feedback':
+            case 'community':
                 if ($sec->isGranted('USE_COMMUNITY') && $this->container->get('data.community')->hasAny()) {
                     return true;
                 }
@@ -465,7 +465,7 @@ class PortalSupportExtension extends \Twig_Extension
                 return preg_match('#^portal_news#', $route);
             case 'downloads':
                 return preg_match('#^portal_downloads#', $route);
-            case 'feedback':
+            case 'community':
                 return preg_match('#^portal_community#', $route);
             case 'tickets':
                 return preg_match('#^portal_tickets#', $route) || $route === 'portal_new_ticket';

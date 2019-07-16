@@ -362,7 +362,7 @@ class MainController extends AbstractController
         $results = [
             'article'              => [],
             'download'             => [],
-            'feedback'             => [],
+            'community'            => [],
             'news'                 => [],
             'ticket'               => [],
             'person'               => [],
@@ -681,7 +681,7 @@ class MainController extends AbstractController
 
             case 'article':
             case 'news':
-            case 'feedback':
+            case 'community':
             case 'download':
             case 'topic':
                 foreach ($results as $r) {

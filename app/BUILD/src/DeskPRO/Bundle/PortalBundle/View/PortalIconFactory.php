@@ -79,7 +79,7 @@ class PortalIconFactory
     }
 
     /**
-     * Will return HTML representing an icon for any content type (dl, blob, article, news, feedback).
+     * Will return HTML representing an icon for any content type (dl, blob, article, news, community).
      *
      * @param $content
      *
@@ -104,7 +104,7 @@ class PortalIconFactory
         } elseif ($content instanceof NewsAttachment) {
             return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof CommunityTopic) {
-            return $this->makeFeedbackIcon($content);
+            return $this->makeCommunityTopicIcon($content);
         } elseif ($content instanceof Topic) {
             return $this->makeTopicIcon($content);
         } elseif ($content instanceof Ticket) {
@@ -171,13 +171,13 @@ class PortalIconFactory
     }
 
     /**
-     * Will return HTML representing an icon for any feedback.
+     * Will return HTML representing an icon for any community topic.
      *
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $topic
      *
      * @return string
      */
-    public function makeFeedbackIcon(CommunityTopic $feedback)
+    public function makeCommunityTopicIcon(CommunityTopic $topic)
     {
         return '<i class="far fa-file-alt"></i>';
     }

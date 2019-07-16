@@ -24,14 +24,14 @@
           </a></li>
         </script>
         <div class="input-wrapper">
-          {% if brand_setting('user.feedback_subscriptions') %}
+          {% if brand_setting('user.community_subscriptions') %}
             <div style="display: block;">
               <input type="checkbox" id="is_subscribe_owner" name="is_subscribe_owner" checked="checked">
-              <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+              <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_community_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
             </div>
             <div style="display: block;">
               <input type="checkbox" id="is_subscribe_participants" name="is_subscribe_participants">
-              <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
+              <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_community_subscr_part', {'count': ticket.participants.count}) }}</label>
             </div>
           {% else %}
             <input type="hidden" id="is_subscribe_owner" name="is_subscribe_owner">

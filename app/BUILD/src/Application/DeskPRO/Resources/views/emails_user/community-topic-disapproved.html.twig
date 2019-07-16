@@ -1,10 +1,10 @@
 <dp:subject>{{ phrase('user.email_subjects.community_topic_new-disapproved') }}</dp:subject>
-{{ phrase('user.emails.feedback_thank-you', {'title':topic.title}) }}
+{{ phrase('user.emails.community-topic_thank-you', {'title':topic.title}) }}
 
 <br /><br />
 
 {% if reason %}
-	{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name_user}) }}
+	{{ phrase('user.emails.community-topic_disapproved-reason', {name: agent.display_name_user}) }}
 	<br /><br />
 	{{ reason }}
 {% else %}

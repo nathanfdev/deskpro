@@ -291,7 +291,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseFeedback()) {
       menus.push({
         className: 'feedback',
-        label:     <FormattedMessage id="agent.general.feedback" />,
+        label:     <FormattedMessage id="agent.general.community" />,
         link:      '/agent/#app.community',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {

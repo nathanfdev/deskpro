@@ -79,6 +79,6 @@ class NewCommunityTopic extends AbstractType
 
     public function getName()
     {
-        return 'newfeedback';
+        return 'newcomunitytopic';
     }
 }

@@ -29,7 +29,7 @@ class LabelsController extends BaseController
      *     requirements={
      *         {
      *             "name"="type",
-     *             "requirement"="task|ticket|person|organization|feedback|news|chat|article|download",
+     *             "requirement"="task|ticket|person|organization|community|news|chat|article|download",
      *             "description"="Which entity type labels we are searching?",
      *             "dataType"="string"
      *         }
@@ -54,7 +54,7 @@ class LabelsController extends BaseController
      *     "",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="task|ticket|person|organization|feedback|news|chat|article|download"
+     *         "type"="task|ticket|person|organization|community|news|chat|article|download"
      *     }
      * )
      *
@@ -78,7 +78,7 @@ class LabelsController extends BaseController
             case 'organization':
                 $labelType = LabelDef::TYPE_ORGS;
                 break;
-            case 'feedback':
+            case 'community':
                 $labelType = LabelDef::TYPE_COMMUNITY;
                 break;
             case 'news':

@@ -559,11 +559,11 @@ class SettingsController extends AbstractController implements ProtectedControll
                 ];
                 break;
 
-            case 'feedback':
+            case 'community':
                 $settings = [
                     'enabled'       => (bool) $this->settings->get('core.apps_community'),
-                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_feedback'),
-                    'subscriptions' => (bool) $this->settings->get('user.feedback_subscriptions'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_community'),
+                    'subscriptions' => (bool) $this->settings->get('user.community_subscriptions'),
                 ];
                 break;
 
@@ -626,9 +626,9 @@ class SettingsController extends AbstractController implements ProtectedControll
 
             case 'community':
                 $settings = [
-                    'core.apps_community'         => $this->in->getBoolInt('settings.enabled'),
-                    'user.portal_tab_feedback'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
-                    'user.feedback_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
+                    'core.apps_community'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_community'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.community_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
                 ];
                 break;
 

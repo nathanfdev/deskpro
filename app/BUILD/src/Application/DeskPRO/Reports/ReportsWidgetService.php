@@ -111,14 +111,14 @@ class ReportsWidgetService
             $groupParams['values']['organization'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         }
 
-        $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class, $addReportLevel);
-        $groupParams['org_custom_fields']      = $this->customFields(CustomDefOrganization::class, $addReportLevel);
-        $groupParams['user_custom_fields']     = $this->customFields(CustomDefPerson::class, $addReportLevel);
-        $groupParams['article_custom_fields']  = $this->customFields(CustomDefArticle::class, $addReportLevel);
-        $groupParams['chat_custom_fields']     = $this->customFields(CustomDefChat::class, $addReportLevel);
-        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefCommunityTopic::class, $addReportLevel);
-        $groupParams['billing_custom_fields']  = $this->customFields(CustomDefBilling::class, $addReportLevel);
-        $groupParams['product_custom_fields']  = $this->customFields(CustomDefProduct::class, $addReportLevel);
+        $groupParams['ticket_custom_fields']    = $this->customFields(CustomDefTicket::class, $addReportLevel);
+        $groupParams['org_custom_fields']       = $this->customFields(CustomDefOrganization::class, $addReportLevel);
+        $groupParams['user_custom_fields']      = $this->customFields(CustomDefPerson::class, $addReportLevel);
+        $groupParams['article_custom_fields']   = $this->customFields(CustomDefArticle::class, $addReportLevel);
+        $groupParams['chat_custom_fields']      = $this->customFields(CustomDefChat::class, $addReportLevel);
+        $groupParams['community_custom_fields'] = $this->customFields(CustomDefCommunityTopic::class, $addReportLevel);
+        $groupParams['billing_custom_fields']   = $this->customFields(CustomDefBilling::class, $addReportLevel);
+        $groupParams['product_custom_fields']   = $this->customFields(CustomDefProduct::class, $addReportLevel);
 
         return $groupParams;
     }

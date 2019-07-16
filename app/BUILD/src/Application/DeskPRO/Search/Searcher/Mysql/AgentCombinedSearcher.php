@@ -15,7 +15,7 @@ use Application\DeskPRO\Search\SearcherResult\Result;
 use Application\DeskPRO\Search\SearcherResult\ResultSet;
 
 /**
- * The combined searcher searches everything: articles, news, downloads, feedback.
+ * The combined searcher searches everything: articles, news, downloads, community topics.
  */
 class AgentCombinedSearcher
 {

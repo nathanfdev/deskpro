@@ -56,11 +56,11 @@ define([
     */
 
     remove(id) {
-      const model = this.em.getById('feedback_status', id);
+      const model = this.em.getById('community_status', id);
 
       if ((model != null) && (model.status_type != null)) {
         this.recs[`${model.status_type}_statuses`].remove(id);
-        this.em.removeById('feedback_status', 'id');
+        this.em.removeById('community_status', 'id');
       }
 
       return this._updateOrderOfData();
@@ -71,7 +71,7 @@ define([
   * with new model provided. Or adds it to the list if it doesnt exist.
   */
     updateModel(model) {
-      const new_model = this.em.createEntity('feedback_status', 'id', model);
+      const new_model = this.em.createEntity('community_status', 'id', model);
 
       if ((model.status_type != null) && (model.status_type === 'active')) {
         this.recs.active_statuses.set(new_model.id, new_model);
@@ -87,8 +87,8 @@ define([
     }
 
     /*
-    * Returns list of feedback_statuses where feedback of specified feedback_status could be moved to
-  * @param model - specified feedback_status model
+    * Returns list of community_statuses where feedback of specified community_status could be moved to
+  * @param model - specified community_status model
     * @return array
     */
 
@@ -113,7 +113,7 @@ define([
     _setListData(raw_recs) {
       let model;
       for (var rec of Array.from(raw_recs.active_statuses)) {
-        model = this.em.createEntity('feedback_status', 'id', rec);
+        model = this.em.createEntity('community_status', 'id', rec);
         model.retain();
         this.recs.active_statuses.set(model.id, model);
       }
@@ -121,7 +121,7 @@ define([
       return (() => {
         const result = [];
         for (rec of Array.from(raw_recs.closed_statuses)) {
-          model = this.em.createEntity('feedback_status', 'id', rec);
+          model = this.em.createEntity('community_status', 'id', rec);
           model.retain();
           result.push(this.recs.closed_statuses.set(model.id, model));
         }

@@ -62,7 +62,7 @@ trait ExtractsMatchersFromQuery
      * http://support.deskpro.com/agent/#app.userchat,ended:mine:,c.o:20,vis:7
      * d.o => download
      * http://support.deskpro.com//agent/#app.publish,downloads:1,i:17,a:1,n:1,d.o:7,vis:7
-     * i.o => feedback
+     * i.o => community
      * http://support.deskpro.com//agent/#app.community,ct_content,i.o:17,vis:7
      * n.o => news
      * http://support.deskpro.com//agent/#app.publish,news:1,i:17,a:1,n.o:1,vis:7
@@ -89,7 +89,7 @@ trait ExtractsMatchersFromQuery
             'a' => 'article',
             'n' => 'news',
             'd' => 'download',
-            'i' => 'feedback',
+            'i' => 'community',
             'c' => 'chat',
             'p' => 'person',
             'o' => 'organization',
@@ -178,10 +178,10 @@ trait ExtractsMatchersFromQuery
             }
 
             $matrix = [
-                'article'  => 'kb/articles',
-                'download' => 'downloads/files',
-                'feedback' => 'feedback/view',
-                'news'     => 'news/posts',
+                'article'   => 'kb/articles',
+                'download'  => 'downloads/files',
+                'community' => 'community/view',
+                'news'      => 'news/posts',
             ];
 
             foreach ($matrix as $object => $pattern) {

@@ -625,7 +625,7 @@ define([
           if (settings.other_notifs) {
             return (() => {
               const result1 = [];
-              for (n of ['chat', 'task', 'twitter', 'feedback', 'publish', 'crm', 'account']) {
+              for (n of ['chat', 'task', 'twitter', 'community', 'publish', 'crm', 'account']) {
                 if ((this.notif_prefs.subs[n] != null) && (notif_prefs.subs[n] != null)) {
                   result1.push((() => {
                     const result2 = [];

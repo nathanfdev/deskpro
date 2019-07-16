@@ -58,7 +58,7 @@ class SearchIndexer
                     case $object instanceof Download:
                         return 'fos_elastica.object_persister.deskpro.download';
                     case $object instanceof CommunityTopic:
-                        return 'fos_elastica.object_persister.deskpro.feedback';
+                        return 'fos_elastica.object_persister.deskpro.community';
                     case $object instanceof Ticket:
                         return 'fos_elastica.object_persister.deskpro.ticket';
                     case $object instanceof Person:

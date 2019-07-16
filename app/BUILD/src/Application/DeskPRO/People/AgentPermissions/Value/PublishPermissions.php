@@ -33,7 +33,7 @@ class PublishPermissions implements PermissionValueInterface
 
     public function getNames()
     {
-        return ['use', 'create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html'];
+        return ['use', 'create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'community_create_labels', 'can_insert_html'];
     }
 
     public function getDestructiveNames()

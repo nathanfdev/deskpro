@@ -70,7 +70,7 @@ class CommunityTopicsSearchController extends AbstractController
             'value' => $communityTopic->getId(),
             'title' => $communityTopic->getTitle(),
             'type'  => $communityTopic->getCategory() ? $communityTopic->getCategory()->getTitle() : '',
-            //'status'  => $feedback->status_category ? $feedback->status_category->title : ''
+            //'status'  => $communityTopic->status_category ? $communityTopic->status_category->title : ''
         ];
     }
 }

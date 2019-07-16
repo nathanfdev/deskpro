@@ -33,7 +33,7 @@ class CommunityStatuses
     }
 
     /**
-     * Loads feedback statuses data from the database.
+     * Loads community statuses data from the database.
      */
     private function preload()
     {

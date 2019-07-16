@@ -13,7 +13,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		{{ phrase('agent.feedback.user_submitted_new_feedback', {name: person.display_contact }) }}
+		{{ phrase('agent.community.user_submitted_new_community_topic', {name: person.display_contact }) }}
 		{% if topic.status == 'hidden' and not topic.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
 
 		<br /><br />

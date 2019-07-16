@@ -287,8 +287,8 @@
 	</div>
 	{% endif  %}
   
-	{% if 'feedback_links' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
-	<div class="builder-type" title="{{ phrase('agent.general.linked_community_topics') }}" data-rule-type="feedback_links" data-rule-handler="DeskPRO.Agent.RuleBuilder.TicketFeedbackLinksTerm">
+	{% if 'community_topics_links' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+	<div class="builder-type" title="{{ phrase('agent.general.linked_community_topics') }}" data-rule-type="community_links" data-rule-handler="DeskPRO.Agent.RuleBuilder.TicketFeedbackLinksTerm">
 		<div class="builder-op">
 			<select name="op" class="op">
 				<option value="isset">{{ phrase('agent.general.exists') }}</option>
@@ -297,7 +297,7 @@
 			</select>
 		</div>
 		<div class="builder-options">
-      <input type="text" name="feedback_links" class="feedback_links_values" value="" style="display: none;"/>
+      <input type="text" name="community_links" class="community_links_values" value="" style="display: none;"/>
     </div>
 	</div>
 	{% endif %}

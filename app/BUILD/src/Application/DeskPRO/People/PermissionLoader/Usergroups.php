@@ -80,7 +80,7 @@ class Usergroups extends AbstractLoader implements \Application\DeskPRO\People\P
                 }
                 break;
 
-            case 'core.feedback_submit_check':
+            case 'core.community_submit_check':
                 if ($this->getPermission('community.use')) {
                     return true;
                 } else {

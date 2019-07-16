@@ -58,7 +58,7 @@ class CommunityTopicLinkGenerator implements LinkGeneratorInterface
                 $route = "{$context}_community_topic_view";
         }
 
-        // Use feedback_id instead slug for 'agent' context
+        // Use communityTopicId instead slug for 'agent' context
         $routeParam = static::TYPE_PERMALINK === $type || ObjectRouter::CONTEXT_AGENT === $context
             ? $object->getId()
             : $object->getSlug();

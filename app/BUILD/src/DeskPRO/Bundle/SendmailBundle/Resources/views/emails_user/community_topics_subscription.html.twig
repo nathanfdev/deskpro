@@ -12,7 +12,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_topics|length}) }}</h1>
+		<h1>{{ phrase('user.emails.community-updated-items', {count: updated_topics|length}) }}</h1>
 		<ul>
 			{% for topic in updated_topics %}
 				<li><a href="{{ url_full('portal_community_topic_view', {slug: topic.slug}) }}">{{ topic.title }}</a></li>
@@ -20,7 +20,7 @@
 		</ul>
 
 		<div class="dp-hr">&nbsp;</div>
-		{{ phrase('user.emails.feedback-explain', {deskpro_url: portal_home }) }}
+		{{ phrase('user.emails.community-explain', {deskpro_url: portal_home }) }}
 	</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

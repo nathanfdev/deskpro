@@ -25,7 +25,7 @@ class LabelSearch
     /**
      * @var array
      */
-    protected $search_types = ['article', 'download', 'feedback', 'news', 'organization', 'person', 'ticket'];
+    protected $search_types = ['article', 'download', 'community', 'news', 'organization', 'person', 'ticket'];
 
     /**
      * @var int
@@ -71,7 +71,7 @@ class LabelSearch
         $results = [
             'article'      => [],
             'download'     => [],
-            'feedback'     => [],
+            'community'    => [],
             'news'         => [],
             'ticket'       => [],
             'person'       => [],
@@ -135,7 +135,7 @@ class LabelSearch
             }
         }
 
-        if (in_array('feedback', $this->search_types)) {
+        if (in_array('community', $this->search_types)) {
             $ids = $this->db->fetchAllCol("
                 SELECT labels_community_topics.topic_id
                 FROM labels_community_topics
@@ -146,7 +146,7 @@ class LabelSearch
             ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
-                $results['feedback'] = $this->em->getRepository('DeskPRO:CommunityTopic')->getByIds($ids, true);
+                $results['community'] = $this->em->getRepository('DeskPRO:CommunityTopic')->getByIds($ids, true);
             }
         }
 

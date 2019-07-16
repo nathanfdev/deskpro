@@ -17,6 +17,8 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\CommunityTopicSubscription;
 use Application\DeskPRO\Entity\CustomDataCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -298,7 +300,7 @@ class ObjectsManager
             'CustomDefTicket'                  => [Factory\CommonFactories::class, 'customDef', 'ticket'],
             'CustomDefPerson'                  => [Factory\CommonFactories::class, 'customDef', 'person'],
             'CustomDefChat'                    => [Factory\CommonFactories::class, 'customDef', 'conversation'],
-            'CustomDefFeedback'                => [Factory\CommonFactories::class, 'customDef', 'feedback'],
+            'CustomDefCommunityTopic'          => [Factory\CommonFactories::class, 'customDef', 'community'],
             'CustomDefDownload'                => [Factory\CommonFactories::class, 'customDef', 'download'],
             'CustomDefBilling'                 => [Factory\CommonFactories::class, 'customDef', 'billing'],
             'CustomDataFeedback'               => [Factory\SimpleFactory::class, 'create', CustomDataCommunityTopic::class],
@@ -308,11 +310,11 @@ class ObjectsManager
             'Department'                       => [Factory\CommonFactories::class, 'department'],
             'Download'                         => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'                 => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
-            'Feedback'                         => [Factory\CommonFactories::class, 'feedback'],
-            'FeedbackSubscription'             => [Factory\SimpleFactory::class, 'create', FeedbackSubscription::class],
-            'FeedbackCategory'                 => [Factory\SimpleFactory::class, 'create', CommunityChannel::class],
-            'FeedbackStatusCategory'           => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
-            'FeedbackComment'                  => [Factory\SimpleFactory::class, 'create', CommunityTopicComment::class],
+            'CommunityTopic'                   => [Factory\CommonFactories::class, 'community'],
+            'CommunityTopicSubscription'       => [Factory\SimpleFactory::class, 'create', CommunityTopicSubscription::class],
+            'CommunityChannel'                 => [Factory\SimpleFactory::class, 'create', CommunityChannel::class],
+            'CommunityTopicStatusCategory'     => [Factory\SimpleFactory::class, 'create', CommunityTopicStatusCategory::class],
+            'CommunityTopicComment'            => [Factory\SimpleFactory::class, 'create', CommunityTopicComment::class],
             'GlossaryWord'                     => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
             'GlossaryWordDefinition'           => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                             => [Factory\SimpleFactory::class, 'create', News::class],

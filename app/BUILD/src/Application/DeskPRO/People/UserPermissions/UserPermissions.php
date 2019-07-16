@@ -61,7 +61,7 @@ class UserPermissions implements PermissionsSetInterface
     public static $prefix_map = [
         'tickets'   => 'ticket',
         'chat'      => 'chat',
-        'feedback'  => 'feedback',
+        'community' => 'community',
         'articles'  => 'article',
         'downloads' => 'download',
         'news'      => 'news',
@@ -155,6 +155,6 @@ class UserPermissions implements PermissionsSetInterface
      */
     public function getTypes()
     {
-        return ['ticket', 'chat', 'feedback', 'article', 'download', 'news', 'guide'];
+        return ['ticket', 'chat', 'community', 'article', 'download', 'news', 'guide'];
     }
 }

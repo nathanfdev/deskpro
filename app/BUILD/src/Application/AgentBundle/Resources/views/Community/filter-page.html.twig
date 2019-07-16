@@ -3,10 +3,10 @@
 	 	{% set topic = result.topic %}
 		<article
 			class="row-item feedback feedback-{{topic.id}} feedback-{{topic.id}} related-is-linkable"
-			data-content-type="feedback"
+			data-content-type="community"
 			data-content-id="{{ topic.id }}"
 			data-route="community:{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}"
-			data-route-title="@selector(a.feedback-title)"
+			data-route-title="@selector(a.community-title)"
 			data-route-openclass="open"
 		>
 			<input class="item-select" type="checkbox" value="{{topic.id}}" />
@@ -16,11 +16,15 @@
 						{{ topic.num_ratings|default(0) }}
 					</span>
 					<h3>
-						<a class="feedback-title click-through"><span class="obj-title-feedback_{{ topic.id }}">{{ topic.title }}</span></a>
+						<a class="feedback-title click-through"><span class="obj-title-community-topic_{{ topic.id }}">{{ topic.title }}</span></a>
 					</h3>
+
+
 				</div>
+
 				<div class="top-row-right">
 					<div class="bound-fade"></div>
+
 				</div>
 				<div class="top-row-right visible-related-content-controls">
 					<div class="bound-fade"></div>

@@ -162,7 +162,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
         try {
             if (!$skipMoving) {
                 $this->db->executeUpdate(
-                    'UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?',
+                    'UPDATE custom_data_community_topic SET field_id = ? WHERE field_id = ?',
                     [$moveTo, $oldId]
                 );
             }

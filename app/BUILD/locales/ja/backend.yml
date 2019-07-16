@@ -2229,8 +2229,8 @@ agent.tickets.log_email_sent_aborted: メールは送信されませんでした
 agent.tickets.log_email_sent_error: エラーのため、メールは送信されませんでした
 agent.tickets.log_email_sent_retry: 現在メールを送信中です
 agent.tickets.log_email_sent_success: メールが正常に送信されました
-agent.tickets.log_community_link_added: フィードバックリンクが追加されました
-agent.tickets.log_community_link_removed: フィードバックリンクが削除されました
+agent.tickets.log_community_topic_link_added: フィードバックリンクが追加されました
+agent.tickets.log_community_topic_link_removed: フィードバックリンクが削除されました
 agent.tickets.log_followup_created: '{{date_to_run}}の新たなフォローアップ#{{id}}'
 agent.tickets.log_followup_removed: 'フォローアップ#{{id}}が削除されました'
 agent.tickets.log_from_message: メッセージから

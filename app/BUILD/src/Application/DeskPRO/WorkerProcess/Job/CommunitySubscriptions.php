@@ -201,7 +201,7 @@ class CommunitySubscriptions extends AbstractJob
                 $message = $this->getContainer()->getMailer()->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate(
-                    'DeskPRO:emails_user:feedback-subscription.html.twig',
+                    'DeskPRO:emails_user:community-topic-subscription.html.twig',
                     [
                         'person'        => $person,
                         'updated_items' => $updatedItems,

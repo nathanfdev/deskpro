@@ -273,10 +273,10 @@ class ContentSubscriptionsHelper
         }
 
         if (
-            'feedback' === $input
+            'community' === $input
             || is_object($input) && CommunityTopic::class === get_class($input)
         ) {
-            return 'feedback_id';
+            return 'topic_id';
         }
 
         if (

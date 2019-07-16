@@ -29,18 +29,18 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           $list.find('li').each(function () {
             x += 10;
-            const feedback_status_id = parseInt($(this).data('id'));
+            const community_status_id = parseInt($(this).data('id'));
 
-            if (feedback_status_id) {
-              const feedback_status = em.getById('feedback_status', feedback_status_id);
+            if (community_status_id) {
+              const community_status = em.getById('community_status', community_status_id);
 
-              if (feedback_status) {
-                feedback_status.display_order = x;
-                ({ status_type } = feedback_status);
+              if (community_status) {
+                community_status.display_order = x;
+                ({ status_type } = community_status);
               }
             }
 
-            return postData.display_orders.push(feedback_status_id);
+            return postData.display_orders.push(community_status_id);
           });
 
           const promise = this.Api.sendPostJson('/community_statuses/display_order', postData);
@@ -84,20 +84,20 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   * Show the delete dlg
   */
 
-    startDelete(feedback_status) {
-      const move_feedback_statuses_list = this.CommunityStatusesData.getListOfMovables(feedback_status);
+    startDelete(community_status) {
+      const move_community_statuses_list = this.CommunityStatusesData.getListOfMovables(community_status);
 
-      if (!move_feedback_statuses_list.length) {
+      if (!move_community_statuses_list.length) {
         this.showAlert('@no_delete_last');
         return;
       }
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('CommunityStatuses/delete-modal.html'),
-        controller:  ['$scope', '$modalInstance', 'move_feedback_statuses_list', function ($scope, $modalInstance, move_feedback_statuses_list) {
-          $scope.move_feedback_statuses_list = move_feedback_statuses_list;
+        controller:  ['$scope', '$modalInstance', 'move_community_statuses_list', function ($scope, $modalInstance, move_community_statuses_list) {
+          $scope.move_community_statuses_list = move_community_statuses_list;
           $scope.selected = {
-            move_to_id: move_feedback_statuses_list[0].id
+            move_to_id: move_community_statuses_list[0].id
           };
 
           $scope.confirm = () => $modalInstance.close($scope.selected.move_to_id);
@@ -106,28 +106,28 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         }
         ],
         resolve: {
-          move_feedback_statuses_list: () => move_feedback_statuses_list
+          move_community_statuses_list: () => move_community_statuses_list
         }
       });
 
-      return inst.result.then(move_to => this.deleteFeedbackStatus(feedback_status, move_to));
+      return inst.result.then(move_to => this.deleteFeedbackStatus(community_status, move_to));
     }
 
     /*
     * Actually do the delete
-  * @param feedback_status - feedback status we want to delete
+  * @param community_status - feedback status we want to delete
   * @param move_to - to what status feedback should be moved
     */
 
-    deleteFeedbackStatus(feedback_status, move_to) {
-      return this.Api.sendDelete(`/community_statuses/${feedback_status.id}`, {
+    deleteFeedbackStatus(community_status, move_to) {
+      return this.Api.sendDelete(`/community_statuses/${community_status.id}`, {
         move_to
       }).success(() => {
-        this.CommunityStatusesData.remove(feedback_status.id);
+        this.CommunityStatusesData.remove(community_status.id);
         this.ngApply();
 
         // if currently viewing the deleted feedback status, then should need to switch state
-        if ((this.$state.current.name === 'portal.community_statuses.edit') && (parseInt(this.$state.params.id) === feedback_status.id)) {
+        if ((this.$state.current.name === 'portal.community_statuses.edit') && (parseInt(this.$state.params.id) === community_status.id)) {
           return this.$state.go('portal.community_statuses');
         }
       });

@@ -422,7 +422,7 @@ class PublishController extends AbstractController
             case 'news':
                 $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
                 break;
-            case 'feedback':
+            case 'community':
                 $objectUrl = $this->get('router')->generate('agent_community_topic_view', ['communityTopicId' => $comment->getObject()->getId()]);
                 break;
             default:
@@ -451,7 +451,7 @@ class PublishController extends AbstractController
                 return DownloadComment::class;
             case 'news':
                 return NewsComment::class;
-            case 'feedback':
+            case 'community':
                 return CommunityTopicComment::class;
             default:
                 return '';
@@ -585,7 +585,7 @@ class PublishController extends AbstractController
 
     public function listValidatingCommunityTopicsCommentsAction()
     {
-        $this->publishHelper->setEnabledTypes(['feedback']);
+        $this->publishHelper->setEnabledTypes(['community']);
 
         return $this->listValidatingCommentsAction();
     }
@@ -774,7 +774,7 @@ class PublishController extends AbstractController
             case 'news':
                 $entity_name = 'DeskPRO:News';
                 break;
-            case 'feedback':
+            case 'community':
                 $entity_name = CommunityTopic::class;
                 break;
             case 'topics':
@@ -1174,7 +1174,7 @@ class PublishController extends AbstractController
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
                 break;
-            case 'feedback':
+            case 'community':
                 $url = $this->generateUrl('agent_community_channels', ['$channelId' => $cat->getId()]);
                 break;
         }

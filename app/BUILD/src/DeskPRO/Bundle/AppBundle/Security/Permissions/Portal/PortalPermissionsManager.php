@@ -260,7 +260,7 @@ class PortalPermissionsManager
             'chat'         => $this->fetchFields(CustomDefChat::class),
             'article'      => $this->fetchFields(CustomDefArticle::class),
             'ticket'       => $this->fetchFields(CustomDefTicket::class),
-            'feedback'     => $this->fetchFields(CustomDefCommunityTopic::class),
+            'community'    => $this->fetchFields(CustomDefCommunityTopic::class),
             'person'       => $this->fetchFields(CustomDefPerson::class),
             'organization' => $this->fetchFields(CustomDefOrganization::class),
         ];

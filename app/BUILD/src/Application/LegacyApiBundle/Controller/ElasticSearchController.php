@@ -241,7 +241,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
         if (empty($info['error']) && isset($index) && isset($indexName)) {
             $types = [
-                'feedback'          => 'feedback',
+                'community'         => 'community_topic',
                 'organization'      => 'organizations',
                 'person'            => 'people',
                 'article'           => 'articles',

@@ -168,7 +168,7 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
             case self::TYPE_COMMENT:
                 return 'comment';
             case self::TYPE_NEW_COMMUNITY_TOPIC:
-                return 'new feedback';
+                return 'new community topic';
             case self::TYPE_NEW_TICKET:
                 return 'new ticket';
             case self::TYPE_ADD_EMAIL:

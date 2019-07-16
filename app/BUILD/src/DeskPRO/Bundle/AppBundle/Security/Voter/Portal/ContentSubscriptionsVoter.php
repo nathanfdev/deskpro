@@ -62,7 +62,7 @@ class ContentSubscriptionsVoter extends AbstractVoter
             case static::SUBSCRIBE_DOWNLOAD_CATEGORY:
                 return $this->getActiveBrandSetting('user.downloads_subscriptions') && $permitted;
             case static::SUBSCRIBE_COMMUNITY:
-                return $this->getActiveBrandSetting('user.feedback_subscriptions') && $permitted;
+                return $this->getActiveBrandSetting('user.community_subscriptions') && $permitted;
         }
 
         return false;

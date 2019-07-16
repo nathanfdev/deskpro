@@ -612,8 +612,8 @@ class LanguagesController extends AbstractController implements ProtectedControl
             $object_groups[] = ['id' => 'ticket_workflows',    'title' => 'Ticket Workflows'];
         }
 
-        $object_groups[] = ['id' => 'feedback_statuses',   'title' => 'Feedback Statuses'];
-        $object_groups[] = ['id' => 'feedback_types',      'title' => 'Feedback Types'];
+        $object_groups[] = ['id' => 'community_statuses',  'title' => 'Community Statuses'];
+        $object_groups[] = ['id' => 'community_channels',  'title' => 'Community Channels'];
         $object_groups[] = ['id' => 'kb_categories',       'title' => 'Knowledgebase Categories'];
 
         if ($this->container->getSystemService('ticket_fields_manager')->count()) {
@@ -758,12 +758,12 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 );
                 break;
 
-            case 'feedback_statuses':
-                $phrases = $phrase_data->getFeedbackStatusPhrases($lang);
+            case 'community_statuses':
+                $phrases = $phrase_data->getCommunityStatusPhrases($lang);
                 break;
 
-            case 'feedback_types':
-                $phrases = $phrase_data->getFeedbackTypePhrases($lang);
+            case 'community_channels':
+                $phrases = $phrase_data->getCommunityChannelsPhrases($lang);
                 break;
 
             case 'kb_categories':

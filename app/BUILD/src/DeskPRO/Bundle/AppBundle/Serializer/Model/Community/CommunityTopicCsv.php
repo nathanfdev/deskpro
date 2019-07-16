@@ -16,7 +16,7 @@ class CommunityTopicCsv extends CommunityTopic
     protected $person;
 
     /**
-     * Category the feedback belongs to.
+     * Community channel the topic belongs to.
      *
      * @JMS\Expose()
      * @JMS\Type("string")

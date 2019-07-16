@@ -134,7 +134,7 @@ class CommonFactories
             'organization' => CustomDefOrganization::class,
             'person'       => CustomDefPerson::class,
             'conversation' => CustomDefChat::class,
-            'feedback'     => CustomDefCommunityTopic::class,
+            'community'    => CustomDefCommunityTopic::class,
             'download'     => CustomDefDownload::class,
             'billing'      => CustomDefBilling::class,
         ];

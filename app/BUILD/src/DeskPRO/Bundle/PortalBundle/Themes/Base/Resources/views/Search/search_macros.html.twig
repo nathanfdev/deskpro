@@ -5,8 +5,8 @@
         {{ _self.ticket_search_result(result['object']) }}
     {% elseif result['type'] == 'article' %}
         {{ _self.article_search_result(result['object']) }}
-    {% elseif result['type'] == 'feedback' %}
-        {{ _self.feedback_search_result(result['object']) }}
+    {% elseif result['type'] == 'community' %}
+        {{ _self.community_search_result(result['object']) }}
     {% elseif result['type'] == 'download' %}
         {{ _self.dl_search_result(result['object']) }}
     {% elseif result['type'] == 'topic' %}
@@ -53,7 +53,7 @@
   </li>
 {% endmacro %}
 
-{% macro feedback_search_result(feedback) %}
+{% macro community_search_result(feedback) %}
   <li>
     <a href="{{ portal_path(feedback) }}">
       <span class="item-title">

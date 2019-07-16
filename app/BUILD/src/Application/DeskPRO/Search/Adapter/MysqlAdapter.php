@@ -32,7 +32,7 @@ class MysqlAdapter extends AbstractAdapter
     {
         $this->addContentTypeMap(Article::class, 'article');
         $this->addContentTypeMap(Download::class, 'download');
-        $this->addContentTypeMap(CommunityTopic::class, 'feedback');
+        $this->addContentTypeMap(CommunityTopic::class, 'community');
         $this->addContentTypeMap(News::class, 'news');
         $this->addContentTypeMap(Topic::class, 'topic');
     }

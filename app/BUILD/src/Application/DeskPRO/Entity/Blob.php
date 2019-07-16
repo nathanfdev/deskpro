@@ -951,7 +951,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             ['table' => 'download_revisions', 'columns' => ['blob_id']],
             ['table' => 'email_accounts', 'columns' => ['key_blob_id', 'cert_blob_id']],
             ['table' => 'email_sources', 'columns' => ['blob_id', 'log_blob_id']],
-            ['table' => 'feedback_attachments', 'columns' => ['blob_id']],
+            ['table' => 'community_topic_attachments', 'columns' => ['blob_id']],
             ['table' => 'labels_blobs', 'columns' => ['blob_id']],
             ['table' => 'organizations', 'columns' => ['picture_blob_id']],
             ['table' => 'organization_files', 'columns' => ['blob_id']],

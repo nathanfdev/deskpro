@@ -50,14 +50,14 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     protected $brand;
 
     /**
-     * Has this feedback been reviewed by an agent?
+     * Has this community topic been reviewed by an agent?
      *
      * @var bool
      */
     protected $is_reviewed = false;
 
     /**
-     * Category the feedback belongs to.
+     * Status category the topic belongs to.
      *
      * @var CommunityTopicStatusCategory
      */
@@ -71,14 +71,14 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     protected $hidden_status = null;
 
     /**
-     * Channel the feedback belongs to.
+     * Channel the topic belongs to.
      *
      * @var CommunityChannel
      */
     protected $channel;
 
     /**
-     * Revisions of this feedback.
+     * Revisions of this topic.
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
@@ -199,7 +199,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     public function addCustomData(CustomDataCommunityTopic $data)
     {
         $this->custom_data->add($data);
-        $data['feedback'] = $this;
+        $data['topic'] = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
     }
 
@@ -506,7 +506,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
      */
     public function addLabel(Label $label)
     {
-        $label['feedback'] = $this;
+        $label['topic'] = $this;
         $this->labels->add($label);
 
         return $this;

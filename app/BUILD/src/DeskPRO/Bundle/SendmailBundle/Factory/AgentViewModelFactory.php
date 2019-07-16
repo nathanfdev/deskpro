@@ -121,7 +121,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param CommunityTopic $feedback
+     * @param CommunityTopic $communityTopic
      *
      * @return AgentNewCommunityTopic
      */

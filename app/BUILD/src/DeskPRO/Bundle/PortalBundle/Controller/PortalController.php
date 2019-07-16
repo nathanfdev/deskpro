@@ -103,8 +103,8 @@ class PortalController extends AbstractController
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
-                'page_title'    => $this->createPageTitle()->homepage(),
-                'feedbackTypes' => $allowedCommunityChannelIds,
+                'page_title'        => $this->createPageTitle()->homepage(),
+                'communityChannels' => $allowedCommunityChannelIds,
             ]
         );
     }
