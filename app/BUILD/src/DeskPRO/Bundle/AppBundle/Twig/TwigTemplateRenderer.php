@@ -94,6 +94,7 @@ class TwigTemplateRenderer
             'site_name'     => $this->settingsResolver->getSetting('core.site_name'),
             'user_vars'     => $context->getUserVars(),
             'new_cc_emails' => $this->getNewCcs($ticket),
+            'ticket_object' => $ticket,
         ];
 
         if ($extraVars) {
