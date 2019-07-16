@@ -75,27 +75,29 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			self.fireEvent('postTabClick', [ev]);
 		});
 
-		if (this.options.autoSelectFirst) {
-			var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).first();
-			if (!firstTab.length) {
-				firstTab = this.triggerEls.first();
-			}
+		setTimeout(function () {
+      if (this.options.autoSelectFirst) {
+        var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).first();
+        if (!firstTab.length) {
+          firstTab = this.triggerEls.first();
+        }
 
-			if (firstTab.length && !firstTab.is(':visible')) {
-        firstTab = this.triggerEls.filter(':visible').first();
+        if (firstTab.length && !firstTab.is(':visible')) {
+          firstTab = this.triggerEls.filter(':visible').first();
+        }
+
+        // Check again, there might not be any tabs
+        if (firstTab.length) {
+          // need to hide all others
+          var self = this;
+          this.triggerEls.each(function() {
+            self.getContentElFromTab($(this)).hide();
+          });
+
+          this.activateTab(firstTab);
+        }
       }
-
-			// Check again, there might not be any tabs
-			if (firstTab.length) {
-				// need to hide all others
-				var self = this;
-				this.triggerEls.each(function() {
-					self.getContentElFromTab($(this)).hide();
-				});
-
-				this.activateTab(firstTab);
-			}
-		}
+    }.bind(this), 1);
 	},
 
 	addTriggerElement: function(el) {
