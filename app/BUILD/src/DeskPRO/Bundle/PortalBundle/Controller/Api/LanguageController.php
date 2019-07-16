@@ -54,6 +54,7 @@ class LanguageController extends AbstractApiController
             'portal.general.show_x_more',
             'portal.general.select_placeholder',
             'portal.general.delete',
+            'portal.general.sort',
             'portal.tickets.thank_you',
             'portal.tickets.thank_you_desc',
             'portal.tickets.new-title',
