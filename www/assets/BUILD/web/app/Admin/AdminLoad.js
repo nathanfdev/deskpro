@@ -98,6 +98,9 @@ define([
   'Admin/TicketSlas/Ctrl/Edit',
   'Admin/TicketSettings/Ctrl/TicketSettings',
   'Admin/TicketSettings/Ctrl/FwdSettings',
+
+  'Admin/TicketApprovals/Ctrl/List',
+
   'Admin/TicketStatuses/Ctrl/List',
   'Admin/TicketStatuses/Ctrl/EditAwaitingAgent',
   'Admin/TicketStatuses/Ctrl/EditAwaitingUser',

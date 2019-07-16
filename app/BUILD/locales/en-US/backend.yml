@@ -2263,6 +2263,8 @@ admin.tickets.have_count_workflows:
   one: 'You have 1 workflows.'
   other: 'You have {{count}} workflows.'
 admin.tickets.hidden_statuses: 'Hidden Statuses'
+admin.tickets.approval_types: 'Approval Types'
+admin.tickets.approval_templates: 'Approval Templates'
 admin.tickets.hours: Hours
 admin.tickets.html_content: 'HTML Content'
 admin.tickets.if: if

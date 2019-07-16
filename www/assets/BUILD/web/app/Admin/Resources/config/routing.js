@@ -482,6 +482,17 @@ define(function() {
   // ##################################################################################################################
 
   // ###
+  // # Approvals
+  // ###
+  routes.push({
+    id:           'tickets.approvals',
+    url:          '/approvals',
+    templateName: 'TicketApprovals/list.html',
+    controller:   'Admin_TicketApprovals_Ctrl_List'
+  });
+
+
+  // ###
   // # Statuses
   // ###
   routes.push({
