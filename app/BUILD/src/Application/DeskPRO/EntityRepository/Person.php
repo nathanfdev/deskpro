@@ -15,9 +15,11 @@ use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntit
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\PersonPhoneNumber as PhoneNumberEntity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\Query\Expr;
 use Orb\Util\Strings;
 
 class Person extends AbstractEntityRepository
@@ -749,15 +751,33 @@ class Person extends AbstractEntityRepository
     {
         $person = null;
         if ($number) {
-            // check for an existing person
-            $phoneNumbers = $this->_em->getRepository(PhoneNumberEntity::class)->findBy([
-                'number' => $number,
-            ]);
+            // select person by ticket last activity
+            $qb = $this->_em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from(PersonEntity::class, 'p')
+                ->join('p.phone_numbers', 'n')
+                ->join(TicketEntity::class, 't', Expr\Join::WITH, 't.person = p.id')
+                ->where('n.number = :number')
+                ->orderBy('t.date_created', 'DESC')
+                ->setMaxResults(1)
+                ->setParameter('number', $number)
+            ;
 
-            // exact match if phone number is found and just one person is associated
-            // otherwise you should select a person
-            if (count($phoneNumbers) === 1) {
-                $person = $phoneNumbers[0]->getPerson();
+            $person = $qb->getQuery()->getOneOrNullResult();
+
+            // select first existing person by phone number
+            if (!$person) {
+                // check for an existing person
+                $phoneNumbers = $this->_em->getRepository(PhoneNumberEntity::class)->findBy([
+                    'number' => $number,
+                ]);
+
+                // exact match if phone number is found and just one person is associated
+                // otherwise you should select a person
+                if (count($phoneNumbers) === 1) {
+                    $person = $phoneNumbers[0]->getPerson();
+                }
             }
 
             // if person was not found then create a new one

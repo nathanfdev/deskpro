@@ -26,6 +26,13 @@ export const editNumber = createAction(
   })
 );
 
+export const disableNumber = createAction(
+  'VOICE_DISABLE_NUMBER',
+  id => dispatch => api.sendPut(`DP_API/voice_numbers/${id}/disable`).success(() => {
+    dispatch(removeFromCollection('VoiceNumber', 'all', [id]));
+  })
+);
+
 export const deleteNumber = createAction(
   'VOICE_DELETE_NUMBER',
   id => dispatch => repository('VoiceNumber').remove(id).success(() => {
@@ -33,9 +40,14 @@ export const deleteNumber = createAction(
   })
 );
 
+export const releaseNumber = createAction(
+  'VOICE_RELEASE_NUMBER',
+  (account, number) => api.sendPost(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/release_number/${number.get('sid')}`)
+);
+
 export const loadExistingNumbers = createAction(
   'VOICE_LOAD_EXISTING_NUMBERS',
-  (account, page = 0) => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/existing_numbers?page=${page}`)
+  account => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/existing_numbers`)
 );
 
 export const loadAvailableNumbers = createAction(

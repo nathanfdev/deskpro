@@ -281,6 +281,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false)
     {
@@ -327,6 +329,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent)
     {
@@ -372,6 +376,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $person)
     {
@@ -397,6 +403,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function endCall(VoicePhoneCall $phoneCall)
     {
@@ -425,6 +433,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
@@ -492,6 +502,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function isCallActive(VoicePhoneCall $phoneCall)
     {
@@ -522,6 +534,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod)
     {
