@@ -1178,14 +1178,15 @@ class TwilioCallbacksController extends BaseController
         $recording = $em->getRepository(VoiceRecording::class)->findOneBy([
             'recordingSid' => $recordingSid,
         ]);
-
-        if (!$recording) {
-            // try to get personal agent voicemail
-            $recording = $em->getRepository(VoiceMissedAgentCall::class)->findOneBy([
-                'recordingSid' => $recordingSid,
-            ]);
+        if ($recording) {
+            $recording->setTranscription($transcriptionText);
+            $em->flush();
         }
 
+        // try to get personal agent voicemail
+        $recording = $em->getRepository(VoiceMissedAgentCall::class)->findOneBy([
+            'recordingSid' => $recordingSid,
+        ]);
         if ($recording) {
             $recording->setTranscription($transcriptionText);
             $em->flush();

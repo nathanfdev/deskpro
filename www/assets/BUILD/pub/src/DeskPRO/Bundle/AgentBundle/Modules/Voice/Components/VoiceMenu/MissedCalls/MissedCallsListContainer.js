@@ -40,7 +40,7 @@ class MissedCallsListContainer extends React.Component {
 
   createTicket = (record) => {
     const { dispatch } = this.props;
-    dispatch(createVoicemailTicket(record.get('id')));
+    dispatch(createVoicemailTicket(record));
   };
 
   openPerson = (id) => {
