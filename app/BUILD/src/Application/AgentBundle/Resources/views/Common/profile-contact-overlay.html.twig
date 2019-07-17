@@ -20,8 +20,13 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								{{ form_widget(phone.number, { attr: {  style: "width: 200px" } }) }}
-								{{ form_widget(phone.ext) }}
+                                <select class="type phone-number-type">
+                                    {% for type,label in {'phone': 'Phone', 'sip': 'Sip'} %}
+                                        <option value="{{ type }}" {% if phone.number.vars.data matches '{^sip:.*}' %}selected="selected"{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ form_widget(phone.number, { attr: {  style: "width: 200px" } }) }}
+                                {{ form_widget(phone.ext) }}
 							</div>
 							<div class="label">
 								{{ form_widget(phone.label, { attr: { placeholder: 'Add a label' } }) }}
@@ -41,8 +46,13 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-				{{ form_widget(contact_data.phone_numbers.vars.prototype.number) }}
-				{{ form_widget(contact_data.phone_numbers.vars.prototype.ext) }}
+                        <select class="type phone-number-type">
+                            {% for type,label in {'phone': 'Phone', 'sip': 'Sip'} %}
+                                <option value="{{ type }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {{ form_widget(contact_data.phone_numbers.vars.prototype.number) }}
+                        {{ form_widget(contact_data.phone_numbers.vars.prototype.ext) }}
 					</div>
 					<div class="label">
 				{{ form_widget(contact_data.phone_numbers.vars.prototype.label, { attr: { placeholder: 'Add a label' } }) }}
