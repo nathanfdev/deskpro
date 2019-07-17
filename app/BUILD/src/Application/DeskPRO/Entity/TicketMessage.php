@@ -259,6 +259,11 @@ class TicketMessage extends DomainObject
     protected $email_message_id;
 
     /**
+     * @var TicketFeedback[]|ArrayCollection
+     */
+    protected $ticketFeedback;
+
+    /**
      * TicketMessage constructor.
      *
      * @param null $email_id
@@ -269,6 +274,7 @@ class TicketMessage extends DomainObject
         $this->attributes       = new ArrayCollection();
         $this->attachments      = new ArrayCollection();
         $this->snippet_use_logs = new ArrayCollection();
+        $this->ticketFeedback   = new ArrayCollection();
         if ($email_id) {
             $ref             = new TicketMessageEmailId();
             $ref['email_id'] = $email_id;
@@ -1166,6 +1172,14 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @return TicketFeedback[]|ArrayCollection
+     */
+    public function getTicketFeedback()
+    {
+        return $this->ticketFeedback;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __call($name, $arguments)
@@ -1388,6 +1402,16 @@ class TicketMessage extends DomainObject
                 'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\SnippetUseLog',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticketMessage',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'ticketFeedback',
+                'targetEntity'  => TicketFeedback::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket_message',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
             ]
