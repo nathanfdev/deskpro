@@ -1,7 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
 import $ from 'jquery';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -656,5 +656,17 @@ export const openDialpad = createAction(
 
 export const deleteRecord = createAction(
   'VOICE_AGENT_DELETE_RECORD',
-  phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
+  phoneCallId => (dispatch, getState) => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`).success(() => {
+    const state = getState();
+    const phoneCalls = allPhoneCallsSelector(state);
+
+    repository('VoicePhoneCall').load(phoneCallId).success(({ data }) => {
+      const phoneCall = Immutable.fromJS(data);
+      if (phoneCalls.get(phoneCallId)) {
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+      } else {
+        dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+      }
+    });
+  })
 );
