@@ -227,12 +227,12 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 				return;
 			}
 
-			var ticketFeedbackLinkId = $(this).data('id');
+			var ticketCommunityTopicLinkId = $(this).data('id');
       var ticketId = $(this).data('ticket-id');
 
 			$(this).closest('tr').hide();
 			$.ajax({
-				url: DP_BASE_API_URL + "/v2/tickets/" + ticketId + "/feedback_links/" + ticketFeedbackLinkId,
+				url: DP_BASE_API_URL + "/v2/tickets/" + ticketId + "/community_topic_links/" + ticketCommunityTopicLinkId,
 				type: 'DELETE',
         withActionAlerts: true,
 				error: function() {
@@ -561,7 +561,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		}
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'editfeedback',
+			stateId: 'editcommunitytopic',
 			listenOn: $('.feedback-editor-wrap:first', wrap)
 		});
 		this.ownObject(this.editStateSaver);

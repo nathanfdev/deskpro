@@ -652,7 +652,7 @@
                     </article>
                     {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                       <article id="{{ baseId }}_linked_feedback_wrap">
-                          {% include 'AgentBundle:Ticket:linked-feedback.html.twig' %}
+                          {% include 'AgentBundle:Ticket:linked-community-topics.html.twig' %}
                       </article>
                     {% endif %}
                     {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}

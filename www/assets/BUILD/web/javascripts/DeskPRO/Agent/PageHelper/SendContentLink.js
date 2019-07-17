@@ -24,9 +24,6 @@ DeskPRO.Agent.PageHelper.SendContentLink = new Orb.Class({
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('*', this);
 		var types = [
 			'article', 'newarticle',
-			//'download', 'newdownload',
-			//'news', 'newnews',
-			//'feedback', 'newcomunitytopic'
 		];
 
 		this.addEvent('watchedTabActivated', function(tab) {

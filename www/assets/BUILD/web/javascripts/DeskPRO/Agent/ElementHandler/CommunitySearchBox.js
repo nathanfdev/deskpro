@@ -60,12 +60,12 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 
 				var current = $('li.on', self.resultsList);
 				if (current.length) {
-					var feedbackId = current.data('community-topic-id');
+					var topicId = current.data('community-topic-id');
 					var title  = $.trim($('.community-topic-title', current).text());
 
 					self.termInput.val(title);
 
-					self.el.trigger('communitysearchboxclick', [feedbackId, title, self]);
+					self.el.trigger('communitysearchboxclick', [topicId, title, self]);
 				}
 
 			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
@@ -123,14 +123,14 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 
 		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
-			var feedbackId = $(this).data('feedback-id');
-			if (self.exclude.indexOf(feedbackId) > -1) {
+			var topicId = $(this).data('community-topic-id');
+			if (self.exclude.indexOf(topicId) > -1) {
 				return;
 			}
 			var title = $.trim($('.feedback-title', this).text());
       self.termInput.val(title);
 
-			self.el.trigger('communitysearchboxclick', [feedbackId, title, self]);
+			self.el.trigger('communitysearchboxclick', [topicId, title, self]);
 		});
 
 		//------------------------------
@@ -201,7 +201,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 
 
 	/**
-	 * Sends the ajax request to find feedbacks that match the term in the search box
+	 * Sends the ajax request to find community topics that match the term in the search box
 	 */
 	updateResults: function() {
 
@@ -227,39 +227,39 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 				this.runningAjax = null;
 			},
 			success: function(data) {
-				var currentFeedbackId = parseInt($('li.on', this.resultsList).data('feedback-id')) || 0;
+				var currentTopicId = parseInt($('li.on', this.resultsList).data('community-topic-id')) || 0;
 				this.resultsList.empty();
 
-				data.forEach(function(feedback) {
+				data.forEach(function(topic) {
 					var row = $(this.tplHtml);
 
-					row.data('feedback-id', feedback.id);
-					row.attr('feedback-id', feedback.id);
-					row.addClass('feedback-' + feedback.id);
-          row.find('.feedback-type').text(feedback.type);
+					row.data('community-topic-id', topic.id);
+					row.attr('community-topic-id', topic.id);
+					row.addClass('feedback-' + topic.id);
+          row.find('.feedback-type').text(topic.type);
 
-					if (self.exclude.indexOf(feedback.id) > -1) {
+					if (self.exclude.indexOf(topic.id) > -1) {
 						row.addClass('disabled');
 					}
 
-					if (currentFeedbackId && currentFeedbackId == parseInt(feedback.id)) {
+					if (currentTopicId && currentTopicId == parseInt(topic.id)) {
 						row.addClass('on');
-						currentFeedbackId = false;
+						currentTopicId = false;
 					}
 
 					if (this.el.data('highlight-term')) {
 						var term  = Orb.escapeHtml(this.getTerm());
-						var title = Orb.escapeHtml(feedback.title);
+						var title = Orb.escapeHtml(topic.title);
 
 						term = (term+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
 						title = title.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
 
 						$('.feedback-title', row).html(title);
 					} else {
-						$('.feedback-title', row).text(feedback.title);
+						$('.feedback-title', row).text(topic.title);
 					}
 
-					$('.feedback-id', row).text(feedback.id);
+					$('.feedback-id', row).text(topic.id);
 
 					this.resultsList.append(row);
 				}, this);

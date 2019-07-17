@@ -115,7 +115,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 				}
 
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/community/topic/view/' + data.feedback_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/community/topic/view/' + data.community_topic_id);
 					this.markForReload();
 					this.closeSelf();
 				} else {

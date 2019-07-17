@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.RuleBuilder');
 
-DeskPRO.Agent.RuleBuilder.TicketFeedbackLinksTerm = new Orb.Class({
+DeskPRO.Agent.RuleBuilder.TicketCommunityTopicLinksTerm = new Orb.Class({
 	Extends: DeskPRO.Agent.RuleBuilder.TermAbstract,
 
 	initRow: function() {

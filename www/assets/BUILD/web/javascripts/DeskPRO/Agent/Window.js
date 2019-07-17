@@ -2877,7 +2877,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/community/topic/new',
 				autostart: autostart
 			});
-			this.newCommunityTopicLoader.newLinkedFeedback = function(ticket_id, message_id) {
+			this.newCommunityTopicLoader.newLinkedCommunityTopic = function(ticket_id, message_id) {
 				self.newCommunityTopicLoader.nextParams = {
 					ticket_id: ticket_id,
 					message_id: message_id || 0
