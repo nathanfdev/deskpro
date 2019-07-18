@@ -1073,23 +1073,30 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				h = $(window).height() - 170 - txt.offset().top;
 			}
 
-			this.rte = window.LegacyRteTextarea.init(txt, {
-				height: h,
-        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
-			});
+			if (window.DP_HAS_NEW_CONTENT_EDITOR) {
+				window.AgentLegacyBundle.renderContentEditor(
+					document.getElementsByClassName('edit-content-field')[0],
+					txt.val()
+				);
+			} else {
+				this.rte = window.LegacyRteTextarea.init(txt, {
+					height: h,
+				  inlineHiddenPosition: $('.content-tab-item', this.wrapper)
+				});
 
-      txt.on('froalaEditor.keypress', function () {
-        self.editStateSaver.triggerChange();
-      });
+				txt.on('froalaEditor.keypress', function () {
+				  self.editStateSaver.triggerChange();
+				});
 
-			var saveBtn = this.getEl('save_btn');
-			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
-				page: this,
-				rte: this.rte,
-				isReadyCallback: function() {
-					return saveBtn.is(':visible');
-				}
-			});
+				var saveBtn = this.getEl('save_btn');
+				this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
+					page: this,
+					rte: this.rte,
+					isReadyCallback: function() {
+						return saveBtn.is(':visible');
+					}
+				});
+			}
 
 			this._hasInitEdBefore = true;
 		}

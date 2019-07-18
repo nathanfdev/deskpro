@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-class ContentEditor extends AbstractBetaFeature
+class ContentEditorFeature extends AbstractBetaFeature
 {
     /**
      * {@inheritdoc}

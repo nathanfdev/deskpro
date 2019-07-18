@@ -39,6 +39,7 @@ import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersCont
 import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
 import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
+import ContentEditor from './Modules/Publish/Components/Content/ContentEditor';
 
 class AgentLegacyApp {
 
@@ -324,6 +325,27 @@ class AgentLegacyApp {
               inputType={inputType}
               save={save}
               updateSource={updateSource}
+            />
+          </IntlProvider>
+        </Provider>
+      </AppContainer>,
+      node
+    );
+  }
+
+  renderContentEditor(
+    node,
+    value
+  ) {
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={this.store}>
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ContentEditor
+              value={value}
             />
           </IntlProvider>
         </Provider>
