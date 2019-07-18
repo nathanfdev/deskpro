@@ -139,6 +139,8 @@ class TaskRouter
 
                     $this->storage->saveTask($task);
                 } elseif ($task->isAssignExpired() || !$task->getWorkerIds()) {
+                    $assignTimeout = false;
+
                     // re-route timeout
                     if ($task->isAssignExpired()) {
                         $task->setDateExpireAssigned(null);
@@ -164,6 +166,7 @@ class TaskRouter
                         }
 
                         $this->storage->saveTask($task);
+                        $assignTimeout = true;
                     }
 
                     // if task wasn't assigned yet then try to find a worker for it
@@ -181,6 +184,18 @@ class TaskRouter
 
                         try {
                             $this->dispatcher->dispatch(TaskRouterEvent::ASSIGNED, new TaskRouterEvent($task));
+                        } catch (\Exception $e) {
+                            SystemErrorHandler::logException($e);
+                        }
+
+                        $this->storage->saveTask($task);
+                    } elseif ($assignTimeout) {
+                        // no workers found after assign timeout
+                        // redirect directly to timeout handler
+                        $task->setStatus(Task::STATUS_TIMEOUT);
+
+                        try {
+                            $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
                         } catch (\Exception $e) {
                             SystemErrorHandler::logException($e);
                         }
