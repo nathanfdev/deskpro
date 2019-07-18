@@ -138,14 +138,6 @@ class SlaCalculator
     {
         $dates = [];
 
-        if ($ticket->status == 'resolved') {
-            if ($ticket->date_resolved) {
-                $dates[] = $ticket->date_resolved->getTimestamp();
-            } else {
-                $dates[] = time();
-            }
-        }
-
         if ($ticket->status == 'hidden' && ($ticket->hidden_status == 'spam' || $ticket->hidden_status == 'deleted')) {
             $dates[] = time();
         }
@@ -154,18 +146,24 @@ class SlaCalculator
             $dates[] = $ticket->date_archived->getTimestamp();
         }
 
-        if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-            if ($this->isTicketHasNotInitialAgentReply($ticket)) {
-                // don't auto resolve sla on ticket creation, even if created by an agent
-                if ($ticket->date_first_agent_reply) {
-                    $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+        if ($this->type == self::TYPE_FIRST_RESPONSE) {
+            if ($ticket->date_last_agent_reply) {
+                if ($this->isTicketHasNotInitialAgentReply($ticket)) {
+                    // don't auto resolve sla on ticket creation, even if created by an agent
+                    if ($ticket->date_first_agent_reply) {
+                        $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                    }
+                    $dates[] = $ticket->date_last_agent_reply->getTimestamp();
                 }
-                $dates[] = $ticket->date_last_agent_reply->getTimestamp();
             }
-        }
-
-        if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
-            $dates[] = $ticket->date_status->getTimestamp();
+        } else {
+            if ($ticket->status == 'resolved') {
+                if ($ticket->date_resolved) {
+                    $dates[] = $ticket->date_resolved->getTimestamp();
+                } else {
+                    $dates[] = time();
+                }
+            }
         }
 
         if ($dates) {
