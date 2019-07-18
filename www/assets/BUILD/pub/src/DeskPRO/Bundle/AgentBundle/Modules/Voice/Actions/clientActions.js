@@ -670,3 +670,11 @@ export const deleteRecord = createAction(
     });
   })
 );
+
+export const deleteMessage = createAction(
+  'VOICE_AGENT_DELETE_MESSAGE',
+  (ticketId, messageId) => api.sendDelete(`DP_API/tickets/${ticketId}/messages/${messageId}`).success(() => {
+    $(`article.message-${messageId}`).remove();
+    $(`.voice-ticket-message.message-${messageId}`).remove();
+  })
+);

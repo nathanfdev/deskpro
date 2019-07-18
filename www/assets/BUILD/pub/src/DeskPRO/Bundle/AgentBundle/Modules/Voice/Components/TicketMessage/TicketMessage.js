@@ -8,7 +8,6 @@ import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
 import classNames from 'classnames';
 import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
-import { deleteRecord } from '../../Actions/clientActions';
 import Avatar from '../Common/Avatar';
 import MessagePhoneNumber from './MessagePhoneNumber';
 import { TicketMessageMenu } from './TicketMessageMenu';
@@ -28,13 +27,14 @@ class TicketMessage extends React.Component {
     openDialpad:          PropTypes.func,
     me:                   PropTypes.object,
     elid:                 PropTypes.string,
-    dispatch:             PropTypes.func,
-    canEditMessage:       PropTypes.bool
+    deleteMessage:        PropTypes.func,
+    deleteRecord:         PropTypes.func,
+    canDeleteRecording:   PropTypes.bool,
+    canDeleteMessage:     PropTypes.bool
   };
 
   static defaultProps = {
-    openDialpad:    () => {},
-    canEditMessage: false
+    openDialpad: () => {}
   };
 
   constructor(props) {
@@ -65,14 +65,10 @@ class TicketMessage extends React.Component {
     }
   };
 
-  deleteRecord = (phoneCallId) => {
-    this.props.dispatch(deleteRecord(phoneCallId));
-  };
-
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants } = this.props;
-    const { outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
-    const { openDialpad, me, openTarget } = this.props;
+    const { outboundCallsEnabled, dateCreatedFormatted, canDeleteRecording, canDeleteMessage } = this.props;
+    const { openDialpad, me, openTarget, deleteRecord, deleteMessage } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
     const fullRecording = phoneCall.get('full_recording');
@@ -84,7 +80,7 @@ class TicketMessage extends React.Component {
     }
 
     return (
-      <div className="voice-ticket-message">
+      <div className={`voice-ticket-message message-${message.id}`}>
         <div className="voice-ticket-message-participants" style={{ width: Math.ceil(participants.size / 3) * 45 }}>
           {participants.map((participant, index) =>
             <Avatar
@@ -107,7 +103,7 @@ class TicketMessage extends React.Component {
                   : 'agent.voice.incoming_call_title'}
               />
             </span>
-            {canEditMessage &&
+            {(canDeleteRecording || canDeleteMessage) &&
             <span className="voice-ticket-message-edit-menu" onClick={this.openMenu}>
               <i className="fas fa-cog" />
               <PopUp
@@ -119,7 +115,11 @@ class TicketMessage extends React.Component {
                 content={
                   <TicketMessageMenu
                     phoneCall={phoneCall}
-                    deleteRecord={this.deleteRecord}
+                    message={message}
+                    deleteRecord={deleteRecord}
+                    deleteMessage={deleteMessage}
+                    canDeleteRecording={canDeleteRecording}
+                    canDeleteMessage={canDeleteMessage}
                   />
                 }
               />

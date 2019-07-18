@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { loadBatch, collectionSelectorFactory, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import TicketMessage from './TicketMessage';
-import { openDialpad } from '../../Actions/clientActions';
+import { deleteRecord, deleteMessage, openDialpad } from '../../Actions/clientActions';
 import { loadNumbers } from '../../Actions/numberActions';
 import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 import { connectionsSelector } from '../../Selectors/client';
@@ -93,7 +93,7 @@ class TicketMessageContainer extends React.Component {
     return connections.filter(connection => parseInt(connection.callId, 10) === phoneCall.get('id')).first();
   }
 
-  canEditMessage() {
+  canDeleteRecording() {
     const { data } = this.state;
     const ticket = this.getTicket();
     if (!ticket || !data.linked.voice_permissions) {
@@ -102,7 +102,19 @@ class TicketMessageContainer extends React.Component {
 
     const permissions = data.linked.voice_permissions[ticket.get('id')];
 
-    return permissions ? permissions.delete_voice_recordings || permissions.delete_voice_messages  : false;
+    return permissions ? permissions.delete_voice_recordings || permissions.delete_voice_messages : false;
+  }
+
+  canDeleteMessage() {
+    const { data } = this.state;
+    const ticket = this.getTicket();
+    if (!ticket || !data.linked.voice_permissions) {
+      return false;
+    }
+
+    const permissions = data.linked.voice_permissions[ticket.get('id')];
+
+    return permissions ? permissions.delete_voice_messages : false;
   }
 
   openDialpad = () => {
@@ -129,6 +141,14 @@ class TicketMessageContainer extends React.Component {
         window.DP_FRAME_OVERLAYS.admin.open(`/voice_channel/auto_attendants/${id}`);
       }
     }
+  };
+
+  deleteMessage = (ticketId, messageId) => {
+    this.props.dispatch(deleteMessage(ticketId, messageId));
+  };
+
+  deleteRecord = (phoneCallId) => {
+    this.props.dispatch(deleteRecord(phoneCallId));
   };
 
   loadParticipants() {
@@ -163,7 +183,10 @@ class TicketMessageContainer extends React.Component {
         connection={this.getConnection()}
         openDialpad={this.openDialpad}
         openTarget={this.openTarget}
-        canEditMessage={this.canEditMessage()}
+        canDeleteRecording={this.canDeleteRecording()}
+        canDeleteMessage={this.canDeleteMessage()}
+        deleteRecord={this.deleteRecord}
+        deleteMessage={this.deleteMessage}
       />
     );
   }

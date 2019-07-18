@@ -76,15 +76,13 @@ class VoicePhoneCallsController extends CrudController
         $recordings = $phoneCall->getRecordings();
         if ($recordings->count() > 0) {
             foreach ($recordings as $recording) {
-                $blob = $recording->getBlob();
-                if (!$blob) {
-                    continue;
-                }
-
                 $recording->setBlob(null);
                 $recording->setIsDeleted(true);
 
-                $this->get('blob.storage')->deleteBlobRecord($blob);
+                $blob = $recording->getBlob();
+                if ($blob) {
+                    $this->get('blob.storage')->deleteBlobRecord($blob);
+                }
 
                 $em->flush();
 
@@ -94,8 +92,11 @@ class VoicePhoneCallsController extends CrudController
                     ->setPerson($this->getUser())
                     ->setIdObject($phoneCall->getId())
                     ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
-                    ->setDetailItem('filesize', sprintf('%.2f', $blob->getFilesize() / 1024))
                 ;
+
+                if ($blob) {
+                    $ticketLog->setDetailItem('filesize', sprintf('%.2f', $blob->getFilesize() / 1024));
+                }
 
                 $em->persist($ticketLog);
             }
