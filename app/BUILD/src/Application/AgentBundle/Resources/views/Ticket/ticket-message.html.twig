@@ -10,6 +10,7 @@
 	data-elid="{{ elid }}"
 	data-message-date-created-fulltime="{{message.date_created|date('fulltime')}}"
     data-perms="{{message_perms|json_encode}}"
+    data-message-num="{{ message_num }}"
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="{{ phrase('agent.general.note_tag_title') }}"><i>{{ phrase('agent.general.note') }}</i></div>{% endif %}
 	<div class="avatar"><img

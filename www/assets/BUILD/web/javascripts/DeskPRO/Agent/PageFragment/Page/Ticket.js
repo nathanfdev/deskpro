@@ -1956,7 +1956,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         $rElement.get(0),
         messageData,
         $el.data('message-date-created-fulltime'),
-        $el.data('elid')
+        $el.data('elid'),
+        $el.data('message-num')
       );
     };
 

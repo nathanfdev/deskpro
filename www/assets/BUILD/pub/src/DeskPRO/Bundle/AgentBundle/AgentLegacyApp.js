@@ -243,7 +243,7 @@ class AgentLegacyApp {
     }
   }
 
-  renderVoiceMessage(node, data, dateCreatedFormatted, elid) {
+  renderVoiceMessage(node, data, dateCreatedFormatted, elid, messageNum) {
     let tabRef;
 
     ReactDOM.render(
@@ -257,6 +257,7 @@ class AgentLegacyApp {
               tabRef={(c) => { tabRef = c; }}
               data={data}
               elid={elid}
+              messageNum={messageNum}
               dateCreatedFormatted={dateCreatedFormatted}
             />
           </IntlProvider>

@@ -27,6 +27,7 @@ class TicketMessage extends React.Component {
     openDialpad:          PropTypes.func,
     me:                   PropTypes.object,
     elid:                 PropTypes.string,
+    messageNum:           PropTypes.number,
     deleteMessage:        PropTypes.func,
     deleteRecord:         PropTypes.func,
     canDeleteRecording:   PropTypes.bool,
@@ -68,7 +69,7 @@ class TicketMessage extends React.Component {
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants } = this.props;
     const { outboundCallsEnabled, dateCreatedFormatted, canDeleteRecording, canDeleteMessage } = this.props;
-    const { openDialpad, me, openTarget, deleteRecord, deleteMessage } = this.props;
+    const { openDialpad, me, openTarget, deleteRecord, deleteMessage, elid, messageNum } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
     const fullRecording = phoneCall.get('full_recording');
@@ -93,7 +94,7 @@ class TicketMessage extends React.Component {
         <div className="voice-ticket-message-body">
           <div className="voice-ticket-message-header">
             <span className="voice-ticket-message-id">
-              #{message.id}
+              #{messageNum}
             </span>
             <span className="voice-ticket-message-title">
               <i className="icon call" />
@@ -126,7 +127,7 @@ class TicketMessage extends React.Component {
             </span>}
             <span className="voice-ticket-message-date">
               <time
-                data-stickytip-target={`#${this.props.elid}`}
+                data-stickytip-target={`#${elid}`}
                 className="timeago with-stickytip timeago-auto-update with-timeago"
                 dateTime={message.date_created}
                 title={dateCreatedFormatted}
