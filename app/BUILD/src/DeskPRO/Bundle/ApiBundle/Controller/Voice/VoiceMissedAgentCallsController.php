@@ -184,14 +184,28 @@ class VoiceMissedAgentCallsController extends CrudController
      */
     protected function deleteEntity($entity)
     {
-        if ($entity->getAgent() !== $this->getUser()) {
+        $person = $this->getUser();
+        if ($entity->getAgent() !== $person) {
             throw $this->createAccessDeniedException('Unable to delete voicemail record');
         }
 
-        $entity->setIsDeleted(true);
+        $canDeleteRecordings = $person->hasPerm('agent_tickets.modify_messages_delete_voice_recordings_own');
+        $canDeleteMessages   = $person->hasPerm('agent_tickets.modify_messages_delete_voice_messages_own');
 
         $em = $this->getManager();
-        $em->persist($entity);
+
+        if ($canDeleteRecordings || $canDeleteMessages) {
+            $blob = $entity->getBlob();
+
+            $entity->setBlob(null);
+            $em->flush();
+
+            if ($blob) {
+                $this->get('blob.storage')->deleteBlobRecord($blob);
+            }
+        }
+
+        $entity->setIsDeleted(true);
         $em->flush();
     }
 }
