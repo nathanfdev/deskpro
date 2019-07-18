@@ -33,10 +33,11 @@ class NumberTargetList extends React.Component {
               positionMy="left top"
               positionAt="left bottom"
               zIndex={99999}
+              style={{ display: 'inline-block' }}
               autoClose
               content={(
                 <div>
-                  {popupTargets.toArray().map((target, index) => (
+                  {popupTargets.map((target, index) => (
                     <div key={index}>{target.name}</div>
                   ))}
                 </div>
