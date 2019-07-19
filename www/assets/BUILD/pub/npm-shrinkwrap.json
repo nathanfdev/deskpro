@@ -304,8 +304,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/product-content-editor": {
-      "version": "file:deskpro-product-content-editor-0.1.0.tgz",
-      "integrity": "sha512-nDWiVvr5EbAB3t8W0EDjk2gpNxW3WxyaylW/+AlxSjeWV2tVfqITshBMfy1K+0GGcOlgNA5A96UvuZXBPnn6wQ==",
+      "version": "0.1.0",
+      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.0.tgz",
+      "integrity": "sha512-Ka8E5Lg1gI7uZ7BftzgmlWBjPOnRSaiXJyzYBMwWen44qfhlxkteynmGM+PDqFp6NKMq1uPPWxPnebtXXI/hpg==",
       "requires": {
         "@deskpro/content-editor": "^0.1.0",
         "@deskpro/react-content-editor": "^0.1.0",
