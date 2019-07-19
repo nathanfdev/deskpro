@@ -24,6 +24,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\VoiceBundle\Exception\BlacklistException;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
@@ -33,7 +35,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Twilio\Exceptions\RestException;
 
 /**
  * Class TwilioCallbacksController.
@@ -1382,19 +1383,20 @@ class TwilioCallbacksController extends BaseController
                 new LegacySystemEvent('agent.voice.outgoing-call-init')
             );
         } elseif ($exception) {
-            if ($exception instanceof RestException) {
-                $errorCodeGen = $this->get('form_error.error_code_generator.api');
-                if ($exception->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
-                } else {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
-                }
+            $errorCodeGen = $this->get('form_error.error_code_generator.api');
 
-                $this->get('event_dispatcher')->dispatch(
-                    LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
-                );
+            if ($exception instanceof BlacklistException) {
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
+            } elseif ($exception instanceof InsufficientBalanceException) {
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+            } else {
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
             }
+
+            $this->get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
+            );
 
             $twiml->hangup();
 

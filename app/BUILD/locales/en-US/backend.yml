@@ -5646,6 +5646,7 @@ api.error_codes.unauthorized_check_server: 'Unauthorized. If you are using apach
 api.error_codes.unique_entity: 'This value already exists in the system.'
 api.error_codes.voice_no_department_permission: 'Agent {{agent}} has no permission for department {{department}}.'
 api.error_codes.voice_permissions: 'Check your voice permissions.'
+api.error_codes.voice_blacklist: 'This number is blocked for security & regulatory reasons, please contact the Deskpro Support Team.'
 api.error_codes.unverified_number: 'Verify this number or upgrade your account.'
 api.error_codes.insufficient_balance: 'Insufficient balance.'
 api.oauth.authorize_accept: Access

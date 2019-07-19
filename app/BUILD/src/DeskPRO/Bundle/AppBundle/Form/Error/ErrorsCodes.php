@@ -68,6 +68,7 @@ final class ErrorsCodes
     const MISMATCH_VALUES             = 'mismatch_values';
     const UNVERIFIED_NUMBER           = 'unverified_number';
     const INSUFFICIENT_BALANCE        = 'insufficient_balance';
+    const VOICE_BLACKLIST             = 'voice_blacklist';
     const VOICE_PERMISSIONS           = 'voice_permissions';
 
     /** Term Engine Specific */
