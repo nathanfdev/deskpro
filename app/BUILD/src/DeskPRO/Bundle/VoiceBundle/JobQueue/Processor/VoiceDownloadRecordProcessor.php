@@ -106,7 +106,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
             } elseif (isset($data['voicemail_recording_id'])) {
                 /** @var VoiceMissedAgentCall $recording */
                 $recording = $this->em->getRepository(VoiceMissedAgentCall::class)->find($data['voicemail_recording_id']);
-                if (!$recording) {
+                if (!$recording || $recording->isDeleted()) {
                     return;
                 }
 
