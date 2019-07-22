@@ -306,6 +306,7 @@ class ChatWorkflow implements WorkflowInterface
                 }
 
                 $task->setWorkersIds($workersIds);
+                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                 break;
         }
