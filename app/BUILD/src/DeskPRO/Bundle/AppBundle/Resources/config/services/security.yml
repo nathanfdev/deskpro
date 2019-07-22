@@ -268,3 +268,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ClientDeviceVoter
     tags:
       - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.voice_missed_agent_call:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoiceMissedAgentCallVoter
+    tags:
+      - { name: security.voter.permission_groups }
