@@ -4,7 +4,11 @@ pageMeta.title = '{{ phrase('agent.publish.glossary') }}';
 </script>
 <div class="content">
 	<div class="add-dlg dp-overlay" style="display: none; width: 400px;">
-		{{ phrase('agent.publish.add_new_glossary') }}: <input type="text" class="word" value="" style="width: 150px;" /><br />
+		{{ phrase('agent.publish.add_new_glossary') }}: <input type="text"
+															   class="word"
+															   value=""
+															   autocomplete="{{ "now" | date("U") }}"
+															   style="width: 150px;" /><br />
 		<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
 		<div style="text-align: right">
 			<button class="dp-button x-small save-trigger">{{ phrase('agent.general.add') }}</button>

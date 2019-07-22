@@ -38,14 +38,18 @@
                     <div class="first section cat-section" id="{{ baseId }}_email_section">
                         <div class="content">
                             <h4>{{ phrase('agent.general.email') }}</h4>
-                            <input type="text" name="newperson[email]" id="{{ baseId }}_email" value="" class="fill" />
+                            <input type="text" autocomplete="{{ "now" | date("U") }}" name="newperson[email]" id="{{ baseId }}_email" value="" class="fill" />
                         </div>
                     </div>
 
                     <div class="section cat-section" id="{{ baseId }}_name_section">
                         <div class="content">
                             <h4>{{ phrase('agent.general.name') }}</h4>
-                            <input type="text" name="newperson[name]" id="{{ baseId }}_name" value="" class="fill" />
+                            <input type="text"
+                                   name="newperson[name]" id="{{ baseId }}_name"
+                                   value=""
+                                   class="fill"
+                                   autocomplete="{{ "now" | date("U") }}" />
                         </div>
                     </div>
 
@@ -66,6 +70,7 @@
                                     >
                                 <input type="text" class="org-name fill" id="{{ baseId }}_org_name"
                                        name="newperson[new_organization]"
+                                       autocomplete="{{ "now" | date("U") }}"
                                        placeholder="{{ phrase('agent.general.find_org') }}" value=""/>
                                 <input type="hidden" class="org-id" id="{{ baseId }}_org_id"
                                        name="newperson[organization_id]" value=""/>
@@ -94,7 +99,10 @@
 
                                 <div id="{{ baseId }}_org_pos" style="display: none; margin-top: 10px">
                                     <h4>{{ phrase('agent.general.position') }}</h4>
-                                    <input type="text" name="newperson[organization_position]" value="" size="40" />
+                                    <input type="text"
+                                           name="newperson[organization_position]"
+                                           autocomplete="{{ "now" | date("U") }}"
+                                           value="" size="40" />
                                 </div>
                             </div>
                         </div>
@@ -122,7 +130,10 @@
                                             <input type="hidden" id="newperson_phone_numbers__name___ext" name="newperson[phone_numbers][__name__][ext]" class="dp_phone_ext_hidden" />
                                         </div>
                                         <div class="phone-label">
-                                            <input type="text" id="newperson_phone_numbers__name___label" name="newperson[phone_numbers][__name__][label]" placeholder="Add a label"/>
+                                            <input type="text"
+                                                id="newperson_phone_numbers__name___label"
+                                                name="newperson[phone_numbers][__name__][label]"
+                                                placeholder="Add a label"/>
                                         </div>
                                         <br class="clear" />
                                     </li>
@@ -148,7 +159,7 @@
                                 <label>
                                     <input type="radio" name="newperson[set_password_radio]" value="set"/>
                                     {{ phrase('agent.general.set_password_manual') }}
-                                    <input type="password" name="newperson[new_password]"
+                                    <input type="password" autocomplete="new-password" name="newperson[new_password]"
                                            id="{{ baseId }}_set_password_input" style="display: none;"/>
                                 </label>
                             </div>

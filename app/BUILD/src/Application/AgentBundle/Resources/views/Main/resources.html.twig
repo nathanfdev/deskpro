@@ -79,16 +79,6 @@
 	define("jquery", function() {
 		return window.jQuery;
 	});
-
-	// Prevent autocomplete
-	document.addEventListener('DOMNodeInserted', function() {
-		document.querySelectorAll("input[type='text']").forEach(function(input) {
-			input.setAttribute('autocomplete', Date.now())
-		});
-		document.querySelectorAll("input[type='password']").forEach(function(input) {
-			input.setAttribute('autocomplete', 'new-password')
-		});
-	});
 </script>
 <script	type="text/javascript" src="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}"></script>
 

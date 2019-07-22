@@ -114,7 +114,10 @@
                                     <th width="100">{{ phrase('agent.general.title') }}</th>
                                     <td>
                                         <input type="hidden" name="category[id]" value="{{ guide.id }}" />
-                                        <input type="text" name="category[title]" value="{{ guide.title }}" {% if not perms.can_edit %} disabled {% endif %}/>
+                                        <input type="text"
+                                               name="category[title]"
+                                               autocomplete="{{ "now" | date("U") }}"
+                                               value="{{ guide.title }}" {% if not perms.can_edit %} disabled {% endif %}/>
                                     </td>
                                 </tr>
                                 <tr class="vtop">

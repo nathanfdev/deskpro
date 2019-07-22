@@ -77,7 +77,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4 id="{{baseId}}_topic_title" style="display: none">{{ phrase('agent.general.title') }}</h4>
 		<h4 id="{{baseId}}_section_title">{{ phrase('agent.general.section_title') }}</h4>
-		<input type="text" name="newtopic[title]" id="{{baseId}}_title" value="{{ state.topic.title }}" style="width: 80%;" />
+		<input type="text"
+			   name="newtopic[title]"
+			   id="{{baseId}}_title"
+			   autocomplete="{{ "now" | date("U") }}"
+			   value="{{ state.topic.title }}"
+			   style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
 	</div>
 </div>
@@ -85,7 +90,12 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section" style="display:none;">
 	<div class="content">
 		<h4>{{ phrase('agent.publish.post') }}</h4>
-		<textarea type="text" name="newtopic[content]" id="{{baseId}}_content">{{ state.topic.content }}</textarea>
+		<textarea type="text"
+				  name="newtopic[content]"
+				  autocomplete="{{ "now" | date("U") }}"
+				  id="{{baseId}}_content">
+			{{ state.topic.content }}
+		</textarea>
 		<input type="hidden" name="newtopic[content_input]" id="{{baseId}}_content_input" value="">
 		<input type="hidden" name="newtopic[content_input_type]" id="{{baseId}}_content_input_type" value="markdown">
 	</div>
@@ -108,7 +118,10 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.newnews.labels %}{{label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
+								<input type="text"
+									   autocomplete="{{ "now" | date("U") }}"
+									   value="{% for label in state.newnews.labels %}{{label}},{% endfor %}"
+									   data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
 							</div>
 						</dd>
 					</dl>

@@ -26,7 +26,8 @@
 				</header>
 				<article class="article-form">
 					<div class="title-row">
-						<input type="text" name="title[{{ lang.id }}]" value="{{ trans_data.title[lang.id].value }}" placeholder="Title" />
+						<input type="text" name="title[{{ lang.id }}]" value="{{ trans_data.title[lang.id].value }}"
+							   placeholder="Title" autocomplete="{{ "now" | date("U") }}" />
 					</div>
 					<div class="editor-row">
 						<textarea name="content[{{ lang.id }}]">{{ trans_data.content[lang.id].value }}</textarea>

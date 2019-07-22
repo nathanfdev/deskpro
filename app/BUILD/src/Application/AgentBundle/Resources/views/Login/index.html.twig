@@ -251,11 +251,12 @@
               <i class="fas fa-envelope"></i>
               <input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40"
                      placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}"
+                     autocomplete="{{ "now" | date("U") }}"
                      tabindex="1" />
             </p>
             <p>
               <i class="fas fa-lock"></i>
-              <input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"
+              <input type="password" autocomplete="new-password" class="text" value="" name="password" id="password" size="40"
                      tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
             </p>
 
@@ -414,6 +415,7 @@
               <i class="fas fa-envelope"></i>
               {{ form_token('user_login') }}
               <input type="text" class="text" value="{{ render_forgot_pw ?: failed_login_name }}" name="email"
+                     autocomplete="{{ "now" | date("U") }}"
                      id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
             </p>
           </fieldset>
