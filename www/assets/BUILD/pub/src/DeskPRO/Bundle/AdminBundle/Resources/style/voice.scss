@@ -130,8 +130,6 @@
       }
 
       &.targets {
-        width: 350px;
-
         .more-button {
           cursor: pointer;
         }
@@ -309,6 +307,10 @@
 
   .target {
     min-width: 50px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
     padding: 3px 5px;
     display: inline-block;
     font-size: 10px;
@@ -658,6 +660,10 @@
       &.queue {
         .target {
           min-width: 50px;
+          max-width: 200px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space:nowrap;
           padding: 3px 5px;
           display: inline-block;
           font-size: 12px;

@@ -104,7 +104,7 @@ class ExistingExtensionRow extends React.Component {
           </div>
           <div className="column extension">{agent.getIn(['agent_data', 'extension_number'])}</div>
           <div className="column targets">
-            <NumberTargetList targets={involvedQueues} displayCount={2} />
+            <NumberTargetList targets={involvedQueues} displayCount={5} />
           </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>

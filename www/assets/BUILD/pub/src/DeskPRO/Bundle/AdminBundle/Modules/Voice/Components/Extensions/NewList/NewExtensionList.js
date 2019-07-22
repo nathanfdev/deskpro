@@ -203,7 +203,7 @@ class NewExtensionRow extends React.Component {
           <span className="agent-name">{agent.get('name')}</span>
         </td>
         <td className="queue">
-          <NumberTargetList targets={involvedQueues} displayCount={2} />
+          <NumberTargetList targets={involvedQueues} displayCount={5} />
         </td>
         <td className="extension">
           <Form onSubmit={this.onSubmit} formValue={formData}>
