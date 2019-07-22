@@ -51,7 +51,7 @@ class OutgoingCallContainer extends React.Component {
       return;
     }
 
-    dispatch(hangup(connection));
+    dispatch(hangup(connection.callId));
   };
 
   render() {

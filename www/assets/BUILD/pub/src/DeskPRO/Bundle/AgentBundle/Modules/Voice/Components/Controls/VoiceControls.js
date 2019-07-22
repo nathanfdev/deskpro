@@ -335,7 +335,7 @@ class Active extends React.Component {
         </Button>}
         {displayButton &&
         <Button
-          className={classNames('red', { disabled: ended || !connection })}
+          className={classNames('red', { disabled: ended })}
           onClick={this.endCall}
         >
           {phoneCall.get('agent_participants').size >= 2 ? 'Hang up' : 'End call'}

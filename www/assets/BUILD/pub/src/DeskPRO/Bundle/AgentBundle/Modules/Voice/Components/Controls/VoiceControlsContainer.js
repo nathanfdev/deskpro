@@ -104,7 +104,7 @@ class VoiceControlsContainer extends React.Component {
           const promise = dispatch(checkIsActive(connection.callId));
           promise.success(({ data }) => {
             if (!data.is_active) {
-              dispatch(hangup(connection));
+              dispatch(hangup(connection.callId));
             }
           });
         } else if (status !== 'connected' && status !== 'active') {
@@ -146,8 +146,10 @@ class VoiceControlsContainer extends React.Component {
 
   getConnection() {
     const { connections, ticketId } = this.props;
+    const { viewCallId } = this.state;
+
     return connections
-      .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10))
+      .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10) || parseInt(connection.callId, 10) === parseInt(viewCallId, 10))
       .first();
   }
 
@@ -172,12 +174,12 @@ class VoiceControlsContainer extends React.Component {
 
   endCall = () => {
     const { dispatch } = this.props;
-    const connection = this.getConnection();
-    if (!connection) {
+    const callId = this.getCallId();
+    if (!callId) {
       return;
     }
 
-    dispatch(hangup(connection));
+    dispatch(hangup(callId));
   };
 
   sendDigits = (digit) => {

@@ -631,10 +631,15 @@ export const checkIsActive = createAction(
 
 export const hangup = createAction(
   'VOICE_AGENT_HANGUP',
-  connection => (dispatch) => {
+  callId => (dispatch, getState) => {
     dispatch(resetOutgoingCall());
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/end_call`).success(() => {
-      hangupConnection(connection);
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/end_call`).success(() => {
+      const connections = connectionsSelector(getState());
+      connections.forEach((connection) => {
+        if (parseInt(connection.callId, 10) === parseInt(callId, 10)) {
+          hangupConnection(connection);
+        }
+      });
     });
   }
 );
