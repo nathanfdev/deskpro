@@ -397,6 +397,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_SIMULRING);
         $queue->getActiveAgentsPeople()->willReturn([$person1, $person2, $person4, $person5]);
+        $queue->getAnswerTimeout()->willReturn(15);
 
         $permissionsChecker->canBeMemberOfVoiceQueue($queue, $person1)->willReturn(true);
         $permissionsChecker->canBeMemberOfVoiceQueue($queue, $person2)->willReturn(true);
@@ -410,6 +411,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10, 50])->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(15)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3, $worker5]);
     }
