@@ -244,7 +244,6 @@ class VoiceWorkflow implements WorkflowInterface
                     }
 
                     $task->setWorkersIds($workerIds);
-                    $task->setDateExpireAssignedOffset($voiceQueue->getAnswerTimeout());
 
                     break;
             }

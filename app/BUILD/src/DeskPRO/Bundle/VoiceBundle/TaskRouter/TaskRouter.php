@@ -189,8 +189,9 @@ class TaskRouter
                         }
 
                         $this->storage->saveTask($task);
-                    } elseif ($assignTimeout) {
+                    } elseif ($assignTimeout || $task->getRejectedBy()) {
                         // no workers found after assign timeout
+                        // or workers actively declined the call
                         // redirect directly to timeout handler
                         $task->setStatus(Task::STATUS_TIMEOUT);
 
