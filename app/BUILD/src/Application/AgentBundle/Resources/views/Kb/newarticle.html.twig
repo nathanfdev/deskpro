@@ -88,9 +88,13 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.general.article') }}</h4>
 		<div style="width: 98%">
-			<textarea type="text" name="newarticle[content]" id="{{baseId}}_content" autocomplete="{{ "now" | date("U") }}">
-				{{ state.newarticle.content }}
-			</textarea>
+			{% if app.hasBeta('content_editor') %}
+				<div id="{{baseId}}_content" class="edit-content-field">{{ state.newarticle.content }}</div>
+			{%  else  %}
+				<textarea type="text" name="newarticle[content]" id="{{baseId}}_content" autocomplete="{{ "now" | date("U") }}">
+                    {{ state.newarticle.content }}
+                </textarea>
+			{% endif %}
 			<div class="error-message content">{{ phrase('agent.publish.please_enter_content') }}</div>
 		</div>
 		{% if app.languages.isMultiLang() %}

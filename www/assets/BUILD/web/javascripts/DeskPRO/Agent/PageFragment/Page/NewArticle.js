@@ -132,6 +132,15 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			formData.push(this.labelsInput.getFormData());
 		}
 
+		formData.push({
+			name: "newarticle[content]",
+			value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
+		});
+		formData.push({
+			name: "newarticle[content_input]",
+			value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+		});
+
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
 
@@ -255,22 +264,29 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		var txt = this.getEl('content');
 
-    this.rte = window.LegacyRteTextarea.init(txt, {
-			height: 							Math.max(h - 500, 200),
-      inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
-      formname:							'newarticle'
-		});
+		if (window.DP_HAS_NEW_CONTENT_EDITOR) {
+			self.rte = window.AgentLegacyBundle.renderContentEditor(
+				txt[0],
+				txt.val()
+			);
+		} else {
+			this.rte = window.LegacyRteTextarea.init(txt, {
+				height: 							Math.max(h - 500, 200),
+				inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
+				formname:							'newarticle'
+			});
 
-    txt.on('froalaEditor.keypress', function () {
-			if (self.stateSaver) {
-				self.stateSaver.triggerChange();
-			}
-    });
+			txt.on('froalaEditor.keypress', function () {
+				if (self.stateSaver) {
+					self.stateSaver.triggerChange();
+				}
+			});
 
-		this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
-			page: this,
-			rte: this.rte
-		});
+			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
+				page: this,
+				rte: this.rte
+			});
+		}
 	},
 
 	//#########################################################################

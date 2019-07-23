@@ -1073,10 +1073,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				h = $(window).height() - 170 - txt.offset().top;
 			}
 
-			if (window.DP_HAS_NEW_CONTENT_EDITOR) {
-				window.AgentLegacyBundle.renderContentEditor(
-					document.getElementsByClassName('edit-content-field')[0],
-					txt.val()
+			if (window.DP_HAS_NEW_CONTENT_EDITOR && txt[0].tagName === "DIV") {
+			  var contentInput = '';
+			  if (window[this.meta.baseId + '_content_input']) {
+			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
+			  }
+			  window.AgentLegacyBundle.renderContentEditor(
+					txt[0],
+					contentInput
 				);
 			} else {
 				this.rte = window.LegacyRteTextarea.init(txt, {

@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\SearchLog;
@@ -1103,7 +1104,13 @@ class KbController extends AbstractController
 
             $newArticle->setCustomFieldForm($request->request->all());
 
-            $newArticle->save();
+            $contentInputType = ContentAbstract::CONTENT_TYPE_RTE;
+
+            if ($this->container->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+                $contentInputType = ContentAbstract::CONTENT_TYPE_DESKPRO_EDITOR_V1;
+            }
+
+            $newArticle->save($contentInputType);
 
             $article = $newArticle->getArticle();
 

@@ -337,6 +337,8 @@ class AgentLegacyApp {
     node,
     value
   ) {
+    const editor = React.createRef();
+
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
@@ -345,6 +347,7 @@ class AgentLegacyApp {
             messages={agentPhrases.getPhrases()}
           >
             <ContentEditor
+              ref={editor}
               value={value}
             />
           </IntlProvider>
@@ -352,6 +355,8 @@ class AgentLegacyApp {
       </AppContainer>,
       node
     );
+
+    return editor;
   }
 
   renderTopicsTree(node, guideId, height, openTopic, displayStatuses, canDrag) {
