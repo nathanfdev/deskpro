@@ -490,6 +490,53 @@ define(function() {
     templateName: 'TicketApprovals/list.html',
     controller:   'Admin_TicketApprovals_Ctrl_List'
   });
+  // Edit type
+  routes.push({
+    id:           'tickets.approvals.type_edit',
+    url:          '/{id:type\-[0-9]+}',
+    templateName: 'TicketApprovals/type_edit.html',
+    controller:   'Admin_TicketApprovals_Ctrl_TypeEdit',
+    data:         { stateMarkId: 'tickets.approvals' }
+  });
+  // Create type
+  routes.push({
+    id:         'tickets.approvals.type_gocreate',
+    url:        '/type/go-create',
+    template:   '',
+    controller: ['$state', function ($state) {
+      $state.go('tickets.approvals.type_create');
+    }]
+  });
+  routes.push({
+    id:           'tickets.approvals.type_create',
+    url:          '/type/create',
+    templateName: 'TicketApprovals/type_edit.html',
+    controller:   'Admin_TicketApprovals_Ctrl_TypeEdit'
+  });
+
+  // Edit template
+  routes.push({
+    id:           'tickets.approvals.template_edit',
+    url:          '/{id:template\-[0-9]+}',
+    templateName: 'TicketApprovals/template_edit.html',
+    controller:   'Admin_TicketApprovals_Ctrl_TemplateEdit',
+    data:         { stateMarkId: 'tickets.approvals' }
+  });
+  // Create template
+  routes.push({
+    id:         'tickets.approvals.template_gocreate',
+    url:        '/template/go-create',
+    template:   '',
+    controller: ['$state', function ($state) {
+      $state.go('tickets.approvals.template_create');
+    }]
+  });
+  routes.push({
+    id:           'tickets.approvals.template_create',
+    url:          '/template/create',
+    templateName: 'TicketApprovals/template_edit.html',
+    controller:   'Admin_TicketApprovals_Ctrl_TemplateEdit'
+  });
 
 
   // ###

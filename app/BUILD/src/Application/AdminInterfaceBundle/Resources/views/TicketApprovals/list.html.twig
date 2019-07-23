@@ -5,42 +5,23 @@
             <h3>{{ phrase('admin.tickets.approval_types') }}</h3>
         </header>
         <article>
-            {#<ul class="dp-item-list"
-                ng-init="
-            TicketStatusesList.statusTrans.awaiting_agent='{{ phrase('agent.tickets.status_awaiting_agent') | replace({'\'': '\\\''}) }}';
-            TicketStatusesList.statusTrans.awaiting_user='{{ phrase('agent.tickets.status_awaiting_user') | replace({'\'': '\\\''}) }}';
-            TicketStatusesList.statusTrans.pending='{{ phrase('agent.tickets.status_pending') | replace({'\'': '\\\''}) }}';
-            TicketStatusesList.statusTrans.resolved='{{ phrase('agent.tickets.status_resolved') | replace({'\'': '\\\''}) }}';
-            TicketStatusesList.statusTrans.archived='{{ phrase('agent.tickets.status_archived') | replace({'\'': '\\\''}) }}';
-          "
-            >
-                <li ng-repeat="topStatus in TicketStatusesList.tree"
-                    dp-state-mark="tickets.statuses.{{ ng_var('topStatus.status_type') }}">
-                    <a href="{{ ng_var('state_path(TicketStatusesList.getTopStatusRouteName(topStatus.status_type))') }}">{{ ng_var('TicketStatusesList.statusTrans[topStatus.status_type]') }}</a>
-                    <ul class="dp-item-list sublist">
-                        <li ng-repeat="status in topStatus.children"
-                            dp-state-mark="tickets.statuses.edit.{{ ng_var('status.id') }}"
-                            data-id="{{ ng_var('status.id') }}">
-                            <a href="{{ ng_href('tickets.statuses.edit', '{id: status.id}') }}">
-                                <h4>
-                                    <span class="tree-char middle" ng-if="!$last"></span>
-                                    <span class="tree-char last" ng-if="$last"></span>
-                                    <span class="title-id" title="ID">#{{ ng_var('status.id') }}</span>
-                                    <span class="title-text">{{ ng_var('status.title') }}</span>
-                                </h4>
-                            </a>
-                        </li>
-                    </ul>
+            <ul class="dp-item-list" dp-list-autoload>
+                <li ng-repeat="type in TicketApprovalsList.types" dp-state-mark="tickets.approvals.type-{{ ng_var('type.id') }}">
+                    <a href="{{ ng_href('tickets.approvals.type_edit', "{id: 'type-' + type.id}") }}">
+                        {{ ng_var('type.title') }}
+                    </a>
                 </li>
-            </ul>#}
+            </ul>
         </article>
-    </section>
-
-    <section class="dp-paneblock dp-listpane">
         <article>
             <div class="dp-add-control">
-                <a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
-                   href="{#{{ ng_href('tickets.approvals.gocreate_type') }}#}"><i class="fas fa-plus"></i> Add Approval Type</a>
+                <a class="btn btn-default"
+                   href="{{ ng_href('tickets.approvals.type_gocreate') }}"
+                   ng-class="{'active': isStateActive('.create') }"
+                >
+                    <i class="fas fa-plus"></i>
+                    Add Approval Type
+                </a>
             </div>
         </article>
     </section>
@@ -50,100 +31,25 @@
             <h3>{{ phrase('admin.tickets.approval_templates') }}</h3>
         </header>
         <article>
-            {#<ul class="dp-item-list">
-                <li dp-state-mark="tickets.statuses.hidden_deleted">
-                    <a href="{{ ng_href('tickets.statuses.hidden_deleted') }}">{{ phrase('agent.tickets.status_hidden_deleted') }}</a>
+            <ul class="dp-item-list" dp-list-autoload>
+                <li ng-repeat="template in TicketApprovalsList.templates" dp-state-mark="tickets.approvals.template-{{ ng_var('template.id') }}">
+                    <a href="{{ ng_href('tickets.approvals.template_edit', "{id: 'template-' + template.id}") }}">
+                        {{ ng_var('template.title') }}
+                    </a>
                 </li>
-                <li dp-state-mark="tickets.statuses.hidden_spam">
-                    <a href="{{ ng_href('tickets.statuses.hidden_spam') }}">{{ phrase('agent.tickets.status_hidden_spam') }}</a>
-                </li>
-            </ul>#}
+            </ul>
         </article>
-    </section>
-
-    <section class="dp-paneblock dp-listpane">
         <article>
             <div class="dp-add-control">
-                <a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
-                   href="{#{{ ng_href('tickets.approvals.gocreate_template') }}#}"><i class="fas fa-plus"></i> Add Approval Template</a>
+                <a class="btn btn-default"
+                   href="{{ ng_href('tickets.approvals.template_gocreate') }}"
+                   ng-class="{'active': isStateActive('.create') }"
+                >
+                    <i class="fas fa-plus"></i>
+                    Add Approval Template
+                </a>
             </div>
         </article>
     </section>
-{% endblock %}
-{% block listpane_help %}
-    <header>
-        <h1>The ticket status field tracks who needs to act on the ticket next.</h1>
-        <p>
-            Deskpro is based on back and forth communication between users and agents. The status field is used to
-            record whether a user or an agent needs to respond to the ticket next. You cannot change or add statuses.
-        </p>
-    </header>
-    <article>
-        <section>
-            <p>There are three core ticket statuses:</p>
 
-            <ul>
-                <li><strong>Awaiting Agent</strong>: The ticket requires a response from an agent. Deskpro is based
-                    around helping agents work on and respond to these tickets.
-                </li>
-
-                <li><strong>Awaiting User</strong>: The ticket requires a response from a user. Typically this will be
-                    because the Agent has replied and is either awaiting further information or has fixed the problem
-                    and is awaiting confirmation that the problem is fixed.
-                </li>
-
-                <li><strong>Resolved</strong>: The ticket is completed and does not require any further response.</li>
-
-            </ul>
-            <p>Click on each status below to see the number of tickets in your helpdesk with that status.</p>
-
-            <p>Agents can set tickets to a sub-status called <strong>On Hold</strong>. This status only applies to
-                tickets that are Awaiting Agent. This status is designed for tickets that agents cannot reply to
-                currently (e.g. because they are waiting for a third party). Tickets on hold are accessible from the
-                Awaiting Agent section of the agent interface filter pane.
-
-            <p>Tickets can also have their status set to <strong>Spam</strong> or <strong>Deleted</strong>. You can set
-                how long spam or deleted tickets are kept before they are automatically deleted by clicking on the
-                relevant status.</p>
-            <p>You can turn on <strong>archiving</strong> of old, resolved tickets. For very large helpdesks with
-                millions of tickets, archiving can greatly improve performance. Click <strong>Archived</strong> to
-                enable this, and specify how long before resolved tickets are archived.</p>
-            <p>When an old ticket is archived it is given archived status. Agents can still view archived tickets from
-                the Tickets app filter pane, and agents with the correct permission can restore archived tickets.</p>
-        </section>
-
-        <section>
-            <h2><span>FAQ</span></h2>
-            <dl>
-                <dt><em>Q:</em> Can I have a custom status?</dt>
-                <dd><em>A:</em>
-                    No. Being able to add extra statuses would break the core flow of how Deskpro handles tickets.
-                    If you wish to track the state of a ticket more closely, we recommend you use the
-                    <strong>Workflow</strong> custom field.
-                </dd>
-
-                <dt><em>Q:</em> My helpdesk is slow; should I enable archiving?</dt>
-                <dd><em>A:</em> Deskpro can handle the ticket volume of the vast majority of helpdesks.
-                    Archiving is only likely to improve performance if you have over a million resolved tickets.
-                    If you have fewer than that and your helpdesk is slow, you should check your internet connectivity
-                    (for Cloud customers) or the server configuration of your Deskpro installation
-                    (for Download customers).
-                </dd>
-            </dl>
-        </section>
-        <section class="related-content">
-            <h2><span>Related Content</span></h2>
-            <ul>
-                <li>
-                    <i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/278" target="_blank">Ticket
-                        status</a>
-                </li>
-                <li>
-                    <i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/195"
-                                                       target="_blank">Why can't I add a custom ticket status?</a>
-                </li>
-
-            </ul>
-        </section>
-    </article>
 {% endblock %}
