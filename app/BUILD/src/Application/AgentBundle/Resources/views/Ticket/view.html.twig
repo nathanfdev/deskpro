@@ -669,7 +669,7 @@
                         </article>
                     {% endif %}
                     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-                        <article id="{{ baseId }}_billing_wrap" style="display: none" style="overflow-x: auto;">
+                        <article id="{{ baseId }}_billing_wrap" style="display: none; overflow-x: auto;">
                             {% include 'AgentBundle:Ticket:view-billing.html.twig' %}
                         </article>
                     {% endif %}
