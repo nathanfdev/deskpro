@@ -246,7 +246,7 @@ class TwilioAdapter implements VoiceProviderInterface
     public function createTwimlApp(TwilioVoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
     {
         $client  = $this->getClient($account);
-        $appName = 'DeskPRO App';
+        $appName = 'Deskpro Agent App';
 
         // ensure we don't have twiml app with this name
         foreach ($client->applications->read() as $existingApp) {

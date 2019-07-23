@@ -21,21 +21,6 @@ const gulp     = require('gulp'),
 
 
 //######################################################################################################################
-//# Task Runners
-//######################################################################################################################
-
-gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
-  return deskpro.taskGen.babel([
-    './app/Admin*/**/*.js',
-    './app/Agent*/**/*.js',
-    './app/Reports*/**/*.js',
-    './app/Interface*/**/*.js',
-    './app/DeskPRO*/**/*.js'
-  ]);
-});
-gulp.task('prod', ['babel', 'less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader', 'rjs']);
-
-//######################################################################################################################
 //# Setup
 //######################################################################################################################
 
@@ -169,6 +154,28 @@ deskpro.taskGen.loaderTpl = function(glob, target_dir) {
 //######################################################################################################################
 
 //------------------------------
+// Watcher
+//------------------------------
+
+gulp.task('watch', function (done) {
+  deskpro.isWatching = true;
+  deskpro.watches.forEach(function (w) {
+    gulp.watch(w[0], { interval: 750 }, gulp.series.apply(gulp, w[1]));
+  });
+
+  done();
+});
+
+//------------------------------
+// Clean
+//------------------------------
+
+gulp.task('clean', function () {
+  return gulp.src(['./app-build', './loader-build'], {read: false, allowEmpty: true})
+    .pipe(clean());
+});
+
+//------------------------------
 // Babel
 //------------------------------
 
@@ -192,7 +199,7 @@ gulp.task('babel-deskpro', function () {
   return deskpro.taskGen.babel('./app/DeskPRO*/**/*.js');
 });
 
-gulp.task('babel', ['clean'], function() {
+gulp.task('babel', function() {
   return deskpro.taskGen.babel([
     './app/Admin*/**/*.js',
     './app/Agent*/**/*.js',
@@ -228,22 +235,21 @@ gulp.task('cpjs-all', function() {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 });
 
-gulp.task('cpjs', ['clean', 'cpjs-clipboard'], function() {
+gulp.task('cpjs', gulp.series(
+  function() {
+    var glob       = './app/**/{amcharts27,routing.js}.js';
+    var target_dir = './app-build/';
 
-  var glob       = './app/**/{amcharts27,routing.js}.js';
-  var target_dir = './app-build/';
-
-  return gulp.src(glob)
-    .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
-    .pipe(gulpif(deskpro.isWatching, plumber()))
-    .pipe(gulp.dest(target_dir))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
-});
-
-// it's unable to add to config.assets.php, failed on yui-compressor filter
-gulp.task('cpjs-clipboard', ['clean'], function () {
-  gulp.src('./node_modules/clipboard/dist/clipboard.min.js').pipe(gulp.dest('./app-build/'));
-});
+    return gulp.src(glob)
+      .pipe(gulpif(deskpro.isWatching, cache('watch', {optimizeMemory: true})))
+      .pipe(gulpif(deskpro.isWatching, plumber()))
+      .pipe(gulp.dest(target_dir))
+      .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+  },
+  function () {
+    return gulp.src('./node_modules/clipboard/dist/clipboard.min.js').pipe(gulp.dest('./app-build/'));
+  }
+));
 
 //------------------------------
 // Less
@@ -254,7 +260,7 @@ gulp.task('less-app', function () {
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
 });
 
-gulp.task('less', ['clean'], function () {
+gulp.task('less', function () {
   deskpro.taskGen.copyThemeConfig();
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
 });
@@ -265,7 +271,7 @@ gulp.task('less-dp-semantic-app', function () {
   return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
 });
 
-gulp.task('less-dp-semantic', ['clean'], function () {
+gulp.task('less-dp-semantic', function () {
   deskpro.taskGen.copyThemeConfig();
   deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
   return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
@@ -290,32 +296,40 @@ gulp.task('semantic-watch', function () {
   return deskpro.taskGen.semantic('./app-build/Interface/Resources/style/');
 });
 
-gulp.task('semantic-copy', ['clean'], function () {
-  gulp.src('./stylesheets-less/semantic-ui/semantic.css')
-    .pipe(postcss([
-      autoprefixer(),
-      comments({})
-    ]))
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
-    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
-  gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
-    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
-});
+gulp.task('semantic-copy', gulp.series(
+  function () {
+    return gulp.src('./stylesheets-less/semantic-ui/semantic.css')
+      .pipe(postcss([
+        autoprefixer(),
+        comments({})
+      ]))
+      .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+      .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
+  },
+  function () {
+    return gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
+      .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+      .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
+  }
+));
 
-gulp.task('semantic-copy-prod', ['clean'], function () {
-  gulp.src('./stylesheets-less/semantic-ui/semantic.css')
-    .pipe(postcss([
-      autoprefixer(),
-      comments({}),
-      cssnano()
-    ]))
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
-    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
-  gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
-    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
-});
+gulp.task('semantic-copy-prod', gulp.series(
+  function () {
+    return gulp.src('./stylesheets-less/semantic-ui/semantic.css')
+      .pipe(postcss([
+        autoprefixer(),
+        comments({}),
+        cssnano()
+      ]))
+      .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+      .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
+  },
+  function () {
+    return gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
+      .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+      .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
+  }
+));
 
 deskpro.taskGen.semantic = function(target_dir) {
   if (!target_dir) {
@@ -345,11 +359,11 @@ gulp.task('sass-app', function () {
   return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
 });
 
-gulp.task('sass', ['clean'], function () {
+gulp.task('sass', function () {
   return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
 });
 
-gulp.task('sassdoc', function () {
+gulp.task('sassdoc', function (done) {
 
   /**
    * Transform sassdoc raw output into grouped variables, fixing variable names from - to _
@@ -385,6 +399,8 @@ gulp.task('sassdoc', function () {
   sassdoc.parse('../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/vars.scss').then(function(items) {
     fs.writeFileSync('./sassdoc/vars.json', JSON.stringify(transform(items), null, '\t'));
   });
+
+  done();
 });
 
 //------------------------------
@@ -395,7 +411,7 @@ gulp.task('loader-requirejs', function () {
   return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
 });
 
-gulp.task('loader', ['clean'], function () {
+gulp.task('loader', function () {
   return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
 });
 
@@ -442,7 +458,7 @@ function addRjsTask(rjsBundle) {
       break;
   }
 
-  gulp.task(taskName, ['babel', 'loader'], function () {
+  gulp.task(taskName, function () {
     var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
     rjsConfig.out  =  target;
     rjsConfig.name = bundleName;
@@ -466,37 +482,20 @@ for (var x = 0; x < rjsLoadFiles.length; x++) {
   rjsTasks.push(addRjsTask(rjsLoadFiles[x]));
 }
 
-gulp.task('rjs', rjsTasks, function (cb) {
-  cb();
-});
+gulp.task('rjs', gulp.series.apply(gulp, rjsTasks));
 
-//------------------------------
-// Watcher
-//------------------------------
 
-gulp.task('precache', function () {
-  deskpro.isWatching = true;
-  var globs = [];
-  deskpro.watches.forEach(function (w) {
-    globs.push(w[0]);
-  });
+//######################################################################################################################
+//# Task Runners
+//######################################################################################################################
 
-  return gulp.src(globs)
-    .pipe(cache('watch', {optimizeMemory: true}));
-});
-
-gulp.task('watch', ['precache'], function () {
-  deskpro.isWatching = true;
-  deskpro.watches.forEach(function (w) {
-    gulp.watch(w[0], { interval: 750 }, w[1]);
-  });
-});
-
-//------------------------------
-// Clean
-//------------------------------
-
-gulp.task('clean', function () {
-  return gulp.src(['./app-build', './loader-build'])
-    .pipe(clean());
-});
+gulp.task('default', gulp.series('clean', 'less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader', function() {
+  return deskpro.taskGen.babel([
+    './app/Admin*/**/*.js',
+    './app/Agent*/**/*.js',
+    './app/Reports*/**/*.js',
+    './app/Interface*/**/*.js',
+    './app/DeskPRO*/**/*.js'
+  ]);
+}));
+gulp.task('prod', gulp.series('clean', 'babel', 'less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader', 'rjs'));
