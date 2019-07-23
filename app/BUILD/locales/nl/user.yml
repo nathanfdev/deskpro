@@ -664,8 +664,8 @@ portal.general.show_more: 'Meer weergeven'
 portal.general.show_x_more: 'Toon {num} meer'
 portal.general.software_provided_by: 'Helpdesksoftware aangeboden door'
 portal.general.start-chat: 'Start een chatsessie'
-portal.general.submit-community: 'Feedback plaatsen'
-portal.general.submit-community-desc: 'Feedback en suggesties ingestuurd door klanten zoals u'
+portal.general.submit-community-topic: 'Feedback plaatsen'
+portal.general.submit-community-topic-desc: 'Feedback en suggesties ingestuurd door klanten zoals u'
 portal.general.tagged_with: 'getagd met'
 portal.general.toggle_off: uit
 portal.general.toggle_on: aan

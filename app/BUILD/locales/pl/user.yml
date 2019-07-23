@@ -717,8 +717,8 @@ portal.general.show_more: 'Pokaż więcej'
 portal.general.show_x_more: 'Pokaż {num} więcej'
 portal.general.software_provided_by: 'Oprogramowanie helpdesku dostarczone przez'
 portal.general.start-chat: 'Rozpocznij sesje czatu'
-portal.general.submit-community: 'Wyślij opinię'
-portal.general.submit-community-desc: 'Informacja zwrotna oraz sugestie wysłane przez klientów takich jak ty'
+portal.general.submit-community-topic: 'Wyślij opinię'
+portal.general.submit-community-topic-desc: 'Informacja zwrotna oraz sugestie wysłane przez klientów takich jak ty'
 portal.general.tagged_with: 'oznaczone z'
 portal.general.tags: Tagi
 portal.general.toggle_off: wyłączone

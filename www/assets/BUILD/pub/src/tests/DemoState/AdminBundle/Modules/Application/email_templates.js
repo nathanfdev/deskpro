@@ -154,7 +154,7 @@ export const emailBlocks = {
                   name:       'DeskPRO:emails_agent:new-community-topic.html.twig',
                   showName:   'emails_agent/new-community-topic.html',
                   title:      'New Community Topic',
-                  desc:       'Email sent when new feedback has been submitted.'
+                  desc:       'Email sent when new community topic has been submitted.'
                 },
                 {
                   typeId:     'agent',
@@ -626,9 +626,9 @@ export const emailBlocks = {
                   groupId:    'publish',
                   subGroupId: 'primary',
                   name:       'DeskPRO:emails_user:feedback-subscription.html.twig',
-                  showName:   'emails_user/feedback-subscription.html',
-                  title:      'New Feedback',
-                  desc:       'Email sent the user to notify them of new feedbacks in a subscribed category.'
+                  showName:   'emails_user/community-topic-subscription.html',
+                  title:      'New Community Topic',
+                  desc:       'Email sent the user to notify them of new community topics in a subscribed category.'
                 },
                 {
                   typeId:     'user',

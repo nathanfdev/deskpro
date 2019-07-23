@@ -1,38 +1,38 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
-class FeedbackValueReader {
+class CommunityTopicValueReader {
 
   constructor($formEl) {
     this.$formEl = $formEl;
   }
 
-  _parseIntSelect(f) {
+  parseIntSelect(f) { // eslint-disable-line class-methods-use-this
     return parseInt(f.val() || 0, 10) || 0;
   }
 
   getCategoryId() {
-    return this._parseIntSelect(this.$formEl.find('#new_feedback_category'));
+    return this.parseIntSelect(this.$formEl.find('#new_feedback_category'));
   }
 }
 
-export class FeedbackForm extends PageWidget {
+export class CommunityTopicForm extends PageWidget {
 
   renderWidget() {
     const $expandedForm = this.$element.find('.feedback-form-expanded');
     const $startBtn = this.$element.find('.feedback-selected-start');
     const $catSelect = this.$element.find('#new_feedback_category');
-    const $feedbackAttachments = this.$element.find('#new_feedback_more_attachments');
-    const feedbackReader = new FeedbackValueReader(this.$element);
+    const $communityTopicAttachments = this.$element.find('#new_feedback_more_attachments');
+    const communityTopicReader = new CommunityTopicValueReader(this.$element);
 
     // deatch the "Add More Attachments" button from the DOM (unnecessary if JS enabled)
-    $feedbackAttachments.remove();
+    $communityTopicAttachments.remove();
 
     if ($expandedForm.data('do-show')) {
       $expandedForm.show();
     }
 
     this.processChangedCategory = () => {
-      if (feedbackReader.getCategoryId()) {
+      if (communityTopicReader.getCategoryId()) {
         $expandedForm.show();
         $catSelect.removeClass('error-large');
       } else {

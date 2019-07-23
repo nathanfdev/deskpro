@@ -70,7 +70,7 @@ class LanguageController extends AbstractApiController
             'portal.general.nav-guides',
             'portal.general.nav-chat',
             'portal.general.published',
-            'portal.general.submit-community',
+            'portal.general.submit-community-topic',
             'portal.general.start-chat',
             'portal.general.agents-available',
             'portal.general.no-agents-available',

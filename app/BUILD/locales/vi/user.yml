@@ -601,8 +601,8 @@ portal.general.show_more: 'Cho xem nhiều hơn'
 portal.general.show_x_more: 'Hiển thị {num} mục khác'
 portal.general.software_provided_by: 'Phần mềm Helpdesk được cung cấp bởi'
 portal.general.start-chat: 'Bắt đầu một phiên chat'
-portal.general.submit-community: 'Gửi phản hồi'
-portal.general.submit-community-desc: 'Phản hồi và đề xuất được gửi bởi khách hàng như bạn'
+portal.general.submit-community-topic: 'Gửi phản hồi'
+portal.general.submit-community-topic-desc: 'Phản hồi và đề xuất được gửi bởi khách hàng như bạn'
 portal.general.tagged_with: 'được gắn thẻ với'
 portal.general.tags: Thẻ
 portal.general.toggle_off: tắt

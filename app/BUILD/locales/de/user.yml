@@ -665,8 +665,8 @@ portal.general.show_more: 'Mehr anzeigen'
 portal.general.show_x_more: '{num} mehr anzeigen'
 portal.general.software_provided_by: 'Helpdesk Software zur Verfügung gestellt von'
 portal.general.start-chat: 'Chat-Session starten'
-portal.general.submit-community: 'Feedback geben'
-portal.general.submit-community-desc: 'Feedback und Vorschläge von anderen Kunden'
+portal.general.submit-community-topic: 'Feedback geben'
+portal.general.submit-community-topic-desc: 'Feedback und Vorschläge von anderen Kunden'
 portal.general.tagged_with: 'getaggt mit'
 portal.general.toggle_off: aus
 portal.general.toggle_on: an

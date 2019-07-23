@@ -657,8 +657,8 @@ portal.general.show_more: 'Mostra di più'
 portal.general.show_x_more: 'Mostra altri {num} '
 portal.general.software_provided_by: 'Il software Helpdesk è fornito da'
 portal.general.start-chat: 'Inizia una sessione chat'
-portal.general.submit-community: 'Invia un Feedback'
-portal.general.submit-community-desc: 'Feedback e suggerimenti inviati da clienti come te'
+portal.general.submit-community-topic: 'Invia un Feedback'
+portal.general.submit-community-topic-desc: 'Feedback e suggerimenti inviati da clienti come te'
 portal.general.tagged_with: 'taggato con'
 portal.general.tags: Tag
 portal.general.toggle_off: disattivo

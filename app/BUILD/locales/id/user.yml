@@ -654,8 +654,8 @@ portal.general.show_more: 'Tunjukkan lebih banyak'
 portal.general.show_x_more: 'Tampilkan {num} lagi'
 portal.general.software_provided_by: 'Perangkat lunak Helpdesk yang disediakan oleh'
 portal.general.start-chat: 'Mulai obrolan baru'
-portal.general.submit-community: 'Kirim tanggapan'
-portal.general.submit-community-desc: 'Masukan dan saran yang dikirimkan oleh pelanggan seperti Anda'
+portal.general.submit-community-topic: 'Kirim tanggapan'
+portal.general.submit-community-topic-desc: 'Masukan dan saran yang dikirimkan oleh pelanggan seperti Anda'
 portal.general.tagged_with: 'Ditandai oleh'
 portal.general.tags: Tanda
 portal.general.toggle_off: mati

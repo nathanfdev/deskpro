@@ -1,7 +1,7 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
 
-export class FeedbackVoteWidget extends PageWidget {
+export class CommunityVoteWidget extends PageWidget {
 
   renderWidget() {
     const $iAgreeBox = this.$element;

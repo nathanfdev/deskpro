@@ -99,7 +99,7 @@ export class SideBarContainer extends SeparateComponent {
     return window.DESKPRO_PERSON_PERMS['agent_people.use'];
   }
 
-  static canUseFeedback() {
+  static canUseCommunity() {
     return window.DESKPRO_PERSON_PERMS['agent_publish.use'] && window.DESKPRO_PERSON_PERMS['agent_publish.validate'];
   }
 
@@ -194,7 +194,7 @@ export class SideBarContainer extends SeparateComponent {
       canUseTicket:          SideBarContainer.canUseTicket,
       canUseChat:            SideBarContainer.canUseChat,
       canUsePeople:          SideBarContainer.canUsePeople,
-      canUseFeedback:        SideBarContainer.canUseFeedback,
+      canUseCommunity:       SideBarContainer.canUseCommunity,
       canUsePublish:         SideBarContainer.canUsePublish,
       canUseTasks:           SideBarContainer.canUseTasks,
       canUseReports:         SideBarContainer.canUseReports,
@@ -219,7 +219,7 @@ export class SideBar extends React.PureComponent {
     canUseTicket:          PropTypes.func.isRequired,
     canUseChat:            PropTypes.func.isRequired,
     canUsePeople:          PropTypes.func.isRequired,
-    canUseFeedback:        PropTypes.func.isRequired,
+    canUseCommunity:       PropTypes.func.isRequired,
     canUsePublish:         PropTypes.func.isRequired,
     canUseTasks:           PropTypes.func.isRequired,
     canUseReports:         PropTypes.func.isRequired,
@@ -288,7 +288,7 @@ export class SideBar extends React.PureComponent {
         }
       });
     }
-    if (this.props.canUseFeedback()) {
+    if (this.props.canUseCommunity()) {
       menus.push({
         className: 'feedback',
         label:     <FormattedMessage id="agent.general.community" />,

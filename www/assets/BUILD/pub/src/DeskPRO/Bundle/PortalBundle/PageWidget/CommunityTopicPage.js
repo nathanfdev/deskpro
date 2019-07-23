@@ -2,13 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { FeedbackForm } from './FeedbackForm';
-import { FeedbackFilter } from '../React/Feedback/FeedbackFilter';
+import { CommunityTopicForm } from './CommunityTopicForm';
+import { CommunityFilter } from '../React/Feedback/CommunityFilter';
 
-export class FeedbackPage extends PageWidget {
+export class CommunityTopicPage extends PageWidget {
 
   init() {
-    this.addWidgetDef(FeedbackForm, '.feedback-form-interactive');
+    this.addWidgetDef(CommunityTopicForm, '.feedback-form-interactive');
   }
 
   renderWidget() {
@@ -16,6 +16,6 @@ export class FeedbackPage extends PageWidget {
     $interactiveFilterSection.hide();
 
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter($interactiveFilterSection);
-    ReactDOM.render(React.createElement(FeedbackFilter, { filter_data: window.COMMUNITY_FILTER_STATE }), this.$rElement.get(0));
+    ReactDOM.render(React.createElement(CommunityFilter, { filter_data: window.COMMUNITY_FILTER_STATE }), this.$rElement.get(0));
   }
 }

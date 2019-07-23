@@ -751,8 +751,8 @@ portal.general.show_more: 'اظهر المزيد'
 portal.general.show_x_more: 'اظهر المزيد{num}'
 portal.general.software_provided_by: 'نظام الدعم الفني مقدم من نظام إسعاد'
 portal.general.start-chat: 'ابدأ جلسة محادثة'
-portal.general.submit-community: 'ارسل ملاحظة'
-portal.general.submit-community-desc: 'التغذية الراجعة والاقتراحات ارسلت عن طريق عملاء مثلك'
+portal.general.submit-community-topic: 'ارسل ملاحظة'
+portal.general.submit-community-topic-desc: 'التغذية الراجعة والاقتراحات ارسلت عن طريق عملاء مثلك'
 portal.general.tagged_with: 'المعنونة بـ'
 portal.general.tags: البطاقات
 portal.general.toggle_off: ايقاف

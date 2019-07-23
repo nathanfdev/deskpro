@@ -655,8 +655,8 @@ portal.general.show_more: 'Προβολή περισσότερων'
 portal.general.show_x_more: 'Προβολή {num} περισσότερων'
 portal.general.software_provided_by: 'To Helpdesk software παρέχεται από'
 portal.general.start-chat: 'Ξεκινήστε ένα chat'
-portal.general.submit-community: 'Υποβολή feedback'
-portal.general.submit-community-desc: 'Feedback και προτάσεις από άλλους πελάτες μας όπως εσείς'
+portal.general.submit-community-topic: 'Υποβολή feedback'
+portal.general.submit-community-topic-desc: 'Feedback και προτάσεις από άλλους πελάτες μας όπως εσείς'
 portal.general.tagged_with: 'με ετικέτα'
 portal.general.tags: Ετικέτες
 portal.general.top: Αρχή

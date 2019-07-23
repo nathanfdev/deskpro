@@ -6,7 +6,7 @@ import { faBolt, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Icon, ListElement, ToggleableList } from '@deskpro/react-components';
 import Articles from './Articles';
 import Downloads from './Downloads';
-import Feedback from './Feedback';
+import CommunityTopic from './CommunityTopic';
 import News from './News';
 
 const Drawer = ({ onClick, heading, opened, children }) => (
@@ -51,20 +51,20 @@ export default class Publishing extends React.Component {
     const { activeDrawer } = this.state;
     const drawers = [];
 
-    if (results.feedback && results.feedback.length) {
+    if (results.community && results.community.length) {
       drawers.push(
         <Drawer
           key="community"
           heading={
             <span>
-              <Icon name={faThumbsUp} size="m" fixedWidth /> Feedback
-              &nbsp;<span className="count">{results.feedback.length}</span>
+              <Icon name={faThumbsUp} size="m" fixedWidth /> Community
+              &nbsp;<span className="count">{results.community.length}</span>
             </span>
           }
           opened={activeDrawer === 'community'}
           onClick={selected => this.onSelect(selected, 'community')}
         >
-          <Feedback feedback={results.feedback} />
+          <CommunityTopic topics={results.community} />
         </Drawer>
       );
     }

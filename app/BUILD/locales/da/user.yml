@@ -655,8 +655,8 @@ portal.general.show_more: 'Vis flere'
 portal.general.show_x_more: 'Vis {num} mere'
 portal.general.software_provided_by: 'Helpdesk software leveret af'
 portal.general.start-chat: 'Start en chat-session'
-portal.general.submit-community: 'Send indlæg'
-portal.general.submit-community-desc: 'Feedback og forslag indsendt af kunder som dig'
+portal.general.submit-community-topic: 'Send indlæg'
+portal.general.submit-community-topic-desc: 'Feedback og forslag indsendt af kunder som dig'
 portal.general.tagged_with: 'mærket med'
 portal.general.tags: Mærkater
 portal.general.toggle_off: fra

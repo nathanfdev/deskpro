@@ -7,7 +7,7 @@ import { FilterModel } from './FilterModel';
 import { FilterOptions } from './FilterOptions';
 import { ResultsPartial } from './ResultsPartial';
 
-export class FeedbackFilter extends React.Component {
+export class CommunityFilter extends React.Component {
 
   static propTypes = {
     filter_data: PropTypes.object

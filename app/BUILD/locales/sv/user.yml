@@ -667,8 +667,8 @@ portal.general.show_more: 'Visa mer'
 portal.general.show_x_more: 'Visa {num} fler'
 portal.general.software_provided_by: 'Helpdeskmjukvaran tillhandahålls av'
 portal.general.start-chat: 'Starta en chatsession'
-portal.general.submit-community: 'Posta feedback'
-portal.general.submit-community-desc: 'Feedback och förslag postat av kunder som du'
+portal.general.submit-community-topic: 'Posta feedback'
+portal.general.submit-community-topic-desc: 'Feedback och förslag postat av kunder som du'
 portal.general.tagged_with: 'taggade med'
 portal.general.tags: Taggar
 portal.general.toggle_off: av

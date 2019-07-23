@@ -645,8 +645,8 @@ portal.general.show_more: 显示更多的内容
 portal.general.show_x_more: '显示更多{num}条'
 portal.general.software_provided_by: 帮助系统软件由（）提供
 portal.general.start-chat: 开始聊天会话
-portal.general.submit-community: 提交反馈
-portal.general.submit-community-desc: 反馈和建议由像你一样的客户提交
+portal.general.submit-community-topic: 提交反馈
+portal.general.submit-community-topic-desc: 反馈和建议由像你一样的客户提交
 portal.general.tagged_with: 与（）一起被标记
 portal.general.tags: 标签
 portal.general.toggle_off: 关闭

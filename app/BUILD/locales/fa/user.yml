@@ -475,8 +475,8 @@ portal.general.search-labels-section-title: 'جستجو برچسب ها'
 portal.general.search-section-title: جستجو
 portal.general.search_btn: جستجو
 portal.general.share-this: 'به اشتراک گذاشتن این'
-portal.general.submit-community: 'ارسال انتقاد و پیشنهاد'
-portal.general.submit-community-desc: 'انتقادات و پیشنهادات ارائه شده توسط مشتریان '
+portal.general.submit-community-topic: 'ارسال انتقاد و پیشنهاد'
+portal.general.submit-community-topic-desc: 'انتقادات و پیشنهادات ارائه شده توسط مشتریان '
 portal.general.top: عالی
 portal.general.updated: 'بروز شده'
 portal.guides.view-as-agent: "شما می توانید این صفحه را ببینید زیرا شما یک پشتیبان هستید. کاربران نمی توانند این صفحه را مشاهده کنند.\n"

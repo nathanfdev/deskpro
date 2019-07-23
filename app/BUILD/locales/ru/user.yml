@@ -721,8 +721,8 @@ portal.general.show_more: 'Показать больше'
 portal.general.show_x_more: 'Показать ещё {num}'
 portal.general.software_provided_by: 'Программное обеспечение Helpdesk предоставлено'
 portal.general.start-chat: 'Начать чат'
-portal.general.submit-community: 'Оставить отзыв'
-portal.general.submit-community-desc: 'Отзывы и предложения, оставленные другими пользователями'
+portal.general.submit-community-topic: 'Оставить отзыв'
+portal.general.submit-community-topic-desc: 'Отзывы и предложения, оставленные другими пользователями'
 portal.general.tagged_with: 'отмечен как'
 portal.general.tags: Отметки
 portal.general.toggle_off: Выключено

@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default class Feedback extends React.Component {
+export default class CommunityTopic extends React.Component {
   static propTypes = {
-    feedback: PropTypes.array
+    topics: PropTypes.array
   };
 
   render() {
-    const { feedback } = this.props;
+    const { topics } = this.props;
     return (
       <section>
         <table>
           <tbody>
-            {feedback.map(f =>
+            {topics.map(f =>
               <tr key={f.id}>
                 <td>
                   <span className="id">{`#${f.id}`}</span>

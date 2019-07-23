@@ -447,8 +447,8 @@ portal.general.show: Zobraz
 portal.general.show_less: 'Zobraz míň'
 portal.general.show_more: 'Zobraz víc'
 portal.general.show_x_more: 'Zobraz další {num}'
-portal.general.submit-community: 'Odeslat zpětnou vazbu'
-portal.general.submit-community-desc: 'Připomínky, které byly odeslány podobnými zákazníky, jak jste vy'
+portal.general.submit-community-topic: 'Odeslat zpětnou vazbu'
+portal.general.submit-community-topic-desc: 'Připomínky, které byly odeslány podobnými zákazníky, jak jste vy'
 portal.general.tagged_with: označen
 portal.general.tags: Označení
 portal.general.toggle_off: vypnuto

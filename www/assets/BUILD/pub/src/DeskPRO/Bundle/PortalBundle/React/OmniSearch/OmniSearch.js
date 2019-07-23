@@ -250,10 +250,10 @@ export class OmniSearch extends React.Component {
                 <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
               </a>}
 
-            {window.DESKPRO_CAN_USE_FEEDBACK &&
+            {window.DESKPRO_CAN_USE_COMMUNITY &&
               <a href={portalUrlGenerator.path('/community')}>
                 <i className="fas fa-list" />
-                <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
+                <span>{portalPhrases.get('portal.general.submit-community-topic')}</span>
               </a>}
             {window.DESKPRO_CAN_USE_CHAT &&
               <a href={portalUrlGenerator.path('/chat-logs')}>

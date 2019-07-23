@@ -180,7 +180,7 @@ portal.general.search-labels-section-title: 検索ラベル
 portal.general.search-section-title: 検索
 portal.general.search_btn: 検索
 portal.general.share-this: 共有する
-portal.general.submit-community: フィードバックを送る
+portal.general.submit-community-topic: フィードバックを送る
 portal.news.section-title: ニュース
 portal.news.view-x-news:
   other: 'View {{count}} articles'
