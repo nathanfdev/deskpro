@@ -154,11 +154,6 @@ class VoiceControlsContainer extends React.Component {
   }
 
   setViewCall = (activeCall) => {
-    const connection = this.getConnection();
-    if (connection) {
-      return;
-    }
-
     const { phoneCalls, dispatch } = this.props;
     const phoneCall = Immutable.fromJS(activeCall);
     this.setState({
