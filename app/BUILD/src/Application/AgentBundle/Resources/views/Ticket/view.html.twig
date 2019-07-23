@@ -647,29 +647,29 @@
                             </table>
                         </div>
                     </article>
-                    <article id="{{ baseId }}_linked_wrap">
+                    <article id="{{ baseId }}_linked_wrap" style="display: none">
                         {% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
                     </article>
                     {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-                      <article id="{{ baseId }}_linked_feedback_wrap">
+                      <article id="{{ baseId }}_linked_feedback_wrap" style="display: none">
                           {% include 'AgentBundle:Ticket:linked-feedback.html.twig' %}
                       </article>
                     {% endif %}
                     {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
-                        <article id="{{ baseId }}_tasks_wrap">
+                        <article id="{{ baseId }}_tasks_wrap" style="display: none">
                             {% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
                         </article>
                     {% endif %}
                     {% if app.hasBeta('follow_up') %}
-                        <article id="{{ baseId }}_follow_ups_wrap"></article>
+                        <article id="{{ baseId }}_follow_ups_wrap" style="display: none"></article>
                     {% endif %}
                     {% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
-                        <article id="{{ baseId }}_sla_wrap">
+                        <article id="{{ baseId }}_sla_wrap" style="display: none">
                             {% include 'AgentBundle:Ticket:view-slas.html.twig' %}
                         </article>
                     {% endif %}
                     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-                        <article id="{{ baseId }}_billing_wrap" style="overflow-x: auto;">
+                        <article id="{{ baseId }}_billing_wrap" style="display: none" style="overflow-x: auto;">
                             {% include 'AgentBundle:Ticket:view-billing.html.twig' %}
                         </article>
                     {% endif %}
@@ -829,7 +829,7 @@
                         <strong>{% if app.user.getPref('agent.ticket_reverse_order') %}{{ phrase('agent.tickets.view_older_messages') }}{% else %}{{ phrase('agent.tickets.view_newer_messages') }}{% endif %}</strong>
                     </div>
                 </section>
-                <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0;">
+                <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0; display: none">
                     <div style="padding:25px;">
                         <i class="spinner-circle-32"></i>
                     </div>
