@@ -30,6 +30,8 @@ class MergeVoiceRecordings extends AbstractJob
         $phoneCalls = $em->getRepository(VoicePhoneCall::class)->findBy(
             [
                 'fullRecording' => null,
+                'status'        => VoicePhoneCall::STATUS_ENDED,
+
             ],
             null,
             50
