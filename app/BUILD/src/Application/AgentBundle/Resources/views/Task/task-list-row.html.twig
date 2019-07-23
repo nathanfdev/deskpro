@@ -30,6 +30,7 @@
 		<input type="checkbox" class="item-select" value="{{ task.id }}" {% if task.is_completed %}checked="checked"{% endif %} />
 		<h5>
             <input class="{% if task.person.id == app.user.id %}editable {% endif %}disabled" type="text"
+				   autocomplete="{{ "now" | date("U") }}"
                    value="{{ task.title }}" title="{{ task.title }}" readonly />
         </h5>
 	</div>

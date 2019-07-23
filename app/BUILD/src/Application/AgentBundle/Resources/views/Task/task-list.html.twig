@@ -114,7 +114,9 @@
 				<section data-section-name="agents">
 					<header>
 						<h3>{{ phrase('agent.general.agents') }}</h3>
-						<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
+						<input type="text" class="filter-box"
+							   autocomplete="{{ "now" | date("U") }}"
+							   placeholder="{{ phrase('agent.general.filter') }}" />
 					</header>
 					<ul>
 						<li class="me last-me">
@@ -139,7 +141,9 @@
 				<section data-section-name="teams">
 					<header>
 						<h3>{{ phrase('agent.general.teams') }}</h3>
-						<input type="text" class="filter-box" placeholder="{{ phrase('agent.general.filter') }}" />
+						<input type="text" class="filter-box"
+							   autocomplete="{{ "now" | date("U") }}"
+							   placeholder="{{ phrase('agent.general.filter') }}" />
 					</header>
 					<ul>
 						{% for team in app.user.getAgent().getTeams() %}

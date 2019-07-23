@@ -107,7 +107,11 @@
 				</li>
 
 				<li class="form-row">
-					<input type="text" class="twitter-person-find-box" placeholder="{{ phrase('agent.twitter.find_person') }}" style="width: 122px" />
+					<input type="text"
+						   class="twitter-person-find-box"
+						   autocomplete="{{ "now" | date("U") }}"
+						   placeholder="{{ phrase('agent.twitter.find_person') }}"
+						   style="width: 122px" />
 					<button class="clean-white twitter-person-find-button" style="width: 60px">{{ phrase('agent.general.find') }}</button>
 				</li>
 			</ul>
@@ -148,7 +152,10 @@
 				</li>
 
 				<li class="form-row">
-					<input type="text" class="twitter-search-add-box" placeholder="{{ phrase('agent.chrome.nav_search') }}..." style="width: 122px" />
+					<input type="text" class="twitter-search-add-box"
+						   autocomplete="{{ "now" | date("U") }}"
+						   placeholder="{{ phrase('agent.chrome.nav_search') }}..."
+						   style="width: 122px" />
 					<button class="clean-white twitter-search-add-button" style="width: 60px">{{ phrase('agent.chrome.nav_search') }}</button>
 				</li>
 			</ul>

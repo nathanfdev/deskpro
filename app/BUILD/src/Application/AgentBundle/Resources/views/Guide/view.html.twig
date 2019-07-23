@@ -34,7 +34,9 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<h1>
 		<span id="{{baseId}}_showname">{{ topic.title }}</span>
-		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ topic.title }}" /></span>
+		<span id="{{baseId}}_editname" style="display: none">
+			<input type="text" name="name" value="{{ topic.title }}" autocomplete="{{ "now" | date("U") }}" />
+		</span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>
@@ -165,7 +167,10 @@ pageMeta.baseId = '{{ baseId }}';
 					<dl class="info-list">
 						<dt class="type-labels">{{ phrase('agent.publish.sticky_words_title') }}</dt>
 						<dd class="noedit-tags">
-							<input type="text" value="{% for label in sticky_search_words %}{{label}},{% endfor %}" id="{{baseId}}_stickysearch_input" />
+							<input type="text"
+								   autocomplete="{{ "now" | date("U") }}"
+								   value="{% for label in sticky_search_words %}{{label}},{% endfor %}"
+								   id="{{baseId}}_stickysearch_input" />
 							<div class="explain">
 								{{ phrase('agent.publish.search_sticky_words_explain') }}
 							</div>
@@ -185,7 +190,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
-		<input type="text" name="title" value="{{ topic.title }}"/>
+		<input type="text" name="title" value="{{ topic.title }}" autocomplete="{{ "now" | date("U") }}" />
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>

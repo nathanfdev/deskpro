@@ -41,7 +41,11 @@
 							</div>
                         {% endset %}
                         {{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-                        <input type="text" class="end-date-input" value="{{ topic.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
+                        <input type="text"
+                               class="end-date-input"
+                               autocomplete="{{ "now" | date("U") }}"
+                               value="{{ topic.date_end|date('j M, y') }}"
+                               style="display: none; height: 10px;" />
 						(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
             <span class="options-text auto-unpublish-set" {% if topic.date_end %}style="display: none"{% endif %}>
@@ -70,7 +74,11 @@
 							</div>
                         {% endset %}
                         {{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-                        <input type="text" class="pub-date-input" value="{{ topic.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
+                        <input type="text"
+                               class="pub-date-input"
+                               autocomplete="{{ "now" | date("U") }}"
+                               value="{{ topic.date_published|date('j M, y') }}000"
+                               style="display: none; height: 10px;" />
 						(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
 					</span>
             <span class="options-text auto-publish-set" {% if topic.date_published %}style="display: none"{% endif %}>
