@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketMessageAttributeRepository")
  * @JMS\ExclusionPolicy("all")
  */
 class TicketMessageVoicePhoneCall extends TicketMessageAttribute

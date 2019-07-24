@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketMessageAttributeRepository")
  * @ORM\Table(name="ticket_message_attributes", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="attr_name", columns={"ticket_message_id", "name"})
  * })
