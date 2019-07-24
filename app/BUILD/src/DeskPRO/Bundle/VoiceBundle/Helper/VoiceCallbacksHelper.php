@@ -91,6 +91,11 @@ class VoiceCallbacksHelper
     private $workerHelper;
 
     /**
+     * @var VoiceTaskHelper
+     */
+    private $taskHelper;
+
+    /**
      * @var StorageAdapterInterface
      */
     private $storageAdapter;
@@ -123,6 +128,7 @@ class VoiceCallbacksHelper
      * @param VoiceTicketHelper          $voiceTicketHelper
      * @param TransferCallHelper         $transferCallHelper
      * @param WorkerHelper               $workerHelper
+     * @param VoiceTaskHelper            $taskHelper
      * @param StorageAdapterInterface    $storageAdapter
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param EventDispatcherInterface   $dispatcher
@@ -139,6 +145,7 @@ class VoiceCallbacksHelper
         VoiceTicketHelper          $voiceTicketHelper,
         TransferCallHelper         $transferCallHelper,
         WorkerHelper               $workerHelper,
+        VoiceTaskHelper            $taskHelper,
         StorageAdapterInterface    $storageAdapter,
         BrandAwareSettingsResolver $settingsResolver,
         EventDispatcherInterface   $dispatcher,
@@ -154,6 +161,7 @@ class VoiceCallbacksHelper
         $this->voiceTicketHelper     = $voiceTicketHelper;
         $this->transferCallHelper    = $transferCallHelper;
         $this->workerHelper          = $workerHelper;
+        $this->taskHelper            = $taskHelper;
         $this->storageAdapter        = $storageAdapter;
         $this->settingsResolver      = $settingsResolver;
         $this->dispatcher            = $dispatcher;
@@ -223,7 +231,6 @@ class VoiceCallbacksHelper
         $this->em->persist($phoneCall);
         $this->em->flush();
 
-        // log auto-attendant press key event
         $log = new VoicePhoneCallLog();
         $log->setActionType(VoicePhoneCallLog::ACTION_CALL_TARGET);
         $log->setPhoneCall($phoneCall);
@@ -281,6 +288,12 @@ class VoiceCallbacksHelper
         $log = new VoicePhoneCallLog();
         $log->setPerson($agent);
         $log->setPhoneCall($phoneCall);
+
+        $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+        if ($task) {
+            $log->setTargetQueue($this->taskHelper->getVoiceQueue($task));
+            $log->setTargetAgent($this->taskHelper->getWorkerAgent($task));
+        }
 
         if ($forwardedNumber) {
             $log->setActionType(VoicePhoneCallLog::ACTION_FORWARD_ANSWERED);
