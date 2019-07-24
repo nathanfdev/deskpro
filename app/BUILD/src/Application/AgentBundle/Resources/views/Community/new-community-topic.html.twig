@@ -31,11 +31,11 @@ pageMeta.baseId = '{{ baseId }}';
           <br class="clear" />
           <div style="display: block;">
             <input type="checkbox" id="{{baseId}}_is_subscribe_owner" name="newcommunitytopic[is_subscribe_ticket_owner]" checked="checked">
-            <label for="{{baseId}}_is_subscribe_owner">{{ phrase('agent.tickets.link_existing_community_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+            <label for="{{baseId}}_is_subscribe_owner">{{ phrase('agent.tickets.link_existing_community_topic_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
           </div>
           <div style="display: block;">
             <input type="checkbox" id="{{baseId}}_is_subscribe_participants" name="newcommunitytopic[is_subscribe_ticket_participants]">
-            <label for="{{baseId}}_is_subscribe_participants">{{ phrase('agent.tickets.link_existing_community_subscr_part', {'count': ticket.participants.count}) }}</label>
+            <label for="{{baseId}}_is_subscribe_participants">{{ phrase('agent.tickets.link_existing_community_topic_subscr_part', {'count': ticket.participants.count}) }}</label>
           </div>
         {% else %}
           <input type="hidden" id="{{baseId}}_is_subscribe_owner" name="newcommunitytopic[is_subscribe_ticket_owner]">

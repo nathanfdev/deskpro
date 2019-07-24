@@ -5,7 +5,7 @@ DeskPRO.Agent.RuleBuilder.TicketCommunityTopicLinksTerm = new Orb.Class({
 
 	initRow: function() {
     this.opInput = $('select.op', this.rowEl);
-    this.inputValue = $('input.feedback_links_values', this.rowEl);
+    this.inputValue = $('input.community_topic_links_values', this.rowEl);
 
     this.opInput.change(this.updateInput.bind(this));
 	},

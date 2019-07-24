@@ -1662,7 +1662,7 @@ agent.tickets.count_charges:
   other: '{{count}} charges'
 agent.tickets.count_users:
   other: '{{count}} users'
-agent.tickets.link_existing_community_subscr_part:
+agent.tickets.link_existing_community_topic_subscr_part:
   other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.list_title:
   other: '{{count}} Tickets'

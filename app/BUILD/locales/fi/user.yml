@@ -172,7 +172,7 @@ portal.community.form_custom_cat: Kategoria
 portal.community.search-title: Palaute
 portal.community.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
 portal.community.section-title: Palaute
-portal.community.submit_community_topic: 'Lähetä palaute'
+portal.feedback.submit_feedback_topic: 'Lähetä palaute'
 portal.forms.error_password_forbid_reuse: 'Et voi käyttää aikaisempaa salasanaasi'
 portal.forms.error_password_min_length:
   one: 'Vähintään {{count}} merkkiä'
@@ -228,7 +228,7 @@ portal.general.submit-community-topic: 'Lähetä palaute'
 portal.news.section-title: Uutiset
 portal.news.view-as-agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 portal.sidebar.news_title: Uutiset
-portal.tickets.community_message_leave_comment: 'Vapaaehtoinen kommentti'
+portal.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
 portal.tickets.guest-thanks-section-title: Kiitos
 portal.tickets.guest_thank_you_title: Kiitos
 portal.tickets.list_agent: 'Liitetty tukihenkilö'

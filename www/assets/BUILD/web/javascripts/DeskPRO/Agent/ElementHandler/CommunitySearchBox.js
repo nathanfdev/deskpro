@@ -9,7 +9,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 
 		this.termInput   = $('input.term', this.el);
 		this.idInput     = $('input.topic-id', this.el);
-		this.resultsBox  = $('.feedback-search-box', this.el);
+		this.resultsBox  = $('.community-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
 		this.exclude 		 = this.el.data('exclude') ? (this.el.data('exclude')+'').split(',') : [];
 		for (var i = 0; i < this.exclude.length; i++) this.exclude[i] = parseInt(this.exclude[i]) || 0;
@@ -33,7 +33,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 		if (this._hasInitResultsBox) return;
 		this._hasInitResultsBox = true;
 
-		this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.feedback-row-tpl', this.el));
+		this.tplHtml = DeskPRO_Window.util.getPlainTpl($('.community-row-tpl', this.el));
 
 		//------------------------------
 		// Update caller schedules the update requests

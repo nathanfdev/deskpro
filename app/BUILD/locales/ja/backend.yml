@@ -2098,7 +2098,7 @@ agent.tickets.count_charges:
   other: '{{count}} charges'
 agent.tickets.count_users:
   other: 1ユーザ
-agent.tickets.create_linked_community: リンクされたフィードバックを作成
+agent.tickets.create_linked_community_topic: リンクされたフィードバックを作成
 agent.tickets.create_linked_ticket: リンクされたチケットを作成
 agent.tickets.create_new_pending_article: 新しい保留記事を作成
 agent.tickets.create_task_action: 'タスク{{title}}を作成'
@@ -2201,9 +2201,9 @@ agent.tickets.lc_new_reply: 新しい返信
 agent.tickets.lc_new_ticket: 新しいチケット
 agent.tickets.lc_new_ticket_agent: エージェントによる新しいチケット
 agent.tickets.lc_update: 更新
-agent.tickets.link_existing_community: 既存のフィードバックをリンク
-agent.tickets.link_existing_community_subscr_owner: 'チケット所有者（{{name}}/{{email}}）をフィードバックに登録'
-agent.tickets.link_existing_community_subscr_part:
+agent.tickets.link_existing_community_topic: 既存のフィードバックをリンク
+agent.tickets.link_existing_community_topic_subscr_owner: 'チケット所有者（{{name}}/{{email}}）をフィードバックに登録'
+agent.tickets.link_existing_community_topic_subscr_part:
   other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.link_existing_ticket: 既存チケットをリンク
 agent.tickets.link_existing_ticket_make_below: チケットを親チケットの下に配置する

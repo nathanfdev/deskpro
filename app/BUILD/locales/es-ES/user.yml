@@ -398,7 +398,7 @@ portal.community.sort_views: 'Puntos de vista'
 portal.community.status_active: 'Artículos abiertos'
 portal.community.status_all: 'Todos los artículos'
 portal.community.status_closed: 'Artículos cerrados'
-portal.community.submit_community_topic: 'Enviar comentario'
+portal.feedback.submit_feedback_topic: 'Enviar comentario'
 portal.community.view-x-community-topics:
   one: 'Ver 1 comentarios '
   other: ' Ver {{count}} comentarios'
@@ -696,7 +696,7 @@ portal.sidebar.satisfied_customers: 'clientes satisfechos'
 portal.sidebar.top_articles_title: 'Artículos principales'
 portal.tickets.add-reply: Respuesta
 portal.tickets.cancel-ticket-edit: 'Cancelar editar y mostrarme el ticket de nuevo.'
-portal.tickets.community_message_leave_comment: 'Opcionalmente deje un comentario'
+portal.tickets.feedback_message_leave_comment: 'Opcionalmente deje un comentario'
 portal.tickets.form-changed-notice: 'Se han añadido nuevos campos al formulario. Por favor revise estos campos y luego vuelva a enviar el formulario.'
 portal.tickets.guest-thanks-section-title: Gracias
 portal.tickets.guest_thank_you_desc: 'Gracias por contactarnos. Le hemos enviado un correo electrónico con instrucciones sobre cómo administrar su boleto con nosotros.'

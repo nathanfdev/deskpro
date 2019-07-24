@@ -218,7 +218,7 @@ portal.community.sort_views: Zobrazení
 portal.community.status_active: 'Otevřené položky'
 portal.community.status_all: 'Všechny položky'
 portal.community.status_closed: 'Uzavřené položky'
-portal.community.submit_community_topic: 'Odeslat připomínku'
+portal.feedback.submit_feedback_topic: 'Odeslat připomínku'
 portal.community.view-x-community-topics:
   one: 'Zobrazit 1 připomínku'
   few: 'Zobrazit {{count}} připomínky'

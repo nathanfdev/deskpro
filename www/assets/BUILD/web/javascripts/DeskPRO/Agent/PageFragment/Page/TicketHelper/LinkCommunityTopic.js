@@ -54,7 +54,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkCommunityTopic = new Orb.Class(
 		var wrapper = this.overlay.getWrapper();
 
 		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
-    wrapper.find('.feedback-finder').bind('communitysearchboxclick', function(ev, communityTopicId, title, sb) {
+    wrapper.find('.community-topic-finder').bind('communitysearchboxclick', function(ev, communityTopicId, title, sb) {
 			var footerEl = self.overlay.getWrapper().find('.overlay-footer').addClass('loading');
 
 			var isSubscribeOwner = wrapper.find("#is_subscribe_owner").is(":checked");

@@ -31,9 +31,9 @@
                             <label class="title" style="text-align: left" for="feedback_rating_n">{{ phrase('portal.tickets.rate-negative') }}</label>
                         </div>
                     </div>
-                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.community_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
                     <br />
-                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.community.submit_community') }}</button>
+                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>
                 </form>
             {% else %}
                 {# this is shown when clicking an email link, #}
@@ -41,10 +41,10 @@
 
                 <form action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
                     <input type="hidden" name="rating" value="{{ feedback.rating }}" />
-                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.community_message_leave_comment') }}">{{ feedback.message }}</textarea>
+                    <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
 
                     <br />
-                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.community.submit_community') }}</button>
+                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>
                 </form>
             {% endif %}
         </article>

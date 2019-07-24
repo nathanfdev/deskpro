@@ -390,7 +390,7 @@ portal.community.sort_views: Tampilan
 portal.community.status_active: 'Buka item'
 portal.community.status_all: 'Semua barang'
 portal.community.status_closed: 'Item yang ditutup'
-portal.community.submit_community_topic: 'Kirim tanggapan'
+portal.feedback.submit_feedback_topic: 'Kirim tanggapan'
 portal.community.view-x-community-topics:
   other: 'Lihat 1 tanggapan '
 portal.flashes.article_cat_subscribe: 'Anda telah berlangganan kategori ini. Anda akan menerima pemberitahuan apabila terdapat artikel baru.'
@@ -682,7 +682,7 @@ portal.sidebar.satisfied_customers: 'Pelanggan puas'
 portal.sidebar.top_articles_title: 'Artikel Teratas'
 portal.tickets.add-reply: Balasan
 portal.tickets.cancel-ticket-edit: 'Batalkan edit dan tunjukkan tiket lagi'
-portal.tickets.community_message_leave_comment: 'Berikan komentar'
+portal.tickets.feedback_message_leave_comment: 'Berikan komentar'
 portal.tickets.form-changed-notice: 'Kolom baru telah ditambahkan. Silakan lihat kembali kolom tersebut, kemudian ajukan formulir.'
 portal.tickets.guest-thanks-section-title: 'Terima Kasih'
 portal.tickets.guest_thank_you_desc: 'Terima kasih sudah menghubungi kami. Kami telah mengirimi Anda email berisi petunjuk tentang cara mengelola tiket Anda bersama kami.'

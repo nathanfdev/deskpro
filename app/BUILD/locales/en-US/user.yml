@@ -409,7 +409,7 @@ portal.community.sort_views: Views
 portal.community.status_active: 'Open items'
 portal.community.status_all: 'All items'
 portal.community.status_closed: 'Closed items'
-portal.community.submit_community_topic: 'Submit community topic'
+portal.feedback.submit_feedback_topic: 'Submit community topic'
 portal.community.view-x-community-topics:
   one: 'View 1 community topic'
   other: 'View {{count}} community topics'
@@ -721,7 +721,7 @@ portal.sidebar.satisfied_customers: 'satisfied customers'
 portal.sidebar.top_articles_title: 'Top Articles'
 portal.tickets.add-reply: Reply
 portal.tickets.cancel-ticket-edit: 'Cancel edit and show me the ticket again'
-portal.tickets.community_message_leave_comment: 'Optionally leave a comment'
+portal.tickets.feedback_message_leave_comment: 'Optionally leave a comment'
 portal.tickets.form-changed-notice: 'New fields have been added to the form. Please review these fields and then re-submit the form.'
 portal.tickets.guest-thanks-section-title: 'Thank You'
 portal.tickets.guest_thank_you_desc: 'Thank you for contacting us. We have sent you an email with instructions on how to manage your ticket with us.'

@@ -142,7 +142,7 @@ portal.community.form_title: 제목
 portal.community.form_custom_cat: 범주
 portal.community.search-title: 피드백
 portal.community.section-title: 피드백
-portal.community.submit_community_topic: '피드백 작성하기'
+portal.feedback.submit_feedback_topic: '피드백 작성하기'
 portal.community.view-x-community-topics:
   other: 'View {{count}} feedback'
 portal.forms.error_password_min_length:
@@ -214,7 +214,7 @@ portal.news.view-x-news:
 portal.sidebar.agents_x_online:
   other: '{{count}} online'
 portal.sidebar.news_title: 뉴스
-portal.tickets.community_message_leave_comment: '댓글 남기기'
+portal.tickets.feedback_message_leave_comment: '댓글 남기기'
 portal.tickets.guest-thanks-section-title: 감사합니다.
 portal.tickets.guest_thank_you_title: 감사합니다.
 portal.tickets.list_agent: '배정된 에이전트'

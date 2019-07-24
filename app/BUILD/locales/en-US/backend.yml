@@ -4788,7 +4788,7 @@ agent.tickets.count_charges:
 agent.tickets.count_users:
   one: '1 user'
   other: '{{count}} users'
-agent.tickets.create_linked_community: 'Create Linked Community Topic'
+agent.tickets.create_linked_community_topic: 'Create Linked Community Topic'
 agent.tickets.create_linked_ticket: 'Create Linked Ticket'
 agent.tickets.create_new_pending_article: 'Create New Pending Article'
 agent.tickets.create_task_action: 'Create a task {{title}}'
@@ -4905,9 +4905,9 @@ agent.tickets.lc_new_reply: 'new reply'
 agent.tickets.lc_new_ticket: 'new ticket'
 agent.tickets.lc_new_ticket_agent: 'new ticket by agent'
 agent.tickets.lc_update: update
-agent.tickets.link_existing_community: 'Link Existing Community Topic'
-agent.tickets.link_existing_community_subscr_owner: 'Subscribe Ticket Owner ({{name}}/{{email}}) to Community Topic'
-agent.tickets.link_existing_community_subscr_part:
+agent.tickets.link_existing_community_topic: 'Link Existing Community Topic'
+agent.tickets.link_existing_community_topic_subscr_owner: 'Subscribe Ticket Owner ({{name}}/{{email}}) to Community Topic'
+agent.tickets.link_existing_community_topic_subscr_part:
   one: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
   other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.link_existing_ticket: 'Link Existing Ticket'

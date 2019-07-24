@@ -432,7 +432,7 @@ portal.community.sort_views: Просмотры
 portal.community.status_active: 'Открытые сообщения'
 portal.community.status_all: 'Все сообщения'
 portal.community.status_closed: 'Закрытые сообщения'
-portal.community.submit_community_topic: 'Оставить отзыв'
+portal.feedback.submit_feedback_topic: 'Оставить отзыв'
 portal.community.view-x-community-topics:
   one: 'Посмотреть 1 отзыв'
   few: 'Посмотреть отзывы: {{count}}'
@@ -755,7 +755,7 @@ portal.sidebar.satisfied_customers: 'довольные клиенты'
 portal.sidebar.top_articles_title: 'Лучшие статьи'
 portal.tickets.add-reply: Ответить
 portal.tickets.cancel-ticket-edit: 'Отменить правки и показать мой вопрос'
-portal.tickets.community_message_leave_comment: 'Вы можете оставить комментарий'
+portal.tickets.feedback_message_leave_comment: 'Вы можете оставить комментарий'
 portal.tickets.form-changed-notice: 'Новые пункты были добавлены в анкету. Пожалуйста, проверьте данные пункты и подтвердите заполнение анкеты.'
 portal.tickets.guest-thanks-section-title: Спасибо
 portal.tickets.guest_thank_you_desc: 'Спасибо за то, что связались с нами! Мы отправили Вам письмо с инструкцией о том, как получать информацию по Вашему обращению.'

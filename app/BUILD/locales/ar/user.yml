@@ -458,7 +458,7 @@ portal.community.sort_views: المشاهدات
 portal.community.status_active: 'الفقرات المفتوحة'
 portal.community.status_all: 'كل الفقرات'
 portal.community.status_closed: 'الفقرات المقفلة'
-portal.community.submit_community_topic: 'أضف اقتراحك'
+portal.feedback.submit_feedback_topic: 'أضف اقتراحك'
 portal.community.view-x-community-topics:
   zero: 'استعرض{{count}} 1 تغذية راجعة'
   one: 'استعرض تغذية راجعة'
@@ -789,7 +789,7 @@ portal.sidebar.satisfied_customers: 'المستخدمين الراضين'
 portal.sidebar.top_articles_title: 'اعلى المقالات'
 portal.tickets.add-reply: رد
 portal.tickets.cancel-ticket-edit: 'الغ التحرير وأطلعني على التذكرة مرة اخرى'
-portal.tickets.community_message_leave_comment: 'يمكنك ترك تعليق "أختياري"'
+portal.tickets.feedback_message_leave_comment: 'يمكنك ترك تعليق "أختياري"'
 portal.tickets.form-changed-notice: 'اضيف للاستمارة بعض الحقول . قم بمراجعة الحقول ثم اعد ارسالها'
 portal.tickets.guest-thanks-section-title: 'شكراً لك'
 portal.tickets.guest_thank_you_desc: 'شكرا على تواصلك. تم ارسال بريد يحوي تعليمات كيف يمكنك ادارة تذكرتك'

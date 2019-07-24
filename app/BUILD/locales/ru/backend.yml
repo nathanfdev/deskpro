@@ -2311,7 +2311,7 @@ agent.tickets.lc_new_reply: 'новый ответ'
 agent.tickets.lc_new_ticket: 'новый тикет'
 agent.tickets.lc_new_ticket_agent: 'Новый тикет от агента'
 agent.tickets.lc_update: обновить
-agent.tickets.link_existing_community_subscr_part:
+agent.tickets.link_existing_community_topic_subscr_part:
   one: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
   few: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
   many: 'Subscribed ({{count}}) Ticket Participants to Community Topic'

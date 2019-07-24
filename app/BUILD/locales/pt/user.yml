@@ -225,7 +225,7 @@ portal.community.search-title: Comentário
 portal.community.section-desc: 'Estas sugestões foram apresentadas por clientes como você, nós encorajamos-lo a discutir e votar naqueles com que concorda e enviar suas próprias sugestões, se a sugestão não estiver listada.'
 portal.community.section-title: Comentário
 portal.community.sort_comments: 'Comentários?'
-portal.community.submit_community_topic: 'Submeter Comentário'
+portal.feedback.submit_feedback_topic: 'Submeter Comentário'
 portal.community.form_custom_cat: Categoria
 portal.flashes.comment_thank_you: 'Obrigado pelo seu comentário'
 portal.forms.label_category: Categoria
@@ -280,7 +280,7 @@ portal.general.submit-community-topic: 'Submeter Comentário'
 portal.news.section-title: Notícias
 portal.news.view-as-agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
 portal.sidebar.news_title: Notícias
-portal.tickets.community_message_leave_comment: 'Opcionalmente deixe um comentário'
+portal.tickets.feedback_message_leave_comment: 'Opcionalmente deixe um comentário'
 portal.tickets.guest-thanks-section-title: Obrigado
 portal.tickets.guest_thank_you_title: Obrigado
 portal.tickets.list_agent: 'Agente designado'

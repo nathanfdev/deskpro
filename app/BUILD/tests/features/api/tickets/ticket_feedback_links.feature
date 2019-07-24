@@ -1,5 +1,5 @@
 @new
-Feature: /tickets/{id}/feedback_links endpoint
+Feature: /tickets/{id}/community_topic_links endpoint
   To CRUD DeskPRO ticket feedback links
 
   Background:
@@ -19,15 +19,15 @@ Feature: /tickets/{id}/feedback_links endpoint
     And I grant the "{fc1}" feedback category permission for usergroup everyone
 
   Scenario: I retrieve an empty ticket feedback links
-    When I send a GET request to "/api/v2/tickets/{t1}/feedback_links"
+    When I send a GET request to "/api/v2/tickets/{t1}/community_topic_links"
     Then the response status code should be 200
     And the JSON node "data" should have 0 element
 
-    When I send a GET request to "/api/v2/tickets/{t1}/feedback_links/0"
+    When I send a GET request to "/api/v2/tickets/{t1}/community_topic_links/0"
     Then the response status code should be 404
 
   Scenario: I fail form validation
-    When I send a POST request to "/api/v2/tickets/{t1}/feedback_links"
+    When I send a POST request to "/api/v2/tickets/{t1}/community_topic_links"
     Then the response status code should be 400
     And the JSON node "errors.fields.feedback.errors[0].code" should be equal to "required"
 
@@ -39,7 +39,7 @@ Feature: /tickets/{id}/feedback_links endpoint
       | {t1}   | ~user_1@deskpro.dev~  |
       | {t1}   | ~user_2@deskpro.dev~  |
     When I reset ticket logs
-    And I send a POST request to "/api/v2/tickets/{t1}/feedback_links" with body:
+    And I send a POST request to "/api/v2/tickets/{t1}/community_topic_links" with body:
     """
 {
   "feedback": ~f1~,
@@ -60,12 +60,12 @@ Feature: /tickets/{id}/feedback_links endpoint
       | #   | Person  | Ticket | Feedback |
       | ttf | {admin} | {t1}   | {f1}     |
 
-    When I send a GET request to "/api/v2/tickets/{t1}/feedback_links"
+    When I send a GET request to "/api/v2/tickets/{t1}/community_topic_links"
     Then the response status code should be 200
     And the JSON node "data" should have 1 elements
     And the JSON node "data[0].id" should be equal to "{ttf}"
 
-    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/feedback_links"
+    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/community_topic_links"
     Then the response status code should be 200
     And the JSON node "data" should have 1 elements
     And the JSON node "data[0].id" should be equal to "{ttf}"
@@ -76,10 +76,10 @@ Feature: /tickets/{id}/feedback_links endpoint
       | ttf | {admin} | {t1}   | {f1}     |
 
     When I reset ticket logs
-    And I send a DELETE request to "/api/v2/tickets/{t1}/feedback_links/{ttf}"
+    And I send a DELETE request to "/api/v2/tickets/{t1}/community_topic_links/{ttf}"
     Then the response status code should be 200
     And the "{t1}" ticket should have "feedback_link_removed" log
     And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
 
-    When I send a GET request to "/api/v2/tickets/{t1}/feedback_links/{ttf}"
+    When I send a GET request to "/api/v2/tickets/{t1}/community_topic_links/{ttf}"
     Then the response status code should be 404

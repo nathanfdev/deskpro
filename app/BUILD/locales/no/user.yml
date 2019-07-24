@@ -115,7 +115,7 @@ portal.general.rated-positive: 'Du markerte siden som hjelpsom'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} av {{vote_count}} syns denne siden hjalp dem'
 portal.general.related-downloads: 'Relaterte filer'
 portal.news.view-as-agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
-portal.tickets.community_message_leave_comment: 'Eventuelt legg igjen en kommentar'
+portal.tickets.feedback_message_leave_comment: 'Eventuelt legg igjen en kommentar'
 portal.tickets.guest-thanks-section-title: Takk
 portal.tickets.guest_thank_you_title: Takk
 portal.tickets.list_agent: 'Tildelt medarbeider'

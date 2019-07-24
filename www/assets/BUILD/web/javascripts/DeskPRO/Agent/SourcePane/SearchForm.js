@@ -167,7 +167,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 			}
 		});
 
-		context.find('.feedback-links-term-wrap').each(function() {
+		context.find('.community-topics-links-term-wrap').each(function() {
       var el = $(this);
       var communityTopicTerm = new DeskPRO.Agent.RuleBuilder.TicketCommunityTopicLinksTerm({
         ruleBuilder: null,

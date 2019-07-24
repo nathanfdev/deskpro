@@ -119,7 +119,7 @@ portal.community.btn-vote: 同意
 portal.community.search-title: フィードバック
 portal.community.section-desc: 他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。
 portal.community.section-title: フィードバック
-portal.community.submit_community_topic: フィードバックを送信
+portal.feedback.submit_feedback_topic: フィードバックを送信
 portal.community.form_custom_cat: カテゴリー
 portal.community.view-x-community-topics:
   other: 'View {{count}} feedback'
@@ -187,7 +187,7 @@ portal.news.view-x-news:
 portal.sidebar.agents_x_online:
   other: '{{count}} online'
 portal.sidebar.news_title: ニュース
-portal.tickets.community_message_leave_comment: オプション：コメントを残す
+portal.tickets.feedback_message_leave_comment: オプション：コメントを残す
 portal.tickets.guest-thanks-section-title: ありがとうございました。
 portal.tickets.guest_thank_you_title: ありがとうございました。
 portal.tickets.list_agent: 担当エージェント

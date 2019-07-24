@@ -181,7 +181,7 @@ portal.community.form_custom_cat: Kategórie
 portal.community.search-title: 'Spätná väzba'
 portal.community.section-desc: 'Tieto návrhy boli schválené zákazníkmi ako vy; skúste problém s nimi prediskutovať a prísť na koreň problému spoločne.'
 portal.community.section-title: 'Spätná väzba'
-portal.community.submit_community_topic: 'Potvrdiť spätnú väzbu'
+portal.feedback.submit_feedback_topic: 'Potvrdiť spätnú väzbu'
 portal.community.view-x-community-topics:
   one: 'View 1 feedback'
   few: 'View {{count}} feedback'
@@ -284,7 +284,7 @@ portal.sidebar.agents_x_online:
   many: '{{count}} online'
   other: '{{count}} online'
 portal.sidebar.news_title: Novinky
-portal.tickets.community_message_leave_comment: 'Ak chcete zanechajte komentár'
+portal.tickets.feedback_message_leave_comment: 'Ak chcete zanechajte komentár'
 portal.tickets.guest-thanks-section-title: Ďakujeme
 portal.tickets.guest_thank_you_title: Ďakujeme
 portal.tickets.list_agent: 'Pridelený agent'

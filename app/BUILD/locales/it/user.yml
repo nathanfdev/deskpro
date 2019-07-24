@@ -395,7 +395,7 @@ portal.community.sort_views: Visualizzazioni
 portal.community.status_active: 'Apri oggetti'
 portal.community.status_all: 'Tutti gli oggetti'
 portal.community.status_closed: 'Oggetti chiusi'
-portal.community.submit_community_topic: 'Invia feedback'
+portal.feedback.submit_feedback_topic: 'Invia feedback'
 portal.community.view-x-community-topics:
   one: 'Visualizza 1 feedback'
   other: ' Visualizza {{count}} feedback'
@@ -683,7 +683,7 @@ portal.sidebar.satisfied_customers: 'Clienti Soddisfatti'
 portal.sidebar.top_articles_title: 'Migliori Articoli'
 portal.tickets.add-reply: Rispondi
 portal.tickets.cancel-ticket-edit: 'Annulla la modifica e mostrami di nuovo il ticket'
-portal.tickets.community_message_leave_comment: 'Lascia un commento opzionale'
+portal.tickets.feedback_message_leave_comment: 'Lascia un commento opzionale'
 portal.tickets.form-changed-notice: 'Nuovi campi sono stati aggiunti al modulo. Per favore riguarda questi campi e poi reinvia il modulo.'
 portal.tickets.guest-thanks-section-title: Grazie
 portal.tickets.guest_thank_you_desc: 'Grazie per averci contattato. Ti abbiamo mandato una email con le istruzione su come gestire il tuo ticket con noi.'

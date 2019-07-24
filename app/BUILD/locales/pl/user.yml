@@ -431,7 +431,7 @@ portal.community.sort_views: Widoki
 portal.community.status_active: 'Otwarte elementy'
 portal.community.status_all: 'Wszystkie elementy'
 portal.community.status_closed: 'Zamknięte elementy'
-portal.community.submit_community_topic: 'Wyślij opinię'
+portal.feedback.submit_feedback_topic: 'Wyślij opinię'
 portal.community.view-x-community-topics:
   one: 'Zobacz 1 opinie'
   few: 'Zobacz {{count}} opinii'
@@ -751,7 +751,7 @@ portal.sidebar.satisfied_customers: 'zadowolonych klientów'
 portal.sidebar.top_articles_title: 'Najlepsze artykuły'
 portal.tickets.add-reply: Odpowiedz
 portal.tickets.cancel-ticket-edit: 'Anuluj edytowanie i pokaż mi zgłoszenie ponownie'
-portal.tickets.community_message_leave_comment: 'Jeśli chcesz, zostaw komentarz'
+portal.tickets.feedback_message_leave_comment: 'Jeśli chcesz, zostaw komentarz'
 portal.tickets.form-changed-notice: 'Nowe pola zostały dodane do formularza. Zwróć uwagę na te pola i wyślij formularz ponownie.'
 portal.tickets.guest-thanks-section-title: Dziękujemy
 portal.tickets.guest_thank_you_desc: 'Dziękujemy za kontakt z nami. Wysłaliśmy ci wiadomość email z informacjami jak zarządzać swoimi zgłoszeniami.'

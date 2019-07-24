@@ -1817,7 +1817,7 @@ agent.tickets.lc_new_reply: 'Trả lời mới'
 agent.tickets.lc_new_ticket: 'Ticket mới'
 agent.tickets.lc_new_ticket_agent: 'ticket mới của agent'
 agent.tickets.lc_update: 'cập nhật'
-agent.tickets.link_existing_community_subscr_part:
+agent.tickets.link_existing_community_topic_subscr_part:
   other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.link_existing_ticket: 'Liên kết Ticket hiện có'
 agent.tickets.link_existing_ticket_make_below: 'Làm ticket được chọn bên dưới ticket gốc'

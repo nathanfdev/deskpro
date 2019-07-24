@@ -647,13 +647,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
     this.linkExistingCommunityTopic = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkCommunityTopic(this, {
       loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-community-topics-overlay",
-      saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/feedback_links",
+      saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/community_topic_links",
       reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
     });
 
     this.ownObject(this.linkExistingCommunityTopic);
 
-    this.wrapper.find('.unlink-feedback').on('click', function(ev) {
+    this.wrapper.find('.unlink-community-topic').on('click', function(ev) {
       Orb.cancelEvent(ev);
 
       if (!confirm("Are you sure you want to unlink the selected feedback?")) {
@@ -672,7 +672,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         },
         success: function() {
           $(this).closest('tr').remove();
-          decTabCount('linked_feedback_count');
+          decTabCount('linked_community_topic_count');
         }
       });
     });

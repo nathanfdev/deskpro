@@ -114,7 +114,7 @@ portal.community.search-title: Ötlettár
 portal.community.section-desc: 'Ezeken az oldalakon olyan ötleteket, javaslatokat, hibabejelentéseket és visszajelzéseket talál, amelyeket az Önhöz hasonló ügyfeleinktől kaptunk. Kérjük, segítse Ön is munkánkat észrevételeivel! Böngésszen a mások által beküldött kérések, kérdések és észrevételek között; szóljon hozzá egy témához, vagy csak adjon le egy szavazatot azokra a bejegyzésekre, amelyekkel egyetért. Amennyiben az Ön ötlete még nem szerepel a listán, kérjük ne habozzon megosztani velünk - küldjön be új témát!'
 portal.community.section-title: Ötlettár
 portal.community.sort_comments: 'Hozzászólás?'
-portal.community.submit_community_topic: 'Visszajelzés küldése'
+portal.feedback.submit_feedback_topic: 'Visszajelzés küldése'
 portal.community.form_custom_cat: Kategória
 portal.flashes.comment_thank_you: 'Köszönjük hozzászólását'
 portal.forms.label_category: Típus
@@ -168,7 +168,7 @@ portal.general.submit-community-topic: 'Üzenet beküldése'
 portal.news.section-title: Hírek
 portal.news.view-as-agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 portal.sidebar.news_title: Hírek
-portal.tickets.community_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
+portal.tickets.feedback_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
 portal.tickets.guest-thanks-section-title: Köszönjük
 portal.tickets.guest_thank_you_title: Köszönjük
 portal.tickets.list_agent: 'Hozzárendelt munkatárs'

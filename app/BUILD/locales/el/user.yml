@@ -393,7 +393,7 @@ portal.community.sort_views: Προβολές
 portal.community.status_active: 'Ανοιχτά στοιχεία'
 portal.community.status_all: 'Όλα τα στοιχεία'
 portal.community.status_closed: 'Κλειστά στοιχεία'
-portal.community.submit_community_topic: 'Υποβολή feedback'
+portal.feedback.submit_feedback_topic: 'Υποβολή feedback'
 portal.community.view-x-community-topics:
   one: 'Δείτε 1 feedback'
   other: 'Δείτε {{count}} feedback'
@@ -680,7 +680,7 @@ portal.sidebar.satisfied_customers: 'ικανοποιημένοι πελάτες
 portal.sidebar.top_articles_title: 'Κορυφαία άρθρα'
 portal.tickets.add-reply: Απάντηση
 portal.tickets.cancel-ticket-edit: 'Ακύρωση επεξεργασίας και προβολή του ticket'
-portal.tickets.community_message_leave_comment: 'Αφήστε προαιρετικά τα σχόλιά σας'
+portal.tickets.feedback_message_leave_comment: 'Αφήστε προαιρετικά τα σχόλιά σας'
 portal.tickets.form-changed-notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 portal.tickets.guest-thanks-section-title: Ευχαριστούμε!
 portal.tickets.guest_thank_you_desc: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Σας έχουμε στείλει ένα email με οδηγίες σχετικά με την διαχείριση του ticket σας.'

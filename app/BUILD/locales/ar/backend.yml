@@ -2608,7 +2608,7 @@ agent.tickets.lc_new_reply: 'رد جديد'
 agent.tickets.lc_new_ticket: 'تذكرة جديدة'
 agent.tickets.lc_new_ticket_agent: 'تذكرة جديدة بواسطة مقدم الخدمة'
 agent.tickets.lc_update: حَدث
-agent.tickets.link_existing_community_subscr_part:
+agent.tickets.link_existing_community_topic_subscr_part:
   zero: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
   one: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
   two: 'Subscribed ({{count}}) Ticket Participants to Community Topic'

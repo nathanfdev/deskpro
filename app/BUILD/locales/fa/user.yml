@@ -306,7 +306,7 @@ portal.community.sort_views: بازدید
 portal.community.status_active: 'ایتم های باز'
 portal.community.status_all: 'همه موارد'
 portal.community.status_closed: 'آیتم های بسته شده'
-portal.community.submit_community_topic: 'ارسال انتقاد و پیشنهاد'
+portal.feedback.submit_feedback_topic: 'ارسال انتقاد و پیشنهاد'
 portal.flashes.article_cat_subscribe: 'شما با موفقیت به این دسته اضافه شده اید. هنگامی که مقالات جدید ارسال می شود، شما مطلع خواهید شد.'
 portal.flashes.article_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
 portal.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
@@ -490,7 +490,7 @@ portal.sidebar.satisfied_customers: 'مشتریان راضی'
 portal.sidebar.top_articles_title: 'مقاله های برتر'
 portal.tickets.add-reply: پاسخ
 portal.tickets.cancel-ticket-edit: 'لغو ویرایش و دوباره پیام من را نشان دهید'
-portal.tickets.community_message_leave_comment: 'به صورت اختیاری میتوانید نظر دهید'
+portal.tickets.feedback_message_leave_comment: 'به صورت اختیاری میتوانید نظر دهید'
 portal.tickets.guest-thanks-section-title: 'با تشکر از شما'
 portal.tickets.guest_thank_you_title: 'با تشکر از شما'
 portal.tickets.list_date_last_agent: 'اخرین پیام کارشناس'

@@ -157,7 +157,7 @@ portal.community.attachments: Atasamente
 portal.community.btn-closed: Inchis
 portal.community.btn-vote: 'Sunt de acord'
 portal.community.section-desc: 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.'
-portal.community.submit_community_topic: 'Trimite feedback'
+portal.feedback.submit_feedback_topic: 'Trimite feedback'
 portal.community.view-x-community-topics:
   one: 'View 1 feedback'
   few: 'View {{count}} feedback'
@@ -244,7 +244,7 @@ portal.sidebar.agents_x_online:
   few: '{{count}} online'
   other: '{{count}} online'
 portal.sidebar.news_title: Stiri
-portal.tickets.community_message_leave_comment: 'Optional, puteti lasa un comentariu'
+portal.tickets.feedback_message_leave_comment: 'Optional, puteti lasa un comentariu'
 portal.tickets.guest-thanks-section-title: 'Va multumim'
 portal.tickets.guest_thank_you_title: 'Va multumim'
 portal.tickets.list_agent: 'Agentul asignat'

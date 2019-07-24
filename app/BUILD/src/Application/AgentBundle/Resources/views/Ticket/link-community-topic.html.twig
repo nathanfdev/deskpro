@@ -1,12 +1,12 @@
 <div class="extended-merge overlay">
 	<div class="overlay-title">
-		<h4>{{ phrase('agent.tickets.link_existing_community') }}</h4>
+		<h4>{{ phrase('agent.tickets.link_existing_community_topic') }}</h4>
 	</div>
 
 	<div class="overlay-content">
     <form>
       <div
-        class="feedback-finder"
+        class="community-topic-finder"
         data-element-handler="DeskPRO.Agent.ElementHandler.CommunitySearchBox"
         data-search-url="{{ path('agent_communitysearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
         data-highlight-term="1"
@@ -14,7 +14,7 @@
         data-search-param="term"
         data-exclude="{{ exludeIds|join(',')}}"
       >
-        <script type="text/x-deskpro-tmpl" class="feedback-row-tpl">
+        <script type="text/x-deskpro-tmpl" class="community-row-tpl">
           <li><a>
             <span class="topic-id pill">1234</span>
             <span class="topic-title"></span>
@@ -27,11 +27,11 @@
           {% if brand_setting('user.community_subscriptions') %}
             <div style="display: block;">
               <input type="checkbox" id="is_subscribe_owner" name="is_subscribe_owner" checked="checked">
-              <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_community_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+              <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_community_topic_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
             </div>
             <div style="display: block;">
               <input type="checkbox" id="is_subscribe_participants" name="is_subscribe_participants">
-              <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_community_subscr_part', {'count': ticket.participants.count}) }}</label>
+              <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_community_topic_subscr_part', {'count': ticket.participants.count}) }}</label>
             </div>
           {% else %}
             <input type="hidden" id="is_subscribe_owner" name="is_subscribe_owner">
@@ -40,7 +40,7 @@
           <input type="text" style="width: 78%" class="term" placeholder="{{ phrase('agent.tickets.find_community_topic') }}" class="user-input" />
         </div>
         <input type="hidden" name="feedback_id" class="topic-id" value="" />
-        <div class="ticket-search-box person-search-box feedback-search-box" style="display: none">
+        <div class="ticket-search-box person-search-box community-search-box" style="display: none">
           <section>
             <ul class="results-list">
 
