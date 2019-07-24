@@ -646,7 +646,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     });
 
     this.linkExistingCommunityTopic = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkCommunityTopic(this, {
-      loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-community-topics-overlay",
+      loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-community-topic-overlay",
       saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/community_topic_links",
       reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
     });
@@ -656,7 +656,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this.wrapper.find('.unlink-community-topic').on('click', function(ev) {
       Orb.cancelEvent(ev);
 
-      if (!confirm("Are you sure you want to unlink the selected feedback?")) {
+      if (!confirm("Are you sure you want to unlink selected topic?")) {
         return;
       }
 
@@ -732,7 +732,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           self.getEl('messages_wrap').find('article.content-message').show();
         } else if (type == 'community') {
           self.getEl('messages_wrap').removeClass('show-log');
-          self.getEl('messages_wrap').find('article.content-message').show().not('article.with-feedback').hide();
+          self.getEl('messages_wrap').find('article.content-message').show().not('article.with-community-topic').hide();
         } else if (type == 'log') {
           self.refreshLogTypes();
         }
