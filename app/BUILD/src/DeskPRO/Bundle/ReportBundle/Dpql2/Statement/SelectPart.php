@@ -311,7 +311,7 @@ class SelectPart
         'voice_phone_call_logs'       => VoicePhoneCallLog::class,
         'voice_queues'                => VoiceQueue::class,
         'voice_queue_agents'          => VoiceQueueAgent::class,
-        'voice_missed_agent_call'     => VoiceMissedAgentCall::class,
+        'voice_missed_agent_calls'    => VoiceMissedAgentCall::class,
     ];
 
     /**
