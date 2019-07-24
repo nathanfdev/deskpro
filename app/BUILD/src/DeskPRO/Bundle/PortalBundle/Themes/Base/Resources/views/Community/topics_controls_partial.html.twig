@@ -1,4 +1,4 @@
-<div class="community-topic-controls" ref="feedbacktopicControls">
+<div class="community-topic-controls" ref="communityTopicControls">
     <a
         {% if (not topic.isClosed) %}
         href="{{ portal_path(topic, user_up_voted(topic) ? 'vote_down' : 'vote_up') }}"

@@ -5,7 +5,7 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <article class="feedback main-community" id="feedback_view">
+    <article class="community main-community" id="community_topic_view">
         {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
         <div class="community-topic">
             {%  include 'Theme:Community:rate_limit.submit_community_topic.s_controls_partial.html.twig' with {'topic': topic} %}

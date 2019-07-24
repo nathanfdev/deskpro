@@ -86,10 +86,10 @@ abstract class AbstractViewModelFactory
                 $handler = $this->container->get('api_serializer.handler.download');
                 break;
             case CommunityTopic::class:
-                $handler = $this->container->get('api_serializer.handler.feedback');
+                $handler = $this->container->get('api_serializer.handler.community_topic');
                 break;
             case CommunityTopicComment::class:
-                $handler = $this->container->get('api_serializer.handler.feedback_comment');
+                $handler = $this->container->get('api_serializer.handler.community_topic_comment');
                 break;
             case LayoutField::class:
                 $handler = $this->container->get('api_serializer.handler.layout_field');

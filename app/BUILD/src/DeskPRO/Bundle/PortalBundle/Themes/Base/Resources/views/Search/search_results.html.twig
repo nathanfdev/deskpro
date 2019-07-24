@@ -84,10 +84,10 @@
             {% endif %}
 
             {% if can_use_community() and community_results %}
-                <div class="search-result-category-wrapper" id="feedback_results">
+                <div class="search-result-category-wrapper" id="community_results">
                   <div class="deskpro-search-results">
                     <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.community.search-title') }} <span class="count">({{ community_info['total_results'] }})</span></span></div>
-                    <ul class="dpx-dynamic-search-results" data-type="feedback" data-next="{{ community_info.next ? 1 : 0 }}">
+                    <ul class="dpx-dynamic-search-results" data-type="community" data-next="{{ community_info.next ? 1 : 0 }}">
                         {% for result_set in community_results %}
                             {{ search_macros.search_result(result_set) }}
                         {% endfor %}

@@ -359,7 +359,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_community'),
             Breadcrumbs::COMMUNITY,
-            ['phrase' => 'portal.general.nav-feedback']
+            ['phrase' => 'portal.general.nav-community']
         );
 
         return $this;

@@ -128,7 +128,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('file_icon', [$this, 'makeFileIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('article_icon', [$this, 'makeArticleIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('news_icon', [$this, 'makeNewsIcon'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('feedback_icon', [$this, 'makeFeedbackIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('community_icon', [$this, 'makeCommunityIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('content_icon', [$this, 'makeContentIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('ticket_view', [$this, 'getTicketView']),
             new \Twig_SimpleFunction('ticket_excerpts', [$this, 'getTicketExcerpts']),
@@ -294,7 +294,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @return string
      */
-    public function makeFeedbackIcon($topic)
+    public function makeCommunityIcon($topic)
     {
         return $this->container->get('icon_factory')->makeCommunityTopicIcon($topic);
     }
@@ -419,7 +419,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         } elseif ($content instanceof Entity\CommunityTopic) {
             $cat = $content->getCategory();
         } else {
-            throw new \InvalidArgumentException('the get_secure_cats twig function requires one of: Article, Download, News, Feedback, but did not get one');
+            throw new \InvalidArgumentException('the get_secure_cats twig function requires one of: Article, Download, News, Community Topics, but did not get one');
         }
 
         $category_tree = [];

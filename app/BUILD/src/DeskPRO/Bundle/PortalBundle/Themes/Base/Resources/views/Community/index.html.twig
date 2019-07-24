@@ -5,8 +5,8 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <article class="feedback main-community" id="community_page">
-        {{  macros.lockout_notice(phrase('portal.account.feedback-lockout'), lockout, lockout_time) }}
+    <article class="community main-community" id="community_page">
+        {{  macros.lockout_notice(phrase('portal.account.community-lockout'), lockout, lockout_time) }}
         <header class="large-title">
             <div class="header-buttons">
                 {% show community_root_subscription_link %}

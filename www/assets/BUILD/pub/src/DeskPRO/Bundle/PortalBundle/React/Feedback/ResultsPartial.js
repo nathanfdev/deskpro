@@ -72,7 +72,7 @@ export class ResultsPartial extends React.Component {
     });
 
     // add events to type (categories) links
-    $results.find('a.feedback-category').each((i, item) => {
+    $results.find('a.community-custom-channel').each((i, item) => {
       $(item).on('click', (event) => {
         event.preventDefault();
         this.setType($(item).data('id'));
