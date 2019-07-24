@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceAutoAttendant.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAutoAttendantRepository")
  * @ORM\Table(name="voice_auto_attendants")
  *
  * @JMS\ExclusionPolicy("all")

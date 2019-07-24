@@ -5,8 +5,8 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
 /**
- * Class VoiceAccountRepository.
+ * Class VoiceAssetRepository.
  */
-class VoiceAccountRepository extends AbstractEntityRepository
+class VoiceAssetRepository extends AbstractEntityRepository
 {
 }
