@@ -17,7 +17,8 @@ use JMS\Serializer\Annotation as JMS;
  */
 class CommunityTopicComment extends CommentAbstract
 {
-    const OBJ_PROP = 'topic';
+    const OBJ_PROP     = 'topic';
+    const CONTENT_TYPE = 'community';
 
     /**
      * CommunityTopic this comment belongs to.
@@ -32,6 +33,11 @@ class CommunityTopicComment extends CommentAbstract
     public function getTopic()
     {
         return $this->topic;
+    }
+
+    public function getObjectContentType()
+    {
+        return self::CONTENT_TYPE;
     }
 
     //###########################################################################

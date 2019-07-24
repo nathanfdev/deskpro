@@ -319,7 +319,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 					}
 					$('body').removeClass('related-controls-on');
 				}
-				if ($(info.tabContent).is('.feedback-revs') && !$(info.tabContent).is('.loaded')) {
+				if ($(info.tabContent).is('.revisions-tab') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/community/topic/view/' + this.topic_id + '/view-revisions',
 						type: 'GET',
@@ -586,9 +586,9 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 				context: this,
 				data: data,
 				dataType: 'json',
-				success: function(data) {
-					this.getEl('content_ed').html(data.content_html);
-					this.handleUnloadRevisions(data.revision_id);
+				success: function(response) {
+					this.getEl('content_ed').html(response.content_html);
+					this.handleUnloadRevisions(response.revision_id);
 					this._initPostArea();
 				}
 			});

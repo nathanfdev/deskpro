@@ -2136,6 +2136,12 @@ $collection->create('agent_community_topic_save', [
     'requirements' => ['communityTopicId' => '\\d+'],
 ]);
 
+$collection->create('agent_community_topic_view_revisions', [
+    'path'         => '/community/topic/view/{communityTopicId}/view-revisions',
+    'controller'   => 'AgentBundle:CommunityTopics:viewRevisions',
+    'requirements' => ['communityTopicId' => '\\d+'],
+]);
+
 $collection->create('agent_community_topic_subscribe_person', [
     'path'         => '/community/topic/{communityTopicId}/ajax-subscribe-person',
     'controller'   => 'AgentBundle:CommunityTopics:ajaxSubscribePerson',

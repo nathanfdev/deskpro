@@ -272,6 +272,15 @@ class CommunityTopicsController extends AbstractController
         );
     }
 
+    public function viewRevisionsAction($communityTopicId)
+    {
+        $communityTopic = $this->getTopic($communityTopicId);
+
+        return $this->render('AgentBundle:Community:view-revisions-tab.html.twig', [
+            'topic' => $communityTopic,
+        ]);
+    }
+
     /**
      * @param $communityTopicId
      *
@@ -379,10 +388,10 @@ class CommunityTopicsController extends AbstractController
      * @param $communityTopicId
      * @param $channelId
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
      */
@@ -508,8 +517,8 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Exception
+     * @throws \Doctrine\DBAL\ConnectionException
      *
      * @return Response
      */
@@ -551,9 +560,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
      */
@@ -646,7 +655,7 @@ class CommunityTopicsController extends AbstractController
 
                 $data['content_html'] = $this->renderView(
                     'AgentBundle:Community:view-content-tab.html.twig',
-                    ['community_topic' => $communityTopic]
+                    ['topic' => $communityTopic]
                 );
 
                 $rev            = ContentRevisionUtil::findOrCreate($communityTopic, ['content'], $this->person);
@@ -737,9 +746,9 @@ class CommunityTopicsController extends AbstractController
      * @param     $communityTopicId
      * @param int $otherCommunityTopicId
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
      */
@@ -834,9 +843,9 @@ class CommunityTopicsController extends AbstractController
      *
      * @param int $channelId
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
      */
@@ -1199,9 +1208,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $action
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Response
      */
@@ -1443,9 +1452,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return CommunityTopic
      */
@@ -1461,9 +1470,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $ticketId
      *
-     * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return Ticket
      */
