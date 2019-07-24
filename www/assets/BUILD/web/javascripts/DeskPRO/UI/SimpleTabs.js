@@ -77,13 +77,12 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		setTimeout(function () {
       if (this.options.autoSelectFirst) {
-        var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).first();
+				var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).filter(':visible').first();
         if (!firstTab.length) {
-          firstTab = this.triggerEls.first();
-        }
-
-        if (firstTab.length && !firstTab.is(':visible')) {
-          firstTab = this.triggerEls.filter(':visible').first();
+					firstTab = this.triggerEls.filter(':visible').first();
+					if (!firstTab.length) {
+						firstTab = this.triggerEls.first();
+					}
         }
 
         // Check again, there might not be any tabs
