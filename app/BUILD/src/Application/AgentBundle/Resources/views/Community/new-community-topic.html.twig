@@ -51,7 +51,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
         <div class="col">
             <h4>{{ phrase('agent.general.brand') }}</h4>
-            <select name="newcommunitytopic[brand]" id="new_feedback_brand_id">
+            <select name="newcommunitytopic[brand]" id="new_topic_brand_id">
                 {% for brand in brands %}
                     <option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
                         {{ brand.name }}

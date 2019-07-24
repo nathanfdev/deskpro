@@ -2,7 +2,7 @@
 	{% for result in display %}
 	 	{% set topic = result.topic %}
 		<article
-			class="row-item feedback feedback-{{topic.id}} feedback-{{topic.id}} related-is-linkable"
+			class="row-item feedback feedback-{{topic.id}} related-is-linkable"
 			data-content-type="community"
 			data-content-id="{{ topic.id }}"
 			data-route="community:{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}"
@@ -16,7 +16,7 @@
 						{{ topic.num_ratings|default(0) }}
 					</span>
 					<h3>
-						<a class="feedback-title click-through"><span class="obj-title-community-topic_{{ topic.id }}">{{ topic.title }}</span></a>
+						<a class="topic-title click-through"><span class="obj-title-community-topic_{{ topic.id }}">{{ topic.title }}</span></a>
 					</h3>
 
 

@@ -39,7 +39,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
-    $('#new_feedback_brand_id').on('change', function() {
+    $('#new_topic_brand_id').on('change', function() {
       self.updateCategories();
       self.updateStatusCategories();
     });
@@ -146,7 +146,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 	},
 
   updateCategories: function() {
-    var brand_select = $('#new_feedback_brand_id');
+    var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
     var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
     $.ajax({
@@ -162,7 +162,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
   },
 
   updateStatusCategories: function() {
-    var brand_select = $('#new_feedback_brand_id');
+    var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
     var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.status_id');
     $.ajax({

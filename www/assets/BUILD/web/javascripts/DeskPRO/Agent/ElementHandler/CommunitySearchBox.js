@@ -8,7 +8,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 		var self = this;
 
 		this.termInput   = $('input.term', this.el);
-		this.idInput     = $('input.feedback-id', this.el);
+		this.idInput     = $('input.topic-id', this.el);
 		this.resultsBox  = $('.feedback-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
 		this.exclude 		 = this.el.data('exclude') ? (this.el.data('exclude')+'').split(',') : [];
@@ -127,7 +127,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 			if (self.exclude.indexOf(topicId) > -1) {
 				return;
 			}
-			var title = $.trim($('.feedback-title', this).text());
+			var title = $.trim($('.topic-title', this).text());
       self.termInput.val(title);
 
 			self.el.trigger('communitysearchboxclick', [topicId, title, self]);
@@ -236,7 +236,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 					row.data('community-topic-id', topic.id);
 					row.attr('community-topic-id', topic.id);
 					row.addClass('feedback-' + topic.id);
-          row.find('.feedback-type').text(topic.type);
+          row.find('.community-channel').text(topic.type);
 
 					if (self.exclude.indexOf(topic.id) > -1) {
 						row.addClass('disabled');
@@ -254,12 +254,12 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 						term = (term+'').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, "\\$1");
 						title = title.replace( new RegExp( "(" + term + ")", 'gi' ), '<span class="highlight">$1</span>' );
 
-						$('.feedback-title', row).html(title);
+						$('.topic-title', row).html(title);
 					} else {
-						$('.feedback-title', row).text(topic.title);
+						$('.topic-title', row).text(topic.title);
 					}
 
-					$('.feedback-id', row).text(topic.id);
+					$('.topic-id', row).text(topic.id);
 
 					this.resultsList.append(row);
 				}, this);
