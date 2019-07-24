@@ -37,7 +37,7 @@ define([
       *
       * @return {promise}
     */
-    saveFeedbackStatus() {
+    saveCommunityStatus() {
       let is_new,
         promise;
       this.feedback_status.brand = this.$stateParams.brandId;

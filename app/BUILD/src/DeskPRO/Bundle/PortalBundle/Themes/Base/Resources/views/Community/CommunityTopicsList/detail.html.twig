@@ -1,9 +1,9 @@
 {% for topic in pager %}
-<div class="feedback-item feedback-list-item">
+<div class="community-topic community-topic-list-item">
   {%  include 'Theme:Community:topics_controls_partial.html.twig' with {'topic': topic} %}
 
-  <div class="feedback-item-content">
-    <span class="feedback-status">
+  <div class="community-topic-content">
+    <span class="community-status">
       {% if topic.status_category %}
       <a href="{{ portal_path(topic.status_category) }}" data-id="{{ topic.status_category.id }}">
         <i class="far fa-eye"></i> {{ object_phrase(topic.status_category) }}
@@ -13,7 +13,7 @@
       {% endif %}
     </span>
 
-    <span class="feedback-item-type">
+    <span class="community-topic-type">
       <a href="{{ portal_path(topic.channel) }}" class="feedback-category" data-id="{{ topic.channel.id }}">{{ object_phrase(topic.channel) }}</a>
     </span>
 
@@ -62,5 +62,5 @@
 {% endfor %}
 
 {% if show_pager %}
-   {% show feedback_pager %}
+   {% show community_pager %}
 {% endif %}

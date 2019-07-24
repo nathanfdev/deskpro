@@ -891,7 +891,7 @@ return [
     'user.portal_simpleheader'     => false,
     'user.portal_tab_news'         => 1,
     'user.portal_tab_articles'     => 1,
-    'user.portal_tab_feedback'     => 1,
+    'user.portal_tab_community'    => 1,
     'user.portal_tab_tickets'      => 1,
     'user.portal_tab_downloads'    => 1,
     'user.portal_tab_guides'       => 1,

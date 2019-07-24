@@ -27,7 +27,7 @@ DeskPRO.Agent.WindowElement.Section.Community = new Orb.Class({
 
 	reload: function() {
 		DeskPRO_Window.getSectionData('community_section', this._initSection.bind(this), {
-			brand_id: $('#feedback_brand_id').val()
+			brand_id: $('#community_brand_id').val()
 		});
 	},
 
@@ -42,13 +42,13 @@ DeskPRO.Agent.WindowElement.Section.Community = new Orb.Class({
 		var self = this;
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
-			triggerElements: $('#feedback_outline_tabstrip li'),
+			triggerElements: $('#community_outline_tabstrip li'),
 			onTabSwitch: function(info) {
 
 			}
 		});
 
-    $('select#feedback_brand_id').select2().on('change', function() {
+    $('select#community_brand_id').select2().on('change', function() {
       self.reload();
     });
 
@@ -66,8 +66,8 @@ DeskPRO.Agent.WindowElement.Section.Community = new Orb.Class({
 
 	recountBadge: function() {
 		var count = 0;
-		count += parseInt($.trim($('#feedback_validating_count').text())) || 0;
-		count += parseInt($.trim($('#feedback_comments_validating_count').text())) || 0;
+		count += parseInt($.trim($('#community_validating_count').text())) || 0;
+		count += parseInt($.trim($('#community_comments_validating_count').text())) || 0;
 		this.updateBadge(count);
 	}
 

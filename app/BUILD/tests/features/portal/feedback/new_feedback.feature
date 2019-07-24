@@ -17,7 +17,7 @@ Feature: submitting new feedback
     And I press "Add your feedback"
     Then I should be on "/feedback/view/my-new-feedback-title"
     And the response status code should be 200
-    And I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
+    And I should see a "success" flash message with the phrase "portal.flashes.new_community_topic_posted"
     And I should receive an email on user with the subject "Thank you for submitting your feedback"
 
   Scenario: A logged in user submits invalid feedback
@@ -46,7 +46,7 @@ Feature: submitting new feedback
     Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
     And I should receive an email on "guest@deskpro.com" with the subject phrase "portal.email_subjects.validate-email"
     When I click the email verification link received on "guest@deskpro.com"
-    Then I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
+    Then I should see a "success" flash message with the phrase "portal.flashes.new_community_topic_posted"
     And I should be on the set password page
 
 #  Scenario: A guest submits valid feedback and needs email verification
@@ -62,7 +62,7 @@ Feature: submitting new feedback
 #    When I fill in "Email" with "user@deskpro.dev"
 #    And I fill in "Your password" with "12345"
 #    And I press "Login"
-#    Then I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
+#    Then I should see a "success" flash message with the phrase "portal.flashes.new_community_topic_posted"
 #    And I should be on "/feedback/view/a-guest-feedback-title"
 #    And the response status code should be 200
 #    And I should see "A Guest Feedback Title"

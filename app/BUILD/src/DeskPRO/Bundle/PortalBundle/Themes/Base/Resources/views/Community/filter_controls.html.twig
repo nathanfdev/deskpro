@@ -1,7 +1,7 @@
 <script>
     window.COMMUNITY_FILTER_STATE = {{ filter_js|raw }};
 </script>
-<div class="feedback-filter">
+<div class="community-filter">
     <ul class="flat-tabs">
         <li>
             <div class="quick-jump">
@@ -31,10 +31,10 @@
         </li>
     </ul>
 
-    {% if feedback_types is defined and feedback_types|length > 0 %}
+    {% if community_channels is defined and community_channels|length > 0 %}
     <div>
         <ul class="slider-list">
-            {% for type in feedback_types %}
+            {% for type in community_channels %}
             <li>
                 <div class="slider-panel">
                     {% if type.id in types or types is empty %}

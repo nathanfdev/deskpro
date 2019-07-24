@@ -45,7 +45,7 @@ define([
       *
       * @return {promise}
     */
-    saveFeedbackType() {
+    saveCommunityChannel() {
       let is_new,
         promise;
       this.feedback_type.brand = this.$stateParams.brandId;

@@ -290,13 +290,13 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param $feedback
+     * @param $topic
      *
      * @return string
      */
-    public function makeFeedbackIcon($feedback)
+    public function makeFeedbackIcon($topic)
     {
-        return $this->container->get('icon_factory')->makeCommunityTopicIcon($feedback);
+        return $this->container->get('icon_factory')->makeCommunityTopicIcon($topic);
     }
 
     /**

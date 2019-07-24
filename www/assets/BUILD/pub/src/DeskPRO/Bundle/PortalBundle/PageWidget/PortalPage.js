@@ -40,7 +40,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(TicketList, '#ticket_list_page');
     this.addWidgetDef(DownloadPopupWidget, '.dpx-download-popup');
     this.addWidgetDef(DownloadsList, '.download-list');
-    this.addWidgetDef(CommunityTopicPage, '#feedback_page');
+    this.addWidgetDef(CommunityTopicPage, '#community_page');
     // this is specifically on the view page, because the vote widget is managed
     // manually via the react component on the filter page
     this.addWidgetDef(CommunityVoteWidget, '#feedback_view .i-agree');

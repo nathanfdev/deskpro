@@ -14,7 +14,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 		this.wrapper = el;
 
 		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
-			prefId: 'feedback-filter',
+			prefId: 'community-filter',
 			resultId: this.meta.resultId,
 			refreshUrl: this.meta.refreshUrl,
 			prefSaveResultId: '0'
@@ -59,7 +59,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 		});
 		this.ownObject(this.sortingMenu);
 
-		this.listWrapper = $('section.feedback-simple-list', this.wrapper);
+		this.listWrapper = $('section.community-simple-list', this.wrapper);
 
 		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
 			contentListEl: this.listWrapper
@@ -79,7 +79,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 				var action = '';
 
 				switch (menuType) {
-					case 'feedback-status-menu':
+					case 'community-status-menu':
 
 						action = 'set-status';
 
@@ -89,7 +89,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 						});
 						break;
 
-					case 'feedback-category-menu':
+					case 'community-channel-menu':
 
 						action = 'set-category';
 
@@ -100,7 +100,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 
 						break;
 
-					case 'feedback-massactions-menu':
+					case 'community-massactions-menu':
 
 						switch (itemEl.data('action')) {
 							case 'delete':

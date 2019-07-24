@@ -57,7 +57,7 @@
   <li>
     <a href="{{ portal_path(topic) }}">
       <span class="item-title">
-          <span class="feedback-count"><i class="fas fa-thumbs-up"></i>{{ topic.total_rating >= 0 ? (topic.total_rating > 0 ? '+' : '') : '-' }}{{ topic.total_rating }}</span>
+          <span class="community-count"><i class="fas fa-thumbs-up"></i>{{ topic.total_rating >= 0 ? (topic.total_rating > 0 ? '+' : '') : '-' }}{{ topic.total_rating }}</span>
           {{ topic.title }}
       </span>
       <p>{{ topic.getContentHtml()|html_content_preview(350) }}</p>

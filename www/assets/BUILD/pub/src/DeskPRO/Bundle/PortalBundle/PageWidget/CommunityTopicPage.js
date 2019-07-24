@@ -8,11 +8,11 @@ import { CommunityFilter } from '../React/Feedback/CommunityFilter';
 export class CommunityTopicPage extends PageWidget {
 
   init() {
-    this.addWidgetDef(CommunityTopicForm, '.feedback-form-interactive');
+    this.addWidgetDef(CommunityTopicForm, '.community-topic-form-interactive');
   }
 
   renderWidget() {
-    const $interactiveFilterSection = this.$element.find('.feedback-filter-interactive');
+    const $interactiveFilterSection = this.$element.find('.community-filter-interactive');
     $interactiveFilterSection.hide();
 
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter($interactiveFilterSection);

@@ -5,12 +5,12 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <article class="feedback main-feedback" id="feedback_view">
+    <article class="feedback main-community" id="feedback_view">
         {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
-        <div class="feedback-item">
+        <div class="community-topic">
             {%  include 'Theme:Community:rate_limit.submit_community_topic.s_controls_partial.html.twig' with {'topic': topic} %}
-            <div class="feedback-item-content">
-                <span class="feedback-status">
+            <div class="community-topic-content">
+                <span class="community-status">
                     {% if topic.status_category %}
                         <a href="{{ portal_path(topic.status_category) }}">
                             {{ object_phrase(topic.status_category) }}
@@ -22,7 +22,7 @@
                     {% endif %}
                 </span>
 
-                <span class="feedback-item-type"><a href="{{ portal_path(topic.channel) }}">{{ object_phrase(topic.channel) }}</a></span>
+                <span class="community-topic-type"><a href="{{ portal_path(topic.channel) }}">{{ object_phrase(topic.channel) }}</a></span>
 
                 <div class="header-buttons">
                     {% show community_topic_subscription_link %}
@@ -36,7 +36,7 @@
                     <p>{{ topic.getContentHtml()|raw }}</p>
                 </div>
 
-                <div class="feedback-item-meta">
+                <div class="community-topic-meta">
                     <ul>
                         <li><i class="fas fa-user"></i> {{ topic.person.display_name }}</li>
                         <li><a href="#comments"><i

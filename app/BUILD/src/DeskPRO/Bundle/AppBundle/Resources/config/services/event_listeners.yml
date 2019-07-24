@@ -79,7 +79,7 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback:
+  event_listener.doctrine.community_topic:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener
     arguments: ["@brand_stack"]
     tags:

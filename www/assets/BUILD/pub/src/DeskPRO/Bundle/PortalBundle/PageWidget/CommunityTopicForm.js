@@ -18,7 +18,7 @@ class CommunityTopicValueReader {
 export class CommunityTopicForm extends PageWidget {
 
   renderWidget() {
-    const $expandedForm = this.$element.find('.feedback-form-expanded');
+    const $expandedForm = this.$element.find('.community-topic-form-expanded');
     const $startBtn = this.$element.find('.feedback-selected-start');
     const $catSelect = this.$element.find('#new_feedback_category');
     const $communityTopicAttachments = this.$element.find('#new_feedback_more_attachments');

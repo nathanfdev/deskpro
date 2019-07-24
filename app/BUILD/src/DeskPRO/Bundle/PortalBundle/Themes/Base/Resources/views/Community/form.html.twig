@@ -2,7 +2,7 @@
 {{ form_start(form) }}
 
 {% if form.category is defined %}
-<div class="feedback-form">
+<div class="community-topic-form">
     {{ form_errors(form.category) }}
 
     <div class="main-input dpx-form">
@@ -14,7 +14,7 @@
 </div>
 {% endif %}
 
-<div class="feedback-form-expanded as-no-dpui dpx-form"{% if form_was_submitted %} data-do-show="true"{% endif %}>
+<div class="community-topic-form-expanded as-no-dpui dpx-form"{% if form_was_submitted %} data-do-show="true"{% endif %}>
     {% if is_user() %}
         <div>
             <div class="user-logged-in" href="#">

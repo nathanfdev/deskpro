@@ -161,7 +161,7 @@ class NewCommunityTopicType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'new_feedback';
+        return 'new_community_topic';
     }
 
     /**

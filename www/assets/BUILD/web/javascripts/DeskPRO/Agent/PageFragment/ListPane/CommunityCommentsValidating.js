@@ -5,7 +5,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityCommentsValidating = new Orb.Class(
 
 	updateCount: function(action, num) {
 		num = num || 1;
-		DeskPRO_Window.util.modCountEl($('#feedback_comments_validating_count'), action, num);
+		DeskPRO_Window.util.modCountEl($('#community_comments_validating_count'), action, num);
 		DeskPRO_Window.util.modCountEl($('.comments_validating_count_header', this.wrapper), action, num);
 		DeskPRO_Window.sections.community_section.recountBadge();
 	}

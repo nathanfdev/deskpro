@@ -20,7 +20,7 @@ pageMeta.isValidating = true;
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content full-page page-feedback-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
+<div class="layout-content full-page page-community-topic-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
 <div class="dp-page-content">
 <div class="delete-notice" {% if topic.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	{{ phrase('agent.community.community_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
@@ -50,7 +50,7 @@ pageMeta.baseId = '{{ baseId }}';
 			data-select-width="auto"
 			data-placeholder="{{ phrase('agent.general.add_a_label') }}"
 			value="{% for label in topic.labels %}{{ label.label }},{% endfor %}"
-			data-allow-new="{% if app.user.hasPerm('agent_publish.feedback_create_labels') %}1{% endif %}"
+			data-allow-new="{% if app.user.hasPerm('agent_publish.community_create_labels') %}1{% endif %}"
 		/>
 	</div>
 	<br class="clear" />
@@ -117,7 +117,7 @@ pageMeta.baseId = '{{ baseId }}';
                         {% set phrase_part %}
                         <span id="{{baseId}}_num_votes">{{ topic.num_ratings }}</span>
                         {% endset %}
-                        {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':topic.num_ratings}, true) }}
+                        {{ phrase('agent.community.count_votes', {'display_count':phrase_part,'count':topic.num_ratings}, true) }}
                     </span>
           </dd>
 
@@ -209,7 +209,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 			{# Tab: Comments #}
 			<div id="{{baseId}}_comments_tab" class="deskpro-tab-item content-tab-item comments-tab">
-				<div class="feedback-comments">
+				<div class="topic-comments">
 					<div class="full-tab-content">
 						<div class="messages-wrap" id="{{baseId}}_comments_wrap">
 							{% for comment in topic_comments %}

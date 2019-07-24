@@ -16,13 +16,13 @@
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_validatingcontent') }}">
 								<h3>{{ phrase('agent.community.community_topics_to_review') }}</h3>
-								<em class="counter list-counter" id="feedback_validating_count">{{ counts.community_topics_awaiting_validation|default(0) }}</em>
+								<em class="counter list-counter" id="community_validating_count">{{ counts.community_topics_awaiting_validation|default(0) }}</em>
 							</div>
 						</li>
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_validatingcomments') }}">
 								<h3>{{ phrase('agent.publish.comments_to_validate') }}</h3>
-								<em class="counter list-counter" id="feedback_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</em>
+								<em class="counter list-counter" id="community_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</em>
 							</div>
 						</li>
 					</ul>
@@ -31,7 +31,7 @@
 
             {% if (brands|length) > 1 %}
 				<section>
-					<select class="dp-select-widget-simple brand_id" name="brand_id" id="feedback_brand_id" style="width: 100%">
+					<select class="dp-select-widget-simple brand_id" name="brand_id" id="community_brand_id" style="width: 100%">
                         {% for brand in brands %}
 							<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
                                 {{ brand.name }}
@@ -40,31 +40,31 @@
 					</select>
 				</section>
             {% else %}
-				<input type="hidden" name="brand_id" id="feedback_brand_id" value="{{ brands[0].id }}" />
+				<input type="hidden" name="brand_id" id="community_brand_id" value="{{ brands[0].id }}" />
             {% endif %}
 
 			<section class="pane-section with-tabs last">
-				<nav class="pane-section-tabs" id="feedback_outline_tabstrip">
+				<nav class="pane-section-tabs" id="community_outline_tabstrip">
 					<ul>
-						<li style="width:33%;" data-tab-for="#feedback_outline_status"><span>{{ phrase('agent.general.status') }}</span></li>
-						<li style="width:33%;" data-tab-for="#feedback_outline_category"><span>{{ phrase('agent.general.type') }}</span></li>
-						<li style="width:33%;" data-tab-for="#feedback_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_status"><span>{{ phrase('agent.general.status') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_channel"><span>{{ phrase('agent.general.type') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
 					</ul>
 				</nav>
 
-				<section id="feedback_outline_status" class="deskpro-tab-item">
+				<section id="community_outline_status" class="deskpro-tab-item">
 					<ul class="nav-list nav-list-small">
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'active', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.community.status_active') }}</h3>
-								<em class="counter list-counter" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>
+								<em class="counter list-counter" id="community_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								{% for cat in active_status_cats %}
 									<li class="is-nav-item">
 										<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
 											<h3>{{ cat.title }}</h3>
-											<em class="counter list-counter" id="feedback_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</em>
+											<em class="counter list-counter" id="community_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</em>
 										</div>
 									</li>
 								{% endfor %}
@@ -73,14 +73,14 @@
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'closed', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.community.status_closed') }}</h3>
-								<em class="counter list-counter" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</em>
+								<em class="counter list-counter" id="community_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								{% for cat in closed_status_cats %}
 									<li class="is-nav-item">
 										<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
 											<h3>{{ cat.title }}</h3>
-											<em class="counter list-counter" id="feedback_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</em>
+											<em class="counter list-counter" id="community_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</em>
 										</div>
 									</li>
 								{% endfor %}
@@ -89,26 +89,26 @@
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.general.hidden') }}</h3>
-								<em class="counter list-counter" id="feedback_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</em>
+								<em class="counter list-counter" id="community_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								<li class="is-nav-item">
 									<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden.deleted', 'brand_id': selected_brand_id}) }}">
 										<h3>{{ phrase('agent.general.deleted') }}</h3>
-										<em class="counter list-counter" id="feedback_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</em>
+										<em class="counter list-counter" id="community_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</em>
 									</div>
 								</li>
 								<li class="is-nav-item">
 									<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden.spam', 'brand_id': selected_brand_id}) }}">
 										<h3>{{ phrase('agent.general.spam') }}</h3>
-										<em class="counter list-counter" id="feedback_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</em>
+										<em class="counter list-counter" id="community_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</em>
 									</div>
 								</li>
 							</ul>
 						</li>
 					</ul>
 				</section>
-				<section id="feedback_outline_category" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.categroies">
+				<section id="community_outline_channel" class="deskpro-tab-item" data-tab-trigger="#community_outline_tabstrip li.categroies">
 					<ul class="nav-list nav-list-small">
 						{% for channel in community_channels %}
 							<li
@@ -117,13 +117,13 @@
 							>
 								<div class="item" {% if channel.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':channel.id}) }}">
 									<h3>{{ channel.title }}</h3>
-									<em class="counter list-counter" id="feedback_cat_{{channel.id}}_count">{{ category_counts[channel.id]|default(0) }}</em>
+									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ category_counts[channel.id]|default(0) }}</em>
 								</div>
 							</li>
 						{% endfor %}
 					</ul>
 				</section>
-				<section id="feedback_outline_labels" class="deskpro-tab-item" data-tab-trigger="#feedback_outline_tabstrip li.labels">
+				<section id="community_outline_labels" class="deskpro-tab-item" data-tab-trigger="#community_outline_tabstrip li.labels">
 					<section class="labels-list" style="border-top:none;">
 						{% if community_tag_index|length %}
 							<table>
@@ -154,8 +154,8 @@
 		{% include 'AgentBundle:Community:window-search.html.twig' %}
 	</div>
 
-<div id="deskpro_window_feedback_templates" style="display: none;">
-	<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
+<div id="deskpro_window_community_templates" style="display: none;">
+	<ul id="community_custom_channel_menu" data-menu-type="community-channel-menu" data-menu-flag="copy-menu">
         {% for channel in app.getDataService('CommunityChannel').getRootNodes(selected_brand_id) %}
             {% if last_with_child %}
 				<li class="sep">-</li>
@@ -173,7 +173,7 @@
         {% endfor %}
 	</ul>
 
-	<ul id="feedback_status_menu" data-menu-type="feedback-status-menu" data-menu-flag="copy-menu">
+	<ul id="community_status_menu" data-menu-type="community-status-menu" data-menu-flag="copy-menu">
 		<li
 				class="status-new"
 				data-status-type="new"

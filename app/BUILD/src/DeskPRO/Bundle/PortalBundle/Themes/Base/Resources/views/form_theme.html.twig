@@ -395,7 +395,7 @@
 {% endblock ticket_message_attachment_collection_widget %}
 
 {# COMMUNITY TOPICS ATTACHMENTS #}
-{% block feedback_attachment_widget %}
+{% block community_attachment_widget %}
     {% if form.blob is defined %}
         {{ form_widget(form.blob) }}
         {{ form_errors(form.blob) }}
@@ -427,9 +427,9 @@
             {{ form_widget(form.blob_auth) }}
         </div>
     {% endif %}
-{% endblock feedback_attachment_widget %}
+{% endblock community_attachment_widget %}
 
-{% block feedback_attachment_collection_widget %}
+{% block community_attachment_collection_widget %}
     <div class="bucket">
         {% if prototype is defined %}
             {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
@@ -449,7 +449,7 @@
             </div>
         </div>
     </div>
-{% endblock feedback_attachment_collection_widget %}
+{% endblock community_attachment_collection_widget %}
 
 {# DISPLAY HTML #}
 {% block deskpro_display_html_widget %}

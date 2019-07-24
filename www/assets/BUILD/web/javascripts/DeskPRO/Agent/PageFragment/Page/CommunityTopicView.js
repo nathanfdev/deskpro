@@ -9,7 +9,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 	},
 
 	getAlertId: function() {
-		return 'feedback-row-' + this.meta.topic_id;
+		return 'community-topic-row-' + this.meta.topic_id;
 	},
 
 	initPage: function(el) {
@@ -275,7 +275,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 	destroyPage: function() {
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
-		var el = $('.feedback-editor-wrap', this.getEl('content_ed'));
+		var el = $('.community-topic-editor-wrap', this.getEl('content_ed'));
 		if (el && el.parentNode) {
 			el.parentNode.removeChild(el);
 		}
@@ -562,7 +562,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'editcommunitytopic',
-			listenOn: $('.feedback-editor-wrap:first', wrap)
+			listenOn: $('.community-topic-editor-wrap:first', wrap)
 		});
 		this.ownObject(this.editStateSaver);
 
@@ -571,8 +571,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 			var data = {
 				action: 'content',
-				content: $('.feedback-editor-wrap textarea:first', wrap).val(),
-				attach: $('.feedback-editor-wrap .edit-content-attach:first', wrap).val(),
+				content: $('.community-topic-editor-wrap textarea:first', wrap).val(),
+				attach: $('.community-topic-editor-wrap .edit-content-attach:first', wrap).val(),
 				blob_inline_ids: []
 			};
 
@@ -602,7 +602,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 		var self = this;
 
-		var edWrap = $('.feedback-editor-wrap', this.getEl('content_ed')).show();
+		var edWrap = $('.community-topic-editor-wrap', this.getEl('content_ed')).show();
 		$('.revert-default', edWrap).on('click', function() {
 			var def = $('textarea.edit-content-field-default').val();
 			$('textarea.edit-content-field').val(def);
@@ -610,8 +610,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			$('.revert-message-notice', edWrap).remove();
 		});
 
-		$('.feedback-content-wrap', this.getEl('content_ed')).hide();
-		$('.feedback-editor-wrap', this.getEl('content_ed')).show();
+		$('.community-topic-content-wrap', this.getEl('content_ed')).hide();
+		$('.community-topic-editor-wrap', this.getEl('content_ed')).show();
 
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
@@ -669,10 +669,10 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		this.getEl('edit_btn').show();
 		this.getEl('save_btn').hide();
 		this.getEl('cancel_btn').hide();
-		$('.feedback-editor-wrap', this.getEl('content_ed')).hide();
-		$('.feedback-content-wrap', this.getEl('content_ed')).show();
+		$('.community-topic-editor-wrap', this.getEl('content_ed')).hide();
+		$('.community-topic-content-wrap', this.getEl('content_ed')).show();
 		this.updateUi();
-		$('.feedback-content-wrap a').each(function(){
+		$('.community-topic-content-wrap a').each(function(){
 			$(this).attr('target', '_blank');
 		});
 	},

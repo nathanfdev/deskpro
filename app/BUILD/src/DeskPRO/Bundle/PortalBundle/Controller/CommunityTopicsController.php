@@ -247,10 +247,10 @@ class CommunityTopicsController extends AbstractController
         $this->getEm()->flush();
 
         if ($newCommunityTopic->isVisibleOnPortal()) {
-            $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_posted'));
+            $this->addFlash('success', $this->phrase('portal.flashes.new_community_topic_posted'));
             $destination = $this->getObjectRouter()->getPortalPath($newCommunityTopic);
         } else {
-            $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
+            $this->addFlash('success', $this->phrase('portal.flashes.new_community_topic_awaiting_review'));
             $destination = $this->generateUrl('portal_community');
         }
 
@@ -424,7 +424,7 @@ class CommunityTopicsController extends AbstractController
     public function viewAction(Request $request, CommunityTopic $item, $visitor_id)
     {
         if (!$item->isVisibleOnPortal()) {
-            throw $this->createNotFoundException('this feedback item is hidden');
+            throw $this->createNotFoundException('this community topic is hidden');
         }
 
         // COMMENT FORM
@@ -518,7 +518,7 @@ class CommunityTopicsController extends AbstractController
         if (!$this->isGranted('USE_COMMUNITY')) {
             throw $this->createAccessDeniedException($this->phrase('portal.community.module_forbidden'));
         }
-        if (!$this->isGranted('RATE_FEEDBACK', $item)) {
+        if (!$this->isGranted('RATE_COMMUNITY', $item)) {
             if ($this->getUser()) {
                 throw $this->createAccessDeniedException($this->phrase('portal.community.rate_forbidden'));
             }
@@ -532,7 +532,7 @@ class CommunityTopicsController extends AbstractController
                     ]
                 );
             } else {
-                $this->addFlash('notice', $this->phrase('portal.flashes.feedback_login'));
+                $this->addFlash('notice', $this->phrase('portal.flashes.community_login'));
 
                 return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $item->getSlug()])]);
             }
@@ -573,7 +573,7 @@ class CommunityTopicsController extends AbstractController
     public function articleSubscriptionAction(CommunityTopic $item)
     {
         if (!$item->isVisibleOnPortal()) {
-            throw $this->createNotFoundException('this feedback item is hidden');
+            throw $this->createNotFoundException('this community topic is hidden');
         }
 
         $person              = $this->getUser();
@@ -581,10 +581,10 @@ class CommunityTopicsController extends AbstractController
 
         if ($subscriptionsHelper->isSubscribedContent($item, $person)) {
             $subscriptionsHelper->unsubscribeFromContent($item, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe'));
+            $this->addFlash('success', $this->phrase('portal.flashes.community_unsubscribe'));
         } else {
             $subscriptionsHelper->subscribeToContent($item, $person);
-            $this->addFlash('success', $this->phrase('portal.flashes.feedback_subscribe'));
+            $this->addFlash('success', $this->phrase('portal.flashes.community_subscribe'));
         }
 
         return $this->redirectToRoute('portal_community_topic_view', ['slug' => $item->getSlug()]);
@@ -623,7 +623,7 @@ class CommunityTopicsController extends AbstractController
     {
         $this->getSubscriptionsHelper()->unsubscribeFromAll('community', $this->getUser());
 
-        $this->addFlash('success', $this->phrase('portal.flashes.feedback_unsubscribe_everything'));
+        $this->addFlash('success', $this->phrase('portal.flashes.community_unsubscribe_everything'));
 
         return $this->redirectToRoute('portal_home');
     }

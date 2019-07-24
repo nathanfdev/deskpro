@@ -94,7 +94,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityContentValidating = new Orb.Class({
 			});
 
 			DeskPRO_Window.util.modCountEl($('#validation-list-header-count', self.wrapper), '-', el.length);
-			DeskPRO_Window.util.modCountEl($('#feedback_validating_count'), '-', el.length);
+			DeskPRO_Window.util.modCountEl($('#community_validating_count'), '-', el.length);
 		}
 		DeskPRO_Window.sections.community_section.recountBadge();
 	}

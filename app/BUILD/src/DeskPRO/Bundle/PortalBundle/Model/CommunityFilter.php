@@ -115,7 +115,7 @@ class CommunityFilter
     public function setStatus($status)
     {
         if (!in_array($status, static::$statuses)) {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid feedback filter status', $status));
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid community filter status', $status));
         }
 
         $this->status = $status;
@@ -167,7 +167,7 @@ class CommunityFilter
     public function setSort($sort)
     {
         if (!in_array($sort, static::$sorts)) {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid feedback filter sort', $sort));
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid community filter sort', $sort));
         }
 
         $this->sort = $sort;
@@ -188,7 +188,7 @@ class CommunityFilter
     {
         if (!in_array($sort_direction, static::$sort_directions)
         ) {
-            throw new \InvalidArgumentException(sprintf('"%s" is not a valid feedback filter sort direction', $sort_direction));
+            throw new \InvalidArgumentException(sprintf('"%s" is not a valid community filter sort direction', $sort_direction));
         }
 
         $this->sort_direction = $sort_direction;

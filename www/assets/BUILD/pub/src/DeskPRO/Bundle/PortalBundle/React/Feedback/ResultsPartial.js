@@ -58,13 +58,13 @@ export class ResultsPartial extends React.Component {
     });
 
     // add events to "I Agree"
-    $results.find('.feedback-item-controls a.i-agree').each((i, item) => {
+    $results.find('.community-topic-controls a.i-agree').each((i, item) => {
       const w = new CommunityVoteWidget($(item));
       w.render();
     });
 
     // add events to status category links
-    $results.find('.feedback-item-content .feedback-status a').each((i, item) => {
+    $results.find('.community-topic-content .community-status a').each((i, item) => {
       $(item).on('click', (event) => {
         event.preventDefault();
         this.setStatusCategory($(item).data('id'));

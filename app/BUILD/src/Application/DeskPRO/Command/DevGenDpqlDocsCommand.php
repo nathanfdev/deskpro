@@ -37,7 +37,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'labels_articles'             => 'Labels for knowledgebase articles',
             'labels_chat_conversations'   => 'Labels for chats',
             'labels_downloads'            => 'Labels for downloads',
-            'labels_feedback'             => 'Labels for feedback and suggestions',
+            'labels_community_topics'     => 'Labels for community topics',
             'labels_news'                 => 'Labels for news entries',
             'labels_organizations'        => 'Labels for organizations',
             'labels_people'               => 'Labels for registered people',

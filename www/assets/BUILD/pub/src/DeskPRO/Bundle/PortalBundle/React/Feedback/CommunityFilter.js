@@ -79,7 +79,7 @@ export class CommunityFilter extends React.Component {
 
   render() {
     return (
-      <article className="feedback-filter-interactive">
+      <article className="community-filter-interactive">
         <FilterControls
           filterModel={this.state.filter}
           available={this.state.available}

@@ -1,5 +1,5 @@
 <div class="full-tab-content">
-	<div class="feedback-content-wrap content-post-wrap">
+	<div class="community-topic-content-wrap content-post-wrap">
 		{{ topic.content_html|raw }}
 		{% if topic.attachments|length %}
 			<ul class="attachment-list">
@@ -15,15 +15,15 @@
 			</ul>
 		{%endif%}
 	</div>
-	<div class="feedback-editor-wrap article-editor-wrap" style="display: none">
-		<div class="feedback-editor">
+	<div class="community-topic-editor-wrap article-editor-wrap" style="display: none">
+		<div class="community-editor">
 			{% if state.topic.content %}
 				<div class="revert-message-notice">
 					{{ phrase('agent.general.unsaved_changes_were_restored') }} <button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
 					<br />
 				</div>
 			{% endif %}
-			<textarea class="edit-content-field" name="feedback[content]" rows="5" cols="50">{{ state.topic.content|default(topic.content) }}</textarea>
+			<textarea class="edit-content-field" name="topic[content]" rows="5" cols="50">{{ state.topic.content|default(topic.content) }}</textarea>
 			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newcommunitytopic[attach][]'} %}
 			<h6>{{ phrase('agent.general.attachments') }}</h6>
 			<div class="file-input">

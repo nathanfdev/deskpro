@@ -5145,10 +5145,10 @@ h1.fancy-header {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Feedback
+// Community
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-.feedback-filter {
+.community-filter {
   .flat-tabs {
     select {
       width: 120px;
@@ -5404,7 +5404,7 @@ h1.fancy-header {
   }
 }
 
-.feedback-form {
+.community-topic-form {
   .main-input {
     @include clearfix;
     @include margin-left(15px);
@@ -5459,7 +5459,7 @@ h1.fancy-header {
   }
 }
 
-.feedback-form-expanded {
+.community-topic-form-expanded {
   position: relative;
   top: -30px;
   @include left(20px);
@@ -5507,14 +5507,14 @@ h1.fancy-header {
   }
 }
 
-.main-feedback {
+.main-community {
   margin-top: 10px;
   .table-meta {
     top: -10px;
   }
   // Silly gfix to align the table controls to the flat tabs
 
-  .feedback-item {
+  .community-topic {
     @include clearfix;
 
     td {
@@ -5530,8 +5530,8 @@ h1.fancy-header {
       border-bottom: 0;
     }
 
-    &.feedback-list-item {
-      .feedback-item-content {
+    &.community-topic-list-item {
+      .community-topic-content {
         @media screen and (max-width: 760px) {
           .comment {
             display: none;
@@ -5541,7 +5541,7 @@ h1.fancy-header {
             display: none;
           }
 
-          .feedback-item-meta {
+          .community-topic-meta {
             display: none;
           }
         }
@@ -5558,7 +5558,7 @@ h1.fancy-header {
     }
   }
 
-  .feedback-item-controls, .feedback-item-content {
+  .community-topic-controls, .community-topic-content {
     display: block;
     padding-top: 0;
     padding-bottom: 10px;
@@ -5574,7 +5574,7 @@ h1.fancy-header {
   }
 
 
-  .feedback-status, .feedback-item-type {// Tags for feedback items
+  .community-status, .community-topic-type {// Tags for feedback items
     display: inline-block;
     float: $float-right;
     padding: 1px 10px;
@@ -5594,7 +5594,7 @@ h1.fancy-header {
     }
   }
 
-  .feedback-item-type {
+  .community-topic-type {
     background: darken($page-bg, 5%);
     float: $float-left;
     @include margin-right(10px);
@@ -5602,10 +5602,10 @@ h1.fancy-header {
   }
 
   @media screen and (max-width: 760px) {
-    .feedback-status, .feedback-item-type { float: none; }
+    .community-status, .community-topic-type { float: none; }
   }
 
-  .feedback-item-controls {
+  .community-topic-controls {
     float: $float-left;
     width: 105px;
 
@@ -5774,7 +5774,7 @@ h1.fancy-header {
     // }
   }
 
-  .feedback-item-content {
+  .community-topic-content {
     overflow: hidden;
     @include padding-left(10px);
     @include border-left(1px solid $hr-border);
@@ -5825,7 +5825,7 @@ h1.fancy-header {
   }
 
   @media screen and (max-width: 760px) {
-    .feedback-item-controls, .feedback-item-content {
+    .community-topic-controls, .community-topic-content {
       float: none;
       width: 100%;
       overflow: initital;
@@ -5835,7 +5835,7 @@ h1.fancy-header {
       border: 0;
     }
 
-    .feedback-item-content {
+    .community-topic-content {
       h1 {
         font-size: 1.25em;
         margin-top: 10px;
@@ -5843,7 +5843,7 @@ h1.fancy-header {
     }
   }
 
-  .feedback-item-meta {
+  .community-topic-meta {
     margin-top: 15px;
     color: $text-color-lighter;
     font-size: $font-size-base;
@@ -5869,7 +5869,7 @@ h1.fancy-header {
 }
 
 // Small feedback list
-.front-page-feedback {
+.front-page-community {
   @include remove-link-styling;
 
   ul {
@@ -11780,7 +11780,7 @@ body.portal-mode-focus-window {
         font-size: $font-size-base;
       }
 
-      .feedback-count {
+      .community-count {
         color: $text-color-lighter;
         @include margin-right(5px);
         display: inline-block;
