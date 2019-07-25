@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -331,6 +332,7 @@ class SelectPart
         'voice_queues'                      => VoiceQueue::class,
         'voice_queue_agents'                => VoiceQueueAgent::class,
         'voice_recordings'                  => VoiceRecording::class,
+        'agent_data'                        => AgentData::class,
     ];
 
     /**
