@@ -180,7 +180,7 @@ GROUP BY %2:FIELD_GROUP:chats:chat_conversations%',
                 'title' => 'Number of chats missed <1:date group, default: this_month> grouped by <2:field group:chats, default: department> <chart:bar>',
             ],
 
-        'number-com-topics-com-created-date-group-by-feedback' => [
+        'number-com-topics-com-created-date-group-by-community-topic' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '30',
@@ -188,8 +188,8 @@ GROUP BY %2:FIELD_GROUP:chats:chat_conversations%',
 SELECT COUNT() AS \'Comments Created\'
 FROM community_topics_comments
 WHERE community_topics_comments.date_created = %1:DATE_GROUP%
-GROUP BY %2:FIELD_GROUP:feedback:community_topics_comments.topic%',
-                'title' => 'Number of feedback comments created <1:date group, default: this_month> grouped by feedback <2:field group:feedback, default: type> <chart:bar>',
+GROUP BY %2:FIELD_GROUP:community_topics:community_topics_comments.topic%',
+                'title' => 'Number of community topic comments created <1:date group, default: this_month> grouped by feedback <2:field group:community, default: type> <chart:bar>',
             ],
 
         'number-community-topic-comments-created-date-group-by-x' => [
@@ -212,8 +212,8 @@ GROUP BY %2:FIELD_GROUP:community_topic_comments%',
 SELECT COUNT() AS \'Entries Created\'
 FROM community_topics
 WHERE community_topics.date_created = %1:DATE_GROUP%
-GROUP BY %2:FIELD_GROUP:feedback%',
-                'title' => 'Number of community topics created <1:date group, default: this_month> grouped by <2:field group:feedback, default: type> <chart:bar>',
+GROUP BY %2:FIELD_GROUP:community_topics%',
+                'title' => 'Number of community topics created <1:date group, default: this_month> grouped by <2:field group:community_topics, default: type> <chart:bar>',
             ],
 
         'number-community-topic-votes-submitted-date-x-group-y' => [
@@ -224,8 +224,8 @@ GROUP BY %2:FIELD_GROUP:feedback%',
 SELECT COUNT() AS \'Ratings\'
 FROM community_topics
 WHERE community_topics.ratings.date_created = %1:DATE_GROUP%
-GROUP BY %2:FIELD_GROUP:feedback%',
-                'title' => 'Number of feedback votes submitted <1:date group, default: this_month> grouped by <2:field group:feedback, default: type> <chart:bar>',
+GROUP BY %2:FIELD_GROUP:community_topics%',
+                'title' => 'Number of community topic votes submitted <1:date group, default: this_month> grouped by <2:field group:community_topics, default: type> <chart:bar>',
             ],
 
         'number-ticket-messages-written-agent-day' => [
