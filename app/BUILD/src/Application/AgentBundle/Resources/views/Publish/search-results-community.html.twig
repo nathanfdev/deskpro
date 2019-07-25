@@ -29,7 +29,7 @@
 		<section class="search-results page-set" data-page="{{ page }}">
 			{% for topic in results %}
 				<article
-					class="row-item feedback feedback-{{topic.id}} community-topic-{{topic.id}} related-is-linkable"
+					class="row-item community community-{{topic.id}} community-topic-{{topic.id}} related-is-linkable"
 					data-content-type="community"
 					data-content-id="{{ topic.id }}"
 					data-route="page:{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}"

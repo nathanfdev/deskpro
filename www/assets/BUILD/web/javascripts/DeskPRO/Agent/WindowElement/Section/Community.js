@@ -9,7 +9,7 @@ DeskPRO.Agent.WindowElement.Section.Community = new Orb.Class({
 
 		this.urlFragmentName = 'community';
 
-		this.setSectionElement($('<section id="feedback_outline"></section>'));
+		this.setSectionElement($('<section id="community_outline"></section>'));
 
 		DeskPRO_Window.getSectionData('community_section', this._initSection.bind(this));
 

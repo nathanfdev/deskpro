@@ -235,7 +235,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 
 					row.data('community-topic-id', topic.id);
 					row.attr('community-topic-id', topic.id);
-					row.addClass('feedback-' + topic.id);
+					row.addClass('community-' + topic.id);
           row.find('.community-channel').text(topic.type);
 
 					if (self.exclude.indexOf(topic.id) > -1) {

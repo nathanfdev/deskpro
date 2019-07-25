@@ -162,7 +162,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 		this.resultsHelper = new DeskPRO.Agent.PageHelper.Results(this, opt);
 		this.ownObject(this.resultsHelper);
 
-		this.enableHighlightOpenRows('feedback', 'feedback_id', 'article.feedback-');
+		this.enableHighlightOpenRows('community', 'community_topic_id', 'article.community-');
 
 		this.listNav = new DeskPRO.Agent.PageHelper.ListNav(this);
 	}

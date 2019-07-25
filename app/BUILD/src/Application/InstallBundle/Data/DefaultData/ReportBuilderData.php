@@ -192,7 +192,7 @@ GROUP BY %2:FIELD_GROUP:feedback:community_topics_comments.topic%',
                 'title' => 'Number of feedback comments created <1:date group, default: this_month> grouped by feedback <2:field group:feedback, default: type> <chart:bar>',
             ],
 
-        'number-feedback-comments-created-date-group-by-x' => [
+        'number-community-topic-comments-created-date-group-by-x' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '20',
@@ -201,10 +201,10 @@ SELECT COUNT() AS \'Comments Created\'
 FROM community_topics_comments
 WHERE community_topics_comments.date_created = %1:DATE_GROUP%
 GROUP BY %2:FIELD_GROUP:community_topic_comments%',
-                'title' => 'Number of feedback comments created <1:date group, default: this_month> grouped by <2:field group:community_topic_comments, default: none> <chart:bar>',
+                'title' => 'Number of community topic comments created <1:date group, default: this_month> grouped by <2:field group:community_topic_comments, default: none> <chart:bar>',
             ],
 
-        'number-feedback-created-date-group-by-x' => [
+        'number-community-topics-created-date-group-by-x' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '10',
@@ -213,10 +213,10 @@ SELECT COUNT() AS \'Entries Created\'
 FROM community_topics
 WHERE community_topics.date_created = %1:DATE_GROUP%
 GROUP BY %2:FIELD_GROUP:feedback%',
-                'title' => 'Number of feedback entries created <1:date group, default: this_month> grouped by <2:field group:feedback, default: type> <chart:bar>',
+                'title' => 'Number of community topics created <1:date group, default: this_month> grouped by <2:field group:feedback, default: type> <chart:bar>',
             ],
 
-        'number-feedback-votes-submitted-date-x-group-y' => [
+        'number-community-topic-votes-submitted-date-x-group-y' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '60',
@@ -405,7 +405,7 @@ ORDER BY COUNT() DESC',
                 'title' => 'Number of views per article <1:date group, default: this_month>',
             ],
 
-        'number-views-per-feedback-date-x' => [
+        'number-views-per-community-topic-date-x' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '50',

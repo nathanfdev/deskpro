@@ -60,7 +60,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkCommunityTopic = new Orb.Class(
 			var isSubscribeOwner = wrapper.find("#is_subscribe_owner").is(":checked");
       var isSubscribeParticipants = wrapper.find("#is_subscribe_participants").is(":checked");
 
-			if (confirm("Are you sure you want to link the current ticket to this feedback?")) {
+			if (confirm("Are you sure you want to link the current ticket to this community topic?")) {
 
         wrapper.find('.loading-on').show();
         sb.close();

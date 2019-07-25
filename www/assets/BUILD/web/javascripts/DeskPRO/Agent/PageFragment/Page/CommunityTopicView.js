@@ -638,7 +638,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			var list = $('.file-list', this.wrapper);
 
 			DeskPRO_Window.util.fileupload(this.wrapper, {
-				url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=feedback&object_id=' + this.meta.topic_id,
+				url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=community_topic&object_id=' + this.meta.topic_id,
 				page: this
 			});
 
@@ -706,8 +706,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 	},
 
 	showCompareRev: function() {
-		var old_id = $('.feedback-revs input.old:checked', this.wrapper).val();
-		var new_id = $('.feedback-revs input.new:checked', this.wrapper).val();
+		var old_id = $('.revisions-tab input.old:checked', this.wrapper).val();
+		var new_id = $('.revisions-tab input.new:checked', this.wrapper).val();
 
 		if (!old_id || !new_id) {
 			return;

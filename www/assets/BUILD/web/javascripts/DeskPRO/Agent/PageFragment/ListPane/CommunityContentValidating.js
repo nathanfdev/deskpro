@@ -78,7 +78,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityContentValidating = new Orb.Class({
 		});
 		this.ownObject(this.selectionBar);
 
-		this.enableHighlightOpenRows('feedback', 'feedback_id', '.row-item.feedback-');
+		this.enableHighlightOpenRows('community', 'community_topic_id', '.row-item.community-');
 	},
 
 	listRemove: function(el) {
