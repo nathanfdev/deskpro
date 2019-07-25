@@ -103,20 +103,6 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 $this->em->persist($recording);
                 $this->em->flush();
-
-                $context = new SideloadSerializationContext();
-                $context->setIncludes(['recording_enabled']);
-                $context->setInlineSideloads(true);
-
-                $serializedData = $this->serializer->toArray(new ApiWrapper($recording->getPhoneCall()), $context);
-
-                $this->dispatcher->dispatch(
-                    LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent(
-                        'agent.voice.recording_status',
-                        ['data' => $serializedData]
-                    )
-                );
             } elseif (isset($data['voicemail_recording_id'])) {
                 /** @var VoiceMissedAgentCall $recording */
                 $recording = $this->em->getRepository(VoiceMissedAgentCall::class)->find($data['voicemail_recording_id']);

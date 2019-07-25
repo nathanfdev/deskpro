@@ -201,6 +201,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $dateEnded;
 
     /**
+     * @ORM\JoinColumn(name="full_recording_id", referencedColumnName="id", nullable=true, onDelete="CASCADE",
+     *     unique=true, columnDefinition=null)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", cascade={"persist", "detach"},
+     *     fetch="EAGER")
+     *
+     * @var VoiceRecording|null
+     */
+    private $fullRecording = null;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
      *
      * @var VoiceRecording[]|ArrayCollection
@@ -1081,5 +1091,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getConferenceName()
     {
         return 'conference'.$this->getId();
+    }
+
+    /**
+     * @return VoiceRecording|null
+     */
+    public function getFullRecording()
+    {
+        return $this->fullRecording;
+    }
+
+    /**
+     * @param VoiceRecording $fullRecording
+     */
+    public function setFullRecording($fullRecording)
+    {
+        $this->fullRecording = $fullRecording;
     }
 }

@@ -10,6 +10,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
 use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\CheckVoiceWorkers;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\MergeVoiceRecordings;
 use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\RunTaskRouter;
 
 /**
@@ -365,6 +366,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Background job to evaluate task router',
             'job_class'    => RunTaskRouter::class,
             'run_interval' => RunTaskRouter::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'merge_voice_recordings',
+            'worker_group' => 'voice',
+            'title'        => 'Merge voice recordings',
+            'description'  => 'Check if all recordings are downloaded and merge them into one file',
+            'job_class'    => MergeVoiceRecordings::class,
+            'run_interval' => MergeVoiceRecordings::DEFAULT_INTERVAL,
         ];
 
         //------------------------------

@@ -139,6 +139,13 @@ class VoicePhoneCall
     private $recordings;
 
     /**
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceRecording")
+     *
+     * @var VoiceRecording
+     */
+    private $fullRecording;
+
+    /**
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall")
      *
      * @var VoiceMissedAgentCall
@@ -225,6 +232,7 @@ class VoicePhoneCall
         $this->dateStarted        = $phoneCall->getDateStarted();
         $this->dateEnded          = $phoneCall->getDateEnded();
         $this->recordings         = $phoneCall->getRecordings();
+        $this->fullRecording      = $phoneCall->getFullRecording();
         $this->agentVoicemail     = $phoneCall->getAgentVoicemailRecord();
         $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
