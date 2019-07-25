@@ -395,7 +395,7 @@ export const voiceBootstrap = createAction(
 
 export const makeOutboundCall = createAction(
   'VOICE_AGENT_MAKE_OUTBOUND_PHONE_CALL',
-  (callFrom, callTo, ticketId = null) => (dispatch, getState) => {
+  (callFrom, callTo, ticketId = null, personId = null) => (dispatch, getState) => {
     const state   = getState();
     const me      = meSelector(state);
     const agentId = me.get('id');
@@ -403,7 +403,8 @@ export const makeOutboundCall = createAction(
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
       call_to:   callTo,
-      ticket:    ticketId
+      ticket:    ticketId,
+      person:    personId
     });
 
     dispatch(waitingConnection());

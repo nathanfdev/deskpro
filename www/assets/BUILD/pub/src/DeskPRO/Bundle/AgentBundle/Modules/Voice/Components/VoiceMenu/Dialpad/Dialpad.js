@@ -39,7 +39,8 @@ class Dialpad extends React.Component {
         value: {
           call_from: callFrom,
           call_to:   '',
-          ticket:    null
+          ticket:    null,
+          person:    null
         },
         errorList: {},
         onChange:  this.onChange
@@ -159,7 +160,7 @@ class Dialpad extends React.Component {
       return;
     }
 
-    const promise = makeCall(value.call_from, value.call_to, value.ticket);
+    const promise = makeCall(value.call_from, value.call_to, value.ticket, value.person);
     if (!promise) {
       return;
     }
