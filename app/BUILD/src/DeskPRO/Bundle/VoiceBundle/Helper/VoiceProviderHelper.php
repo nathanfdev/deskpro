@@ -134,7 +134,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
             }
         }
 
-        if (!$phoneCall->isVoicemail()) {
+        if (!$phoneCall->isVoicemail() && !$phoneCall->isFailed()) {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
             $this->em->flush();
         }

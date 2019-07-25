@@ -229,6 +229,8 @@ class TwilioCallbacksController extends BaseController
                 // for real time ui updates
                 $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
             }
+        } elseif ($callStatus === 'failed') {
+            $this->get('dp.voice.callbacks_helper')->callFailed($callSid, $details);
         }
     }
 
@@ -1395,7 +1397,10 @@ class TwilioCallbacksController extends BaseController
 
             $this->get('event_dispatcher')->dispatch(
                 LegacySystemEvent::EVENT_NAME,
-                new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
+                new LegacySystemEvent('agent.voice.outgoing-provider-error', [
+                    'call_id' => $phoneCall->getId(),
+                    'errors'  => $errorMessage,
+                ])
             );
 
             $twiml->hangup();

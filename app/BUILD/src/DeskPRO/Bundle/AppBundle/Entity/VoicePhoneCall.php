@@ -41,6 +41,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const STATUS_ENDED         = 'ended';
     const STATUS_CANCELED      = 'canceled';
     const STATUS_VOICEMAIL     = 'voicemail';
+    const STATUS_FAILED        = 'failed';
 
     const DIRECTION_INBOUND  = 'inbound';
     const DIRECTION_OUTBOUND = 'outbound';
@@ -519,6 +520,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function isEnded()
     {
         return $this->status === self::STATUS_ENDED;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFailed()
+    {
+        return $this->status === self::STATUS_FAILED;
     }
 
     /**

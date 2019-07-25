@@ -16,6 +16,7 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@dp.voice.task_router.storage"
       - "@brand_aware_settings_resolver"
+      - "@form_error.error_code_generator.api"
       - "@event_dispatcher"
       - "@dp.voice.logger"
 

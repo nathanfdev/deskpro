@@ -245,12 +245,18 @@ export const voiceBootstrap = createAction(
             hangupConnection(connection);
           }
         });
-        messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (errors) => {
+        messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (data) => {
           const state = getState();
           const outgoingCall = outgoingCallSelector(state);
+          const connections = connectionsSelector(state);
+          const connection = connections.filter(c => filterConnection(c, data.call_id)).first();
+
+          if (connection) {
+            hangupConnection(connection);
+          }
           if (outgoingCall) {
             dispatch(resetOutgoingCall());
-            window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), errors);
+            window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), data.errors);
           }
         });
         messageBroker.addMessageListener('agent.voice.worker-idle', (data) => {

@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendantDialNumber;
@@ -22,6 +23,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
+use DeskPRO\Bundle\AppBundle\Form\Error\ExceptionErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
@@ -106,6 +109,11 @@ class VoiceCallbacksHelper
     private $settingsResolver;
 
     /**
+     * @var ExceptionErrorsGenerator
+     */
+    private $errorsGenerator;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
@@ -131,6 +139,7 @@ class VoiceCallbacksHelper
      * @param VoiceTaskHelper            $taskHelper
      * @param StorageAdapterInterface    $storageAdapter
      * @param BrandAwareSettingsResolver $settingsResolver
+     * @param ExceptionErrorsGenerator   $errorsGenerator
      * @param EventDispatcherInterface   $dispatcher
      * @param LoggerInterface            $logger
      */
@@ -148,6 +157,7 @@ class VoiceCallbacksHelper
         VoiceTaskHelper            $taskHelper,
         StorageAdapterInterface    $storageAdapter,
         BrandAwareSettingsResolver $settingsResolver,
+        ExceptionErrorsGenerator   $errorsGenerator,
         EventDispatcherInterface   $dispatcher,
         LoggerInterface            $logger
     ) {
@@ -164,6 +174,7 @@ class VoiceCallbacksHelper
         $this->taskHelper            = $taskHelper;
         $this->storageAdapter        = $storageAdapter;
         $this->settingsResolver      = $settingsResolver;
+        $this->errorsGenerator       = $errorsGenerator;
         $this->dispatcher            = $dispatcher;
         $this->logger                = $logger;
     }
@@ -781,6 +792,64 @@ class VoiceCallbacksHelper
                 'call_sid' => $phoneCall->getCallSid(),
             ])
         );
+    }
+
+    /**
+     * @param string $callSid
+     * @param array  $details
+     */
+    public function callFailed($callSid, array $details)
+    {
+        if (!$callSid) {
+            return;
+        }
+
+        /** @var AbstractVoicePhoneCallParticipant $participant */
+        $participant = $this->em->getRepository(AbstractVoicePhoneCallParticipant::class)->findOneBy([
+            'callSid' => $callSid,
+        ]);
+
+        if (!$participant) {
+            return;
+        }
+
+        /** @var VoicePhoneCall $phoneCall */
+        $phoneCall = $participant->getPhoneCall();
+
+        // set participant leave event time
+        $participant->setDateLeft(new \DateTime());
+        $this->em->persist($participant);
+        $this->em->flush();
+
+        // log agent ends the call
+        $log = new VoicePhoneCallLog();
+        $log
+            ->setDetails($details)
+            ->setPerson($participant->getPerson())
+            ->setPhoneCall($participant->getPhoneCall())
+            ->setActionType(VoicePhoneCallLog::ACTION_FAILED)
+        ;
+
+        $this->em->persist($log);
+        $this->em->flush();
+
+        if ($phoneCall->isOutgoingCall() && $participant instanceof VoicePhoneCallParticipantUser) {
+            // mark the phone call as finished
+            $phoneCall->setDateEnded(new \DateTime());
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_FAILED);
+
+            $this->em->flush();
+            $this->taskRouter->endTask($phoneCall->getTaskSid());
+
+            $errorMessage = $this->errorsGenerator->generateByErrorCode(ErrorsCodes::VOICE_INVALID_NUMBER, [], ['call_to']);
+            $this->dispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.outgoing-provider-error', [
+                    'call_id' => $phoneCall->getId(),
+                    'errors'  => $errorMessage,
+                ])
+            );
+        }
     }
 
     /**
