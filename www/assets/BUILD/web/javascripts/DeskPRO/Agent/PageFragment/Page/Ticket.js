@@ -1677,7 +1677,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }
 
     if (window.DP_HAS_FOLLOW_UP) {
-      window.AgentLegacyBundle.unmountEmbeddedReactNode(self.getEl('follow_ups_wrap')[0]);
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(this.getEl('follow_ups_wrap')[0]);
     }
 
     this.valueForm = null;

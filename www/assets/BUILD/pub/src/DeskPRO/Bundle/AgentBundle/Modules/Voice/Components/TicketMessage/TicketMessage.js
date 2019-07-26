@@ -76,7 +76,7 @@ class TicketMessage extends React.Component {
     const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
 
     let transcription = '';
-    if (fullRecording.get('transcription')) {
+    if (fullRecording && fullRecording.get('transcription')) {
       transcription = `${transcription} ${fullRecording.get('transcription')}`;
     }
 
