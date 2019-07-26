@@ -526,6 +526,7 @@ class KbController extends AbstractController
                 $data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', [
                     'article' => $article,
                     'content' => $content,
+                    'baseId'  => $this->in->getString('base_id'),
                 ]);
                 if ($restartReviewDate) {
                     $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [

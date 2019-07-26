@@ -926,9 +926,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			if (!this.wrapper.find('.revert-default')[0]) {
 				var def = this.wrapper.find('textarea.edit-content-field-default').val();
 				this.wrapper.find('textarea.edit-content-field').val(def);
-				if (this.rte) {
+				if (this.rte.current) {
+          // this.rte.current.editor.current.reactEditor.current.editor
+
+				} else if (this.rte) {
 					this.rte.val(def);
-				}
+        }
 			}
 		}).bind(this));
 
@@ -970,67 +973,92 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();
 
-		var data = [];
-		data.push({
-			name: 'action',
-			value: 'content'
-		});
-		data.push({
-			name: 'content',
-				value: $('.article-editor-wrap textarea:first', wrap).val()
-		});
-		data.push({
-			name: 'language_id',
-				value: wrap.find('.article-editor-wrap').find('.language_id').val()
-		});
-		data.push({
-			name: 'restart-review-date',
-				value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
-		});
-
-		$('input.edit-content-attach:checked', wrap).each(function() {
+			var data = [];
 			data.push({
-				name: 'attach[]',
-				value: $(this).val()
+				name: 'action',
+				value: 'content'
 			});
-		});
-
-		$('input[name="blob_inline_ids[]"]', wrap).each(function() {
-			data.push({
-				name: 'blob_inline_ids[]',
-				value: $(this).val()
-			});
-		});
-
-		var showSaving = this.getEl('article_save').find('.mark-loading');
-		var showSaved  = this.getEl('article_save').find('.mark-saved');
-
-		showSaved.stop().hide();
-		showSaving.show();
-
-		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			complete: function() {
-        showSaving.hide();
-			},
-			success: function(data) {
-				this.getEl('content_ed').html(data.content_html);
-				this._initPostArea();
-				this._initArticleArea();
-				this.handleUnloadRevisions(data.revision_id);
-
-        if (data.prop_html) {
-          this.getEl('review_date').html(data.prop_html);
-          this._initReviewDateOptions();
-        }
-
-				showSaved.show().fadeOut(2000);
+			var txt = $('.edit-content-field', this.getEl('content_ed'));
+			if (window.DP_HAS_NEW_CONTENT_EDITOR && txt[0].tagName === "DIV") {
+			  var contentInput = JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON());
+			  data.push({
+			    name: 'content',
+			    value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
+			  });
+			  data.push({
+			    name:  'content_input',
+			    value: contentInput
+			  });
+			  data.push({
+			    name: 'content_input_type',
+			    value: 'dped_v1'
+			  });
+			  data.push({
+          name: 'base_id',
+          value: this.meta.baseId
+        });
+			} else {
+			  data.push({
+			    name:  'content',
+			    value: $('.article-editor-wrap textarea:first', wrap).val()
+			  });
+			  data.push({
+			    name: 'content_input_type',
+			    value: 'rte'
+			  });
 			}
-		});
+			data.push({
+				name: 'language_id',
+					value: wrap.find('.article-editor-wrap').find('.language_id').val()
+			});
+			data.push({
+				name: 'restart-review-date',
+					value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
+			});
+
+			$('input.edit-content-attach:checked', wrap).each(function() {
+				data.push({
+					name: 'attach[]',
+					value: $(this).val()
+				});
+			});
+
+			$('input[name="blob_inline_ids[]"]', wrap).each(function() {
+				data.push({
+					name: 'blob_inline_ids[]',
+					value: $(this).val()
+				});
+			});
+
+			var showSaving = this.getEl('article_save').find('.mark-loading');
+			var showSaved  = this.getEl('article_save').find('.mark-saved');
+
+			showSaved.stop().hide();
+			showSaving.show();
+
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+				type: 'POST',
+				context: this,
+				data: data,
+				dataType: 'json',
+				complete: function() {
+			    showSaving.hide();
+				},
+				success: function(data) {
+					this.getEl('content_ed').html(data.content_html);
+					this._initPostArea();
+					this._initArticleArea();
+					this.handleUnloadRevisions(data.revision_id);
+
+			    if (data.prop_html) {
+			      this.getEl('review_date').html(data.prop_html);
+			      this._initReviewDateOptions();
+			    }
+
+					showSaved.show().fadeOut(2000);
+				}
+			});
 
 		}).bind(this));
 
@@ -1078,7 +1106,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			  if (window[this.meta.baseId + '_content_input']) {
 			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
 			  }
-			  window.AgentLegacyBundle.renderContentEditor(
+			  this.rte = window.AgentLegacyBundle.renderContentEditor(
 					txt[0],
 					contentInput
 				);
