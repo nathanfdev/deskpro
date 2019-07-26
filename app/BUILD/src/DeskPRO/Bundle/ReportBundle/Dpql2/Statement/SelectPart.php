@@ -384,12 +384,14 @@ class SelectPart
     /**
      * Returns statement as SQL.
      *
+     * @param string $section
+     *
      * @return string
      */
-    public function toSql()
+    public function toSql($section = null)
     {
         if (!$this->prepared) {
-            $this->prepare();
+            $this->prepare($section);
         }
 
         return $this->sql->toSql();
@@ -699,10 +701,16 @@ class SelectPart
     }
 
     /**
+     * @param string $section
+     *
      * @return string
      */
-    public function toDpql()
+    public function toDpql($section = null)
     {
+        if (!$this->prepared) {
+            $this->prepare($section);
+        }
+
         $parts = [];
         foreach ($this->getDpqlParts() as $key => $value) {
             $parts[Strings::dashToCamelCase($key)] = $value;
@@ -714,9 +722,11 @@ class SelectPart
     /**
      * Prepares the statement for use.
      *
+     * @param string $section
+     *
      * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      */
-    public function prepare()
+    public function prepare($section = null)
     {
         if ($this->prepared) {
             return;
@@ -741,7 +751,9 @@ class SelectPart
         $this->prepareSplitBy();
         $this->prepareOrderBy();
 
-        $this->setSqlLimit();
+        if (!($section === 'where' && $this->isSubQuery)) {
+            $this->setSqlLimit();
+        }
     }
 
     /**
