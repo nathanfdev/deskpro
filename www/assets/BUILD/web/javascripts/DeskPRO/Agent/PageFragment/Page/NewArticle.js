@@ -269,7 +269,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		if (window.DP_HAS_NEW_CONTENT_EDITOR) {
 			self.rte = window.AgentLegacyBundle.renderContentEditor(
 				txt[0],
-				txt.val()
+				null
 			);
 		} else {
 			this.rte = window.LegacyRteTextarea.init(txt, {

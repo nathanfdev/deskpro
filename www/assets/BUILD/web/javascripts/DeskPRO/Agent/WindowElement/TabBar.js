@@ -927,7 +927,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
         return;
       }
 
-      console.log('close');
       if (tab.page && tab.page.fireEvent) {
         event.deskpro = {cancelClose: false};
         tab.page.fireEvent('closeTab', [event, tab]);

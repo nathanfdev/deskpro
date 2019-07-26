@@ -33,7 +33,7 @@ class ContentEditor extends React.PureComponent {
 }
 
 ContentEditor.propTypes = {
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  value: PropTypes.PropTypes.object,
 };
 
 export default ContentEditor;

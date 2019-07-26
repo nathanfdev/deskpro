@@ -584,17 +584,18 @@ class KbController extends AbstractController
                         continue;
                     }
 
-                    $title       = $this->in->getString("title.$langId");
-                    $content_val = (string) $this->in->getRaw("content.$langId");
+                    $title        = $this->in->getString("title.$langId");
+                    $contentVal   = (string) $this->in->getRaw("content.$langId");
+                    $contentInput = (string) $this->in->getRaw("input.$langId");
 
-                    if (!$title && !$content_val) {
+                    if (!$title && !$contentVal) {
                         continue;
                     }
 
                     $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'title', $title);
                     $this->em->persist($rec);
 
-                    $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $content_val);
+                    $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $contentVal, $contentInput);
                     $this->em->persist($rec);
                 }
 
