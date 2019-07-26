@@ -14,6 +14,7 @@ use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\AbuseCaptchaFormException;
@@ -251,7 +252,10 @@ class ApiTokensController extends BaseController
 
             $result = $adapter->authenticate();
             if ($result->isRedirectRequired()) {
-                return $this->redirect($result->getRedirectUrl());
+                $redirectResponse = new RedirectResponse($result->getRedirectUrl());
+                $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+                return $redirectResponse;
             } else {
                 throw $this->createBadRequestException('Unable to redirect');
             }

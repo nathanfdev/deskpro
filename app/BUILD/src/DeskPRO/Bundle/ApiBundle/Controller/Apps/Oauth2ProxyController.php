@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthErrorCodes;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
@@ -110,7 +111,7 @@ class Oauth2ProxyController extends BaseController
             return new Response('Connection not found', 400);
         }
 
-        $state = ProxyParams::getDPQueryParam('state', $request);
+        $state                = ProxyParams::getDPQueryParam('state', $request);
         $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
             ->withApplicationState($state)
         ;
@@ -152,7 +153,7 @@ class Oauth2ProxyController extends BaseController
             $state  = self::encode($proxyState, $secret);
             if (empty($state)) {
                 return $errorResponseBuilder
-                    ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE,'failed to secure the request')
+                    ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE, 'failed to secure the request')
                     ->buildPostMessage($callbackUrl)
                 ;
             }
@@ -160,17 +161,18 @@ class Oauth2ProxyController extends BaseController
             $extraQueryParams = ProxyParams::getExtraQueryParams($request);
             $authorizationUrl = $connection->getAuthorizationUrl(array_merge($extraQueryParams, ['state' => $state]));
 
-            return new RedirectResponse($authorizationUrl);
+            return new RedirectResponse($authorizationUrl, 302, [RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER => 'true']);
         }
 
         return $errorResponseBuilder
-            ->withError(OauthErrorCodes::CODE_BAD_REQUEST,'only web-server profile allowed')
+            ->withError(OauthErrorCodes::CODE_BAD_REQUEST, 'only web-server profile allowed')
             ->buildPostMessage($callbackUrl)
         ;
     }
 
     /**
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
      * @param AppInstance|null $application
      *
      * @Rest\Get("/{provider}/grant-access-implicit/{application}")
@@ -213,14 +215,14 @@ class Oauth2ProxyController extends BaseController
         }
 
         $callbackUrl = ProxyParams::getDPQueryParamFromArray('callbackUrl', $proxyState);
-        $appState = ProxyParams::getDPQueryParamFromArray('appState', $proxyState);
+        $appState    = ProxyParams::getDPQueryParamFromArray('appState', $proxyState);
         // prepare the error response builder
         $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')->withApplicationState($appState);
 
         $responseType = $request->query->get('response_type', 'code'); // === 'code'
         if (!in_array($responseType, ['code', 'error'])) {
             return $errorResponseBuilder
-                ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE,'unexpected response type')
+                ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE, 'unexpected response type')
                 ->buildPostMessage($callbackUrl)
             ;
         }
@@ -241,7 +243,7 @@ class Oauth2ProxyController extends BaseController
                     ->buildPostMessage($callbackUrl);
             } catch (\Exception $e) {
                 return $errorResponseBuilder
-                    ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE,'failed to retrieve token')
+                    ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE, 'failed to retrieve token')
                     ->buildPostMessage($callbackUrl);
             }
         }
@@ -292,26 +294,25 @@ class Oauth2ProxyController extends BaseController
                 ->buildJSON();
         }
 
-        $person = $this->getUser();
+        $person     = $this->getUser();
         $connection = $provider->loadOauth2Connection($applicationId, $person);
         if (empty($connection)) {
             return $errorResponseBuilder->withError(OauthErrorCodes::CODE_CONNECTION_NOT_FOUND)->buildJSON();
         }
 
         $extraQueryParams = ProxyParams::getExtraQueryParams($request);
-        $tokens = $provider->loadOauth2Tokens($applicationId, $person, $refreshToken);
-        $newAccessToken = $connection->getAccessTokenWithRefreshToken($tokens->getRefreshToken(), $extraQueryParams);
+        $tokens           = $provider->loadOauth2Tokens($applicationId, $person, $refreshToken);
+        $newAccessToken   = $connection->getAccessTokenWithRefreshToken($tokens->getRefreshToken(), $extraQueryParams);
 
         // we're merging the tokens to preserve the information requested with the original token, such as
         // the refresh token which is not always returned with the refresh token response and since the api clients
         // are just replacing the old token with the new one that information will be lost
         $tokenValues = array_merge($tokens->jsonSerialize(), $newAccessToken->jsonSerialize());
-        $finalToken = new AccessToken($tokenValues);
+        $finalToken  = new AccessToken($tokenValues);
 
         return OauthResponseBuilder::forResponseType('token')
             ->withOauth2Token($finalToken)
             ->buildJSON()
         ;
     }
-
 }

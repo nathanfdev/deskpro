@@ -8,6 +8,8 @@ namespace Application\AdminInterfaceBundle\Controller;
 
 use Application\DeskPRO\JIRA\OAuthWrapper;
 use Application\DeskPRO\Service\JIRA;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -52,6 +54,9 @@ class JiraController extends AbstractController
         $credentials = $oauth->requestTempCredentials();
         $request->getSession()->set('jira_oauth', $credentials);
 
-        return $this->redirect($oauth->getAuthUrl());
+        $redirectResponse = new RedirectResponse($oauth->getAuthUrl());
+        $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+        return $redirectResponse;
     }
 }
