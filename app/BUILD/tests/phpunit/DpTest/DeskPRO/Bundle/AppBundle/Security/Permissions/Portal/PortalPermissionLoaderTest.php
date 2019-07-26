@@ -123,7 +123,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
     public function loadAllCategoriesProvider()
     {
         return [
-            [CommunityChannel::class, 'getAllowedFeedbackCategories'],
+            [CommunityChannel::class, 'getAllowedCommunityChannels'],
             [NewsCategory::class, 'getAllowedNewsCategories'],
             [ArticleCategory::class, 'getAllowedArticleCategories'],
             [DownloadCategory::class, 'getAllowedDownloadCategories'],

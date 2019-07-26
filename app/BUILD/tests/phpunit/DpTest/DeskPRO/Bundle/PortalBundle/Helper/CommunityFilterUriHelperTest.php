@@ -10,7 +10,7 @@ use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DpTest\DeskProTestCase;
 
-class FeedbackFilterUriHelperTest extends DeskProTestCase
+class CommunityFilterUriHelperTest extends DeskProTestCase
 {
     public function testExtractNoPath()
     {

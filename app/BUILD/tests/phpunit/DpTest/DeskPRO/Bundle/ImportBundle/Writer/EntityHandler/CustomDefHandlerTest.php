@@ -18,7 +18,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('custom_def_ticket');
         $this->clearTable('custom_def_people');
         $this->clearTable('custom_def_article');
-        $this->clearTable('custom_def_feedback');
+        $this->clearTable('custom_def_community_topic');
         $this->clearTable('custom_def_organizations');
         $this->clearTable('custom_def_chat');
 

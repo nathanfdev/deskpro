@@ -6,9 +6,9 @@ use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\ImportBundle\Model;
 
 /**
- * Class FeedbackTest.
+ * Class CommunityTopicHandlerTest.
  */
-class FeedbackHandlerTest extends AbstractEntityHandlerTest
+class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
 {
     /**
      * {@inheritdoc}
@@ -69,7 +69,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $model->setDatePublished(new \DateTime('2016-07-20'));
         $model->setViewCount(100);
         $model->setLanguage('en-US');
-        $model->setCategory('Category 1 > Sub category 1');
+        $model->setChannel('Channel 1 > Sub channel 1');
         $model->setLabels(['label 1', 'label 2']);
         $model->addCustomField($customField1);
         $model->addAttachment($attachment);
@@ -86,7 +86,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('2016-07-20', $entity->getDatePublished()->format('Y-m-d'));
         $this->assertEquals(100, $entity->getViewCount());
         $this->assertEquals('en-US', $entity->getLanguage()->getLocale());
-        $this->assertEquals('Sub category 1', $entity->getCategory()->getTitle());
+        $this->assertEquals('Sub channel 1', $entity->getChannel()->getTitle());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
         $this->assertEquals('label 2', $entity->getLabels()[1]->getLabel());
         $this->assertCount(1, $entity->getCustomData());
@@ -94,12 +94,12 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(1, $entity->getAttachments());
     }
 
-    public function test_default_category()
+    public function test_default_channel()
     {
-        $category = new Entity\CommunityChannel();
-        $category->setRealTitle('cat');
+        $channel = new Entity\CommunityChannel();
+        $channel->setRealTitle('chan');
 
-        $this->em()->persist($category);
+        $this->em()->persist($channel);
         $this->em()->flush();
 
         $model = $this->createBaseModel();
@@ -108,7 +108,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
 
         $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
-        $this->assertNotNull($entity->getCategory());
+        $this->assertNotNull($entity->getChannel());
     }
 
     /**

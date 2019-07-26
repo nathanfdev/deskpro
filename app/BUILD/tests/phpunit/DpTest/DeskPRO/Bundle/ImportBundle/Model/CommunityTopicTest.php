@@ -5,9 +5,9 @@ namespace DpTest\DeskPRO\Bundle\ImportBundle\Model;
 use DeskPRO\Bundle\ImportBundle\Model\CommunityTopic;
 
 /**
- * Class FeedbackTest.
+ * Class CommunityTopicTest.
  */
-class FeedbackTest extends AbstractModelTest
+class CommunityTopicTest extends AbstractModelTest
 {
     protected static $modelClass = CommunityTopic::class;
 
@@ -25,8 +25,8 @@ class FeedbackTest extends AbstractModelTest
     public function test_required_params()
     {
         $params = [
-            'title'   => 'Feedback 1',
-            'content' => 'Feedback content',
+            'title'   => 'Topic 1',
+            'content' => 'Topic content',
             'status'  => 'closed',
         ];
 
@@ -42,8 +42,8 @@ class FeedbackTest extends AbstractModelTest
     public function test_full_params()
     {
         $params = [
-            'title'          => 'Feedback 1',
-            'content'        => 'Feedback content',
+            'title'          => 'Topic 1',
+            'content'        => 'Topic content',
             'language'       => 'eng',
             'status'         => 'active',
             'date_created'   => '2016-07-15T12:55:01+0300',
