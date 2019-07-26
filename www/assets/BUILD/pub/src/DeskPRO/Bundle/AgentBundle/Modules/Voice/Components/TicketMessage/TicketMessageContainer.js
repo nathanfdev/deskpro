@@ -120,8 +120,11 @@ class TicketMessageContainer extends React.Component {
   openDialpad = () => {
     const phoneCall = this.getPhoneCall();
     const ticket = this.getTicket();
+    const { dispatch } = this.props;
+    const { data } = this.state;
+    const message = data.data;
 
-    this.props.dispatch(openDialpad(phoneCall.get('external_number'), ticket.get('id'), ticket.get('subject')));
+    dispatch(openDialpad(phoneCall.get('external_number'), ticket.get('id'), ticket.get('subject'), message.person));
   };
 
   openTarget = (target) => {

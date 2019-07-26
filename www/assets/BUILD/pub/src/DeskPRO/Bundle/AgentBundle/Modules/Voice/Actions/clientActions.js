@@ -661,8 +661,8 @@ export const searchPerson = createAction(
 
 export const openDialpad = createAction(
   'VOICE_AGENT_OPEN_DIALPAD',
-  (outgoingNumber, ticketId = null, ticketTitle = null) => {
-    window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle);
+  (outgoingNumber, ticketId = null, ticketTitle = null, personId = null) => {
+    window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle, personId);
   }
 );
 

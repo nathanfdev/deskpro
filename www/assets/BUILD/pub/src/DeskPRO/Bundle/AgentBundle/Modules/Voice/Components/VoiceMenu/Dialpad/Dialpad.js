@@ -297,6 +297,13 @@ class Dialpad extends React.Component {
     });
   };
 
+  setPerson = (personId) => {
+    const { formData } = this.state;
+    formData.value.person = personId;
+
+    this.setState({ formData });
+  };
+
   clearSearchResults = () => {
     setTimeout(() => {
       this.setState({
