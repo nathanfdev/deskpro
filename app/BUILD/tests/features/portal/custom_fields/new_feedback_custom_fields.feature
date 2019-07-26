@@ -15,7 +15,7 @@ Feature: New feedback form custom fields
     And I set permission "feedback.use" = 1 for "everyone" usergroup
 
   Scenario: I check custom fields exist on the form
-    Given only the following custom feedback fields exist:
+    Given only the following custom community fields exist:
       | #              | Type     | Title          |
       | text_field     | text     | Text field     |
       | textarea_field | textarea | Textarea field |
@@ -25,7 +25,7 @@ Feature: New feedback form custom fields
     And I should see the "new_feedback[custom_data][{textarea_field}][data]" field
 
   Scenario: I check custom field w/o validation
-    Given only the following custom feedback fields exist:
+    Given only the following custom community fields exist:
       | #          | Type | Title      |
       | text_field | text | Text field |
     And I go to "/feedback"
@@ -38,7 +38,7 @@ Feature: New feedback form custom fields
     Then I should not see a form error with the phrase "This value should have "
 
   Scenario: I check custom fields validation
-    Given only the following custom feedback fields exist:
+    Given only the following custom community fields exist:
       | #          | Type | Title      | Options                              |
       | text_field | text | Text field | {"required": true, "min_length": 10} |
     And I go to "/feedback"

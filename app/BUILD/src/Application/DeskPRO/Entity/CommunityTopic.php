@@ -261,36 +261,12 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $this->recalculatePopularity();
     }
 
-    public function getChannelId()
-    {
-        return $this->channel['id'];
-    }
-
-    public function getCategory()
-    {
-        return $this->channel;
-    }
-
     protected function getParentAttributeName()
     {
         return 'topic';
     }
 
-    /**
-     * Set a category.
-     *
-     * @param CommunityChannel $channel
-     *
-     * @return $this
-     */
-    public function setCategory(CommunityChannel $channel = null)
-    {
-        $this->setModelField('channel', $channel);
-
-        return $this;
-    }
-
-    public function setCategoryId($id)
+    public function setChannelId($id)
     {
         $this->setModelField('channel', App::getEntityRepository('DeskPRO:CommunityChannel')->find($id));
 
@@ -1088,5 +1064,10 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $fields = ['num_comments'];
 
         return $fields;
+    }
+
+    public static function getContentType()
+    {
+        return self::CONTENT_TYPE;
     }
 }

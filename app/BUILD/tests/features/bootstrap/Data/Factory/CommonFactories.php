@@ -281,15 +281,15 @@ class CommonFactories
      *
      * @return CommunityTopic
      */
-    public static function feedback(array $data)
+    public static function community(array $data)
     {
-        $feedback = new CommunityTopic();
+        $communityTopic = new CommunityTopic();
         if (isset($data['date_created'])) {
-            $feedback->date_created = new \DateTime($data['date_created']);
+            $communityTopic->setDateCreated(new \DateTime($data['date_created']));
             unset($data['date_created']);
         }
 
-        return SimpleFactory::provide($feedback, $data);
+        return SimpleFactory::provide($communityTopic, $data);
     }
 
     /**

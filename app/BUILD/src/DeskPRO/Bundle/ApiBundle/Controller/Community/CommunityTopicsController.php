@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to community.
  *
  * @ApiModes("all")
- * @Rest\Route("/community")
+ * @Rest\Route("/community_topics")
  * @ApiDoc(target="all", section="Community", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Community\CommunityTopic")
  * @ApiDoc(
  *     target="listAction,countAction",
@@ -67,7 +67,7 @@ use Symfony\Component\HttpFoundation\Request;
  *     }
  * )
  */
-class CommunityController extends AbstractCommunityController
+class CommunityTopicsController extends AbstractCommunityController
 {
     public static $entity      = CommunityTopic::class;
     public static $type        = CommunityTopicType::class;
@@ -132,8 +132,8 @@ class CommunityController extends AbstractCommunityController
                     ->join('def.parent', 'parent')
                     ->addSelect('def.title as title')
                     ->addSelect('def.id as group_name')
-                    ->andWhere('parent.sys_name = :cat')
-                    ->setParameter('cat', 'cat')
+                    ->andWhere('parent.sys_name = :chan')
+                    ->setParameter('chan', 'chan')
                     ->groupBy('group_name');
 
                 break;

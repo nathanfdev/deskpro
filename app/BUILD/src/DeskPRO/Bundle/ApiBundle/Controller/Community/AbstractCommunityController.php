@@ -67,7 +67,7 @@ abstract class AbstractCommunityController extends CrudController
             ;
         }
 
-        $customChannel = $request->get('custom_category');
+        $customChannel = $request->get('custom_channel');
         if (!empty($customChannel)) {
             $qb
                 ->join("$alias.custom_data", 'customChan')

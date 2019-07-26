@@ -61,7 +61,7 @@ class CommunityTopicType extends AbstractType
                 'person'   => $options['person'],
                 'required' => false,
             ])
-            ->add('category', CommunityChannelType::class, [
+            ->add('channel', CommunityChannelType::class, [
                 'person'   => $options['person'],
                 'required' => true,
             ])

@@ -3,7 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Community;
 
 use Application\DeskPRO\Entity\CommunityTopicAttachment;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\CustomDataCommunityTopic;
+use Application\DeskPRO\Entity\LabelCommunityTopic;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
@@ -17,7 +19,7 @@ class CommunityTopic extends ContentAbstract
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopicStatusCategory>")
      *
-     * @var \Application\DeskPRO\Entity\CommunityTopicStatusCategory
+     * @var CommunityTopicStatusCategory
      */
     protected $statusCategory = null;
 
@@ -29,7 +31,7 @@ class CommunityTopic extends ContentAbstract
      *
      * @var \Application\DeskPRO\Entity\CommunityChannel
      */
-    protected $category;
+    protected $channel;
 
     /**
      * String array of labels associated with this news.
@@ -37,7 +39,7 @@ class CommunityTopic extends ContentAbstract
      * @JMS\Groups({"labels"})
      * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelCommunityTopic>>")
      *
-     * @var \Application\DeskPRO\Entity\LabelCommunityTopic
+     * @var LabelCommunityTopic
      */
     protected $labels;
 
@@ -97,7 +99,7 @@ class CommunityTopic extends ContentAbstract
         parent::__construct($entity);
 
         $this->statusCategory = $entity->getStatusCategory();
-        $this->category       = $entity->getCategory();
+        $this->channel        = $entity->getChannel();
         $this->labels         = $entity->getLabels();
         $this->fields         = $entity->getCustomData();
         $this->popularity     = $entity->getPopularity();

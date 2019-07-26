@@ -125,13 +125,13 @@ class CustomDataContext extends BaseContext
     }
 
     /**
-     * @Given only the following custom feedback fields exist:
+     * @Given only the following custom community fields exist:
      *
      * @param TableNode $table
      */
-    public function onlyTheFollowingCustomFeedbackFieldsExist(TableNode $table)
+    public function onlyTheFollowingCustomCommunityFieldsExist(TableNode $table)
     {
-        $this->dataContext->onlyTheFollowingRecordsExist('CustomDefFeedback', $table);
+        $this->dataContext->onlyTheFollowingRecordsExist('CustomDefCommunityTopic', $table);
     }
 
     /**

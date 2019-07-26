@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to community topic comments.
  *
  * @ApiModes("all")
- * @Rest\Route("/community_comments")
+ * @Rest\Route("/community_topic_comments")
  * @ApiDoc(target="all", section="Community", output="Application\DeskPRO\Entity\CommunityTopicComment")
  * @ApiDoc(
  *      target="listAction",

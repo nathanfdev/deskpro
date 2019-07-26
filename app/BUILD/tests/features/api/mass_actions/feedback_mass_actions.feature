@@ -81,7 +81,7 @@ Feature: /mass_actions/feedback endpoint
     And the JSON node "errors.fields.params.fields.remove_labels.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: I apply set of actions on feedback
-    Given only the following custom feedback fields exist:
+    Given only the following custom community fields exist:
       | #    | parent | app_id | sys_name | js_class | has_form_template | has_display_template | title    | description | handler_class                                           | options | is_user_enabled | is_enabled | display_order | default_value | is_agent_field |
       | cdf1 |        |        | cat      |          | 0                 | 0                    | Category | Category    | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
       | cdf2 | {cdf1} |        |          |          | 0                 | 0                    | Windows  |             |                                                         |         | 1               | 1          | 0             |               | 1              |

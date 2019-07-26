@@ -33,8 +33,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
-use Application\DeskPRO\Entity\FeedbackSubscription;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\Job;
@@ -303,7 +301,7 @@ class ObjectsManager
             'CustomDefCommunityTopic'          => [Factory\CommonFactories::class, 'customDef', 'community'],
             'CustomDefDownload'                => [Factory\CommonFactories::class, 'customDef', 'download'],
             'CustomDefBilling'                 => [Factory\CommonFactories::class, 'customDef', 'billing'],
-            'CustomDataFeedback'               => [Factory\SimpleFactory::class, 'create', CustomDataCommunityTopic::class],
+            'CustomDataCommunityTopic'         => [Factory\SimpleFactory::class, 'create', CustomDataCommunityTopic::class],
             'CustomFieldDefinition'            => [Factory\SimpleFactory::class, 'create', CustomFieldDefinition::class],
             'CustomPerUserDef'                 => [Factory\CommonFactories::class, 'customPerDef', Person::class],
             'CustomPerOrgDef'                  => [Factory\CommonFactories::class, 'customPerDef', Organization::class],
@@ -334,7 +332,7 @@ class ObjectsManager
             'TicketFlagged'                    => [Factory\SimpleFactory::class, 'create', TicketFlagged::class],
             'TicketMacro'                      => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
             'TicketMessage'                    => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
-            'TicketFeedbackLink'               => [Factory\SimpleFactory::class, 'create', TicketCommunityTopicLink::class],
+            'TicketCommunityTopicLink'         => [Factory\SimpleFactory::class, 'create', TicketCommunityTopicLink::class],
             'TicketSla'                        => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'TicketLog'                        => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'TicketFollowUp'                   => [Factory\SimpleFactory::class, 'create', TicketFollowUp::class],
@@ -353,7 +351,7 @@ class ObjectsManager
             'LabelTicket'                      => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
             'LabelPerson'                      => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
             'LabelDef'                         => [Factory\SimpleFactory::class, 'create', LabelDef::class],
-            'LabelFeedback'                    => [Factory\SimpleFactory::class, 'create', LabelCommunityTopic::class],
+            'LabelCommunityTopic'              => [Factory\SimpleFactory::class, 'create', LabelCommunityTopic::class],
             'LabelTask'                        => [Factory\SimpleFactory::class, 'create', LabelTask::class],
             'LabelChatConversation'            => [Factory\SimpleFactory::class, 'create', LabelChatConversation::class],
             'Brand'                            => [Factory\SimpleFactory::class, 'create', Brand::class],
@@ -434,7 +432,7 @@ class ObjectsManager
             'Ticket'                           => [$this, 'find', Ticket::class],
             'TicketLayout'                     => [$this, 'find', TicketLayout::class],
             'TicketMessage'                    => [$this, 'find', TicketMessage::class],
-            'TicketFeedbackLink'               => [$this, 'find', TicketCommunityTopicLink::class],
+            'TicketCommunityTopicLink'         => [$this, 'find', TicketCommunityTopicLink::class],
             'TicketPriority'                   => [$this, 'find', TicketPriority::class],
             'TicketWorkflow'                   => [$this, 'find', TicketWorkflow::class],
             'TicketCategory'                   => [$this, 'find', TicketCategory::class],
@@ -462,10 +460,10 @@ class ObjectsManager
             'CustomDefOrganization'            => [$this, 'find', CustomDefOrganization::class],
             'CustomDefPerson'                  => [$this, 'find', CustomDefPerson::class],
             'CustomDefChat'                    => [$this, 'find', CustomDefChat::class],
-            'CustomDefFeedback'                => [$this, 'find', CustomDefCommunityTopic::class],
+            'CustomDefCommunityTopic'          => [$this, 'find', CustomDefCommunityTopic::class],
             'CustomDefDownload'                => [$this, 'find', CustomDefDownload::class],
             'CustomDefBilling'                 => [$this, 'find', CustomDefBilling::class],
-            'CustomDataFeedback'               => [$this, 'find', CustomDataCommunityTopic::class],
+            'CustomDataCommunityTopic'         => [$this, 'find', CustomDataCommunityTopic::class],
             'CustomFieldDefinition'            => [$this, 'find', CustomFieldDefinition::class],
             'CustomPerUserDef'                 => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
             'CustomPerOrgDef'                  => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Organization::class]],
@@ -486,13 +484,13 @@ class ObjectsManager
             'AgentChat'                        => [$this, 'find', AgentChat::class],
             'AgentChatParticipant'             => [$this, 'find', AgentChatParticipant::class],
             'AgentChatMessage'                 => [$this, 'find', AgentChatMessage::class],
-            'Feedback'                         => [$this, 'find', CommunityTopic::class],
-            'FeedbackSubscription'             => [$this, 'find', FeedbackSubscription::class],
-            'FeedbackStatusCategory'           => [$this, 'find', FeedbackStatusCategory::class],
-            'FeedbackCategory'                 => [$this, 'find', CommunityChannel::class],
-            'FeedbackComment'                  => [$this, 'find', CommunityTopicComment::class],
+            'CommunityTopic'                   => [$this, 'find', CommunityTopic::class],
+            'CommunityTopicSubscription'       => [$this, 'find', CommunityTopicSubscription::class],
+            'CommunityTopicStatusCategory'     => [$this, 'find', CommunityTopicStatusCategory::class],
+            'CommunityChannel'                 => [$this, 'find', CommunityChannel::class],
+            'CommunityTopicComment'            => [$this, 'find', CommunityTopicComment::class],
             'LabelDef'                         => [$this, 'find', LabelDef::class],
-            'LabelFeedback'                    => [$this, 'find', LabelCommunityTopic::class],
+            'LabelCommunityTopic'              => [$this, 'find', LabelCommunityTopic::class],
             'LabelTicket'                      => [$this, 'find', LabelTicket::class],
             'LabelTask'                        => [$this, 'find', LabelTask::class],
             'LabelPerson'                      => [$this, 'find', LabelPerson::class],

@@ -45,8 +45,8 @@ class CommunityCustomChannelsController extends BaseController
             ->join('def.parent', 'parent')
             ->addSelect('def.title as title')
             ->addSelect('def.id as group_name')
-            ->andWhere('parent.sys_name = :cat')
-            ->setParameter('cat', 'cat')
+            ->andWhere('parent.sys_name = :chan')
+            ->setParameter('chan', 'chan')
             ->orderBy('def.title', 'asc')
         ;
 
