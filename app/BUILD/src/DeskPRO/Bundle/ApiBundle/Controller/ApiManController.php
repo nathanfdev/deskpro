@@ -38,10 +38,7 @@ class ApiManController extends BaseController
      */
     public function manAction()
     {
-        $r = new RedirectResponse('http://api.deskpro.com/');
-        $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, true);
-
-        return $r;
+        return new RedirectResponse('http://api.deskpro.com/', 302, [RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER => 'true']);
     }
 
     /**
