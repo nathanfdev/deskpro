@@ -65,7 +65,7 @@ class UseSectionVoterSpec extends ObjectBehavior
     public function it_abstains_from_non_section_votes(
         TokenInterface $token
     ) {
-        $this->verifyAbstainVote(ContentAccessVoter::VIEW_FEEDBACK, $token);
+        $this->verifyAbstainVote(ContentAccessVoter::VIEW_COMMUNITY, $token);
     }
 
     public function it_denies_use_if_brand_disabled(
