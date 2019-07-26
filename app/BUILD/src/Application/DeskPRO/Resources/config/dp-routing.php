@@ -146,7 +146,7 @@ $collection->create('dp3_redirect_attachment_files_php', [
 
 $collection->create('dp3_redirect_ideas_php', [
     'path'       => '/ideas.php',
-    'controller' => 'PortalBundle:Deskpro3Redirect:feedback',
+    'controller' => 'PortalBundle:Deskpro3Redirect:community',
 ]);
 
 $collection->create('dp3_redirect_kb_article_php', [

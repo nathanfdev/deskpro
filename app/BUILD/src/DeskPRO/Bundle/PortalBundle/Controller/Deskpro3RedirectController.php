@@ -61,7 +61,7 @@ class Deskpro3RedirectController extends AbstractController
      * ideas.php?cat=123
      * ideas.php?123-some-idea.
      */
-    public function feedbackAction()
+    public function communityAction()
     {
         $catId   = isset($_GET['cat']) ? $_GET['cat'] : 0;
         $ideaStr = Arrays::getFirstKey($_GET);

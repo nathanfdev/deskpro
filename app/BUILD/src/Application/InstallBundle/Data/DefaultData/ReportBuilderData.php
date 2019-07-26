@@ -189,7 +189,7 @@ SELECT COUNT() AS \'Comments Created\'
 FROM community_topics_comments
 WHERE community_topics_comments.date_created = %1:DATE_GROUP%
 GROUP BY %2:FIELD_GROUP:community_topics:community_topics_comments.topic%',
-                'title' => 'Number of community topic comments created <1:date group, default: this_month> grouped by feedback <2:field group:community, default: type> <chart:bar>',
+                'title' => 'Number of community topic comments created <1:date group, default: this_month> grouped by topic <2:field group:community, default: type> <chart:bar>',
             ],
 
         'number-community-topic-comments-created-date-group-by-x' => [
