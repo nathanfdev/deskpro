@@ -23,6 +23,7 @@ services:
   dp.voice.event_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceEventHelper
     arguments:
+      - "@doctrine.orm.entity_manager"
       - "@serializer"
       - "@event_dispatcher"
 
