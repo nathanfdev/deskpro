@@ -202,14 +202,6 @@ class Dialpad extends React.Component {
     });
   };
 
-  onClearSearchResults = () => {
-    setTimeout(() => {
-      this.setState({
-        searchResults: Immutable.fromJS([])
-      });
-    }, 1);
-  };
-
   getFromNumber() {
     // update 'call from' field based on current country code
     const countryCode = this.phoneInput.getCountryData().iso2;
@@ -305,6 +297,14 @@ class Dialpad extends React.Component {
     });
   };
 
+  clearSearchResults = () => {
+    setTimeout(() => {
+      this.setState({
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
   showProviderError = (errors) => {
     const { formData } = this.state;
     this.setState({
@@ -331,7 +331,7 @@ class Dialpad extends React.Component {
             </Field>
 
             {searchResults.size > 0 &&
-            <ClickOut onClickOut={this.onClearSearchResults}>
+            <ClickOut onClickOut={this.clearSearchResults}>
               <SearchResults
                 query={formData.value.call_to}
                 results={searchResults}
