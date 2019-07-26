@@ -293,7 +293,7 @@ export class SideBar extends React.PureComponent {
         className: 'feedback',
         label:     <FormattedMessage id="agent.general.community" />,
         link:      '/agent/#app.community',
-        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/community.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('community_section');
           closeIframes();
