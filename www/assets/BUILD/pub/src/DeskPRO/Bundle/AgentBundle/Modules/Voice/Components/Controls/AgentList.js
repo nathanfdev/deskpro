@@ -41,7 +41,7 @@ class AgentList extends React.Component {
               key={index}
               agent={agent}
               busy={busyAgentIds.contains(agent.get('id'))}
-              active={target && agent === target.target || busyAgentIds.contains(agent.get('id'))}
+              active={target && agent === target.target}
               participant={phoneCall.get('agent_participants').contains(agent.get('id'))}
               onClick={this.onSelect}
               online={onlineAgentIds.contains(agent.get('id'))}
