@@ -2,7 +2,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory as CommunityTopicStatusCategoryEntity;
 
 /**
@@ -11,7 +11,7 @@ use Application\DeskPRO\Entity\CommunityTopicStatusCategory as CommunityTopicSta
 class CommunityTopicStatusCategory extends AbstractEntityRepository
 {
     /**
-     * @param int|Brand $brand
+     * @param int|BrandEntity $brand
      *
      * @return CommunityTopicStatusCategoryEntity[]
      */
@@ -21,7 +21,7 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     }
 
     /**
-     * @param int|Brand $brand
+     * @param int|BrandEntity $brand
      *
      * @return CommunityTopicStatusCategoryEntity[]
      */
@@ -46,8 +46,8 @@ class CommunityTopicStatusCategory extends AbstractEntityRepository
     }
 
     /**
-     * @param string    $type
-     * @param int|Brand $brand
+     * @param string          $type
+     * @param int|BrandEntity $brand
      *
      * @return array
      */
