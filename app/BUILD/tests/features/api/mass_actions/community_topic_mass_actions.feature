@@ -17,8 +17,8 @@ Feature: /mass_actions/community_topics endpoint
       | cc1 | Feature    | feature    |
       | cc2 | Suggestion | suggestion |
     And only the following "CommunityTopic" records exist:
-      | #     | status_category | category | person  | is_reviewed | slug   | title  | content | status |
-      | topic | {ctsc1}         | {cc1}    | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | #     | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
+      | topic | {ctsc1}         | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
 
   Scenario: I set incorrect hidden_status for topic
     When I send a POST request to "/api/v2/mass_actions/community_topics" with body:
@@ -83,7 +83,7 @@ Feature: /mass_actions/community_topics endpoint
   Scenario: I apply set of actions on topic
     Given only the following custom community fields exist:
       | #    | parent | app_id | sys_name | js_class | has_form_template | has_display_template | title    | description | handler_class                                           | options | is_user_enabled | is_enabled | display_order | default_value | is_agent_field |
-      | cdf1 |        |        | cat      |          | 0                 | 0                    | Category | Category    | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
+      | cdf1 |        |        | chan     |          | 0                 | 0                    | Category | Category    | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
       | cdf2 | {cdf1} |        |          |          | 0                 | 0                    | Windows  |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdf3 | {cdf1} |        |          |          | 0                 | 0                    | Mac      |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdf4 | {cdf1} |        |          |          | 0                 | 0                    | Linux    |             |                                                         |         | 1               | 1          | 0             |               | 1              |
@@ -106,7 +106,7 @@ Feature: /mass_actions/community_topics endpoint
     And the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{topic}"
-    And the JSON node "data.category" should be equal to "{cc2}"
+    And the JSON node "data.channel" should be equal to "{cc2}"
     And the JSON node "data.status_category" should be equal to "{ctsc1}"
     And the JSON node "data.fields.{cdf1}.value" should be equal to "1"
     And the JSON node "data.labels[0]" should be equal to "first"

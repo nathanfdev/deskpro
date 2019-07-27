@@ -50,7 +50,7 @@ class AgentClientInfoSettings
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CommunitySettings")
      */
-    private $communitySettings;
+    private $community;
 
     /**
      * @var PublishSettings
@@ -78,14 +78,14 @@ class AgentClientInfoSettings
      */
     public function __construct()
     {
-        $this->accountInfo       = new AccountInfo();
-        $this->settings          = new CoreSettings();
-        $this->chat              = new ChatSettings();
-        $this->crm               = new CRMSettings();
-        $this->communitySettings = new CommunitySettings();
-        $this->publish           = new PublishSettings();
-        $this->tasks             = new TasksSettings();
-        $this->tickets           = new TicketsSettings();
+        $this->accountInfo = new AccountInfo();
+        $this->settings    = new CoreSettings();
+        $this->chat        = new ChatSettings();
+        $this->crm         = new CRMSettings();
+        $this->community   = new CommunitySettings();
+        $this->publish     = new PublishSettings();
+        $this->tasks       = new TasksSettings();
+        $this->tickets     = new TicketsSettings();
     }
 
     /**
@@ -173,17 +173,17 @@ class AgentClientInfoSettings
      */
     public function getCommunity()
     {
-        return $this->communitySettings;
+        return $this->community;
     }
 
     /**
-     * @param CommunitySettings $communitySettings
+     * @param CommunitySettings $community
      *
      * @return $this
      */
-    public function setCommunity(CommunitySettings $communitySettings)
+    public function setCommunity(CommunitySettings $community)
     {
-        $this->communitySettings = $communitySettings;
+        $this->community = $community;
 
         return $this;
     }

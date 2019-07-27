@@ -72,7 +72,7 @@ class CommunityTopicMassActionParamsType extends AbstractType
                         ->createQueryBuilder('c')
                         ->join('c.parent', 'p')
                         ->where('p.sys_name = :sys_name')
-                        ->setParameter('sys_name', 'cat')
+                        ->setParameter('sys_name', 'chan')
                     ;
                 },
             ])

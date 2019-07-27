@@ -32,7 +32,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
     /**
      * @var int[]
      */
-    private $types = [];
+    private $channels = [];
 
     /**
      * @var int[]
@@ -107,7 +107,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
         $this->manager->flush();
 
         $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
-        $this->types          = $this->fetchIds(self::TABLE_COMMUNITY_CHANNELS);
+        $this->channels       = $this->fetchIds(self::TABLE_COMMUNITY_CHANNELS);
         $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
         $this->activeStatuses = $this->fetchIds(
             self::TABLE_COMMUNITY_TOPICS_STATUS_CATEGORIES,
@@ -126,14 +126,14 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
 
     private function loadCommunityTopicChoices()
     {
-        $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
-            'sys_name' => 'cat',
+        $customChanDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
+            'sys_name' => 'chan',
         ]);
 
         foreach ($this->communityChannels as $order => $title) {
-            $customCatChoice = new CustomDefCommunityTopic();
-            $customCatChoice
-                ->setParent($customCatDef)
+            $customCchanChoice = new CustomDefCommunityTopic();
+            $customCchanChoice
+                ->setParent($customChanDef)
                 ->setTitle($title)
                 ->setDescription('')
                 ->setIsUserEnabled(true)
@@ -142,7 +142,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
                 ->setOption('parent_id', 0)
             ;
 
-            $customCatDef->addChild($customCatChoice);
+            $customChanDef->addChild($customCchanChoice);
         }
 
         $this->manager->flush();
@@ -202,7 +202,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
             $values      = [
                 'content'      => $this->faker->realText(300),
                 'person_id'    => $this->faker->randomElement($this->people),
-                'category_id'  => $this->faker->randomElement($this->types),
+                'channel_id'   => $this->faker->randomElement($this->channels),
                 'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
                 'brand_id'     => $brand->getId(),
@@ -275,17 +275,17 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
 
     private function loadCommunityChannels()
     {
-        $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
-            'sys_name' => 'cat',
+        $customChanDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
+            'sys_name' => 'chan',
         ]);
 
         $batch = [];
-        $ids   = $customCatDef->getChoiceIds();
+        $ids   = $customChanDef->getChoiceIds();
 
         foreach ($this->communityTopics as $topicId) {
             $batch[] = [
                 'topic_id   '   => $topicId,
-                'root_field_id' => $customCatDef->getId(),
+                'root_field_id' => $customChanDef->getId(),
                 'field_id'      => $ids[array_rand($ids)],
                 'value'         => 1,
             ];

@@ -425,7 +425,7 @@ class ChatController extends AbstractApiController
     }
 
     /**
-     * @Rest\Post("/{id}/community")
+     * @Rest\Post("/{id}/feedback")
      * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation

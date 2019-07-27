@@ -15,7 +15,7 @@ class CommunityFieldManager extends FieldManager
      */
     public function getUserCategoryField()
     {
-        $field = $this->getSystemField('cat');
+        $field = $this->getSystemField('chan');
         if (!$field) {
             return;
         }

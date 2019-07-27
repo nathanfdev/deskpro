@@ -18,7 +18,7 @@ Feature: /community_topic_comments/counts endpoint
 
   Scenario: I GET community topic comments list awaiting review and side-loaded author info
     Given only the following "CommunityTopic" records exist:
-      | #   | status_category | category | person  | is_reviewed | slug   | title  | content | status |
+      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
       | ct1 | {csc1}          | {cc1}    | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
       | topic | person  | content  | is_reviewed |
