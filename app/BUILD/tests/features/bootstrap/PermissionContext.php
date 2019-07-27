@@ -177,23 +177,22 @@ class PermissionContext extends BaseContext
     }
 
     /**
-     * @Given I grant the :feedbackCategoryId feedback category permission for usergroup :usergroup
+     * @Given I grant the :communityChannelId community channel permission for usergroup :usergroup
      *
      * @param string $usergroup
-     * @param string $departmentId
-     * @param string $app
+     * @param int    $communityChannelId
      */
-    public function iGrantFeedbackCategoryPermissionForUsergroup($feedbackCategoryId, $usergroup)
+    public function iGrantCommunityChannelPermissionForUsergroup($communityChannelId, $usergroup)
     {
         DataContext::scheduleCleanup();
 
-        $feedbackCategoryId = DataContext::replace($feedbackCategoryId);
+        $communityChannelId = DataContext::replace($communityChannelId);
         $usergroup          = DataContext::getReference($usergroup.'_group');
 
         $connection = $this->em()->getConnection();
         $connection->executeUpdate(
-            'INSERT IGNORE INTO feedback_category2usergroup SET category_id = ?, usergroup_id = ?',
-            [$feedbackCategoryId, $usergroup->getId()]
+            'INSERT IGNORE INTO community_channel2usergroup SET channel_id = ?, usergroup_id = ?',
+            [$communityChannelId, $usergroup->getId()]
         );
     }
 

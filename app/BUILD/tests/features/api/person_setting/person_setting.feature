@@ -7,7 +7,7 @@ Feature: /person_setting endpoint
     Given I install the "api" data set
     And my request is authenticated
 
-  Scenario: I GET person setting for feedback view fields
+  Scenario: I GET person setting for community view fields
     When I send a GET request to "/api/v2/person_setting/community_display_fields"
     Then the response should be in JSON
     And the response status code should be 200

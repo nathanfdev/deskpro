@@ -266,6 +266,7 @@ class GenericContext extends BasePortalContext
 
     /**
      * @Given the :type category :cat_name exists with content titled :content_name
+     * @Given the :type channel :cat_name exists with content titled :content_name
      */
     public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
     {

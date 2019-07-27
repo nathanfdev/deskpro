@@ -22,7 +22,7 @@ Feature:
       | ct2 | {agent} | {c1}     | {sc2}          | Second topic | active | 1          |         |
       | ct2 | {agent} | {c2}     | {sc2}          | Second topic | closed | 1          |         |
 
-  Scenario: I GET list of feedback in CSV format
+  Scenario: I GET list of community topics in CSV format
     When I send a GET request to "/api/v2/community_topics/csv?category=First+community+channel&status_category={sc1}&count=200"
     Then the response status code should be 200
     And the JSON node "data" should exist

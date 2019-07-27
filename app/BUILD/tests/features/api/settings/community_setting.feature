@@ -1,5 +1,5 @@
 @new
-Feature: Feedback brand settings Setup
+Feature: Community brand settings Setup
 
   Background:
     Given I'm authenticated as admin

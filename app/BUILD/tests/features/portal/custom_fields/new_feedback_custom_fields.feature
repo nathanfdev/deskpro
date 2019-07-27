@@ -9,9 +9,9 @@ Feature: New feedback form custom fields
       | fc1 | Category 1 |
       | fc2 | Category 2 |
       | fc3 | Category 3 |
-    And I grant the "{fc1}" feedback category permission for usergroup everyone
-    And I grant the "{fc2}" feedback category permission for usergroup everyone
-    And I grant the "{fc3}" feedback category permission for usergroup everyone
+    And I grant the "{fc1}" community channel permission for usergroup everyone
+    And I grant the "{fc2}" community channel permission for usergroup everyone
+    And I grant the "{fc3}" community channel permission for usergroup everyone
     And I set permission "feedback.use" = 1 for "everyone" usergroup
 
   Scenario: I check custom fields exist on the form
@@ -21,8 +21,8 @@ Feature: New feedback form custom fields
       | textarea_field | textarea | Textarea field |
 
     When I go to "/feedback"
-    Then I should see the "new_feedback[custom_data][{text_field}][data]" field
-    And I should see the "new_feedback[custom_data][{textarea_field}][data]" field
+    Then I should see the "new_community_topic[custom_data][{text_field}][data]" field
+    And I should see the "new_community_topic[custom_data][{textarea_field}][data]" field
 
   Scenario: I check custom field w/o validation
     Given only the following custom community fields exist:
@@ -30,10 +30,10 @@ Feature: New feedback form custom fields
       | text_field | text | Text field |
     And I go to "/feedback"
 
-    When I select "Category 1" from "new_feedback_category"
+    When I select "Category 1" from "new_community_channel"
     And I fill in "new_feedback_title" with "Title"
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
-    And I fill in "new_feedback[custom_data][{text_field}][data]" with "12345"
+    And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
     And I press "Add your feedback"
     Then I should not see a form error with the phrase "This value should have "
 
@@ -43,9 +43,9 @@ Feature: New feedback form custom fields
       | text_field | text | Text field | {"required": true, "min_length": 10} |
     And I go to "/feedback"
 
-    When I select "Category 2" from "new_feedback_category"
+    When I select "Category 2" from "new_community_channel"
     And I fill in "new_feedback_title" with "Title"
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
-    And I fill in "new_feedback[custom_data][{text_field}][data]" with "12345"
+    And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
     And I press "Add your feedback"
     Then I should see a form error with the phrase "This value should have 10 characters or more"
