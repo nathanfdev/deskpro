@@ -9,7 +9,7 @@ Feature: To prevent community topics submitting abuse
 
   Scenario: Checking lockout response for user
     Given I'm authenticated as "user"
-    And I set "submit_community" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
+    And I set "submit_community_topic" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/community"
 
     When I select "Suggestion" from "new_community_topic_channel"
@@ -24,7 +24,7 @@ Feature: To prevent community topics submitting abuse
 
   Scenario: Checking captcha response for user
     Given I'm authenticated as "user"
-    And I set "submit_community" rate limit to 1 attempt within 15 minutes with "captcha" response
+    And I set "submit_community_topic" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/community"
 
     When I select "Suggestion" from "new_community_topic_channel"
@@ -39,7 +39,7 @@ Feature: To prevent community topics submitting abuse
 
   Scenario: Checking lockout response for guest
     Given I am not logged in
-    And I set "submit_community" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time for guest
+    And I set "submit_community_topic" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time for guest
     And I am on "/community"
 
     When I select "Suggestion" from "new_community_topic_channel"
@@ -56,7 +56,7 @@ Feature: To prevent community topics submitting abuse
 
   Scenario: Checking lockout captcha for guest
     Given I am not logged in
-    And I set "submit_community" rate limit to 1 attempt within 15 minutes with "captcha" response for guest
+    And I set "submit_community_topic" rate limit to 1 attempt within 15 minutes with "captcha" response for guest
     And I am on "/community"
 
     When I select "Suggestion" from "new_community_topic_channel"
