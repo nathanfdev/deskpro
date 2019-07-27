@@ -15,7 +15,7 @@ Feature: Community topic ratings
     And I press "Continue"
     Then I should be on "/community/view/example-topic"
     And I should see a "success" flash message
-    And I should see "Thank you for your community topic!"
+    And I should see "Thank you for your feedback!"
 
   Scenario: I rate a community topic positively as a GUEST via I AGREE
     Given the "community" channel "Suggestion" exists with content titled "Example Topic"
@@ -24,4 +24,4 @@ Feature: Community topic ratings
     And I press "Continue"
     Then I should be on "/community/view/example-topic"
     And I should see a "success" flash message
-    And I should see "Thank you for your community topic!"
+    And I should see "Thank you for your feedback!"
