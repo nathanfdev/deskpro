@@ -704,4 +704,9 @@ class CommunityTopicsController extends AbstractController
 
         return $newArray;
     }
+
+    public function redirectCommunityAction($url)
+    {
+        return $this->redirect('/community/'.$url, RedirectResponse::HTTP_MOVED_PERMANENTLY);
+    }
 }
