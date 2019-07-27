@@ -15,7 +15,8 @@ Feature: Community
     And the response status code should be 200
 
   Scenario: I visit a community topic from the Community page
-    Given I am on "/community"
+    Given the "community" channel "Suggestion" exists with content titled "Example Topic"
+    And I am on "/community"
     When I follow "Example Topic"
     Then I should be on "/community/view/example-topic"
     And the response status code should be 200

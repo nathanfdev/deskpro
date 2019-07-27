@@ -411,32 +411,32 @@ class CommunityTopicsController extends AbstractController
     /**
      * @Route("/community/view/{slug}", name="portal_community_topic_view")
      * @Route("/community/view/{slug}", name="user_community_topic_view")
-     * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_COMMUNITY') and is_granted('VIEW_COMMUNITY', item)")
-     * @PageHttpCache(content="item")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('VIEW_COMMUNITY', topic)")
+     * @PageHttpCache(content="topic")
      *
      * @param Request        $request
-     * @param CommunityTopic $item
+     * @param CommunityTopic $topic
      * @param string         $visitor_id
      *
      * @return Response
      */
-    public function viewAction(Request $request, CommunityTopic $item, $visitor_id)
+    public function viewAction(Request $request, CommunityTopic $topic, $visitor_id)
     {
-        if (!$item->isVisibleOnPortal()) {
+        if (!$topic->isVisibleOnPortal()) {
             throw $this->createNotFoundException('this community topic is hidden');
         }
 
         // COMMENT FORM
 
         $newCommentForm = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $item)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $topic)) {
             $formHandler = $this->get('form_handler.comment');
             $comment     = new CommunityTopicComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $newCommentForm = $formHandler->createForm($comment, $request);
-            $formResult     = $formHandler->handle($newCommentForm, $request, $item, $comment);
+            $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
             if ($formResult) {
                 $notify = new NewCommentNotification($comment);
                 $notify->send();
@@ -448,26 +448,26 @@ class CommunityTopicsController extends AbstractController
 
         // BREADCRUMBS
 
-        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunityView($item);
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunityView($topic);
 
         // RATING
 
-        $rating         = $this->findContentRating($item, $visitor_id);
-        $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $item);
+        $rating          = $this->findContentRating($topic, $visitor_id);
+        $topic->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic);
 
         // NUM RATINGS
 
-        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($item);
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic);
 
         // SUBSCRIPTION
 
         $isSubscribed = false;
         if (
             $this->getBrandSetting('user.community_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_COMMUNITY, $item)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_COMMUNITY, $topic)
         ) {
             // waiting on info on the kb subs
-            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($item, $this->getUser());
+            $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedContent($topic, $this->getUser());
         }
 
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
@@ -476,7 +476,7 @@ class CommunityTopicsController extends AbstractController
 
         // REGISTERED PAGE VIEW LOG
         if ($person = $this->getUser()) {
-            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_COMMUNITY, $item->getId());
+            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_COMMUNITY, $topic->getId());
         }
 
         // RENDER THEME
@@ -484,12 +484,12 @@ class CommunityTopicsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Community:view.html.twig',
             [
-                'item'               => $item,
+                'topic'              => $topic,
                 'is_subscribed'      => $isSubscribed,
-                'content_id'         => $item->getId(),
+                'content_id'         => $topic->getId(),
                 'content_type'       => CommunityTopic::CONTENT_TYPE,
                 'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'page_title'         => $this->createPageTitle()->community($item),
+                'page_title'         => $this->createPageTitle()->community($topic),
                 'breadcrumbs'        => $breadcrumbs,
                 'rating'             => $rating,
                 'show_rating_counts' => $showRatingCounts,
@@ -503,22 +503,22 @@ class CommunityTopicsController extends AbstractController
     /**
      * @Route("/community/view/{slug}/vote-up", name="portal_community_topic_vote_up", defaults={"up_or_down":"up"})
      * @Route("/community/view/{slug}/vote-down", name="portal_community_topic_vote_down", defaults={"up_or_down":"down"})
-     * @ParamConverter(name="item", converter="deskpro_slug")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
      * @AutoPostOnGetRequest()
      *
      * @param Request        $request
-     * @param CommunityTopic $item
+     * @param CommunityTopic $topic
      * @param string         $visitor_id
      * @param string         $up_or_down
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|JsonResponse
      */
-    public function communityRateAction(Request $request, CommunityTopic $item, $visitor_id, $up_or_down)
+    public function communityRateAction(Request $request, CommunityTopic $topic, $visitor_id, $up_or_down)
     {
         if (!$this->isGranted('USE_COMMUNITY')) {
             throw $this->createAccessDeniedException($this->phrase('portal.community.module_forbidden'));
         }
-        if (!$this->isGranted('RATE_COMMUNITY', $item)) {
+        if (!$this->isGranted('RATE_COMMUNITY', $topic)) {
             if ($this->getUser()) {
                 throw $this->createAccessDeniedException($this->phrase('portal.community.rate_forbidden'));
             }
@@ -527,26 +527,26 @@ class CommunityTopicsController extends AbstractController
                     [
                         'error'    => $this->phrase('portal.community.error_login'),
                         'redirect' => $this->generateUrl('portal_login', [
-                            '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $item->getSlug()]),
+                            '_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()]),
                         ]),
                     ]
                 );
             } else {
                 $this->addFlash('notice', $this->phrase('portal.flashes.community_login'));
 
-                return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $item->getSlug()])]);
+                return $this->redirectToRoute('portal_login', ['_destination' => $this->generateUrl('portal_community_topic_view', ['slug' => $topic->getSlug()])]);
             }
         }
-        if (!$item->isVisibleOnPortal()) {
+        if (!$topic->isVisibleOnPortal()) {
             throw $this->createNotFoundException($this->phrase('portal.community.error_hidden'));
         }
 
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('down' === $up_or_down) {
-            $this->getRatingsHelper()->rateContentDown($item, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentDown($topic, $visitor_id, $person);
         } else {
-            $this->getRatingsHelper()->rateContentUp($item, $visitor_id, $person);
+            $this->getRatingsHelper()->rateContentUp($topic, $visitor_id, $person);
         }
 
         if ($request->getContentType() == 'json') {
@@ -556,38 +556,38 @@ class CommunityTopicsController extends AbstractController
         } else {
             $this->addFlash('success', $this->phrase('portal.flashes.rating_thanks'));
 
-            return $this->redirectToRoute('portal_community_topic_view', ['slug' => $item->getSlug()]);
+            return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
         }
     }
 
     /**
      * @Route("/community/view/{slug}/toggle-subscription", name="portal_community_topic_toggle_subscription")
-     * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_COMMUNITY') and is_granted('SUBSCRIBE_COMMUNITY', item)")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('SUBSCRIBE_COMMUNITY', topic)")
      * @AutoPostOnGetRequest()
      *
-     * @param CommunityTopic $item
+     * @param CommunityTopic $topic
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function articleSubscriptionAction(CommunityTopic $item)
+    public function articleSubscriptionAction(CommunityTopic $topic)
     {
-        if (!$item->isVisibleOnPortal()) {
+        if (!$topic->isVisibleOnPortal()) {
             throw $this->createNotFoundException('this community topic is hidden');
         }
 
         $person              = $this->getUser();
         $subscriptionsHelper = $this->getSubscriptionsHelper();
 
-        if ($subscriptionsHelper->isSubscribedContent($item, $person)) {
-            $subscriptionsHelper->unsubscribeFromContent($item, $person);
+        if ($subscriptionsHelper->isSubscribedContent($topic, $person)) {
+            $subscriptionsHelper->unsubscribeFromContent($topic, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.community_unsubscribe'));
         } else {
-            $subscriptionsHelper->subscribeToContent($item, $person);
+            $subscriptionsHelper->subscribeToContent($topic, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.community_subscribe'));
         }
 
-        return $this->redirectToRoute('portal_community_topic_view', ['slug' => $item->getSlug()]);
+        return $this->redirectToRoute('portal_community_topic_view', ['slug' => $topic->getSlug()]);
     }
 
     /**

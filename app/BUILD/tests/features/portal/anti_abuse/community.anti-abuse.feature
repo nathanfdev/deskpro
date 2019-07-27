@@ -12,7 +12,7 @@ Feature: To prevent community topics submitting abuse
     And I set "submit_community" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time
     And I am on "/community"
 
-    When I select "Suggestion" from "new_community_channel"
+    When I select "Suggestion" from "new_community_topic_channel"
     And I fill in the following:
       | new_community_topic[title]                | topic title   |
       | new_community_topic[content]              | topic content |
@@ -27,7 +27,7 @@ Feature: To prevent community topics submitting abuse
     And I set "submit_community" rate limit to 1 attempt within 15 minutes with "captcha" response
     And I am on "/community"
 
-    When I select "Suggestion" from "new_community_channel"
+    When I select "Suggestion" from "new_community_topic_channel"
     And I fill in the following:
       | new_community_topic[title]                | topic title   |
       | new_community_topic[content]              | topic content |
@@ -42,7 +42,7 @@ Feature: To prevent community topics submitting abuse
     And I set "submit_community" rate limit to 1 attempt within 15 minutes with "lockout" response and 15 minutes lockout time for guest
     And I am on "/community"
 
-    When I select "Suggestion" from "new_community_channel"
+    When I select "Suggestion" from "new_community_topic_channel"
     And I fill in the following:
       | new_community_topic[name]                 | Tyrion Lannister                        |
       | new_community_topic[email][email]         | ohmylion@kingslanding.westeros          |
@@ -59,7 +59,7 @@ Feature: To prevent community topics submitting abuse
     And I set "submit_community" rate limit to 1 attempt within 15 minutes with "captcha" response for guest
     And I am on "/community"
 
-    When I select "Suggestion" from "new_community_channel"
+    When I select "Suggestion" from "new_community_topic_channel"
     And I fill in the following:
       | new_community_topic[name]                 | Eddard Stark            |
       | new_community_topic[email][email]         | ned@winterfell.westeros |

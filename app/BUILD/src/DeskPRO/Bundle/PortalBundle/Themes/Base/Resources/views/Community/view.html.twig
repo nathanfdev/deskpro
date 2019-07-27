@@ -8,7 +8,7 @@
     <article class="community main-community" id="community_topic_view">
         {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
         <div class="community-topic">
-            {%  include 'Theme:Community:rate_limit.submit_community_topic.s_controls_partial.html.twig' with {'topic': topic} %}
+            {%  include 'Theme:Community:topics_controls_partial.html.twig' with {'topic': topic} %}
             <div class="community-topic-content">
                 <span class="community-status">
                     {% if topic.status_category %}

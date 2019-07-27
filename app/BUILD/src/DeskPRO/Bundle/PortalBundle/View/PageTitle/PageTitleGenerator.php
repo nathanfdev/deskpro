@@ -203,7 +203,7 @@ class PageTitleGenerator
         } elseif ($content_or_cat instanceof CommunityTopic) {
             $builder->prependSection(
                 $this->getCategorySection(
-                    $content_or_cat->getCategory(),
+                    $content_or_cat instanceof CommunityTopic ? $content_or_cat->getChannel() : $content_or_cat->getCategory(),
                     $section_title
                 )
             );

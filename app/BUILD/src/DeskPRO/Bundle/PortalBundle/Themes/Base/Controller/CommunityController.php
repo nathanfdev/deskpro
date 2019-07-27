@@ -66,8 +66,8 @@ class CommunityController extends AbstractController
             $person
         );
 
-        foreach ($pager as $item) {
-            $item->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $item);
+        foreach ($pager as $topic) {
+            $topic->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic);
         }
 
         $types   = $filter->getTypes();
@@ -89,21 +89,21 @@ class CommunityController extends AbstractController
      *
      * @TagOptions(
      *      defaults={
-     *          "item": null
+     *          "topic": null
      *      },
      *      allowed_types={
-     *          "item":{"Application\DeskPRO\Entity\CommunityTopic","int","string"}
+     *          "topic":{"Application\DeskPRO\Entity\CommunityTopic","int","string"}
      *      },
      *      attribute_expressions={
-     *          "item": "service('data.community').getItem(options['item'])"
+     *          "topic": "service('data.community').getItem(options['topic'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_COMMUNITY')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options, CommunityTopic $item)
+    public function commentsAction(TagRequest $tag_request, array $options, CommunityTopic $topic)
     {
-        $comments = $this->getCommunityDataService()->getItemComments($item, $this->getUser());
+        $comments = $this->getCommunityDataService()->getItemComments($topic, $this->getUser());
 
         return $this->renderThemeView('Theme:Common:comments.html.twig', [
             'comments' => $comments,

@@ -68,12 +68,12 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         //------------------------------
 
         foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
-            $cat = new CommunityChannel();
-            $cat->setTitle($title);
-            $manager->persist($cat);
+            $channel = new CommunityChannel();
+            $channel->setTitle($title);
+            $manager->persist($channel);
 
             $id = str_replace(' ', '_', strtolower($title));
-            $this->setReference('community_custom_channel_'.$id, $cat);
+            $this->setReference('community_channel_'.$id, $channel);
         }
 
         $manager->flush();
@@ -103,9 +103,9 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
             ['id' => 'article_category_general', 'table' => 'article_category2usergroup', 'cat_attribute' => 'category_id'],
             ['id' => 'news_category_general', 'table' => 'news_category2usergroup', 'cat_attribute' => 'category_id'],
             ['id' => 'downloads_category_general', 'table' => 'download_category2usergroup', 'cat_attribute' => 'category_id'],
-            ['id' => 'community_channel_suggestion', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'channel_id'],
-            ['id' => 'community_channel_feature_request', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'channel_id'],
-            ['id' => 'community_channel_bug_report', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'channel_id'],
+            ['id' => 'community_channel_suggestion', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
+            ['id' => 'community_channel_feature_request', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
+            ['id' => 'community_channel_bug_report', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
         ];
 
         foreach ($ref_perms as $perm) {

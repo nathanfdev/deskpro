@@ -206,7 +206,7 @@ class CommunityDataService extends AbstractDataService
             function () use ($that, $item, $person) {
                 $item = $that->getItem($item);
 
-                return $that->getItemCommetRepo()->getDisplayComments($item, $person);
+                return $that->getItemCommentRepo()->getDisplayComments($item, $person);
             }
         );
     }
@@ -278,8 +278,8 @@ class CommunityDataService extends AbstractDataService
     /**
      * @return \Application\DeskPRO\EntityRepository\CommunityTopicComment
      */
-    public function getItemCommetRepo()
+    public function getItemCommentRepo()
     {
-        return $this->em->getRepository('DeskPROBundle:CommunityTopicComment');
+        return $this->em->getRepository('DeskPRO:CommunityTopicComment');
     }
 }

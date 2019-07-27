@@ -659,6 +659,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         return $this->channel;
     }
 
+    public function getCategory()
+    {
+        return $this->channel;
+    }
+
     public function setChannel(CommunityChannel $channel = null)
     {
         $this->setModelField('channel', $channel);

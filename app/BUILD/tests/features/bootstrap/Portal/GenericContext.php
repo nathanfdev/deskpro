@@ -314,9 +314,9 @@ class GenericContext extends BasePortalContext
 
                 $content = new CommunityTopic();
                 $content->setStatus(CommunityTopic::STATUS_ACTIVE);
-                $content->setCategory($communityChannel);
+                $content->setChannel($communityChannel);
                 $content->setStatusCategory($communityTopicStatusCategory);
-                $content->title = 'Example Community Topic';
+                $content->title = 'Example Topic';
 
                 break;
             default:

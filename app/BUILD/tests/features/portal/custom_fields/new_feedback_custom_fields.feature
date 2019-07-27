@@ -30,7 +30,7 @@ Feature: New feedback form custom fields
       | text_field | text | Text field |
     And I go to "/feedback"
 
-    When I select "Category 1" from "new_community_channel"
+    When I select "Category 1" from "new_community_topic_channel"
     And I fill in "new_feedback_title" with "Title"
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
@@ -43,7 +43,7 @@ Feature: New feedback form custom fields
       | text_field | text | Text field | {"required": true, "min_length": 10} |
     And I go to "/feedback"
 
-    When I select "Category 2" from "new_community_channel"
+    When I select "Category 2" from "new_community_topic_channel"
     And I fill in "new_feedback_title" with "Title"
     And I fill in "new_feedback_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
