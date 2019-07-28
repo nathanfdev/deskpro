@@ -2,7 +2,7 @@
 // Mixins and Resources
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic);
+@import '../../../AgentBundle/Resources/fonts/Lato.css';
 
 // Button text color based on how dark the button color is
 @function set-button-text-color($color) {

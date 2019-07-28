@@ -294,21 +294,15 @@
           (function() {
             var link = document.createElement('link');
             link.rel = "stylesheet";
-            {% if not app.isCloud() %}
-                link.href = "{{ asset('fonts/lato.css') }}";
-            {%  else %}
-                link.href = "//fonts.googleapis.com/css?family=Lato:900,700,400,300,100";
-            {%  endif %}
+            link.href = "{{ asset('fonts/lato.css') }}";
+
             document.querySelector("head").appendChild(link);
           })();
           (function() {
             var link = document.createElement('link');
             link.rel = "stylesheet";
-            {% if not app.isCloud() %}
-                link.href = "{{ asset('fonts/OpenSans.css') }}";
-            {%  else %}
-                link.href = "//fonts.googleapis.com/css?family=Open Sans:300,400,600,700,400italic,700italic&subset=latin";
-            {%  endif %}
+            link.href = "{{ asset('fonts/OpenSans.css') }}";
+
             document.querySelector("head").appendChild(link);
           })();
         </script>
