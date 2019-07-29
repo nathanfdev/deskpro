@@ -266,13 +266,13 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
       contentHeight += 150;
     }
 
-    window.LegacyRteTextarea.init(txt, {
+    this.rte = window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - contentHeight, 150),
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
       formname:							'newcomunitytopic'
 		});
 
-    txt.on('froalaEditor.keypress', function () {
+    this.rte.on('froalaEditor.keypress', function () {
       if (self.stateSaver) {
         self.editStateSaver.triggerChange();
       }

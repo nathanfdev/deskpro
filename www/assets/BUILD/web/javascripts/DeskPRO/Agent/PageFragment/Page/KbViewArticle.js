@@ -957,10 +957,19 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this.editStateSaver.destroy();
 		}
 
-		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'editarticle.' + this.article_id,
-			listenOn: $('.article-editor-wrap:first', wrap)
-		});
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
+      this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+        stateId: 'editarticle.' + this.article_id,
+        callback: this.getSaveStateData.bind(this),
+        time: 5000
+      });
+      this.editStateSaver.stop();
+    } else {
+      this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+        stateId: 'editarticle.' + this.article_id,
+        listenOn: $('.article-editor-wrap:first', wrap)
+      });
+    }
 		this.ownObject(this.editStateSaver);
 
 		DeskPRO_Window.util.fileupload(this.getEl('content_ed').find('.article-editor'), {
@@ -1006,11 +1015,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			    name: 'content_input_type',
 			    value: 'rte'
 			  });
+        data.push({
+          name: 'language_id',
+          value: wrap.find('.article-editor-wrap').find('.language_id').val()
+        });
 			}
-			data.push({
-				name: 'language_id',
-					value: wrap.find('.article-editor-wrap').find('.language_id').val()
-			});
 			data.push({
 				name: 'restart-review-date',
 					value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
@@ -1108,7 +1117,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			  }
 			  this.rte = window.AgentLegacyBundle.renderContentEditor(
 					txt[0],
-					contentInput
+					contentInput,
+          self.editStateSaver.triggerChange.bind(self.editStateSaver),
+          this.onBlur.bind(this)
 				);
 			} else {
 				this.rte = window.LegacyRteTextarea.init(txt, {
@@ -1116,8 +1127,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				  inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 				});
 
-				txt.on('froalaEditor.keypress', function () {
-				  self.editStateSaver.triggerChange();
+        this.rte.on('froalaEditor.keypress', function () {
+          if (self.editStateSaver) {
+            self.editStateSaver.triggerChange();
+          }
 				});
 
 				var saveBtn = this.getEl('save_btn');
@@ -1138,6 +1151,29 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('cancel_btn').show();
 		this.updateUi();
 	},
+
+  onFocus: function() {
+    this.editStateSaver.setOptions({alwaysChanged: true});
+    this.editStateSaver.triggerChange();
+  },
+
+  onBlur: function() {
+    this.editStateSaver.setOptions({alwaysChanged: false});
+    this.editStateSaver.saveState();
+  },
+
+  getSaveStateData: function () {
+	  if (this.rte) {
+	    return [{
+        name: 'article[content_input]',
+        value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+      },{
+	      name: 'article[language_id]',
+        value: this.wrapper.find('.article-editor-wrap').find('.language_id').val()
+      }];
+    }
+	  return '';
+  },
 
 	hideEditor: function() {
 		$('body').removeClass('content-link-control-on');

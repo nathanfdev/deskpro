@@ -625,12 +625,12 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			}
 
 
-      window.LegacyRteTextarea.init($('.edit-content-field', this.getEl('content_ed')), {
+      this.rte = window.LegacyRteTextarea.init($('.edit-content-field', this.getEl('content_ed')), {
         height: h,
         inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
-      txt.on('froalaEditor.keypress', function () {
+      this.rte.on('froalaEditor.keypress', function () {
         self.editStateSaver.triggerChange();
       });
 

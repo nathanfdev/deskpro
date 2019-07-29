@@ -4,18 +4,21 @@ import { ArticleEditor } from '@deskpro/product-content-editor';
 
 
 class ContentEditor extends React.PureComponent {
-  static onFocus() {
-    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-  }
-
-  static onBlur() {
-    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
-  }
 
   constructor(props) {
     super(props);
     this.editor = React.createRef();
   }
+
+  onFocus = () => {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+    this.props.onFocus();
+  };
+
+  onBlur = () => {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+    this.props.onBlur();
+  };
 
   render() {
     const { value  } = this.props;
@@ -25,15 +28,22 @@ class ContentEditor extends React.PureComponent {
         options={{
           initialContent: value
         }}
-        onFocus={ContentEditor.onFocus}
-        onBlur={ContentEditor.onBlur}
+        onFocus={this.onFocus}
+        onBlur={this.onBlur}
       />
     );
   }
 }
 
 ContentEditor.propTypes = {
-  value: PropTypes.PropTypes.object,
+  value:   PropTypes.PropTypes.object,
+  onFocus: PropTypes.PropTypes.func,
+  onBlur:  PropTypes.PropTypes.func,
+};
+
+ContentEditor.defaultProps = {
+  onFocus() {},
+  onBlur() {},
 };
 
 export default ContentEditor;

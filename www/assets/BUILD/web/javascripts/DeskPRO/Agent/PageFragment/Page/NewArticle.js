@@ -27,14 +27,24 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
+    if (window.DP_HAS_NEW_CONTENT_EDITOR) {
+      this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+        stateId: 'newarticle',
+        callback: this.getSaveStateData.bind(this),
+        listenOn: this.getEl('newarticle'),
+        time: 5000
+      });
+      this.stateSaver.stop();
+    } else {
+      this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+        stateId: 'newarticle',
+        listenOn: this.getEl('newarticle')
+      });
+    }
+		this.ownObject(this.stateSaver);
+
 		this._initContentSection();
 		this._initOtherSection();
-
-		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'newarticle',
-			listenOn: this.getEl('newarticle')
-		});
-		this.ownObject(this.stateSaver);
 
 		$('#new_article_brand_id').on('change', function() {
 			self.updateCategories();
@@ -267,18 +277,24 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		var txt = this.getEl('content');
 
 		if (window.DP_HAS_NEW_CONTENT_EDITOR) {
+      var contentInput = null;
+      if (window[this.meta.baseId + '_content_input']) {
+        contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
+      }
 			self.rte = window.AgentLegacyBundle.renderContentEditor(
 				txt[0],
-				null
+        contentInput,
+				this.onFocus.bind(this),
+				this.onBlur.bind(this)
 			);
 		} else {
-			this.rte = window.LegacyRteTextarea.init(txt, {
+      self.rte = window.LegacyRteTextarea.init(txt, {
 				height: 							Math.max(h - 500, 200),
 				inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
 				formname:							'newarticle'
 			});
 
-			txt.on('froalaEditor.keypress', function () {
+      self.rte.on('froalaEditor.keypress', function () {
 				if (self.stateSaver) {
 					self.stateSaver.triggerChange();
 				}
@@ -290,6 +306,27 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			});
 		}
 	},
+
+  onFocus: function() {
+    this.stateSaver.setOptions({alwaysChanged: true});
+    this.stateSaver.triggerChange();
+  },
+
+  onBlur: function() {
+	  this.stateSaver.setOptions({alwaysChanged: false});
+    this.stateSaver.saveState();
+  },
+
+  getSaveStateData: function () {
+    var formData = this.form.serializeArray();
+    if (this.rte) {
+      formData.push({
+        name: 'newarticle[content_input]',
+        value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+      });
+    }
+    return formData;
+  },
 
 	//#########################################################################
 	//# Other Section

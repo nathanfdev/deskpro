@@ -206,19 +206,19 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
 
-    window.LegacyRteTextarea.init(txt, {
+    this.rte = window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - 500, 200),
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
       formname:							'newnews'
 		});
 
-    txt.on('froalaEditor.keypress', function () {
+    this.rte.on('froalaEditor.keypress', function () {
       if (self.stateSaver) {
         self.stateSaver.triggerChange();
       }
     });
 
-    txt.on('froalaEditor.click', function () {
+    this.rte.on('froalaEditor.click', function () {
       self.getEl('content_section').addClass('done');
     });
 	},

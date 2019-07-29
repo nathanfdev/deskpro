@@ -335,7 +335,9 @@ class AgentLegacyApp {
 
   renderContentEditor(
     node,
-    value
+    value,
+    onFocus,
+    onBlur
   ) {
     const editor = React.createRef();
 
@@ -349,6 +351,8 @@ class AgentLegacyApp {
             <ContentEditor
               ref={editor}
               value={value}
+              onFocus={onFocus}
+              onBlur={onBlur}
             />
           </IntlProvider>
         </Provider>

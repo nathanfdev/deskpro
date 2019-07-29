@@ -289,19 +289,19 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
 		var txt = this.getEl('content');
 
-    window.LegacyRteTextarea.init(txt, {
+    this.rte = window.LegacyRteTextarea.init(txt, {
 			height: 250,
       inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
       formname:							'newdownload'
 		});
 
-    txt.on('froalaEditor.keypress', function () {
+    this.rte.on('froalaEditor.keypress', function () {
       if (self.stateSaver) {
         self.stateSaver.triggerChange();
       }
     });
 
-    txt.on('froalaEditor.click', function () {
+    this.rte.on('froalaEditor.click', function () {
       self.getEl('content_section').addClass('done');
     });
 	},

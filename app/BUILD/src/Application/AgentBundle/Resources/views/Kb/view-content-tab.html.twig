@@ -51,7 +51,7 @@
       </div>
 			{% if app.hasBeta('content_editor') and article.content_input_type == 'dped_v1' %}
 				<script type="text/javascript">
-					var {{ baseId }}_content_input = {{ article.content_input|json_encode|raw }};
+					var {{ baseId }}_content_input = {{ state.article.content_input|default(article.content_input)|json_encode|raw }};
 				</script>
 				<div class="edit-content-field"></div>
 			{% else %}
