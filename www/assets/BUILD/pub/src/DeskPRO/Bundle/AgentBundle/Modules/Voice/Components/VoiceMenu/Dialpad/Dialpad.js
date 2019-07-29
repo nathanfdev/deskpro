@@ -267,9 +267,11 @@ class Dialpad extends React.Component {
     return selectedNumber;
   }
 
-  setOutgoingNumber = (number) => {
+  setOutgoingNumber = (number, personId = null) => {
     const $input = $(this.phoneInput.input);
     const { formData } = this.state;
+    formData.value.call_from = number;
+    formData.value.person = personId;
 
     setTimeout(() => {
       this.setState({
@@ -407,7 +409,7 @@ class SearchResults extends React.Component {
           <div
             key={index}
             className="dialpad-search-result-item"
-            onClick={() => { onSelect(getNumber(item)); }}
+            onClick={() => { onSelect(getNumber(item), item.get('id')); }}
           >
             {item.get('name')} {getNumber(item)}
           </div>
