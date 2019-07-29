@@ -204,7 +204,7 @@ class Dialpad extends React.Component {
 
   getFromNumber() {
     // update 'call from' field based on current country code
-    const countryCode = this.phoneInput.getCountryData().iso2;
+    const countryCode = this.phoneInput ? this.phoneInput.getCountryData().iso2 : null;
     const { numbers = Immutable.fromJS({}) } = this.props;
 
     let selectedNumber;
