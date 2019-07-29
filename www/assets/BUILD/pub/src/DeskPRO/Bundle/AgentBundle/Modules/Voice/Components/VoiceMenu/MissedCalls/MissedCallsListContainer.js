@@ -25,7 +25,7 @@ class MissedCallsListContainer extends React.Component {
 
   callBack = (phoneCall) => {
     const { dispatch } = this.props;
-    dispatch(openDialpad(phoneCall.get('external_number')));
+    dispatch(openDialpad(phoneCall.get('external_number'), null, null, phoneCall.get('person')));
   };
 
   deleteRecording = (record) => {
