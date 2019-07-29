@@ -68,7 +68,7 @@ GROUP BY %2:FIELD_GROUP:tickets%',
                 'title' => 'Average total waiting time for tickets resolved <1:date group, default: this_month> grouped by <2:field group:tickets> <chart:bar>',
             ],
 
-        'community-topic-views-date-x-grouped-date' => [
+        'community-views-date-x-grouped-date' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '40',
@@ -180,7 +180,7 @@ GROUP BY %2:FIELD_GROUP:chats:chat_conversations%',
                 'title' => 'Number of chats missed <1:date group, default: this_month> grouped by <2:field group:chats, default: department> <chart:bar>',
             ],
 
-        'number-com-topics-com-created-date-group-by-community-topic' => [
+        'number-com-topics-com-created-date-group-by-com' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '30',
@@ -192,7 +192,7 @@ GROUP BY %2:FIELD_GROUP:community_topics:community_topics_comments.topic%',
                 'title' => 'Number of community topic comments created <1:date group, default: this_month> grouped by topic <2:field group:community, default: type> <chart:bar>',
             ],
 
-        'number-community-topic-comments-created-date-group-by-x' => [
+        'number-community-comments-created-date-group-by-x' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '20',
@@ -204,7 +204,7 @@ GROUP BY %2:FIELD_GROUP:community_topic_comments%',
                 'title' => 'Number of community topic comments created <1:date group, default: this_month> grouped by <2:field group:community_topic_comments, default: none> <chart:bar>',
             ],
 
-        'number-community-topics-created-date-group-by-x' => [
+        'number-communitys-created-date-group-by-x' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '10',
@@ -216,7 +216,7 @@ GROUP BY %2:FIELD_GROUP:community_topics%',
                 'title' => 'Number of community topics created <1:date group, default: this_month> grouped by <2:field group:community_topics, default: type> <chart:bar>',
             ],
 
-        'number-community-topic-votes-submitted-date-x-group-y' => [
+        'number-community-votes-submitted-date-x-group-y' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '60',
@@ -405,7 +405,7 @@ ORDER BY COUNT() DESC',
                 'title' => 'Number of views per article <1:date group, default: this_month>',
             ],
 
-        'number-views-per-community-topic-date-x' => [
+        'number-views-per-community-date-x' => [
                 'category'      => 'community',
                 'description'   => '',
                 'display_order' => '50',
@@ -415,7 +415,7 @@ FROM community_topics
 WHERE community_topics.views.date_created = %1:DATE_GROUP%
 GROUP BY community_topics.id
 ORDER BY COUNT() DESC',
-                'title' => 'Number of views per topic <1:date group, default: this_month>',
+                'title' => 'Number of views per community topic <1:date group, default: this_month>',
             ],
 
         'organizations-longest-total--wait' => [

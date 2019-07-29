@@ -302,7 +302,7 @@ WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved =
 GROUP BY ${ticket}',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date","type":"dates"}]',
             ],
-        'community-topics-views-date-x-grouped-date' => [
+        'community-views-date-x-grouped-date' => [
                 'title'         => 'Number of community topics views ${date} grouped by date',
                 'labels'        => 'community',
                 'description'   => '',
@@ -423,7 +423,7 @@ WHERE chat_conversations.date_created = ${date} AND chat_conversations.is_agent 
 GROUP BY ${chat}',
                 'variables' => '[{"name":"chat","type":"fields","field_type":"chats","table":"chat_conversations","default":"department"},{"name":"date","type":"dates"}]',
             ],
-        'number-community-topics-com-created-date-group-by-community-topic' => [
+        'number-community-created-date-group-by-ct' => [
                 'title'         => 'Number of community topics comments created ${date} grouped by topic ${topic}',
                 'labels'        => 'community',
                 'description'   => '',
@@ -436,7 +436,7 @@ WHERE community_topic_comments.date_created = ${date}
 GROUP BY ${topic}',
                 'variables' => '[{"name":"topic","type":"fields","field_type":"community","table":"community_topics_comments.topic","default":"type"},{"name":"date","type":"dates"}]',
             ],
-        'number-community-topics-comments-created-date-group-by-x' => [
+        'number-community-comments-created-date-group-by-x' => [
                 'title'         => 'Number of community-topics comments created ${date} grouped by ${topic_comment}',
                 'labels'        => 'community',
                 'description'   => '',
@@ -449,7 +449,7 @@ WHERE community_topic_comments.date_created = ${date}
 GROUP BY ${topic_comment}',
                 'variables' => '[{"name":"topic_comment","type":"fields","field_type":"community_topic_comments","table":"community_topic_comments","default":"none"},{"name":"date","type":"dates"}]',
             ],
-        'number-community-topics-created-date-group-by-x' => [
+        'number-community-created-date-group-by-x' => [
                 'title'         => 'Number of community topics created ${date} grouped by ${topic}',
                 'labels'        => 'community',
                 'description'   => '',
@@ -462,7 +462,7 @@ WHERE community_topics.date_created = ${date}
 GROUP BY ${topic}',
                 'variables' => '[{"name":"topic","type":"fields","field_type":"community","table":"community_topics","default":"type"},{"name":"date","type":"dates"}]',
             ],
-        'number-community-topic-votes-submitted-date-x-group-y' => [
+        'number-community-votes-submitted-date-x-group-y' => [
                 'title'         => 'Number of community topic votes submitted ${date} grouped by ${topic}',
                 'labels'        => 'community',
                 'description'   => '',
@@ -678,7 +678,7 @@ ORDER BY DPQL_COUNT() DESC',
                 'variables' => '[{"name":"date","type":"dates"}]',
             ],
         'number-views-per-community-topic-date-x' => [
-                'title'         => 'Number of views per community topic entry ${date}',
+                'title'         => 'Number of views per community topic ${date}',
                 'labels'        => 'community,agents',
                 'description'   => '',
                 'display_types' => 'table',
