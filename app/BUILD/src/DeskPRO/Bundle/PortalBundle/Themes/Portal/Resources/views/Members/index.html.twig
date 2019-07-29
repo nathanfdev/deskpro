@@ -1,0 +1,29 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
+
+  <div class="browse-page">
+    <header class="large-title">
+      <h1>{{ phrase('portal.members.title') }}</h1>
+    </header>
+
+    <div class="content-list-wrap simple as-articles {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
+      {% if pager|length %}
+        <ul class="content-list">
+          {% for person in pager %}
+            <li>
+              <a href="{{ path('portal_members_view', {'id': person.id}) }}">{{ person.id }}{% if person.community_name %}-{{ person.community_name }} {% endif %}</a>
+            </li>
+          {% endfor %}
+        </ul>
+        {% show members_pager %}
+      {% else %}
+        <strong>{{ phrase('portal.members.none') }}</strong>
+      {% endif %}
+    </div>
+
+  </div>
+{% endblock inner_content %}

@@ -1,0 +1,24 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
+
+  <div class="browse-page">
+    <header class="large-title">
+      <h1>{{ object_phrase(category) }}</h1>
+
+      <div class="header-buttons">
+        {% show rss_link %}
+        {% show kb_cat_subscription_link %}
+      </div>
+    </header>
+
+    {% show kb with {
+      with_tree: brand_setting('user.kb_categories_with_tree')
+
+    }%}
+    {% show kb_list_detail %}
+  </div>
+{% endblock inner_content %}

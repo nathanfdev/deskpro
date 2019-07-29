@@ -1,0 +1,116 @@
+{% if brand_setting('core.iface_portal') %}
+  {% if is_guest() %}
+    {% if display_registration_link %}
+      <li class="register-greeting">
+        <a href="{{ path('portal_user_registration') }}" class="button-small button-marked">{{ phrase('portal.account.login-register-header') }}</a>
+      </li>
+    {% endif %}
+
+    {% if show_auth %}
+      {% if display_registration_link %}
+        <li class="register-or-signup">
+          <span><hr> {{ phrase('portal.general.or') }} <hr></span>
+        </li>
+      {% endif %}
+      <li>
+        <div class="dropdown-group">
+          <a href="{{ path('portal_login') }}" id="top-login-btn" class="button-small button-marked clickaway-dropdown" data-clickaway-target="top-login-dropdown">{{ phrase('portal.account.login-btn') }} <i
+                    class="fas fa-caret-down"></i></a>
+          <div class="dp-react-widget">
+            <div class="active-button-dropdown language-dropdown" id="top-login-dropdown" style="min-width: 300px">
+              <div class="small-form">
+                <div>
+                  {% if has_login_form() %}
+                    <form method="post" id="login-sidebar">
+                      <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}" />
+                      <label for="login-form-username">
+                        <span>{{ phrase('portal.account.login-email') }}</span>
+                        <input
+                          type="text"
+                          placeholder="{{ phrase('portal.account.login-email-placeholder') }}"
+                          name="dropdown_username"
+                          id="login-form-username"
+                          tabIndex="21"
+                        />
+                      </label>
+
+                      <label for="login-form-password">
+                        <div id="login-form-failed-reason"></div>
+                        <span>{{ phrase('portal.account.login-password') }}</span>
+                        <input
+                          type="password"
+                          placeholder="{{ phrase('portal.account.login-password') }}"
+                          name="dropdown_password"
+                          id="login-form-password"
+                          tabIndex="22"
+                        />
+                      </label>
+
+                      <div class="permanent-login">
+                        <label for="login-form-remember-me">
+                          <input
+                            type="checkbox"
+                            name="remember_me"
+                            id="login-form-remember-me"
+                            tabIndex="23"
+                          />
+                          {{ phrase('portal.account.login-stay-logged-in') }}
+                        </label>
+                      </div>
+
+                      <button type="submit" tabIndex="24">{{ phrase('portal.account.login-btn') }}</button>
+
+                      {% if has_login_form() %}
+                        <div class="secondary-action">
+                          <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25">
+                            {{ phrase('portal.account.login-password-reminder') }}
+                          </a>
+                        </div>
+                      {% endif %}
+                    </form>
+                  {% endif %}
+                  <div id="login-form-usersources"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    {% endif %}
+  {% else %}
+    <li class="welcome item-profile">
+      <span class="agent-greeting">
+        <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}',sizingMethod='scale'); -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}', sizingMethod='scale')";"></span>
+        {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
+        <span class="mobile-expand"><i class="fas fa-angle-double-down"></i></span>
+      </span>
+      <span class="disc"></span>
+      <a class="profile-link hideable" href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>
+    </li>
+
+    {% if ticket_count > 0 and can_use_tickets() %}
+    <li class="welcome item-tickets hideable">
+      <span class="disc"></span>
+      <a class="tickets-link dpx-ticket-count" href="{{ path('portal_tickets') }}">{{ phrase('portal.general.nav-tickets') }} ({{ ticket_count }})</a>
+    </li>
+    {% endif %}
+
+    {% if chat_count > 0 and can_use_chat() %}
+    <li class="welcome item-chat hideable">
+      <span class="disc"></span>
+      <a class="chat-link" href="{{ path('portal_chats') }}">{{ phrase('portal.general.nav-chat') }} ({{ chat_count }})</a>
+    </li>
+    {% endif %}
+
+    {% if user.organization and user.organization_manager and ticket_count_org > 0 and can_use_tickets() %}
+    <li class="welcome item-org hideable">
+      <span class="disc"></span>
+      <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dpx-ticket-count-org org-tickets-link">{{ phrase('portal.general.nav-tickets-org') }} ({{ ticket_count_org }})</a>
+    </li>
+    {% endif %}
+
+    <li class="welcome item-logout hideable">
+      <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="button-small button-marked logout-link">{{ phrase('portal.account.logout-btn') }}</a>
+    </li>
+  {% endif %}
+{% endif %}

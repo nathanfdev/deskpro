@@ -1,0 +1,119 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block inner_content %}
+
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
+
+  <article class="news kb-article">
+    {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
+    <header>
+      <div class="header-button-container">
+        <div class="header-buttons">
+          {% show kb_subscription_link %}
+          {% if can_share %}
+            <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button" rel="noindex, nofollow">
+              <span>{{ phrase('portal.general.btn-share') }}</span> <i class="fas fa-share"></i>
+            </a>
+          {%  endif %}
+          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}">
+            <span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="far fa-file-pdf"></i>
+          </a>
+        </div>
+      </div>
+
+      <h1>{{ article.translated_title }}</h1>
+
+      <div class="article-meta">
+        <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>
+        {{ article.person.display_name_user }}
+        <hr>
+        {{ article.date_updated | date('Y-m-d') }}
+        <hr>
+        {% if brand_setting('user.publish_comments') %}
+          <span class="comments"><i class="far fa-comments"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
+          <hr>
+        {% endif %}
+        {% if article.primary_category %}
+          {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
+        {% endif %}
+      </div>
+      {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
+        <div class="sub-note">{{ phrase('portal.articles.view-as-agent') }}</div>
+      {% endif %}
+    </header>
+
+    <div class="article-content-wrapper">
+      <div class="article-content padded dpx-kb-article-content">
+        {{ article.translated_content|raw }}
+      </div>
+      {% if article.custom_data|length %}
+        <div class="ticket-view-sidebar">
+          <div class="ticket-sidebar-container ticket-sidebar-meta">
+            <ul>
+              {% for custom in custom_data %}
+                {% if custom['value'] %}
+                  <li>
+                    <h3>{{ custom['label'] }}</h3>
+                    {% if custom['type'] == 'url' %}
+                      <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
+                    {% elseif custom['type'] == 'date' %}
+                      <p>{{ custom['value']|date('full') }}</p>
+                    {% elseif custom['type'] == 'datetime' %}
+                      <p>{{ custom['value']|date('fulltime') }}</p>
+                    {% elseif custom['type'] == 'file' %}
+                      {% for file in custom['value'] %}
+                        <div>
+                          <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                            {{ content_icon(file) }}
+                            {{ file.filename }}
+                            ({{ file.readableFilesize }})
+                          </a>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      <p>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</p>
+                    {% endif %}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+
+
+    {% if article.labels|length %}
+      <div class="tag-list">
+        <ul>
+          <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
+          {% for l in  article.labels %}
+            <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </article>
+
+  {% show kb_attachments %}
+  {% show kb_ratings %}
+  {% show related_content %}
+
+  {% if brand_setting('user.publish_comments') and (article.calc_num_comments or new_comment_form) %}
+    <div class="comment-box" id="comments">
+      <div class="titled-header">
+        <h1>{{ phrase('portal.general.comments-title', {count: article.calc_num_comments}) }}</h1>
+      </div>
+      {% show kb_article_comments %}
+      {% show comment_form %}
+    </div>
+  {% endif %}
+{% endblock inner_content %}
+
+{% block doc_end %}
+      {{ insert_glossary_js(article) }}
+{% endblock %}
