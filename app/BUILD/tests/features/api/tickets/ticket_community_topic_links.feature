@@ -7,14 +7,14 @@ Feature: /tickets/{id}/community_topic_links endpoint
     And no TicketCommunityTopicLink records exist
     And no CommunityTopic records exist
     And only the following Ticket records exist:
-      | #  | Subject  | Status         | Person   |
-      | t1 | Ticket 1 | awaiting_agent | {admin}  |
+      | #  | Subject  | Status         | Person  |
+      | t1 | Ticket 1 | awaiting_agent | {admin} |
     And only the following "CommunityChannel" records exist:
-      | #   | title      | slug       |
-      | cc1 | Feature    | feature    |
+      | #   | title   | slug    |
+      | cc1 | Feature | feature |
     And only the following CommunityTopic records exist:
-      | #  | Title      | category  |
-      | ct1 | Feedback 1 | {cc1}     |
+      | #   | Title   | channel |
+      | ct1 | Topic 1 | {cc1}   |
     And I reset ticket logs
     And I grant the "{cc1}" community channel permission for usergroup everyone
 
@@ -35,9 +35,9 @@ Feature: /tickets/{id}/community_topic_links endpoint
     Given "user_1@deskpro.dev" user exists
     And "user_2@deskpro.dev" user exists
     And only the following TicketParticipant records exist:
-      | Ticket | Person                |
-      | {t1}   | ~user_1@deskpro.dev~  |
-      | {t1}   | ~user_2@deskpro.dev~  |
+      | Ticket | Person               |
+      | {t1}   | ~user_1@deskpro.dev~ |
+      | {t1}   | ~user_2@deskpro.dev~ |
     When I reset ticket logs
     And I send a POST request to "/api/v2/tickets/{t1}/community_topic_links" with body:
     """
@@ -58,7 +58,7 @@ Feature: /tickets/{id}/community_topic_links endpoint
   Scenario: I retrieve ticket community topic links by ticket id and by ticket ref
     Given only the following TicketCommunityTopicLink records exist:
       | #   | Person  | Ticket | Topic |
-      | ttf | {admin} | {t1}   | {ct1}     |
+      | ttf | {admin} | {t1}   | {ct1} |
 
     When I send a GET request to "/api/v2/tickets/{t1}/community_topic_links"
     Then the response status code should be 200
@@ -73,7 +73,7 @@ Feature: /tickets/{id}/community_topic_links endpoint
   Scenario: I delete ticket community topic link
     Given only the following TicketCommunityTopicLink records exist:
       | #   | Person  | Ticket | Topic |
-      | ttf | {admin} | {t1}   | {ct1}     |
+      | ttf | {admin} | {t1}   | {ct1} |
 
     When I reset ticket logs
     And I send a DELETE request to "/api/v2/tickets/{t1}/community_topic_links/{ttf}"

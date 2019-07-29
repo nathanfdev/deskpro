@@ -2,7 +2,8 @@
 Feature: Resolve ticket
 
   Background:
-    Given I have only default brand
+    Given I install the fresh data set
+    And I have only default brand
     And agent and user exist
     And I'm authenticated as user
     And user has defaultBrand brand
