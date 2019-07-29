@@ -3058,8 +3058,12 @@ class TicketController extends AbstractController
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
 
-        if (!$macro || (!$macro->is_global && $macro->getPerson() && $macro->getPerson()->getId(
-                ) != $this->person->getId())
+        if (!$macro ||
+            (
+                !$macro->getIsGlobal() &&
+                $macro->getPerson() &&
+                $macro->getPerson()->getId() != $this->person->getId()
+            )
         ) {
             throw $this->createNotFoundException();
         }
@@ -3082,13 +3086,17 @@ class TicketController extends AbstractController
         /** @var $macro \Application\DeskPRO\Entity\TicketMacro */
         $macro = $this->em->getRepository(TicketMacro::class)->find($macro_id);
 
-        if (!$macro || (!$macro->is_global && $macro->getPerson() && $macro->getPerson()->getId(
-                ) != $this->person->getId())
+        if (!$macro ||
+            (
+                !$macro->getIsGlobal() &&
+                $macro->getPerson() &&
+                $macro->getPerson()->getId() != $this->person->getId()
+            )
         ) {
             throw $this->createNotFoundException();
         }
 
-        $actions_collection = $macro->getActionsCollection($ticket);
+        $actions_collection = $macro->getActionsCollection();
 
         $permission_errors = false;
         $this->db->beginTransaction();
@@ -3140,6 +3148,18 @@ class TicketController extends AbstractController
                     $actions_collection->add($reply_action);
 
                     $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+
+                    if ($reply_action instanceof ReplySnippetAction &&
+                        $this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')
+                    ) {
+                        $snippetItems = $reply_action->getSnippetItems();
+
+                        foreach ($snippetItems as $snippetItem) {
+                            $snippetItem->snippet->setUsageCount((int) $snippetItem->snippet->getUsageCount() + 1);
+
+                            $this->em->persist($snippetItem->snippet);
+                        }
+                    }
 
                     $newticket = new NewTicket($this->em, $this->person);
                     $newticket->setValuesFromTicket($ticket);
@@ -5100,34 +5120,15 @@ class TicketController extends AbstractController
             // Person
             $person_id = $this->in->getUInt('newticket.person.id');
             if ($person_id) {
-                $check_person = $this->em->find(Person::class, $person_id);
-                if (!$check_person) {
+                $checkPerson = $this->em->find(Person::class, $person_id);
+                if (!$checkPerson) {
                     $errors['person_id'] = true;
                 }
 
-                if ($check_person->is_disabled) {
+                if ($checkPerson->is_disabled) {
                     $errors['person_disabled'] = true;
                 }
             } else {
-                $new_email = $this->in->getString('newticket.person.email_address');
-                if (!$new_email) {
-                    $new_email                        = $this->in->getString('newticket.person_input_choice');
-                    $newTicket->person->email_address = $new_email;
-                }
-
-                if (!$new_email && !$this->in->getString('newticket.person.name')) {
-                    $errors['person_no_user'] = true;
-                } elseif (!StringEmail::isValueValid($new_email)) {
-                    $errors['person_email_address'] = true;
-                } elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_email)) {
-                    $errors['person_email_address_gateway'] = true;
-                }
-
-                $check_person = $this->em->getRepository(Person::class)->findOneByEmail($new_email);
-                if ($check_person && $check_person->is_disabled) {
-                    $errors['person_disabled'] = true;
-                }
-
                 $newPhone = $this->in->getString('newticket.person.phone_number');
                 if ($newPhone) {
                     $phoneNumbers = $this->em->getRepository(Entity\PersonPhoneNumber::class)->findBy([
@@ -5135,9 +5136,39 @@ class TicketController extends AbstractController
                     ]);
                     if ($phoneNumbers) {
                         $errors['person_phone_number_exists'] = true;
+                        $newPhone                             = null;
                     }
                     if ($this->container->get('validator')->validate($newPhone, [new AppAssert\PhoneNumber()])->has(0)) {
                         $errors['person_phone_number_invalid'] = true;
+                        $newPhone                              = null;
+                    }
+                }
+
+                $newEmail = $this->in->getString('newticket.person.email_address');
+                if (!$newEmail) {
+                    $newEmail                         = $this->in->getString('newticket.person_input_choice');
+                    $newTicket->person->email_address = $newEmail;
+                }
+
+                if ($newEmail) {
+                    if (!StringEmail::isValueValid($newEmail)) {
+                        $errors['person_email_address'] = true;
+                    } elseif (App::$container->getEmailAccountManager()->findAccountForEmailAddress($newEmail)) {
+                        $errors['person_email_address_gateway'] = true;
+                    }
+
+                    $checkPerson = $this->em->getRepository(Person::class)->findOneByEmail($newEmail);
+                    if ($checkPerson && $checkPerson->is_disabled) {
+                        $errors['person_disabled'] = true;
+                    }
+                } else {
+                    if (!$this->in->getString('newticket.person.name') && !$newPhone) {
+                        $errors['person_no_user'] = true;
+                    }
+                    // allow to create a new person without email but with phone number
+                    // if it's an agent note
+                    if (!($newPhone && $request->request->get('is_note'))) {
+                        $errors['person_email_address'] = true;
                     }
                 }
             }
@@ -5216,8 +5247,8 @@ class TicketController extends AbstractController
                 $newTicket->getMockTicket()
             );
 
-            if (isset($check_person) && $check_person) {
-                $newTicket->setValuesFromTicket(null, $check_person, $check_person->organization);
+            if (isset($checkPerson) && $checkPerson) {
+                $newTicket->setValuesFromTicket(null, $checkPerson, $checkPerson->organization);
             }
 
             $validator->setLayout($layout);

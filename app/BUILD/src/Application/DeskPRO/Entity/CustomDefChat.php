@@ -8,13 +8,17 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AbstractAlias;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomChatFieldDefinitionAlias;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A custom field definition.
  */
-class CustomDefChat extends CustomDefAbstract
+class CustomDefChat extends CustomDefAbstract implements AliasesOwner
 {
     /**
      * @var CustomDefChat
@@ -29,6 +33,22 @@ class CustomDefChat extends CustomDefAbstract
     protected $children = null;
 
     /**
+     * Aliases for this field.
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomChatFieldDefinitionAlias[]
+     */
+    protected $aliases;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->aliases = new ArrayCollection();
+    }
+
+    /**
      * Set parent.
      *
      * @param CustomDefChat $parent
@@ -38,6 +58,39 @@ class CustomDefChat extends CustomDefAbstract
     public function setParent(CustomDefChat $parent = null)
     {
         $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|AbstractAlias[]|null
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
+
+    /**
+     * @param AbstractAlias $alias
+     *
+     * @return $this
+     */
+    public function addAlias(AbstractAlias $alias)
+    {
+        $alias->setObject($this);
+        $this->aliases->add($alias);
+
+        return $this;
+    }
+
+    /**
+     * @param AbstractAlias $alias
+     *
+     * @return $this
+     */
+    public function removeAlias(AbstractAlias $alias)
+    {
+        $this->aliases->removeElement($alias);
 
         return $this;
     }
@@ -218,6 +271,17 @@ class CustomDefChat extends CustomDefAbstract
                 'orderBy'  => ['display_order' => 'ASC'],
             ]
         );
+        $metadata->mapOneToMany([
+            'fieldName'    => 'aliases',
+            'targetEntity' => CustomChatFieldDefinitionAlias::class,
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'object',
+            'orphanRemoval' => true,
+        ]);
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'app',

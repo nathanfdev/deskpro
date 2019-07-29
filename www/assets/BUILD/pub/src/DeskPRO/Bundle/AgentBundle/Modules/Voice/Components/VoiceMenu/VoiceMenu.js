@@ -11,28 +11,27 @@ import MissedCallsListContainer from './MissedCalls/MissedCallsListContainer';
 class VoiceMenu extends React.Component {
 
   static propTypes = {
-    mp3:                   PropTypes.string,
-    wav:                   PropTypes.string,
-    ogg:                   PropTypes.string,
-    me:                    PropTypes.object,
-    agents:                PropTypes.object,
-    people:                PropTypes.object,
-    queues:                PropTypes.object,
-    incomingCall:          PropTypes.object,
-    acceptCall:            PropTypes.func,
-    declineCall:           PropTypes.func,
-    hideCall:              PropTypes.func,
-    onHangup:              PropTypes.func,
-    outboundCallsEnabled:  PropTypes.bool,
-    outgoingCall:          PropTypes.object,
-    ringingVolume:         PropTypes.number,
-    agentVoicemailTimeout: PropTypes.number,
-    callsEnabled:          PropTypes.bool,
-    voiceEnabled:          PropTypes.bool,
-    micEnabled:            PropTypes.bool,
-    openUserMenu:          PropTypes.func,
-    recordsCount:          PropTypes.number,
-    defaultTab:            PropTypes.string
+    mp3:                  PropTypes.string,
+    wav:                  PropTypes.string,
+    ogg:                  PropTypes.string,
+    me:                   PropTypes.object,
+    agents:               PropTypes.object,
+    people:               PropTypes.object,
+    queues:               PropTypes.object,
+    incomingCall:         PropTypes.object,
+    acceptCall:           PropTypes.func,
+    declineCall:          PropTypes.func,
+    hideCall:             PropTypes.func,
+    onHangup:             PropTypes.func,
+    outboundCallsEnabled: PropTypes.bool,
+    outgoingCall:         PropTypes.object,
+    ringingVolume:        PropTypes.number,
+    callsEnabled:         PropTypes.bool,
+    voiceEnabled:         PropTypes.bool,
+    micEnabled:           PropTypes.bool,
+    openUserMenu:         PropTypes.func,
+    recordsCount:         PropTypes.number,
+    defaultTab:           PropTypes.string
   };
 
   constructor(props) {
@@ -81,7 +80,7 @@ class VoiceMenu extends React.Component {
   };
 
   renderPhoneTab() {
-    const { me, agents, people, queues, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
+    const { me, agents, people, queues, incomingCall, ringingVolume } = this.props;
     const { outgoingCall, acceptCall, declineCall, hideCall, onHangup } = this.props;
     const { mp3, wav, ogg } = this.props;
 
@@ -97,7 +96,6 @@ class VoiceMenu extends React.Component {
           queues={queues}
           incomingCall={incomingCall}
           ringingVolume={ringingVolume}
-          agentVoicemailTimeout={agentVoicemailTimeout}
           onAccept={acceptCall}
           onDecline={declineCall}
           hideCall={hideCall}

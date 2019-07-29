@@ -23,7 +23,7 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
-export const setBusyAgents = createAction('VOICE_AGENT_SET_BUSY_AGENTS');
+export const setVoiceOnlineAgents = createAction('VOICE_AGENT_SET_ONLINE_AGENTS');
 export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
 export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
 export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
@@ -175,6 +175,9 @@ export const voiceBootstrap = createAction(
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
           }
         });
+        messageBroker.addMessageListener('agent.voice.conference.incoming-call-timeout', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
         messageBroker.addMessageListener('agent.voice.reached-voicemail', (data) => {
           dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });
@@ -264,8 +267,8 @@ export const voiceBootstrap = createAction(
           window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket_id}`, { noToggle: true });
         });
 
-        api.sendGet('DP_API/voice_client/busy_voice_agents').success(({ data }) => {
-          dispatch(setBusyAgents(data));
+        api.sendGet('DP_API/voice_client/online_agents').success(({ data }) => {
+          dispatch(setVoiceOnlineAgents(Immutable.fromJS(data)));
         });
       })
       .catch((e) => {
@@ -275,14 +278,18 @@ export const voiceBootstrap = createAction(
         // nothing to do
       });
 
-      const runTaskRouter = () => {
-        api.sendPut('DP_API/voice_client/task_router').then(
-          () => { setTimeout(runTaskRouter, 2000); },
-          () => { setTimeout(runTaskRouter, 2000); }
-        );
-      };
+      // run locally for developing
+      // to avoid running cron
+      if (window.DP_VOICE_USE_LOCAL_POLLING) {
+        const runTaskRouter = () => {
+          api.sendGet('DP_API/task_router/evaluate').then(
+            () => { setTimeout(runTaskRouter, 2000); },
+            () => { setTimeout(runTaskRouter, 2000); }
+          );
+        };
 
-      runTaskRouter();
+        runTaskRouter();
+      }
 
       accounts.forEach((account) => {
         const id = account.get('id');
@@ -437,7 +444,20 @@ export const makeOutboundCall = createAction(
 
 export const toggleHold = createAction(
   'VOICE_AGENT_TOGGLE_HOLD',
-  (callId, hold) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold })
+  (callId, hold) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
+    promise.success(() => {
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+      const phoneCall = phoneCalls.get(callId);
+
+      if (phoneCall) {
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall.set('on_hold', hold)]), 'replace'));
+      }
+    });
+
+    return promise;
+  }
 );
 
 export const acceptPhoneCall = createAction(

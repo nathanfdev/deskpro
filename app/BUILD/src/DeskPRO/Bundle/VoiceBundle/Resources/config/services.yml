@@ -81,6 +81,11 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@chat_settings_resolver"
 
+  dp.voice.chat_queue_targets_loader:
+    class: DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsLoader
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+
   dp.voice.task_router.voice_workflow:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow
     arguments:
@@ -88,19 +93,30 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@voice_settings_resolver"
       - "@dp.voice.task_router.storage"
-      - "@dp.voice.department_checker"
+      - "@dp.voice.voice_permissions_checker"
     tags:
       - { name: dp.voice.task_router_workflow }
 
   dp.voice.task_router.chat_workflow:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow
     arguments:
-      - "@doctrine.orm.entity_manager"
       - "@dp.voice.chat_task_helper"
       - "@chat_settings_resolver"
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.chat_queue_targets_loader"
+      - "@dp.voice.user_chat_permissions_checker"
     tags:
       - { name: dp.voice.task_router_workflow }
 
-  dp.voice.department_checker:
-    class: DeskPRO\Bundle\VoiceBundle\Permissions\DepartmentChecker
+  dp.voice.voice_permissions_checker:
+    class: DeskPRO\Bundle\VoiceBundle\Permissions\VoicePermissionsChecker
+
+  dp.voice.user_chat_permissions_checker:
+    class: DeskPRO\Bundle\VoiceBundle\Permissions\UserChatPermissionsChecker
+
+  dp.voice.worker_activity:
+    class: DeskPRO\Bundle\VoiceBundle\Worker\WorkerActivity
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.worker_helper"

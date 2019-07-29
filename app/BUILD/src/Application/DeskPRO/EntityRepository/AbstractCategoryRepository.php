@@ -115,6 +115,10 @@ class AbstractCategoryRepository extends AbstractEntityRepository
      */
     public function __call($method, $args)
     {
-        return call_user_func_array([$this->getCategoryHelper(), $method], $args);
+        if (method_exists($this->getCategoryHelper(), $method)) {
+            return call_user_func_array([$this->getCategoryHelper(), $method], $args);
+        } else {
+            return parent::__call($method, $args);
+        }
     }
 }

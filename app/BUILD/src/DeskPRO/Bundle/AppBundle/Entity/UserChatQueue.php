@@ -6,7 +6,6 @@ use Application\DeskPRO\Entity\Department;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
@@ -17,7 +16,6 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @ORM\Table(name="user_chat_queues")
  * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\UserChatQueueListener"})
  *
- * @JMS\ExclusionPolicy("all")
  * @Assert\GroupSequenceProvider
  */
 class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequenceProviderInterface
@@ -35,18 +33,12 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @Assert\NotBlank()
      *
@@ -57,9 +49,6 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
     /**
      * @ORM\Column(name="routing_model", type="string", length=255)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @Assert\NotBlank()
      *
      * @var string
@@ -69,9 +58,6 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
     /**
      * @ORM\Column(name="answer_timeout", type="integer")
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var int
      */
     private $answerTimeout = 60;
@@ -79,18 +65,12 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
     /**
      * @ORM\Column(name="is_all_agents", type="boolean")
      *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     *
      * @var bool
      */
     private $isAllAgents;
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget>")
      *
      * @Assert\Valid()
      * @Assert\Count(min=1, groups="SpecificTargets")
@@ -102,18 +82,12 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequ
     /**
      * @ORM\OneToMany(targetEntity="Application\DeskPRO\Entity\Department", mappedBy="chatQueue")
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Department>>")
-     *
      * @var ArrayCollection|Department[]
      */
     private $departments;
 
     /**
      * @ORM\Column(name="max_queue_size", type="integer", nullable=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */

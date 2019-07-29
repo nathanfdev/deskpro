@@ -8,13 +8,17 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AbstractAlias;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomArticleFieldDefinitionAlias;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * A custom field definition.
  */
-class CustomDefArticle extends CustomDefAbstract
+class CustomDefArticle extends CustomDefAbstract implements AliasesOwner
 {
     /**
      * @var CustomDefArticle
@@ -29,6 +33,22 @@ class CustomDefArticle extends CustomDefAbstract
     protected $children = null;
 
     /**
+     * Aliases for this field.
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomArticleFieldDefinitionAlias[]
+     */
+    protected $aliases;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->aliases = new ArrayCollection();
+    }
+
+    /**
      * Set parent.
      *
      * @param CustomDefArticle $parent
@@ -38,6 +58,39 @@ class CustomDefArticle extends CustomDefAbstract
     public function setParent(CustomDefArticle $parent = null)
     {
         $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|AbstractAlias[]|null
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
+
+    /**
+     * @param AbstractAlias $alias
+     *
+     * @return $this
+     */
+    public function addAlias(AbstractAlias $alias)
+    {
+        $alias->setObject($this);
+        $this->aliases->add($alias);
+
+        return $this;
+    }
+
+    /**
+     * @param AbstractAlias $alias
+     *
+     * @return $this
+     */
+    public function removeAlias(AbstractAlias $alias)
+    {
+        $this->aliases->removeElement($alias);
 
         return $this;
     }
@@ -187,6 +240,17 @@ class CustomDefArticle extends CustomDefAbstract
             ],
             'mappedBy'      => 'parent',
             'orderBy'       => ['display_order' => 'ASC'],
+            'orphanRemoval' => true,
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'aliases',
+            'targetEntity' => CustomArticleFieldDefinitionAlias::class,
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'object',
             'orphanRemoval' => true,
         ]);
         $metadata->mapManyToOne([

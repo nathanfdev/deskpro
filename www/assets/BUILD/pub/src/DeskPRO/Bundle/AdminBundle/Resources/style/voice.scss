@@ -17,6 +17,11 @@
       }
     }
   }
+
+  .voice-transcription-settings {
+    padding-left: 20px;
+    padding-bottom: 20px;
+  }
 }
 
 .admin-list-table {
@@ -259,6 +264,19 @@
           }
         }
 
+        &.disabled-number-buttons {
+          width: 400px;
+          float: right;
+          text-align: right;
+          padding: 10px 20px;
+
+          a {
+            cursor: pointer;
+            color: #999999;
+            margin-right: 20px;
+          }
+        }
+
         &.press-options {
           position: relative;
 
@@ -399,7 +417,7 @@
 }
 
 .twilio-number-form {
-  width: 425px;
+  width: 500px;
 
   .number-target {
     clear: both;
@@ -538,6 +556,22 @@
     .help {
       margin-top: 5px;
       font-size: 13px;
+    }
+  }
+
+  .answer-timeout {
+    padding-top: 10px;
+
+    .input {
+      display: inline-block;
+      width: 50px !important;
+      margin: 0 10px;
+      position: relative;
+
+      input {
+        position: absolute;
+        top: -25px;
+      }
     }
   }
 

@@ -78,7 +78,10 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.labels') }}</h4>
       <div class="tags-wrap article-tags" style="width:250px">
-        <input type="text" value="{% for label in state.newcommunitytopic.labels %}{{label.label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
+        <input type="text"
+               autocomplete="{{ "now" | date("U") }}"
+               value="{% for label in state.newcommunitytopic.labels %}{{label.label}},{% endfor %}"
+               data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
       </div>
 		</div>
 		<div class="col">
@@ -114,7 +117,12 @@ pageMeta.baseId = '{{ baseId }}';
         data-search-param="term"
         data-position-bound="#{{baseId}}_userselect"
       >
-        <input type="text" name="person_input_choice" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_community_topic') }}" style="width: 80%;" />
+        <input type="text" name="person_input_choice"
+               id="{{baseId}}_userselect"
+               class="select-user term"
+               autocomplete="{{ "now" | date("U") }}"
+               placeholder="{{ phrase('agent.general.choose_person_for_community_topic') }}"
+               style="width: 80%;" />
         <input type="hidden" name="newcommunitytopic[person][id]" value="{{ topic_person.id }}" class="person-id" id="{{baseId}}_person_id" />
 
         <script type="text/x-deskpro-tmpl" class="user-row-tpl">
@@ -159,7 +167,12 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="text" name="newcommunitytopic[title]" id="{{baseId}}_title" value="{% if ticket %}{{ ticket.subject }}{% else %}{{ state.newcommunitytopic.title }}{% endif %}" style="width: 80%;" />
+		<input type="text"
+               name="newcommunitytopic[title]"
+               id="{{baseId}}_title"
+               autocomplete="{{ "now" | date("U") }}"
+               value="{% if ticket %}{{ ticket.subject }}{% else %}{{ state.newcommunitytopic.title }}{% endif %}"
+               style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.general.enter_a_title') }}</div>
 	</div>
 </div>
@@ -167,7 +180,12 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section">
 	<div class="content" style="padding-right: 10px;">
 		<h4>{{ phrase('agent.general.description') }}</h4>
-		<textarea type="text" name="newcommunitytopic[content]" id="{{baseId}}_content">{% if message %}{{message.getMessageHtml()}}{% else %}{{ state.newcommunitytopic.content }}{% endif %}</textarea>
+		<textarea type="text"
+                  name="newcommunitytopic[content]"
+                  autocomplete="{{ "now" | date("U") }}"
+                  id="{{baseId}}_content">
+            {% if message %}{{message.getMessageHtml()}}{% else %}{{ state.newcommunitytopic.content }}{% endif %}
+        </textarea>
         <div class="error-message content">{{ phrase('agent.general.enter_a_content') }}</div>
 	</div>
 </div>

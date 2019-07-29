@@ -7,15 +7,15 @@ import TransferStatus from '../TransferStatus';
 class AddList extends React.Component {
 
   static propTypes = {
-    target:           PropTypes.object,
-    onlineAgents:     PropTypes.object,
-    forwardingAgents: PropTypes.object,
-    busyAgents:       PropTypes.array,
-    participants:     PropTypes.array,
-    connection:       PropTypes.object,
-    warmAddAgent:     PropTypes.func,
-    cancelInvite:     PropTypes.func,
-    inviteError:      PropTypes.string
+    target:             PropTypes.object,
+    phoneCall:          PropTypes.object,
+    agents:             PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    busyAgentIds:       PropTypes.array,
+    warmAddAgent:       PropTypes.func,
+    cancelInvite:       PropTypes.func,
+    inviteError:        PropTypes.string
   };
 
   constructor(props) {
@@ -45,7 +45,7 @@ class AddList extends React.Component {
   };
 
   renderList() {
-    const { inviteError, onlineAgents, forwardingAgents, busyAgents, participants } = this.props;
+    const { inviteError, agents, onlineAgentIds, forwardingAgentIds, busyAgentIds, phoneCall } = this.props;
     const { selectedTarget } = this.state;
 
     return (
@@ -58,10 +58,11 @@ class AddList extends React.Component {
         </div>
 
         <AgentList
-          onlineAgents={onlineAgents}
-          forwardingAgents={forwardingAgents}
-          busyAgents={busyAgents}
-          participants={participants}
+          agents={agents}
+          onlineAgentIds={onlineAgentIds}
+          forwardingAgentIds={forwardingAgentIds}
+          busyAgentIds={busyAgentIds}
+          phoneCall={phoneCall}
           target={selectedTarget}
           onClick={this.selectAgentTarget}
         />
@@ -80,13 +81,13 @@ class AddList extends React.Component {
   }
 
   render() {
-    const { connection, target } = this.props;
+    const { phoneCall, target } = this.props;
 
     if (target) {
       return (
         <div className="voice-ticket-add-list">
           <TransferStatus
-            connection={connection}
+            phoneCall={phoneCall}
             title="Adding..."
             cancelLabel="Cancel add"
             target={target}

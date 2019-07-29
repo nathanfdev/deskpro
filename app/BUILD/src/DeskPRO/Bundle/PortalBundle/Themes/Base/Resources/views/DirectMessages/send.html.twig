@@ -1,0 +1,22 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% form_theme form _self %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+
+    <header class="large-title">
+        <h1>{{ phrase('portal.direct_messages.title') }}</h1>
+    </header>
+
+    <section class="padded">
+      <div class="column-half">
+          {{ form_start(form, { attr: { class: 'form-ticket dpx-form' } }) }}
+          {{ form_errors(form) }}
+          {{ form_rest(form) }}
+          {{ form_end(form) }}
+      </div>
+    </section>
+{% endblock inner_content %}

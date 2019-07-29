@@ -2313,12 +2313,18 @@ define([
               for (let i = -12, asc = -12 <= 12; asc ? i <= 12 : i >= 12; asc ? i++ : i--) {
                 timezones.push({ id: i, title: `UTC ${i >= 0 ? '+' : ''}${i}:00` });
               }
-
-              return {
+              const dueDateSet = !!options.date_due;
+              const due_type = options.due_type || (dueDateSet ? 'abs' : 'none');
+              const due_rel_unit = options.due_rel_unit || 'day';
+              const due_rel_period = options.due_rel_period || 1;
+              const vm = {
                 agents,
                 teams:    data.agent_teams,
                 title:    options.title,
+                due_type,
                 date_due: options.date_due,
+                due_rel_unit,
+                due_rel_period,
                 public:   _public,
                 creator:  options.creator,
                 assignee: options.assignee,
@@ -2326,21 +2332,28 @@ define([
                 offset:   options.offset,
                 link:     options.link
               };
+              return vm;
             },
 
             getValue(model, data) {
               let date;
               if (model == null) { model = {}; }
               if (model.date_due) { date = moment(model.date_due).format('YYYY-MM-DD HH:mm'); }
+              if (!model.due_type) { model.due_type = 'none'; }
+              if (!model.due_rel_unit) { model.due_rel_unit = 'day'; }
+              if (!model.due_rel_period) { model.due_rel_period = 1; }
               return {
                 type:    'CreateTask',
                 options: {
                   title:    model.title,
-                  date_due: (date != null) ? date : undefined,
+                  due_type: model.due_type, // 'none', rel', 'abs'
+                  date_due: (date != null) ? date : undefined, // absolute date
+                  due_rel_unit: model.due_rel_unit, // relative unit: 'min', 'hour' 'day', 'week', 'year'
+                  due_rel_period: model.due_rel_period, // period in given units (e.g 5 in 5 min)
                   public:   !!model.public,
                   creator:  model.creator,
                   assignee: model.assignee,
-                  offset:   model.offset,
+                  offset:   model.offset, // UTC offset
                   link:     !!model.link
                 }
               };
@@ -2362,7 +2375,6 @@ define([
               if (value == null) { value = {}; }
               const opt = value.options || {};
               const by_agent_id = `${opt.by_agent_id || data.agents[0].id}`;
-
               return {
                 type:              'AddJIRAComment',
                 text:              opt.note_text || '',

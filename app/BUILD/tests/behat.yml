@@ -33,6 +33,7 @@ api:
                 - DpBehat\Portal\GenericContext
                 - DpBehat\System\Alerts\IncidentsContext
                 - DpBehat\CommunitySubscriptionContext
+                - DpBehat\EmailGatewayContext
                 - DpBehat\TicketLogsContext
                 - DpBehat\Data\DataContext
                 - DpBehat\Data\PeopleContext

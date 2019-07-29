@@ -155,7 +155,9 @@
                     {% endif %}
                     {% if app.hasBeta('email_templates') %}
                         {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-alt') }}
-                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-alt') }}
+                        {% if legacy_templates|length > 1 %}
+                            {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-alt') }}
+                        {%  endif %}
                     {%  else %}
                         {{ nav.list_subitem('Email Templates', ng_href('emails.email_templates'), 'emails.email_templates', 'fa-file-alt') }}
                     {%  endif %}

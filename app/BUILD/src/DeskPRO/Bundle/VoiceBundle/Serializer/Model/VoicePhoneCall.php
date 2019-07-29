@@ -139,6 +139,13 @@ class VoicePhoneCall
     private $recordings;
 
     /**
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceRecording")
+     *
+     * @var VoiceRecording
+     */
+    private $fullRecording;
+
+    /**
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall")
      *
      * @var VoiceMissedAgentCall
@@ -181,6 +188,27 @@ class VoicePhoneCall
     private $duration;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $waitingTime;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $onHold;
+
+    /**
+     * @JMS\Type("array")
+     *
+     * @var int[]
+     */
+    private $agentParticipants;
+
+    /**
      * Constructor.
      *
      * @param VoicePhoneCallEntity $phoneCall
@@ -204,10 +232,18 @@ class VoicePhoneCall
         $this->dateStarted        = $phoneCall->getDateStarted();
         $this->dateEnded          = $phoneCall->getDateEnded();
         $this->recordings         = $phoneCall->getRecordings();
+        $this->fullRecording      = $phoneCall->getFullRecording();
         $this->agentVoicemail     = $phoneCall->getAgentVoicemailRecord();
         $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
         $this->duration           = $phoneCall->getDateStarted() ? time() - $phoneCall->getDateStarted()->getTimestamp() : 0;
+        $this->waitingTime        = $phoneCall->getDateWaiting() ? time() - $phoneCall->getDateWaiting()->getTimestamp() : 0;
+        $this->onHold             = $phoneCall->getUserParticipants()->count()
+            ? $phoneCall->getUserParticipants()->first()->isOnHold()
+            : false;
+        $this->agentParticipants = $phoneCall->getActiveAgentParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant->getPerson()->getId();
+        })->getValues();
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
             unset($this->data['RecordingUrl']);

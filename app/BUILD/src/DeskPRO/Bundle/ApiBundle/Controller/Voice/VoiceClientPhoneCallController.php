@@ -15,6 +15,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -276,7 +278,7 @@ class VoiceClientPhoneCallController extends BaseController
         $em->flush();
 
         // send conference status
-        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+        $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -363,6 +365,7 @@ class VoiceClientPhoneCallController extends BaseController
         $em = $this->getManager();
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_WARM_ADD);
+        $phoneCall->setDateWaiting(new \DateTime());
         $em->flush();
 
         // get phone call ticket
@@ -389,6 +392,8 @@ class VoiceClientPhoneCallController extends BaseController
                 'from_agent_id'    => $this->getVoiceAgent()->getId(),
                 'ticket_id'        => $ticket->getId(),
                 'invite_type'      => 'warm',
+                'phone_call'       => $this->getSerializedPhoneCallData($phoneCall),
+                'expire_timeout'   => $this->get('voice_settings_resolver')->getAgentVoicemailTimeout(),
                 'target'           => $agent->getId(),
             ]
         ));
@@ -457,6 +462,7 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_WARM_TRANSFER);
+        $phoneCall->setDateWaiting(new \DateTime());
         $em->flush();
 
         /** @var Ticket $ticket */
@@ -489,6 +495,8 @@ class VoiceClientPhoneCallController extends BaseController
                 'from_agent_id'    => $this->getVoiceAgent()->getId(),
                 'ticket_id'        => $ticket->getId(),
                 'invite_type'      => 'warm',
+                'phone_call'       => $this->getSerializedPhoneCallData($phoneCall),
+                'expire_timeout'   => $this->get('voice_settings_resolver')->getAgentVoicemailTimeout(),
                 'target'           => $agent->getId(),
             ]
         ));
@@ -547,6 +555,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
         $phoneCall->setEnqueuedAs(VoicePhoneCall::ENQUEUED_AS_USER);
+        $phoneCall->setDateWaiting(new \DateTime());
         $em->flush();
 
         // disconnect existing agents from the call
@@ -603,6 +612,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
         $phoneCall->setEnqueuedAs(VoicePhoneCall::ENQUEUED_AS_USER);
+        $phoneCall->setDateWaiting(new \DateTime());
         $em->flush();
 
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
@@ -662,6 +672,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
         $phoneCall->setEnqueuedAs(VoicePhoneCall::ENQUEUED_AS_USER);
+        $phoneCall->setDateWaiting(new \DateTime());
         $em->flush();
 
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
@@ -720,10 +731,12 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em = $this->getManager();
 
+        $phoneCall->setDateWaiting(null);
         if ($phoneCall->isWarmTransfer() || $phoneCall->isWarmAdd()) {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
-            $em->flush();
         }
+
+        $em->flush();
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -784,10 +797,12 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em = $this->getManager();
 
+        $phoneCall->setDateWaiting(null);
         if ($phoneCall->isWarmTransfer() || $phoneCall->isWarmAdd()) {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
-            $em->flush();
         }
+
+        $em->flush();
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -902,5 +917,22 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         return $agent;
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return array
+     */
+    private function getSerializedPhoneCallData(VoicePhoneCall $phoneCall)
+    {
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['recording_enabled']);
+        $context->setInlineSideloads(true);
+
+        $serializedData = $this->get('serializer')->toArray(new ApiWrapper($phoneCall), $context)['data'];
+        unset($serializedData['ticket']);
+
+        return $serializedData;
     }
 }

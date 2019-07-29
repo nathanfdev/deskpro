@@ -88,7 +88,15 @@ class SetSlasComplete extends AbstractContainerAwareAction implements ActionInte
             }
 
             $completed_date = $calc->calculateCompletedDate($ticket);
-            $ticket_sla->setIsCompleted(true, $completed_date);
+            // Use setIsCompletedSet for everything other than the "auto" option
+            // The "auto" option should actually disable the is_complete_set, we can use that as the way to un-do a set sla
+            if ($set_status === 'auto') {
+                $ticket_sla->unsetIsCompletedSet();
+                $ticket_sla->setIsCompleted(true, $completed_date);
+            } else {
+                $ticket_sla->setIsCompletedSet(true, $completed_date);
+            }
+
             $this->getContainer()->getEm()->persist($ticket_sla);
         }
     }

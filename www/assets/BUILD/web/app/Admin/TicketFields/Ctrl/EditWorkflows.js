@@ -1,4 +1,8 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
+define([
+  'Admin/Main/Ctrl/Base',
+  'DeskPRO/Util/Arrays',
+  'Admin/TicketFields/Util/FieldOptionRemoveHandler'],
+function(Admin_Ctrl_Base, Arrays, FieldOptionRemoveHandler) {
   class Admin_TicketFields_Ctrl_EditWorkflows extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketFields_Ctrl_EditWorkflows';
@@ -84,6 +88,19 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
         }
         ]
       });
+    }
+
+    /**
+     *
+     * @param object ctrl - CategoryBuilder controller
+     * @param object row - Selected row
+     * @param array removeIds
+     * @param function doRemoveCallback - callback that really remove elements from UI
+     * @returns {unresolved}
+     */
+    removeCallback(builderCtrl, ev, removeIds, doRemoveCallback) {
+      const handler = new FieldOptionRemoveHandler(this.Api, this.$modal, 'workflow');
+      return handler.removeCallback(builderCtrl, ev, removeIds, doRemoveCallback);
     }
   }
   Admin_TicketFields_Ctrl_EditWorkflows.initClass();

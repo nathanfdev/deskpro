@@ -58,7 +58,7 @@ class LoadingFormContainer extends React.Component {
     dispatch(loadAgentTeams());
     dispatch(loadAgentGroups());
     dispatch(loadSelectableChatDepartments());
-    dispatch(loadQueues());
+    dispatch(loadQueues(true));
   }
 
   loadTeamAgentsList = id => this.props.dispatch(loadTeamAgents(id));

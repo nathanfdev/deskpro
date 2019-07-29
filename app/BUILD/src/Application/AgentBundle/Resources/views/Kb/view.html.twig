@@ -53,7 +53,9 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<h1>
 		<span id="{{baseId}}_showname">{{ article.real_title }}</span>
-		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ article.real_title }}" /></span>
+		<span id="{{baseId}}_editname" style="display: none">
+			<input type="text" name="name" value="{{ article.real_title }}" autocomplete="{{ "now" | date("U") }}" />
+		</span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>
@@ -281,7 +283,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</div>
 								{% endset %}
 								{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-								<input type="text" class="end-date-input" value="{{ article.date_end|date('j M, y') }}" style="display: none; height: 10px;" />
+								<input type="text" class="end-date-input" value="{{ article.date_end|date('j M, y') }}" autocomplete="{{ "now" | date("U") }}" style="display: none; height: 10px;" />
 								(<span class="remove-auto-unpublish options-text">{{ phrase('agent.general.remove') }}</span>)
 							</div>
 							<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
@@ -310,7 +312,7 @@ pageMeta.baseId = '{{ baseId }}';
 									</div>
 								{% endset %}
 								{{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase_part1, date: phrase_part2}, true) }}
-								<input type="text" class="pub-date-input" value="{{ article.date_published|date('j M, y') }}" style="display: none; height: 10px;" />
+								<input type="text" class="pub-date-input" value="{{ article.date_published|date('j M, y') }}" autocomplete="{{ "now" | date("U") }}" style="display: none; height: 10px;" />
 								(<span class="remove-auto-publish options-text">{{ phrase('agent.general.remove') }}</span>)
 							</span>
 							<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
@@ -424,6 +426,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dd class="ticket-tags tags-wrap noedit-tags">
 							<input type="text" id="{{baseId}}_stickysearch_input"
 							       value="{% for label in sticky_search_words %}{{label}},{% endfor %}"
+								   autocomplete="{{ "now" | date("U") }}"
 							       data-placeholder-new="{{ phrase('agent.publish.add_new_search_word') }}"
 									/>
 							<br class="clear" />
@@ -446,7 +449,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="inline-editable" style="display:none">
 	<div class="title">
-		<input type="text" name="title" value="{{ article.real_title }}"/>
+		<input type="text" name="title" value="{{ article.real_title }}" autocomplete="{{ "now" | date("U") }}" />
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>

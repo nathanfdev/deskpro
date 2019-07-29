@@ -10,12 +10,16 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
+use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Raw email sources.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -64,6 +68,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const ERR_DKIM_REJECT       = 'dkim_rejected';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
@@ -76,6 +83,17 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $uid = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $uuid = null;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
      * @var \Application\DeskPRO\Entity\Blob
      */
     protected $blob = null;
@@ -92,12 +110,18 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      * This typically is not set until after the email is processed (ie
      * the status is 'processed').
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $object_type = '';
 
     /**
      * The ID of the object this is attached to.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -109,6 +133,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $object_info = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $from_email = '';
@@ -152,17 +179,26 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      * - complete: Fully processed
      * - error: Tried to process but there was some kind of error (see error_code).
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $status = 'processing';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_status = null;
 
     /**
      * When status is error, this is the code that describes the error.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -182,6 +218,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $log_blob = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;
@@ -214,6 +253,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_status', new \DateTime());
+        $this->setUuid(RandUtils::uuidV4());
     }
 
     /**
@@ -222,6 +262,26 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUuid()
+    {
+        return $this->uuid;
+    }
+
+    /**
+     * @param string $uuid
+     *
+     * @return $this
+     */
+    public function setUuid($uuid)
+    {
+        $this->setModelField('uuid', $uuid);
+
+        return $this;
     }
 
     /**
@@ -524,6 +584,15 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'length'     => 100,
             'nullable'   => true,
             'columnName' => 'uid',
+            'unique'     => false,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'uuid',
+            'type'       => 'string',
+            'length'     => 36,
+            'nullable'   => true,
+            'columnName' => 'uuid',
+            'unique'     => true,
         ]);
         $metadata->mapField([
             'fieldName'  => 'object_type',

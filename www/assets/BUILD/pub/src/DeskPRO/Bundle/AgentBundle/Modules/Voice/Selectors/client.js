@@ -69,5 +69,22 @@ export const ringingVolumeSelector = createSelector(
 
 export const busyAgentsSelector = createSelector(
   stateSelector,
-  state => state.get('busyAgents')
+  state => state.get('onlineAgents')
+    .filter(onlineStatus => onlineStatus.get('busy_for_voice'))
+    .map(onlineStatus => onlineStatus.get('agent_id'))
+);
+
+export const onlineAgentsSelector = createSelector(
+  stateSelector,
+  state => state.get('onlineAgents')
+    .filter(onlineStatus => onlineStatus.get('online') && onlineStatus.get('voice_enabled'))
+    .map(onlineStatus => onlineStatus.get('agent_id'))
+);
+
+
+export const forwardingAgentsSelector = createSelector(
+  stateSelector,
+  state => state.get('onlineAgents')
+    .filter(onlineStatus => onlineStatus.get('forwarding_enabled'))
+    .map(onlineStatus => onlineStatus.get('agent_id'))
 );

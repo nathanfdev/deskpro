@@ -73,6 +73,20 @@ class VoiceSettings
     private $transcribeVoicemail;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $emailAttachRecording;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $emailAttachTranscription;
+
+    /**
      * @return int
      */
     public function getAgentVoicemailTimeout()
@@ -248,6 +262,46 @@ class VoiceSettings
     public function setTranscribeVoicemail($transcribeVoicemail)
     {
         $this->transcribeVoicemail = $transcribeVoicemail;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailAttachRecording()
+    {
+        return $this->emailAttachRecording;
+    }
+
+    /**
+     * @param bool $emailAttachRecording
+     *
+     * @return $this
+     */
+    public function setEmailAttachRecording($emailAttachRecording)
+    {
+        $this->emailAttachRecording = $emailAttachRecording;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailAttachTranscription()
+    {
+        return $this->emailAttachTranscription;
+    }
+
+    /**
+     * @param bool $emailAttachTranscription
+     *
+     * @return $this
+     */
+    public function setEmailAttachTranscription($emailAttachTranscription)
+    {
+        $this->emailAttachTranscription = $emailAttachTranscription;
 
         return $this;
     }

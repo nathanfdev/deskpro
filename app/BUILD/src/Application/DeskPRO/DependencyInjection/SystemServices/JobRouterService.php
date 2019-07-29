@@ -20,6 +20,7 @@ use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
 use Application\LegacyApiBundle\Controller\ResetHelpdeskController;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\EmailWithTranscriptionProcessor;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceDownloadRecordProcessor;
@@ -118,6 +119,16 @@ class JobRouterService
                 $container->getEm(),
                 $container->get('twilio_adapter'),
                 $container->getJobQueue()
+            )
+        );
+
+        $router->addProcessor(
+            new EmailWithTranscriptionProcessor(
+                $conn,
+                $container->getEm(),
+                $container->getTicketManager(),
+                $container->getJobQueue(),
+                $container
             )
         );
 

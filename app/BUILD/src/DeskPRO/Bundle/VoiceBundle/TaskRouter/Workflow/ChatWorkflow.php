@@ -2,28 +2,23 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
+use DeskPRO\Bundle\VoiceBundle\Permissions\UserChatPermissionsChecker;
 use DeskPRO\Bundle\VoiceBundle\Settings\ChatSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsLoader;
 
 /**
  * Class ChatWorkflow.
  */
 class ChatWorkflow implements WorkflowInterface
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
     /**
      * @var ChatTaskHelper
      */
@@ -40,23 +35,36 @@ class ChatWorkflow implements WorkflowInterface
     private $storage;
 
     /**
+     * @var UserChatQueueTargetsLoader
+     */
+    private $targetsLoader;
+
+    /**
+     * @var UserChatPermissionsChecker
+     */
+    private $permissionsChecker;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager           $em
-     * @param ChatTaskHelper          $taskHelper
-     * @param ChatSettingsResolver    $settingsResolver
-     * @param StorageAdapterInterface $storage
+     * @param ChatTaskHelper             $taskHelper
+     * @param ChatSettingsResolver       $settingsResolver
+     * @param StorageAdapterInterface    $storage
+     * @param UserChatQueueTargetsLoader $targetsLoader
+     * @param UserChatPermissionsChecker $permissionsChecker
      */
     public function __construct(
-        EntityManager           $em,
-        ChatTaskHelper          $taskHelper,
-        ChatSettingsResolver    $settingsResolver,
-        StorageAdapterInterface $storage
+        ChatTaskHelper             $taskHelper,
+        ChatSettingsResolver       $settingsResolver,
+        StorageAdapterInterface    $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
-        $this->em               = $em;
-        $this->taskHelper       = $taskHelper;
-        $this->settingsResolver = $settingsResolver;
-        $this->storage          = $storage;
+        $this->taskHelper         = $taskHelper;
+        $this->settingsResolver   = $settingsResolver;
+        $this->storage            = $storage;
+        $this->targetsLoader      = $targetsLoader;
+        $this->permissionsChecker = $permissionsChecker;
     }
 
     /**
@@ -72,12 +80,7 @@ class ChatWorkflow implements WorkflowInterface
      */
     public function getTimeout(Task $task)
     {
-        $now = new \DateTime();
-
-        $timeout = $this->settingsResolver->getAgentChatTimeout();
-        $offset  = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
-
-        return $timeout - $offset;
+        return $this->settingsResolver->getAgentChatTimeout();
     }
 
     /**
@@ -91,7 +94,7 @@ class ChatWorkflow implements WorkflowInterface
             $availableAgentWorkers[$worker->getId()] = $worker;
         }
 
-        $activeAgentIds        = $this->getPersonRepo()->getActiveAgentIdsForUserChat();
+        $activeAgentIds        = $this->targetsLoader->getActiveAgentIdsForUserChat();
         $maxChatsCount         = $this->settingsResolver->getMaxChatsCount();
         $availableAgentWorkers = array_filter(
             $availableAgentWorkers,
@@ -145,25 +148,13 @@ class ChatWorkflow implements WorkflowInterface
             $taskQueue->setTypeId($chatQueue->getId());
         }
 
-        if ($chatQueue->isAllAgents()) {
-            // all agents are available so dynamically create chat queue targets
-            // based on the agents list
-            $targets = [];
+        $targets = $this->targetsLoader->getChatQueueTargets($chatQueue);
 
-            $agentIds = $this->getPersonRepo()->getActiveAgentIdsForUserChat();
-            $agents   = $this->getPersonRepo()->findBy([
-                'id' => $agentIds,
-            ]);
-
-            foreach ($agents as $agent) {
-                $target = new UserChatQueueAgent();
-                $target->setAgent($agent);
-
-                $targets[] = $target;
-            }
-        } else {
-            $targets = $chatQueue->getTargets()->toArray();
-        }
+        // check targets permissions
+        /** @var AbstractUserChatQueueTarget[] $targets */
+        $targets = array_filter($targets, function (AbstractUserChatQueueTarget $target) {
+            return $this->permissionsChecker->canBeMemberOfChatQueue($target);
+        });
 
         // sort targets by priority
         usort($targets, function (AbstractUserChatQueueTarget $target1, AbstractUserChatQueueTarget $target2) {
@@ -226,7 +217,7 @@ class ChatWorkflow implements WorkflowInterface
 
                         if ($workersIds) {
                             $task->setWorkersIds($workersIds);
-                            $task->setDateExpireOffset($chatQueue->getAnswerTimeout());
+                            $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                             // worker was fetched push to the end of the list
                             unset($order[$num]);
@@ -298,7 +289,7 @@ class ChatWorkflow implements WorkflowInterface
                 }
 
                 $task->setWorkersIds($workerIds);
-                $task->setDateExpireOffset($chatQueue->getAnswerTimeout());
+                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                 break;
             case UserChatQueue::ROUTING_MODEL_SIMULRING:
@@ -315,19 +306,11 @@ class ChatWorkflow implements WorkflowInterface
                 }
 
                 $task->setWorkersIds($workersIds);
-                $task->setDateExpireOffset($chatQueue->getAnswerTimeout());
+                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                 break;
         }
 
         $this->storage->saveTaskQueue($taskQueue);
-    }
-
-    /**
-     * @return \Doctrine\ORM\EntityRepository|\Application\DeskPRO\EntityRepository\Person
-     */
-    protected function getPersonRepo()
-    {
-        return $this->em->getRepository(Person::class);
     }
 }

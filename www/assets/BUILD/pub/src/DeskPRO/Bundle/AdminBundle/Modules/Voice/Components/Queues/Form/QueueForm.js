@@ -52,7 +52,7 @@ class QueueForm extends BaseForm {
       brand:                queue ? queue.get('brand') : null,
       agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
       routing_model:        queue ? queue.get('routing_model') : 'round_robin',
-      max_queue_size:       queue ? queue.get('max_queue_size') : 0,
+      max_queue_size:       queue ? queue.get('max_queue_size') : 1,
       greet_asset:          greetAsset ? greetAsset.toJS() : null,
       loop_asset:           loopAsset ? loopAsset.toJS() : null,
       voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
@@ -60,6 +60,7 @@ class QueueForm extends BaseForm {
       voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
       voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
       voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 15,
+      answer_timeout:       queue ? queue.get('answer_timeout') : 15,
       recording_enabled:    queue ? queue.get('recording_enabled') : true,
     };
   }
@@ -67,6 +68,9 @@ class QueueForm extends BaseForm {
   transformSubmitData(data) { // eslint-disable-line
     if (!data.voicemail_timeout) {
       data.voicemail_timeout = 30;
+    }
+    if (!data.max_queue_size) {
+      data.max_queue_size = 1;
     }
 
     return data;
@@ -114,6 +118,10 @@ class QueueForm extends BaseForm {
             {formData.value.routing_model === 'least_utilized' &&
             <Field select="max_queue_size" className="queue-size">
               <MaxQueueSize />
+            </Field>}
+            {['round_robin', 'least_utilized'].indexOf(formData.value.routing_model) !== -1 &&
+            <Field select="answer_timeout">
+              <AnswerTimeout />
             </Field>}
             <Field select="greet_asset" className="audio-asset" label="Greet">
               <AudioWidgetFormContainer />
@@ -207,6 +215,19 @@ class RoutingModel extends React.Component {
         <div className="help">
           {help[value]}
         </div>
+      </div>
+    );
+  }
+}
+
+class AnswerTimeout extends React.Component {
+
+  render() {
+    return (
+      <div className="answer-timeout">
+        <span>Agents have at most</span>
+        <Input {...this.props} type="number" />
+        <span>seconds before the call gets re-routed</span>
       </div>
     );
   }

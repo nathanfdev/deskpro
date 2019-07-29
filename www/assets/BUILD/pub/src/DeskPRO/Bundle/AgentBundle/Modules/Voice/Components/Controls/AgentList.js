@@ -7,13 +7,14 @@ import Avatar from '../Common/Avatar';
 class AgentList extends React.Component {
 
   static propTypes = {
-    target:           PropTypes.object,
-    onlineAgents:     PropTypes.object,
-    forwardingAgents: PropTypes.object,
-    busyAgents:       PropTypes.array,
-    participants:     PropTypes.array,
-    onClick:          PropTypes.func,
-    transferDisabled: PropTypes.bool
+    target:             PropTypes.object,
+    agents:             PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    busyAgentIds:       PropTypes.array,
+    phoneCall:          PropTypes.object,
+    onClick:            PropTypes.func,
+    transferDisabled:   PropTypes.bool
   };
 
   static defaultProps = {
@@ -26,21 +27,26 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { onlineAgents, forwardingAgents, busyAgents, target, participants, transferDisabled } = this.props;
+    const { agents, onlineAgentIds, forwardingAgentIds, busyAgentIds, target, phoneCall, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
-        {onlineAgents.concat(forwardingAgents).toArray().map((agent, index) =>
-          <Agent
-            transferDisabled={transferDisabled}
-            key={index}
-            agent={agent}
-            busy={busyAgents.indexOf(agent.get('id')) !== -1}
-            active={target && agent === target.target || busyAgents.indexOf(agent.get('id')) !== -1}
-            participant={participants.indexOf(agent.get('id')) !== -1}
-            onClick={this.onSelect}
-            online={onlineAgents.contains(agent)}
-          />
+        {agents.filter(agent =>
+            onlineAgentIds.contains(agent.get('id')) || forwardingAgentIds.contains(agent.get('id'))
+          )
+          .toArray()
+          .map((agent, index) =>
+            <Agent
+              transferDisabled={transferDisabled}
+              key={index}
+              agent={agent}
+              busy={busyAgentIds.contains(agent.get('id'))}
+              active={target && agent === target.target || busyAgentIds.contains(agent.get('id'))}
+              participant={phoneCall.get('agent_participants').contains(agent.get('id'))}
+              onClick={this.onSelect}
+              online={onlineAgentIds.contains(agent.get('id'))}
+              forwarding={forwardingAgentIds.contains(agent.get('id'))}
+            />
         )}
       </ScrollArea>
     );
@@ -54,6 +60,7 @@ class Agent extends React.Component {
     agent:            PropTypes.object,
     active:           PropTypes.bool,
     online:           PropTypes.bool,
+    forwarding:       PropTypes.bool,
     busy:             PropTypes.bool,
     participant:      PropTypes.bool,
     onClick:          PropTypes.func
@@ -73,7 +80,7 @@ class Agent extends React.Component {
   };
 
   render() {
-    const { agent, active, online, busy, participant } = this.props;
+    const { agent, active, online, busy, forwarding, participant } = this.props;
 
     return (
       <div
@@ -84,6 +91,7 @@ class Agent extends React.Component {
           person={agent}
           size={24}
           online={online}
+          forwarding={forwarding}
           withOnlineStatus
         />
         <span className="agent-name">

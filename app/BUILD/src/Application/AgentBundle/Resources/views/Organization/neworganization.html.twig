@@ -24,7 +24,12 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="first section cat-section" id="{{baseId}}_cat_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.name') }}</h4>
-		<input type="text" class="fill" name="neworg[name]" id="{{baseId}}_name" value="" />
+		<input type="text"
+			   class="fill"
+			   name="neworg[name]"
+			   id="{{baseId}}_name"
+			   value=""
+			   autocomplete="{{ "now" | date("U") }}"/>
 	</div>
 </div>
 

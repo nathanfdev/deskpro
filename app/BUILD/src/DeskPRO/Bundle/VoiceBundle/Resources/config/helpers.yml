@@ -18,6 +18,12 @@ services:
       - "@event_dispatcher"
       - "@dp.voice.logger"
 
+  dp.voice.event_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceEventHelper
+    arguments:
+      - "@serializer"
+      - "@event_dispatcher"
+
   dp.voice.assets_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper
     arguments:
@@ -49,6 +55,7 @@ services:
       - "@dp.voice.task_router"
       - "@twilio_adapter"
       - "@plivo_adapter"
+      - "@dp.voice.event_helper"
       - "@event_dispatcher"
 
   dp.voice.transfer_helper:

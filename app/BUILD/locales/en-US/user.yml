@@ -238,6 +238,7 @@ portal.email_subjects.comment-deleted: 'Your comment was read by our agents'
 portal.email_subjects.download_sub_new: 'New Downloads'
 portal.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
 portal.email_subjects.download_sub_updated: 'Updated Downloads'
+portal.email_subjects.direct_message_new: 'New Message'
 portal.email_subjects.email-too-big: 'Your email "{{subject}}" was not accepted'
 portal.email_subjects.email_new-confirm: 'Validate your email address'
 portal.email_subjects.email_primary-confirm: 'Validate your email address'
@@ -277,6 +278,7 @@ portal.emails.comment_approved: 'Your comment has been published.'
 portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Thank you for your comment on {{link}}.'
 portal.emails.comment_validate-email: 'Please validate your email address by clicking the following link:'
+portal.emails.direct_message_new: 'There is new message from {{person}} in the thread {{link}}'
 portal.emails.do-not-reply: 'Please do not reply to this email. This is an automatically-generated message and replies will not be read by our agents.'
 portal.emails.download-new-downloads:
   one: '1 New Download'
@@ -518,6 +520,7 @@ portal.forms.error_password_require_num_uppercase:
   other: 'At least {{count}} uppercase characters'
 portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an agent.'
 portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
+portal.forms.error_dm_message_to_self: 'Please choose another person'
 portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
 portal.forms.error_regex: 'This value does not match the expected format'
 portal.forms.error_required: 'This value is required'
@@ -623,6 +626,7 @@ portal.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>'
 portal.general.nav-all: All
 portal.general.nav-chat: 'Chat Logs'
 portal.general.nav-chatlog: 'Chat Log'
+portal.general.nav-dm: Messages
 portal.general.nav-downloads: Downloads
 portal.general.nav-downloads-desc: 'Browse our downloads'
 portal.general.nav-emails: Emails
@@ -699,6 +703,7 @@ portal.general.top: Top
 portal.general.updated: Updated
 portal.general.x-search-results: '{{num}} search results for "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} search results'
+portal.general.sort: 'Sort'
 portal.guides.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
 portal.news.none: 'No news yet'
 portal.news.recent-title: 'Recent News'
@@ -708,6 +713,9 @@ portal.news.view-as-agent: 'You can see this page because you are an agent. Norm
 portal.news.view-x-news:
   one: 'View 1 article'
   other: 'View {{count}} articles'
+portal.direct_messages.title: Messages
+portal.direct_messages.none: No messages
+portal.direct_messages.create_thread: Create
 portal.members.title: Members
 portal.members.none: No members
 portal.sidebar.agents_available: 'Available Agents'

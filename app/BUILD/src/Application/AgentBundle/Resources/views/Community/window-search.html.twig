@@ -13,7 +13,12 @@
 			<strong>{{ phrase('agent.general.search_terms') }}</strong>
 		</div>
 		<div class="input-row-body add-to-search">
-			<input class="full" type="text" name="query" value="" placeholder="Enter search terms" />
+			<input class="full"
+				   type="text"
+				   name="query"
+				   value=""
+				   placeholder="Enter search terms"
+				   autocomplete="{{ "now" | date("U") }}" />
 		</div>
 	</div>
 

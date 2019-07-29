@@ -187,11 +187,28 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $dateStarted;
 
     /**
+     * @ORM\Column(name="date_waiting", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    private $dateWaiting;
+
+    /**
      * @ORM\Column(name="date_ended", type="datetime", nullable=true)
      *
      * @var \DateTime
      */
     private $dateEnded;
+
+    /**
+     * @ORM\JoinColumn(name="full_recording_id", referencedColumnName="id", nullable=true, onDelete="CASCADE",
+     *     unique=true, columnDefinition=null)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", cascade={"persist", "detach"},
+     *     fetch="EAGER")
+     *
+     * @var VoiceRecording|null
+     */
+    private $fullRecording = null;
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -245,6 +262,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->ticketMessageAttributes = new ArrayCollection();
         $this->recordings              = new ArrayCollection();
         $this->dateCreated             = new \DateTime();
+        $this->dateWaiting             = new \DateTime();
     }
 
     /**
@@ -760,6 +778,27 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setDateStarted(\DateTime $dateStarted = null)
     {
         $this->setModelField('dateStarted', $dateStarted);
+        $this->setDateWaiting(null);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateWaiting()
+    {
+        return $this->dateWaiting;
+    }
+
+    /**
+     * @param \DateTime $dateWaiting
+     *
+     * @return $this
+     */
+    public function setDateWaiting(\DateTime $dateWaiting = null)
+    {
+        $this->setModelField('dateWaiting', $dateWaiting);
 
         return $this;
     }
@@ -780,6 +819,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setDateEnded(\DateTime $dateEnded = null)
     {
         $this->setModelField('dateEnded', $dateEnded);
+        $this->setDateWaiting(null);
 
         return $this;
     }
@@ -1051,5 +1091,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getConferenceName()
     {
         return 'conference'.$this->getId();
+    }
+
+    /**
+     * @return VoiceRecording|null
+     */
+    public function getFullRecording()
+    {
+        return $this->fullRecording;
+    }
+
+    /**
+     * @param VoiceRecording $fullRecording
+     */
+    public function setFullRecording($fullRecording)
+    {
+        $this->fullRecording = $fullRecording;
     }
 }

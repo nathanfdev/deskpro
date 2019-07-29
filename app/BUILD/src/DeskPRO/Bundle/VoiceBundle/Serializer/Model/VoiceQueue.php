@@ -117,7 +117,7 @@ class VoiceQueue
      *
      * @var int
      */
-    private $voicemailTimeout = 30;
+    private $answerTimeout;
 
     /**
      * @JMS\Expose()
@@ -125,7 +125,15 @@ class VoiceQueue
      *
      * @var int
      */
-    private $maxQueueSize = 0;
+    private $voicemailTimeout;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $maxQueueSize;
 
     /**
      * @JMS\Expose()
@@ -147,6 +155,7 @@ class VoiceQueue
         $this->department          = $entity->getDepartment();
         $this->brand               = $entity->getBrand();
         $this->routingModel        = $entity->getRoutingModel();
+        $this->answerTimeout       = $entity->getAnswerTimeout();
         $this->greetAsset          = $entity->getGreetAsset();
         $this->loopAsset           = $entity->getLoopAsset();
         $this->voicemailAsset      = $entity->getVoicemailAsset();

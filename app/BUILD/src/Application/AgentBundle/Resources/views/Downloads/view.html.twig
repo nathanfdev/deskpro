@@ -48,7 +48,12 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<h1>
 		<span id="{{baseId}}_showname">{{ download.title }}</span>
-		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ download.title }}" /></span>
+		<span id="{{baseId}}_editname" style="display: none">
+			<input type="text"
+				name="name"
+				value="{{ download.title }}"
+				autocomplete="{{ "now" | date("U") }}"/>
+		</span>
 		<span id="{{baseId}}_editname_start" class="edit-name-gear"></span>
 		<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
 	</h1>

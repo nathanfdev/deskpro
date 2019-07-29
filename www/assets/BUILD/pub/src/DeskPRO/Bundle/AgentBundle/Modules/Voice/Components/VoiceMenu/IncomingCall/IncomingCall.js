@@ -9,19 +9,18 @@ import IncomingCallAudio from './IncomingCallAudio';
 class IncomingCall extends React.Component {
 
   static propTypes = {
-    mp3:                   PropTypes.string,
-    wav:                   PropTypes.string,
-    ogg:                   PropTypes.string,
-    me:                    PropTypes.object,
-    agents:                PropTypes.object,
-    people:                PropTypes.object,
-    queues:                PropTypes.object,
-    incomingCall:          PropTypes.object,
-    onAccept:              PropTypes.func,
-    onDecline:             PropTypes.func,
-    hideCall:              PropTypes.func,
-    ringingVolume:         PropTypes.number,
-    agentVoicemailTimeout: PropTypes.number
+    mp3:           PropTypes.string,
+    wav:           PropTypes.string,
+    ogg:           PropTypes.string,
+    me:            PropTypes.object,
+    agents:        PropTypes.object,
+    people:        PropTypes.object,
+    queues:        PropTypes.object,
+    incomingCall:  PropTypes.object,
+    onAccept:      PropTypes.func,
+    onDecline:     PropTypes.func,
+    hideCall:      PropTypes.func,
+    ringingVolume: PropTypes.number
   };
 
   static defaultProps = {
@@ -34,9 +33,9 @@ class IncomingCall extends React.Component {
       this.audio.playSound();
     }
 
-    const { incomingCall, hideCall, agentVoicemailTimeout } = this.props;
-    if (!incomingCall.get('call_type') && agentVoicemailTimeout) {
-      setTimeout(hideCall, agentVoicemailTimeout * 1000);
+    const { incomingCall, hideCall } = this.props;
+    if (incomingCall.get('expire_timeout')) {
+      setTimeout(hideCall, incomingCall.get('expire_timeout') * 1000);
     }
   }
 
@@ -118,7 +117,7 @@ class IncomingCall extends React.Component {
             <i className="icon call" />
             Answer
             <span className="waiting-time">
-              <Timer format="waiting_time" />
+              <Timer format="waiting_time" startTime={incomingCall.get('expire_timeout')} countDown />
             </span>
           </Button>
           <a

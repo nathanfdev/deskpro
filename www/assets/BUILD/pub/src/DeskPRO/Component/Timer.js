@@ -5,6 +5,7 @@ class Timer extends React.Component {
 
   static propTypes = {
     startTime: PropTypes.number,
+    countDown: PropTypes.bool,
     paused:    PropTypes.bool,
     format:    PropTypes.string
   };
@@ -42,9 +43,20 @@ class Timer extends React.Component {
 
   startTimer() {
     this.interval = setInterval(() => {
-      this.setState({
-        time: this.state.time + 1
-      });
+      const { countDown } = this.props;
+      const { time } = this.state;
+
+      if (countDown) {
+        if (time > 0) {
+          this.setState({
+            time: time - 1
+          });
+        }
+      } else {
+        this.setState({
+          time: time + 1
+        });
+      }
     }, 1000);
   }
 

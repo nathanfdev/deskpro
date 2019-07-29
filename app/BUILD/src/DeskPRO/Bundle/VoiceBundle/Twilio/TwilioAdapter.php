@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Twilio;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
@@ -13,7 +14,6 @@ use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioCountry;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
-use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
@@ -25,7 +25,6 @@ use Twilio\Jwt\ClientToken;
 use Twilio\Rest\Api\V2010\Account\CallInstance;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
-use Twilio\Values;
 
 /**
  * Class TwilioAdapter.
@@ -160,14 +159,13 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * @param TwilioVoiceAccount $account
-     * @param int                $pageNum
      *
-     * @return TwilioPaginate
+     * @return TwilioExistingNumber[]
      */
-    public function getExistingPhoneNumbers(TwilioVoiceAccount $account, $pageNum = 1)
+    public function getExistingPhoneNumbers(TwilioVoiceAccount $account)
     {
         try {
-            $page = $this->getClient($account)->incomingPhoneNumbers->page([], Values::NONE, Values::NONE, $pageNum - 1);
+            $page = $this->getClient($account)->incomingPhoneNumbers->read();
 
             $exclude = $this->getAccountNumbersList($account);
             $numbers = [];
@@ -179,9 +177,9 @@ class TwilioAdapter implements VoiceProviderInterface
                 );
             }
 
-            return new TwilioPaginate($numbers, $pageNum, $page);
+            return $numbers;
         } catch (\Exception $e) {
-            return new TwilioPaginate([], $pageNum);
+            return [];
         }
     }
 
@@ -248,7 +246,7 @@ class TwilioAdapter implements VoiceProviderInterface
     public function createTwimlApp(TwilioVoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
     {
         $client  = $this->getClient($account);
-        $appName = 'DeskPRO App';
+        $appName = 'Deskpro Agent App';
 
         // ensure we don't have twiml app with this name
         foreach ($client->applications->read() as $existingApp) {
@@ -318,9 +316,21 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
+     * @param AbstractVoiceAccount $account
+     * @param string               $sid
+     */
+    public function releaseNumber(TwilioVoiceAccount $account, $sid)
+    {
+        try {
+            $this->getClient($account)->incomingPhoneNumbers($sid)->delete();
+        } catch (\Exception $e) {
+        }
+    }
+
+    /**
      * {@inheritdoc}
      *
-     * @throws \Twilio\Exceptions\ConfigurationException
+     * @throws \Exception
      */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $person)
     {
@@ -348,7 +358,7 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \Twilio\Exceptions\ConfigurationException
+     * @throws \Exception
      */
     public function endCall(VoicePhoneCall $phoneCall)
     {
@@ -467,7 +477,7 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      *
-     * @throws \Twilio\Exceptions\ConfigurationException
+     * @throws \Exception
      */
     public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
@@ -491,6 +501,8 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false)
     {
@@ -512,6 +524,8 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent)
     {
@@ -573,6 +587,8 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function isCallActive(VoicePhoneCall $phoneCall)
     {
@@ -594,6 +610,8 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod)
     {
@@ -627,6 +645,8 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid)
     {
@@ -644,6 +664,8 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * @param VoicePhoneCall $phoneCall
      * @param string         $callSid
+     *
+     * @throws \Exception
      *
      * @return CallInstance
      */

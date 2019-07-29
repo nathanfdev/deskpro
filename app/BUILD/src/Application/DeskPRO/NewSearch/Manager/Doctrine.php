@@ -440,6 +440,12 @@ class Doctrine extends AbstractSearchManager implements SearchManagerInterface
             }
         }
 
+        // Support old code. Check also: AbstractSearchManager::handleResult
+        if (isset($results['chat'])) {
+            $results['chat_conversation'] = $results['chat'];
+            unset($results['chat']);
+        }
+
         return [$results, $result_meta, $people_top];
     }
 }

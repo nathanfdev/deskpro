@@ -13,6 +13,7 @@
 		<div class="show-offline">
             <label><input type="checkbox" class="show-offline-opt" />{{ phrase('agent.chat.show_offline') }}</label>
             <input type="text" id="im-agents-filter" style="float: left; padding: 1px; margin-right: 4px;"
+				    autocomplete="{{ "now" | date("U") }}"
 		            placeholder="Filter" />
 		</div>
 		<div class="agents-list">

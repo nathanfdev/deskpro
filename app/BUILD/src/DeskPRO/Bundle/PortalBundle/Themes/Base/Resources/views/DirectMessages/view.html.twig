@@ -1,0 +1,57 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% if reply_form %}
+  {% form_theme reply_form _self %}
+{% endif %}
+
+{% block inner_content %}
+  <div class="breadcrumbs">
+    {% show breadcrumbs %}
+  </div>
+
+  <div class="browse-page">
+    <header class="large-title">
+      <h1>{{ phrase('portal.direct_messages.title') }}</h1>
+    </header>
+
+    {% if reply_form %}
+    <section class="padded">
+      <div class="column-half">
+          {{ form_start(reply_form, { attr: { class: 'form-ticket dpx-form' } }) }}
+          {{ form_errors(reply_form) }}
+          {{ form_rest(reply_form) }}
+          {{ form_end(reply_form) }}
+      </div>
+    </section>
+    {% endif %}
+
+    <div class="content-list-wrap simple as-articles {% if messages|length %}with-items{% else %}with-no-items{% endif %}">
+      {% if messages|length %}
+      <ul class="categories-article-list">
+        {% for message in messages %}
+          <li>
+            <div class="chat-message {{ message.author.person.id == app.user.id ? 'chat-message-agent' : 'chat-message-user' }}">
+              <span class="author">
+                  {% if message.author.person.id == app.user.id %}
+                    {{ phrase('portal.chat.you') }}
+                  {% else %}
+                    {{ message.author.person.display_name }}
+                  {% endif %}
+              </span>
+              <span class="messages">
+                <p class="message-time">{{ date(message.dateCreated, 'Y-m-d H:i') }}</p>
+                <p>
+                  {{message.messageHtml|raw}}
+                </p>
+              </span>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+        <strong>{{ phrase('portal.direct_messages.none') }}</strong>
+      {% endif %}
+    </div>
+
+  </div>
+{% endblock inner_content %}

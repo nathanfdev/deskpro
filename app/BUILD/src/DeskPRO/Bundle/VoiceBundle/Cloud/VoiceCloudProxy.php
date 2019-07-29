@@ -46,18 +46,7 @@ class VoiceCloudProxy
      */
     public function initPlivoProxy(Person $person)
     {
-        $data = $this->callMemberArea($person);
-        $url  = "{$data['dpmsUrl']}/voice/plivo-api/";
-
-        /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
-        $settingsRepo = $this->em->getRepository(Setting::class);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_HOST, $url);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_USERNAME, $data['accessToken']);
-        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_PLIVO_PROXY_PASSWORD, $data['authToken']);
-
-        // reload settings because we need these settings
-        // to create account app in voice account doctrine listener
-        $this->settingsResolver->getGlobalSettings(true);
+        throw new \RuntimeException('Not supported');
     }
 
     /**
@@ -69,9 +58,9 @@ class VoiceCloudProxy
     {
         $data = $this->callMemberArea($person);
 
-        $apiHost     = "{$data['dpmsUrl']}/twilio/twilio-api-proxy/{$data['accessToken']}/{$data['authToken']}";
-        $pricingHost = "{$data['dpmsUrl']}/twilio/twilio-pricing-proxy/{$data['accessToken']}/{$data['authToken']}";
-        $clientHost  = "{$data['dpmsUrl']}/twilio/twilio-client/generate-token/{$data['accessToken']}/{$data['authToken']}";
+        $apiHost     = "{$data['twilioProxyServiceUrl']}/twilio/twilio-api-proxy/{$data['accessToken']}/{$data['authToken']}";
+        $pricingHost = "{$data['twilioProxyServiceUrl']}/twilio/twilio-pricing-proxy/{$data['accessToken']}/{$data['authToken']}";
+        $clientHost  = "{$data['twilioProxyServiceUrl']}/twilio/twilio-client/generate-token/{$data['accessToken']}/{$data['authToken']}";
 
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->em->getRepository(Setting::class);
@@ -98,15 +87,15 @@ class VoiceCloudProxy
      */
     private function callMemberArea(Person $person, array $data = [])
     {
-        $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpms.access_token');
-        $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpms.auth_token');
-        $dpmsUrl     = $this->settingsResolver->getGlobalSettings()->get('dpms.url');
+        $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpss.access_token');
+        $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpss.auth_token');
+        $proxyUrl    = $this->settingsResolver->getGlobalSettings()->get('dpss.twilio_proxy_service_url');
 
-        if ($accessToken && $authToken && $dpmsUrl) {
+        if ($accessToken && $authToken && $proxyUrl) {
             return [
-                'accessToken' => $accessToken,
-                'authToken'   => $authToken,
-                'dpmsUrl'     => $dpmsUrl,
+                'accessToken'           => $accessToken,
+                'authToken'             => $authToken,
+                'twilioProxyServiceUrl' => $proxyUrl,
             ];
         }
 
@@ -141,9 +130,9 @@ class VoiceCloudProxy
 
             /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
             $settingsRepo = $this->em->getRepository(Setting::class);
-            $settingsRepo->updateSetting('dpms.access_token', $data['accessToken']);
-            $settingsRepo->updateSetting('dpms.auth_token', $data['authToken']);
-            $settingsRepo->updateSetting('dpms.url', $data['dpmsUrl']);
+            $settingsRepo->updateSetting('dpss.access_token', $data['accessToken']);
+            $settingsRepo->updateSetting('dpss.auth_token', $data['authToken']);
+            $settingsRepo->updateSetting('dpss.twilio_proxy_service_url', $data['twilioProxyServiceUrl']);
 
             return $data;
         } catch (\Exception $e) {

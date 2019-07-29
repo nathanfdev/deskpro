@@ -2148,6 +2148,10 @@ admin.templates.revert_to_default: 'Revert To Default'
 admin.templates.template_name: 'Template Name'
 admin.templates.use_selected_template: 'Use Selected Template'
 admin.ticket_accounts.email_preview: 'Enable email preview'
+admin.ticket_fields.categories_saved_successfully: 'Categories saved successfully'
+admin.ticket_fields.priorities_saved_successfully: 'Priorities saved successfully'
+admin.ticket_fields.products_saved_successfully: 'Products saved successfully'
+admin.ticket_fields.workflows_saved_successfully: 'Worfklows saved successfully'
 admin.ticket_accounts.email_preview_help: 'When enabled preview text will appear in email. Enabled by default'
 admin.tickets.account_details: 'Account Details'
 admin.tickets.add_a_new_action: 'Add a new Action'
@@ -4074,6 +4078,7 @@ agent.people.reg_gateway: 'User was created by submitting an email to the helpde
 agent.people.reg_website: 'User registered using the website'
 agent.people.reg_phone_inbound: 'User created by an inbound call'
 agent.people.reg_phone_outbound: 'User created by an outbound call'
+agent.people.reg_usersource_sync: 'User created by usersource sync'
 agent.people.remove_picture: 'Remove Picture'
 agent.people.since: Since
 agent.people.title_dr: Dr.

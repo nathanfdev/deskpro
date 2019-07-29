@@ -1,4 +1,3 @@
-@new
 Feature: /tickets/{id}/messages endpoint
 
   Background:

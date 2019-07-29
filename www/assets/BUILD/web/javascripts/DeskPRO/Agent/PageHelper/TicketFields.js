@@ -675,7 +675,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     self.addEvent('edit_custom_field', function (fieldId) {
       var id    = 'custom_def_ticket_' + fieldId.replace('ticket_field_', '');
       var field = self.jsfields[id];
-      if (field.element) {
+      if (field && field.element) {
         field.ctx.onShow.call(field.ctx, field.currentValue, field.currentData, field.field, field.element);
       } else {
         var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {

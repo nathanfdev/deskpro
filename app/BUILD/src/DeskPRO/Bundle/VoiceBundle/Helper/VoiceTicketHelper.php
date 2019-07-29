@@ -160,19 +160,14 @@ class VoiceTicketHelper
                 // try to get last ticket
                 $ticket = null;
                 if ($this->voiceSettingsResolver->isGroupMissedCallTickets()) {
+                    $hours    = $this->voiceSettingsResolver->getGroupMissedCallTicketsTimeout();
+                    $fromDate = new \DateTime("-{$hours} hours");
+
                     /** @var Ticket $lastTicket */
-                    $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
+                    $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber(), $fromDate);
                     if ($lastTicket) {
                         $lastTicket->disableAutoTicketProcess();
-
-                        $now    = new \DateTime();
-                        $hours  = $this->voiceSettingsResolver->getGroupMissedCallTicketsTimeout();
-                        $offset = clone $lastTicket->getDateCreated();
-                        $offset->modify("+{$hours} hours");
-
-                        if ($offset > $now) {
-                            $ticket = $lastTicket;
-                        }
+                        $ticket = $lastTicket;
                     }
                 }
 

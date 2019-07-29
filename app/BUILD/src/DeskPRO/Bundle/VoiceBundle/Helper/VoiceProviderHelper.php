@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
@@ -48,6 +49,11 @@ class VoiceProviderHelper implements VoiceProviderInterface
     private $plivoAdapter;
 
     /**
+     * @var VoiceEventHelper
+     */
+    private $voiceEventHelper;
+
+    /**
      * @var EventDispatcherInterface
      */
     private $dispatcher;
@@ -60,6 +66,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      * @param TaskRouter               $taskRouter
      * @param TwilioAdapter            $twilioAdapter
      * @param PlivoAdapter             $plivoAdapter
+     * @param VoiceEventHelper         $voiceEventHelper
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
@@ -68,14 +75,16 @@ class VoiceProviderHelper implements VoiceProviderInterface
         TaskRouter               $taskRouter,
         TwilioAdapter            $twilioAdapter,
         PlivoAdapter             $plivoAdapter,
+        VoiceEventHelper         $voiceEventHelper,
         EventDispatcherInterface $dispatcher
     ) {
-        $this->em            = $em;
-        $this->router        = $router;
-        $this->taskRouter    = $taskRouter;
-        $this->twilioAdapter = $twilioAdapter;
-        $this->plivoAdapter  = $plivoAdapter;
-        $this->dispatcher    = $dispatcher;
+        $this->em               = $em;
+        $this->router           = $router;
+        $this->taskRouter       = $taskRouter;
+        $this->twilioAdapter    = $twilioAdapter;
+        $this->plivoAdapter     = $plivoAdapter;
+        $this->voiceEventHelper = $voiceEventHelper;
+        $this->dispatcher       = $dispatcher;
     }
 
     /**
@@ -83,7 +92,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false)
     {
-        return $this->getAdapter($phoneCall)->callNumber($phoneCall, $toNumber, $options, $exception);
+        return $this->getPhoneCallAdapter($phoneCall)->callNumber($phoneCall, $toNumber, $options, $exception);
     }
 
     /**
@@ -91,7 +100,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent)
     {
-        return $this->getAdapter($phoneCall)->callForwardingNumber($phoneCall, $agent);
+        return $this->getPhoneCallAdapter($phoneCall)->callForwardingNumber($phoneCall, $agent);
     }
 
     /**
@@ -101,7 +110,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $agent)
     {
-        $this->getAdapter($phoneCall)->cancelForwardingCall($phoneCall, $agent);
+        $this->getPhoneCallAdapter($phoneCall)->cancelForwardingCall($phoneCall, $agent);
     }
 
     /**
@@ -111,7 +120,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function endCall(VoicePhoneCall $phoneCall)
     {
-        $this->getAdapter($phoneCall)->endCall($phoneCall);
+        $this->getPhoneCallAdapter($phoneCall)->endCall($phoneCall);
 
         // force end all agent workers
         // in case if agent hangup callback is not called for some reason
@@ -145,7 +154,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
-        $this->getAdapter($participant->getPhoneCall())->kickParticipant($participant);
+        $this->getPhoneCallAdapter($participant->getPhoneCall())->kickParticipant($participant);
     }
 
     /**
@@ -160,15 +169,8 @@ class VoiceProviderHelper implements VoiceProviderInterface
         });
 
         $this->em->flush();
-        $this->getAdapter($phoneCall)->holdEndUser($phoneCall, $isHold);
-
-        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.voice.conference.hold',
-            [
-                'call_id' => $phoneCall->getId(),
-                'hold'    => $isHold,
-            ]
-        ));
+        $this->getPhoneCallAdapter($phoneCall)->holdEndUser($phoneCall, $isHold);
+        $this->voiceEventHelper->sendConferenceStatus($phoneCall);
     }
 
     /**
@@ -176,7 +178,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
     {
-        $this->getAdapter($phoneCall)->muteParticipant($phoneCall, $callSid, $mute);
+        $this->getPhoneCallAdapter($phoneCall)->muteParticipant($phoneCall, $callSid, $mute);
     }
 
     /**
@@ -184,7 +186,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function isCallActive(VoicePhoneCall $phoneCall)
     {
-        return $this->getAdapter($phoneCall)->isCallActive($phoneCall);
+        return $this->getPhoneCallAdapter($phoneCall)->isCallActive($phoneCall);
     }
 
     /**
@@ -193,7 +195,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
     public function transferUser(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
     {
         foreach ($phoneCall->getUserParticipants() as $participant) {
-            $this->getAdapter($phoneCall)->transferParticipant($participant, $callbackUrl, $callbackMethod);
+            $this->getPhoneCallAdapter($phoneCall)->transferParticipant($participant, $callbackUrl, $callbackMethod);
         }
     }
 
@@ -202,7 +204,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod)
     {
-        return $this->getAdapter($participant->getPhoneCall())->transferParticipant($participant, $callbackUrl, $callbackMethod);
+        return $this->getPhoneCallAdapter($participant->getPhoneCall())->transferParticipant($participant, $callbackUrl, $callbackMethod);
     }
 
     /**
@@ -212,7 +214,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function prepareForColdTransfer(VoicePhoneCall $phoneCall)
     {
-        $this->getAdapter($phoneCall)->prepareForColdTransfer($phoneCall);
+        $this->getPhoneCallAdapter($phoneCall)->prepareForColdTransfer($phoneCall);
     }
 
     /**
@@ -220,19 +222,28 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid)
     {
-        $this->getAdapter($phoneCall)->deleteRecording($phoneCall, $recordingSid);
+        $this->getPhoneCallAdapter($phoneCall)->deleteRecording($phoneCall, $recordingSid);
     }
 
     /**
      * @param VoicePhoneCall $phoneCall
      *
+     * @return PlivoAdapter|TwilioAdapter
+     */
+    private function getPhoneCallAdapter(VoicePhoneCall $phoneCall)
+    {
+        return $this->getAdapter($phoneCall->getNumber()->getAccount());
+    }
+
+    /**
+     * @param AbstractVoiceAccount $account
+     *
      * @throws OutOfServiceException
      *
      * @return PlivoAdapter|TwilioAdapter
      */
-    private function getAdapter(VoicePhoneCall $phoneCall)
+    private function getAdapter(AbstractVoiceAccount $account)
     {
-        $account = $phoneCall->getNumber()->getAccount();
         if ($account instanceof TwilioVoiceAccount) {
             return $this->twilioAdapter;
         } elseif ($account instanceof PlivoVoiceAccount) {

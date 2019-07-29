@@ -219,6 +219,17 @@ export const sendPreview = createAction(
   )
 );
 
+export const markAsConverted = createAction(
+  'EMAIL_TEMPLATE_MARK_AS_CONVERTED',
+  name => new Promise((resolve, reject) => {
+    repository('EmailTemplates').markAsConverted(name)
+      .success((result) => {
+        resolve(result);
+      })
+      .error(response => reject(response));
+  })
+);
+
 export const setCurrentLanguage = createAction(
   'EMAIL_TEMPLATES_SET_CURRENT_LANGUAGE',
   params => params

@@ -332,7 +332,7 @@ class RecordingDownloadHelper
         $ticketMessage = new TicketMessage();
         $ticketMessage->setPerson($phoneCall->getPerson());
         $ticketMessage->addAttribute($ticketMessageCall);
-        $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
+        $ticketMessage->setMessage('Voicemail from '.$phoneCall->getExternalNumber());
         $ticketMessage->setAsAgentNote(true);
 
         // try to get last ticket
@@ -341,19 +341,14 @@ class RecordingDownloadHelper
         // group missed call tickets is enabled
         // try to get last ticket related to this number
         if ($this->settingsResolver->isGroupMissedCallTickets()) {
+            $hours    = $this->settingsResolver->getGroupMissedCallTicketsTimeout();
+            $fromDate = new \DateTime("-{$hours} hours");
+
             /** @var Ticket $lastTicket */
-            $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
+            $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber(), $fromDate);
             if ($lastTicket) {
                 $lastTicket->disableAutoTicketProcess();
-
-                $now    = new \DateTime();
-                $hours  = $this->settingsResolver->getGroupMissedCallTicketsTimeout();
-                $offset = clone $lastTicket->getDateCreated();
-                $offset->modify("+{$hours} hours");
-
-                if ($offset > $now) {
-                    $ticket = $lastTicket;
-                }
+                $ticket = $lastTicket;
             }
         }
 

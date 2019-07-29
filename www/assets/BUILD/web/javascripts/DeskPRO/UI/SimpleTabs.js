@@ -2,12 +2,12 @@ Orb.createNamespace('DeskPRO.UI');
 
 /**
  * This is a simple tabbing system where the tab triggers and tab contents can be completely
- * separate, and are linked by attribuets in the source. This tab system simply
+ * separate, and are linked by attributes in the source. This tab system simply
  * toggles an 'on' CSS class on elements, so it's up to you to style the elements. For example,
- * content elements without 'on' sholud be display:none etc.
+ * content elements without 'on' should be display:none etc.
  *
  * There are two elements: tab triggers and tab content. Tab triggers are attached a click event
- * that stitches the 'on' state of all the tab contents. So the tab clicked becoems "on" (and your
+ * that stitches the 'on' state of all the tab contents. So the tab clicked becomes "on" (and your
  * CSS makes it visible, and the rest invisible).
  *
  * <code>
@@ -75,27 +75,28 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			self.fireEvent('postTabClick', [ev]);
 		});
 
-		if (this.options.autoSelectFirst) {
-			var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).first();
-			if (!firstTab.length) {
-				firstTab = this.triggerEls.first();
-			}
+		setTimeout(function () {
+      if (this.options.autoSelectFirst) {
+				var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).filter(':visible').first();
+        if (!firstTab.length) {
+					firstTab = this.triggerEls.filter(':visible').first();
+					if (!firstTab.length) {
+						firstTab = this.triggerEls.first();
+					}
+        }
 
-			if (firstTab.length && !firstTab.is(':visible')) {
-        firstTab = this.triggerEls.filter(':visible').first();
+        // Check again, there might not be any tabs
+        if (firstTab.length) {
+          // need to hide all others
+          var self = this;
+          this.triggerEls.each(function() {
+            self.getContentElFromTab($(this)).hide();
+          });
+
+          this.activateTab(firstTab);
+        }
       }
-
-			// Check again, there might not be any tabs
-			if (firstTab.length) {
-				// need to hide all others
-				var self = this;
-				this.triggerEls.each(function() {
-					self.getContentElFromTab($(this)).hide();
-				});
-
-				this.activateTab(firstTab);
-			}
-		}
+    }.bind(this), 1);
 	},
 
 	addTriggerElement: function(el) {

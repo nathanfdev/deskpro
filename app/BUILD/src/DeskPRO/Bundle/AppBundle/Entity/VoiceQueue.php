@@ -153,6 +153,15 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $voicemailAgentTeam;
 
     /**
+     * @ORM\Column(name="answer_timeout", type="integer")
+     *
+     * @Assert\GreaterThanOrEqual("10")
+     *
+     * @var int
+     */
+    private $answerTimeout = 15;
+
+    /**
      * @ORM\Column(name="voicemail_timeout", type="integer")
      *
      * @Assert\NotBlank()
@@ -165,9 +174,11 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="max_queue_size", type="integer")
      *
+     * @Assert\GreaterThanOrEqual("1")
+     *
      * @var int
      */
-    private $maxQueueSize = 0;
+    private $maxQueueSize = 1;
 
     /**
      * @ORM\Column(name="recording_enabled", type="boolean")
@@ -477,6 +488,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setVoicemailAgentTeam(AgentTeam $voicemailAgentTeam = null)
     {
         $this->setModelField('voicemailAgentTeam', $voicemailAgentTeam);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAnswerTimeout()
+    {
+        return $this->answerTimeout;
+    }
+
+    /**
+     * @param int $answerTimeout
+     *
+     * @return $this
+     */
+    public function setAnswerTimeout($answerTimeout)
+    {
+        $this->setModelField('answerTimeout', $answerTimeout);
 
         return $this;
     }

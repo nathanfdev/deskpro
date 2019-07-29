@@ -22,10 +22,11 @@
                 <div class="input-wrapper">
                   <input type="text" id="{{ baseId }}_subscribe_searchbox_txt" style="width: 98%"
                          class="term integrated"
+                         autocomplete="{{ "now" | date("U") }}"
                          placeholder="{{ phrase('agent.community.subscribe_user') }}"
                          class="user-input" />
                 </div>
-                
+
                 <div class="person-search-box" style="display: none">
                     <section>
                         <ul class="results-list">

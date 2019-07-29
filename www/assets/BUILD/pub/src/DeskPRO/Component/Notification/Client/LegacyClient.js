@@ -2,7 +2,10 @@
  * wrapper for pusher-app client
  */
 import $ from 'jquery';
+import Immutable from 'immutable';
+import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { AbstractClient } from './AbstractClient';
+import { setVoiceOnlineAgents } from '../../../Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
 
 export default class LegacyClient extends AbstractClient {
 
@@ -33,6 +36,11 @@ export default class LegacyClient extends AbstractClient {
 
     this.handleAlert = this.handleActionAlertsPoll.bind(this);
     this.handleNotify = this.handleUserNotifyPoll.bind(this);
+    this.handleOnlineWorkers = (response) => {
+      if (response.task_router_workers) {
+        store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(response.task_router_workers)));
+      }
+    };
     this.poller.addData({ last_alert: this.options.last_alert }, 'last_alert');
     this.poller.addData({ last_notify: this.options.last_notify }, 'last_notify');
     if (eventName === 'action_alert') {
@@ -41,6 +49,7 @@ export default class LegacyClient extends AbstractClient {
       }
 
       this.poller.addEvent('ajaxSuccess', this.handleAlert);
+      this.poller.addEvent('ajaxSuccess', this.handleOnlineWorkers);
     } else if (eventName === 'user_notify') {
       if (oldNotifyHandler) {
         this.poller.removeEvent('ajaxSuccess', oldNotifyHandler);
@@ -113,6 +122,7 @@ export default class LegacyClient extends AbstractClient {
   stopPolling() {
     this.poller.removeEvent('ajaxSuccess', this.handleAlert);
     this.poller.removeEvent('ajaxSuccess', this.handleNotify);
+    this.poller.removeEvent('ajaxSuccess', this.handleOnlineWorkers);
   }
 
   getLastActionAlert() {

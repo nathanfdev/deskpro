@@ -32,16 +32,15 @@ class TransferList extends React.Component {
 
   static propTypes = {
     me:                          PropTypes.object,
+    phoneCall:                   PropTypes.object,
     target:                      PropTypes.object,
     transferDisabled:            PropTypes.bool,
-    onlineAgents:                PropTypes.object,
-    forwardingAgents:            PropTypes.object,
-    participants:                PropTypes.array,
+    onlineAgentIds:              PropTypes.object,
+    forwardingAgentIds:          PropTypes.object,
     agents:                      PropTypes.object,
-    busyAgents:                  PropTypes.array,
+    busyAgentIds:                PropTypes.array,
     queues:                      PropTypes.object,
     autoAttendants:              PropTypes.object,
-    connection:                  PropTypes.object,
     warmTransferToAgent:         PropTypes.func,
     coldTransferToAgent:         PropTypes.func,
     coldTransferToQueue:         PropTypes.func,
@@ -120,11 +119,12 @@ class TransferList extends React.Component {
   };
 
   renderList() {
-    const { me, agents, busyAgents, queues, autoAttendants, onlineAgents, forwardingAgents, participants } = this.props;
+    const { me, agents, busyAgentIds, queues, autoAttendants, onlineAgentIds, forwardingAgentIds, phoneCall } = this.props;
     const { inviteError, transferDisabled } = this.props;
     const { tabName, selectedTarget } = this.state;
 
-    const hasAgentsTab = ((onlineAgents && onlineAgents.size > 0) || (forwardingAgents && forwardingAgents.size > 0));
+    const hasAgentsTab = ((onlineAgentIds && onlineAgentIds.filter(onlineId => onlineId !== me.get('id')).size > 0)
+      || (forwardingAgentIds && forwardingAgentIds.filter(onlineId => onlineId !== me.get('id')).size > 0));
     const hasQueuesTab = queues && queues.size > 0;
     const hasAutoAttendantTab = autoAttendants && autoAttendants.size > 0;
 
@@ -160,10 +160,11 @@ class TransferList extends React.Component {
 
         <Tab active={tabName === 'agents'}>
           <AgentList
-            onlineAgents={onlineAgents}
-            forwardingAgents={forwardingAgents}
-            busyAgents={busyAgents}
-            participants={participants}
+            agents={agents}
+            onlineAgentIds={onlineAgentIds}
+            forwardingAgentIds={forwardingAgentIds}
+            busyAgentIds={busyAgentIds}
+            phoneCall={phoneCall}
             target={selectedTarget}
             onClick={this.selectAgentTarget}
             transferDisabled={transferDisabled}
@@ -174,7 +175,9 @@ class TransferList extends React.Component {
           <Queues
             me={me}
             agents={agents}
-            onlineAgents={onlineAgents}
+            onlineAgentIds={onlineAgentIds}
+            forwardingAgentIds={forwardingAgentIds}
+            busyAgentIds={busyAgentIds}
             queues={queues}
             target={selectedTarget}
             onClick={this.selectQueueTarget}
@@ -209,13 +212,13 @@ class TransferList extends React.Component {
   }
 
   render() {
-    const { connection, target } = this.props;
+    const { phoneCall, target } = this.props;
 
     if (target) {
       return (
         <div className="voice-ticket-transfer-list">
           <TransferStatus
-            connection={connection}
+            phoneCall={phoneCall}
             title="Transferring..."
             cancelLabel="Cancel transfer"
             target={target}
