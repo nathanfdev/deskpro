@@ -47,6 +47,28 @@ class VoiceRecording extends AbstractVoiceRecording
     }
 
     /**
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function setMetadataProperty($key, $value)
+    {
+        $metadata       = $this->metadata;
+        $metadata[$key] = $value;
+
+        $this->setModelField('metadata', $metadata);
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function getMetadataProperty($key)
+    {
+        return isset($this->metadata[$key]) ? $this->metadata[$key] : null;
+    }
+
+    /**
      * @return array
      */
     public function getMetadata()

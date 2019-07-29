@@ -918,6 +918,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return ArrayCollection|\Doctrine\Common\Collections\Collection
+     */
+    public function getTempRecordings()
+    {
+        return $this->recordings->filter(function (VoiceRecording $recording) {
+            return $recording !== $this->fullRecording && !$recording->getMetadataProperty('full_recording');
+        });
+    }
+
+    /**
      * @param VoiceRecording $recording
      *
      * @return $this
@@ -1112,9 +1122,17 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param VoiceRecording $fullRecording
+     *
+     * @return $this
      */
-    public function setFullRecording($fullRecording)
+    public function setFullRecording(VoiceRecording $fullRecording = null)
     {
-        $this->fullRecording = $fullRecording;
+        $this->setModelField('fullRecording', $fullRecording);
+        if ($fullRecording) {
+            $fullRecording->setPhoneCall($this);
+            $fullRecording->setMetadataProperty('full_recording', 1);
+        }
+
+        return $this;
     }
 }

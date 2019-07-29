@@ -144,7 +144,7 @@ class TicketMessage extends React.Component {
               <Button className="basic call-button" onClick={openDialpad}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
-              {fullRecording ? <MediaControls key={`recording_${fullRecording.get('blob').get('blob_id')}`} recording={fullRecording.get('blob')} /> : null}
+              {fullRecording && fullRecording.get('blob') ? <MediaControls key={`recording_${fullRecording.get('blob').get('blob_id')}`} recording={fullRecording.get('blob')} /> : null}
               {fullRecording && !fullRecording.get('blob') && !fullRecording.get('is_deleted') ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
               {fullRecording && fullRecording.get('is_deleted') && 'This call recording has been deleted.'}
               {!fullRecording ? 'This call was not recorded.' : ''}

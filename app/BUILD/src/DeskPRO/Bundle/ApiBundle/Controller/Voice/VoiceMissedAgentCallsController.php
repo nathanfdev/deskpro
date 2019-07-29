@@ -113,6 +113,10 @@ class VoiceMissedAgentCallsController extends CrudController
 
             $phoneCall->addRecording($recording);
 
+            if (!$phoneCall->getFullRecording()) {
+                $phoneCall->setFullRecording($recording);
+            }
+
             // create a new ticket based on the voicemail message
             $ticketMessageCall = new TicketMessageVoicePhoneCall();
             $ticketMessageCall->setPhoneCall($phoneCall);

@@ -26,32 +26,41 @@ class MergeVoiceRecordings extends AbstractJob
      */
     public function run()
     {
-        $em         = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $phoneCalls = $em->getRepository(VoicePhoneCall::class)->findBy(
-            [
-                'fullRecording' => null,
-                'status'        => VoicePhoneCall::STATUS_ENDED,
+        $serializer = $this->getContainer()->get('serializer');
+        $em         = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-            ],
-            null,
-            50
-        );
+        $qb = $em
+            ->createQueryBuilder()
+            ->select('p')
+            ->from(VoicePhoneCall::class, 'p')
+            ->leftJoin('p.fullRecording', 'fr')
+            ->join('p.recordings', 'r')
+            ->where('p.fullRecording IS NULL OR fr.blob IS NULL')
+            ->andWhere('p.status IN (:ended_statuses)')
+            ->andWhere('p.dateEnded < :date_offset')
+            ->groupBy('p.id')
+            ->having('COUNT(r.id) > 0')
+            ->setParameter('ended_statuses', [VoicePhoneCall::STATUS_ENDED, VoicePhoneCall::STATUS_VOICEMAIL])
+            ->setParameter('date_offset', new \DateTime('-1 min'))
+            ->setMaxResults(50)
+        ;
 
+        /** @var VoicePhoneCall[] $phoneCalls */
+        $phoneCalls = $qb->getQuery()->getResult();
         foreach ($phoneCalls as $phoneCall) {
-            /** @var VoicePhoneCall $phoneCall */
-            $allDone = true;
-            foreach ($phoneCall->getRecordings() as $recording) {
-                $allDone = $allDone && $recording->getBlob();
+            $loaded = true;
+            foreach ($phoneCall->getTempRecordings() as $recording) {
+                $loaded = $loaded && $recording->getBlob();
             }
-            if ($allDone) {
-                $newRecording = $this->mergeRecordings($phoneCall);
+
+            if ($loaded) {
+                $this->mergeRecordings($phoneCall);
 
                 $context = new SideloadSerializationContext();
                 $context->setIncludes(['recording_enabled']);
                 $context->setInlineSideloads(true);
 
-                $serializedData = $this->getContainer()->get('serializer')->toArray(new ApiWrapper($newRecording->getPhoneCall()), $context);
-
+                $serializedData = $serializer->toArray(new ApiWrapper($phoneCall), $context);
                 $this->getContainer()->get('event_dispatcher')->dispatch(
                     LegacySystemEvent::EVENT_NAME,
                     new LegacySystemEvent(
@@ -63,18 +72,22 @@ class MergeVoiceRecordings extends AbstractJob
         }
     }
 
+    /**
+     * @param VoicePhoneCall $phoneCall
+     */
     private function mergeRecordings(VoicePhoneCall $phoneCall)
     {
-        $em          = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em          = $this->getContainer()->get('doctrine.orm.entity_manager');
         $blobStorage = $this->getContainer()->get('blob.storage');
 
         $newAudioFile = null;
         $parser       = new Parser();
         $duration     = 0;
-        $newRecording = new VoiceRecording();
 
-        foreach ($phoneCall->getRecordings() as $rec) {
-            $blobString = $blobStorage->copyBlobRecordToString($rec->getBlob());
+        $fullRecording = $phoneCall->getFullRecording() ?: new VoiceRecording();
+
+        foreach ($phoneCall->getTempRecordings() as $recording) {
+            $blobString = $blobStorage->copyBlobRecordToString($recording->getBlob());
             if (!$newAudioFile) {
                 $newAudioFile = $parser->parseString($blobString);
             } else {
@@ -82,27 +95,29 @@ class MergeVoiceRecordings extends AbstractJob
                 $newAudioFile->append($parser->parseString($blobString));
             }
 
-            $duration += $rec->getDuration();
-            $newRecording->addVoiceRecordingMetadata($rec);
-            $newRecording->setTranscription($newRecording->getTranscription() ?: ''.$rec->getTranscription() ? "\r\n\r\n".$rec->getTranscription() : '');
-            $em->remove($rec);
+            $duration += $recording->getDuration();
+            $fullRecording->addVoiceRecordingMetadata($recording);
+            $fullRecording->setTranscription($fullRecording->getTranscription() ?: ''.$recording->getTranscription() ? "\r\n\r\n".$recording->getTranscription() : '');
+            $em->remove($recording);
         }
+
         $newBlobString = IO::saveAudioToMemory($newAudioFile);
         $newBlob       = $blobStorage->createBlobRecordFromString(
             $newBlobString,
             'call_record_'.$phoneCall->getId().'_merged.wav',
             'wav'
         );
+
         $em->persist($newBlob);
 
-        $newRecording
+        $fullRecording
             ->setDuration($duration)
             ->setBlob($newBlob)
-            ->setPhoneCall($phoneCall);
-        $phoneCall->setFullRecording($newRecording);
-        $em->persist($newRecording);
-        $em->flush();
+            ->setPhoneCall($phoneCall)
+        ;
 
-        return $newRecording;
+        $phoneCall->setFullRecording($fullRecording);
+        $em->persist($fullRecording);
+        $em->flush();
     }
 }
