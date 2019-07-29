@@ -142,9 +142,9 @@ class VoiceMenuDropdown extends React.Component {
         this.voiceMenu.changeTab('phone');
         setTimeout(() => {
           this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+          this.voiceMenu.dialpad.setPerson(personId);
           if (ticketId) {
             this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
-            this.voiceMenu.dialpad.setPerson(personId);
           }
         }, 1);
 

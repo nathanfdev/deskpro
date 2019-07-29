@@ -218,8 +218,8 @@ class AgentLegacyApp {
     return canOpenDialpadSelector(this.store.getState());
   }
 
-  openVoiceDialpad(number) {
-    this.store.dispatch(openDialpad(number));
+  openVoiceDialpad(number, ticketId = null, ticketTitle = null, personId = null) {
+    this.store.dispatch(openDialpad(number, ticketId, ticketTitle, personId));
   }
 
   hasActiveVoiceCall() {

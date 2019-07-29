@@ -887,7 +887,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	},
 
 	refreshPropBox: function() {
-
+    var self = this;
 		var contactBox = $('.profile-box-container.contact', this.wrapper);
 
 		var has = false;
@@ -914,7 +914,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				event.preventDefault();
 
 				var $el = $(this);
-				window.AgentLegacyBundle.openVoiceDialpad($el.data('phoneNumber'));
+				window.AgentLegacyBundle.openVoiceDialpad($el.data('phoneNumber'), null, null, self.meta.person_id);
 				return false;
 			}
 
