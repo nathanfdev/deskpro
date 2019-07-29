@@ -191,7 +191,7 @@ class PermissionContext extends BaseContext
 
         $connection = $this->em()->getConnection();
         $connection->executeUpdate(
-            'INSERT IGNORE INTO community_channel2usergroup SET channel_id = ?, usergroup_id = ?',
+            'INSERT IGNORE INTO community_channel2usergroup SET community_channel_id = ?, usergroup_id = ?',
             [$communityChannelId, $usergroup->getId()]
         );
     }

@@ -94,7 +94,7 @@ Feature: /mass_actions/community_topics endpoint
   "params":{
      "set_category": ~cdf2~,
      "set_status_category": ~ctsc1~,
-     "set_type": ~cc2~,
+     "set_channel": ~cc2~,
      "add_labels": ["first", "second"]
   }
 }
@@ -119,10 +119,10 @@ Feature: /mass_actions/community_topics endpoint
       | community  | second | blue  | 0     |
       | community  | third  | white | 0     |
     And only the following "LabelCommunityTopic" records exist:
-      | topic       | label  |
-      | {community} | first  |
-      | {community} | second |
-      | {community} | third  |
+      | topic   | label  |
+      | {topic} | first  |
+      | {topic} | second |
+      | {topic} | third  |
     When I send a POST request to "/api/v2/mass_actions/community_topics" with body:
     """
 {

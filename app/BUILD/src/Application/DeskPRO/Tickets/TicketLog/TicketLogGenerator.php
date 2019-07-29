@@ -465,7 +465,7 @@ class TicketLogGenerator
                 return $logSet;
                 break;
 
-            case 'topic_links':
+            case 'topic_link':
                 $logSet = [];
 
                 if ($new) {
@@ -480,7 +480,7 @@ class TicketLogGenerator
                 if ($old) {
                     $m                      = $old;
                     $logData                = [];
-                    $logData['action_type'] = 'community_topic_link_added';
+                    $logData['action_type'] = 'community_topic_link_removed';
                     $logData['id_before']   = $m->getId();
                     $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
                     $logSet[]               = $logData;

@@ -56,9 +56,9 @@ class CommunityTopicMassActionParamsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('set_type', EntityType::class, [
+            ->add('set_channel', EntityType::class, [
                 'class'         => CommunityChannel::class,
-                'property_path' => 'category',
+                'property_path' => 'channel',
             ])
             ->add('set_status_category', EntityType::class, [
                 'class'         => CommunityTopicStatusCategory::class,

@@ -1831,7 +1831,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $topicLink->setTicket($this);
 
         $this->_onPropertyChanged('topic_links', null, $topicLink, true);
-        $this->getStateChangeRecorder()->record('topic_links', null, $topicLink);
+        $this->getStateChangeRecorder()->record('topic_link', null, $topicLink);
     }
 
     /**
@@ -1843,7 +1843,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $this->topic_links->removeElement($topicLink);
         $this->_onPropertyChanged('topic_links', null, $this->topic_links);
-        $this->getStateChangeRecorder()->record('feedback_link', $topicLink, null);
+        $this->getStateChangeRecorder()->record('topic_link', $topicLink, null);
 
         return $this;
     }

@@ -31,8 +31,8 @@ Feature: New community topic form custom fields
     And I go to "/community"
 
     When I select "Channel 1" from "new_community_topic_channel"
-    And I fill in "new_community_topictitle" with "Title"
-    And I fill in "new_community_topiccontent" with "I need to report the following bug. It happens when..."
+    And I fill in "new_community_topic_title" with "Title"
+    And I fill in "new_community_topic_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
     And I press "Add your community topic"
     Then I should not see a form error with the phrase "This value should have "
@@ -44,8 +44,8 @@ Feature: New community topic form custom fields
     And I go to "/community"
 
     When I select "Channel 2" from "new_community_topic_channel"
-    And I fill in "new_community_topictitle" with "Title"
-    And I fill in "new_community_topiccontent" with "I need to report the following bug. It happens when..."
+    And I fill in "new_community_topic_title" with "Title"
+    And I fill in "new_community_topic_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
     And I press "Add your community topic"
     Then I should see a form error with the phrase "This value should have 10 characters or more"

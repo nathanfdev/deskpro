@@ -42,14 +42,14 @@ Feature: /tickets/{id}/community_topic_links endpoint
     And I send a POST request to "/api/v2/tickets/{t1}/community_topic_links" with body:
     """
 {
-  "feedback": ~ct1~,
+  "topic": ~ct1~,
   "is_subscribe_ticket_owner": 1,
   "is_subscribe_ticket_participants": 1
 }
     """
     Then the response status code should be 201
     And the JSON node "data.person" should be equal to "{admin}"
-    And the JSON node "data.feedback" should be equal to "{ct1}"
+    And the JSON node "data.topic" should be equal to "{ct1}"
     And the JSON node "data.ticket" should be equal to "{t1}"
     And the "{t1}" ticket should have "community_topic_link_added" log
     And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
