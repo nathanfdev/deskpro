@@ -1,0 +1,39 @@
+<header>
+    <ul class="dp-po-nav">
+        <li class="dp-po-Logo-wrap">
+            {% if portal_custom_logo() %}
+                <span class="dp-po-Icon Icon-Tech-company">
+                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
+                    </span>
+            {% endif %}
+            <span class="dp-po-Logo-descript">{{ brand_setting('core.deskpro_name')|e }}</span>
+        </li>
+        <li class="dp-po-nav-control">
+            <ul>
+                {% if is_multi_lang() %}
+                    <li class="dp-po-Select-Language">
+                        <form method="POST" action="{{ path('portal_change_language') }}" id="language-changer" class="as-no-dpui">
+                            <select name="lang_code" class="button button-dropdown button-dropdown-language">
+                                {% for language in enabled_languages() %}
+                                    <option
+                                            value="{{ language.urlCode }}"
+                                            {% if language.urlCode == current_language().urlCode %}selected="selected"{% endif %}
+                                    >
+                                        {{ language.title|capitalize }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button class="button button-plain button-small" type="submit">Go</button>
+                        </form>
+                    </li>
+                {% endif %}
+                {% if can_view_tickets_link %}
+                    <li>
+                        <a class="dp-po-Button Button--small" href="{{ path('portal_new_ticket') }}">{{ phrase('portal.general.nav-newticket') }}</a>
+                    </li>
+                {% endif %}
+                {# TODO USER INFO #}
+            </ul>
+        </li>
+    </ul>
+</header>

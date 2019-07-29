@@ -1,1 +1,41 @@
-The layout body should be defined in a sub-theme.
+{% extends 'base' %}
+<!doctype html>
+<html lang="en">
+<head>
+    {% include 'Theme:Internal:head-include.html.twig' %}
+    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
+
+    {# TODO -- real css #}
+    <link rel="stylesheet" href="https://deskpro.github.io/portal-components/style/css/style.css" />
+</head>
+<body class="dp-Template portal-mode-{{ portal_mode() }}">
+
+<div>
+    {% block page_header %}
+        {% include 'Theme:Portal:Header/top-bar.html.twig' %}
+        {% include 'Theme:Portal:Header/search-hero.html.twig' %}
+        {% include 'Theme:Portal:Header/breadcrumps.html.twig' %}
+    {% endblock %}
+
+    {% block page_content %}
+        {% show section alerts %}
+        {% show section flashes %}
+
+        {% block inner_content %}{% endblock inner_content %}
+    {% endblock %}
+
+    {% include 'Theme:Internal:custom-footer.html.twig' %}
+    {% block doc_end %}{% endblock %}
+    {% include 'Theme:Internal:foot-include.html.twig' %}
+
+    <footer class="dp-po-footer">
+        <div class="dp-po-frame-copyright">{{ phrase('portal.general.software_provided_by') }} <span class="dp-po-copyright-deskpro"><span class="dp-po-Icon Icon--elephant Icon--primary"></span>Deskpro</span></div>
+    </footer>
+</div>
+
+<script type="text/javascript">
+    {{ portal_custom_js()|raw }}
+</script>
+
+</body>
+</html>

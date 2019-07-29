@@ -86,6 +86,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('lang_code', [$this, 'langCode']),
             new \Twig_SimpleFunction('lang_dir', [$this, 'langDir']),
             new \Twig_SimpleFunction('lang_locale', [$this, 'langLocale']),
+            new \Twig_SimpleFunction('current_language', [$this, 'currentLanguage']),
             new \Twig_SimpleFunction('enabled_languages', [$this, 'enabledLanguages']),
             new \Twig_SimpleFunction('date', [$this, 'date']),
             new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
@@ -266,6 +267,14 @@ class PortalSupportExtension extends \Twig_Extension
     public function enabledLanguages()
     {
         return $this->container->get('language_manager')->getEnabledLanguages();
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Language
+     */
+    public function currentLanguage()
+    {
+        return $this->container->get('language_manager')->getLanguageStack()->getActiveOrDefault();
     }
 
     /**
