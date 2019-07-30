@@ -2893,40 +2893,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						}
 					}
 				});
-      } else if (value === 'unknown_person') {
-				$.ajax({
-					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-					type: 'GET',
-					success: function (getResponse) {
-						// existing user, create a new person and change
-						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
-							$.ajax({
-								url: BASE_URL + 'api/v2/people',
-								type: 'POST',
-								data: {
-									phone_numbers: [
-										{number: self.meta.voicePhoneNumber}
-									]
-								},
-								success: function(response) {
-									setPerson(response.data.id, null);
-									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
-								}
-							});
-						} else {
-							$.ajax({
-								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-								type: 'PUT',
-								data: {
-									preferences: {
-										'voice.unknown_caller': 0
-									},
-								},
-								success: reloadPersonView
-							});
-						}
-					}
-				});
 			} else if (value) {
 				var email = $('input[name=select_user]:checked', self.wrapper).data('email');
 				setPerson(value, email);
