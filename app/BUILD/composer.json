@@ -19,7 +19,7 @@
     "doctrine/dbal": "2.5.*",
     "doctrine/orm": "2.5.*",
     "symfony/symfony": "2.8.45",
-    "twig/twig": "1.35.*",
+    "twig/twig": "1.42.*",
     "swiftmailer/swiftmailer": "~5.0",
     "kriswallsmith/assetic": "~1.4",
     "doctrine/migrations": "1.0.*@dev",
