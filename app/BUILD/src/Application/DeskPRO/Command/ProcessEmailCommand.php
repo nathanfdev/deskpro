@@ -11,7 +11,6 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\Logger;
-use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -119,14 +118,14 @@ class ProcessEmailCommand extends ContainerAwareCommand
             }
 
             $accountManager = $this->getContainer()->getEmailAccountManager();
-            $readerFactory = $this->getContainer()->getEmailEzcReaderFactory();
-            $mapper = new PropertyMapper($accountManager, $readerFactory);
+            $readerFactory  = $this->getContainer()->getEmailEzcReaderFactory();
+            $mapper         = new PropertyMapper($accountManager, $readerFactory);
 
             $reader = $mapper->createReader($rawSource);
             $source = $mapper->read($reader, new EmailSource());
             $source->fromArray([
-                'status'         => EmailSource::STATUS_INSERTED,
-                'object_type'    => EmailSource::OBJ_TYPE_TICKET,
+                'status'      => EmailSource::STATUS_INSERTED,
+                'object_type' => EmailSource::OBJ_TYPE_TICKET,
             ]);
 
             $t = microtime(true);
@@ -166,6 +165,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             return 1;
         }
+
+        $account = null;
 
         if ($accountId) {
             $accountManager = $this->getContainer()->getEmailAccountManager();
