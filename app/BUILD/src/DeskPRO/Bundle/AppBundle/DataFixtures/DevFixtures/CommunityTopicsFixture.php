@@ -110,11 +110,11 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
         $this->channels       = $this->fetchIds(self::TABLE_COMMUNITY_CHANNELS);
         $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
         $this->activeStatuses = $this->fetchIds(
-            self::TABLE_COMMUNITY_TOPICS_STATUS_CATEGORIES,
+            self::TABLE_COMMUNITY_TOPIC_STATUS_CATEGORIES,
             [['field' => 'status_type', 'value' => CommunityTopic::STATUS_ACTIVE]]
         );
         $this->closedStatuses = $this->fetchIds(
-            self::TABLE_COMMUNITY_TOPICS_STATUS_CATEGORIES,
+            self::TABLE_COMMUNITY_TOPIC_STATUS_CATEGORIES,
             [['field' => 'status_type', 'value' => CommunityTopic::STATUS_CLOSED]]
         );
 
@@ -131,8 +131,8 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
         ]);
 
         foreach ($this->communityChannels as $order => $title) {
-            $customCchanChoice = new CustomDefCommunityTopic();
-            $customCchanChoice
+            $customChanChoice = new CustomDefCommunityTopic();
+            $customChanChoice
                 ->setParent($customChanDef)
                 ->setTitle($title)
                 ->setDescription('')
@@ -142,7 +142,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
                 ->setOption('parent_id', 0)
             ;
 
-            $customChanDef->addChild($customCchanChoice);
+            $customChanDef->addChild($customChanChoice);
         }
 
         $this->manager->flush();
@@ -284,7 +284,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
 
         foreach ($this->communityTopics as $topicId) {
             $batch[] = [
-                'topic_id   '   => $topicId,
+                'topic_id'      => $topicId,
                 'root_field_id' => $customChanDef->getId(),
                 'field_id'      => $ids[array_rand($ids)],
                 'value'         => 1,
@@ -347,7 +347,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
                 $batch[] = $values;
             }
         }
-        $this->db->batchInsert(self::TABLE_COMMUNITY_TOPICS, $batch, true);
+        $this->db->batchInsert(self::TABLE_COMMUNITY_TOPIC_COMMENTS, $batch, true);
         $this->manager->flush();
     }
 
