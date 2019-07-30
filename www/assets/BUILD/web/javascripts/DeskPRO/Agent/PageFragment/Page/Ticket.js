@@ -2750,24 +2750,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       });
     };
 
-    var removeNumberFromPerson = function (phoneNumber, personData) {
-    	var newPhoneNumbers = [];
-    	if (personData.phone_numbers.length > 0) {
-				personData.phone_numbers.forEach(function(value) {
-					if (value.number != phoneNumber) {
-						newPhoneNumbers.push(value);
-					}
-				});
-			}
-			$.ajax({
-				url: BASE_URL + 'api/v2/people/' + personData.id,
-				type: 'PUT',
-				data: JSON.stringify({
-					phone_numbers: newPhoneNumbers.length > 0 ? newPhoneNumbers : {}
-				}),
-			});
-		};
-
     var setPerson = function(personId, personEmail) {
 			$.ajax({
 				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
@@ -2874,7 +2856,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								data: submitData,
 								success: function(response) {
 									setPerson(response.data.id, response.data.primary_email);
-									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
 								},
 								error: errorHandler
 							});
