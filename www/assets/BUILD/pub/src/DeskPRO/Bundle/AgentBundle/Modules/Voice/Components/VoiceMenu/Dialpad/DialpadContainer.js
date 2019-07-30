@@ -41,9 +41,13 @@ class DialpadContainer extends React.Component {
 
     let ticketId;
     let ticketTitle;
+    let ticketPersonId;
+    let ticketPersonNumbers;
     if (activeTab && activeTab.tabType === 'ticket') {
       ticketId = activeTab.page.meta.ticket_id;
       ticketTitle = activeTab.title;
+      ticketPersonId = activeTab.page.meta.person_id;
+      ticketPersonNumbers = activeTab.page.meta.person_phone_numbers;
     }
 
     return React.cloneElement(children, {
@@ -52,6 +56,8 @@ class DialpadContainer extends React.Component {
       lastCallFrom,
       ticketId,
       ticketTitle,
+      ticketPersonId,
+      ticketPersonNumbers,
       makeCall:     this.makeCall,
       searchPerson: this.searchPerson,
     });

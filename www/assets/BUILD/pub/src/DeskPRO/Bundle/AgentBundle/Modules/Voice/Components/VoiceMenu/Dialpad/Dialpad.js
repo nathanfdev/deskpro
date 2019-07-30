@@ -15,12 +15,14 @@ import DialGrid from '../../Common/DialGrid';
 class Dialpad extends React.Component {
 
   static propTypes = {
-    numbers:      PropTypes.object,
-    lastCallFrom: PropTypes.number,
-    ticketId:     PropTypes.number,
-    ticketTitle:  PropTypes.string,
-    makeCall:     PropTypes.func,
-    searchPerson: PropTypes.func
+    numbers:             PropTypes.object,
+    lastCallFrom:        PropTypes.number,
+    ticketId:            PropTypes.number,
+    ticketTitle:         PropTypes.string,
+    ticketPersonId:      PropTypes.number,
+    ticketPersonNumbers: PropTypes.array,
+    makeCall:            PropTypes.func,
+    searchPerson:        PropTypes.func
   };
 
   constructor(props) {
@@ -152,7 +154,7 @@ class Dialpad extends React.Component {
   onSubmit = (event) => {
     event.preventDefault();
 
-    const { makeCall } = this.props;
+    const { makeCall, ticketPersonId, ticketPersonNumbers } = this.props;
     const { submit } = this.state;
     const { value } = this.state.formData;
 
@@ -160,7 +162,17 @@ class Dialpad extends React.Component {
       return;
     }
 
-    const promise = makeCall(value.call_from, value.call_to, value.ticket, value.person);
+    let personId = value.person;
+    if (value.ticket) {
+      // if ticket is set and ticket's person has this phone number
+      // then use this person as call owner
+      if (ticketPersonNumbers.filter(number => `${number}`.replace(/[^\d]/, '')
+          === `${value.call_to}`.replace(/[^\d]/, '')).length > 0) {
+        personId = ticketPersonId;
+      }
+    }
+
+    const promise = makeCall(value.call_from, value.call_to, value.ticket, personId);
     if (!promise) {
       return;
     }
