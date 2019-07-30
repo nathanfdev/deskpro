@@ -22,6 +22,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\ExceptionErrorsGenerator;
@@ -346,6 +347,12 @@ class VoiceCallbacksHelper
             $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
             $log->setPhoneCall($phoneCall);
 
+            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+            if ($task) {
+                $log->setTargetQueue($this->taskHelper->getVoiceQueue($task));
+                $log->setTargetAgent($this->taskHelper->getWorkerAgent($task));
+            }
+
             $this->em->persist($log);
             $this->em->flush();
         }
@@ -642,6 +649,12 @@ class VoiceCallbacksHelper
         $log->setDetails($details);
         $log->setPhoneCall($phoneCall);
 
+        $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+        if ($task) {
+            $log->setTargetQueue($this->taskHelper->getVoiceQueue($task));
+            $log->setTargetAgent($this->taskHelper->getWorkerAgent($task));
+        }
+
         $this->em->persist($log);
         $this->em->persist($phoneCall);
         $this->em->flush();
@@ -780,6 +793,12 @@ class VoiceCallbacksHelper
         $log->setActionType(VoicePhoneCallLog::ACTION_ENDED);
         $log->setDetails($details);
         $log->setPhoneCall($phoneCall);
+
+        $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+        if ($task) {
+            $log->setTargetQueue($this->taskHelper->getVoiceQueue($task));
+            $log->setTargetAgent($this->taskHelper->getWorkerAgent($task));
+        }
 
         $this->em->persist($log);
         $this->em->persist($phoneCall);
@@ -990,11 +1009,22 @@ class VoiceCallbacksHelper
      */
     public function logPressedAutoAttendantDigit(VoicePhoneCall $phoneCall, VoiceAutoAttendantDialNumber $dialNumber, array $details)
     {
+        $target = $dialNumber->getTarget();
+
         $log = new VoicePhoneCallLog();
         $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_KEY);
         $log->setDetails(array_merge($details, [
-            'target' => $dialNumber->getTarget()->getTargetDetails(),
+            'target' => $target->getTargetDetails(),
         ]));
+
+        if ($target instanceof VoiceQueueTarget) {
+            $log->setTargetQueue($target->getQueue());
+        } elseif ($target instanceof VoiceAgentTarget) {
+            $log->setTargetAgent($target->getAgent());
+        } elseif ($target instanceof VoiceAutoAttendantTarget) {
+            $log->setTargetAutoAttendant($target->getAutoAttendant());
+        }
+
         $log->setPhoneCall($phoneCall);
 
         $this->em->persist($log);
