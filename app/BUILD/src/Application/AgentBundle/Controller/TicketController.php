@@ -522,7 +522,8 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id);
         $vars   = [
-            'ticket' => $ticket,
+            'ticket'      => $ticket,
+            'person_repo' => $this->em->getRepository(Person::class),
         ];
 
         if ($request->get('select_person')) {
