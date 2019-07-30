@@ -288,7 +288,7 @@ class TicketMessageType extends AbstractType
                     // so we need to map entity property with the form field
                     'message' => 'message',
                 ],
-                'constraints'             => [
+                'constraints' => [
                     // check message directly via the form to prevent checking all ticket messages collection
                     new Assert\Valid(),
                 ],
@@ -576,7 +576,7 @@ class TicketMessageType extends AbstractType
         $message = $event->getData();
         $person  = $config->getOption('person');
 
-        $snippetTranslations = $form->get('snippets')->getData();
+        $snippetTranslations = $form->get('snippets')->getData() ?: new ArrayCollection();
         foreach ($snippetTranslations as $translation) {
             $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $person, $translation);
             $snippet    = $snippetLog->getSnippet();

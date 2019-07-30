@@ -17,10 +17,10 @@ Feature:
       | sc2 | active     | Second active community status category |
       | sc3 | closed     | First closed community status category  |
     And I have the following "CommunityTopic" records:
-      | #   | Person  | Category | StatusCategory | Title        | Status | IsReviewed | Content |
-      | ct1 | {agent} | {c1}     | {sc1}          | First topic  | active | 1          |         |
-      | ct2 | {agent} | {c1}     | {sc2}          | Second topic | active | 1          |         |
-      | ct2 | {agent} | {c2}     | {sc2}          | Second topic | closed | 1          |         |
+      | #   | Person  | Channel | StatusCategory | Title        | Status | IsReviewed | Content |
+      | ct1 | {agent} | {c1}    | {sc1}          | First topic  | active | 1          |         |
+      | ct2 | {agent} | {c1}    | {sc2}          | Second topic | active | 1          |         |
+      | ct2 | {agent} | {c2}    | {sc2}          | Second topic | closed | 1          |         |
 
   Scenario: I GET list of community topics in CSV format
     When I send a GET request to "/api/v2/community_topics/csv?category=First+community+channel&status_category={sc1}&count=200"
