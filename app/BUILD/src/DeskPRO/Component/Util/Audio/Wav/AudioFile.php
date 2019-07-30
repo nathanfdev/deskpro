@@ -22,8 +22,6 @@ class AudioFile
      */
     private $data;
 
-    private $multi = false;
-
     /**
      * AudioFile constructor.
      *
@@ -39,6 +37,9 @@ class AudioFile
         $this->convertMonoToStereo();
     }
 
+    /**
+     * Converts mono file to stereo if necessary.
+     */
     private function convertMonoToStereo()
     {
         if ($this->format->getNumberOfChannels() == 1) {
@@ -88,6 +89,11 @@ class AudioFile
         }
     }
 
+    /**
+     * @param AudioFile $audioFile
+     *
+     * @return $this
+     */
     public function append(AudioFile $audioFile)
     {
         $this->header = new Header(
@@ -103,22 +109,6 @@ class AudioFile
         );
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMulti()
-    {
-        return $this->multi;
-    }
-
-    /**
-     * @param bool $multi
-     */
-    public function setMulti($multi)
-    {
-        $this->multi = $multi;
     }
 
     /**
