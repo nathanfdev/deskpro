@@ -1306,8 +1306,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
         var rte = row.find('.trans_content').data('rte');
         // @TODO Set Editor value
       } else {
-			  var contentInput = row.find('.editor-row').find('textarea');
-			  contentInput.froalaEditor().setContent(defaultContentInput.val());
+			  var contentInput = row.find('.editor-row').find('textarea').data('rte');
+			  contentInput.froalaEditor('html.set', defaultContentInput.val());
       }
 		});
 
