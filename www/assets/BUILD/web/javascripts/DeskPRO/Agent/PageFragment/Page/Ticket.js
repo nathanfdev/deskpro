@@ -2690,11 +2690,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
   _initSelectUser: function() {
     var self = this;
-    $('.select-user-item-options', this.wrapper).hide();
 
     var $type = $('input[name=select_user]', this.wrapper);
     $type.first().attr('checked', true);
-    $type.first().parent().find('.select-user-item-options').show();
 
     if ($('.select-user-menu', this.wrapper).length) {
 			this.wrapper.addClass('select-user-error');
@@ -2714,12 +2712,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				this.wrapper.find('.status-reply-menu-trigger').removeAttr('disabled');
 			}
 		}
-
-    $type.on('click', function () {
-      var $selected = $(this);
-      $('.select-user-item-options', this.wrapper).hide();
-      $selected.parent().find('.select-user-item-options').show();
-    });
 
 		var searchbox = $('.select-user', this.wrapper).parent();
     searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
@@ -2750,7 +2742,44 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       });
     };
 
-    var setPerson = function(personId, personEmail) {
+    var errorHandler = function (response) {
+      var data = response.responseJSON;
+      var errors = data.errors;
+      var error;
+
+      if (errors && errors.fields && errors.fields.primary_email) {
+        error = errors.fields.primary_email.errors[0].message;
+      }
+
+      if (error) {
+        $('.error-message', self.wrapper).html(error);
+      }
+    };
+
+    var setPerson = function(personId, personEmail, newPersonEmail, newPersonLanguage) {
+      if (newPersonEmail || newPersonLanguage) {
+        var submitData = {};
+        if (newPersonEmail) {
+          submitData.primary_email = newPersonEmail;
+          personEmail = newPersonEmail;
+        }
+        if (newPersonLanguage) {
+          submitData.language = newPersonLanguage;
+        }
+
+        $.ajax({
+          url:  BASE_URL + 'api/v2/people/' + personId,
+          type: 'PUT',
+          data: submitData,
+          success: function() {
+            setPerson(personId, personEmail);
+          },
+          error: errorHandler
+        });
+
+        return;
+      }
+
 			$.ajax({
 				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
 				type: 'GET',
@@ -2809,75 +2838,67 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		};
 
 		$('.select-user-button', this.wrapper).on('click', function () {
-      var value = $('input[name=select_user]:checked', self.wrapper).val();
-      if (value === 'find_person') {
-        var personId = $('input[name=select_user_find_id]', self.wrapper).val();
-        var personEmail = $('input[name=select_user_find_email]', self.wrapper).val();
-        if (personId) {
-					setPerson(personId, personEmail);
-				}
-			} else if (value === 'new_person') {
-      	var submitData = {
-					name: $('input[name=select_user_name]', self.wrapper).val(),
-					language: $('select[name=select_user_language]', self.wrapper).val(),
-					preferences: {
-						'voice.unknown_caller': 0
-					}
-				};
-      	var email =  $('input[name=select_user_email]', self.wrapper).val();
-      	if (email) {
-      		submitData.primary_email = email;
-				}
+      var recentPersonId = $('input[name=select_user]:checked', self.wrapper).val();
+      var recentPersonEmail = $('input[name=select_user]:checked', self.wrapper).data('email');
+      var foundPersonId = $('input[name=select_user_find_id]', self.wrapper).val();
+      var foundPersonEmail = $('input[name=select_user_find_email]', self.wrapper).val();
+      var newPersonEmail = $('input[name=select_user_email_optional]', self.wrapper).val();
+      var newPersonName = $('input[name=select_user_name]', self.wrapper).val();
+      var newPersonLanguage = $('select[name=select_user_language]', self.wrapper).val();
 
-      	var errorHandler = function (response) {
-					var data = response.responseJSON;
-					var errors = data.errors;
-					var error;
+      if (foundPersonId) {
+        // re-assign to existing user from the search
+        setPerson(foundPersonId, foundPersonEmail, newPersonEmail, newPersonLanguage);
+      } else if (newPersonName) {
+        // create a new user and re-assign to the new user
+        var submitData = {
+          name:        newPersonName,
+          preferences: {
+            'voice.unknown_caller': 0
+          }
+        };
+        if (newPersonEmail) {
+          submitData.primary_email = newPersonEmail;
+        }
+        if (newPersonLanguage) {
+          submitData.language = newPersonLanguage;
+        }
 
-					if (errors && errors.fields && errors.fields.primary_email) {
-						error = errors.fields.primary_email.errors[0].message;
-					}
-
-					if (error) {
-						$('.error-message', self.wrapper).html(error);
-					}
-				};
-
-				$.ajax({
-					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-					type: 'GET',
-					success: function(getResponse) {
-						// existing user, create a new person and change
-						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
-							submitData.phone_numbers = [{number: self.meta.voicePhoneNumber}];
-							$.ajax({
-								url: BASE_URL + 'api/v2/people',
-								type: 'POST',
-								data: submitData,
-								success: function(response) {
-									setPerson(response.data.id, response.data.primary_email);
-								},
-								error: errorHandler
-							});
-						} else {
-							// voice user, merge
-							$.ajax({
-								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-								type: 'PUT',
-								data: submitData,
-								success: function() {
-									reloadPersonView();
-									self.meta.person_email = submitData.primary_email;
-								},
-								error: errorHandler
-							});
-						}
-					}
-				});
-			} else if (value) {
-				var email = $('input[name=select_user]:checked', self.wrapper).data('email');
-				setPerson(value, email);
-			}
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+          type: 'GET',
+          success: function(getResponse) {
+            // existing user, create a new person and change
+            if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
+              submitData.phone_numbers = [{ number: self.meta.voicePhoneNumber }];
+              $.ajax({
+                url: BASE_URL + 'api/v2/people',
+                type: 'POST',
+                data: submitData,
+                success: function(response) {
+                  setPerson(response.data.id, response.data.primary_email);
+                },
+                error: errorHandler
+              });
+            } else {
+              // voice user, merge
+              $.ajax({
+                url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+                type: 'PUT',
+                data: submitData,
+                success: function() {
+                  reloadPersonView();
+                  self.meta.person_email = submitData.primary_email;
+                },
+                error: errorHandler
+              });
+            }
+          }
+        });
+      } else if (recentPersonId) {
+        // re-assign to a user from the recent list
+        setPerson(recentPersonId, recentPersonEmail);
+      }
     });
 
     $('.change-user-button', this.wrapper).on('click', function () {
