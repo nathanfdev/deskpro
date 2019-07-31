@@ -487,14 +487,18 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getRecipients()
     {
-        return $this->recipients;
+        if ($this->recipients) {
+            return $this->recipients;
+        }
+
+        return [];
     }
 
     public function addRecipient($recipient)
     {
-        $recipients           = $this->recipients;
+        $recipients           = $this->getRecipients();
         $recipient['address'] = strtolower($recipient['address']);
-        array_push($recipients, $recipient);
+        $recipients[]         = $recipient;
         $this->setModelField('recipients', $recipients);
     }
 
@@ -730,7 +734,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'json_array',
             'precision'  => 0,
             'scale'      => 0,
-            'nullable'   => false,
+            'nullable'   => true,
             'columnName' => 'recipients',
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

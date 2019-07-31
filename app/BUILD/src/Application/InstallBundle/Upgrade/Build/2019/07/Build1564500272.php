@@ -10,7 +10,7 @@ class Build1564500272 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE email_sources ADD recipients LONGTEXT NOT NULL COMMENT \'(DC2Type:json_array)\'');
+        $this->execSlowAlterTable('email_sources', 'ADD recipients LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\'');
     }
 
     public function run()

@@ -109,7 +109,7 @@ class RunnerExecSource
 
         if ($h = $reader->getHeader('To')) {
             $this->source->header_to = implode(', ', $h->getAllParts());
-            $addresses               = \ezcMailTools::parseEmailAddresses($this->source->header_to);
+            $addresses               = $reader->getToAddresses();
             foreach ($addresses as $address) {
                 $recipient = [
                     'type'    => 'to',
@@ -120,7 +120,7 @@ class RunnerExecSource
         }
         if ($h = $reader->getHeader('Cc')) {
             $this->source->header_cc = implode(', ', $h->getAllParts());
-            $addresses               = \ezcMailTools::parseEmailAddresses($this->source->header_cc);
+            $addresses               = $reader->getCcAddresses();
             foreach ($addresses as $address) {
                 $recipient = [
                     'type'    => 'cc',
