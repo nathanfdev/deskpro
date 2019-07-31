@@ -23,6 +23,8 @@ use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Orb\Types\NoValue;
@@ -61,9 +63,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     protected $created_object_info = null;
 
     /**
-     * @throws \Exception
+     *@throws \Exception
      *
-     * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
+     * @return Ticket|TicketMessage|null
      */
     public function run()
     {
@@ -481,7 +483,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      *
      * @param TicketIncomingEmail $ticket_email
      *
-     * @return \Application\DeskPRO\Entity\TicketMessage|null
+     * @return TicketMessage|null
      */
     private function runReply(TicketIncomingEmail $ticket_email)
     {
@@ -584,34 +586,34 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      * @param TicketIncomingEmail $ticket_email
      * @param bool                $reply_as_new
      *
-     * @return \Application\DeskPRO\Entity\Ticket|null
+     * @return Ticket|null
      */
     private function runNew(TicketIncomingEmail $ticket_email, $reply_as_new = false)
     {
         $this->logMessage('[TicketGatewayProcessor] Creating new ticket');
 
-        $person_processor = new PersonFromEmailProcessor();
-        $person           = $person_processor->findPerson($this->reader->getFromAddress());
+        $personProcessor = new PersonFromEmailProcessor();
+        $person          = $personProcessor->findPerson($this->reader->getFromAddress());
 
         if ($person) {
             $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
-            if (!$person_processor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
+            if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
                 $this->logMessage('[TicketGatewayProcessor] Person is not associated with brands for account: #'.$this->account['id']);
-                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
+                $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $person);
                 if ($brand) {
                     $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
-                    $person_processor->passPerson($this->reader->getFromAddress(), $person);
+                    $personProcessor->passPerson($this->reader->getFromAddress(), $person);
                 } else {
                     $this->logMessage("[TicketGatewayProcessor] Can't add Person #{$person->id} to Account Brand.");
                     $person = false;
                 }
             }
         } else {
-            if ($person_processor->canAssociatePersonWithAccountBrands($this->account)) {
-                $person = $person_processor->createPerson($this->reader->getFromAddress());
+            if ($personProcessor->canAssociatePersonWithAccountBrands($this->account)) {
+                $person = $personProcessor->createPerson($this->reader->getFromAddress());
                 $this->logMessage('[TicketGatewayProcessor] Created new contact: '.$person['id']);
 
-                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
+                $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $person);
                 if ($brand) {
                     $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
                 }
@@ -624,10 +626,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->error      = EmailSource::ERR_PERM_INSUFFICIENT;
             $this->error_type = 'rejected';
 
-            $account_manager = $this->container->getEmailAccountManager();
-            $user_email      = $this->reader->getFromAddress()->getEmail();
+            $accountManager = $this->container->getEmailAccountManager();
+            $userEmail      = $this->reader->getFromAddress()->getEmail();
 
-            if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
+            if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$accountManager->findAccountForEmailAddress($userEmail)) {
                 if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->container->get('email.user_viewmodel_factory')
                         ->createNewTicketRegClosedModel($this->reader->getSubject()->getSubjectUtf8());
@@ -655,13 +657,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($person && !$person->isConfirmed() && $this->container->getSetting('core_tickets.email_require_validation')) {
             $this->logMessage('User is not confirmed, message is rejected');
 
-            $email_address = $person->findEmailAddress($this->reader->getFromAddress()->getEmail()) ?: $person->getPrimaryEmail();
+            $emailAddress = $person->findEmailAddress($this->reader->getFromAddress()->getEmail()) ?: $person->getPrimaryEmail();
 
             /** @var EmailSource $source */
-            if (($source = $this->options['email_source']) && $email_address) {
+            if (($source = $this->options['email_source']) && $emailAddress) {
                 $tmpdata = TmpData::create('newticket_email_validate', [
                     'email_source_id' => $source->getId(),
-                    'person_email_id' => $email_address->getId(),
+                    'person_email_id' => $emailAddress->getId(),
                 ]);
 
                 $this->container->getEm()->persist($tmpdata);
@@ -691,7 +693,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($person) {
             $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
-            $person_processor->passPerson($this->reader->getFromAddress(), $person);
+            $personProcessor->passPerson($this->reader->getFromAddress(), $person);
         } else {
             $this->logMessage('[TicketGatewayProcessor] Creating new contact');
         }
@@ -737,12 +739,12 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($this->container->getSetting('core_tickets.process_agent_fwd') and $person->is_agent and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
             $this->logMessage('[TicketGatewayProcessor] runNewForwardedTicket');
 
-            $fwd_proc = new ProcessAgentFwd($this->account, $person, $ticket_email);
-            $fwd_proc->setLogger($this->logger);
+            $fwdProc = new ProcessAgentFwd($this->account, $person, $ticket_email);
+            $fwdProc->setLogger($this->logger);
 
-            $created = $fwd_proc->run();
+            $created = $fwdProc->run();
 
-            if ($err = $fwd_proc->getError()) {
+            if ($err = $fwdProc->getError()) {
                 $this->error      = $err;
                 $this->error_type = 'rejected';
 
@@ -763,14 +765,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $ticket_email->force_reply_cutter = $reply_as_new;
 
             $translator = $this->container->getTranslator();
-            $new_proc   = new ProcessNew($this->account, $person, $ticket_email, $translator);
-            $new_proc->setLogger($this->logger);
+            $newProc    = new ProcessNew($this->account, $person, $ticket_email, $translator);
+            $newProc->setLogger($this->logger);
 
-            $created = $new_proc->run();
+            $created = $newProc->run();
 
-            if ($err = $new_proc->getError()) {
+            if ($err = $newProc->getError()) {
                 $this->error      = $err;
-                $this->error_type = $new_proc->getErrorType();
+                $this->error_type = $newProc->getErrorType();
 
                 return null;
             }
