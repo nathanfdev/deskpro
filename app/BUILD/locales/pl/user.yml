@@ -431,7 +431,7 @@ portal.community.sort_views: Widoki
 portal.community.status_active: 'Otwarte elementy'
 portal.community.status_all: 'Wszystkie elementy'
 portal.community.status_closed: 'Zamknięte elementy'
-portal.feedback.submit_feedback_topic: 'Wyślij opinię'
+portal.community.submit_community_topic: 'Wyślij opinię'
 portal.community.view-x-community-topics:
   one: 'Zobacz 1 opinie'
   few: 'Zobacz {{count}} opinii'
@@ -954,7 +954,7 @@ user.email_subjects.community_topic_new-approved: 'Twoja opinia została zaakcep
 user.email_subjects.community_topic_new-comment: 'Nowy komentarz pojawił się na "{{title}}"'
 user.email_subjects.community_topic_new-disapproved: 'Przepraszamy, twoja opinia została odrzucona'
 user.email_subjects.community_sub_updated: 'Zaktualizowana opinia'
-user.email_subjects.community_updated: 'Twoja opinia została zaktualizowana: {{title}}'
+user.email_subjects.community_topic_updated: 'Twoja opinia została zaktualizowana: {{title}}'
 user.email_subjects.kb_sub_new: 'Nowe artykuły'
 user.email_subjects.kb_sub_new_and_updated: 'Nowe oraz zaktualizowane artykuły'
 user.email_subjects.kb_sub_updated: 'Zaktualizowane artykuły'

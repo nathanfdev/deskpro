@@ -81,7 +81,7 @@ admin.community.count_active_statuses:
 admin.community.count_closed_statuses:
   other: '{{count}} closed statuses'
 admin.community.count_community_topics:
-  other: '{{count}} feedback'
+  other: '{{count}} community topics'
 admin.general.count_custom_fields:
   other: '{{count}} Custom Fields'
 admin.general.count_labels:
@@ -504,7 +504,7 @@ agent.general.create_article: 'Tạo bài báo'
 agent.general.create_content: 'Tạo nội dung'
 agent.general.create_deal: 'Tạo nên thỏa thuận'
 agent.general.create_download: 'Tạo Tải xuống'
-agent.general.create_community: 'Tạo phản hồi'
+agent.general.create_community_topic: 'Tạo phản hồi'
 agent.general.create_news: 'Tạo Tin bài Đăng'
 agent.general.create_status: 'Tạo trạng thái'
 agent.general.create_ticket: 'Tạo vé'
@@ -863,7 +863,7 @@ agent.general.registered_views: 'Lượt xem đã đăng'
 agent.general.related_articles: 'Những bài viết liên quan'
 agent.general.related_content: 'Nội dung liên quan'
 agent.general.related_downloads: 'Tải xuống liên quan'
-agent.general.related_community: 'Phản hồi liên quan'
+agent.general.related_community_topic: 'Phản hồi liên quan'
 agent.general.related_news: 'Tin tức liên quan'
 agent.general.relative_time: 'Thời gian tương đối'
 agent.general.remove: Tẩy

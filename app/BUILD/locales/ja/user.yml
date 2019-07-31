@@ -72,7 +72,7 @@ portal.emails.download-new-downloads:
 portal.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
 portal.emails.community-topics-updated:
-  other: '{{count}} Updated Feedback Items'
+  other: '{{count}} Updated Community Topics'
 portal.emails.community_topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
 portal.emails.community_topic_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
 portal.emails.community-topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
@@ -119,10 +119,10 @@ portal.community.btn-vote: 同意
 portal.community.search-title: フィードバック
 portal.community.section-desc: 他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。
 portal.community.section-title: フィードバック
-portal.feedback.submit_feedback_topic: フィードバックを送信
+portal.community.submit_community_topic: フィードバックを送信
 portal.community.form_custom_cat: カテゴリー
 portal.community.view-x-community-topics:
-  other: 'View {{count}} feedback'
+  other: 'View {{count}} community topic'
 portal.forms.error_password_min_length:
   other: 'Minimum of {{count}} characters'
 portal.forms.error_password_require_num_lowercase:
@@ -288,7 +288,7 @@ user.email_subjects.community_topic_new: フィードバックを頂きありが
 user.email_subjects.community_topic_new-approved: フィードバックは承認されました。
 user.email_subjects.community_topic_new-comment: '"{{title}}"に新着コメントがあります。'
 user.email_subjects.community_topic_new-disapproved: フィードバックは承認されませんでした。
-user.email_subjects.community_updated: 'フィードバックが更新されました：{{title}}'
+user.email_subjects.community_topic_updated: 'フィードバックが更新されました：{{title}}'
 user.email_subjects.kb_sub_new: 新しい記事
 user.email_subjects.kb_sub_new_and_updated: 新しい記事と更新情報
 user.email_subjects.kb_sub_updated: 更新された記事
@@ -310,7 +310,7 @@ user.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
 user.emails.email-too-big: 'あなたのメール "{{subject}}" はサイズが大きすぎるため、受理されませんでした。 受付可能なメールのサイズは最大 {{max_size}} です。添付ファイルを削除して、再度送信してください。'
 user.emails.community-updated-items:
-  other: '{{count}} Updated Feedback Items'
+  other: '{{count}} Updated Community Topics'
 user.emails.community-topic_agent-validation: フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。
 user.emails.community-topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
 user.emails.community-topic_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'

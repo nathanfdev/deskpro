@@ -172,7 +172,7 @@ portal.community.form_custom_cat: Kategoria
 portal.community.search-title: Palaute
 portal.community.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
 portal.community.section-title: Palaute
-portal.feedback.submit_feedback_topic: 'Lähetä palaute'
+portal.community.submit_community_topic: 'Lähetä palaute'
 portal.forms.error_password_forbid_reuse: 'Et voi käyttää aikaisempaa salasanaasi'
 portal.forms.error_password_min_length:
   one: 'Vähintään {{count}} merkkiä'
@@ -332,7 +332,7 @@ user.email_subjects.community_topic_new: 'Kiitos lähettämästäsi palautteesta
 user.email_subjects.community_topic_new-approved: 'Palautteesi hyväskyttiin'
 user.email_subjects.community_topic_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
 user.email_subjects.community_topic_new-disapproved: 'Palautteesi hylättiin'
-user.email_subjects.community_updated: 'Palautteesi ladattiin: {{title}}'
+user.email_subjects.community_topic_updated: 'Palautteesi ladattiin: {{title}}'
 user.email_subjects.kb_sub_new: 'Uudet artikkelit'
 user.email_subjects.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'
 user.email_subjects.kb_sub_updated: 'Päivitetyt artikkelit'

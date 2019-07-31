@@ -382,7 +382,7 @@ portal.community.sort_views: 看法
 portal.community.status_active: 打开项目
 portal.community.status_all: 所有项目
 portal.community.status_closed: 已关闭项目
-portal.feedback.submit_feedback_topic: 提交反馈
+portal.community.submit_community_topic: 提交反馈
 portal.community.view-x-community-topics:
   other: 查看1个反馈
 portal.flashes.article_cat_subscribe: '您已成功订阅此类文章。 当新文章发布时，您将收到通知。'
@@ -867,7 +867,7 @@ user.email_subjects.community_topic_new-approved: 您的反馈已获得批准
 user.email_subjects.community_topic_new-comment: '有关于“{{title}}”的新评论'
 user.email_subjects.community_topic_new-disapproved: 抱歉，您的反馈已被拒绝
 user.email_subjects.community_sub_updated: 更新的反馈
-user.email_subjects.community_updated: '您的反馈已更新：{{title}}'
+user.email_subjects.community_topic_updated: '您的反馈已更新：{{title}}'
 user.email_subjects.kb_sub_new: 新文章
 user.email_subjects.kb_sub_new_and_updated: 新的和更新的文章
 user.email_subjects.kb_sub_updated: 更新的文章

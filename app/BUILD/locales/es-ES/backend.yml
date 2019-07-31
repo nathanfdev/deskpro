@@ -370,7 +370,7 @@ agent.tickets.log_new_web_user_widget: 'Nuevo ticket por usuario vía widget web
 agent.tickets.log_note_deleted: 'Nota eliminada'
 agent.tickets.log_on_article: 'en el artículo "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'en descarga "{{title}} (ID {{id}})'
-agent.tickets.log_on_community_topic: 'en feedback "{{title}} (ID {{id}})'
+agent.tickets.log_on_community_topic: 'en community topic "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'en noticias "{{title}} (ID {{id}})'
 agent.tickets.log_sent_from: 'Enviado desde {{email}}'
 agent.tickets.log_sla_added: 'SLA agregado'

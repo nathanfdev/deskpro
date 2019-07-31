@@ -81,7 +81,7 @@ admin.community.count_active_statuses:
 admin.community.count_closed_statuses:
   other: '{{count}} closed statuses'
 admin.community.count_community_topics:
-  other: '{{count}} feedback'
+  other: '{{count}} community topics'
 admin.general.count_custom_fields:
   other: '{{count}} Custom Fields'
 admin.general.count_labels:
@@ -550,7 +550,7 @@ agent.general.create_article: 创建文章
 agent.general.create_content: 创建内容
 agent.general.create_deal: 创建交易
 agent.general.create_download: 创建下载
-agent.general.create_community: 创建反馈
+agent.general.create_community_topic: 创建反馈
 agent.general.create_news: 创建新消息
 agent.general.create_status: 创建状态
 agent.general.create_ticket: 创建来单
@@ -955,7 +955,7 @@ agent.general.registered_views: "注册视图\n"
 agent.general.related_articles: "相关文章\n"
 agent.general.related_content: "相关内容\n"
 agent.general.related_downloads: "相关下载\n"
-agent.general.related_community: 相关反馈
+agent.general.related_community_topic: 相关反馈
 agent.general.related_news: 相关新闻
 agent.general.relative_time: "相对时间\n"
 agent.general.remove: 移除

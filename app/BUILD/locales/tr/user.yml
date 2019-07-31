@@ -128,7 +128,7 @@ portal.community.form_custom_cat: Kategori
 portal.community.search-title: 'Geri Bildirim'
 portal.community.section-desc: 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.'
 portal.community.section-title: 'Geri Bildirim'
-portal.feedback.submit_feedback_topic: 'Geri bildirim gönder'
+portal.community.submit_community_topic: 'Geri bildirim gönder'
 portal.forms.error_password_forbid_reuse: 'Daha önce kullanmış olduğunuz bir parola kullanamazsınız'
 portal.forms.error_password_min_length:
   one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
@@ -289,7 +289,7 @@ user.email_subjects.community_topic_new: 'Geri bildirimde bulunduğunuz için te
 user.email_subjects.community_topic_new-approved: 'Geri bildiriminiz onaylandı'
 user.email_subjects.community_topic_new-comment: 'Yeni bir yorum mevcut "{{title}}"'
 user.email_subjects.community_topic_new-disapproved: 'Geri bildiriminiz rededildi'
-user.email_subjects.community_updated: 'Geri bildiriminiz güncellendi: {{title}}'
+user.email_subjects.community_topic_updated: 'Geri bildiriminiz güncellendi: {{title}}'
 user.email_subjects.kb_sub_new: 'Yeni Makaleler'
 user.email_subjects.kb_sub_new_and_updated: 'Yeni veya Güncel Makaleler'
 user.email_subjects.kb_sub_updated: 'Makaleleri Güncelle'

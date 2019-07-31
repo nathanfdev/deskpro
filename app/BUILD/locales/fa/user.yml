@@ -306,7 +306,7 @@ portal.community.sort_views: بازدید
 portal.community.status_active: 'ایتم های باز'
 portal.community.status_all: 'همه موارد'
 portal.community.status_closed: 'آیتم های بسته شده'
-portal.feedback.submit_feedback_topic: 'ارسال انتقاد و پیشنهاد'
+portal.community.submit_community_topic: 'ارسال انتقاد و پیشنهاد'
 portal.flashes.article_cat_subscribe: 'شما با موفقیت به این دسته اضافه شده اید. هنگامی که مقالات جدید ارسال می شود، شما مطلع خواهید شد.'
 portal.flashes.article_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
 portal.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
@@ -649,7 +649,7 @@ user.email_subjects.community_topic_new-approved: 'نظرات شما مورد ت
 user.email_subjects.community_topic_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
 user.email_subjects.community_topic_new-disapproved: 'نظرات شما رد شده است'
 user.email_subjects.community_sub_updated: 'بازخورد به روز شده '
-user.email_subjects.community_updated: 'نظرات شما به روز رسانی: {{title}}'
+user.email_subjects.community_topic_updated: 'نظرات شما به روز رسانی: {{title}}'
 user.email_subjects.kb_sub_new: 'مقاله جدید'
 user.email_subjects.kb_sub_new_and_updated: 'مقاله های جدید و بروز شده'
 user.email_subjects.kb_sub_updated: 'مقاله های بروز شده'

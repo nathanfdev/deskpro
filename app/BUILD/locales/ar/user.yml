@@ -458,7 +458,7 @@ portal.community.sort_views: المشاهدات
 portal.community.status_active: 'الفقرات المفتوحة'
 portal.community.status_all: 'كل الفقرات'
 portal.community.status_closed: 'الفقرات المقفلة'
-portal.feedback.submit_feedback_topic: 'أضف اقتراحك'
+portal.community.submit_community_topic: 'أضف اقتراحك'
 portal.community.view-x-community-topics:
   zero: 'استعرض{{count}} 1 تغذية راجعة'
   one: 'استعرض تغذية راجعة'
@@ -996,7 +996,7 @@ user.email_subjects.community_topic_new-approved: 'تمت الموافقه عل�
 user.email_subjects.community_topic_new-comment: 'يوجد تعليق جديد في : {{title}}'
 user.email_subjects.community_topic_new-disapproved: 'نعتذر ، فقد تم رفض تغذيتك الراجعة'
 user.email_subjects.community_sub_updated: 'تغذية راجعة محدثة'
-user.email_subjects.community_updated: 'تم تحديث تغذيتك الراجعة: {{title}}'
+user.email_subjects.community_topic_updated: 'تم تحديث تغذيتك الراجعة: {{title}}'
 user.email_subjects.kb_sub_new: 'مقالة جديدة'
 user.email_subjects.kb_sub_new_and_updated: 'مقالات جديدة ومحدثة'
 user.email_subjects.kb_sub_updated: 'مقالات محدثة'

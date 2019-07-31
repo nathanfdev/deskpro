@@ -411,7 +411,7 @@ portal.community.sort_views: Views
 portal.community.status_active: 'Open items'
 portal.community.status_all: 'All items'
 portal.community.status_closed: 'Closed items'
-portal.feedback.submit_feedback_topic: 'Submit community topic'
+portal.community.submit_community_topic: 'Submit community topic'
 portal.community.view-x-community-topics:
   one: 'View 1 community topic'
   other: 'View {{count}} community topics'
@@ -928,7 +928,7 @@ user.email_subjects.community_topic_new-approved: 'Your community topic has been
 user.email_subjects.community_topic_new-comment: 'There is a new comment on "{{title}}"'
 user.email_subjects.community_topic_new-disapproved: 'Sorry but your community topic has been declined'
 user.email_subjects.community_sub_updated: 'Updated Community Topic'
-user.email_subjects.community_updated: 'Your community was updated: {{title}}'
+user.email_subjects.community_topic_updated: 'Your community was updated: {{title}}'
 user.email_subjects.kb_sub_new: 'New Articles'
 user.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
 user.email_subjects.kb_sub_updated: 'Updated Articles'

@@ -390,7 +390,7 @@ portal.community.sort_views: Tampilan
 portal.community.status_active: 'Buka item'
 portal.community.status_all: 'Semua barang'
 portal.community.status_closed: 'Item yang ditutup'
-portal.feedback.submit_feedback_topic: 'Kirim tanggapan'
+portal.community.submit_community_topic: 'Kirim tanggapan'
 portal.community.view-x-community-topics:
   other: 'Lihat 1 tanggapan '
 portal.flashes.article_cat_subscribe: 'Anda telah berlangganan kategori ini. Anda akan menerima pemberitahuan apabila terdapat artikel baru.'
@@ -877,7 +877,7 @@ user.email_subjects.community_topic_new-approved: 'Tanggapan Anda telah diterbit
 user.email_subjects.community_topic_new-comment: 'Ada komentar baru pada {{title}}'
 user.email_subjects.community_topic_new-disapproved: 'Maaf. Tanggapan Anda ditolak'
 user.email_subjects.community_sub_updated: 'Tanggapan Diperbarui'
-user.email_subjects.community_updated: 'Tanggapan Anda telah diperbarui: {{title}}'
+user.email_subjects.community_topic_updated: 'Tanggapan Anda telah diperbarui: {{title}}'
 user.email_subjects.kb_sub_new: 'Artikel Baru'
 user.email_subjects.kb_sub_new_and_updated: 'Artikel Baru dan Diperbarui'
 user.email_subjects.kb_sub_updated: 'Artikel yang Diperbarui'
