@@ -1,0 +1,26 @@
+{% for custom in custom_data %}
+    {% if custom['value'] %}
+        <li>
+            <span class="dp-po-title">{{ custom['label'] }}</span>
+            {% if custom['type'] == 'url' %}
+                <span><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></span>
+            {% elseif custom['type'] == 'date' %}
+                <span>{{ custom['value']|date('full') }}</span>
+            {% elseif custom['type'] == 'datetime' %}
+                <span>{{ custom['value']|date('fulltime') }}</span>
+            {% elseif custom['type'] == 'file' %}
+                {% for file in custom['value'] %}
+                    <span>
+                        <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                            {{ content_icon(file) }}
+                            {{ file.filename }}
+                            ({{ file.readableFilesize }})
+                        </a>
+                    </span>
+                {% endfor %}
+            {% else %}
+                <span>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</span>
+            {% endif %}
+        </li>
+    {% endif %}
+{% endfor %}

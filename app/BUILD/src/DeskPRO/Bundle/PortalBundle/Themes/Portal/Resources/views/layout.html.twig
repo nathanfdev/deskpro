@@ -1,4 +1,3 @@
-{% extends 'base' %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -6,6 +5,7 @@
     <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
 
     {# TODO -- real css #}
+    <link rel="stylesheet" href="https://deskpro.github.io/portal-components/style/css/main.css" />
     <link rel="stylesheet" href="https://deskpro.github.io/portal-components/style/css/style.css" />
 </head>
 <body class="dp-Template portal-mode-{{ portal_mode() }}">
@@ -14,14 +14,35 @@
     {% block page_header %}
         {% include 'Theme:Portal:Header/top-bar.html.twig' %}
         {% include 'Theme:Portal:Header/search-hero.html.twig' %}
-        {% include 'Theme:Portal:Header/breadcrumps.html.twig' %}
+        {% include 'Theme:Portal:Header/breadcrumbs.html.twig' %}
     {% endblock %}
 
-    {% block page_content %}
+    {% block page %}
         {% show section alerts %}
         {% show section flashes %}
 
-        {% block inner_content %}{% endblock inner_content %}
+        {% block page_content %}
+            <section class="dp-po-main">
+                <div class="dp-po-container">
+                    <div class="dp-po-row">
+                        {% if block("page_sidebar") is defined %}
+                            <div class="dp-po-col-9 dp-po-md-12">
+                                {{ block("page_body") }}
+                            </div>
+                            <div class="dp-po-col-3 dp-po-md-12">
+                                <div class="dp-po-Sidebar Sidebar--right">
+                                    {{ block("page_sidebar") }}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="dp-po-col-9 dp-po-md-12">
+                                {{ block("page_body") }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+        {% endblock %}
     {% endblock %}
 
     {% include 'Theme:Internal:custom-footer.html.twig' %}

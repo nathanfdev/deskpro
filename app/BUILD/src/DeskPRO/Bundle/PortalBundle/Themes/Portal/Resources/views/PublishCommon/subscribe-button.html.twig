@@ -1,0 +1,20 @@
+<div class="dp-po-Dropdown-container subscribe--dropdown">
+    <span class="dp-po-dropdown-atom">
+        <span class="dp-po-dropdown-Title">
+            <span class="dp-po-Icon Icon--subscribe"></span>
+            {{ phrase('portal.general.btn-subscribe') }}
+        </span>
+    </span>
+    <ul class="dp-po-dropdown-menu">
+        {% for sub in subscriptionInfo %}
+            <li class="dp-po-dropdown-menu-item is-selected">
+                <a href="{{ sub.toggleUrl }}" class="post-link" rel="noindex, nofollow">
+                    <span class="dp-po-Icon {{ sub.icon }}"></span>{{ sub.title }}{% if sub.active %}<span class="dp-po-Icon Icon--check Icon--success"></span>{% endif %}
+                </a>
+            </li>
+        {% endfor %}
+        <li class="dp-po-dropdown-menu-item">
+            <a href="{{ url('portal_user_profile') }}">{{ phrase('portal.general.btn-manage_subscriptions') }}</a>
+        </li>
+    </ul>
+</div>

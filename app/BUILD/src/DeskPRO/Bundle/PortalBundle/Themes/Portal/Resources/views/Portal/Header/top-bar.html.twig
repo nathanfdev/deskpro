@@ -10,7 +10,8 @@
         </li>
         <li class="dp-po-nav-control">
             <ul>
-                {% if is_multi_lang() %}
+                {# TODO lang selector #}
+                {% if is_multi_lang() and false %}
                     <li class="dp-po-Select-Language">
                         <form method="POST" action="{{ path('portal_change_language') }}" id="language-changer" class="as-no-dpui">
                             <select name="lang_code" class="button button-dropdown button-dropdown-language">
@@ -27,7 +28,7 @@
                         </form>
                     </li>
                 {% endif %}
-                {% if can_view_tickets_link %}
+                {% if can_view_tickets_link() %}
                     <li>
                         <a class="dp-po-Button Button--small" href="{{ path('portal_new_ticket') }}">{{ phrase('portal.general.nav-newticket') }}</a>
                     </li>

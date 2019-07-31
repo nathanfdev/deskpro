@@ -17,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -242,6 +243,13 @@ class ArticlesController extends AbstractController
             $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_ARTICLE, $article->getId());
         }
 
+        // OTHER ARTICLE DATA
+        $articleData = new LazyPropObject([
+            'comments' => function () use ($article) {
+                return $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
+            },
+        ]);
+
         // RENDER THEME
 
         $customData = [];
@@ -272,6 +280,7 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             [
                 'article'            => $article,
+                'articleData'        => $articleData,
                 'custom_data'        => $customData,
                 'rating'             => $rating,
                 'is_subscribed'      => $isSubscribed,

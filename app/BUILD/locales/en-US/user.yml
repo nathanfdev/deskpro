@@ -543,6 +543,7 @@ portal.forms.error_upload_ini_size: 'The file is too large. Maximum allowed size
 portal.forms.label_add_attachment: 'Add Another Attachment'
 portal.forms.label_captcha: 'To prove you are a human, please tell us the text you see in the CAPTCHA image'
 portal.forms.label_category: Category
+portal.forms.label_kb_article: Article
 portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Choose a file'
 portal.forms.label_comment: 'Any comments?'
@@ -602,9 +603,13 @@ portal.general.btn-send-email: 'Send e-mail'
 portal.general.btn-share: Share
 portal.general.btn-subscribe: Subscribe
 portal.general.btn-unsubscribe: Unsubscribe
+portal.general.btn-manage_subscriptions: Manage your subscriptions
 portal.general.by: by
 portal.general.by_2: By
 portal.general.comment_btn_save: 'Save Comment'
+portal.general.comment_login_first: 'You need to log in before you can submit a comment.'
+portal.general.your_comment_label: 'Your comment'
+portal.general.enter_comment_placeholder: 'Enter your comment here...'
 portal.general.comments-count:
   one: '1 Comment'
   other: '{{count}} Comments'
@@ -684,6 +689,7 @@ portal.general.ics_subscribe: 'iCalendar'
 portal.general.search-labels-section-title: 'Search Labels'
 portal.general.search-section-title: Search
 portal.general.search_btn: Search
+portal.general.labels: Labels
 portal.general.select_placeholder: Select...
 portal.general.select_search_placeholder: 'Search for option...'
 portal.general.share-this: 'Share this'
@@ -1066,7 +1072,7 @@ user.error.not-found: 'The page you are looking for was not found.'
 user.error.not-found-title: 'Not Found'
 user.error.permission-denied: 'Sorry, the action you are trying to perform is not allowed.'
 user.error.permission-denied-login: 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.'
-user.error.permission-denied-title: 'You are not allowed to do that'
+user.error.permission-denied-title: 'You are not allowed to perform this action'
 user.error.server-error: 'Sorry but there was a server error that prevented the page from loading. Please try again.'
 user.community.submit_community_topic: 'Submit community topic'
 user.general.deskpro: Deskpro

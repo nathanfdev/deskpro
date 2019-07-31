@@ -4,7 +4,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Themes\Standard;
+namespace DeskPRO\Bundle\PortalBundle\Themes\Portal;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;

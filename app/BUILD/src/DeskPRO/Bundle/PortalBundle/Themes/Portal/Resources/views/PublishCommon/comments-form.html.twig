@@ -1,0 +1,90 @@
+<div>
+    <div class="dp-po-comments dp-po-add-comments is-active">
+        {{ phrase('portal.general.add-comment') }}
+    </div>
+
+    {# ------------------------------------------ #}
+    {# Comment Form #}
+    {# ------------------------------------------ #}
+
+    {% if new_comment_form and app.user %}
+        <div class="dp-po-comments-wrap">
+            <!-- Demo -->
+            <div class="dp-po-list comment--item">
+                {{ form_start(new_comment_form) }}
+
+                <span class="dp-po-subtitle">
+                    <span class="dp-po-username">
+                        <img class="dp-po-Avatar-icon" src="{{ avatar_url(app.user) }}" alt="">
+                        {{ app.user.display_name }}
+                    </span>
+                </span>
+                <span class="dp-po-Forms Forms--Textarea">
+                    <div class="dp-po-Textarea">
+                        <span class="dp-po-comment-subtitle">{{ phrase('portal.general.your_comment_label') }}*</span>
+                        {{ form_widget(new_comment_form.content_real, { attr: { placeholder: phrase('portal.general.enter_comment_placeholder') }}) }}
+                    </div>
+                </span>
+
+                {# TODO comment attachments
+                <div class="dp-po-Upload-wrapper">
+                    <span class="dp-po-Icon Icon--attach dp-po-hidden-md-up"></span>
+                    <span class="dp-po-comment-subtitle">Add attachment</span>
+                    <span class="dp-po-Upload">
+                        <span class="dp-po-Upload-item dp-po-Choose-btn">
+                            <label for="file-upload">
+                            <span class="dp-po-Icon Icon--file Icon--grey-dark"></span>
+                                Choose a file
+                            </label>
+                            <input id="file-upload" type="file"/>
+                        </span>
+                        or
+                        <span class="dp-po-Upload-item dp-po-Dragdrop-btn">
+                            <span class="dp-po-Icon Icon--dragdrop"></span>
+                            Drag and drop
+                        </span>
+                    </span>
+                </div>
+                #}
+
+                <div class="dp-po-button-wrap">
+                    <button class="dp-po-Button" type="submit">{{ phrase('portal.general.comment_btn_save') }}</button>
+                    {# TODO comment subscribe
+                    <span class="dp-po-CustomCheckbox CustomCheckbox--medium">
+                        <input type="checkbox" class="dp-po-ControlInput" id="DemoPublishCheckbox-04"></input>
+                        <label for="DemoPublishCheckbox-04">Subscribe</label>
+                    </span>
+                    #}
+                </div>
+
+                {{ form_rest(new_comment_form) }}
+                {{ form_end(new_comment_form) }}
+            </div>
+        </div>
+
+    {# ------------------------------------------ #}
+    {# Login to comment #}
+    {# ------------------------------------------ #}
+    {% elseif is_guest() and can_login() %}
+        <div class="dp-po-comments-wrap">
+            <p class="dp-po-comment-subtitle">
+                {{ phrase('portal.general.comment_login_first') }}
+            </p>
+            <div style="display: flex">
+                <a href="{{ url('portal_login') }}" class="dp-po-Button Button--large">{{ phrase('portal.account.login-btn') }}</a>
+                &nbsp;
+                <a href="{{ url('portal_user_registration') }}" class="dp-po-Button Button--large">{{ phrase('portal.account.register-btn') }}</a>
+            </div>
+        </div>
+
+    {# ------------------------------------------ #}
+    {# Cannot add a comment #}
+    {# ------------------------------------------ #}
+    {% else %}
+        <div class="dp-po-comments-wrap">
+            <p class="dp-po-comment-subtitle">
+                {{ phrase('user.error.permission-denied-title', { login_url: url('login') }) }}
+            </p>
+        </div>
+    {% endif %}
+</div>
