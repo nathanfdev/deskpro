@@ -569,48 +569,44 @@ class SelectPart
                     $max = $setFirst[$order];
                 }
 
-                if ($first[$order] == $last[$order]) {
-                    $newResults = array_merge($newResults, $rows);
-                } else {
-                    $fills = $closure($min, $max);
-                    if (!$ascending) {
-                        $fills = array_reverse($fills);
-                    }
+                $fills = $closure($min, $max);
+                if (!$ascending) {
+                    $fills = array_reverse($fills);
+                }
 
-                    if ($fills) {
-                        $fillRow = array_shift($fills);
+                if ($fills) {
+                    $fillRow = array_shift($fills);
 
-                        foreach ($rows as $row) {
-                            while ($fillRow && (
-                                ($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
-                            )) {
-                                $copyRow         = $base;
-                                $copyRow[$print] = $fillRow[0];
-                                $copyRow[$sql]   = $fillRow[1];
-                                $copyRow[$order] = $fillRow[2];
-                                $newResults[]    = $copyRow;
-
-                                $fillRow = array_shift($fills);
-                            }
-                            while ($fillRow && $fillRow[2] == $row[$print]) {
-                                $fillRow = array_shift($fills);
-                            }
-                            $newResults[] = $row;
-                        }
-
-                        if ($fillRow) {
-                            array_unshift($fills, $fillRow);
-                        }
-                        while ($fillRow = array_shift($fills)) {
+                    foreach ($rows as $row) {
+                        while ($fillRow && (
+                            ($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
+                        )) {
                             $copyRow         = $base;
                             $copyRow[$print] = $fillRow[0];
                             $copyRow[$sql]   = $fillRow[1];
                             $copyRow[$order] = $fillRow[2];
                             $newResults[]    = $copyRow;
+
+                            $fillRow = array_shift($fills);
                         }
-                    } else {
-                        $newResults = array_merge($newResults, $rows);
+                        while ($fillRow && $fillRow[2] == $row[$print]) {
+                            $fillRow = array_shift($fills);
+                        }
+                        $newResults[] = $row;
                     }
+
+                    if ($fillRow) {
+                        array_unshift($fills, $fillRow);
+                    }
+                    while ($fillRow = array_shift($fills)) {
+                        $copyRow         = $base;
+                        $copyRow[$print] = $fillRow[0];
+                        $copyRow[$sql]   = $fillRow[1];
+                        $copyRow[$order] = $fillRow[2];
+                        $newResults[]    = $copyRow;
+                    }
+                } else {
+                    $newResults = array_merge($newResults, $rows);
                 }
 
                 $seenRow = $set['end'];
