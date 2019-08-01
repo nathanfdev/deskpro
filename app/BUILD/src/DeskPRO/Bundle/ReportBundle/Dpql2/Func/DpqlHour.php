@@ -65,7 +65,7 @@ class DpqlHour extends AbstractDpqlFunc
             }
 
             $fills = [];
-            for ($i = $min; $i < $max; ++$i) {
+            for ($i = $min; $i <= $max; ++$i) {
                 $fills[] = [$i, $i, $i];
             }
 
