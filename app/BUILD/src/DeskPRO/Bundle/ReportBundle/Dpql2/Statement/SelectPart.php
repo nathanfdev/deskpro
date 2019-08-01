@@ -489,10 +489,6 @@ class SelectPart
             return $results;
         }
 
-        if (!$results) {
-            return $results;
-        }
-
         $first = reset($results);
         $last  = end($results);
 
@@ -514,6 +510,7 @@ class SelectPart
             $startRowValue = null;
             $startRow      = 0;
             $rowSets       = [];
+            $rowKey        = null;
 
             foreach ($results as $rowKey => $row) {
                 if ($previousValue !== null) {
