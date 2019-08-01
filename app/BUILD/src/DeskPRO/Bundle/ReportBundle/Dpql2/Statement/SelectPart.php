@@ -505,7 +505,7 @@ class SelectPart
 
             $firstValue    = $first[$order];
             $lastValue     = $last[$order];
-            $ascending     = ($lastValue > $firstValue);
+            $ascending     = !$lastValue || ($lastValue > $firstValue);
             $previousValue = null;
             $startRowValue = null;
             $startRow      = 0;
