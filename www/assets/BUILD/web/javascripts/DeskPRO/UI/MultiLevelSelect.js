@@ -103,6 +103,7 @@
               }
             } else {
               child.$selectWrap && child.$selectWrap.hide();
+              isNaN(val) && $el.val('');
               process(child);
             }
           });
