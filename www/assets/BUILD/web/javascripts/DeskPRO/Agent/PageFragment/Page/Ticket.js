@@ -2918,6 +2918,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     $('.cancel-button', this.wrapper).on('click', function () {
       reloadPersonView();
     });
+
+    $('input[name=select_user_name]', this.wrapper).on('change keyup', function () {
+      $('.select-user-menu input[type=radio]', this.wrapper).prop('checked', false);
+    })
   },
 
   handleFwd: function(info) {
