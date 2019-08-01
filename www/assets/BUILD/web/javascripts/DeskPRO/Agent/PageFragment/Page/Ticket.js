@@ -2724,6 +2724,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           $('input.person-id', searchbox).val(personId);
           $('input.person-email', searchbox).val(email);
           $('input.select-user', searchbox).val(name);
+          $('input[name=select_user_email_optional]', self.wrapper).val(email);
         }
       });
       sb.close();
@@ -2757,9 +2758,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     };
 
     var setPerson = function(personId, personEmail, newPersonEmail, newPersonLanguage) {
-      if (newPersonEmail || newPersonLanguage) {
+      var hasNewEmail = newPersonEmail && newPersonEmail !== personEmail;
+      if (hasNewEmail || newPersonLanguage) {
         var submitData = {};
-        if (newPersonEmail) {
+        if (hasNewEmail) {
           submitData.primary_email = newPersonEmail;
           personEmail = newPersonEmail;
         }
