@@ -2912,6 +2912,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         }
       });
     });
+
+    $('.cancel-button', this.wrapper).on('click', function () {
+      reloadPersonView();
+    });
   },
 
   handleFwd: function(info) {
