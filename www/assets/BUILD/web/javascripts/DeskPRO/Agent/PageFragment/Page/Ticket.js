@@ -2840,6 +2840,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		};
 
 		$('.select-user-button', this.wrapper).on('click', function () {
+		  if ($('.select-user-menu button', this.wrapper).is(':disabled')) {
+		    return;
+      }
+
+		  $('.select-user-menu button', this.wrapper).attr('disabled', true).hide();
+		  $('.select-user-spinner').show();
+
       var recentPersonId = $('input[name=select_user]:checked', self.wrapper).val();
       var recentPersonEmail = $('input[name=select_user]:checked', self.wrapper).data('email');
       var foundPersonId = $('input[name=select_user_find_id]', self.wrapper).val();
