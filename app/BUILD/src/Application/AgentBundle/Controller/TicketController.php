@@ -529,6 +529,14 @@ class TicketController extends AbstractController
         if ($request->get('select_person')) {
             return $this->render('AgentBundle:Ticket:select-user-menu.html.twig', $vars);
         } else {
+            $message = $this->get('dp.voice.ticket_user_changer')->getLastVoiceMessage($ticket);
+            if ($message) {
+                $phoneCall = $message->getActiveCall();
+                if ($phoneCall) {
+                    $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
+                }
+            }
+
             return $this->render('AgentBundle:Ticket:view-ticket-person-holder.html.twig', $vars);
         }
     }

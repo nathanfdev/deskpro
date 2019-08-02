@@ -13,6 +13,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -894,6 +895,24 @@ class TicketMessage extends DomainObject
     public function isVoiceMessage()
     {
         return count($this->getPhoneCallAttributes()) > 0;
+    }
+
+    /**
+     * @return VoicePhoneCall|null
+     */
+    public function getActiveCall()
+    {
+        $attribute = $this->getPhoneCallAttribute();
+        if (!$attribute) {
+            return;
+        }
+
+        $phoneCall = $attribute->getPhoneCall();
+        if (!$phoneCall || $phoneCall->isEnded() || $phoneCall->isVoicemail() || $phoneCall->isFailed()) {
+            return;
+        }
+
+        return $phoneCall;
     }
 
     /**
