@@ -130,15 +130,16 @@ class Translate
      *
      * @see https://docs.microsoft.com/en-us/azure/cognitive-services/translator/reference/v3-0-translate?tabs=curl
      *
-     * @param string|string[] $text         A string or array of strings
-     * @param string|null     $from         Language to translate from, or null to auto-detect
-     * @param string          $to           Language to translate to
-     * @param string          $content_type Content type of the string. HTML must be well-formed
+     * @param string|string[] $text     A string or array of strings
+     * @param string|null     $from     Language to translate from, or null to auto-detect
+     * @param string          $to       Language to translate to
+     * @param string          $textType Content type of the string. HTML must be well-formed
+     * @param string          $category A string specifying the category (domain) of the translation.
      *
      * @return string|string[]
-     * @throws \Exception
+     * @throws TextValueTooLongException
      */
-    public function translate($text, $from, $to, $content_type = self::TYPE_TEXT, $category = self::CAT_GENERAL)
+    public function translate($text, $from, $to, $textType = self::TYPE_TEXT, $category = self::CAT_GENERAL)
     {
         $from = $this->getNearestTranslateLocale($from);
         $to   = $this->getNearestTranslateLocale($to);
@@ -165,7 +166,7 @@ class Translate
                     'text'        => $text,
                     'from'        => $from ?: '',
                     'to'          => $to,
-                    'contentType' => $content_type,
+                    'textType'    => $textType,
                     'category'    => $category,
                 ],
                 RequestOptions::JSON  => $requestBody,
