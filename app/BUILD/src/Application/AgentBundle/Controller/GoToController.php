@@ -50,7 +50,7 @@ class GoToController extends AbstractController
     public function ticketIdAction($id)
     {
         /** @var Ticket $ticket */
-        $ticket = $this->getDoctrine()->getRepository(Ticket::class)->find($id);
+        $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketId($id);
         if (!$ticket instanceof Ticket) {
             $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($id);
             if (!$ticket instanceof Ticket) {
@@ -58,7 +58,7 @@ class GoToController extends AbstractController
             }
         }
 
-        return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$id);
+        return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$ticket->getId());
     }
 
     /**
