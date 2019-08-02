@@ -18,7 +18,7 @@ export default class PortalRte extends React.Component {
     $textarea:         PropTypes.object,
     ctrlEnterSubmit:   PropTypes.bool,
 
-    // Inline attachment form prototype must be suppled
+    // Inline attachment form prototype must be supplied
     // if inline attachments (e.g. pasting, dragging images etc) is to be supported.
     $inlineAttachProto: PropTypes.object
   };
