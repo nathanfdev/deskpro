@@ -6,6 +6,9 @@
 
 namespace Application\DeskPRO\RefGenerator;
 
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
@@ -57,18 +60,30 @@ class CustomRef implements RefGeneratorInterface
     protected $append_count = 0;
 
     /**
+     * @var string
+     */
+    protected $personTimezone = 'UTC';
+
+    /**
      * $format_string shold encase keywords in brakcets. For example:
      *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>.
      *
      * @param \Doctrine\ORM\EntityManager $em
      * @param $format_string
+     * @param $append_count
+     * @param $personTimezone
      */
-    public function __construct(\Doctrine\ORM\EntityManager $em, $format_string, $append_count = 0)
-    {
-        $this->em            = $em;
-        $this->db            = $em->getConnection();
-        $this->append_count  = $append_count;
-        $this->format_string = $format_string;
+    public function __construct(
+        \Doctrine\ORM\EntityManager $em,
+        $format_string,
+        $append_count = 0,
+        $personTimezone = 'UTC'
+    ) {
+        $this->em             = $em;
+        $this->db             = $em->getConnection();
+        $this->append_count   = $append_count;
+        $this->format_string  = $format_string;
+        $this->personTimezone = $personTimezone;
 
         //------------------------------
         // Parses format string into array(token, repeated)
@@ -120,7 +135,7 @@ class CustomRef implements RefGeneratorInterface
     /**
      * @param string $class
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return string
      */
@@ -187,7 +202,7 @@ class CustomRef implements RefGeneratorInterface
                     'ref'      => $ref,
                 ]);
                 break;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Try again..
             }
         }
@@ -199,14 +214,20 @@ class CustomRef implements RefGeneratorInterface
      * Generate a new ref string.
      *
      * @param int $count
+     *
+     * @return string
      */
     public function generateRefString($count = 1)
     {
         $ref = [];
 
-        foreach ($this->format as $seg) {
-            list($type, $length) = $seg;
+        try{
+            $now = new DateTime('now', new DateTimeZone($this->personTimezone));
+        } catch (Exception $exception) {
+            $now = new DateTime();
+        }
 
+        foreach ($this->format as list($type, $length)) {
             switch ($type) {
                 case 'A':
                     $ref[] = DpStrings::random($length, Strings::CHARS_ALPHA_IU);
@@ -221,27 +242,27 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 case 'YEAR':
-                    $ref[] = date('Y');
+                    $ref[] = $now->format('Y');
                     break;
 
                 case 'MONTH':
-                    $ref[] = date('m');
+                    $ref[] = $now->format('m');
                     break;
 
                 case 'DAY':
-                    $ref[] = date('d');
+                    $ref[] = $now->format('d');
                     break;
 
                 case 'HOUR':
-                    $ref[] = date('H');
+                    $ref[] = $now->format('H');
                     break;
 
                 case 'MIN':
-                    $ref[] = date('i');
+                    $ref[] = $now->format('i');
                     break;
 
                 case 'SEC':
-                    $ref[] = date('s');
+                    $ref[] = $now->format('s');
                     break;
 
                 default:
@@ -268,9 +289,7 @@ class CustomRef implements RefGeneratorInterface
     {
         $regex = ['('];
 
-        foreach ($this->format as $seg) {
-            list($type, $length) = $seg;
-
+        foreach ($this->format as list($type, $length)) {
             switch ($type) {
                 case 'A':
                     $regex[] = "([A-Z]{$length})";
@@ -301,9 +320,6 @@ class CustomRef implements RefGeneratorInterface
                     break;
 
                 case 'MIN':
-                    $regex[] = "([0-5]\d)";
-                    break;
-
                 case 'SEC':
                     $regex[] = "([0-5]\d)";
                     break;
