@@ -5342,6 +5342,7 @@ class TicketController extends AbstractController
                     $parent_ticket = $this->em->find(Ticket::class, $this->in->getUInt('parent_ticket_id'));
                     if ($parent_ticket) {
                         $ticket->setParentTicket($parent_ticket);
+                        $ticket->setBrandId($parent_ticket->getBrandId());
                     }
                 }
 
