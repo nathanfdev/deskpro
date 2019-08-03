@@ -883,7 +883,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
         }
       });
     });
-    
+
     $('.action-review-date-remove', optWrap).on('click', function(e) {
       $.ajax({
         url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
@@ -981,7 +981,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 		data.push({
 			name: 'language_id',
-				value: wrap.find('.article-editor.wrap').find('.language_id').val()
+				value: wrap.find('.article-editor-wrap').find('.language_id').val()
 		});
 		data.push({
 			name: 'restart-review-date',
