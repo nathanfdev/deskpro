@@ -306,21 +306,26 @@ class ServerController extends AbstractController implements ProtectedController
     {
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
-        /** @var DeskproBlobStorage $blobStorage */
-        $blobStorage       = $this->container->getBlobStorage();
 
         $options = $this->in->getArrayValue('options');
         $method  = $options['method'];
 
         $serverFileUploads->switchStorage($options);
 
-        if ($method === 's3' && $blobStorage->hasAdapter($method)) {
-            $blob = new Blob('robots.txt', 'text/plane');
-            $blob->setPath('robots.txt');
+        if ($method === 's3') {
+            // Refresh settings before init BlobStorage
+            $this->container->getSettingsResolver()->getGlobalSettings(true);
+            /** @var DeskproBlobStorage $blobStorage */
+            $blobStorage = $this->container->getBlobStorage();
 
-            $blobStorage
-                ->getAdapter($method)
-                ->writeBlobString($blob, "User-agent: *\r\nDisallow: /");
+            if ($blobStorage->hasAdapter($method)) {
+                $blob = new Blob('robots.txt', 'text/plane');
+                $blob->setPath('robots.txt');
+
+                $blobStorage
+                    ->getAdapter($method)
+                    ->writeBlobString($blob, "User-agent: *\r\nDisallow: /");
+            }
         }
 
         return $this->createSuccessResponse();
