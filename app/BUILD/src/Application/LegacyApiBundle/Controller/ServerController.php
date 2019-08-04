@@ -6,6 +6,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\BlobStorage\Blob;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Encryption\DpEnc;
 use Application\DeskPRO\Exception\ValidationException;
@@ -304,7 +306,22 @@ class ServerController extends AbstractController implements ProtectedController
     {
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
-        $serverFileUploads->switchStorage($this->in->getArrayValue('options'));
+        /** @var DeskproBlobStorage $blobStorage */
+        $blobStorage       = $this->container->getBlobStorage();
+
+        $options = $this->in->getArrayValue('options');
+        $method  = $options['method'];
+
+        $serverFileUploads->switchStorage($options);
+
+        if ($method === 's3' && $blobStorage->hasAdapter($method)) {
+            $blob = new Blob('robots.txt', 'text/plane');
+            $blob->setPath('robots.txt');
+
+            $blobStorage
+                ->getAdapter($method)
+                ->writeBlobString($blob, "User-agent: *\r\nDisallow: /");
+        }
 
         return $this->createSuccessResponse();
     }
