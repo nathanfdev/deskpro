@@ -3908,6 +3908,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'person',
             'person_email',
             'department',
+            'brand',
             'category',
             'product',
             'workflow',
