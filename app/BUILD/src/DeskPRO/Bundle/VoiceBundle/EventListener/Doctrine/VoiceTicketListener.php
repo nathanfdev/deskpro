@@ -71,6 +71,8 @@ class VoiceTicketListener implements EventSubscriber
             /** @var Ticket $ticket */
             foreach ($this->updateQueue as $num => $ticket) {
                 array_splice($this->updateQueue, $num, 1);
+
+                // clear change set to avoid pre-update recursion
                 $em->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket));
 
                 $this->userChanger->syncPhoneCallUser($ticket);
