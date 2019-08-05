@@ -21,7 +21,7 @@ class RefGeneratorService
                 $container->getEm(),
                 $container->getSetting('core.ref_pattern'),
                 $container->getSession(),
-                (int) $container->getSetting('core.ref_append_counter'),
+                (int) $container->getSetting('core.ref_append_counter')
             );
         } else {
             $ref_gen = new RandomRef($container->getEm());
