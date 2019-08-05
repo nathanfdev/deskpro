@@ -20,8 +20,8 @@ class RefGeneratorService
             $ref_gen = new CustomRef(
                 $container->getEm(),
                 $container->getSetting('core.ref_pattern'),
+                $container->getSession(),
                 (int) $container->getSetting('core.ref_append_counter'),
-                $container->getSession()->getPerson()->getTimezone()
             );
         } else {
             $ref_gen = new RandomRef($container->getEm());

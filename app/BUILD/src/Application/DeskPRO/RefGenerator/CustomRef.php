@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\RefGenerator;
 
+use Application\DeskPRO\HttpFoundation\Session;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -38,6 +39,11 @@ class CustomRef implements RefGeneratorInterface
     protected $db;
 
     /**
+     * @var Session
+     */
+    protected $session;
+
+    /**
      * @var string
      */
     protected $format_string = [];
@@ -60,30 +66,25 @@ class CustomRef implements RefGeneratorInterface
     protected $append_count = 0;
 
     /**
-     * @var string
-     */
-    protected $personTimezone = 'UTC';
-
-    /**
      * $format_string shold encase keywords in brakcets. For example:
      *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>.
      *
      * @param \Doctrine\ORM\EntityManager $em
      * @param $format_string
+     * @param $session
      * @param $append_count
-     * @param $personTimezone
      */
     public function __construct(
         \Doctrine\ORM\EntityManager $em,
         $format_string,
-        $append_count = 0,
-        $personTimezone = 'UTC'
+        Session $session,
+        $append_count = 0
     ) {
         $this->em             = $em;
         $this->db             = $em->getConnection();
+        $this->session        = $session;
         $this->append_count   = $append_count;
         $this->format_string  = $format_string;
-        $this->personTimezone = $personTimezone;
 
         //------------------------------
         // Parses format string into array(token, repeated)
@@ -222,7 +223,8 @@ class CustomRef implements RefGeneratorInterface
         $ref = [];
 
         try{
-            $now = new DateTime('now', new DateTimeZone($this->personTimezone));
+            $personTimezone = $this->session->getPerson()->getTimezone();
+            $now            = new DateTime('now', new DateTimeZone($personTimezone));
         } catch (Exception $exception) {
             $now = new DateTime();
         }
