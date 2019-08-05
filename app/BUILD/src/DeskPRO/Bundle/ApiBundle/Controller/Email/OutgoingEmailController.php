@@ -52,26 +52,12 @@ class OutgoingEmailController extends BaseController
         $source  = $this->findEntity($uuid, $request);
         $isForce = $request->query->has('force');
 
-        if (!$isForce) {
-            if ($source->getStatus() === SendmailSource::STATUS_PROCESSING) {
-                return View::create(null, Response::HTTP_LOCKED);
-            } elseif ($source->getStatus() === SendmailSource::STATUS_COMPLETE) {
-                return View::create(null, Response::HTTP_NOT_MODIFIED);
-            } elseif (in_array($source->getStatus(), [
-                SendmailSource::STATUS_ERROR,
-                SendmailSource::STATUS_ABORTED,
-            ])) {
-                return View::create(null, Response::HTTP_UNPROCESSABLE_ENTITY);
-            }
+        $res = $this->processSendmailSource($source, $isForce);
+        if ($res instanceof SendmailSource) {
+            return View::create($this->wrap($res), Response::HTTP_OK);
         }
 
-        /** @var \Application\EmailBundle\Queue\QueueProc $proc */
-        $proc = $this->get('email.queue_processor');
-        $proc->process($source->toRecordArray());
-
-        $this->getManager()->refresh($source);
-
-        return View::create($this->wrap($source), Response::HTTP_OK);
+        return View::create(null, $res);
     }
 
     /**
@@ -83,38 +69,22 @@ class OutgoingEmailController extends BaseController
      */
     public function batchSendAction(Request $request)
     {
-        $uuids   = $request->get('uuids');
+        $uuids   = $request->get('uuids', []);
         $isForce = $request->request->has('force');
-        /** @var \Application\EmailBundle\Queue\QueueProc $proc */
-        $proc = $this->get('email.queue_processor');
 
         $res = [];
         foreach ($uuids as $uuid) {
             /** @var SendmailSource $source */
             $source = $this->getManager()->getRepository(SendmailSource::class)->findOneByUuid($uuid);
             if (!$source) {
-                $res[$uuid] = SendmailSource::STATUS_ERROR;
+                $res[$uuid] = Response::HTTP_NOT_FOUND;
                 continue;
             }
 
-            if (!$isForce) {
-                if (in_array($source->getStatus(), [
-                    SendmailSource::STATUS_PROCESSING,
-                    SendmailSource::STATUS_COMPLETE,
-                    SendmailSource::STATUS_ERROR,
-                    SendmailSource::STATUS_ABORTED,
-                ])) {
-                    $res[$uuid] = $source->getStatus();
-                    continue;
-                }
-            }
-
             try {
-                $proc->process($source->toRecordArray());
-                $this->getManager()->refresh($source);
-                $res[$uuid] = $source->getStatus();
+                $res[$uuid] = $this->processSendmailSource($source, $isForce);
             } catch (\Exception $e) {
-                $res[$uuid] = SendmailSource::STATUS_ERROR;
+                $res[$uuid] = Response::HTTP_INTERNAL_SERVER_ERROR;
             }
         }
 
@@ -189,6 +159,36 @@ class OutgoingEmailController extends BaseController
         }
 
         return View::create($this->wrap($log), Response::HTTP_OK);
+    }
+
+    /**
+     * @param SendmailSource $source
+     * @param bool           $isForce
+     *
+     * @return SendmailSource|string
+     */
+    protected function processSendmailSource(SendmailSource $source, $isForce)
+    {
+        if (!$isForce) {
+            if ($source->getStatus() === SendmailSource::STATUS_PROCESSING) {
+                return Response::HTTP_LOCKED;
+            } elseif ($source->getStatus() === SendmailSource::STATUS_COMPLETE) {
+                return Response::HTTP_NOT_MODIFIED;
+            } elseif (in_array($source->getStatus(), [
+                SendmailSource::STATUS_ERROR,
+                SendmailSource::STATUS_ABORTED,
+            ])) {
+                return Response::HTTP_UNPROCESSABLE_ENTITY;
+            }
+        }
+
+        /** @var \Application\EmailBundle\Queue\QueueProc $proc */
+        $proc = $this->get('email.queue_processor');
+
+        $proc->process($source->toRecordArray());
+        $this->getManager()->refresh($source);
+
+        return $source;
     }
 
     /**
