@@ -10,6 +10,7 @@ parameters:
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
+  session.class: Application\DeskPRO\HttpFoundation\Session
   templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
   jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
   twig.exception_listener.class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionListener
