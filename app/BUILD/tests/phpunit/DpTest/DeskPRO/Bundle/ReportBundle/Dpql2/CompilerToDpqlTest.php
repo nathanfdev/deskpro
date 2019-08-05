@@ -22,11 +22,11 @@ DPQL;
         $parts     = $statement->getDpqlParts();
 
         $this->assertEquals('tickets.id', $parts['SELECT']);
-        $this->assertEquals('(SELECT tickets.id
+        $this->assertEquals('((SELECT tickets.id
 FROM tickets)
 UNION DISTINCT
 (SELECT tickets.id
-FROM tickets) AS \'tickets\'', $parts['FROM']);
+FROM tickets)) AS \'tickets\'', $parts['FROM']);
     }
 
     public function test_distinct_union()
@@ -44,11 +44,11 @@ DPQL;
         $parts     = $statement->getDpqlParts();
 
         $this->assertEquals('tickets.id', $parts['SELECT']);
-        $this->assertEquals('(SELECT tickets.id
+        $this->assertEquals('((SELECT tickets.id
 FROM tickets)
 UNION DISTINCT
 (SELECT tickets.id
-FROM tickets) AS \'tickets\'', $parts['FROM']);
+FROM tickets)) AS \'tickets\'', $parts['FROM']);
     }
 
     public function test_all_union()
@@ -66,11 +66,11 @@ DPQL;
         $parts     = $statement->getDpqlParts();
 
         $this->assertEquals('tickets.id', $parts['SELECT']);
-        $this->assertEquals('(SELECT tickets.id
+        $this->assertEquals('((SELECT tickets.id
 FROM tickets)
 UNION ALL
 (SELECT tickets.id
-FROM tickets) AS \'tickets\'', $parts['FROM']);
+FROM tickets)) AS \'tickets\'', $parts['FROM']);
     }
 
     public function test_in_subquery()
