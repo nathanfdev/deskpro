@@ -1631,6 +1631,10 @@ class TicketController extends AbstractController
             $ticket = $this->getTicketOr404($ticket_id, 'reply');
         }
 
+        if ($this->in->getBool('options.close_tab')) {
+            $ticket->setLockedByAgentId(null);
+        }
+
         $ticketContext = $this->container->getTicketManager()->createAgentExecutorContext(
             $this->person,
             'newreply',
