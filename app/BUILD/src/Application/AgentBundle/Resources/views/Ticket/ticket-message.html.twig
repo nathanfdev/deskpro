@@ -151,24 +151,6 @@
 							</td>
 						</tr>
 					{% endif %}
-					{% if message.email_source %}
-						<tr>
-							<th>{{ phrase('agent.general.to') }}:</th>
-							<td>
-								{{ message.email_source.header_to }}
-							</td>
-						</tr>
-					{% endif %}
-					{% if message.email_source.header_cc %}
-						<tr>
-							<th>{{ phrase('agent.general.ccs') }}:</th>
-							<td style="overflow: hidden;">
-								{% for email in message.email_source.header_cc|split(',') %}
-									<span title="{{ email|trim }}">{{ email|trim }}</span><br />
-								{% endfor %}
-							</td>
-						</tr>
-					{% endif %}
 					{% if message.ip_address %}
 						<tr>
 							<th>{{ phrase('agent.general.ip_address') }}:</th>
@@ -195,6 +177,45 @@
 				</table>
 			</div>
 		</header>
+		{% set recipients = message.getEmailRecipients() %}
+		{%  if recipients | length %}
+			<div class="message-recipients">
+				<span class="with-stickytip" data-stickytip-target="#{{ elid }}_recipient_cc">{{ phrase('agent.general.ccs') }} ({{ recipients.cc | length }})</span>
+				{% if recipients.absent | length > 0 %}<span>/</span> <span class="absent with-stickytip" data-stickytip-target="#{{ elid }}_recipient_absent">{{ phrase('agent.tickets.absent') }} ({{ recipients.absent | length }})</span>{% endif %}
+				&nbsp;
+				{% for recipient in recipients.cc %}
+					{% if recipient.email_address %}
+					<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}">
+						{{ recipient.display_name }}
+						<span class="email" title="{{ recipient.email_address }}">{{ recipient.email_address }}</span>
+					</span>
+					{% else %}
+						<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient}) }}">
+							<span class="email" title="{{ recipient }}">{{ recipient }}</span>
+						</span>
+					{% endif %}
+				{% endfor %}
+				{% for recipient in recipients.absent %}
+					<span class="recipient recipient-absent" title="{{ phrase('agent.tickets.recipient_absent', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}">
+						<span
+								class="remove"
+								title="Remove from ticket"
+								data-confirm="{{ phrase('agent.tickets.confirm_remove_absent', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}"
+								data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
+								data-person-id="{{ recipient.id }}"
+						/>
+						{{ recipient.display_name }}
+						<span class="email" title="{{ recipient.email_address }}">{{ recipient.email_address }}</span>
+					</span>
+				{% endfor %}
+			</div>
+			<div class="dp-stickytip" id="{{ elid }}_recipient_cc" style="display: none">
+				{{ phrase('agent.tickets.recipients_cc_tooltip', {count: recipients.cc | length}) }}
+			</div>
+			<div class="dp-stickytip" id="{{ elid }}_recipient_absent" style="display: none">
+				{{ phrase('agent.tickets.recipients_absent_tooltip', {count: recipients.absent | length}) }}
+			</div>
+		{% endif %}
 		{% set message_translated = ticket_messages_translated[message.id] %}
 		<div class="body-text {% if message_translated %}with-translated{% endif %}">
 			<div class="body-text-container">

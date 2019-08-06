@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
@@ -1085,6 +1086,74 @@ class TicketMessage extends DomainObject
         if ($this->person) {
             $this->ticket->addAccessCodeForPerson($this->person);
         }
+    }
+
+    public function getEmailRecipients()
+    {
+        $recipients = [];
+        $keyArray   = [];
+        $value      = json_decode($this->getAttribute('email_recipients')->getValue());
+        if ($value) {
+            foreach ($value as $recipient) {
+                if (!in_array($recipient->address, $keyArray)) {
+                    $keyArray[]   = $recipient->address;
+                    $recipients[] = $recipient->address;
+                }
+            }
+        }
+        $accountRepo = new EmailAccountRepository(App::getContainer()->getEm());
+        $accounts    = $accountRepo->getAccounts();
+        $recipients  = array_filter($recipients, function ($recipient) use ($accounts) {
+            foreach ($accounts as $account) {
+                if ($recipient === $account->address) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+        // We won't display anything if there's only on recipient
+        if (count($recipients) <= 1) {
+            return [];
+        }
+
+        $ticket = $this->getTicket();
+
+        $participants[] = $ticket->getPerson();
+
+        foreach ($ticket->getParticipants() as $participant) {
+            $participants[] = $participant->getPerson();
+        }
+
+        $result = [];
+        /** @var Person $participant */
+        foreach ($participants as $participant) {
+            if (in_array($participant->getEmailAddress(), $recipients)) {
+                $result['cc'][] = $participant;
+            } else {
+                if ($participant->getEmailAddress() !== $ticket->getPersonEmailAddress()) {
+                    $result['absent'][] = $participant;
+                }
+            }
+        }
+
+        foreach ($recipients as $recipient) {
+            $present = false;
+            if (!empty($result['cc'])) {
+                foreach ($result['cc'] as $cc) {
+                    if ($cc->getEmailAddress() === $recipient) {
+                        $present = true;
+                        break 1;
+                    }
+                }
+            }
+            if (!$present) {
+                $person         = App::getEntityRepository(Person::class)->findOneByEmail($recipient);
+                $result['cc'][] = $person ? $person : $recipient;
+            }
+        }
+
+        return $result;
     }
 
     public function incTicketCount()
