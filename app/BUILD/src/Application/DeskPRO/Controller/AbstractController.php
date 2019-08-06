@@ -11,6 +11,8 @@ namespace Application\DeskPRO\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -269,7 +271,10 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
         if ($hasJustLoggedOut) {
             if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
-                return $this->redirect($url);
+                $redirectResponse = new RedirectResponse($url);
+                $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+                return $redirectResponse;
             }
 
             // if user has just logged out, and we dont get a redirect url from the auth system, we don't
@@ -293,7 +298,10 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-                return $this->redirect($sso_result->getRedirectUrl());
+                $redirectResponse = new RedirectResponse($sso_result->getRedirectUrl());
+                $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+                return $redirectResponse;
             }
         }
     }

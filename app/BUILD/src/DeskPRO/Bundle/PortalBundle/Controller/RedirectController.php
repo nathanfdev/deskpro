@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
-use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DpSys\CodePlugin\DpPlugins;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;

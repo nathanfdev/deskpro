@@ -6,12 +6,12 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthErrorCodes;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthException;
-use DeskPRO\Bundle\AppStoreBundle\Oauth1\AuthorizationSession;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth1Connection;
+use DeskPRO\Bundle\AppStoreBundle\Oauth1\AuthorizationSession;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -34,10 +34,10 @@ class Oauth1ProxyController extends BaseController
 
     private $authSessionDuration = 300; //in seconds
 
-
     private function readTokenCallbackCookie(Request $request)
     {
         $tokenCallback = $request->cookies->get($this->tokenCallbackCookieName, null);
+
         return $tokenCallback;
     }
 
@@ -58,9 +58,9 @@ class Oauth1ProxyController extends BaseController
 
     /**
      * @param Response $response
-     * @param string $callbackUrl
-     * @return Cookie
+     * @param string   $callbackUrl
      *
+     * @return Cookie
      */
     private function writeTokenCallbackCookie(Response $response, $callbackUrl = null)
     {
@@ -124,7 +124,7 @@ class Oauth1ProxyController extends BaseController
         }
 
         $errorResponseBuilder = OauthResponseBuilder::forResponseType('error');
-        $appState = ProxyParams::getDPQueryParam('state', $request);
+        $appState             = ProxyParams::getDPQueryParam('state', $request);
         if (!is_null($appState)) {
             $errorResponseBuilder->withApplicationState($appState);
         }
@@ -161,6 +161,7 @@ class Oauth1ProxyController extends BaseController
                 $authorizationUrl = $connection->getAuthorizationUrl($authSession);
 
                 $response = new RedirectResponse($authorizationUrl);
+                $response->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
                 $this->writeAuthSessionCookie($response, $authSession);
                 $this->writeTokenCallbackCookie($response, $callbackUrl);
 
@@ -170,7 +171,7 @@ class Oauth1ProxyController extends BaseController
             }
         }
 
-        return $errorResponseBuilder->withError(OauthErrorCodes::CODE_BAD_REQUEST,'only web-server profile allowed')->buildPostMessage($callbackUrl);
+        return $errorResponseBuilder->withError(OauthErrorCodes::CODE_BAD_REQUEST, 'only web-server profile allowed')->buildPostMessage($callbackUrl);
     }
 
     /**
@@ -211,7 +212,7 @@ class Oauth1ProxyController extends BaseController
             $authSession = $this->readAuthSessionCookie($request);
             if (is_null($authSession)) {
                 return $errorResponseBuilder
-                    ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE,'failed to retrieve token')
+                    ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE, 'failed to retrieve token')
                     ->buildPostMessage($callbackUrl)
                 ;
             }
@@ -221,11 +222,11 @@ class Oauth1ProxyController extends BaseController
             return OauthResponseBuilder::forResponseType('token', '1.0')
                 ->withTokenParams($token->jsonSerialize())
                 ->buildPostMessage($callbackUrl);
-        }  catch (OAuthException $e) {
+        } catch (OAuthException $e) {
             return $errorResponseBuilder->withOauthException($e)->buildPostMessage($callbackUrl);
         } catch (\Exception $e) {
             return $errorResponseBuilder
-                ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE,'failed to retrieve token')
+                ->withError(OauthErrorCodes::CODE_GENERIC_FAILURE, 'failed to retrieve token')
                 ->buildPostMessage($callbackUrl)
             ;
         }

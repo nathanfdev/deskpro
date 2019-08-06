@@ -4,7 +4,7 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
@@ -56,6 +56,10 @@ class RedirectProtectionListener implements EventSubscriberInterface, SkipLowReq
             && !$response->headers->get(self::ALLOW_REDIRECT_OFFSITE_HEADER, false)
         ) {
             $location = $response->headers->get('Location');
+
+            if (!$location) {
+                return;
+            }
 
             if ($this->url_host_checker->isMatch(
                 $location,

@@ -6,7 +6,9 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\OAuthExceptionEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class GmailController extends AbstractController
@@ -36,7 +38,10 @@ class GmailController extends AbstractController
         $client->setRedirectUri($backUrl);
         $location = $client->createAuthUrl();
 
-        return $this->redirect($location);
+        $redirectResponse = new RedirectResponse($location);
+        $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+        return $redirectResponse;
     }
 
     /**

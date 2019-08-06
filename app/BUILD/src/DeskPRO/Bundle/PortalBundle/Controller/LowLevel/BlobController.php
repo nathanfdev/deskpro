@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
@@ -11,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class BlobController extends BaseController
@@ -155,7 +157,10 @@ class BlobController extends BaseController
         // During ticket message creation blob could stay in temp status while user typing a message
         // if user press on attachment - just return it
         if ($blob->isTemp()) {
-            return $this->redirect($blob->getDownloadUrl());
+            $redirectResponse = new RedirectResponse($blob->getDownloadUrl());
+            $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+            return $redirectResponse;
         }
 
         try {
@@ -177,6 +182,9 @@ class BlobController extends BaseController
             }
         }
 
-        return $this->redirect($blob->getDownloadUrl());
+        $redirectResponse = new RedirectResponse($blob->getDownloadUrl());
+        $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+        return $redirectResponse;
     }
 }
