@@ -9,6 +9,7 @@ namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Component\Util\ListUtils;
+use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
 
 class EmailRateLimitFactory
@@ -20,7 +21,7 @@ class EmailRateLimitFactory
      */
     public static function create(Container $container)
     {
-        if (!defined('DPC_IS_CLOUD') || (defined('DPC_NO_SENDMAIL_LIMITS') && DPC_NO_SENDMAIL_LIMITS)) {
+        if (!defined('DPC_IS_CLOUD') || Util::getConst('DPC_NO_SENDMAIL_LIMITS')) {
             return new NullEmailRateLimit();
         }
 
@@ -65,15 +66,15 @@ class EmailRateLimitFactory
         }
 
         // Demos
-        if (DPC_DEMO_EXPIRE) {
-            if (DPC_SITE_IS_SUSPICIOUS) {
+        if (Util::getConst('DPC_DEMO_EXPIRE')) {
+            if (Util::getConst('DPC_SITE_IS_SUSPICIOUS')) {
                 return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
             }
 
-            if (DPC_SITE_IS_APPROVED) {
+            if (Util::getConst('DPC_SITE_IS_APPROVED')) {
                 return [
                     ['time' => 900    /* 15m */, 'count' => 40, 'actions' => ['log_account_warning']],
-                    ['time' => 3600    /* 1h */, 'count' => min(100, max(DPC_AGENTS * 4, 50)), 'actions' => ['log_account_warning']],
+                    ['time' => 3600    /* 1h */, 'count' => min(100, max(Util::getConst('DPC_AGENTS') * 4, 50)), 'actions' => ['log_account_warning']],
                     ['time' => 28800   /* 1h */, 'count' => 500, 'actions' => ['log_account_warning']],
                 ];
             } else {
@@ -86,21 +87,21 @@ class EmailRateLimitFactory
             }
 
         // New accounts (30 days)
-        } elseif (DPC_SITE_CREATED_AT > (time() - 3369600)) {
-            if (DPC_SITE_IS_SUSPICIOUS) {
+        } elseif (Util::getConst('DPC_SITE_CREATED_AT') > (time() - 3369600)) {
+            if (Util::getConst('DPC_SITE_IS_SUSPICIOUS')) {
                 return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
             }
 
-            if (DPC_SITE_IS_APPROVED) {
+            if (Util::getConst('DPC_SITE_IS_APPROVED')) {
                 return [
                     ['time' => 900     /* 15m */, 'count' => 40, 'actions' => ['log_account_warning']],
-                    ['time' => 3600    /* 1h */, 'count' => min(100, max(DPC_AGENTS * 4, 50)), 'actions' => ['log_account_warning']],
+                    ['time' => 3600    /* 1h */, 'count' => min(100, max(Util::getConst('DPC_AGENTS') * 4, 50)), 'actions' => ['log_account_warning']],
                 ];
             } else {
                 return [
                     ['time' => 5       /* 5s */, 'count' => 30, 'actions' => ['log_account_warning']],
                     ['time' => 900     /* 15m */, 'count' => 40, 'actions' => ['log_account_warning']],
-                    ['time' => 3600    /* 1h */, 'count' => min(100, max(DPC_AGENTS * 4, 50)), 'actions' => ['rate_limit', 'log_suspicious']],
+                    ['time' => 3600    /* 1h */, 'count' => min(100, max(Util::getConst('DPC_AGENTS') * 4, 50)), 'actions' => ['rate_limit', 'log_suspicious']],
                 ];
             }
 

@@ -741,4 +741,15 @@ class Util
 
         return;
     }
+
+    /**
+     * @param string $constName Constant name
+     * @param mixed  $default   Default value returned when constant is not defined
+     *
+     * @return mixed
+     */
+    public static function getConst($constName, $default = null)
+    {
+        return defined($constName) ? constant($constName) : $default;
+    }
 }
