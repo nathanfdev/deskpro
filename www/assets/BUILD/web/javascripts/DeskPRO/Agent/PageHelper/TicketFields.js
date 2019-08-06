@@ -675,26 +675,29 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     self.addEvent('edit_custom_field', function (fieldId) {
       var id    = 'custom_def_ticket_' + fieldId.replace('ticket_field_', '');
       var field = self.jsfields[id];
-      if (field && field.element) {
-        field.ctx.onShow.call(field.ctx, field.currentValue, field.currentData, field.field, field.element);
-      } else {
-        var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
-          var dataObject = { value: null, data: null };
-          if (
-            (value === null || typeof value === "undefined")
-            && (data === null || typeof data === "undefined")
-          ) {
-            dataObject.value = null;
-            dataObject.data  = null;
-          } else {
-            dataObject = Object.assign({}, { value: value }, { data: data || {} });
-          }
-          field.field.val(JSON.stringify(dataObject));
-          field.currentData = dataObject.data;
-          field.currentValue = dataObject.value;
-        }, field.currentValue, field.currentData);
-        field.field.after($renderedElement);
-        field.element = $renderedElement;
+
+      if (field) {
+        if (field.element) {
+          field.ctx.onShow.call(field.ctx, field.currentValue, field.currentData, field.field, field.element);
+        } else {
+          var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
+            var dataObject = { value: null, data: null };
+            if (
+              (value === null || typeof value === "undefined")
+              && (data === null || typeof data === "undefined")
+            ) {
+              dataObject.value = null;
+              dataObject.data  = null;
+            } else {
+              dataObject = Object.assign({}, { value: value }, { data: data || {} });
+            }
+            field.field.val(JSON.stringify(dataObject));
+            field.currentData = dataObject.data;
+            field.currentValue = dataObject.value;
+          }, field.currentValue, field.currentData);
+          field.field.after($renderedElement);
+          field.element = $renderedElement;
+        }
       }
     }, self);
     self.addEvent('cancel_edit', function () {
