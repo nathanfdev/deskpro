@@ -20,7 +20,7 @@ class RefGeneratorService
             $ref_gen = new CustomRef(
                 $container->getEm(),
                 $container->getSetting('core.ref_pattern'),
-                $container->getSession(),
+                $container->getSetting('core.default_timezone', 'UTC'),
                 (int) $container->getSetting('core.ref_append_counter')
             );
         } else {

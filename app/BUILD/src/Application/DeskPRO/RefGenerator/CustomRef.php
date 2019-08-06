@@ -39,9 +39,9 @@ class CustomRef implements RefGeneratorInterface
     protected $db;
 
     /**
-     * @var Session
+     * @var string
      */
-    protected $session;
+    protected $timezone;
 
     /**
      * @var string
@@ -66,25 +66,25 @@ class CustomRef implements RefGeneratorInterface
     protected $append_count = 0;
 
     /**
-     * $format_string shold encase keywords in brakcets. For example:
+     * $format_string should encase keywords in brackets. For example:
      *     <A><A><A><A>-<#><#><#><#>-<A><A><A><A>.
      *
      * @param \Doctrine\ORM\EntityManager $em
-     * @param $format_string
-     * @param $session
-     * @param $append_count
+     * @param string $format_string
+     * @param string $timezone
+     * @param int $append_count
      */
     public function __construct(
         \Doctrine\ORM\EntityManager $em,
         $format_string,
-        Session $session,
+        $timezone = 'UTC',
         $append_count = 0
     ) {
-        $this->em             = $em;
-        $this->db             = $em->getConnection();
-        $this->session        = $session;
-        $this->append_count   = $append_count;
-        $this->format_string  = $format_string;
+        $this->em            = $em;
+        $this->db            = $em->getConnection();
+        $this->timezone      = $timezone;
+        $this->append_count  = $append_count;
+        $this->format_string = $format_string;
 
         //------------------------------
         // Parses format string into array(token, repeated)
@@ -223,8 +223,7 @@ class CustomRef implements RefGeneratorInterface
         $ref = [];
 
         try{
-            $personTimezone = $this->session->getPerson()->getTimezone();
-            $now            = new DateTime('now', new DateTimeZone($personTimezone));
+            $now = new DateTime('now', new DateTimeZone($this->timezone));
         } catch (Exception $exception) {
             $now = new DateTime();
         }
