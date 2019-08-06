@@ -80,9 +80,10 @@ class MergeVoiceRecordings extends AbstractJob
         $em          = $this->getContainer()->get('doctrine.orm.entity_manager');
         $blobStorage = $this->getContainer()->get('blob.storage');
 
-        $newAudioFile = null;
-        $parser       = new Parser();
-        $duration     = 0;
+        $newAudioFile   = null;
+        $parser         = new Parser();
+        $duration       = 0;
+        $transcriptions = [];
 
         $fullRecording = $phoneCall->getFullRecording() ?: new VoiceRecording();
 
@@ -96,8 +97,10 @@ class MergeVoiceRecordings extends AbstractJob
             }
 
             $duration += $recording->getDuration();
+            $transcriptions[] = $recording->getTranscription();
+
             $fullRecording->addVoiceRecordingMetadata($recording);
-            $fullRecording->setTranscription($fullRecording->getTranscription() ?: ''.$recording->getTranscription() ? "\r\n\r\n".$recording->getTranscription() : '');
+
             $em->remove($recording);
         }
 
@@ -112,6 +115,7 @@ class MergeVoiceRecordings extends AbstractJob
 
         $fullRecording
             ->setDuration($duration)
+            ->setTranscription(implode("\r\n\r\n", $transcriptions))
             ->setBlob($newBlob)
             ->setPhoneCall($phoneCall)
         ;

@@ -37,12 +37,10 @@
 		{% if lastReply and lastReply.isVoiceMessage() %}
 			{% set phoneCall = lastReply.getPhoneCallAttribute().getPhoneCall() %}
             {% if app.getSetting('voice.email_attach_recording') %}
-                {% if phoneCall.getRecordings().count() > 0 %}
+                {% if phoneCall.getFullRecording() %}
                     <br /><br />Click here to listen to the call recording:<br />
-                    {% for recording in phoneCall.getRecordings() %}
-                        {% set recordingUrl = url('go_to_voice_recording', { id: recording.getId(), authCode: ticket.getAuth() }) %}
-                        <a href="{{ recordingUrl }}">{{ recordingUrl  }}</a><br />
-                    {% endfor %}
+                    {% set recordingUrl = url('go_to_voice_recording', { id: phoneCall.getFullRecording().getId(), authCode: ticket.getAuth() }) %}
+                    <a href="{{ recordingUrl }}">{{ recordingUrl  }}</a><br />
                 {% endif %}
                 {% if phoneCall.getAgentVoicemailRecord() %}
                     Click here to listen to the voicemail message:<br />
@@ -52,9 +50,9 @@
             {% endif %}
             {% if app.getSetting('voice.transcribe_voicemail') and app.getSetting('voice.email_attach_transcription') and (phoneCall.getRecordings().count() > 0 or phoneCall.getAgentVoicemailRecord()) %}
                 <br /><br />
-                {% for recording in phoneCall.getRecordings() %}
-                    {{ recording.getTranscription() }}
-                {% endfor %}
+                {% if phoneCall.getFullRecording() %}
+                    {{ phoneCall.getFullRecording.getTranscription() }}
+                {% endif %}
                 {% if phoneCall.getAgentVoicemailRecord() %}
                     {{ phoneCall.getAgentVoicemailRecord().getTranscription() }}
                 {% endif %}
