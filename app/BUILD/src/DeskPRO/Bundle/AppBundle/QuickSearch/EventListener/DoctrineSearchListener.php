@@ -101,7 +101,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $types = [
             QuickSearchContext::TYPE_ARTICLE,
             QuickSearchContext::TYPE_DOWNLOAD,
-            QuickSearchContext::TYPE_FEEDBACK,
+            QuickSearchContext::TYPE_COMMUNITY,
             QuickSearchContext::TYPE_NEWS,
             QuickSearchContext::TYPE_TOPIC,
         ];
@@ -243,7 +243,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
         $types = [
             QuickSearchContext::TYPE_ARTICLE,
             QuickSearchContext::TYPE_DOWNLOAD,
-            QuickSearchContext::TYPE_FEEDBACK,
+            QuickSearchContext::TYPE_COMMUNITY,
             QuickSearchContext::TYPE_NEWS,
             QuickSearchContext::TYPE_ORGANIZATION,
             QuickSearchContext::TYPE_PERSON,
@@ -273,7 +273,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                 break;
             case QuickSearchContext::TYPE_ARTICLE:
             case QuickSearchContext::TYPE_DOWNLOAD:
-            case QuickSearchContext::TYPE_FEEDBACK:
+            case QuickSearchContext::TYPE_COMMUNITY:
             case QuickSearchContext::TYPE_NEWS:
             case QuickSearchContext::TYPE_TOPIC:
                 $qb->andWhere($qb->expr()->orX(

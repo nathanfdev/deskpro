@@ -6,8 +6,8 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Task;
 use DateTime;
@@ -108,8 +108,8 @@ class PreviewFakeDataFactory
                     case 'newNews':
                     case 'updatedNews':
                         return $this->manager->getRepository(News::class)->findBy([], [], 10);
-                    case 'updatedFeedback':
-                        return $this->manager->getRepository(Feedback::class)->findBy([], [], 10);
+                    case 'updatedCommunityTopic':
+                        return $this->manager->getRepository(CommunityTopic::class)->findBy([], [], 10);
                     case 'task':
                         return $this->manager->getRepository(Task::class)->findBy([], [], 10);
                     case 'newPassword':

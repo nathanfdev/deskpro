@@ -27,7 +27,7 @@ class GeneralPortalSettings
         'deskpro_url'  => ['core.deskpro_url', 'string'],
         'deskpro_name' => ['core.deskpro_name', 'string'],
 
-        'apps_feedback'  => ['core.apps_feedback', 'bool'],
+        'apps_community' => ['core.apps_community', 'bool'],
         'apps_kb'        => ['core.apps_kb', 'bool'],
         'apps_news'      => ['core.apps_news', 'bool'],
         'apps_downloads' => ['core.apps_downloads', 'bool'],
@@ -63,7 +63,7 @@ class GeneralPortalSettings
     /**
      * @var bool
      */
-    public $apps_feedback;
+    public $apps_community;
 
     /**
      * @var bool
@@ -159,7 +159,7 @@ class GeneralPortalSettings
             }
         }
 
-        if ($this->apps_downloads || $this->apps_feedback || $this->apps_kb || $this->apps_news || $this->apps_guides) {
+        if ($this->apps_downloads || $this->apps_community || $this->apps_kb || $this->apps_news || $this->apps_guides) {
             $export_settings['portal_mode'] = 'publish';
         } else {
             $export_settings['portal_mode'] = 'tickets';
@@ -175,7 +175,7 @@ class GeneralPortalSettings
     {
         if (isset($set_settings['portal_mode'])) {
             if ($set_settings['portal_mode'] != 'publish') {
-                foreach (['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads'] as $n) {
+                foreach (['apps_community', 'apps_kb', 'apps_news', 'apps_downloads'] as $n) {
                     $set_settings[$n] = 0;
                 }
             }

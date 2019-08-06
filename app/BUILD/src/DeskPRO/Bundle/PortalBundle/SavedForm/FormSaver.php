@@ -101,7 +101,7 @@ class FormSaver
      * Saves the form information and prepares the session for auto-submit. Returns the correct
      * redirect reponse that your controller should return immediately to auto-submit.
      *
-     * @param string        $data_type the type of data being saved (feedback, ticket, etc) - a const of this class
+     * @param string        $data_type the type of data being saved (community topic, ticket, etc) - a const of this class
      * @param Person        $person    the Person that needs to log in
      * @param FormInterface $form      the submitted form
      * @param Request       $request   the request that was used to submit the form
@@ -146,7 +146,7 @@ class FormSaver
      * they cannot log in yet (user registration for example) and will be dealt with outside
      * of the normal flow of forcing a user to login before submitting.
      *
-     * @param string        $data_type the type of data being saved (feedback, ticket, etc) - a const of this class
+     * @param string        $data_type the type of data being saved (community topic, ticket, etc) - a const of this class
      * @param FormInterface $form      the submitted form
      * @param Request       $request   the request that was used to submit the form
      * @param string|null   $name

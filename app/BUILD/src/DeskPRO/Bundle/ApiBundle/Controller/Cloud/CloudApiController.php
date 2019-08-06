@@ -212,7 +212,7 @@ class CloudApiController extends BaseController
             'kb',
             'news',
             'downloads',
-            'feedback',
+            'community',
             'labels',
             'snippets',
             'apps',

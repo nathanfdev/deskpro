@@ -9,9 +9,9 @@ namespace DeskPRO\Bundle\PortalBundle\View;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicAttachment;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsAttachment;
 use Application\DeskPRO\Entity\Ticket;
@@ -79,7 +79,7 @@ class PortalIconFactory
     }
 
     /**
-     * Will return HTML representing an icon for any content type (dl, blob, article, news, feedback).
+     * Will return HTML representing an icon for any content type (dl, blob, article, news, community).
      *
      * @param $content
      *
@@ -93,7 +93,7 @@ class PortalIconFactory
             return $this->makeFileIcon($content);
         } elseif ($content instanceof TicketAttachment) {
             return $this->makeFileIcon($content->getBlob());
-        } elseif ($content instanceof FeedbackAttachment) {
+        } elseif ($content instanceof CommunityTopicAttachment) {
             return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof Article) {
             return $this->makeArticleIcon($content);
@@ -103,8 +103,8 @@ class PortalIconFactory
             return $this->makeNewsIcon($content);
         } elseif ($content instanceof NewsAttachment) {
             return $this->makeFileIcon($content->getBlob());
-        } elseif ($content instanceof Feedback) {
-            return $this->makeFeedbackIcon($content);
+        } elseif ($content instanceof CommunityTopic) {
+            return $this->makeCommunityTopicIcon($content);
         } elseif ($content instanceof Topic) {
             return $this->makeTopicIcon($content);
         } elseif ($content instanceof Ticket) {
@@ -171,13 +171,13 @@ class PortalIconFactory
     }
 
     /**
-     * Will return HTML representing an icon for any feedback.
+     * Will return HTML representing an icon for any community topic.
      *
-     * @param Feedback $feedback
+     * @param CommunityTopic $topic
      *
      * @return string
      */
-    public function makeFeedbackIcon(Feedback $feedback)
+    public function makeCommunityTopicIcon(CommunityTopic $topic)
     {
         return '<i class="far fa-file-alt"></i>';
     }

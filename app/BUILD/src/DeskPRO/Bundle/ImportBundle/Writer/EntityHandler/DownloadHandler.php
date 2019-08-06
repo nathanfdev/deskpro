@@ -57,7 +57,7 @@ class DownloadHandler extends AbstractEntityHandler
             ));
         } else {
             // use default category
-            $entity->setCategory($this->mappers->getDownloadCategoryMapper()->getDefaultCategory());
+            $entity->setCategory($this->mappers->getDownloadCategoryMapper()->getDefaultChannel());
         }
 
         // update download blob

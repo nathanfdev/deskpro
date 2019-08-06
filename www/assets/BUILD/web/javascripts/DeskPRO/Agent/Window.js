@@ -1756,8 +1756,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			sectionId = 'agent_chat_section';
 		} else if (testcl('.OpenChats') || testcl('.UserChatFilter')) {
 			sectionId = 'chat_section';
-		} else if (testcl('.Feedback') || testcl('.FeedbackSearch')) {
-			sectionId = 'feedback_section';
+		} else if (testcl('.Community') || testcl('.CommunitySearch')) {
+			sectionId = 'community_section';
 		} else if (testcl('.TicketFilter') || testcl('.RecycleBin')) {
 			sectionId = 'tickets_section';
 		} else if (testcl('.Task')) {
@@ -2762,7 +2762,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('download', cb.bind(this));
 		this.addPageRouteLoader('news', cb.bind(this));
 		this.addPageRouteLoader('guides', cb.bind(this));
-		this.addPageRouteLoader('feedback', cb.bind(this));
+		this.addPageRouteLoader('community', cb.bind(this));
 		this.addPageRouteLoader('org', cb.bind(this));
 
     var loaded = {};
@@ -2872,17 +2872,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/downloads/new',
 				autostart: autostart
 			});
-			this.newFeedbackLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
-				loadUrl: BASE_URL + 'agent/feedback/new',
-				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
+			this.newCommunityTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+				loadUrl: BASE_URL + 'agent/community/topic/new',
+				tabRoute: 'page:' + BASE_URL + 'agent/community/topic/new',
 				autostart: autostart
 			});
-			this.newFeedbackLoader.newLinkedFeedback = function(ticket_id, message_id) {
-				self.newFeedbackLoader.nextParams = {
+			this.newCommunityTopicLoader.newLinkedCommunityTopic = function(ticket_id, message_id) {
+				self.newCommunityTopicLoader.nextParams = {
 					ticket_id: ticket_id,
 					message_id: message_id || 0
 				};
-				self.newFeedbackLoader.open();
+				self.newCommunityTopicLoader.open();
 			};
       this.newTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
         loadUrl: BASE_URL + 'agent/guides/new',
@@ -3462,8 +3462,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				url = BASE_URL + 'agent/people/get-section-data.json';
 				break;
 
-			case 'feedback_section':
-				url = BASE_URL + 'agent/feedback/get-section-data.json';
+			case 'community_section':
+				url = BASE_URL + 'agent/community/get-section-data.json';
 				break;
 
 			case 'publish_section':

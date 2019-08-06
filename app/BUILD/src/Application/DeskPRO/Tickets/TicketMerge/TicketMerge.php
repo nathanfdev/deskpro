@@ -400,7 +400,7 @@ class TicketMerge implements PersonContextInterface
             WHERE ticket_id = ?
         ', [$this->ticket['id'], $this->other_ticket['id']]);
 
-        // Feedback
+        // Ticket feedback
         $this->db->executeUpdate('
             UPDATE IGNORE ticket_feedback
             SET ticket_id = ?

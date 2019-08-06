@@ -564,8 +564,8 @@ class SearchContainer extends React.Component {
                 label: intl.formatMessage({ id: 'agent.general.download' })
               },
               {
-                value: 'feedback',
-                label: intl.formatMessage({ id: 'agent.general.feedback' })
+                value: 'community',
+                label: intl.formatMessage({ id: 'agent.general.community' })
               },
               {
                 value: 'guide',

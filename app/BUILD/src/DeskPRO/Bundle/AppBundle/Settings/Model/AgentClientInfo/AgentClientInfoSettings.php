@@ -4,8 +4,8 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CommunitySettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMSettings;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\PublishSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\TasksSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\TicketsSettings;
@@ -46,11 +46,11 @@ class AgentClientInfoSettings
     private $crm;
 
     /**
-     * @var FeedbackSettings
+     * @var CommunitySettings
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackSettings")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CommunitySettings")
      */
-    private $feedback;
+    private $community;
 
     /**
      * @var PublishSettings
@@ -82,7 +82,7 @@ class AgentClientInfoSettings
         $this->settings    = new CoreSettings();
         $this->chat        = new ChatSettings();
         $this->crm         = new CRMSettings();
-        $this->feedback    = new FeedbackSettings();
+        $this->community   = new CommunitySettings();
         $this->publish     = new PublishSettings();
         $this->tasks       = new TasksSettings();
         $this->tickets     = new TicketsSettings();
@@ -169,21 +169,21 @@ class AgentClientInfoSettings
     }
 
     /**
-     * @return FeedbackSettings
+     * @return CommunitySettings
      */
-    public function getFeedback()
+    public function getCommunity()
     {
-        return $this->feedback;
+        return $this->community;
     }
 
     /**
-     * @param FeedbackSettings $feedback
+     * @param CommunitySettings $community
      *
      * @return $this
      */
-    public function setFeedback(FeedbackSettings $feedback)
+    public function setCommunity(CommunitySettings $community)
     {
-        $this->feedback = $feedback;
+        $this->community = $community;
 
         return $this;
     }

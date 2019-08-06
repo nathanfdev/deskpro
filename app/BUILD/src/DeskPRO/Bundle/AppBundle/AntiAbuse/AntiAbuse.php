@@ -24,15 +24,15 @@ class AntiAbuse
     const SETTING_RATE_LIMIT_IS_DISABLED = 'core.rate_limit_disabled';
     const SETTING_IP_WHITELIST           = 'core.rate_limit_ips';
 
-    const ACTION_LOGIN           = 'login';
-    const ACTION_UPLOAD          = 'upload_attachment';
-    const ACTION_REGISTER        = 'registration';
-    const ACTION_RESET_PASSWORD  = 'reset_password';
-    const ACTION_TOKEN_EXCHANGE  = 'token_exchange';
-    const ACTION_SUBMIT_COMMENT  = 'submit_comment';
-    const ACTION_SUBMIT_FEEDBACK = 'submit_feedback';
-    const ACTION_SUBMIT_TICKET   = 'submit_ticket';
-    const ACTION_SHARE_CONTENT   = 'share_content';
+    const ACTION_LOGIN                  = 'login';
+    const ACTION_UPLOAD                 = 'upload_attachment';
+    const ACTION_REGISTER               = 'registration';
+    const ACTION_RESET_PASSWORD         = 'reset_password';
+    const ACTION_TOKEN_EXCHANGE         = 'token_exchange';
+    const ACTION_SUBMIT_COMMENT         = 'submit_comment';
+    const ACTION_SUBMIT_COMMUNITY_TOPIC = 'submit_community_topic';
+    const ACTION_SUBMIT_TICKET          = 'submit_ticket';
+    const ACTION_SHARE_CONTENT          = 'share_content';
 
     // the EVENT_ consts are needed, because the ACTION_ are legacy and
     // cannot be used by themselves as event names for this sytem.

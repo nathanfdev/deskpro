@@ -53,7 +53,7 @@ class Deskpro3RedirectController extends AbstractController
     }
 
     //###########################################################################
-    // Feedback
+    // Community
     //###########################################################################
 
     /**
@@ -61,7 +61,7 @@ class Deskpro3RedirectController extends AbstractController
      * ideas.php?cat=123
      * ideas.php?123-some-idea.
      */
-    public function feedbackAction()
+    public function communityAction()
     {
         $catId   = isset($_GET['cat']) ? $_GET['cat'] : 0;
         $ideaStr = Arrays::getFirstKey($_GET);
@@ -73,14 +73,14 @@ class Deskpro3RedirectController extends AbstractController
             $id    = Strings::extractRegexMatch('#^([0-9]+)#', $ideaStr);
             $newId = $this->getNewId('dp3_ideaid_'.$id);
             if ($newId) {
-                $obj = $this->getEm()->find('DeskPRO:Feedback', $newId);
+                $obj = $this->getEm()->find('DeskPRO:CommunityTopic', $newId);
                 if ($obj) {
-                    return $this->redirectToRoute('portal_feedback_view', ['slug' => $obj->getUrlSlug()], 301);
+                    return $this->redirectToRoute('portal_community_topic_view', ['slug' => $obj->getUrlSlug()], 301);
                 }
             }
         }
 
-        return $this->redirectToRoute('portal_feedback', [], 301);
+        return $this->redirectToRoute('portal_community', [], 301);
     }
 
     //###########################################################################

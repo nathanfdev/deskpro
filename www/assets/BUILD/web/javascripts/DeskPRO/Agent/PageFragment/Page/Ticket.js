@@ -645,26 +645,26 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       });
     });
 
-    this.linkExistingFeedback = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback(this, {
-      loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-feedback-overlay",
-      saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/feedback_links",
+    this.linkExistingCommunityTopic = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkCommunityTopic(this, {
+      loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-community-topic-overlay",
+      saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/community_topic_links",
       reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
     });
 
-    this.ownObject(this.linkExistingFeedback);
+    this.ownObject(this.linkExistingCommunityTopic);
 
-    this.wrapper.find('.unlink-feedback').on('click', function(ev) {
+    this.wrapper.find('.unlink-community-topic').on('click', function(ev) {
       Orb.cancelEvent(ev);
 
-      if (!confirm("Are you sure you want to unlink the selected feedback?")) {
+      if (!confirm("Are you sure you want to unlink selected topic?")) {
         return;
       }
 
-      var ticketFeedbackLinkId = $(this).data('id');
+      var ticketCommunityTopicLinkId = $(this).data('id');
 
       $(this).closest('tr').hide();
       $.ajax({
-        url: DP_BASE_API_URL + "/v2/tickets/" + self.meta.ticket_id + "/feedback_links/" + ticketFeedbackLinkId,
+        url: DP_BASE_API_URL + "/v2/tickets/" + self.meta.ticket_id + "/community_topic_links/" + ticketCommunityTopicLinkId,
         type: 'DELETE',
         withActionAlerts: true,
         error: function() {
@@ -672,7 +672,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         },
         success: function() {
           $(this).closest('tr').remove();
-          decTabCount('linked_feedback_count');
+          decTabCount('linked_community_topic_count');
         }
       });
     });
@@ -730,9 +730,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         if (type == 'messages') {
           self.getEl('messages_wrap').removeClass('show-log');
           self.getEl('messages_wrap').find('article.content-message').show();
-        } else if (type == 'feedback') {
+        } else if (type == 'community') {
           self.getEl('messages_wrap').removeClass('show-log');
-          self.getEl('messages_wrap').find('article.content-message').show().not('article.with-feedback').hide();
+          self.getEl('messages_wrap').find('article.content-message').show().not('article.with-community-topic').hide();
         } else if (type == 'log') {
           self.refreshLogTypes();
         }
@@ -1654,9 +1654,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this.linkExistingTicket.destroy();
       this.linkExistingTicket = null;
     }
-    if (this.linkExistingFeedback) {
-      this.linkExistingFeedback.destroy();
-      this.linkExistingFeedback = null;
+    if (this.linkExistingCommunityTopic) {
+      this.linkExistingCommunityTopic.destroy();
+      this.linkExistingCommunityTopic = null;
     }
     if (this.labelsInput) {
       this.labelsInput.destroy();
@@ -2516,12 +2516,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             self.linkExistingTicket.open();
             break;
 
-          case 'link_existing_feedback':
-            self.linkExistingFeedback.open();
+          case 'link_existing_community_topic':
+            self.linkExistingCommunityTopic.open();
             break;
 
-          case 'link_new_feedback':
-            DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(self.meta.ticket_id);
+          case 'link_new_community_topic':
+            DeskPRO_Window.newCommunityTopicLoader.newLinkedCommunityTopic(self.meta.ticket_id);
             break;
 
           case 'kb-pending':
@@ -3327,8 +3327,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
         break;
 
-      case 'link_new_feedback':
-        DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
+      case 'link_existing_community_topic':
+        DeskPRO_Window.newCommunityTopicLoader.newLinkedCommunityTopic(this.meta.ticket_id, messageId);
         break;
 
       case 'fwd':

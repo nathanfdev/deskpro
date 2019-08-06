@@ -354,11 +354,11 @@ class CategoryEdit
                     LIMIT 1
                 ", [$categoryId]);
                 break;
-            case 'feedback':
+            case 'community':
                 $counts = App::getDb()->fetchColumn("
                     SELECT COUNT(*)
-                    FROM feedback
-                    WHERE category_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+                    FROM community_topics
+                    WHERE channel_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
                 ", [$categoryId]);
                 break;

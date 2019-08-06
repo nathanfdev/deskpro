@@ -1,0 +1,12 @@
+<select name="{{ name }}" class="{{ add_classname }}">
+	<optgroup label="{{ phrase('agent.community.status_active') }}">
+		{% for cat in active_status_cats %}
+			<option value="active.{{ cat.id }}">{{ cat.title }}</option>
+		{% endfor %}
+	</optgroup>
+	<optgroup label="{{ phrase('agent.community.status_closed') }}">
+		{% for cat in closed_status_cats %}
+			<option value="closed.{{ cat.id }}">{{ cat.title }}</option>
+		{% endfor %}
+	</optgroup>
+</select>

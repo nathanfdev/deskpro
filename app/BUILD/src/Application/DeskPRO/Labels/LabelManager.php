@@ -190,7 +190,7 @@ class LabelManager
                 case 'DeskPRO:LabelArticle':          $perm = $person->hasPerm('agent_publish.articles_create_labels'); break;
                 case 'DeskPRO:LabelNews':             $perm = $person->hasPerm('agent_publish.news_create_labels'); break;
                 case 'DeskPRO:LabelDownload':         $perm = $person->hasPerm('agent_publish.downloads_create_labels'); break;
-                case 'DeskPRO:LabelFeedback':         $perm = $person->hasPerm('agent_publish.feedback_create_labels'); break;
+                case 'DeskPRO:LabelCommunityTopic':   $perm = $person->hasPerm('agent_publish.community_create_labels'); break;
                 default: $perm                              = false;
             }
         } else {

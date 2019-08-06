@@ -15,7 +15,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     initialLoad() {
       const promise = this.Api2.sendGet(_url).then(res => this.$scope.settings = res.data.data);
-      const feedbackPromise = this.Api.sendGet('/settings/portal/feedback').then(res => this.$scope.feedbackSettings = res.data.settings);
+      const feedbackPromise = this.Api.sendGet('/settings/portal/community').then(res => this.$scope.feedbackSettings = res.data.settings);
       const usersourcePromise = this.Api2.sendGet('/settings/user_source').then(res => this.$scope.usersourceSettings = res.data.data);
       const generalPromise = this.Api.sendGet('/general_settings').then(res => this.$scope.general_settings = res.data.general_settings);
 

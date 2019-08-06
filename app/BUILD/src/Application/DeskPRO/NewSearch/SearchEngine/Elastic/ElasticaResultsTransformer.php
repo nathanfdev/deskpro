@@ -87,7 +87,7 @@ class ElasticaResultsTransformer
             case 'article':           return 'DeskPRO:Article';
             case 'download':          return 'DeskPRO:Download';
             case 'news':              return 'DeskPRO:News';
-            case 'feedback':          return 'DeskPRO:Feedback';
+            case 'community':         return 'DeskPRO:CommunityTopic';
             case 'topic':             return 'DeskPRO:Topic';
             case 'chat_conversation': return 'DeskPRO:ChatConversation';
             case 'person':            return 'DeskPRO:Person';

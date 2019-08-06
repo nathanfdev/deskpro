@@ -104,7 +104,7 @@ abstract class AbstractCustomDefHandler extends AbstractEntityHandler
      *
      * @param PrimaryImportModelInterface $model
      *
-     * @return DeskPROEntity\CustomDefFeedback
+     * @return DeskPROEntity\CustomDefCommunityTopic
      */
     private function findOrCreateCustomDef(PrimaryImportModelInterface $model)
     {

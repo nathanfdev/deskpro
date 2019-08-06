@@ -1,0 +1,101 @@
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{% set tplvars = { baseId: el_uid() } %}
+
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+	<script>
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.CommunitySearch';
+	</script>
+{% endblock top %}
+
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
+
+{% block pane_header %}
+	<h1><i class="far icon-dp-article"></i> {{ phrase('agent.community.list_title', {count: num_results}) }}</h1>
+{% endblock pane_header %}
+
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
+
+	{% if results|length %}
+	<section class="community-simple-list list-listing">
+		<section class="search-results page-set" data-page="{{ page }}">
+			{% for topic in results %}
+				<article
+					class="row-item community community-{{topic.id}} community-topic-{{topic.id}} related-is-linkable"
+					data-content-type="community"
+					data-content-id="{{ topic.id }}"
+					data-route="page:{{ path('agent_community_topic_view', {'communityTopicId': topic.id}) }}"
+					data-route-title="@selector(a.community-title)"
+					data-route-openclass="open"
+				>
+					<div class="top-row">
+						<div class="top-row-left">
+							<span class="votes">
+								{{ topic.num_ratings|default(0) }}
+							</span>
+							<h3>
+								<a class="topic-title click-through">{{ topic.title }}</a>
+							</h3>
+						</div>
+						<div class="top-row-right visible-related-content-controls">
+							<div class="bound-faded"></div>
+							<span class="tipped related-link" title="{{ phrase('agent.general.add_as_related') }}"></span>
+							<span class="tipped related-unlink" title="{{ phrase('agent.general.remove_as_related') }}"></span>
+						</div>
+					</div>
+					<hr class="clear-top" />
+					<div class="extra-fields">
+						<ul>
+							<li>
+								<span class="prop-title">{{ phrase('agent.general.category') }}</span>
+								<span class="prop-val">{{ topic.category.full_title }}</span>
+							</li>
+							<li>
+								<span class="prop-title">{{ phrase('agent.general.author') }}</span>
+								<span class="prop-val">{{ topic.person.display_name }} {% if topic.person.primary_email_address %}({{ topic.person.primary_email_address }}){% endif %}</span>
+							</li>
+							<li>
+								<span class="prop-title">{{ phrase('agent.general.date_created') }}</span>
+								<span class="prop-val">{{ topic.date_created|date('day')}}</span>
+							</li>
+						</ul>
+						<br class="clear" />
+					</div>
+				</article>
+			{% endfor %}
+		</section>
+
+		{% if num_results %}
+			<footer class="results-nav">
+				<div class="cursor">
+					{{ phrase('agent.general.page_x_of_y', {page: page, num_pages: pageinfo.last}) }}
+				</div>
+				{% if num_results > per_page %}
+					<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif %} {% if not pageinfo.next %}no-next{% endif %}">
+						<li class="prev" {% if pageinfo.prev %}data-route="listpane:{{ path('agent_publish_search', {content_type: 'community', p: pageinfo.prev, cache_id: cache_id}) }}"{% endif %}></li>
+						<li class="next" {% if pageinfo.next %}data-route="listpane:{{ path('agent_publish_search', {content_type: 'community', p: pageinfo.next, cache_id: cache_id}) }}"{% endif %}></li>
+					</ul>
+				{% endif %}
+			</footer>
+		{% endif %}
+	</section>
+
+	{% else %}
+
+		<section class="list-listing no-results">
+			<article class="row-item no-results">
+				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+			</article>
+		</section>
+
+	{% endif %}
+
+{% endblock pane_content %}

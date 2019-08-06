@@ -34,8 +34,8 @@ services:
     tags:
       - { name: dp.importer.writer.mapper }
 
-  dp.importer.writer.mapper.custom_def_feedback:
-    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\CustomDefFeedbackMapper
+  dp.importer.writer.mapper.custom_def_community:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\CustomDefCommunityMapper
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: dp.importer.writer.mapper }
@@ -58,8 +58,8 @@ services:
     tags:
       - { name: dp.importer.writer.mapper }
 
-  dp.importer.writer.mapper.feedback_category:
-    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\FeedbackCategoryMapper
+  dp.importer.writer.mapper.community_channel:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\CommunityChannelMapper
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: dp.importer.writer.mapper }

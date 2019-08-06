@@ -26,8 +26,8 @@ Feature: API discover feature
     And the JSON node "data.chat.enabled" should exist
     And the JSON node "data.crm" should exist
     And the JSON node "data.crm.enabled" should exist
-    And the JSON node "data.feedback" should exist
-    And the JSON node "data.feedback.enabled" should exist
+    And the JSON node "data.community" should exist
+    And the JSON node "data.community.enabled" should exist
     And the JSON node "data.publish" should exist
     And the JSON node "data.publish.enabled" should exist
     And the JSON node "data.tasks" should exist

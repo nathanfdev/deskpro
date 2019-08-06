@@ -9,24 +9,24 @@ export class FilterControls extends React.Component {
     available:    PropTypes.object,
     updateFilter: PropTypes.func,
     filterModel:  PropTypes.object,
-    doSpin:       PropTypes.any
+    doSpin:       PropTypes.bool
   };
 
-  onToggleType = typeId => {
+  onToggleType = (typeId) => {
     const { filterModel } = this.props;
     filterModel.toggleType(typeId);
 
     this.updateFilter(filterModel);
   };
 
-  onSetStatusCategory = statusCategoryId => {
+  onSetStatusCategory = (statusCategoryId) => {
     const { filterModel } = this.props;
     filterModel.toggleStatusCategory(statusCategoryId);
 
     this.updateFilter(filterModel);
   };
 
-  onSetStatus = statusId => {
+  onSetStatus = (statusId) => {
     const { filterModel } = this.props;
     filterModel.status_categories = [];
     filterModel.setStatus(statusId);
@@ -34,7 +34,7 @@ export class FilterControls extends React.Component {
     this.updateFilter(filterModel);
   };
 
-  onSetSort = newSort => {
+  onSetSort = (newSort) => {
     const { filterModel } = this.props;
     filterModel.changeSort(newSort);
 
@@ -49,7 +49,7 @@ export class FilterControls extends React.Component {
     const { available, filterModel, doSpin } = this.props;
 
     return (
-      <div className="feedback-filter">
+      <div className="community-filter">
         <TabRow
           available={available}
           filter={filterModel}

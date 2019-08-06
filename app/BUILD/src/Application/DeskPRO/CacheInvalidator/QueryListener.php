@@ -91,9 +91,9 @@ class QueryListener
             case 'update_downloads_categories':
             case 'insert_downloads_categories':
             case 'delete_downloads_categories':
-            case 'update_feedback_categories':
-            case 'insert_feedback_categories':
-            case 'delete_feedback_categories':
+            case 'update_community_channels':
+            case 'insert_community_channels':
+            case 'delete_community_channels':
             case 'update_news_categories':
             case 'insert_news_categories':
             case 'delete_news_categories':
@@ -109,20 +109,20 @@ class QueryListener
                 break;
 
             case 'delete_articles':
-            case 'delete_feedback':
+            case 'delete_community_topics':
             case 'delete_news':
             case 'delete_downloads':
             case 'insert_articles':
             case 'insert_news':
             case 'insert_downloads':
-            case 'insert_feedback':
+            case 'insert_community_topics':
                 $this->updates[] = 'publish_structure_cache';
                 break;
 
             case 'update_articles':
             case 'update_news':
             case 'update_downloads':
-            case 'update_feedback':
+            case 'update_community_topics':
                 if (strpos($sql, 'category_id') !== false) {
                     $this->updates[] = 'publish_structure_cache';
                 } elseif (strpos($sql, 'status')) {

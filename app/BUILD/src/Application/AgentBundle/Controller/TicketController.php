@@ -21,9 +21,9 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Draft;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
@@ -63,9 +63,10 @@ use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -368,10 +369,11 @@ class TicketController extends AbstractController
         );
 
         //------------------------------
-        // Linked Feedback
+        // Linked Community Topics
         //------------------------------
-        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
-        $ticketFeedbackLinks = $feedbackRepo->findByTicketAndJoinFeedbackData($ticket);
+        /** @var TicketCommunityTopicLinkRepository $ticketCommunityTopicsLinksRepo */
+        $ticketCommunityTopicsLinksRepo = $this->em->getRepository(TicketCommunityTopicLink::class);
+        $ticketCommunityTopicsLinks     = $ticketCommunityTopicsLinksRepo->findByTicketAndJoinCommunityTopicData($ticket);
 
         //------------------------------
         // Pre-load person and org
@@ -439,9 +441,9 @@ class TicketController extends AbstractController
             'custom_person_fields' => $custom_person_fields,
             'custom_org_fields'    => $custom_org_fields,
 
-            'show_related_content'  => $show_related_content,
-            'linked_tickets'        => $linked_tickets,
-            'ticket_feedback_links' => $ticketFeedbackLinks,
+            'show_related_content'          => $show_related_content,
+            'linked_tickets'                => $linked_tickets,
+            'ticket_community_topics_links' => $ticketCommunityTopicsLinks,
 
             'ticket_messages_block' => $ticket_messages_block,
 
@@ -5351,6 +5353,7 @@ class TicketController extends AbstractController
                     $parent_ticket = $this->em->find(Ticket::class, $this->in->getUInt('parent_ticket_id'));
                     if ($parent_ticket) {
                         $ticket->setParentTicket($parent_ticket);
+                        $ticket->setBrandId($parent_ticket->getBrandId());
                     }
                 }
 
@@ -5623,8 +5626,8 @@ class TicketController extends AbstractController
                 return DownloadComment::class;
             case 'news':
                 return NewsComment::class;
-            case 'feedback':
-                return FeedbackComment::class;
+            case 'community':
+                return CommunityTopicComment::class;
         }
     }
 
@@ -6293,7 +6296,7 @@ CSS;
         return $this->render('AgentBundle:Ticket:link.html.twig');
     }
 
-    public function linkExistingFeedbackOverlayAction($ticket_id)
+    public function linkExistingCommunityTopicOverlayAction($ticket_id)
     {
         try {
             $ticket = $this->getTicketOr404($ticket_id);
@@ -6307,11 +6310,11 @@ CSS;
             }
         }
 
-        $exludeIds = $ticket->getFeedbackLinks()->map(function ($e) {
-            return $e->getFeedback()->getId();
+        $exludeIds = $ticket->getTopicLinks()->map(function ($e) {
+            return $e->getTopic()->getId();
         })->toArray();
 
-        return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [
+        return $this->render('AgentBundle:Ticket:link-community-topic.html.twig', [
             'ticket'    => $ticket,
             'exludeIds' => $exludeIds,
         ]);

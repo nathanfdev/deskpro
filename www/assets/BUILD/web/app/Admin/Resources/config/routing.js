@@ -1886,140 +1886,140 @@ define(function() {
   });
 
   // ###
-  // # Feedback::Settings
+  // # Community::Settings
   // ###
   routes.push({
-    id:           'portal.feedback_settings',
-    url:          '/feedback/settings',
-    templateName: 'FeedbackSettings/feedback-settings.html',
-    controller:   'Admin_FeedbackSettings_Ctrl_FeedbackSettings'
+    id:           'portal.community_settings',
+    url:          '/community/settings',
+    templateName: 'CommunitySettings/community-settings.html',
+    controller:   'Admin_CommunitySettings_Ctrl_CommunitySettings'
   });
 
   // ###
   // # Feedback::Statuses
   // ###
   routes.push({
-    id:           'portal.feedback_statuses',
-    url:          '/feedback/statuses',
-    templateName: 'FeedbackStatuses/list.html',
-    controller:   'Admin_FeedbackStatuses_Ctrl_List'
+    id:           'portal.community_statuses',
+    url:          '/community/statuses',
+    templateName: 'CommunityStatuses/list.html',
+    controller:   'Admin_CommunityStatuses_Ctrl_List'
   });
 
   routes.push({
-    id:         'portal.feedback_statuses.gocreate',
+    id:         'portal.community_statuses.gocreate',
     url:        '/go-create/{type:(?:active|closed)}',
     template:   '',
-    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('portal.feedback_statuses.create', { type: $stateParams.type }); }]
+    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('portal.community_statuses.create', { type: $stateParams.type }); }]
   });
 
   routes.push({
-    id:           'portal.feedback_statuses.create',
+    id:           'portal.community_statuses.create',
     url:          '/create/{type:(?:active|closed)}',
-    templateName: 'FeedbackStatuses/edit.html',
-    controller:   'Admin_FeedbackStatuses_Ctrl_Edit'
+    templateName: 'CommunityStatuses/edit.html',
+    controller:   'Admin_CommunityStatuses_Ctrl_Edit'
   });
 
   routes.push({
-    id:           'portal.feedback_statuses.edit',
+    id:           'portal.community_statuses.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'FeedbackStatuses/edit.html',
-    controller:   'Admin_FeedbackStatuses_Ctrl_Edit'
+    templateName: 'CommunityStatuses/edit.html',
+    controller:   'Admin_CommunityStatuses_Ctrl_Edit'
   });
 
   // ###
-  // # Feedback::Types
+  // # Community::Channels
   // ###
   routes.push({
-    id:           'portal.feedback_types',
-    url:          '/feedback/types',
-    templateName: 'FeedbackTypes/list.html',
-    controller:   'Admin_FeedbackTypes_Ctrl_List'
+    id:           'portal.community_channels',
+    url:          '/community/channels',
+    templateName: 'CommunityChannels/list.html',
+    controller:   'Admin_CommunityChannels_Ctrl_List'
   });
 
   routes.push({
-    id:         'portal.feedback_types.gocreate',
+    id:         'portal.community_channels.gocreate',
     url:        '/go-create/',
     template:   '',
-    controller: ['$state', function ($state) { $state.go('portal.feedback_types.create'); }]
+    controller: ['$state', function ($state) { $state.go('portal.community_channels.create'); }]
   });
 
   routes.push({
-    id:           'portal.feedback_types.create',
+    id:           'portal.community_channels.create',
     url:          '/create/',
-    templateName: 'FeedbackTypes/edit.html',
-    controller:   'Admin_FeedbackTypes_Ctrl_Edit'
+    templateName: 'CommunityChannels/edit.html',
+    controller:   'Admin_CommunityChannels_Ctrl_Edit'
   });
 
   routes.push({
-    id:           'portal.feedback_types.edit',
+    id:           'portal.community_channels.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'FeedbackTypes/edit.html',
-    controller:   'Admin_FeedbackTypes_Ctrl_Edit'
+    templateName: 'CommunityChannels/edit.html',
+    controller:   'Admin_CommunityChannels_Ctrl_Edit'
   });
 
   // ###
-  // # Feedback::Categories
+  // # Community::CustomChannels
   // ###
   routes.push({
-    id:           'portal.feedback_categories',
-    url:          '/feedback/categories',
-    templateName: 'FeedbackCategories/list.html',
-    controller:   'Admin_FeedbackCategories_Ctrl_List'
+    id:           'portal.community_custom_channels',
+    url:          '/community/custom_channels',
+    templateName: 'CommunityCustomChannels/list.html',
+    controller:   'Admin_CommunityCustomChannels_Ctrl_List'
   });
 
   routes.push({
-    id:         'portal.feedback_categories.gocreate',
+    id:         'portal.community_custom_channels.gocreate',
     url:        '/go-create/',
     template:   '',
-    controller: ['$state', function ($state) { $state.go('portal.feedback_categories.create'); }]
+    controller: ['$state', function ($state) { $state.go('portal.community_custom_channels.create'); }]
   });
 
   routes.push({
-    id:           'portal.feedback_categories.create',
+    id:           'portal.community_custom_channels.create',
     url:          '/create/',
-    templateName: 'FeedbackCategories/edit.html',
-    controller:   'Admin_FeedbackCategories_Ctrl_Edit'
+    templateName: 'CommunityCustomChannels/edit.html',
+    controller:   'Admin_CommunityCustomChannels_Ctrl_Edit'
   });
 
   routes.push({
-    id:           'portal.feedback_categories.edit',
+    id:           'portal.community_custom_channels.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'FeedbackCategories/edit.html',
-    controller:   'Admin_FeedbackCategories_Ctrl_Edit'
+    templateName: 'CommunityCustomChannels/edit.html',
+    controller:   'Admin_CommunityCustomChannels_Ctrl_Edit'
   });
 
   // ###
   // # Feedback::Labels
   // ###
   routes.push({
-    id:           'portal.feedback_labels',
-    url:          '/feedback/labels',
+    id:           'portal.community_labels',
+    url:          '/community/labels',
     templateName: 'Labels/Feedback/list.html',
     controller:   'Admin_Labels_Ctrl_List',
-    data:         { type: 'feedback' }
+    data:         { type: 'community' }
   });
 
   routes.push({
-    id:           'portal.feedback_labels.create',
+    id:           'portal.community_labels.create',
     url:          '/create/',
     templateName: 'Labels/Feedback/edit.html',
     controller:   'Admin_Labels_Ctrl_Edit',
-    data:         { type: 'feedback' }
+    data:         { type: 'community' }
   });
 
   routes.push({
-    id:           'portal.feedback_labels.gocreate',
+    id:           'portal.community_labels.gocreate',
     url:          '/go-create/',
     templateName: 'Labels/Feedback/edit.html',
-    controller:   ['$state', function ($state) { $state.go('portal.feedback_labels.create'); }]
+    controller:   ['$state', function ($state) { $state.go('portal.community_labels.create'); }]
   });
 
   routes.push({
-    id:           'portal.feedback_labels.edit',
+    id:           'portal.community_labels.edit',
     url:          '/{label:.*}/',
     templateName: 'Labels/Feedback/edit.html',
     controller:   'Admin_Labels_Ctrl_Edit',
-    data:         { type: 'feedback' }
+    data:         { type: 'community' }
   });
 
   // ###

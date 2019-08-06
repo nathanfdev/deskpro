@@ -5,16 +5,16 @@ namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
+use DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
-use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -45,14 +45,14 @@ class HierarchyGenerator
     private $em;
 
     /**
-     * @var \DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
+     * @var DepartmentDataService
      */
     private $departmentDataService;
 
     /**
-     * @var FeedbackDataService
+     * @var CommunityDataService
      */
-    private $feedbackDataService;
+    private $communityDataService;
 
     /**
      * @var LanguageManager
@@ -69,20 +69,20 @@ class HierarchyGenerator
      *
      * @param EntityManager         $em
      * @param DepartmentDataService $departmentDataService
-     * @param FeedbackDataService   $feedbackDataService
+     * @param CommunityDataService  $communityDataService
      * @param LanguageManager       $languageManager
      * @param BrandStack            $brandStack
      */
     public function __construct(
         EntityManager         $em,
         DepartmentDataService $departmentDataService,
-        FeedbackDataService   $feedbackDataService,
+        CommunityDataService  $communityDataService,
         LanguageManager       $languageManager,
         BrandStack            $brandStack
     ) {
         $this->em                    = $em;
         $this->departmentDataService = $departmentDataService;
-        $this->feedbackDataService   = $feedbackDataService;
+        $this->communityDataService  = $communityDataService;
         $this->languageManager       = $languageManager;
         $this->brandStack            = $brandStack;
     }
@@ -387,17 +387,17 @@ class HierarchyGenerator
      *
      * @return Hierarchy
      */
-    public function generateForFeedbackCategories(Person $person)
+    public function generateForCommunityChannels(Person $person)
     {
-        $feedback_data_service = $this->feedbackDataService;
+        $communityDataService = $this->communityDataService;
 
         return $this->generateAndCache(
             [
-                'generateForFeedbackCategories',
+                'generateForCommunityChannels',
                 $person,
             ],
-            function () use ($feedback_data_service, $person) {
-                $categories = $feedback_data_service->getFeedbackCategoriesForPerson($person);
+            function () use ($communityDataService, $person) {
+                $categories = $communityDataService->getCommunityChannelsForPerson($person);
                 $rootNodes = [];
                 foreach ($categories as $category) {
                     if ($category->getParent()) {
@@ -410,7 +410,7 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
+                $recursive = function (CommunityChannel $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
                     $hierarchy->addNode($parent);
                     foreach ($cat->getChildren() as $child) {
                         $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));

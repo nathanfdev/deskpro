@@ -16,7 +16,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
@@ -46,65 +46,65 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Ticket.
  *
- * @property int                                 $id
- * @property string                              $ref
- * @property string                              $auth
- * @property Language                            $language
- * @property Brand                               $brand
- * @property Department                          $department
- * @property TicketCategory                      $category
- * @property TicketWorkflow                      $workflow
- * @property TicketPriority                      $priority
- * @property Product                             $product
- * @property Person                              $person
- * @property PersonEmail                         $person_email
- * @property Person                              $agent
- * @property AgentTeam                           $agent_team
- * @property Organization                        $organization
- * @property ChatConversation                    $linked_chat
- * @property TicketAttachment[]|ArrayCollection  $attachments
- * @property TicketAccessCode[]|ArrayCollection  $access_codes
- * @property TicketMessage[]|ArrayCollection     $messages
- * @property TicketSms[]                         $sms_messages
- * @property TicketFeedbackLink[]|ArrayCollection  $feedback_links
- * @property CustomDataTicket[]|ArrayCollection  $custom_data
- * @property LabelTicket[]                       $labels
- * @property string                              $sent_to_address
- * @property EmailAccount                        $email_account
- * @property string                              $email_account_address
- * @property string                              $creation_system
- * @property string                              $creation_system_option
- * @property string                              $ticket_hash
- * @property string                              $status
- * @property TicketStatus                        $ticket_status
- * @property int                                 $urgency
- * @property int                                 $feedback_rating
- * @property \DateTime                           $date_feedback_rating
- * @property \DateTime                           $date_created
- * @property \DateTime                           $date_resolved
- * @property \DateTime                           $date_archived
- * @property \DateTime                           $date_first_agent_assign
- * @property \DateTime                           $date_first_agent_reply
- * @property \DateTime                           $date_last_agent_reply
- * @property \DateTime                           $date_last_user_reply
- * @property \DateTime                           $date_agent_waiting
- * @property \DateTime                           $date_user_waiting
- * @property \DateTime                           $date_status
- * @property int                                 $total_user_waiting
- * @property int                                 $total_to_first_reply
- * @property Person                              $locked_by_agent
- * @property \DateTime                           $date_locked
- * @property bool                                $has_attachments
- * @property string                              $subject
- * @property string                              $original_subject
- * @property array                               $properties
- * @property int                                 $count_agent_replies
- * @property int                                 $count_user_replies
- * @property string|null                         $worst_sla_status
- * @property array                               $waiting_times
- * @property TicketParticipant[]|ArrayCollection $participants
- * @property TicketCharge[]                      $charges
- * @property TicketSla[]|ArrayCollection         $ticket_slas
+ * @property int                                  $id
+ * @property string                               $ref
+ * @property string                               $auth
+ * @property Language                             $language
+ * @property Brand                                $brand
+ * @property Department                           $department
+ * @property TicketCategory                       $category
+ * @property TicketWorkflow                       $workflow
+ * @property TicketPriority                       $priority
+ * @property Product                              $product
+ * @property Person                               $person
+ * @property PersonEmail                          $person_email
+ * @property Person                                     $agent
+ * @property AgentTeam                                  $agent_team
+ * @property Organization                               $organization
+ * @property ChatConversation                           $linked_chat
+ * @property TicketAttachment[]|ArrayCollection         $attachments
+ * @property TicketAccessCode[]|ArrayCollection         $access_codes
+ * @property TicketMessage[]|ArrayCollection            $messages
+ * @property TicketSms[]                                $sms_messages
+ * @property TicketCommunityTopicLink[]|ArrayCollection $topic_links
+ * @property CustomDataTicket[]|ArrayCollection         $custom_data
+ * @property LabelTicket[]                              $labels
+ * @property string                                     $sent_to_address
+ * @property EmailAccount                               $email_account
+ * @property string                                     $email_account_address
+ * @property string                                     $creation_system
+ * @property string                                     $creation_system_option
+ * @property string                               $ticket_hash
+ * @property string                               $status
+ * @property TicketStatus                         $ticket_status
+ * @property int                                  $urgency
+ * @property int                                  $feedback_rating
+ * @property \DateTime                            $date_feedback_rating
+ * @property \DateTime                            $date_created
+ * @property \DateTime                            $date_resolved
+ * @property \DateTime                            $date_archived
+ * @property \DateTime                            $date_first_agent_assign
+ * @property \DateTime                            $date_first_agent_reply
+ * @property \DateTime                            $date_last_agent_reply
+ * @property \DateTime                            $date_last_user_reply
+ * @property \DateTime                            $date_agent_waiting
+ * @property \DateTime                            $date_user_waiting
+ * @property \DateTime                            $date_status
+ * @property int                                  $total_user_waiting
+ * @property int                                  $total_to_first_reply
+ * @property Person                               $locked_by_agent
+ * @property \DateTime                            $date_locked
+ * @property bool                                 $has_attachments
+ * @property string                               $subject
+ * @property string                               $original_subject
+ * @property array                                $properties
+ * @property int                                  $count_agent_replies
+ * @property int                                  $count_user_replies
+ * @property string|null                          $worst_sla_status
+ * @property array                                $waiting_times
+ * @property TicketParticipant[]|ArrayCollection  $participants
+ * @property TicketCharge[]                       $charges
+ * @property TicketSla[]|ArrayCollection          $ticket_slas
  *
  * REPEAT THESE ANNOTATIONS IN DeskPRO\Bundle\AppBundle\Model\TicketView
  * @PortalLinkRoute("portal_tickets_guest_view", route_param_map={"auth":"auth"}, type="view_only")
@@ -289,9 +289,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $sms_messages;
 
     /**
-     * @var TicketFeedbackLink[]|ArrayCollection
+     * @var TicketCommunityTopicLink[]|ArrayCollection
      */
-    protected $feedback_links;
+    protected $topic_links;
 
     /**
      * @var ArrayCollection|CustomDataTicket[]
@@ -628,7 +628,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->jira_issues      = new ArrayCollection();
         $this->messages         = new ArrayCollection();
         $this->sms_messages     = new ArrayCollection();
-        $this->feedback_links   = new ArrayCollection();
+        $this->topic_links      = new ArrayCollection();
         $this->custom_data      = new ArrayCollection();
         $this->customPerData    = new ArrayCollection();
         $this->labels           = new ArrayCollection();
@@ -1803,51 +1803,51 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return TicketFeedbackLink[]|ArrayCollection
+     * @return TicketCommunityTopicLink[]|ArrayCollection
      */
-    public function getFeedbackLinks()
+    public function getTopicLinks()
     {
-        return $this->feedback_links;
+        return $this->topic_links;
     }
 
     /**
-     * Add a TicketFeedbackLink to this ticket.
+     * Add a TicketCommunityTopicLink to this ticket.
      *
-     * @param TicketFeedbackLink $feedbackLink
+     * @param TicketCommunityTopicLink $topicLink
      */
-    public function addFeedbackLink(TicketFeedbackLink $feedbackLink)
+    public function addTopicLink(TicketCommunityTopicLink $topicLink)
     {
-        if ($this->feedback_links->contains($feedbackLink)) {
+        if ($this->topic_links->contains($topicLink)) {
             return;
         }
 
-        $changes = $this->getStateChangeRecorder()->getChangesForField('feedback_links');
+        $changes = $this->getStateChangeRecorder()->getChangesForField('topic_links');
         if ($changes) {
             foreach ($changes as $c) {
-                if ($c->getNew() === $feedbackLink) {
+                if ($c->getNew() === $topicLink) {
                     // already added
                     return;
                 }
             }
         }
 
-        $this->feedback_links->add($feedbackLink);
-        $feedbackLink->setTicket($this);
+        $this->topic_links->add($topicLink);
+        $topicLink->setTicket($this);
 
-        $this->_onPropertyChanged('feedback_links', null, $feedbackLink, true);
-        $this->getStateChangeRecorder()->record('feedback_link', null, $feedbackLink);
+        $this->_onPropertyChanged('topic_links', null, $topicLink, true);
+        $this->getStateChangeRecorder()->record('topic_link', null, $topicLink);
     }
 
     /**
-     * @param TicketFeedbackLink $feedbackLink
+     * @param TicketCommunityTopicLink $topicLink
      *
      * @return $this
      */
-    public function removeFeedbackLink(TicketFeedbackLink $feedbackLink)
+    public function removeTopicLink(TicketCommunityTopicLink $topicLink)
     {
-        $this->feedback_links->removeElement($feedbackLink);
-        $this->_onPropertyChanged('feedback_links', null, $this->feedback_links);
-        $this->getStateChangeRecorder()->record('feedback_link', $feedbackLink, null);
+        $this->topic_links->removeElement($topicLink);
+        $this->_onPropertyChanged('topic_links', null, $this->topic_links);
+        $this->getStateChangeRecorder()->record('topic_link', $topicLink, null);
 
         return $this;
     }
@@ -3910,6 +3910,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'person',
             'person_email',
             'department',
+            'brand',
             'category',
             'product',
             'workflow',
@@ -5559,8 +5560,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'     => 'feedback_links',
-                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketFeedbackLink',
+                'fieldName'     => 'topic_links',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketCommunityTopicLink',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

@@ -1,0 +1,365 @@
+<?php
+
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
+
+namespace Application\DeskPRO\EntityRepository;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\ORM\Query\Expr;
+use Orb\Util\Numbers;
+use Orb\Util\Strings;
+
+class CommunityTopic extends AbstractEntityRepository
+{
+    //###########################################################################
+    // Counters
+    //###########################################################################
+
+    /**
+     * Count the number of community topics that are awaiting validation.
+     *
+     * @return int
+     */
+    public function countAwaitingValidation()
+    {
+        return $this->getEntityManager()->getConnection()->fetchColumn('
+            SELECT COUNT(*)
+            FROM community_topics
+            WHERE is_reviewed = 0
+        ');
+    }
+
+    public function getAwaitingValidation($limit, $offset = 0)
+    {
+        $qb = $this->createQueryBuilder('ct');
+        $qb
+            ->where($qb->expr()->eq('ct.is_reviewed', 0))
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->orderBy('ct.date_created', 'ASC')
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Count the number of community topics that are 'active', grouped by status category as key.
+     * The key 0 will be used as the total.
+     *
+     * @param int $brandId
+     *
+     * @return array
+     */
+    public function countActiveGrouped($brandId)
+    {
+        return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT IFNULL(status_category_id, 0), COUNT(*) as count
+            FROM community_topics
+            WHERE status = 'active' AND brand_id = ?
+            GROUP BY status_category_id WITH ROLLUP
+        ", [$brandId]);
+    }
+
+    /**
+     * Count the number of community topics that are 'active', grouped by status category as key.
+     * The key 0 will be used as the total.
+     *
+     * @param int $brandId
+     *
+     * @return array
+     */
+    public function countClosedGrouped($brandId)
+    {
+        return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT IFNULL(status_category_id, 0), COUNT(*) as count
+            FROM community_topics
+            WHERE status = 'closed' AND brand_id = ?
+            GROUP BY status_category_id WITH ROLLUP
+        ", [$brandId]);
+    }
+
+    /**
+     * Count the number of hidden community topics, groupbed by hidden_status as key.
+     * The key 'hidden' will be used as the total.
+     *
+     * @param int $brandId
+     *
+     * @return array
+     */
+    public function countHiddenGrouped($brandId)
+    {
+        // We dont count validating with this number because
+        // in the UI we generally show validating separately
+        return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
+            FROM community_topics
+            WHERE status = ? AND brand_id = ?
+            GROUP BY hidden_status WITH ROLLUP
+        ", ['hidden', $brandId]);
+    }
+
+    /**
+     * Count the number of community topics that are new.
+     *
+     * @return int
+     */
+    public function countNew()
+    {
+        return $this->getEntityManager()->getConnection()->fetchColumn("
+            SELECT COUNT(*)
+            FROM community_topics
+            WHERE status = 'new'
+        ");
+    }
+
+    /**
+     * Count the number of non-hidden community topics in all categories, grouped by category ID key.
+     * Each parent category has the sum of all children.
+     *
+     * @return array
+     */
+    public function countAllCategoriesGrouped()
+    {
+        /*
+         * Note that the order by category_id ASC is important here.
+         * The tally loop after modifies the array as we go. We cant
+         * have a parents tally using a childs tally that was already incremented,
+         * that'd result in incorrect tallies.
+         * (Could just make a 2nd new array using 1st as a lookup, but this solution is easy enough)
+         */
+
+        $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT channel_id, COUNT(*)
+            FROM community_topics
+            WHERE status != 'hidden'
+            GROUP BY channel_id
+            ORDER BY channel_id ASC
+        ");
+
+        foreach ($counts as $cat_id => &$count) {
+            $cat_childs = App::getEntityRepository('DeskPRO:CommunityChannel')->getIdsInTree($cat_id, false);
+            if ($cat_childs) {
+                foreach ($cat_childs as $child_cat_id) {
+                    if (isset($counts[$child_cat_id])) {
+                        $count += $counts[$child_cat_id];
+                    }
+                }
+            }
+        }
+
+        return $counts;
+    }
+
+    /**
+     * Count the number of community topics in a status category.
+     *
+     * @param $category
+     *
+     * @return int
+     */
+    public function countInCategory($category)
+    {
+        return $this->getEntityManager()->getConnection()->fetchColumn('
+            SELECT COUNT(*)
+            FROM community_topics
+            WHERE channel_id = ?
+        ', [$category->id]);
+    }
+
+    /**
+     * Count the number of community topics in a status category.
+     *
+     * @param $category
+     *
+     * @return int
+     */
+    public function countInStatusCategory($category)
+    {
+        return $this->getEntityManager()->getConnection()->fetchColumn('
+            SELECT COUNT(*)
+            FROM community_topics
+            WHERE status_category_id = ?
+        ', [$category->id]);
+    }
+
+    //###########################################################################
+    // Fetchers
+    //###########################################################################
+
+    public function getBySlug($slug)
+    {
+        $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+        if (!$id) {
+            return;
+        }
+
+        return $this->find($id);
+    }
+
+    /**
+     * Get a collection of community topics by ID. If $person_context
+     * is supplied, only articles that this person is able to view will be returned.
+     *
+     * @return array
+     */
+    public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
+    {
+        if (!$ids) {
+            return [];
+        }
+
+        if ($person_context) {
+            $communityTopics = $this->getEntityManager()->createQuery("
+                SELECT i
+                FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                WHERE i.id IN (?0) AND i.status != 'hidden'
+                ORDER BY i.id DESC
+            ")->execute([$ids]);
+        } else {
+            $communityTopics = $this->getEntityManager()->createQuery('
+                SELECT i
+                FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                WHERE i.id IN (?0)
+                ORDER BY i.id DESC
+            ')->execute([$ids]);
+        }
+
+        return $communityTopics;
+    }
+
+    public function getByResultIds(array $ids)
+    {
+        if (!$ids) {
+            return [];
+        }
+
+        $unsortedCommunityTopics = $this->getEntityManager()->createQuery('
+            SELECT i
+            FROM DeskPRO:CommunityTopic i INDEX BY i.id
+            WHERE i.id IN (?0)
+            ORDER BY i.id DESC
+        ')->execute([$ids]);
+
+        $communityTopics = [];
+
+        foreach ($ids as $id) {
+            if (isset($unsortedCommunityTopics[$id])) {
+                $communityTopics[$id] = $unsortedCommunityTopics[$id];
+            }
+        }
+
+        return $communityTopics;
+    }
+
+    public function getTopic($status, $node = false, $sort = 'id', $num = 10)
+    {
+        if ($sort == 'date') {
+            $sort = 'id';
+        }
+        if (!in_array($sort, ['id', 'num_ratings'])) {
+            $sort = 'id';
+        }
+
+        if ($node) {
+            $node_ids = $node->getTreeIds(true);
+
+            $communityTopics = $this->getEntityManager()->createQuery("
+                SELECT i
+                FROM DeskPRO:CommunityTopic i
+                WHERE i.category IN (?0) AND i.status = ?1
+                ORDER BY i.$sort DESC
+            ")->setMaxResults($num)->execute([$node_ids, $status]);
+        } else {
+            $communityTopics = $this->getEntityManager()->createQuery("
+                SELECT i
+                FROM DeskPRO:CommunityTopic i
+                WHERE i.status = ?0
+                ORDER BY i.$sort DESC
+            ")->setMaxResults($num)->execute([$status]);
+        }
+
+        return $communityTopics;
+    }
+
+    public function countNotClosedNotHidden()
+    {
+        return $this->getEntityManager()->createQuery(
+            "
+                        SELECT COUNT(n) as cc
+                        FROM DeskPRO:CommunityTopic n
+                        WHERE n.status != 'closed' AND n.status != 'hidden'
+                    "
+        )->getSingleScalarResult();
+    }
+
+    public function getNewest($status, $num = 10, $node = false)
+    {
+        if (!$status) {
+            $communityTopics = $this->getEntityManager()->createQuery("
+                SELECT i
+                FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                WHERE i.status != 'closed' AND i.status != 'hidden'
+                ORDER BY i.id DESC
+            ")->setMaxResults($num)->execute();
+
+            return $communityTopics;
+        }
+
+        if (Numbers::isInteger($status)) {
+            if ($node) {
+                $cat_ids         = $node->getTreeIds(true);
+                $communityTopics = $this->getEntityManager()->createQuery('
+                    SELECT i
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                    WHERE i.status_category = ?0 AND i.category IN (?1)
+                    ORDER BY i.id DESC
+                ')->setMaxResults($num)->execute([$status, $cat_ids]);
+            } else {
+                $communityTopics = $this->getEntityManager()->createQuery('
+                    SELECT i
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                    WHERE i.status_category = ?0
+                    ORDER BY i.id DESC
+                ')->setMaxResults($num)->execute([$status]);
+            }
+        } else {
+            if ($node) {
+                $cat_ids         = $node->getTreeIds(true);
+                $communityTopics = $this->getEntityManager()->createQuery('
+                    SELECT i
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                    WHERE i.status = ?0 AND i.category IN (?1)
+                    ORDER BY i.id DESC
+                ')->setMaxResults($num)->execute([$status, $cat_ids]);
+            } else {
+                $communityTopics = $this->getEntityManager()->createQuery('
+                    SELECT i
+                    FROM DeskPRO:CommunityTopic i INDEX BY i.id
+                    WHERE i.status = ?0
+                    ORDER BY i.id DESC
+                ')->setMaxResults($num)->execute([$status]);
+            }
+        }
+
+        return $communityTopics;
+    }
+
+    public function getReportAssociations()
+    {
+        return [
+            'views' => [
+                'conditions'   => '%1$s.page_type = "deskpro.community_view" AND %1$s.page_id = %2$s.id',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\HitRecord',
+            ],
+            'ratings' => [
+                'conditions'   => '%1$s.object_type = \'community\' AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\Rating',
+            ],
+        ];
+    }
+}

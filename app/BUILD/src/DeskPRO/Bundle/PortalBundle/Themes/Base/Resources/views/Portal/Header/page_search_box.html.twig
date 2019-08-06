@@ -49,14 +49,14 @@
                 </a>
               </li>
               {% endif %}
-              {% if can_use_feedback %}
+              {% if can_use_community %}
               <li>
-                <a href={{ path('portal_feedback') }}>
+                <a href={{ path('portal_community') }}>
                   <i class="far fa-thumbs-up"></i>
 
-                  <h1>{{ phrase('portal.general.submit-feedback') }}</h1>
+                  <h1>{{ phrase('portal.general.submit-community-topic') }}</h1>
 
-                  <p>{{ phrase('portal.general.submit-feedback-desc') }}</p>
+                  <p>{{ phrase('portal.general.submit-community-topic-desc') }}</p>
                 </a>
               </li>
               {% endif %}

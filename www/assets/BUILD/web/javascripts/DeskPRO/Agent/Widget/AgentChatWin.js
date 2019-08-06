@@ -402,7 +402,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			'a': {title: 'Article', url: BASE_URL + 'agent/kb/article/'},
 			'n': {title: 'News', url: BASE_URL + 'agent/news/post/'},
 			'd': {title: 'Download', url: BASE_URL + 'agent/downloads/file/'},
-			'i': {title: 'Feedback', url: BASE_URL + 'agent/feedback/view/'}
+			'i': {title: 'Community Topic', url: BASE_URL + 'agent/community/topic/view/'}
 		};
 		Object.entries(idMap).forEach(function(_vk) { var prefix = _vk[0], info = _vk[1];
 			var re = new RegExp('\\{\\{\\s*' + prefix + '\\-([0-9]+)\\s*\\}\\}', 'g');

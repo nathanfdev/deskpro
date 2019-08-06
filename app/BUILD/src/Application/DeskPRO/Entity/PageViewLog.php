@@ -16,10 +16,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 {
-    const TYPE_ARTICLE  = 1;
-    const TYPE_DOWNLOAD = 2;
-    const TYPE_NEWS     = 3;
-    const TYPE_FEEDBACK = 4;
+    const TYPE_ARTICLE   = 1;
+    const TYPE_DOWNLOAD  = 2;
+    const TYPE_NEWS      = 3;
+    const TYPE_COMMUNITY = 4;
 
     const ACTION_VIEW     = 1;
     const ACTION_DOWNLOAD = 2;
@@ -131,8 +131,8 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
                 case 'news':
                     $type = self::TYPE_NEWS;
                     break;
-                case 'feedback':
-                    $type = self::TYPE_FEEDBACK;
+                case 'community':
+                    $type = self::TYPE_COMMUNITY;
                     break;
             }
         }
@@ -172,7 +172,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
             case self::TYPE_ARTICLE: return 'article';
             case self::TYPE_DOWNLOAD: return 'download';
             case self::TYPE_NEWS: return 'news';
-            case self::TYPE_FEEDBACK: return 'feedback';
+            case self::TYPE_COMMUNITY: return 'community';
         }
 
         throw new \InvalidArgumentException("Invalid type id. Got:`$type`");

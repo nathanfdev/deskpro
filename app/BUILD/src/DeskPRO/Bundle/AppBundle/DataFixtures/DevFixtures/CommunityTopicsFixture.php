@@ -1,0 +1,360 @@
+<?php
+
+namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
+
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
+use Application\DeskPRO\Entity\LabelDef;
+use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+
+/**
+ * Class CommunityTopicsFixture.
+ */
+class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixtureInterface
+{
+    const NUM_TOPICS           = 100;
+    const MIN_TOPICS_COMMENTS  = 1;
+    const MAX_TOPICS_COMMENTS  = 5;
+    const NUM_LABELS           = 30;
+    const MIN_LABELS_PER_TOPIC = 0;
+    const MAX_LABELS_PER_TOPIC = 5;
+
+    /**
+     * @var int[]
+     */
+    private $people = [];
+
+    /**
+     * @var int[]
+     */
+    private $channels = [];
+
+    /**
+     * @var int[]
+     */
+    private $languages = [];
+
+    /**
+     * @var int[]
+     */
+    private $communityTopics = [];
+
+    /**
+     * @var string[]
+     */
+    private $statuses = [CommunityTopic::STATUS_ACTIVE, CommunityTopic::STATUS_CLOSED, CommunityTopic::STATUS_HIDDEN];
+
+    /**
+     * @var array
+     */
+    private $statusesCategories = [
+        CommunityTopic::STATUS_ACTIVE => ['Gathering Topics', 'Planning', 'Started', 'Under Review'],
+        CommunityTopic::STATUS_CLOSED => ['Completed', 'Duplicate', 'Declined'],
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $hiddenStatuses = [
+        CommunityTopic::HIDDEN_STATUS_DELETED,
+        CommunityTopic::HIDDEN_STATUS_UNPUBLISHED,
+        CommunityTopic::HIDDEN_STATUS_SPAM,
+        CommunityTopic::HIDDEN_STATUS_DRAFT,
+    ];
+
+    /**
+     * @var string[]
+     */
+    private $communityChannels = ['Windows', 'Linux', 'Mac'];
+
+    /**
+     * @var string[]
+     */
+    private $labels = [];
+
+    /**
+     * @var int[]
+     */
+    private $activeStatuses = [];
+
+    /**
+     * @var int[]
+     */
+    private $closedStatuses = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOrder()
+    {
+        return 100;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function load(ObjectManager $manager)
+    {
+        $this->manager = $manager;
+        $this->loadCommunityTopicChoices();
+        $this->loadStatusCategories();
+        $this->loadLabels();
+        $this->manager->flush();
+
+        $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->channels       = $this->fetchIds(self::TABLE_COMMUNITY_CHANNELS);
+        $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
+        $this->activeStatuses = $this->fetchIds(
+            self::TABLE_COMMUNITY_TOPIC_STATUS_CATEGORIES,
+            [['field' => 'status_type', 'value' => CommunityTopic::STATUS_ACTIVE]]
+        );
+        $this->closedStatuses = $this->fetchIds(
+            self::TABLE_COMMUNITY_TOPIC_STATUS_CATEGORIES,
+            [['field' => 'status_type', 'value' => CommunityTopic::STATUS_CLOSED]]
+        );
+
+        $this->loadCommunityTopics();
+        $this->loadCommunityChannels();
+        $this->loadCommunityLabels();
+        $this->loadCommunityTopicComments();
+    }
+
+    private function loadCommunityTopicChoices()
+    {
+        $customChanDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
+            'sys_name' => 'chan',
+        ]);
+
+        foreach ($this->communityChannels as $order => $title) {
+            $customChanChoice = new CustomDefCommunityTopic();
+            $customChanChoice
+                ->setParent($customChanDef)
+                ->setTitle($title)
+                ->setDescription('')
+                ->setIsUserEnabled(true)
+                ->setIsEnabled(true)
+                ->setDisplayOreder($order)
+                ->setOption('parent_id', 0)
+            ;
+
+            $customChanDef->addChild($customChanChoice);
+        }
+
+        $this->manager->flush();
+    }
+
+    private function loadStatusCategories()
+    {
+        foreach ($this->statusesCategories as $status => $titles) {
+            $i = 0;
+            foreach ($titles as $title) {
+                $i += 10;
+                $cat = new CommunityTopicStatusCategory();
+                $cat
+                    ->setStatusType($status)
+                    ->setTitle($title)
+                    ->setDisplayOrder($i);
+
+                $this->manager->persist($cat);
+            }
+        }
+    }
+
+    private function loadLabels()
+    {
+        $label_type = LabelDef::TYPE_COMMUNITY;
+        $this->faker->unique(true);
+
+        $batch = [];
+
+        for ($i = 0; $i < self::NUM_LABELS; ++$i) {
+            $l = str_replace(',', '', $this->faker->unique()->company);
+            if ($l) {
+                $l       = strtolower($l);
+                $batch[] = [
+                    'label_type' => $label_type,
+                    'label'      => $l,
+                    'color'      => $this->faker->hexColor,
+                    'total'      => 0,
+                ];
+            }
+        }
+
+        $this->db->batchInsert('label_defs', $batch, true);
+
+        $this->labels = $this->db->fetchAllCol('SELECT label FROM label_defs WHERE label_type = ?', [$label_type]);
+    }
+
+    private function loadCommunityTopics()
+    {
+        /** @var Brand $brand */
+        $brand = $this->getReference('brand');
+
+        $i     = 0;
+        $batch = [];
+        while ($i++ < self::NUM_TOPICS) {
+            $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+            $values      = [
+                'content'      => $this->faker->realText(300),
+                'person_id'    => $this->faker->randomElement($this->people),
+                'channel_id'   => $this->faker->randomElement($this->channels),
+                'language_id'  => $this->faker->randomElement($this->languages),
+                'date_created' => $dateCreated,
+                'brand_id'     => $brand->getId(),
+            ];
+            $values  = $this->setReviewed($values);
+            $values  = $this->setStatus($values);
+            $values  = $this->setTitleAndSlug($values);
+            $batch[] = $values;
+        }
+        $this->db->batchInsert(self::TABLE_COMMUNITY_TOPICS, $batch, true);
+        $this->communityTopics = $this->fetchIds(self::TABLE_COMMUNITY_TOPICS);
+    }
+
+    private function setStatus(array $values)
+    {
+        $values['status'] = $this->faker->randomElement($this->statuses);
+        switch ($values['status']) {
+            case CommunityTopic::STATUS_ACTIVE:
+                $values['hidden_status']      = null;
+                $values['status_category_id'] = $this->faker->randomElement($this->activeStatuses);
+                break;
+            case CommunityTopic::STATUS_CLOSED:
+                $values['hidden_status']      = null;
+                $values['status_category_id'] = $this->faker->randomElement($this->closedStatuses);
+                break;
+            case CommunityTopic::STATUS_HIDDEN:
+                $values['hidden_status']      = $this->faker->randomElement($this->hiddenStatuses);
+                $values['status_category_id'] = null;
+                break;
+        }
+
+        return $values;
+    }
+
+    private function setReviewed(array $values)
+    {
+        $date                   = $this->faker->dateTimeBetween('-10 days', '-1 days')->format('Y-m-d H:i:s');
+        $isReviewed             = rand(0, 1);
+        $values['is_reviewed']  = $isReviewed;
+        $values['num_comments'] = 0;
+        if ($isReviewed) {
+            $values['view_count']     = rand(0, 100);
+            $values['num_ratings']    = rand(0, 20);
+            $values['total_rating']   = rand(0, 20);
+            $values['popularity']     = $this->calculatePopularity($values);
+            $values['date_published'] = $date;
+            $values['date_updated']   = $date;
+        } else {
+            $values['view_count']     = 0;
+            $values['num_ratings']    = 0;
+            $values['total_rating']   = 0;
+            $values['popularity']     = 0;
+            $values['date_published'] = null;
+            $values['date_updated']   = null;
+        }
+
+        return $values;
+    }
+
+    private function calculatePopularity(array $values)
+    {
+        $date = new \DateTime($values['date_created']);
+        $days = (time() - $date->getTimestamp()) / 86400;
+        if (!$days) {
+            $days = 1;
+        }
+
+        return ceil($values['total_rating'] / sqrt($days));
+    }
+
+    private function loadCommunityChannels()
+    {
+        $customChanDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
+            'sys_name' => 'chan',
+        ]);
+
+        $batch = [];
+        $ids   = $customChanDef->getChoiceIds();
+
+        foreach ($this->communityTopics as $topicId) {
+            $batch[] = [
+                'topic_id'      => $topicId,
+                'root_field_id' => $customChanDef->getId(),
+                'field_id'      => $ids[array_rand($ids)],
+                'value'         => 1,
+            ];
+        }
+
+        $this->db->batchInsert(self::TABLE_CUSTOM_DATA_COMMUNITY_TOPIC, $batch, true);
+    }
+
+    private function loadCommunityLabels()
+    {
+        $batch = [];
+        foreach ($this->communityTopics as $id) {
+            $num = rand(self::MIN_LABELS_PER_TOPIC, self::MAX_LABELS_PER_TOPIC);
+            if ($num) {
+                $labels = (array) array_rand($this->labels, $num);
+                foreach ($labels as $key) {
+                    $batch[] = [
+                        'topic_id' => $id,
+                        'label'    => $this->labels[$key],
+                    ];
+                }
+            }
+        }
+
+        $this->db->batchInsert(self::TABLE_LABELS_COMMUNITY_TOPICS, $batch, true);
+    }
+
+    private function loadCommunityTopicComments()
+    {
+        $batch = [];
+        foreach ($this->communityTopics as $id) {
+            $num_comments = rand(self::MIN_TOPICS_COMMENTS, self::MAX_TOPICS_COMMENTS);
+            /** @var CommunityTopic $communityTopic */
+            $communityTopic = $this->manager->getRepository('DeskPRO:CommunityTopic')->find($id);
+            if (!$communityTopic->isReviewed()) {
+                continue;
+            }
+            $communityTopic->setNumComments($num_comments);
+            $this->manager->persist($communityTopic);
+
+            $i = 0;
+            while ($i++ < $num_comments) {
+                $dateCreated = $this->faker->dateTimeBetween('-2 months', '-10 days')->format('Y-m-d H:i:s');
+                $values      = [
+                    'content'    => $this->faker->realText(300),
+                    'topic_id'   => $id,
+                    'person_id'  => $this->faker->randomElement($this->people),
+                    'ip_address' => $this->faker->ipv4,
+                    'status'     => $this->faker->randomElement(
+                        [
+                            CommunityTopicComment::STATUS_VISIBLE,
+                            CommunityTopicComment::STATUS_HIDDEN,
+                            CommunityTopicComment::STATUS_DELETED,
+                        ]
+                    ),
+                    'date_created' => $dateCreated,
+                ];
+                $values  = $this->setCommentReviewed($values);
+                $batch[] = $values;
+            }
+        }
+        $this->db->batchInsert(self::TABLE_COMMUNITY_TOPIC_COMMENTS, $batch, true);
+        $this->manager->flush();
+    }
+
+    private function setCommentReviewed(array $values)
+    {
+        $values['is_reviewed'] = $values['status'] === CommunityTopicComment::STATUS_HIDDEN ? 0 : 1;
+
+        return $values;
+    }
+}

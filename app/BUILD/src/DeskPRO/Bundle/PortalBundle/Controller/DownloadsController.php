@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
@@ -21,6 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -348,7 +350,10 @@ class DownloadsController extends AbstractController
         $this->getEm()->flush();
 
         if ($file->getFileurl()) {
-            return $this->redirect($file->getFileurl());
+            $redirectResponse = new RedirectResponse($file->getFileurl());
+            $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+            return $redirectResponse;
         }
 
         $url = $file->getBlob()->getDownloadUrl();
@@ -359,7 +364,10 @@ class DownloadsController extends AbstractController
             $url .= '&dl=1';
         }
 
-        return $this->redirect($url);
+        $redirectResponse = new RedirectResponse($url);
+        $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+        return $redirectResponse;
     }
 
     /**

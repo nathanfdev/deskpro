@@ -57,12 +57,12 @@ portal.email_subjects.comment-deleted: '저희 상담원들이 고객님의 코�
 portal.email_subjects.email-too-big: '이메일 "{{subject}}" 이 수락되지않았습니다'
 portal.email_subjects.email_new-confirm: '이메일 주소를 확인해주십시오'
 portal.email_subjects.email_primary-confirm: '이메일 주소를 확인해주십시오'
-portal.email_subjects.feedback_new: '피드백을 남겨주셔서 감사합니다'
-portal.email_subjects.feedback_new-approved: '피드백이 승인되었습니다'
-portal.email_subjects.feedback_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
-portal.email_subjects.feedback_new-confirm: '피드백을 남겨주셔서 감사합니다 (확인 필요)'
-portal.email_subjects.feedback_new-disapproved: '등록요청 글이 거절되었습니다'
-portal.email_subjects.feedback_updated: '피드백이 업데이트 되었습니다: {{title}}'
+portal.email_subjects.community_new: '피드백을 남겨주셔서 감사합니다'
+portal.email_subjects.community_new-approved: '피드백이 승인되었습니다'
+portal.email_subjects.community_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
+portal.email_subjects.community_new-confirm: '피드백을 남겨주셔서 감사합니다 (확인 필요)'
+portal.email_subjects.community_new-disapproved: '등록요청 글이 거절되었습니다'
+portal.email_subjects.community_updated: '피드백이 업데이트 되었습니다: {{title}}'
 portal.email_subjects.kb_sub_new: '새 글들'
 portal.email_subjects.kb_sub_new_and_updated: '새로 업데이트 된 글들'
 portal.email_subjects.kb_sub_updated: '업데이트 된 글들'
@@ -85,18 +85,18 @@ portal.emails.download-new-downloads:
 portal.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
 portal.emails.email-too-big: '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.'
-portal.emails.feedback-updated-items:
-  other: '{{count}} Updated Feedback Items'
-portal.emails.feedback_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
-portal.emails.feedback_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
-portal.emails.feedback_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
-portal.emails.feedback_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
-portal.emails.feedback_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
-portal.emails.feedback_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
-portal.emails.feedback_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
-portal.emails.feedback_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
-portal.emails.feedback_validate-email: '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.'
-portal.emails.feedback_votes:
+portal.emails.community-topics-updated:
+  other: '{{count}} Updated Community Topics'
+portal.emails.community_topic_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
+portal.emails.community_topic_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
+portal.emails.community-topic_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
+portal.emails.community-topic_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
+portal.emails.community-topic_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
+portal.emails.community-topic_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
+portal.emails.community-topic_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
+portal.emails.community-topic_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
+portal.emails.community-topic_validate-email: '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.'
+portal.emails.community-topic_votes:
   other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
 portal.emails.greeting: '{{to_name}}님께,'
 portal.emails.kb-explain: '이 이메일은 지식베이스를 <a href="{{deskpro_url}}">{{deskpro_url}}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{unsubscribe_url}}"> 를 클릭해 구독을 취소해주십시오.</a>'
@@ -135,16 +135,16 @@ portal.emails.tickets_ommitted:
   other: '1개의 메세지가 제외 되었습니다. {{count}}개의 메세지가 제외 되었습니다'
 portal.emails.view_full_history_online: '티켓 전체는 온라인에서 확인해주세요.'
 portal.error.404-title: '찾을 수 없습니다.'
-portal.feedback.attachments: 첨부파일
-portal.feedback.btn-closed: 닫혔습니다
-portal.feedback.btn-vote: 동의합니다.
-portal.feedback.form_title: 제목
-portal.feedback.form_custom_cat: 범주
-portal.feedback.search-title: 피드백
-portal.feedback.section-title: 피드백
-portal.feedback.submit_feedback: '피드백 작성하기'
-portal.feedback.view-x-feedback:
-  other: 'View {{count}} feedback'
+portal.community.attachments: 첨부파일
+portal.community.btn-closed: 닫혔습니다
+portal.community.btn-vote: 동의합니다.
+portal.community.form_title: 제목
+portal.community.form_custom_cat: 범주
+portal.community.search-title: 피드백
+portal.community.section-title: 피드백
+portal.community.submit_community_topic: '피드백 작성하기'
+portal.community.view-x-community-topics:
+  other: 'View {{count}} community topic'
 portal.forms.error_password_min_length:
   other: 'Minimum of {{count}} characters'
 portal.forms.error_password_require_num_lowercase:
@@ -184,7 +184,7 @@ portal.general.delete: 삭제
 portal.general.everything: 전체
 portal.general.nav-downloads: '다운로드 파일들'
 portal.general.nav-downloads-desc: '다운로드 보기'
-portal.general.nav-feedback: 피드백
+portal.general.nav-community: 피드백
 portal.general.nav-kb: '지식 베이스'
 portal.general.nav-kb-desc: '도움말 보기'
 portal.general.nav-news: 뉴스
@@ -199,14 +199,14 @@ portal.general.rated-negative: '이 페이지 비공감을 눌러 주셨습니�
 portal.general.rated-positive: '이 페이지 공감을 눌러 주셨습니다'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} of {{vote_count}} 사람들이 이 페이지를 추천 하였습니다'
 portal.general.related-downloads: '관련 파일들'
-portal.general.related-feedback: '관련 피드백'
+portal.general.related-community: '관련 피드백'
 portal.general.related-news: '관련 뉴스'
 portal.general.search-labels-section-title: '레벨 검색'
 portal.general.search-section-title: 검색
 portal.general.search_btn: 검색
 portal.general.share-this: 공유하기
 portal.general.show: 보기
-portal.general.submit-feedback: '피드백 남기기'
+portal.general.submit-community-topic: '피드백 남기기'
 portal.news.section-title: 뉴스
 portal.news.view-as-agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
 portal.news.view-x-news:
@@ -317,11 +317,11 @@ user.email_subjects.comment-approved: '코멘트가 승인 되었습니다'
 user.email_subjects.comment-deleted: '저희 상담원들이 고객님의 코멘트를 읽었습니다'
 user.email_subjects.email-too-big: '이메일 "{{subject}}" 이 수락되지않았습니다'
 user.email_subjects.email_new-confirm: '이메일 주소를 확인해주십시오'
-user.email_subjects.feedback_new: '피드백을 남겨주셔서 감사합니다'
-user.email_subjects.feedback_new-approved: '피드백이 승인되었습니다'
-user.email_subjects.feedback_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
-user.email_subjects.feedback_new-disapproved: '등록요청 글이 거절되었습니다'
-user.email_subjects.feedback_updated: '피드백이 업데이트 되었습니다: {{title}}'
+user.email_subjects.community_topic_new: '피드백을 남겨주셔서 감사합니다'
+user.email_subjects.community_topic_new-approved: '피드백이 승인되었습니다'
+user.email_subjects.community_topic_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
+user.email_subjects.community_topic_new-disapproved: '등록요청 글이 거절되었습니다'
+user.email_subjects.community_topic_updated: '피드백이 업데이트 되었습니다: {{title}}'
 user.email_subjects.kb_sub_new: '새 글들'
 user.email_subjects.kb_sub_new_and_updated: '새로 업데이트 된 글들'
 user.email_subjects.kb_sub_updated: '업데이트 된 글들'
@@ -341,18 +341,18 @@ user.emails.download-new-downloads:
 user.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
 user.emails.email-too-big: '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.'
-user.emails.feedback-updated-items:
-  other: '{{count}} Updated Feedback Items'
-user.emails.feedback_agent-validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
-user.emails.feedback_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
-user.emails.feedback_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
-user.emails.feedback_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
-user.emails.feedback_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
-user.emails.feedback_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
-user.emails.feedback_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
-user.emails.feedback_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
-user.emails.feedback_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
-user.emails.feedback_votes:
+user.emails.community-updated-items:
+  other: '{{count}} Updated Community Topics'
+user.emails.community-topic_agent-validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
+user.emails.community-topic_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
+user.emails.community-topic_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
+user.emails.community-topic_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
+user.emails.community-topic_disapproved-reason: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다. {{name}} 의 사유는 이와 같습니다:'
+user.emails.community-topic_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
+user.emails.community-topic_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
+user.emails.community-topic_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
+user.emails.community-topic_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
+user.emails.community-topic_votes:
   other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
 user.emails.greeting: '{{to_name}}님께,'
 user.emails.kb-explain: '이 이메일은 지식베이스를 <a href="{{deskpro_url}}">{{deskpro_url}}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{unsubscribe_url}}"> 를 클릭해 구독을 취소해주십시오.</a>'
@@ -423,7 +423,7 @@ user.error.permission-denied: '죄송합니다. 요청하신 작업은 허가되
 user.error.permission-denied-login: '로그아웃 되셨습니다. <a href="{{login_url}}"> 로그인하시고 </a> 다시 시도 해 주십시오.'
 user.error.permission-denied-title: '요청하신 작업에 대한 권한이 없습니다.'
 user.error.server-error: '페이지를 로딩 하는데 서버 오류가 있었습니다. 다시 시도 해주십시오.'
-user.feedback.submit_feedback: '피드백 작성하기'
+user.community.submit_community_topic: '피드백 작성하기'
 user.general.deskpro: DeskPro
 user.general.label_captcha: '등록 번호'
 user.general.page: 페이지
@@ -463,7 +463,7 @@ user.profile.register_password_require_num_symbol:
   other: 'At least {{count}} symbols'
 user.profile.register_password_require_num_uppercase:
   other: 'At least {{count}} uppercase characters'
-user.tickets.feedback_message_leave_comment: '댓글 남기기'
+user.tickets.community_message_leave_comment: '댓글 남기기'
 user.tickets.fields_category: 카테고리
 user.tickets.fields_department: 부서
 user.tickets.fields_priority: 우선순위

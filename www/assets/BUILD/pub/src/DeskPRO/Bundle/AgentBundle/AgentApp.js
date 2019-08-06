@@ -19,8 +19,8 @@ window.Immutable = Immutable;
  */
 window.DP_LOCALE = 'en';
 window.DP_LANG = {
-  'feedback.nav.title':       'Feedback',
-  'feedback.nav.tabs.status': 'Status'
+  'community.nav.title':       'Community',
+  'community.nav.tabs.status': 'Status'
 };
 // ---------------------------------------------------------------------------------------------------------------------
 

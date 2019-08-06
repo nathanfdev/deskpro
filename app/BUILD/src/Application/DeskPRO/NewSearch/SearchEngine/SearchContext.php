@@ -24,7 +24,7 @@ class SearchContext implements SearchContextInterface
     /**
      * @var array
      */
-    private $feedback_category_ids = [];
+    private $community_channel_ids = [];
 
     /**
      * @var array
@@ -149,17 +149,17 @@ class SearchContext implements SearchContextInterface
     /**
      * @return array
      */
-    public function getFeedbackCategoryIds()
+    public function getCommunityChannelIds()
     {
-        return $this->feedback_category_ids;
+        return $this->community_channel_ids;
     }
 
     /**
-     * @param array $feedback_category_ids
+     * @param array $community_channel_ids
      */
-    public function setFeedbackCategoryIds($feedback_category_ids)
+    public function setCommunitychannelIds($community_channel_ids)
     {
-        $this->feedback_category_ids = $feedback_category_ids;
+        $this->community_channel_ids = $community_channel_ids;
     }
 
     /**

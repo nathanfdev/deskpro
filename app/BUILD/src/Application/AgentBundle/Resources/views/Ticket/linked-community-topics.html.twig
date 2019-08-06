@@ -1,0 +1,25 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table linked-community-topics-table">
+	<tbody>
+    <tr class="linked-title">
+      <th colspan="7" style="background: #eee;">{{ phrase('agent.tickets.linked_community') }}</th>
+    </tr>
+    <tr class="linked-head-title">
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.title') }}</th>
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.type') }}</th>
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
+      <th width="10">&nbsp;</th>
+    </tr>
+    {% for tctl in ticket_community_topics_links %}
+      <tr class="linked-community-topics">
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_community_topic_view', {communityTopicId: tctl.topic.id}) }}">{{ tctl.topic.id }}</a></td>
+        <td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_community_topic_view', {communityTopicId: tctl.topic.id}) }}">{{ tctl.topic.title }}</a></td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tctl.topic.channel ? tctl.topic.channel.title : '' }}</td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tctl.topic.status_category ? tctl.topic.status_category.title : '' }}</td>
+        <td width="10" style="text-align: right;">
+          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-community-topic" data-id="{{ tctl.id }}" />
+        </td>
+      </tr>
+    {% endfor %}
+	</tbody>
+</table>

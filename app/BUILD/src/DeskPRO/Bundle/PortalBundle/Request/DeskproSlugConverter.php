@@ -7,8 +7,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Topic;
@@ -137,7 +137,7 @@ class DeskproSlugConverter implements ParamConverterInterface
     {
         switch ($param_class) {
             case Article::class:
-            case Feedback::class:
+            case CommunityTopic::class:
             case News::class:
             case Download::class:
             case Topic::class:

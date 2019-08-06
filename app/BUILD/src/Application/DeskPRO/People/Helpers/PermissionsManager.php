@@ -340,7 +340,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
     {
         static $god_mode_names = [
             'articles.use'  => true,
-            'feedback.use'  => true,
+            'community.use' => true,
             'downloads.use' => true,
             'news.use'      => true,
             'chat.use'      => true,
@@ -362,7 +362,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         if ($name === 'articles.use' && !$crossBrandAppSettings['core.apps_kb']) {
             return false;
         }
-        if ($name === 'feedback.use' && !$crossBrandAppSettings['core.apps_feedback']) {
+        if ($name === 'community.use' && !$crossBrandAppSettings['core.apps_community']) {
             return false;
         }
         if ($name === 'downloads.use' && !$crossBrandAppSettings['core.apps_downloads']) {
@@ -474,7 +474,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             PortalSettingsResolver::APPS_KB          => false,
             PortalSettingsResolver::APPS_DOWNLOADS   => false,
             PortalSettingsResolver::APPS_NEWS        => false,
-            PortalSettingsResolver::APPS_FEEDBACK    => false,
+            PortalSettingsResolver::APPS_COMMUNITY   => false,
             PortalSettingsResolver::APPS_GUIDES      => false,
             PortalSettingsResolver::PUBLISH_COMMENTS => false,
         ];

@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'Adicionar endereço de e-mail'
 portal.account.email-management: 'Gerenciar e-mails'
 portal.account.email-management-from-form: 'Gerenciar seus endereços de email'
 portal.account.email-primary-description: 'Este é seu email principal. Ele será usado por padrão, a menos que você tenha especificado o contrário.'
-portal.account.feedback-lockout: 'Você enviou um feedback muitas vezes para que você tenha sido bloqueado. Por favor, tente novamente mais tarde.'
+portal.account.community-lockout: 'Você enviou um community topic muitas vezes para que você tenha sido bloqueado. Por favor, tente novamente mais tarde.'
 portal.account.link-expired: 'Desculpe, o link que você clicou expirou ou já foi usado antes.'
 portal.account.lockout_time: 'Você pode tentar novamente em {{time}} minutos.'
 portal.account.login-btn: Entrar
@@ -32,7 +32,7 @@ portal.account.login-remember: 'Permaneça logado?'
 portal.account.login-saved-add_email: 'Seu e-mail adicional ainda não foi enviado. Por favor faça o login para continuar.'
 portal.account.login-saved-comment: 'Seu comentário ainda não foi enviado. Por favor faça o login para continuar.'
 portal.account.login-saved-form: 'Seu formulário ainda não foi enviado. Por favor faça o login para continuar.'
-portal.account.login-saved-new_feedback: 'Seu novo feedback ainda não foi enviado. Por favor faça o login para continuar.'
+portal.account.login-saved-new_community_topic: 'Seu novo community topic ainda não foi enviado. Por favor faça o login para continuar.'
 portal.account.login-saved-new_ticket: 'Seu novo ingresso ainda não foi enviado. Por favor faça o login para continuar.'
 portal.account.login-saved-register: 'Seu registro ainda não foi enviado. Por favor faça o login para continuar.'
 portal.account.login-stay-logged-in: 'Permaneça logado?'
@@ -81,7 +81,7 @@ portal.account.submit-saved-add_email: 'Seu e-mail de adição ainda não foi en
 portal.account.submit-saved-comment: 'Seu comentário ainda não foi enviado, mas nós o salvamos para você.'
 portal.account.submit-saved-form: 'Seu formulário ainda não foi enviado, mas nós o salvamos para você.'
 portal.account.submit-saved-form-go: 'Clique aqui para reenviar automaticamente o formulário.'
-portal.account.submit-saved-new_feedback: 'Seu novo feedback ainda não foi enviado, mas nós o salvamos para você.'
+portal.account.submit-saved-new_community_topic: 'Seu novo community topic ainda não foi enviado, mas nós o salvamos para você.'
 portal.account.submit-saved-new_ticket: 'Seu novo ingresso ainda não foi enviado, mas nós o salvamos para você.'
 portal.account.submit-saved-register: 'Seu registro ainda não foi enviado, mas nós o salvamos para você.'
 portal.account.tickets-lockout: 'Você enviou muitos tickets para que você tenha sido bloqueado. Por favor, tente novamente mais tarde.'
@@ -159,12 +159,12 @@ portal.email_subjects.comment-deleted: 'O seu comentário foi lido pelos nossos 
 portal.email_subjects.email-too-big: 'O seu email "{{subject}}" não foi aceite'
 portal.email_subjects.email_new-confirm: 'Valide o seu endereço de email'
 portal.email_subjects.email_primary-confirm: 'Valide o seu endereço de email'
-portal.email_subjects.feedback_new: 'Obrigado por ter enviado os seus comentários'
-portal.email_subjects.feedback_new-approved: 'Os seus comentários foram aprovados'
-portal.email_subjects.feedback_new-comment: 'Existe um novo comentário no "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Obrigado por ter enviado os seus comentários (confirmação requerida)'
-portal.email_subjects.feedback_new-disapproved: 'Os seus comentários foram refutados'
-portal.email_subjects.feedback_updated: 'O seu comentário foi atualizado: {{title}}'
+portal.email_subjects.community_new: 'Obrigado por ter enviado os seus comentários'
+portal.email_subjects.community_new-approved: 'Os seus comentários foram aprovados'
+portal.email_subjects.community_new-comment: 'Existe um novo comentário no "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Obrigado por ter enviado os seus comentários (confirmação requerida)'
+portal.email_subjects.community_new-disapproved: 'Os seus comentários foram refutados'
+portal.email_subjects.community_updated: 'O seu comentário foi atualizado: {{title}}'
 portal.email_subjects.password_agent-reset: 'Um agente efectuou a reinicialização da sua palavra cháve'
 portal.email_subjects.password_reset: 'Reinicializar a palavra cháve'
 portal.email_subjects.register-welcome: 'Obrigado por se ter registado'
@@ -178,16 +178,16 @@ portal.emails.comment_thank-you: 'Obrigado pelo seu comentário sobre {{link}}.'
 portal.emails.comment_validate-email: 'Por favor valide o seu endereço de email clicando no link seguinte:'
 portal.emails.do-not-reply: 'Por favor não responda a este email. Esta mensagem é gerada automaticamente pelo servidor e respostas a esta mensagem não serão lidas pelo nosso pessoal.'
 portal.emails.email-too-big: 'O seu e-mail "{{subject}}" não foi aceito, porque é mdemasiado grande. O tamanho máximo de e-mail que este helpdesk aceita é {{max_size}}. Remova todos os anexos e tente novamente.'
-portal.emails.feedback_approved: 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.'
-portal.emails.feedback_closed: 'O comentário que nos enviou "{{title}}" foi fechado: {{status}}'
-portal.emails.feedback_disapproved: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site.'
-portal.emails.feedback_disapproved-reason: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site. {{name}} deu a seguinte razão:'
-portal.emails.feedback_new-comment: '{{name}} postou um novo comentário:'
-portal.emails.feedback_published: 'O comentário que enviou "{{title}}" foi validado e irá agora aparecer no nosso Website.'
-portal.emails.feedback_thank-you: 'Obrigado por ter enviado o seu comentário "{{title}}"'
-portal.emails.feedback_updated: 'O seu comentário "{{title}}" foi atualizado. Pode encontrar o mesmo com o novo estado "{{status}}"'
-portal.emails.feedback_validate-email: 'Por favor valide o seu endereço de email clicando no link seguinte:'
-portal.emails.feedback_votes:
+portal.emails.community_topic_approved: 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.'
+portal.emails.community_topic_closed: 'O comentário que nos enviou "{{title}}" foi fechado: {{status}}'
+portal.emails.community-topic_disapproved: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site.'
+portal.emails.community-topic_disapproved-reason: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site. {{name}} deu a seguinte razão:'
+portal.emails.community-topic_new-comment: '{{name}} postou um novo comentário:'
+portal.emails.community-topic_published: 'O comentário que enviou "{{title}}" foi validado e irá agora aparecer no nosso Website.'
+portal.emails.community-topic_thank-you: 'Obrigado por ter enviado o seu comentário "{{title}}"'
+portal.emails.community-topic_updated: 'O seu comentário "{{title}}" foi atualizado. Pode encontrar o mesmo com o novo estado "{{status}}"'
+portal.emails.community-topic_validate-email: 'Por favor valide o seu endereço de email clicando no link seguinte:'
+portal.emails.community-topic_votes:
   one: 'O seu comentário tem atualmente  <strong>1</strong> voto. Veja o seu comentário online em:'
   other: 'O seu comentário tem atualmente  <strong>{{count}}</strong> votos. Veja o seu comentário online em:'
 portal.emails.greeting: 'Caro {{to_name}},'
@@ -217,16 +217,16 @@ portal.emails.tickets_ommitted:
   other: '{{count}} mensagens foram omitidas'
 portal.emails.view_full_history_online: 'Ver bilhete online inteiro'
 portal.error.404-title: 'Não encontrada'
-portal.feedback.attachments: Anexos
-portal.feedback.btn-closed: Fechado
-portal.feedback.btn-vote: Concordo
-portal.feedback.form_i_have_a: 'Eu tenho um...'
-portal.feedback.search-title: Comentário
-portal.feedback.section-desc: 'Estas sugestões foram apresentadas por clientes como você, nós encorajamos-lo a discutir e votar naqueles com que concorda e enviar suas próprias sugestões, se a sugestão não estiver listada.'
-portal.feedback.section-title: Comentário
-portal.feedback.sort_comments: 'Comentários?'
-portal.feedback.submit_feedback: 'Submeter Comentário'
-portal.feedback.form_custom_cat: Categoria
+portal.community.attachments: Anexos
+portal.community.btn-closed: Fechado
+portal.community.btn-vote: Concordo
+portal.community.form_i_have_a: 'Eu tenho um...'
+portal.community.search-title: Comentário
+portal.community.section-desc: 'Estas sugestões foram apresentadas por clientes como você, nós encorajamos-lo a discutir e votar naqueles com que concorda e enviar suas próprias sugestões, se a sugestão não estiver listada.'
+portal.community.section-title: Comentário
+portal.community.sort_comments: 'Comentários?'
+portal.community.submit_community_topic: 'Submeter Comentário'
+portal.community.form_custom_cat: Categoria
 portal.flashes.comment_thank_you: 'Obrigado pelo seu comentário'
 portal.forms.label_category: Categoria
 portal.forms.label_department: Departamento
@@ -253,7 +253,7 @@ portal.general.delete: Excluir
 portal.general.everything: Tudo
 portal.general.nav-downloads: Transferências
 portal.general.nav-downloads-desc: 'Procure nas nossas transferências'
-portal.general.nav-feedback: Comentário
+portal.general.nav-community: Comentário
 portal.general.nav-kb: 'Base de Conhecimento'
 portal.general.nav-kb-desc: 'Ler artigos de ajuda'
 portal.general.nav-login: Entrar
@@ -270,13 +270,13 @@ portal.general.rated-negative: 'Marcou esta página como inútil'
 portal.general.rated-positive: 'Marcou esta página como útil'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} pessoas de {{vote_count}} marcaram esta página como útil'
 portal.general.related-downloads: 'Arquivos relacionados'
-portal.general.related-feedback: 'Comentário relacionado'
+portal.general.related-community: 'Comentário relacionado'
 portal.general.related-news: 'Notícias relacionadas'
 portal.general.search-labels-section-title: 'Procurar Etiquetas'
 portal.general.search-section-title: Pesquisar
 portal.general.search_btn: Pesquisar
 portal.general.share-this: 'Partilhe isto'
-portal.general.submit-feedback: 'Submeter Comentário'
+portal.general.submit-community-topic: 'Submeter Comentário'
 portal.news.section-title: Notícias
 portal.news.view-as-agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
 portal.sidebar.news_title: Notícias
@@ -382,11 +382,11 @@ user.email_subjects.comment-approved: 'O seu comentário foi aprovado'
 user.email_subjects.comment-deleted: 'O seu comentário foi lido pelos nossos agentes'
 user.email_subjects.email-too-big: 'O seu email "{{subject}}" não foi aceite'
 user.email_subjects.email_new-confirm: 'Valide o seu endereço de email'
-user.email_subjects.feedback_new: 'Obrigado por ter enviado os seus comentários'
-user.email_subjects.feedback_new-approved: 'Os seus comentários foram aprovados'
-user.email_subjects.feedback_new-comment: 'Existe um novo comentário no "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Os seus comentários foram refutados'
-user.email_subjects.feedback_updated: 'O seu comentário foi atualizado: {{title}}'
+user.email_subjects.community_topic_new: 'Obrigado por ter enviado os seus comentários'
+user.email_subjects.community_topic_new-approved: 'Os seus comentários foram aprovados'
+user.email_subjects.community_topic_new-comment: 'Existe um novo comentário no "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Os seus comentários foram refutados'
+user.email_subjects.community_topic_updated: 'O seu comentário foi atualizado: {{title}}'
 user.email_subjects.password_agent-reset: 'Um agente efectuou a reinicialização da sua palavra cháve'
 user.email_subjects.password_reset: 'Reinicializar a palavra cháve'
 user.email_subjects.register-welcome: 'Obrigado por se ter registado'
@@ -397,16 +397,16 @@ user.emails.comment_approved: 'O seu comentário foi publicado.'
 user.emails.comment_deleted: 'O seu comentário foi usado para melhorar a página.'
 user.emails.comment_thank-you: 'Obrigado pelo seu comentário sobre {{link}}.'
 user.emails.email-too-big: 'O seu e-mail "{{subject}}" não foi aceito, porque é mdemasiado grande. O tamanho máximo de e-mail que este helpdesk aceita é {{max_size}}. Remova todos os anexos e tente novamente.'
-user.emails.feedback_agent-validation: 'Lembre-se que seu comentário não será exibido publicamente no nosso site, até que um dos nossos agentes o reveja manualmente.'
-user.emails.feedback_approved: 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.'
-user.emails.feedback_closed: 'O comentário que nos enviou "{{title}}" foi fechado: {{status}}'
-user.emails.feedback_disapproved: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site.'
-user.emails.feedback_disapproved-reason: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site. {{name}} deu a seguinte razão:'
-user.emails.feedback_new-comment: '{{name}} postou um novo comentário:'
-user.emails.feedback_published: 'O comentário que enviou "{{title}}" foi validado e irá agora aparecer no nosso Website.'
-user.emails.feedback_thank-you: 'Obrigado por ter enviado o seu comentário "{{title}}"'
-user.emails.feedback_updated: 'O seu comentário "{{title}}" foi atualizado. Pode encontrar o mesmo com o novo estado "{{status}}"'
-user.emails.feedback_votes:
+user.emails.community-topic_agent-validation: 'Lembre-se que seu comentário não será exibido publicamente no nosso site, até que um dos nossos agentes o reveja manualmente.'
+user.emails.community-topic_approved: 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.'
+user.emails.community-topic_closed: 'O comentário que nos enviou "{{title}}" foi fechado: {{status}}'
+user.emails.community-topic_disapproved: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site.'
+user.emails.community-topic_disapproved-reason: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site. {{name}} deu a seguinte razão:'
+user.emails.community-topic_new-comment: '{{name}} postou um novo comentário:'
+user.emails.community-topic_published: 'O comentário que enviou "{{title}}" foi validado e irá agora aparecer no nosso Website.'
+user.emails.community-topic_thank-you: 'Obrigado por ter enviado o seu comentário "{{title}}"'
+user.emails.community-topic_updated: 'O seu comentário "{{title}}" foi atualizado. Pode encontrar o mesmo com o novo estado "{{status}}"'
+user.emails.community-topic_votes:
   one: 'O seu comentário tem atualmente  <strong>1</strong> voto. Veja o seu comentário online em:'
   other: 'O seu comentário tem atualmente  <strong>{{count}}</strong> votos. Veja o seu comentário online em:'
 user.emails.greeting: 'Caro {{to_name}},'
@@ -470,7 +470,7 @@ user.error.permission-denied: 'Peço desculpa, a ação que está a tentar execu
 user.error.permission-denied-login: 'Está correntemente desconectado. <a href="{{login_url}}">Inicie Sessão</a> e tente novamente.'
 user.error.permission-denied-title: 'Não tem permissão para fazer isso'
 user.error.server-error: 'Houve um erro no servidor que impediu o carregamento da página. Por favor, tente novamente'
-user.feedback.submit_feedback: 'Submeter Comentário'
+user.community.submit_community_topic: 'Submeter Comentário'
 user.general.helpdesk_by: 'Programa Helpdesk da <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Código de confirmação'
 user.general.page: Pagina
@@ -483,7 +483,7 @@ user.profile.register: Registar
 user.profile.register_password_require_num_uppercase:
   one: 'Pelo menos {{count}} letra maiúscula'
   other: 'Pelo menos {{count}} letras maiúsculas'
-user.tickets.feedback_message_leave_comment: 'Opcionalmente deixe um comentário'
+user.tickets.community_message_leave_comment: 'Opcionalmente deixe um comentário'
 user.tickets.fields_category: Categoria
 user.tickets.fields_department: Departamento
 user.tickets.fields_priority: Prioridade

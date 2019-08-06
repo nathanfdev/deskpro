@@ -409,7 +409,7 @@ class DownloadsController extends AbstractController
     //###########################################################################
 
     /**
-     * View a list of feedback.
+     * View a list of downloads.
      */
     public function listAction($category_id = 0)
     {

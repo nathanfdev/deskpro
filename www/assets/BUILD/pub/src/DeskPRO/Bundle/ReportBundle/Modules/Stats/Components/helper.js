@@ -161,8 +161,8 @@ export const varTypes = [
     value: 'article_custom_fields'
   },
   {
-    label: 'Feedback custom fields',
-    value: 'feedback_custom_fields'
+    label: 'Community custom fields',
+    value: 'community_custom_fields'
   },
   {
     label: 'Billing custom fields',

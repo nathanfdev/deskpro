@@ -42,7 +42,7 @@ class LinkMenu extends React.Component {
     if (!input) {
       callback(null, []);
     }
-    const types = ['article', 'download', 'news', 'feedback', 'topic'];
+    const types = ['article', 'download', 'news', 'community', 'topic'];
     this.props.dispatch(quickSearchAction({ types, query: input })).then((res) => {
       invariant(res.data && res.data.data && res.data.data.grouped_results, 'Malformed QuickSearch response');
 
@@ -56,8 +56,8 @@ class LinkMenu extends React.Component {
           option.label = 'Articles';
         } else if (group.type === 'download') {
           option.label = 'Downloads';
-        } else if (group.type === 'feedback') {
-          option.label = 'Feedback';
+        } else if (group.type === 'community') {
+          option.label = 'Community';
         } else if (group.type === 'news') {
           option.label = 'News';
         } else if (group.type === 'topic') {

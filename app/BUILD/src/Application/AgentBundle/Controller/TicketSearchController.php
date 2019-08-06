@@ -748,7 +748,7 @@ class TicketSearchController extends AbstractController
                 }
             }
 
-            $typesWithAllowedEmptyOptions = ['feedback_links'];
+            $typesWithAllowedEmptyOptions = ['community_topics_links'];
             foreach ($this->in->getCleanValueArray('terms_expanded', 'raw', 'raw') as $type => $info) {
                 if (
                     (!in_array($type, $typesWithAllowedEmptyOptions) && empty($info['options']))

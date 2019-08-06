@@ -32,7 +32,7 @@ class LabelDef extends DomainObject
     const TYPE_PEOPLE    = 'people';
     const TYPE_ORGS      = 'organizations';
     const TYPE_NEWS      = 'news';
-    const TYPE_FEEDBACK  = 'feedback';
+    const TYPE_COMMUNITY = 'community';
     const TYPE_DOWNLOADS = 'downloads';
     const TYPE_CHATS     = 'chat_conversations';
     const TYPE_ARTICLES  = 'articles';

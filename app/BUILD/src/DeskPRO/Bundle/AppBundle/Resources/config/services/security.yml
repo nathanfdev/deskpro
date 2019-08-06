@@ -179,13 +179,13 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
-  security.voter.permission_groups.feedback:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackVoter
+  security.voter.permission_groups.community_topic:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\CommunityVoter
     tags:
       - { name: security.voter.permission_groups }
 
-  security.voter.permission_groups.feedback_comments:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackCommentsVoter
+  security.voter.permission_groups.community_topic_comments:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\CommunityTopicCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 

@@ -35,10 +35,10 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.user_rate_limit.login_settings.response" should be equal to "lockout"
     And the JSON node "data.user_rate_limit.login_settings.lockout_time" should be equal to 15
 
-    And the JSON node "data.user_rate_limit.submit_feedback.enabled" should be equal to 1
-    And the JSON node "data.user_rate_limit.submit_feedback.limit" should be equal to 3
-    And the JSON node "data.user_rate_limit.submit_feedback.time" should be equal to 15
-    And the JSON node "data.user_rate_limit.submit_feedback.response" should be equal to "captcha"
+    And the JSON node "data.user_rate_limit.submit_community_topic.enabled" should be equal to 1
+    And the JSON node "data.user_rate_limit.submit_community_topic.limit" should be equal to 3
+    And the JSON node "data.user_rate_limit.submit_community_topic.time" should be equal to 15
+    And the JSON node "data.user_rate_limit.submit_community_topic.response" should be equal to "captcha"
 
     And the JSON node "data.user_rate_limit.submit_comment.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.submit_comment.limit" should be equal to 3
@@ -60,10 +60,10 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.guest_rate_limit.submit_ticket.time" should be equal to 15
     And the JSON node "data.guest_rate_limit.submit_ticket.response" should be equal to "captcha"
 
-    And the JSON node "data.guest_rate_limit.submit_feedback.enabled" should be equal to 1
-    And the JSON node "data.guest_rate_limit.submit_feedback.limit" should be equal to 3
-    And the JSON node "data.guest_rate_limit.submit_feedback.time" should be equal to 15
-    And the JSON node "data.guest_rate_limit.submit_feedback.response" should be equal to "captcha"
+    And the JSON node "data.guest_rate_limit.submit_community_topic.enabled" should be equal to 1
+    And the JSON node "data.guest_rate_limit.submit_community_topic.limit" should be equal to 3
+    And the JSON node "data.guest_rate_limit.submit_community_topic.time" should be equal to 15
+    And the JSON node "data.guest_rate_limit.submit_community_topic.response" should be equal to "captcha"
 
     And the JSON node "data.guest_rate_limit.submit_comment.enabled" should be equal to 1
     And the JSON node "data.guest_rate_limit.submit_comment.limit" should be equal to 3
@@ -128,7 +128,7 @@ Feature: Portal Anti-Abuse Setup
         "lockout_time": 11,
         "response": "lockout"
     },
-    "submit_feedback": {
+    "submit_community_topic": {
         "enabled": 1,
         "limit": 8,
         "time": 20,
@@ -168,7 +168,7 @@ Feature: Portal Anti-Abuse Setup
         "lockout_time": 13,
         "response": "lockout"
     },
-    "submit_feedback": {
+    "submit_community_topic": {
         "enabled": 1,
         "limit": 11,
         "time": 24,
@@ -227,10 +227,10 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.user_rate_limit.submit_ticket.response" should be equal to "lockout"
     And the JSON node "data.user_rate_limit.submit_ticket.lockout_time" should be equal to 11
 
-    And the JSON node "data.user_rate_limit.submit_feedback.enabled" should be equal to 1
-    And the JSON node "data.user_rate_limit.submit_feedback.limit" should be equal to 8
-    And the JSON node "data.user_rate_limit.submit_feedback.time" should be equal to 20
-    And the JSON node "data.user_rate_limit.submit_feedback.response" should be equal to "captcha"
+    And the JSON node "data.user_rate_limit.submit_community_topic.enabled" should be equal to 1
+    And the JSON node "data.user_rate_limit.submit_community_topic.limit" should be equal to 8
+    And the JSON node "data.user_rate_limit.submit_community_topic.time" should be equal to 20
+    And the JSON node "data.user_rate_limit.submit_community_topic.response" should be equal to "captcha"
 
     And the JSON node "data.user_rate_limit.submit_comment.enabled" should be equal to 0
     And the JSON node "data.user_rate_limit.submit_comment.limit" should be equal to 9
@@ -259,10 +259,10 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.guest_rate_limit.submit_ticket.response" should be equal to "lockout"
     And the JSON node "data.guest_rate_limit.submit_ticket.lockout_time" should be equal to 13
 
-    And the JSON node "data.guest_rate_limit.submit_feedback.enabled" should be equal to 1
-    And the JSON node "data.guest_rate_limit.submit_feedback.limit" should be equal to 11
-    And the JSON node "data.guest_rate_limit.submit_feedback.time" should be equal to 24
-    And the JSON node "data.guest_rate_limit.submit_feedback.response" should be equal to "captcha"
+    And the JSON node "data.guest_rate_limit.submit_community_topic.enabled" should be equal to 1
+    And the JSON node "data.guest_rate_limit.submit_community_topic.limit" should be equal to 11
+    And the JSON node "data.guest_rate_limit.submit_community_topic.time" should be equal to 24
+    And the JSON node "data.guest_rate_limit.submit_community_topic.response" should be equal to "captcha"
 
     And the JSON node "data.guest_rate_limit.submit_comment.enabled" should be equal to 0
     And the JSON node "data.guest_rate_limit.submit_comment.limit" should be equal to 12
@@ -310,7 +310,7 @@ Feature: Portal Anti-Abuse Setup
         "lockout_time": 11,
         "response": "lockout"
     },
-    "submit_feedback": {
+    "submit_community_topic": {
         "enabled": 1,
         "limit": 8,
         "time": 20,
@@ -358,7 +358,7 @@ Feature: Portal Anti-Abuse Setup
         "lockout_time": 13,
         "response": "lockout"
     },
-    "submit_feedback": {
+    "submit_community_topic": {
         "enabled": 1,
         "limit": 11,
         "time": 24,

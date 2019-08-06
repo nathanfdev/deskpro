@@ -187,10 +187,10 @@ export class OmniSearch extends React.Component {
             q={this.state.searchQuery}
           />
           <OmniSearchResultSection
-            name={portalPhrases.get('portal.general.nav-feedback')}
-            nameApi="feedback"
+            name={portalPhrases.get('portal.general.nav-community')}
+            nameApi="community"
             nameIcon="fas fa-comments"
-            initialResult={'feedback' in data ? data.feedback : {}}
+            initialResult={'community' in data ? data.community : {}}
             q={this.state.searchQuery}
           />
           <OmniSearchResultSection
@@ -250,10 +250,10 @@ export class OmniSearch extends React.Component {
                 <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
               </a>}
 
-            {window.DESKPRO_CAN_USE_FEEDBACK &&
-              <a href={portalUrlGenerator.path('/feedback')}>
+            {window.DESKPRO_CAN_USE_COMMUNITY &&
+              <a href={portalUrlGenerator.path('/community')}>
                 <i className="fas fa-list" />
-                <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
+                <span>{portalPhrases.get('portal.general.submit-community-topic')}</span>
               </a>}
             {window.DESKPRO_CAN_USE_CHAT &&
               <a href={portalUrlGenerator.path('/chat-logs')}>

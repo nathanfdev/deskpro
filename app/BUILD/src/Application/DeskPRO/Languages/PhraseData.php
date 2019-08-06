@@ -439,16 +439,15 @@ class PhraseData
      *
      * @return array
      */
-    public function getFeedbackStatusPhrases(Language $language = null)
+    public function getCommunityStatusPhrases(Language $language = null)
     {
-        //TODO: need a feedback service
         $em = App::getOrm();
 
-        $phrase_group = 'obj_feedbackstatuscategory';
+        $phrase_group = 'obj_CommunityTopicStatusCategory';
 
         $all_statuses = $em->createQuery('
             SELECT s
-            FROM DeskPRO:FeedbackStatusCategory s
+            FROM DeskPRO:CommunityTopicStatusCategory s
             ORDER BY s.display_order ASC
         ')->getResult();
 
@@ -466,7 +465,7 @@ class PhraseData
             $row = [
                 'id'      => $id,
                 'depth'   => 0,
-                'type'    => 'feedback_status',
+                'type'    => 'community_status',
                 'type_id' => $status->id,
                 'default' => $status->title,
                 'lang'    => $status->title,
@@ -487,16 +486,16 @@ class PhraseData
      *
      * @return array
      */
-    public function getFeedbackTypePhrases(Language $language = null)
+    public function getCommunityChannelsPhrases(Language $language = null)
     {
-        //TODO: need a feedback service
+        //TODO: need a community service
         $em = App::getOrm();
 
-        $phrase_group = 'obj_feedbackcategory';
+        $phrase_group = 'obj_communitychannel';
 
         $all_types = $em->createQuery('
             SELECT s
-            FROM DeskPRO:FeedbackCategory s
+            FROM DeskPRO:CommunityChannel s
             ORDER BY s.display_order ASC
         ')->getResult();
 
@@ -514,7 +513,7 @@ class PhraseData
             $row = [
                 'id'      => $id,
                 'depth'   => 0,
-                'type'    => 'feedback_status',
+                'type'    => 'community_status',
                 'type_id' => $type->id,
                 'default' => $type->title,
                 'lang'    => $type->title,

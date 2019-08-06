@@ -19,7 +19,7 @@ export default class TopTabs extends React.Component {
 
   getPublishingCount = () => {
     const { results } = this.props;
-    const elements = ['feedback', 'articles', 'news', 'downloads'];
+    const elements = ['community', 'articles', 'news', 'downloads'];
     let count = 0;
     elements.forEach((e) => {
       if (results[e] && results[e].length) {
