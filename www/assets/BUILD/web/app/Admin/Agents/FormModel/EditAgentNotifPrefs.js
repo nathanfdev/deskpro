@@ -54,7 +54,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         };
       };
 
-      for (const groupName of ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter', 'account']) {
+      for (const groupName of ['chat', 'crm', 'community', 'publish', 'task', 'twitter', 'account']) {
         if ((this.prefsTable.subs[groupName] == null)) { continue; }
 
         for (const row of Array.from(this.prefsTable.subs[groupName].rows)) {

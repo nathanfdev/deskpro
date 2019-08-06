@@ -12,7 +12,7 @@ storiesOf('App: side bar', module)
       <SideBar
         canUseTicket={() => true}
         canUseChat={() => true}
-        canUseFeedback={() => true}
+        canUseCommunity={() => true}
         canUsePeople={() => true}
         canUsePublish={() => true}
         canUseReports={() => false}
@@ -31,7 +31,7 @@ storiesOf('App: side bar', module)
       <SideBar
         canUseTicket={() => true}
         canUseChat={() => true}
-        canUseFeedback={() => true}
+        canUseCommunity={() => true}
         canUsePeople={() => true}
         canUsePublish={() => true}
         canUseReports={() => false}
@@ -50,7 +50,7 @@ storiesOf('App: side bar', module)
       <SideBar
         canUseTicket={() => true}
         canUseChat={() => true}
-        canUseFeedback={() => false}
+        canUseCommunity={() => false}
         canUsePeople={() => true}
         canUsePublish={() => true}
         canUseReports={() => false}

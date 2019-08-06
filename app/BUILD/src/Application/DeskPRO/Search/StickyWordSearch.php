@@ -11,8 +11,8 @@ namespace Application\DeskPRO\Search;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Application\DeskPRO\Searcher\TopicSearch;
 use Doctrine\DBAL\Connection;
@@ -125,7 +125,7 @@ class StickyWordSearch implements PersonContextInterface
      *
      * @return array
      */
-    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'feedback', 'topic'])
+    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'community', 'topic'])
     {
         $words = $this->getWordsFromQuery($query);
 
@@ -145,7 +145,7 @@ class StickyWordSearch implements PersonContextInterface
                 case 'article':  return 'DeskPRO:Article';
                 case 'news':     return 'DeskPRO:News';
                 case 'download': return 'DeskPRO:Download';
-                case 'feedback': return 'DeskPRO:Feedback';
+                case 'community': return 'DeskPRO:CommunityTopic';
                 case 'topic':    return 'DeskPRO:Topic';
                 default: return $t;
             }
@@ -169,11 +169,11 @@ class StickyWordSearch implements PersonContextInterface
         //------------------------------
 
         $check_ids = [
-            'DeskPRO:Article'  => [],
-            'DeskPRO:News'     => [],
-            'DeskPRO:Download' => [],
-            'DeskPRO:Feedback' => [],
-            'DeskPRO:Topic'    => [],
+            'DeskPRO:Article'        => [],
+            'DeskPRO:News'           => [],
+            'DeskPRO:Download'       => [],
+            'DeskPRO:CommunityTopic' => [],
+            'DeskPRO:Topic'          => [],
         ];
 
         if (empty($check_ids)) {
@@ -205,11 +205,11 @@ class StickyWordSearch implements PersonContextInterface
                 $search->addTerm(DownloadSearch::TERM_ID, DownloadSearch::OP_CONTAINS, $check_ids['DeskPRO:Download']);
                 $valid_ids['DeskPRO:Download'] = $search->getMatches();
             }
-            if ($check_ids['DeskPRO:Feedback']) {
-                $search = new FeedbackSearch();
+            if ($check_ids['DeskPRO:CommunityTopic']) {
+                $search = new CommunitySearch();
                 $search->setPersonContext($this->person_context);
-                $search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:Feedback']);
-                $valid_ids['DeskPRO:Feedback'] = $search->getMatches();
+                $search->addTerm(CommunitySearch::TERM_ID, CommunitySearch::OP_CONTAINS, $check_ids['DeskPRO:CommunityTopic']);
+                $valid_ids['DeskPRO:CommunityTopic'] = $search->getMatches();
             }
             if ($check_ids['DeskPRO:Topic']) {
                 $search = new TopicSearch();

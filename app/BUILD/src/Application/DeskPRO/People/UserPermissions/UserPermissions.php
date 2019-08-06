@@ -11,8 +11,8 @@ namespace Application\DeskPRO\People\UserPermissions;
 use Application\DeskPRO\People\PermissionsSetInterface;
 use Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions;
 use Application\DeskPRO\People\UserPermissions\Value\ChatPermissions;
+use Application\DeskPRO\People\UserPermissions\Value\CommunityPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\DownloadPermissions;
-use Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\GuidesPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\NewsPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\TicketPermissions;
@@ -31,9 +31,9 @@ class UserPermissions implements PermissionsSetInterface
     public $chat;
 
     /**
-     * @var \Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions
+     * @var \Application\DeskPRO\People\UserPermissions\Value\CommunityPermissions
      */
-    public $feedback;
+    public $community;
 
     /**
      * @var \Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions
@@ -61,7 +61,7 @@ class UserPermissions implements PermissionsSetInterface
     public static $prefix_map = [
         'tickets'   => 'ticket',
         'chat'      => 'chat',
-        'feedback'  => 'feedback',
+        'community' => 'community',
         'articles'  => 'article',
         'downloads' => 'download',
         'news'      => 'news',
@@ -70,13 +70,13 @@ class UserPermissions implements PermissionsSetInterface
 
     public function __construct()
     {
-        $this->ticket   = new TicketPermissions();
-        $this->chat     = new ChatPermissions();
-        $this->feedback = new FeedbackPermissions();
-        $this->article  = new ArticlePermissions();
-        $this->download = new DownloadPermissions();
-        $this->news     = new NewsPermissions();
-        $this->guide    = new GuidesPermissions();
+        $this->ticket    = new TicketPermissions();
+        $this->chat      = new ChatPermissions();
+        $this->community = new CommunityPermissions();
+        $this->article   = new ArticlePermissions();
+        $this->download  = new DownloadPermissions();
+        $this->news      = new NewsPermissions();
+        $this->guide     = new GuidesPermissions();
     }
 
     /**
@@ -155,6 +155,6 @@ class UserPermissions implements PermissionsSetInterface
      */
     public function getTypes()
     {
-        return ['ticket', 'chat', 'feedback', 'article', 'download', 'news', 'guide'];
+        return ['ticket', 'chat', 'community', 'article', 'download', 'news', 'guide'];
     }
 }

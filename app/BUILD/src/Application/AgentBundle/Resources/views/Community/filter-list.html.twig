@@ -1,0 +1,102 @@
+{% extends 'AgentBundle::list-pane-layout.html.twig' %}
+{%- if list_type == 'category' -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: path('agent_community_channels', {'channelId': category_id}) ~ '?subgroup=SUBGROUP_ID'
+	} %}
+{%- elseif list_type == 'status' -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: path('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) ~ '?subgroup=SUBGROUP_ID'
+	} %}
+{%- else -%}
+	{% set tplvars = {
+		baseId: el_uid(),
+		subgroup_url: null
+	} %}
+{%- endif -%}
+
+{######################################################################################################################}
+{# METADATA #}
+{######################################################################################################################}
+{% block top %}
+	<script>
+		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.CommunityFilter';
+		{% if list_type == 'category' %}
+			pageMeta.refreshUrl = '{{ path('agent_community_channels', {'channelId': category_id}) }}';
+			pageMeta.url_fragment = '{{ url_fragment('agent_community_channels', {'channel': channel}) }}';
+		{% elseif list_type == 'status' %}
+			pageMeta.refreshUrl = '{{ path('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) }}?';
+			pageMeta.url_fragment = '{{ url_fragment('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) }}';
+		{% elseif list_type == 'label' %}
+			pageMeta.refreshUrl = '{{ path('agent_community_label', {'label': label, 'brand_id': selected_brand_id}) }}?';
+			pageMeta.url_fragment = '{{ url_fragment('agent_community_topic_status', {'label': label, 'brand_id': selected_brand_id}) }}';
+		{% elseif list_type == 'validating' %}
+			pageMeta.refreshUrl = '{{ path('agent_community_validatingcontent') }}?';
+		{% else %}
+			pageMeta.refreshUrl = '{{ path('agent_community_filter') }}?cache_id={{cache_id}}';
+		{% endif %}
+		{% if cache_id %}
+			pageMeta.cache_id = {{cache_id}};
+		{% endif %}
+		{% if not community_topics %}
+			pageMeta.noResults = true;
+		{% endif %}
+		pageMeta.baseId = '{{ tplvars.baseId }}';
+		pageMeta.perPage = 50;
+		pageMeta.currentPage = {{ cur_page }};
+		pageMeta.resultIds = {{ result_ids|json_encode|raw }};
+	</script>
+
+{% endblock top %}
+
+{######################################################################################################################}
+{# HEADER #}
+{######################################################################################################################}
+
+{% block pane_header %}
+	<h1><i class="far icon-dp-community"></i> {{ phrase('agent.community.list_title', {count: result_ids|length|default(0)}) }}</h1>
+{% endblock pane_header %}
+
+{######################################################################################################################}
+{# CONTENT #}
+{######################################################################################################################}
+
+{% block pane_content %}
+
+	{% include 'AgentBundle:Community:filter-display-options.html.twig' %}
+	{% include 'AgentBundle:Community:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:Community:filter-grouping-bar.html.twig' %}
+	{% include 'AgentBundle:Community:filter-massactions-bar.html.twig' %}
+
+	<section class="community-simple-list list-listing">
+		{% include 'AgentBundle:Community:filter-page.html.twig' %}
+	</section>
+
+	{% if not community_topics|length %}
+		<section class="list-listing no-results">
+			<p>{{ phrase('agent.general.there_are_no_results') }}</p>
+		</section>
+	{% endif %}
+
+	{% if community_topics|length %}
+		<footer class="results-nav">
+			<div class="cursor">
+				{{ phrase('agent.community.showing_results') }}
+				<span class="results-showing-count" id="{{ tplvars.baseId }}_showing_count"></span>
+				{{ phrase('agent.general.of') }}
+				<span class="results-total-count" id="{{ tplvars.baseId }}_total_count">{{ result_ids|length }}</span>
+			</div>
+			{% if result_ids|length > per_page %}
+				<ul class="pagenav no-prev">
+					<li class="prev"></li>
+					<li class="next"></li>
+				</ul>
+			{% endif %}
+			<div class="loading">
+
+			</div>
+		</footer>
+	{% endif %}
+
+{% endblock pane_content %}

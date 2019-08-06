@@ -12,7 +12,7 @@ export class TypeSlider extends React.Component {
     toggleType: PropTypes.func
   };
 
-  onClick = event => {
+  onClick = (event) => {
     event.preventDefault();
 
     const { toggleType, id } = this.props;
@@ -26,7 +26,7 @@ export class TypeSlider extends React.Component {
       <li>
         <div className="slider-panel">
           <a
-            href={`/feedback/browse/type-${id}`}
+            href={`/community/browse/type-${id}`}
             className={classNames('slider', { off: !active })}
             onClick={this.onClick}
           >

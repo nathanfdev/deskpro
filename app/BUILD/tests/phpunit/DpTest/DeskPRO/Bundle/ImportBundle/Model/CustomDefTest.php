@@ -14,7 +14,7 @@ class CustomDefTest extends AbstractModelTest
         Model\TicketCustomDef::class,
         Model\ArticleCustomDef::class,
         Model\OrganizationCustomDef::class,
-        Model\FeedbackCustomDef::class,
+        Model\CommunityTopicCustomDef::class,
         Model\ChatCustomDef::class,
     ];
 

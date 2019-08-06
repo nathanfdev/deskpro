@@ -645,7 +645,7 @@ abstract class ContentAbstract extends DomainObject
         }
 
         $ent   = $this->getEntityName().'Revision';
-        $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
+        $field = Strings::camelCaseToUnderscore((str_replace('DeskPRO:', '', $this->getEntityName())));
 
         $revs = App::getOrm()->createQuery(
             "
@@ -990,6 +990,11 @@ abstract class ContentAbstract extends DomainObject
         }
     }
 
+    protected function getParentAttributeName()
+    {
+        return Strings::camelCaseToUnderscore(Util::getBaseClassname(get_called_class()));
+    }
+
     public function getCalcNumComments()
     {
         static $numComments = null;
@@ -997,7 +1002,7 @@ abstract class ContentAbstract extends DomainObject
             return $numComments;
         }
         $ent    = $this->getEntityName();
-        $entity = strtolower(Util::getBaseClassname(get_called_class()));
+        $entity = $this->getParentAttributeName();
         $result = App::getOrm()->createQuery(
             "
             SELECT count(1) as num_comment

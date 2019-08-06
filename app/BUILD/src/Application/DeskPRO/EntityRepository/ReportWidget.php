@@ -218,10 +218,10 @@ class ReportWidget extends AbstractEntityRepository
                     'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
-                'feedback' => [
+                'community_topics' => [
                     'type'                                           => ['type', 'DPQL_ALIAS(%s.category, \'Type\')'],
                     'status'                                         => ['status', 'DPQL_ALIAS(%s.status_category, \'Status\')'],
-                    'category'                                       => ['category', 'DPQL_ALIAS(%s.custom_data[1], \'category\')'],
+                    'channel'                                        => ['channel', 'DPQL_ALIAS(%s.custom_data[1], \'category\')'],
                     'person'                                         => ['person', '%s.person'],
                     'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
                     'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
@@ -232,7 +232,7 @@ class ReportWidget extends AbstractEntityRepository
                     'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
-                'feedback_comments' => [
+                'community_topic_comments' => [
                     'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
                     'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
                     'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],

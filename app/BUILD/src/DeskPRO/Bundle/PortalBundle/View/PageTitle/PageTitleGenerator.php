@@ -9,10 +9,10 @@ namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -190,20 +190,20 @@ class PageTitleGenerator
         return (string) $builder;
     }
 
-    public function feedback($content_or_cat = null)
+    public function community($content_or_cat = null)
     {
         $builder = $this->createHelpdeskTitleBuilder();
 
-        $section_title = $this->phrase('portal.feedback.section-title');
+        $section_title = $this->phrase('portal.community.section-title');
 
-        if ($content_or_cat instanceof FeedbackCategory) {
+        if ($content_or_cat instanceof CommunityChannel) {
             $builder->prependSection(
                 $this->getCategorySection($content_or_cat, $section_title)
             );
-        } elseif ($content_or_cat instanceof Feedback) {
+        } elseif ($content_or_cat instanceof CommunityTopic) {
             $builder->prependSection(
                 $this->getCategorySection(
-                    $content_or_cat->getCategory(),
+                    $content_or_cat instanceof CommunityTopic ? $content_or_cat->getChannel() : $content_or_cat->getCategory(),
                     $section_title
                 )
             );

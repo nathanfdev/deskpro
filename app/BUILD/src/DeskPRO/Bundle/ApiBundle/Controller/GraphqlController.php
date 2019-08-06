@@ -43,7 +43,7 @@ class GraphqlController extends BaseController
         'email_templates_get_email_templates_info',
         'email_templates_get_email_templates_legacy_templates',
         'email_templates_get_email_templates_revert_legacy_template',
-        'feedback_get_feedback',
+        'community_get_community_topic',
         'helpdesk_get_helpdesk_agent_client_settings',
         'languages_get_languages_admin_phrases',
         'auth_get_me_device_setup_token',

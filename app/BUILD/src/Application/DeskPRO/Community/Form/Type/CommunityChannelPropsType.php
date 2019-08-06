@@ -1,0 +1,60 @@
+<?php
+
+namespace Application\DeskPRO\Community\Form\Type;
+
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+/**
+ * Class CommunityChannelPropsType.
+ */
+class CommunityChannelPropsType extends AbstractType
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', 'text', ['required' => true])
+            ->add('usergroups', 'entity', [
+                'class'         => 'DeskPRO:Usergroup',
+                'required'      => false,
+                'expanded'      => true,
+                'multiple'      => true,
+                'property'      => 'title',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')->where(
+                        'u.is_agent_group = false AND u.is_enabled = true'
+                    );
+                },
+            ])
+            ->add('brand', EntityType::class, [
+                'class' => Brand::class,
+            ])
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => CommunityChannel::class,
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'community_channel';
+    }
+}

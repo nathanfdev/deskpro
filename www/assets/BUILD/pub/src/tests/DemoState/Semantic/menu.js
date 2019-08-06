@@ -244,7 +244,7 @@ export const emailStructure = {
           subContent: {}
         },
         {
-          label:      'Feedback emails',
+          label:      'Community emails',
           icon:       'folder open',
           subContent: {}
         },

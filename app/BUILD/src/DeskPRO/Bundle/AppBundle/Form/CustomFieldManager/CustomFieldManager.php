@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -88,11 +88,11 @@ class CustomFieldManager
     }
 
     /**
-     * @return CustomDefFeedback[]
+     * @return CustomDefCommunityTopic[]
      */
-    public function getAvailableFeedbackDefs()
+    public function getAvailableCommunityDefs()
     {
-        return $this->getAvailableCustomDefs(CustomDefFeedback::class);
+        return $this->getAvailableCustomDefs(CustomDefCommunityTopic::class);
     }
 
     /**
@@ -209,7 +209,7 @@ class CustomFieldManager
             ->orderBy('f.display_order')
         ;
 
-        if (in_array($entityType, [CustomDefFeedback::class])) {
+        if (in_array($entityType, [CustomDefCommunityTopic::class])) {
             $currentBrand = $this->brandStack->getActive()->getBrand();
             if ($currentBrand && $currentBrand->getId()) {
                 $qb->andWhere('f.brand = :brand');

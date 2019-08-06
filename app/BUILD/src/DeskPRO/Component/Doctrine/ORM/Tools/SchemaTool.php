@@ -184,7 +184,7 @@ class SchemaTool extends BaseSchemaTool
             case 'custom_data_article':
             case 'custom_data_billing':
             case 'custom_data_chat':
-            case 'custom_data_feedback':
+            case 'custom_data_community_topic':
             case 'custom_data_organizations':
             case 'custom_data_person':
             case 'custom_data_product':

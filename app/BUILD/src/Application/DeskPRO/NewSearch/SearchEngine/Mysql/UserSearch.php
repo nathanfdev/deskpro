@@ -347,13 +347,13 @@ class UserSearch implements UserSearchInterface
             $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'news' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
             $wheres[] = "($jn.object_type = 'news' AND $jn.object_id IS NOT NULL)";
         }
-        if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
+        if ($context->getCommunityChannelIds() && ($limit_types === null || in_array('community', $limit_types))) {
             $jn      = '_cs'.$x++;
-            $cat_ids = implode(',', $context->getFeedbackCategoryIds());
+            $cat_ids = implode(',', $context->getCommunityChannelIds());
 
-            $types[]  = 'feedback';
-            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
-            $wheres[] = "($jn.object_type = 'feedback' AND $jn.object_id IS NOT NULL)";
+            $types[]  = 'community';
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'community' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'channel_id' AND $jn.content IN ($cat_ids))";
+            $wheres[] = "($jn.object_type = 'community' AND $jn.object_id IS NOT NULL)";
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
             $jn      = '_cs'.$x++;

@@ -66,19 +66,19 @@ class Column extends AbstractPart
      * @var array
      */
     protected static $_tableResolver = [
-        'agent_teams'                => ['id', 'name'],
-        'article_categories'         => ['id', 'title'],
-        'download_categories'        => ['id', 'title'],
-        'feedback_categories'        => ['id', 'title'],
-        'news_categories'            => ['id', 'title'],
-        'brands'                     => ['id', 'name'],
-        'custom_field_definition'    => ['id', 'title'],
-        'departments'                => ['id', 'title'],
-        'feedback_status_categories' => ['id', 'title'],
-        'labels_tickets'             => ['label', 'label'],
-        'languages'                  => ['id', 'title'],
-        'organizations'              => ['id', 'name', 'organization'],
-        'people'                     => ['id', '
+        'agent_teams'                       => ['id', 'name'],
+        'article_categories'                => ['id', 'title'],
+        'download_categories'               => ['id', 'title'],
+        'community_channels'                => ['id', 'title'],
+        'news_categories'                   => ['id', 'title'],
+        'brands'                            => ['id', 'name'],
+        'custom_field_definition'           => ['id', 'title'],
+        'departments'                       => ['id', 'title'],
+        'community_topic_status_categories' => ['id', 'title'],
+        'labels_tickets'                    => ['label', 'label'],
+        'languages'                         => ['id', 'title'],
+        'organizations'                     => ['id', 'name', 'organization'],
+        'people'                            => ['id', '
 (CASE
     WHEN (LENGTH(%1$s.first_name) > 0 AND LENGTH(%1$s.last_name) > 0) THEN CONCAT(%1$s.first_name, \' \', %1$s.last_name)
     WHEN LENGTH(%1$s.name) > 0 THEN %1$s.name
@@ -87,26 +87,26 @@ class Column extends AbstractPart
     ELSE CONCAT(\'ID-\', %1$s.id)
 END)
 ', 'person'],
-        'products'                  => ['id', 'title'],
-        'slas'                      => ['id', 'title'],
-        'tickets'                   => ['id', 'subject', 'ticket'],
-        'ticket_categories'         => ['id', 'title'],
-        'ticket_priorities'         => ['id', 'title'],
-        'ticket_workflows'          => ['id', 'title'],
-        'custom_def_article'        => ['id', 'title'],
-        'custom_def_chat'           => ['id', 'title'],
-        'custom_def_feedback'       => ['id', 'title'],
-        'custom_def_organizations'  => ['id', 'title'],
-        'custom_def_ticket'         => ['id', 'title'],
-        'custom_def_people'         => ['id', 'title'],
-        'custom_data_article'       => ['id', 'title'],
-        'custom_data_chat'          => ['id', 'title'],
-        'custom_data_feedback'      => ['id', 'title'],
-        'custom_data_organizations' => ['id', 'title'],
-        'custom_data_ticket'        => ['id', 'title'],
-        'custom_data_people'        => ['id', 'title'],
-        'voice_queues'              => ['id', 'name'],
-        'voice_numbers'             => ['id', 'number'],
+        'products'                    => ['id', 'title'],
+        'slas'                        => ['id', 'title'],
+        'tickets'                     => ['id', 'subject', 'ticket'],
+        'ticket_categories'           => ['id', 'title'],
+        'ticket_priorities'           => ['id', 'title'],
+        'ticket_workflows'            => ['id', 'title'],
+        'custom_def_article'          => ['id', 'title'],
+        'custom_def_chat'             => ['id', 'title'],
+        'custom_def_community_topic'  => ['id', 'title'],
+        'custom_def_organizations'    => ['id', 'title'],
+        'custom_def_ticket'           => ['id', 'title'],
+        'custom_def_people'           => ['id', 'title'],
+        'custom_data_article'         => ['id', 'title'],
+        'custom_data_chat'            => ['id', 'title'],
+        'custom_data_community_topic' => ['id', 'title'],
+        'custom_data_organizations'   => ['id', 'title'],
+        'custom_data_ticket'          => ['id', 'title'],
+        'custom_data_people'          => ['id', 'title'],
+        'voice_queues'                => ['id', 'name'],
+        'voice_numbers'               => ['id', 'number'],
     ];
 
     /**
@@ -117,15 +117,15 @@ END)
     ];
 
     protected static $_conditionResolver = [
-        'custom_data_article'       => '%1$s.root_field_id = %2$s',
-        'custom_data_feedback'      => '%1$s.root_field_id = %2$s',
-        'custom_data_organizations' => '%1$s.root_field_id = %2$s',
-        'custom_data_person'        => '%1$s.root_field_id = %2$s',
-        'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
-        'custom_data_chat'          => '%1$s.root_field_id = %2$s',
-        'custom_data_billing'       => '%1$s.root_field_id = %2$s',
-        'custom_field_data'         => '%1$s.root_definition_id = %2$s',
-        'ticket_slas'               => '%1$s.sla_id = %2$s',
+        'custom_data_article'         => '%1$s.root_field_id = %2$s',
+        'custom_data_community_topic' => '%1$s.root_field_id = %2$s',
+        'custom_data_organizations'   => '%1$s.root_field_id = %2$s',
+        'custom_data_person'          => '%1$s.root_field_id = %2$s',
+        'custom_data_ticket'          => '%1$s.root_field_id = %2$s',
+        'custom_data_chat'            => '%1$s.root_field_id = %2$s',
+        'custom_data_billing'         => '%1$s.root_field_id = %2$s',
+        'custom_field_data'           => '%1$s.root_definition_id = %2$s',
+        'ticket_slas'                 => '%1$s.sla_id = %2$s',
     ];
 
     /**
@@ -139,12 +139,12 @@ END)
      * @param array                $parts
      */
     public function __construct(
-        DpqlStatementFactory     $statementFactory,
-        DpqlFuncRegistry         $dpqlFuncRegistry,
-        EntityManager            $em,
-        Connection               $connection,
-        CustomDataHelper         $customDataHelper,
-        array                    $parts
+        DpqlStatementFactory $statementFactory,
+        DpqlFuncRegistry $dpqlFuncRegistry,
+        EntityManager $em,
+        Connection $connection,
+        CustomDataHelper $customDataHelper,
+        array $parts
     ) {
         $this->statementFactory = $statementFactory;
         $this->dpqlFuncRegistry = $dpqlFuncRegistry;

@@ -26,7 +26,7 @@ interface Label
     public function getLabel();
 
     /**
-     * Return label type (e.g. person, feedback etc).
+     * Return label type (e.g. person, community etc).
      *
      * @return string
      */

@@ -5,9 +5,9 @@ Feature: Quick Search
   Background:
     Given I'm authenticated as "admin"
     And the setting "elastica.enabled" is set to 0
-    And only the following "Feedback" records exist:
-      | #        | person  | is_reviewed | slug      | title          | content   | status |
-      | feedback | {admin} | 1           | feedback1 | Test Feedback1 | Feedback1 | active |
+    And only the following "CommunityTopic" records exist:
+      | #     | person  | is_reviewed | slug   | title                | content         | status |
+      | topic | {admin} | 1           | topic1 | Test CommunityTopic1 | CommunityTopic1 | active |
     And only the following "Article" records exist:
       | #       | slug     | title         | content  | status  |
       | article | article1 | Test Article1 | Article1 | visible |
@@ -18,10 +18,10 @@ Feature: Quick Search
       | #    | slug  | title      | status    |
       | news | News1 | Test News1 | published |
     And only the following "Organization" records exist:
-      | #            | name       | summary                                    |
+      | #            | name             | summary                                          |
       | organization | Admin Vector ltd | Admin Vector is a common fake org name in Russia |
     And only the following "Ticket" records exist:
-      | #      | status        | ref  | subject     |
+      | #      | status        | ref  | subject      |
       | ticket | awaiting_user | AAAA | Test Ticket1 |
     And only the following "Chat" records exist:
       | #    | subject    |
@@ -52,15 +52,15 @@ Feature: Quick Search
     And the JSON node "data[0].<param>" should be equal to "<value>"
 
     Examples:
-      | type              | param         | value             | query          |
-      | article           | title         | Test Article1     | {article}      |
-      | download          | title         | Test Download1    | {download}     |
-      | feedback          | title         | Test Feedback1    | {feedback}     |
-      | news              | title         | Test News1        | {news}         |
-      | ticket            | subject       | Test Ticket1      | {ticket}       |
-      | person            | primary_email | admin@deskpro.dev | {admin}        |
-      | organization      | name          | Admin Vector ltd  | {organization} |
-      | chat_conversation | subject       | Test Chat1        | {chat}         |
+      | type              | param         | value                | query          |
+      | article           | title         | Test Article1        | {article}      |
+      | download          | title         | Test Download1       | {download}     |
+      | community         | title         | Test CommunityTopic1 | {topic}        |
+      | news              | title         | Test News1           | {news}         |
+      | ticket            | subject       | Test Ticket1         | {ticket}       |
+      | person            | primary_email | admin@deskpro.dev    | {admin}        |
+      | organization      | name          | Admin Vector ltd     | {organization} |
+      | chat_conversation | subject       | Test Chat1           | {chat}         |
 
   Scenario: I try to search by unsupported type
     When I send a GET request to "/api/v2/search/unknown?q=1"

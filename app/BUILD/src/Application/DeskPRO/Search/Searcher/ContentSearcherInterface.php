@@ -11,7 +11,7 @@ namespace Application\DeskPRO\Search\Searcher;
 /**
  * Interface for 'ContentSearcher'.
  *
- * The content searcher searches: articles, downloads, feedback, news
+ * The content searcher searches: articles, downloads, community topics, news
  */
 interface ContentSearcherInterface
 {

@@ -46,15 +46,15 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            {% if 'feedback' == type and related|length %}
+            {% if 'community' == type and related|length %}
                 <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-feedback') }}</h1>
+                    <h1>{{ phrase('portal.general.related-community') }}</h1>
                 </div>
                 <ul>
                     {% for content in related %}
                         <li>
                             {{ content_icon(content) }}
-                            <a href="{{ path('portal_feedback_view', { slug: content.slug }) }}">
+                            <a href="{{ path('portal_community_topic_view', { slug: content.slug }) }}">
                                 {{ content.realTitle }}
                             </a>
                         </li>

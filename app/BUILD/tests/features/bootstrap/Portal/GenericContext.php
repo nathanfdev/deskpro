@@ -9,12 +9,12 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
@@ -266,6 +266,7 @@ class GenericContext extends BasePortalContext
 
     /**
      * @Given the :type category :cat_name exists with content titled :content_name
+     * @Given the :type channel :cat_name exists with content titled :content_name
      */
     public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
     {
@@ -302,20 +303,20 @@ class GenericContext extends BasePortalContext
                 $content->setBlob($blob);
                 $em->persist($blob);
                 break;
-            case 'feedback':
-                $fcat = $em->getRepository(FeedbackCategory::class)->findOneBy([
+            case 'community':
+                $communityChannel = $em->getRepository(CommunityChannel::class)->findOneBy([
                     'id' => 1,
                 ]);
 
-                $fstatus_cat = $em->getRepository(FeedbackStatusCategory::class)->findOneBy([
+                $communityTopicStatusCategory = $em->getRepository(CommunityTopicStatusCategory::class)->findOneBy([
                     'id' => 1,
                 ]);
 
-                $content = new Feedback();
-                $content->setStatus(Feedback::STATUS_ACTIVE);
-                $content->setCategory($fcat);
-                $content->setStatusCategory($fstatus_cat);
-                $content->title = 'Example Feedback';
+                $content = new CommunityTopic();
+                $content->setStatus(CommunityTopic::STATUS_ACTIVE);
+                $content->setChannel($communityChannel);
+                $content->setStatusCategory($communityTopicStatusCategory);
+                $content->title = 'Example Topic';
 
                 break;
             default:
@@ -445,8 +446,8 @@ class GenericContext extends BasePortalContext
                 return DownloadCategory::class;
             case 'news':
                 return NewsCategory::class;
-            case 'feedback':
-                return FeedbackCategory::class;
+            case 'community':
+                return CommunityChannel::class;
         }
     }
 
@@ -459,8 +460,8 @@ class GenericContext extends BasePortalContext
                 return Download::class;
             case 'news':
                 return News::class;
-            case 'feedback':
-                return Feedback::class;
+            case 'community':
+                return CommunityTopic::class;
         }
     }
 }

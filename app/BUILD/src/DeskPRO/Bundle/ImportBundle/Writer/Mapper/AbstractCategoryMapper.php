@@ -21,7 +21,7 @@ abstract class AbstractCategoryMapper extends AbstractContainerMapper implements
     /**
      * {@inheritdoc}
      */
-    public function getDefaultCategory()
+    public function getDefaultChannel()
     {
         return $this->em->getRepository(static::getMapperEntityClass())->findOneBy([]);
     }

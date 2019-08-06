@@ -48,9 +48,9 @@ class PersonMerge implements PersonContextInterface
     protected $em;
 
     /**
-     * @param \Application\DeskPRO\Entity\Person   $person_performer
-     * @param \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
-     * @param \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
+     * @param \Application\DeskPRO\Entity\Person         $person_performer
+     * @param \Application\DeskPRO\Entity\Person         $person           The base person, this is the one that will still exist at the end
+     * @param \Application\DeskPRO\Entity\CommunityTopic $other_person     The other person, the one that will be merged into $person and then deleted
      *
      * @throws \InvalidArgumentException
      */
@@ -112,7 +112,7 @@ class PersonMerge implements PersonContextInterface
             $this->_mergeArticles();
             $this->_mergeChats();
             $this->_mergeDownloads();
-            $this->_mergeFeedback();
+            $this->_mergeCommunityTopics();
             $this->_mergeNews();
             $this->_mergeTasks();
             $this->_mergePhoneCalls();
@@ -262,13 +262,13 @@ class PersonMerge implements PersonContextInterface
         }
     }
 
-    protected function _mergeFeedback()
+    protected function _mergeCommunityTopics()
     {
         $simple_tables = [
-            'feedback',
-            'feedback_attachments',
-            'feedback_comments',
-            'feedback_revisions',
+            'community_topics',
+            'community_topic_attachments',
+            'community_topic_comments',
+            'community_topic_revisions',
         ];
 
         foreach ($simple_tables as $table) {

@@ -32,7 +32,7 @@ class GeneralSettingsType extends AbstractType
             ->add('orig_deskpro_url', HiddenType::class, [
                 'mapped' => false, // unused, there for perf reasons on FE
             ])
-            ->add('apps_feedback', ApiBooleanType::class)
+            ->add('apps_community', ApiBooleanType::class)
             ->add('apps_kb', ApiBooleanType::class)
             ->add('apps_news', ApiBooleanType::class)
             ->add('apps_downloads', ApiBooleanType::class)

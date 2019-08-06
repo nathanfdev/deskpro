@@ -300,8 +300,8 @@ class MainController extends AbstractController
                     $data[$name] = json_decode($this->forward('AgentBundle:PeopleSearch:getSectionData')->getContent());
                     break;
 
-                case 'feedback_section':
-                    $data[$name] = json_decode($this->forward('AgentBundle:Feedback:getSectionData')->getContent());
+                case 'community_section':
+                    $data[$name] = json_decode($this->forward('AgentBundle:CommunityTopics:getSectionData')->getContent());
                     break;
 
                 case 'publish_section':
@@ -362,7 +362,7 @@ class MainController extends AbstractController
         $results = [
             'article'              => [],
             'download'             => [],
-            'feedback'             => [],
+            'community'            => [],
             'news'                 => [],
             'ticket'               => [],
             'person'               => [],
@@ -681,7 +681,7 @@ class MainController extends AbstractController
 
             case 'article':
             case 'news':
-            case 'feedback':
+            case 'community':
             case 'download':
             case 'topic':
                 foreach ($results as $r) {
@@ -755,7 +755,7 @@ class MainController extends AbstractController
             PortalSettingsResolver::APPS_KB        => false,
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
-            PortalSettingsResolver::APPS_FEEDBACK  => false,
+            PortalSettingsResolver::APPS_COMMUNITY => false,
             PortalSettingsResolver::APPS_GUIDES    => false,
             'core.apps_tasks'                      => false,
         ];

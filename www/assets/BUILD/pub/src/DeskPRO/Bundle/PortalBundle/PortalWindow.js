@@ -8,6 +8,6 @@ export const portalWindow = {
   enabled_langs:         window.DESKPRO_ENABLED_LANGS,
   can_view_tickets_link: window.DESKPRO_CAN_VIEW_TICKETS_LINK,
   can_use_tickets:       window.DESKPRO_CAN_USE_TICKETS,
-  can_use_feedback:      window.DESKPRO_CAN_USE_FEEDBACK,
+  can_use_community:     window.DESKPRO_CAN_USE_COMMUNITY,
   can_use_chat:          window.DESKPRO_CAN_USE_CHAT
 };

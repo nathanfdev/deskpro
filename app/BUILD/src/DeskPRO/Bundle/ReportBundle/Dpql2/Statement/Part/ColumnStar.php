@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
 use Application\DeskPRO\Entity\CustomDefArticle;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -185,8 +185,8 @@ class ColumnStar extends AbstractPart
                     case 'Article':
                         $type = CustomDefArticle::class;
                         break;
-                    case 'Feedback':
-                        $type = CustomDefFeedback::class;
+                    case 'CommunityTopic':
+                        $type = CustomDefCommunityTopic::class;
                         break;
                     case 'Organization':
                         $type = CustomDefOrganization::class;

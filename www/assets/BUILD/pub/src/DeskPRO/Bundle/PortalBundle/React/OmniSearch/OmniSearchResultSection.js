@@ -181,7 +181,7 @@ export class OmniSearchResultSection extends React.Component {
           <span className="item-name">{item.name}</span>
         </span>
       );
-    } else if (this.state.nameApi === 'feedback') {
+    } else if (this.state.nameApi === 'community') {
       const sign = item.rating < 0 ? '-' : '+';
 
       t = (

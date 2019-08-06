@@ -10,8 +10,8 @@ namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -164,7 +164,7 @@ class CategoryHierarchy
             if ($this->table_name == 'departments') {
                 $select = 'id, parent_id, title, user_title';
             }
-            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'feedback_categories'])) {
+            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'community_channels'])) {
                 $select = 'id, parent_id, title, brand_id';
             }
 
@@ -430,8 +430,8 @@ class CategoryHierarchy
     {
         return App::getDb()->fetchAllCol('
             SELECT DISTINCT c.id
-            FROM feedback_categories c
-            LEFT JOIN feedback_categories AS c2 ON (c2.parent_id = c.id)
+            FROM community_channels c
+            LEFT JOIN community_channels AS c2 ON (c2.parent_id = c.id)
             WHERE c2.id IS NULL
         ');
     }
@@ -481,16 +481,16 @@ class CategoryHierarchy
         $qb   = $conn->createQueryBuilder();
 
         $tbl = $conn->quoteIdentifier($permission_table_name);
-        $qb->select('t.category_id');
+        $qb->select("t.{$this->repos->getCategoryField()}");
         $qb->from($tbl, 't');
         $qb->andWhere($qb->expr()->in('t.usergroup_id', $usergroup_ids));
-        $qb->groupBy('t.category_id');
+        $qb->groupBy("t.{$this->repos->getCategoryField()}");
 
         $brandRelatedCategories = [
             ArticleCategory::class,
             DownloadCategory::class,
             NewsCategory::class,
-            FeedbackCategory::class,
+            CommunityChannel::class,
         ];
 
         if (in_array($this->class->name, $brandRelatedCategories)) {
@@ -501,7 +501,7 @@ class CategoryHierarchy
             if ($currentBrand && $currentBrand->getId()) {
                 $tableName = $this->repos->getTableName();
 
-                $qb->innerJoin('t', $tableName, 'c', 'c.id = t.category_id');
+                $qb->innerJoin('t', $tableName, 'c', "c.id = t.{$this->repos->getCategoryField()}");
                 $qb->andWhere($qb->expr()->eq('c.brand_id', $currentBrand->getId()));
             }
         }

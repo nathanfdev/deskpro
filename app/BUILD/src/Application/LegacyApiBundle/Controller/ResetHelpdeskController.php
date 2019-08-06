@@ -32,7 +32,7 @@ class ResetHelpdeskController extends AbstractController implements ProtectedCon
         'kb',
         'news',
         'downloads',
-        'feedback',
+        'community',
         'labels',
         'snippets',
         'apps',

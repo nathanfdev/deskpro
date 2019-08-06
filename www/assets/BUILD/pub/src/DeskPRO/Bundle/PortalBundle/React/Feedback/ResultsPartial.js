@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
-import { FeedbackVoteWidget } from '../../PageWidget/FeedbackVoteWidget';
 import classNames from 'classnames';
+import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
+import { CommunityVoteWidget } from '../../PageWidget/CommunityVoteWidget';
 
 export class ResultsPartial extends React.Component {
 
@@ -42,11 +42,11 @@ export class ResultsPartial extends React.Component {
   }
 
   setEvents() {
-    const $results = $(ReactDOM.findDOMNode(this.refs.results));
+    const $results = $(ReactDOM.findDOMNode(this.results)); // eslint-disable-line react/no-find-dom-node
 
     // process pager
     $results.find('.deskpro-pager a').each((i, item) => {
-      $(item).on('click', event => {
+      $(item).on('click', (event) => {
         event.preventDefault();
 
         const uri = $(item).attr('href');
@@ -58,22 +58,22 @@ export class ResultsPartial extends React.Component {
     });
 
     // add events to "I Agree"
-    $results.find('.feedback-item-controls a.i-agree').each((i, item) => {
-      const w = new FeedbackVoteWidget($(item));
+    $results.find('.community-topic-controls a.i-agree').each((i, item) => {
+      const w = new CommunityVoteWidget($(item));
       w.render();
     });
 
     // add events to status category links
-    $results.find('.feedback-item-content .feedback-status a').each((i, item) => {
-      $(item).on('click', event => {
+    $results.find('.community-topic-content .community-status a').each((i, item) => {
+      $(item).on('click', (event) => {
         event.preventDefault();
         this.setStatusCategory($(item).data('id'));
       });
     });
 
     // add events to type (categories) links
-    $results.find('a.feedback-category').each((i, item) => {
-      $(item).on('click', event => {
+    $results.find('a.community-custom-channel').each((i, item) => {
+      $(item).on('click', (event) => {
         event.preventDefault();
         this.setType($(item).data('id'));
       });
@@ -92,8 +92,9 @@ export class ResultsPartial extends React.Component {
 
     if (partial.length === 0) {
       return (
-        <div className="paged-results centered" ref="results">
+        <div className="paged-results centered" ref={(c) => { this.results = c; }}> {/* eslint-disable-line react/no-string-refs */}
           <img
+            role="presentation"
             src={portalUrlGenerator.getSpinnerPath()}
             style={{
               display: doSpin ? 'table' : 'none',
@@ -109,9 +110,9 @@ export class ResultsPartial extends React.Component {
     return (
       <div
         className={classNames('paged-results', { centered: partial.indexOf('no-data') !== -1 })}
-        ref="results"
+        ref={(c) => { this.results = c; }}
         dangerouslySetInnerHTML={{ __html: partial }}
-      ></div>
+      />
     );
   }
 }

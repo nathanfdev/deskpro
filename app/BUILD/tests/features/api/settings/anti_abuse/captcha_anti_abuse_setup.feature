@@ -15,7 +15,7 @@ Feature: Captcha Anti-Abuse Setup
     And the JSON node "data.recaptcha2_secret_key" should be equal to 0
     And the JSON node "data.tickets" should be equal to 0
     And the JSON node "data.comments" should be equal to 0
-    And the JSON node "data.feedback" should be equal to 0
+    And the JSON node "data.community" should be equal to 0
     And the JSON node "data.register" should be equal to 0
     And the JSON node "data.sharing" should be equal to 0
 
@@ -28,7 +28,7 @@ Feature: Captcha Anti-Abuse Setup
   "recaptcha2_secret_key": "some key",
   "tickets": "everyone",
   "comments": "guests",
-  "feedback": "everyone",
+  "community": "everyone",
   "register": "guests",
   "sharing": "everyone"
 }
@@ -43,7 +43,7 @@ Feature: Captcha Anti-Abuse Setup
     And the JSON node "data.recaptcha2_secret_key" should be equal to "some key"
     And the JSON node "data.tickets" should be equal to "everyone"
     And the JSON node "data.comments" should be equal to "guests"
-    And the JSON node "data.feedback" should be equal to "everyone"
+    And the JSON node "data.community" should be equal to "everyone"
     And the JSON node "data.register" should be equal to "guests"
     And the JSON node "data.sharing" should be equal to "everyone"
 

@@ -3,8 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
@@ -63,17 +63,17 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         $manager->persist($cat);
 
         //------------------------------
-        // Initial feedback cats :
-        // feedback_category_suggestion, feedback_category_feature_request, feedback_category_bug_report
+        // Initial community custom channels:
+
         //------------------------------
 
         foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
-            $cat = new FeedbackCategory();
-            $cat->setTitle($title);
-            $manager->persist($cat);
+            $channel = new CommunityChannel();
+            $channel->setTitle($title);
+            $manager->persist($channel);
 
             $id = str_replace(' ', '_', strtolower($title));
-            $this->setReference('feedback_category_'.$id, $cat);
+            $this->setReference('community_channel_'.$id, $channel);
         }
 
         $manager->flush();
@@ -100,17 +100,17 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         $db = $this->container->get('database_connection');
 
         $ref_perms = [
-            ['id' => 'article_category_general', 'table' => 'article_category2usergroup'],
-            ['id' => 'news_category_general', 'table' => 'news_category2usergroup'],
-            ['id' => 'downloads_category_general', 'table' => 'download_category2usergroup'],
-            ['id' => 'feedback_category_suggestion', 'table' => 'feedback_category2usergroup'],
-            ['id' => 'feedback_category_feature_request', 'table' => 'feedback_category2usergroup'],
-            ['id' => 'feedback_category_bug_report', 'table' => 'feedback_category2usergroup'],
+            ['id' => 'article_category_general', 'table' => 'article_category2usergroup', 'cat_attribute' => 'category_id'],
+            ['id' => 'news_category_general', 'table' => 'news_category2usergroup', 'cat_attribute' => 'category_id'],
+            ['id' => 'downloads_category_general', 'table' => 'download_category2usergroup', 'cat_attribute' => 'category_id'],
+            ['id' => 'community_channel_suggestion', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
+            ['id' => 'community_channel_feature_request', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
+            ['id' => 'community_channel_bug_report', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
         ];
 
         foreach ($ref_perms as $perm) {
             $rec = $this->getReference($perm['id']);
-            $db->insert($perm['table'], ['category_id' => $rec->getId(), 'usergroup_id' => $g->getId()]);
+            $db->insert($perm['table'], [$perm['cat_attribute'] => $rec->getId(), 'usergroup_id' => $g->getId()]);
         }
     }
 }

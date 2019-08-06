@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Entity\CommunityTopic;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +15,7 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
 {
     protected function configure()
     {
-        $this->setName('dp:search-reindex')->addArgument('content-type', InputArgument::REQUIRED, 'The type of content you want to reindex: article, download, feedback, news, topic, ticket');
+        $this->setName('dp:search-reindex')->addArgument('content-type', InputArgument::REQUIRED, 'The type of content you want to reindex: article, download, community, news, topic, ticket');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,9 +37,9 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
                 $table  = 'downloads';
                 break;
 
-            case 'feedback':
-                $entity = 'DeskPRO:Feedback';
-                $table  = 'feedback';
+            case 'community':
+                $entity = CommunityTopic::class;
+                $table  = 'community_topics';
                 break;
 
             case 'news':

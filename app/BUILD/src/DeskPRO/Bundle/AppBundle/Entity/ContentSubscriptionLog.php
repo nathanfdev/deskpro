@@ -94,7 +94,7 @@ class ContentSubscriptionLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * This is the base name of the entity object (e.g. Article, News, Download, Feedback).
+     * This is the base name of the entity object (e.g. Article, News, Download, Community Topics).
      *
      * @param string $content_type
      *

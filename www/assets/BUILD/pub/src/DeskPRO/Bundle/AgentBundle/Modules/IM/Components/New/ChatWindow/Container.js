@@ -84,7 +84,7 @@ class Container extends React.Component {
         return 'building outline';
       case 'download':
         return 'download';
-      case 'feedback':
+      case 'community':
         return 'thumbs outline up';
       case 'userchat':
         return 'comment outline';

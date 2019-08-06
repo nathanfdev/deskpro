@@ -311,7 +311,7 @@ SQL
                 (1, 8)
             ;
 
-            INSERT INTO `feedback_category2usergroup`
+            INSERT INTO `community_channel2usergroup`
                 (`category_id`, `usergroup_id`)
             VALUES
                 (1, 1),
@@ -357,14 +357,14 @@ SQL
               (`usergroup_id`, `person_id`, `name`, `value`, `is_active`)
             VALUES
               ('8', NULL, 'articles.use', 1, 1),
-              ('8', NULL, 'feedback.use', 1, 1),
+              ('8', NULL, 'community.use', 1, 1),
               ('8', NULL, 'downloads.use', 1, 1),
               ('8', NULL, 'news.use', 1, 1),
               ('8', NULL, 'chat.use', 1, 1),
               ('8', NULL, 'guides.use', 1, 1),
 
               ('7', NULL, 'articles.use', 1, 1),
-              ('7', NULL, 'feedback.use', 1, 1),
+              ('7', NULL, 'community.use', 1, 1),
               ('7', NULL, 'downloads.use', 1, 1),
               ('7', NULL, 'news.use', 1, 1),
               ('7', NULL, 'chat.use', 1, 1);
@@ -677,7 +677,7 @@ SQL
             "
             INSERT INTO `person_settings` (`person_id`, `name`, `value`)
             VALUES
-              (1, 'feedback_display_fields', '{\"isStored\":null,\"isChanged\":\"1\",\"card\":{\"id\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":null},\"total_rating\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"}},\"table\":{\"id\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"title\":{\"isShown\":\"1\"},\"content\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"labels\":{\"isShown\":\"1\"},\"author_name\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":\"1\"},\"total_rating\":{\"isShown\":\"1\"},\"validating\":{\"isShown\":\"1\"}}}');
+              (1, 'community_display_fields', '{\"isStored\":null,\"isChanged\":\"1\",\"card\":{\"id\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":null},\"total_rating\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"}},\"table\":{\"id\":{\"isShown\":\"1\"},\"num_ratings\":{\"isShown\":\"1\"},\"title\":{\"isShown\":\"1\"},\"content\":{\"isShown\":\"1\"},\"hidden_status\":{\"isShown\":\"1\"},\"status_category\":{\"isShown\":\"1\"},\"type\":{\"isShown\":\"1\"},\"custom_category\":{\"isShown\":\"1\"},\"labels\":{\"isShown\":\"1\"},\"author_name\":{\"isShown\":\"1\"},\"num_comments\":{\"isShown\":\"1\"},\"date_created\":{\"isShown\":\"1\"},\"total_rating\":{\"isShown\":\"1\"},\"validating\":{\"isShown\":\"1\"}}}');
         "
         );
 

@@ -50,7 +50,7 @@ export class FilterModel {
   }
 
   createUrl() {
-    let url = 'DP_URL/feedback/browse/';
+    let url = 'DP_URL/community/browse/';
 
     url += this.status;
 
@@ -117,18 +117,18 @@ export class FilterModel {
 
   toggleType(typeId) {
     this.page = 1;
-    typeId = parseInt(typeId, 10);
-    if (includes(this.types, typeId)) {
-      this.types = filter(this.types, n => n !== typeId);
+    const parsedTypeId = parseInt(typeId, 10);
+    if (includes(this.types, parsedTypeId)) {
+      this.types = filter(this.types, n => n !== parsedTypeId);
     } else {
-      this.types.push(typeId);
+      this.types.push(parsedTypeId);
     }
   }
 
   setType(typeId) {
     this.page = 1;
-    typeId = parseInt(typeId, 10);
+    const parsedTypeId = parseInt(typeId, 10);
     this.types = [];
-    this.types.push(typeId);
+    this.types.push(parsedTypeId);
   }
 }

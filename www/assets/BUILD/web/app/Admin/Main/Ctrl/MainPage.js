@@ -32,7 +32,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         apps_kb:        true,
         apps_news:      true,
         apps_downloads: true,
-        apps_feedback:  true,
+        apps_community:  true,
         apps_guides:    true,
         iface_portal:   true,
         portal_mode:    'publish'

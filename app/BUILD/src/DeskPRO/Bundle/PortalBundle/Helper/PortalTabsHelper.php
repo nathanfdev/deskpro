@@ -53,9 +53,9 @@ class PortalTabsHelper
                         $tabs[] = $tab_type;
                     }
                     break;
-                case 'feedback':
-                    if ($this->getBrandSetting('user.portal_tab_feedback')
-                        && $this->auth_checker->isGranted(UseSectionVoter::USE_FEEDBACK)) {
+                case 'community':
+                    if ($this->getBrandSetting('user.portal_tab_community')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_COMMUNITY)) {
                         $tabs[] = $tab_type;
                     }
                     break;
@@ -101,7 +101,7 @@ class PortalTabsHelper
             'articles',
             'guides',
             'news',
-            'feedback',
+            'community',
             'downloads',
             'newticket',
         ]);

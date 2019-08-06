@@ -151,10 +151,10 @@ export const emailBlocks = {
                   typeId:     'agent',
                   groupId:    'general',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_agent:new-feedback.html.twig',
-                  showName:   'emails_agent/new-feedback.html',
-                  title:      'New Feedback',
-                  desc:       'Email sent when new feedback has been submitted.'
+                  name:       'DeskPRO:emails_agent:new-community-topic.html.twig',
+                  showName:   'emails_agent/new-community-topic.html',
+                  title:      'New Community Topic',
+                  desc:       'Email sent when new community topic has been submitted.'
                 },
                 {
                   typeId:     'agent',
@@ -626,9 +626,9 @@ export const emailBlocks = {
                   groupId:    'publish',
                   subGroupId: 'primary',
                   name:       'DeskPRO:emails_user:feedback-subscription.html.twig',
-                  showName:   'emails_user/feedback-subscription.html',
-                  title:      'New Feedback',
-                  desc:       'Email sent the user to notify them of new feedbacks in a subscribed category.'
+                  showName:   'emails_user/community-topic-subscription.html',
+                  title:      'New Community Topic',
+                  desc:       'Email sent the user to notify them of new community topics in a subscribed category.'
                 },
                 {
                   typeId:     'user',
@@ -653,8 +653,8 @@ export const emailBlocks = {
           }
         },
         feedback: {
-          groupId:   'feedback',
-          title:     'Feedback Emails',
+          groupId:   'community',
+          title:     'Community Emails',
           subGroups: {
             primary: {
               subGroupId: 'primary',
@@ -662,48 +662,48 @@ export const emailBlocks = {
               templates:  [
                 {
                   typeId:     'user',
-                  groupId:    'feedback',
+                  groupId:    'community',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_user:feedback-approved.html.twig',
-                  showName:   'emails_user/feedback-approved.html',
-                  title:      'Feedback Approved',
-                  desc:       'Email sent to a user when their feedback has been approved.'
+                  name:       'DeskPRO:emails_user:community-topic-approved.html.twig',
+                  showName:   'emails_user/community-topic-approved.html',
+                  title:      'Community Topic Approved',
+                  desc:       'Email sent to a user when their community topic has been approved.'
                 },
                 {
                   typeId:     'user',
-                  groupId:    'feedback',
+                  groupId:    'community',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_user:feedback-disapproved.html.twig',
-                  showName:   'emails_user/feedback-disapproved.html',
-                  title:      'Feedback Deleted',
-                  desc:       'Email sent to a user when their feedback was not approved.'
+                  name:       'DeskPRO:emails_user:community-topic-disapproved.html.twig',
+                  showName:   'emails_user/community-topic-disapproved.html',
+                  title:      'Community Topic Deleted',
+                  desc:       'Email sent to a user when their community topic was not approved.'
                 },
                 {
                   typeId:     'user',
-                  groupId:    'feedback',
+                  groupId:    'community',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_user:feedback-new.html.twig',
-                  showName:   'emails_user/feedback-new.html',
-                  title:      'Feedback Thank-you',
-                  desc:       'Email sent to a user after they submit new feedback.'
+                  name:       'DeskPRO:emails_user:community-topic-new.html.twig',
+                  showName:   'emails_user/community-topic-new.html',
+                  title:      'Community Topic Thank-you',
+                  desc:       'Email sent to a user after they submit new community topic.'
                 },
                 {
                   typeId:     'user',
-                  groupId:    'feedback',
+                  groupId:    'community',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_user:feedback-new-comment.html.twig',
-                  showName:   'emails_user/feedback-new-comment.html',
-                  title:      'Feedback Comment Thank-you',
-                  desc:       'Email sent to a user after they submit a new comment on feedback.'
+                  name:       'DeskPRO:emails_user:community-topic-new-comment.html.twig',
+                  showName:   'emails_user/community-topic-new-comment.html',
+                  title:      'Community Topic Comment Thank-you',
+                  desc:       'Email sent to a user after they submit a new comment on community topic.'
                 },
                 {
                   typeId:     'user',
-                  groupId:    'feedback',
+                  groupId:    'community',
                   subGroupId: 'primary',
-                  name:       'DeskPRO:emails_user:feedback-updated.html.twig',
-                  showName:   'emails_user/feedback-updated.html',
-                  title:      'Feedback Updated Notification',
-                  desc:       'Email sent to a user when their feedback post has been updated.'
+                  name:       'DeskPRO:emails_user:community-topic-updated.html.twig',
+                  showName:   'emails_user/community-topic-updated.html',
+                  title:      'Community Topic Updated Notification',
+                  desc:       'Email sent to a user when their community topic has been updated.'
                 }
               ]
             }

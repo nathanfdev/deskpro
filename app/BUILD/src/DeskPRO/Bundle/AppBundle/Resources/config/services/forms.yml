@@ -24,7 +24,12 @@ services:
   # helpers
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
-    arguments: ["@doctrine.orm.default_entity_manager", "@data.departments", "@data.feedback", "@language_manager", "@brand_stack"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@data.departments"
+      - "@data.community"
+      - "@language_manager"
+      - "@brand_stack"
 
   custom_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
@@ -167,8 +172,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.ticket_feedback_link:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType
+  form.ticket_community_topic_link:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCommunityTopicLinkType
     arguments: ["@brand_aware_settings_resolver"]
     tags:
       - { name: form.type }
@@ -186,8 +191,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.feedback:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType
+  form.community_topic:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Community\CommunityTopicType
     arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type }
@@ -399,8 +404,8 @@ services:
     tags:
       - { name: form.type }
 
-  form.mass_actions.feedback_params:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback\FeedbackMassActionParamsType
+  form.mass_actions.community_topic_params:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\CommunityTopic\CommunityTopicMassActionParamsType
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:

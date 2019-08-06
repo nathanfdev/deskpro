@@ -73,7 +73,7 @@ class HelpdeskUser extends \Application\DeskPRO\Domain\DomainObject implements \
             return true;
         }
 
-        if ($this->person->hasPerm('feedback.use')) {
+        if ($this->person->hasPerm('community.use')) {
             return true;
         }
 

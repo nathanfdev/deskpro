@@ -1,0 +1,91 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+    <article class="community main-community" id="community_topic_view">
+        {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
+        <div class="community-topic">
+            {%  include 'Theme:Community:topics_controls_partial.html.twig' with {'topic': topic} %}
+            <div class="community-topic-content">
+                <span class="community-status">
+                    {% if topic.status_category %}
+                        <a href="{{ portal_path(topic.status_category) }}">
+                            {{ object_phrase(topic.status_category) }}
+                        </a>
+                    {% else %}
+                        {{ topic.status }}
+                        {# no link here because it's a worse case fallback #}
+                        {# every community topic should have a status_category! #}
+                    {% endif %}
+                </span>
+
+                <span class="community-topic-type"><a href="{{ portal_path(topic.channel) }}">{{ object_phrase(topic.channel) }}</a></span>
+
+                <div class="header-buttons">
+                    {% show community_topic_subscription_link %}
+                </div>
+
+                <h1>
+                    <a href="{{ portal_path(topic) }}">{{ topic.title }}</a>
+                </h1>
+
+                <div class="comment">
+                    <p>{{ topic.getContentHtml()|raw }}</p>
+                </div>
+
+                <div class="community-topic-meta">
+                    <ul>
+                        <li><i class="fas fa-user"></i> {{ topic.person.display_name }}</li>
+                        <li><a href="#comments"><i
+                                        class="fas fa-comment"></i> {{ phrase('portal.general.comments-count', { count: topic.calc_num_comments }) }}</a></li>
+                        {% if topic.getCustomDataSelection() %}
+                            <li><i class="fas fa-inbox"></i> {{ topic.getCustomDataSelection().title }}</li>
+                        {% endif %}
+                        {% if topic.labels|length %}
+                            <li>
+                                <i class="fas fa-tags"></i>
+                                {% for l in topic.labels %}
+                                    <a
+                                    href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="attached">
+                    {% if topic.attachments|length > 0 %}
+                        <h3>{{ phrase('portal.community.attachments') }}</h3>
+                        {% for attachment in topic.attachments %}
+                            <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
+                                {% if attachment.blob.is_image %}
+                                    <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+                                {% else %}
+                                    {{ file_icon(attachment.blob) }}
+                                {% endif %}
+                                {{ attachment.blob.filename }}
+                                <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>
+                            </a><br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </article>
+
+    {% show related_content %}
+
+    {% if topic.calc_num_comments or new_comment_form %}
+        <div class="comment-box" id="comments">
+            <div class="titled-header">
+                <h1>{{ phrase('portal.general.comments-title', {count: topic.calc_num_comments}) }}</h1>
+            </div>
+            {% show community_topic_comments %}
+            {% show comment_form %}
+        </div>
+    {% endif %}
+
+{% endblock inner_content %}

@@ -14,7 +14,7 @@ class FieldsProcessor extends Base
      */
     protected function doProcess(array $data)
     {
-        $types = ['article', 'chat', 'feedback', 'organizations', 'ticket'];
+        $types = ['article', 'chat', 'community_topics', 'organizations', 'ticket'];
         foreach ($types as $type) {
             $this->connection->executeUpdate("DELETE FROM custom_data_$type");
             $this->connection->executeUpdate("DELETE FROM custom_def_$type");

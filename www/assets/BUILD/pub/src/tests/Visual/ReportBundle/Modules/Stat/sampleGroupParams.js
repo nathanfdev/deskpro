@@ -336,7 +336,7 @@ export const groupParams = {
         'NULL'
       ]
     },
-    feedback: {
+    community: {
       day_week_created: [
         'day of week created',
         'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'
@@ -382,7 +382,7 @@ export const groupParams = {
         'ALIAS(%s.custom_data[1], \'category\')'
       ]
     },
-    feedback_comments: {
+    community_topic_comments: {
       hour_created: [
         'hour created',
         'ALIAS(HOUR(%s.date_created), \'Hour Created\')'

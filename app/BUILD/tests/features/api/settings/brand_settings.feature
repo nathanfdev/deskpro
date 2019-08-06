@@ -18,7 +18,7 @@ Feature: Brand Settings Setup
   "brand_name": "Test site (same)",
   "deskpro_name":"Test site",
   "deskpro_url":"http://testsite.com",
-  "apps_feedback":true,
+  "apps_community":true,
   "apps_kb":true,
   "apps_news":true,
   "apps_downloads":true,
@@ -36,7 +36,7 @@ Feature: Brand Settings Setup
     And the response status code should be 200
     And the JSON node "data.deskpro_name" should be equal to "Test site"
     And the JSON node "data.deskpro_url" should be equal to "http://testsite.com"
-    And the JSON node "data.apps_feedback" should be true
+    And the JSON node "data.apps_community" should be true
     And the JSON node "data.apps_kb" should be true
     And the JSON node "data.apps_news" should be true
     And the JSON node "data.apps_downloads" should be true
@@ -61,7 +61,7 @@ Feature: Brand Settings Setup
   "brand_name": "My new Brand",
   "deskpro_name":"Other Brand",
   "deskpro_url":"http://otherbrand.com",
-  "apps_feedback":false,
+  "apps_community":false,
   "apps_kb":false,
   "apps_news":true,
   "apps_downloads":false,
@@ -80,7 +80,7 @@ Feature: Brand Settings Setup
     And the JSON node "data.brand_name" should be equal to "My new Brand"
     And the JSON node "data.deskpro_name" should be equal to "Other Brand"
     And the JSON node "data.deskpro_url" should be equal to "http://otherbrand.com"
-    And the JSON node "data.apps_feedback" should be false
+    And the JSON node "data.apps_community" should be false
     And the JSON node "data.apps_kb" should be false
     And the JSON node "data.apps_news" should be true
     And the JSON node "data.apps_downloads" should be false
@@ -101,7 +101,7 @@ Feature: Brand Settings Setup
     And the response status code should be 200
     And the JSON node "data.deskpro_name" should be equal to "Test site"
     And the JSON node "data.deskpro_url" should be equal to "http://testsite.com"
-    And the JSON node "data.apps_feedback" should be true
+    And the JSON node "data.apps_community" should be true
     And the JSON node "data.apps_kb" should be true
     And the JSON node "data.apps_news" should be true
     And the JSON node "data.apps_downloads" should be true

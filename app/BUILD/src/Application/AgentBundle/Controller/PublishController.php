@@ -12,10 +12,11 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -29,8 +30,8 @@ use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
@@ -421,8 +422,8 @@ class PublishController extends AbstractController
             case 'news':
                 $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
                 break;
-            case 'feedback':
-                $objectUrl = $this->get('router')->generate('agent_feedback_view', ['feedback_id' => $comment->getObject()->getId()]);
+            case 'community':
+                $objectUrl = $this->get('router')->generate('agent_community_topic_view', ['communityTopicId' => $comment->getObject()->getId()]);
                 break;
             default:
                 $objectUrl = null;
@@ -450,8 +451,8 @@ class PublishController extends AbstractController
                 return DownloadComment::class;
             case 'news':
                 return NewsComment::class;
-            case 'feedback':
-                return FeedbackComment::class;
+            case 'community':
+                return CommunityTopicComment::class;
             default:
                 return '';
         }
@@ -582,9 +583,9 @@ class PublishController extends AbstractController
         ]);
     }
 
-    public function listValidatingFeedbackCommentsAction()
+    public function listValidatingCommunityTopicsCommentsAction()
     {
-        $this->publishHelper->setEnabledTypes(['feedback']);
+        $this->publishHelper->setEnabledTypes(['community']);
 
         return $this->listValidatingCommentsAction();
     }
@@ -773,8 +774,8 @@ class PublishController extends AbstractController
             case 'news':
                 $entity_name = 'DeskPRO:News';
                 break;
-            case 'feedback':
-                $entity_name = 'DeskPRO:Feedback';
+            case 'community':
+                $entity_name = CommunityTopic::class;
                 break;
             case 'topics':
                 $entity_name = 'DeskPRO:Topic';
@@ -1173,8 +1174,8 @@ class PublishController extends AbstractController
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
                 break;
-            case 'feedback':
-                $url = $this->generateUrl('agent_feedback_category', ['category_id' => $cat->getId()]);
+            case 'community':
+                $url = $this->generateUrl('agent_community_channels', ['$channelId' => $cat->getId()]);
                 break;
         }
 
@@ -1242,11 +1243,11 @@ class PublishController extends AbstractController
                 $cats   = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
                 break;
 
-            case 'feedback':
-                $searcher = new FeedbackSearch();
+            case 'community':
+                $searcher = new CommunitySearch();
                 $searcher->addTerm('deleted', 'not', 1);
-                $helper = 'FeedbackResults';
-                $cats   = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');
+                $helper = 'CommunityTopicResults';
+                $cats   = $this->in->getCleanValueArray('community_channels', 'uint', 'discard');
                 break;
 
             default:

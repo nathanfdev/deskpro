@@ -18,7 +18,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('custom_def_ticket');
         $this->clearTable('custom_def_people');
         $this->clearTable('custom_def_article');
-        $this->clearTable('custom_def_feedback');
+        $this->clearTable('custom_def_community_topic');
         $this->clearTable('custom_def_organizations');
         $this->clearTable('custom_def_chat');
 
@@ -342,7 +342,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
             [Model\TicketCustomDef::class, Entity\CustomDefTicket::class],
             [Model\PersonCustomDef::class, Entity\CustomDefPerson::class],
             [Model\ArticleCustomDef::class, Entity\CustomDefArticle::class],
-            [Model\FeedbackCustomDef::class, Entity\CustomDefFeedback::class],
+            [Model\CommunityTopicCustomDef::class, Entity\CustomDefCommunityTopic::class],
             [Model\OrganizationCustomDef::class, Entity\CustomDefOrganization::class],
             [Model\ChatCustomDef::class, Entity\CustomDefChat::class],
         ];
