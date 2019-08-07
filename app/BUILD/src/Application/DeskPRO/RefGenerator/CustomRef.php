@@ -6,7 +6,6 @@
 
 namespace Application\DeskPRO\RefGenerator;
 
-use Application\DeskPRO\HttpFoundation\Session;
 use DateTime;
 use DateTimeZone;
 use Exception;
