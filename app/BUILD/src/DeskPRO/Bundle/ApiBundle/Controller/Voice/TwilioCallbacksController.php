@@ -918,7 +918,7 @@ class TwilioCallbacksController extends BaseController
                 ]);
             } elseif ($phoneCall->isOnHold()) {
                 if ($phoneCall->enqueuedAsAgent()) {
-                    $twiml->redirect($this->getHoldMusicCallbackUrl($account));
+                    $twiml->redirect($this->getHoldMusicCallbackUrl($account, $phoneCall));
                 } else {
                     $twiml->redirect($this->getHoldSilentCallbackUrl($account));
                 }
@@ -966,7 +966,7 @@ class TwilioCallbacksController extends BaseController
         if ($phoneCall->enqueuedAsAgent()) {
             $waitUrl = $this->getHoldSilentCallbackUrl($account);
         } else {
-            $waitUrl = $this->getHoldMusicCallbackUrl($account);
+            $waitUrl = $this->getHoldMusicCallbackUrl($account, $phoneCall);
         }
 
         $twiml = new Twiml();
@@ -1032,18 +1032,27 @@ class TwilioCallbacksController extends BaseController
      *     output="string"
      * )
      *
-     * @Rest\Post("/hold_music_callback", name="twilio_hold_music_callback")
+     * @Rest\Post("/{phoneCall}/hold_music_callback", name="twilio_hold_music_callback")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function holdMusicCallbackAction()
+    public function holdMusicCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         $twiml = new Twiml();
-        $twiml->play('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3', [
-            'loop' => 0,
-        ]);
+        $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
+        $queue = $this->container->get('dp.voice.voice_task_helper')->getVoiceQueue($task);
+        if ($queue && $queue->getLoopAsset()) {
+            $twiml->redirect($this->getHoldMusicUrl($account, $queue->getLoopAsset()));
+        } else {
+            $twiml->play('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3', [
+                'loop' => 0,
+            ]);
+        }
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1658,14 +1667,16 @@ class TwilioCallbacksController extends BaseController
 
     /**
      * @param TwilioVoiceAccount $account
+     * @param VoicePhoneCall     $phoneCall
      *
      * @return string
      */
-    private function getHoldMusicCallbackUrl(TwilioVoiceAccount $account)
+    private function getHoldMusicCallbackUrl(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         return $this->get('router')->generate('twilio_hold_music_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
+            'phoneCall'   => $phoneCall->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
