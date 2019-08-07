@@ -37,6 +37,8 @@ class TwilioAdapter implements VoiceProviderInterface
 {
     const VOICEMAIL_WAITING_TIMEOUT = 15;
 
+    const ERROR_CODE_BLACK_LIST = 21216;
+
     /**
      * @var EntityManager
      */
@@ -520,7 +522,7 @@ class TwilioAdapter implements VoiceProviderInterface
 
             return $call->sid;
         } catch (RestException $e) {
-            if ($e->getCode() === 21216) {
+            if ($e->getCode() === self::ERROR_CODE_BLACK_LIST) {
                 $exception = new BlacklistException();
             } elseif ($e->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
                 $exception = new InsufficientBalanceException();
