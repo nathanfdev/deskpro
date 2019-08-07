@@ -1534,8 +1534,6 @@ class TwilioCallbacksController extends BaseController
 
         if ($target instanceof VoiceQueueTarget) {
             if ($target->getQueue()->getGreetAsset()) {
-                $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
-                $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
                 $this->playGreetAsset($twiml, $target->getQueue()->getGreetAsset());
             }
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
