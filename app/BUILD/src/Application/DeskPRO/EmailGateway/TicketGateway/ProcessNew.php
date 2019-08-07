@@ -295,7 +295,7 @@ class ProcessNew extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->getId()])) {
+            if (isset($this->inlineBlobs[$blob->getId()])) {
                 $attach->is_inline = true;
             }
 

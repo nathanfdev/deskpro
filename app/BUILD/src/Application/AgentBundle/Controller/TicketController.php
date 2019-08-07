@@ -1283,7 +1283,7 @@ class TicketController extends AbstractController
                 $removedAddresses = [];
             }
             $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses());
-            $removedCCs->setValue(json_encode($removedAddresses));
+            $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
             $ticket->addAttribute($removedCCs);
             $this->em->persist($removedCCs);
 

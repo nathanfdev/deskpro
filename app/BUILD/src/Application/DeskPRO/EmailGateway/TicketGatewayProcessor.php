@@ -469,6 +469,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticketEmail->reply_actions   = $replyActions;
         $ticketEmail->isPublicTac     = $isPtac;
 
+        if ($ticket && $ticket->getAttribute('removed_ccs')) {
+            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue());
+            if ($removed) {
+                if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
+                    $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
+                    $ticket = null;
+                }
+            }
+        }
+
         if ($ticket && $person) {
             $this->container->getTicketManager()->markAsManaged($ticket);
 
@@ -490,8 +500,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticket = $ticket_email->ticket;
         $person = $ticket_email->person;
 
-        $person_processor = new PersonFromEmailProcessor();
-        $person_processor->passPerson($this->reader->getFromAddress(), $person);
+        $personProcessor = new PersonFromEmailProcessor();
+        $personProcessor->passPerson($this->reader->getFromAddress(), $person);
 
         if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
             $this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
@@ -502,8 +512,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         }
 
         if (!$person->disable_autoresponses) {
-            if ($return_path = $this->reader->getHeader('Return-Path')) {
-                if ($return_path->getHeader() == '<>') {
+            if ($returnPath = $this->reader->getHeader('Return-Path')) {
+                if ($returnPath->getHeader() == '<>') {
                     $this->logMessage('Null return path, disabling auto-responses for this user');
                     $person->setDisableAutoresponses(
                         true,
@@ -517,20 +527,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         // If the agent is replying to an email that is not a notification, then this check doesnt
         // need to run (e.g., they replied to an email they were CCd on).
-        $is_reply_to_dpmail = false;
-        if ($body_html = $ticket_email->email_body_html) {
+        $isReplyToDpmail = false;
+        if ($bodyHtml = $ticket_email->email_body_html) {
             if (
-                strpos($body_html, 'DP_BOTTOM_MARK') !== false
-                || strpos($body_html, 'DP_TOP_MARK') !== false
-                || strpos($body_html, 'DP_MESSAGE_BEGIN') !== false
-                || strpos($body_html, 'DP_USER_EMAIL') !== false
-                || strpos($body_html, 'DP_AGENT_EMAIL') !== false
+                strpos($bodyHtml, 'DP_BOTTOM_MARK') !== false
+                || strpos($bodyHtml, 'DP_TOP_MARK') !== false
+                || strpos($bodyHtml, 'DP_MESSAGE_BEGIN') !== false
+                || strpos($bodyHtml, 'DP_USER_EMAIL') !== false
+                || strpos($bodyHtml, 'DP_AGENT_EMAIL') !== false
             ) {
-                $is_reply_to_dpmail = true;
+                $isReplyToDpmail = true;
             }
         }
 
-        if ($is_reply_to_dpmail) {
+        if ($isReplyToDpmail) {
             $this->logMessage('[TicketGatewayProcessor] IS a reply to a DeskPRO email');
         } else {
             $this->logMessage('[TicketGatewayProcessor] NOT a reply to a DeskPRO email');
@@ -538,8 +548,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         // todo injection
         $translator = $this->container->getTranslator();
-        $reply_proc = new ProcessReply($this->account, $ticket, $person, $ticket_email, $translator);
-        $reply_proc->setLogger($this->logger);
+        $replyProc  = new ProcessReply($this->account, $ticket, $person, $ticket_email, $translator);
+        $replyProc->setLogger($this->logger);
 
         if (
             $person['is_agent']
@@ -547,22 +557,22 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             !$ticket_email->isPublicTac
             && (
                 // Is not a user email
-                (strpos($ticket_email->email_body_html, 'DP_USER_EMAIL') === false && $is_reply_to_dpmail)
+                (strpos($ticket_email->email_body_html, 'DP_USER_EMAIL') === false && $isReplyToDpmail)
                 ||
                 // Or is a text email where user email markers wouldnt be detected
-                ($ticket_email->tac_person && $ticket_email->tac_person->getId() == $person->getId() && !$is_reply_to_dpmail)
+                ($ticket_email->tac_person && $ticket_email->tac_person->getId() == $person->getId() && !$isReplyToDpmail)
             )
         ) {
             $this->logMessage('[TicketGatewayProcessor] runNewAgentReply');
-            $obj = $reply_proc->run('agent');
+            $obj = $replyProc->run('agent');
         } else {
             $this->logMessage('[TicketGatewayProcessor] runNewUserReply');
-            $obj = $reply_proc->run('user');
+            $obj = $replyProc->run('user');
         }
 
-        if ($err = $reply_proc->getError()) {
+        if ($err = $replyProc->getError()) {
             $this->error      = $err;
-            $this->error_type = $reply_proc->getErrorType();
+            $this->error_type = $replyProc->getErrorType();
 
             return null;
         }
@@ -661,19 +671,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             /** @var EmailSource $source */
             if (($source = $this->options['email_source']) && $emailAddress) {
-                $tmpdata = TmpData::create('newticket_email_validate', [
+                $tmpData = TmpData::create('newticket_email_validate', [
                     'email_source_id' => $source->getId(),
                     'person_email_id' => $emailAddress->getId(),
                 ]);
 
-                $this->container->getEm()->persist($tmpdata);
+                $this->container->getEm()->persist($tmpData);
                 $this->container->getEm()->flush();
 
                 if (!$this->reader->isFromRobot() && !$ticket_email->is_bounce) {
                     $this->container->get('portal_validation')->sendTicketByEmailVerificationEmail(
                         $person,
                         $this->reader,
-                        $tmpdata->getCode()
+                        $tmpData->getCode()
                     );
                     $this->logMessage('--> User was sent validation link');
                 } else {
@@ -795,18 +805,18 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      */
     private function createTicketDetector($with_code_check = true)
     {
-        $ticket_detect = new CompositeDetector();
-        $ticket_detect->setLogger($this->logger);
+        $ticketDetect = new CompositeDetector();
+        $ticketDetect->setLogger($this->logger);
 
         if ($with_code_check) {
-            $ticket_detect->addDetector(new CodeTicketDetector());
+            $ticketDetect->addDetector(new CodeTicketDetector());
         }
 
         if ($this->container->getSetting('core.deskpro3importer')) {
-            $ticket_detect->addDetector(new Dp3Detector());
+            $ticketDetect->addDetector(new Dp3Detector());
         }
 
-        $ticket_detect->addDetector(new SubjectRefMatchDetector());
+        $ticketDetect->addDetector(new SubjectRefMatchDetector());
 
         if ($this->container->getSetting('core_tickets.gateway_enable_subject_match')) {
             $m = new SubjectMatchDetector();
@@ -818,10 +828,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $m->enableExactSubjectMatching();
             }
 
-            $ticket_detect->addDetector($m);
+            $ticketDetect->addDetector($m);
         }
 
-        return $ticket_detect;
+        return $ticketDetect;
     }
 
     /**

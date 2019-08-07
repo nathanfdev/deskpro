@@ -271,7 +271,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
             }
 
@@ -633,7 +633,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $ticket->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
             }
 
@@ -647,7 +647,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $agentTicketMessage ? $agentTicketMessage->person : $ticket->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
             }
 

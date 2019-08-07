@@ -245,7 +245,7 @@ class ProcessReply extends ProcessAbstract
 
         $ticketAttach = [];
         foreach ($this->processBlobs() as $blob) {
-            if (isset($this->dupe_inline_blobs[$blob->getId()])) {
+            if (isset($this->dupeInlineBlobs[$blob->getId()])) {
                 continue;
             }
 
@@ -253,7 +253,7 @@ class ProcessReply extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->getId()])) {
+            if (isset($this->inlineBlobs[$blob->getId()])) {
                 $attach->is_inline = true;
             }
 
