@@ -250,9 +250,7 @@ class TwilioCallbacksController extends BaseController
         $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $queue = $this->container->get('dp.voice.voice_task_helper')->getVoiceQueue($task);
         if ($queue && $queue->getLoopAsset()) {
-            $twiml->play($this->getHoldMusicUrl($account, $queue->getLoopAsset()), [
-                'loop' => 0,
-            ]);
+            $twiml->redirect($this->getHoldMusicUrl($account, $queue->getLoopAsset()));
         } else {
             $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl(), [
                 'loop' => 0,
@@ -756,6 +754,7 @@ class TwilioCallbacksController extends BaseController
      * )
      *
      * @Rest\Get("/hold_music", name="twilio_hold_music")
+     * @Rest\Post("/hold_music", name="twilio_hold_music_post")
      *
      * @param Request $request
      *
