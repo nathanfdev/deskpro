@@ -115,9 +115,9 @@
       }
     },
     "@deskpro/apps-components-style": {
-      "version": "0.11.0",
-      "resolved": "https://registry.npmjs.org/@deskpro/apps-components-style/-/apps-components-style-0.11.0.tgz",
-      "integrity": "sha512-t/tSB1a3nbsOiLyoTOK6OK36pWvg2m+uEL1nONINH+1h3K3dTP5hEWWlSLDk4exQYjCxlvX4qOk6rtQn05Pahg=="
+      "version": "0.12.3",
+      "resolved": "https://registry.npmjs.org/@deskpro/apps-components-style/-/apps-components-style-0.12.3.tgz",
+      "integrity": "sha512-uvtWD+lGGh2UEm+XUjMSrPi8kOEu6xvpfwyRbuMqTS2IzWC4aTLL+SLKj30Qd3DlO/CVLQUzJaySNqyXTzFSew=="
     },
     "@deskpro/js-utils": {
       "version": "1.0.4",
