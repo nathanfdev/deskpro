@@ -95,7 +95,7 @@ class PrefsPersister
              'chat',
              'task',
              'twitter',
-             'feedback',
+             'community',
              'publish',
              'crm',
              'account',

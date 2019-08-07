@@ -59,13 +59,13 @@ class CaptchaAntiAbuseSettings
     private $comments = self::TYPE_BASED_RATE_LIMITS;
 
     /**
-     * Use it for feedback.
+     * Use it for community topics.
      *
      * @var bool|string
      *
      * @JMS\Type("string")
      */
-    private $feedback = self::TYPE_BASED_RATE_LIMITS;
+    private $community = self::TYPE_BASED_RATE_LIMITS;
 
     /**
      * Use it for registration.
@@ -188,19 +188,19 @@ class CaptchaAntiAbuseSettings
     /**
      * @return mixed
      */
-    public function getFeedback()
+    public function getCommunity()
     {
-        return $this->feedback;
+        return $this->community;
     }
 
     /**
-     * @param mixed $feedback
+     * @param mixed $community
      *
      * @return $this
      */
-    public function setFeedback($feedback)
+    public function setCommunity($community)
     {
-        $this->feedback = $feedback;
+        $this->community = $community;
 
         return $this;
     }

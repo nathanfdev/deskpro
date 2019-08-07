@@ -1,0 +1,29 @@
+<div class="content-list-wrap simple {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
+    {% if pager|length %}
+        <ul>
+            {% for topic in pager %}
+                <li>
+                    <a href="{{ portal_path(topic, 'vote_up') }}" class="post-link thumbs" rel="noindex, nofollow">
+                        <span><i class="fas fa-thumbs-up"></i> {{ topic.total_rating }}</span>
+                    </a>
+                    <span class="text-tag">{{ topic.status_category ? object_phrase(topic.status_category) : topic.status }}</span>
+                    <a href="{{ portal_path(topic) }}">{{ topic.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong>{{ phrase('portal.community.none') }}</strong>
+    {% endif %}
+
+    {% if show_category_link and pager|length > 0 %}
+        <div class="list-meta">
+            <a href="{{ path('portal_community') }}">
+                {{ phrase('portal.community.view-x-community-topics', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
+            </a>
+        </div>
+    {% endif %}
+
+    {% if show_pager %}
+       {% show community_pager %}
+    {% endif %}
+</div>

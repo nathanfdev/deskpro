@@ -1,0 +1,31 @@
+<dp:subject>{{ phrase('user.email_subjects.community_topic_new-comment', {title: topic.title}) }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{{ phrase('user.emails.community-topic_new-comment', {name: comment.user_display_contact|default('Anonymous') }) }}
+
+		<br /><br />
+
+        {{ comment.content_html|raw }}
+
+		<br /><br />
+
+		{{ phrase('user.emails.label_view-online') }}:
+		<a href="{{ community_topic_link }}">
+			{{ community_topic_link }}
+		</a>
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -60,7 +60,7 @@ class CustomDefHandler extends AbstractEntityHandler
             CustomDefPerson::class,
             CustomDefOrganization::class,
             CustomDefArticle::class,
-            CustomDefFeedback::class,
+            CustomDefCommunityTopic::class,
         ];
     }
 

@@ -74,8 +74,8 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@settings_resolver"
 
-  feedback_subscription_helper:
-    class: DeskPRO\Bundle\AppBundle\Content\FeedbackSubscriptionHelper
+  community_subscription_helper:
+    class: DeskPRO\Bundle\AppBundle\Content\CommunitySubscriptionHelper
     arguments: ["@doctrine.orm.default_entity_manager", "@portal_permissions_manager"]
 
   agent_data:

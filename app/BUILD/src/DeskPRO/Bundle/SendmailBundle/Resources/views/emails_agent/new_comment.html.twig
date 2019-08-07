@@ -35,8 +35,8 @@
 						<a href="{{ login_link }}#app.publish,validating_comments,n.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,n.o={{ object.id }}</a>
                     {% elseif object_type == 'Topic' %}
 						<a href="{{ login_link }}#app.publish,validating_comments,m.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,m.o={{ object.id }}</a>
-                    {% elseif object_type == 'Feedback' %}
-						<a href="{{ login_link }}#app.publish,fb_comments,i.o:{{ object.id }}">{{ login_link }}#app.publish,fb_comments,i.o={{ object.id }}</a>
+                    {% elseif object_type == 'CommunityTopic' %}
+						<a href="{{ login_link }}#app.publish,ct_comments,i.o:{{ object.id }}">{{ login_link }}#app.publish,ct_comments,i.o={{ object.id }}</a>
 					{% else %}
 						<a href="{{ login_link }}#app.publish,validating_comments">{{ login_link }}#app.publish,validating_comments</a>
 					{% endif %}
@@ -64,7 +64,7 @@
 						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#d.o:{{ object.id }}">{{ login_link }}#d.o={{ object.id }}</a>
 					{% elseif object_type == 'News' %}
 						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#n.o:{{ object.id }}">{{ login_link }}#n.o={{ object.id }}</a>
-					{% elseif object_type == 'Feedback' %}
+					{% elseif object_type == 'CommunityTopic' %}
 						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#i.o:{{ object.id }}">{{ login_link }}#i.o={{ object.id }}</a>
 					{% elseif object_type == 'Topic' %}
 						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#m.o:{{ object.id }}">{{ login_link }}#m.o={{ object.id }}</a>

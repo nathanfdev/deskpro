@@ -1,0 +1,13 @@
+<dp:subject>{{ phrase('user.email_subjects.community_topic_new-comment', {title: topic.title}) }}</dp:subject>
+{{ phrase('user.emails.community-topic_new-comment', {name: comment.getUserName(true)|default('Anonymous') }) }}
+
+<br /><br />
+
+{{ comment.getContentHtml()|raw }}
+
+<br /><br />
+
+{{ phrase('user.emails.label_view-online') }}:
+<a href="{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}">
+	{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}
+</a>

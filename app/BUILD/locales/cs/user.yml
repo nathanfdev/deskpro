@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'Přidat e-mailovou adresu'
 portal.account.email-management: 'Spravovat e-maily'
 portal.account.email-management-from-form: 'Spravovat e-mailové adresy'
 portal.account.email-primary-description: 'Toto je váš primární e-mail. Pokud neurčíte jinak, bude použit tento.'
-portal.account.feedback-lockout: 'Odeslali jste příliš mnoho připomínek pro zpětnou vazbu. Váš účet byl dočasně pozastaven.'
+portal.account.community-lockout: 'Odeslali jste příliš mnoho připomínek pro zpětnou vazbu. Váš účet byl dočasně pozastaven.'
 portal.account.link-expired: 'Platnost tohoto odkazu vypršela, nebo už byl dříve použit.'
 portal.account.lockout_time: 'Můžete se pokusit znovu za {{time}} minut.'
 portal.account.login-btn: Přihlásit
@@ -31,7 +31,7 @@ portal.account.login-register-header: Registrovat
 portal.account.login-remember: 'Zůstat přihlášen(a)?'
 portal.account.login-saved-comment: 'Váš komentář nebyl odeslán. Přihlašte se, prosím.'
 portal.account.login-saved-form: 'Váš formulář nebyl odeslán. Přihlašte se, prosím.'
-portal.account.login-saved-new_feedback: 'Váše připomínka nebyla odeslána. Přihlašte se, prosím.'
+portal.account.login-saved-new_community_topic: 'Váše připomínka nebyla odeslána. Přihlašte se, prosím.'
 portal.account.login-saved-new_ticket: 'Váš tiket nebyl odeslán. Přihlašte se, prosím.'
 portal.account.login-stay-logged-in: 'Zůstat přihlášen(a)?'
 portal.account.logout-btn: Odhlásit
@@ -74,13 +74,13 @@ portal.email_subjects.email-too-big: 'Váš e-mail "{{subject}}" nebyl přijat'
 portal.email_subjects.email_new-confirm: 'Ověřte svou e-mailovou adresu'
 portal.email_subjects.email_primary-confirm: 'Ověřte svou e-mailovou adresu'
 portal.email_subjects.email_ticket-reminder: 'Důležité: Váš tiket ještě nebyl odeslán'
-portal.email_subjects.feedback_new: 'Děkujeme za vaši připomínku'
-portal.email_subjects.feedback_new-approved: 'Vaše připomínka byla zveřejněna'
-portal.email_subjects.feedback_new-comment: 'Máte nový komentář k "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Děkujeme za vaši připomínku (je zapotřebí ověření)'
-portal.email_subjects.feedback_new-disapproved: 'Omlouváme se. Vaše připomínka byla zamítnuta'
-portal.email_subjects.feedback_sub_updated: 'Upravená připomínka'
-portal.email_subjects.feedback_updated: 'Vaše připomínka byla upravena: {{title}}'
+portal.email_subjects.community_new: 'Děkujeme za vaši připomínku'
+portal.email_subjects.community_new-approved: 'Vaše připomínka byla zveřejněna'
+portal.email_subjects.community_new-comment: 'Máte nový komentář k "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Děkujeme za vaši připomínku (je zapotřebí ověření)'
+portal.email_subjects.community_new-disapproved: 'Omlouváme se. Vaše připomínka byla zamítnuta'
+portal.email_subjects.community_sub_updated: 'Upravená připomínka'
+portal.email_subjects.community_updated: 'Vaše připomínka byla upravena: {{title}}'
 portal.email_subjects.kb_sub_new: 'Nové články'
 portal.email_subjects.kb_sub_new_and_updated: 'Nové a upravené články'
 portal.email_subjects.kb_sub_updated: 'Upravené články'
@@ -119,23 +119,23 @@ portal.emails.download-updated-downloads:
   other: '{{count}} upravená stažení'
 portal.emails.email-too-big: 'Váš e-mail "{{subject}}" nebyl přijat, protože je příliš velký. Maximální povolená velikost je {{max_size}}. Odeberte, prosíme, přílohy a zkuste to znovu.'
 portal.emails.end_greeting: 'S pozdravem,<br /><br />{{site_name}}'
-portal.emails.feedback-updated-items:
+portal.emails.community-topics-updated:
   one: '1 upravená připomínka'
   few: '{{count}} upravených připomínek'
   many: '{{count}} upravených připomínek'
   other: '{{count}} upravených připomínek'
-portal.emails.feedback_agent-validation: 'Vaše připomínka nebude zveřejněna, dokud ji jeden z našich operátorů neschválí.'
-portal.emails.feedback_approved: 'Vaše připomínka byla schválena a zveřejněna na našem portálu.'
-portal.emails.feedback_disapproved: 'Vaše připomínka nebyla schválena a nebude tedy zveřejněna na našem portálu.'
-portal.emails.feedback_new-comment: '{{name}} odeslal nový komentář:'
-portal.emails.feedback_published: 'Vaše připomínka "{{title}}" byla schválena a bude nyní zveřejněna na našem portálu.'
-portal.emails.feedback_thank-you: 'Děkujeme za vaši připomínku "{{title}}"'
-portal.emails.feedback_validate-email: 'Prosíme, ověřte svou e-mailovou adresu kliknutím na následující odkaz:'
-portal.emails.feedback_votes:
-  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
-  few: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
-  many: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
-  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+portal.emails.community-topic_agent-validation: 'Vaše připomínka nebude zveřejněna, dokud ji jeden z našich operátorů neschválí.'
+portal.emails.community_topic_approved: 'Vaše připomínka byla schválena a zveřejněna na našem portálu.'
+portal.emails.community-topic_disapproved: 'Vaše připomínka nebyla schválena a nebude tedy zveřejněna na našem portálu.'
+portal.emails.community-topic_new-comment: '{{name}} odeslal nový komentář:'
+portal.emails.community-topic_published: 'Vaše připomínka "{{title}}" byla schválena a bude nyní zveřejněna na našem portálu.'
+portal.emails.community-topic_thank-you: 'Děkujeme za vaši připomínku "{{title}}"'
+portal.emails.community-topic_validate-email: 'Prosíme, ověřte svou e-mailovou adresu kliknutím na následující odkaz:'
+portal.emails.community-topic_votes:
+  one: 'Your community topic currently has <strong>1</strong> vote. View your community topic online at:'
+  few: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
+  many: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
+  other: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
 portal.emails.greeting: 'Milý {{to_name}},'
 portal.emails.kb-new-articles:
   one: '1 New Knowledgebase Article'
@@ -183,43 +183,43 @@ portal.emails.tickets_ommitted:
   other: '{{count}} messages have been omitted'
 portal.emails.validate-email: 'Prosíme, ověřte, že tato e-mailova dresa je opravdu vaše, kliknutím na následující odkaz:'
 portal.emails.view_full_history_online: 'Zobrazit celý tiket online'
-portal.feedback.attachments: Přílohy
-portal.feedback.btn-closed: Zavřeno
-portal.feedback.btn-vote: Souhlasím
-portal.feedback.dir_asc: Vzestupně
-portal.feedback.dir_desc: Sestupně
-portal.feedback.error_hidden: 'Tato připomínka je skrytá'
-portal.feedback.error_login: 'Prosíme, přihlašte se'
-portal.feedback.filter_all_items: 'Všechny položky'
-portal.feedback.filter_closed_items: 'Uzavřené položky'
-portal.feedback.filter_open_items: 'Otevřené položky'
-portal.feedback.form_attach_files: 'Připojit soubory'
-portal.feedback.form_btn_submit: 'Přidejte připomínku'
-portal.feedback.form_email_not_shown: 'Váš e-mail (nebude veřejný)'
-portal.feedback.form_i_have_a: Mám
-portal.feedback.form_logged_in_as: 'Přihlášen jako: <span>{{name}}</span>, z e-mailu <span>{{email}}</span>.'
-portal.feedback.form_logout: 'Nejste to vy?'
-portal.feedback.form_tell_us_more: 'Řekněte nám více'
-portal.feedback.form_title: Název
-portal.feedback.form_custom_cat: Kategorie
-portal.feedback.module_forbidden: 'Nemáte přístup k tomuto modulu'
-portal.feedback.no_matching: 'Žádná související připomínka'
-portal.feedback.none: 'Zatím žádná připomínka'
-portal.feedback.rate_forbidden: 'Nemůžete hlasovat'
-portal.feedback.recent-feedback: 'Nedávné připomínky'
-portal.feedback.search-title: Připomínka
-portal.feedback.section-desc: 'Tyto připomínky byly odeslány podobnými zákazníky, jak jste vy. Doporučujeme hlasovat a diskutovat u připomínek, se kterými souhlasíte, případně nám poslat vaši vlastní.'
-portal.feedback.section-title: Připomínka
-portal.feedback.sort_comments: Komentáře
-portal.feedback.sort_date: Datum
-portal.feedback.sort_popularity: Popularita
-portal.feedback.sort_rating: Hodnocení
-portal.feedback.sort_views: Zobrazení
-portal.feedback.status_active: 'Otevřené položky'
-portal.feedback.status_all: 'Všechny položky'
-portal.feedback.status_closed: 'Uzavřené položky'
-portal.feedback.submit_feedback: 'Odeslat připomínku'
-portal.feedback.view-x-feedback:
+portal.community.attachments: Přílohy
+portal.community.btn-closed: Zavřeno
+portal.community.btn-vote: Souhlasím
+portal.community.dir_asc: Vzestupně
+portal.community.dir_desc: Sestupně
+portal.community.error_hidden: 'Tato připomínka je skrytá'
+portal.community.error_login: 'Prosíme, přihlašte se'
+portal.community.filter_all_items: 'Všechny položky'
+portal.community.filter_closed_items: 'Uzavřené položky'
+portal.community.filter_open_items: 'Otevřené položky'
+portal.community.form_attach_files: 'Připojit soubory'
+portal.community.form_btn_submit: 'Přidejte připomínku'
+portal.community.form_email_not_shown: 'Váš e-mail (nebude veřejný)'
+portal.community.form_i_have_a: Mám
+portal.community.form_logged_in_as: 'Přihlášen jako: <span>{{name}}</span>, z e-mailu <span>{{email}}</span>.'
+portal.community.form_logout: 'Nejste to vy?'
+portal.community.form_tell_us_more: 'Řekněte nám více'
+portal.community.form_title: Název
+portal.community.form_custom_cat: Kategorie
+portal.community.module_forbidden: 'Nemáte přístup k tomuto modulu'
+portal.community.no_matching: 'Žádná související připomínka'
+portal.community.none: 'Zatím žádná připomínka'
+portal.community.rate_forbidden: 'Nemůžete hlasovat'
+portal.community.recent-community_topics: 'Nedávné připomínky'
+portal.community.search-title: Připomínka
+portal.community.section-desc: 'Tyto připomínky byly odeslány podobnými zákazníky, jak jste vy. Doporučujeme hlasovat a diskutovat u připomínek, se kterými souhlasíte, případně nám poslat vaši vlastní.'
+portal.community.section-title: Připomínka
+portal.community.sort_comments: Komentáře
+portal.community.sort_date: Datum
+portal.community.sort_popularity: Popularita
+portal.community.sort_rating: Hodnocení
+portal.community.sort_views: Zobrazení
+portal.community.status_active: 'Otevřené položky'
+portal.community.status_all: 'Všechny položky'
+portal.community.status_closed: 'Uzavřené položky'
+portal.community.submit_community_topic: 'Odeslat připomínku'
+portal.community.view-x-community-topics:
   one: 'Zobrazit 1 připomínku'
   few: 'Zobrazit {{count}} připomínky'
   many: 'Zobrazit {{count}} připomínky'
@@ -341,14 +341,14 @@ portal.general.admin_home: 'Admin domov. stránka'
 portal.general.agent: Operátor
 portal.general.agent_bar_admin_desc: 'Spravovat váš helpdesk'
 portal.general.agent_bar_admin_dl: 'Nastavení stahování'
-portal.general.agent_bar_admin_feedback: 'Nastavení připomínek'
+portal.general.agent_bar_admin_community: 'Nastavení připomínek'
 portal.general.agent_bar_admin_kb: 'Nastavení znalostní báze'
 portal.general.agent_bar_admin_lang: 'Nastavení jazyků'
 portal.general.agent_bar_admin_news: 'Nastavení novinek'
 portal.general.agent_bar_admin_portal: 'Vzhled portálu & templaty'
 portal.general.agent_bar_agent_desc: 'Zobrazit tikety / Spravovat obsah'
 portal.general.agent_bar_agent_dl: 'Spravovat stahování'
-portal.general.agent_bar_agent_feedback: 'Spravovat připomínky'
+portal.general.agent_bar_agent_community: 'Spravovat připomínky'
 portal.general.agent_bar_agent_home: 'Operátor domov. stránka'
 portal.general.agent_bar_agent_kb: 'Spravovat znalostní bázi'
 portal.general.agent_bar_agent_news: 'Spravovat novinky'
@@ -389,8 +389,8 @@ portal.general.nav-all: Vše
 portal.general.nav-downloads: Stahování
 portal.general.nav-downloads-desc: 'Listujte našimi soubory'
 portal.general.nav-emails: E-maily
-portal.general.nav-feedback: Připomínka
-portal.general.nav-feedback-desc: Doporučení
+portal.general.nav-community: Připomínka
+portal.general.nav-community-desc: Doporučení
 portal.general.nav-guides: Návody
 portal.general.nav-guides-desc: 'Produktová dokumentace'
 portal.general.nav-kb: 'Znalostní báze'
@@ -433,7 +433,7 @@ portal.general.rated-negative: 'Ohodnoceno jako neužitečné'
 portal.general.rated-positive: 'Ohodnoceno jako užitečné'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} z {{vote_count}} lidí hodnotilo stránku kladně'
 portal.general.related-downloads: 'Související soubory'
-portal.general.related-feedback: 'Související připomínky'
+portal.general.related-community: 'Související připomínky'
 portal.general.related-news: 'Související novinky'
 portal.general.related-pages: 'Související stránky'
 portal.general.rerender-form: 'Prosíme, překontrolujte formulář před jeho odesláním.'
@@ -447,8 +447,8 @@ portal.general.show: Zobraz
 portal.general.show_less: 'Zobraz míň'
 portal.general.show_more: 'Zobraz víc'
 portal.general.show_x_more: 'Zobraz další {num}'
-portal.general.submit-feedback: 'Odeslat zpětnou vazbu'
-portal.general.submit-feedback-desc: 'Připomínky, které byly odeslány podobnými zákazníky, jak jste vy'
+portal.general.submit-community-topic: 'Odeslat zpětnou vazbu'
+portal.general.submit-community-topic-desc: 'Připomínky, které byly odeslány podobnými zákazníky, jak jste vy'
 portal.general.tagged_with: označen
 portal.general.tags: Označení
 portal.general.toggle_off: vypnuto
@@ -486,13 +486,13 @@ user.email_subjects.download_sub_new_and_updated: 'Nová a upravená stažení'
 user.email_subjects.download_sub_updated: 'Upravená stažení'
 user.email_subjects.email-too-big: 'Váš e-mail "{{subject}}" nebyl přijat'
 user.email_subjects.email_new-confirm: 'Prosíme, ověřte svou e-mailovou adresu'
-user.email_subjects.feedback_created_for_user: 'Děkujeme za vaše připomínky'
-user.email_subjects.feedback_new: 'Děkujeme za zaslání vašich připomínek'
-user.email_subjects.feedback_new-approved: 'Vaše připomínky byly schváleny'
-user.email_subjects.feedback_new-comment: 'Máte nový komentář k "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Omlouváme se, ale vaše připomínky byly zamítnuty'
-user.email_subjects.feedback_sub_updated: 'Upravená připomínka'
-user.email_subjects.feedback_updated: 'Vaše připomínka byla upravena: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'Děkujeme za vaše připomínky'
+user.email_subjects.community_topic_new: 'Děkujeme za zaslání vašich připomínek'
+user.email_subjects.community_topic_new-approved: 'Vaše připomínky byly schváleny'
+user.email_subjects.community_topic_new-comment: 'Máte nový komentář k "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Omlouváme se, ale vaše připomínky byly zamítnuty'
+user.email_subjects.community_sub_updated: 'Upravená připomínka'
+user.email_subjects.community_topic_updated: 'Vaše připomínka byla upravena: {{title}}'
 user.email_subjects.kb_sub_new: 'Nové články'
 user.email_subjects.kb_sub_new_and_updated: 'Nové a upravené články'
 user.email_subjects.kb_sub_updated: 'Upravené články'
@@ -523,22 +523,22 @@ user.emails.download-updated-downloads:
   many: '{{count}} upravená stažení'
   other: '{{count}} upravená stažení'
 user.emails.email-too-big: 'Váš e-mail "{{subject}}" nebyl přijat, protože je příliš velký. Maximální povolená velikost je {{max_size}}. Odeberte, prosíme, přílohy a zkuste to znovu.'
-user.emails.feedback-updated-items:
+user.emails.community-updated-items:
   one: '1 upravená připomínka'
   few: '{{count}} upravených připomínek'
   many: '{{count}} upravených připomínek'
   other: '{{count}} upravených připomínek'
-user.emails.feedback_agent-validation: 'Vaše připomínka nebude zveřejněna, dokud ji jeden z našich operátorů neschválí.'
-user.emails.feedback_approved: 'Vaše připomínka byla schválena a zveřejněna na našem portálu.'
-user.emails.feedback_disapproved: 'Vaše připomínka nebyla schválena a nebude tedy zveřejněna na našem portálu.'
-user.emails.feedback_new-comment: '{{name}} odeslal nový komentář:'
-user.emails.feedback_published: 'Vaše připomínka "{{title}}" byla schválena a bude nyní zveřejněna na našem portálu.'
-user.emails.feedback_thank-you: 'Děkujeme za vaši připomínku "{{title}}"'
-user.emails.feedback_votes:
-  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
-  few: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
-  many: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
-  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+user.emails.community-topic_agent-validation: 'Vaše připomínka nebude zveřejněna, dokud ji jeden z našich operátorů neschválí.'
+user.emails.community-topic_approved: 'Vaše připomínka byla schválena a zveřejněna na našem portálu.'
+user.emails.community-topic_disapproved: 'Vaše připomínka nebyla schválena a nebude tedy zveřejněna na našem portálu.'
+user.emails.community-topic_new-comment: '{{name}} odeslal nový komentář:'
+user.emails.community-topic_published: 'Vaše připomínka "{{title}}" byla schválena a bude nyní zveřejněna na našem portálu.'
+user.emails.community-topic_thank-you: 'Děkujeme za vaši připomínku "{{title}}"'
+user.emails.community-topic_votes:
+  one: 'Your community topic currently has <strong>1</strong> vote. View your community topic online at:'
+  few: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
+  many: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
+  other: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
 user.emails.greeting: 'Milý {{to_name}},'
 user.emails.kb-new-articles:
   one: '1 nový článek'
@@ -604,7 +604,7 @@ user.error.form_text_min:
   few: 'Please enter at least {{count}} characters'
   many: 'Please enter at least {{count}} characters'
   other: 'Please enter at least {{count}} characters'
-user.feedback.submit_feedback: 'Odeslat připomínku'
+user.community.submit_community_topic: 'Odeslat připomínku'
 user.general.label_captcha: 'Potvrzovací kód'
 user.general.page: Stránka
 user.general.request_token_expired: 'Váš token expiroval. Zkuste to znovu.'

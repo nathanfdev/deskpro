@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\HttpFoundation\Session as HttpSession;
 
@@ -122,25 +122,25 @@ class UserPublishChecker extends AbstractChecker
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param CommunityTopic $communityTopic
      *
      * @return bool
      */
-    public function canViewFeedback(Feedback $feedback, HttpSession $user_session = null)
+    public function canViewCommunityTopic(CommunityTopic $communityTopic, HttpSession $user_session = null)
     {
-        if (!$this->person->hasPerm('feedback.use')) {
+        if (!$this->person->hasPerm('community.use')) {
             return false;
         }
 
         // Only agents can view non-published
-        if ($feedback->getStatus() == 'hidden' && !$this->person->is_agent) {
-            // But still show the user their own submitted feedback
-            if ($feedback->person && $feedback->person->getId() == $this->person->getId()) {
+        if ($communityTopic->getStatus() == 'hidden' && !$this->person->is_agent) {
+            // But still show the user their own submitted community topic
+            if ($communityTopic->getPerson() && $communityTopic->getPerson()->getId() == $this->person->getId()) {
                 return true;
             }
             if ($user_session) {
-                $submitted_feedback = $user_session->get('submitted_feedback');
-                if (is_array($submitted_feedback) && in_array($feedback->getId(), $submitted_feedback)) {
+                $submittedCommunityTopic = $user_session->get('submitted_community_topic');
+                if (is_array($submittedCommunityTopic) && in_array($communityTopic->getId(), $submittedCommunityTopic)) {
                     return true;
                 }
             }

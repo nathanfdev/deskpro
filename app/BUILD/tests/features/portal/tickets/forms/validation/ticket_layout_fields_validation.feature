@@ -18,7 +18,6 @@ Feature: New ticket form validation
       | user_layout |
       | cc          |
     And I go to "/new-ticket"
-    And print last response
     And I select "Department 1" from "Department"
     And I press "Submit"
 

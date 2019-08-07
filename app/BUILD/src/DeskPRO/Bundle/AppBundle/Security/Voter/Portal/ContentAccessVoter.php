@@ -21,7 +21,7 @@ class ContentAccessVoter extends AbstractVoter
     const VIEW_NEWS          = 'VIEW_NEWS';
     const VIEW_NEWS_CATEGORY = 'VIEW_NEWS_CATEGORY';
 
-    const VIEW_FEEDBACK = 'VIEW_FEEDBACK';
+    const VIEW_COMMUNITY = 'VIEW_COMMUNITY';
 
     const VIEW_GUIDE = 'VIEW_GUIDE';
     const VIEW_TOPIC = 'VIEW_TOPIC';
@@ -39,7 +39,7 @@ class ContentAccessVoter extends AbstractVoter
             self::VIEW_ARTICLE_CATEGORY,
             self::VIEW_NEWS,
             self::VIEW_NEWS_CATEGORY,
-            self::VIEW_FEEDBACK,
+            self::VIEW_COMMUNITY,
             self::VIEW_GUIDE,
             self::VIEW_TOPIC,
         ];
@@ -58,7 +58,7 @@ class ContentAccessVoter extends AbstractVoter
         $permissionsBag = $this->getPermissionsBag($user);
 
         switch ($attribute) {
-            case static::VIEW_FEEDBACK:
+            case static::VIEW_COMMUNITY:
             case static::DOWNLOAD_DOWNLOAD:
             case static::VIEW_DOWNLOAD:
             case static::VIEW_ARTICLE:

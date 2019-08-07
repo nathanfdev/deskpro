@@ -1,10 +1,10 @@
 {
     "basePath": "/api",
     "swaggerVersion": "1.2",
-    "resourcePath": "/feedback",
+    "resourcePath": "/community",
     "apis": [
         {
-            "path": "/feedback",
+            "path": "/community",
             "operations": [
                 {
                     "method": "GET",
@@ -67,7 +67,7 @@
             ]
         },
         {
-            "path": "/feedback/categories",
+            "path": "/community/categories",
             "operations": [
                 {
                     "method": "GET",
@@ -77,7 +77,7 @@
             ]
         },
         {
-            "path": "/feedback/status-categories",
+            "path": "/community/status-categories",
             "operations": [
                 {
                     "method": "GET",
@@ -87,7 +87,7 @@
             ]
         },
         {
-            "path": "/feedback/user-categories",
+            "path": "/community/user-categories",
             "operations": [
                 {
                     "method": "GET",
@@ -97,7 +97,7 @@
             ]
         },
         {
-            "path": "/feedback/validating-comments",
+            "path": "/community/validating-comments",
             "operations": [
                 {
                     "method": "GET",
@@ -107,7 +107,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}",
+            "path": "/community/{feedback_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -154,7 +154,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/attachments",
+            "path": "/community/{feedback_id}/attachments",
             "operations": [
                 {
                     "method": "GET",
@@ -215,7 +215,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/attachments/{attachment_id}",
+            "path": "/community/{feedback_id}/attachments/{attachment_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -275,7 +275,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/comments",
+            "path": "/community/{feedback_id}/comments",
             "operations": [
                 {
                     "method": "GET",
@@ -343,7 +343,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/comments/{comment_id}",
+            "path": "/community/{feedback_id}/comments/{comment_id}",
             "operations": [
                 {
                     "method": "GET",
@@ -445,7 +445,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/labels",
+            "path": "/community/{feedback_id}/labels",
             "operations": [
                 {
                     "method": "GET",
@@ -499,7 +499,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/labels/{label}",
+            "path": "/community/{feedback_id}/labels/{label}",
             "operations": [
                 {
                     "method": "GET",
@@ -558,7 +558,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/merge/{other_feedback_id}",
+            "path": "/community/{feedback_id}/merge/{other_feedback_id}",
             "operations": [
                 {
                     "method": "POST",
@@ -590,7 +590,7 @@
             ]
         },
         {
-            "path": "/feedback/{feedback_id}/votes",
+            "path": "/community/{feedback_id}/votes",
             "operations": [
                 {
                     "method": "GET",
@@ -616,7 +616,7 @@
             ]
         },
         {
-            "path": "/feedbacks",
+            "path": "/communitys",
             "operations": [
                 {
                     "method": "POST",
@@ -677,7 +677,7 @@
             ]
         },
         {
-            "path": "/feedbacks/{feedback_id}",
+            "path": "/communitys/{feedback_id}",
             "operations": [
                 {
                     "method": "POST",

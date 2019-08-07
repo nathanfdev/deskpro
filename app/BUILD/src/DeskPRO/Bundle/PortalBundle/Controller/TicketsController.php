@@ -562,7 +562,7 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
-            'page_title'  => $this->get('portal_view.page_title_generator')->feedback(),
+            'page_title'  => $this->get('portal_view.page_title_generator')->community(),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,
             'message'     => $message,

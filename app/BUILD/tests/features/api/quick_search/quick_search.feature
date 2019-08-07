@@ -9,20 +9,20 @@ Feature: Quick Search
     And I set permission "articles.use" = 1 for "registered" usergroup
     And I set permission "downloads.use" = 1 for "registered" usergroup
     And I set permission "news.use" = 1 for "registered" usergroup
-    And I set permission "feedback.use" = 1 for "registered" usergroup
+    And I set permission "community.use" = 1 for "registered" usergroup
     And I set permission "agent_tickets.use" = 1 for "registered" usergroup
     And I set permission "agent_tickets.view_unassigned" = 1 for "registered" usergroup
 
   Scenario Outline: I search by ID
     Given I set permission "agent_people.use" = 1 for "registered" usergroup
-    And only the following "Feedback" records exist:
-      | #        | person  | is_reviewed | slug      | title     | content   | status |
-      | feedback | {admin} | 1           | feedback1 | Feedback1 | Feedback1 | active |
+    And only the following "CommunityTopic" records exist:
+      | #     | person  | is_reviewed | slug   | title  | content | status |
+      | topic | {admin} | 1           | topic1 | Topic1 | Topic1  | active |
     And only the following "Article" records exist:
       | #       | slug     | title    | content  | status  |
       | article | article1 | Article1 | Article1 | visible |
     And only the following "Download" records exist:
-      | #        | slug      | title     |  status   |
+      | #        | slug      | title     | status    |
       | download | Download1 | Download1 | published |
     And only the following "News" records exist:
       | #    | slug  | title | status    |
@@ -44,7 +44,7 @@ Feature: Quick Search
       | ref            | type         | order |
       | {article}      | article      | 0     |
       | {download}     | download     | 1     |
-      | {feedback}     | feedback     | 2     |
+      | {topic}        | community    | 2     |
       | {news}         | news         | 3     |
       | {ticket}       | ticket       | 4     |
       | {me}           | person       | 5     |
@@ -65,7 +65,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -91,7 +91,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -124,7 +124,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -163,7 +163,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -193,7 +193,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results[1].id" should be equal to "{article2}"
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -210,7 +210,7 @@ Feature: Quick Search
 
   Scenario: I search downloads by title
     Given only the following "Download" records exist:
-      | #         | slug      | title     |  status   |
+      | #         | slug      | title     | status    |
       | download1 | Download1 | Download1 | published |
       | download2 | Download2 | Download2 | published |
     When I send a GET request to "/api/v2/search?q=Download"
@@ -221,7 +221,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[1].results" should have 2 elements
     And the JSON node "data.grouped_results[1].results[0].id" should be equal to "{download1}"
     And the JSON node "data.grouped_results[1].results[1].id" should be equal to "{download2}"
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -236,21 +236,21 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[8].type" should be equal to "chat_conversation"
     And the JSON node "data.grouped_results[8].results" should have 0 elements
 
-  Scenario: I search feedback by title
-    Given only the following "Feedback" records exist:
-      | #         | person  | is_reviewed | slug      | title     | content   | status |
-      | feedback1 | {admin} | 1           | feedback1 | Feedback1 | Feedback1 | active |
-      | feedback2 | {admin} | 1           | feedback2 | Feedback2 | Feedback2 | active |
-    When I send a GET request to "/api/v2/search?q=Feedback"
+  Scenario: I search community topic by title
+    Given only the following "CommunityTopic" records exist:
+      | #      | person  | is_reviewed | slug   | title  | content | status |
+      | topic1 | {admin} | 1           | topic1 | Topic1 | Topic1  | active |
+      | topic2 | {admin} | 1           | topic2 | Topic2 | Topic2  | active |
+    When I send a GET request to "/api/v2/search?q=Topic"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 2 elements
-    And the JSON node "data.grouped_results[2].results[0].id" should be equal to "{feedback1}"
-    And the JSON node "data.grouped_results[2].results[1].id" should be equal to "{feedback2}"
+    And the JSON node "data.grouped_results[2].results[0].id" should be equal to "{topic1}"
+    And the JSON node "data.grouped_results[2].results[1].id" should be equal to "{topic2}"
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
     And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
@@ -275,7 +275,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 2 elements
@@ -294,16 +294,16 @@ Feature: Quick Search
 
   Scenario: I search ticket by subject
     And only the following "Ticket" records exist:
-      | #       | status        | ref  | subject  |
-      | ticket1 | awaiting_user | AAAA | Ticket1  |
-      | ticket2 | awaiting_user | BBBB | Ticket2  |
+      | #       | status        | ref  | subject |
+      | ticket1 | awaiting_user | AAAA | Ticket1 |
+      | ticket2 | awaiting_user | BBBB | Ticket2 |
     When I send a GET request to "/api/v2/search?q=Ticket"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -331,7 +331,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -349,9 +349,9 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[8].results" should have 0 elements
 
   Scenario: I search by word
-    Given only the following "Feedback" records exist:
-      | #        | person  | is_reviewed | slug      | title          | content   | status |
-      | feedback | {admin} | 1           | feedback1 | Test Feedback1 | Feedback1 | active |
+    Given only the following "CommunityTopic" records exist:
+      | #     | person  | is_reviewed | slug   | title       | content | status |
+      | topic | {admin} | 1           | topic1 | Test Topic1 | Topic1  | active |
     And only the following "Article" records exist:
       | #       | slug     | title         | content  | status  |
       | article | article1 | Test Article1 | Article1 | visible |
@@ -373,7 +373,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 1 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 1 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 1 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 1 elements
@@ -398,7 +398,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -419,7 +419,7 @@ Feature: Quick Search
       | label_type | label  | color | total |
       | ticket     | label1 | red   | 0     |
       | ticket     | label2 | blue  | 0     |
-      | feedback   | label2 | blue  | 0     |
+      | community  | label2 | blue  | 0     |
     Given only the following "Ticket" records exist:
       | #       | status        | ref         | subject       |
       | ticket1 | awaiting_user | AA-BB-CC-DD | Test Ticket 1 |
@@ -430,19 +430,19 @@ Feature: Quick Search
       | {ticket1} | label1 |
       | {ticket2} | label1 |
       | {ticket3} | label2 |
-    And only the following "Feedback" records exist:
-      | #        | person  | is_reviewed | slug      | title     | content   | status |
-      | feedback | {admin} | 1           | feedback1 | Feedback1 | Feedback1 | active |
-    And only the following "LabelFeedback" records exist:
-      | feedback   | label  |
-      | {feedback} | label2 |
+    And only the following "CommunityTopic" records exist:
+      | #     | person  | is_reviewed | slug   | title  | content | status |
+      | topic | {admin} | 1           | topic1 | Topic1 | Topic1  | active |
+    And only the following "LabelCommunityTopic" records exist:
+      | topic   | label  |
+      | {topic} | label2 |
     When I send a GET request to "/api/v2/search?q=[label1]"
     Then the response should be in JSON
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -465,7 +465,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -488,7 +488,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 1 element
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements
@@ -512,7 +512,7 @@ Feature: Quick Search
     And the response status code should be 200
     And the JSON node "data.grouped_results[0].type" should be equal to "article"
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[4].type" should be equal to "ticket"
     And the JSON node "data.grouped_results[5].type" should be equal to "chat_conversation"
@@ -527,7 +527,7 @@ Feature: Quick Search
     And the JSON node "data.grouped_results[0].results" should have 0 elements
     And the JSON node "data.grouped_results[1].type" should be equal to "download"
     And the JSON node "data.grouped_results[1].results" should have 0 elements
-    And the JSON node "data.grouped_results[2].type" should be equal to "feedback"
+    And the JSON node "data.grouped_results[2].type" should be equal to "community"
     And the JSON node "data.grouped_results[2].results" should have 0 elements
     And the JSON node "data.grouped_results[3].type" should be equal to "news"
     And the JSON node "data.grouped_results[3].results" should have 0 elements

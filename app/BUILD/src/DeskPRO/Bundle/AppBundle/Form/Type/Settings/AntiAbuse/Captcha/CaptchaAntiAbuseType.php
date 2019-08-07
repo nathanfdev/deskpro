@@ -35,7 +35,7 @@ class CaptchaAntiAbuseType extends AbstractType
             ->add('comments', CaptchaSettingChoiceType::class, [
                 'required' => false,
             ])
-            ->add('feedback', CaptchaSettingChoiceType::class, [
+            ->add('community', CaptchaSettingChoiceType::class, [
                 'required' => false,
             ])
             ->add('register', CaptchaSettingChoiceType::class, [

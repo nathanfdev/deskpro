@@ -74,7 +74,7 @@ class SimplePortalEntitySerializer
         if ($object instanceof Entity\Article
             || $object instanceof Entity\News
             || $object instanceof Entity\Download
-            || $object instanceof Entity\Feedback
+            || $object instanceof Entity\CommunityTopic
             || $object instanceof Entity\Topic
         ) {
             $result['id']        = $object->getId();
@@ -90,7 +90,7 @@ class SimplePortalEntitySerializer
                 } catch (\Exception $e) {
                 }
             }
-            if ($object instanceof Entity\Feedback) {
+            if ($object instanceof Entity\CommunityTopic) {
                 if ($rating = $object->getTotalRating()) {
                     $result['rating'] = $rating;
                 } else {

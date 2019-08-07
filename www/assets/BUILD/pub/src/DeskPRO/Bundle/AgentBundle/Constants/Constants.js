@@ -19,11 +19,11 @@ export const constants = {
   CONTENT_NEWS:         'news',
   CONTENT_DOWNLOADS:    'downloads',
   APP_COLOURS:          {
-    crm:      '#42c1c1',
-    chat:     '#eb4f6c',
-    feedback: '#955872',
-    publish:  '#f0b52f',
-    tasks:    '#d99379',
-    tickets:  '#eb794f'
+    crm:       '#42c1c1',
+    chat:      '#eb4f6c',
+    community: '#955872',
+    publish:   '#f0b52f',
+    tasks:     '#d99379',
+    tickets:   '#eb794f'
   }
 };

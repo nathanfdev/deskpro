@@ -34,7 +34,7 @@ class PortalUserRateLimit
     private $submitTicket;
 
     /**
-     * Limits for feedback submitting.
+     * Limits for community topics submitting.
      *
      * @Assert\Valid
      *
@@ -42,7 +42,7 @@ class PortalUserRateLimit
      *
      * @var RateLimitOptionsGroup
      */
-    private $submitFeedback;
+    private $submitCommunityTopic;
 
     /**
      * Limits for comments submitting.
@@ -82,12 +82,12 @@ class PortalUserRateLimit
      */
     public function __construct()
     {
-        $this->loginSettings    = new RateLimitOptionsGroup();
-        $this->submitTicket     = new RateLimitOptionsGroup();
-        $this->submitFeedback   = new RateLimitOptionsGroup();
-        $this->submitComment    = new RateLimitOptionsGroup();
-        $this->uploadAttachment = new RateLimitOptionsGroup();
-        $this->shareContent     = new RateLimitOptionsGroup();
+        $this->loginSettings        = new RateLimitOptionsGroup();
+        $this->submitTicket         = new RateLimitOptionsGroup();
+        $this->submitCommunityTopic = new RateLimitOptionsGroup();
+        $this->submitComment        = new RateLimitOptionsGroup();
+        $this->uploadAttachment     = new RateLimitOptionsGroup();
+        $this->shareContent         = new RateLimitOptionsGroup();
     }
 
     /**
@@ -109,9 +109,9 @@ class PortalUserRateLimit
     /**
      * @return RateLimitOptionsGroup
      */
-    public function getSubmitFeedback()
+    public function getSubmitCommunityTopic()
     {
-        return $this->submitFeedback;
+        return $this->submitCommunityTopic;
     }
 
     /**

@@ -496,7 +496,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (sizeof($errors) > 0) {
             foreach ($errors as $error) {
-                $result[] = $error->getPropertyPath() . ' : ' . $error->getMessage();
+                $result[] = $error->getPropertyPath().' : '.$error->getMessage();
             }
         }
 
@@ -638,9 +638,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 $this->container->getMailer()->send($message);
             }
         }
-
-        // For feedback we also notify everyone involved
-        if ($comment instanceof \Application\DeskPRO\Entity\FeedbackComment) {
+        // TODO this code will throw an error cause FeedbackCommenting doesn't exist
+        // For community topics we also notify everyone involved
+        if ($comment instanceof \Application\DeskPRO\Entity\CommunityTopicComment) {
             $commenting = new \Application\DeskPRO\Feedback\FeedbackCommenting($this->container, $this->person);
             $commenting->newCommentNotify($comment);
         }

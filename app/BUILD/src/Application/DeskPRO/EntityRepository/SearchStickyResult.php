@@ -20,8 +20,8 @@ class SearchStickyResult extends AbstractEntityRepository
             $objectType = 'DeskPRO:Download';
         } elseif ($object instanceof Entity\News) {
             $objectType = 'DeskPRO:News';
-        } elseif ($object instanceof Entity\Feedback) {
-            $objectType = 'DeskPRO:Feedback';
+        } elseif ($object instanceof Entity\CommunityTopic) {
+            $objectType = 'DeskPRO:CommunityTopic';
         } elseif ($object instanceof Entity\Topic) {
             $objectType = 'DeskPRO:Topic';
         } else {

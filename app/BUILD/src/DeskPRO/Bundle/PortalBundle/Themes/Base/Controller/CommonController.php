@@ -4,8 +4,8 @@ namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
@@ -169,7 +169,7 @@ class CommonController extends AbstractController
      * @TagOptions(
      *      required={"content_type", "content_id"},
      *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
-     *      allowed_values={"content_type":{"article","news","download","feedback"}}
+     *      allowed_values={"content_type":{"article","news","download","community"}}
      * )
      *
      * @param array $options
@@ -206,7 +206,7 @@ class CommonController extends AbstractController
      * @param $content_type
      * @param $content_id
      *
-     * @return Article|Download|Feedback|News|null
+     * @return Article|Download|CommunityTopic|News|null
      */
     protected function extractContent($content_type, $content_id)
     {
@@ -221,8 +221,8 @@ class CommonController extends AbstractController
             case News::CONTENT_TYPE:
                 $content = $this->getNewsDataService()->getPost($content_id);
                 break;
-            case Feedback::CONTENT_TYPE:
-                $content = $this->getFeedbackDataService()->getItem($content_id);
+            case CommunityTopic::CONTENT_TYPE:
+                $content = $this->getCommunityDataService()->getItem($content_id);
                 break;
         }
 

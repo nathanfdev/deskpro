@@ -55,6 +55,7 @@ class ErrorReporter
             $info = [
                 'root'              => defined('DP_ROOT') ? DP_ROOT : '',
                 'os'                => isset($all_stats['server_os']) ? $all_stats['server_os'] : '',
+                'uname'             => php_uname(),
                 'web_server'        => isset($all_stats['web_server']) ? $all_stats['web_server'] : '',
                 'php_version'       => isset($all_stats['php_version']) ? $all_stats['php_version'] : '',
                 'apc_version'       => isset($all_stats['apc_version']) ? $all_stats['apc_version'] : '',
@@ -160,8 +161,6 @@ class ErrorReporter
 
             return $r->getBody();
         } catch (\Exception $e) {
-            error_log(sprintf('sendHeartbeat %s %s', $e->getCode(), $e->getMessage()));
-
             return;
         }
     }

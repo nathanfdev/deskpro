@@ -65,7 +65,7 @@ class UseSectionVoterSpec extends ObjectBehavior
     public function it_abstains_from_non_section_votes(
         TokenInterface $token
     ) {
-        $this->verifyAbstainVote(ContentAccessVoter::VIEW_FEEDBACK, $token);
+        $this->verifyAbstainVote(ContentAccessVoter::VIEW_COMMUNITY, $token);
     }
 
     public function it_denies_use_if_brand_disabled(
@@ -73,7 +73,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(false);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(false);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(false);
@@ -82,7 +82,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $this->verifyDeniedVote(
             [
                 UseSectionVoter::USE_ARTICLES,
-                UseSectionVoter::USE_FEEDBACK,
+                UseSectionVoter::USE_COMMUNITY,
                 UseSectionVoter::USE_CHAT,
                 UseSectionVoter::USE_DOWNLOADS,
                 UseSectionVoter::USE_NEWS,
@@ -167,15 +167,15 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('articles.use')->willReturn(false);
         $person_permission_bag->getAllowedArticleCategories()->willReturn([]);
-        $person_permission_bag->get('feedback.use')->willReturn(false);
-        $person_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([]);
+        $person_permission_bag->get('community.use')->willReturn(false);
+        $person_permission_bag->getAllowedCommunityChannelIds()->willReturn([]);
         $person_permission_bag->get('downloads.use')->willReturn(false);
         $person_permission_bag->getAllowedDownloadCategories()->willReturn([]);
         $person_permission_bag->get('news.use')->willReturn(false);
@@ -185,8 +185,8 @@ class UseSectionVoterSpec extends ObjectBehavior
 
         $guest_permission_bag->get('articles.use')->willReturn(false);
         $guest_permission_bag->getAllowedArticleCategories()->willReturn([]);
-        $guest_permission_bag->get('feedback.use')->willReturn(false);
-        $guest_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([]);
+        $guest_permission_bag->get('community.use')->willReturn(false);
+        $guest_permission_bag->getAllowedCommunityChannelIds()->willReturn([]);
         $guest_permission_bag->get('downloads.use')->willReturn(false);
         $guest_permission_bag->getAllowedDownloadCategories()->willReturn([]);
         $guest_permission_bag->get('news.use')->willReturn(false);
@@ -195,13 +195,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->getAllowedGuides()->willReturn([]);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $token);
-        $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyDeniedVote(UseSectionVoter::USE_COMMUNITY, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
-        $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyDeniedVote(UseSectionVoter::USE_COMMUNITY, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_GUIDES, $guest_token);
@@ -215,31 +215,31 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('articles.use')->willReturn(true);
-        $person_permission_bag->get('feedback.use')->willReturn(true);
+        $person_permission_bag->get('community.use')->willReturn(true);
         $person_permission_bag->get('downloads.use')->willReturn(true);
         $person_permission_bag->get('news.use')->willReturn(true);
         $person_permission_bag->get('guides.use')->willReturn(true);
 
         $guest_permission_bag->get('articles.use')->willReturn(true);
-        $guest_permission_bag->get('feedback.use')->willReturn(true);
+        $guest_permission_bag->get('community.use')->willReturn(true);
         $guest_permission_bag->get('downloads.use')->willReturn(true);
         $guest_permission_bag->get('news.use')->willReturn(true);
         $guest_permission_bag->get('guides.use')->willReturn(true);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $guest_token);
@@ -253,15 +253,15 @@ class UseSectionVoterSpec extends ObjectBehavior
         BrandContainer $brand_container
     ) {
         $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
-        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_community', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('articles.use')->willReturn(false);
         $person_permission_bag->getAllowedArticleCategories()->willReturn([1, 2]);
-        $person_permission_bag->get('feedback.use')->willReturn(false);
-        $person_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([1, 2]);
+        $person_permission_bag->get('community.use')->willReturn(false);
+        $person_permission_bag->getAllowedCommunityChannelIds()->willReturn([1, 2]);
         $person_permission_bag->get('downloads.use')->willReturn(false);
         $person_permission_bag->getAllowedDownloadCategories()->willReturn([1, 2]);
         $person_permission_bag->get('news.use')->willReturn(false);
@@ -271,8 +271,8 @@ class UseSectionVoterSpec extends ObjectBehavior
 
         $guest_permission_bag->get('articles.use')->willReturn(false);
         $guest_permission_bag->getAllowedArticleCategories()->willReturn([1, 2]);
-        $guest_permission_bag->get('feedback.use')->willReturn(false);
-        $guest_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([1, 2]);
+        $guest_permission_bag->get('community.use')->willReturn(false);
+        $guest_permission_bag->getAllowedCommunityChannelIds()->willReturn([1, 2]);
         $guest_permission_bag->get('downloads.use')->willReturn(false);
         $guest_permission_bag->getAllowedDownloadCategories()->willReturn([1, 2]);
         $guest_permission_bag->get('news.use')->willReturn(false);
@@ -281,13 +281,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->getAllowedGuides()->willReturn([1, 2]);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
-        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_COMMUNITY, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $guest_token);

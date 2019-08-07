@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'اضافه کردن ادرس ایمی�
 portal.account.email-management: 'مدیریت ایمیل ها'
 portal.account.email-management-from-form: 'مدیریت ایمیل های شما'
 portal.account.email-primary-description: 'این ایمیل اصلی شما است. این کار به صورت پیش فرض مورد استفاده قرار می گیرد مگر اینکه  ایمیل دیگری مشخص کنید.'
-portal.account.feedback-lockout: 'بازخورد بیش از حد ارسال شده است، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+portal.account.community-lockout: 'بازخورد بیش از حد ارسال شده است، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
 portal.account.link-expired: 'با عرض پوزش، لینکی که روی آن کلیک کردید منقضی شده یا قبلا استفاده شده است.'
 portal.account.login-btn: ورود
 portal.account.login-captcha-failed: 'شما کد امنیتی نامعتبر وارد کرده اید. لطفا دوباره تلاش کنید'
@@ -30,7 +30,7 @@ portal.account.login-remember: 'در حساب باقی میمانید؟'
 portal.account.login-saved-add_email: "ایمیل اضافه شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-comment: "نظر شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-form: '{{type}} شما هنوز ارسال نشده است لطفا برای ادامه وارد شوید.'
-portal.account.login-saved-new_feedback: "بازخورد جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-saved-new_community_topic: "بازخورد جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-new_ticket: "پیام جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-saved-register: "ثبت نام شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
 portal.account.login-stay-logged-in: 'در حساب باقی میمانید؟'
@@ -222,13 +222,13 @@ portal.email_subjects.email-too-big: 'ایمیل شما "{{subject}}" پذیرف
 portal.email_subjects.email_new-confirm: 'اعتبار سنجی آدرس ایمیل شما'
 portal.email_subjects.email_primary-confirm: 'اعتبار سنجی آدرس ایمیل شما'
 portal.email_subjects.email_ticket-reminder: 'اقدام لازم: بلیط شما هنوز ارسال نشده است'
-portal.email_subjects.feedback_new: 'با تشکر از شما برای ارسال نظرات خود'
-portal.email_subjects.feedback_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
-portal.email_subjects.feedback_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'با تشکر از شما برای ارسال نظرات خود ( اعتبار مورد نیاز )'
-portal.email_subjects.feedback_new-disapproved: 'نظرات شما رد شده است'
-portal.email_subjects.feedback_sub_updated: ' بازخورد به روز شده'
-portal.email_subjects.feedback_updated: 'نظرات شما به روز رسانی: {{title}}'
+portal.email_subjects.community_new: 'با تشکر از شما برای ارسال نظرات خود'
+portal.email_subjects.community_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
+portal.email_subjects.community_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
+portal.email_subjects.community_new-confirm: 'با تشکر از شما برای ارسال نظرات خود ( اعتبار مورد نیاز )'
+portal.email_subjects.community_new-disapproved: 'نظرات شما رد شده است'
+portal.email_subjects.community_sub_updated: ' بازخورد به روز شده'
+portal.email_subjects.community_updated: 'نظرات شما به روز رسانی: {{title}}'
 portal.email_subjects.kb_sub_new: 'مقاله جدید'
 portal.email_subjects.kb_sub_new_and_updated: 'مقالات جدید و به روز شده'
 portal.email_subjects.kb_sub_updated: 'به روز رسانی مقالات'
@@ -278,35 +278,35 @@ portal.error.404-title: 'یافت نشد'
 portal.error.contact: "اگر احساس می کنید این یک خطا است، لطفا با ما تماس بگیرید.\n"
 portal.error.general-desc: "متاسفیم، ولی یک مشکل رخ داده است. لطفا بعدا دوباره امتحان کنید یا با ما تماس بگیرید\n"
 portal.error.general-title: 'یک خطا رخ داد'
-portal.feedback.attachments: 'فایل پیوست'
-portal.feedback.btn-closed: بسته
-portal.feedback.btn-vote: 'من موافقت می کنم'
-portal.feedback.error_hidden: 'این مورد بازخورد پنهان است'
-portal.feedback.error_login: 'لطفا وارد شوید'
-portal.feedback.filter_all_items: 'همه موارد'
-portal.feedback.filter_closed_items: 'آیتم های بسته شده'
-portal.feedback.filter_open_items: 'ایتم های باز'
-portal.feedback.form_attach_files: 'فایل های ضمیمه '
-portal.feedback.form_btn_submit: 'نظرات خود را اضافه کنید'
-portal.feedback.form_email_not_shown: 'ایمیل شما (به صورت عمومی نمایش داده نمی شود)'
-portal.feedback.form_i_have_a: موضوع
-portal.feedback.form_logged_in_as: "ورود با نام کاربری <span>{{name}}</span>\nاز ایمیل  <span>{{email}}</span>."
-portal.feedback.form_logout: 'شما نیستید؟'
-portal.feedback.form_tell_us_more: 'توضیح بیشتر'
-portal.feedback.form_title: عنوان
-portal.feedback.form_custom_cat: 'دسته بندی'
-portal.feedback.none: 'هیچ بازخوردی  وجود ندارد'
-portal.feedback.search-title: 'انتقادات و پیشنهادات'
-portal.feedback.section-desc: 'در این قسمت میتوانید نظرات و انتقادات خود را با ما و سایر کاربران در میان گذارید'
-portal.feedback.section-title: 'انتقادات و پیشنهادات'
-portal.feedback.sort_comments: نظرات
-portal.feedback.sort_date: تاریخ
-portal.feedback.sort_rating: امتیاز
-portal.feedback.sort_views: بازدید
-portal.feedback.status_active: 'ایتم های باز'
-portal.feedback.status_all: 'همه موارد'
-portal.feedback.status_closed: 'آیتم های بسته شده'
-portal.feedback.submit_feedback: 'ارسال انتقاد و پیشنهاد'
+portal.community.attachments: 'فایل پیوست'
+portal.community.btn-closed: بسته
+portal.community.btn-vote: 'من موافقت می کنم'
+portal.community.error_hidden: 'این مورد بازخورد پنهان است'
+portal.community.error_login: 'لطفا وارد شوید'
+portal.community.filter_all_items: 'همه موارد'
+portal.community.filter_closed_items: 'آیتم های بسته شده'
+portal.community.filter_open_items: 'ایتم های باز'
+portal.community.form_attach_files: 'فایل های ضمیمه '
+portal.community.form_btn_submit: 'نظرات خود را اضافه کنید'
+portal.community.form_email_not_shown: 'ایمیل شما (به صورت عمومی نمایش داده نمی شود)'
+portal.community.form_i_have_a: موضوع
+portal.community.form_logged_in_as: "ورود با نام کاربری <span>{{name}}</span>\nاز ایمیل  <span>{{email}}</span>."
+portal.community.form_logout: 'شما نیستید؟'
+portal.community.form_tell_us_more: 'توضیح بیشتر'
+portal.community.form_title: عنوان
+portal.community.form_custom_cat: 'دسته بندی'
+portal.community.none: 'هیچ بازخوردی  وجود ندارد'
+portal.community.search-title: 'انتقادات و پیشنهادات'
+portal.community.section-desc: 'در این قسمت میتوانید نظرات و انتقادات خود را با ما و سایر کاربران در میان گذارید'
+portal.community.section-title: 'انتقادات و پیشنهادات'
+portal.community.sort_comments: نظرات
+portal.community.sort_date: تاریخ
+portal.community.sort_rating: امتیاز
+portal.community.sort_views: بازدید
+portal.community.status_active: 'ایتم های باز'
+portal.community.status_all: 'همه موارد'
+portal.community.status_closed: 'آیتم های بسته شده'
+portal.community.submit_community_topic: 'ارسال انتقاد و پیشنهاد'
 portal.flashes.article_cat_subscribe: 'شما با موفقیت به این دسته اضافه شده اید. هنگامی که مقالات جدید ارسال می شود، شما مطلع خواهید شد.'
 portal.flashes.article_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
 portal.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
@@ -320,14 +320,14 @@ portal.flashes.download_subscribe: "شما با موفقیت به این دان�
 portal.flashes.download_unsubscribe: 'شما با موفقیت این اشتراک را لغو کردید.'
 portal.flashes.download_unsubscribe_everything: 'شما از همه اعلانهای دریافتی لغو شده اید'
 portal.flashes.email_sent: 'ایمیل شما فرستاده شده است'
-portal.flashes.feedback_login: 'شما باید برای رای دادن وارد شوید'
-portal.flashes.feedback_subscribe: "شما با موفقیت به این مورد بازخورد مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
-portal.flashes.feedback_unsubscribe: 'شما با موفقیت این مورد بازخورد لغو شده اید.'
-portal.flashes.feedback_unsubscribe_everything: 'شما همه اعلانهای بازخورد لغو شده اید'
+portal.flashes.community_login: 'شما باید برای رای دادن وارد شوید'
+portal.flashes.community_subscribe: "شما با موفقیت به این مورد بازخورد مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+portal.flashes.community_unsubscribe: 'شما با موفقیت این مورد بازخورد لغو شده اید.'
+portal.flashes.community_unsubscribe_everything: 'شما همه اعلانهای بازخورد لغو شده اید'
 portal.flashes.guest_content_must_verify: "قبل از اینکه محتوای خود را ارسال کنید لازم است آدرس ایمیل  را تایید بفرمایید.\nلطفا صندوق ورودی ایمیل خود را چک کنید و ما لینک تایید  حساب رو برای شما ارسال می کنیم."
 portal.flashes.guest_new_ticket_must_verify: "قبل از اینکه بتوانیم پیام خود را بپذیریم، باید آدرس ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را بررسی کنید ما یک پیوند تأیید را برای شما ارسال کرده ایم.\n"
-portal.flashes.new_feedback_awaiting_review: "از نظرات شما متشکریم پس از بررسی عامل، در پورتال پشتیبانی ما قابل مشاهده خواهد بود.\n"
-portal.flashes.new_feedback_posted: 'از نظرات شما متشکریم'
+portal.flashes.new_community_topic_awaiting_review: "از نظرات شما متشکریم پس از بررسی عامل، در پورتال پشتیبانی ما قابل مشاهده خواهد بود.\n"
+portal.flashes.new_community_topic_posted: 'از نظرات شما متشکریم'
 portal.flashes.news_cat_subscribe: "شما با موفقیت به این دسته متصل شده اید. شما از پست های جدید مطلع خواهید شد.\n"
 portal.flashes.news_cat_unsubscribe: 'شما با موفقیت اشتراک خود را لغو نمودید.'
 portal.flashes.news_subscribe: "شما با موفقیت به این مقاله خبری مشترکید. وقتی نظرات جدیدی به شما اطلاع داده می شود، مطلع خواهید شد\n"
@@ -395,14 +395,14 @@ portal.general.admin_home: 'صفحه اصلی'
 portal.general.agent: 'کارشناس پشتیبانی'
 portal.general.agent_bar_admin_desc: 'مدیریت مرکز راهنمایی خود را مدیریت کنید'
 portal.general.agent_bar_admin_dl: 'تنظیمات دانلود'
-portal.general.agent_bar_admin_feedback: 'تنظیمات بازخورد'
+portal.general.agent_bar_admin_community: 'تنظیمات بازخورد'
 portal.general.agent_bar_admin_kb: 'تنظیمات مرکز آموزش'
 portal.general.agent_bar_admin_lang: 'تنظیمات زبان'
 portal.general.agent_bar_admin_news: 'تنظیمات اخبار'
 portal.general.agent_bar_admin_portal: 'طراحی پورتال و قالب'
 portal.general.agent_bar_agent_desc: 'طراحی پورتال و قالب'
 portal.general.agent_bar_agent_dl: 'مدیریت دانلودها'
-portal.general.agent_bar_agent_feedback: 'مدیریت بازخورد'
+portal.general.agent_bar_agent_community: 'مدیریت بازخورد'
 portal.general.agent_bar_agent_home: 'صفحه اصلی'
 portal.general.agent_bar_agent_kb: 'مدیریت دانش پایگاه'
 portal.general.agent_bar_agent_news: 'مدیریت اخبار'
@@ -432,8 +432,8 @@ portal.general.nav-chat: 'گفتگوی چت'
 portal.general.nav-chatlog: 'گفتگو چت'
 portal.general.nav-downloads: دانلود
 portal.general.nav-emails: 'ایمیل ها'
-portal.general.nav-feedback: 'انتقادات و پیشنهادات'
-portal.general.nav-feedback-desc: پیشنهادات
+portal.general.nav-community: 'انتقادات و پیشنهادات'
+portal.general.nav-community-desc: پیشنهادات
 portal.general.nav-guides-desc: 'مستندات '
 portal.general.nav-kb: 'مرکز آموزش'
 portal.general.nav-kb-desc: 'مقالات کمکی'
@@ -469,14 +469,14 @@ portal.general.rate-page: 'به کیفیت این صفحه امتیاز بده'
 portal.general.rate-page-negative: 'این صفحه مفید نبود'
 portal.general.rate-page-positive: 'این صفحه مفید بود'
 portal.general.related-downloads: 'فایل های مرتبط'
-portal.general.related-feedback: 'انتقادات و پیشنهادات مرتبط'
+portal.general.related-community: 'انتقادات و پیشنهادات مرتبط'
 portal.general.related-news: 'اخبار مرتبط'
 portal.general.search-labels-section-title: 'جستجو برچسب ها'
 portal.general.search-section-title: جستجو
 portal.general.search_btn: جستجو
 portal.general.share-this: 'به اشتراک گذاشتن این'
-portal.general.submit-feedback: 'ارسال انتقاد و پیشنهاد'
-portal.general.submit-feedback-desc: 'انتقادات و پیشنهادات ارائه شده توسط مشتریان '
+portal.general.submit-community-topic: 'ارسال انتقاد و پیشنهاد'
+portal.general.submit-community-topic-desc: 'انتقادات و پیشنهادات ارائه شده توسط مشتریان '
 portal.general.top: عالی
 portal.general.updated: 'بروز شده'
 portal.guides.view-as-agent: "شما می توانید این صفحه را ببینید زیرا شما یک پشتیبان هستید. کاربران نمی توانند این صفحه را مشاهده کنند.\n"
@@ -643,13 +643,13 @@ user.email_subjects.download_sub_new: 'دانلود های جدید'
 user.email_subjects.download_sub_new_and_updated: 'دانلودهای جدید و بروز رسانی شده'
 user.email_subjects.download_sub_updated: 'دانلودهای بروز رسانی شده'
 user.email_subjects.email_new-confirm: 'اعتبار سنجی آدرس ایمیل شما'
-user.email_subjects.feedback_created_for_user: 'از نظرات شما متشکریم'
-user.email_subjects.feedback_new: 'با تشکر از شما برای ارسال نظرات خود'
-user.email_subjects.feedback_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
-user.email_subjects.feedback_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'نظرات شما رد شده است'
-user.email_subjects.feedback_sub_updated: 'بازخورد به روز شده '
-user.email_subjects.feedback_updated: 'نظرات شما به روز رسانی: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'از نظرات شما متشکریم'
+user.email_subjects.community_topic_new: 'با تشکر از شما برای ارسال نظرات خود'
+user.email_subjects.community_topic_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
+user.email_subjects.community_topic_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'نظرات شما رد شده است'
+user.email_subjects.community_sub_updated: 'بازخورد به روز شده '
+user.email_subjects.community_topic_updated: 'نظرات شما به روز رسانی: {{title}}'
 user.email_subjects.kb_sub_new: 'مقاله جدید'
 user.email_subjects.kb_sub_new_and_updated: 'مقاله های جدید و بروز شده'
 user.email_subjects.kb_sub_updated: 'مقاله های بروز شده'
@@ -667,7 +667,7 @@ user.email_subjects.ticket-rate: 'به پاسخ ما امتیاز دهید'
 user.emails.chat_transcript: 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .'
 user.emails.comment_approved: 'نظر شما منتشر شده است.'
 user.emails.comment_deleted: 'نظر شما برای بهبود به صفحه مورد استفاده قرار گرفت .'
-user.emails.feedback_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
+user.emails.community-topic_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
 user.emails.greeting: '{{to_name}} عزیز,'
 user.emails.kb-explain: "شما این ایمیل را دریافت می کنید زیرا شما در مرکز آموزش ما در\n       <a href=\"{{deskpro_url}}\">{{deskpro_url}}</a>.<br />\n      آیا تمایل به دریافت ایمیل ها ندارید؟\n      <a href=\"{{unsubscribe_url}}\"></a>\n\n\n"
 user.emails.kb-new-articles:
@@ -704,7 +704,7 @@ user.error.not-found-title: 'یافت نشد'
 user.error.permission-denied: 'با عرض پوزش ، اقدام شما در حالا انجام برای شما مجاز نمی باشد.'
 user.error.permission-denied-title: 'انجام این کار برای شما امکان پذیر نیست'
 user.error.server-error: 'یک خطای سرور وجود دارد که مانع از صفحه در حال بارگذاری می شود. لطفا دوباره سعی کنید.'
-user.feedback.submit_feedback: 'ارسال انتقاد و پیشنهاد'
+user.community.submit_community_topic: 'ارسال انتقاد و پیشنهاد'
 user.general.label_captcha: 'کد تایید'
 user.general.page: صفحه
 user.lang.lang_title: فارسی

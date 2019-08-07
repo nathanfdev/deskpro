@@ -21,7 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends BaseController
 {
     /**
-     * Search through articles, downloads, feedback, news, tickets, chat_conversations, people and organizations.
+     * Search through articles, downloads, community topics, news, tickets, chat_conversations, people and
+     * organizations.
      *
      * @ApiDoc(
      *     section="Search",
@@ -41,7 +42,7 @@ class SearchController extends BaseController
      *          },
      *          {
      *              "name"="types",
-     *              "requirement"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation)+",
+     *              "requirement"="(article|download|community|news|ticket|person|agent|organization|chat_conversation)+",
      *              "description"="comma separated list of types",
      *              "dataType"="string"
      *          }
@@ -144,7 +145,7 @@ class SearchController extends BaseController
      *     output="array"
      * )
      * @Rest\Get("/{type}", requirements={
-     *     "type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation|topic)"
+     *     "type"="(article|download|community|news|ticket|person|agent|organization|chat_conversation|topic)"
      * })
      *
      * @param string  $type
@@ -293,10 +294,10 @@ class SearchController extends BaseController
                     ],
                 ],
             ],
-            'feedback' => [
+            'community' => [
                 [
                     'id'    => 83995,
-                    'title' => 'Feedback result',
+                    'title' => 'Community result',
                 ],
             ],
             'articles' => [

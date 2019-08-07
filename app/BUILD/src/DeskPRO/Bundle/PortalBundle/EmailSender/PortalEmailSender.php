@@ -9,7 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\EmailSender;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
@@ -169,22 +169,22 @@ class PortalEmailSender
         }
     }
 
-    public function sendNewFeedbackEmail(Feedback $feedback)
+    public function sendNewCommunityTopicEmail(CommunityTopic $communityTopic)
     {
-        $person = $feedback->getPerson();
+        $person = $communityTopic->getPerson();
 
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
-                ->createFeedbackNewModel($feedback);
+                ->createCommunityTopicNewModel($communityTopic);
             $this->container->get('email.email_sender')
                 ->send($viewModel, ['to' => $person]);
         } else {
             $this->sendTo(
                 new EmailTo($person),
-                'DeskPRO:emails_user:feedback-new.html.twig',
+                'DeskPRO:emails_user:community-topic-new.html.twig',
                 [
                     'person'     => $person,
-                    'feedback'   => $feedback,
+                    'topic'      => $communityTopic,
                     'verify_url' => null,
                     'validating' => false,
                 ]

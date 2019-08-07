@@ -132,8 +132,11 @@ export default class RteEditor extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
+    this.medium.saveSelection();
+
     const { onPasteImage } = this.props;
     const clipboardData = event.clipboardData;
+
     if (clipboardData) {
       // Non-IE browsers
       if (!clipboardHasImages(clipboardData)) {
@@ -168,6 +171,12 @@ export default class RteEditor extends React.Component {
         getBlobsFromIEItems(window.clipboardData.files, event, onPasteImage);
       }
     }
+
+    // Move selection state to the next position after paste
+    this.medium.selectionState = {
+      start: this.medium.selectionState.start + 1,
+      end: this.medium.selectionState.end + 1,
+    };
   };
 
   onShowToolbar = () => {

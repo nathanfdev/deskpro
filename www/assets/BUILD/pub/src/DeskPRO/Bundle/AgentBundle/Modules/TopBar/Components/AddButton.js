@@ -39,8 +39,8 @@ class AddButton extends React.Component {
           <i className="icon calendar outline" /> <FormattedMessage id="agent.general.news_post" /></MenuItem>);
         items.push(<MenuItem key="download" onClick={this.addDownload}>
           <i className="icon download" /> <FormattedMessage id="agent.general.download" /></MenuItem>);
-        items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
-          <i className="icon thumbs outline up" /> <FormattedMessage id="agent.general.feedback" /></MenuItem>);
+        items.push(<MenuItem key="community" onClick={this.addCommunityTopic}>
+          <i className="icon thumbs outline up" /> <FormattedMessage id="agent.general.community" /></MenuItem>);
         if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
           items.push(<MenuItem key="topic" onClick={this.addTopic}>
             <i className="icon book" /> <FormattedMessage id="agent.general.topic" /></MenuItem>);
@@ -92,8 +92,8 @@ class AddButton extends React.Component {
     this.closePopup();
   };
 
-  addFeedback = () => {
-    window.DeskPRO_Window.newFeedbackLoader.toggle();
+  addCommunityTopic = () => {
+    window.DeskPRO_Window.newCommunityTopicLoader.toggle();
     this.closePopup();
   };
 

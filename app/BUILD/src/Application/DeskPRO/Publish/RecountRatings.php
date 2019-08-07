@@ -115,7 +115,7 @@ class RecountRatings
                     case 'article':   $table = 'articles'; break;
                     case 'download':  $table = 'downloads'; break;
                     case 'news':      $table = 'news'; break;
-                    case 'feedback':  $table = 'feedback'; break;
+                    case 'community': $table = 'community_topics'; break;
                     default: continue;
                 }
 

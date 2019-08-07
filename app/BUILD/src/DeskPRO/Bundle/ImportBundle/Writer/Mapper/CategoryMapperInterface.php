@@ -18,5 +18,5 @@ interface CategoryMapperInterface extends MapperInterface
     /**
      * @return mixed
      */
-    public function getDefaultCategory();
+    public function getDefaultChannel();
 }

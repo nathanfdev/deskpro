@@ -58,5 +58,5 @@ Feature: /outgoing-emails endpoint
 }
     """
     Then the response status code should be 200
-    And the JSON node "1dd5cc48-ec64-440b-90ad-f814284445ab" should be equal to "error"
-    And the JSON node "1dd5cc48-ec64-440b-90ad-f814284445ac" should be equal to "error"
+    And the JSON node "1dd5cc48-ec64-440b-90ad-f814284445ab.status" should be equal to "error"
+    And the JSON node "1dd5cc48-ec64-440b-90ad-f814284445ac.status" should be equal to "error"

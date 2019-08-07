@@ -142,7 +142,7 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
     protected $type;
 
     /**
-     * Property manually set to containt ticket feedback message.
+     * Property manually set to contain snippet message.
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -157,8 +157,9 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      * @param Person             $person
      * @param SnippetTranslation $snippetTranslation
      *
-     * @return SnippetUseLog
      * @throws \Exception
+     *
+     * @return SnippetUseLog
      */
     public static function createSnippetTicketLog(
         TicketMessage $ticketMessage,

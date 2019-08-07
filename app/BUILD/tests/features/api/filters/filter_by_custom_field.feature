@@ -7,7 +7,7 @@ Feature: Filter data by custom fields
     Given there are no Organization records
     Given there are no Ticket records
     Given there are no Chat records
-    Given there are no Feedback records
+    Given there are no CommunityTopic records
     Given I'm authenticated as admin
 
   Scenario Outline: I filter by custom fields
@@ -142,9 +142,9 @@ Feature: Filter data by custom fields
     And the JSON node "data[0].id" should be equal to "~entity_10~"
 
     Examples:
-      | custom_def_type       | entity_type  | endpoint      | prefix   |
-      | CustomDefPerson       | User         | people        | person   |
-      | CustomDefOrganization | Organization | organizations | org      |
-      | CustomDefTicket       | Ticket       | tickets       | ticket   |
-      | CustomDefChat         | Chat         | user_chats    | chat     |
-      | CustomDefFeedback     | Feedback     | feedback      | feedback |
+      | custom_def_type         | entity_type    | endpoint         | prefix    |
+      | CustomDefPerson         | User           | people           | person    |
+      | CustomDefOrganization   | Organization   | organizations    | org       |
+      | CustomDefTicket         | Ticket         | tickets          | ticket    |
+      | CustomDefChat           | Chat           | user_chats       | chat      |
+      | CustomDefCommunityTopic | CommunityTopic | community_topics | community |

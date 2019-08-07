@@ -59,9 +59,10 @@ class CleanupHourly extends AbstractJob
             $this->logStatus("Cleaned up $num temp download comments");
         }
 
-        $num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);
+        $num = App::getDb()->executeUpdate("DELETE FROM community_topic_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);
+
         if ($num) {
-            $this->logStatus("Cleaned up $num temp feedback comments");
+            $this->logStatus("Cleaned up $num temp community topic comments");
         }
 
         $num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", [$datetime]);

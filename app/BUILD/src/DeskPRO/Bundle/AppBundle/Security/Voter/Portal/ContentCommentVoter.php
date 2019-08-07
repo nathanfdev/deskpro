@@ -11,11 +11,11 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class ContentCommentVoter extends AbstractVoter
 {
     /** everyone is allowed to VIEW comments, but can they submit a comment? */
-    const COMMENT_ARTICLE  = 'COMMENT_ARTICLE';
-    const COMMENT_FEEDBACK = 'COMMENT_FEEDBACK';
-    const COMMENT_DOWNLOAD = 'COMMENT_DOWNLOAD';
-    const COMMENT_NEWS     = 'COMMENT_NEWS';
-    const COMMENT_TOPIC    = 'COMMENT_TOPIC';
+    const COMMENT_ARTICLE   = 'COMMENT_ARTICLE';
+    const COMMENT_COMMUNITY = 'COMMENT_COMMUNITY';
+    const COMMENT_DOWNLOAD  = 'COMMENT_DOWNLOAD';
+    const COMMENT_NEWS      = 'COMMENT_NEWS';
+    const COMMENT_TOPIC     = 'COMMENT_TOPIC';
 
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class ContentCommentVoter extends AbstractVoter
     {
         $supported = [
             self::COMMENT_ARTICLE,
-            self::COMMENT_FEEDBACK,
+            self::COMMENT_COMMUNITY,
             self::COMMENT_DOWNLOAD,
             self::COMMENT_NEWS,
             self::COMMENT_TOPIC,
@@ -55,8 +55,8 @@ class ContentCommentVoter extends AbstractVoter
         switch ($attribute) {
             case static::COMMENT_ARTICLE:
                 return $permissionsBag->get('articles.comment') && $permitted;
-            case static::COMMENT_FEEDBACK:
-                return $permissionsBag->get('feedback.comment') && $permitted;
+            case static::COMMENT_COMMUNITY:
+                return $permissionsBag->get('community.comment') && $permitted;
             case static::COMMENT_DOWNLOAD:
                 return $permissionsBag->get('downloads.comment') && $permitted;
             case static::COMMENT_NEWS:

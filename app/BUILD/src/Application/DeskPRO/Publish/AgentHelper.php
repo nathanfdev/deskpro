@@ -6,12 +6,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
@@ -31,7 +31,7 @@ class AgentHelper implements PersonContextInterface
     const ARTICLES  = 'articles';
     const DOWNLOADS = 'downloads';
     const NEWS      = 'news';
-    const FEEDBACK  = 'feedback';
+    const COMMUNITY = 'community';
     const TOPICS    = 'topics';
 
     /** @var array */
@@ -319,7 +319,7 @@ class AgentHelper implements PersonContextInterface
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
                 )';
-            } elseif ($brandId && $t != 'feedback') {
+            } elseif ($brandId && $t != 'community') {
                 $sql_parts[] = "(
                     SELECT {$t_info['table']}.id as comment_id, '{$t_info['content_type']}' as content_type, 
                     {$t_info['table']}.date_created
@@ -418,7 +418,7 @@ class AgentHelper implements PersonContextInterface
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
                 ) AS $alias";
-            } elseif ($brandId && $t != 'feedback') {
+            } elseif ($brandId && $t != 'community') {
                 $sql_parts[] = "(
                     SELECT COUNT(DISTINCT {$t_info['table']}.{$t_info['id_field']})
                     FROM {$t_info['table']} 
@@ -483,11 +483,11 @@ class AgentHelper implements PersonContextInterface
                 'category_field' => 'category_id',
                 'id_field'       => 'news_id',
             ],
-            'feedback' => [
-                'content_type' => 'feedback',
-                'table'        => 'feedback_comments',
-                'entity'       => FeedbackComment::class,
-                'id_field'     => 'feedback_id',
+            'community' => [
+                'content_type' => 'community',
+                'table'        => 'community_topic_comments',
+                'entity'       => CommunityTopicComment::class,
+                'id_field'     => 'topic_id',
             ],
             'topics' => [
                 'content_type'   => 'topics',
@@ -580,11 +580,11 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'news_id',
                 'rev_table'    => 'news_revisions',
             ],
-            'feedback' => [
-                'content_type' => 'feedback',
-                'entity'       => Feedback::class,
-                'id_field'     => 'feedback_id',
-                'rev_table'    => 'feedback_revisions',
+            'community' => [
+                'content_type' => 'community',
+                'entity'       => CommunityTopic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'community_topic_revisions',
             ],
             'topics' => [
                 'content_type' => 'topics',
@@ -660,11 +660,11 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'news_id',
                 'rev_table'    => 'news_revisions',
             ],
-            'feedback' => [
-                'content_type' => 'feedback',
-                'entity'       => Feedback::class,
-                'id_field'     => 'feedback_id',
-                'rev_table'    => 'feedback_revisions',
+            'community' => [
+                'content_type' => 'community',
+                'entity'       => CommunityTopic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'community_topic_revisions',
             ],
             'topics' => [
                 'content_type' => 'topics',
@@ -731,11 +731,11 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'news_id',
                 'rev_table'    => 'news_revisions',
             ],
-            'feedback' => [
-                'content_type' => 'feedback',
-                'entity'       => Feedback::class,
-                'id_field'     => 'feedback_id',
-                'rev_table'    => 'feedback_revisions',
+            'community' => [
+                'content_type' => 'community',
+                'entity'       => CommunityTopic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'community_topic_revisions',
             ],
             'topics' => [
                 'content_type' => 'topics',
@@ -807,8 +807,8 @@ class AgentHelper implements PersonContextInterface
             case self::NEWS:
                 return News::class;
                 break;
-            case self::FEEDBACK:
-                return Feedback::class;
+            case self::COMMUNITY:
+                return CommunityTopic::class;
                 break;
             case self::TOPICS:
                 return Topic::class;
@@ -840,8 +840,8 @@ class AgentHelper implements PersonContextInterface
             case self::NEWS:
                 return NewsCategory::class;
                 break;
-            case self::FEEDBACK:
-                return FeedbackCategory::class;
+            case self::COMMUNITY:
+                return CommunityChannel::class;
                 break;
             case self::TOPICS:
                 return Guide::class;

@@ -379,7 +379,7 @@ CODE
           '{{ download.content_desc }}'                                         => '{{ download.content }}',
           '{{ download.filename }}'                                             => '{{ download.blob.filename }}',
           '{{ download.readable_filesize }}'                                    => '{{ download.blob.filesize_readable }}',
-          '{{ feedback.person.display_name_user }}'                             => '{{ feedback.person.display_name }}',
+          '{{ topic.person.display_name_user }}'                                => '{{ topic.person.display_name }}',
           '{{ portal_url(ticket) }}'                                            => '{{ ticket_link }}',
           '{{ portal_url(article) }}'                                           => '{{ article_link }}',
           '{{ url_full(\'portal_reset_password_process\', {\'code\': code}) }}' => '{{ reset_url }}',
@@ -410,7 +410,7 @@ CODE
             '{{ download.title }}',
             '{{ download.slug }}',
             '{{ download.date_created|date(\'full\') }}',
-            '{{ feedback.status }}',
+            '{{ topic.status }}',
             '{{ message }}',
         ]);
     }

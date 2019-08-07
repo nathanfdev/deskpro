@@ -171,29 +171,29 @@
         }
       }
     },
-    "feedback": {
-      "$id": "/properties/feedback",
+    "community": {
+      "$id": "/properties/community",
       "type": "array",
       "items": {
-        "$id": "/properties/feedback/items",
+        "$id": "/properties/community/items",
         "type": "object",
         "properties": {
           "id": {
-            "$id": "/properties/feedback/items/properties/id",
+            "$id": "/properties/community/items/properties/id",
             "type": "integer",
-            "title": "Feedback Id",
+            "title": "Community Topic Id",
             "default": 0,
             "examples": [
               83995
             ]
           },
           "title": {
-            "$id": "/properties/feedback/items/properties/title",
+            "$id": "/properties/community/items/properties/title",
             "type": "string",
-            "title": "Feedback title",
+            "title": "Community Topic title",
             "default": "",
             "examples": [
-              "Feedback result"
+              "Community topic result"
             ]
           }
         }

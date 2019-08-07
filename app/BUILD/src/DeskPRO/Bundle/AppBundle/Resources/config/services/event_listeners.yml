@@ -79,26 +79,26 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackListener
+  event_listener.doctrine.community_topic:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback_category:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackCategoryListener
+  event_listener.doctrine.community_channel:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityChannelListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback_status_category:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackStatusCategoryListener
+  event_listener.doctrine.community_topic_status_category:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicStatusCategoryListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.custom_def_feedback:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefFeedbackListener
+  event_listener.doctrine.custom_def_community_topic:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
@@ -154,6 +154,12 @@ services:
   url_corrector.listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\UrlCorrectorEventListener
     arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@url_corrector_factory", "@logger"]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  redirect_protection_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener
+    arguments: ["@brand_stack", "@url_host_checker", "@logger"]
     tags:
       - { name: kernel.event_subscriber }
 

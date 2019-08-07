@@ -29,7 +29,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       });
 
       const tmpUpdate = () => this.portalSettings.updateSettingsTemporary(this.settings);
-      for (const i of ['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']) {
+      for (const i of ['apps_community', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']) {
         this.$scope.$watch(`Ctrl.settings.${i}`, tmpUpdate);
       }
 
@@ -54,14 +54,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       if (v === 'publish') {
         this.settings.portal_mode = 'publish';
         this.settings.apps_downloads = true;
-        this.settings.apps_feedback = true;
+        this.settings.apps_community = true;
         this.settings.apps_guides = true;
         this.settings.apps_kb = true;
         this.settings.apps_news = true;
       } else {
         this.settings.portal_mode = 'tickets';
         this.settings.apps_downloads = false;
-        this.settings.apps_feedback = false;
+        this.settings.apps_community = false;
         this.settings.apps_guides = false;
         this.settings.apps_kb = false;
         this.settings.apps_news = false;

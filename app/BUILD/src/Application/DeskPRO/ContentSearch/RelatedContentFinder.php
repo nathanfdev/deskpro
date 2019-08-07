@@ -9,6 +9,10 @@
 namespace Application\DeskPRO\ContentSearch;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\ContentSearch\Fetcher\ArticlesFetcher;
+use Application\DeskPRO\ContentSearch\Fetcher\CommunityTopicsFetcher;
+use Application\DeskPRO\ContentSearch\Fetcher\DownloadsFetcher;
+use Application\DeskPRO\ContentSearch\Fetcher\NewsFetcher;
 use Application\DeskPRO\Entity\Person;
 
 class RelatedContentFinder
@@ -135,22 +139,23 @@ class RelatedContentFinder
     {
         switch ($type) {
             case 'articles':
-                return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\ArticlesFetcher';
+                return ArticlesFetcher::class;
                 break;
 
             case 'downloads':
-                return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\DownloadsFetcher';
+                return DownloadsFetcher::class;
                 break;
 
-            case 'feedback':
-                return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\FeedbackFetcher';
+            case 'community_topics':
+                return CommunityTopicsFetcher::class;
                 break;
 
             case 'news':
-                return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\NewsFetcher';
+                return NewsFetcher::class;
                 break;
-                        case 'deals':
-                return 'Application\\DeskPRO\\ContentSearch\\Fetcher\\DealsFetcher';
+
+            case 'deals':
+                throw new \Exception('DealsFetcher is requried, but doesn\'t exist');
                 break;
         }
 

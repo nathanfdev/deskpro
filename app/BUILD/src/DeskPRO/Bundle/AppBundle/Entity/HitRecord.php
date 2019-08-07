@@ -24,10 +24,10 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const PAGETYPE_NEWS     = 'deskpro.news_view';
-    const PAGETYPE_ARTICLE  = 'deskpro.kb_view';
-    const PAGETYPE_FEEDBACK = 'deskpro.feedback_view';
-    const PAGETYPE_DOWNLOAD = 'deskpro.download_view';
+    const PAGETYPE_NEWS      = 'deskpro.news_view';
+    const PAGETYPE_ARTICLE   = 'deskpro.kb_view';
+    const PAGETYPE_COMMUNITY = 'deskpro.community_view';
+    const PAGETYPE_DOWNLOAD  = 'deskpro.download_view';
 
     /**
      * @ORM\Id()
@@ -343,7 +343,7 @@ class HitRecord implements EntityInterface, NotifyPropertyChanged
             self::PAGETYPE_NEWS,
             self::PAGETYPE_ARTICLE,
             self::PAGETYPE_DOWNLOAD,
-            self::PAGETYPE_FEEDBACK,
+            self::PAGETYPE_COMMUNITY,
         ];
     }
 }

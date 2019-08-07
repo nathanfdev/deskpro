@@ -60,17 +60,17 @@
         </div>
         {% enditem %}
 
-        {% item if has_any_feedback() %}
+        {% item if has_any_community() %}
         <div class="column">
-            <article class="panel-tiny front-page-feedback">
+            <article class="panel-tiny front-page-community">
                 <div class="large-title">
                     <h1>
-                        <a href="{{ path('portal_feedback') }}">
-                            {{ phrase('portal.feedback.recent-feedback') }}
+                        <a href="{{ path('portal_community') }}">
+                            {{ phrase('portal.community.recent-community') }}
                         </a>
                     </h1>
                 </div>
-                {% show  feedback_list_simple with { count: 5, show_category_link: true, types: feedbackTypes  } %}
+                {% show  community_list_simple with { count: 5, show_category_link: true, types: communityChannels  } %}
             </article>
         </div>
         {% enditem %}

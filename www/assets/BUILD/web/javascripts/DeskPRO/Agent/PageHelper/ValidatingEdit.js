@@ -50,8 +50,8 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 						contentId: this.options.contentId
 					});
 
-					if (DeskPRO_Window.sections.feedback_section) {
-						DeskPRO_Window.sections.feedback_section.reload();
+					if (DeskPRO_Window.sections.community_section) {
+						DeskPRO_Window.sections.community_section.reload();
 					}
 					this.triggers.inAction = false;
 					DeskPRO_Window.removePage(this.page);
@@ -83,8 +83,8 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 						contentId: this.options.contentId
 					});
 
-					if (DeskPRO_Window.sections.feedback_section) {
-						DeskPRO_Window.sections.feedback_section.reload();
+					if (DeskPRO_Window.sections.community_section) {
+						DeskPRO_Window.sections.community_section.reload();
 					}
 					this.triggers.inAction = false;
 

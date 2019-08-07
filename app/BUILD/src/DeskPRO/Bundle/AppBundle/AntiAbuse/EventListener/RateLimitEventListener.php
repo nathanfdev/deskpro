@@ -44,15 +44,15 @@ class RateLimitEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            AntiAbuse::getEventName(AntiAbuse::ACTION_LOGIN)           => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_REGISTER)        => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_RESET_PASSWORD)  => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMENT)  => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_FEEDBACK) => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_TICKET)   => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_TOKEN_EXCHANGE)  => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_UPLOAD)          => 'checkAntiAbuse',
-            AntiAbuse::getEventName(AntiAbuse::ACTION_SHARE_CONTENT)   => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_LOGIN)                  => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_REGISTER)               => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_RESET_PASSWORD)         => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMENT)         => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_COMMUNITY_TOPIC) => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SUBMIT_TICKET)          => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_TOKEN_EXCHANGE)         => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_UPLOAD)                 => 'checkAntiAbuse',
+            AntiAbuse::getEventName(AntiAbuse::ACTION_SHARE_CONTENT)          => 'checkAntiAbuse',
         ];
     }
 

@@ -607,7 +607,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             'a'  => ['Article', 'agent/#app.publish,a.o:'],
             'n'  => ['News', 'agent/#app.publish,n.o:'],
             'd'  => ['Download', 'agent/#app.publish,d.o:'],
-            'i'  => ['Feedback', 'agent/#app.feedback,i.o:'],
+            'i'  => ['Community Topic', 'agent/#app.community,i.o:'],
             'tw' => ['Tweet', 'agent/#app.twitter,tw.o:'],
         ];
 

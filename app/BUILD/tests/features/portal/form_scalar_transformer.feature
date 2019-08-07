@@ -25,11 +25,11 @@ Feature: Form scalar transformer
       | ticket[message][format][]  | Value |
     Then the response status code should not be 500
 
-  Scenario: I check feedback form
-    When I send a POST request to "/feedback" with parameters:
+  Scenario: I check community topic form
+    When I send a POST request to "/community" with parameters:
       | key                     | value |
-      | new_feedback[content][] | Value |
-      | new_feedback[title][]   | Value |
+      | new_community_topic[content][] | Value |
+      | new_community_topic[title][]   | Value |
     Then the response status code should not be 500
 
   Scenario: I check register form

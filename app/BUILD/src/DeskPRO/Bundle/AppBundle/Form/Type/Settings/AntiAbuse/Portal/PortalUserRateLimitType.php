@@ -25,8 +25,8 @@ class PortalUserRateLimitType extends AbstractType
             ->add('submit_ticket', RateLimitOptionsGroupType::class, [
                 'property_path' => 'submitTicket',
             ])
-            ->add('submit_feedback', RateLimitOptionsGroupType::class, [
-                'property_path' => 'submitFeedback',
+            ->add('submit_community_topic', RateLimitOptionsGroupType::class, [
+                'property_path' => 'submitCommunityTopic',
             ])
             ->add('submit_comment', RateLimitOptionsGroupType::class, [
                 'property_path' => 'submitComment',

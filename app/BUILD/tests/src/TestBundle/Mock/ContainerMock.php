@@ -243,7 +243,7 @@ class ContainerMock
 
             $obj->shouldReceive('getRepository')->with('DeskPRO:Article')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:Download')->andReturn($commonRepository);
-            $obj->shouldReceive('getRepository')->with('DeskPRO:Feedback')->andReturn($commonRepository);
+            $obj->shouldReceive('getRepository')->with('DeskPRO:CommunityTopic')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:News')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:Person')->andReturn($commonRepository);
             $obj->shouldReceive('getRepository')->with('DeskPRO:Organization')->andReturn($commonRepository);

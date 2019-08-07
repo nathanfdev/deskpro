@@ -12,7 +12,7 @@ class LabelsProcessor extends Base
     protected function doProcess(array $data)
     {
         $types = [
-            'articles', 'blobs', 'chat_conversations', 'downloads', 'feedback', 'news', 'organizations',
+            'articles', 'blobs', 'chat_conversations', 'downloads', 'community_topics', 'news', 'organizations',
             'people', 'tasks', 'tickets',
         ];
 

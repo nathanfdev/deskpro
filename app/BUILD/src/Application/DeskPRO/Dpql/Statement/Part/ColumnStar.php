@@ -169,12 +169,12 @@ class ColumnStar extends AbstractPart
                 }
             } elseif (preg_match('/CustomData([a-zA-Z]+)$/', $association['targetEntity'], $match)) {
                 switch ($match[1]) {
-                    case 'Article': $type      = 'articles'; break;
-                    case 'Feedback': $type     = 'feedback'; break;
-                    case 'Organization': $type = 'organizations'; break;
-                    case 'Person': $type       = 'people'; break;
-                    case 'Ticket': $type       = 'tickets'; break;
-                    default: $type             = ''; break;
+                    case 'Article': $type        = 'articles'; break;
+                    case 'CommunityTopic': $type = 'community_topics'; break;
+                    case 'Organization': $type   = 'organizations'; break;
+                    case 'Person': $type         = 'people'; break;
+                    case 'Ticket': $type         = 'tickets'; break;
+                    default: $type               = ''; break;
                 }
 
                 if ($type) {
