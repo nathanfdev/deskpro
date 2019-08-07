@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
@@ -5619,6 +5620,8 @@ class TicketController extends AbstractController
                 return NewsComment::class;
             case 'community':
                 return CommunityTopicComment::class;
+            case 'topics':
+                return TopicComment::class;
         }
     }
 

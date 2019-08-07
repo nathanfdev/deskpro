@@ -96,7 +96,19 @@ class GuidesController extends AbstractApiController
         $comment->setIpAddress($request->getClientIp());
         $newCommentForm = $formHandler->createForm($comment, $request);
         $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
-        $flashes        = [];
+
+        // Workaround for Guest comments email validation
+        // If processing comment in sub-request - then we got here from email validation link (route: `portal_validation`)
+        // in this case we need to return regular page response instead of json response
+        if (
+            $formResult instanceof Response
+            && $this->get('request_stack')->getParentRequest()
+            && $request->attributes->get('saved-form')
+        ) {
+            return $formResult;
+        }
+
+        $flashes = [];
         foreach ($request->getSession()->getFlashBag()->all() as $type => $flash) {
             $flashes[] = [
                 'type'    => $type,

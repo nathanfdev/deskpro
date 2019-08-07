@@ -364,7 +364,7 @@ class CommentFormHandler
         } elseif ($content instanceof CommunityTopic) {
             return 'community';
         } elseif ($content instanceof Topic) {
-            return 'topic';
+            return 'guides';
         }
 
         throw new InvalidArgumentException('content type not supported');
