@@ -76,6 +76,6 @@ class Union extends AbstractPart
             $first = false;
         }
 
-        return implode('', $dpqlParts);
+        return '('.implode('', $dpqlParts).')';
     }
 }
