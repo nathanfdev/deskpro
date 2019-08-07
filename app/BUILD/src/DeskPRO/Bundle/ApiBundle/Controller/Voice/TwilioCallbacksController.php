@@ -1085,6 +1085,42 @@ class TwilioCallbacksController extends BaseController
 
     /**
      * @ApiDoc(
+     *     description="Creates a task for task router",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     *
+     * @Rest\Post("/{phoneCall}/new_incoming_call/{target}", name="twilio_new_incoming_call_callback")
+     *
+     * @param TwilioVoiceAccount  $account
+     * @param VoicePhoneCall      $phoneCall
+     * @param AbstractVoiceTarget $target
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function newIncomingCallCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, AbstractVoiceTarget $target)
+    {
+        $twiml = new Twiml();
+
+        // enqueue task for task router
+        $task = $this->get('dp.voice.callbacks_helper')->createTaskForTarget($phoneCall, $target);
+        if ($task) {
+            $twiml->redirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
+        }
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
      *     description="Plays ringing musing",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -1585,11 +1621,24 @@ class TwilioCallbacksController extends BaseController
             }
         }
 
-        // enqueue task for task router
-        $task = $this->get('dp.voice.callbacks_helper')->createTaskForTarget($phoneCall, $target);
-        if ($task) {
-            $twiml->redirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
-        }
+        $twiml->redirect($this->getNewIncomingCallCallbackUrl($account, $phoneCall, $target));
+    }
+
+    /**
+     * @param TwilioVoiceAccount  $account
+     * @param VoicePhoneCall      $phoneCall
+     * @param AbstractVoiceTarget $target
+     *
+     * @return string
+     */
+    private function getNewIncomingCallCallbackUrl(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, AbstractVoiceTarget $target)
+    {
+        return $this->get('router')->generate('twilio_new_incoming_call_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'phoneCall'   => $phoneCall->getId(),
+            'target'      => $target->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**
