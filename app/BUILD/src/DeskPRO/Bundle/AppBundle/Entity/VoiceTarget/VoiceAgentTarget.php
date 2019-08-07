@@ -60,7 +60,7 @@ class VoiceAgentTarget extends AbstractVoiceTarget
     {
         return [
             'id'   => $this->agent->getId(),
-            'type' => 'agent',
+            'type' => self::TYPE_AGENT,
             'name' => $this->agent->getName(),
         ];
     }

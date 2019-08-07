@@ -56,7 +56,7 @@ class VoiceQueueTarget extends AbstractVoiceTarget
     {
         return [
             'id'   => $this->queue->getId(),
-            'type' => 'queue',
+            'type' => self::TYPE_QUEUE,
             'name' => $this->queue->getName(),
         ];
     }

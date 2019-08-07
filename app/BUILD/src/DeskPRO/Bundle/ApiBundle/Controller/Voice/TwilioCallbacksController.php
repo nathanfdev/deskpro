@@ -1102,7 +1102,8 @@ class TwilioCallbacksController extends BaseController
      *     noOutput=true
      * )
      *
-     * @Rest\Post("/{phoneCall}/new_incoming_call/{target}", name="twilio_new_incoming_call_callback")
+     * @Rest\Post("/{phoneCall}/new_incoming_call/{targetType}/{targetId}", name="twilio_new_incoming_call_callback")
+     * @ParamConverter(name="target", converter="voice_target", options={"targetType": "targetType", "targetId": "targetId"})
      *
      * @param TwilioVoiceAccount  $account
      * @param VoicePhoneCall      $phoneCall
@@ -1642,11 +1643,14 @@ class TwilioCallbacksController extends BaseController
      */
     private function getNewIncomingCallCallbackUrl(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, AbstractVoiceTarget $target)
     {
+        $targetDetails = $target->getTargetDetails();
+
         return $this->get('router')->generate('twilio_new_incoming_call_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'phoneCall'   => $phoneCall->getId(),
-            'target'      => $target->getId(),
+            'targetId'    => $targetDetails['id'],
+            'targetType'  => $targetDetails['type'],
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 

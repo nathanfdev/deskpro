@@ -56,7 +56,7 @@ class VoiceAutoAttendantTarget extends AbstractVoiceTarget
     {
         return [
             'id'   => $this->autoAttendant->getId(),
-            'type' => 'auto_attendant',
+            'type' => self::TYPE_AUTO_ATTENDANT,
             'name' => $this->autoAttendant->getName(),
         ];
     }
