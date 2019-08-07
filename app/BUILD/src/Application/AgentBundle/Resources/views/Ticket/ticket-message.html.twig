@@ -201,7 +201,7 @@
 								class="remove"
 								title="Remove from ticket"
 								data-confirm="{{ phrase('agent.tickets.confirm_remove_absent', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}"
-								data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
+								data-delete-url="{{ path('agent_ticket_delabsent', {'ticket_id': ticket.id}) }}"
 								data-person-id="{{ recipient.id }}"
 						/>
 						{{ recipient.display_name }}

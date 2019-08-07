@@ -67,6 +67,7 @@ use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
@@ -1234,6 +1235,57 @@ class TicketController extends AbstractController
             }
 
             $this->db->beginTransaction();
+
+            try {
+                $this->em->remove($part);
+                $this->em->flush();
+                $this->db->commit();
+            } catch (\Exception $e) {
+                $this->db->rollback();
+                throw $e;
+            }
+        }
+
+        return $this->createJsonResponse(['success' => true, 'cc_list' => $this->_getTicketCcList($ticket)]);
+    }
+
+    public function removeAbsentAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        if (!$this->checkPerm($ticket, 'modify_cc')) {
+            return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
+        }
+
+        $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
+
+        if ($person) {
+            $part = $this->em->createQuery(
+                '
+                SELECT part
+                FROM DeskPRO:TicketParticipant part
+                WHERE part.ticket = ?0 AND part.person = ?1
+            '
+            )->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
+
+            if (!$part) {
+                return $this->createJsonResponse(['success' => false]);
+            }
+
+            $this->db->beginTransaction();
+
+            $removedCCs = $ticket->getAttribute('removed_ccs');
+            if (!$removedCCs) {
+                $removedCCs = new TicketAttribute('removed_ccs');
+            }
+            $removedAddresses = json_decode($removedCCs->getValue());
+            if (!$removedAddresses) {
+                $removedAddresses = [];
+            }
+            $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses());
+            $removedCCs->setValue(json_encode($removedAddresses));
+            $ticket->addAttribute($removedCCs);
+            $this->em->persist($removedCCs);
 
             try {
                 $this->em->remove($part);
