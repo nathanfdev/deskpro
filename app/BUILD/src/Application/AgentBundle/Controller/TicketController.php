@@ -4544,8 +4544,23 @@ class TicketController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Ticket $ticket
+     * @param array $tos
+     * @param array $ccs
+     * @param array $bccs
+     * @param string $fromEmail
+     * @param string $fromName
+     * @param string $customMessage
+     * @param array $messages
+     * @param array $options
+     *
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
     protected function forwardAsNew(
-        $ticket,
+        Ticket $ticket,
         $tos,
         $ccs,
         $bccs,
@@ -4556,8 +4571,8 @@ class TicketController extends AbstractController
         $options
     ) {
         $this->em->beginTransaction();
-        $doAssignAgent = $options['do_assign_agent'] === 'true';
-        $doAssignTeam  = $options['do_assign_team'] === 'true';
+        $doAssignAgent = array_key_exists('do_assign_agent', $options) && $options['do_assign_agent'] === 'true';
+        $doAssignTeam  = array_key_exists('do_assign_team', $options) && $options['do_assign_team'] === 'true';
 
         $ticketManager = $this->container->getTicketManager();
 
