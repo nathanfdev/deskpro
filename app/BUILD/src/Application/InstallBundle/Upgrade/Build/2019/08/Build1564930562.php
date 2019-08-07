@@ -20,7 +20,7 @@ class Build1564930562 extends AbstractBuild implements OnlineBuildInterface, Ski
        $storageMethod = $this->container->getSetting('core.filestorage_method');
 
         if ($storageMethod === 's3' && $blobStorage->hasAdapter($storageMethod)) {
-            $blob = new Blob('robots.txt', 'text/plane');
+            $blob = new Blob('robots.txt', 'text/plain');
             $blob->setPath('robots.txt');
 
             $blobStorage

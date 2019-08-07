@@ -319,7 +319,7 @@ class ServerController extends AbstractController implements ProtectedController
             $blobStorage = $this->container->getBlobStorage();
 
             if ($blobStorage->hasAdapter($method)) {
-                $blob = new Blob('robots.txt', 'text/plane');
+                $blob = new Blob('robots.txt', 'text/plain');
                 $blob->setPath('robots.txt');
 
                 $blobStorage
