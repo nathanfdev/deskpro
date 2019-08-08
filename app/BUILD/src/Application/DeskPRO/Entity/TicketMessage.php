@@ -1135,7 +1135,7 @@ class TicketMessage extends DomainObject
             if (in_array($participant->getEmailAddress(), $recipients)) {
                 $result['cc'][] = $participant;
             } else {
-                if ($participant->getEmailAddress() !== $ticket->getPersonEmailAddress()) {
+                if ($participant->getEmailAddress() !== $this->getPerson()->getEmailAddress()) {
                     $result['absent'][] = $participant;
                 }
             }
