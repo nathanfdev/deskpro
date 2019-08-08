@@ -101,38 +101,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-
-<div class="section other-section" id="{{baseId}}_other_section">
-	<div class="content">
-		{# Tab Container #}
-		<div class="tab-container">
-			<nav id="{{baseId}}_other_props_tabs_wrap">
-				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
-				</ul>
-			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
-				{# Tab Properties #}
-				<div class="tab-properties" style="display: none">
-					<dl>
-						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
-						<dd class="prop">
-							<div class="tags-wrap article-tags">
-								<input type="text"
-									   autocomplete="{{ "now" | date("U") }}"
-									   value="{% for label in state.newnews.labels %}{{label}},{% endfor %}"
-									   data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
-							</div>
-						</dd>
-					</dl>
-				</div>
-				{# /Tab Properties #}
-			</div>
-		</div>
-		{# /Tab Container #}
-	</div>
-</div>
-
 <footer class="pop-footer">
 	<div class="is-not-loading">
 		<button class="submit-trigger clean-white"><span id="{{baseId}}_topic_submit" style="display: none">{{ phrase('agent.general.create_topic') }}</span><span id="{{baseId}}_section_submit">{{ phrase('agent.general.create_section') }}</span> <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
