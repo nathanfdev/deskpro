@@ -176,7 +176,8 @@ abstract class ProcessAbstract
         $maxCc          = (int) App::getSetting('core_tickets.email_cc_max_count');
         $maxCc          = $maxCc ?: 100;
 
-        $removed = [];
+        $removed   = [];
+        $reAddedCC = false;
         if ($ticket->getAttribute('removed_ccs')) {
             $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue());
         }
@@ -208,9 +209,10 @@ abstract class ProcessAbstract
                 continue;
             }
 
-            if (in_array($ccEmail, $removed)) {
-                $this->logMessage("Skipping cc: $ccEmail (previously removed by agent)");
-                continue;
+            $key = array_search($ccEmail, $removed);
+            if ($key !== false) {
+                unset($removed[$key]);
+                $reAddedCC = true;
             }
 
             $personProcessor = new PersonFromEmailProcessor();
@@ -260,6 +262,11 @@ abstract class ProcessAbstract
                     ++$count;
                 }
             }
+        }
+        if ($reAddedCC) {
+            $removedCCs = $ticket->getAttribute('removed_ccs');
+            $removedCCs->setValue(json_encode($removed));
+            $ticket->addAttribute($removedCCs);
         }
     }
 

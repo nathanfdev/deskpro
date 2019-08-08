@@ -1092,7 +1092,11 @@ class TicketMessage extends DomainObject
     {
         $recipients = [];
         $keyArray   = [];
-        $value      = json_decode($this->getAttribute('email_recipients')->getValue());
+        $attribute  = $this->getAttribute('email_recipients');
+        if (!$attribute) {
+            return [];
+        }
+        $value = json_decode($attribute->getValue());
         if ($value) {
             foreach ($value as $recipient) {
                 if (!in_array($recipient->address, $keyArray)) {
