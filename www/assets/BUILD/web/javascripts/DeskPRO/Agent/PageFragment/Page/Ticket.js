@@ -2757,31 +2757,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       }
     };
 
-    var setPerson = function(personId, personEmail, newPersonEmail, newPersonLanguage) {
-      var hasNewEmail = newPersonEmail && newPersonEmail !== personEmail;
-      if (hasNewEmail || newPersonLanguage) {
-        var submitData = {};
-        if (hasNewEmail) {
-          submitData.primary_email = newPersonEmail;
-          personEmail = newPersonEmail;
-        }
-        if (newPersonLanguage) {
-          submitData.language = newPersonLanguage;
-        }
-
-        $.ajax({
-          url:  BASE_URL + 'api/v2/people/' + personId,
-          type: 'PUT',
-          data: submitData,
-          success: function() {
-            setPerson(personId, personEmail);
-          },
-          error: errorHandler
-        });
-
-        return;
-      }
-
+    var setPerson = function(personId, personEmail) {
 			$.ajax({
 				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
 				type: 'GET',
@@ -2857,7 +2833,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
       if (foundPersonId) {
         // re-assign to existing user from the search
-        setPerson(foundPersonId, foundPersonEmail, newPersonEmail, newPersonLanguage);
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + foundPersonId,
+          type: 'GET',
+          success: function (getResponse) {
+            var phoneNumbers = getResponse.data.phone_numbers.map(function (phoneNumber) {
+              return { number: phoneNumber.number, extension: phoneNumber.extension, label: phoneNumber.label };
+            });
+            var hasNumber = phoneNumbers.filter(function (phoneNumber) {
+              return phoneNumber.number.replace(/[^\d]/, '') === self.meta.voicePhoneNumber.replace(/[^\d]/, '');
+            }).length > 0;
+
+            if (!hasNumber) {
+              phoneNumbers.push({ number: self.meta.voicePhoneNumber });
+            }
+
+            var submitData = {
+              phone_numbers: phoneNumbers
+            };
+            if (newPersonEmail) {
+              submitData.primary_email = newPersonEmail;
+            }
+            if (newPersonLanguage) {
+              submitData.language = newPersonLanguage;
+            }
+            if (newPersonName) {
+              submitData.name = newPersonName;
+            }
+
+            $.ajax({
+              url:  BASE_URL + 'api/v2/people/' + foundPersonId,
+              type: 'PUT',
+              data: submitData,
+              success: function() {
+                setPerson(foundPersonId, newPersonEmail || foundPersonEmail);
+              },
+              error: errorHandler
+            });
+          }
+        });
       } else if (newPersonName) {
         // create a new user and re-assign to the new user
         var submitData = {
