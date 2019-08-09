@@ -1980,7 +1980,7 @@ agent.snippets.content_change: コンテンツ変更
 agent.snippets.departments: 部門
 agent.snippets.draft_status: ドラフトステータス
 agent.snippets.edit_snippet: スニペット編集
-agent.snippets.community: フィードバック：
+agent.snippets.feedback: フィードバック：
 agent.snippets.helpdesk_default: ヘルプデスクデフォルト
 agent.snippets.insert_variable: 変数の挿入
 agent.snippets.learn_more_about_vars: 変数の詳細
