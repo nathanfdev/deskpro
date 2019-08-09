@@ -399,14 +399,16 @@ class TicketChecker extends AbstractChecker
 
         $permissionsToCheck = [];
 
-        if ($message->isAgentNote()) {
+        if ($message->isVoiceMessage()) {
+            $permissionsToCheck[] = 'delete_voice_messages';
+        } elseif ($message->isAgentNote()) {
             $permissionsToCheck = ['delete_notes'];
             // Can Edit Notes (Time Limit, 1 hour)
             if (time() - $message->getDateCreated()->getTimestamp() <= 3600) {
                 $permissionsToCheck[] = 'delete_timelimited_notes';
             }
         } else {
-            $permissionsToCheck[] = $message->isVoiceMessage() ? 'delete_voice_messages' : 'delete';
+            $permissionsToCheck[] = 'delete';
         }
 
         return array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
