@@ -10,7 +10,6 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
@@ -264,6 +263,11 @@ class TicketMessage extends DomainObject
      * @var TicketFeedback[]|ArrayCollection
      */
     protected $ticketFeedback;
+
+    /**
+     * @var EmailAccount[]|ArrayCollection
+     */
+    protected $emailAccounts;
 
     /**
      * TicketMessage constructor.
@@ -1105,11 +1109,9 @@ class TicketMessage extends DomainObject
                 }
             }
         }
-        $accountRepo = new EmailAccountRepository(App::getContainer()->getEm());
-        $accounts    = $accountRepo->getAccounts();
-        $recipients  = array_filter($recipients, function ($recipient) use ($accounts) {
-            foreach ($accounts as $account) {
-                if ($recipient === $account->address) {
+        $recipients = array_filter($recipients, function ($recipient) {
+            foreach ($this->getEmailAccounts() as $emailAccount) {
+                if ($recipient === $emailAccount->address) {
                     return false;
                 }
             }
@@ -1233,6 +1235,22 @@ class TicketMessage extends DomainObject
     public function setIpAddress($ip_address)
     {
         $this->setModelField('ip_address', $ip_address);
+    }
+
+    /**
+     * @return EmailAccount[]|ArrayCollection
+     */
+    public function getEmailAccounts()
+    {
+        return $this->emailAccounts;
+    }
+
+    /**
+     * @param EmailAccount[]|ArrayCollection $emailAccounts
+     */
+    public function setEmailAccounts($emailAccounts)
+    {
+        $this->emailAccounts = $emailAccounts;
     }
 
     /**
