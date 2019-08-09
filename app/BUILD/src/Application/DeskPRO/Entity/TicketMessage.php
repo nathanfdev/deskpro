@@ -265,9 +265,9 @@ class TicketMessage extends DomainObject
     protected $ticketFeedback;
 
     /**
-     * @var array
+     * @var array|callable|null
      */
-    protected $email_recipients = [];
+    protected $emailRecipients = null;
 
     /**
      * TicketMessage constructor.
@@ -1094,16 +1094,16 @@ class TicketMessage extends DomainObject
 
     public function setEmailRecipients($recipients)
     {
-        $this->email_recipients = $recipients;
+        $this->emailRecipients = $recipients;
     }
 
     public function getEmailRecipients()
     {
-        if (!is_array($this->email_recipients)) {
-            $this->email_recipients = $this->email_recipients->call();
+        if (is_callable($this->emailRecipients)) {
+            $this->emailRecipients = call_user_func($this->emailRecipients);
         }
 
-        return $this->email_recipients;
+        return $this->emailRecipients;
     }
 
     public function incTicketCount()

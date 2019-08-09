@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
-use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
@@ -37,8 +36,11 @@ class TicketMessageListener implements EventSubscriber
             return;
         }
 
+        $em = $args->getEntityManager();
         /* @var TicketMessage $entity */
-        $entity->setEmailRecipients(new CallbackDeferredProperty([$this, 'getRecipients'], [$entity, $args->getEntityManager()]));
+        $entity->setEmailRecipients(function () use ($entity, $em) {
+            return $this->getRecipients($entity, $em);
+        });
     }
 
     public function getRecipients(TicketMessage $ticketMessage, EntityManager $em)
