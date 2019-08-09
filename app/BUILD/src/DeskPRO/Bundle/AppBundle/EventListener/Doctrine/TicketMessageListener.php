@@ -3,13 +3,13 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\LazyCriteriaCollection;
 
 class TicketMessageListener implements EventSubscriber
 {
@@ -17,6 +17,11 @@ class TicketMessageListener implements EventSubscriber
      * @var ArrayCollection
      */
     private $accounts = null;
+
+    /**
+     * @var array
+     */
+    private $collectionCache = [];
 
     public function getSubscribedEvents()
     {
@@ -33,18 +38,76 @@ class TicketMessageListener implements EventSubscriber
         }
 
         /* @var TicketMessage $entity */
-        $entity->setEmailAccounts($this->getLazyCriteriaCollection($entity, $args->getEntityManager()));
+        $entity->setEmailRecipients(new CallbackDeferredProperty([$this, 'getRecipients'], [$entity, $args->getEntityManager()]));
     }
 
-    private function getLazyCriteriaCollection(TicketMessage $entity, EntityManager $em)
+    public function getRecipients(TicketMessage $ticketMessage, EntityManager $em)
     {
-        if (!isset($this->accounts)) {
-            $persister = $em->getUnitOfWork()->getEntityPersister(EmailAccount::class);
-            $criteria  = new Criteria();
+        $recipients = [];
+        $keyArray   = [];
+        $attribute  = $ticketMessage->getAttribute('email_recipients');
+        if (!$attribute) {
+            return [];
+        }
+        $value = json_decode($attribute->getValue());
+        if ($value) {
+            foreach ($value as $recipient) {
+                if (!in_array($recipient->address, $keyArray)) {
+                    $keyArray[]   = $recipient->address;
+                    $recipients[] = $recipient->address;
+                }
+            }
+        }
+        $recipients = array_filter($recipients, function ($recipient) use ($em) {
+            foreach ($em->getRepository(EmailAccount::class)->findAll() as $emailAccount) {
+                if ($recipient === $emailAccount->address) {
+                    return false;
+                }
+            }
 
-            $this->accounts = new LazyCriteriaCollection($persister, $criteria);
+            return true;
+        });
+        // We won't display anything if there's only on recipient
+        if (count($recipients) <= 1) {
+            return [];
         }
 
-        return $this->accounts;
+        $ticket = $ticketMessage->getTicket();
+
+        $participants[] = $ticket->getPerson();
+
+        foreach ($ticket->getParticipants() as $participant) {
+            $participants[] = $participant->getPerson();
+        }
+
+        $result = [];
+        /** @var Person $participant */
+        foreach ($participants as $participant) {
+            if (in_array($participant->getEmailAddress(), $recipients)) {
+                $result['cc'][] = $participant;
+            } else {
+                if ($participant->getEmailAddress() !== $ticketMessage->getPerson()->getEmailAddress()) {
+                    $result['absent'][] = $participant;
+                }
+            }
+        }
+
+        foreach ($recipients as $recipient) {
+            $present = false;
+            if (!empty($result['cc'])) {
+                foreach ($result['cc'] as $cc) {
+                    if ($cc->getEmailAddress() === $recipient) {
+                        $present = true;
+                        break 1;
+                    }
+                }
+            }
+            if (!$present) {
+                $person         = $em->getRepository(Person::class)->findOneByEmail($recipient);
+                $result['cc'][] = $person ? $person : $recipient;
+            }
+        }
+
+        return $result;
     }
 }

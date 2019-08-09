@@ -265,9 +265,9 @@ class TicketMessage extends DomainObject
     protected $ticketFeedback;
 
     /**
-     * @var EmailAccount[]|ArrayCollection
+     * @var array
      */
-    protected $emailAccounts;
+    protected $email_recipients = [];
 
     /**
      * TicketMessage constructor.
@@ -1092,74 +1092,18 @@ class TicketMessage extends DomainObject
         }
     }
 
+    public function setEmailRecipients($recipients)
+    {
+        $this->email_recipients = $recipients;
+    }
+
     public function getEmailRecipients()
     {
-        $recipients = [];
-        $keyArray   = [];
-        $attribute  = $this->getAttribute('email_recipients');
-        if (!$attribute) {
-            return [];
-        }
-        $value = json_decode($attribute->getValue());
-        if ($value) {
-            foreach ($value as $recipient) {
-                if (!in_array($recipient->address, $keyArray)) {
-                    $keyArray[]   = $recipient->address;
-                    $recipients[] = $recipient->address;
-                }
-            }
-        }
-        $recipients = array_filter($recipients, function ($recipient) {
-            foreach ($this->getEmailAccounts() as $emailAccount) {
-                if ($recipient === $emailAccount->address) {
-                    return false;
-                }
-            }
-
-            return true;
-        });
-        // We won't display anything if there's only on recipient
-        if (count($recipients) <= 1) {
-            return [];
+        if (!is_array($this->email_recipients)) {
+            $this->email_recipients = $this->email_recipients->call();
         }
 
-        $ticket = $this->getTicket();
-
-        $participants[] = $ticket->getPerson();
-
-        foreach ($ticket->getParticipants() as $participant) {
-            $participants[] = $participant->getPerson();
-        }
-
-        $result = [];
-        /** @var Person $participant */
-        foreach ($participants as $participant) {
-            if (in_array($participant->getEmailAddress(), $recipients)) {
-                $result['cc'][] = $participant;
-            } else {
-                if ($participant->getEmailAddress() !== $this->getPerson()->getEmailAddress()) {
-                    $result['absent'][] = $participant;
-                }
-            }
-        }
-
-        foreach ($recipients as $recipient) {
-            $present = false;
-            if (!empty($result['cc'])) {
-                foreach ($result['cc'] as $cc) {
-                    if ($cc->getEmailAddress() === $recipient) {
-                        $present = true;
-                        break 1;
-                    }
-                }
-            }
-            if (!$present) {
-                $person         = App::getEntityRepository(Person::class)->findOneByEmail($recipient);
-                $result['cc'][] = $person ? $person : $recipient;
-            }
-        }
-
-        return $result;
+        return $this->email_recipients;
     }
 
     public function incTicketCount()
