@@ -4645,9 +4645,15 @@ class TicketController extends AbstractController
         $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
 
         foreach ($messages as $message) {
+            /** @var TicketMessage $messageCopy */
             $messageCopy     = clone $message;
             $messageCopy->id = null;
             $messageCopy->setTicket($ticket);
+
+            foreach ($message->getAttachments() as $attachment) {
+                $messageCopy->addAttachment($attachment);
+            }
+
             $this->em->persist($messageCopy);
         }
 
