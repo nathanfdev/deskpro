@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		  });
 		  formData.push({
 		    name:  "newarticle[content_input]",
-		    value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+		    value: this.rte.current.editor.current.reactEditor.current.editor.getJSON()
 		  });
 		}
 
@@ -322,7 +322,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
     if (this.rte) {
       formData.push({
         name: 'newarticle[content_input]',
-        value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+        value: this.rte.current.editor.current.reactEditor.current.editor.getJSON()
       });
     }
     return formData;
