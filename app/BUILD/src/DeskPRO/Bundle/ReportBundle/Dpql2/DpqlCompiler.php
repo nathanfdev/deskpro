@@ -283,6 +283,9 @@ class DpqlCompiler
         $selectBits = implode(', ', $selectBits);
         if ($selectBits) {
             $selectBits = $selectBits.', ';
+        } else {
+            // we need to return something to replace placeholder
+            $selectBits = ' ';
         }
 
         $vars = [
