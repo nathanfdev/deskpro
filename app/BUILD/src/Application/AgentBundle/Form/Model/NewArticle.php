@@ -9,7 +9,9 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Person;
 
 class NewArticle
@@ -25,6 +27,9 @@ class NewArticle
 
     /** @var string */
     public $content;
+
+    /** @var string */
+    public $content_input;
 
     /** @var int */
     public $language_id;
@@ -59,23 +64,25 @@ class NewArticle
         $this->_em = App::getOrm();
     }
 
-    public function save()
+    public function save($contentInputType = ContentAbstract::CONTENT_TYPE_RTE)
     {
         $this->_em->beginTransaction();
 
-        $article         = new Article();
-        $article->person = $this->_person_context;
+        $article = new Article();
+        $article->setPerson($this->_person_context);
         $article->setStatusCode($this->status);
 
         if ($article->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
             $article->setStatusCode('hidden.unpublished');
         }
 
-        $article->title = $this->title;
+        $article->setTitle($this->title);
 
-        $article->content = $this->_person_context->hasPerm('agent_publish.can_insert_html')
+        $article->setContent($this->_person_context->hasPerm('agent_publish.can_insert_html')
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
-            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
+            : App::$container->getInputCleaner()->clean($this->content ?: '', 'html'));
+
+        $article->setContentInput($this->content_input);
 
         $lang = null;
         if ($this->language_id) {
@@ -84,10 +91,12 @@ class NewArticle
         if (!$lang) {
             $lang = App::getContainer()->getLanguageData()->getDefault();
         }
-        $article->language = $lang;
+        $article->setLanguage($lang);
 
-        $cat = $this->_em->find('DeskPRO:ArticleCategory', $this->category_id);
+        $cat = $this->_em->find(ArticleCategory::class, $this->category_id);
         $article->addToCategory($cat);
+
+        $article->setContentInputType($contentInputType);
 
         $this->_em->persist($article);
         $this->_em->flush();

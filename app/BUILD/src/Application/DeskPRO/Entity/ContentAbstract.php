@@ -33,8 +33,9 @@ abstract class ContentAbstract extends DomainObject
     const HIDDEN_STATUS_DRAFT       = 'draft';
     const HIDDEN_STATUS_PENDING     = 'pending';
 
-    const CONTENT_TYPE_RTE      = 'rte';
-    const CONTENT_TYPE_MARKDOWN = 'markdown';
+    const CONTENT_TYPE_RTE               = 'rte';
+    const CONTENT_TYPE_MARKDOWN          = 'markdown';
+    const CONTENT_TYPE_DESKPRO_EDITOR_V1 = 'dped_v1';
 
     const DELETED_SLUG_PREFIX = '__DELETED__';
 
@@ -548,6 +549,7 @@ abstract class ContentAbstract extends DomainObject
         if ($contentInputType && !in_array($contentInputType, [
             self::CONTENT_TYPE_RTE,
             self::CONTENT_TYPE_MARKDOWN,
+            self::CONTENT_TYPE_DESKPRO_EDITOR_V1,
         ])) {
             throw new \Exception('Unknown content type '.$contentInputType);
         }

@@ -245,7 +245,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		var contentInputType = this.getEl('content_input_type');
     var $rElement = $('<div></div>').insertAfter(textArea);
     textArea.hide();
-    window.AgentLegacyBundle.renderContentEditor(
+    window.AgentLegacyBundle.renderMarkdownEditor(
       $rElement.get(0),
       textArea.val(),
       'markdown',

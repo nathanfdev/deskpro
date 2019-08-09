@@ -623,12 +623,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 				h = $(window).height() - 90 - txt.offset().top;
 			}
 
-      window.LegacyRteTextarea.init(txt, {
+      this.rte = window.LegacyRteTextarea.init(txt, {
         height: h,
         inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
-      txt.on('froalaEditor.keypress', function () {
+      this.rte.on('froalaEditor.keypress', function () {
         self.editStateSaver.triggerChange();
       });
 

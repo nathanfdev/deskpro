@@ -79,3 +79,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.content_editor:
+    class: DeskPRO\Bundle\AppBundle\Features\ContentEditorFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
