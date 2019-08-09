@@ -282,7 +282,7 @@ class Dialpad extends React.Component {
   setOutgoingNumber = (number, personId = null) => {
     const $input = $(this.phoneInput.input);
     const { formData } = this.state;
-    formData.value.call_from = number;
+    formData.value.call_to = number;
     formData.value.person = personId;
 
     setTimeout(() => {
@@ -326,17 +326,24 @@ class Dialpad extends React.Component {
     }, 1);
   };
 
-  showProviderError = (errors) => {
+  showProviderError = (number, errors) => {
+    const $input = $(this.phoneInput.input);
     const { formData } = this.state;
-    this.setState({
-      formData: createValue({
-        value:     formData.value,
-        errorList: errors,
-        onChange:  this.onChange
-      }),
-      submit:        false,
-      searchResults: Immutable.fromJS([])
-    });
+
+    this.phoneInput.setNumber(number);
+    $input.focus();
+
+    setTimeout(() => {
+      this.setState({
+        formData: createValue({
+          value:     formData.value,
+          errorList: errors,
+          onChange:  this.onChange
+        }),
+        submit:        false,
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
   };
 
   render() {
