@@ -227,6 +227,8 @@ class DashboardWidgetManager
             } else {
                 $data = [];
             }
+        } elseif ($data instanceof SplitResult) {
+            $data = $data->getResults();
         }
 
         return $this->formatData($data, $widget->getType());
