@@ -794,6 +794,18 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @param TicketAttachment[]|ArrayCollection $attachments
+     *
+     * @return $this
+     */
+    public function setAttachments($attachments)
+    {
+        $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
      * @param TicketAttachment $attach
      *
      * @return $this

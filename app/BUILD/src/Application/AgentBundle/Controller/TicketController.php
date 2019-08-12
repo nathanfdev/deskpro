@@ -4648,7 +4648,9 @@ class TicketController extends AbstractController
             /** @var TicketMessage $messageCopy */
             $messageCopy     = clone $message;
             $messageCopy->id = null;
-            $messageCopy->setTicket($ticket);
+            $messageCopy
+                ->setTicket($ticket)
+                ->setAttachments(new ArrayCollection());
 
             foreach ($message->getAttachments() as $attachment) {
                 /** @var TicketAttachment $attachmentCopy */
