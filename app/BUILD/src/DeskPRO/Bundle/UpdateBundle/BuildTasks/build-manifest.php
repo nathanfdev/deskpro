@@ -1387,69 +1387,69 @@ return [
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1560501774 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/06/Build1560501774.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1560501774',
-        'skipPostBuild' => false,
-        'isOnlineBuild' => true,
-    ],
     1560968706 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/06/Build1560968706.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1560968706',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1561013353 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/06/Build1561013353.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1561013353',
+    1565606453 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606453.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606453',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1565606454 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606454.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606454',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1562260337 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/07/Build1562260337.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1562260337',
+    1565606455 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606455.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606455',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1562594875 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/07/Build1562594875.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1562594875',
+    1565606456 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606456.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606456',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1562594876 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/07/Build1562594876.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1562594876',
+    1565606457 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606457.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606457',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1562594877 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/07/Build1562594877.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1562594877',
+    1565606458 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606458.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606458',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1563296946 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/07/Build1563296946.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1563296946',
+    1565606459 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606459.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606459',
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
-    1564393916 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/07/Build1564393916.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1564393916',
+    1565606460 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606460.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606460',
         'skipPostBuild' => true,
         'isOnlineBuild' => false,
     ],
-    1564930562 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1564930562.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1564930562',
+    1565606461 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606461.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606461',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
-    1565349384 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565349384.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565349384',
+    1565606462 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/08/Build1565606462.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1565606462',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
