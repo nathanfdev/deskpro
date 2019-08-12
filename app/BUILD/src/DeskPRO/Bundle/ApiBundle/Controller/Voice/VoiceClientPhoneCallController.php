@@ -399,7 +399,7 @@ class VoiceClientPhoneCallController extends BaseController
         ));
 
         // call forwarding number
-        $this->get('dp.voice.provider_helper')->callForwardingNumber($phoneCall, $agent);
+        $this->get('dp.voice.forwarding_helper')->tryToMakeAForwardingCall($phoneCall, $agent);
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -503,7 +503,7 @@ class VoiceClientPhoneCallController extends BaseController
         ));
 
         // call forwarding number
-        $this->get('dp.voice.provider_helper')->callForwardingNumber($phoneCall, $agent);
+        $this->get('dp.voice.forwarding_helper')->tryToMakeAForwardingCall($phoneCall, $agent);
 
         // add action log
         $log = new VoicePhoneCallLog();

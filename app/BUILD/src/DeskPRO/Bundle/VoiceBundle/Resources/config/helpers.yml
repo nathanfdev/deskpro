@@ -85,3 +85,11 @@ services:
       - "@brand_aware_settings_resolver"
       - "@serializer"
       - "@event_dispatcher"
+
+  dp.voice.forwarding_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceForwardingHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.provider_helper"
+      - "@dp.voice.logger"

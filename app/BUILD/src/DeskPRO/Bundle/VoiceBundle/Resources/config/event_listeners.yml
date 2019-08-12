@@ -49,7 +49,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_task_helper"
-      - "@twilio_adapter"
+      - "@service_container"
       - "@dp.voice.logger"
     tags:
       - { name: dp.voice.event_subscriber }
