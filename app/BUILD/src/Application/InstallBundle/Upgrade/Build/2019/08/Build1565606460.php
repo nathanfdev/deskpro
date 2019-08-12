@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1564393916 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1565606460 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -52,7 +52,7 @@ class Build1564393916 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', "UPDATE `settings` SET `name` = REPLACE(`name`, 'feedback', 'community') WHERE `name` LIKE \"%feedback%\"");
         $this->execDbQuery('default', "UPDATE `settings_brand` SET `name` = REPLACE(`name`, 'feedback', 'community') WHERE `name` LIKE \"%feedback%\"");
         $this->execDbQuery('default', "UPDATE `hit_record` SET `page_type` = 'deskpro.community_view' WHERE `page_type` = 'deskpro.feedback_view'");
-        $this->execDbQuery('default', "UPDATE`people_prefs` SET `name` = REPLACE('newfeedback', 'newcommunitytopic', `name`) WHERE `name` LIKE \"%newfeedback%\"");
+        $this->execDbQuery('default', "UPDATE `people_prefs` SET `name` = REPLACE('newfeedback', 'newcommunitytopic', `name`) WHERE `name` LIKE \"%newfeedback%\"");
         $this->execDbQuery('default', "UPDATE `people_prefs` SET `name` = REPLACE('feedback', 'community', `name`) WHERE `name` LIKE \"%feedback%\"");
         $this->execDbQuery('default', "UPDATE `people_prefs` SET `name` = REPLACE('feedback', 'community', `name`) WHERE `name` LIKE \"%feedback%\"");
         $this->execDbQuery('default', "UPDATE `custom_def_community_topic` SET `sys_name` = 'chan' WHERE `sys_name` = 'cat'");

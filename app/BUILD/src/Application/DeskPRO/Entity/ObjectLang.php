@@ -258,7 +258,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getInput()
     {
-        return $this->input;
+        return $this->input ?: '';
     }
 
     public function _resetRefCode()
@@ -365,7 +365,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
             [
                 'fieldName'  => 'input',
                 'type'       => 'text',
-                'nullable'   => false,
+                'nullable'   => true,
                 'columnName' => 'input',
             ]
         );
