@@ -558,12 +558,15 @@ class TicketController extends AbstractController
         if (isset($this->ticketPermsCache[$ticket->getId()])) {
             return $this->ticketPermsCache[$ticket->getId()];
         }
-        $ticket_perms                        = [];
-        $ticket_perms['delete']              = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
-        $ticket_perms['reply']               = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
-        $ticket_perms['modify_set_archived'] = $this->person->PermissionsManager->TicketChecker->canSetArchived(
-            $ticket
-        );
+
+        /** @var TicketChecker $ticketChecker */
+        $ticketChecker = $this->person->PermissionsManager->TicketChecker;
+        $ticketPerms   = [
+            'delete'                     => $ticketChecker->canDelete($ticket),
+            'reply'                      => $ticketChecker->canReply($ticket),
+            'modify_set_archived'        => $ticketChecker->canSetArchived($ticket),
+            'modify_messages_no_logging' => $ticketChecker->canModifyMessages($ticket, 'no_logging'),
+        ];
 
         foreach ([
                      'department',
@@ -584,12 +587,12 @@ class TicketController extends AbstractController
                      'billing',
                      'followed',
                  ] as $p) {
-            $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
+            $ticketPerms["modify_$p"] = $ticketChecker->canModify($ticket, $p);
         }
 
-        $this->ticketPermsCache[$ticket->getId()] = $ticket_perms;
+        $this->ticketPermsCache[$ticket->getId()] = $ticketPerms;
 
-        return $ticket_perms;
+        return $ticketPerms;
     }
 
     /**
@@ -2178,6 +2181,7 @@ class TicketController extends AbstractController
     /**
      * @param $message_id
      *
+     * @throws NotFoundHttpException
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -2187,10 +2191,13 @@ class TicketController extends AbstractController
      */
     public function ajaxSaveMessageTextAction($message_id)
     {
+        /** @var TicketChecker $ticketChecker */
+        $ticketChecker = $this->person->PermissionsManager->TicketChecker;
+
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
         $message = $this->em->find(TicketMessage::class, $message_id);
         $ticket  = null;
-        if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessage($message)) {
+        if ($message && $ticketChecker->canEditMessage($message)) {
             $ticket = $message->ticket;
         }
 
@@ -2214,7 +2221,7 @@ class TicketController extends AbstractController
         $details = [
             'message_id' => $message->getId(),
         ];
-        if ($logOriginalContents) {
+        if ($logOriginalContents || !$ticketChecker->canModifyMessages($ticket, 'no_logging')) {
             $details += [
                 'old_message'      => $oldMessage,
                 'old_full_message' => $oldFullMessage,
@@ -4551,18 +4558,19 @@ class TicketController extends AbstractController
 
     /**
      * @param Ticket $ticket
-     * @param array $tos
-     * @param array $ccs
-     * @param array $bccs
+     * @param array  $tos
+     * @param array  $ccs
+     * @param array  $bccs
      * @param string $fromEmail
      * @param string $fromName
      * @param string $customMessage
-     * @param array $messages
-     * @param array $options
+     * @param array  $messages
+     * @param array  $options
      *
-     * @return Response
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
+     *
+     * @return Response
      */
     protected function forwardAsNew(
         Ticket $ticket,
