@@ -40,6 +40,7 @@ class ContentAbstractType extends AbstractType
                 'choices'           => [
                     ContentAbstract::CONTENT_TYPE_MARKDOWN,
                     ContentAbstract::CONTENT_TYPE_RTE,
+                    ContentAbstract::CONTENT_TYPE_DESKPRO_EDITOR_V1,
                 ],
             ])
             ->add('status', ChoiceType::class, [

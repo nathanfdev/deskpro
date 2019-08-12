@@ -365,6 +365,14 @@ class TicketType extends AbstractType
         if ($status) {
             $ticket->setTicketStatus($this->ticketStatuses->findStatusOrException($status));
         }
+
+        if ($form->has('message')) {
+            /** @var TicketMessage $message */
+            $message = $ticket->getMessages()->first();
+            if ($message && $form->get('person')->getData() && !$form->get('message')->get('person')->getData()) {
+                $message->setPerson($ticket->getPerson());
+            }
+        }
     }
 
     /**

@@ -23,6 +23,7 @@ use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\EntityRepository\AbstractCategoryRepository;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
@@ -425,6 +426,9 @@ class PublishController extends AbstractController
             case 'community':
                 $objectUrl = $this->get('router')->generate('agent_community_topic_view', ['communityTopicId' => $comment->getObject()->getId()]);
                 break;
+            case 'topics':
+                $objectUrl = $this->get('router')->generate('agent_topic_view', ['topic_id' => $comment->getObject()->getId()]);
+                break;
             default:
                 $objectUrl = null;
         }
@@ -453,6 +457,8 @@ class PublishController extends AbstractController
                 return NewsComment::class;
             case 'community':
                 return CommunityTopicComment::class;
+            case 'topics':
+                return TopicComment::class;
             default:
                 return '';
         }

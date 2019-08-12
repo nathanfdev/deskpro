@@ -4657,7 +4657,7 @@ agent.snippets.content_change: 'Content change'
 agent.snippets.departments: departments
 agent.snippets.draft_status: 'Draft status'
 agent.snippets.edit_snippet: 'Edit Snippet'
-agent.snippets.community: 'community:'
+agent.snippets.feedback: 'feedback:'
 agent.snippets.helpdesk_default: 'Helpdesk default'
 agent.snippets.insert_variable: 'Insert Variable'
 agent.snippets.learn_more_about_vars: 'Learn more about variables'

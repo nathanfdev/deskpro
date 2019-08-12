@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\SearchLog;
@@ -525,6 +526,7 @@ class KbController extends AbstractController
                 $data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', [
                     'article' => $article,
                     'content' => $content,
+                    'baseId'  => $this->in->getString('base_id'),
                 ]);
                 if ($restartReviewDate) {
                     $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
@@ -582,17 +584,18 @@ class KbController extends AbstractController
                         continue;
                     }
 
-                    $title       = $this->in->getString("title.$langId");
-                    $content_val = (string) $this->in->getRaw("content.$langId");
+                    $title        = $this->in->getString("title.$langId");
+                    $contentVal   = (string) $this->in->getRaw("content.$langId");
+                    $contentInput = (string) $this->in->getRaw("input.$langId");
 
-                    if (!$title && !$content_val) {
+                    if (!$title && !$contentVal) {
                         continue;
                     }
 
                     $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'title', $title);
                     $this->em->persist($rec);
 
-                    $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $content_val);
+                    $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $contentVal, $contentInput);
                     $this->em->persist($rec);
                 }
 
@@ -1103,7 +1106,13 @@ class KbController extends AbstractController
 
             $newArticle->setCustomFieldForm($request->request->all());
 
-            $newArticle->save();
+            $contentInputType = ContentAbstract::CONTENT_TYPE_RTE;
+
+            if ($this->container->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+                $contentInputType = ContentAbstract::CONTENT_TYPE_DESKPRO_EDITOR_V1;
+            }
+
+            $newArticle->save($contentInputType);
 
             $article = $newArticle->getArticle();
 

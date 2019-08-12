@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\Translate;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\ObjectLang;
 use Doctrine\ORM\EntityManager;
 
@@ -50,7 +51,7 @@ class ObjectLangRepository
     /**
      * Set the default languages to try (in order). These are used when $lang is null in the get prop methods.
      *
-     * @param \Application\DeskPRO\Entity\Language[] $try_langs
+     * @param Language[] $try_langs
      */
     public function setTryLangs(array $try_langs)
     {
@@ -58,7 +59,7 @@ class ObjectLangRepository
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Language[]
+     * @return Language[]
      */
     public function getTryLangs()
     {
@@ -89,8 +90,8 @@ class ObjectLangRepository
     }
 
     /**
-     * @param int|\Application\DeskPRO\Entity\Language $lang
-     * @param object|string                            $object
+     * @param int|Language  $lang
+     * @param object|string $object
      *
      * @return bool
      */
@@ -107,7 +108,7 @@ class ObjectLangRepository
      *
      * @param object|string $object
      *
-     * @return \Application\DeskPRO\Entity\ObjectLang[]
+     * @return ObjectLang[]
      */
     public function getLoadedRecs($object)
     {
@@ -134,12 +135,12 @@ class ObjectLangRepository
     /**
      * Get the ObjectLang record for a given property. Returns null if no such record exists.
      *
-     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned
-     * @param object|string                            $object    The object to get the property on
-     * @param string                                   $prop_name The property to get
-     * @param string                                   $fallback  True to the 'try langs' if $lang is not found
+     * @param int|Language  $lang      A language or array of languages. If an array, the first existing will be returned
+     * @param object|string $object    The object to get the property on
+     * @param string        $prop_name The property to get
+     * @param string        $fallback  True to the 'try langs' if $lang is not found
      *
-     * @return \Application\DeskPRO\Entity\ObjectLang
+     * @return ObjectLang
      */
     public function getRec($lang, $object, $prop_name, $fallback = false)
     {
@@ -177,14 +178,17 @@ class ObjectLangRepository
     /**
      * Sets the value on a phrase lang. A new record will be created automatically if one doesnt exist.
      *
-     * @param int|\Application\DeskPRO\Entity\Language $lang
-     * @param object|string                            $object
-     * @param string                                   $prop_name
-     * @param string                                   $text
+     * @param int|Language  $lang
+     * @param object|string $object
+     * @param string        $prop_name
+     * @param string        $text
+     * @param string        $input
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return ObjectLang
      */
-    public function setRec($lang, $object, $prop_name, $text)
+    public function setRec($lang, $object, $prop_name, $text, $input = '')
     {
         $rec = $this->getRec($lang, $object, $prop_name);
 
@@ -192,22 +196,25 @@ class ObjectLangRepository
             // Need to do manual lookup because getRec wont return
             // empty values, so the record itself might still exist
 
-            $lang_id = is_object($lang) ? $lang->getId() : $lang;
-            $obj_ref = is_object($object) ? $object->getObjectRef() : $object;
+            $langId = is_object($lang) ? $lang->getId() : $lang;
+            $objRef = is_object($object) ? $object->getObjectRef() : $object;
 
             $rec = $this->em->createQuery('
                 SELECT o
                 FROM DeskPRO:ObjectLang o
                 WHERE o.ref = ?0 AND o.prop_name = ?1 AND o.language = ?2
-            ')->setParameters([$obj_ref, $prop_name, $lang_id])->getOneOrNullResult();
+            ')->setParameters([$objRef, $prop_name, $langId])->getOneOrNullResult();
         }
 
         if (!$rec) {
-            $rec = ObjectLang::createObjectLang($lang, $object, $prop_name, $text);
+            $rec = ObjectLang::createObjectLang($lang, $object, $prop_name, $text, $input);
             $this->registerRec($rec);
         }
 
         $rec->setValue($text);
+        if ($input) {
+            $rec->setInput($input);
+        }
 
         return $rec;
     }
@@ -215,10 +222,10 @@ class ObjectLangRepository
     /**
      * Get the value of a given property. This is the actual translated text.
      *
-     * @param int|\Application\DeskPRO\Entity\Language $lang      A language or array of languages. If an array, the first existing will be returned
-     * @param object|string                            $object    The object to get the property on
-     * @param string                                   $prop_name The property to get
-     * @param string                                   $fallback  True to the 'try langs' if $lang is not found
+     * @param int|Language  $lang      A language or array of languages. If an array, the first existing will be returned
+     * @param object|string $object    The object to get the property on
+     * @param string        $prop_name The property to get
+     * @param string|bool   $fallback  True to the 'try langs' if $lang is not found
      *
      * @return string
      */
@@ -236,7 +243,7 @@ class ObjectLangRepository
      * Registeres an object lang record onto this object. E.g., it might be one that we are about
      * to persist, or one we want to keep unpersisted.
      *
-     * @param \Application\DeskPRO\Entity\ObjectLang $rec
+     * @param ObjectLang $rec
      */
     public function registerRec($rec)
     {
@@ -264,8 +271,8 @@ class ObjectLangRepository
     /**
      * Mark an object for preloading.
      *
-     * @param int|\Application\DeskPRO\Entity\Language $lang   Lang, array of langs or null for getTryLangs
-     * @param object                                   $object
+     * @param int|Language $lang   Lang, array of langs or null for getTryLangs
+     * @param object       $object
      */
     public function preloadObject($lang, $object)
     {
@@ -302,8 +309,8 @@ class ObjectLangRepository
     }
 
     /**
-     * @param int|\Application\DeskPRO\Entity\Language $lang       Lang, array of langs or null for getTryLangs
-     * @param array                                    $collection
+     * @param int|Language $lang       Lang, array of langs or null for getTryLangs
+     * @param array        $collection
      */
     public function preloadObjectCollection($lang, $collection)
     {

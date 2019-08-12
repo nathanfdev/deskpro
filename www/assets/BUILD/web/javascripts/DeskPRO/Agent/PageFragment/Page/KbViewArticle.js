@@ -926,9 +926,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			if (!this.wrapper.find('.revert-default')[0]) {
 				var def = this.wrapper.find('textarea.edit-content-field-default').val();
 				this.wrapper.find('textarea.edit-content-field').val(def);
-				if (this.rte) {
+				if (this.rte.current) {
+          // this.rte.current.editor.current.reactEditor.current.editor
+
+				} else if (this.rte) {
 					this.rte.val(def);
-				}
+        }
 			}
 		}).bind(this));
 
@@ -954,10 +957,19 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this.editStateSaver.destroy();
 		}
 
-		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'editarticle.' + this.article_id,
-			listenOn: $('.article-editor-wrap:first', wrap)
-		});
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
+      this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+        stateId: 'editarticle.' + this.article_id,
+        callback: this.getSaveStateData.bind(this),
+        time: 5000
+      });
+      this.editStateSaver.stop();
+    } else {
+      this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+        stateId: 'editarticle.' + this.article_id,
+        listenOn: $('.article-editor-wrap:first', wrap)
+      });
+    }
 		this.ownObject(this.editStateSaver);
 
 		DeskPRO_Window.util.fileupload(this.getEl('content_ed').find('.article-editor'), {
@@ -970,67 +982,92 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();
 
-		var data = [];
-		data.push({
-			name: 'action',
-			value: 'content'
-		});
-		data.push({
-			name: 'content',
-				value: $('.article-editor-wrap textarea:first', wrap).val()
-		});
-		data.push({
-			name: 'language_id',
-				value: wrap.find('.article-editor-wrap').find('.language_id').val()
-		});
-		data.push({
-			name: 'restart-review-date',
-				value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
-		});
-
-		$('input.edit-content-attach:checked', wrap).each(function() {
+			var data = [];
 			data.push({
-				name: 'attach[]',
-				value: $(this).val()
+				name: 'action',
+				value: 'content'
 			});
-		});
-
-		$('input[name="blob_inline_ids[]"]', wrap).each(function() {
-			data.push({
-				name: 'blob_inline_ids[]',
-				value: $(this).val()
-			});
-		});
-
-		var showSaving = this.getEl('article_save').find('.mark-loading');
-		var showSaved  = this.getEl('article_save').find('.mark-saved');
-
-		showSaved.stop().hide();
-		showSaving.show();
-
-		$.ajax({
-			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			complete: function() {
-        showSaving.hide();
-			},
-			success: function(data) {
-				this.getEl('content_ed').html(data.content_html);
-				this._initPostArea();
-				this._initArticleArea();
-				this.handleUnloadRevisions(data.revision_id);
-
-        if (data.prop_html) {
-          this.getEl('review_date').html(data.prop_html);
-          this._initReviewDateOptions();
-        }
-
-				showSaved.show().fadeOut(2000);
+			var txt = $('.edit-content-field', this.getEl('content_ed'));
+			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
+			  var contentInput = JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON());
+			  data.push({
+			    name: 'content',
+			    value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
+			  });
+			  data.push({
+			    name:  'content_input',
+			    value: contentInput
+			  });
+			  data.push({
+			    name: 'content_input_type',
+			    value: 'dped_v1'
+			  });
+			  data.push({
+          name: 'base_id',
+          value: this.meta.baseId
+        });
+			} else {
+			  data.push({
+			    name:  'content',
+			    value: $('.article-editor-wrap textarea:first', wrap).val()
+			  });
+			  data.push({
+			    name: 'content_input_type',
+			    value: 'rte'
+			  });
+        data.push({
+          name: 'language_id',
+          value: wrap.find('.article-editor-wrap').find('.language_id').val()
+        });
 			}
-		});
+			data.push({
+				name: 'restart-review-date',
+					value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
+			});
+
+			$('input.edit-content-attach:checked', wrap).each(function() {
+				data.push({
+					name: 'attach[]',
+					value: $(this).val()
+				});
+			});
+
+			$('input[name="blob_inline_ids[]"]', wrap).each(function() {
+				data.push({
+					name: 'blob_inline_ids[]',
+					value: $(this).val()
+				});
+			});
+
+			var showSaving = this.getEl('article_save').find('.mark-loading');
+			var showSaved  = this.getEl('article_save').find('.mark-saved');
+
+			showSaved.stop().hide();
+			showSaving.show();
+
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+				type: 'POST',
+				context: this,
+				data: data,
+				dataType: 'json',
+				complete: function() {
+			    showSaving.hide();
+				},
+				success: function(data) {
+					this.getEl('content_ed').html(data.content_html);
+					this._initPostArea();
+					this._initArticleArea();
+					this.handleUnloadRevisions(data.revision_id);
+
+			    if (data.prop_html) {
+			      this.getEl('review_date').html(data.prop_html);
+			      this._initReviewDateOptions();
+			    }
+
+					showSaved.show().fadeOut(2000);
+				}
+			});
 
 		}).bind(this));
 
@@ -1073,23 +1110,38 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				h = $(window).height() - 170 - txt.offset().top;
 			}
 
-			this.rte = window.LegacyRteTextarea.init(txt, {
-				height: h,
-        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
-			});
+			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
+			  var contentInput = null;
+			  if (window[this.meta.baseId + '_content_input']) {
+			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
+			  }
+			  this.rte = window.AgentLegacyBundle.renderContentEditor(
+					txt[0],
+					contentInput,
+          self.editStateSaver.triggerChange.bind(self.editStateSaver),
+          this.onBlur.bind(this)
+				);
+			} else {
+				this.rte = window.LegacyRteTextarea.init(txt, {
+					height: h,
+				  inlineHiddenPosition: $('.content-tab-item', this.wrapper)
+				});
 
-      txt.on('froalaEditor.keypress', function () {
-        self.editStateSaver.triggerChange();
-      });
+        this.rte.on('froalaEditor.keypress', function () {
+          if (self.editStateSaver) {
+            self.editStateSaver.triggerChange();
+          }
+				});
 
-			var saveBtn = this.getEl('save_btn');
-			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
-				page: this,
-				rte: this.rte,
-				isReadyCallback: function() {
-					return saveBtn.is(':visible');
-				}
-			});
+				var saveBtn = this.getEl('save_btn');
+				this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
+					page: this,
+					rte: this.rte,
+					isReadyCallback: function() {
+						return saveBtn.is(':visible');
+					}
+				});
+			}
 
 			this._hasInitEdBefore = true;
 		}
@@ -1099,6 +1151,29 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('cancel_btn').show();
 		this.updateUi();
 	},
+
+  onFocus: function() {
+    this.editStateSaver.setOptions({alwaysChanged: true});
+    this.editStateSaver.triggerChange();
+  },
+
+  onBlur: function() {
+    this.editStateSaver.setOptions({alwaysChanged: false});
+    this.editStateSaver.saveState();
+  },
+
+  getSaveStateData: function () {
+	  if (this.rte) {
+	    return [{
+        name: 'article[content_input]',
+        value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+      },{
+	      name: 'article[language_id]',
+        value: this.wrapper.find('.article-editor-wrap').find('.language_id').val()
+      }];
+    }
+	  return '';
+  },
 
 	hideEditor: function() {
 		$('body').removeClass('content-link-control-on');
@@ -1200,21 +1275,40 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			$(this).closest('.dp-group').addClass('on');
 		});
 
-		transGroup.find('textarea').each(function() {
-			var rte = window.LegacyRteTextarea.init($(this));
-			$(this).data('rte', rte);
-		});
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && self.meta.content_input_type === 'dped_v1') {
+      transGroup.find('.trans_content').each(function() {
+        var contentInput = null;
+        if (window[self.meta.baseId + '_lang_' + $(this).data('lang_id') + '_input']) {
+          contentInput = JSON.parse(window[self.meta.baseId + '_lang_' + $(this).data('lang_id') + '_input']);
+        }
+        var rte = window.AgentLegacyBundle.renderContentEditor(
+          $(this)[0],
+          contentInput
+        );
+        $(this).data('rte', rte);
+      });
+    } else {
+      transGroup.find('textarea').each(function() {
+        var rte = window.LegacyRteTextarea.init($(this));
+        $(this).data('rte', rte);
+      });
+    }
 
 		transGroup.find('.copy-trigger').on('click', function() {
 			var row = $(this).closest('.dp-group');
 			var titleInput   = row.find('.title-row').find('input');
-			var contentInput = row.find('.editor-row').find('textarea');
 
 			var defaultTitleInput = self.getEl('editname').find('input');
 			var defaultContentInput = self.wrapper.find('.article-editor-wrap').find('.edit-content-field-default');
 
 			titleInput.val(defaultTitleInput.val());
-			contentInput.froalaEditor().setContent(defaultContentInput.val());
+      if (window.DP_HAS_NEW_CONTENT_EDITOR && self.meta.content_input_type === 'dped_v1') {
+        var rte = row.find('.trans_content').data('rte');
+        // @TODO Set Editor value
+      } else {
+			  var contentInput = row.find('.editor-row').find('textarea').data('rte');
+			  contentInput.froalaEditor('html.set', defaultContentInput.val());
+      }
 		});
 
 		transGroup.find('.save-trigger').on('click', function() {
@@ -1225,7 +1319,15 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var titleName = titleInput.attr('name');
 			var postData = [];
 			postData.push({name: titleName, value: titleInput.val() });
-			postData.push({name: titleName.replace(/title/, 'content'), value: contentInput.val() });
+      if (window.DP_HAS_NEW_CONTENT_EDITOR && self.meta.content_input_type === 'dped_v1') {
+        var rte = row.find('.trans_content').data('rte');
+        var content = rte.current.editor.current.reactEditor.current.editor.getHTML();
+        var input = JSON.stringify(rte.current.editor.current.reactEditor.current.editor.getJSON());
+        postData.push({name: titleName.replace(/title/, 'content'), value: content });
+        postData.push({name: titleName.replace(/title/, 'input'), value: input });
+      } else {
+			  postData.push({name: titleName.replace(/title/, 'content'), value: contentInput.val() });
+      }
 			postData.push({name: 'action', value: 'trans' });
 
 			row.addClass('dp-loading-on');

@@ -82,6 +82,7 @@ class NewTicketController extends AbstractController
             // if we get it from route path (/new-ticket/{department_id}) then we should make department field hidden
             'department_id'         => $request->attributes->getInt('department_id') ?: $request->query->getInt('department_id'),
             'hide_department_field' => (bool) $request->attributes->getInt('department_id'),
+            'subject_type'          => $request->get('subject_type'),
         ];
 
         if ($request->isMethod('get') && $request->query->count()) {

@@ -17,7 +17,7 @@ import { AgentList } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Components/A
 import { AgentOnboardingContainer }  from 'DeskPRO/Bundle/AgentBundle/Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Archive/ArchiveFiles';
 import { GuideTreeContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/List/GuideTree';
-import { EditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/Editor/Editor';
+import { MarkdownEditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/MarkdownEditor/Editor';
 import VoiceControlsContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import MessagePhoneNumber from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/MessagePhoneNumber';
@@ -39,6 +39,7 @@ import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersCont
 import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
 import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
+import ContentEditor from './Modules/Publish/Components/Content/ContentEditor';
 
 class AgentLegacyApp {
 
@@ -306,7 +307,7 @@ class AgentLegacyApp {
     );
   }
 
-  renderContentEditor(
+  renderMarkdownEditor(
     node,
     value,
     inputType,
@@ -320,7 +321,7 @@ class AgentLegacyApp {
             locale={this.locale}
             messages={agentPhrases.getPhrases()}
           >
-            <EditorContainer
+            <MarkdownEditorContainer
               value={value}
               inputType={inputType}
               save={save}
@@ -331,6 +332,36 @@ class AgentLegacyApp {
       </AppContainer>,
       node
     );
+  }
+
+  renderContentEditor(
+    node,
+    value,
+    onFocus,
+    onBlur
+  ) {
+    const editor = React.createRef();
+
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={this.store}>
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ContentEditor
+              ref={editor}
+              value={value}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+          </IntlProvider>
+        </Provider>
+      </AppContainer>,
+      node
+    );
+
+    return editor;
   }
 
   renderTopicsTree(node, guideId, height, openTopic, displayStatuses, canDrag) {

@@ -75,6 +75,16 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     protected $value = '';
 
     /**
+     * @var string
+     *
+     * Only used if the editor needs a alternate data format (ex: dped_v1)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
+    protected $input = '';
+
+    /**
      * @var object
      */
     protected $_set_object;
@@ -86,12 +96,11 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
      * @param object       $object    The domain object to set the lang for. This is any object that has getObjectRef
      * @param string       $prop_name The property ID of the thing we are translating
      * @param string       $value     The value ID of the thing we are translating
+     * @param string       $input
      *
-     * @throws \InvalidArgumentException
-     *
-     * @return \Application\DeskPRO\Entity\ObjectLang
+     * @return ObjectLang
      */
-    public static function createObjectLang($lang, $object, $prop_name, $value)
+    public static function createObjectLang($lang, $object, $prop_name, $value, $input = '')
     {
         if ($lang === 0 || $lang === null || $lang === 'default') {
             $lang = App::getContainer()->getDataService('language')->getDefault();
@@ -117,6 +126,9 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
         $ol->setPropName($prop_name);
         $ol->setValue($value);
         $ol->setLanguage($lang);
+        if ($input) {
+            $ol->setInput($input);
+        }
 
         return $ol;
     }
@@ -131,6 +143,18 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public function setValue($value)
     {
         $this->setModelField('value', $value);
+
+        return $this;
+    }
+
+    /**
+     * @param string $input
+     *
+     * @return ObjectLang
+     */
+    public function setInput($input)
+    {
+        $this->setModelField('input', $input);
 
         return $this;
     }
@@ -227,6 +251,14 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public function getRefId()
     {
         return $this->ref_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 
     public function _resetRefCode()
@@ -329,11 +361,19 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
                 'columnName' => 'value',
             ]
         );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'input',
+                'type'       => 'text',
+                'nullable'   => false,
+                'columnName' => 'input',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'language',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Language',
+                'targetEntity' => Language::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [

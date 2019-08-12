@@ -49,7 +49,14 @@
         </span>
          <br class="clear" />
       </div>
-			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
+			{% if app.hasBeta('content_editor') and article.content_input_type == 'dped_v1' %}
+				<script type="text/javascript">
+					var {{ baseId }}_content_input = {{ state.article.content_input|default(article.content_input)|json_encode|raw }};
+				</script>
+				<div class="edit-content-field"></div>
+			{% else %}
+				<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
+			{% endif %}
 			{% if app.languages.isMultiLang() %}
 				<div style="float: right; padding-right: 18px; padding-top: 4px;">
 					<span class="small-light-icon tipped" title="{{ phrase('agent.publish.primary_lang_explain') }}"></span>

@@ -278,7 +278,7 @@ class LanguagesController extends CrudController
             'agent.snippets.content_change',
             'agent.snippets.draft_status',
             'agent.snippets.edit_snippet',
-            'agent.snippets.community',
+            'agent.snippets.feedback',
             'agent.snippets.helpdesk_default',
             'agent.snippets.mass_actions_progress',
             'agent.snippets.my_drafts',

@@ -159,7 +159,7 @@ export class SnippetsListElement extends React.PureComponent {
     return (<div className="stats">
       <span className="stat"><FormattedMessage id="agent.snippets.used" /> <span className="value">{snippet.get('usage_count')}</span></span>
       <span className="stat">
-        <FormattedMessage id="agent.snippets.community" />&nbsp;
+        <FormattedMessage id="agent.snippets.feedback" />&nbsp;
         <span className="rating">
           <Icon name={faSmile} />
           <span className="value">{snippet.get('positive_ratings')}</span>

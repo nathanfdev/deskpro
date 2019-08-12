@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
@@ -1640,6 +1641,10 @@ class TicketController extends AbstractController
             $ticket = $this->getTicketOr404($ticket_id, 'modify_notes');
         } else {
             $ticket = $this->getTicketOr404($ticket_id, 'reply');
+        }
+
+        if ($this->in->getBool('options.close_tab')) {
+            $ticket->setLockedByAgentId(null);
         }
 
         $ticketContext = $this->container->getTicketManager()->createAgentExecutorContext(
@@ -4553,8 +4558,23 @@ class TicketController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Ticket $ticket
+     * @param array $tos
+     * @param array $ccs
+     * @param array $bccs
+     * @param string $fromEmail
+     * @param string $fromName
+     * @param string $customMessage
+     * @param array $messages
+     * @param array $options
+     *
+     * @return Response
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
     protected function forwardAsNew(
-        $ticket,
+        Ticket $ticket,
         $tos,
         $ccs,
         $bccs,
@@ -4565,8 +4585,8 @@ class TicketController extends AbstractController
         $options
     ) {
         $this->em->beginTransaction();
-        $doAssignAgent = $options['do_assign_agent'] === 'true';
-        $doAssignTeam  = $options['do_assign_team'] === 'true';
+        $doAssignAgent = array_key_exists('do_assign_agent', $options) && $options['do_assign_agent'] === 'true';
+        $doAssignTeam  = array_key_exists('do_assign_team', $options) && $options['do_assign_team'] === 'true';
 
         $ticketManager = $this->container->getTicketManager();
 
@@ -5628,6 +5648,8 @@ class TicketController extends AbstractController
                 return NewsComment::class;
             case 'community':
                 return CommunityTopicComment::class;
+            case 'topics':
+                return TopicComment::class;
         }
     }
 
