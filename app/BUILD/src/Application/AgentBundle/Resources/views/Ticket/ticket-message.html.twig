@@ -336,7 +336,7 @@
 
 									<div class="overlay-content">
 										<div style="margin-bottom: 10px; font-size: 11px; color: #888">This custom message was sent along with the forwarded message:</div>
-										{{ log.details.custom_message|nl2br }}
+										{{ log.details.custom_message|raw|nl2br }}
 									</div>
 								</div>
 							</div>
