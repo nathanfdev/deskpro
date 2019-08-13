@@ -99,4 +99,39 @@ class ezcMailParserTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals( "Some plain text\n", $parts[0]->text );
         $this->assertEquals( "<html>Some html</html>\n", $parts[1]->text );
     }
+
+    public function testAttachmentFilenameEncodedAndWithNewLine()
+    {
+        $parser = new \ezcMailParser();
+        $set = new SingleFileSet( 'various/mail_with_attachment_filename_encoded_with_newline.eml' );
+        $mail = $parser->parseMail( $set );
+        $this->assertEquals( 1, count( $mail ) );
+        $mail = $mail[0];
+        $this->assertEquals( new \ezcMailAddress( 'reports@testcustomer.com', '', 'utf-8' ), $mail->from );
+        $this->assertEquals( array( new \ezcMailAddress( 'dev@deskprodev.com', '', 'utf-8' ) ), $mail->to );
+        $this->assertEquals( array(), $mail->cc );
+        $this->assertEquals( array(), $mail->bcc );
+        $this->assertEquals( 'Account was executed at 7/31/2019 6:22:07 AM', $mail->subject );
+        $this->assertEquals( true, $mail->body instanceof \ezcMailMultipartMixed );
+        $parts = $mail->body->getParts();
+
+        $this->assertEquals( true, $parts[0] instanceof \ezcMailMultipartAlternative );
+        $this->assertEquals( true, $parts[1] instanceof \ezcMailMultipartMixed );
+
+        $altParts = $parts[0]->getParts();
+        $mixedParts = $parts[1]->getParts();
+
+        $this->assertEquals( true, $altParts[0] instanceof \ezcMailText );
+        $this->assertEquals( true, $altParts[1] instanceof \ezcMailText );
+        $this->assertEquals( true, $mixedParts[0] instanceof \ezcMailFile );
+        $this->assertEquals( '--boundary_621_f1d675c8-2267-4ba6-b6ca-bb3f9a06e104', $mail->body->boundary );
+
+        $filePart = $mixedParts[0];
+
+        // check the file
+        $this->assertEquals( 'National Account Report - Incomplete Physicals by National Account.xlsx', $filePart->contentDisposition->displayFileName);
+        $this->assertEquals( \ezcMailFile::CONTENT_TYPE_APPLICATION, $filePart->contentType );
+        $this->assertEquals( \ezcMailFile::DISPLAY_ATTACHMENT, $filePart->dispositionType );
+        $this->assertEquals( 'vnd.openxmlformats-officedocument.spreadsheetml.sheet', $filePart->mimeType );
+    }
 }

@@ -119,7 +119,16 @@ class ezcMailFileParser extends ezcMailPartParser
         // search Content-Disposition first as specified by RFC 2183
         $fileName = '';
         $matches = array();
-        if ( preg_match( '/\s*filename="?([^;"]*);?/i',
+        //
+        // DeskPRO Edit: updated regex according to library latest version
+        // https://github.com/zetacomponents/Mail/blob/master/src/parser/parts/file_parser.php
+        // added newlines support for attachment names
+        // ```
+        //  Content-Disposition: attachment; filename=
+        //      "=?utf-8?B?TmF0aW9uYWwgQWNjb3VudCBSZXBvcnQgLSBJbmNvbXBsZXRlIFBoeXNpY2FscyBieSBOYXRpb25hbCBBY2NvdW50Lnhsc3g=?="
+        // ```
+        //
+        if ( preg_match( '/\s*filename=\s?"?([^;"]*);?/i',
                         $this->headers['Content-Disposition'], $matches ) && $matches[1])
         {
             $fileName = trim( $matches[1], '" ' );
