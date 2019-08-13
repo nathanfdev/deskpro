@@ -2,16 +2,16 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
 
 class CustomDefCommunityTopic extends CustomDefAbstract
 {
     /**
-     * @param Brand $brand
+     * @param BrandEntity $brand
      *
      * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic|null
      */
-    public function getChannelField(Brand $brand)
+    public function getChannelField(BrandEntity $brand)
     {
         return $this->_em
             ->createQuery("
