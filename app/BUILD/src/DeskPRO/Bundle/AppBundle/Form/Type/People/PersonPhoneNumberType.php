@@ -74,7 +74,7 @@ class PersonPhoneNumberType extends AbstractType
 
         if ($data instanceof PersonPhoneNumber && $data->getNumber()) {
             $region   = null;
-            $typeCode = null;
+            $typeCode = 0;
 
             try {
                 $region   = PhoneNumbers::getRegionForNumber($data->getNumber());

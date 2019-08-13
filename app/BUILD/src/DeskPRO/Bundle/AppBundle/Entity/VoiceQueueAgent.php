@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceQueueAgent.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceQueueAgentRepository")
  * @ORM\Table(name="voice_queue_agents", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="queue_agent_idx", columns={"voice_queue_id", "agent_id"})
  * })

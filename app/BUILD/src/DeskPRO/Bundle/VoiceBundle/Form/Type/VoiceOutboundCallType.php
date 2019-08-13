@@ -55,6 +55,11 @@ class VoiceOutboundCallType extends AbstractType
                 'required' => false,
                 'class'    => Ticket::class,
             ])
+            ->add('person', EntityType::class, [
+                'mapped'   => false,
+                'required' => false,
+                'class'    => Person::class,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -94,7 +99,11 @@ class VoiceOutboundCallType extends AbstractType
         $data->setType(VoicePhoneCall::DIRECTION_OUTBOUND);
         $data->setData($options);
 
-        if ($data->getExternalNumber()) {
+        // set person
+        $person = $form->get('person')->getData();
+        if ($person instanceof Person) {
+            $data->setPerson($person);
+        } elseif ($data->getExternalNumber()) {
             $person = $this->personRepo->getOrCreateUserByPhoneNumber($data->getExternalNumber(), Person::CREATED_PHONE_OUTBOUND);
             $data->setPerson($person);
         }

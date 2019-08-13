@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class AgentData.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentDataRepository")
  * @ORM\Table(name="agent_data", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_extension_numbers", columns={"extension_number"})
  * })

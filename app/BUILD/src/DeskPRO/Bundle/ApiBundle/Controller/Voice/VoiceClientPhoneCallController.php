@@ -399,13 +399,14 @@ class VoiceClientPhoneCallController extends BaseController
         ));
 
         // call forwarding number
-        $this->get('dp.voice.provider_helper')->callForwardingNumber($phoneCall, $agent);
+        $this->get('dp.voice.forwarding_helper')->tryToMakeAForwardingCall($phoneCall, $agent);
 
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPerson($agent);
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_INVITED);
+        $log->setTargetAgent($agent);
         $log->setDetails([
             'call_type'   => 'add',
             'invite_type' => 'warm',
@@ -502,13 +503,14 @@ class VoiceClientPhoneCallController extends BaseController
         ));
 
         // call forwarding number
-        $this->get('dp.voice.provider_helper')->callForwardingNumber($phoneCall, $agent);
+        $this->get('dp.voice.forwarding_helper')->tryToMakeAForwardingCall($phoneCall, $agent);
 
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPerson($agent);
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        $log->setTargetAgent($agent);
         $log->setDetails([
             'call_type'   => 'transfer',
             'invite_type' => 'warm',
@@ -576,6 +578,7 @@ class VoiceClientPhoneCallController extends BaseController
         $log->setPerson($agent);
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        $log->setTargetAgent($agent);
         $log->setDetails([
             'call_type'   => 'transfer',
             'invite_type' => 'cold',
@@ -635,6 +638,7 @@ class VoiceClientPhoneCallController extends BaseController
         $log = new VoicePhoneCallLog();
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_QUEUE_TRANSFER);
+        $log->setTargetQueue($queue);
         $log->setDetails([
             'call_type'   => 'transfer',
             'invite_type' => 'cold',
@@ -689,6 +693,7 @@ class VoiceClientPhoneCallController extends BaseController
         $log = new VoicePhoneCallLog();
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_TRANSFER);
+        $log->setTargetAutoAttendant($autoAttendant);
         $log->setDetails([
             'call_type'         => 'transfer',
             'invite_type'       => 'cold',
@@ -742,6 +747,7 @@ class VoiceClientPhoneCallController extends BaseController
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());
         $log->setPhoneCall($phoneCall);
+        $log->setTargetAgent($agent);
         $log->setDetails([
             'to_person' => $agent->getId(),
         ]);

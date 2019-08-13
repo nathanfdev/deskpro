@@ -4,15 +4,13 @@ namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
-use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
-use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -36,9 +34,9 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
     private $taskHelper;
 
     /**
-     * @var TwilioAdapter
+     * @var ContainerInterface
      */
-    private $twilioAdapter;
+    private $container;
 
     /**
      * @var LoggerInterface
@@ -51,20 +49,20 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
      * @param EntityManager           $em
      * @param StorageAdapterInterface $storageAdapter
      * @param VoiceTaskHelper         $taskHelper
-     * @param TwilioAdapter           $twilioAdapter
+     * @param ContainerInterface      $container
      * @param LoggerInterface         $logger
      */
     public function __construct(
         EntityManager           $em,
         StorageAdapterInterface $storageAdapter,
         VoiceTaskHelper         $taskHelper,
-        TwilioAdapter           $twilioAdapter,
+        ContainerInterface      $container,
         LoggerInterface         $logger
     ) {
         $this->em             = $em;
         $this->storageAdapter = $storageAdapter;
         $this->taskHelper     = $taskHelper;
-        $this->twilioAdapter  = $twilioAdapter;
+        $this->container      = $container;
         $this->logger         = $logger;
     }
 
@@ -113,39 +111,14 @@ class TwilioIncomingCallListener implements EventSubscriberInterface
 
         // once workers are found
         // we can call them and enqueue the user
-        $taskWorkers   = $this->storageAdapter->getWorkers($task->getWorkerIds());
-        $onlineWorkers = $this->storageAdapter->getOnlineWorkersByType('agent');
+        $taskWorkers = $this->storageAdapter->getWorkers($task->getWorkerIds());
 
         foreach ($taskWorkers as $taskWorker) {
             /** @var Person $agent */
             $agent = $this->em->getRepository(Person::class)->find($taskWorker->getTypeId());
             if ($agent) {
-                if ($agent->canForwardCall()) {
-                    $isAgentOnline = count(array_filter($onlineWorkers, function (Worker $onlineWorker) use ($taskWorker) {
-                        return $onlineWorker->getTypeId() === $taskWorker->getTypeId();
-                    })) > 0;
-
-                    $this->logger->info(sprintf(
-                        '[TwilioIncomingCallListener] Agent #%s is_online = %s',
-                        $agent->getId(), $isAgentOnline ? 'true' : 'false'
-                    ));
-
-                    if (($isAgentOnline && !$agent->getAgentData()->isForwardingLoggedOut()) || !$isAgentOnline) {
-                        // make an outbound call
-                        $this->logger->info(sprintf(
-                            '[TwilioIncomingCallListener] Make a forwarding call to agent #%s',
-                            $agent->getId()
-                        ));
-
-                        $callUuid = $this->twilioAdapter->callForwardingNumber($phoneCall, $agent);
-                        if ($callUuid) {
-                            $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
-                        }
-                    }
-                }
+                $this->container->get('dp.voice.forwarding_helper')->tryToMakeAForwardingCall($phoneCall, $agent);
             }
         }
-
-        $this->em->flush();
     }
 }

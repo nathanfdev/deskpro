@@ -31,3 +31,10 @@ services:
     - "@voice_settings_resolver"
    tags:
      - { name: request.param_converter, priority: -1, converter: twilio_voice_account_sid }
+
+ api_param_converter.voice_target:
+   class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\VoiceTargetConverter
+   arguments:
+    - "@doctrine.orm.default_entity_manager"
+   tags:
+     - { name: request.param_converter, priority: -1, converter: voice_target }

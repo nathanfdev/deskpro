@@ -117,7 +117,7 @@ class Environment extends \Twig_Environment
         }
 
         if (!class_exists($cls, false)) {
-            $this->loadClass($name);
+            $this->loadTemplateClass($name);
         }
 
         return $this->loadedTemplates[$cls] = new $cls($this);
@@ -129,7 +129,7 @@ class Environment extends \Twig_Environment
      * @throws \Twig_Error
      * @throws \Twig_Error_Syntax
      */
-    private function loadClass($name)
+    private function loadTemplateClass($name)
     {
         if (false === $cache = $this->getCachePath($name)) {
             eval('?>'.$this->compileSource($this->loader->getSource($name), $name));

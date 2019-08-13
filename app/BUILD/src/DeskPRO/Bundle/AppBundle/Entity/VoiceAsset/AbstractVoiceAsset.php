@@ -12,7 +12,7 @@ use Orb\Util\Strings;
 /**
  * Class VoiceAsset.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAssetRepository")
  * @ORM\Table(name="voice_assets")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)

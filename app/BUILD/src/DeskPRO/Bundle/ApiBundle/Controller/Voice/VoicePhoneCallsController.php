@@ -55,59 +55,69 @@ class VoicePhoneCallsController extends CrudController
      */
     public function deletePhoneCallRecordAction(VoicePhoneCall $phoneCall)
     {
-        $em        = $this->getManager();
+        $em = $this->getManager();
+
+        $missedCall = $phoneCall->getAgentVoicemailRecord();
+        if ($missedCall) {
+            $missedCall->setIsDeleted(true);
+            $blob = $missedCall->getBlob();
+
+            $missedCall->setBlob(null);
+            $em->flush();
+
+            if ($blob) {
+                $this->get('blob.storage')->deleteBlobRecord($blob);
+            }
+        }
+
         $attribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
             'phoneCall' => $phoneCall,
         ]);
+        if ($attribute) {
+            /** @var TicketMessage $message */
+            $message = $attribute->getMessage();
+            if (!$message) {
+                throw $this->createNotFoundException('Message not found');
+            }
+            $ticket = $message->getTicket();
 
-        if (!$attribute) {
-            throw $this->createNotFoundException('Call not found');
-        }
+            $this->denyAccessUnlessGranted(TicketMessagesVoter::DELETE_RECORDING, new PermissionGroupContext($ticket, $message));
 
-        /** @var TicketMessage $message */
-        $message = $attribute->getMessage();
-        if (!$message) {
-            throw $this->createNotFoundException('Message not found');
-        }
-        $ticket = $message->getTicket();
+            $recordings = $phoneCall->getRecordings();
+            if ($recordings->count() > 0) {
+                foreach ($recordings as $recording) {
+                    $recording->setBlob(null);
+                    $recording->setIsDeleted(true);
 
-        $this->denyAccessUnlessGranted(TicketMessagesVoter::DELETE_RECORDING, new PermissionGroupContext($ticket, $message));
+                    $blob = $recording->getBlob();
+                    if ($blob) {
+                        $this->get('blob.storage')->deleteBlobRecord($blob);
+                    }
 
-        $recordings = $phoneCall->getRecordings();
-        if ($recordings->count() > 0) {
-            foreach ($recordings as $recording) {
-                $blob = $recording->getBlob();
-                if (!$blob) {
-                    continue;
+                    $em->flush();
+
+                    $ticketLog = new TicketLog();
+                    $ticketLog
+                        ->setTicket($ticket)
+                        ->setPerson($this->getUser())
+                        ->setIdObject($phoneCall->getId())
+                        ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+
+                    if ($blob) {
+                        $ticketLog->setDetailItem('filesize', sprintf('%.2f', $blob->getFilesize() / 1024));
+                    }
+
+                    $em->persist($ticketLog);
                 }
 
-                $recording->setBlob(null);
-                $recording->setIsDeleted(true);
-
-                $this->get('blob.storage')->deleteBlobRecord($blob);
-
-                $em->flush();
-
-                $ticketLog = new TicketLog();
-                $ticketLog
-                    ->setTicket($ticket)
+                $callLog = new VoicePhoneCallLog();
+                $callLog
+                    ->setPhoneCall($phoneCall)
                     ->setPerson($this->getUser())
-                    ->setIdObject($phoneCall->getId())
-                    ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
-                    ->setDetailItem('filesize', sprintf('%.2f', $blob->getFilesize() / 1024))
-                ;
+                    ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
 
-                $em->persist($ticketLog);
+                $em->persist($callLog);
             }
-
-            $callLog = new VoicePhoneCallLog();
-            $callLog
-                ->setPhoneCall($phoneCall)
-                ->setPerson($this->getUser())
-                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
-            ;
-
-            $em->persist($callLog);
         }
 
         $serializedData = $this->get('serializer')->toArray(

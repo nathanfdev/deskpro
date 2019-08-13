@@ -25,7 +25,7 @@ class MissedCallsListContainer extends React.Component {
 
   callBack = (phoneCall) => {
     const { dispatch } = this.props;
-    dispatch(openDialpad(phoneCall.get('external_number')));
+    dispatch(openDialpad(phoneCall.get('external_number'), null, null, phoneCall.get('person')));
   };
 
   deleteRecording = (record) => {
@@ -40,7 +40,7 @@ class MissedCallsListContainer extends React.Component {
 
   createTicket = (record) => {
     const { dispatch } = this.props;
-    dispatch(createVoicemailTicket(record.get('id')));
+    dispatch(createVoicemailTicket(record));
   };
 
   openPerson = (id) => {

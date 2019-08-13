@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class VoiceAutoAttendantTarget.
  *
  * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceTargetRepository")
  */
 class VoiceAutoAttendantTarget extends AbstractVoiceTarget
 {
@@ -56,7 +56,7 @@ class VoiceAutoAttendantTarget extends AbstractVoiceTarget
     {
         return [
             'id'   => $this->autoAttendant->getId(),
-            'type' => 'auto_attendant',
+            'type' => self::TYPE_AUTO_ATTENDANT,
             'name' => $this->autoAttendant->getName(),
         ];
     }

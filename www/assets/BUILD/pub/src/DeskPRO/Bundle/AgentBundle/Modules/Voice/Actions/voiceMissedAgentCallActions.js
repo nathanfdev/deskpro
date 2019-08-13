@@ -3,6 +3,7 @@ import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { addToCollection, updateCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
 import { allVoiceMissedAgentCallsSelector } from '../Selectors/voicemailRecords';
+import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 
 export const loadVoiceMissedAgentCalls = createAction(
   'VOICE_LOAD_VOICE_MISSED_AGENT_CALLS',
@@ -59,11 +60,23 @@ export const deleteVoiceMissedAgentCall = createAction(
 
 export const createVoicemailTicket = createAction(
   'VOICE_CREATE_MISSED_AGENT_CALLL_TICKET',
-  id => (dispatch) => {
-    const promise = api.sendPut(`DP_API/voice_missed_agent_calls/${id}/create_ticket`);
-    promise.success(({ data }) => {
-      dispatch(removeFromCollection('VoiceMissedAgentCall', 'all', [id]));
-      window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
+  missedCall => (dispatch, getState) => {
+    const promise = api.sendPost(`DP_API/voice_missed_agent_calls/${missedCall.get('id')}/create_ticket`);
+    promise.success((ticketResponse) => {
+      dispatch(removeFromCollection('VoiceMissedAgentCall', 'all', [missedCall.get('id')]));
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+
+      repository('VoicePhoneCall').load(missedCall.get('phone_call')).success((phoneCallResponse) => {
+        const phoneCall = Immutable.fromJS(phoneCallResponse.data);
+        if (phoneCalls.get(phoneCall.get('id'))) {
+          dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+        } else {
+          dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+        }
+
+        window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketResponse.data.id}`, {});
+      });
     });
 
     return promise;

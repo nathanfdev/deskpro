@@ -30,6 +30,8 @@ class TicketDupeValidator extends ConstraintValidator
 
     /**
      * {@inheritdoc}
+     *
+     * @throws UnexpectedTypeException
      */
     public function validate($value, Constraint $constraint)
     {
@@ -42,6 +44,12 @@ class TicketDupeValidator extends ConstraintValidator
         }
         if (!$value instanceof Ticket) {
             throw new UnexpectedTypeException($value, Ticket::class);
+        }
+
+        // if it's an existing ticket then don't validate it
+        $state = $value->getStateChangeRecorder();
+        if (!$state->isNewTicket()) {
+            return;
         }
 
         $value->recomputeHash();

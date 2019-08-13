@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceAutoAttendantDialNumber.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAutoAttendantDialNumberRepository")
  * @ORM\Table(name="voice_auto_attendant_dial_numbers", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="dial_nums_unique_idx", columns={"voice_auto_attendant_id", "dial_num"})
  * })

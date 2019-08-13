@@ -66,7 +66,7 @@ class VoiceSettingsController extends BaseController
      */
     public function updateSettingsAction(Request $request)
     {
-        $form = $this->createForm(VoiceSettingsType::class);
+        $form = $this->createForm(VoiceSettingsType::class, $this->get('voice_settings_resolver')->getVoiceSettings());
         $form->submit($request->request->all(), false);
 
         if (!$form->isValid()) {

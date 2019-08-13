@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -14,6 +15,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class VoiceEventHelper
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
     /**
      * @var Serializer
      */
@@ -27,11 +33,13 @@ class VoiceEventHelper
     /**
      * Constructor.
      *
+     * @param EntityManager            $em
      * @param Serializer               $serializer
      * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(Serializer $serializer, EventDispatcherInterface $dispatcher)
+    public function __construct(EntityManager $em, Serializer $serializer, EventDispatcherInterface $dispatcher)
     {
+        $this->em         = $em;
         $this->serializer = $serializer;
         $this->dispatcher = $dispatcher;
     }
@@ -43,6 +51,9 @@ class VoiceEventHelper
      */
     public function sendConferenceStatus(VoicePhoneCall $phoneCall)
     {
+        // make sure we send latest phone call
+        $this->em->refresh($phoneCall);
+
         // send client message
         // for real time ui updates
         $statusParams = [];

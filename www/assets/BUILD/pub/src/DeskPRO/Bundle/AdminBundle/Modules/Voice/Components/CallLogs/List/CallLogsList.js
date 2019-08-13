@@ -18,15 +18,15 @@ import { openTicket, openPerson } from '../../../../../Services/history';
 class CallLogsList extends React.Component {
 
   static propTypes = {
-    calls:               PropTypes.object,
-    numbers:             PropTypes.object,
-    pageCount:           PropTypes.number,
-    liveUpdates:         PropTypes.bool,
-    onPageChange:        PropTypes.func,
-    onOpenCallLog:       PropTypes.func,
-    openDialpad:         PropTypes.func,
-    onToggleLiveUpdates: PropTypes.func,
-    onDeleteRecordClick: PropTypes.func
+    calls:             PropTypes.object,
+    numbers:           PropTypes.object,
+    pageCount:         PropTypes.number,
+    liveUpdates:       PropTypes.bool,
+    pageChange:        PropTypes.func,
+    openCallLog:       PropTypes.func,
+    openDialpad:       PropTypes.func,
+    toggleLiveUpdates: PropTypes.func,
+    deleteRecording:   PropTypes.func
   };
 
   constructor(props) {
@@ -36,26 +36,26 @@ class CallLogsList extends React.Component {
     };
   }
 
-  onConfirmDeleteClick = (event) => {
+  confirmDelete = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    this.props.onDeleteRecordClick(this.state.deleteConfirmation);
+    this.props.deleteRecording(this.state.deleteConfirmation);
     this.setState({ deleteConfirmation: false });
   };
 
-  onRejectDeleteClick = (event) => {
+  rejectDelete = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.setState({ deleteConfirmation: false });
   };
 
-  onDeleteClick = (callId) => {
+  openDeleteConfirmation = (callId) => {
     this.setState({ deleteConfirmation: callId });
   };
 
   render() {
     const { calls, numbers, pageCount, liveUpdates } = this.props;
-    const { onPageChange, onOpenCallLog, openDialpad, onToggleLiveUpdates } = this.props;
+    const { pageChange, openCallLog, openDialpad, toggleLiveUpdates } = this.props;
     const { deleteConfirmation } = this.state;
 
     return ([
@@ -67,16 +67,16 @@ class CallLogsList extends React.Component {
         <h2>Do you really want to delete this record? This cannot be undone.</h2>
         <div>
           <span style={{ float: 'left' }}>
-            <Button size="large" type="secondary" onClick={this.onRejectDeleteClick}>Decline</Button>
+            <Button size="large" type="secondary" onClick={this.rejectDelete}>Decline</Button>
           </span>
           <span style={{ float: 'right' }}>
-            <Button size="large" type="cta" onClick={this.onConfirmDeleteClick}>Confirm</Button>
+            <Button size="large" type="cta" onClick={this.confirmDelete}>Confirm</Button>
           </span>
         </div>
       </Modal>,
       <div className="page">
         <SectionHeader title="Call logs" dividing />
-        <Checkbox label="Live updates" value={liveUpdates} onChange={onToggleLiveUpdates} />
+        <Checkbox label="Live updates" value={liveUpdates} onChange={toggleLiveUpdates} />
         <table className="table">
           <colgroup>
             <col width="1%" />
@@ -116,7 +116,7 @@ class CallLogsList extends React.Component {
               const number = numbers.get(call.get('number')) || Immutable.fromJS({});
               const onOpen = (event) => {
                 event.preventDefault();
-                onOpenCallLog(call.get('id'));
+                openCallLog(call.get('id'));
               };
 
               const recordings = call.get('recordings');
@@ -186,7 +186,12 @@ class CallLogsList extends React.Component {
                     {!recordingsEnabled.size && !agentVoicemail && '-'}
                     {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <BlobPlayButton key={`call_log_record_play_${index}`} iconOnly value={recording.get('blob')} />)}
                     {agentVoicemail && <BlobPlayButton key={`call_log_record_play_${index}`} iconOnly value={agentVoicemail} />}
-                    {recordingsEnabled.size > 0 ? <DeleteButton key={`call_log_record_delete_${index}`}  iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
+                    {(recordingsEnabled.size > 0 || agentVoicemail) &&
+                      <DeleteButton
+                        key={`call_log_record_delete_${index}`}
+                        iconOnly
+                        onClick={() => this.openDeleteConfirmation(call.get('id'))}
+                      />}
                   </td>
                 </tr>
               );
@@ -202,7 +207,7 @@ class CallLogsList extends React.Component {
           pageCount={pageCount}
           marginPagesDisplayed={2}
           pageRangeDisplayed={5}
-          onPageChange={onPageChange}
+          onPageChange={pageChange}
           containerClassName="pagination"
           subContainerClassName="pages pagination"
           activeClassName="active"

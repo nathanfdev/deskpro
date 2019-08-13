@@ -222,7 +222,10 @@ class PlivoCallbacksController extends BaseController
 
                         $this->get('event_dispatcher')->dispatch(
                             LegacySystemEvent::EVENT_NAME,
-                            new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
+                            new LegacySystemEvent('agent.voice.outgoing-provider-error', [
+                                'call_id' => $phoneCall->getId(),
+                                'errors'  => $errorMessage,
+                            ])
                         );
 
                         $plivoXml->addHangup();
@@ -1160,8 +1163,6 @@ class PlivoCallbacksController extends BaseController
 
         if ($target instanceof VoiceQueueTarget) {
             if ($target->getQueue()->getGreetAsset()) {
-                $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
-                $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
                 $this->playAsset($plivoXml, $target->getQueue()->getGreetAsset());
             }
         } elseif ($target instanceof VoiceAutoAttendantTarget) {

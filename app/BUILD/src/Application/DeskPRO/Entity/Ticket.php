@@ -23,10 +23,12 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceTicketListener;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
@@ -4967,6 +4969,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
+        $metadata->addEntityListener(Events::preUpdate, VoiceTicketListener::class, Events::preUpdate);
         $metadata->setPrimaryTable(
             [
                 'name'    => 'tickets',

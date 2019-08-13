@@ -38,7 +38,7 @@ export const openDialpad = createAction(
   number => window.parent.AgentLegacyBundle.openVoiceDialpad(number)
 );
 
-export const deleteRecord = createAction(
+export const deleteRecording = createAction(
   'VOICE_AGENT_DELETE_RECORD',
   phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
 );

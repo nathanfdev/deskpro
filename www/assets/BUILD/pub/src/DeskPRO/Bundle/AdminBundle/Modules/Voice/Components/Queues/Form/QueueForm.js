@@ -133,7 +133,7 @@ class QueueForm extends BaseForm {
               <AudioWidgetFormContainer />
             </Field>
 
-            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Voicemail timeout (in Seconds)">
+            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Maximum Queue Wait Time (in Seconds)">
               <Input type="number" />
             </Field>
 

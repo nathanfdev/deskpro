@@ -116,8 +116,7 @@ class VoiceMenuDropdown extends React.Component {
     setTimeout(() => {
       this.voiceMenu.changeTab('phone');
       setTimeout(() => {
-        this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
-        setTimeout(() => { this.voiceMenu.dialpad.showProviderError(errors); }, 1);
+        this.voiceMenu.dialpad.showProviderError(outgoingNumber, errors);
       }, 1);
     }, 1);
   };
@@ -133,7 +132,7 @@ class VoiceMenuDropdown extends React.Component {
     this.popup.closePopup();
   };
 
-  openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null) => {
+  openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null, personId = null) => {
     this.setState({
       defaultTab: 'phone'
     }, () => {
@@ -141,7 +140,7 @@ class VoiceMenuDropdown extends React.Component {
       setTimeout(() => {
         this.voiceMenu.changeTab('phone');
         setTimeout(() => {
-          this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+          this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber, personId);
           if (ticketId) {
             this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
           }

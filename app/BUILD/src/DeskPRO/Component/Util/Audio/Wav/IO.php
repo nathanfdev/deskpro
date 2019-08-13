@@ -104,9 +104,9 @@ class IO
     public static function saveAudioToFile(AudioFile $audioFile, $path)
     {
         $handle = fopen($path, 'wb');
-        self::writeHeader($audioFile, $handle);
-        self::writeFormatSection($audioFile, $handle);
-        self::writeDataSection($audioFile, $handle);
+        self::writeHeader($audioFile->getHeader(), $handle);
+        self::writeFormatSection($audioFile->getFormat(), $handle);
+        self::writeDataSection($audioFile->getData(), $handle);
         fclose($handle);
     }
 
@@ -118,9 +118,9 @@ class IO
     public static function saveAudioToMemory(AudioFile $audioFile)
     {
         $handle = fopen('php://memory', 'wb');
-        self::writeHeader($audioFile, $handle);
-        self::writeFormatSection($audioFile, $handle);
-        self::writeDataSection($audioFile, $handle);
+        self::writeHeader($audioFile->getHeader(), $handle);
+        self::writeFormatSection($audioFile->getFormat(), $handle);
+        self::writeDataSection($audioFile->getData(), $handle);
         rewind($handle);
 
         $content = stream_get_contents($handle);
@@ -130,35 +130,38 @@ class IO
     }
 
     /**
+     * @param Header   $header
      * @param resource $handle
      */
-    protected static function writeHeader(AudioFile $audioFile, $handle)
+    protected static function writeHeader(Header $header, $handle)
     {
-        self::writeString($handle, $audioFile->getHeader()->getId());
-        self::writeLong($handle, $audioFile->getHeader()->getSize());
-        self::writeString($handle, $audioFile->getHeader()->getFormat());
+        self::writeString($handle, $header->getId());
+        self::writeLong($handle, $header->getSize());
+        self::writeString($handle, $header->getFormat());
     }
     /**
-     * @param resource $handle
+     * @param FormatSection $section
+     * @param resource      $handle
      */
-    protected static function writeFormatSection(AudioFile $audioFile, $handle)
+    protected static function writeFormatSection(FormatSection $section, $handle)
     {
-        self::writeString($handle, $audioFile->getFormat()->getId());
-        self::writeLong($handle,   $audioFile->getFormat()->getSize());
-        self::writeWord($handle,   $audioFile->getFormat()->getAudioFormat());
-        self::writeWord($handle,   $audioFile->getFormat()->getNumberOfChannels());
-        self::writeLong($handle,   $audioFile->getFormat()->getSampleRate());
-        self::writeLong($handle,   $audioFile->getFormat()->getByteRate());
-        self::writeWord($handle,   $audioFile->getFormat()->getBlockAlign());
-        self::writeWord($handle,   $audioFile->getFormat()->getBitsPerSample());
+        self::writeString($handle, $section->getId());
+        self::writeLong($handle,   $section->getSize());
+        self::writeWord($handle,   $section->getAudioFormat());
+        self::writeWord($handle,   $section->getNumberOfChannels());
+        self::writeLong($handle,   $section->getSampleRate());
+        self::writeLong($handle,   $section->getByteRate());
+        self::writeWord($handle,   $section->getBlockAlign());
+        self::writeWord($handle,   $section->getBitsPerSample());
     }
     /**
-     * @param resource $handle
+     * @param DataSection $data
+     * @param resource    $handle
      */
-    protected static function writeDataSection(AudioFile $audioFile, $handle)
+    protected static function writeDataSection(DataSection $data, $handle)
     {
-        self::writeString($handle, $audioFile->getData()->getId());
-        self::writeLong($handle, $audioFile->getData()->getSize());
-        self::writeString($handle, $audioFile->getData()->getRaw());
+        self::writeString($handle, $data->getId());
+        self::writeLong($handle, $data->getSize());
+        self::writeString($handle, $data->getRaw());
     }
 }

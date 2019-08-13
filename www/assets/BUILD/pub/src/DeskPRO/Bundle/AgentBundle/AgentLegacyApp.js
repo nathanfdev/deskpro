@@ -219,8 +219,8 @@ class AgentLegacyApp {
     return canOpenDialpadSelector(this.store.getState());
   }
 
-  openVoiceDialpad(number) {
-    this.store.dispatch(openDialpad(number));
+  openVoiceDialpad(number, ticketId = null, ticketTitle = null, personId = null) {
+    this.store.dispatch(openDialpad(number, ticketId, ticketTitle, personId));
   }
 
   hasActiveVoiceCall() {
@@ -244,7 +244,7 @@ class AgentLegacyApp {
     }
   }
 
-  renderVoiceMessage(node, data, dateCreatedFormatted, elid) {
+  renderVoiceMessage(node, data, dateCreatedFormatted, elid, messageNum) {
     let tabRef;
 
     ReactDOM.render(
@@ -258,6 +258,7 @@ class AgentLegacyApp {
               tabRef={(c) => { tabRef = c; }}
               data={data}
               elid={elid}
+              messageNum={messageNum}
               dateCreatedFormatted={dateCreatedFormatted}
             />
           </IntlProvider>

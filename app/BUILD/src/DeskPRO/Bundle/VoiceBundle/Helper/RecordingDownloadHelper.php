@@ -153,6 +153,12 @@ class RecordingDownloadHelper
 
             $phoneCall->addRecording($recording);
 
+            // add temp full recording
+            if (!$phoneCall->getFullRecording()) {
+                $fullRecording = new VoiceRecording();
+                $phoneCall->setFullRecording($fullRecording);
+            }
+
             $this->em->persist($phoneCall);
             $this->em->flush();
 
@@ -260,6 +266,13 @@ class RecordingDownloadHelper
             $recording->setRecordingUrl($recordingUrl);
 
             $phoneCall->addRecording($recording);
+
+            // add temp full recording
+            if (!$phoneCall->getFullRecording()) {
+                $fullRecording = new VoiceRecording();
+                $phoneCall->setFullRecording($fullRecording);
+            }
+
             $this->em->flush();
 
             $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
@@ -305,6 +318,13 @@ class RecordingDownloadHelper
         $recording->setRecordingUrl($recordingUrl);
 
         $phoneCall->addRecording($recording);
+
+        // add temp full recording
+        if (!$phoneCall->getFullRecording()) {
+            $fullRecording = new VoiceRecording();
+            $phoneCall->setFullRecording($fullRecording);
+        }
+
         $this->em->flush();
 
         $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [

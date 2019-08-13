@@ -52,9 +52,9 @@ class InSubquery extends AbstractPart
         $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $metadata);
         $not = ($this->positive ? '' : ' NOT');
 
-        $this->subselect->prepare();
+        $this->subselect->prepare($section);
 
-        $sql = "{$lhs->sql()}$not IN (".$this->subselect->toSql().')';
+        $sql = "{$lhs->sql()}$not IN (".$this->subselect->toSql($section).')';
 
         return new Prepared($sql, "{$lhs->name()}$not IN subquery", false, 'boolean');
     }
@@ -66,6 +66,6 @@ class InSubquery extends AbstractPart
     {
         $not = ($this->positive ? '' : ' NOT');
 
-        return $this->lhs->toDpql($statement, $section, $stack).$not.' IN ('.$this->subselect->toDpql().')';
+        return $this->lhs->toDpql($statement, $section, $stack).$not.' IN ('.$this->subselect->toDpql($section).')';
     }
 }

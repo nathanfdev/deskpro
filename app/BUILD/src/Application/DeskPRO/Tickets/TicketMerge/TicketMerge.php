@@ -302,6 +302,8 @@ class TicketMerge implements PersonContextInterface
         $context = $this->ticket_manager->createAgentExecutorContext($this->person, 'noop', 'web');
         $this->ticket_manager->saveTicket($this->other_ticket, $context);
 
+        App::$container->get('dp.voice.ticket_user_changer')->syncPhoneCallUser($this->ticket);
+
         $this->em->detach($this->other_ticket);
         $this->other_ticket->id = null;
 

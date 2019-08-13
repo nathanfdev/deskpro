@@ -24,6 +24,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\VoiceBundle\Exception\BlacklistException;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
@@ -33,7 +35,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Twilio\Exceptions\RestException;
 
 /**
  * Class TwilioCallbacksController.
@@ -228,6 +229,8 @@ class TwilioCallbacksController extends BaseController
                 // for real time ui updates
                 $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
             }
+        } elseif ($callStatus === 'failed') {
+            $this->get('dp.voice.callbacks_helper')->callFailed($callSid, $details);
         }
     }
 
@@ -247,9 +250,7 @@ class TwilioCallbacksController extends BaseController
         $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         $queue = $this->container->get('dp.voice.voice_task_helper')->getVoiceQueue($task);
         if ($queue && $queue->getLoopAsset()) {
-            $twiml->play($this->getHoldMusicUrl($account, $queue->getLoopAsset()), [
-                'loop' => 0,
-            ]);
+            $twiml->redirect($this->getHoldMusicUrl($account, $queue->getLoopAsset()));
         } else {
             $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl(), [
                 'loop' => 0,
@@ -753,6 +754,7 @@ class TwilioCallbacksController extends BaseController
      * )
      *
      * @Rest\Get("/hold_music", name="twilio_hold_music")
+     * @Rest\Post("/hold_music", name="twilio_hold_music_post")
      *
      * @param Request $request
      *
@@ -916,7 +918,7 @@ class TwilioCallbacksController extends BaseController
                 ]);
             } elseif ($phoneCall->isOnHold()) {
                 if ($phoneCall->enqueuedAsAgent()) {
-                    $twiml->redirect($this->getHoldMusicCallbackUrl($account));
+                    $twiml->redirect($this->getHoldMusicCallbackUrl($account, $phoneCall));
                 } else {
                     $twiml->redirect($this->getHoldSilentCallbackUrl($account));
                 }
@@ -964,7 +966,7 @@ class TwilioCallbacksController extends BaseController
         if ($phoneCall->enqueuedAsAgent()) {
             $waitUrl = $this->getHoldSilentCallbackUrl($account);
         } else {
-            $waitUrl = $this->getHoldMusicCallbackUrl($account);
+            $waitUrl = $this->getHoldMusicCallbackUrl($account, $phoneCall);
         }
 
         $twiml = new Twiml();
@@ -1030,18 +1032,27 @@ class TwilioCallbacksController extends BaseController
      *     output="string"
      * )
      *
-     * @Rest\Post("/hold_music_callback", name="twilio_hold_music_callback")
+     * @Rest\Post("/{phoneCall}/hold_music_callback", name="twilio_hold_music_callback")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param VoicePhoneCall     $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function holdMusicCallbackAction()
+    public function holdMusicCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         $twiml = new Twiml();
-        $twiml->play('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3', [
-            'loop' => 0,
-        ]);
+        $task  = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
+        $queue = $this->container->get('dp.voice.voice_task_helper')->getVoiceQueue($task);
+        if ($queue && $queue->getLoopAsset()) {
+            $twiml->redirect($this->getHoldMusicUrl($account, $queue->getLoopAsset()));
+        } else {
+            $twiml->play('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3', [
+                'loop' => 0,
+            ]);
+        }
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1074,6 +1085,43 @@ class TwilioCallbacksController extends BaseController
             'length' => 3600,
         ]);
         $twiml->redirect($this->getHoldSilentCallbackUrl($account));
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Creates a task for task router",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     *
+     * @Rest\Post("/{phoneCall}/new_incoming_call/{targetType}/{targetId}", name="twilio_new_incoming_call_callback")
+     * @ParamConverter(name="target", converter="voice_target", options={"targetType": "targetType", "targetId": "targetId"})
+     *
+     * @param TwilioVoiceAccount  $account
+     * @param VoicePhoneCall      $phoneCall
+     * @param AbstractVoiceTarget $target
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function newIncomingCallCallbackAction(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, AbstractVoiceTarget $target)
+    {
+        $twiml = new Twiml();
+
+        // enqueue task for task router
+        $task = $this->get('dp.voice.callbacks_helper')->createTaskForTarget($phoneCall, $target);
+        if ($task) {
+            $twiml->redirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
+        }
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1178,14 +1226,15 @@ class TwilioCallbacksController extends BaseController
         $recording = $em->getRepository(VoiceRecording::class)->findOneBy([
             'recordingSid' => $recordingSid,
         ]);
-
-        if (!$recording) {
-            // try to get personal agent voicemail
-            $recording = $em->getRepository(VoiceMissedAgentCall::class)->findOneBy([
-                'recordingSid' => $recordingSid,
-            ]);
+        if ($recording) {
+            $recording->setTranscription($transcriptionText);
+            $em->flush();
         }
 
+        // try to get personal agent voicemail
+        $recording = $em->getRepository(VoiceMissedAgentCall::class)->findOneBy([
+            'recordingSid' => $recordingSid,
+        ]);
         if ($recording) {
             $recording->setTranscription($transcriptionText);
             $em->flush();
@@ -1381,19 +1430,23 @@ class TwilioCallbacksController extends BaseController
                 new LegacySystemEvent('agent.voice.outgoing-call-init')
             );
         } elseif ($exception) {
-            if ($exception instanceof RestException) {
-                $errorCodeGen = $this->get('form_error.error_code_generator.api');
-                if ($exception->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
-                } else {
-                    $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
-                }
+            $errorCodeGen = $this->get('form_error.error_code_generator.api');
 
-                $this->get('event_dispatcher')->dispatch(
-                    LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
-                );
+            if ($exception instanceof BlacklistException) {
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_BLACKLIST, [], ['call_to']);
+            } elseif ($exception instanceof InsufficientBalanceException) {
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+            } else {
+                $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
             }
+
+            $this->get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.outgoing-provider-error', [
+                    'call_id' => $phoneCall->getId(),
+                    'errors'  => $errorMessage,
+                ])
+            );
 
             $twiml->hangup();
 
@@ -1527,8 +1580,6 @@ class TwilioCallbacksController extends BaseController
 
         if ($target instanceof VoiceQueueTarget) {
             if ($target->getQueue()->getGreetAsset()) {
-                $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
-                $twiml->play($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
                 $this->playGreetAsset($twiml, $target->getQueue()->getGreetAsset());
             }
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
@@ -1580,11 +1631,27 @@ class TwilioCallbacksController extends BaseController
             }
         }
 
-        // enqueue task for task router
-        $task = $this->get('dp.voice.callbacks_helper')->createTaskForTarget($phoneCall, $target);
-        if ($task) {
-            $twiml->redirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
-        }
+        $twiml->redirect($this->getNewIncomingCallCallbackUrl($account, $phoneCall, $target));
+    }
+
+    /**
+     * @param TwilioVoiceAccount  $account
+     * @param VoicePhoneCall      $phoneCall
+     * @param AbstractVoiceTarget $target
+     *
+     * @return string
+     */
+    private function getNewIncomingCallCallbackUrl(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall, AbstractVoiceTarget $target)
+    {
+        $targetDetails = $target->getTargetDetails();
+
+        return $this->get('router')->generate('twilio_new_incoming_call_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'phoneCall'   => $phoneCall->getId(),
+            'targetId'    => $targetDetails['id'],
+            'targetType'  => $targetDetails['type'],
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**
@@ -1604,14 +1671,16 @@ class TwilioCallbacksController extends BaseController
 
     /**
      * @param TwilioVoiceAccount $account
+     * @param VoicePhoneCall     $phoneCall
      *
      * @return string
      */
-    private function getHoldMusicCallbackUrl(TwilioVoiceAccount $account)
+    private function getHoldMusicCallbackUrl(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         return $this->get('router')->generate('twilio_hold_music_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
+            'phoneCall'   => $phoneCall->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
