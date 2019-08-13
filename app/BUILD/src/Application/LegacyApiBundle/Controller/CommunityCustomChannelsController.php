@@ -105,7 +105,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
             }
 
             $customCommunityChannel->title  = $postData['community_custom_channel']['title'];
-            $customCommunityChannel->parent = $customCommunityChannelsService->getParentCategory($brand);
+            $customCommunityChannel->parent = $customCommunityChannelsService->getParentChannel($brand);
             $customCommunityChannel->setOption('parent_id', $parent_id);
 
             $this->em->persist($customCommunityChannel);
