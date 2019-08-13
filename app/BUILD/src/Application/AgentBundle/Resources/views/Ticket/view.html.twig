@@ -145,7 +145,7 @@
             {#<input type="hidden" name="hidden_status" class="hidden_status" value="{{ ticket.hidden_status }}" />#}
         </form>
 
-        {% if ticket.status == 'hidden' %}
+        {% if ticket.ticketStatus.isDeleted() %}
             {% include 'AgentBundle:Ticket:view-hidden-bar.html.twig' %}
         {% endif %}
 
