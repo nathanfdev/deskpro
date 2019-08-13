@@ -22,9 +22,8 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const CONTENT_TYPE_ARTICLE = 'article';
-    const CONTENT_TYPE_NEWS    = 'news';
-
+    const CONTENT_TYPE_ARTICLE  = 'article';
+    const CONTENT_TYPE_NEWS     = 'news';
     const CONTENT_TYPE_DOWNLOAD = 'download';
 
     /**
