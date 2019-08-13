@@ -1222,22 +1222,17 @@ class TicketController extends AbstractController
         $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
 
         if ($person) {
-            $part = $this->em->createQuery(
-                '
-                SELECT part
-                FROM DeskPRO:TicketParticipant part
-                WHERE part.ticket = ?0 AND part.person = ?1
-            '
-            )->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
-
-            if (!$part) {
-                return $this->createJsonResponse(['success' => false]);
-            }
-
             $this->db->beginTransaction();
 
             try {
-                $this->em->remove($part);
+                $part = $ticket->removeParticipantPerson($person);
+
+                if (!$part) {
+                    return $this->createJsonResponse(['success' => false]);
+                }
+
+                $ticket->getTicketLogger()->done();
+                $this->em->persist($ticket);
                 $this->em->flush();
                 $this->db->commit();
             } catch (\Exception $e) {
@@ -1260,35 +1255,31 @@ class TicketController extends AbstractController
         $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
 
         if ($person) {
-            $part = $this->em->createQuery(
-                '
-                SELECT part
-                FROM DeskPRO:TicketParticipant part
-                WHERE part.ticket = ?0 AND part.person = ?1
-            '
-            )->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
-
-            if (!$part) {
-                return $this->createJsonResponse(['success' => false]);
-            }
-
             $this->db->beginTransaction();
 
-            $removedCCs = $ticket->getAttribute('removed_ccs');
-            if (!$removedCCs) {
-                $removedCCs = new TicketAttribute('removed_ccs');
-            }
-            $removedAddresses = json_decode($removedCCs->getValue());
-            if (!$removedAddresses) {
-                $removedAddresses = [];
-            }
-            $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses());
-            $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
-            $ticket->addAttribute($removedCCs);
-            $this->em->persist($removedCCs);
-
             try {
-                $this->em->remove($part);
+                $part = $ticket->removeParticipantPerson($person);
+
+                if (!$part) {
+                    return $this->createJsonResponse(['success' => false]);
+                }
+
+                $ticket->getTicketLogger()->done();
+                $this->em->persist($ticket);
+
+                $removedCCs = $ticket->getAttribute('removed_ccs');
+                if (!$removedCCs) {
+                    $removedCCs = new TicketAttribute('removed_ccs');
+                }
+                $removedAddresses = json_decode($removedCCs->getValue());
+                if (!$removedAddresses) {
+                    $removedAddresses = [];
+                }
+                $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses());
+                $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
+                $ticket->addAttribute($removedCCs);
+                $this->em->persist($removedCCs);
+
                 $this->em->flush();
                 $this->db->commit();
             } catch (\Exception $e) {
@@ -4612,18 +4603,19 @@ class TicketController extends AbstractController
 
     /**
      * @param Ticket $ticket
-     * @param array $tos
-     * @param array $ccs
-     * @param array $bccs
+     * @param array  $tos
+     * @param array  $ccs
+     * @param array  $bccs
      * @param string $fromEmail
      * @param string $fromName
      * @param string $customMessage
-     * @param array $messages
-     * @param array $options
+     * @param array  $messages
+     * @param array  $options
      *
-     * @return Response
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
+     *
+     * @return Response
      */
     protected function forwardAsNew(
         Ticket $ticket,
@@ -4716,7 +4708,6 @@ class TicketController extends AbstractController
             foreach ($message->getAttachments() as $attachment) {
                 /** @var TicketAttachment $attachmentCopy */
                 /** @var Blob $blob */
-
                 $attachmentCopy = clone $attachment;
                 $blob           = $attachment->getBlob();
                 $rawFile        = $blobStorage->copyBlobRecordToString($blob);
