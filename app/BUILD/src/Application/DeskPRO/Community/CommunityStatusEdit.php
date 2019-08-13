@@ -14,11 +14,11 @@ class CommunityStatusEdit
     /**
      * @var CommunityTopicStatusCategory
      */
-    public $communityStatus;
+    public $community_status;
 
     public function __construct(CommunityTopicStatusCategory $communityStatus)
     {
-        $this->communityStatus = $communityStatus;
+        $this->community_status = $communityStatus;
     }
 
     /**
@@ -26,7 +26,7 @@ class CommunityStatusEdit
      */
     public function save(EntityManager $em)
     {
-        $em->persist($this->communityStatus);
+        $em->persist($this->community_status);
         $em->flush();
     }
 }

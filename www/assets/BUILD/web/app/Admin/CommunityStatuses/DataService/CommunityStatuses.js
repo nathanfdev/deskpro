@@ -21,7 +21,7 @@ define([
     }
 
     /**
-    * Loads all feedback statuses
+    * Loads all community statuses
       * Returns a promise.
       *
       * @return {Promise}
@@ -87,7 +87,7 @@ define([
     }
 
     /*
-    * Returns list of community_statuses where feedback of specified community_status could be moved to
+    * Returns list of community_statuses where community topic of specified community_status could be moved to
   * @param model - specified community_status model
     * @return array
     */
@@ -105,7 +105,7 @@ define([
     }
 
     /**
-        * Creates entities for feedback statuses raw data
+        * Creates entities for community statuses raw data
         * The thing is that it creates entities for both active and closed statuses
         *
         * @return {Promise}
