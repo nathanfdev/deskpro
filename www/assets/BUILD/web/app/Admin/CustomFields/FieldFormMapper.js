@@ -277,6 +277,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
                 if (fieldModel.options.date_valid_date2 != null) { formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate(); }
               }
               if (fieldModel.options.date_valid_type === 'range') {
+                formTypeOpts.valid_dates_mode = 'range';
                 if (fieldModel.options.date_valid_range1 != null) { formTypeOpts.date_valid_range1 = fieldModel.options.date_valid_range1; }
                 if (fieldModel.options.date_valid_range2 != null) { formTypeOpts.date_valid_range2 = fieldModel.options.date_valid_range2; }
               }
