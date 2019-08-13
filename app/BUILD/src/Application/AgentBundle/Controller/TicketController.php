@@ -4649,14 +4649,43 @@ class TicketController extends AbstractController
             $ticket->setAgentTeam(null);
         }
 
-        $account = $this->getAccount($ticket);
-
-        $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+        $account     = $this->getAccount($ticket);
+        $context     = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+        $blobStorage = $this->get('blob.storage');
 
         foreach ($messages as $message) {
+            /** @var TicketMessage $messageCopy */
             $messageCopy     = clone $message;
             $messageCopy->id = null;
-            $messageCopy->setTicket($ticket);
+            $messageCopy
+                ->setTicket($ticket)
+                ->setAttachments(new ArrayCollection());
+
+            foreach ($message->getAttachments() as $attachment) {
+                /** @var TicketAttachment $attachmentCopy */
+                /** @var Blob $blob */
+
+                $attachmentCopy = clone $attachment;
+                $blob           = $attachment->getBlob();
+                $rawFile        = $blobStorage->copyBlobRecordToString($blob);
+                $blobCopy       = $blobStorage
+                    ->createBlobRecordFromString(
+                        $rawFile,
+                        $blob->getFileName(),
+                        $blob->getContentType(),
+                        ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
+                    )
+                    ->setIsTemp(false);
+
+                $attachmentCopy
+                    ->setId(null)
+                    ->setMessage($messageCopy)
+                    ->setBlob($blobCopy)
+                    ->setTicket($ticket);
+
+                $messageCopy->addAttachment($attachmentCopy);
+            }
+
             $this->em->persist($messageCopy);
         }
 
