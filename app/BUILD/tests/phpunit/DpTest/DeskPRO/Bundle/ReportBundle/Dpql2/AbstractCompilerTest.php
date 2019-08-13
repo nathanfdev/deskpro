@@ -32,6 +32,7 @@ abstract class AbstractCompilerTest extends ApiTestCase
         $connection->executeQuery('DELETE FROM custom_def_ticket');
         $connection->executeQuery('DELETE FROM custom_def_people');
         $connection->executeQuery('DELETE FROM custom_def_organizations');
+        $connection->executeQuery('DELETE FROM custom_def_billing');
 
         $this->compiler = $this->getContainer()->get('dpql.compiler');
         $this->context  = null;

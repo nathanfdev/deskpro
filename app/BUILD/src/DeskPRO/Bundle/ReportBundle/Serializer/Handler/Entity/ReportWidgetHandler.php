@@ -104,6 +104,8 @@ class ReportWidgetHandler extends AbstractEntityHandler
 
             if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
                 $extendedQuery = true;
+            } else {
+                SystemErrorHandler::logException($e);
             }
         }
 
