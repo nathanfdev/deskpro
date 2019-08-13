@@ -601,6 +601,10 @@ class VoiceCallbacksHelper
 
         /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $participant->getPhoneCall();
+        $this->logger->info(sprintf(
+            '[VoiceCallbacksHelper] Call status = %s, call_id = %s, uuid = %s',
+            $phoneCall->getStatus(), $phoneCall->getId(), $callSid
+        ));
 
         // set participant leave event time
         $participant->setDateLeft(new \DateTime());
@@ -633,10 +637,14 @@ class VoiceCallbacksHelper
         }
 
         // mark the phone call as finished
-        $phoneCall->setDateEnded(new \DateTime());
-        if (!$phoneCall->isVoicemail()) {
+        if (!$phoneCall->isVoicemail()
+            // handle edge case when user reached /voicemail
+            // but hanged up the call without leaving a message
+            || $phoneCall->getDateWaiting() > new \DateTime('-5 seconds')) {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
         }
+
+        $phoneCall->setDateEnded(new \DateTime());
 
         // user ends call
         // create a ticket for missed calls
