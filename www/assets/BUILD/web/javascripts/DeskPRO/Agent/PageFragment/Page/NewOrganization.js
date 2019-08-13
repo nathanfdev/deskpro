@@ -80,8 +80,12 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 
 					this.closeSelf();
 				} else {
-					if (data && data.error_code && data.error_code == 'invalid_name') {
-						DeskPRO_Window.showAlert('Please enter a name for the organization');
+					if (data && data.error_code) {
+					  if (data.error_code === 'invalid_name') {
+              DeskPRO_Window.showAlert('Please enter a name for the organization');
+            } else if (data.error_code === 'free') {
+              DeskPRO_Window.showAlert(data.error_messages.join(". "));
+            }
 					}
 				}
 			}

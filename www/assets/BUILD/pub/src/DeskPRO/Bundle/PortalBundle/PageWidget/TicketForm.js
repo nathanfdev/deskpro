@@ -184,6 +184,11 @@ export default class TicketForm extends PageWidget {
           newFields = newFields.filter(filterFn);
         }
 
+        const hasOrganization = !!$formEl.find('#ticket_person_user_name').data('organization-id');
+        if (!hasOrganization) {
+          newFields = newFields.filter(field => !field.id.test(/^org_field_/));
+        }
+
         newFields = map(layout.getMatchingFields(ticketReader), (v) => {
           const id = v.id;
           switch (id) {
