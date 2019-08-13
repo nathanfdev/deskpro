@@ -92,8 +92,8 @@ define([
       });
 
       options.push({
-        title: 'Linked feedback items',
-        value: 'FilterFeedbackLinks'
+        title: 'Linked Community Items',
+        value: 'FilterCommunityTopicsLinks'
       });
 
       options.push({
@@ -789,7 +789,7 @@ define([
       return def;
     }
 
-    getFilterFeedbackLinks(options) {
+    getFilterCommunityTopicsLinks(options) {
       if (options == null) { options = {}; }
       options.propName = 'topic_links';
       options.operators = ['isset', 'not_isset', 'is'];
