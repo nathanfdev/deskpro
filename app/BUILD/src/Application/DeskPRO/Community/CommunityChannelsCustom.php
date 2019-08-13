@@ -113,7 +113,7 @@ class CommunityChannelsCustom
      */
     protected function createInitialCommunityCustomChannelIfNotDefined(Brand $brand)
     {
-        $this->parentChannel[$brand->getId()] = $this->em->getRepository(CustomDefCommunityTopic::class)->getCategoryField($brand);
+        $this->parentChannel[$brand->getId()] = $this->em->getRepository(CustomDefCommunityTopic::class)->getChannelField($brand);
 
         if (!$this->parentChannel[$brand->getId()]) {
             $this->parentChannel[$brand->getId()]                = new CustomDefCommunityTopic();

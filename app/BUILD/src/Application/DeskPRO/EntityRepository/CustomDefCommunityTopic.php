@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Brand;
+
 class CustomDefCommunityTopic extends CustomDefAbstract
 {
     /**
@@ -9,7 +11,7 @@ class CustomDefCommunityTopic extends CustomDefAbstract
      *
      * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic|null
      */
-    public function getCategoryField(\Application\DeskPRO\Entity\Brand $brand)
+    public function getChannelField(Brand $brand)
     {
         return $this->_em
             ->createQuery("
