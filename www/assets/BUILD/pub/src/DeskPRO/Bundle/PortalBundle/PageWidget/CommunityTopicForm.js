@@ -19,12 +19,11 @@ export class CommunityTopicForm extends PageWidget {
 
   renderWidget() {
     const $expandedForm = this.$element.find('.community-topic-form-expanded');
-    const $startBtn = this.$element.find('.feedback-selected-start');
     const $catSelect = this.$element.find('#new_community_topic_channel');
     const $communityTopicAttachments = this.$element.find('#new_feedback_more_attachments');
     const communityTopicReader = new CommunityTopicValueReader(this.$element);
 
-    // deatch the "Add More Attachments" button from the DOM (unnecessary if JS enabled)
+    // detach the "Add More Attachments" button from the DOM (unnecessary if JS enabled)
     $communityTopicAttachments.remove();
 
     if ($expandedForm.data('do-show')) {
@@ -42,9 +41,5 @@ export class CommunityTopicForm extends PageWidget {
     };
 
     $catSelect.change(this.processChangedCategory);
-    $startBtn.on('click', (e) => {
-      e.preventDefault();
-      this.processChangedCategory();
-    });
   }
 }
