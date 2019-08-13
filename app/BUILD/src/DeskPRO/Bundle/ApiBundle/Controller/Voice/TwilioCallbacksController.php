@@ -922,7 +922,7 @@ class TwilioCallbacksController extends BaseController
                 } else {
                     $twiml->redirect($this->getHoldSilentCallbackUrl($account));
                 }
-            } else {
+            } elseif (!$phoneCall->isVoicemail()) {
                 $logger->info(sprintf(
                     '[TwilioCallbacks] End call, call_id = %s, uuid = %s',
                     $phoneCall->getId(), $callSid

@@ -701,7 +701,7 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->flush();
 
-        if (!$phoneCall->isColdTransfer()) {
+        if (!$phoneCall->isColdTransfer() && !$phoneCall->isVoicemail()) {
             if (count($phoneCall->getActiveParticipants()) < 2) {
                 $this->voiceProviderHelper->endCall($phoneCall);
             }
