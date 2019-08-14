@@ -32,6 +32,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Proxy\Proxy;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -1801,7 +1802,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeMessage(TicketMessage $message)
     {
+        $attributes = $message->getAttributes();
+        if ($attributes instanceof PersistentCollection) {
+            // messages is an extra lazy collection
+            // so we have to init message attributes
+            // to use them in pre-remove doctrine handlers
+            $attributes->initialize();
+        }
+
         $this->messages->removeElement($message);
+
         $this->_onPropertyChanged('messages', null, $this->messages);
         $this->getStateChangeRecorder()->record('message', $message, null);
 
@@ -5038,6 +5048,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
         $metadata->addEntityListener(Events::preUpdate, VoiceTicketListener::class, Events::preUpdate);
+        $metadata->addEntityListener(Events::preRemove, VoiceTicketListener::class, Events::preRemove);
         $metadata->setPrimaryTable(
             [
                 'name'    => 'tickets',

@@ -6,8 +6,10 @@
 
 namespace Application\DeskPRO\People;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Doctrine\ORM\EntityManager;
 
@@ -66,7 +68,10 @@ class Purger implements PersonContextInterface
     public function purgeCallRecords()
     {
         if ($this->blobStorage) {
-            TicketUtil::deletePersonCallRecords($this->person, $this->em, $this->blobStorage);
+            $tickets = $this->em->getRepository(Ticket::class)->findBy(['person' => $this->person]);
+            foreach ($tickets as $ticket) {
+                App::$container->get('dp.voice.ticket_recording_cleaner')->deleteTicketRecordings($ticket);
+            }
         }
     }
 
