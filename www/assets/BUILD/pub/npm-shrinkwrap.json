@@ -279,10 +279,11 @@
       "integrity": "sha512-QFLxmFqomqMz7S1i8/6RBZ8Wmw/mcZ+KAFYE5H4tG35jbzcsNVNQtpaeMqdouUU7LW9BuoYo0zqEf9aVwKdylQ=="
     },
     "@deskpro/content-editor": {
-      "version": "0.1.5",
-      "resolved": "https://registry.npmjs.org/@deskpro/content-editor/-/content-editor-0.1.5.tgz",
-      "integrity": "sha512-BqQPN9uZLrLNWmUh/qamVwtclWQs/6DOBbKmZE60o3OdVdW8kQgdJYiEiOltXh8LJqoI9o9Ajxp2C0tMAKUnYA==",
+      "version": "0.1.7",
+      "resolved": "https://registry.npmjs.org/@deskpro/content-editor/-/content-editor-0.1.7.tgz",
+      "integrity": "sha512-q8vHGba7g7X+yvOLhRz85lkO648w7mtafbz0XtAOHBrNL7GvB2f7gxf6wahqERJAtIJSRHlkso5LMK6jIuC9ZQ==",
       "requires": {
+        "@types/uuid": "^3.4.5",
         "prosemirror-collab": "^1.1.2",
         "prosemirror-commands": "^1.0.8",
         "prosemirror-dropcursor": "^1.1.1",
@@ -295,7 +296,8 @@
         "prosemirror-schema-list": "^1.0.3",
         "prosemirror-state": "^1.2.3",
         "prosemirror-tables": "^0.8.0",
-        "prosemirror-view": "^1.9.12"
+        "prosemirror-view": "^1.9.12",
+        "uuid": "^3.3.2"
       }
     },
     "@deskpro/js-utils": {
@@ -304,12 +306,12 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/product-content-editor": {
-      "version": "0.1.5",
-      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.5.tgz",
-      "integrity": "sha512-3h5vixq1oZM3qCh6/BhQuvVYg5mNeWBZWJvpTHNCI23P6hbjzoZPXvx57lE7r3UBr71pwQu2sBtzQjXao4/qhw==",
+      "version": "0.1.7",
+      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.7.tgz",
+      "integrity": "sha512-FEpi+rQ5Z9Qh0crX1j6se/RhvTt1Z1qD1dQR6yNfz/H5Xw+F0XwK8fbNIJLon8NoJvUOnaZFqLvA62sVyY2g9g==",
       "requires": {
-        "@deskpro/content-editor": "^0.1.5",
-        "@deskpro/react-content-editor": "^0.1.5",
+        "@deskpro/content-editor": "^0.1.7",
+        "@deskpro/react-content-editor": "^0.1.7",
         "@tippy.js/react": "^2.2.2",
         "prosemirror-commands": "^1.0.8",
         "prosemirror-model": "^1.7.1",
@@ -404,14 +406,15 @@
       }
     },
     "@deskpro/react-content-editor": {
-      "version": "0.1.5",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-content-editor/-/react-content-editor-0.1.5.tgz",
-      "integrity": "sha512-d5kmVioV/3F7pNlgsbxT/cIjEUQFhDF4t1vM9R8aVR44V2Y5z20fqlc/zxcuLRaWsRdNMk8GbzYImde3KUjxTA==",
+      "version": "0.1.7",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-content-editor/-/react-content-editor-0.1.7.tgz",
+      "integrity": "sha512-Nf9WXV3xBhEKfGeSr6lPWKkm6CL6O2isI7zz9EfLCuO7Htqx5AtNoM/rPEBYVBgUf4AOfaLzDb9ChnmBYWorfA==",
       "requires": {
-        "@deskpro/content-editor": "^0.1.5",
+        "@deskpro/content-editor": "^0.1.7",
         "@fortawesome/fontawesome-svg-core": "^1.2.19",
-        "@fortawesome/free-regular-svg-icons": "^5.9.0",
-        "@fortawesome/free-solid-svg-icons": "^5.9.0",
+        "@fortawesome/free-brands-svg-icons": "^5.10.1",
+        "@fortawesome/free-regular-svg-icons": "^5.10.1",
+        "@fortawesome/free-solid-svg-icons": "^5.10.1",
         "@fortawesome/react-fontawesome": "^0.1.4",
         "@tippy.js/react": "^2.2.2",
         "@toast-ui/react-image-editor": "^1.0.1",
@@ -15749,6 +15752,21 @@
         "@fortawesome/fontawesome-common-types": "^0.2.4"
       }
     },
+    "@fortawesome/free-brands-svg-icons": {
+      "version": "5.10.1",
+      "resolved": "https://npm.fontawesome.com/@fortawesome/free-brands-svg-icons/-/free-brands-svg-icons-5.10.1.tgz",
+      "integrity": "sha512-xrq2+coLZUGcQsmbdoyyp5O5X4a6FhEQj3cGdlM14/bZ6lHCeKlZElsvr/ETtFtD8w2UgQpb3E7Eylo69utD1g==",
+      "requires": {
+        "@fortawesome/fontawesome-common-types": "^0.2.21"
+      },
+      "dependencies": {
+        "@fortawesome/fontawesome-common-types": {
+          "version": "0.2.21",
+          "resolved": "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.21.tgz",
+          "integrity": "sha512-iJtcrU2BtF9Wyr0zm3tHEJy3HqA6sADExhCqCv3SKaJJKKp4ORJ40t4nyHvcWXSVFtd7r1gcdqcRsAfoREGTFA=="
+        }
+      }
+    },
     "@fortawesome/free-regular-svg-icons": {
       "version": "5.4.1",
       "resolved": "https://npm.fontawesome.com/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-5.4.1.tgz",
@@ -17235,6 +17253,19 @@
       "version": "2.2.9",
       "resolved": "https://registry.npmjs.org/@types/classnames/-/classnames-2.2.9.tgz",
       "integrity": "sha512-MNl+rT5UmZeilaPxAVs6YaPC2m6aA8rofviZbhbxpPpl61uKodfdQVsBtgJGTqGizEf02oW3tsVe7FYB8kK14A=="
+    },
+    "@types/node": {
+      "version": "12.7.1",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-12.7.1.tgz",
+      "integrity": "sha512-aK9jxMypeSrhiYofWWBf/T7O+KwaiAHzM4sveCdWPn71lzUSMimRnKzhXDKfKwV1kWoBo2P1aGgaIYGLf9/ljw=="
+    },
+    "@types/uuid": {
+      "version": "3.4.5",
+      "resolved": "https://registry.npmjs.org/@types/uuid/-/uuid-3.4.5.tgz",
+      "integrity": "sha512-MNL15wC3EKyw1VLF+RoVO4hJJdk9t/Hlv3rt1OL65Qvuadm4BYo6g9ZJQqoq7X8NBFSsQXgAujWciovh2lpVjA==",
+      "requires": {
+        "@types/node": "*"
+      }
     },
     "@uppy/companion-client": {
       "version": "1.2.0",
@@ -32365,9 +32396,9 @@
       }
     },
     "prosemirror-state": {
-      "version": "1.2.3",
-      "resolved": "https://registry.npmjs.org/prosemirror-state/-/prosemirror-state-1.2.3.tgz",
-      "integrity": "sha512-TNFw98jHLcU7JXViozcDHxzIWQj7WfGqTAB05RCrkkUuIleKekW9PbhQGXRZdlSPFkViPlLy/emh+5HtjH1Yzg==",
+      "version": "1.2.4",
+      "resolved": "https://registry.npmjs.org/prosemirror-state/-/prosemirror-state-1.2.4.tgz",
+      "integrity": "sha512-ViXpXond3BbSL12ENARQGq3Y8igwFMbTcy96xUNK8kfIcfQRlYlgYrBPXIkHC5+QZtbPrYlpuJ2+QyeSlSX9Cw==",
       "requires": {
         "prosemirror-model": "^1.0.0",
         "prosemirror-transform": "^1.0.0"
@@ -32394,9 +32425,9 @@
       }
     },
     "prosemirror-view": {
-      "version": "1.9.13",
-      "resolved": "https://registry.npmjs.org/prosemirror-view/-/prosemirror-view-1.9.13.tgz",
-      "integrity": "sha512-afJxCZR4EH04u4thl7xYHSIgyQiGALstLi+5SW9t3868ghrgcFhpQvbJAN17Yb9nwtnltD64t15Msk2UlXkPeQ==",
+      "version": "1.10.0",
+      "resolved": "https://registry.npmjs.org/prosemirror-view/-/prosemirror-view-1.10.0.tgz",
+      "integrity": "sha512-STHw0xHfk+XPMqMLTKykRL1qEMtO+n1GWINBl94IPIq82AmWO1Ors4wVw93HKo/oIadWRrP/7faNJKh1UVLrTg==",
       "requires": {
         "prosemirror-model": "^1.1.0",
         "prosemirror-state": "^1.0.0",
