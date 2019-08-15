@@ -57,7 +57,7 @@
 				{{ phrase('agent.general.page_x_of_y', {page: pageinfo.cursor, num_pages: pageinfo.last}) }}
 
 			</div>
-			{% set routeName = (single_type == 'community_topic') ? 'agent_community_validatingcomments' : 'agent_publish_validatingcomments' %}
+			{% set routeName = (single_type == 'community') ? 'agent_community_validatingcomments' : 'agent_publish_validatingcomments' %}
 			{% if pageinfo.last > 1 %}
 				<ul class="pagenav {% if not pageinfo.prev %}no-prev{% endif  %}{% if not pageinfo.next %}no-next{% endif  %}">
 					<li class="prev" data-route="listpane:{{ path(routeName, {type: type, page: pageinfo.prev}) }}"></li>
