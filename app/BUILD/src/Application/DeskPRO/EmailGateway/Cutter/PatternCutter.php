@@ -111,7 +111,7 @@ class PatternCutter implements QuoteDef
     /**
      * @param \Application\DeskPRO\EmailGateway\Cutter\PatternCutter\HtmlPattern|string $pattern
      */
-    public function addPattern($pattern, $k)
+    public function addPattern($pattern)
     {
         $patternOptions = [];
         if (is_array($pattern)) {
@@ -137,7 +137,7 @@ class PatternCutter implements QuoteDef
                         $this->patternOptions[$hash] = $patternOptions;
                     }
                     $pattern          = new HtmlPattern($pattern);
-                    $this->patterns[$k] = $pattern;
+                    $this->patterns[] = $pattern;
                 }
             } else {
                 if ($patternOptions) {
@@ -145,10 +145,10 @@ class PatternCutter implements QuoteDef
                     $this->patternOptions[$hash] = $patternOptions;
                 }
                 $pattern          = new HtmlPattern($pattern);
-                $this->patterns[$k] = $pattern;
+                $this->patterns[] = $pattern;
             }
         } else {
-            $this->patterns[$k] = $pattern;
+            $this->patterns[] = $pattern;
         }
     }
 
@@ -159,8 +159,8 @@ class PatternCutter implements QuoteDef
      */
     public function addPatterns(array $patterns)
     {
-        foreach ($patterns as $k => $pattern) {
-            $this->addPattern($pattern, $k);
+        foreach ($patterns as $pattern) {
+            $this->addPattern($pattern);
         }
     }
 
@@ -181,7 +181,7 @@ class PatternCutter implements QuoteDef
         $body = str_replace('<br></br>', '<br />', $body);
         $body = str_replace('<br>', '<br />', $body);
 
-        foreach ($this->patterns as $k => $pattern) {
+        foreach ($this->patterns as $pattern) {
             $matcher = new HtmlMatcher($body, $pattern);
             $hash    = hash('md4', $pattern->getPattern());
             if (isset($this->patternOptions[$hash]) && isset($this->patternOptions[$hash]['reverse'])) {
