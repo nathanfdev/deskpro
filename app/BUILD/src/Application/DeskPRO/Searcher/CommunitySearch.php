@@ -389,7 +389,7 @@ class CommunitySearch extends SearcherAbstract
 
                 case self::TERM_CHANNEL:
                 case self::TERM_CHANNEL_SPECIFIC:
-                    $base_ids = (array) ((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $base_ids = (array) ((is_array($choice) && isset($choice['channel'])) ? $choice['channel'] : $choice);
                     $ids      = [];
 
                     if ($term == self::TERM_CHANNEL_SPECIFIC) {
@@ -402,9 +402,9 @@ class CommunitySearch extends SearcherAbstract
 
                     $ids = array_unique($ids);
 
-                    $wheres[] = $this->_choiceMatch('community_topics.category_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('community_topics.channel_id', $op, $ids);
 
-                    $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
+                    $this->summary[] = $this->_choiceSummary('Channel', $op, $choice, function ($choice) {
                         $titles = App::getEntityRepository('DeskPRO:CommunityChannel')->getNames((array) $choice);
 
                         return $titles;

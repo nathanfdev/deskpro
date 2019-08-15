@@ -7,12 +7,12 @@
 					<span class="count">{{ grouped.items[-1].total }}</span>
 				</a>
 			</li>
-			{% for cat in grouped.items %}
-				{% if cat.id != '-1' %}
-					<li class="{% if subgroup == cat.id %}on{% endif %}">
-						<a data-route="listpane:{{ tplvars.subgroup_url|replace({'SUBGROUP_ID': cat.id}) }}">
-							{{ cat.title }}
-							<span class="count">{{ cat.total }}</span>
+			{% for channel in grouped.items %}
+				{% if channel.id != '-1' %}
+					<li class="{% if subgroup == channel.id %}on{% endif %}">
+						<a data-route="listpane:{{ tplvars.subgroup_url|replace({'SUBGROUP_ID': channel.id}) }}">
+							{{ channel.title }}
+							<span class="count">{{ channel.total }}</span>
 						</a>
 					</li>
 				{% endif %}

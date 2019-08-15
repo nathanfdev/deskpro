@@ -388,10 +388,10 @@ class CommunityTopicsController extends AbstractController
      * @param $communityTopicId
      * @param $channelId
      *
-     * @throws \Exception
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -517,8 +517,8 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Exception
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -560,9 +560,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -746,9 +746,9 @@ class CommunityTopicsController extends AbstractController
      * @param     $communityTopicId
      * @param int $otherCommunityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -843,9 +843,9 @@ class CommunityTopicsController extends AbstractController
      *
      * @param int $channelId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -855,8 +855,8 @@ class CommunityTopicsController extends AbstractController
             $this,
             [
                 'specific_terms' => [
-                    'category' => ['type' => 'category', 'op' => 'is', 'category' => $channelId],
-                    'status'   => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
+                    'channel' => ['type' => 'channel', 'op' => 'is', 'channel' => $channelId],
+                    'status'  => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
                 ],
             ]
         );
@@ -866,8 +866,8 @@ class CommunityTopicsController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
-                        'category' => ['type' => 'category', 'op' => 'is', 'category' => $channelId],
-                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
+                        'channel' => ['type' => 'channel', 'op' => 'is', 'channel' => $channelId],
+                        'status'  => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
                     ],
                 ]
             );
@@ -875,15 +875,15 @@ class CommunityTopicsController extends AbstractController
             $resultHelper = $topResultHelper;
         }
 
-        $cat = $this->em->find('DeskPRO:CommunityChannel', $channelId);
+        $channel = $this->em->find('DeskPRO:CommunityChannel', $channelId);
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('status')->setIds($topResultHelper->getTopicIds());
         $grouped      = $grouping->getDisplayArray();
         $grouped_info = [];
 
-        if (!$cat->parent) {
-            $grouped_key = $cat->getId();
+        if (!$channel->parent) {
+            $grouped_key = $channel->getId();
 
             $t = 0;
             if (isset($grouped['items'][$grouped_key])) {
@@ -893,9 +893,9 @@ class CommunityTopicsController extends AbstractController
 
             $grouped_info[-1] = ['id' => -1, 'title' => 'TOTAL', 'total' => $t];
         } else {
-            $grouped_key = $cat->getId();
+            $grouped_key = $channel->getId();
             $t           = 0;
-            foreach ($cat->children as $c) {
+            foreach ($channel->children as $c) {
                 $k = $c['id'];
                 if (isset($grouped['items'][$k])) {
                     $grouped_info = Arrays::mergeAssoc($grouped_info, [$k => $grouped['items'][$k]]);
@@ -910,10 +910,10 @@ class CommunityTopicsController extends AbstractController
             $resultHelper,
             null,
             [
-                'list_type'    => 'category',
-                'brand_id'     => $cat->getBrand() ? $cat->getBrand()->getId() : null,
+                'list_type'    => 'channel',
+                'brand_id'     => $channel->getBrand() ? $channel->getBrand()->getId() : null,
                 'channel_id'   => $channelId,
-                'page_title'   => $cat->getFullTitle(),
+                'page_title'   => $channel->getFullTitle(),
                 'grouped'      => $grouped,
                 'grouped_info' => $grouped_info,
                 'grouped_key'  => $grouped_key,
@@ -997,12 +997,12 @@ class CommunityTopicsController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
-                        'brand'    => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
-                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $status],
-                        'category' => [
-                            'type'     => 'category',
-                            'op'       => 'is',
-                            'category' => $this->in->getString('subgroup'),
+                        'brand'   => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
+                        'status'  => ['type' => 'status', 'op' => 'is', 'status' => $status],
+                        'channel' => [
+                            'type'    => 'channel',
+                            'op'      => 'is',
+                            'channel' => $this->in->getString('subgroup'),
                         ],
                     ],
                 ]
@@ -1069,7 +1069,7 @@ class CommunityTopicsController extends AbstractController
         $displayFields = $this->person->getPref('agent.ui.community-filter-display-fields.0')
             ?: [
                 'date_created',
-                'category',
+                'channel',
             ];
         $userCatField = $this->container->getSystemService('CommunityFieldsManager')->getUserCategoryField();
 
@@ -1208,9 +1208,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $action
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -1452,9 +1452,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return CommunityTopic
      */
@@ -1470,9 +1470,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $ticketId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Ticket
      */
