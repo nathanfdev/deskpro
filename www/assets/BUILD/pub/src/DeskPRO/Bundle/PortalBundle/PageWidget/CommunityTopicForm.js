@@ -20,7 +20,7 @@ export class CommunityTopicForm extends PageWidget {
   renderWidget() {
     const $expandedForm = this.$element.find('.community-topic-form-expanded');
     const $catSelect = this.$element.find('#new_community_topic_channel');
-    const $communityTopicAttachments = this.$element.find('#new_feedback_more_attachments');
+    const $communityTopicAttachments = this.$element.find('#new_community_topic_more_attachments');
     const communityTopicReader = new CommunityTopicValueReader(this.$element);
 
     // detach the "Add More Attachments" button from the DOM (unnecessary if JS enabled)
