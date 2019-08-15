@@ -104,6 +104,6 @@ return [
     // Sparrow mac client
     'sparrow_1' => 'p #^On .*?,.*?wrote:#i /p blockquote /blockquote',
 
-//     DeskPRO blockqoute
+    // DeskPRO blockqoute
     'dp' => ['div.dp-author-row', 'reverse' => false],
 ];
