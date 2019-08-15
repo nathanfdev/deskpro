@@ -43,7 +43,9 @@ class VoiceTicketRecordingCleaner
     public function deleteTicketRecordings(Ticket $ticket)
     {
         foreach ($ticket->getMessages() as $message) {
-            $this->deleteTicketMessageRecordings($message);
+            if ($message->isAgentNote()) {
+                $this->deleteTicketMessageRecordings($message);
+            }
         }
     }
 
