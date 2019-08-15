@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\CsvImport;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -108,6 +109,7 @@ class CsvImporter
     {
         $customDefs = [];
         $personData = [];
+        $brandName  = null;
 
         foreach ($fieldMaps as $columnId => $info) {
             if (empty($info['map']) || !isset($data[$columnId])) {
@@ -148,6 +150,20 @@ class CsvImporter
                     }
 
                     $personData[$mapField] = $columnValue;
+                    break;
+                case 'brand':
+                    $brandName = $columnValue;
+
+                    if (is_numeric($columnValue)) {
+                        /** @var Brand $brand */
+                        $brand = $this->em->find(Brand::class, $columnValue);
+
+                        if ($brand) {
+                            $brandName = $brand->getName();
+                        } else {
+                            $brandName = null;
+                        }
+                    }
                     break;
 
                 // contact data
@@ -265,7 +281,7 @@ class CsvImporter
             }
         }
 
-        $this->importer->writeData($collection);
+        $this->importer->writeData($collection, $brandName);
 
         // get person object
         $people = $personRepo->findByEmails($personData['emails']);
