@@ -613,11 +613,7 @@ class TwilioCallbacksController extends BaseController
     public function voicemailAction(TwilioVoiceAccount $account, Request $request)
     {
         $callSid = $request->get('CallSid');
-
-        $lock = $this->get('dp.voice.phone_lock_helper')->createPhoneLock($callSid);
-        $lock->acquire(true);
-
-        $twiml = new Twiml();
+        $twiml   = new Twiml();
 
         /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
