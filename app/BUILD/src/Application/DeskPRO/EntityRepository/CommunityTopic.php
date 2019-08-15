@@ -123,7 +123,7 @@ class CommunityTopic extends AbstractEntityRepository
      *
      * @return array
      */
-    public function countAllCategoriesGrouped()
+    public function countAllChannelsGrouped()
     {
         /*
          * Note that the order by category_id ASC is important here.

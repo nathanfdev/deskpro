@@ -117,7 +117,7 @@
 							>
 								<div class="item" {% if channel.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':channel.id}) }}">
 									<h3>{{ channel.title }}</h3>
-									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ category_counts[channel.id]|default(0) }}</em>
+									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ channel_counts[channel.id]|default(0) }}</em>
 								</div>
 							</li>
 						{% endfor %}
