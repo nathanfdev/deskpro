@@ -6,7 +6,7 @@
 {######################################################################################################################}
 {% block top %}
 	<script>
-		{% if single_type == 'community_topic' %}
+		{% if single_type == 'community' %}
 			pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.CommunityCommentsValidating';
 			pageMeta.singleType = 'community_topic';
 			pageMeta.url_fragment = '{{ url_fragment('agent_community_validatingcomments') }}';
