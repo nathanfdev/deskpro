@@ -1,5 +1,5 @@
 @new
-Feature: /community_custom_channels endpoint
+Feature: /custom_community_channels endpoint
   To retrieve info about custom community channels (custom_category)
   As an API user
   I want an endpoint for custom community channels
@@ -15,7 +15,7 @@ Feature: /community_custom_channels endpoint
 
   Scenario: I GET all custom channels
 
-    When I send a GET request to "/api/v2/community_custom_channels"
+    When I send a GET request to "/api/v2/custom_community_channels"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta" should exist

@@ -69,7 +69,7 @@ adm.general.x_community_active_statuses:
   few: '{{count}} Community Active Statuses'
   many: '{{count}} Community Active Statuses'
   other: '{{count}} Community Active Statuses'
-adm.general.x_community_custom_channels:
+adm.general.x_custom_community_channels:
   zero: '{{count}} Custom Community Channels'
   one: '{{count}} Custom Community Channel'
   two: '{{count}} Custom Community Channels'
