@@ -11,8 +11,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.$scope.activeType = 'active';
       this.$scope.closedType = 'closed';
 
-      this.feedback_active_statuses = [];
-      this.feedback_closed_statuses = [];
+      this.community_active_statuses = [];
+      this.community_closed_statuses = [];
 
       return this.sortedListOptions = {
         axis:   'y',
@@ -62,16 +62,16 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     initialLoad() {
       const promises = [];
       promises.push(this.CommunityStatusesData.loadList().then((recs) => {
-        this.feedback_active_statuses = this.sort(recs.active_statuses.values());
-        this.feedback_closed_statuses = this.sort(recs.closed_statuses.values());
+        this.community_active_statuses = this.sort(recs.active_statuses.values());
+        this.community_closed_statuses = this.sort(recs.closed_statuses.values());
 
         this.addManagedListener(this.CommunityStatusesData.recs.active_statuses, 'changed', () => {
-          this.feedback_active_statuses = this.sort(this.CommunityStatusesData.recs.active_statuses.values());
+          this.community_active_statuses = this.sort(this.CommunityStatusesData.recs.active_statuses.values());
           return this.ngApply();
         });
 
         return this.addManagedListener(this.CommunityStatusesData.recs.closed_statuses, 'changed', () => {
-          this.feedback_closed_statuses = this.sort(this.CommunityStatusesData.recs.closed_statuses.values());
+          this.community_closed_statuses = this.sort(this.CommunityStatusesData.recs.closed_statuses.values());
           return this.ngApply();
         });
       })
@@ -110,23 +110,23 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         }
       });
 
-      return inst.result.then(move_to => this.deleteFeedbackStatus(community_status, move_to));
+      return inst.result.then(move_to => this.deleteCommunityStatus(community_status, move_to));
     }
 
     /*
     * Actually do the delete
-  * @param community_status - feedback status we want to delete
-  * @param move_to - to what status feedback should be moved
+  * @param community_status - community status we want to delete
+  * @param move_to - to what status community topic should be moved
     */
 
-    deleteFeedbackStatus(community_status, move_to) {
+    deleteCommunityStatus(community_status, move_to) {
       return this.Api.sendDelete(`/community_statuses/${community_status.id}`, {
         move_to
       }).success(() => {
         this.CommunityStatusesData.remove(community_status.id);
         this.ngApply();
 
-        // if currently viewing the deleted feedback status, then should need to switch state
+        // if currently viewing the deleted community status, then should need to switch state
         if ((this.$state.current.name === 'portal.community_statuses.edit') && (parseInt(this.$state.params.id) === community_status.id)) {
           return this.$state.go('portal.community_statuses');
         }

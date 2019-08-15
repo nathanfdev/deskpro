@@ -8,7 +8,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     init() {
       this.$scope.brand_id = this.$stateParams.brandId;
-      this.feedback_categories = [];
+      this.community_custom_channels = [];
       this.parent_data = [];
       this.child_data = {};
 
@@ -70,14 +70,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       return this.$q.all(promises);
     }
 
-    initHierarchyData(feedback_categories) {
-      this.feedback_categories = feedback_categories;
+    initHierarchyData(community_custom_channels) {
+      this.community_custom_channels = community_custom_channels;
       this.parent_data = [];
       this.child_data = {};
 
       return (() => {
         const result = [];
-        for (const category of Array.from(feedback_categories)) {
+        for (const category of Array.from(community_custom_channels)) {
           if (parseInt(category.parent_id, 10)) {
             if (!this.child_data[category.parent_id]) {
               this.child_data[category.parent_id] = [];

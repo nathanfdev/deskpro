@@ -13,7 +13,7 @@ define([
     }
 
     init() {
-      this.feedback_type = {};
+      this.community_channel = {};
       this.usergroups = [];
       return this.selected_usergroups = {};
     }
@@ -26,10 +26,10 @@ define([
 
       if (this.$stateParams.id) {
         promises.push(this.Api.sendDataGet({
-          feedback_type: `/community_channels/${this.$stateParams.id}`,
+          community_channel: `/community_channels/${this.$stateParams.id}`,
         }).then((result) => {
-          this.feedback_type = result.data.feedback_type.feedback_type;
-          const ids = _.pluck(this.feedback_type.usergroups, 'id');
+          this.community_channel = result.data.community_channel.community_channel;
+          const ids = _.pluck(this.community_channel.usergroups, 'id');
           return Array.from(ids).map(id =>
             (this.selected_usergroups[id] = true));
         })
@@ -48,14 +48,14 @@ define([
     saveCommunityChannel() {
       let is_new,
         promise;
-      this.feedback_type.brand = this.$stateParams.brandId;
-      this.feedback_type.usergroups = [];
+      this.community_channel.brand = this.$stateParams.brandId;
+      this.community_channel.usergroups = [];
 
       for (const key of Object.keys(this.selected_usergroups || {})) {
         const value = this.selected_usergroups[key];
         if (value) {
           const usergroup = _.findWhere(this.usergroups, { id: parseInt(key) });
-          if (usergroup) { this.feedback_type.usergroups.push(usergroup.id); }
+          if (usergroup) { this.community_channel.usergroups.push(usergroup.id); }
         }
       }
 
@@ -63,23 +63,23 @@ define([
         return;
       }
 
-      this.startSpinner('saving_feedback_type');
+      this.startSpinner('saving_community_channel');
 
-      if (this.feedback_type.id) {
+      if (this.community_channel.id) {
         is_new = false;
-        promise = this.Api.sendPostJson(`/community_channels/${this.feedback_type.id}`, { feedback_type: this.feedback_type });
+        promise = this.Api.sendPostJson(`/community_channels/${this.community_channel.id}`, { community_channel: this.community_channel });
       } else {
         is_new = true;
-        promise = this.Api.sendPutJson('/community_channels', { feedback_type: this.feedback_type });
+        promise = this.Api.sendPutJson('/community_channels', { community_channel: this.community_channel });
       }
 
       promise.success((result) => {
-        this.feedback_type.id = result.id;
-        this.feedback_type.brand = result.brand;
+        this.community_channel.id = result.id;
+        this.community_channel.brand = result.brand;
 
-        this.stopSpinner('saving_feedback_type', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_feedback_type')));
+        this.stopSpinner('saving_community_channel', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_community_channel')));
 
-        this.CommunityChannelsData.updateModel(this.feedback_type);
+        this.CommunityChannelsData.updateModel(this.community_channel);
 
         this.skipDirtyState();
 
@@ -89,7 +89,7 @@ define([
         return this.$state.go('portal.community_channels');
       });
       promise.error((info, code) => {
-        this.stopSpinner('saving_feedback_type', true);
+        this.stopSpinner('saving_community_channel', true);
         return this.applyErrorResponseToView(info);
       });
 

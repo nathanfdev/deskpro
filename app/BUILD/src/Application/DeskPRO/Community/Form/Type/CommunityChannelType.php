@@ -17,7 +17,7 @@ class CommunityChannelType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('communityChannel', CommunityChannelPropsType::class);
+        $builder->add('community_channel', CommunityChannelPropsType::class);
     }
 
     /**

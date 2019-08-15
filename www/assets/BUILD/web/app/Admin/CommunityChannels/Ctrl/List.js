@@ -99,23 +99,23 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         }
       });
 
-      return inst.result.then(move_to => this.deleteFeedbackType(community_channel, move_to));
+      return inst.result.then(move_to => this.deleteCommunityChannel(community_channel, move_to));
     }
 
     /*
     * Actually do the delete
-  * @param community_channel - feedback type we want to delete
-  * @param move_to - to what type feedback should be moved
+  * @param community_channel - community channel we want to delete
+  * @param move_to - to what type community topic should be moved
     */
 
-    deleteFeedbackType(community_channel, move_to) {
+    deleteCommunityChannel(community_channel, move_to) {
       return this.Api.sendDelete(`/community_channels/${community_channel.id}`, {
         move_to
       }).success(() => {
         this.CommunityChannelsData.remove(community_channel.id);
         this.ngApply();
 
-        // if currently viewing the deleted feedback type, then should need to switch state
+        // if currently viewing the deleted community topic, then should need to switch state
         if ((this.$state.current.name === 'portal.community_channels.edit') && (parseInt(this.$state.params.id) === community_channel.id)) {
           return this.$state.go('portal.community_channels');
         }

@@ -18,7 +18,7 @@ define([
     }
 
     /**
-    * Loads all feedback types
+    * Loads all community channels
       * Returns a promise.
       *
       * @return {Promise}
@@ -76,7 +76,7 @@ define([
     }
 
     /*
-    * Returns list of community_channels where feedback of specified community_channel could be moved to
+    * Returns list of community_channels where community topic of specified community_channel could be moved to
   * @param model - specified community_channel model
     * @return array
     */
@@ -94,7 +94,7 @@ define([
     }
 
     /**
-        * Creates entities for feedback types raw data
+        * Creates entities for community channels raw data
         *
         * @return {Promise}
     */
