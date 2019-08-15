@@ -4,7 +4,7 @@ import Modal from 'DeskPRO/Component/Semantic/Modal';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import AccountList from './AccountList';
-import { loadAccounts, createCloudAccount } from '../../../Actions/accountActions';
+import { loadAccounts } from '../../../Actions/accountActions';
 import { allAccountsSelector, isAccountsLoadedSelector } from '../../../Selectors/account';
 import NewAccountContainer from '../Form/NewAccountContainer';
 import EditAccountContainer from '../Form/EditAccountContainer';
@@ -36,7 +36,8 @@ class AccountListContainer extends React.Component {
     this.state = {
       formOpened:  false,
       editAccount: null,
-      accountType: null
+      accountType: null,
+      isManaged:   false
     };
   }
 
@@ -48,10 +49,11 @@ class AccountListContainer extends React.Component {
     dispatch(loadNumbers());
   }
 
-  openNewAccountForm = (accountType) => {
+  openNewAccountForm = (accountType, isManaged = false) => {
     this.setState({
       formOpened: true,
-      accountType
+      accountType,
+      isManaged
     });
   };
 
@@ -71,15 +73,11 @@ class AccountListContainer extends React.Component {
     });
   };
 
-  createCloudAccount = () => {
-    this.props.dispatch(createCloudAccount('twilio'));
-  };
-
   saveSettings = data => this.props.dispatch(updateSettings(data));
 
   render() {
     const { accountsLoaded, settingsLoaded, numbersLoaded } = this.props;
-    const { editAccount, accountType, formOpened } = this.state;
+    const { editAccount, accountType, isManaged, formOpened } = this.state;
     const FormContainer = editAccount ? EditAccountContainer : NewAccountContainer;
     const title = editAccount ? 'Edit account' : 'New account';
 
@@ -93,11 +91,10 @@ class AccountListContainer extends React.Component {
           {...this.props}
           openNewAccountForm={this.openNewAccountForm}
           openEditAccountForm={this.openEditAccountForm}
-          createCloudAccount={this.createCloudAccount}
           saveSettings={this.saveSettings}
         />
         <Modal isOpen={formOpened} onClose={this.onClose} title={title} onCloseButtonClick={this.closeEditPopup}>
-          <FormContainer account={editAccount} accountType={accountType} onClose={this.closeEditPopup}>
+          <FormContainer account={editAccount} accountType={accountType} isManaged={isManaged} onClose={this.closeEditPopup}>
             <AccountForm />
           </FormContainer>
         </Modal>

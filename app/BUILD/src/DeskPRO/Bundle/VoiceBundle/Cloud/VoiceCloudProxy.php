@@ -112,32 +112,29 @@ class VoiceCloudProxy
 
         $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
 
-        try {
-            $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
-            $client->setMethod(\Zend\Http\Request::METHOD_GET);
-            $client->setUri($url);
+        $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+        $client->setUri($url);
 
-            $response = $client->send();
-            $data     = json_decode($response->getBody(), true);
+        $response = $client->send();
+        $data     = json_decode($response->getBody(), true);
 
-            if (!empty($data['error'])) {
-                throw new InsufficientBalanceException($data['code']);
-            }
-
-            if (empty($data['accessToken']) || empty($data['accessToken'])) {
-                throw new AccessDeniedException('dpms');
-            }
-
-            /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
-            $settingsRepo = $this->em->getRepository(Setting::class);
-            $settingsRepo->updateSetting('dpss.access_token', $data['accessToken']);
-            $settingsRepo->updateSetting('dpss.auth_token', $data['authToken']);
-            $settingsRepo->updateSetting('dpss.twilio_proxy_service_url', $data['twilioProxyServiceUrl']);
-
-            return $data;
-        } catch (\Exception $e) {
-            SystemErrorHandler::logException($e);
-            throw new AccessDeniedException('not_found', $e);
+        if (!empty($data['error'])) {
+            SystemErrorHandler::logException(new \Exception(json_encode($data)));
+            throw new InsufficientBalanceException($data['code']);
         }
+
+        if (empty($data['accessToken']) || empty($data['accessToken'])) {
+            SystemErrorHandler::logException(new \Exception(json_encode($data)));
+            throw new AccessDeniedException('dpms');
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
+        $settingsRepo = $this->em->getRepository(Setting::class);
+        $settingsRepo->updateSetting('dpss.access_token', $data['accessToken']);
+        $settingsRepo->updateSetting('dpss.auth_token', $data['authToken']);
+        $settingsRepo->updateSetting('dpss.twilio_proxy_service_url', $data['twilioProxyServiceUrl']);
+
+        return $data;
     }
 }
