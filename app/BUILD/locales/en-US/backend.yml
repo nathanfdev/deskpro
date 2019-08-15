@@ -420,11 +420,11 @@ adm.email_templates.user_rating: Rating
 adm.email_templates.user_tickets: 'Ticket Emails'
 adm.email_templates.user_validation: Validation
 adm.email_templates.user_warnings: 'Warnings, alerts & errors'
-adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this community custom channel will be moved to:'
-adm.community_categories.delete_cummunity_custom_channel: 'Delete Community Custom Channel'
-adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this community custom channel?'
-adm.community_custom_channels.new_channel: 'New Community Custom Channel'
-adm.community_custom_channels.parent_explain: 'By setting a parent channel, this channel becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
+adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community channel will be moved to:'
+adm.community_categories.delete_cummunity_custom_channel: 'Delete Custom Community Channel'
+adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community channel?'
+adm.community_custom_channels.new_channel: 'New Custom Community Channel'
+adm.community_custom_channels.parent_explain: 'By setting a parent category, this category becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
 adm.community_custom_channels.title: Title
 adm.community_custom_channels.title_error: 'You must enter a valid title'
 adm.community_custom_channels.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
@@ -503,8 +503,8 @@ adm.general.x_community_active_statuses:
   one: '{{count}} Community Active Status'
   other: '{{count}} Community Active Statuses'
 adm.general.x_community_custom_channels:
-  one: '{{count}} Community Custom Channel'
-  other: '{{count}} Community Custom Channels'
+  one: '{{count}} Custom Community Channel'
+  other: '{{count}} Custom Community Channels'
 adm.general.x_community_closed_statuses:
   one: '{{count}} Community Closed Status'
   other: '{{count}} Community Closed Statuses'

@@ -63,7 +63,7 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         $manager->persist($cat);
 
         //------------------------------
-        // Initial community custom channels:
+        // Initial custom community channels:
 
         //------------------------------
 

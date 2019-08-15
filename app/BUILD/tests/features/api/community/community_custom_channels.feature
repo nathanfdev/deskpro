@@ -1,8 +1,8 @@
 @new
 Feature: /community_custom_channels endpoint
-  To retrieve info about community custom channels (custom_category)
+  To retrieve info about custom community channels (custom_category)
   As an API user
-  I want an endpoint for community custom channels
+  I want an endpoint for custom community channels
 
   Background:
     Given I'm authenticated as admin

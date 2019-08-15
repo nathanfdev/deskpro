@@ -70,12 +70,12 @@ adm.general.x_community_active_statuses:
   many: '{{count}} Community Active Statuses'
   other: '{{count}} Community Active Statuses'
 adm.general.x_community_custom_channels:
-  zero: '{{count}} Community Custom Channels'
-  one: '{{count}} Community Custom Channel'
-  two: '{{count}} Community Custom Channels'
-  few: '{{count}} Community Custom Channels'
-  many: '{{count}} Community Custom Channels'
-  other: '{{count}} Community Custom Channels'
+  zero: '{{count}} Custom Community Channels'
+  one: '{{count}} Custom Community Channel'
+  two: '{{count}} Custom Community Channels'
+  few: '{{count}} Custom Community Channels'
+  many: '{{count}} Custom Community Channels'
+  other: '{{count}} Custom Community Channels'
 adm.general.x_community_closed_statuses:
   zero: '{{count}} Community Closed Statuses'
   one: '{{count}} Community Closed Status'
