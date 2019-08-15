@@ -232,31 +232,29 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             $helpdeskUrl  = $urlCorrector->forceCorrectUrlScheme($helpdeskUrl, $request);
         }
 
-        $basePath = $request ? $request->getBasePath() : '';
+        $correctAssetUrl = function ($assetUrl) use ($baseUrl, $request, $brand) {
+            $basePath = $request ? $request->getBasePath() : '';
+
+            if (!preg_match('#^https?://#i', $assetUrl)) {
+                $assetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$assetUrl;
+            }
+            if ($request) {
+                $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
+                $assetUrl     = $urlCorrector->forceCorrectUrlScheme($assetUrl, $request);
+            }
+
+            return $assetUrl;
+        };
 
         if ($useDynAssets) {
             $loaderUrl = rtrim($helpdeskUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
         } else {
             $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
-            if (!preg_match('#^https?://#i', $loaderUrl)) {
-                $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
-            }
-
-            if ($request) {
-                $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
-                $loaderUrl    = $urlCorrector->forceCorrectUrlScheme($loaderUrl, $request);
-            }
+            $loaderUrl = $correctAssetUrl($loaderUrl);
         }
 
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
-        if (!preg_match('#^https?://#i', $widgetUrl)) {
-            $widgetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$widgetUrl;
-        }
-
-        if ($request) {
-            $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
-            $widgetUrl    = $urlCorrector->forceCorrectUrlScheme($widgetUrl, $request);
-        }
+        $widgetUrl = $correctAssetUrl($widgetUrl);
 
         $model = new WidgetUrlSettings();
         $model
