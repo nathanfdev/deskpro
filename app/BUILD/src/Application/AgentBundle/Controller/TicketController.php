@@ -4642,7 +4642,9 @@ class TicketController extends AbstractController
             $this->em->rollback();
             throw $e;
         }
+
         $newTicket->setParentTicket($ticket);
+        $newTicket->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
 
         /** @var Ticket $oldTicket */
         $oldTicket = $ticket;
