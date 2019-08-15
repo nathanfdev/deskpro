@@ -676,7 +676,7 @@
 	<span class="new-val expand" data-set=".set-detail">
 		{% if log.action_type == 'changed_agent_participants' %}
 			{{ phrase('agent.tickets.log_changed_agent_followers') }}
-		{% elseif log.action_type == 'changed_participants' %}
+		{% elseif log.action_type == 'changed_user_participants' %}
 			{{ phrase('agent.tickets.log_changed_users_ccs') }}
 		{% else %}
 			{{ phrase('agent.tickets.log_changed_participants') }}

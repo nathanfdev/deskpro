@@ -16,6 +16,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TicketAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
@@ -616,6 +617,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var TicketLog[]
      */
     protected $logs;
+    /**
+     * @var TicketAttribute[]
+     */
+    protected $attributes;
 
     /**
      * Constructor.
@@ -641,6 +646,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->stars            = new ArrayCollection();
         $this->followUps        = new ArrayCollection();
         $this->logs             = new ArrayCollection();
+        $this->attributes       = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -4939,6 +4945,64 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketAttribute[]
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return TicketAttribute|null
+     */
+    public function getAttribute($name)
+    {
+        foreach ($this->attributes as $attr) {
+            if ($attr->getName() === $name) {
+                return $attr;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param TicketAttribute $attr
+     *
+     * @return $this
+     */
+    public function addAttribute(TicketAttribute $attr)
+    {
+        $this->attributes->add($attr);
+        $attr->setTicket($this);
+
+        return $this;
+    }
+
+    /**
+     * @param string|TicketAttribute $attr
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function removeAttribute($attr)
+    {
+        if (!$attr instanceof TicketAttribute) {
+            $attr = $this->getAttribute($attr);
+            if (!$attr) {
+                throw new \OutOfBoundsException();
+            }
+        }
+
+        $this->attributes->removeElement($attr);
+
+        return $this;
+    }
+
+    /**
      * @return TicketLog[]|ArrayCollection
      */
     public function getLogs()
@@ -5587,6 +5651,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'     => 'followUps',
                 'targetEntity'  => TicketFollowUp::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'attributes',
+                'targetEntity'  => TicketAttribute::class,
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

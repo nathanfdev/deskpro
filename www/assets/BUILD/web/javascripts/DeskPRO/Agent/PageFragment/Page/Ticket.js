@@ -3225,6 +3225,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     $('.ticket-message-edit-btn', wrap).live('click', function(event) {
       menu.openMenu(event);
     });
+    $('.message-recipients .remove', wrap).on('click', function(event) {
+      if (confirm(event.target.dataset.confirm)) {
+        $.ajax({
+          url: event.target.dataset.deleteUrl,
+          data: {
+            person_id: event.target.dataset.personId
+          },
+          dataType: 'json',
+          withActionAlerts: true,
+          success: function(data) {
+            if (data.success) {
+              self.getEl('cc_row_list').html(data.cc_list);
+              var recipients = event.target.parentElement.parentElement;
+              event.target.parentElement.remove();
+              var absents = $('.absent', recipients);
+              var count = parseInt(absents.text().match(/\d+/));
+              if (count > 1) {
+                absents.text(absents.text().replace(/\d+/, count - 1));
+              } else {
+                absents.prev().remove();
+                absents.remove();
+              }
+            }
+          }
+        });
+      }
+    });
   },
 
   _doMessageAction: function(optionId, messageId, itemEl) {

@@ -55,6 +55,11 @@ services:
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
+  event_listener.doctrine.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketMessageListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.doctrine.agent_message:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener
     arguments: ["@event_dispatcher"]

@@ -238,6 +238,13 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $exec_count = 0;
 
     /**
+     * Email recipients.
+     *
+     * @var array
+     */
+    protected $recipients = [];
+
+    /**
      * The raw source, pieced together.
      *
      * This is public on purpose. The AbstractFetcher
@@ -475,6 +482,37 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->exec_count = $exec_count;
     }
 
+    /**
+     * @return array
+     */
+    public function getRecipients()
+    {
+        if ($this->recipients) {
+            return $this->recipients;
+        }
+
+        return [];
+    }
+
+    public function addRecipient($recipient)
+    {
+        $recipients           = $this->getRecipients();
+        $recipient['address'] = strtolower($recipient['address']);
+        $recipients[]         = $recipient;
+        $this->setModelField('recipients', $recipients);
+    }
+
+    /**
+     * @param array $recipients
+     */
+    public function setRecipients($recipients)
+    {
+        foreach ($recipients as &$recipient) {
+            $recipient['address'] = strtolower($recipient['address']);
+        }
+        $this->setModelField('recipients', $recipients);
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -690,6 +728,14 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'datetime',
             'nullable'   => false,
             'columnName' => 'date_created',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'recipients',
+            'type'       => 'json_array',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'recipients',
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([

@@ -1113,6 +1113,11 @@ $collection->create('agent_ticket_delpart', [
     'controller' => 'AgentBundle:Ticket:removeParticipant',
 ]);
 
+$collection->create('agent_ticket_delabsent', [
+    'path'       => '/tickets/{ticket_id}/remove-absent.json',
+    'controller' => 'AgentBundle:Ticket:removeAbsent',
+]);
+
 $collection->create('agent_ticket_ajaxtab_releated_content', [
     'path'         => '/tickets/{ticket_id}/ajax-tab-related-content',
     'controller'   => 'AgentBundle:Ticket:ajaxTabRelatedContent',

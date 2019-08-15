@@ -265,6 +265,11 @@ class TicketMessage extends DomainObject
     protected $ticketFeedback;
 
     /**
+     * @var array|callable|null
+     */
+    protected $emailRecipients = null;
+
+    /**
      * TicketMessage constructor.
      *
      * @param null $email_id
@@ -1087,6 +1092,20 @@ class TicketMessage extends DomainObject
         }
     }
 
+    public function setEmailRecipients($recipients)
+    {
+        $this->emailRecipients = $recipients;
+    }
+
+    public function getEmailRecipients()
+    {
+        if (is_callable($this->emailRecipients)) {
+            $this->emailRecipients = call_user_func($this->emailRecipients);
+        }
+
+        return $this->emailRecipients;
+    }
+
     public function incTicketCount()
     {
         if (!$this->ticket) {
@@ -1160,6 +1179,22 @@ class TicketMessage extends DomainObject
     public function setIpAddress($ip_address)
     {
         $this->setModelField('ip_address', $ip_address);
+    }
+
+    /**
+     * @return EmailAccount[]|ArrayCollection
+     */
+    public function getEmailAccounts()
+    {
+        return $this->emailAccounts;
+    }
+
+    /**
+     * @param EmailAccount[]|ArrayCollection $emailAccounts
+     */
+    public function setEmailAccounts($emailAccounts)
+    {
+        $this->emailAccounts = $emailAccounts;
     }
 
     /**

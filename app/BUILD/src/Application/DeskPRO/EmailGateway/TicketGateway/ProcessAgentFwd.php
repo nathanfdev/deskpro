@@ -224,6 +224,10 @@ class ProcessAgentFwd extends ProcessAbstract
 
         if ($this->reader->getProperty('email_source')) {
             $ticketMessage->email_source = $this->reader->getProperty('email_source');
+
+            $emailRecipients = new TicketMessageAttribute('email_recipients');
+            $emailRecipients->setValue(json_encode($ticketMessage->email_source->getRecipients()));
+            $ticketMessage->addAttribute($emailRecipients);
         }
 
         $ticket->addMessage($ticketMessage);
@@ -267,7 +271,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
             }
 
@@ -282,9 +286,9 @@ class ProcessAgentFwd extends ProcessAbstract
         }
 
         $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: '.$ticketMessage->getMessageHash());
-        if ($dupe_message = App::getOrm()->getRepository(TicketMessage::class)->checkDupeMessage($ticketMessage, null, 10800, $this->getLogger())) {
+        if ($dupeMessage = App::getOrm()->getRepository(TicketMessage::class)->checkDupeMessage($ticketMessage, null, 10800, $this->getLogger())) {
             $this->setError('duplicate_message');
-            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message '.$dupe_message->getId());
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message '.$dupeMessage->getId());
 
             $message = App::getMailer()->createMessage();
             $message->setSuppressAutoreplies(true);
@@ -292,7 +296,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
                 'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
                 'error'         => $this->error,
-                'old_ticket_id' => $dupe_message->ticket->id,
+                'old_ticket_id' => $dupeMessage->ticket->id,
             ]);
             $message->setTo($this->reader->getFromAddress()->getEmail());
             $message->attach(\Swift_Attachment::newInstance(
@@ -566,6 +570,10 @@ class ProcessAgentFwd extends ProcessAbstract
 
         if ($this->reader->getProperty('email_source')) {
             $ticketMessage->email_source = $this->reader->getProperty('email_source');
+
+            $emailRecipients = new TicketMessageAttribute('email_recipients');
+            $emailRecipients->setValue(json_encode($ticketMessage->email_source->getRecipients()));
+            $ticketMessage->addAttribute($emailRecipients);
         }
 
         $ticket->addMessage($ticketMessage);
@@ -625,7 +633,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $ticket->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
             }
 
@@ -639,7 +647,7 @@ class ProcessAgentFwd extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $agentTicketMessage ? $agentTicketMessage->person : $ticket->person;
 
-            if (isset($this->inline_blobs[$blob->id])) {
+            if (isset($this->inlineBlobs[$blob->id])) {
                 $attach->is_inline = true;
             }
 
