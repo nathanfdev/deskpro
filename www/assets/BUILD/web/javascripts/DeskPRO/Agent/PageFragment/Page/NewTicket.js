@@ -2396,7 +2396,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       var option = followerSel.find('option[value="' + agentId + '"]');
 
-      var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="icon-remove"></i></span></a></li>');
+      var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="fas fa-times"></i></span></a></li>');
       li.find('span.text').css('background-image', 'url(' +option.data('icon-small') + ')').text(option.text());
 
       followersList.append(li);
