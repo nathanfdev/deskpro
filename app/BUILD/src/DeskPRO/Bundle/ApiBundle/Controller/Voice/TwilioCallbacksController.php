@@ -621,31 +621,31 @@ class TwilioCallbacksController extends BaseController
         ]);
         if (!$phoneCall) {
             $twiml->hangup();
-        }
-
-        $this->get('event_dispatcher')->dispatch(
-            LegacySystemEvent::EVENT_NAME,
-            new LegacySystemEvent('agent.voice.reached-voicemail', [
-                'call_id' => $phoneCall->getId(),
-            ])
-        );
-
-        $asset   = null;
-        $assetId = $request->query->get('asset');
-        if ($assetId) {
-            $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
-        }
-
-        // get voicemail message
-        if ($asset) {
-            $this->playGreetAsset($twiml, $asset);
         } else {
-            $twiml->say('You have reached voicemail. Please leave a message.', [
-                'voice' => 'alice',
-            ]);
-        }
+            $this->get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.reached-voicemail', [
+                    'call_id' => $phoneCall->getId(),
+                ])
+            );
 
-        $twiml->redirect($this->getVoicemailRecordUrl($account));
+            $asset   = null;
+            $assetId = $request->query->get('asset');
+            if ($assetId) {
+                $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
+            }
+
+            // get voicemail message
+            if ($asset) {
+                $this->playGreetAsset($twiml, $asset);
+            } else {
+                $twiml->say('You have reached voicemail. Please leave a message.', [
+                    'voice' => 'alice',
+                ]);
+            }
+
+            $twiml->redirect($this->getVoicemailRecordUrl($account));
+        }
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
