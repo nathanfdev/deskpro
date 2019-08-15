@@ -229,7 +229,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         if ($request) {
             $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
-            $helpdeskUrl  = $urlCorrector->correctUrlScheme($helpdeskUrl, $request);
+            $helpdeskUrl  = $urlCorrector->forceCorrectUrlScheme($helpdeskUrl, $request);
         }
 
         $basePath = $request ? $request->getBasePath() : '';
@@ -241,11 +241,21 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             if (!preg_match('#^https?://#i', $loaderUrl)) {
                 $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
             }
+
+            if ($request) {
+                $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
+                $loaderUrl    = $urlCorrector->forceCorrectUrlScheme($loaderUrl, $request);
+            }
         }
 
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
         if (!preg_match('#^https?://#i', $widgetUrl)) {
             $widgetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$widgetUrl;
+        }
+
+        if ($request) {
+            $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
+            $widgetUrl    = $urlCorrector->forceCorrectUrlScheme($widgetUrl, $request);
         }
 
         $model = new WidgetUrlSettings();

@@ -109,6 +109,21 @@ class UrlCorrector
     }
 
     /**
+     * @param string  $url
+     * @param Request $request
+     *
+     * @return string
+     */
+    public function forceCorrectUrlScheme($url, Request $request)
+    {
+        if ($request->isSecure() && !preg_match('#^https:#i', $url)) {
+            $url = preg_replace('#^http:#i', 'https:', $url);
+        }
+
+        return $url;
+    }
+
+    /**
      * @param Request $request
      *
      * @return string
