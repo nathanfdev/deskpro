@@ -9,6 +9,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use Doctrine\ORM\EntityManager;
+use DpSys\License;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -56,7 +57,11 @@ class VoiceCloudProxy
      */
     public function initTwilioProxy(Person $person)
     {
-        $data = $this->callMemberArea($person);
+        if (defined('DPC_IS_CLOUD')) {
+            $data = $this->callMemberAreaCloud($person);
+        } else {
+            $data = $this->callMemberAreaOnPrem($person);
+        }
 
         $apiHost     = "{$data['twilioProxyServiceUrl']}/twilio/twilio-api-proxy/{$data['accessToken']}/{$data['authToken']}";
         $pricingHost = "{$data['twilioProxyServiceUrl']}/twilio/twilio-pricing-proxy/{$data['accessToken']}/{$data['authToken']}";
@@ -85,7 +90,7 @@ class VoiceCloudProxy
      *
      * @return array
      */
-    private function callMemberArea(Person $person, array $data = [])
+    private function callMemberAreaCloud(Person $person, array $data = [])
     {
         $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpss.access_token');
         $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpss.auth_token');
@@ -119,9 +124,9 @@ class VoiceCloudProxy
         $response = $client->send();
         $data     = json_decode($response->getBody(), true);
 
-        if (!empty($data['error'])) {
+        if (!$data || !empty($data['error'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)));
-            throw new InsufficientBalanceException($data['code']);
+            throw new InsufficientBalanceException(@$data['code']);
         }
 
         if (empty($data['accessToken']) || empty($data['accessToken'])) {
@@ -136,5 +141,68 @@ class VoiceCloudProxy
         $settingsRepo->updateSetting('dpss.twilio_proxy_service_url', $data['twilioProxyServiceUrl']);
 
         return $data;
+    }
+
+    /**
+     * Calls MA.
+     *
+     * @param Person $person
+     * @param array  $data
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    private function callMemberAreaOnPrem(Person $person, array $data = [])
+    {
+        $accessToken = $this->settingsResolver->getGlobalSettings()->get('dpss.access_token');
+        $authToken   = $this->settingsResolver->getGlobalSettings()->get('dpss.auth_token');
+        $proxyUrl    = $this->settingsResolver->getGlobalSettings()->get('dpss.twilio_proxy_service_url');
+
+        if ($accessToken && $authToken && $proxyUrl) {
+            return [
+                'accessToken'           => $accessToken,
+                'authToken'             => $authToken,
+                'twilioProxyServiceUrl' => $proxyUrl,
+            ];
+        }
+
+        // dpss hasn't been set up yet
+        if (empty($accessToken) || empty($authToken)) {
+            throw new InsufficientBalanceException('No DPSS access token configured', 402);
+        }
+
+        $url = sprintf(
+            '%s/api/member-services-call/%s/%s/register-twilio',
+            DP_MA_SERVER_SECURE,
+            'LICENSE',
+            License::getLicense()->getLicenseId()
+        );
+
+        $hdBaseUrl = $this->settingsResolver->getGlobalSettings()->get('dpss.callback_base_url')
+            ?: $this->settingsResolver->getGlobalSettings()->get('core.deskpro_url');
+
+        $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+        $client->setAuth($accessToken, $authToken);
+        $client->setMethod(\Zend\Http\Request::METHOD_POST);
+        $client->setUri($url);
+        $client->setParameterPost(['baseUrl' => $hdBaseUrl]);
+
+        $response = $client->send();
+        $data     = json_decode($response->getBody(), true);
+
+        if (!$data || !empty($data['error']) || empty($data['twilioProxyServiceUrl'])) {
+            SystemErrorHandler::logException(new \Exception(json_encode($data)), false, null, true);
+            throw new InsufficientBalanceException(@$data['code']);
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
+        $settingsRepo = $this->em->getRepository(Setting::class);
+        $settingsRepo->updateSetting('dpss.twilio_proxy_service_url', $data['twilioProxyServiceUrl']);
+
+        return array_merge([
+            'accessToken' => $accessToken,
+            'authToken'   => $authToken,
+        ], $data);
     }
 }
