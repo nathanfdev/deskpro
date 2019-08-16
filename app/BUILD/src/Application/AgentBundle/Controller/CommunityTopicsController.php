@@ -93,12 +93,12 @@ class CommunityTopicsController extends AbstractController
             'hidden' => $communityTopicRepository->countHiddenGrouped($selectedBrandId),
         ];
 
-        $categoryCounts = $communityTopicRepository->countAllCategoriesGrouped();
+        $channelCounts = $communityTopicRepository->countAllChannelsGrouped();
 
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
-        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
-            return $category['brand_id'] === $selectedBrandId;
+        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($channel) use ($selectedBrandId) {
+            return $channel['brand_id'] === $selectedBrandId;
         });
 
         /** @var Brand[] $brands */
@@ -113,7 +113,7 @@ class CommunityTopicsController extends AbstractController
                 [
                     'counts'                    => $counts,
                     'status_counts'             => $statusCounts,
-                    'category_counts'           => $categoryCounts,
+                    'channel_counts'            => $channelCounts,
                     'community_channels'        => $communityChannels,
                     'active_status_cats'        => $activeStatusCategories,
                     'closed_status_cats'        => $closedStatusCategories,
@@ -219,7 +219,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         $state       = $personPrefRepository->getPrefForPersonId('agent.ui.state.editcommunity', $this->person->id);
-        $channel     = $communityTopic->getCategory();
+        $channel     = $communityTopic->getChannel();
         $channelPath = $channel->getTreeParents();
 
         $ratedSearches           = $searchLogRepository->getRatedSearchesFor('community', $communityTopic['id'], 'counted');
@@ -303,14 +303,14 @@ class CommunityTopicsController extends AbstractController
 
     public function ajaxGetChannelsByBrandAction($brand_id)
     {
-        $communityChannels = array_filter($this->em->getRepository(CommunityChannel::class)->getFlatHierarchy(), function ($category) use ($brand_id) {
-            return $category['brand_id'] === (int) $brand_id;
+        $communityChannels = array_filter($this->em->getRepository(CommunityChannel::class)->getFlatHierarchy(), function ($channel) use ($brand_id) {
+            return $channel['brand_id'] === (int) $brand_id;
         });
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
-            'name'             => 'newcomunitytopic[category_id]',
+            'name'             => 'newcomunitytopic[channel_id]',
             'id'               => '_cat',
-            'add_classname'    => 'category_id',
+            'add_classname'    => 'channel_id',
             'add_attr'         => '',
             'with_blank'       => 0,
             'blank_title'      => '',
@@ -388,18 +388,18 @@ class CommunityTopicsController extends AbstractController
      * @param $communityTopicId
      * @param $channelId
      *
-     * @throws \Exception
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
      *
      * @return Response
      */
     public function ajaxUpdateChannelAction($communityTopicId, $channelId)
     {
         $communityTopic = $this->getTopic($communityTopicId);
-        $cat            = $this->em->find(CommunityChannel::class, $channelId);
-        $communityTopic->setCategory($cat);
+        $channel        = $this->em->find(CommunityChannel::class, $channelId);
+        $communityTopic->setChannel($channel);
 
         $this->em->transactional(
             function ($em) use ($communityTopic) {
@@ -517,8 +517,8 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Exception
      * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -560,9 +560,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -663,11 +663,11 @@ class CommunityTopicsController extends AbstractController
 
                 break;
 
-            case 'category':
-                $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('category_id'));
+            case 'channel':
+                $channel = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('channel_id'));
                 if ($cat) {
-                    $communityTopic['category'] = $cat;
-                    $data['channel_id']         = $cat['id'];
+                    $communityTopic['channel'] = $channel;
+                    $data['channel_id']        = $channel['id'];
                 }
                 break;
         }
@@ -746,9 +746,9 @@ class CommunityTopicsController extends AbstractController
      * @param     $communityTopicId
      * @param int $otherCommunityTopicId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -823,7 +823,7 @@ class CommunityTopicsController extends AbstractController
     //###########################################################################
 
     /**
-     * Any general search. For example, status, category or label.
+     * Any general search. For example, status, channel or label.
      *
      * @return Response
      */
@@ -839,13 +839,13 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * A shortcut to run a filter on a category.
+     * A shortcut to run a filter on a channel.
      *
      * @param int $channelId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -855,8 +855,8 @@ class CommunityTopicsController extends AbstractController
             $this,
             [
                 'specific_terms' => [
-                    'category' => ['type' => 'category', 'op' => 'is', 'category' => $channelId],
-                    'status'   => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
+                    'channel' => ['type' => 'channel', 'op' => 'is', 'channel' => $channelId],
+                    'status'  => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
                 ],
             ]
         );
@@ -866,8 +866,8 @@ class CommunityTopicsController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
-                        'category' => ['type' => 'category', 'op' => 'is', 'category' => $channelId],
-                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
+                        'channel' => ['type' => 'channel', 'op' => 'is', 'channel' => $channelId],
+                        'status'  => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
                     ],
                 ]
             );
@@ -875,15 +875,15 @@ class CommunityTopicsController extends AbstractController
             $resultHelper = $topResultHelper;
         }
 
-        $cat = $this->em->find('DeskPRO:CommunityChannel', $channelId);
+        $channel = $this->em->find('DeskPRO:CommunityChannel', $channelId);
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('status')->setIds($topResultHelper->getTopicIds());
         $grouped      = $grouping->getDisplayArray();
         $grouped_info = [];
 
-        if (!$cat->parent) {
-            $grouped_key = $cat->getId();
+        if (!$channel->parent) {
+            $grouped_key = $channel->getId();
 
             $t = 0;
             if (isset($grouped['items'][$grouped_key])) {
@@ -893,9 +893,9 @@ class CommunityTopicsController extends AbstractController
 
             $grouped_info[-1] = ['id' => -1, 'title' => 'TOTAL', 'total' => $t];
         } else {
-            $grouped_key = $cat->getId();
+            $grouped_key = $channel->getId();
             $t           = 0;
-            foreach ($cat->children as $c) {
+            foreach ($channel->children as $c) {
                 $k = $c['id'];
                 if (isset($grouped['items'][$k])) {
                     $grouped_info = Arrays::mergeAssoc($grouped_info, [$k => $grouped['items'][$k]]);
@@ -910,10 +910,10 @@ class CommunityTopicsController extends AbstractController
             $resultHelper,
             null,
             [
-                'list_type'    => 'category',
-                'brand_id'     => $cat->getBrand() ? $cat->getBrand()->getId() : null,
+                'list_type'    => 'channel',
+                'brand_id'     => $channel->getBrand() ? $channel->getBrand()->getId() : null,
                 'channel_id'   => $channelId,
-                'page_title'   => $cat->getFullTitle(),
+                'page_title'   => $channel->getFullTitle(),
                 'grouped'      => $grouped,
                 'grouped_info' => $grouped_info,
                 'grouped_key'  => $grouped_key,
@@ -997,12 +997,12 @@ class CommunityTopicsController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
-                        'brand'    => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
-                        'status'   => ['type' => 'status', 'op' => 'is', 'status' => $status],
-                        'category' => [
-                            'type'     => 'category',
-                            'op'       => 'is',
-                            'category' => $this->in->getString('subgroup'),
+                        'brand'   => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
+                        'status'  => ['type' => 'status', 'op' => 'is', 'status' => $status],
+                        'channel' => [
+                            'type'    => 'channel',
+                            'op'      => 'is',
+                            'channel' => $this->in->getString('subgroup'),
                         ],
                     ],
                 ]
@@ -1062,14 +1062,14 @@ class CommunityTopicsController extends AbstractController
         // Options for the filter form
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($brandId);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($brandId);
-        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($brandId) {
-            return $category['brand_id'] === $brandId;
+        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($channel) use ($brandId) {
+            return $channel['brand_id'] === $brandId;
         });
 
         $displayFields = $this->person->getPref('agent.ui.community-filter-display-fields.0')
             ?: [
                 'date_created',
-                'category',
+                'channel',
             ];
         $userCatField = $this->container->getSystemService('CommunityFieldsManager')->getUserCategoryField();
 
@@ -1208,9 +1208,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $action
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Response
      */
@@ -1229,10 +1229,10 @@ class CommunityTopicsController extends AbstractController
                     $communityTopic->setStatusCode($this->in->getString('status'));
                     break;
 
-                case 'set-category':
-                    $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('category_id'));
-                    if ($cat) {
-                        $communityTopic->setCategory($cat);
+                case 'set-channel':
+                    $channel = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('channel_id'));
+                    if ($channel) {
+                        $communityTopic->setChannel($channel);
                     }
                     break;
             }
@@ -1335,8 +1335,8 @@ class CommunityTopicsController extends AbstractController
 
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
-        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
-            return $category['brand_id'] === $selectedBrandId;
+        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($channel) use ($selectedBrandId) {
+            return $channel['brand_id'] === $selectedBrandId;
         });
 
         /** @var Brand[] $brands */
@@ -1452,9 +1452,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $communityTopicId
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return CommunityTopic
      */
@@ -1470,9 +1470,9 @@ class CommunityTopicsController extends AbstractController
     /**
      * @param $ticketId
      *
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Ticket
      */

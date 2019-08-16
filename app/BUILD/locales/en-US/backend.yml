@@ -3691,7 +3691,9 @@ agent.general.triggers_urgency_base: 'Default urgency for new tickets'
 agent.general.twitter: Twitter
 agent.general.twitter_username: 'Twitter username'
 agent.general.type: Type
+agent.general.channel: Channel
 agent.general.types: Types
+agent.general.channels: Channels
 agent.general.tz_wrong_explain: 'The timezone region saved in your profile appears to differ from the region reported by your computer.'
 agent.general.ucfirst_edit: Edit
 agent.general.unassign: Unassign

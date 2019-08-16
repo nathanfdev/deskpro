@@ -47,7 +47,7 @@
 				<nav class="pane-section-tabs" id="community_outline_tabstrip">
 					<ul>
 						<li style="width:33%;" data-tab-for="#community_outline_status"><span>{{ phrase('agent.general.status') }}</span></li>
-						<li style="width:33%;" data-tab-for="#community_outline_channel"><span>{{ phrase('agent.general.type') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_channel"><span>{{ phrase('agent.general.channel') }}</span></li>
 						<li style="width:33%;" data-tab-for="#community_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
 					</ul>
 				</nav>
@@ -117,7 +117,7 @@
 							>
 								<div class="item" {% if channel.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':channel.id}) }}">
 									<h3>{{ channel.title }}</h3>
-									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ category_counts[channel.id]|default(0) }}</em>
+									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ channel_counts[channel.id]|default(0) }}</em>
 								</div>
 							</li>
 						{% endfor %}

@@ -1,8 +1,8 @@
 {% extends 'AgentBundle::list-pane-layout.html.twig' %}
-{%- if list_type == 'category' -%}
+{%- if list_type == 'channel' -%}
 	{% set tplvars = {
 		baseId: el_uid(),
-		subgroup_url: path('agent_community_channels', {'channelId': category_id}) ~ '?subgroup=SUBGROUP_ID'
+		subgroup_url: path('agent_community_channels', {'channelId': channel_id}) ~ '?subgroup=SUBGROUP_ID'
 	} %}
 {%- elseif list_type == 'status' -%}
 	{% set tplvars = {
@@ -22,9 +22,9 @@
 {% block top %}
 	<script>
 		pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.CommunityFilter';
-		{% if list_type == 'category' %}
-			pageMeta.refreshUrl = '{{ path('agent_community_channels', {'channelId': category_id}) }}';
-			pageMeta.url_fragment = '{{ url_fragment('agent_community_channels', {'channel': channel}) }}';
+		{% if list_type == 'channel' %}
+			pageMeta.refreshUrl = '{{ path('agent_community_channels', {'channelId': channel_id}) }}';
+			pageMeta.url_fragment = '{{ url_fragment('agent_community_channels', {'channel': channel_id}) }}';
 		{% elseif list_type == 'status' %}
 			pageMeta.refreshUrl = '{{ path('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) }}?';
 			pageMeta.url_fragment = '{{ url_fragment('agent_community_topic_status', {'status': status, 'brand_id': selected_brand_id}) }}';
