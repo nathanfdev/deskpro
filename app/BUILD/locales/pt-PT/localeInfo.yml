@@ -1,7 +1,7 @@
-id: portuguese
-name: Portuguese
-nameLocal: Português
-locale: pt
+id: portuguese_pt
+name: Portuguese (Portugal)
+nameLocal: Português (Europeu)
+locale: pt-PT
 isRtl: false
 pluralRules:
   plurals: 2
