@@ -592,9 +592,11 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             case 1:
                 $hasData = $dataService->getTicketsCountWithFields($type, $removeIds);
                 if (!$hasData) {
-                    $dataService->deleteOptionsById($type, $removeIds);
+                    if (!$dataService->getOptionUsage($type, $removeIds)) {
+                        $dataService->deleteOptionsById($type, $removeIds);
 
-                    return $this->createSuccessResponse();
+                        return $this->createSuccessResponse();
+                    }
                 }
 
                 $all     = $dataService->getAll($type);
