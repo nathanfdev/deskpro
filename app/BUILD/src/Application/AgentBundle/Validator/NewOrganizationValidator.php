@@ -45,5 +45,11 @@ class NewOrganizationValidator extends AbstractValidator
                 $this->addError('org.'.$field->getId().'.'.$code, ['message' => $str, 'field' => 'org_field_'.$field->getId()]);
             }
         }
+
+        if ($this->errors) {
+            return false;
+        }
+
+        return true;
     }
 }
