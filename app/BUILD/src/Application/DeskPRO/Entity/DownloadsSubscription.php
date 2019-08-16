@@ -85,7 +85,7 @@ class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadSubscription';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadsSubscription';
         $metadata->setPrimaryTable([
             'name'    => 'download_subscriptions',
             'indexes' => [
