@@ -77,14 +77,24 @@ class DpqlFormat extends AbstractDpqlFunc
 
                 case 'date':
                     if ($argLiterals) {
-                        $context = $this->contextStorage->getContext();
-                        $tz      = $context ? $context->getTimezone() : 'UTC';
-
                         try {
-                            $date = new \DateTime($value, new \DateTimeZone($tz));
+                            $date = new \DateTime($value);
+                        } catch (\Exception $e) {
+                            try {
+                                $date = new \DateTime('@'.$value);
+                            } catch (\Exception $e) {
+                                $date = null;
+                            }
+                        }
+
+                        if ($date) {
+                            $context  = $this->contextStorage->getContext();
+                            $timezone = $context ? $context->getTimezone() : new \DateTimeZone('UTC');
+
+                            $date->setTimezone($timezone);
 
                             return $valueRenderer->escapeValue($date->format($argLiterals[0]));
-                        } catch (\Exception $e) {
+                        } else {
                             return $valueRenderer->escapeValue($value);
                         }
                     }
