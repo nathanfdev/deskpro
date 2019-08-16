@@ -25,6 +25,7 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
     const CONTENT_TYPE_ARTICLE  = 'article';
     const CONTENT_TYPE_NEWS     = 'news';
     const CONTENT_TYPE_DOWNLOAD = 'download';
+    const CONTENT_TYPE_TOPIC    = 'topic';
 
     /**
      * @ORM\Id()
@@ -197,12 +198,17 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param \DateTime $dateCreated
+     * @param \DateTime|null $dateCreated
+     *
+     * @throws \Exception
      *
      * @return $this
      */
-    public function setDateCreated(\DateTime $dateCreated)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
+        if ($dateCreated === null) {
+            $dateCreated = new \DateTime();
+        }
         $this->setModelField('date_created', $dateCreated);
 
         return $this;

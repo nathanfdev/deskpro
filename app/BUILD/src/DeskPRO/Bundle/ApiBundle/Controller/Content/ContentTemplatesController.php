@@ -12,7 +12,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class ContentTemplateController.
+ * Class ContentTemplatesController.
  *
  * @ApiModes("all")
  * @Rest\Route("/content_templates")
@@ -28,10 +28,12 @@ use Symfony\Component\HttpFoundation\Request;
  * )
  * @RequireAgentPermissions()
  */
-class ContentTemplateController extends CrudController
+class ContentTemplatesController extends CrudController
 {
-    public static $entity = ContentTemplate::class;
-    public static $type   = ContentTemplateType::class;
+    public static $entity    = ContentTemplate::class;
+    public static $type      = ContentTemplateType::class;
+    public static $listSort  = 'id';
+    public static $listOrder = 'asc';
 
     /**
      * {@inheritdoc}

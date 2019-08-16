@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
-use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\JsonArrayType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
@@ -19,21 +18,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ContentTemplateType extends AbstractType
 {
-    /**
-     * @var CustomFieldManager
-     */
-    private $fieldManager;
-
-    /**
-     * Constructor.
-     *
-     * @param CustomFieldManager $fieldManager
-     */
-    public function __construct(CustomFieldManager $fieldManager)
-    {
-        $this->fieldManager = $fieldManager;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -51,7 +35,7 @@ class ContentTemplateType extends AbstractType
                 'widget'        => 'single_text',
                 'required'      => false,
             ])
-            ->add('status', ChoiceType::class, [
+            ->add('type', ChoiceType::class, [
                 'multiple'          => false,
                 'expanded'          => false,
                 'choices_as_values' => true,
@@ -59,6 +43,7 @@ class ContentTemplateType extends AbstractType
                     ContentTemplate::CONTENT_TYPE_ARTICLE,
                     ContentTemplate::CONTENT_TYPE_NEWS,
                     ContentTemplate::CONTENT_TYPE_DOWNLOAD,
+                    ContentTemplate::CONTENT_TYPE_TOPIC,
 
                 ],
             ]);
