@@ -273,3 +273,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoiceMissedAgentCallVoter
     tags:
       - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.voice_asset:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoiceAssetVoter
+    tags:
+      - { name: security.voter.permission_groups }
