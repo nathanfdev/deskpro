@@ -623,7 +623,7 @@
                             <option value="1"
                                     {% if person.disable_autoresponses %}selected="selected"{% endif %}>{{ phrase('agent.people.user_is_autoresponder') }}</option>
                         </select>
-                        {% if person.disable_autoresponses and person.disable_autoresponses_log %}
+                        {% if person.disable_autoresponses_log %}
                             <div style="font-size:10px;" id="{{ baseId }}_disable_autoresponses_reason">
                                 {{ person.disable_autoresponses_log }}
                             </div>

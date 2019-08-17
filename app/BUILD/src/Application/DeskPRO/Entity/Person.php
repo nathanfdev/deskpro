@@ -3548,16 +3548,15 @@ class Person extends DomainObject implements
     {
         $val = (bool) $val;
 
-        $this->setModelField('disable_autoresponses', $val);
-        if (!$val) {
-            $this->setModelField('disable_autoresponses_log', null);
-        } else {
-            if (!$reason) {
-                $reason = 'Unknown';
-            }
-            $reason .= ' ('.date('M j Y @ H:i').' UTC)';
-            $this->setModelField('disable_autoresponses_log', $reason);
+        if (!$reason) {
+            $reason = 'Unknown';
         }
+        $reason .= ' ('.date('M j Y @ H:i').' UTC)';
+
+        $log = $this->disable_autoresponses_log."\n{$reason}";
+
+        $this->setModelField('disable_autoresponses', $val);
+        $this->setModelField('disable_autoresponses_log', $log);
     }
 
     /**
