@@ -648,7 +648,7 @@
                             </table>
                         </div>
                     </article>
-                    <article id="{{ baseId }}_linked_wrap" style="display: none">
+                    <article id="{{ baseId }}_linked_wrap" style="display: none;" class="table-wrapper">
                         {% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
                     </article>
                     {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
