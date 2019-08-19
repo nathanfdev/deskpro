@@ -308,7 +308,7 @@ class CommunityTopicsController extends AbstractController
         });
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
-            'name'             => 'newcomunitytopic[channel_id]',
+            'name'             => 'newcommunitytopic[channel_id]',
             'id'               => '_cat',
             'add_classname'    => 'channel_id',
             'add_attr'         => '',
@@ -327,7 +327,7 @@ class CommunityTopicsController extends AbstractController
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($brand_id);
 
         return $this->render('AgentBundle:Common:select-community-topic-status.html.twig', [
-            'name'               => 'newcomunitytopic[status_code]',
+            'name'               => 'newcommunitytopic[status_code]',
             'id'                 => '_cat',
             'add_classname'      => 'status_id',
             'add_attr'           => '',
@@ -1341,7 +1341,7 @@ class CommunityTopicsController extends AbstractController
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
-        $state  = $personPrefRepository->getPrefForPersonId('agent.ui.state.newcomunitytopic', $this->person->id);
+        $state  = $personPrefRepository->getPrefForPersonId('agent.ui.state.newcommunitytopic', $this->person->id);
 
         return $this->render(
             'AgentBundle:Community:new-community-topic.html.twig',
@@ -1402,7 +1402,7 @@ class CommunityTopicsController extends AbstractController
             /** @var PersonPrefRepository $personPrefRepository */
             $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
             $personPrefRepository->deletePrefForPersonId(
-                'agent.ui.state.newcomunitytopic',
+                'agent.ui.state.newcommunitytopic',
                 $this->person->id
             );
 

@@ -2114,7 +2114,7 @@ $collection->create('agent_community_topic_new_save', [
 ]);
 
 $collection->create('agent_community_topic_view', [
-    'path'       => '/community/view/{communityTopicId}',
+    'path'       => '/community/topic/view/{communityTopicId}',
     'controller' => 'AgentBundle:CommunityTopics:view',
     'options'    => ['fragment_name' => 'i'],
 ]);
