@@ -2828,7 +2828,8 @@ agent.emails.whitelist_ip_note: 'Once the IP address has been validated, you wil
 agent.emails.whitelist_ip_subject: 'Verify DeskPRO Login - New IP Address'
 agent.emails.whitelist_ip_validation_link: 'If this is a valid login attempt by you, click the following link to validate the new IP address:'
 agent.emails.your_initial_password: 'Your initial password'
-agent.community.any_category: 'Any Category'
+agent.community.community_custom_channel: 'Custom Channel'
+agent.community.any_category: 'Any Channel'
 agent.community.any_status: 'Any Status'
 agent.community.count_votes:
   one: '{{display_count}} vote'
