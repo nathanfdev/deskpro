@@ -23,7 +23,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="layout-content full-page page-community-topic-view {% if not perms.can_edit %}perm-no-edit{% endif %} {% if not perms.can_delete %}perm-no-delete{% endif %}">
 <div class="dp-page-content">
 <div class="delete-notice" {% if topic.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
-	{{ phrase('agent.community.community_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
+	{{ phrase('agent.community.community_topic_deleted') }} <button class="clean-gray xxx-small undelete">{{ phrase('agent.general.undelete') }}</button>
 </div>
 
 <div class="spam-notice" {% if topic.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
