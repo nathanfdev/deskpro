@@ -35,7 +35,7 @@ class ContentTemplateVoter implements PermissionGroupEntityVoterInterface
                 return false;
             }
 
-            if ($user->hasPerm('agent_publish.edit') && $contentTemplate->getPerson() && $contentTemplate->getPerson()->getId() == $user->getId()) {
+            if ($contentTemplate->getPerson() && $contentTemplate->getPerson()->getId() == $user->getId()) {
                 return true;
             }
         }
