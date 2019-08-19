@@ -22,15 +22,12 @@ class ApprovalTemplate extends AbstractApproval
     /**
      * @var ApproverCriteria
      *
-     * @ORM\Embedded(
-     *     class="DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria",
-     *     columnPrefix="approver_criteria_",
-     * )
+     * @ORM\Column(name="approval_criteria", type="dp_json_obj", nullable=false)
      *
      * @JMS\Expose
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria")
      */
-    private $approverCriteria;
+    protected $approverCriteria;
 
     /**
      * @return ApproverCriteria
@@ -46,7 +43,7 @@ class ApprovalTemplate extends AbstractApproval
      */
     public function setApproverCriteria(ApproverCriteria $approverCriteria)
     {
-        $this->approverCriteria = $approverCriteria;
+        $this->setModelField('approverCriteria', $approverCriteria);
 
         return $this;
     }

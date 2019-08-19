@@ -3,31 +3,25 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
 use JMS\Serializer\Annotation as JMS;
-use Doctrine\ORM\Mapping as ORM;
+use Orb\Types\JsonObjectSerializable;
 
 /**
  * Class ApproverCriteria
  *
- * @ORM\Embeddable
- *
  * @JMS\ExclusionPolicy("all")
  */
-class ApproverCriteria
+class ApproverCriteria implements JsonObjectSerializable
 {
     /**
-     * @var int[]|null
-     *
-     * @ORM\Column(name="agents", type="json_array", nullable=true)
+     * @var int[]
      *
      * @JMS\Expose
      * @JMS\Type("array<integer>")
      */
-    private $agents;
+    private $agents = [];
 
     /**
      * @var bool
-     *
-     * @ORM\Column(name="all_agents", type="boolean", nullable=false)
      *
      * @JMS\Expose
      * @JMS\Type("boolean")
@@ -35,19 +29,15 @@ class ApproverCriteria
     private $allAgents = false;
 
     /**
-     * @var int[]|null
-     *
-     * @ORM\Column(name="users", type="json_array", nullable=true)
+     * @var int[]
      *
      * @JMS\Expose
      * @JMS\Type("array<integer>")
      */
-    private $users;
+    private $users = [];
 
     /**
      * @var bool
-     *
-     * @ORM\Column(name="all_users", type="boolean", nullable=false)
      *
      * @JMS\Expose
      * @JMS\Type("boolean")
@@ -57,32 +47,26 @@ class ApproverCriteria
     /**
      * @var bool
      *
-     * @ORM\Column(name="org_managers", type="boolean", nullable=false)
-     *
      * @JMS\Expose
      * @JMS\Type("boolean")
      */
-    private $organisationManagers = false;
+    private $organizationManagers = false;
 
     /**
-     * @var int[]|null
-     *
-     * @ORM\Column(name="teams", type="json_array", nullable=true)
+     * @var int[]
      *
      * @JMS\Expose
      * @JMS\Type("array<integer>")
      */
-    private $teams;
+    private $teams = [];
 
     /**
-     * @var int[]|null
-     *
-     * @ORM\Column(name="departments", type="json_array", nullable=true)
+     * @var int[]
      *
      * @JMS\Expose
      * @JMS\Type("array<integer>")
      */
-    private $departments;
+    private $departments = [];
 
     /**
      * @return int[]|null
@@ -98,7 +82,7 @@ class ApproverCriteria
      */
     public function setAgents(array $agents = null)
     {
-        $this->agents = $agents;
+        $this->agents = $agents ?: [];
 
         return $this;
     }
@@ -117,7 +101,7 @@ class ApproverCriteria
      */
     public function setAllAgents($allAgents)
     {
-        $this->allAgents = $allAgents;
+        $this->allAgents = (bool) $allAgents;
 
         return $this;
     }
@@ -136,7 +120,7 @@ class ApproverCriteria
      */
     public function setUsers(array $users = null)
     {
-        $this->users = $users;
+        $this->users = $users ?: [];
 
         return $this;
     }
@@ -155,7 +139,7 @@ class ApproverCriteria
      */
     public function setAllUsers($allUsers)
     {
-        $this->allUsers = $allUsers;
+        $this->allUsers = (bool) $allUsers;
 
         return $this;
     }
@@ -163,18 +147,18 @@ class ApproverCriteria
     /**
      * @return bool
      */
-    public function isOrganisationManagers()
+    public function isOrganizationManagers()
     {
-        return $this->organisationManagers;
+        return $this->organizationManagers;
     }
 
     /**
-     * @param bool $organisationManagers
+     * @param bool $organizationManagers
      * @return ApproverCriteria
      */
-    public function setOrganisationManagers($organisationManagers)
+    public function setOrganizationManagers($organizationManagers)
     {
-        $this->organisationManagers = $organisationManagers;
+        $this->organizationManagers = (bool) $organizationManagers;
 
         return $this;
     }
@@ -193,7 +177,7 @@ class ApproverCriteria
      */
     public function setTeams(array $teams = null)
     {
-        $this->teams = $teams;
+        $this->teams = $teams ?: [];
 
         return $this;
     }
@@ -212,8 +196,40 @@ class ApproverCriteria
      */
     public function setDepartments(array $departments = null)
     {
-        $this->departments = $departments;
+        $this->departments = $departments ?: [];
 
         return $this;
+    }
+
+    /**
+     * Return TRUE if this criteria absolutely defines and agents or user IDs
+     *
+     * @return bool
+     */
+    public function hasPeople()
+    {
+        return (!empty($this->getAgents()) || !empty($this->getUsers()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $criteria = new self();
+
+        foreach ($data as $property => $value) {
+            $criteria->{$property} = $value;
+        }
+
+        return $criteria;
     }
 }

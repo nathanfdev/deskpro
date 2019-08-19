@@ -37,7 +37,7 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="text", nullable=false)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      *
      * @JMS\Expose
      * @JMS\Type("string")
@@ -78,9 +78,11 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
      * @var ApprovalType
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType", inversedBy="approvals")
+     * @ORM\JoinColumn(name="type_id", nullable=false)
      *
      * @JMS\Expose
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType")
+     * @JMS\Type("integer")
+     * @JMS\Accessor(getter="getTypeId")
      */
     protected $type;
 
@@ -231,8 +233,16 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
      */
     public function setCanApproversViewSubject($canApproversViewSubject)
     {
-        $this->setModelField('canApproversViewSubject', $canApproversViewSubject);
+        $this->setModelField('canApproversViewSubject', (bool) $canApproversViewSubject);
 
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTypeId()
+    {
+        return $this->type->getId();
     }
 }

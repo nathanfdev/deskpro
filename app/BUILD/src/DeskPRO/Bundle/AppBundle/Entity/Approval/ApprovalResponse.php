@@ -32,6 +32,16 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
     const VOTE_REJECT = -1;
 
     /**
+     * Vote type to pretty name map
+     *
+     * @var array
+     */
+    private static $voteTypeMap = [
+        self::VOTE_APPROVE => 'approve',
+        self::VOTE_REJECT => 'reject',
+    ];
+
+    /**
      * @var int
      *
      * @ORM\Id
@@ -80,7 +90,8 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="approver_id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("integer")
+     * @JMS\Accessor(getter="getApproverId")
      */
     private $approver;
 
@@ -89,6 +100,10 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval", inversedBy="responses")
      * @ORM\JoinColumn(name="approval_id", nullable=false, onDelete="CASCADE")
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     * @JMS\Accessor(getter="getApprovalId")
      */
     private $approval;
 
@@ -100,6 +115,34 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
     public function __construct()
     {
         $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * @param Person $approver
+     * @return ApprovalResponse
+     * @throws \Exception
+     */
+    public static function createApprovalResponse(Person $approver)
+    {
+        $response = new self();
+        $response->setVote(self::VOTE_APPROVE);
+        $response->setApprover($approver);
+
+        return $response;
+    }
+
+    /**
+     * @param Person $approver
+     * @return ApprovalResponse
+     * @throws \Exception
+     */
+    public static function createRejectionResponse(Person $approver)
+    {
+        $response = new self();
+        $response->setVote(self::VOTE_REJECT);
+        $response->setApprover($approver);
+
+        return $response;
     }
 
     /**
@@ -124,13 +167,32 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
      */
     public function setVote($vote)
     {
-        if (!in_array($vote, $types = [self::VOTE_APPROVE, self::VOTE_REJECT])) {
+        if (!in_array($vote, $types = array_keys(self::$voteTypeMap))) {
             throw new \InvalidArgumentException(sprintf('Vote must be either [%s]', implode(',', $types)));
         }
 
         $this->setModelField('vote', $vote);
 
         return $this;
+    }
+
+    /**
+     * Get pretty name for a vote
+     *
+     * @JMS\Expose
+     * @JMS\Type("string")
+     * @JMS\SerializedName("vote_type")
+     * @JMS\VirtualProperty
+     *
+     * @return string
+     */
+    public function getVoteType()
+    {
+        if (isset(self::$voteTypeMap[$this->vote])) {
+            return self::$voteTypeMap[$this->vote];
+        }
+
+        return 'unknown';
     }
 
     /**
@@ -200,6 +262,14 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return int
+     */
+    public function getApproverId()
+    {
+        return $this->approver->getId();
+    }
+
+    /**
      * @return AbstractBaseApproval
      */
     public function getApproval()
@@ -216,5 +286,13 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('approval', $approval);
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getApprovalId()
+    {
+        return $this->approval->getId();
     }
 }

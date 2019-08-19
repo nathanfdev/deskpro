@@ -154,3 +154,10 @@ services:
       - "@attachment_accepter"
     tags:
       - { name: validator.constraint_validator }
+
+  validator.approver_criteria:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApproverCriteriaValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }

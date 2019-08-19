@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\Entity
  * @ORM\Table(name="approvals")
  * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string", length=60)
+ * @ORM\DiscriminatorColumn(name="dtype", type="string", length=60)
  * @ORM\DiscriminatorMap({
  *   "ticket_approval" = "TicketApproval",
  * })
@@ -58,20 +58,10 @@ abstract class AbstractBaseApproval extends AbstractApproval
      * @ORM\JoinColumn(name="template_id", nullable=true, onDelete="SET NULL")
      *
      * @JMS\Expose
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate")
+     * @JMS\Type("integer")
+     * @JMS\Accessor(getter="getTemplateId")
      */
     protected $template;
-
-    /**
-     * @var Person
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", nullable=false, onDelete="CASCADE")
-     *
-     * @JMS\Expose
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
-     */
-    protected $owner;
 
     /**
      * @var ArrayCollection|ApprovalResponse[]
@@ -88,12 +78,12 @@ abstract class AbstractBaseApproval extends AbstractApproval
     /**
      * @var int[] Person IDs @see Application\DeskPRO\Entity\Person
      *
-     * @ORM\Column(name="approver_ids", type="json_array", nullable=false)
+     * @ORM\Column(name="approvers", type="json_array", nullable=false)
      *
      * @JMS\Expose
      * @JMS\Type("array<integer>")
      */
-    protected $approverIds = [];
+    protected $approvers = [];
 
     /**
      * @var \DateTime|null
@@ -146,6 +136,37 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * Create a new approval from a given template
+     *
+     * @param ApprovalTemplate $template
+     * @return AbstractBaseApproval
+     * @throws \Exception
+     */
+    public static function createFromTemplate(ApprovalTemplate $template)
+    {
+        /** @var self $approval */
+        $approval = new static();
+
+        $approval->setType($template->getType());
+        $approval->setName($template->getName());
+        $approval->setRequiredApprovals($template->getRequiredApprovals());
+        $approval->setRequiredRejections($template->getRequiredRejections());
+        $approval->setCanApproversViewSubject($template->canApproversViewSubject());
+
+        $criteria = $template->getApproverCriteria();
+        foreach ($criteria->getAgents() as $agentId) {
+            $approval->addApprover($agentId);
+        }
+        foreach ($criteria->getUsers() as $userId) {
+            $approval->addApprover($userId);
+        }
+
+        // todo: triggers & permissions
+
+        return $approval;
+    }
+
+    /**
      * Determine whether this approval is complete and produce an outcome after each response is given
      *
      * @return string|null Approval status ("approved" or "rejected"), NULL for no change
@@ -169,7 +190,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      * @param string $status
      * @return self
      */
-    protected function setStatus($status)
+    public function setStatus($status)
     {
         $this->setModelField('status', $status);
 
@@ -203,31 +224,20 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @return int
+     */
+    public function getTemplateId()
+    {
+        return $this->template->getId();
+    }
+
+    /**
      * @param ApprovalTemplate|null $template
      * @return self
      */
     public function setTemplate(ApprovalTemplate $template = null)
     {
         $this->setModelField('template', $template);
-
-        return $this;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getOwner()
-    {
-        return $this->owner;
-    }
-
-    /**
-     * @param Person $owner
-     * @return self
-     */
-    public function setOwner(Person $owner)
-    {
-        $this->setModelField('owner', $owner);
 
         return $this;
     }
@@ -303,29 +313,37 @@ abstract class AbstractBaseApproval extends AbstractApproval
     /**
      * @return int[] Person IDs @see Application\DeskPRO\Entity\Person
      */
-    public function getApproverIds()
+    public function getApprovers()
     {
-        return $this->approverIds;
+        return $this->approvers;
     }
 
     /**
-     * @param int $approverId Person ID @see Application\DeskPRO\Entity\Person
+     * @param int $approver Person ID @see Application\DeskPRO\Entity\Person
      * @return self
      */
-    public function addApproverId($approverId)
+    public function addApprover($approver)
     {
-        if (count($this->approverIds) >= self::APPROVERS_MAX) {
+        if (count($this->approvers) >= self::APPROVERS_MAX) {
             throw new \DomainException(
                 sprintf('Cannot add more than %d approvers to an approval', self::APPROVERS_MAX)
             );
         }
 
         $this->setModelField(
-            'approverIds',
-            array_merge($this->approverIds, [(int) $approverId])
+            'approvers',
+            array_merge($this->approvers, [(int) $approver])
         );
 
         return $this;
+    }
+
+    /**
+     * @param int $approver
+     */
+    public function removeApprover($approver)
+    {
+        // NoOp, approvers cannot be removed once added
     }
 
     /**
@@ -441,8 +459,8 @@ abstract class AbstractBaseApproval extends AbstractApproval
     {
         $approver = $response->getApprover();
 
-        if (!in_array($approver->getId(), $this->approverIds)) {
-            throw new \InvalidArgumentException(
+        if (!in_array($approver->getId(), $this->approvers)) {
+            throw new \DomainException(
                 sprintf('%s is not listed as an approver for this approval', (string) $approver)
             );
         }

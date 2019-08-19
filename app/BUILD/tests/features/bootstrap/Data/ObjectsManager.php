@@ -95,6 +95,11 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
@@ -411,6 +416,11 @@ class ObjectsManager
             'UserChatQueue'                    => [Factory\SimpleFactory::class, 'create', UserChatQueue::class],
             'UserChatQueueAgent'               => [Factory\SimpleFactory::class, 'create', UserChatQueueAgent::class],
             'ChatConversation'                 => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'ApprovalType'                     => [Factory\SimpleFactory::class, 'create', ApprovalType::class],
+            'ApprovalTemplate'                 => [Factory\SimpleFactory::class, 'create', ApprovalTemplate::class],
+            'ApprovalResponse'                 => [Factory\SimpleFactory::class, 'create', ApprovalResponse::class],
+            'TicketApproval'                   => [Factory\SimpleFactory::class, 'create', TicketApproval::class],
+            'ApproverCriteria'                 => [Factory\SimpleFactory::class, 'create', ApproverCriteria::class],
         ];
     }
 
@@ -554,6 +564,10 @@ class ObjectsManager
             'UserChatQueue'                    => [$this, 'find', UserChatQueue::class],
             'UserChatQueueAgent'               => [$this, 'find', UserChatQueueAgent::class],
             'ChatConversation'                 => [$this, 'find', ChatConversation::class],
+            'ApprovalType'                     => [$this, 'find', ApprovalType::class],
+            'ApprovalTemplate'                 => [$this, 'find', ApprovalTemplate::class],
+            'ApprovalResponse'                 => [$this, 'find', ApprovalResponse::class],
+            'TicketApproval'                   => [$this, 'find', TicketApproval::class],
         ];
     }
 }

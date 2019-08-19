@@ -129,7 +129,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
         $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
         $approverMock->shouldReceive('getId')->withNoArgs()->andReturn(1);
 
-        $approval->addApproverId(1);
+        $approval->addApprover(1);
 
         $responseMock = m::mock(ApprovalResponse::class)->shouldIgnoreMissing();
         $responseMock->shouldReceive('getApprover')->withNoArgs()->andReturn($approverMock);
@@ -140,8 +140,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Person [4] is not listed as an approver for this approval
+     * @expectedException \DomainException
+     * @expectedExceptionMessageRegExp  /(.*) is not listed as an approver for this approval/
      *
      * @throws \Exception
      */
@@ -149,9 +149,9 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApproverId(1);
-        $approval->addApproverId(2);
-        $approval->addApproverId(3);
+        $approval->addApprover(1);
+        $approval->addApprover(2);
+        $approval->addApprover(3);
 
         $this->assertCount(0, $approval->getResponses());
 
@@ -166,7 +166,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \DomainException
-     * @expectedExceptionMessage Approver [2] has responded to this approval before
+     * @expectedExceptionMessageRegExp /Approver, (.*), has responded to this approval before/
      *
      * @throws \Exception
      */
@@ -174,8 +174,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApproverId(1);
-        $approval->addApproverId(2);
+        $approval->addApprover(1);
+        $approval->addApprover(2);
 
         $this->assertCount(0, $approval->getResponses());
 
@@ -195,7 +195,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApproverId(1);
+        $approval->addApprover(1);
 
         $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
         $approverMock->shouldReceive('getId')->withNoArgs()->andReturn(1);
@@ -215,7 +215,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApproverId(1);
+        $approval->addApprover(1);
 
         $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
         $approverMock->shouldReceive('getId')->withNoArgs()->andReturn(1);

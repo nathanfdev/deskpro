@@ -62,6 +62,9 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
      * @var bool
      *
      * @ORM\Column(name="is_deleted", type="boolean", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("boolean")
      */
     private $isDeleted = false;
 
@@ -94,6 +97,14 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
     }
 
     /**

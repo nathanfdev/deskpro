@@ -180,6 +180,13 @@ class DataContext extends BaseContext
         if (!is_object($object)) {
             throw new \Exception('Unable to set reference of non object');
         }
+
+        if (!method_exists($object, 'getId')) {
+            self::$references[$name] = $object;
+
+            return;
+        }
+
         if (!$object->getId()) {
             throw new \Exception('Unable to set reference of not persisted object');
         }
@@ -222,6 +229,12 @@ class DataContext extends BaseContext
             }
 
             return;
+        }
+
+        $reference = self::$references[$name];
+
+        if (is_object($reference)) {
+            return $reference;
         }
 
         list($class, $id) = self::$references[$name];
@@ -384,6 +397,10 @@ class DataContext extends BaseContext
                     $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
+                } elseif (is_string($value) && 'true' === $value) {
+                    $value = true;
+                } elseif (is_string($value) && 'false' === $value) {
+                    $value = false;
                 } elseif (is_string($value)) {
                     $value = self::replace($value, true);
                 }
@@ -438,6 +455,56 @@ class DataContext extends BaseContext
     {
         $this->noRecordsExist($type);
         $this->theFollowingRecordsExist($type, $table);
+    }
+
+    /**
+     * @Given the following :type objects exist:
+     *
+     * @param string $type
+     * @throws \Exception
+     */
+    public function theFollowingTypeObjectsExist($type, TableNode $table)
+    {
+        $recordsData = $table->getHash();
+        foreach ($recordsData as $data) {
+            // Remember reference and don't pass it to the factory
+            $reference = false;
+            if (array_key_exists('#', $data)) {
+                $reference = $data['#'];
+                unset($data['#']);
+            }
+
+            // Resolve references to other objects
+            foreach ($data as &$value) {
+                if (self::isArray($value) && !json_decode($value)) {
+                    $arrayValue = [];
+                    foreach (self::transformToArray($value) as $item) {
+                        if (self::isReference($item)) {
+                            $arrayValue[] = self::resolveReference($item);
+                        } else {
+                            $arrayValue[] = $item;
+                        }
+                    }
+
+                    $value = new ArrayCollection($arrayValue);
+                } elseif (self::isReference($value)) {
+                    $value = self::resolveReference($value);
+                } elseif (is_string($value) && 'true' === $value) {
+                    $value = true;
+                } elseif (is_string($value) && 'false' === $value) {
+                    $value = false;
+                } elseif (is_string($value)) {
+                    $value = self::replace($value, true);
+                }
+            }
+
+            $record = $this->om()->create($type, $data);
+
+            // Track the record reference
+            if ($reference) {
+                $this->setReference($reference, $record);
+            }
+        }
     }
 
     /**
