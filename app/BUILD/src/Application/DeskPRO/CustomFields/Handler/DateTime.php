@@ -98,6 +98,8 @@ class DateTime extends Date
         if ($data) {
             try {
                 $date = new \DateTime('@'.$data);
+                // data is loaded from db, we need to set correct timezone before any validation
+                $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
             } catch (\Exception $e) {
                 try {
                     $date = new \DateTime($data);
