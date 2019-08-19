@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 		this.wrapper = el;
 		this.parent(el);
 
-		if (!this.getEl('cat').find('option')[0]) {
+		if (!this.getEl('chan').find('option')[0]) {
 			this.wrapper.find('.form-header-error').show();
 			this.wrapper.find('.form-outer').hide();
 			this.markForReload();
@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
-		this._initCategorySection();
+		this._initChannelSection();
     this._initUserSection();
 		this._initTitleSection();
 		this._initContentSection();
@@ -40,7 +40,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 		this.ownObject(this.stateSaver);
 
     $('#new_topic_brand_id').on('change', function() {
-      self.updateCategories();
+      self.updateChannels();
       self.updateStatusCategories();
     });
 
@@ -130,33 +130,33 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 	},
 
 	//#################################################################
-	//# Category section
+	//# Channels section
 	//#################################################################
 
-	_initCategorySection: function() {
+	_initChannelSection: function() {
 		var self = this;
 
-		this.getEl('cat').on('change', function() {
+		this.getEl('chan').on('change', function() {
 			if (parseInt($(this).val())) {
-				self.getEl('cat_section').addClass('done');
+				self.getEl('chan_section').addClass('done');
 			} else {
-				self.getEl('cat_section').removeClass('done');
+				self.getEl('chan_section').removeClass('done');
 			}
 		});
 	},
 
-  updateCategories: function() {
+  updateChannels: function() {
     var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
-    var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
+    var channels_select = $(brand_select.parents('.cat-section')[0]).find('select.channel_id');
     $.ajax({
       url: BASE_URL + 'agent/community/channels/brand/'+brand_id,
       type: 'GET',
       context: this,
       success: function(result) {
-        categories_select.children().remove();
-        categories_select.append($(result).find('option'));
-        categories_select.select2("val", '');
+        channels_select.children().remove();
+        channels_select.append($(result).find('option'));
+        channels_select.select2("val", '');
       }
     });
   },
@@ -164,15 +164,15 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
   updateStatusCategories: function() {
     var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
-    var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.status_id');
+    var channels_select = $(brand_select.parents('.cat-section')[0]).find('select.status_id');
     $.ajax({
       url: BASE_URL + 'agent/community/statuses/brand/'+brand_id,
       type: 'GET',
       context: this,
       success: function(result) {
-        categories_select.children().remove();
-        categories_select.append($(result).find('optgroup'));
-        categories_select.select2("val", '');
+        channels_select.children().remove();
+        channels_select.append($(result).find('optgroup'));
+        channels_select.select2("val", '');
       }
     });
   },

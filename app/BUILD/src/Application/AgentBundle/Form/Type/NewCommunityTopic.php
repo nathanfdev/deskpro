@@ -31,7 +31,7 @@ class NewCommunityTopic extends AbstractType
         $builder->add('brand', EntityType::class, [
             'class' => Brand::class,
         ]);
-        $builder->add('category_id', 'text');
+        $builder->add('channel_id', 'text');
         $builder->add('status_code', 'text');
 
         $builder->add('labels', 'collection', [
@@ -79,6 +79,6 @@ class NewCommunityTopic extends AbstractType
 
     public function getName()
     {
-        return 'newcomunitytopic';
+        return 'newcommunitytopic';
     }
 }
