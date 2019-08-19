@@ -1015,11 +1015,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			    name: 'content_input_type',
 			    value: 'rte'
 			  });
-        data.push({
-          name: 'language_id',
-          value: wrap.find('.article-editor-wrap').find('.language_id').val()
-        });
 			}
+      data.push({
+        name: 'language_id',
+        value: wrap.find('.article-editor-wrap').find('.language_id').val()
+      });
 			data.push({
 				name: 'restart-review-date',
 					value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
