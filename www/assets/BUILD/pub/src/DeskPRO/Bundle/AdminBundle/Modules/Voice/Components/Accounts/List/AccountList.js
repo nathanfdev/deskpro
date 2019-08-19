@@ -10,45 +10,46 @@ class AccountList extends React.Component {
     numbers:             PropTypes.object,
     settings:            PropTypes.object,
     openNewAccountForm:  PropTypes.func,
-    createCloudAccount:  PropTypes.func,
     openEditAccountForm: PropTypes.func,
     saveSettings:        PropTypes.func,
   };
 
   renderEmpty() {
-    const { openNewAccountForm, createCloudAccount } = this.props;
-
-    if (window.DP_IS_CLOUD) {
-      return (
-        <div className="page">
-          <SectionHeader title="General Settings" dividing />
-
-          Voice has not been enabled on your account yet.
-          <br /><br />
-
-          <button className="ui primary button" onClick={() => createCloudAccount('twilio')}>
-            Enable Voice
-          </button>
-        </div>
-      );
-    }
+    const { openNewAccountForm, settings } = this.props;
 
     return (
       <div className="page">
         <SectionHeader title="General Settings" dividing />
 
-        You currently have no accounts.
+        Voice has not been enabled yet.
         <br /><br />
 
-        <button className="ui primary button" onClick={() => openNewAccountForm('twilio')}>
-          Add new account
+        <button className="ui primary button" onClick={() => openNewAccountForm('twilio', true)}>
+          Begin Setup &rarr;
         </button>
+
+        {settings.get('private_accounts_enabled') &&
+          <button className="ui primary button" onClick={() => openNewAccountForm('twilio')}>
+            Add your own Twilio account
+          </button>
+        }
       </div>
     );
   }
 
   renderTable() {
     const { accounts = [], numbers, openEditAccountForm, settings, saveSettings } = this.props;
+
+    const privateAccounts = [];
+    const managedAccounts = [];
+
+    accounts.toArray().forEach((account) => {
+      if (account.get('account_id') === '__ACCOUNT_ID__') {
+        managedAccounts.push(account);
+      } else {
+        privateAccounts.push(account);
+      }
+    });
 
     return (
       <div className="page">
@@ -59,16 +60,15 @@ class AccountList extends React.Component {
         </button>*/}
         <SectionHeader title="General Settings" />
 
-        {/* disable list on cloud -- we manage it */}
-        {!window.DP_IS_CLOUD && (
+        { (privateAccounts.length || settings.get('private_accounts_enabled')) && (
           <div className="admin-list-table">
             <div className="row header">
               <div className="column account-name">Name/Note</div>
               <div className="column sid">Account SID</div>
               <div className="column date">Date Added</div>
             </div>
-            {accounts.toArray().map((account, index) =>
-              <div className="row" key={index}>
+            {privateAccounts.map((account) =>
+              <div className="row" key={account.get('id')}>
                 <div className="info">
                   <div className="column account-name">{account.get('account_name')}</div>
                   <div className="column sid">{account.get('account_id')}</div>
@@ -78,6 +78,17 @@ class AccountList extends React.Component {
                       <i className="fas fa-cog" />
                     </a>
                   </div>
+                  <div style={{ clear: 'both' }} />
+                </div>
+              </div>
+            )}
+            {managedAccounts.map((account) =>
+              <div className="row" key={account.get('id')}>
+                <div className="info">
+                  <div className="column account-name">Managed Account #{account.get('id')}</div>
+                  <div className="column sid">-</div>
+                  <div className="column date">{account.get('date_created')}</div>
+                  <div className="column options-button">-</div>
                   <div style={{ clear: 'both' }} />
                 </div>
               </div>

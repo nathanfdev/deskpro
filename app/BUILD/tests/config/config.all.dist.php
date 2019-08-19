@@ -1,8 +1,5 @@
 <?php
 
-// To run the tests, you need to do the following:
-
-// 1. rename this file to "config.all.php"
 // 2. ensure the database config below are correct
 // 3. ensure the DP_E2E_BASE_URL is correct (used in e2e tests)
 // 4. Remember that the test db will be deleted and
@@ -41,6 +38,7 @@ $CONFIG['env'] = [
     'debug_mode'  => true,
 ];
 
-$CONFIG['settings']['enable_experimental']    = ['all' => true];
-$CONFIG['settings']['disable_outgoing_email'] = true;
-$CONFIG['settings']['core.deskpro_url']       = 'http://pr-next.deskprodev.com/';
+$CONFIG['settings']['enable_experimental']            = ['all' => true];
+$CONFIG['settings']['disable_outgoing_email']         = true;
+$CONFIG['settings']['core.deskpro_url']               = 'http://pr-next.deskprodev.com/';
+$CONFIG['settings']['voice.private_accounts_enabled'] = true;

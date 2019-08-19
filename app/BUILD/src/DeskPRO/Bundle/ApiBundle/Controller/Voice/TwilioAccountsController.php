@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\TwilioAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
@@ -239,64 +240,115 @@ class TwilioAccountsController extends AbstractVoiceCrudController
 
     /**
      * @ApiDoc(
-     *     description="Enable voice on cloud",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount"
+     *      description="Create a new resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *          201="Returned in case of successful resource creation",
+     *          400="We will return this in case your request was malformed",
+     *      }
      * )
-     *
-     * @Rest\Post("/create_cloud_account")
+     * @Rest\Post("")
      *
      * @param Request $request
      *
-     * @throws \Exception
-     *
      * @return View
      */
-    public function createCloudAccountAction(Request $request)
+    public function postAction(Request $request)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
+        $isManaged = $request->request->get('isManaged');
+        if (!$isManaged && !$this->get('voice_settings_resolver')->isPrivateAccountsEnabled()) {
+            throw $this->createAccessDeniedException('Cannot create private accounts');
+        }
 
-        try {
-            $this->get('dp.voice.cloud_proxy')->initTwilioProxy($this->getUser());
-        } catch (InsufficientBalanceException $e) {
-            return new View([
-                'code'    => 'invalid_input',
-                'message' => 'Could not setup voice account',
-                'errors'  => [
-                    'errors' => [
-                        ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
-                    ],
-                    'fields' => [
-                        'dpms_client' => [
-                            'errors' => [
-                                ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+        if ($isManaged) {
+            $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
+
+            try {
+                $this->get('dp.voice.cloud_proxy')->initTwilioProxy($this->getUser());
+            } catch (InsufficientBalanceException $e) {
+                return new View([
+                    'code'    => 'invalid_input',
+                    'message' => 'Could not setup voice account',
+                    'errors'  => [
+                        'errors' => [
+                            ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                        ],
+                        'fields' => [
+                            'dpms_client' => [
+                                'errors' => [
+                                    ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                                ],
                             ],
                         ],
                     ],
-                ],
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (\Exception $e) {
-            throw $this->createAccessDeniedException($e->getMessage());
+                ], Response::HTTP_BAD_REQUEST);
+            } catch (\Exception $e) {
+                throw $this->createAccessDeniedException($e->getMessage());
+            }
+
+            $account = $this->getRepository(TwilioVoiceAccount::class)->findOneBy([
+                'accountId' => VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER,
+                'authToken' => '_',
+            ]);
+
+            if (!$account) {
+                $account = new TwilioVoiceAccount();
+                $account->setAccountId(VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER);
+                $account->setAuthToken('_');
+                $account->setAccountName('Deskpro Voice Account');
+
+                $this->getManager()->persist($account);
+                $this->getManager()->flush();
+            }
+
+            return new View($this->wrap($account), Response::HTTP_CREATED);
         }
 
-        $account = $this->getRepository(TwilioVoiceAccount::class)->findOneBy([
-            'accountId' => VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER,
-            'authToken' => '_',
-        ]);
+        return parent::postAction($request);
+    }
 
-        if (!$account) {
-            $account = new TwilioVoiceAccount();
-            $account->setAccountId(VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER);
-            $account->setAuthToken('_');
-            $account->setAccountName('Deskpro Cloud Voice Account');
+    /**
+     * @ApiDoc(
+     *      description="Update an existing resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          204="Returned in case of successful resource modify",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     * @Rest\Put("/{id}", requirements={"id"="\d+"})
+     *
+     * @param int     $id
+     * @param Request $request
+     * @SerializerView(serializeNull=true)
+     *
+     * @return View
+     */
+    public function putAction($id, Request $request)
+    {
+        $isManaged = $request->request->get('isManaged');
 
-            $this->getManager()->persist($account);
-            $this->getManager()->flush();
+        if (!$isManaged && !$this->get('voice_settings_resolver')->isPrivateAccountsEnabled()) {
+            throw $this->createAccessDeniedException('Cannot create private accounts');
         }
 
-        return new View($this->wrap($account), Response::HTTP_CREATED);
+        /** @var TwilioVoiceAccount $ent */
+        $ent = $this->findEntity($id, $request);
+
+        // Managed accounts dont get editted
+        if ($isManaged || ($ent && $ent->getAccountId() === VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER)) {
+            throw $this->createAccessDeniedException('Cannot edit managed accounts');
+        }
+
+        return parent::putAction($id, $request);
     }
 
     /**
