@@ -366,7 +366,7 @@ agent.emails.view_your_tasks: 查看您的任务
 agent.emails.view_your_teams_tasks: 查看您团队的任务
 agent.emails.view_your_tweets: 查看您的推文
 agent.emails.your_initial_password: 您的初始密码
-agent.community.any_category: 任何类别
+agent.community.any_channel: 任何类别
 agent.community.any_status: 任何状态
 agent.community.count_votes:
   other: '{{display_count}} votes'
