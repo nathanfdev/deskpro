@@ -16,7 +16,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class CommunityCustomChannelsController extends AbstractController implements ProtectedControllerInterface
+class CustomCommunityChannelsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
      * {@inheritdoc}
@@ -36,11 +36,11 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
 
     public function listAction()
     {
-        $communityChannels = $this->container->getSystemService('community_channels_custom');
+        $communityChannels = $this->container->getSystemService('custom_community_channels');
 
         return $this->createApiResponse(
             [
-                'community_custom_channels' => $communityChannels->getAll(),
+                'custom_community_channels' => $communityChannels->getAll(),
             ]
         );
     }
@@ -51,7 +51,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
 
     public function getAction($id)
     {
-        $communityChannelsCustomService = $this->container->getSystemService('community_channels_custom');
+        $communityChannelsCustomService = $this->container->getSystemService('custom_community_channels');
         $communityChannel               = $communityChannelsCustomService->getById($id);
 
         if (!$communityChannel) {
@@ -62,7 +62,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
 
         return $this->createApiResponse(
             [
-                'community_custom_channel' => $returnedData,
+                'custom_community_channel' => $returnedData,
             ]
         );
     }
@@ -73,7 +73,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
 
     public function saveAction($id)
     {
-        $customCommunityChannelsService = $this->container->getSystemService('community_channels_custom');
+        $customCommunityChannelsService = $this->container->getSystemService('custom_community_channels');
 
         if ($id) {
             $customCommunityChannel = $customCommunityChannelsService->getById($id);
@@ -93,18 +93,18 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
             // @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
 
             $parent_id =
-                isset($postData['community_custom_channel']['options']) ?
-                    $postData['community_custom_channel']['options']['parent_id'] : '';
+                isset($postData['custom_community_channel']['options']) ?
+                    $postData['custom_community_channel']['options']['parent_id'] : '';
 
             $brand = null;
-            if (!empty($postData['community_custom_channel']['brand'])) {
-                $brand = $this->em->getRepository(Brand::class)->find($postData['community_custom_channel']['brand']);
+            if (!empty($postData['custom_community_channel']['brand'])) {
+                $brand = $this->em->getRepository(Brand::class)->find($postData['custom_community_channel']['brand']);
             }
             if (!$brand) {
                 $brand = $this->get('default_brand_finder')->getDefaultBrand();
             }
 
-            $customCommunityChannel->title  = $postData['community_custom_channel']['title'];
+            $customCommunityChannel->title  = $postData['custom_community_channel']['title'];
             $customCommunityChannel->parent = $customCommunityChannelsService->getParentChannel($brand);
             $customCommunityChannel->setOption('parent_id', $parent_id);
 
@@ -132,7 +132,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
 
     public function removeAction($id)
     {
-        $customCommunityChannelsService = $this->container->getSystemService('community_channels_custom');
+        $customCommunityChannelsService = $this->container->getSystemService('custom_community_channels');
         $customCommunityChannel         = $customCommunityChannelsService->getById($id);
 
         if (!$customCommunityChannel) {
@@ -187,7 +187,7 @@ class CommunityCustomChannelsController extends AbstractController implements Pr
     {
         $displayOrders = $this->in->getArrayOfUInts('display_orders');
 
-        $customCommunityChannelsService = $this->container->getSystemService('community_channels_custom');
+        $customCommunityChannelsService = $this->container->getSystemService('custom_community_channels');
         $customCommunityChannelsService->updateDisplayOrders($displayOrders);
 
         return $this->createSuccessResponse();

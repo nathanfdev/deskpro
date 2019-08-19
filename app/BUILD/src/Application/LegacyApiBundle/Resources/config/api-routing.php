@@ -3061,7 +3061,7 @@ $collection->create(
 );
 
 $collection->create(
-    'api_community_channels_custom',
+    'api_custom_community_channels',
     [
         'path'       => '/community/channels',
         'controller' => 'LegacyApiBundle:CommunityTopics:getChannels',
@@ -5412,60 +5412,60 @@ $collection->create(
 );
 
 //#######################################################################################################################
-// Community custom channels
+// Custom Community channels
 //#######################################################################################################################
 
 $collection->create(
-    'api_community_channels_custom',
+    'api_custom_community_channels',
     [
-        'path'       => '/community_custom_channels',
-        'controller' => 'LegacyApiBundle:CommunityCustomChannels:list',
+        'path'       => '/custom_community_channels',
+        'controller' => 'LegacyApiBundle:CustomCommunityChannels:list',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_custom_order',
+    'api_custom_community_channels_order',
     [
-        'path'       => '/community_custom_channels/display_order',
-        'controller' => 'LegacyApiBundle:CommunityCustomChannels:saveDisplayOrder',
+        'path'       => '/custom_community_channels/display_order',
+        'controller' => 'LegacyApiBundle:CustomCommunityChannels:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_custom_get',
+    'api_custom_community_channels_get',
     [
-        'path'       => '/community_custom_channels/{id}',
-        'controller' => 'LegacyApiBundle:CommunityCustomChannels:get',
+        'path'       => '/custom_community_channels/{id}',
+        'controller' => 'LegacyApiBundle:CustomCommunityChannels:get',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_custom_create',
+    'api_custom_community_channels_create',
     [
-        'path'       => '/community_custom_channels',
-        'controller' => 'LegacyApiBundle:CommunityCustomChannels:save',
+        'path'       => '/custom_community_channels',
+        'controller' => 'LegacyApiBundle:CustomCommunityChannels:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_custom_save',
+    'api_custom_community_channels_save',
     [
-        'path'       => '/community_custom_channels/{id}',
-        'controller' => 'LegacyApiBundle:CommunityCustomChannels:save',
+        'path'       => '/custom_community_channels/{id}',
+        'controller' => 'LegacyApiBundle:CustomCommunityChannels:save',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_custom_delete',
+    'api_custom_community_channels_delete',
     [
-        'path'       => '/community_custom_channels/{id}',
-        'controller' => 'LegacyApiBundle:CommunityCustomChannels:remove',
+        'path'       => '/custom_community_channels/{id}',
+        'controller' => 'LegacyApiBundle:CustomCommunityChannels:remove',
         'methods'    => ['DELETE'],
     ]
 );

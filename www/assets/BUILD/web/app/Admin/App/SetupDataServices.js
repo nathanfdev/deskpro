@@ -3,7 +3,7 @@ define([
 
   'Admin/CommunityStatuses/DataService/CommunityStatuses',
   'Admin/CommunityChannels/DataService/CommunityChannels',
-  'Admin/CommunityCustomChannels/DataService/CommunityCustomChannels',
+  'Admin/CustomCommunityChannels/DataService/CustomCommunityChannels',
   'Admin/ChannelSms/DataService/SmsAccounts',
   'Admin/Brand/DataService/Brands',
   'Admin/ChannelFacebook/DataService/FacebookPages',
@@ -19,7 +19,7 @@ define([
 	Admin_Main_DataService_EntityManager,
 	Admin_CommunityStatuses_DataService_CommunityStatuses,
 	Admin_CommunityChannels_DataService_CommunityChannels,
-	Admin_CommunityCustomChannels_DataService_CommunityCustomChannels,
+	Admin_CustomCommunityChannels_DataService_CustomCommunityChannels,
 	Admin_ChannelSms_DataService_SmsAccounts,
 	Admin_Brand_DataService_Brands,
 	Admin_ChannelFacebook_DataService_FacebookPages,
@@ -42,7 +42,7 @@ define([
   Module.service('CommunityChannelsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityChannels_DataService_CommunityChannels(em, Api, $q)
   ]);
 
-  Module.service('CommunityCustomChannelsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityCustomChannels_DataService_CommunityCustomChannels(em, Api, $q)
+  Module.service('CustomCommunityChannelsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CustomCommunityChannels_DataService_CustomCommunityChannels(em, Api, $q)
   ]);
 
   Module.service('SmsAccountsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_ChannelSms_DataService_SmsAccounts(em, Api, $q)

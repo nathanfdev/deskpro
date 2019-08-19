@@ -10,7 +10,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Doctrine\ORM\EntityManager;
 
-class CommunityChannelsCustom
+class CustomCommunityChannels
 {
     /**
      * @var \Doctrine\ORM\EntityManager

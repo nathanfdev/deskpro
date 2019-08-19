@@ -1,20 +1,20 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="form_props.$valid && CommunityCustomChannelsEdit.saveForm()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && CustomCommunityChannelsEdit.saveForm()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel-body">
 					<div class="form-group">
 						<div class="col-lg-3">
-							<h3>{{ phrase('adm.community_custom_channels.title') }} *</h3>
+							<h3>{{ phrase('adm.custom_community_channels.title') }} *</h3>
 						</div>
 						<div class="col-lg-9">
 							<div class="inner-group" dp-error-class="form_props.title">
 								<input type="text" class="form-control" name="title"
-									   ng-model="CommunityCustomChannelsEdit.community_custom_channel.title" style="width: 50%;"
+									   ng-model="CustomCommunityChannelsEdit.custom_community_channel.title" style="width: 50%;"
 									   required autofocus dp-server-validation="title.not_blank">
 							<span class="help-block">
-								{{ phrase('adm.community_custom_channels.title_explain') }}
+								{{ phrase('adm.custom_community_channels.title_explain') }}
 							</span>
 							</div>
 						</div>
@@ -27,14 +27,14 @@
 						<div class="col-lg-9">
 							<select
 									ui-select2
-									ng-model="CommunityCustomChannelsEdit.community_custom_channel.options.parent_id"
+									ng-model="CustomCommunityChannelsEdit.custom_community_channel.options.parent_id"
 									style="min-width: 240px"
 									class="no-search"
 									>
-								<option value="{{ ng_var('category.id') }}" ng-repeat="category in CommunityCustomChannelsEdit.community_custom_channels_parent_list">{{ ng_var('category.title') }}</option>
+								<option value="{{ ng_var('category.id') }}" ng-repeat="category in CustomCommunityChannelsEdit.custom_community_channels_parent_list">{{ ng_var('category.title') }}</option>
 							</select>
 						<span class="help-block">
-							{{ phrase('adm.community_custom_channels.parent_explain') }}
+							{{ phrase('adm.custom_community_channels.parent_explain') }}
 						</span>
 						</div>
 					</div>
@@ -43,10 +43,10 @@
 			<footer>
 				<div class="dp-content">
 
-                    <div class="dp-delete-control" ng-if="CommunityCustomChannelsEdit.community_custom_channel.id"
+                    <div class="dp-delete-control" ng-if="CustomCommunityChannelsEdit.custom_community_channel.id"
                          ng-hide="form_props.$attempted && form_props.$invalid">
                         <button class="btn btn-danger"
-                                ng-click="$event.preventDefault(); CommunityCustomChannelsEdit.showDelete();">Delete
+                                ng-click="$event.preventDefault(); CustomCommunityChannelsEdit.showDelete();">Delete
                         </button>
                     </div>
 
@@ -54,17 +54,17 @@
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
 							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
-								{{ phrase('adm.community_custom_channels.title_error') }}
+								{{ phrase('adm.custom_community_channels.title_error') }}
 							</li>
 						</ul>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_community_custom_channel">
+						<div dp-hide-spinning="saving_custom_community_channel">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-							<button class="btn btn-default" ng-click="CommunityCustomChannelsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
+							<button class="btn btn-default" ng-click="CustomCommunityChannelsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 						</div>
-						<div dp-show-spinning="saving_community_custom_channel">
+						<div dp-show-spinning="saving_custom_community_channel">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>
@@ -72,5 +72,5 @@
 			</footer>
 		</section>
 	</form>
-	<div dp-register-message="saved_community_custom_channel">{{ ng_var('CommunityCustomChannelsEdit.community_custom_channel.title') }} was saved successfully</div>
+	<div dp-register-message="saved_custom_community_channel">{{ ng_var('CustomCommunityChannelsEdit.custom_community_channel.title') }} was saved successfully</div>
 {% endblock %}

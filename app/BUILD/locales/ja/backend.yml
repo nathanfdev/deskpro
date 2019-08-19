@@ -25,11 +25,11 @@ adm.custom_fields.user_fields: ユーザフィールド
 adm.community_categories.delete_communuty_custom_channels_moved: 現在、このフィードバックカテゴリの下にある全てのフィードバックは、次の場所に移動されます：
 adm.community_categories.delete_cummunity_custom_channel: フィードバックカテゴリ削除
 adm.community_categories.delete_cummunity_custom_channel_confirm: このフィードバックカテゴリを削除してもよろしいですか？
-adm.community_custom_channels.new_channel: 新しいフィードバックカテゴリ
-adm.community_custom_channels.parent_explain: 親カテゴリを設定することで、このカテゴリは子カテゴリになります。これは、使いやすいフィードバック構造を作成するのに役立つ組織的な機能です。
-adm.community_custom_channels.title: タイトル
-adm.community_custom_channels.title_error: 有効なタイトルを入力する必要があります
-adm.community_custom_channels.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
+adm.custom_community_channels.new_channel: 新しいフィードバックカテゴリ
+adm.custom_community_channels.parent_explain: 親カテゴリを設定することで、このカテゴリは子カテゴリになります。これは、使いやすいフィードバック構造を作成するのに役立つ組織的な機能です。
+adm.custom_community_channels.title: タイトル
+adm.custom_community_channels.title_error: 有効なタイトルを入力する必要があります
+adm.custom_community_channels.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
 adm.community_channels.delete_community_channel: フィードバックタイプ削除
 adm.community_channels.delete_community_channel_confirm: このフィードバックタイプを削除してもよろしいですか？
 adm.community_channels.delete_community_channels_moved: このフィードバックタイプのしたにあるフィードバックは、次の場所に移動されます：
@@ -51,8 +51,8 @@ adm.general.x_email_bans:
   other: '{{count}} Email Bans'
 adm.general.x_community_active_statuses:
   other: '{{count}} Community Active Statuses'
-adm.general.x_community_custom_channels:
-  other: '{{count}} Community Custom Channels'
+adm.general.x_custom_community_channels:
+  other: '{{count}} Custom Community Channels'
 adm.general.x_community_closed_statuses:
   other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:

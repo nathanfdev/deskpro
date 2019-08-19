@@ -28,18 +28,18 @@
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 
-			<h3 ng-pluralize count="CommunityCustomChannelsList.community_custom_channels.length || 0" when="{{ ng_plural_phrase('adm.general.x_community_custom_channels') }}"></h3>
+			<h3 ng-pluralize count="CustomCommunityChannelsList.custom_community_channels.length || 0" when="{{ ng_plural_phrase('adm.general.x_custom_community_channels') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="CommunityCustomChannelsList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="category in CommunityCustomChannelsList.parent_data" dp-state-mark="portal.community_custom_channels.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}" ng-if="category.brand == brand_id">
-					<a href="{{ ng_href('portal.community_custom_channels.edit', '{id: category.id}') }}">
+			<ul class="dp-item-list" ui-sortable="CustomCommunityChannelsList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="category in CustomCommunityChannelsList.parent_data" dp-state-mark="portal.custom_community_channels.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}" ng-if="category.brand == brand_id">
+					<a href="{{ ng_href('portal.custom_community_channels.edit', '{id: category.id}') }}">
 						<i class="fas fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('category.id') }}</span> <span class="title-text">{{ ng_var('category.title') }}</span></h4>
 					</a>
-					<ul class="dp-item-list sublist" ng-if="CommunityCustomChannelsList.child_data[category.id]" ui-sortable="CommunityCustomChannelsList.sortedListOptions">
-						<li class="with-drag-handle" ng-repeat="sub_category in CommunityCustomChannelsList.child_data[category.id]" dp-state-mark="portal.community_custom_channels.edit.{{ ng_var('sub_category.id') }}" data-id="{{ ng_var('sub_category.id') }}">
-							<a href="{{ ng_href('portal.community_custom_channels.edit', '{id: sub_category.id}') }}">
+					<ul class="dp-item-list sublist" ng-if="CustomCommunityChannelsList.child_data[category.id]" ui-sortable="CustomCommunityChannelsList.sortedListOptions">
+						<li class="with-drag-handle" ng-repeat="sub_category in CustomCommunityChannelsList.child_data[category.id]" dp-state-mark="portal.custom_community_channels.edit.{{ ng_var('sub_category.id') }}" data-id="{{ ng_var('sub_category.id') }}">
+							<a href="{{ ng_href('portal.custom_community_channels.edit', '{id: sub_category.id}') }}">
 								<i class="fas fa-bars drag-handle"></i>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
@@ -53,7 +53,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('portal.community_custom_channels.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{phrase('agent.general.add')}}</a>
+				<a class="btn btn-default" href="{{ ng_href('portal.custom_community_channels.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{phrase('agent.general.add')}}</a>
 			</div>
 		</article>
 	</section>
@@ -82,7 +82,7 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-			<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Community Custom Channels</a></li>
+			<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Custom Community Channels</a></li>
 			</ul>
 	</section>
 	</article>
