@@ -158,20 +158,23 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			});
 
-			this.getEl('disable_autoresponses').on('change', function(){
-				var val = $(this).val();
-				$.ajax({
-					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'disable_autoresponses',
-						disable_autoresponses: val
-					}
-				});
-
-				self.getEl('disable_autoresponses_reason').remove();
-			});
+      this.getEl('disable_autoresponses').on('change', function () {
+        var val = $(this).val();
+        $.ajax({
+          url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            action: 'disable_autoresponses',
+            disable_autoresponses: val,
+          },
+          success: function (data) {
+            if (data.hasOwnProperty('disable_autoresponses_log')) {
+              self.getEl('disable_autoresponses_reason').text(data.disable_autoresponses_log);
+            }
+          },
+        });
+      });
 
       this.getEl('toggle_confirmed').on('change', function(){
         $.ajax({
