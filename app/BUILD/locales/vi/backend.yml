@@ -355,7 +355,7 @@ agent.emails.view_your_tasks: 'Xem các tác vụ của bạn'
 agent.emails.view_your_teams_tasks: 'Xem tác vụ của nhóm bạn'
 agent.emails.view_your_tweets: 'Xem tweet của bạn'
 agent.emails.your_initial_password: 'Mật khẩu ban đầu của bạn'
-agent.community.any_category: 'Bất kỳ loại'
+agent.community.any_channel: 'Bất kỳ loại'
 agent.community.any_status: 'Bất kỳ Trạng thái'
 agent.community.count_votes:
   other: '{{display_count}} votes'

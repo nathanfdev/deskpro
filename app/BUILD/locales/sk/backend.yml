@@ -582,7 +582,7 @@ agent.emails.view_your_tasks: 'Zobraziť Vaše úlohy'
 agent.emails.view_your_teams_tasks: 'Zobraziť úlohy Vášho teamu'
 agent.emails.view_your_tweets: 'Zobraziť Vaše tweety'
 agent.emails.your_initial_password: 'Vaše počiatočné heslo'
-agent.community.any_category: 'Hocijaká kategória'
+agent.community.any_channel: 'Hocijaká kategória'
 agent.community.any_status: 'Hocijaký status'
 agent.community.count_votes:
   one: '{{display_count}} vote'

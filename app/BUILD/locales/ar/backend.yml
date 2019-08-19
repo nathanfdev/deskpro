@@ -768,7 +768,7 @@ agent.emails.view_your_tasks: 'استعرض مهامك'
 agent.emails.view_your_teams_tasks: 'اظهر مهام فريقك'
 agent.emails.view_your_tweets: 'استعرض تغريداتك'
 agent.emails.your_initial_password: 'كلمة مرورك الاولية'
-agent.community.any_category: 'اي تصنيف'
+agent.community.any_channel: 'اي تصنيف'
 agent.community.any_status: 'اي حالة'
 agent.community.count_votes:
   zero: '{{display_count}} votes'

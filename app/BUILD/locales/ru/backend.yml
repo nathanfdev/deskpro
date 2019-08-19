@@ -597,7 +597,7 @@ agent.emails.view_your_tasks: 'Показать ваши задачи'
 agent.emails.view_your_teams_tasks: 'Показать задачи вашей команды'
 agent.emails.view_your_tweets: 'Просмотреть ваши твиты'
 agent.emails.your_initial_password: 'Ваш изначальный пароль'
-agent.community.any_category: 'Любая категория'
+agent.community.any_channel: 'Любая категория'
 agent.community.any_status: 'Любой статус'
 agent.community.count_votes:
   one: '{{display_count}} vote'

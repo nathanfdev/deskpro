@@ -595,7 +595,7 @@ agent.emails.view_your_tasks: 'Zobacz swoje zadania'
 agent.emails.view_your_teams_tasks: 'Zobacz zadania swojego zespołu'
 agent.emails.view_your_tweets: 'Zobacz swoje tweety'
 agent.emails.your_initial_password: 'Twoje hasło początkowe'
-agent.community.any_category: 'Jakakolwiek Kategoria'
+agent.community.any_channel: 'Jakakolwiek Kategoria'
 agent.community.any_status: 'Jakikolwiek Status'
 agent.community.count_votes:
   one: '{{display_count}} vote'
