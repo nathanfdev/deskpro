@@ -201,22 +201,21 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
           "template": formData,
           "title": $('input[name=title]', overlayEl).val()
         };
-        $('.is-loading').show();
-        $('.is-not-loading').hide();
+        $('.is-loading', overlayEl).show();
+        $('.is-not-loading', overlayEl).hide();
         $.ajax({
           url:  DP_BASE_API_URL + "/v2/content_templates",
           type: 'POST',
           data: data,
           dataType: 'json',
-          success: function(response) {
-            $('.is-not-loading').show();
-            $('.is-loading').hide();
-            console.log(response);
+          success: function() {
+            $('.is-not-loading', overlayEl).show();
+            $('.success', overlayEl).show();
+            $('.is-loading', overlayEl).hide();
           },
-          error: function(response) {
-            $('.is-not-loading').show();
-            $('.is-loading').hide();
-            console.log(response);
+          error: function() {
+            $('.is-not-loading', overlayEl).show();
+            $('.is-loading', overlayEl).hide();
           }
         });
       });
