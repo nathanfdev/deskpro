@@ -415,7 +415,8 @@ class TicketBuiltInFieldsDataService
                     $escalation->terms = $terms;
                     $this->em->persist($escalation);
                 }
-                $terms = $escalation->terms_any;
+                $changed = false;
+                $terms   = $escalation->terms_any;
                 foreach ($terms as &$term) {
                     if ($this->filterTerm($term, $type, $type, $removeIds)) {
                         foreach ($term['options'][$type] as &$option) {
@@ -523,7 +524,8 @@ class TicketBuiltInFieldsDataService
 
         if (isset($usage['filters'])) {
             foreach ($usage['filters'] as $ticketFilter) {
-                $terms = $ticketFilter->terms;
+                $changed = false;
+                $terms   = $ticketFilter->terms;
                 foreach ($terms as &$term) {
                     if ($this->filterTerm($term, $type, $type, $removeIds)) {
                         foreach ($term['options'][$type] as &$option) {

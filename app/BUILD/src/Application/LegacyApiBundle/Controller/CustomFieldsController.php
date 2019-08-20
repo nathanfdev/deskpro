@@ -10,6 +10,12 @@ use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefDownload;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\CustomDefAbstract;
@@ -279,12 +285,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     public function deleteOptionAction(Request $request)
     {
         $types = [
-            'tickets'       => 'CustomDefTicket',
-            'organizations' => 'CustomDefOrganization',
-            'people'        => 'CustomDefPerson',
-            'chats'         => 'CustomDefChat',
-            'kb'            => 'CustomDefArticle',
-            'download'      => 'CustomDefDownload',
+            'tickets'       => CustomDefTicket::class,
+            'organizations' => CustomDefOrganization::class,
+            'people'        => CustomDefPerson::class,
+            'chats'         => CustomDefChat::class,
+            'kb'            => CustomDefArticle::class,
+            'download'      => CustomDefDownload::class,
         ];
 
         if (!$repClass = @$types[$this->in->getString('type')]) {
@@ -300,7 +306,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             throw new BadRequestHttpException();
         }
         /** @var CustomDefAbstract $rep */
-        $rep  = $this->em->getRepository('DeskPRO:'.$repClass);
+        $rep  = $this->em->getRepository($repClass);
         $step = (int) $this->in->getInt('step');
         switch ($step) {
 
@@ -309,13 +315,16 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
                 $response = ['success' => $hasData];
                 $root     = (int) min($ids);
 
-                if (!$hasData) {
-                    $rep->delete($ids);
+                $field = $rep->getByOptions($ids);
 
-                    return $this->createJsonResponse($response);
+                if (!$hasData) {
+                    if ($repClass !== CustomDefTicket::class || $rep->getOptionUsage($field, $ids)) {
+                        $rep->delete($ids);
+
+                        return $this->createJsonResponse($response);
+                    }
                 }
 
-                $field   = $rep->getByOptions($ids);
                 $options = [];
                 $map     = [];
                 foreach ($field->children as $child) {
@@ -343,7 +352,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
                 if (!$to = $this->in->getInt('update_to')) {
                     throw new BadRequestHttpException();
                 }
-                $rep->updateTo($ids, $to);
+                $field = null;
+                if ($repClass === CustomDefTicket::class) {
+                    $field = $rep->getByOptions($ids);
+                }
+                $rep->updateTo($ids, $to, $field);
+                $rep->delete($ids);
 
                 return $this->createSuccessResponse();
                 break;
