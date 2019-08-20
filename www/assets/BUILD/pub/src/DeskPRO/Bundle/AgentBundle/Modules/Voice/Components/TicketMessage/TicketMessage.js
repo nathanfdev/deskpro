@@ -77,7 +77,7 @@ class TicketMessage extends React.Component {
 
     let transcription = '';
     if (fullRecording && fullRecording.get('transcription')) {
-      transcription = `${transcription} ${fullRecording.get('transcription')}`;
+      transcription = `${fullRecording.get('transcription')}`.trim();
     }
 
     return (

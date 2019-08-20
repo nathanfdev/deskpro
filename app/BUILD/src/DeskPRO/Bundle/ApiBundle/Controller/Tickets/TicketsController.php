@@ -16,7 +16,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
@@ -458,21 +457,5 @@ class TicketsController extends AbstractTicketsController
 
         $this->saveTicket($entity);
         $entity->deleteTicket($this->getUser(), '', false);
-    }
-
-    /**
-     * @param string $value
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-     *
-     * @return array
-     */
-    private function parseDateField($value)
-    {
-        try {
-            return QueryUtil::parseDateFieldFromQuery($value);
-        } catch (\Exception $e) {
-            throw $this->createBadRequestException($e->getMessage());
-        }
     }
 }

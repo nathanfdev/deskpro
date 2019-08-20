@@ -97,7 +97,9 @@ class MergeVoiceRecordings extends AbstractJob
             }
 
             $duration += $recording->getDuration();
-            $transcriptions[] = $recording->getTranscription();
+            if ($recording->getTranscription()) {
+                $transcriptions[] = $recording->getTranscription();
+            }
 
             $fullRecording->addVoiceRecordingMetadata($recording);
 

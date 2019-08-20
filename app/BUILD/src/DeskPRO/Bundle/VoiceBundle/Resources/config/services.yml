@@ -126,3 +126,9 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@dp.voice.event_helper"
+
+  dp.voice.ticket_recording_cleaner:
+    class: DeskPRO\Bundle\VoiceBundle\Voice\VoiceTicketRecordingCleaner
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@blob.storage"
