@@ -14,11 +14,11 @@ class CommunityChannelEdit
     /**
      * @var \Application\DeskPRO\Entity\CommunityChannel
      */
-    public $communityChannel;
+    public $community_channel;
 
     public function __construct(CommunityChannel $communityChannel)
     {
-        $this->communityChannel = $communityChannel;
+        $this->community_channel = $communityChannel;
     }
 
     /**
@@ -26,7 +26,7 @@ class CommunityChannelEdit
      */
     public function save(EntityManager $em)
     {
-        $em->persist($this->communityChannel);
+        $em->persist($this->community_channel);
         $em->flush();
     }
 }

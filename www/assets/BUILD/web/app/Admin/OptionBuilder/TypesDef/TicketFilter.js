@@ -92,8 +92,8 @@ define([
       });
 
       options.push({
-        title: 'Linked feedback items',
-        value: 'FilterFeedbackLinks'
+        title: 'Linked Community Topics',
+        value: 'FilterCommunityTopicLinks'
       });
 
       options.push({

@@ -461,7 +461,7 @@ class LegacyTermsTransformer
 
             case 'FilterCommunityTopicsLinks':
                 return [
-                    'type'    => 'topic_links',
+                    'type'    => 'community_topic_links',
                     'op'      => $term->getTermOperator(),
                     'options' => $options->all(),
                 ];

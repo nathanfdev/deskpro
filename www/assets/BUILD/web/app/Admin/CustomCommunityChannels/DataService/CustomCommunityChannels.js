@@ -7,7 +7,7 @@ define([
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
 ) => {
-  class Admin_CommunityCustomChannels_DataService_CommunityCustomChannels extends Admin_Main_DataService_Base {
+  class Admin_CustomCommunityChannels_DataService_CustomCommunityChannels extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q   = $q;
@@ -37,8 +37,8 @@ define([
         return deferred.promise;
       }
 
-      this.Api.sendGet('/community_custom_channels').success((data, status, headers, config) => {
-        this._setListData(data.community_custom_channels);
+      this.Api.sendGet('/custom_community_channels').success((data, status, headers, config) => {
+        this._setListData(data.custom_community_channels);
         return deferred.resolve(this.recs);
       }
 
@@ -56,11 +56,11 @@ define([
     */
 
     remove(id) {
-      const model = this.em.getById('community_custom_channel', id);
+      const model = this.em.getById('custom_community_channel', id);
 
       if (model != null) {
         this.recs.remove(id);
-        this.em.removeById('community_custom_channel', 'id');
+        this.em.removeById('custom_community_channel', 'id');
       }
 
       return this._updateOrderOfData();
@@ -84,15 +84,15 @@ define([
       // this is due to the reason that in list it's stored as parent_id while in form it's stored in options.parent_id
       model.parent_id = model.options.parent_id;
 
-      const new_model = this.em.createEntity('community_custom_channel', 'id', model);
+      const new_model = this.em.createEntity('custom_community_channel', 'id', model);
       this.recs.set(new_model.id, new_model);
 
       return this._updateOrderOfData();
     }
 
     /*
-     * Returns list of community_custom_channels where feedback of specified community_custom_channel could be moved to
-     * @param model - specified community_custom_channel model
+     * Returns list of custom_community_channels where feedback of specified custom_community_channel could be moved to
+     * @param model - specified custom_community_channel model
      * @return array
      */
     getListOfMovables(model) {
@@ -146,7 +146,7 @@ define([
     }
 
     /**
-        * Creates entities for feedback categories raw data
+        * Creates entities for custom community channels raw data
         *
         * @return {Promise}
     */
@@ -154,7 +154,7 @@ define([
       return (() => {
         const result = [];
         for (const rec of Array.from(raw_recs)) {
-          const model = this.em.createEntity('community_custom_channel', 'id', rec);
+          const model = this.em.createEntity('custom_community_channel', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));
         }
@@ -184,5 +184,5 @@ define([
     }
   }
 
-  return Admin_CommunityCustomChannels_DataService_CommunityCustomChannels;
+  return Admin_CustomCommunityChannels_DataService_CustomCommunityChannels;
 });

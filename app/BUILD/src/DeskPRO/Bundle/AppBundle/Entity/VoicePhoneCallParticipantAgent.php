@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class VoicePhoneCallParticipantAgent.
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoicePhoneCallParticipantRepository")
  */
 class VoicePhoneCallParticipantAgent extends AbstractVoicePhoneCallParticipant
 {

@@ -748,7 +748,7 @@ class CommunityTopicsController extends AbstractController
             $brand = $this->get('default_brand_finder')->getDefaultBrand();
         }
 
-        return $this->container->getSystemService('community_channels_custom')->getParentCategory($brand);
+        return $this->container->getSystemService('custom_community_channels')->getParentCategory($brand);
     }
 
     /**

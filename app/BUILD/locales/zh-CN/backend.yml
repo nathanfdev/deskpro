@@ -18,8 +18,8 @@ adm.general.x_email_bans:
   other: '{{count}} Email Bans'
 adm.general.x_community_active_statuses:
   other: '{{count}} Community Active Statuses'
-adm.general.x_community_custom_channels:
-  other: '{{count}} Community Custom Channels'
+adm.general.x_custom_community_channels:
+  other: '{{count}} Custom Community Channels'
 adm.general.x_community_closed_statuses:
   other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
@@ -366,7 +366,7 @@ agent.emails.view_your_tasks: 查看您的任务
 agent.emails.view_your_teams_tasks: 查看您团队的任务
 agent.emails.view_your_tweets: 查看您的推文
 agent.emails.your_initial_password: 您的初始密码
-agent.community.any_category: 任何类别
+agent.community.any_channel: 任何类别
 agent.community.any_status: 任何状态
 agent.community.count_votes:
   other: '{{display_count}} votes'

@@ -20,12 +20,12 @@ class NewCommunityTopicValidator extends AbstractValidator
     protected function checkIsValid($communityTopic)
     {
         if (!$communityTopic->channel_id) {
-            $this->addError('category_id.invalid');
+            $this->addError('channel_id.invalid');
         }
 
         $cat = App::getOrm()->find('DeskPRO:CommunityChannel', $communityTopic->channel_id);
         if (!$cat) {
-            $this->addError('category_id.invalid');
+            $this->addError('channel_id.invalid');
         }
 
         if (!$communityTopic->title) {

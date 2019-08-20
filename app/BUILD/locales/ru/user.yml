@@ -415,7 +415,7 @@ portal.community.form_logged_in_as: 'Зашел в систему как <span>{
 portal.community.form_logout: 'Не Вы?'
 portal.community.form_tell_us_more: 'Расскажите нам больше'
 portal.community.form_title: Заголовок
-portal.community.form_custom_cat: Категория
+portal.community.form_custom_chan: Пользовательский канал
 portal.community.module_forbidden: 'У Вас нет доступа к этому разделу'
 portal.community.no_matching: 'Нет подходящих отзывов'
 portal.community.none: 'Ещё нет отзывов'

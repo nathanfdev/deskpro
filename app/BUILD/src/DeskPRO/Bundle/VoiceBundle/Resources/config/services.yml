@@ -120,3 +120,9 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.worker_helper"
+
+  dp.voice.ticket_user_changer:
+    class: DeskPRO\Bundle\VoiceBundle\Voice\VoiceTicketUserChanger
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.event_helper"

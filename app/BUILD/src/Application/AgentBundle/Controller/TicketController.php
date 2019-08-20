@@ -67,6 +67,7 @@ use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
@@ -525,12 +526,21 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id);
         $vars   = [
-            'ticket' => $ticket,
+            'ticket'      => $ticket,
+            'person_repo' => $this->em->getRepository(Person::class),
         ];
 
         if ($request->get('select_person')) {
             return $this->render('AgentBundle:Ticket:select-user-menu.html.twig', $vars);
         } else {
+            $message = $this->get('dp.voice.ticket_user_changer')->getLastVoiceMessage($ticket);
+            if ($message) {
+                $phoneCall = $message->getActiveCall();
+                if ($phoneCall) {
+                    $this->get('dp.voice.event_helper')->sendConferenceStatus($phoneCall);
+                }
+            }
+
             return $this->render('AgentBundle:Ticket:view-ticket-person-holder.html.twig', $vars);
         }
     }
@@ -558,12 +568,15 @@ class TicketController extends AbstractController
         if (isset($this->ticketPermsCache[$ticket->getId()])) {
             return $this->ticketPermsCache[$ticket->getId()];
         }
-        $ticket_perms                        = [];
-        $ticket_perms['delete']              = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
-        $ticket_perms['reply']               = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
-        $ticket_perms['modify_set_archived'] = $this->person->PermissionsManager->TicketChecker->canSetArchived(
-            $ticket
-        );
+
+        /** @var TicketChecker $ticketChecker */
+        $ticketChecker = $this->person->PermissionsManager->TicketChecker;
+        $ticketPerms   = [
+            'delete'                     => $ticketChecker->canDelete($ticket),
+            'reply'                      => $ticketChecker->canReply($ticket),
+            'modify_set_archived'        => $ticketChecker->canSetArchived($ticket),
+            'modify_messages_no_logging' => $ticketChecker->canModifyMessages($ticket, 'no_logging'),
+        ];
 
         foreach ([
                      'department',
@@ -584,12 +597,12 @@ class TicketController extends AbstractController
                      'billing',
                      'followed',
                  ] as $p) {
-            $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
+            $ticketPerms["modify_$p"] = $ticketChecker->canModify($ticket, $p);
         }
 
-        $this->ticketPermsCache[$ticket->getId()] = $ticket_perms;
+        $this->ticketPermsCache[$ticket->getId()] = $ticketPerms;
 
-        return $ticket_perms;
+        return $ticketPerms;
     }
 
     /**
@@ -1212,22 +1225,64 @@ class TicketController extends AbstractController
         $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
 
         if ($person) {
-            $part = $this->em->createQuery(
-                '
-                SELECT part
-                FROM DeskPRO:TicketParticipant part
-                WHERE part.ticket = ?0 AND part.person = ?1
-            '
-            )->setParameters([$ticket, $person])->setMaxResults(1)->getOneOrNullResult();
-
-            if (!$part) {
-                return $this->createJsonResponse(['success' => false]);
-            }
-
             $this->db->beginTransaction();
 
             try {
-                $this->em->remove($part);
+                $part = $ticket->removeParticipantPerson($person);
+
+                if (!$part) {
+                    return $this->createJsonResponse(['success' => false]);
+                }
+
+                $ticket->getTicketLogger()->done();
+                $this->em->persist($ticket);
+                $this->em->flush();
+                $this->db->commit();
+            } catch (\Exception $e) {
+                $this->db->rollback();
+                throw $e;
+            }
+        }
+
+        return $this->createJsonResponse(['success' => true, 'cc_list' => $this->_getTicketCcList($ticket)]);
+    }
+
+    public function removeAbsentAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        if (!$this->checkPerm($ticket, 'modify_cc')) {
+            return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
+        }
+
+        $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
+
+        if ($person) {
+            $this->db->beginTransaction();
+
+            try {
+                $part = $ticket->removeParticipantPerson($person);
+
+                if (!$part) {
+                    return $this->createJsonResponse(['success' => false]);
+                }
+
+                $ticket->getTicketLogger()->done();
+                $this->em->persist($ticket);
+
+                $removedCCs = $ticket->getAttribute('removed_ccs');
+                if (!$removedCCs) {
+                    $removedCCs = new TicketAttribute('removed_ccs');
+                }
+                $removedAddresses = json_decode($removedCCs->getValue());
+                if (!$removedAddresses) {
+                    $removedAddresses = [];
+                }
+                $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses());
+                $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
+                $ticket->addAttribute($removedCCs);
+                $this->em->persist($removedCCs);
+
                 $this->em->flush();
                 $this->db->commit();
             } catch (\Exception $e) {
@@ -2178,6 +2233,7 @@ class TicketController extends AbstractController
     /**
      * @param $message_id
      *
+     * @throws NotFoundHttpException
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -2187,10 +2243,13 @@ class TicketController extends AbstractController
      */
     public function ajaxSaveMessageTextAction($message_id)
     {
+        /** @var TicketChecker $ticketChecker */
+        $ticketChecker = $this->person->PermissionsManager->TicketChecker;
+
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
         $message = $this->em->find(TicketMessage::class, $message_id);
         $ticket  = null;
-        if ($message && $this->person->PermissionsManager->TicketChecker->canEditMessage($message)) {
+        if ($message && $ticketChecker->canEditMessage($message)) {
             $ticket = $message->ticket;
         }
 
@@ -2214,7 +2273,7 @@ class TicketController extends AbstractController
         $details = [
             'message_id' => $message->getId(),
         ];
-        if ($logOriginalContents) {
+        if ($logOriginalContents || !$ticketChecker->canModifyMessages($ticket, 'no_logging')) {
             $details += [
                 'old_message'      => $oldMessage,
                 'old_full_message' => $oldFullMessage,
@@ -4551,18 +4610,19 @@ class TicketController extends AbstractController
 
     /**
      * @param Ticket $ticket
-     * @param array $tos
-     * @param array $ccs
-     * @param array $bccs
+     * @param array  $tos
+     * @param array  $ccs
+     * @param array  $bccs
      * @param string $fromEmail
      * @param string $fromName
      * @param string $customMessage
-     * @param array $messages
-     * @param array $options
+     * @param array  $messages
+     * @param array  $options
      *
-     * @return Response
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
+     *
+     * @return Response
      */
     protected function forwardAsNew(
         Ticket $ticket,
@@ -4589,7 +4649,9 @@ class TicketController extends AbstractController
             $this->em->rollback();
             throw $e;
         }
+
         $newTicket->setParentTicket($ticket);
+        $newTicket->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
 
         /** @var Ticket $oldTicket */
         $oldTicket = $ticket;
@@ -4640,14 +4702,42 @@ class TicketController extends AbstractController
             $ticket->setAgentTeam(null);
         }
 
-        $account = $this->getAccount($ticket);
-
-        $context = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+        $account     = $this->getAccount($ticket);
+        $context     = $ticketManager->createAgentExecutorContext($this->person, 'forward', 'web');
+        $blobStorage = $this->get('blob.storage');
 
         foreach ($messages as $message) {
+            /** @var TicketMessage $messageCopy */
             $messageCopy     = clone $message;
             $messageCopy->id = null;
-            $messageCopy->setTicket($ticket);
+            $messageCopy
+                ->setTicket($ticket)
+                ->setAttachments(new ArrayCollection());
+
+            foreach ($message->getAttachments() as $attachment) {
+                /** @var TicketAttachment $attachmentCopy */
+                /** @var Blob $blob */
+                $attachmentCopy = clone $attachment;
+                $blob           = $attachment->getBlob();
+                $rawFile        = $blobStorage->copyBlobRecordToString($blob);
+                $blobCopy       = $blobStorage
+                    ->createBlobRecordFromString(
+                        $rawFile,
+                        $blob->getFileName(),
+                        $blob->getContentType(),
+                        ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
+                    )
+                    ->setIsTemp(false);
+
+                $attachmentCopy
+                    ->setId(null)
+                    ->setMessage($messageCopy)
+                    ->setBlob($blobCopy)
+                    ->setTicket($ticket);
+
+                $messageCopy->addAttachment($attachmentCopy);
+            }
+
             $this->em->persist($messageCopy);
         }
 

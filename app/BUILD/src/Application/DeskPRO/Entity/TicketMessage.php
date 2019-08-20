@@ -13,6 +13,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -262,6 +263,11 @@ class TicketMessage extends DomainObject
      * @var TicketFeedback[]|ArrayCollection
      */
     protected $ticketFeedback;
+
+    /**
+     * @var array|callable|null
+     */
+    protected $emailRecipients = null;
 
     /**
      * TicketMessage constructor.
@@ -794,6 +800,18 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @param TicketAttachment[]|ArrayCollection $attachments
+     *
+     * @return $this
+     */
+    public function setAttachments($attachments)
+    {
+        $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
      * @param TicketAttachment $attach
      *
      * @return $this
@@ -894,6 +912,24 @@ class TicketMessage extends DomainObject
     public function isVoiceMessage()
     {
         return count($this->getPhoneCallAttributes()) > 0;
+    }
+
+    /**
+     * @return VoicePhoneCall|null
+     */
+    public function getActiveCall()
+    {
+        $attribute = $this->getPhoneCallAttribute();
+        if (!$attribute) {
+            return;
+        }
+
+        $phoneCall = $attribute->getPhoneCall();
+        if (!$phoneCall || $phoneCall->isEnded() || $phoneCall->isVoicemail() || $phoneCall->isFailed()) {
+            return;
+        }
+
+        return $phoneCall;
     }
 
     /**
@@ -1056,6 +1092,20 @@ class TicketMessage extends DomainObject
         }
     }
 
+    public function setEmailRecipients($recipients)
+    {
+        $this->emailRecipients = $recipients;
+    }
+
+    public function getEmailRecipients()
+    {
+        if (is_callable($this->emailRecipients)) {
+            $this->emailRecipients = call_user_func($this->emailRecipients);
+        }
+
+        return $this->emailRecipients;
+    }
+
     public function incTicketCount()
     {
         if (!$this->ticket) {
@@ -1129,6 +1179,22 @@ class TicketMessage extends DomainObject
     public function setIpAddress($ip_address)
     {
         $this->setModelField('ip_address', $ip_address);
+    }
+
+    /**
+     * @return EmailAccount[]|ArrayCollection
+     */
+    public function getEmailAccounts()
+    {
+        return $this->emailAccounts;
+    }
+
+    /**
+     * @param EmailAccount[]|ArrayCollection $emailAccounts
+     */
+    public function setEmailAccounts($emailAccounts)
+    {
+        $this->emailAccounts = $emailAccounts;
     }
 
     /**

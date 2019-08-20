@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class VoiceQueueTarget.
  *
  * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceTargetRepository")
  */
 class VoiceQueueTarget extends AbstractVoiceTarget
 {
@@ -56,7 +56,7 @@ class VoiceQueueTarget extends AbstractVoiceTarget
     {
         return [
             'id'   => $this->queue->getId(),
-            'type' => 'queue',
+            'type' => self::TYPE_QUEUE,
             'name' => $this->queue->getName(),
         ];
     }

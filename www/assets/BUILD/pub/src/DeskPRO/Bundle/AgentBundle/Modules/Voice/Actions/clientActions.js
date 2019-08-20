@@ -1,7 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
 import $ from 'jquery';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -245,12 +245,18 @@ export const voiceBootstrap = createAction(
             hangupConnection(connection);
           }
         });
-        messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (errors) => {
+        messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (data) => {
           const state = getState();
           const outgoingCall = outgoingCallSelector(state);
+          const connections = connectionsSelector(state);
+          const connection = connections.filter(c => filterConnection(c, data.call_id)).first();
+
+          if (connection) {
+            hangupConnection(connection);
+          }
           if (outgoingCall) {
             dispatch(resetOutgoingCall());
-            window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), errors);
+            window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), data.errors);
           }
         });
         messageBroker.addMessageListener('agent.voice.worker-idle', (data) => {
@@ -389,7 +395,7 @@ export const voiceBootstrap = createAction(
 
 export const makeOutboundCall = createAction(
   'VOICE_AGENT_MAKE_OUTBOUND_PHONE_CALL',
-  (callFrom, callTo, ticketId = null) => (dispatch, getState) => {
+  (callFrom, callTo, ticketId = null, personId = null) => (dispatch, getState) => {
     const state   = getState();
     const me      = meSelector(state);
     const agentId = me.get('id');
@@ -397,7 +403,8 @@ export const makeOutboundCall = createAction(
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
       call_to:   callTo,
-      ticket:    ticketId
+      ticket:    ticketId,
+      person:    personId
     });
 
     dispatch(waitingConnection());
@@ -631,10 +638,15 @@ export const checkIsActive = createAction(
 
 export const hangup = createAction(
   'VOICE_AGENT_HANGUP',
-  connection => (dispatch) => {
+  callId => (dispatch, getState) => {
     dispatch(resetOutgoingCall());
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/end_call`).success(() => {
-      hangupConnection(connection);
+    api.sendPut(`DP_API/voice_client/phone_call/${callId}/end_call`).success(() => {
+      const connections = connectionsSelector(getState());
+      connections.forEach((connection) => {
+        if (parseInt(connection.callId, 10) === parseInt(callId, 10)) {
+          hangupConnection(connection);
+        }
+      });
     });
   }
 );
@@ -649,12 +661,32 @@ export const searchPerson = createAction(
 
 export const openDialpad = createAction(
   'VOICE_AGENT_OPEN_DIALPAD',
-  (outgoingNumber, ticketId = null, ticketTitle = null) => {
-    window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle);
+  (outgoingNumber, ticketId = null, ticketTitle = null, personId = null) => {
+    window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle, personId);
   }
 );
 
 export const deleteRecord = createAction(
   'VOICE_AGENT_DELETE_RECORD',
-  phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
+  phoneCallId => (dispatch, getState) => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`).success(() => {
+    const state = getState();
+    const phoneCalls = allPhoneCallsSelector(state);
+
+    repository('VoicePhoneCall').load(phoneCallId).success(({ data }) => {
+      const phoneCall = Immutable.fromJS(data);
+      if (phoneCalls.get(phoneCallId)) {
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+      } else {
+        dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+      }
+    });
+  })
+);
+
+export const deleteMessage = createAction(
+  'VOICE_AGENT_DELETE_MESSAGE',
+  (ticketId, messageId) => api.sendDelete(`DP_API/tickets/${ticketId}/messages/${messageId}`).success(() => {
+    $(`article.message-${messageId}`).remove();
+    $(`.voice-ticket-message.message-${messageId}`).remove();
+  })
 );

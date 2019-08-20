@@ -109,9 +109,25 @@ class RunnerExecSource
 
         if ($h = $reader->getHeader('To')) {
             $this->source->header_to = implode(', ', $h->getAllParts());
+            $addresses               = $reader->getToAddresses();
+            foreach ($addresses as $address) {
+                $recipient = [
+                    'type'    => 'to',
+                    'address' => $address->email,
+                ];
+                $this->source->addRecipient($recipient);
+            }
         }
         if ($h = $reader->getHeader('Cc')) {
             $this->source->header_cc = implode(', ', $h->getAllParts());
+            $addresses               = $reader->getCcAddresses();
+            foreach ($addresses as $address) {
+                $recipient = [
+                    'type'    => 'cc',
+                    'address' => $address->email,
+                ];
+                $this->source->addRecipient($recipient);
+            }
         }
         if ($h = $reader->getHeader('Subject')) {
             $this->source->header_subject = implode(', ', $h->getAllParts());

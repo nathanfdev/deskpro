@@ -87,12 +87,10 @@ class EmailWithTranscriptionProcessor extends AbstractJobProcessor
             }
 
             $phoneCall = $messageAttribute->getPhoneCall();
-            foreach ($phoneCall->getRecordings() as $recording) {
-                if ($recording->getTranscription() === null) {
-                    $this->jobQueue->retryByJobId($job['id'], new \DateTime('+5 minutes'));
+            if ($phoneCall->getFullRecording()->getTranscription() === null) {
+                $this->jobQueue->retryByJobId($job['id'], new \DateTime('+5 minutes'));
 
-                    return;
-                }
+                return;
             }
 
             $ticket = $messageAttribute->getMessage()->getTicket();

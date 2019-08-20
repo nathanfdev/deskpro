@@ -7,11 +7,10 @@
 namespace Application\DeskPRO\Community;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CustomDataCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Doctrine\ORM\EntityManager;
 
-class CommunityChannelsCustom
+class CustomCommunityChannels
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -55,7 +54,7 @@ class CommunityChannelsCustom
         foreach ($brands as $brand) {
             $this->communityCustomChannels = array_merge(
                 $this->communityCustomChannels,
-                $this->em->getRepository(CustomDataCommunityTopic::class)->getAllFlatData($this->getParentChannel($brand))
+                $this->em->getRepository(CustomDefCommunityTopic::class)->getAllFlatData($this->getParentChannel($brand))
             );
         }
     }
@@ -76,7 +75,7 @@ class CommunityChannelsCustom
      */
     public function getById($id)
     {
-        return $this->em->getRepository(CustomDataCommunityTopic::class)->get($id);
+        return $this->em->getRepository(CustomDefCommunityTopic::class)->get($id);
     }
 
     /**
@@ -114,7 +113,7 @@ class CommunityChannelsCustom
      */
     protected function createInitialCommunityCustomChannelIfNotDefined(Brand $brand)
     {
-        $this->parentChannel[$brand->getId()] = $this->em->getRepository(CustomDataCommunityTopic::class)->getCategoryField($brand);
+        $this->parentChannel[$brand->getId()] = $this->em->getRepository(CustomDefCommunityTopic::class)->getChannelField($brand);
 
         if (!$this->parentChannel[$brand->getId()]) {
             $this->parentChannel[$brand->getId()]                = new CustomDefCommunityTopic();

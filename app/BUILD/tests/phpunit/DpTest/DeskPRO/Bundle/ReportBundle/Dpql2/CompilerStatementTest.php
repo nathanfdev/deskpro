@@ -331,8 +331,7 @@ SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE `tickets`.`ref` IN (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE (`tickets`.`ref` = 'AAAA-%')
-LIMIT 2500)
+WHERE (`tickets`.`ref` = 'AAAA-%'))
 LIMIT 2500
 SQL
         );
@@ -356,8 +355,7 @@ SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE `tickets`.`ref` NOT IN (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE (`tickets`.`ref` = 'AAAA-%')
-LIMIT 2500)
+WHERE (`tickets`.`ref` = 'AAAA-%'))
 LIMIT 2500
 SQL
         );

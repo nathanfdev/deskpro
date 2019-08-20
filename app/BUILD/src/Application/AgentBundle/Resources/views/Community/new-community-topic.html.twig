@@ -13,11 +13,11 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <div class="form-header-error" style="display: none">
-	{{ phrase('agent.community.no_community_cats_error') }}
+	{{ phrase('agent.community.no_community_channels_error') }}
 </div>
 <div class="form-outer">
 
-<form id="{{baseId}}_newcomunitytopic" class="keybound-submit">
+<form id="{{baseId}}_newcommunitytopic" class="keybound-submit">
 
 <input type="hidden" name="newcommunitytopic[linked_ticket]" id="{{baseId}}_linked_ticket" value="{% if ticket %}{{ ticket.id }}{% endif %}" />
 
@@ -47,7 +47,7 @@ pageMeta.baseId = '{{ baseId }}';
   </div>
 {% endif %}
 
-<div class="{% if not ticket %}first{% endif %} section cat-section" id="{{baseId}}_cat_section">
+<div class="{% if not ticket %}first{% endif %} section chan-section" id="{{baseId}}_chan_section">
 	<div class="content">
         <div class="col">
             <h4>{{ phrase('agent.general.brand') }}</h4>
@@ -60,16 +60,16 @@ pageMeta.baseId = '{{ baseId }}';
             </select>
         </div>
 		<div class="col">
-			<h4>{{ phrase('agent.general.type') }}</h4>
+			<h4>{{ phrase('agent.general.channel') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
-				'name': 'newcommunitytopic[category_id]',
-				'id': baseId ~ '_cat',
-				'add_classname': 'category_id',
+				'name': 'newcommunitytopic[channel_id]',
+				'id': baseId ~ '_chan',
+				'add_classname': 'channel_id',
 				'add_attr': '',
 				'categories': community_channels,
 				'selected': state.newcommunitytopic.channel_id|default(0)
 			} %}
-			<div class="error-message category_id">{{ phrase('agent.general.choose_a_type') }}</div>
+			<div class="error-message channel_id">{{ phrase('agent.general.choose_a_type') }}</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
@@ -192,7 +192,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_community') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_community_topic') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

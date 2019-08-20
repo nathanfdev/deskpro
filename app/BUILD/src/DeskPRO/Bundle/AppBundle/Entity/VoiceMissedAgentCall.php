@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class VoicemailRecord.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceMissedAgentCallRepository")
  * @ORM\Table(name="voice_missed_agent_calls", indexes={@ORM\Index(name="recording_sid", columns={"recording_sid"})})
  *
  * @JMS\ExclusionPolicy("all")

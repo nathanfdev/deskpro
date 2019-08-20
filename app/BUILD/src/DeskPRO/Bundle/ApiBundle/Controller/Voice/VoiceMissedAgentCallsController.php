@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -73,7 +74,7 @@ class VoiceMissedAgentCallsController extends CrudController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/{missedAgentCall}/create_ticket")
+     * @Rest\Post("/{missedAgentCall}/create_ticket")
      *
      * @param VoiceMissedAgentCall $missedAgentCall
      *
@@ -102,6 +103,20 @@ class VoiceMissedAgentCallsController extends CrudController
             // ticket is already created, just return it
             $ticket = $messageAttribute->getMessage()->getTicket();
         } else {
+            // copy voicemail from missed call as phone call recording
+            $recording = new VoiceRecording();
+            $recording->setRecordingSid($missedAgentCall->getRecordingSid());
+            $recording->setRecordingUrl($missedAgentCall->getRecordingUrl());
+            $recording->setTranscription($missedAgentCall->getTranscription());
+            $recording->setBlob($missedAgentCall->getBlob());
+            $recording->setDuration($missedAgentCall->getDuration());
+
+            $phoneCall->addRecording($recording);
+
+            if (!$phoneCall->getFullRecording()) {
+                $phoneCall->setFullRecording($recording);
+            }
+
             // create a new ticket based on the voicemail message
             $ticketMessageCall = new TicketMessageVoicePhoneCall();
             $ticketMessageCall->setPhoneCall($phoneCall);
@@ -131,6 +146,7 @@ class VoiceMissedAgentCallsController extends CrudController
 
         // mark the voicemail record as deleted because it's not needed anymore
         $missedAgentCall->setIsDeleted(true);
+        $missedAgentCall->setBlob(null);
 
         $em = $this->getManager();
         $em->persist($missedAgentCall);
@@ -172,14 +188,28 @@ class VoiceMissedAgentCallsController extends CrudController
      */
     protected function deleteEntity($entity)
     {
-        if ($entity->getAgent() !== $this->getUser()) {
+        $person = $this->getUser();
+        if ($entity->getAgent() !== $person) {
             throw $this->createAccessDeniedException('Unable to delete voicemail record');
         }
 
-        $entity->setIsDeleted(true);
+        $canDeleteRecordings = $person->hasPerm('agent_tickets.modify_messages_delete_voice_recordings_own');
+        $canDeleteMessages   = $person->hasPerm('agent_tickets.modify_messages_delete_voice_messages_own');
 
         $em = $this->getManager();
-        $em->persist($entity);
+
+        if ($canDeleteRecordings || $canDeleteMessages) {
+            $blob = $entity->getBlob();
+
+            $entity->setBlob(null);
+            $em->flush();
+
+            if ($blob) {
+                $this->get('blob.storage')->deleteBlobRecord($blob);
+            }
+        }
+
+        $entity->setIsDeleted(true);
         $em->flush();
     }
 }

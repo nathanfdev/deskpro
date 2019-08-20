@@ -1,14 +1,14 @@
 {{ form_errors(form) }}
 {{ form_start(form) }}
 
-{% if form.category is defined %}
+{% if form.channel is defined %}
 <div class="community-topic-form">
-    {{ form_errors(form.category) }}
+    {{ form_errors(form.channel) }}
 
     <div class="main-input dpx-form">
         <h3>{{ phrase('portal.community.form_i_have_a') }}:</h3>
         <div class="question-type">
-            {{ form_widget(form.category) }}
+            {{ form_widget(form.channel) }}
         </div>
     </div>
 </div>

@@ -1,11 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\VoiceTarget;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
@@ -17,7 +11,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class AbstractVoiceTarget.
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceTargetRepository")
  * @ORM\Table(name="voice_targets")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)

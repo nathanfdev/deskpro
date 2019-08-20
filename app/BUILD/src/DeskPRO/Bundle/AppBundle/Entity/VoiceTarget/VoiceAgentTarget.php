@@ -11,10 +11,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceAgentTarget.
  *
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceTargetRepository")
  * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceAgentTargetListener"})
  *
  * @JMS\ExclusionPolicy("all")
- * @ORM\Entity
  */
 class VoiceAgentTarget extends AbstractVoiceTarget
 {
@@ -60,7 +60,7 @@ class VoiceAgentTarget extends AbstractVoiceTarget
     {
         return [
             'id'   => $this->agent->getId(),
-            'type' => 'agent',
+            'type' => self::TYPE_AGENT,
             'name' => $this->agent->getName(),
         ];
     }

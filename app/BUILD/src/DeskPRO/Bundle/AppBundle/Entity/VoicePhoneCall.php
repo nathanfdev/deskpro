@@ -41,6 +41,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const STATUS_ENDED         = 'ended';
     const STATUS_CANCELED      = 'canceled';
     const STATUS_VOICEMAIL     = 'voicemail';
+    const STATUS_FAILED        = 'failed';
 
     const DIRECTION_INBOUND  = 'inbound';
     const DIRECTION_OUTBOUND = 'outbound';
@@ -102,7 +103,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
-     * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @Assert\NotNull()
      *
@@ -522,6 +523,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isFailed()
+    {
+        return $this->status === self::STATUS_FAILED;
+    }
+
+    /**
      * @param string $status
      *
      * @return $this
@@ -909,6 +918,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return ArrayCollection|\Doctrine\Common\Collections\Collection
+     */
+    public function getTempRecordings()
+    {
+        return $this->recordings->filter(function (VoiceRecording $recording) {
+            return $recording !== $this->fullRecording && !$recording->getMetadataProperty('full_recording');
+        });
+    }
+
+    /**
      * @param VoiceRecording $recording
      *
      * @return $this
@@ -1103,9 +1122,17 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param VoiceRecording $fullRecording
+     *
+     * @return $this
      */
-    public function setFullRecording($fullRecording)
+    public function setFullRecording(VoiceRecording $fullRecording = null)
     {
-        $this->fullRecording = $fullRecording;
+        $this->setModelField('fullRecording', $fullRecording);
+        if ($fullRecording) {
+            $fullRecording->setPhoneCall($this);
+            $fullRecording->setMetadataProperty('full_recording', 1);
+        }
+
+        return $this;
     }
 }

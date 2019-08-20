@@ -16,6 +16,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TicketAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
@@ -23,10 +24,12 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceTicketListener;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Proxy\Proxy;
@@ -614,6 +617,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var TicketLog[]
      */
     protected $logs;
+    /**
+     * @var TicketAttribute[]
+     */
+    protected $attributes;
 
     /**
      * Constructor.
@@ -639,6 +646,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->stars            = new ArrayCollection();
         $this->followUps        = new ArrayCollection();
         $this->logs             = new ArrayCollection();
+        $this->attributes       = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -3114,11 +3122,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @deprecated use setTicketStatus instead
      *
      * @param string       $status
-     * @param TicketStatus $ticket_status
+     * @param TicketStatus $ticketStatus
      *
      * @return $this
      */
-    public function setStatus($status, TicketStatus $ticket_status = null)
+    public function setStatus($status, TicketStatus $ticketStatus = null)
     {
         // fallback to support these 2 statuses for cases which has not been updated
         if (in_array($status, ['hidden.deleted', 'hidden.spam'])) {
@@ -3131,8 +3139,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $old_status_code   = $this->getStatusCode();
         $old_ticket_status = $this->ticket_status;
 
-        $status_code = $status;
-        $hstatus     = null;
+        $statusCode = $status;
+        if ($ticketStatus) {
+            $statusCode = $ticketStatus->getStatusCode();
+        }
+
+        $hstatus = null;
         if (strpos($status, '.')) {
             list($status, $hstatus) = explode('.', $status, 2);
         }
@@ -3209,25 +3221,25 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             );
         }
 
-        if (!$ticket_status || $ticket_status instanceof VirtualTicketStatus || $ticket_status->getStatusType() !== $status) {
-            $ticket_status = null;
+        if (!$ticketStatus || $ticketStatus instanceof VirtualTicketStatus || $ticketStatus->getStatusType() !== $status) {
+            $ticketStatus = null;
         }
 
-        if ($hstatus && !$ticket_status) {
-            $ticket_status = $hstatus == TicketStatus::SYS_ID_DELETED
+        if ($hstatus && !$ticketStatus) {
+            $ticketStatus = $hstatus == TicketStatus::SYS_ID_DELETED
                 ? App::getContainer()->getTicketStatuses()->getDeletedStatus()
                 : App::getContainer()->getTicketStatuses()->getSpamStatus();
         }
 
         $this->setModelField('status', $status);
-        $this->setModelField('ticket_status', $ticket_status);
+        $this->setModelField('ticket_status', $ticketStatus);
 
         if ($old_status_code !== $this->getStatusCode()) {
             $this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
             $this->getStateChangeRecorder()->record(
                 'status_change_info',
                 ['status' => $old_status, 'ticket_status' => $old_ticket_status],
-                ['status' => $status, 'ticket_status' => $ticket_status],
+                ['status' => $status, 'ticket_status' => $ticketStatus],
                 false
             );
         }
@@ -3235,7 +3247,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($old_status === TicketStatus::STATUS_TYPE_HIDDEN) {
             $deletedTicketStatus = App::getContainer()->getTicketStatuses()->getDeletedStatus();
             if ($old_status_code == $deletedTicketStatus->getStatusCode()
-                && $status_code != $deletedTicketStatus->getStatusCode()
+                && $statusCode != $deletedTicketStatus->getStatusCode()
             ) {
                 $this->undeleteTicket();
             }
@@ -3259,13 +3271,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @param TicketStatus $ticket_status
+     * @param TicketStatus $ticketStatus
      *
      * @return $this
      */
-    public function setTicketStatus(TicketStatus $ticket_status = null)
+    public function setTicketStatus(TicketStatus $ticketStatus = null)
     {
-        $this->setStatus($ticket_status->getStatusType(), $ticket_status);
+        $this->setStatus($ticketStatus->getStatusType(), $ticketStatus);
 
         return $this;
     }
@@ -4933,6 +4945,64 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketAttribute[]
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return TicketAttribute|null
+     */
+    public function getAttribute($name)
+    {
+        foreach ($this->attributes as $attr) {
+            if ($attr->getName() === $name) {
+                return $attr;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param TicketAttribute $attr
+     *
+     * @return $this
+     */
+    public function addAttribute(TicketAttribute $attr)
+    {
+        $this->attributes->add($attr);
+        $attr->setTicket($this);
+
+        return $this;
+    }
+
+    /**
+     * @param string|TicketAttribute $attr
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function removeAttribute($attr)
+    {
+        if (!$attr instanceof TicketAttribute) {
+            $attr = $this->getAttribute($attr);
+            if (!$attr) {
+                throw new \OutOfBoundsException();
+            }
+        }
+
+        $this->attributes->removeElement($attr);
+
+        return $this;
+    }
+
+    /**
      * @return TicketLog[]|ArrayCollection
      */
     public function getLogs()
@@ -4967,6 +5037,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
+        $metadata->addEntityListener(Events::preUpdate, VoiceTicketListener::class, Events::preUpdate);
         $metadata->setPrimaryTable(
             [
                 'name'    => 'tickets',
@@ -5580,6 +5651,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'     => 'followUps',
                 'targetEntity'  => TicketFollowUp::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'attributes',
+                'targetEntity'  => TicketAttribute::class,
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

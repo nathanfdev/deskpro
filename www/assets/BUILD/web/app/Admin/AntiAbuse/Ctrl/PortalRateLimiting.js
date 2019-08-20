@@ -8,18 +8,18 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     init() {
       this.$scope.settings = null;
-      this.$scope.feedbackSettings = null;
+      this.$scope.communitySettings = null;
       this.$scope.usersourceSettings = null;
       return this.$scope.general_settings = null;
     }
 
     initialLoad() {
       const promise = this.Api2.sendGet(_url).then(res => this.$scope.settings = res.data.data);
-      const feedbackPromise = this.Api.sendGet('/settings/portal/community').then(res => this.$scope.feedbackSettings = res.data.settings);
+      const communityPromise = this.Api.sendGet('/settings/portal/community').then(res => this.$scope.communitySettings = res.data.settings);
       const usersourcePromise = this.Api2.sendGet('/settings/user_source').then(res => this.$scope.usersourceSettings = res.data.data);
       const generalPromise = this.Api.sendGet('/general_settings').then(res => this.$scope.general_settings = res.data.general_settings);
 
-      return this.$q.all([promise, feedbackPromise, usersourcePromise, generalPromise]);
+      return this.$q.all([promise, communityPromise, usersourcePromise, generalPromise]);
     }
 
     save() {

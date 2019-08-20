@@ -32,15 +32,6 @@ export const createAccount = createAction(
   })
 );
 
-export const createCloudAccount = createAction(
-  'VOICE_CREATE_ACCOUNT',
-  (accountType, data) => dispatch =>
-    api.sendPost(`DP_API/voice_accounts/${accountType}/create_cloud_account`, data).success((response) => {
-      const account = Immutable.fromJS(response.data);
-      dispatch(addToCollection('VoiceAccount', 'all', Immutable.List([account])));
-    })
-);
-
 export const updateAccount = createAction(
   'VOICE_UPDATE_ACCOUNT',
   (accountType, id, data) => dispatch => api.sendPut(`DP_API/voice_accounts/${accountType}/${id}`, data).success(() => {

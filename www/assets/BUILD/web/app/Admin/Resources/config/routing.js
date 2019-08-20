@@ -567,7 +567,7 @@ define(function() {
     templateName: 'TicketStatuses/edit.html',
     controller: 'Admin_TicketStatuses_Ctrl_Edit'
   });
-  
+
   // ###
   // # Urgency
   // ###
@@ -1896,7 +1896,7 @@ define(function() {
   });
 
   // ###
-  // # Feedback::Statuses
+  // # Community::Statuses
   // ###
   routes.push({
     id:           'portal.community_statuses',
@@ -1961,40 +1961,40 @@ define(function() {
   // # Community::CustomChannels
   // ###
   routes.push({
-    id:           'portal.community_custom_channels',
+    id:           'portal.custom_community_channels',
     url:          '/community/custom_channels',
-    templateName: 'CommunityCustomChannels/list.html',
-    controller:   'Admin_CommunityCustomChannels_Ctrl_List'
+    templateName: 'CustomCommunityChannels/list.html',
+    controller:   'Admin_CustomCommunityChannels_Ctrl_List'
   });
 
   routes.push({
-    id:         'portal.community_custom_channels.gocreate',
+    id:         'portal.custom_community_channels.gocreate',
     url:        '/go-create/',
     template:   '',
-    controller: ['$state', function ($state) { $state.go('portal.community_custom_channels.create'); }]
+    controller: ['$state', function ($state) { $state.go('portal.custom_community_channels.create'); }]
   });
 
   routes.push({
-    id:           'portal.community_custom_channels.create',
+    id:           'portal.custom_community_channels.create',
     url:          '/create/',
-    templateName: 'CommunityCustomChannels/edit.html',
-    controller:   'Admin_CommunityCustomChannels_Ctrl_Edit'
+    templateName: 'CustomCommunityChannels/edit.html',
+    controller:   'Admin_CustomCommunityChannels_Ctrl_Edit'
   });
 
   routes.push({
-    id:           'portal.community_custom_channels.edit',
+    id:           'portal.custom_community_channels.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'CommunityCustomChannels/edit.html',
-    controller:   'Admin_CommunityCustomChannels_Ctrl_Edit'
+    templateName: 'CustomCommunityChannels/edit.html',
+    controller:   'Admin_CustomCommunityChannels_Ctrl_Edit'
   });
 
   // ###
-  // # Feedback::Labels
+  // # Community::Labels
   // ###
   routes.push({
     id:           'portal.community_labels',
     url:          '/community/labels',
-    templateName: 'Labels/Feedback/list.html',
+    templateName: 'Labels/Community/list.html',
     controller:   'Admin_Labels_Ctrl_List',
     data:         { type: 'community' }
   });
@@ -2002,7 +2002,7 @@ define(function() {
   routes.push({
     id:           'portal.community_labels.create',
     url:          '/create/',
-    templateName: 'Labels/Feedback/edit.html',
+    templateName: 'Labels/Community/edit.html',
     controller:   'Admin_Labels_Ctrl_Edit',
     data:         { type: 'community' }
   });
@@ -2010,14 +2010,14 @@ define(function() {
   routes.push({
     id:           'portal.community_labels.gocreate',
     url:          '/go-create/',
-    templateName: 'Labels/Feedback/edit.html',
+    templateName: 'Labels/Community/edit.html',
     controller:   ['$state', function ($state) { $state.go('portal.community_labels.create'); }]
   });
 
   routes.push({
     id:           'portal.community_labels.edit',
     url:          '/{label:.*}/',
-    templateName: 'Labels/Feedback/edit.html',
+    templateName: 'Labels/Community/edit.html',
     controller:   'Admin_Labels_Ctrl_Edit',
     data:         { type: 'community' }
   });

@@ -10,6 +10,8 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\VoiceBundle\Exception\BlacklistException;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioCountry;
@@ -20,7 +22,9 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client as GuzzleHttpClient;
 use GuzzleHttp\Psr7\Request as GuzzleHttpRequest;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twilio\Exceptions\RestException;
 use Twilio\Jwt\ClientToken;
 use Twilio\Rest\Api\V2010\Account\CallInstance;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
@@ -32,6 +36,8 @@ use Twilio\Rest\Client;
 class TwilioAdapter implements VoiceProviderInterface
 {
     const VOICEMAIL_WAITING_TIMEOUT = 15;
+
+    const ERROR_CODE_BLACK_LIST = 21216;
 
     /**
      * @var EntityManager
@@ -515,6 +521,14 @@ class TwilioAdapter implements VoiceProviderInterface
             $call = $this->getClient($account)->calls->create($toNumber, $phoneCall->getNumber()->getNumber(), $options);
 
             return $call->sid;
+        } catch (RestException $e) {
+            if ($e->getCode() === self::ERROR_CODE_BLACK_LIST) {
+                $exception = new BlacklistException();
+            } elseif ($e->getStatusCode() === Response::HTTP_PAYMENT_REQUIRED) {
+                $exception = new InsufficientBalanceException();
+            } else {
+                $exception = $e;
+            }
         } catch (\Exception $e) {
             $exception = $e;
 

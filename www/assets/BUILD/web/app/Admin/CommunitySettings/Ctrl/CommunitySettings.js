@@ -1,5 +1,5 @@
 define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-  class Admin_CommunitySettings_Ctrl_FeedbackSettings extends Admin_Ctrl_Base {
+  class Admin_CommunitySettings_Ctrl_CommunitySettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_CommunitySettings_Ctrl_CommunitySettings';
       this.CTRL_AS = 'Ctrl';
@@ -22,8 +22,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       });
     }
   }
-  Admin_CommunitySettings_Ctrl_FeedbackSettings.initClass();
+  Admin_CommunitySettings_Ctrl_CommunitySettings.initClass();
 
 
-  return Admin_CommunitySettings_Ctrl_FeedbackSettings.EXPORT_CTRL();
+  return Admin_CommunitySettings_Ctrl_CommunitySettings.EXPORT_CTRL();
 });

@@ -10,21 +10,21 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
 /**
- * Class CommunityCustomChannelsController.
+ * Class CustomCommunityChannelsController.
  *
  * @ApiModes("all")
- * @Rest\Route("/community_custom_channels")
+ * @Rest\Route("/custom_community_channels")
  */
-class CommunityCustomChannelsController extends BaseController
+class CustomCommunityChannelsController extends BaseController
 {
     /**
-     * Fetch community custom channels list.
+     * Fetch custom community channels list.
      * Proper output coming soon.
      *
      * @ApiDoc(
      *     section="Community",
-     *     resourceDescription="Operations about community custom channels",
-     *     description="get list of community custom channels",
+     *     resourceDescription="Operations about custom community channels",
+     *     description="get list of custom community channels",
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },

@@ -183,10 +183,22 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 		var updateSipNumbers = function () {
 			$('.phone-number-type', self.contactEditor).on('change', function () {
 				var $countryCode = $(this).parent().find('.phone-country-code');
+				var $hiddenInput = $(this).parent().find('.dp_phone_number_hidden');
+				var $intlInput = $(this).parent().find('.intl-tel-input');
 				if ($(this).val() === 'sip') {
 					$countryCode.hide();
+          $intlInput.hide();
+          $hiddenInput.attr('type', 'text').show();
+          if (!/^sip:/.test($hiddenInput.val())) {
+            $hiddenInput.val('sip:').trigger('change');
+          }
 				} else {
 					$countryCode.show();
+          $hiddenInput.attr('type', 'hidden').hide();
+          $intlInput.show();
+          if (/^sip:/.test($intlInput.find('input').val())) {
+            $intlInput.find('input').val('').trigger('change');
+          }
 				}
 			});
 		};
@@ -204,6 +216,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			el.addClass('new');
 			el.appendTo($('ul', rowTypeEl));
 			self.phone_numbers.renderPhoneInputs();
+
 			updateSipNumbers();
 
 			DeskPRO_Window.initInterfaceServices(el);
@@ -220,6 +233,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.phone_numbers.renderPhoneInputs();
 		updateSipNumbers();
+    $('.phone-number-type', self.contactEditor).trigger('change');
 	},
 
 	destroy: function() {

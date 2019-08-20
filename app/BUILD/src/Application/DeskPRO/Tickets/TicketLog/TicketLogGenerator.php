@@ -525,48 +525,48 @@ class TicketLogGenerator
                 break;
 
             case 'participants':
-                $added_users = array_filter($added, function ($part) {
+                $addedUsers = array_filter($added, function ($part) {
                     return !$part->person->is_agent;
                 });
-                $added_agents = array_filter($added, function ($part) {
+                $addedAgents = array_filter($added, function ($part) {
                     return $part->person->is_agent;
                 });
 
-                $removed_users = array_filter($removed, function ($part) {
+                $removedUsers = array_filter($removed, function ($part) {
                     return !$part->person->is_agent;
                 });
-                $removed_agents = array_filter($removed, function ($part) {
+                $removedAgents = array_filter($removed, function ($part) {
                     return $part->person->is_agent;
                 });
 
-                if ($added_users || $removed_users) {
+                if ($addedUsers || $removedUsers) {
                     return [
                         'action_type' => 'changed_user_participants',
                         'added'       => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $added_users),
+                        }, $addedUsers),
                         'removed' => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $removed_users),
+                        }, $removedUsers),
                     ];
                 }
-                if ($added_agents || $removed_agents) {
+                if ($addedAgents || $removedAgents) {
                     return [
                         'action_type' => 'changed_agent_participants',
                         'added'       => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $added_agents),
+                        }, $addedAgents),
                         'removed' => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $removed_agents),
+                        }, $removedAgents),
                     ];
                 }
                 break;

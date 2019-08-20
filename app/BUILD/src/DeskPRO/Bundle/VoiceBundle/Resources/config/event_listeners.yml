@@ -49,7 +49,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_task_helper"
-      - "@twilio_adapter"
+      - "@service_container"
       - "@dp.voice.logger"
     tags:
       - { name: dp.voice.event_subscriber }
@@ -157,3 +157,11 @@ services:
       - "@chat_settings_resolver"
     tags:
       - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.voicet_ticket:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceTicketListener
+    arguments:
+      - "@dp.voice.ticket_user_changer"
+    tags:
+      - { name: doctrine.entity_listener }
+      - { name: doctrine.event_subscriber, connection: default }

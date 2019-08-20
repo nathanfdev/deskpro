@@ -11,6 +11,7 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
  */
 class VoiceSettingsResolver
 {
+    const VOICE_PRIVATE_ACCOUNTS_ENABLED          = 'voice.private_accounts_enabled';
     const VOICE_AGENT_VOICEMAIL_TIMEOUT           = 'voice.agent_voicemail_timeout';
     const VOICE_AGENT_DEFAULT_DEPARTMENT          = 'voice.agent_default_department';
     const VOICE_AGENT_DEFAULT_BRAND               = 'voice.agent_default_brand';
@@ -62,6 +63,7 @@ class VoiceSettingsResolver
     {
         $model = new VoiceSettings();
         $model
+            ->setPrivateAccountsEnabled($this->isPrivateAccountsEnabled())
             ->setAgentDefaultDepartment($this->getAgentDefaultDepartment())
             ->setAgentDefaultBrand($this->getAgentDefaultBrand())
             ->setAgentVoicemailTimeout($this->getAgentVoicemailTimeout())
@@ -76,6 +78,14 @@ class VoiceSettingsResolver
         ;
 
         return $model;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPrivateAccountsEnabled()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PRIVATE_ACCOUNTS_ENABLED, false);
     }
 
     /**

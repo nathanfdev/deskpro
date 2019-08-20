@@ -74,9 +74,11 @@ class DbAdapter implements StorageAdapterInterface
      */
     public function getTask($id)
     {
-        $entity = $this->em->getRepository(TaskEntity::class)->find($id);
-        if ($entity) {
-            return $this->transformToTaskModel($entity);
+        if ($id) {
+            $entity = $this->em->getRepository(TaskEntity::class)->find($id);
+            if ($entity) {
+                return $this->transformToTaskModel($entity);
+            }
         }
 
         return;

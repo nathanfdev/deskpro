@@ -80,11 +80,11 @@
 	Changed labels
 {% elseif log.action_type == 'changed_participants' or log.action_type == 'changed_agent_participants' or log.action_type == 'changed_user_participants' %}
 	{% if log.action_type == 'changed_agent_participants' %}
-		Changed agent followers
-	{% elseif log.action_type == 'changed_participants' %}
-		Changed user CC's
+		{{ phrase('agent.tickets.log_changed_agent_followers') }}
+	{% elseif log.action_type == 'changed_user_participants' %}
+		{{ phrase('agent.tickets.log_changed_users_ccs') }}
 	{% else %}
-		Changed participants
+		{{ phrase('agent.tickets.log_changed_participants') }}
 	{% endif %}
 {% elseif log.action_type == 'feedback_rating' %}
 	User set feedback rating to {{ log.details.rating }}

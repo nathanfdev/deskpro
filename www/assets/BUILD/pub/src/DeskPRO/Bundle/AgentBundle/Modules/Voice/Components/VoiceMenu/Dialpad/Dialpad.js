@@ -15,12 +15,14 @@ import DialGrid from '../../Common/DialGrid';
 class Dialpad extends React.Component {
 
   static propTypes = {
-    numbers:      PropTypes.object,
-    lastCallFrom: PropTypes.number,
-    ticketId:     PropTypes.number,
-    ticketTitle:  PropTypes.string,
-    makeCall:     PropTypes.func,
-    searchPerson: PropTypes.func
+    numbers:             PropTypes.object,
+    lastCallFrom:        PropTypes.number,
+    ticketId:            PropTypes.number,
+    ticketTitle:         PropTypes.string,
+    ticketPersonId:      PropTypes.number,
+    ticketPersonNumbers: PropTypes.array,
+    makeCall:            PropTypes.func,
+    searchPerson:        PropTypes.func
   };
 
   constructor(props) {
@@ -39,7 +41,8 @@ class Dialpad extends React.Component {
         value: {
           call_from: callFrom,
           call_to:   '',
-          ticket:    null
+          ticket:    null,
+          person:    null
         },
         errorList: {},
         onChange:  this.onChange
@@ -151,7 +154,7 @@ class Dialpad extends React.Component {
   onSubmit = (event) => {
     event.preventDefault();
 
-    const { makeCall } = this.props;
+    const { makeCall, ticketPersonId, ticketPersonNumbers } = this.props;
     const { submit } = this.state;
     const { value } = this.state.formData;
 
@@ -159,7 +162,17 @@ class Dialpad extends React.Component {
       return;
     }
 
-    const promise = makeCall(value.call_from, value.call_to, value.ticket);
+    let personId = value.person;
+    if (value.ticket) {
+      // if ticket is set and ticket's person has this phone number
+      // then use this person as call owner
+      if (ticketPersonNumbers.filter(number => `${number}`.replace(/[^\d]/, '')
+          === `${value.call_to}`.replace(/[^\d]/, '')).length > 0) {
+        personId = ticketPersonId;
+      }
+    }
+
+    const promise = makeCall(value.call_from, value.call_to, value.ticket, personId);
     if (!promise) {
       return;
     }
@@ -201,17 +214,9 @@ class Dialpad extends React.Component {
     });
   };
 
-  onClearSearchResults = () => {
-    setTimeout(() => {
-      this.setState({
-        searchResults: Immutable.fromJS([])
-      });
-    }, 1);
-  };
-
   getFromNumber() {
     // update 'call from' field based on current country code
-    const countryCode = this.phoneInput.getCountryData().iso2;
+    const countryCode = this.phoneInput ? this.phoneInput.getCountryData().iso2 : null;
     const { numbers = Immutable.fromJS({}) } = this.props;
 
     let selectedNumber;
@@ -274,9 +279,11 @@ class Dialpad extends React.Component {
     return selectedNumber;
   }
 
-  setOutgoingNumber = (number) => {
+  setOutgoingNumber = (number, personId = null) => {
     const $input = $(this.phoneInput.input);
     const { formData } = this.state;
+    formData.value.call_to = number;
+    formData.value.person = personId;
 
     setTimeout(() => {
       this.setState({
@@ -304,17 +311,39 @@ class Dialpad extends React.Component {
     });
   };
 
-  showProviderError = (errors) => {
+  setPerson = (personId) => {
     const { formData } = this.state;
-    this.setState({
-      formData: createValue({
-        value:     formData.value,
-        errorList: errors,
-        onChange:  this.onChange
-      }),
-      submit:        false,
-      searchResults: Immutable.fromJS([])
-    });
+    formData.value.person = personId;
+
+    this.setState({ formData });
+  };
+
+  clearSearchResults = () => {
+    setTimeout(() => {
+      this.setState({
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
+  showProviderError = (number, errors) => {
+    const $input = $(this.phoneInput.input);
+    const { formData } = this.state;
+
+    this.phoneInput.setNumber(number);
+    $input.focus();
+
+    setTimeout(() => {
+      this.setState({
+        formData: createValue({
+          value:     formData.value,
+          errorList: errors,
+          onChange:  this.onChange
+        }),
+        submit:        false,
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
   };
 
   render() {
@@ -330,7 +359,7 @@ class Dialpad extends React.Component {
             </Field>
 
             {searchResults.size > 0 &&
-            <ClickOut onClickOut={this.onClearSearchResults}>
+            <ClickOut onClickOut={this.clearSearchResults}>
               <SearchResults
                 query={formData.value.call_to}
                 results={searchResults}
@@ -399,7 +428,7 @@ class SearchResults extends React.Component {
           <div
             key={index}
             className="dialpad-search-result-item"
-            onClick={() => { onSelect(getNumber(item)); }}
+            onClick={() => { onSelect(getNumber(item), item.get('id')); }}
           >
             {item.get('name')} {getNumber(item)}
           </div>

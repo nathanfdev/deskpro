@@ -33,8 +33,10 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         $entity = $this->findOrCreatePerson($model);
+        $brandHelper = $this->helpers->getBrandHelper();
         $entity
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
+            ->addBrand($brandName !== null ? $brandHelper->findOrCreateBrand($brandName) : $brandHelper->getDefaultBrand())
             ->setIsDisabled($model->isDisabled())
             ->setIsDeleted($model->isDeleted())
             ->setTitlePrefix($model->getTitlePrefix())

@@ -89,13 +89,13 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
         $postData = $this->in->getAll('post');
 
-        $communityChannel_edit = new CommunityChannelEdit($communityChannel);
+        $communityChannelEdit = new CommunityChannelEdit($communityChannel);
 
-        $form = $this->createForm(CommunityChannelType::class, $communityChannel_edit, ['cascade_validation' => true]);
+        $form = $this->createForm(CommunityChannelType::class, $communityChannelEdit, ['cascade_validation' => true]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_channel'), true);
 
         if ($form->isValid()) {
-            $communityChannel_edit->save($this->em);
+            $communityChannelEdit->save($this->em);
         } else {
             return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($communityChannel));
         }

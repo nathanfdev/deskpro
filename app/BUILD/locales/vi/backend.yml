@@ -18,8 +18,8 @@ adm.general.x_email_bans:
   other: '{{count}} Email Bans'
 adm.general.x_community_active_statuses:
   other: '{{count}} Community Active Statuses'
-adm.general.x_community_custom_channels:
-  other: '{{count}} Community Custom Channels'
+adm.general.x_custom_community_channels:
+  other: '{{count}} Custom Community Channels'
 adm.general.x_community_closed_statuses:
   other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
@@ -355,7 +355,7 @@ agent.emails.view_your_tasks: 'Xem các tác vụ của bạn'
 agent.emails.view_your_teams_tasks: 'Xem tác vụ của nhóm bạn'
 agent.emails.view_your_tweets: 'Xem tweet của bạn'
 agent.emails.your_initial_password: 'Mật khẩu ban đầu của bạn'
-agent.community.any_category: 'Bất kỳ loại'
+agent.community.any_channel: 'Bất kỳ loại'
 agent.community.any_status: 'Bất kỳ Trạng thái'
 agent.community.count_votes:
   other: '{{display_count}} votes'

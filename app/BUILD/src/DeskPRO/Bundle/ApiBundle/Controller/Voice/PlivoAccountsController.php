@@ -262,23 +262,7 @@ class PlivoAccountsController extends AbstractVoiceCrudController
         }
     }
 
-    /**
-     * @ApiDoc(
-     *     description="Enable voice on cloud",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount"
-     * )
-     *
-     * @Rest\Post("/create_cloud_account")
-     *
-     * @param Request $request
-     *
-     * @throws \Exception
-     *
-     * @return View
-     */
+    /* This was refactored for Twilio / forms setup, re-enabling Plivo would need similar change to admin setup
     public function createCloudAccountAction(Request $request)
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
@@ -322,5 +306,5 @@ class PlivoAccountsController extends AbstractVoiceCrudController
         }
 
         return new View($this->wrap($account), Response::HTTP_CREATED);
-    }
+    }*/
 }

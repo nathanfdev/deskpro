@@ -1,14 +1,14 @@
 define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-  class Admin_CommunityCustomChannels_Ctrl_List extends Admin_Ctrl_Base {
+  class Admin_CustomCommunityChannels_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
-      this.CTRL_ID = 'Admin_CommunityCustomChannels_Ctrl_List';
-      this.CTRL_AS = 'CommunityCustomChannelsList';
-      this.DEPS    = ['$rootScope', '$scope', 'CommunityCustomChannelsData', 'em', 'Api', '$state', 'Growl'];
+      this.CTRL_ID = 'Admin_CustomCommunityChannels_Ctrl_List';
+      this.CTRL_AS = 'CustomCommunityChannelsList';
+      this.DEPS    = ['$rootScope', '$scope', 'CustomCommunityChannelsData', 'em', 'Api', '$state', 'Growl'];
     }
 
     init() {
       this.$scope.brand_id = this.$stateParams.brandId;
-      this.feedback_categories = [];
+      this.custom_community_channels = [];
       this.parent_data = [];
       this.child_data = {};
 
@@ -26,20 +26,20 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           $list.find('li').each(function () {
             x += 10;
-            const community_custom_channel_id = parseInt($(this).data('id'));
+            const custom_community_channel_id = parseInt($(this).data('id'));
 
-            if (community_custom_channel_id) {
-              const community_custom_channel = em.getById('community_custom_channel', community_custom_channel_id);
+            if (custom_community_channel_id) {
+              const custom_community_channel = em.getById('custom_community_channel', custom_community_channel_id);
 
-              if (community_custom_channel) {
-                community_custom_channel.display_order = x;
+              if (custom_community_channel) {
+                custom_community_channel.display_order = x;
               }
             }
 
-            return postData.display_orders.push(community_custom_channel_id);
+            return postData.display_orders.push(custom_community_channel_id);
           });
 
-          this.Api.sendPostJson('/community_custom_channels/display_order', postData);
+          this.Api.sendPostJson('/custom_community_channels/display_order', postData);
           return this.pingElement('display_orders');
         }
       };
@@ -57,11 +57,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     initialLoad() {
       const promises = [];
-      promises.push(this.CommunityCustomChannelsData.loadList().then((recs) => {
+      promises.push(this.CustomCommunityChannelsData.loadList().then((recs) => {
         this.initHierarchyData(this.sort(recs.values()));
 
-        return this.addManagedListener(this.CommunityCustomChannelsData.recs, 'changed', () => {
-          this.initHierarchyData(this.sort(this.CommunityCustomChannelsData.recs.values()));
+        return this.addManagedListener(this.CustomCommunityChannelsData.recs, 'changed', () => {
+          this.initHierarchyData(this.sort(this.CustomCommunityChannelsData.recs.values()));
           return this.ngApply();
         });
       })
@@ -70,14 +70,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       return this.$q.all(promises);
     }
 
-    initHierarchyData(feedback_categories) {
-      this.feedback_categories = feedback_categories;
+    initHierarchyData(custom_community_channels) {
+      this.custom_community_channels = custom_community_channels;
       this.parent_data = [];
       this.child_data = {};
 
       return (() => {
         const result = [];
-        for (const category of Array.from(feedback_categories)) {
+        for (const category of Array.from(custom_community_channels)) {
           if (parseInt(category.parent_id, 10)) {
             if (!this.child_data[category.parent_id]) {
               this.child_data[category.parent_id] = [];
@@ -92,8 +92,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       })();
     }
   }
-  Admin_CommunityCustomChannels_Ctrl_List.initClass();
+  Admin_CustomCommunityChannels_Ctrl_List.initClass();
 
 
-  return Admin_CommunityCustomChannels_Ctrl_List.EXPORT_CTRL();
+  return Admin_CustomCommunityChannels_Ctrl_List.EXPORT_CTRL();
 });

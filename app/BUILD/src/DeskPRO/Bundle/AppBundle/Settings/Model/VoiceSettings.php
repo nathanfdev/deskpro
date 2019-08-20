@@ -10,6 +10,13 @@ use JMS\Serializer\Annotation as JMS;
 class VoiceSettings
 {
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $privateAccountsEnabled;
+
+    /**
      * @JMS\Type("integer")
      *
      * @var int
@@ -85,6 +92,24 @@ class VoiceSettings
      * @var bool
      */
     private $emailAttachTranscription;
+
+    /**
+     * @return bool
+     */
+    public function isPrivateAccountsEnabled()
+    {
+        return $this->privateAccountsEnabled;
+    }
+
+    /**
+     * @param bool $privateAccountsEnabled
+     */
+    public function setPrivateAccountsEnabled($privateAccountsEnabled)
+    {
+        $this->privateAccountsEnabled = $privateAccountsEnabled;
+
+        return $this;
+    }
 
     /**
      * @return int

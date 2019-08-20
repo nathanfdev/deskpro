@@ -412,7 +412,7 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 		});
 
 		this.merge = new DeskPRO.Agent.Widget.Merge({
-			tabType: 'community',
+			tabType: 'community_topic',
 			metaId: self.meta.topic_id,
 			metaIdName: 'topic_id',
 			menu: this.getEl('merge_menu'),

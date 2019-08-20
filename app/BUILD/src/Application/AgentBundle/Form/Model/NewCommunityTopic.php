@@ -106,8 +106,8 @@ class NewCommunityTopic
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
             : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
-        $cat                      = $this->em->find('DeskPRO:CommunityChannel', $this->channel_id);
-        $communityTopic->category = $cat;
+        $cat = $this->em->find('DeskPRO:CommunityChannel', $this->channel_id);
+        $communityTopic->setChannel($cat);
         $this->em->persist($communityTopic);
         $this->em->flush();
 

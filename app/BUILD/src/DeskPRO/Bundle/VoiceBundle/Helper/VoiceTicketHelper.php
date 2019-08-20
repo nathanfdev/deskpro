@@ -183,6 +183,17 @@ class VoiceTicketHelper
                     if ($task && $voiceQueue = $this->voiceTaskHelper->getVoiceQueue($task)) {
                         $ticket->setDepartment($voiceQueue->getDepartment());
                         $ticket->setBrand($voiceQueue->getBrand());
+
+                        // set asset properties
+                        if ($voiceQueue->getVoicemailAgent()) {
+                            $ticket->setAgent($voiceQueue->getVoicemailAgent());
+                        }
+                        if ($voiceQueue->getVoicemailAgentTeam()) {
+                            $ticket->setAgentTeam($voiceQueue->getVoicemailAgentTeam());
+                        }
+                        if ($voiceQueue->getVoicemailDepartment()) {
+                            $ticket->setDepartment($voiceQueue->getVoicemailDepartment());
+                        }
                     } elseif ($departmentId = $this->voiceSettingsResolver->getAgentDefaultDepartment()) {
                         $department = $this->em->getRepository(Department::class)->find($departmentId);
                         if ($department) {

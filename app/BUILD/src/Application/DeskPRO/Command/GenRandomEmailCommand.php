@@ -6,6 +6,8 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Util\Strings;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,10 +19,11 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
     protected function configure()
     {
         $this->setName('dp:gen-rand-email');
-        $this->addOption('from', null, InputOption::VALUE_REQUIRED, 'An email address to send from. Create a user first if you want to send a name as well. You can use %RAND% as a palceholder for a random value.');
+        $this->addOption('from', null, InputOption::VALUE_REQUIRED, 'An email address to send from. Create a user first if you want to send a name as well. You can use %RAND% as a placeholder for a random value.');
         $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'An email address or a ticket account ID. If none supplied, the first ticket account in the DB is chosen. Note: Does not NEED to be a ticket account, but generaly is.');
+        $this->addOption('cc', null, InputOption::VALUE_REQUIRED, 'An email address or a comma-separated list.');
         $this->addOption('tpl', null, InputOption::VALUE_REQUIRED, 'The template to use: text, html, fwd, fwd_with_reply');
-        $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defults to a generated one. Prefix with 'twig:' to pass the subject string throug twig.");
+        $this->addOption('subject', null, InputOption::VALUE_REQUIRED, "A subject line. Defaults to a generated one. Prefix with 'twig:' to pass the subject string through twig.");
         $this->addOption('message', null, InputOption::VALUE_REQUIRED, "A message. Defaults to a generated one. Prefix with 'twig:' to pass the string through twig.");
         $this->addOption('message-length', null, InputOption::VALUE_REQUIRED, 'Message length, using faker to gen random text.');
         $this->addOption('message-file', null, InputOption::VALUE_REQUIRED, "A file containing a message. Prefix with 'twig:' to pass the file through twig.");
@@ -43,55 +46,55 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         // From
         //------------------------------
 
-        $from_opt   = $input->getOption('from');
-        $from_email = null;
-        $from_user  = null;
-        $from_name  = null;
-        $from_line  = null;
-        if ($from_opt) {
-            $from_email = $from_opt;
-            $from_user  = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($from_email);
-            if ($from_user) {
-                $from_name = $from_user->getDisplayName();
+        $fromOpt   = $input->getOption('from');
+        $fromEmail = null;
+        $fromUser  = null;
+        $fromName  = null;
+        $fromLine  = null;
+        if ($fromOpt) {
+            $fromEmail = $fromOpt;
+            $fromUser  = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($fromEmail);
+            if ($fromUser) {
+                $fromName = $fromUser->getDisplayName();
             }
         }
 
-        if (!$from_email) {
+        if (!$fromEmail) {
             $output->writeln('<error>You must supply --from</error>');
 
             return 1;
         }
 
-        if ($from_name) {
-            $from_line = $from_name.' <'.$from_email.'>';
+        if ($fromName) {
+            $fromLine = $fromName.' <'.$fromEmail.'>';
         } else {
-            $from_line = $from_email;
+            $fromLine = $fromEmail;
         }
 
-        $from_email = str_replace('%RAND%', RandUtils::randomStringFormat('%10A'), $from_email);
+        $fromEmail = str_replace('%RAND%', RandUtils::randomStringFormat('%10A'), $fromEmail);
 
         //------------------------------
         // To
         //------------------------------
 
-        $to_opt     = $input->getOption('to');
-        $to_account = null;
-        $to_email   = null;
-        if ($to_opt) {
-            if (ctype_digit($to_opt)) {
+        $toOpt     = $input->getOption('to');
+        $toAccount = null;
+        $toEmail   = null;
+        if ($toOpt) {
+            if (ctype_digit($toOpt)) {
                 try {
-                    $to_acc = $this->getContainer()->getEmailAccountManager()->getAccount($to_opt);
+                    $toAcc = $this->getContainer()->getEmailAccountManager()->getAccount($toOpt);
                 } catch (\Exception $e) {
-                    $output->writeln("<error>No such ticket account: $to_opt</error>");
+                    $output->writeln("<error>No such ticket account: $toOpt</error>");
 
                     return 1;
                 }
             } else {
-                $to_acc = $this->getContainer()->getEmailAccountManager()->findAccountForEmailAddress($to_opt);
+                $toAcc = $this->getContainer()->getEmailAccountManager()->findAccountForEmailAddress($toOpt);
             }
         } else {
             try {
-                $to_acc = $this->getContainer()->getEmailAccountManager()->getPrimaryTicketAccount();
+                $toAcc = $this->getContainer()->getEmailAccountManager()->getPrimaryTicketAccount();
             } catch (\Exception $e) {
                 $output->writeln('<error>No --to option supplied and this database has no ticket account to use as a default. Try again with --to.</error>');
 
@@ -99,39 +102,45 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        if ($to_acc) {
-            $to_email = $to_acc->getUseEmailAddress();
+        $ccOpt   = $input->getOption('cc');
+        $ccEmail = null;
+        if ($ccOpt) {
+            $ccEmail = $ccOpt;
+        }
+
+        if ($toAcc) {
+            $toEmail = $toAcc->getUseEmailAddress();
         } else {
-            $to_email = $to_opt;
+            $toEmail = $toOpt;
         }
 
         //------------------------------
         // As reply
         //------------------------------
 
-        $ticket      = null;
-        $access_code = null;
+        $ticket     = null;
+        $accessCode = null;
 
-        $reply_opt = $input->getOption('ticket-reply');
+        $replyOpt = $input->getOption('ticket-reply');
 
-        if ($reply_opt) {
-            $ticket = $this->getContainer()->getEm()->find('DeskPRO:Ticket', $reply_opt);
+        if ($replyOpt) {
+            $ticket = $this->getContainer()->getEm()->find(Ticket::class, $replyOpt);
             if (!$ticket) {
-                $output->writeln("<error>--ticket-reply: No such ticket: $reply_opt</error>");
+                $output->writeln("<error>--ticket-reply: No such ticket: $replyOpt</error>");
 
                 return 1;
             }
 
-            if ($from_user && $from_user->is_agent) {
-                $tac = $ticket->findAccessCodeForPerson($from_user);
+            if ($fromUser && $fromUser->is_agent) {
+                $tac = $ticket->findAccessCodeForPerson($fromUser);
                 if (!$tac) {
-                    $tac = $ticket->addAccessCodeForPerson($from_user);
+                    $tac = $ticket->addAccessCodeForPerson($fromUser);
                     $this->getContainer()->getEm()->persist($tac);
                     $this->getContainer()->getEm()->flush();
                 }
-                $access_code = $tac->getAccessCode();
+                $accessCode = $tac->getAccessCode();
             } else {
-                $access_code = $ticket->getAccessCode();
+                $accessCode = $ticket->getAccessCode();
             }
         }
 
@@ -150,21 +159,21 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             }
         }
 
-        if ($message_file = $input->getOption('message-file')) {
-            $is_twig = false;
-            if (substr($message_file, 0, 5) === 'twig:') {
-                $is_twig      = true;
-                $message_file = substr($message_file, 5);
+        if ($messageFile = $input->getOption('message-file')) {
+            $isTwig = false;
+            if (substr($messageFile, 0, 5) === 'twig:') {
+                $isTwig      = true;
+                $messageFile = substr($messageFile, 5);
             }
 
-            $message = file_get_contents($message_file);
+            $message = file_get_contents($messageFile);
             if (!$message) {
                 $output->writeln('<error>--message-file: No such file (or the file is empty)</error>');
 
                 return 1;
             }
 
-            if ($is_twig) {
+            if ($isTwig) {
                 $message = 'twig:'.$message;
             }
         } else {
@@ -193,40 +202,42 @@ class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'message'  => $message,
 
             'as_reply'    => $ticket,
-            'as_agent'    => $from_user && $from_user->isAgent(),
-            'access_code' => $access_code,
+            'as_agent'    => $fromUser && $fromUser->isAgent(),
+            'access_code' => $accessCode,
 
-            'from_user'  => $from_user,
-            'from_email' => $from_email,
-            'from_name'  => $from_name,
-            'from_line'  => $from_line,
+            'from_user'  => $fromUser,
+            'from_email' => $fromEmail,
+            'from_name'  => $fromName,
+            'from_line'  => $fromLine,
 
-            'to_email' => $to_email,
-            'to_acc'   => $to_acc,
+            'to_email' => $toEmail,
+            'to_acc'   => $toAcc,
+
+            'cc_email' => $ccEmail,
         ];
 
-        $custom_vars = null;
-        if ($custom_vars = $input->getOption('vars')) {
-            $custom_vars = @json_decode($custom_vars, true);
+        $customVars = null;
+        if ($customVars = $input->getOption('vars')) {
+            $customVars = @json_decode($customVars, true);
         }
-        if (!$custom_vars) {
-            $custom_vars = [];
+        if (!$customVars) {
+            $customVars = [];
         }
 
-        if ($custom_vars) {
-            $vars = array_merge($vars, $custom_vars);
+        if ($customVars) {
+            $vars = array_merge($vars, $customVars);
         }
 
         if ($input->getOption('is-bounce')) {
             $vars['is_bounce'] = true;
         }
 
-        $proc_keys   = array_keys($custom_vars);
-        $proc_keys[] = 'subject';
-        $proc_keys[] = 'message';
+        $procKeys   = array_keys($customVars);
+        $procKeys[] = 'subject';
+        $procKeys[] = 'message';
 
         $twig = $this->getContainer()->getTwig();
-        foreach ($proc_keys as $k) {
+        foreach ($procKeys as $k) {
             if (substr($vars[$k], 0, 5) === 'twig:') {
                 $vars[$k] = $twig->renderStringTemplate(substr($vars[$k], 5), $vars);
             }

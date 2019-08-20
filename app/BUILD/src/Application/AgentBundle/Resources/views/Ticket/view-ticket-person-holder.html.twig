@@ -1,10 +1,4 @@
-{% set showSelectUserMenu = ticket.person.emails|length == 0 and not ticket.person.primary_email and ticket.person.phone_numbers|length > 0 and ticket.person.getPref('voice.unknown_caller') %}
-
-{% if showSelectUserMenu %}
-    {% include 'AgentBundle:Ticket:select-user-menu.html.twig' %}
-{% else %}
-    {% include 'AgentBundle:Ticket:view-ticket-person.html.twig' %}
-{% endif %}
+{% include 'AgentBundle:Ticket:view-ticket-person.html.twig' %}
 
 {% if not showSelectUserMenu and ticket.getProperty('voice_phone_number') %}
     <a class="cc-btn cc-btn-main change-user-button">

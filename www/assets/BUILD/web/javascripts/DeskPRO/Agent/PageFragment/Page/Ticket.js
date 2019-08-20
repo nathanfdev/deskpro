@@ -1677,7 +1677,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }
 
     if (window.DP_HAS_FOLLOW_UP) {
-      window.AgentLegacyBundle.unmountEmbeddedReactNode(self.getEl('follow_ups_wrap')[0]);
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(this.getEl('follow_ups_wrap')[0]);
     }
 
     this.valueForm = null;
@@ -1956,7 +1956,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         $rElement.get(0),
         messageData,
         $el.data('message-date-created-fulltime'),
-        $el.data('elid')
+        $el.data('elid'),
+        $el.data('message-num')
       );
     };
 
@@ -2689,11 +2690,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
   _initSelectUser: function() {
     var self = this;
-    $('.select-user-item-options', this.wrapper).hide();
 
     var $type = $('input[name=select_user]', this.wrapper);
     $type.first().attr('checked', true);
-    $type.first().parent().find('.select-user-item-options').show();
 
     if ($('.select-user-menu', this.wrapper).length) {
 			this.wrapper.addClass('select-user-error');
@@ -2714,12 +2713,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		}
 
-    $type.on('click', function () {
-      var $selected = $(this);
-      $('.select-user-item-options', this.wrapper).hide();
-      $selected.parent().find('.select-user-item-options').show();
-    });
-
 		var searchbox = $('.select-user', this.wrapper).parent();
     searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
       $.ajax({
@@ -2731,6 +2724,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           $('input.person-id', searchbox).val(personId);
           $('input.person-email', searchbox).val(email);
           $('input.select-user', searchbox).val(name);
+          $('input[name=select_user_email_optional]', self.wrapper).val(email);
         }
       });
       sb.close();
@@ -2749,23 +2743,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       });
     };
 
-    var removeNumberFromPerson = function (phoneNumber, personData) {
-    	var newPhoneNumbers = [];
-    	if (personData.phone_numbers.length > 0) {
-				personData.phone_numbers.forEach(function(value) {
-					if (value.number != phoneNumber) {
-						newPhoneNumbers.push(value);
-					}
-				});
-			}
-			$.ajax({
-				url: BASE_URL + 'api/v2/people/' + personData.id,
-				type: 'PUT',
-				data: JSON.stringify({
-					phone_numbers: newPhoneNumbers.length > 0 ? newPhoneNumbers : {}
-				}),
-			});
-		};
+    var errorHandler = function (response) {
+      var data = response.responseJSON;
+      var errors = data.errors;
+      var error;
+
+      if (errors && errors.fields && errors.fields.primary_email) {
+        error = errors.fields.primary_email.errors[0].message;
+      }
+
+      if (error) {
+        $('.error-message', self.wrapper).html(error);
+      }
+    };
 
     var setPerson = function(personId, personEmail) {
 			$.ajax({
@@ -2826,110 +2816,112 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		};
 
 		$('.select-user-button', this.wrapper).on('click', function () {
-      var value = $('input[name=select_user]:checked', self.wrapper).val();
-      if (value === 'find_person') {
-        var personId = $('input[name=select_user_find_id]', self.wrapper).val();
-        var personEmail = $('input[name=select_user_find_email]', self.wrapper).val();
-        if (personId) {
-					setPerson(personId, personEmail);
-				}
-			} else if (value === 'new_person') {
-      	var submitData = {
-					name: $('input[name=select_user_name]', self.wrapper).val(),
-					language: $('select[name=select_user_language]', self.wrapper).val(),
-					preferences: {
-						'voice.unknown_caller': 0
-					}
-				};
-      	var email =  $('input[name=select_user_email]', self.wrapper).val();
-      	if (email) {
-      		submitData.primary_email = email;
-				}
+		  if ($('.select-user-menu button', this.wrapper).is(':disabled')) {
+		    return;
+      }
 
-      	var errorHandler = function (response) {
-					var data = response.responseJSON;
-					var errors = data.errors;
-					var error;
+		  $('.select-user-menu button', this.wrapper).attr('disabled', true).hide();
+		  $('.select-user-spinner').show();
 
-					if (errors && errors.fields && errors.fields.primary_email) {
-						error = errors.fields.primary_email.errors[0].message;
-					}
+      var recentPersonId = $('input[name=select_user]:checked', self.wrapper).val();
+      var recentPersonEmail = $('input[name=select_user]:checked', self.wrapper).data('email');
+      var foundPersonId = $('input[name=select_user_find_id]', self.wrapper).val();
+      var foundPersonEmail = $('input[name=select_user_find_email]', self.wrapper).val();
+      var newPersonEmail = $('input[name=select_user_email_optional]', self.wrapper).val();
+      var newPersonName = $('input[name=select_user_name]', self.wrapper).val();
+      var newPersonLanguage = $('select[name=select_user_language]', self.wrapper).val();
 
-					if (error) {
-						$('.error-message', self.wrapper).html(error);
-					}
-				};
+      if (foundPersonId) {
+        // re-assign to existing user from the search
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + foundPersonId,
+          type: 'GET',
+          success: function (getResponse) {
+            var phoneNumbers = getResponse.data.phone_numbers.map(function (phoneNumber) {
+              return { number: phoneNumber.number, extension: phoneNumber.extension, label: phoneNumber.label };
+            });
+            var hasNumber = phoneNumbers.filter(function (phoneNumber) {
+              return phoneNumber.number.replace(/[^\d]/, '') === self.meta.voicePhoneNumber.replace(/[^\d]/, '');
+            }).length > 0;
 
-				$.ajax({
-					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-					type: 'GET',
-					success: function(getResponse) {
-						// existing user, create a new person and change
-						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
-							submitData.phone_numbers = [{number: self.meta.voicePhoneNumber}];
-							$.ajax({
-								url: BASE_URL + 'api/v2/people',
-								type: 'POST',
-								data: submitData,
-								success: function(response) {
-									setPerson(response.data.id, response.data.primary_email);
-									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
-								},
-								error: errorHandler
-							});
-						} else {
-							// voice user, merge
-							$.ajax({
-								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-								type: 'PUT',
-								data: submitData,
-								success: function() {
-									reloadPersonView();
-									self.meta.person_email = submitData.primary_email;
-								},
-								error: errorHandler
-							});
-						}
-					}
-				});
-      } else if (value === 'unknown_person') {
-				$.ajax({
-					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-					type: 'GET',
-					success: function (getResponse) {
-						// existing user, create a new person and change
-						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
-							$.ajax({
-								url: BASE_URL + 'api/v2/people',
-								type: 'POST',
-								data: {
-									phone_numbers: [
-										{number: self.meta.voicePhoneNumber}
-									]
-								},
-								success: function(response) {
-									setPerson(response.data.id, null);
-									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
-								}
-							});
-						} else {
-							$.ajax({
-								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-								type: 'PUT',
-								data: {
-									preferences: {
-										'voice.unknown_caller': 0
-									},
-								},
-								success: reloadPersonView
-							});
-						}
-					}
-				});
-			} else if (value) {
-				var email = $('input[name=select_user]:checked', self.wrapper).data('email');
-				setPerson(value, email);
-			}
+            if (!hasNumber) {
+              phoneNumbers.push({ number: self.meta.voicePhoneNumber });
+            }
+
+            var submitData = {
+              phone_numbers: phoneNumbers
+            };
+            if (newPersonEmail) {
+              submitData.primary_email = newPersonEmail;
+            }
+            if (newPersonLanguage) {
+              submitData.language = newPersonLanguage;
+            }
+            if (newPersonName) {
+              submitData.name = newPersonName;
+            }
+
+            $.ajax({
+              url:  BASE_URL + 'api/v2/people/' + foundPersonId,
+              type: 'PUT',
+              data: submitData,
+              success: function() {
+                setPerson(foundPersonId, newPersonEmail || foundPersonEmail);
+              },
+              error: errorHandler
+            });
+          }
+        });
+      } else if (newPersonName) {
+        // create a new user and re-assign to the new user
+        var submitData = {
+          name:        newPersonName,
+          preferences: {
+            'voice.unknown_caller': 0
+          }
+        };
+        if (newPersonEmail) {
+          submitData.primary_email = newPersonEmail;
+        }
+        if (newPersonLanguage) {
+          submitData.language = newPersonLanguage;
+        }
+
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+          type: 'GET',
+          success: function(getResponse) {
+            // existing user, create a new person and change
+            if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
+              submitData.phone_numbers = [{ number: self.meta.voicePhoneNumber }];
+              $.ajax({
+                url: BASE_URL + 'api/v2/people',
+                type: 'POST',
+                data: submitData,
+                success: function(response) {
+                  setPerson(response.data.id, response.data.primary_email);
+                },
+                error: errorHandler
+              });
+            } else {
+              // voice user, merge
+              $.ajax({
+                url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+                type: 'PUT',
+                data: submitData,
+                success: function() {
+                  reloadPersonView();
+                  self.meta.person_email = submitData.primary_email;
+                },
+                error: errorHandler
+              });
+            }
+          }
+        });
+      } else if (recentPersonId) {
+        // re-assign to a user from the recent list
+        setPerson(recentPersonId, recentPersonEmail);
+      }
     });
 
     $('.change-user-button', this.wrapper).on('click', function () {
@@ -2943,6 +2935,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         }
       });
     });
+
+    $('.cancel-button', this.wrapper).on('click', function () {
+      reloadPersonView();
+    });
+
+    $('input[name=select_user_name]', this.wrapper).on('change keyup', function () {
+      $('.select-user-menu input[type=radio]', this.wrapper).prop('checked', false);
+    })
   },
 
   handleFwd: function(info) {
@@ -3224,6 +3224,33 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     });
     $('.ticket-message-edit-btn', wrap).live('click', function(event) {
       menu.openMenu(event);
+    });
+    $('.message-recipients .remove', wrap).on('click', function(event) {
+      if (confirm(event.target.dataset.confirm)) {
+        $.ajax({
+          url: event.target.dataset.deleteUrl,
+          data: {
+            person_id: event.target.dataset.personId
+          },
+          dataType: 'json',
+          withActionAlerts: true,
+          success: function(data) {
+            if (data.success) {
+              self.getEl('cc_row_list').html(data.cc_list);
+              var recipients = event.target.parentElement.parentElement;
+              event.target.parentElement.remove();
+              var absents = $('.absent', recipients);
+              var count = parseInt(absents.text().match(/\d+/));
+              if (count > 1) {
+                absents.text(absents.text().replace(/\d+/, count - 1));
+              } else {
+                absents.prev().remove();
+                absents.remove();
+              }
+            }
+          }
+        });
+      }
     });
   },
 

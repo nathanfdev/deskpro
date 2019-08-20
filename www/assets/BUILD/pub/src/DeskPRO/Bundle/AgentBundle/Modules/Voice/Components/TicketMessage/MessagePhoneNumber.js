@@ -82,6 +82,7 @@ class MessagePhoneNumber extends React.PureComponent {
     for (let i = 0; i < clickToCall.length; i++) {
       const item = clickToCall.item(i);
       const number = item.dataset.tel;
+      $(item).parents('a').each((n, el) => $(el).parent().html($(el).html()));
       window.AgentLegacyBundle.renderClickToCall(item, number, item.innerText);
     }
   }

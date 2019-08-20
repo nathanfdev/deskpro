@@ -8,7 +8,7 @@
       value="{{ status.statusCode }}"
       {% if ticket.status_code == status.statusCode %}selected="selected"{% endif %}
     >
-      {{ parent_title }}&nbsp;>&nbsp;{{ status.title }}
+      {{ parent_title }}&nbsp;&gt;&nbsp;{{ status.title }}
     </option>
     {% endif %}
   {% endfor %}
@@ -53,6 +53,7 @@
   pageMeta.person_id = {{ ticket.person.id }};
   pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
   pageMeta.person_name = {{ ticket.person.display_name|json_encode|raw }};
+  pageMeta.person_phone_numbers = [{{ ticket.person.phone_numbers|map(p => "\"#{p.number}\"")|join(', ')|raw }}];
 
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
@@ -144,7 +145,7 @@
             {#<input type="hidden" name="hidden_status" class="hidden_status" value="{{ ticket.hidden_status }}" />#}
         </form>
 
-        {% if ticket.status == 'hidden' %}
+        {% if ticket.ticketStatus.isDeleted() %}
             {% include 'AgentBundle:Ticket:view-hidden-bar.html.twig' %}
         {% endif %}
 
@@ -647,7 +648,7 @@
                             </table>
                         </div>
                     </article>
-                    <article id="{{ baseId }}_linked_wrap" style="display: none">
+                    <article id="{{ baseId }}_linked_wrap" style="display: none;" class="table-wrapper">
                         {% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
                     </article>
                     {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
@@ -1315,10 +1316,12 @@
                               name="message_text" class="message_text"></textarea>
                 </div>
                 <div class="overlay-footer" style="height: 45px;">
+                    {% if ticket_perms.modify_messages_no_logging %}
                     <label class="log_original_contents">
                         <input type="checkbox" value='1' name="log_original_contents" checked="checked"/>
                         <span>{{ phrase('agent.tickets.log_original_contents') }}</span>
                     </label>
+                    {% endif %}
                     <button class="clean-white save-text-trigger">{{ phrase('agent.general.save') }}</button>
                     <span class="flat-spinner save-text-loading" style="display: none"></span>
                 </div>
