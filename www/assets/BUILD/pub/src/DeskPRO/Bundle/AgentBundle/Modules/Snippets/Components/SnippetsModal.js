@@ -91,11 +91,10 @@ export class SnippetsModalContainer extends React.Component {
     if (typeof DeskPRO_Window !== 'undefined') { // eslint-disable-line camelcase
       const self = this;
       const buttons = [
-        'bold', 'italic', '|',
+        'bold', 'italic', 'underline', '|',
         'formatting', 'fontcolor', '|',
         'alignment', 'unorderedlist', 'outdent', 'indent', '|',
-        'table', 'image', 'link', 'horizontalrule', '|',
-        'html'
+        'table', 'image', 'link', 'horizontalrule', '|'
       ];
       DeskPRO_Window.initRteAgentReply(this.modal.textArea, { // eslint-disable-line no-undef
         defaultIsHtml: true,
