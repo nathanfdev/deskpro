@@ -5419,7 +5419,7 @@ $collection->create(
     'api_custom_community_channels',
     [
         'path'       => '/custom_community_channels',
-        'controller' => 'LegacyApiBundle:CustomCommunityChannels:list',
+        'controller' => 'LegacyApiBundle:CommunityCategories:list',
         'methods'    => ['GET'],
     ]
 );
@@ -5428,7 +5428,7 @@ $collection->create(
     'api_custom_community_channels_order',
     [
         'path'       => '/custom_community_channels/display_order',
-        'controller' => 'LegacyApiBundle:CustomCommunityChannels:saveDisplayOrder',
+        'controller' => 'LegacyApiBundle:CommunityCategories:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
@@ -5437,7 +5437,7 @@ $collection->create(
     'api_custom_community_channels_get',
     [
         'path'       => '/custom_community_channels/{id}',
-        'controller' => 'LegacyApiBundle:CustomCommunityChannels:get',
+        'controller' => 'LegacyApiBundle:CommunityCategories:get',
         'methods'    => ['GET'],
     ]
 );
@@ -5446,7 +5446,7 @@ $collection->create(
     'api_custom_community_channels_create',
     [
         'path'       => '/custom_community_channels',
-        'controller' => 'LegacyApiBundle:CustomCommunityChannels:save',
+        'controller' => 'LegacyApiBundle:CommunityCategories:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
@@ -5456,7 +5456,7 @@ $collection->create(
     'api_custom_community_channels_save',
     [
         'path'       => '/custom_community_channels/{id}',
-        'controller' => 'LegacyApiBundle:CustomCommunityChannels:save',
+        'controller' => 'LegacyApiBundle:CommunityCategories:save',
         'methods'    => ['POST'],
     ]
 );
@@ -5465,7 +5465,7 @@ $collection->create(
     'api_custom_community_channels_delete',
     [
         'path'       => '/custom_community_channels/{id}',
-        'controller' => 'LegacyApiBundle:CustomCommunityChannels:remove',
+        'controller' => 'LegacyApiBundle:CommunityCategories:remove',
         'methods'    => ['DELETE'],
     ]
 );

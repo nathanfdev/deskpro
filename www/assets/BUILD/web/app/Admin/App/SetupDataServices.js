@@ -3,7 +3,7 @@ define([
 
   'Admin/CommunityStatuses/DataService/CommunityStatuses',
   'Admin/CommunityChannels/DataService/CommunityChannels',
-  'Admin/CustomCommunityChannels/DataService/CustomCommunityChannels',
+  'Admin/CommunityCategories/DataService/CommunityCategories',
   'Admin/ChannelSms/DataService/SmsAccounts',
   'Admin/Brand/DataService/Brands',
   'Admin/ChannelFacebook/DataService/FacebookPages',

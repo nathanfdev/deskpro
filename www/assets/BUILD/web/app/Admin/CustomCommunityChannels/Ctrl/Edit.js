@@ -104,7 +104,7 @@ define([
       });
 
       return inst = this.$modal.open({
-        templateUrl: this.getTemplatePath('CustomCommunityChannels/delete-modal.html'),
+        templateUrl: this.getTemplatePath('CommunityCategories/delete-modal.html'),
         controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.move_community_channels_list = list;
           $scope.model = { move_to: (list[0] != null ? list[0].id : undefined) };

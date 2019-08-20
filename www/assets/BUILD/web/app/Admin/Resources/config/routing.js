@@ -1963,7 +1963,7 @@ define(function() {
   routes.push({
     id:           'portal.custom_community_channels',
     url:          '/community/custom_channels',
-    templateName: 'CustomCommunityChannels/list.html',
+    templateName: 'CommunityCategories/list.html',
     controller:   'Admin_CustomCommunityChannels_Ctrl_List'
   });
 
@@ -1977,14 +1977,14 @@ define(function() {
   routes.push({
     id:           'portal.custom_community_channels.create',
     url:          '/create/',
-    templateName: 'CustomCommunityChannels/edit.html',
+    templateName: 'CommunityCategories/edit.html',
     controller:   'Admin_CustomCommunityChannels_Ctrl_Edit'
   });
 
   routes.push({
     id:           'portal.custom_community_channels.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'CustomCommunityChannels/edit.html',
+    templateName: 'CommunityCategories/edit.html',
     controller:   'Admin_CustomCommunityChannels_Ctrl_Edit'
   });
 
