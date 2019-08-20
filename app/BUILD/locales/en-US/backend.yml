@@ -421,9 +421,9 @@ adm.email_templates.user_tickets: 'Ticket Emails'
 adm.email_templates.user_validation: Validation
 adm.email_templates.user_warnings: 'Warnings, alerts & errors'
 adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community channel will be moved to:'
-adm.community_categories.delete_cummunity_custom_channel: 'Delete Custom Community Channel'
+adm.community_categories.delete_cummunity_custom_channel: 'Delete Category'
 adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community channel?'
-adm.custom_community_channels.new_channel: 'New Custom Community Channel'
+adm.custom_community_channels.new_channel: 'New Category'
 adm.custom_community_channels.parent_explain: 'By setting a parent category, this category becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
 adm.custom_community_channels.title: Title
 adm.custom_community_channels.title_error: 'You must enter a valid title'
@@ -503,8 +503,8 @@ adm.general.x_community_active_statuses:
   one: '{{count}} Community Active Status'
   other: '{{count}} Community Active Statuses'
 adm.general.x_custom_community_channels:
-  one: '{{count}} Custom Community Channel'
-  other: '{{count}} Custom Community Channels'
+  one: '{{count}} Category'
+  other: '{{count}} Categories'
 adm.general.x_community_closed_statuses:
   one: '{{count}} Community Closed Status'
   other: '{{count}} Community Closed Statuses'

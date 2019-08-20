@@ -52,7 +52,7 @@ adm.general.x_email_bans:
 adm.general.x_community_active_statuses:
   other: '{{count}} Community Active Statuses'
 adm.general.x_custom_community_channels:
-  other: '{{count}} Custom Community Channels'
+  other: '{{count}} Categories'
 adm.general.x_community_closed_statuses:
   other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
