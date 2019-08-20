@@ -200,7 +200,7 @@ class CustomDefTicket extends CustomDefAbstract
                 foreach ($trigger->actions as $triggerAction) {
                     if ($this->filterAction($triggerAction, $action, $fieldId, $fromIds)) {
                         $options = $triggerAction->getActionOptions();
-                        $options->set('value', $toId);
+                        $options->set('value', (string) $toId);
                         $this->_em->persist($trigger);
                     }
                 }
@@ -213,7 +213,7 @@ class CustomDefTicket extends CustomDefAbstract
                                 if ($this->filterTerm($setTerm, $criteria, $fromIds)) {
                                     foreach ($setTerm['options']['value'] as &$option) {
                                         if (in_array($option, $fromIds)) {
-                                            $option  = $toId;
+                                            $option  = (string) $toId;
                                             $changed = true;
                                         }
                                     }
@@ -223,7 +223,7 @@ class CustomDefTicket extends CustomDefAbstract
                             if ($this->filterTerm($term, $criteria, $fromIds)) {
                                 foreach ($term['options']['value'] as &$option) {
                                     if (in_array($option, $fromIds)) {
-                                        $option  = $toId;
+                                        $option  = (string) $toId;
                                         $changed = true;
                                     }
                                 }
@@ -246,7 +246,7 @@ class CustomDefTicket extends CustomDefAbstract
                 foreach ($escalation->actions as $escalationAction) {
                     if ($this->filterAction($escalationAction, $action, $fieldId, $fromIds)) {
                         $options = $escalationAction->getActionOptions();
-                        $options->set('value', $toId);
+                        $options->set('value', (string) $toId);
                         $this->_em->persist($escalation);
                     }
                 }
@@ -290,14 +290,14 @@ class CustomDefTicket extends CustomDefAbstract
                 foreach ($sla->warn_actions as $warnAction) {
                     if ($this->filterAction($warnAction, $action, $fieldId, $fromIds)) {
                         $options = $warnAction->getActionOptions();
-                        $options->set('value', $toId);
+                        $options->set('value', (string) $toId);
                         $this->_em->persist($sla);
                     }
                 }
                 foreach ($sla->fail_actions as $failAction) {
                     if ($this->filterAction($failAction, $action, $fieldId, $fromIds)) {
                         $options = $failAction->getActionOptions();
-                        $options->set('value', $toId);
+                        $options->set('value', (string) $toId);
                         $this->_em->persist($sla);
                     }
                 }

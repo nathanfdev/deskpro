@@ -351,7 +351,7 @@ class TicketBuiltInFieldsDataService
                 foreach ($trigger->actions as $triggerAction) {
                     if ($this->filterAction($triggerAction, $action, $removeIds)) {
                         $options = $triggerAction->getActionOptions();
-                        $options->set($type.'_id', $setToId);
+                        $options->set($type.'_id', (string) $setToId);
                         $this->em->persist($trigger);
                     }
                 }
@@ -364,7 +364,7 @@ class TicketBuiltInFieldsDataService
                                 if ($this->filterTerm($setTerm, $criteria, $type.'_ids', $removeIds)) {
                                     foreach ($setTerm['options'][$type.'_ids'] as &$option) {
                                         if (in_array($option, $removeIds)) {
-                                            $option  = $setToId;
+                                            $option  = (string) $setToId;
                                             $changed = true;
                                         }
                                     }
@@ -374,7 +374,7 @@ class TicketBuiltInFieldsDataService
                             if ($this->filterTerm($term, $criteria, $type.'_ids', $removeIds)) {
                                 foreach ($term['options'][$type.'_ids'] as &$option) {
                                     if (in_array($option, $removeIds)) {
-                                        $option  = $setToId;
+                                        $option  = (string) $setToId;
                                         $changed = true;
                                     }
                                 }
@@ -397,7 +397,7 @@ class TicketBuiltInFieldsDataService
                 foreach ($escalation->actions as $escalationAction) {
                     if ($this->filterAction($escalationAction, $action, $removeIds)) {
                         $options = $escalationAction->getActionOptions();
-                        $options->set($type.'_id', $setToId);
+                        $options->set($type.'_id', (string) $setToId);
                         $this->em->persist($escalation);
                     }
                 }
@@ -437,14 +437,14 @@ class TicketBuiltInFieldsDataService
                 foreach ($sla->warn_actions as $warnAction) {
                     if ($this->filterAction($warnAction, $action, $removeIds)) {
                         $options = $warnAction->getActionOptions();
-                        $options->set($type.'_id', $setToId);
+                        $options->set($type.'_id', (string) $setToId);
                         $this->em->persist($sla);
                     }
                 }
                 foreach ($sla->fail_actions as $failAction) {
                     if ($this->filterAction($failAction, $action, $removeIds)) {
                         $options = $failAction->getActionOptions();
-                        $options->set($type.'_id', $setToId);
+                        $options->set($type.'_id', (string) $setToId);
                         $this->em->persist($sla);
                     }
                 }
