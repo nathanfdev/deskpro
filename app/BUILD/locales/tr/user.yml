@@ -124,7 +124,7 @@ portal.community.attachments: Ekler
 portal.community.btn-closed: Kapalı
 portal.community.btn-vote: Katılıyorum
 portal.community.form_title: Başlık
-portal.community.form_custom_chan: Kategori
+portal.community.form_category: Kategori
 portal.community.search-title: 'Geri Bildirim'
 portal.community.section-desc: 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.'
 portal.community.section-title: 'Geri Bildirim'

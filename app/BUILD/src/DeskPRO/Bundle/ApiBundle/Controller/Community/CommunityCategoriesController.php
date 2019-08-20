@@ -10,12 +10,12 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 
 /**
- * Class CustomCommunityChannelsController.
+ * Class CommunityCategoriesController.
  *
  * @ApiModes("all")
- * @Rest\Route("/custom_community_channels")
+ * @Rest\Route("/community_categories")
  */
-class CustomCommunityChannelsController extends BaseController
+class CommunityCategoriesController extends BaseController
 {
     /**
      * Fetch custom community channels list.
@@ -45,8 +45,8 @@ class CustomCommunityChannelsController extends BaseController
             ->join('def.parent', 'parent')
             ->addSelect('def.title as title')
             ->addSelect('def.id as group_name')
-            ->andWhere('parent.sys_name = :chan')
-            ->setParameter('chan', 'chan')
+            ->andWhere('parent.sys_name = :cat')
+            ->setParameter('cat', 'cat')
             ->orderBy('def.title', 'asc')
         ;
 

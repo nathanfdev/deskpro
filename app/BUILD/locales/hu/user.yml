@@ -115,7 +115,7 @@ portal.community.section-desc: 'Ezeken az oldalakon olyan ötleteket, javaslatok
 portal.community.section-title: Ötlettár
 portal.community.sort_comments: 'Hozzászólás?'
 portal.community.submit_community_topic: 'Visszajelzés küldése'
-portal.community.form_custom_chan: Kategória
+portal.community.form_category: Kategória
 portal.flashes.comment_thank_you: 'Köszönjük hozzászólását'
 portal.forms.label_category: Típus
 portal.forms.label_department: Részleg

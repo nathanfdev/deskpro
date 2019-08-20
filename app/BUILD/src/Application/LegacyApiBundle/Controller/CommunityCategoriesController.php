@@ -16,7 +16,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class CustomCommunityChannelsController extends AbstractController implements ProtectedControllerInterface
+class CommunityCategoriesController extends AbstractController implements ProtectedControllerInterface
 {
     /**
      * {@inheritdoc}
@@ -36,11 +36,11 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
 
     public function listAction()
     {
-        $communityChannels = $this->container->getSystemService('custom_community_channels');
+        $communityChannels = $this->container->getSystemService('community_categories');
 
         return $this->createApiResponse(
             [
-                'custom_community_channels' => $communityChannels->getAll(),
+                'community_categories' => $communityChannels->getAll(),
             ]
         );
     }
@@ -51,7 +51,7 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
 
     public function getAction($id)
     {
-        $communityChannelsCustomService = $this->container->getSystemService('custom_community_channels');
+        $communityChannelsCustomService = $this->container->getSystemService('community_categories');
         $communityChannel               = $communityChannelsCustomService->getById($id);
 
         if (!$communityChannel) {
@@ -62,7 +62,7 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
 
         return $this->createApiResponse(
             [
-                'custom_community_channel' => $returnedData,
+                'community_category' => $returnedData,
             ]
         );
     }
@@ -73,16 +73,16 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
 
     public function saveAction($id)
     {
-        $customCommunityChannelsService = $this->container->getSystemService('custom_community_channels');
+        $communityCategoriesService = $this->container->getSystemService('community_categories');
 
         if ($id) {
-            $customCommunityChannel = $customCommunityChannelsService->getById($id);
+            $communityCategory = $communityCategoriesService->getById($id);
 
-            if (!$customCommunityChannel) {
+            if (!$communityCategory) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $customCommunityChannel = $customCommunityChannelsService->createNew();
+            $communityCategory = $communityCategoriesService->createNew();
         }
 
         $this->em->getConnection()->beginTransaction();
@@ -93,22 +93,22 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
             // @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
 
             $parent_id =
-                isset($postData['custom_community_channel']['options']) ?
-                    $postData['custom_community_channel']['options']['parent_id'] : '';
+                isset($postData['community_category']['options']) ?
+                    $postData['community_category']['options']['parent_id'] : '';
 
             $brand = null;
-            if (!empty($postData['custom_community_channel']['brand'])) {
-                $brand = $this->em->getRepository(Brand::class)->find($postData['custom_community_channel']['brand']);
+            if (!empty($postData['community_category']['brand'])) {
+                $brand = $this->em->getRepository(Brand::class)->find($postData['community_category']['brand']);
             }
             if (!$brand) {
                 $brand = $this->get('default_brand_finder')->getDefaultBrand();
             }
 
-            $customCommunityChannel->title  = $postData['custom_community_channel']['title'];
-            $customCommunityChannel->parent = $customCommunityChannelsService->getParentChannel($brand);
-            $customCommunityChannel->setOption('parent_id', $parent_id);
+            $communityCategory->title  = $postData['community_category']['title'];
+            $communityCategory->parent = $communityCategoriesService->getParentChannel($brand);
+            $communityCategory->setOption('parent_id', $parent_id);
 
-            $this->em->persist($customCommunityChannel);
+            $this->em->persist($communityCategory);
             $this->em->flush();
 
             $this->em->getConnection()->commit();
@@ -120,8 +120,8 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
         return $this->createApiResponse(
             [
                 'success' => true,
-                'id'      => $customCommunityChannel->getId(),
-                'brand'   => $customCommunityChannel->getBrand() ? $customCommunityChannel->getBrand()->getId() : null,
+                'id'      => $communityCategory->getId(),
+                'brand'   => $communityCategory->getBrand() ? $communityCategory->getBrand()->getId() : null,
             ]
         );
     }
@@ -132,15 +132,15 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
 
     public function removeAction($id)
     {
-        $customCommunityChannelsService = $this->container->getSystemService('custom_community_channels');
-        $customCommunityChannel         = $customCommunityChannelsService->getById($id);
+        $communityCategoriesService = $this->container->getSystemService('community_categories');
+        $communityCategory          = $communityCategoriesService->getById($id);
 
-        if (!$customCommunityChannel) {
+        if (!$communityCategory) {
             throw $this->createNotFoundException();
         }
 
         $moveTo                 = $this->in->getUint('move_to');
-        $moveToCommunityChannel = $customCommunityChannelsService->getById($moveTo);
+        $moveToCommunityChannel = $communityCategoriesService->getById($moveTo);
 
         $skipMoving = false;
 
@@ -148,14 +148,14 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
             $skipMoving = true;
         }
 
-        if (!$skipMoving && $moveToCommunityChannel->getId() == $customCommunityChannel->getId()) {
+        if (!$skipMoving && $moveToCommunityChannel->getId() == $communityCategory->getId()) {
             throw ValidationException::create(
-                'community_channel.remove.move_custom_community_channel',
+                'community_channel.remove.move_community_category',
                 'You must choose a different community channel'
             );
         }
 
-        $oldId = $customCommunityChannel->getId();
+        $oldId = $communityCategory->getId();
 
         $this->db->beginTransaction();
 
@@ -167,7 +167,7 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
                 );
             }
 
-            $this->em->remove($customCommunityChannel);
+            $this->em->remove($communityCategory);
             $this->em->flush();
 
             $this->db->commit();
@@ -187,8 +187,8 @@ class CustomCommunityChannelsController extends AbstractController implements Pr
     {
         $displayOrders = $this->in->getArrayOfUInts('display_orders');
 
-        $customCommunityChannelsService = $this->container->getSystemService('custom_community_channels');
-        $customCommunityChannelsService->updateDisplayOrders($displayOrders);
+        $communityCategoriesService = $this->container->getSystemService('community_categories');
+        $communityCategoriesService->updateDisplayOrders($displayOrders);
 
         return $this->createSuccessResponse();
     }

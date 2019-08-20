@@ -352,7 +352,7 @@ portal.community.form_logged_in_as: 'Đăng nhập với tư cách là: <span>{{
 portal.community.form_logout: 'Không phải bạn?'
 portal.community.form_tell_us_more: 'Hãy cho chúng tôi biết thêm'
 portal.community.form_title: 'Chức vụ'
-portal.community.form_custom_chan: 'Thể loại'
+portal.community.form_category: 'Thể loại'
 portal.community.module_forbidden: 'Bạn không có quyền truy cập vào mô-đun này'
 portal.community.no_matching: 'Không có phản hồi phù hợp'
 portal.community.none: 'Chưa có phản hồi'

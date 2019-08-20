@@ -294,7 +294,7 @@ portal.community.form_logged_in_as: "ورود با نام کاربری <span>{{n
 portal.community.form_logout: 'شما نیستید؟'
 portal.community.form_tell_us_more: 'توضیح بیشتر'
 portal.community.form_title: عنوان
-portal.community.form_custom_chan: 'دسته بندی'
+portal.community.form_category: 'دسته بندی'
 portal.community.none: 'هیچ بازخوردی  وجود ندارد'
 portal.community.search-title: 'انتقادات و پیشنهادات'
 portal.community.section-desc: 'در این قسمت میتوانید نظرات و انتقادات خود را با ما و سایر کاربران در میان گذارید'

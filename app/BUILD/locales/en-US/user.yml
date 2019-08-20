@@ -394,7 +394,7 @@ portal.community.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from e
 portal.community.form_logout: 'Not you?'
 portal.community.form_tell_us_more: 'Tell us more'
 portal.community.form_title: Title
-portal.community.form_custom_chan: Custom channel
+portal.community.form_category: Category
 portal.community.module_forbidden: 'You don''t have access to this module'
 portal.community.no_matching: 'No matching community topics'
 portal.community.none: 'No community topics yet'

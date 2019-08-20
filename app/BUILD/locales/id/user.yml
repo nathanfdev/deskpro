@@ -373,7 +373,7 @@ portal.community.form_logged_in_as: 'Masuk sebagai: <span>{{name}}</span>, dari 
 portal.community.form_logout: 'Bukan Anda?'
 portal.community.form_tell_us_more: 'Beritahu kami lebih'
 portal.community.form_title: Judul
-portal.community.form_custom_chan: Kategori
+portal.community.form_category: Kategori
 portal.community.module_forbidden: 'Anda tidak memiliki akses terhadap modul ini'
 portal.community.no_matching: 'Tidak ada tanggapan yang sesuai'
 portal.community.none: 'Belum ada tanggapan'

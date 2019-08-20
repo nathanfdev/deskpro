@@ -22,7 +22,7 @@ portal.account.login-external: 'Vpiši se z  zunanjim servisom'
 portal.account.login-password-reminder: 'Potrebujete opomnik za geslo?'
 portal.account.login-register-btn: 'Registriraj se'
 portal.account.login-register-header: 'Registriraj se'
-portal.community.form_custom_chan: Kategorija
+portal.community.form_category: Kategorija
 portal.articles.view-x-articles:
   one: 'View 1 article'
   two: 'View {{count}} articles'

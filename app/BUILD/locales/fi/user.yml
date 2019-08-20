@@ -168,7 +168,7 @@ portal.community.attachments: Liitetiedostot
 portal.community.btn-closed: Suljettu
 portal.community.btn-vote: 'Samaa mieltä'
 portal.community.form_title: Aihe
-portal.community.form_custom_chan: Kategoria
+portal.community.form_category: Kategoria
 portal.community.search-title: Palaute
 portal.community.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
 portal.community.section-title: Palaute

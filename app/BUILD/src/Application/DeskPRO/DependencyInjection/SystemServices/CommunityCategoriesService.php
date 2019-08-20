@@ -11,7 +11,7 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 use Application\DeskPRO\Community\CommunityCategories;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class CustomCommunityChannelsService
+class CommunityCategoriesService
 {
     public static function create(DeskproContainer $container)
     {

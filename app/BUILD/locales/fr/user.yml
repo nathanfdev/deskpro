@@ -381,7 +381,7 @@ portal.community.form_logged_in_as: 'Connecté en tant que: <span>{{name}}</span
 portal.community.form_logout: 'Pas toi?'
 portal.community.form_tell_us_more: 'Dis nous en plus'
 portal.community.form_title: Titre
-portal.community.form_custom_chan: Catégorie
+portal.community.form_category: Catégorie
 portal.community.module_forbidden: 'Vous n''avez pas accès à ce module'
 portal.community.no_matching: 'Aucun commentaire correspondant'
 portal.community.none: 'Pas encore de retour'

@@ -365,7 +365,7 @@ portal.community.form_i_have_a: 我有一个
 portal.community.form_logout: 不是你？
 portal.community.form_tell_us_more: 请告诉我们更多
 portal.community.form_title: 标题
-portal.community.form_custom_chan: 類別
+portal.community.form_category: 類別
 portal.community.module_forbidden: 您无权访问此模块
 portal.community.no_matching: 没有匹配的反馈
 portal.community.none: 没有回复

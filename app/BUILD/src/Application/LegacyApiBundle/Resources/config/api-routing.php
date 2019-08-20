@@ -3061,7 +3061,7 @@ $collection->create(
 );
 
 $collection->create(
-    'api_custom_community_channels',
+    'api_community_categories',
     [
         'path'       => '/community/channels',
         'controller' => 'LegacyApiBundle:CommunityTopics:getChannels',
@@ -5416,36 +5416,36 @@ $collection->create(
 //#######################################################################################################################
 
 $collection->create(
-    'api_custom_community_channels',
+    'api_community_categories',
     [
-        'path'       => '/custom_community_channels',
+        'path'       => '/community_categories',
         'controller' => 'LegacyApiBundle:CommunityCategories:list',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_custom_community_channels_order',
+    'api_community_categories_order',
     [
-        'path'       => '/custom_community_channels/display_order',
+        'path'       => '/community_categories/display_order',
         'controller' => 'LegacyApiBundle:CommunityCategories:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_custom_community_channels_get',
+    'api_community_categories_get',
     [
-        'path'       => '/custom_community_channels/{id}',
+        'path'       => '/community_categories/{id}',
         'controller' => 'LegacyApiBundle:CommunityCategories:get',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_custom_community_channels_create',
+    'api_community_categories_create',
     [
-        'path'       => '/custom_community_channels',
+        'path'       => '/community_categories',
         'controller' => 'LegacyApiBundle:CommunityCategories:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
@@ -5453,18 +5453,18 @@ $collection->create(
 );
 
 $collection->create(
-    'api_custom_community_channels_save',
+    'api_community_categories_save',
     [
-        'path'       => '/custom_community_channels/{id}',
+        'path'       => '/community_categories/{id}',
         'controller' => 'LegacyApiBundle:CommunityCategories:save',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_custom_community_channels_delete',
+    'api_community_categories_delete',
     [
-        'path'       => '/custom_community_channels/{id}',
+        'path'       => '/community_categories/{id}',
         'controller' => 'LegacyApiBundle:CommunityCategories:remove',
         'methods'    => ['DELETE'],
     ]

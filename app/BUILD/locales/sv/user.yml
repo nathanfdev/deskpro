@@ -387,7 +387,7 @@ portal.community.form_logged_in_as: 'Inloggad som: <span>{{name}}</span>, från 
 portal.community.form_logout: 'Inte du?'
 portal.community.form_tell_us_more: 'Berätta mer'
 portal.community.form_title: Titel
-portal.community.form_custom_chan: Kategori
+portal.community.form_category: Kategori
 portal.community.module_forbidden: 'Du har inte behörighet att se denna modul'
 portal.community.no_matching: 'Ingen matchande community topic'
 portal.community.none: 'Ingen community topic ännu'
