@@ -2,6 +2,7 @@
 
 namespace DpBehat\Data;
 
+use Application\DeskPRO\Domain\BasicDomainObject;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSearchActive;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
@@ -181,17 +182,17 @@ class DataContext extends BaseContext
             throw new \Exception('Unable to set reference of non object');
         }
 
-        if (!method_exists($object, 'getId')) {
-            self::$references[$name] = $object;
+        if ($object instanceof BasicDomainObject || method_exists($object, 'getId')) {
+            if (!$object->getId()) {
+                throw new \Exception('Unable to set reference of not persisted object');
+            }
+
+            self::$references[$name] = [get_class($object), $object->getId()];
 
             return;
         }
 
-        if (!$object->getId()) {
-            throw new \Exception('Unable to set reference of not persisted object');
-        }
-
-        self::$references[$name] = [get_class($object), $object->getId()];
+        self::$references[$name] = $object;
     }
 
     /**
@@ -397,10 +398,6 @@ class DataContext extends BaseContext
                     $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
-                } elseif (is_string($value) && 'true' === $value) {
-                    $value = true;
-                } elseif (is_string($value) && 'false' === $value) {
-                    $value = false;
                 } elseif (is_string($value)) {
                     $value = self::replace($value, true);
                 }
@@ -489,10 +486,6 @@ class DataContext extends BaseContext
                     $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
-                } elseif (is_string($value) && 'true' === $value) {
-                    $value = true;
-                } elseif (is_string($value) && 'false' === $value) {
-                    $value = false;
                 } elseif (is_string($value)) {
                     $value = self::replace($value, true);
                 }
