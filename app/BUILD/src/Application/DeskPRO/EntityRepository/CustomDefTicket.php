@@ -9,10 +9,10 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\CustomDefTicket as CustomDefTicketEntity;
-use Application\DeskPRO\Entity\LegacyTicketFilter;
-use Application\DeskPRO\Entity\Sla;
-use Application\DeskPRO\Entity\TicketEscalation;
-use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\Entity\LegacyTicketFilter as LegacyTicketFilterEntity;
+use Application\DeskPRO\Entity\Sla as SlaEntity;
+use Application\DeskPRO\Entity\TicketEscalation as TicketEscalationEntity;
+use Application\DeskPRO\Entity\TicketTrigger as TicketTriggerEntity;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 
@@ -27,7 +27,7 @@ class CustomDefTicket extends CustomDefAbstract
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('t')
-            ->from(TicketTrigger::class, 't')
+            ->from(TicketTriggerEntity::class, 't')
             ->andWhere('t.terms LIKE :criteria OR t.actions LIKE :action')
             ->setParameter('criteria', '%'.$criteria.'%')
             ->setParameter('action', '%'.$action.$fieldId.'%')
@@ -38,7 +38,7 @@ class CustomDefTicket extends CustomDefAbstract
 
         if ($triggers) {
             $triggers = array_filter($triggers, function ($trigger) use ($action, $criteria, $fieldId, $ids) {
-                /** @var TicketTrigger $trigger */
+                /** @var TicketTriggerEntity $trigger */
                 foreach ($trigger->actions as $triggerAction) {
                     if ($this->filterAction($triggerAction, $action, $fieldId, $ids)) {
                         return true;
@@ -58,7 +58,7 @@ class CustomDefTicket extends CustomDefAbstract
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('e')
-            ->from(TicketEscalation::class, 'e')
+            ->from(TicketEscalationEntity::class, 'e')
             ->andWhere('e.terms LIKE :criteria OR e.terms_any LIKE :criteria OR e.actions LIKE :action')
             ->setParameter('criteria', '%ticket_field['.$fieldId.']%')
             ->setParameter('action', '%'.$action.'%')
@@ -103,7 +103,7 @@ class CustomDefTicket extends CustomDefAbstract
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('s')
-            ->from(Sla::class, 's')
+            ->from(SlaEntity::class, 's')
             ->andWhere('s.apply_terms LIKE :criteria OR s.warn_actions LIKE :action OR s.fail_actions LIKE :action')
             ->setParameter('criteria', '%'.$criteria.'%')
             ->setParameter('action', '%'.$action.'%')
@@ -112,7 +112,7 @@ class CustomDefTicket extends CustomDefAbstract
 
         if ($slas) {
             $slas = array_filter($slas, function ($sla) use ($action, $criteria, $fieldId, $ids) {
-                /** @var Sla $sla */
+                /** @var SlaEntity $sla */
                 foreach ($sla->warn_actions as $warnAction) {
                     if ($this->filterAction($warnAction, $action, $fieldId, $ids)) {
                         return true;
@@ -159,7 +159,7 @@ class CustomDefTicket extends CustomDefAbstract
 
         $qb = $this->_em->createQueryBuilder();
         $qb->select('f')
-            ->from(LegacyTicketFilter::class, 'f')
+            ->from(LegacyTicketFilterEntity::class, 'f')
             ->andWhere('f.terms LIKE :criteria')
             ->setParameter('criteria', '%ticket_field['.$fieldId.']%')
         ;
