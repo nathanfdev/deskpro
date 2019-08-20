@@ -17,7 +17,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @category Entities
  */
-class TicketApproval extends AbstractBaseApproval
+class TicketApproval extends AbstractBaseApproval implements TicketApprovalInterface
 {
     /**
      * @var Ticket

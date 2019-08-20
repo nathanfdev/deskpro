@@ -17,6 +17,16 @@ use Orb\Util\OptionsArray;
 interface ExecutorContextInterface
 {
     /**
+     * Context methods
+     */
+    const METHOD_API    = 'api';
+    const METHOD_WEB    = 'web';
+    const METHOD_EMAIL  = 'email';
+    const METHOD_MOBILE = 'mobile';
+    const METHOD_SMS    = 'sms';
+    const METHOD_PHONE  = 'phone';
+
+    /**
      * @return string
      */
     public function getEventMethod();

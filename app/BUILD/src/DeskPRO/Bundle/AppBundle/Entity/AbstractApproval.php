@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -97,6 +98,66 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
     protected $canApproversViewSubject = true;
 
     /**
+     * @var TriggerActions
+     *
+     * @ORM\Column(name="actions_on_create", type="dp_json_obj", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     */
+    protected $actionsOnCreate;
+
+    /**
+     * @var TriggerActions
+     *
+     * @ORM\Column(name="actions_on_partial_approval_response", type="dp_json_obj", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     */
+    protected $actionsOnPartialApprovalResponse;
+
+    /**
+     * @var TriggerActions
+     *
+     * @ORM\Column(name="actions_on_partial_rejection_response", type="dp_json_obj", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     */
+    protected $actionsOnPartialRejectionResponse;
+
+    /**
+     * @var TriggerActions
+     *
+     * @ORM\Column(name="actions_on_cancel", type="dp_json_obj", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     */
+    protected $actionsOnCancel;
+
+    /**
+     * @var TriggerActions
+     *
+     * @ORM\Column(name="actions_on_approved", type="dp_json_obj", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     */
+    protected $actionsOnApproved;
+
+    /**
+     * @var TriggerActions
+     *
+     * @ORM\Column(name="actions_on_rejected", type="dp_json_obj", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
+     */
+    protected $actionsOnRejected;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
@@ -113,6 +174,12 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
      */
     public function __construct()
     {
+        $this->actionsOnCreate = new TriggerActions();
+        $this->actionsOnPartialApprovalResponse = new TriggerActions();
+        $this->actionsOnPartialRejectionResponse = new TriggerActions();
+        $this->actionsOnCancel = new TriggerActions();
+        $this->actionsOnApproved = new TriggerActions();
+        $this->actionsOnRejected = new TriggerActions();
         $this->createdAt = new \DateTime();
     }
 
@@ -244,5 +311,131 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
     public function getTypeId()
     {
         return $this->type->getId();
+    }
+
+    /**
+     * @param TriggerActions|null $actionsOnCreate
+     * @return AbstractApproval
+     */
+    public function setActionsOnCreate(TriggerActions $actionsOnCreate = null)
+    {
+        if ($actionsOnCreate) {
+            $this->setModelField('actionsOnCreate', $actionsOnCreate);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TriggerActions|null $actionsOnPartialApprovalResponse
+     * @return AbstractApproval
+     */
+    public function setActionsOnPartialApprovalResponse(TriggerActions $actionsOnPartialApprovalResponse = null)
+    {
+        if ($actionsOnPartialApprovalResponse) {
+            $this->setModelField('actionsOnPartialApprovalResponse', $actionsOnPartialApprovalResponse);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TriggerActions|null $actionsOnPartialRejectionResponse
+     * @return AbstractApproval
+     */
+    public function setActionsOnPartialRejectionResponse(TriggerActions $actionsOnPartialRejectionResponse = null)
+    {
+        if ($actionsOnPartialRejectionResponse) {
+            $this->setModelField('actionsOnPartialRejectionResponse', $actionsOnPartialRejectionResponse);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TriggerActions|null $actionsOnCancel
+     * @return AbstractApproval
+     */
+    public function setActionsOnCancel(TriggerActions $actionsOnCancel = null)
+    {
+        if ($actionsOnCancel) {
+            $this->setModelField('actionsOnCancel', $actionsOnCancel);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TriggerActions|null $actionsOnApproved
+     * @return AbstractApproval
+     */
+    public function setActionsOnApproved(TriggerActions $actionsOnApproved = null)
+    {
+        if ($actionsOnApproved) {
+            $this->setModelField('actionsOnApproved', $actionsOnApproved);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param TriggerActions|null $actionsOnRejected
+     * @return AbstractApproval
+     */
+    public function setActionsOnRejected(TriggerActions $actionsOnRejected = null)
+    {
+        if ($actionsOnRejected) {
+            $this->setModelField('actionsOnRejected', $actionsOnRejected);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return TriggerActions
+     */
+    public function getActionsOnCreate()
+    {
+        return $this->actionsOnCreate;
+    }
+
+    /**
+     * @return TriggerActions
+     */
+    public function getActionsOnPartialApprovalResponse()
+    {
+        return $this->actionsOnPartialApprovalResponse;
+    }
+
+    /**
+     * @return TriggerActions
+     */
+    public function getActionsOnPartialRejectionResponse()
+    {
+        return $this->actionsOnPartialRejectionResponse;
+    }
+
+    /**
+     * @return TriggerActions
+     */
+    public function getActionsOnCancel()
+    {
+        return $this->actionsOnCancel;
+    }
+
+    /**
+     * @return TriggerActions
+     */
+    public function getActionsOnApproved()
+    {
+        return $this->actionsOnApproved;
+    }
+
+    /**
+     * @return TriggerActions
+     */
+    public function getActionsOnRejected()
+    {
+        return $this->actionsOnRejected;
     }
 }

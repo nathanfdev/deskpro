@@ -162,6 +162,129 @@ Feature: /approval_templates endpoint
     And the JSON node "data.required_rejections" should be equal to "3"
     And the JSON node "data.can_approvers_view_subject" should be true
     And the JSON node "data.approver_criteria.agents" should have "2" elements
+    And the JSON node "data.actions_on_create" should exist
+    And the JSON node "data.actions_on_partial_approval_response" should exist
+    And the JSON node "data.actions_on_partial_rejection_response" should exist
+    And the JSON node "data.actions_on_cancel" should exist
+    And the JSON node "data.actions_on_approved" should exist
+    And the JSON node "data.actions_on_rejected" should exist
+
+  Scenario: I POST a valid approval template as admin with trigger actions
+    Given I'm authenticated as "admin"
+    When I send a POST request to "/api/v2/approval_templates" with body:
+            """
+{
+  "name": "Approval Template 1",
+  "description": "Approval template 1 description",
+  "type": ~atype1~,
+  "required_approvals": 2,
+  "required_rejections": 3,
+  "can_approvers_view_subject": true,
+  "approver_criteria": {
+    "agents": [1, 2]
+  },
+  "actions_on_create": [{
+    "type": "SendUserEmail",
+    "options": {
+      "template": "DeskPRO:emails_user:ticket-new-autoreply.html.twig",
+			"do_cc_users": false,
+			"from_name": "helpdesk_name",
+			"from_account": 0,
+			"headers": {
+			  "X-FunctionalTestToken": "A"
+			}
+    }
+  }],
+  "actions_on_partial_approval_response": [{
+    "type": "SendUserEmail",
+    "options": {
+      "template": "DeskPRO:emails_user:ticket-new-autoreply.html.twig",
+			"do_cc_users": false,
+			"from_name": "helpdesk_name",
+			"from_account": 0,
+			"headers": {
+			  "X-FunctionalTestToken": "B"
+			}
+    }
+  }],
+  "actions_on_partial_rejection_response": [{
+    "type": "SendUserEmail",
+    "options": {
+      "template": "DeskPRO:emails_user:ticket-new-autoreply.html.twig",
+			"do_cc_users": false,
+			"from_name": "helpdesk_name",
+			"from_account": 0,
+			"headers": {
+			  "X-FunctionalTestToken": "C"
+			}
+    }
+  }],
+  "actions_on_cancel": [{
+    "type": "SendUserEmail",
+    "options": {
+      "template": "DeskPRO:emails_user:ticket-new-autoreply.html.twig",
+			"do_cc_users": false,
+			"from_name": "helpdesk_name",
+			"from_account": 0,
+			"headers": {
+			  "X-FunctionalTestToken": "D"
+			}
+    }
+  }],
+  "actions_on_approved": [{
+    "type": "SendUserEmail",
+    "options": {
+      "template": "DeskPRO:emails_user:ticket-new-autoreply.html.twig",
+			"do_cc_users": false,
+			"from_name": "helpdesk_name",
+			"from_account": 0,
+			"headers": {
+			  "X-FunctionalTestToken": "E"
+			}
+    }
+  }],
+  "actions_on_rejected": [{
+    "type": "SendUserEmail",
+    "options": {
+      "template": "DeskPRO:emails_user:ticket-new-autoreply.html.twig",
+			"do_cc_users": false,
+			"from_name": "helpdesk_name",
+			"from_account": 0,
+			"headers": {
+			  "X-FunctionalTestToken": "F"
+			}
+    }
+  }]
+}
+            """
+    Then the response status code should be 201
+    Then the response should be in JSON
+    And the JSON node "data" should exist
+    And the JSON node "data.id" should be equal to "{lastCreatedId}"
+    And the JSON node "data.name" should be equal to "Approval Template 1"
+    And the JSON node "data.description" should be equal to "Approval template 1 description"
+    And the JSON node "data.type" should be equal to "{atype1}"
+    And the JSON node "data.required_approvals" should be equal to "2"
+    And the JSON node "data.required_rejections" should be equal to "3"
+    And the JSON node "data.can_approvers_view_subject" should be true
+    And the JSON node "data.approver_criteria.agents" should have "2" elements
+    And the JSON node "data.actions_on_create" should exist
+    And the JSON node "data.actions_on_partial_approval_response" should exist
+    And the JSON node "data.actions_on_partial_rejection_response" should exist
+    And the JSON node "data.actions_on_cancel" should exist
+    And the JSON node "data.actions_on_approved" should exist
+    And the JSON node "data.actions_on_rejected" should exist
+    And the JSON node "data.actions_on_create.actions[0].type" should be equal to "SendUserEmail"
+    And the JSON node "data.actions_on_create.actions[0].options.template" should be equal to "DeskPRO:emails_user:ticket-new-autoreply.html.twig"
+    And the JSON node "data.actions_on_create.actions[0].options.do_cc_users" should be null
+    And the JSON node "data.actions_on_create.actions[0].options.from_name" should be equal to "helpdesk_name"
+    And the JSON node "data.actions_on_create.actions[0].options.from_account" should be equal to "0"
+    And the JSON node "data.actions_on_create.actions[0].options.headers.X-FunctionalTestToken" should be equal to "A"
+    And the JSON node "data.actions_on_partial_approval_response.actions[0].options.headers.X-FunctionalTestToken" should be equal to "B"
+    And the JSON node "data.actions_on_partial_rejection_response.actions[0].options.headers.X-FunctionalTestToken" should be equal to "C"
+    And the JSON node "data.actions_on_cancel.actions[0].options.headers.X-FunctionalTestToken" should be equal to "D"
+    And the JSON node "data.actions_on_approved.actions[0].options.headers.X-FunctionalTestToken" should be equal to "E"
+    And the JSON node "data.actions_on_rejected.actions[0].options.headers.X-FunctionalTestToken" should be equal to "F"
 
   Scenario: I POST a valid approval template as admin
     Given I'm authenticated as "admin"

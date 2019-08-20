@@ -1,0 +1,6 @@
+services:
+
+    approval.approval_manager:
+      class: DeskPRO\Bundle\AppBundle\Approval\ApprovalManager
+      arguments:
+        - "@service_container"

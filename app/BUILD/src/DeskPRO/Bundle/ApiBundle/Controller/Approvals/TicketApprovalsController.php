@@ -9,12 +9,16 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Approval\ApprovalResponseType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Approval\TicketApprovalType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ApprovalTypesController
@@ -63,13 +67,11 @@ class TicketApprovalsController extends AbstractApprovalsController
      * @param Request $request
      *
      * @return View
+     * @throws \Exception
      */
     public function postAction(Request $request)
     {
-        $this->checkExposed(__METHOD__);
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
-
-        return $this->handleForm(null, $request);
+        return parent::postAction($request);
     }
 
     /**
@@ -144,12 +146,13 @@ class TicketApprovalsController extends AbstractApprovalsController
      *
      * @param AbstractBaseApproval $approval
      *
+     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function cancelAction(AbstractBaseApproval $approval)
+    public function cancelAction(AbstractBaseApproval $approval, Request $request)
     {
-        return parent::cancelAction($approval);
+        return parent::cancelAction($approval, $request);
     }
 
     /**
@@ -229,9 +232,11 @@ class TicketApprovalsController extends AbstractApprovalsController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb
-            ->andWhere("IDENTITY({$alias}.ticket) = :ticketId")
-            ->setParameter('ticketId', $request->attributes->getInt('ticketId'))
-        ;
+        if ($request->attributes->has('ticketId')) {
+            $qb
+                ->andWhere("IDENTITY({$alias}.ticket) = :ticketId")
+                ->setParameter('ticketId', $request->attributes->getInt('ticketId'))
+            ;
+        }
     }
 }

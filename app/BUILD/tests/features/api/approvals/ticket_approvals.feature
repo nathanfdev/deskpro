@@ -83,6 +83,12 @@ Feature: /ticket_approvals endpoint
     And the JSON node "data.completed_at" should be null
     And the JSON node "data.cancelled_at" should be null
     And the JSON node "data.ticket" should be equal to "{t1}"
+    And the JSON node "data.actions_on_create" should exist
+    And the JSON node "data.actions_on_partial_approval_response" should exist
+    And the JSON node "data.actions_on_partial_rejection_response" should exist
+    And the JSON node "data.actions_on_cancel" should exist
+    And the JSON node "data.actions_on_approved" should exist
+    And the JSON node "data.actions_on_rejected" should exist
 
   Scenario: I GET a list of ticket approvals as an agent without authentication
     When I send a GET request to "/api/v2/tickets/{t1}/ticket_approvals"

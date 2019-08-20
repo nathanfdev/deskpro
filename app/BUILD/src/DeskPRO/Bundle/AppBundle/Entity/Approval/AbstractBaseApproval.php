@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractApproval;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
@@ -144,7 +143,6 @@ abstract class AbstractBaseApproval extends AbstractApproval
      */
     public static function createFromTemplate(ApprovalTemplate $template)
     {
-        /** @var self $approval */
         $approval = new static();
 
         $approval->setType($template->getType());
@@ -152,16 +150,22 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $approval->setRequiredApprovals($template->getRequiredApprovals());
         $approval->setRequiredRejections($template->getRequiredRejections());
         $approval->setCanApproversViewSubject($template->canApproversViewSubject());
+        $approval->setActionsOnCreate($template->getActionsOnCreate());
+        $approval->setActionsOnPartialApprovalResponse($template->getActionsOnPartialApprovalResponse());
+        $approval->setActionsOnPartialRejectionResponse($template->getActionsOnPartialRejectionResponse());
+        $approval->setActionsOnCancel($template->getActionsOnCancel());
+        $approval->setActionsOnApproved($template->getActionsOnApproved());
+        $approval->setActionsOnRejected($template->getActionsOnRejected());
 
-        $criteria = $template->getApproverCriteria();
-        foreach ($criteria->getAgents() as $agentId) {
+        foreach ($template->getApproverCriteria()->getAgents() as $agentId) {
             $approval->addApprover($agentId);
         }
-        foreach ($criteria->getUsers() as $userId) {
+
+        foreach ($template->getApproverCriteria()->getUsers() as $userId) {
             $approval->addApprover($userId);
         }
 
-        // todo: triggers & permissions
+        // todo: permissions
 
         return $approval;
     }
@@ -281,6 +285,10 @@ abstract class AbstractBaseApproval extends AbstractApproval
      */
     public function addResponse(ApprovalResponse $response)
     {
+        if ($this->isStatus(self::STATUS_CANCELLED)) {
+            throw new \DomainException('Cannot add a response to a cancelled approval');
+        }
+
         // Assert that the approver is allowed to respond
         $this->assertApproverIsInListOfApprovers($response);
 
@@ -352,6 +360,26 @@ abstract class AbstractBaseApproval extends AbstractApproval
     public function getLastApprovedResponseAt()
     {
         return $this->lastApprovedResponseAt;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isComplete()
+    {
+        return self::isCompletionStatus($this->status);
+    }
+
+    /**
+     * @param string|array $status
+     * @return bool
+     */
+    public function isStatus($status)
+    {
+        return self::isOfStatus(
+            $this->status,
+            is_array($status) ? $status : [$status]
+        );
     }
 
     /**
@@ -474,6 +502,16 @@ abstract class AbstractBaseApproval extends AbstractApproval
      */
     private static function isCompletionStatus($status)
     {
-        return in_array($status, [self::STATUS_APPROVED, self::STATUS_REJECTED]);
+        return self::isOfStatus($status, [self::STATUS_APPROVED, self::STATUS_REJECTED]);
+    }
+
+    /**
+     * @param string $status
+     * @param array $statuses
+     * @return bool
+     */
+    private static function isOfStatus($status, array $statuses)
+    {
+        return in_array($status, $statuses);
     }
 }

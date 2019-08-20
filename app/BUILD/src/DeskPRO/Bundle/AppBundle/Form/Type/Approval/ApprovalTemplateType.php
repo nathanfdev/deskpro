@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Approval;
 
+use DeskPRO\Bundle\ApiBundle\Controller\Webhooks\TriggerActionsFormType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
@@ -69,6 +70,30 @@ class ApprovalTemplateType extends AbstractType
                 'constraints' => [
                     new ApproverCriteria(),
                 ],
+            ])
+            ->add('actions_on_create', TriggerActionsFormType::class, [
+                'required' => false,
+                'data_key' => null,
+            ])
+            ->add('actions_on_partial_approval_response', TriggerActionsFormType::class, [
+                'required' => false,
+                'data_key' => null,
+            ])
+            ->add('actions_on_partial_rejection_response', TriggerActionsFormType::class, [
+                'required' => false,
+                'data_key' => null,
+            ])
+            ->add('actions_on_cancel', TriggerActionsFormType::class, [
+                'required' => false,
+                'data_key' => null,
+            ])
+            ->add('actions_on_approved', TriggerActionsFormType::class, [
+                'required' => false,
+                'data_key' => null,
+            ])
+            ->add('actions_on_rejected', TriggerActionsFormType::class, [
+                'required' => false,
+                'data_key' => null,
             ])
         ;
     }
