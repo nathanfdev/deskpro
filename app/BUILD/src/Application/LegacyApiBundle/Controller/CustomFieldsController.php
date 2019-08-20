@@ -312,16 +312,16 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
 
             case 1:
                 $hasData  = $rep->hasData($ids);
-                $response = ['success' => $hasData];
+                $response = ['success' => true];
                 $root     = (int) min($ids);
 
                 $field = $rep->getByOptions($ids);
 
                 if (!$hasData) {
-                    if ($repClass !== CustomDefTicket::class || $rep->getOptionUsage($field, $ids)) {
+                    if ($repClass !== CustomDefTicket::class || count($rep->getOptionUsage($field, $ids)) === 0) {
                         $rep->delete($ids);
 
-                        return $this->createJsonResponse($response);
+                        return $this->createJsonResponse(['success' => false]);
                     }
                 }
 

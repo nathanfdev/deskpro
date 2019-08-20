@@ -196,13 +196,18 @@ class CustomDefTicket extends CustomDefAbstract
 
         $usage = $this->getOptionUsage($field, $fromIds);
         if (isset($usage['triggers'])) {
+            /** @var TicketTriggerEntity $trigger */
             foreach ($usage['triggers'] as $trigger) {
+                $changed = false;
                 foreach ($trigger->actions as $triggerAction) {
                     if ($this->filterAction($triggerAction, $action, $fieldId, $fromIds)) {
                         $options = $triggerAction->getActionOptions();
                         $options->set('value', (string) $toId);
-                        $this->_em->persist($trigger);
+                        $changed = true;
                     }
+                }
+                if ($changed) {
+                    $trigger->setActions($trigger->actions);
                 }
                 $terms = $trigger->terms->getTerms();
                 if ($terms) {
@@ -235,7 +240,7 @@ class CustomDefTicket extends CustomDefAbstract
                         foreach ($terms as $term) {
                             $trigger->terms->addTermFromArray($term);
                         }
-                        $this->_em->persist($trigger);
+                        $trigger->setTerms($trigger->terms);
                     }
                 }
             }
@@ -247,7 +252,6 @@ class CustomDefTicket extends CustomDefAbstract
                     if ($this->filterAction($escalationAction, $action, $fieldId, $fromIds)) {
                         $options = $escalationAction->getActionOptions();
                         $options->set('value', (string) $toId);
-                        $this->_em->persist($escalation);
                     }
                 }
                 $changed = false;
@@ -264,7 +268,6 @@ class CustomDefTicket extends CustomDefAbstract
                 }
                 if ($changed) {
                     $escalation->terms = $terms;
-                    $this->_em->persist($escalation);
                 }
                 $changed = false;
                 $terms   = $escalation->terms_any;
@@ -280,7 +283,6 @@ class CustomDefTicket extends CustomDefAbstract
                 }
                 if ($changed) {
                     $escalation->terms_any = $terms;
-                    $this->_em->persist($escalation);
                 }
             }
         }
@@ -291,14 +293,12 @@ class CustomDefTicket extends CustomDefAbstract
                     if ($this->filterAction($warnAction, $action, $fieldId, $fromIds)) {
                         $options = $warnAction->getActionOptions();
                         $options->set('value', (string) $toId);
-                        $this->_em->persist($sla);
                     }
                 }
                 foreach ($sla->fail_actions as $failAction) {
                     if ($this->filterAction($failAction, $action, $fieldId, $fromIds)) {
                         $options = $failAction->getActionOptions();
                         $options->set('value', (string) $toId);
-                        $this->_em->persist($sla);
                     }
                 }
                 $terms = $sla->apply_terms->getTerms();
@@ -332,7 +332,6 @@ class CustomDefTicket extends CustomDefAbstract
                         foreach ($terms as $term) {
                             $sla->apply_terms->addTermFromArray($term);
                         }
-                        $this->_em->persist($sla);
                     }
                 }
             }
@@ -369,7 +368,6 @@ class CustomDefTicket extends CustomDefAbstract
                         $filterTerms = new FilterTerms();
                         $filterTerms->importFromArray(['terms' => $terms]);
                         $webhook->setSearchTerms($filterTerms);
-                        $this->_em->persist($webhook);
                     }
                 }
             }
@@ -391,7 +389,6 @@ class CustomDefTicket extends CustomDefAbstract
                 }
                 if ($changed) {
                     $ticketFilter->terms = $terms;
-                    $this->_em->persist($ticketFilter);
                 }
             }
         }
