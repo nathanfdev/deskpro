@@ -62,7 +62,8 @@ class TicketApprovalsController extends AbstractApprovalsController
      *      statusCodes={
      *          201="Returned in case of successful resource creation",
      *          400="We will return this in case your request was malformed",
-     *      }
+     *      },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval",
      * )
      * @Rest\Post("/tickets/{ticketId}/ticket_approvals", requirements={"ticketId"="\d+"})
      * @ParamConverter(name="ticket", options={"mapping"={"ticketId"="id"}})
