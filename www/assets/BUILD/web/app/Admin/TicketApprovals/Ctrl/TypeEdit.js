@@ -13,6 +13,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         ? this.$stateParams.id.replace(/^type-(\d+)$/, '$1')
         : null;
 
+      this.typeId = parseInt(this.typeId);
+
       this.form = {
         name: '',
         description: ''
@@ -65,12 +67,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           // stop spinner and show growl message
           this.stopSpinner('saving', true)
-            .then(() => this.Growl.success(msgSuccess));
+            .then(() => {
+              this.Growl.success(msgSuccess);
 
-          // push state back to "list"
-          if (this.$state.current.name === 'tickets.approvals.type_edit') {
-            return this.$state.go('tickets.approvals');
-          }
+              // push state back to "list"
+              if (this.$state.current.name === 'tickets.approvals.type_edit') {
+                return this.$state.go('tickets.approvals');
+              }
+            });
 
         })
         .catch(() => {

@@ -62,7 +62,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     updateTypeById(id, data) {
       const index = this.types.findIndex(obj => obj.id === id);
       if (index > -1) {
-        Object.assign(this.types[index], data);
+        this.types[index] = Object.assign(data, { id: id });
       }
 
       return this.types;
