@@ -37,32 +37,30 @@ Feature: /ticket_approvals endpoint
       | ta3 | {t1}   | {at2}    | [1,2]     | Ticket approval 03 | {atype2} | TA 03       | completed |
 
   Scenario: I try to POST a ticket approval without authentication
-    When I send a POST request to "/api/v2/ticket_approvals"
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
     Then the response status code should be 401
 
   Scenario: I try to POST an ticket approval as a user
     Given I'm authenticated as "user"
-    When I send a POST request to "/api/v2/ticket_approvals"
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
     Then the response status code should be 403
 
-  Scenario: I try to POST an ticket approval without required fields as agent
+  Scenario: I try to POST a ticket approval without required fields as agent
     Given I'm authenticated as "agent"
-    When I send a POST request to "/api/v2/ticket_approvals"
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
+    And print last response
     Then the response should be in JSON
     And the response status code should be 400
     And the JSON node "errors.fields.template.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.template.errors[0].message" should be equal to "This value should not be blank."
-    And the JSON node "errors.fields.ticket.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.ticket.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I POST a valid ticket approval as admin
     Given I'm authenticated as "agent"
-    When I send a POST request to "/api/v2/ticket_approvals" with body:
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals" with body:
             """
 {
   "description": "Approval description 01",
   "template": ~at1~,
-  "ticket": ~t1~,
   "approvers": [1]
 }
             """

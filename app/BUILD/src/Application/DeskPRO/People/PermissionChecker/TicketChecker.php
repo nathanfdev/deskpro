@@ -42,6 +42,8 @@ class TicketChecker extends AbstractChecker
         'billing',
         'associate_problem',
         'disassociate_problem',
+        'add_approval',
+        'cancel_approval',
     ];
 
     /**
@@ -509,6 +511,26 @@ class TicketChecker extends AbstractChecker
     public function canDisassociateProblem(Ticket $ticket)
     {
         return $this->canModify($ticket, 'disassociate_problem') ?: $this->doCheck($ticket, 'disassociate_problem');
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public function canAddApproval(Ticket $ticket)
+    {
+        return $this->canModify($ticket, 'add_approval') ?: $this->doCheck($ticket, 'add_approval');
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public function canCancelApproval(Ticket $ticket)
+    {
+        return $this->canModify($ticket, 'cancel_approval') ?: $this->doCheck($ticket, 'cancel_approval');
     }
 
     /**

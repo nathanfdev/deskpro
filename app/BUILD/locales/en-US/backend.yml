@@ -122,6 +122,14 @@ adm.agents.perm_ticket_reply_unassigned: 'Can reply to unassigned tickets'
 adm.agents.perm_ticket_use: 'Can use the ticket system'
 adm.agents.perm_ticket_view_others: 'Can view tickets assigned to others'
 adm.agents.perm_ticket_view_unassigned: 'Can view unassigned tickets'
+adm.agents.perm_ticket_modify_add_approval_own: 'Can add approval'
+adm.agents.perm_ticket_modify_cancel_approval_own: 'Can cancel approval'
+adm.agents.perm_ticket_modify_add_approval_followed: 'Can add approval'
+adm.agents.perm_ticket_modify_cancel_approval_followed: 'Can cancel approval'
+adm.agents.perm_ticket_modify_add_approval_unassigned: 'Can add approval'
+adm.agents.perm_ticket_modify_cancel_approval_unassigned: 'Can cancel approval'
+adm.agents.perm_ticket_modify_add_approval_others: 'Can add approval'
+adm.agents.perm_ticket_modify_cancel_approval_others: 'Can cancel approval'
 adm.agents.perm_title_chat: Chat
 adm.agents.perm_title_others: Others
 adm.agents.perm_title_people: People

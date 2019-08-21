@@ -2,13 +2,13 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Approval\ApprovalManager;
 use DeskPRO\Bundle\AppBundle\Approval\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Approval\ApprovalResponseType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -24,49 +24,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 abstract class AbstractApprovalsController extends CrudController
 {
-    /**
-     * @ApiDoc(
-     *      description="Create a new ticket approval",
-     *      tags={"CRUD"="#ffa500"},
-     *      statusCodes={
-     *          201="Returned in case of successful resource creation",
-     *          400="We will return this in case your request was malformed",
-     *      }
-     * )
-     * @Rest\Post("/ticket_approvals")
-     *
-     * @param Request $request
-     *
-     * @return View
-     * @throws \Exception
-     */
-    public function postAction(Request $request)
-    {
-        $this->checkExposed(__METHOD__);
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
-
-        $form = $this->createForm(static::$type);
-
-        $form->submit($request->request->all());
-
-        if (!$form->isValid()) {
-            throw new InvalidFormException($form);
-        }
-
-        /** @var TicketApproval $approval */
-        $approval = $form->getData();
-        try {
-            $this->getApprovalManager()->saveApproval(
-                $approval,
-                $this->createExecutionContext()
-            );
-        } catch (\DomainException $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        }
-
-        return View::create($this->wrap($approval), Response::HTTP_CREATED);
-    }
-
     /**
      * @ApiDoc(
      *      description="Cancel an approval",
@@ -94,7 +51,6 @@ abstract class AbstractApprovalsController extends CrudController
     public function cancelAction(AbstractBaseApproval $approval, Request $request)
     {
         $this->checkExposed(__METHOD__);
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupContext($request));
 
         try {
             $this->getApprovalManager()->cancelApproval(

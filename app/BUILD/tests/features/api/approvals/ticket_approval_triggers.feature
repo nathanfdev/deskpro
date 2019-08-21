@@ -45,12 +45,11 @@ Feature: Ticket approval triggers
     Then the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
-    When I send a POST request to "/api/v2/ticket_approvals" with body:
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals" with body:
             """
 {
   "description": "Approval description 01",
   "template": ~lastCreatedId~,
-  "ticket": ~t1~,
   "approvers": [1]
 }
             """

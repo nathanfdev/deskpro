@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Approvals;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\AbstractApprovalsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -10,12 +11,13 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgen
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Approval\ApprovalResponseType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Approval\TicketApprovalType;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -46,11 +48,11 @@ class TicketApprovalsController extends AbstractApprovalsController
     public static $listSort = 'id';
     public static $exposeOnly = [
         'list',
-        'post',
         'count',
         'approve',
         'reject',
         'cancel',
+        'postApproval',
     ];
 
     /**
@@ -62,16 +64,42 @@ class TicketApprovalsController extends AbstractApprovalsController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Rest\Post("/ticket_approvals")
+     * @Rest\Post("/tickets/{ticketId}/ticket_approvals", requirements={"ticketId"="\d+"})
+     * @ParamConverter(name="ticket", options={"mapping"={"ticketId"="id"}})
      *
+     * @param Ticket $ticket
      * @param Request $request
      *
      * @return View
      * @throws \Exception
      */
-    public function postAction(Request $request)
+    public function postApprovalAction(Ticket $ticket, Request $request)
     {
-        return parent::postAction($request);
+        $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(TicketsVoter::ADD_APPROVAL, new PermissionGroupContext($ticket));
+
+        $form = $this->createForm(static::$type);
+
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        /** @var TicketApproval $approval */
+        $approval = $form->getData();
+        $approval->setTicket($ticket);
+
+        try {
+            $this->getApprovalManager()->saveApproval(
+                $approval,
+                $this->createExecutionContext()
+            );
+        } catch (\DomainException $e) {
+            throw new BadRequestHttpException($e->getMessage(), $e);
+        }
+
+        return View::create($this->wrap($approval), Response::HTTP_CREATED);
     }
 
     /**
@@ -152,6 +180,12 @@ class TicketApprovalsController extends AbstractApprovalsController
      */
     public function cancelAction(AbstractBaseApproval $approval, Request $request)
     {
+        if (!($approval instanceof TicketApproval)) {
+            throw new BadRequestHttpException('Approval must be of type '.TicketApproval::class);
+        }
+
+        $this->denyAccessUnlessGranted(TicketsVoter::CANCEL_APPROVAL, new PermissionGroupContext($approval->getTicket()));
+
         return parent::cancelAction($approval, $request);
     }
 
