@@ -10,10 +10,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.dataService = this.DataService.get('TicketApprovals');
 
       this.typeId = (this.$stateParams.id)
-        ? this.$stateParams.id.replace(/^type-(\d+)$/, '$1')
+        ? parseInt(this.$stateParams.id.replace(/^type-(\d+)$/, '$1'))
         : null;
-
-      this.typeId = parseInt(this.typeId);
 
       this.form = {
         name: '',
@@ -73,6 +71,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
               // push state back to "list"
               if (this.$state.current.name === 'tickets.approvals.type_edit') {
                 return this.$state.go('tickets.approvals');
+              }
+
+              if (this.$state.current.name === 'tickets.approvals.type_create') {
+                return this.$state.go('tickets.approvals.type_edit', { id: `type-${response.data.data.id}` });
               }
             });
 
