@@ -53,15 +53,6 @@ interface VoiceProviderInterface
 
     /**
      * @param VoicePhoneCall $phoneCall
-     * @param string         $callSid
-     * @param bool           $mute
-     *
-     * @throws \Exception
-     */
-    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute);
-
-    /**
-     * @param VoicePhoneCall $phoneCall
      *
      * @return bool
      */
