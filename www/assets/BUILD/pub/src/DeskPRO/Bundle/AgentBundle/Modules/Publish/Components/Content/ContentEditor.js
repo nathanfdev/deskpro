@@ -35,7 +35,7 @@ class ContentEditor extends React.PureComponent {
         uppyOptions={{
           autoProceed: false,
           xhrUpload:   {
-            endpoint:             `${window.ASSETS_BASE_URL_FULL.replace('^http(s)?', window.location.protocol).replace(window.ASSETS_BASE_URL, '')}/agent/misc/accept-redactor-image-upload`,
+            endpoint:             `${window.ASSETS_BASE_URL_FULL.replace(/^http(s)?:/, window.location.protocol).replace(window.ASSETS_BASE_URL, '')}/agent/misc/accept-redactor-image-upload`,
             fieldName:            'file',
             responseUrlFieldName: 'link',
             method:               'POST',
