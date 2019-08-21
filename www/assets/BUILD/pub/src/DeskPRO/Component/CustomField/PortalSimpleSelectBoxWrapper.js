@@ -13,43 +13,6 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
     widgetOptions: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      options: []
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // prepare config for <PortalSimpleSelectBox> component
-    // need to refactor <PortalSimpleSelectBox> to accept 'choices' as is
-    const options = [];
-    const prepareOptions = (choice, depth = 0) => {
-      const hasChildren = choice.get('children') && choice.get('children').size > 0;
-      const option = {
-        id:    choice.get('id'),
-        title: choice.get('title'),
-        depth
-      };
-
-      if (nextProps.multiple) {
-        option.children = hasChildren ? choice.get('children').map(child => ({
-          id:    child.get('id'),
-          title: child.get('title')
-        })).toJS() : [];
-      }
-
-      options.push(option);
-
-      if (nextProps.multiple && hasChildren) {
-        choice.get('children').map(child => prepareOptions(child, depth + 1));
-      }
-    };
-
-    nextProps.choices.map(choice => prepareOptions(choice));
-    this.setState({ options });
-  }
-
   onChange = (value) => {
     const { onChange } = this.props;
 
@@ -61,14 +24,42 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
   };
 
   render() {
-    const { level, multiple, value = [], widgetOptions } = this.props;
+    const { level, multiple, value = [], choices = [], widgetOptions } = this.props;
     let selected;
+
+    // prepare config for <PortalSimpleSelectBox> component
+    // need to refactor <PortalSimpleSelectBox> to accept 'choices' as is
+    const options = [];
+    const prepareOptions = (choice, depth = 0) => {
+      const hasChildren = choice.get('children') && choice.get('children').size > 0;
+      const option = {
+        id:    choice.get('id'),
+        title: choice.get('title'),
+        depth
+      };
+
+      if (multiple) {
+        option.children = hasChildren ? choice.get('children').map(child => ({
+          id:    child.get('id'),
+          title: child.get('title')
+        })).toJS() : [];
+      }
+
+      options.push(option);
+
+      if (multiple && hasChildren) {
+        choice.get('children').map(child => prepareOptions(child, depth + 1));
+      }
+    };
+
+    choices.map(choice => prepareOptions(choice));
+
     if (multiple) {
       selected = [];
 
       if (Array.isArray(value)) {
         value.forEach((id) => {
-          this.state.options.forEach((option) => {
+          options.forEach((option) => {
             if (option.id === id) {
               selected.push(option);
             }
@@ -76,7 +67,7 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
         });
       }
     } else {
-      this.state.options.forEach((option) => {
+      options.forEach((option) => {
         if (option.id === value) {
           selected = option;
         }
@@ -86,7 +77,7 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
     return (
       <PortalSimpleSelectBox
         multiple={multiple}
-        options={this.state.options}
+        options={options}
         level={level}
         value={selected}
         widgetOptions={widgetOptions}
