@@ -279,9 +279,9 @@
       "integrity": "sha512-QFLxmFqomqMz7S1i8/6RBZ8Wmw/mcZ+KAFYE5H4tG35jbzcsNVNQtpaeMqdouUU7LW9BuoYo0zqEf9aVwKdylQ=="
     },
     "@deskpro/content-editor": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@deskpro/content-editor/-/content-editor-0.1.9.tgz",
-      "integrity": "sha512-S9s3X8TnFz2arloCHQzK5miNDaxP1K6pwu4EEh/hcjpuekWh6AP4ENLypk6hoW335UzYH1LJHqP+6kbhJRgwRA==",
+      "version": "0.1.10",
+      "resolved": "https://registry.npmjs.org/@deskpro/content-editor/-/content-editor-0.1.10.tgz",
+      "integrity": "sha512-G5GoFypz3WihV9/Ww9AFhdjFxGCz2X6GdkZkgQV0MkF0o1DEAxGUDZIxGcYJdHFDC4t28uBhhcbZpUuxVBTLNA==",
       "requires": {
         "@types/uuid": "^3.4.5",
         "prosemirror-collab": "^1.1.2",
@@ -306,12 +306,12 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/product-content-editor": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.9.tgz",
-      "integrity": "sha512-qObdnXHvLytH90jf12T7l70HvyzUs7XOUbbs1fZXKcavgWKaLp/yUj77hzjlYwuO4LtSul166d4U7CsYOz+zDg==",
+      "version": "0.1.10",
+      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.10.tgz",
+      "integrity": "sha512-LcM7qbWhfpKmlYn/z/6NRDyNzefM7Pi5NQSOBdwsvoK6iqpkIZw7+rS1i4Gw4xPcPV5ffMcOgEtp+U0Ry9GM9A==",
       "requires": {
-        "@deskpro/content-editor": "^0.1.9",
-        "@deskpro/react-content-editor": "^0.1.9",
+        "@deskpro/content-editor": "^0.1.10",
+        "@deskpro/react-content-editor": "^0.1.10",
         "@tippy.js/react": "^2.2.2",
         "prosemirror-commands": "^1.0.8",
         "prosemirror-model": "^1.7.1",
@@ -415,11 +415,11 @@
       }
     },
     "@deskpro/react-content-editor": {
-      "version": "0.1.9",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-content-editor/-/react-content-editor-0.1.9.tgz",
-      "integrity": "sha512-iL/LdbQjQCgxRItCqnDDTUVkB+YrleRJ836KNLrt4YAcmNek9vTpe/H+kDWPJUPMlMqPKiVPjWyy8YDHycyYNQ==",
+      "version": "0.1.10",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-content-editor/-/react-content-editor-0.1.10.tgz",
+      "integrity": "sha512-lIybbk6nFZyMFeYwKjKlWOYmCsO2FwhrqgsU+p/JZKCcfz88aF7BzQJq0FGZKrMe7EbqJ06e46Z0svR9W5g+3Q==",
       "requires": {
-        "@deskpro/content-editor": "^0.1.9",
+        "@deskpro/content-editor": "^0.1.10",
         "@fortawesome/fontawesome-svg-core": "^1.2.19",
         "@fortawesome/free-brands-svg-icons": "^5.10.1",
         "@fortawesome/free-regular-svg-icons": "^5.10.1",
@@ -17264,9 +17264,9 @@
       },
       "dependencies": {
         "memoize-one": {
-          "version": "5.0.5",
-          "resolved": "https://registry.npmjs.org/memoize-one/-/memoize-one-5.0.5.tgz",
-          "integrity": "sha512-ey6EpYv0tEaIbM/nTDOpHciXUvd+ackQrJgEzBwemhZZIWZjcyodqEcrmqDy2BKRTM3a65kKBV4WtLXJDt26SQ=="
+          "version": "5.1.0",
+          "resolved": "https://registry.npmjs.org/memoize-one/-/memoize-one-5.1.0.tgz",
+          "integrity": "sha512-p3tPVJNrjOkJ0vk0FRn6yv898qlQZct1rsQAXuwK9X5brNVajPv/y13ytrUByzSS8olyzeqCLX8BKEWmTmXa1A=="
         }
       }
     },
