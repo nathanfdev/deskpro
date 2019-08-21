@@ -14,7 +14,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         : null;
 
       this.form = {
-        title: '',
+        name: '',
         description: ''
       };
     }
@@ -25,7 +25,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       if (this.typeId) {
         let promise = this.dataService.loadApprovalTypes(this.typeId)
           .then(data => {
-            this.form.title = data.title;
+            this.form.name = data.name;
             this.form.description = data.description;
           });
 

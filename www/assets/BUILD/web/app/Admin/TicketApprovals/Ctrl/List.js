@@ -47,7 +47,9 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      * @returns {*}
      */
     removeTypeById(id) {
-      return this.types = this.types.filter(obj => obj.id !== id);
+      this.types = this.types.filter(obj => obj.id !== id);
+
+      return this.types;
     }
 
     /**

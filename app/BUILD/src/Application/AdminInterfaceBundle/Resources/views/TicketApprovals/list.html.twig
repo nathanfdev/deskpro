@@ -8,7 +8,7 @@
             <ul class="dp-item-list" dp-list-autoload>
                 <li ng-repeat="type in TicketApprovalsList.types" dp-state-mark="tickets.approvals.type-{{ ng_var('type.id') }}">
                     <a href="{{ ng_href('tickets.approvals.type_edit', "{id: 'type-' + type.id}") }}">
-                        {{ ng_var('type.title') }}
+                        {{ ng_var('type.name') }}
                     </a>
                 </li>
             </ul>
