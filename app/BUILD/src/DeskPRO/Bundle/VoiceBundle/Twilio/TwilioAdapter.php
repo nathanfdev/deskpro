@@ -389,20 +389,6 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
-     * @param TwilioVoiceAccount $account
-     * @param string             $conferenceSid
-     *
-     * @throws \Exception
-     * @throws \Twilio\Exceptions\ConfigurationException
-     *
-     * @return \Twilio\Rest\Api\V2010\Account\ConferenceInstance
-     */
-    public function getConference(TwilioVoiceAccount $account, $conferenceSid)
-    {
-        return $this->getConferenceContext($account, $conferenceSid)->fetch();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
