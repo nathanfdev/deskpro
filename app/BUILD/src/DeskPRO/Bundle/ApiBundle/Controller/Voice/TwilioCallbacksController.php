@@ -612,58 +612,116 @@ class TwilioCallbacksController extends BaseController
      */
     public function voicemailAction(TwilioVoiceAccount $account, Request $request)
     {
+        $callSid = $request->get('CallSid');
+        $twiml   = new Twiml();
+
         /** @var VoicePhoneCall $phoneCall */
-        $callId    = $request->get('CallSid');
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
-            'callSid' => $callId,
+            'callSid' => $callSid,
         ]);
+        if (!$phoneCall) {
+            $twiml->hangup();
+        } else {
+            $this->get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.reached-voicemail', [
+                    'call_id' => $phoneCall->getId(),
+                ])
+            );
 
-        $this->get('event_dispatcher')->dispatch(
-            LegacySystemEvent::EVENT_NAME,
-            new LegacySystemEvent('agent.voice.reached-voicemail', [
-                'call_id' => $phoneCall->getId(),
-            ])
-        );
+            $asset   = null;
+            $assetId = $request->query->get('asset');
+            if ($assetId) {
+                $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
+            }
 
-        $em = $this->getManager();
+            // get voicemail message
+            if ($asset) {
+                $this->playGreetAsset($twiml, $asset);
+            } else {
+                $twiml->say('You have reached voicemail. Please leave a message.', [
+                    'voice' => 'alice',
+                ]);
+            }
 
-        // mark the phone call as completed (redirected to voicemail)
-        $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
-        $em->persist($phoneCall);
-        $em->flush();
-
-        $asset   = null;
-        $assetId = $request->query->get('asset');
-        if ($assetId) {
-            $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
+            $twiml->redirect($this->getVoicemailRecordUrl($account));
         }
 
-        // get voicemail message
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Voicemail record callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     filters={
+     *          {"name"="asset", "pattern"="\d", "description"="voice asset id", "dataType"="integer"}
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/voicemail_record", name="twilio_voicemail_record")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param Request            $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function voicemailRecordAction(TwilioVoiceAccount $account, Request $request)
+    {
+        $callSid = $request->get('CallSid');
+
+        $lock = $this->get('dp.voice.phone_lock_helper')->createPhoneLock($callSid);
+        $lock->acquire(true);
+
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf('[TwilioCallbacks] Lock phone call, uuid = %s', $callSid));
+
         $twiml = new Twiml();
 
-        if ($asset) {
-            $this->playGreetAsset($twiml, $asset);
-        } else {
-            $twiml->say('You have reached voicemail. Please leave a message.', [
-                'voice' => 'alice',
+        try {
+            /** @var VoicePhoneCall $phoneCall */
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+                'callSid' => $callSid,
             ]);
+
+            $em = $this->getManager();
+
+            // mark the phone call as completed (redirected to voicemail)
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
+            $phoneCall->setDateWaiting(new \DateTime());
+            $em->persist($phoneCall);
+            $em->flush();
+
+            $logger->info(sprintf('[TwilioCallbacks] Changed call status to voicemail, uuid = %s', $callSid));
+
+            $options = [
+                'action'                        => $this->getVoicemailEndUrl($account),
+                'method'                        => 'POST',
+                'recordingStatusCallback'       => $this->getVoicemailRecordingStatusCallbackUrl($account),
+                'recordingStatusCallbackMethod' => 'POST',
+            ];
+
+            if ($this->container->get('voice_settings_resolver')->isTranscribeVoicemail()) {
+                $options = array_merge($options, [
+                    'transcribe'         => true,
+                    'transcribeCallback' => $this->getTranscribeVoicemailCallbackUrl($account),
+                ]);
+            }
+
+            $twiml->record($options);
+        } finally {
+            $lock->release();
+            $logger->info(sprintf('[TwilioCallbacks] Unlock phone call, uuid = %s', $callSid));
         }
-
-        $options = [
-            'action'                        => $this->getVoicemailEndUrl($account),
-            'method'                        => 'POST',
-            'recordingStatusCallback'       => $this->getVoicemailRecordingStatusCallbackUrl($account),
-            'recordingStatusCallbackMethod' => 'POST',
-        ];
-
-        if ($this->container->get('voice_settings_resolver')->isTranscribeVoicemail()) {
-            $options = array_merge($options, [
-                'transcribe'         => true,
-                'transcribeCallback' => $this->getTranscribeVoicemailCallbackUrl($account),
-            ]);
-        }
-
-        $twiml->record($options);
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -922,7 +980,7 @@ class TwilioCallbacksController extends BaseController
                 } else {
                     $twiml->redirect($this->getHoldSilentCallbackUrl($account));
                 }
-            } else {
+            } elseif (!$phoneCall->isVoicemail()) {
                 $logger->info(sprintf(
                     '[TwilioCallbacks] End call, call_id = %s, uuid = %s',
                     $phoneCall->getId(), $callSid
@@ -1778,6 +1836,19 @@ class TwilioCallbacksController extends BaseController
     private function getVoicemailRecordingStatusCallbackUrl(TwilioVoiceAccount $account)
     {
         return $this->get('router')->generate('twilio_voicemail_recording_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     *
+     * @return string
+     */
+    private function getVoicemailRecordUrl(TwilioVoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_voicemail_record', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

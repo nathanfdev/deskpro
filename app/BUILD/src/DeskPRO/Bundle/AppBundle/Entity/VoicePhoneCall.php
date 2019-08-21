@@ -202,7 +202,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $dateEnded;
 
     /**
-     * @ORM\JoinColumn(name="full_recording_id", referencedColumnName="id", nullable=true, onDelete="CASCADE",
+     * @ORM\JoinColumn(name="full_recording_id", referencedColumnName="id", nullable=true, onDelete="SET NULL",
      *     unique=true, columnDefinition=null)
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", cascade={"persist", "detach"},
      *     fetch="EAGER")

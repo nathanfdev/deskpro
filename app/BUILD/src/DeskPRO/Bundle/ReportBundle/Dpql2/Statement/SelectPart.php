@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 
+use Application\DeskPRO\Entity\DownloadsSubscription;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
@@ -243,6 +244,7 @@ class SelectPart
         'downloads'                         => 'DeskPRO:Download',
         'download_categories'               => 'DeskPRO:DownloadCategory',
         'download_comments'                 => 'DeskPRO:DownloadComment',
+        'download_subscriptions'            => DownloadsSubscription::class,
         'email_accounts'                    => 'DeskPRO:EmailAccount',
         'email_sources'                     => 'DeskPRO:EmailSource',
         'community_topics'                  => 'DeskPRO:CommunityTopic',

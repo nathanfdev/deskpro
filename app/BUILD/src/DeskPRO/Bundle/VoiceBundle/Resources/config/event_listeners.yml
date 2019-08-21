@@ -161,7 +161,7 @@ services:
   event_listener.doctrine.voicet_ticket:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceTicketListener
     arguments:
-      - "@dp.voice.ticket_user_changer"
+      - "@service_container"
     tags:
       - { name: doctrine.entity_listener }
       - { name: doctrine.event_subscriber, connection: default }
