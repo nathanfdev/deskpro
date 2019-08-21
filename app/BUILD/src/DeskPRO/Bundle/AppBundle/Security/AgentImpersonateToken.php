@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\AppBundle\Security;
 
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Symfony\Component\Security\Core\Role\Role;
 
 /**
  * Represents someone logged in that is impersonating another user.
@@ -48,6 +49,18 @@ class AgentImpersonateToken extends AbstractToken
         // only this attrbiute is useful in subsequent requests (session)
         // so don't do ->getAgent(), instead get the attribute id and fetch the agent Person object yourslef
         $this->setAttribute(self::ATTR_AGENT_IMPERSONATE, $agent->getId());
+
+        $roles = $this->getRoles();
+
+        if ($agent->isAdmin()) {
+            $roles[] = new Role('ROLE_ADMIN');
+
+            $reflection = new \ReflectionClass(AbstractToken::class);
+            $property   = $reflection->getProperty('roles');
+            $property->setAccessible(true);
+            $property->setValue($this, $roles);
+            $property->setAccessible(false);
+        }
     }
 
     public function getAgent()
