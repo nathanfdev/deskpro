@@ -149,6 +149,9 @@
                             <span class="person">{{ ticket.agent.display_name_user }} <img src="{{ avatar_url(ticket.agent) }}" class="avatar"></span>
                         {% endif %}
                     {% elseif col.id == 'department' %}
+                        {% if ticket.department and ticket.department.parent %}
+                            {{ ticket.department.parent.user_title }} /
+                        {% endif %}
                         {{ ticket.department_or_default.user_title }}
                     {% elseif col.id == 'subject' %}
                         {{ ticket.subject }}

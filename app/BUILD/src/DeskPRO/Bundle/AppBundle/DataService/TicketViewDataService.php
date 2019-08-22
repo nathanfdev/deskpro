@@ -101,11 +101,20 @@ class TicketViewDataService extends AbstractDataService
             $defId    = $layout_field->getFieldId();
             switch ($layout_field->getFieldType()) {
                 case FormFields::DEPARTMENT:
+                    $title = '';
+                    if ($department = $ticket->getDepartment()) {
+                        $title = $department->getUserTitle();
+
+                        if ($parent = $department->getParent()) {
+                            $title = $parent->getUserTitle().' / '.$title;
+                        }
+                    }
+
                     $view->addProperty(
                         $field_id,
                         CustomDefAbstract::TYPE_CHOICE,
                         $this->translate->phrase('user.tickets.fields_department'),
-                        $ticket->getDepartment() ? $ticket->getDepartment()->getUserTitle() : '',
+                        $title,
                         $layout_field->isVisibleOnViewAlways()
                     );
                     break;
