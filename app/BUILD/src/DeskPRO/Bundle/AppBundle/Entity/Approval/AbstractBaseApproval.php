@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * Approval superclass used for actual approvals. Contains generic state for responses, etc.
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalRepository")
  * @ORM\Table(name="approvals")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="dtype", type="string", length=60)

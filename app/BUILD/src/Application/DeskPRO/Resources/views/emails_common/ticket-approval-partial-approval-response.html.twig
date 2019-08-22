@@ -1,0 +1,10 @@
+<dp:subject>Ticket Approval{% if is_owner %} (Owner){% endif %}</dp:subject>
+<strong>PARTIAL APPROVAL</strong>
+<ul>
+    <li>Ticket ID: {{ ticket.id }}</li>
+    <li>Recipient Person ID: {{ recipient.id }}</li>
+    <li>Approval: {{ approval.name }}</li>
+    {% if approval_response %}
+        <li>Approval Response Vote: {{ approval_response.voteType }}</li>
+    {% endif %}
+</ul>

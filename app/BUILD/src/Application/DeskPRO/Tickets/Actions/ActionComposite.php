@@ -41,21 +41,21 @@ class ActionComposite implements ActionInterface, DeskproContainerAwareInterface
         $this->container = $container;
     }
 
-        /**
-         * Gets the set container.
-         *
-         * @throws \RuntimeException When no container has been set yet
-         *
-         * @return DeskproContainer
-         */
-        protected function getContainer()
-        {
-            if (!$this->container) {
-                throw new \RuntimeException('No container has been set');
-            }
-
-            return $this->container;
+    /**
+     * Gets the set container.
+     *
+     * @throws \RuntimeException When no container has been set yet
+     *
+     * @return DeskproContainer
+     */
+    protected function getContainer()
+    {
+        if (!$this->container) {
+            throw new \RuntimeException('No container has been set');
         }
+
+        return $this->container;
+    }
 
     /**
      * @param ActionInterface $term

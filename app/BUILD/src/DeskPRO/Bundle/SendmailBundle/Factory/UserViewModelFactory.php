@@ -14,6 +14,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AccountDisabled;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangedPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ChatTranscript;
@@ -57,11 +59,17 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyByAgent;
+use DeskPRO\Bundle\SendmailBundle\View\TicketApprovalViewModelMapTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class UserViewModelFactory extends AbstractViewModelFactory
 {
+    /**
+     * Use generic ticket approval event to view model map
+     */
+    use TicketApprovalViewModelMapTrait;
+
     /**
      * @param Ticket $ticket
      *
@@ -646,5 +654,29 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createEmailTooBigModel($subject, $maxSize)
     {
         return $this->convertParameters(EmailTooBig::class, [$subject, $maxSize]);
+    }
+
+    /**
+     * @param string $event
+     * @param Ticket $ticket
+     * @param TicketApproval $approval
+     * @param Person $recipient
+     * @param bool $isOwner
+     * @param ApprovalResponse|null $approvalResponse
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalModelByApprovalEvent(
+        $event,
+        Ticket $ticket,
+        TicketApproval $approval,
+        Person $recipient,
+        $isOwner,
+        ApprovalResponse $approvalResponse = null
+    ) {
+        return $this->convertParameters(
+            $this->getViewModelByTicketApprovalEvent($event),
+            [$ticket, $approval, $recipient, $isOwner, $approvalResponse]
+        );
     }
 }

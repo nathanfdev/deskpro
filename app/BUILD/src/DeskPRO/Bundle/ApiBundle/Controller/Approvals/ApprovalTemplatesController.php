@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -120,5 +121,22 @@ class ApprovalTemplatesController extends CrudController
     public function countAction(Request $request)
     {
         return parent::countAction($request);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function persistModel($model, FormInterface $form = null)
+    {
+        $em = $this->getManager();
+
+        if (!$em->contains($model) && $model instanceof ApprovalTemplate) {
+            $model->addDefaultSendTicketApprovalEmailActions();
+        }
+
+        $em->persist($model);
+        $em->flush();
+
+        return $model;
     }
 }

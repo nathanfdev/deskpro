@@ -6,7 +6,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\ExecutorContextVars;
 use Application\DeskPRO\Tickets\TicketSaveActions\ErrorCheckedInterface;
 use Application\DeskPRO\Tickets\TicketSaveActions\SaveTicketLogs;
@@ -62,10 +61,10 @@ class ApprovalManager
 
     /**
      * @param AbstractBaseApproval $approval
-     * @param ExecutorContextInterface $context
+     * @param ExecutorContext $context
      * @throws Exception
      */
-    public function saveApproval(AbstractBaseApproval $approval, ExecutorContextInterface $context)
+    public function saveApproval(AbstractBaseApproval $approval, ExecutorContext $context)
     {
         $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
             $isNew = !$em->contains($approval);
@@ -74,6 +73,7 @@ class ApprovalManager
 
             if ($isNew) {
                 $context->setEventType(ExecutorContext::EVENT_ON_CREATE);
+                $context->setApproval($approval);
                 $this->applyActions(
                     $approval,
                     $context,
@@ -85,10 +85,10 @@ class ApprovalManager
 
     /**
      * @param AbstractBaseApproval $approval
-     * @param ExecutorContextInterface $context
+     * @param ExecutorContext $context
      * @throws Exception
      */
-    public function cancelApproval(AbstractBaseApproval $approval, ExecutorContextInterface $context)
+    public function cancelApproval(AbstractBaseApproval $approval, ExecutorContext $context)
     {
         $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
             $approval->cancel();
@@ -96,6 +96,7 @@ class ApprovalManager
             $em->persist($approval);
 
             $context->setEventType(ExecutorContext::EVENT_ON_CANCEL);
+            $context->setApproval($approval);
 
             $this->applyActions(
                 $approval,
@@ -108,16 +109,19 @@ class ApprovalManager
     /**
      * @param AbstractBaseApproval $approval
      * @param ApprovalResponse $response
-     * @param ExecutorContextInterface $context
+     * @param ExecutorContext $context
      * @throws Exception
      */
-    public function addApprovalResponse(AbstractBaseApproval $approval, ApprovalResponse $response, ExecutorContextInterface $context)
+    public function addApprovalResponse(AbstractBaseApproval $approval, ApprovalResponse $response, ExecutorContext $context)
     {
         $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $response, $context) {
 
             $approval->addResponse($response);
 
             $em->persist($approval);
+
+            $context->setApproval($approval);
+            $context->setApprovalResponse($response);
 
             if ($approval->isComplete()) {
                 if ($approval->isStatus(AbstractBaseApproval::STATUS_APPROVED)) {
@@ -157,10 +161,10 @@ class ApprovalManager
 
     /**
      * @param AbstractBaseApproval $approval
-     * @param ExecutorContextInterface $context
+     * @param ExecutorContext $context
      * @param string $getActionsMethod
      */
-    private function applyActions(AbstractBaseApproval $approval, ExecutorContextInterface $context, $getActionsMethod)
+    private function applyActions(AbstractBaseApproval $approval, ExecutorContext $context, $getActionsMethod)
     {
         $applicator = new ActionApplicator($this->container);
         if ($approval instanceof TicketApprovalInterface) {
