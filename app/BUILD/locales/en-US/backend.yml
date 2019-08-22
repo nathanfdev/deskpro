@@ -646,6 +646,13 @@ adm.tasks.label_disabled: 'Disable Task Application'
 adm.tasks.label_enabled: 'Enable Task Application'
 adm.tasks.settings: Settings
 adm.tasks.task_reminder_time: 'Send agent task reminders at'
+
+adm.ticket_approvals.title_error: 'You must enter a valid title'
+adm.ticket_approvals.type_save_success: 'Approval Type was saved successfully.'
+adm.ticket_approvals.type_save_failure: 'An error has occurred while saving Approval Type.'
+adm.ticket_approvals.type_delete_success: 'Approval Type was deleted successfully.'
+adm.ticket_approvals.type_delete_failure: 'An error has occurred while deleting Approval Type.'
+
 adm.ticket_accounts.advanced_settings: 'Advanced Settings'
 adm.ticket_accounts.agent_attachments: 'Agent Attachments'
 adm.ticket_accounts.allow_all: 'Allow all files'
@@ -2263,6 +2270,8 @@ admin.tickets.have_count_workflows:
   one: 'You have 1 workflows.'
   other: 'You have {{count}} workflows.'
 admin.tickets.hidden_statuses: 'Hidden Statuses'
+admin.tickets.approval_types: 'Approval Types'
+admin.tickets.approval_templates: 'Approval Templates'
 admin.tickets.hours: Hours
 admin.tickets.html_content: 'HTML Content'
 admin.tickets.if: if
