@@ -219,7 +219,7 @@ class EnabledNumberRow extends React.Component {
             {number.get('outbound_calls_default') &&
             <span className="press-option">
               {number.get('outbound_calls_default_type') === 'all' ? 'Default phone number for all outbound calls' : ''}
-              {number.get('outbound_calls_default_type') === 'country' ? `Make this the default for outgoing calls from ${countryName}` : ''}
+              {number.get('outbound_calls_default_type') === 'country' ? `Make this the default for outgoing calls to ${countryName}` : ''}
               {number.get('outbound_calls_default_type') === 'specific' && countryCodes
                 ? `Default phone number for outbound calls to: ${countryCodes}` : ''}
             </span>}

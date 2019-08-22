@@ -188,7 +188,7 @@ class NumberForm extends BaseForm {
                   <Field select="outbound_calls_default_type">
                     <Radio
                       choice="country"
-                      label={`Make this the default for outgoing calls from ${countryName}`}
+                      label={`Make this the default for outgoing calls to ${countryName}`}
                     />
                   </Field>}
                   <Field select="outbound_calls_default_type">
