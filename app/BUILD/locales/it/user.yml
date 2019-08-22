@@ -380,7 +380,7 @@ portal.community.form_logged_in_as: 'Hai effettuato l''accesso come:<span>{{name
 portal.community.form_logout: 'Non sei tu?'
 portal.community.form_tell_us_more: 'Dicci di più'
 portal.community.form_title: Titolo
-portal.community.form_category: Categoria
+portal.community.form_custom_cat: Categoria
 portal.community.module_forbidden: 'Non hai accesso a questo modulo'
 portal.community.no_matching: 'Non ci sono tema corrispondenti'
 portal.community.none: 'Non c''è alcun temi'

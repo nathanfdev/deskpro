@@ -275,7 +275,7 @@ portal.tickets.timeline_marked_resolved: Rezolvat
 portal.tickets.view_btn_edit: Editare
 portal.tickets.view_label_your_name: 'Numele dumneavoastra'
 portal.tickets.view_unassigned: Neasignat
-portal.community.form_category: Categorie
+portal.community.form_custom_cat: Categorie
 user.chat.email: 'Adresa dumneavoastra de Email'
 user.chat.ended-no-agent: 'Pentru moment toti operatorii nostri sunt ocupati. Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.'
 user.chat.error: 'Eroare chat'
