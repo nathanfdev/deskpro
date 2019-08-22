@@ -256,6 +256,8 @@ class TwilioAccountsController extends AbstractVoiceCrudController
     public function postAction(Request $request)
     {
         $isManaged = $request->request->get('isManaged');
+        $request->request->remove('isManaged');
+
         if (!$isManaged && !$this->get('voice_settings_resolver')->isPrivateAccountsEnabled()) {
             throw $this->createAccessDeniedException('Cannot create private accounts');
         }
