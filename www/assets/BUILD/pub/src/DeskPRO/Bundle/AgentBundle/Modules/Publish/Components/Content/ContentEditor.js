@@ -23,7 +23,6 @@ class ContentEditor extends React.PureComponent {
 
   render() {
     const { value  } = this.props;
-    console.log(`${window.ASSETS_BASE_URL_FULL.replace('^http(s)?', window.location.protocol).replace(window.ASSETS_BASE_URL, '')}/agent/misc/accept-redactor-image-upload`);
     return (
       <ArticleEditor
         ref={this.editor}
