@@ -10021,6 +10021,15 @@ form {
   .field_person {
     // width: 60%;
     max-width: 620px;
+
+    .column-full {
+      display: flex;
+    }
+
+    .column-half {
+      float: none;
+      align-self: flex-end;
+    }
   }
 
   #ticket_message .dp-medium-rte {
