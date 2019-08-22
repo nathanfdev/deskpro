@@ -24,7 +24,6 @@ use Plivo\Exceptions\PlivoRestException;
 use Plivo\Resources\Application\ApplicationList;
 use Plivo\Resources\Call\Call;
 use Plivo\Resources\Call\CallCreateResponse;
-use Plivo\Resources\Conference\ConferenceInterface;
 use Plivo\Resources\Endpoint\Endpoint;
 use Plivo\Resources\Number\Number;
 use Plivo\Resources\PhoneNumber\PhoneNumber;
@@ -448,29 +447,6 @@ class PlivoAdapter implements VoiceProviderInterface
         try {
             $this->getClient($account)->calls->delete($participant->getCallSid());
         } catch (\Exception $e) {
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $conference  = new ConferenceInterface($this->getClient($account)->client, $account->getAccountId());
-        $participant = $phoneCall->getParticipantByCallSid($callSid);
-        if (!$participant) {
-            return;
-        }
-
-        if ($mute) {
-            $conference->muteMember($phoneCall->getConferenceName(), [$participant->getMemberId()]);
-        } else {
-            $conference->unMuteMember($phoneCall->getConferenceName(), [$participant->getMemberId()]);
         }
     }
 

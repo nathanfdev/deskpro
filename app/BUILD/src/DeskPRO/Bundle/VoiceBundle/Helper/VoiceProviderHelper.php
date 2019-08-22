@@ -176,14 +176,6 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
-    {
-        $this->getPhoneCallAdapter($phoneCall)->muteParticipant($phoneCall, $callSid, $mute);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function isCallActive(VoicePhoneCall $phoneCall)
     {
         return $this->getPhoneCallAdapter($phoneCall)->isCallActive($phoneCall);

@@ -259,8 +259,6 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Phone call participant not found');
         }
 
-        $this->get('dp.voice.provider_helper')->muteParticipant($phoneCall, $participant->getCallSid(), $mute);
-
         // log action
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());

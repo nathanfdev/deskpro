@@ -94,27 +94,6 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function getConference(TwilioVoiceAccount $account, $conferenceSid)
-    {
-        $payload = [
-            'account_sid'      => 'account_sid',
-            'date_created'     => 'date_created',
-            'date_updated'     => 'date_updated',
-            'api_version'      => 'api_version',
-            'friendly_name'    => 'friendly_name',
-            'region'           => 'region',
-            'sid'              => 'sid',
-            'status'           => 'status',
-            'uri'              => 'uri',
-            'subresource_uris' => 'subresource_uris',
-        ];
-
-        return new V2010\Account\ConferenceInstance($this->getVersion(), $payload, 'account_sid');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
     {
     }
