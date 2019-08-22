@@ -241,6 +241,16 @@
 	</div>
 </div>
 
+<div class="builder-type" title="Add Approval" data-rule-type="add_approval" data-rule-group="Ticket">
+	<div class="builder-options">
+		<select name="approval_template_id">
+			{% for approvalTemplate in app.getApprovalTemplates() %}
+				<option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+
 <div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply" data-rule-group="Ticket">
 	<div class="builder-options">
 		<textarea name="reply_text" cols="80" rows="4" style="width: 90%;"></textarea>
