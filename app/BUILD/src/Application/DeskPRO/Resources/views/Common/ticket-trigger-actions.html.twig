@@ -241,13 +241,20 @@
 	</div>
 </div>
 
-<div class="builder-type" title="Add Approval" data-rule-type="add_approval" data-rule-group="Ticket">
+<div class="builder-type" title="{{ phrase('agent.tickets.add_approval') }}" data-rule-type="add_approval" data-rule-group="Ticket">
 	<div class="builder-options">
-		<select name="approval_template_id">
-			{% for approvalTemplate in app.getApprovalTemplates() %}
-				<option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
-			{% endfor %}
-		</select>
+		<div>
+			<label for="approval_template_id">{{ phrase('agent.tickets.approval_template') }}</label><br />
+			<select name="approval_template_id">
+				{% for approvalTemplate in app.getApprovalTemplates() %}
+					<option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div style="padding-top: 6px;">
+			<label for="description">{{ phrase('agent.tickets.approval_description') }}</label>
+			<textarea name="description" cols="80" rows="4" style="width: 90%;"></textarea>
+		</div>
 	</div>
 </div>
 

@@ -3,15 +3,19 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 
 /**
  * Class AddApprovalAction
  *
  * @package Application\DeskPRO\Tickets\TicketActions
  */
-class AddApprovalAction extends AbstractAction
+class AddApprovalAction extends AbstractAction implements PersonContextInterface, PermissionableAction
 {
     /**
      * @var string|int
@@ -19,21 +23,47 @@ class AddApprovalAction extends AbstractAction
     protected $approval_template_id;
 
     /**
+     * @var string
+     */
+    private $description;
+
+    /**
+     * @var Person
+     */
+    protected $person_context;
+
+    /**
      * AddApprovalAction constructor.
      *
      * @param string|int $approval_template_id
+     * @param string $description
      */
-    public function __construct($approval_template_id)
+    public function __construct($approval_template_id, $description)
     {
         $this->approval_template_id = $approval_template_id;
+        $this->description = $description;
     }
 
     /**
      * {@inheritDoc}
+     * @throws \Exception
      */
     public function apply(Ticket $ticket)
     {
-        // todo: add approval
+        /** @var TicketApproval $approval */
+        $approval = TicketApproval::createFromTemplate(
+            $this->getTemplate()
+        );
+
+        $approval->setTicket($ticket);
+        $approval->setDescription($this->description);
+
+        $manager = App::getContainer()->get('approval.approval_manager');
+
+        $manager->saveApproval(
+            $approval,
+            $manager->createContext(ExecutorContextInterface::METHOD_WEB, $this->person_context)
+        );
     }
 
     /**
@@ -59,18 +89,51 @@ class AddApprovalAction extends AbstractAction
      */
     public function getDescription($as_html = true)
     {
-        /** @var ApprovalTemplate $template */
-        $template = App::getContainer()->getEm()->getRepository(ApprovalTemplate::class)->findOneBy([
-            'id' => $this->approval_template_id,
-        ]);
+        $tr = App::getTranslator();
+
+        $template = $this->getTemplate();
 
         if ($template) {
             return $as_html
-                ? sprintf('Add approval: <span class="with-approval-template">%s</span>', htmlspecialchars($template->getName(), \ENT_QUOTES))
-                : sprintf('Add approval: %s', $template->getName())
+                ? sprintf(
+                    '%s: <span class="with-approval-template">%s</span>',
+                    $tr->phrase('agent.tickets.add_approval'),
+                    htmlspecialchars($template->getName(), \ENT_QUOTES)
+                )
+                : sprintf(
+                    '%s: %s',
+                    $tr->phrase('agent.tickets.add_approval'),
+                    $template->getName()
+                )
             ;
         }
 
-        return 'Add approval: (unknown)';
+        return $tr->phrase('agent.tickets.approval_add_approval_template_not_found');
+    }
+
+    /**
+     * @return ApprovalTemplate|null
+     */
+    private function getTemplate()
+    {
+        return App::getContainer()->getEm()->getRepository(ApprovalTemplate::class)->findOneBy([
+            'id' => $this->approval_template_id,
+        ]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        return $person->PermissionsManager->TicketChecker->canAddApproval($ticket);
     }
 }

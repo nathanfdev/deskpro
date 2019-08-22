@@ -165,7 +165,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
             $approval->addApprover($userId);
         }
 
-        // todo: permissions
+        $approval->setTemplate($template);
 
         return $approval;
     }

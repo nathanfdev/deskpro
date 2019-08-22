@@ -5253,6 +5253,10 @@ agent.tickets.you_have_auto_lock: 'You have an automatic lock on this ticket. Ot
 agent.tickets.you_have_locked: 'You have locked this ticket. Other agents will not be able to edit the ticket until it is unlocked.'
 agent.tickets.your_teams_tickets: 'Your teams tickets'
 agent.tickets.your_tickets: 'Your tickets'
+agent.tickets.add_approval: 'Add Approval'
+agent.tickets.approval_template: 'Approval Template'
+agent.tickets.approval_description: 'Description'
+agent.tickets.approval_add_approval_template_not_found: 'Add approval: (error, approval template not found)'
 agent.time.future: Future
 agent.time.group_12_to_24_hours: '12 - 24 hours'
 agent.time.group_15_to_30_mins: '15 - 30 minutes'

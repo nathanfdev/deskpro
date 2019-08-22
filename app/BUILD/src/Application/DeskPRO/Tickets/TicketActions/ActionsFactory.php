@@ -93,6 +93,7 @@ class ActionsFactory
                 break;
             case 'add_approval':
                 $options['approval_template_id'] = $value['approval_template_id'];
+                $options['description'] = $value['description'];
                 break;
             case 'urgency_set':
                 $options['num']         = $value['num'];
