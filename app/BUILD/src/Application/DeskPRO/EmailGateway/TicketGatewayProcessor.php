@@ -209,6 +209,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         // Check if we should create a new user on the ticket
         //-------------------------
 
+        $removed = [];
+        if ($ticket && $ticket->getAttribute('removed_ccs')) {
+            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue());
+        }
+
         if ($ticket and !$person and $canAddNewPerson) {
             $this->logMessage(sprintf('[TicketGatewayProcessor] Could not find user on ticket, adding user with email %s', $this->reader->getFromAddress()->getEmail()));
 
@@ -238,7 +243,9 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             if ($person && !$person->is_agent && !$isBounce) {
-                $ticket->addParticipantPerson($person);
+                if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
+                    $ticket->addParticipantPerson($person);
+                }
             }
         }
 
@@ -469,13 +476,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticketEmail->reply_actions   = $replyActions;
         $ticketEmail->isPublicTac     = $isPtac;
 
-        if ($ticket && $ticket->getAttribute('removed_ccs')) {
-            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue());
-            if ($removed) {
-                if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
-                    $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
-                    $ticket = null;
-                }
+        if ($removed) {
+            if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
+                $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
+                $ticket = null;
             }
         }
 

@@ -1236,39 +1236,6 @@ class TicketController extends AbstractController
 
                 $ticket->getTicketLogger()->done();
                 $this->em->persist($ticket);
-                $this->em->flush();
-                $this->db->commit();
-            } catch (\Exception $e) {
-                $this->db->rollback();
-                throw $e;
-            }
-        }
-
-        return $this->createJsonResponse(['success' => true, 'cc_list' => $this->_getTicketCcList($ticket)]);
-    }
-
-    public function removeAbsentAction($ticket_id)
-    {
-        $ticket = $this->getTicketOr404($ticket_id);
-
-        if (!$this->checkPerm($ticket, 'modify_cc')) {
-            return $this->createPermissionErrorResponse('You do not have permission to modify CCs');
-        }
-
-        $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
-
-        if ($person) {
-            $this->db->beginTransaction();
-
-            try {
-                $part = $ticket->removeParticipantPerson($person);
-
-                if (!$part) {
-                    return $this->createJsonResponse(['success' => false]);
-                }
-
-                $ticket->getTicketLogger()->done();
-                $this->em->persist($ticket);
 
                 $removedCCs = $ticket->getAttribute('removed_ccs');
                 if (!$removedCCs) {
@@ -1278,7 +1245,7 @@ class TicketController extends AbstractController
                 if (!$removedAddresses) {
                     $removedAddresses = [];
                 }
-                $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses());
+                $removedAddresses = array_merge($removedAddresses, $person->getEmailAddresses(false, false));
                 $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
                 $ticket->addAttribute($removedCCs);
                 $this->em->persist($removedCCs);
