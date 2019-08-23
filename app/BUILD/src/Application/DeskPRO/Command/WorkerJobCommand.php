@@ -9,6 +9,7 @@ namespace Application\DeskPRO\Command;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Log\Logger;
+use DeskPRO\Bundle\ImportBundle\Command\AbstractImporterCommand;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
 use Orb\Util\Env;
 use Symfony\Component\Console\Input\InputInterface;
@@ -295,10 +296,14 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         //------------------------------
 
         $em              = $this->getContainer()->get('doctrine.orm.default_entity_manager');
-        $importerRunning = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.importer']);
-        $importerJob     = $this->getContainer()->get('dp.importer.data_service.job')->getWaitingJob();
+        $db              = $this->getContainer()->get('database_connection');
+        $importerRunning = $db->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.importer']);
+        $importerJobData = $this->getContainer()->get('dp.importer.data_service.job');
+        $importerJob     = $importerJobData->getWaitingJob();
+        $importerJob     = !$importerJob ? $importerJobData->getErrorJob() : $importerJob;
+
         if (!$importerRunning && $importerJob) {
-            App::getDb()->replace('settings', [
+            $db->replace('settings', [
                 'name'  => 'core.croncheck.importer',
                 'value' => 1,
             ]);
@@ -309,21 +314,26 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $cmd         = $appEnv->getConsolePhpCommand("dp:import {$verboseFlag}-j {$importerJob->getId()}");
             $process     = new Process($cmd);
             $process->setTimeout(null);
+            $failedStep = $importerJob->getDataKey('failed_step');
 
-            if ($isVerbose) {
-                $output->writeln("Executing: {$cmd}");
-                $process->run(function ($type, $dat) use ($output) {
-                    if ($type === Process::OUT) {
-                        $output->writeln($dat);
-                    } else {
-                        $output->writeln('ERR: '.$dat);
-                    }
-                });
-            } else {
-                $process->run();
+            if ($failedStep === null || $failedStep === AbstractImporterCommand::STEP_IMPORT) {
+                if ($isVerbose) {
+                    $output->writeln("Executing: {$cmd}");
+                    $process->run(function ($type, $dat) use ($output) {
+                        if ($type === Process::OUT) {
+                            $output->writeln($dat);
+                        } else {
+                            $output->writeln('ERR: '.$dat);
+                        }
+                    });
+                } else {
+                    $process->run();
+                }
             }
 
-            if ($process->isSuccessful()) {
+            if (($failedStep === null || $failedStep === AbstractImporterCommand::STEP_APPLY) ||
+                $process->isSuccessful()
+            ) {
                 $cmd     = $appEnv->getConsolePhpCommand("dp:import:apply {$verboseFlag}-j {$importerJob->getId()}");
                 $process = new Process($cmd);
                 $process->setTimeout(null);
@@ -348,16 +358,20 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 $failed = true;
             }
 
-            if ($failed) {
-                $importerJob = $this->getContainer()->get('dp.importer.data_service.job')->getWaitingJob();
-                if ($importerJob) {
-                    $importerJob->setStatus(Job::STATUS_ERROR);
-                    $em->persist($importerJob);
-                    $em->flush();
-                }
+            $importerJob = $importerJobData->getActiveJob();
+
+            if ($importerJob) {
+                $importerJob->setStatus(
+                    $failed || null !== $importerJob->getDataKey('failed_step')
+                        ? Job::STATUS_ERROR
+                        : Job::STATUS_COMPLETE
+                );
+
+                $em->persist($importerJob);
+                $em->flush();
             }
 
-            App::getDb()->delete('settings', ['name' => 'core.croncheck.importer']);
+            $db->delete('settings', ['name' => 'core.croncheck.importer']);
 
             return 0;
         }
@@ -408,7 +422,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
         }
 
-        App::getDb()->replace('settings', [
+        $db->replace('settings', [
             'name'  => 'core.croncheck.'.$cron_id,
             'value' => time(),
         ]);
@@ -441,7 +455,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         $step = (int) App::getSetting('core.setup_initial');
 
-        // Only run crom if we've passed initial setup
+        // Only run cron if we've passed initial setup
         // This command will just execute nothing and set the last run time
         // so the system knows its been set up
         if ($step) {

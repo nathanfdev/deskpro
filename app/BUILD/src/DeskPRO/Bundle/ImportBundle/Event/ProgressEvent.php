@@ -19,6 +19,7 @@ class ProgressEvent extends Event
     const POST_APPLY        = 'importer.post_apply';
     const FINISH            = 'importer.finish';
     const CLEAN             = 'importer.clean';
+    const ERROR             = 'importer.error';
 
     /**
      * @var string
