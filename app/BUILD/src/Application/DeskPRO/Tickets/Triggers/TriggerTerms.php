@@ -185,6 +185,11 @@ class TriggerTerms implements \Serializable, TriggerTermInterface, JsonObjectSer
         return $terms;
     }
 
+    public function setTerms($terms)
+    {
+        $this->criteria->setAll($terms);
+    }
+
     /**
      * @param array $data
      */
