@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security;
 
+use Application\DeskPRO\Entity\Person;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -14,6 +15,7 @@ use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\Role\SwitchUserRole;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
@@ -203,30 +205,40 @@ class SwitchUserListener implements ListenerInterface
             $this->logger->info(sprintf('Attempt to switch to user "%s"', $username));
         }
 
+        $backToken = $original_token ?: $this->token_storage->getToken();
+
+        $roles   = [];
+        $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $backToken);
+
+        // we still should have an access to restricted actions
+        // when impersonating as user
+        if ($originalUser = $backToken->getUser()) {
+            if ($originalUser instanceof Person) {
+                /** @var Person $originalUser */
+                $originalUser = $this->provider->refreshUser($originalUser);
+
+                if ($originalUser->isAdmin()) {
+                    $roles[] = new Role('ROLE_ADMIN');
+                }
+            }
+        }
+
         try {
             $user = $this->provider->loadUserByUsername($username);
         } catch (UsernameNotFoundException $e) {
-            $back_token = $original_token ?: $this->token_storage->getToken();
-
-            return new UsernamePasswordToken(
-                'anon', 'anon', $this->provider_key, [new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $back_token)]);
+            return new UsernamePasswordToken('anon', 'anon', $this->provider_key, $roles);
         }
 
         $this->user_checker->checkPostAuth($user);
 
-        $roles = $user->getRoles();
-
-        // If there is an original token, only let them switch back to that user.
-        if ($original_token) {
-            $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $original_token);
-        } else {
-            $roles[] = new SwitchUserRole('ROLE_PREVIOUS_ADMIN', $this->token_storage->getToken());
+        foreach ($user->getRoles() as $role) {
+            $roles[] = $role;
         }
 
         $token = new UsernamePasswordToken($user, $user->getPassword(), $this->provider_key, $roles);
 
         if (null !== $this->dispatcher) {
-            $switchEvent = new SwitchUserEvent($request, $token->getUser());
+            $switchEvent = new SwitchUserEvent($request, $user);
             $this->dispatcher->dispatch(SecurityEvents::SWITCH_USER, $switchEvent);
         }
 
