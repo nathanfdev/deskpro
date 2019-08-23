@@ -1189,7 +1189,8 @@ class LoginController extends AbstractController
             $this->container->get('mailer.utils')->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
         } else {
             $vars = [
-                'code' => $tmpdata->getCode(),
+                'code'   => $tmpdata->getCode(),
+                'person' => $person,
             ];
             $message = $this->container->getMailer()->createMessage();
             $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
