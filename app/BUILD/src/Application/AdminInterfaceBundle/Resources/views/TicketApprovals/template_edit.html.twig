@@ -1,6 +1,142 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-    <form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
+    <form role="form" name="form_props" ng-submit="form_props.$valid && TicketApprovalsTemplateEdit.saveForm()">
+        <section class="dp-paneblock dp-editpane">
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-fill indent">
+                    <div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.template.name') }} *</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.name">
+                                    <input type="text"
+                                           class="form-control"
+                                           name="name"
+                                           ng-model="TicketApprovalsTemplateEdit.form.name"
+                                           required autofocus
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.template.type') }} *</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.type">
+                                    <select name="type"
+                                            ui-select2
+                                            ng-model="TicketApprovalsTemplateEdit.form.type"
+                                            style="min-width: 240px"
+                                    >
+                                        <option value="{{ ng_var('type.id') }}" ng-repeat="type in TicketApprovalsList.types">{{ ng_var('type.name') }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.template.description') }}</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.description">
+                                    <textarea class="form-control"
+                                              name="description"
+                                              ng-model="TicketApprovalsTemplateEdit.form.description"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.template.required_approvals') }} *</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.required_approvals">
+                                    <input type="number"
+                                           name="required_approvals"
+                                           class="form-control"
+                                           ng-model="TicketApprovalsTemplateEdit.form.required_approvals"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.template.required_rejections') }} *</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.required_rejections">
+                                    <input type="number"
+                                           name="required_rejections"
+                                           class="form-control"
+                                           ng-model="TicketApprovalsTemplateEdit.form.required_rejections"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <footer>
+                <div class="dp-content">
+                    <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                        <p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+                        <ul>
+                            <li ng-show="form_props.name.$error.required">
+                                {{ phrase('adm.ticket_approvals.template.error.name') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.type.$error.required">
+                                {{ phrase('adm.ticket_approvals.template.error.type') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.required_approvals.$error.required">
+                                {{ phrase('adm.ticket_approvals.template.error.required_approvals') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.required_rejections.$error.required">
+                                {{ phrase('adm.ticket_approvals.template.error.required_rejections') }}
+                            </li>
+                        </ul>
+                    </div>
 
+                    <div class="dp-delete-control" ng-if="TicketApprovalsTemplateEdit.templateId"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+
+                        <div dp-hide-spinning="deleting">
+                            <button class="btn btn-danger"
+                                    ng-click="$event.preventDefault(); TicketApprovalsTemplateEdit.deleteTemplate(TicketApprovalsTemplateEdit.templateId);">
+                                {{ phrase('agent.general.delete') }}
+                            </button>
+                        </div>
+                        <div dp-show-spinning="deleting">
+                            <i class="spinner-flat"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>
+                                {{ phrase('agent.general.save') }}
+                            </button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
     </form>
+    <div dp-register-message="approval_template_save_success">{{ phrase('adm.ticket_approvals.template_save_success') }}</div>
+    <div dp-register-message="approval_template_save_failure">{{ phrase('adm.ticket_approvals.template_save_failure') }}</div>
+    <div dp-register-message="approval_template_delete_success">{{ phrase('adm.ticket_approvals.template_delete_success') }}</div>
+    <div dp-register-message="approval_template_delete_failure">{{ phrase('adm.ticket_approvals.template_delete_failure') }}</div>
 {% endblock %}

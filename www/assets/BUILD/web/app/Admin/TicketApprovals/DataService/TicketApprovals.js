@@ -82,6 +82,44 @@ define(['Admin/Main/DataService/BaseListEdit'], (BaseListEdit) => {
       return  deferred.promise;
     }
 
+    /**
+     * Update/Create approval template.
+     *
+     * @param {Object} data
+     * @param {integer|null|undefined} id
+     * @returns {Promise}
+     */
+    saveApprovalTemplate(data, id = null) {
+      const deferred = this.$q.defer();
+      const response = (id == null)
+        ? this.Api2.sendPostJson('/approval_templates', data)
+        : this.Api2.sendPutJson(`/approval_templates/${id}`, data);
+
+      response.then(
+        (response) => deferred.resolve(response),
+        (response) => deferred.reject(response)
+      );
+
+      return deferred.promise;
+    }
+
+    /**
+     * Delete approval template.
+     *
+     * @param {integer} id
+     * @returns {Promise}
+     */
+    deleteApprovalTemplate(id) {
+      const deferred = this.$q.defer();
+
+      this.Api2.sendDelete(`/approval_templates/${id}`).then(
+        () => deferred.resolve(),
+        () => deferred.reject()
+      );
+
+      return deferred.promise;
+    }
+
   }
   Admin_TicketApprovals_DataService_TicketApprovals.initClass();
   return Admin_TicketApprovals_DataService_TicketApprovals;
