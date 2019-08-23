@@ -24,6 +24,7 @@ use Orb\Data\Countries;
 use Plivo\Exceptions\PlivoResponseException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 /**
  * Class PlivoAccountsController.
@@ -49,6 +50,12 @@ class PlivoAccountsController extends AbstractVoiceCrudController
     public static $type         = PlivoAccountType::class;
     public static $listOrder    = 'asc';
     public static $listPaginate = false;
+
+    protected function checkExposed($actionMethodName)
+    {
+        // TODO plivo disabled
+        throw new MethodNotAllowedHttpException([]);
+    }
 
     /**
      * @ApiDoc(
