@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { render } from 'react-dom';
 import classNames from 'classnames';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { ConfirmButton, Button } from '@deskpro/react-components';
+import { PopUp } from '../../Semantic/PopUp';
 import Widget from './Widget';
 import CodeMirror from '../CodeMirror';
 
-class TemplatePopup extends React.Component {
+export class TemplatePopup extends React.Component {
   static propTypes = {
     text:             PropTypes.string,
     loadTemplate:     PropTypes.func,
@@ -54,16 +54,17 @@ class TemplatePopup extends React.Component {
         ref={(c) => { this.widgetEditor = c; }}
       />
       <div className="footer">
-        <Button onClick={this.saveChanges}>Submit</Button>
-        <Button className="basic" onClick={this.closePopup}>Cancel</Button>
-        <Button
-          className={classNames('right floated basic small', { loading: this.state.resetSubmit })}
+        <Button type="primary" onClick={this.saveChanges}>Submit</Button>
+        <Button type="secondary" onClick={this.closePopup}>Cancel</Button>
+        <ConfirmButton
+          className={classNames('right floated small')}
+          type="secondary"
+          loading={this.state.resetSubmit}
           disabled={this.state.resetSubmit}
           onClick={this.resetTemplate}
-          confirm
         >
           Reset template
-        </Button>
+        </ConfirmButton>
       </div>
     </div>
     );

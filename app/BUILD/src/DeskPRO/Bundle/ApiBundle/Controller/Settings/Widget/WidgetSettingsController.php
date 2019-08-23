@@ -37,7 +37,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *         200="Returned if request was successful",
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings"
-     *)
+     * )
      * @Rest\Get("/setup")
      *
      * @param Brand $brand
@@ -119,7 +119,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSettingsType"
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings"
-     *)
+     * )
      * @Rest\Post("/setup")
      *
      * @param Request $request
@@ -144,7 +144,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *     statusCodes={
      *         200="Returned if request was successful",
      *     },
-     *)
+     * )
      *
      * @Rest\Delete("/setup")
      *
@@ -178,7 +178,7 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
      *         { "name" = "email", "dataType" = "string", "format" = "string", "required" = true, "description" = "Email address" }
      *     },
      *     noOutput=true
-     *)
+     * )
      *
      * @Rest\Post("/send-instructions")
      *

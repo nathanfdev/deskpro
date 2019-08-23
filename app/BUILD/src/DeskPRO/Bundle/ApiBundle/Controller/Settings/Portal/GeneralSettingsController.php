@@ -85,7 +85,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType"
      *     },
      *     output="Application\DeskPRO\Settings\GeneralPortalSettings"
-     *)
+     * )
      * @Rest\Post("/{brand}/portal/general")
      *
      * @param Request $request

@@ -1,23 +1,25 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
-import DropZone from 'DeskPRO/Component/Uploader/DropZone';
+import { UploadButton } from '../../Uploader/UploadButton';
+import DropZone from '../../Uploader/DropZone';
 
 class MediaDropZone extends React.Component {
   static propTypes = {
-    icon:       PropTypes.string,
-    type:       PropTypes.string,
-    onFail:     PropTypes.func,
-    onSend:     PropTypes.func,
-    onSuccess:  PropTypes.func,
-    onProgress: PropTypes.func,
+    icon:         PropTypes.string,
+    type:         PropTypes.string,
+    onFail:       PropTypes.func,
+    onSend:       PropTypes.func,
+    onSuccess:    PropTypes.func,
+    onProgress:   PropTypes.func,
+    getUploadUrl: PropTypes.func,
   };
   static defaultProps = {
     onFail() {},
     onSend() {},
     onSuccess() {},
     onProgress() {},
+    getUploadUrl() { return '/api/v2/email_templates/email_assets/TYPE'; }
   };
 
   constructor(props) {
@@ -54,7 +56,7 @@ class MediaDropZone extends React.Component {
     return true;
   };
 
-  getUploadUrl = () => `/api/v2/email_templates/email_assets/${this.props.type}`;
+  getUploadUrl = () => this.props.getUploadUrl().replace(/TYPE/, this.props.type);
 
   handleSuccess = () => {
     this.props.onSuccess(this.props.type);

@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
+namespace DeskPRO\Bundle\ApiBundle\Controller\PortalInterface;
 
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\DataStore;
@@ -18,7 +18,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
@@ -35,8 +34,7 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
  * API access to person settings.
  *
  * @ApiModes("all")
- * @Feature("email_templates")
- * @Rest\Route("/email_templates")
+ * @Rest\Route("/portal_templates")
  * @ApiUserContext("admin")
  */
 class TemplateController extends BaseController
@@ -62,16 +60,6 @@ class TemplateController extends BaseController
      */
     public function getTemplateAction($name)
     {
-        if (strpos($name, 'EDIT_SIDEBAR_BLOCK:') === 0) {
-            $blockId = substr($name, strlen('EDIT_SIDEBAR_BLOCK:'));
-            $block   = $this->getManager()->getRepository(PortalPageDisplay::class)->find($blockId);
-            if (!$block || !$block->getData('tpl')) {
-                throw $this->createNotFoundException();
-            }
-
-            $name = $block->getData('tpl');
-        }
-
         $set = $this->getTemplateSet();
 
         try {
@@ -417,38 +405,6 @@ class TemplateController extends BaseController
             }
         }
         $em->flush();
-    }
-
-    /**
-     * @ApiDoc(
-     *     section="Email Templates",
-     *     description="Mark a legacy template as converted",
-     *     requirements={
-     *         {
-     *             "name"="name",
-     *             "description"="The template name",
-     *             "dataType"="string"
-     *         }
-     *     },
-     *     output="array"
-     *)
-     * @Rest\Get("/mark_as_converted/{name}")
-     *     output="string"
-     *)
-     *
-     * @param $name
-     * @param Request $request
-     *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function getMarkAsConvertedAction($name)
-    {
-        $em       = $this->getManager();
-        $template = $em->getRepository(Template::class)->findOneBy(['name' => $name]);
-        if (!$template) {
-            throw $this->createNotFoundException();
-        }
-        $this->deleteLegacyTemplateAction($template->getId());
     }
 
     private function upgradeTrigger(TicketTrigger $trigger, $templateName, $replace = true)

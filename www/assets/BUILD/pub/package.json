@@ -27,7 +27,7 @@
     "card-validator": "^4.1.0",
     "classnames": "2.2.6",
     "clipboard": "^1.7.1",
-    "codemirror": "^5.24.2",
+    "codemirror": "5.47.0",
     "cors": "^2.8.4",
     "countries-list": "^1.2.0",
     "cropper": "1.0.0",

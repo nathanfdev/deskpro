@@ -29,6 +29,8 @@ class CodeMirror extends React.Component {
     this.currentCodemirrorValue = this.props.value;
     const that = this;
 
+    this.codeMirror.setValue(this.props.value);
+
     setTimeout(() => {
       that.codeMirror.refresh();
     }, 1);
@@ -81,7 +83,7 @@ class CodeMirror extends React.Component {
     return (
       <textarea
         ref={(c) => { this.codeMirrorNode = c; }}
-        defaultValue={this.props.value}
+        defaultValue=""
         autoComplete="off"
       />
     );

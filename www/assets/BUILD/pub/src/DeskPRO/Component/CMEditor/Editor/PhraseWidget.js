@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { render } from 'react-dom';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { Field, Input } from 'DeskPRO/Component/Semantic/Form';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { Button } from '@deskpro/react-components';
+import { PopUp } from '../../Semantic/PopUp';
+import { Field, Input } from '../../Semantic/Form';
 import Widget from './Widget';
 
 class PhrasePopup extends React.Component {
@@ -56,8 +56,10 @@ class PhrasePopup extends React.Component {
         <div className="ui horizontal divider">Translations</div>
         {this.getTranslations()}
         {this.getVariables()}
-        <Button onClick={this.saveChanges}>Submit</Button>
-        <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+        <div className="footer">
+          <Button onClick={this.saveChanges}>Submit</Button>
+          <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+        </div>
       </div>
     );
   };
@@ -71,7 +73,7 @@ class PhrasePopup extends React.Component {
             <textarea
               id={`phrase_${language.locale}`}
               name={`phrase_${language.locale}`}
-              value={this.state.translations[language.locale]}
+              value={this.state.translations[language.locale] || ''}
               onChange={(event) => { this.handleChangeTranslation(event, language.locale); }}
             />
           </div>
@@ -203,7 +205,7 @@ class PhrasePopup extends React.Component {
   }
 }
 class PhraseWidget extends Widget {
-  constructor(cm, pos, code, text, setCurrentWidget, getPhraseTranslations, savePhraseTranslations) {
+  constructor(cm, pos, code, text, matches, setCurrentWidget, getPhraseTranslations, savePhraseTranslations) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -212,6 +214,7 @@ class PhraseWidget extends Widget {
 
       this.code = code;
       this.text = text;
+      this.matches = matches;
       this.getPhraseTranslations = getPhraseTranslations;
       this.savePhraseTranslations = savePhraseTranslations;
       this.setCurrentWidget = setCurrentWidget;
@@ -223,7 +226,7 @@ class PhraseWidget extends Widget {
   }
 
   addReactComponent = (element) => {
-    const matches = this.code.match(/{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/);
+    const { matches } = this;
     const phrase = matches[1];
     const variables = {};
     const re = /{{([^}]+)}}/g;

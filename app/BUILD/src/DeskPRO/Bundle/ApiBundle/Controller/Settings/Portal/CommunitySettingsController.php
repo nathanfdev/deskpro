@@ -60,7 +60,7 @@ class CommunitySettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\CommunitySettingsType"
      *     },
      *     noOutput=true
-     *)
+     * )
      * @Rest\Post("")
      *
      * @param Request $request

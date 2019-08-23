@@ -1,20 +1,24 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
+import { PopUp } from '../../Semantic/PopUp';
 
 class DropDownMenu extends React.Component {
   static propTypes    = {
-    label:     PropTypes.string,
-    icon:      PropTypes.string,
-    onClick:   PropTypes.func,
-    className: PropTypes.string,
-    children:  PropTypes.node,
-    disabled:  PropTypes.bool,
+    label:      PropTypes.string,
+    icon:       PropTypes.string,
+    onClick:    PropTypes.func,
+    className:  PropTypes.string,
+    children:   PropTypes.node,
+    disabled:   PropTypes.bool,
+    positionMy: PropTypes.string,
+    positionAt: PropTypes.string,
   };
   static defaultProps = {
     onClick() {},
-    disabled: false,
+    disabled:   false,
+    positionMy: 'left top-1px',
+    positionAt: 'left bottom',
   };
 
   constructor(props) {
@@ -36,14 +40,15 @@ class DropDownMenu extends React.Component {
   };
 
   render() {
+    const { positionMy, positionAt } = this.props;
     return (
       <PopUp
-        positionMy="left top-1px"
-        positionAt="left bottom"
+        positionMy={positionMy}
+        positionAt={positionAt}
         zIndex={100}
         content={this.props.children}
         ref={(c) => { this.dropdown = c; }}
-        className="email-dropdown-menu"
+        className="editor-dropdown-menu"
         autoOpen={false}
         manual
       >

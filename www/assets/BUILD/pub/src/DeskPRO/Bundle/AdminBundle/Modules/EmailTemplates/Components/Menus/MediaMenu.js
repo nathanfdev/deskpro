@@ -3,11 +3,11 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Progress, ProgressBar } from '@deskpro/react-components';
-import { Tab, TabGroup } from 'DeskPRO/Component/Semantic/Tab';
-import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
-import ImageMenuItem from './ImageMenuItem';
-import MediaDropZone from './MediaDropZone';
+import { Tab, TabGroup } from '../../../../../../Component/Semantic/Tab';
+import { MenuWrapper, Menu, MenuItem } from '../../../../../../Component/Semantic/Menu';
+import { MimeIcon } from '../../../../../../Component/Semantic/Icon';
+import ImageMenuItem from '../../../../../../Component/CMEditor/Menus/ImageMenuItem';
+import MediaDropZone from '../../../../../../Component/CMEditor/Menus/MediaDropZone';
 import * as actions from '../../Actions/templatesActions';
 
 @connect(state => ({

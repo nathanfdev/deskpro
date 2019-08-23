@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import CodeMirror from './CodeMirror';
 import { PhraseWidget, TemplateWidget } from './Editor/';
+import showTagWidget from './Editor/showTagWidget';
 
 class Editor extends React.Component {
   static propTypes = {
@@ -13,17 +14,21 @@ class Editor extends React.Component {
     changeTemplateBody:     PropTypes.func,
     changeTemplateSubject:  PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
+    loadTagInfo:            PropTypes.func,
     loadTemplate:           PropTypes.func,
     resetTemplate:          PropTypes.func,
     savePhraseTranslations: PropTypes.func,
     setCurrentWidget:       PropTypes.func,
     setTemplateValue:       PropTypes.func,
+    setEditor:              PropTypes.func,
     phrases:                PropTypes.object,
   };
   static defaultProps = {
+    type:     'block',
     disabled: false,
     changeTemplateBody() {},
     changeTemplateSubject() {},
+    setEditor() {},
   };
 
   constructor(props) {
@@ -85,6 +90,7 @@ class Editor extends React.Component {
             },
             match[0],
             this.findPhrase(match[1]),
+            match,
             setCurrentWidget,
             this.props.getPhraseTranslations,
             this.props.savePhraseTranslations
@@ -110,18 +116,39 @@ class Editor extends React.Component {
           ));
           match = re.exec(content);
         }
+        re = /{%\s*show\s+(section)?\s*([^ ]+)\s*(with\s*{([^}]+)}\s*)?\s*%}/g;
+        match = re.exec(content);
+        while (match !== null) {
+          this.widgets.push(new showTagWidget(
+            cm,
+            {
+              line: line + from.line,
+              ch:   match.index
+            },
+            match[0],
+            match[2],
+            match,
+            setCurrentWidget,
+            this.props.loadTemplate,
+            this.props.resetTemplate,
+            this.props.setTemplateValue,
+            this.props.loadTagInfo,
+            this.addMarks
+          ));
+          match = re.exec(content);
+        }
       });
     }
     return true;
   };
 
   handleSubjectChange = (cm, change) => {
-    this.props.changeTemplateSubject(cm.getValue());
+    this.props.changeTemplateSubject(cm.getValue(), change);
     this.addMarks(cm, change, this.props.setCurrentWidget);
   };
 
   handleBodyChange = (cm, change) => {
-    this.props.changeTemplateBody(cm.getValue());
+    this.props.changeTemplateBody(cm.getValue(), change);
     this.addMarks(cm, change, this.props.setCurrentWidget);
   };
 
@@ -129,10 +156,16 @@ class Editor extends React.Component {
     const { disabled, subject, body } = this.props;
     let extendedSubject = false;
     const bodyStyle = {};
-    if (subject.split(/\r\n|\r|\n/).length > 1) {
+    if (subject && subject.split(/\r\n|\r|\n/).length > 1) {
       extendedSubject = true;
       bodyStyle.height = 'calc(100% - 205px)';
     }
+    if (this.props.phrases.size === 0) {
+      return null;
+    }
+    setTimeout(() => {
+      this.props.setEditor(this.bodyEditor);
+    }, 100);
     return (
       <div className={classNames('dp-code-editor', { disabled })}>
         <div className={classNames('ui dimmer inverted', { active: disabled })}>
