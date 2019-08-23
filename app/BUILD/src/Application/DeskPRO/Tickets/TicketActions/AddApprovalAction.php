@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 
@@ -33,6 +34,11 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
     protected $person_context;
 
     /**
+     * @var AbstractBaseApproval
+     */
+    protected $approval;
+
+    /**
      * AddApprovalAction constructor.
      *
      * @param string|int $approval_template_id
@@ -51,17 +57,17 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
     public function apply(Ticket $ticket)
     {
         /** @var TicketApproval $approval */
-        $approval = TicketApproval::createFromTemplate(
+        $this->approval = TicketApproval::createFromTemplate(
             $this->getTemplate()
         );
 
-        $approval->setTicket($ticket);
-        $approval->setDescription($this->description);
+        $this->approval->setTicket($ticket);
+        $this->approval->setDescription($this->description);
 
         $manager = App::getContainer()->get('approval.approval_manager');
 
         $manager->saveApproval(
-            $approval,
+            $this->approval,
             $manager->createContext(ExecutorContextInterface::METHOD_WEB, $this->person_context)
         );
     }
@@ -135,5 +141,13 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
     public function checkPermission(Ticket $ticket, Person $person)
     {
         return $person->PermissionsManager->TicketChecker->canAddApproval($ticket);
+    }
+
+    /**
+     * @return AbstractBaseApproval
+     */
+    public function getApproval()
+    {
+        return $this->approval;
     }
 }

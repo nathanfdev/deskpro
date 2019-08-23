@@ -56,6 +56,8 @@ class AddApprovalActionTest extends DeskProTestCase
         $action->apply($ticket);
 
         $approvalManager->shouldHaveReceived('saveApproval');
+
+        $this->assertEquals('test description', $action->getApproval()->getDescription());
     }
 
     /**
