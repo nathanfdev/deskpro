@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  *         {"name"="hidden_status", "dataType"="integer", "pattern"="unpublished|deleted|spam|draft", "description"="limit with hidden_status"},
  *         {"name"="status_category", "pattern"="\w|[\w]", "description"="filter by status category", "dataType"="string[]"},
  *         {"name"="channel", "pattern"="\w|[\w]", "description"="channel title, or titles array", "dataType"="string[]"},
- *         {"name"="custom_channel", "pattern"="\w|[\w]", "description"="filter by custom channel", "dataType"="string[]"},
+ *         {"name"="category", "pattern"="\w|[\w]", "description"="filter by category", "dataType"="string[]"},
  *         {"name"="labels_mode", "pattern"="any|all", "description"="how to load labels", "dataType"="string"},
  *         {"name"="label", "pattern"="\w,\w...\w", "description"="select community topics with given lables", "dataType"="string"},
  *         {"name"="no_labels", "pattern"="1", "description"="select community topics have no label", "dataType"="boolean"},
@@ -53,7 +53,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="countAction",
  *     filters={
- *         {"name"="group_by", "pattern"="status_category|hidden_status|channel|custom_channel", "description"="how to group counts", "dataType"="boolean"}
+ *         {"name"="group_by", "pattern"="status_category|hidden_status|channel|category", "description"="how to group counts", "dataType"="boolean"}
  *     }
  * )
  * @ApiDoc(
@@ -125,15 +125,15 @@ class CommunityTopicsController extends AbstractCommunityController
                     ->groupBy('group_name');
 
                 break;
-            case 'custom_channel':
+            case 'category':
                 $qb
                     ->join("{$alias}.custom_data", 'customCat')
                     ->join('customCat.field', 'def')
                     ->join('def.parent', 'parent')
                     ->addSelect('def.title as title')
                     ->addSelect('def.id as group_name')
-                    ->andWhere('parent.sys_name = :chan')
-                    ->setParameter('chan', 'chan')
+                    ->andWhere('parent.sys_name = :cat')
+                    ->setParameter('cat', 'cat')
                     ->groupBy('group_name');
 
                 break;

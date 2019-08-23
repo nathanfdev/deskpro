@@ -1,14 +1,14 @@
 define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
-  class Admin_CustomCommunityChannels_Ctrl_List extends Admin_Ctrl_Base {
+  class Admin_CommunityCategories_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
-      this.CTRL_ID = 'Admin_CustomCommunityChannels_Ctrl_List';
-      this.CTRL_AS = 'CustomCommunityChannelsList';
-      this.DEPS    = ['$rootScope', '$scope', 'CustomCommunityChannelsData', 'em', 'Api', '$state', 'Growl'];
+      this.CTRL_ID = 'Admin_CommunityCategories_Ctrl_List';
+      this.CTRL_AS = 'CommunityCategoriesList';
+      this.DEPS    = ['$rootScope', '$scope', 'CommunityCategoriesData', 'em', 'Api', '$state', 'Growl'];
     }
 
     init() {
       this.$scope.brand_id = this.$stateParams.brandId;
-      this.custom_community_channels = [];
+      this.community_categories = [];
       this.parent_data = [];
       this.child_data = {};
 
@@ -26,20 +26,20 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           $list.find('li').each(function () {
             x += 10;
-            const custom_community_channel_id = parseInt($(this).data('id'));
+            const community_category_id = parseInt($(this).data('id'));
 
-            if (custom_community_channel_id) {
-              const custom_community_channel = em.getById('custom_community_channel', custom_community_channel_id);
+            if (community_category_id) {
+              const community_category = em.getById('community_category', community_category_id);
 
-              if (custom_community_channel) {
-                custom_community_channel.display_order = x;
+              if (community_category) {
+                community_category.display_order = x;
               }
             }
 
-            return postData.display_orders.push(custom_community_channel_id);
+            return postData.display_orders.push(community_category_id);
           });
 
-          this.Api.sendPostJson('/custom_community_channels/display_order', postData);
+          this.Api.sendPostJson('/community_categories/display_order', postData);
           return this.pingElement('display_orders');
         }
       };
@@ -57,11 +57,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     initialLoad() {
       const promises = [];
-      promises.push(this.CustomCommunityChannelsData.loadList().then((recs) => {
+      promises.push(this.CommunityCategoriesData.loadList().then((recs) => {
         this.initHierarchyData(this.sort(recs.values()));
 
-        return this.addManagedListener(this.CustomCommunityChannelsData.recs, 'changed', () => {
-          this.initHierarchyData(this.sort(this.CustomCommunityChannelsData.recs.values()));
+        return this.addManagedListener(this.CommunityCategoriesData.recs, 'changed', () => {
+          this.initHierarchyData(this.sort(this.CommunityCategoriesData.recs.values()));
           return this.ngApply();
         });
       })
@@ -70,14 +70,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       return this.$q.all(promises);
     }
 
-    initHierarchyData(custom_community_channels) {
-      this.custom_community_channels = custom_community_channels;
+    initHierarchyData(community_categories) {
+      this.community_categories = community_categories;
       this.parent_data = [];
       this.child_data = {};
 
       return (() => {
         const result = [];
-        for (const category of Array.from(custom_community_channels)) {
+        for (const category of Array.from(community_categories)) {
           if (parseInt(category.parent_id, 10)) {
             if (!this.child_data[category.parent_id]) {
               this.child_data[category.parent_id] = [];
@@ -92,8 +92,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       })();
     }
   }
-  Admin_CustomCommunityChannels_Ctrl_List.initClass();
+  Admin_CommunityCategories_Ctrl_List.initClass();
 
 
-  return Admin_CustomCommunityChannels_Ctrl_List.EXPORT_CTRL();
+  return Admin_CommunityCategories_Ctrl_List.EXPORT_CTRL();
 });

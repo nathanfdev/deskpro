@@ -10,7 +10,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Doctrine\ORM\EntityManager;
 
-class CustomCommunityChannels
+class CommunityCategories
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -25,7 +25,7 @@ class CustomCommunityChannels
     /**
      * @var CustomDefCommunityTopic[]
      */
-    protected $communityCustomChannels;
+    protected $communityCategories;
 
     /**
      * Constructor.
@@ -44,16 +44,16 @@ class CustomCommunityChannels
      */
     private function preload()
     {
-        if ($this->communityCustomChannels !== null) {
+        if ($this->communityCategories !== null) {
             return;
         }
 
-        $this->communityCustomChannels = [];
+        $this->communityCategories = [];
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
         foreach ($brands as $brand) {
-            $this->communityCustomChannels = array_merge(
-                $this->communityCustomChannels,
+            $this->communityCategories = array_merge(
+                $this->communityCategories,
                 $this->em->getRepository(CustomDefCommunityTopic::class)->getAllFlatData($this->getParentChannel($brand))
             );
         }
@@ -65,7 +65,7 @@ class CustomCommunityChannels
      */
     public function reset()
     {
-        $this->communityCustomChannels = null;
+        $this->communityCategories = null;
     }
 
     /**
@@ -85,7 +85,7 @@ class CustomCommunityChannels
     {
         $this->preload();
 
-        return $this->communityCustomChannels;
+        return $this->communityCategories;
     }
 
     /**
@@ -95,7 +95,7 @@ class CustomCommunityChannels
     {
         $this->preload();
 
-        return count($this->communityCustomChannels);
+        return count($this->communityCategories);
     }
 
     /**
@@ -111,7 +111,7 @@ class CustomCommunityChannels
      *
      * @param Brand $brand
      */
-    protected function createInitialCommunityCustomChannelIfNotDefined(Brand $brand)
+    protected function createInitialCommunityCategoryIfNotDefined(Brand $brand)
     {
         $this->parentChannel[$brand->getId()] = $this->em->getRepository(CustomDefCommunityTopic::class)->getChannelField($brand);
 
@@ -119,9 +119,9 @@ class CustomCommunityChannels
             $this->parentChannel[$brand->getId()]                = new CustomDefCommunityTopic();
             $this->parentChannel[$brand->getId()]->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
             $this->parentChannel[$brand->getId()]->setBrand($brand);
-            $this->parentChannel[$brand->getId()]->title       = 'Channel';
-            $this->parentChannel[$brand->getId()]->sys_name    = 'chan';
-            $this->parentChannel[$brand->getId()]->description = 'Channel';
+            $this->parentChannel[$brand->getId()]->title       = 'Category';
+            $this->parentChannel[$brand->getId()]->sys_name    = 'cat';
+            $this->parentChannel[$brand->getId()]->description = 'Category';
 
             $this->em->persist($this->parentChannel[$brand->getId()]);
             $this->em->flush();
@@ -139,7 +139,7 @@ class CustomCommunityChannels
             return;
         }
         if (!isset($this->parentChannel[$brand->getId()])) {
-            $this->createInitialCommunityCustomChannelIfNotDefined($brand);
+            $this->createInitialCommunityCategoryIfNotDefined($brand);
         }
 
         return $this->parentChannel[$brand->getId()];
@@ -152,17 +152,17 @@ class CustomCommunityChannels
     {
         $x = 10;
 
-        $communityCustomChannels = $this->em->getRepository('DeskPRO:CustomDefCommunityTopic')->getByIds($newOrders);
+        $communityCategories = $this->em->getRepository('DeskPRO:CustomDefCommunityTopic')->getByIds($newOrders);
 
         foreach ($newOrders as $id) {
-            if (!isset($communityCustomChannels[$id])) {
+            if (!isset($communityCategories[$id])) {
                 continue;
             }
 
-            $communityCustomChannel                = $communityCustomChannels[$id];
-            $communityCustomChannel->display_order = $x;
+            $communityCategory                = $communityCategories[$id];
+            $communityCategory->display_order = $x;
 
-            $this->em->persist($communityCustomChannel);
+            $this->em->persist($communityCategory);
 
             $x += 10;
         }

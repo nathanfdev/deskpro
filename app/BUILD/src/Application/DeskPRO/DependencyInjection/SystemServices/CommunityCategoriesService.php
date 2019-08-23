@@ -8,14 +8,14 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\Community\CustomCommunityChannels;
+use Application\DeskPRO\Community\CommunityCategories;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
-class CustomCommunityChannelsService
+class CommunityCategoriesService
 {
     public static function create(DeskproContainer $container)
     {
-        $x = new CustomCommunityChannels($container->getEm());
+        $x = new CommunityCategories($container->getEm());
 
         return $x;
     }

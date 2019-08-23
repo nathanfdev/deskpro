@@ -73,13 +73,13 @@ class FreshDb extends AbstractDbSet
             false
         );
 
-        $channelField                = new CustomDefCommunityTopic();
-        $channelField->sys_name      = 'chan';
-        $channelField->title         = 'Custom Channel';
-        $channelField->description   = 'e.g., maybe Windows, Mac, Linux.';
-        $channelField->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+        $categoryField                = new CustomDefCommunityTopic();
+        $categoryField->sys_name      = 'cat';
+        $categoryField->title         = 'Category';
+        $categoryField->description   = 'e.g., maybe Windows, Mac, Linux.';
+        $categoryField->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
-        $em->persist($channelField);
+        $em->persist($categoryField);
 
         $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
 

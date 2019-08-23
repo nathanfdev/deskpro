@@ -381,7 +381,7 @@ portal.community.form_logged_in_as: 'Inicia sesión como: <span> {{name}} </span
 portal.community.form_logout: '¿No tú?'
 portal.community.form_tell_us_more: 'Cuentanos más'
 portal.community.form_title: Título
-portal.community.form_custom_chan: Categoría
+portal.community.form_custom_cat: Categoría
 portal.community.module_forbidden: 'No tienes acceso a este módulo.'
 portal.community.no_matching: 'No hay comentarios coincidentes'
 portal.community.none: 'No hay comentarios todavía'

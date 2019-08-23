@@ -1976,31 +1976,31 @@ define(function() {
   // # Community::CustomChannels
   // ###
   routes.push({
-    id:           'portal.custom_community_channels',
+    id:           'portal.community_categories',
     url:          '/community/custom_channels',
-    templateName: 'CustomCommunityChannels/list.html',
-    controller:   'Admin_CustomCommunityChannels_Ctrl_List'
+    templateName: 'CommunityCategories/list.html',
+    controller:   'Admin_CommunityCategories_Ctrl_List'
   });
 
   routes.push({
-    id:         'portal.custom_community_channels.gocreate',
+    id:         'portal.community_categories.gocreate',
     url:        '/go-create/',
     template:   '',
-    controller: ['$state', function ($state) { $state.go('portal.custom_community_channels.create'); }]
+    controller: ['$state', function ($state) { $state.go('portal.community_categories.create'); }]
   });
 
   routes.push({
-    id:           'portal.custom_community_channels.create',
+    id:           'portal.community_categories.create',
     url:          '/create/',
-    templateName: 'CustomCommunityChannels/edit.html',
-    controller:   'Admin_CustomCommunityChannels_Ctrl_Edit'
+    templateName: 'CommunityCategories/edit.html',
+    controller:   'Admin_CommunityCategories_Ctrl_Edit'
   });
 
   routes.push({
-    id:           'portal.custom_community_channels.edit',
+    id:           'portal.community_categories.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'CustomCommunityChannels/edit.html',
-    controller:   'Admin_CustomCommunityChannels_Ctrl_Edit'
+    templateName: 'CommunityCategories/edit.html',
+    controller:   'Admin_CommunityCategories_Ctrl_Edit'
   });
 
   // ###

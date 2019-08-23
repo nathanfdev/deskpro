@@ -17,7 +17,7 @@ class CustomDefCommunityTopic extends CustomDefAbstract
             ->createQuery("
                 SELECT f
                 FROM DeskPRO:CustomDefCommunityTopic f
-                WHERE f.sys_name = 'chan' AND f.brand = :brand
+                WHERE f.sys_name = 'cat' AND f.brand = :brand
             ")
             ->setParameter('brand', $brand)
             ->setMaxResults(1)

@@ -139,7 +139,7 @@ portal.community.attachments: 첨부파일
 portal.community.btn-closed: 닫혔습니다
 portal.community.btn-vote: 동의합니다.
 portal.community.form_title: 제목
-portal.community.form_custom_chan: 범주
+portal.community.form_custom_cat: 범주
 portal.community.search-title: 피드백
 portal.community.section-title: 피드백
 portal.community.submit_community_topic: '피드백 작성하기'

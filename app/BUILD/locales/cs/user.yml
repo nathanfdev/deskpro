@@ -201,7 +201,7 @@ portal.community.form_logged_in_as: 'Přihlášen jako: <span>{{name}}</span>, z
 portal.community.form_logout: 'Nejste to vy?'
 portal.community.form_tell_us_more: 'Řekněte nám více'
 portal.community.form_title: Název
-portal.community.form_custom_chan: Kategorie
+portal.community.form_custom_cat: Kategorie
 portal.community.module_forbidden: 'Nemáte přístup k tomuto modulu'
 portal.community.no_matching: 'Žádná související připomínka'
 portal.community.none: 'Zatím žádná připomínka'
