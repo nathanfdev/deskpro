@@ -56,10 +56,14 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
      */
     public function apply(Ticket $ticket)
     {
+        $template = $this->getTemplate();
+
+        if (!$template) {
+            return;
+        }
+
         /** @var TicketApproval $approval */
-        $this->approval = TicketApproval::createFromTemplate(
-            $this->getTemplate()
-        );
+        $this->approval = TicketApproval::createFromTemplate($template);
 
         $this->approval->setTicket($ticket);
         $this->approval->setDescription($this->description);
