@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DpSys\License;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVariables;
@@ -238,6 +239,13 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     public function getMacros()
     {
         return App::$container->get('doctrine.orm.default_entity_manager')->getRepository(TicketMacro::class)->findAll();
+    }
+
+    public function getApprovalTemplates()
+    {
+        return App::$container->get('doctrine.orm.default_entity_manager')->getRepository(ApprovalTemplate::class)->findBy([], [
+            'name' => 'ASC',
+        ]);
     }
 
     public function getCustomFieldManager($type)

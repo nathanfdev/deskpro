@@ -30,6 +30,7 @@ class BaseApprovalType extends AbstractType
             ->add('template', EntityType::class, [
                 'required' => true,
                 'class' => ApprovalTemplate::class,
+                'mapped' => false,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],
