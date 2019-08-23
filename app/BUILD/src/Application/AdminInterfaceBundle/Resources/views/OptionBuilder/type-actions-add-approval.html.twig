@@ -1,0 +1,35 @@
+{% import 'AdminInterfaceBundle:OptionBuilder:type-filter-status.html.twig' as _macro %}
+
+<dp-optionbuilder-row>
+    <div class="dp-ob-standard-row">
+        <table class="display-table">
+            <tr>
+                <td width="60" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+                <td>
+                    <table class="display-table spaced" width="100%">
+                        <tr>
+                            <td>{{ phrase('admin.tickets.approval_template') }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select ui-select2 ng-model="model.approval_template_id" style="min-width: 140px">
+                                    {% for approvalTemplate in app.getApprovalTemplates() %}
+                                        <option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{{ phrase('admin.tickets.approval_description') }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea type="text" ng-model="model.description" class="form-control" style="width: 90%; height: 100px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</dp-optionbuilder-row>

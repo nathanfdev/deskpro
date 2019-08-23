@@ -207,6 +207,11 @@ define([
         value: 'AddBrandToPerson'
       });
 
+      options.push({
+        title: 'Add Approval',
+        value: 'AddApproval'
+      });
+
       set_options.push({
         title:      'Ticket Actions',
         subOptions: options
@@ -877,6 +882,36 @@ define([
               value.options = {};
               value.options.subject = model.subject || '';
               value.options.with_formatter = !!model.with_formatter;
+              return value;
+            }
+          };
+        }
+      };
+    }
+
+    getAddApproval(options) {
+      if (options == null) { options = {}; }
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-actions-add-approval.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+              return {
+                approval_template_id: options.approval_template_id || 0,
+                description: options.description || ''
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'AddApproval';
+              value.options = {};
+              value.options.approval_template_id = model.approval_template_id || 0;
+              value.options.description = model.description || '';
               return value;
             }
           };

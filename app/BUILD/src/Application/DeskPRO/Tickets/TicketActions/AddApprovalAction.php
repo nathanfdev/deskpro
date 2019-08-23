@@ -7,7 +7,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 
@@ -34,7 +33,7 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
     protected $person_context;
 
     /**
-     * @var AbstractBaseApproval
+     * @var TicketApproval
      */
     protected $approval;
 
@@ -45,7 +44,8 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
      * @param string $description
      * @throws \Exception
      */
-    public function __construct($approval_template_id, $description) {
+    public function __construct($approval_template_id, $description)
+    {
         $this->approval_template_id = $approval_template_id;
         $this->description = $description;
     }
@@ -62,7 +62,6 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
             return;
         }
 
-        /** @var TicketApproval $approval */
         $this->approval = TicketApproval::createFromTemplate($template);
 
         $this->approval->setTicket($ticket);
@@ -126,9 +125,9 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
      */
     private function getTemplate()
     {
-        return App::getContainer()->getEm()->getRepository(ApprovalTemplate::class)->findOneBy([
-            'id' => $this->approval_template_id,
-        ]);
+        return App::getContainer()->getEm()->getRepository(ApprovalTemplate::class)->find(
+            $this->approval_template_id
+        );
     }
 
     /**
@@ -148,7 +147,7 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
     }
 
     /**
-     * @return AbstractBaseApproval
+     * @return TicketApproval
      */
     public function getApproval()
     {

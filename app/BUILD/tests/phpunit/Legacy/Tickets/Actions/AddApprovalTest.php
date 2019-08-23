@@ -2,12 +2,10 @@
 
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\TicketActions\AddApprovalAction;
+use Application\DeskPRO\Tickets\Actions\AddApproval;
+use Application\DeskPRO\Tickets\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Approval\ApprovalManager;
-use DeskPRO\Bundle\AppBundle\Approval\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
@@ -18,72 +16,55 @@ use DpTestSrc\TestBundle\Mock\ContainerMock;
 use Mockery as m;
 
 /**
- * Class AddApprovalActionTest
+ * Class AddApprovalTest
  *
  * @package DpUnitTests\DeskPRO\Tickets\Actions
  */
-class AddApprovalActionTest extends DeskProTestCase
+class AddApprovalTest extends DeskProTestCase
 {
-    /**
-     * @var DeskproContainer
-     */
-    protected $containerBefore;
-
-    public function setUp()
-    {
-        $this->containerBefore = App::$container;
-    }
-
-    public function tearDown()
-    {
-        App::$container = $this->containerBefore;
-    }
-
     /**
      * @throws \Exception
      */
-    public function testApply()
+    public function testApplyAction()
     {
-        $approvalManagerSpy = $this->setUpContainer(false);
-
         $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-        $action = new AddApprovalAction(
-            1,
-            'test description'
-        );
+        list ($containerMock, $approvalManagerSpy) = $this->buildContainerMock(false);
 
-        $action->apply($ticket);
+        $action = new AddApproval(['approval_template_id' => 1, 'description' => 'action test description']);
+        $action->setContainer($containerMock);
+
+        $action->applyAction($ticket, $exec);
 
         $approvalManagerSpy->shouldHaveReceived('saveApproval');
 
-        $this->assertEquals('test description', $action->getApproval()->getDescription());
+        $this->assertEquals('action test description', $action->getApproval()->getDescription());
     }
 
     /**
      * @throws \Exception
      */
-    public function testApplyWithTemplateNotFound()
+    public function testApplyActionWithTemplateNotFound()
     {
-        $approvalManager = $this->setUpContainer(true);
-
         $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-        $action = new AddApprovalAction(
-            1,
-            'test description'
-        );
+        list ($containerMock, $approvalManagerSpy) = $this->buildContainerMock(true);
 
-        $action->apply($ticket);
+        $action = new AddApproval(['approval_template_id' => 1, 'description' => 'action test description']);
+        $action->setContainer($containerMock);
 
-        $approvalManager->shouldNotHaveReceived('saveApproval'); // NoOp
+        $action->applyAction($ticket, $exec);
+
+        $approvalManagerSpy->shouldNotHaveReceived('saveApproval'); // NoOp
     }
 
     /**
      * @param bool $returnNullTemplate
-     * @return m\Mock|ApprovalManager
+     * @return array
      */
-    private function setUpContainer($returnNullTemplate)
+    private function buildContainerMock($returnNullTemplate)
     {
         $em = m::mock(EntityManagerInterface::class)->shouldIgnoreMissing();
         $repo = m::mock(EntityRepository::class)->shouldIgnoreMissing();
@@ -111,7 +92,7 @@ class AddApprovalActionTest extends DeskProTestCase
         ;
 
         $approvalManager = m::spy(ApprovalManager::class)->shouldIgnoreMissing();
-        $execContext = m::mock(ExecutorContext::class)->shouldIgnoreMissing();
+        $execContext = m::mock(\DeskPRO\Bundle\AppBundle\Approval\ExecutorContext::class)->shouldIgnoreMissing();
 
         $approvalManager->shouldReceive('createContext')->withAnyArgs()->andReturn($execContext);
 
@@ -121,8 +102,6 @@ class AddApprovalActionTest extends DeskProTestCase
             ->andReturn($approvalManager)
         ;
 
-        App::$container = $containerMock;
-
-        return $approvalManager;
+        return [$containerMock, $approvalManager];
     }
 }
