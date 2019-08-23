@@ -1273,7 +1273,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						if (!oldPersonId) {
 							// new user
 							if (term.indexOf('@') !== -1) {
-								$('input.email', userfields).val(term);
+								$('input.email', userfields).val(term).trigger('change');
 							} else {
 								$('input.name', userfields).val(term);
 							}
