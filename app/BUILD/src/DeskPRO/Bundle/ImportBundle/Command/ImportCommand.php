@@ -78,12 +78,14 @@ class ImportCommand extends AbstractImporterCommand
 
         try {
             $sourceScript->runImport();
+            $container->get('dp.importer.source.helper.progress')->finishImport();
         } catch (\Exception $exception) {
             $container
                 ->get('dp.importer.event_dispatcher')
                 ->dispatch(ProgressEvent::ERROR, new ProgressEvent(null, ['failed_step' => self::STEP_IMPORT]));
+
+            throw $exception;
         } finally {
-            $container->get('dp.importer.source.helper.progress')->finishImport();
             $container->get('dp.importer.logger.job_progress')->flushLog();
             $container->get('dp.importer.logger.storage_handler')->flushLog();
         }

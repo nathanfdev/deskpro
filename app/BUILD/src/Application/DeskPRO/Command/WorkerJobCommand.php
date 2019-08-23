@@ -331,8 +331,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 }
             }
 
-            if (($failedStep === null || $failedStep === AbstractImporterCommand::STEP_APPLY) ||
-                $process->isSuccessful()
+            if ($failedStep === AbstractImporterCommand::STEP_APPLY ||
+                ($process->isStarted() && $process->isSuccessful())
             ) {
                 $cmd     = $appEnv->getConsolePhpCommand("dp:import:apply {$verboseFlag}-j {$importerJob->getId()}");
                 $process = new Process($cmd);
