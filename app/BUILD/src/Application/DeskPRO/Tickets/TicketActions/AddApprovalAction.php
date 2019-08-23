@@ -37,9 +37,9 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
      *
      * @param string|int $approval_template_id
      * @param string $description
+     * @throws \Exception
      */
-    public function __construct($approval_template_id, $description)
-    {
+    public function __construct($approval_template_id, $description) {
         $this->approval_template_id = $approval_template_id;
         $this->description = $description;
     }
