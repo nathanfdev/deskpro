@@ -67,6 +67,44 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       return this.types;
     }
+
+    /**
+     * Add type to list.
+     *
+     * @param {Object} template
+     * @returns {*}
+     */
+    addTemplate(template) {
+      return this.templates.push(template);
+    }
+
+    /**
+     * Remove template by ID.
+     *
+     * @param {integer} id
+     * @returns {*}
+     */
+    removeTemplateById(id) {
+      this.templates = this.templates.filter(obj => obj.id !== id);
+
+      return this.templates;
+    }
+
+    /**
+     * Update template data by ID.
+     *
+     * @param {integer} id
+     * @param {Object} data
+     * @returns {Array}
+     */
+    updateTemplateById(id, data) {
+      const index = this.templates.findIndex(obj => obj.id === id);
+      if (index > -1) {
+        this.templates[index] = Object.assign(data, { id: id });
+      }
+
+      return this.templates;
+    }
   }
 
   Admin_TicketApprovals_Ctrl_List.initClass();
