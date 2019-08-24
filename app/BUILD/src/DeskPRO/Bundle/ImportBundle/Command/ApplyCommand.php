@@ -169,7 +169,7 @@ class ApplyCommand extends AbstractImporterCommand
         }
 
         $job = $this->getJob($input);
-        if ($job && null === $job->getDataKey('failed_step')) {
+        if ($job && $job->getDataKey('failed_step') === null) {
             $dispatcher->dispatch(ProgressEvent::FINISH, new ProgressEvent());
             $output->writeln('<info>Done all.</info>');
         } else {
