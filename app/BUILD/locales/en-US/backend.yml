@@ -3065,7 +3065,7 @@ agent.general.create: Create
 agent.general.create_a_new_organization: 'Create a new organization'
 agent.general.create_a_new_person: 'Create a new person'
 agent.general.create_article: 'Create Article'
-agent.general.create_article_template: 'Create Article Template'
+agent.general.save_as_new_template: 'Save as New Template'
 agent.general.article_template_explanation: "Article template can be used for quick article creation.<br/><br/>All labels, fields and other article properties including brand, category and initial status would be stored in template which you can raise when creating an article."
 agent.general.create_content: 'Create Content'
 agent.general.create_deal: 'Create Deal'
