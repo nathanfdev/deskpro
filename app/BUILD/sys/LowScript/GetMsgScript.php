@@ -591,17 +591,6 @@ class GetMsgScript extends LowScriptAbstract
         return $default;
     }
 
-    protected $_container;
-
-    protected function _getContainer()
-    {
-        if (!$this->_container) {
-            $this->_container = $this->bootFullSystem('DeskPRO\\Kernel\\AgentKernel');
-        }
-
-        return $this->_container;
-    }
-
     protected $_person;
 
     protected function _getPerson()
