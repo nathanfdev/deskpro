@@ -989,7 +989,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			});
 			var txt = $('.edit-content-field', this.getEl('content_ed'));
 			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
-			  var contentInput = JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON());
+			  var contentInput = this.rte.current.editor.current.reactEditor.current.editor.getJSON();
 			  data.push({
 			    name: 'content',
 			    value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
@@ -1015,11 +1015,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			    name: 'content_input_type',
 			    value: 'rte'
 			  });
-        data.push({
-          name: 'language_id',
-          value: wrap.find('.article-editor-wrap').find('.language_id').val()
-        });
 			}
+      data.push({
+        name: 'language_id',
+        value: wrap.find('.article-editor-wrap').find('.language_id').val()
+      });
 			data.push({
 				name: 'restart-review-date',
 					value: $('.article-editor-wrap input[name="article[restart-review-date]"]', wrap).is(':checked') ? 1 : 0
@@ -1166,7 +1166,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	  if (this.rte) {
 	    return [{
         name: 'article[content_input]',
-        value: JSON.stringify(this.rte.current.editor.current.reactEditor.current.editor.getJSON())
+        value: this.rte.current.editor.current.reactEditor.current.editor.getJSON()
       },{
 	      name: 'article[language_id]',
         value: this.wrapper.find('.article-editor-wrap').find('.language_id').val()
@@ -1302,11 +1302,20 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var defaultContentInput = self.wrapper.find('.article-editor-wrap').find('.edit-content-field-default');
 
 			titleInput.val(defaultTitleInput.val());
+      var contentInput;
       if (window.DP_HAS_NEW_CONTENT_EDITOR && self.meta.content_input_type === 'dped_v1') {
         var rte = row.find('.trans_content').data('rte');
+        if (self.rte) {
+          contentInput = self.rte.current.editor.current.reactEditor.current.editor.getJSON();
+        } else {
+          if (window[self.meta.baseId + '_content_input']) {
+            contentInput = JSON.parse(window[self.meta.baseId + '_content_input']);
+          }
+        }
+        rte.current.editor.current.reactEditor.current.editor.setContent(contentInput);
         // @TODO Set Editor value
       } else {
-			  var contentInput = row.find('.editor-row').find('textarea').data('rte');
+			  contentInput = row.find('.editor-row').find('textarea').data('rte');
 			  contentInput.froalaEditor('html.set', defaultContentInput.val());
       }
 		});
@@ -1322,7 +1331,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
       if (window.DP_HAS_NEW_CONTENT_EDITOR && self.meta.content_input_type === 'dped_v1') {
         var rte = row.find('.trans_content').data('rte');
         var content = rte.current.editor.current.reactEditor.current.editor.getHTML();
-        var input = JSON.stringify(rte.current.editor.current.reactEditor.current.editor.getJSON());
+        var input = rte.current.editor.current.reactEditor.current.editor.getJSON();
         postData.push({name: titleName.replace(/title/, 'content'), value: content });
         postData.push({name: titleName.replace(/title/, 'input'), value: input });
       } else {

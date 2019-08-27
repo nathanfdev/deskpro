@@ -6667,6 +6667,15 @@ ul.categories-article-list {
     }
   }
 
+  .dp-editor-content {
+    ul {
+      list-style: disc outside;
+    }
+    ul[data-todo] {
+      list-style: none outside none;
+    }
+  }
+
 
 
   .rate-article {
