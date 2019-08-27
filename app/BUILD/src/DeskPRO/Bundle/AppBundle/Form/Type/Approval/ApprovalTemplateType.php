@@ -12,6 +12,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -49,14 +50,16 @@ class ApprovalTemplateType extends AbstractType
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\GreaterThan(['value' => 0])
+                    new Assert\GreaterThanOrEqual(['value' => 0]),
+                    new Assert\GreaterThan(['value' => 0, 'groups' => ['required_approvals_disallow_zero']]),
                 ],
             ])
             ->add('required_rejections', IntegerType::class, [
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\GreaterThan(['value' => 0])
+                    new Assert\GreaterThanOrEqual(['value' => 0]),
+                    new Assert\GreaterThan(['value' => 0, 'groups' => ['required_rejections_disallow_zero']]),
                 ],
             ])
             ->add('can_approvers_view_subject', ApiBooleanType::class, [
@@ -107,6 +110,13 @@ class ApprovalTemplateType extends AbstractType
             'data_class' => ApprovalTemplate::class,
             'csrf_protection' => false,
             'csrf_double_submit_protection' => false,
+            'validation_groups' => function (FormInterface $form) {
+                if (!$form->get('required_approvals')->getData() && !$form->get('required_rejections')->getData()) {
+                    return ['required_approvals_disallow_zero', 'required_rejections_disallow_zero', 'Default'];
+                }
+
+                return ['Default'];
+            },
         ]);
     }
 }

@@ -23,18 +23,18 @@ Feature: /ticket_approvals endpoint
     And the following ApproverCriteria objects exist:
       | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments |
       | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |
-      | ac2    | [1,2]     | 0         | []    | 0        | 0                    | []    | []          |
+      | ac2    | [1,2,3]   | 0         | []    | 0        | 0                    | []    | []          |
 
     And only the following ApprovalTemplate records exist:
       | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
-      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 4                  | {ac1}            | 1                       |
-      | at2 | Templ 2 | Approval Templ 2 | {atype2} | 2                 | 1                  | {ac2}            | 0                       |
+      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 1                  | {ac1}            | 1                       |
+      | at2 | Templ 2 | Approval Templ 2 | {atype2} | 1                 | 1                  | {ac2}            | 0                       |
 
     And only the following TicketApproval records exist:
       | #   | ticket | template | approvers | name               | type     | description | status    |
       | ta1 | {t1}   | {at1}    | [1]       | Ticket approval 01 | {atype1} | TA 01       | pending   |
-      | ta2 | {t1}   | {at2}    | [1,2]     | Ticket approval 02 | {atype2} | TA 02       | pending   |
-      | ta3 | {t1}   | {at2}    | [1,2]     | Ticket approval 03 | {atype2} | TA 03       | completed |
+      | ta2 | {t1}   | {at2}    | [1,2,3]   | Ticket approval 02 | {atype2} | TA 02       | pending   |
+      | ta3 | {t1}   | {at2}    | [1,2,3]   | Ticket approval 03 | {atype2} | TA 03       | completed |
 
   Scenario: I try to POST a ticket approval without authentication
     When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
@@ -72,7 +72,7 @@ Feature: /ticket_approvals endpoint
     And the JSON node "data.description" should be equal to "Approval description 01"
     And the JSON node "data.type" should be equal to "{atype1}"
     And the JSON node "data.required_approvals" should be equal to "1"
-    And the JSON node "data.required_rejections" should be equal to "4"
+    And the JSON node "data.required_rejections" should be equal to "1"
     And the JSON node "data.can_approvers_view_subject" should be equal to true
     And the JSON node "data.status" should be equal to "pending"
     And the JSON node "data.approvers" should have "1" element

@@ -171,15 +171,27 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Determine whether this approval is complete and produce an outcome after each response is given
+     * Determine if this approval is complete and produce an outcome after each response is given
      *
-     * @return string|null Approval status ("approved" or "rejected"), NULL for no change
+     * @param ApprovalResponse $lastResponse The last approval response to be provided by a user
+     * @return string|null Approval status ("approved" or "rejected"), NULL for no change (still pending)
      */
-    protected function determineOutcome()
+    protected function determineOutcome(ApprovalResponse $lastResponse)
     {
-        // todo: determine outcome algorithm
+        $requiredApprovals = $this->getRequiredApprovals();
+        $requiredRejections = $this->getRequiredRejections();
 
-        return self::STATUS_APPROVED;
+        if (count($this->getApprovers()) === $requiredApprovals && 0 === $requiredRejections) {
+            $requiredRejections = 1;
+        }
+
+        if (count($this->getApproveResponses()) >= $requiredApprovals) {
+            return self::STATUS_APPROVED;
+        } elseif (count($this->getRejectResponses()) >= $requiredRejections) {
+            return self::STATUS_REJECTED;
+        }
+
+        return null;
     }
 
     /**
@@ -309,7 +321,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
         // If we're not complete yet, try to determine outcome
         if (!self::isCompletionStatus($this->status)) {
-            if (self::isCompletionStatus($outcomeStatus = $this->determineOutcome())) {
+            if (self::isCompletionStatus($outcomeStatus = $this->determineOutcome($response))) {
                 $this->setStatus($outcomeStatus);
                 $this->markCompletedAt();
             }

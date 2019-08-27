@@ -197,42 +197,125 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
 
         $approval->addApprover(1);
 
-        $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
-        $approverMock->shouldReceive('getId')->withNoArgs()->andReturn(1);
-
-        $responseMock = m::mock(ApprovalResponse::class)->shouldIgnoreMissing();
-        $responseMock->shouldReceive('getApprover')->withNoArgs()->andReturn($approverMock);
-        $responseMock->shouldReceive('isApproved')->withNoArgs()->andReturn(true);
-        $responseMock->shouldReceive('isRejected')->withNoArgs()->andReturn(false);
-
-        $approval->addResponse($responseMock);
+        $approval->addResponse($this->buildResponseMock(1, 'approve'));
 
         $this->assertNotNull($approval->getLastApprovedResponseAt());
         $this->assertNull($approval->getLastRejectResponseAt());
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testAddResponseTimestampForLastRejectResponse()
     {
         $approval = new TicketApproval();
 
         $approval->addApprover(1);
 
-        $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
-        $approverMock->shouldReceive('getId')->withNoArgs()->andReturn(1);
-
-        $responseMock = m::mock(ApprovalResponse::class)->shouldIgnoreMissing();
-        $responseMock->shouldReceive('getApprover')->withNoArgs()->andReturn($approverMock);
-        $responseMock->shouldReceive('isApproved')->withNoArgs()->andReturn(false);
-        $responseMock->shouldReceive('isRejected')->withNoArgs()->andReturn(true);
-
-        $approval->addResponse($responseMock);
+        $approval->addResponse($this->buildResponseMock(1, 'reject'));
 
         $this->assertNull($approval->getLastApprovedResponseAt());
         $this->assertNotNull($approval->getLastRejectResponseAt());
     }
 
-    public function testAddResponseAndComplete()
+    public function testAddResponseAndCompleteApproved()
     {
-        // todo: wrote test after AbstractBaseApproval::determineOutcome() is written
+        $approval = new TicketApproval();
+
+        $approval->addApprover(1);
+        $approval->addApprover(2);
+
+        $approval->setRequiredApprovals(1);
+        $approval->setRequiredRejections(1);
+
+        $approval->addResponse($this->buildResponseMock(1, 'approve'));
+
+        $this->assertEquals(TicketApproval::STATUS_APPROVED, $approval->getStatus());
+
+        $approval = new TicketApproval();
+
+        $approval->addApprover(1);
+        $approval->addApprover(2);
+
+        $approval->setRequiredApprovals(2);
+        $approval->setRequiredRejections(1);
+
+        $approval->addResponse($this->buildResponseMock(1, 'approve'));
+
+        $this->assertEquals(TicketApproval::STATUS_PENDING, $approval->getStatus());
+
+        $approval->addResponse($this->buildResponseMock(1, 'approve'));
+
+        $this->assertEquals(TicketApproval::STATUS_APPROVED, $approval->getStatus());
+    }
+
+    public function testAddResponseAndCompleteRejected()
+    {
+        $approval = new TicketApproval();
+
+        $approval->addApprover(1);
+        $approval->addApprover(2);
+
+        $approval->setRequiredApprovals(1);
+        $approval->setRequiredRejections(1);
+
+        $approval->addResponse($this->buildResponseMock(1, 'reject'));
+
+        $this->assertEquals(TicketApproval::STATUS_REJECTED, $approval->getStatus());
+
+        $approval = new TicketApproval();
+
+        $approval->addApprover(1);
+        $approval->addApprover(2);
+
+        $approval->setRequiredApprovals(1);
+        $approval->setRequiredRejections(2);
+
+        $approval->addResponse($this->buildResponseMock(1, 'reject'));
+
+        $this->assertEquals(TicketApproval::STATUS_PENDING, $approval->getStatus());
+
+        $approval->addResponse($this->buildResponseMock(1, 'reject'));
+
+        $this->assertEquals(TicketApproval::STATUS_REJECTED, $approval->getStatus());
+    }
+
+    public function testAddResponseAndCompleteRejectedIfApproversCountMatchesApproversRequired()
+    {
+        $approval = new TicketApproval();
+
+        $approval->addApprover(1);
+        $approval->addApprover(2);
+
+        $approval->setRequiredApprovals(2);
+        $approval->setRequiredRejections(0);
+
+        $approval->addResponse($this->buildResponseMock(1, 'reject'));
+
+        $this->assertEquals(TicketApproval::STATUS_REJECTED, $approval->getStatus());
+    }
+
+    /**
+     * @param int $personId
+     * @param string $type approve|reject
+     * @return m\Mock|ApprovalResponse
+     */
+    private function buildResponseMock($personId, $type)
+    {
+        $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
+        $approverMock->shouldReceive('getId')->withNoArgs()->andReturn($personId);
+
+        $responseMock = m::mock(ApprovalResponse::class)->shouldIgnoreMissing();
+        $responseMock->shouldReceive('getApprover')->withNoArgs()->andReturn($approverMock);
+
+        if ('approve' === $type) {
+            $responseMock->shouldReceive('isApproved')->withNoArgs()->andReturn(true);
+            $responseMock->shouldReceive('isRejected')->withNoArgs()->andReturn(false);
+        } else {
+            $responseMock->shouldReceive('isApproved')->withNoArgs()->andReturn(false);
+            $responseMock->shouldReceive('isRejected')->withNoArgs()->andReturn(true);
+        }
+
+        return $responseMock;
     }
 }

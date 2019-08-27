@@ -30,7 +30,7 @@ Feature: Ticket approval triggers
   "required_rejections": 1,
   "can_approvers_view_subject": true,
   "approver_criteria": {
-    "agents": [1]
+    "agents": [1,2]
   },
   "actions_on_approved": [{
 			"type": "SetSubject",

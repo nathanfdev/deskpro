@@ -243,7 +243,9 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
      */
     public function setRequiredApprovals($requiredApprovals)
     {
-        $this->setModelField('requiredApprovals', $requiredApprovals);
+        self::assertZeroOrMoreRequiredApprovers($requiredApprovals);
+
+        $this->setModelField('requiredApprovals', (int) $requiredApprovals);
 
         return $this;
     }
@@ -262,7 +264,9 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
      */
     public function setRequiredRejections($requiredRejections)
     {
-        $this->setModelField('requiredRejections', $requiredRejections);
+        self::assertZeroOrMoreRequiredApprovers($requiredRejections);
+
+        $this->setModelField('requiredRejections', (int) $requiredRejections);
 
         return $this;
     }
@@ -437,5 +441,17 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
     public function getActionsOnRejected()
     {
         return $this->actionsOnRejected;
+    }
+
+    /**
+     * @param int $requiredApprovers
+     */
+    private static function assertZeroOrMoreRequiredApprovers($requiredApprovers)
+    {
+        if ($requiredApprovers < 0) {
+            throw new \DomainException(
+                sprintf('Number of required approvals/rejections must be zero or more, %d given', $requiredApprovers)
+            );
+        }
     }
 }

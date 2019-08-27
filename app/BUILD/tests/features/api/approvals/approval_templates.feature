@@ -51,9 +51,6 @@ Feature: /approval_templates endpoint
     And the JSON node "errors.fields.required_approvals.errors[0].message" should be equal to "This value should not be blank."
     And the JSON node "errors.fields.required_rejections.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.required_rejections.errors[0].message" should be equal to "This value should not be blank."
-    # These two tests can be reinstated when we use a version of symfony which addresses this bug: https://github.com/symfony/symfony/issues/9961
-    # And the JSON node "errors.fields.agent_can_choose_approvers.errors[0].code" should be equal to "required"
-    # And the JSON node "errors.fields.agent_can_choose_approvers.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I POST an approval template as admin with invalid agents in criteria
     Given I'm authenticated as "admin"
@@ -74,6 +71,27 @@ Feature: /approval_templates endpoint
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].code" should be equal to "invalid_approver_criteria"
+
+  Scenario: I POST an approval template as admin with invalid approval and rejection thresholds
+    Given I'm authenticated as "admin"
+    When I send a POST request to "/api/v2/approval_templates" with body:
+            """
+{
+  "name": "Approval Template 1",
+  "description": "Approval template 1 description",
+  "type": ~atype1~,
+  "required_approvals": 0,
+  "required_rejections": 0,
+  "can_approvers_view_subject": true,
+  "approver_criteria": {
+    "agents": [1]
+  }
+}
+            """
+    Then the response status code should be 400
+    Then the response should be in JSON
+    And the JSON node "errors.fields.required_approvals.errors" should have "1" element
+    And the JSON node "errors.fields.required_rejections.errors" should have "1" element
 
   Scenario: I POST an approval template as admin with invalid users in criteria
     Given I'm authenticated as "admin"
