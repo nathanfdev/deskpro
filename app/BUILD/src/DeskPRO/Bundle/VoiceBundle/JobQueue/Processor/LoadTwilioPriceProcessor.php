@@ -6,6 +6,8 @@ use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
@@ -61,7 +63,23 @@ class LoadTwilioPriceProcessor extends AbstractJobProcessor
                 throw new \RuntimeException("Voice account {$data['account_id']} not found");
             }
 
-            $callInfo = $this->twilioAdapter->getCallInfo($account, $data['call_sid']);
+            $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($data['call_id']);
+            if (!$phoneCall) {
+                throw new \RuntimeException("Phone call {$data['call_id']} not found");
+            }
+
+            $initial = false;
+
+            $participant = $phoneCall->getParticipantByCallSid($data['call_sid']);
+            if ($phoneCall->isIncomingCall()) {
+                if ($participant instanceof VoicePhoneCallParticipantUser) {
+                    $initial = true;
+                }
+            } elseif ($participant === $phoneCall->getAgentParticipants()->first()) {
+                $initial = true;
+            }
+
+            $callInfo = $this->twilioAdapter->getCallInfo($account, $data['call_sid'], $initial);
             if ($callInfo && $callInfo->price) {
                 $this->jobQueue->addJob(new Job(VoiceCallCostProcessor::JOB_TYPE, [
                     'call_sid' => $data['call_sid'],

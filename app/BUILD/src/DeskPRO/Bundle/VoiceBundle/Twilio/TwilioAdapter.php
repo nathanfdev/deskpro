@@ -16,6 +16,7 @@ use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioCountry;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
+use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\CallContextProxy;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
@@ -643,15 +644,21 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * @param TwilioVoiceAccount $account
      * @param string             $callSid
+     * @param bool               $initial
      *
      * @throws \Exception
      *
-     * @return CallInstance
+     * @return CallInstance|null
      */
-    public function getCallInfo(TwilioVoiceAccount $account, $callSid)
+    public function getCallInfo(TwilioVoiceAccount $account, $callSid, $initial)
     {
         try {
-            return  $this->getClient($account)->calls($callSid)->fetch();
+            $context = $this->getClient($account)->calls($callSid);
+            if ($context instanceof CallContextProxy) {
+                return $context->fetch($initial);
+            }
+
+            return $context->fetch();
         } catch (\Exception $e) {
         }
 
