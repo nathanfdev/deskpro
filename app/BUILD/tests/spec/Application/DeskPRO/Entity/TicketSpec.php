@@ -34,6 +34,7 @@ class TicketSpec extends ObjectBehavior
 
         $colin->getId()->willReturn(3);
         $colin->getPrimaryEmail()->willReturn(null);
+        $colin->getEmailAddresses(false, false)->willReturn([]);
         $colin->getOrganization()->willReturn(null);
         $colin->isOrganizationManager()->willReturn(false);
         $colin->isAgent()->willReturn(false);
@@ -79,6 +80,7 @@ class TicketSpec extends ObjectBehavior
     ) {
         $bob->getId()->willReturn(1);
         $bob->getPrimaryEmail()->willReturn(null);
+        $bob->getEmailAddresses(false, false)->willReturn([]);
         $alice->getId()->willReturn(2);
 
         $this->addParticipantPerson($bob);
