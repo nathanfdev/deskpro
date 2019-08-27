@@ -243,7 +243,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             if ($person && !$person->is_agent && !$isBounce) {
-                if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
+                if (!in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
                     $ticket->addParticipantPerson($person);
                 }
             }
