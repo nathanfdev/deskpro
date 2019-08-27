@@ -641,20 +641,15 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
-     * @param VoicePhoneCall $phoneCall
-     * @param string         $callSid
+     * @param TwilioVoiceAccount $account
+     * @param string             $callSid
      *
      * @throws \Exception
      *
      * @return CallInstance
      */
-    public function getCallInfo(VoicePhoneCall $phoneCall, $callSid)
+    public function getCallInfo(TwilioVoiceAccount $account, $callSid)
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
         try {
             return  $this->getClient($account)->calls($callSid)->fetch();
         } catch (\Exception $e) {
