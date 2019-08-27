@@ -57,6 +57,8 @@ abstract class LowScriptAbstract
      */
     protected $settings;
 
+    protected $_container;
+
     /**
      * serve_abstract constructor.
      *
@@ -392,5 +394,14 @@ abstract class LowScriptAbstract
         }
 
         return $agentSession;
+    }
+
+    protected function _getContainer()
+    {
+        if (!$this->_container) {
+            $this->_container = $this->bootFullSystem();
+        }
+
+        return $this->_container;
     }
 }
