@@ -109,4 +109,44 @@ class SchemaHelper
 
         return;
     }
+
+    /**
+     * This will rename columns with recreating all FKs.
+     *
+     * @param string $table
+     * @param string $oldColName
+     * @param string $newColName
+     */
+    public function renameColumn($tableName, $oldColName, $newColName)
+    {
+        $fks   = $this->getSchemaManager()->listTableForeignKeys($tableName);
+        $table = $this->getSchemaManager()->listTableDetails($tableName);
+        $col   = $table->getColumn($oldColName);
+
+        foreach ($fks as $fk) {
+            $this->db->executeQuery(sprintf('ALTER TABLE `%s` DROP FOREIGN KEY `%s`', $tableName, $fk->getName()));
+        }
+        $this->db->executeQuery(sprintf('ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s', $tableName, $oldColName,
+            $newColName, $col->getType()->getSQLDeclaration($col->toArray(), $this->db->getDatabasePlatform())));
+
+        foreach ($fks as $fk) {
+            $addFKQuery = sprintf(
+                'ALTER TABLE `%s` ADD CONSTRAINT `%s` FOREIGN KEY (`%s`) REFERENCES `%s` (`%s`)',
+                $tableName,
+                $fk->getName(),
+                implode(',', array_map(function ($column) use ($oldColName, $newColName) {
+                    return $column === $oldColName ? $newColName : $column;
+                }, $fk->getColumns())),
+                $fk->getForeignTableName(),
+                implode(',', $fk->getForeignColumns())
+            );
+            if ($fk->onDelete()) {
+                $addFKQuery .= ' ON DELETE '.$fk->onDelete();
+            }
+            if ($fk->onUpdate()) {
+                $addFKQuery .= ' ON UPDATE '.$fk->onUpdate();
+            }
+            $this->db->executeQuery($addFKQuery);
+        }
+    }
 }
