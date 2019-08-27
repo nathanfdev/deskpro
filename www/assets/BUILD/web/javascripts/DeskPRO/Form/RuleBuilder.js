@@ -402,7 +402,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		try {
       row.find('[data-custom-field]').dpMultiLevelSelect();
     } catch (e) {
-      //
+      console.warning('Can\'t init multiselect on non selectable field', e);
     }
 
 		if (row.data('form-base-name')) {
