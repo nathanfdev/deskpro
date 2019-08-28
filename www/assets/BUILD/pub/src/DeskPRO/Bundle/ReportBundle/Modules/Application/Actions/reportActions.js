@@ -30,6 +30,10 @@ export const loadReport = createAction(
   id => (dispatch) => {
     const promise = repository('Reports').load(id);
     promise.success((response) => {
+      const collectionData = response.data;
+      if (response.linked && response.linked.additional_info && response.linked.additional_info[response.data.id]) {
+        collectionData.additional_info = response.linked.additional_info[response.data.id];
+      }
       dispatch(addToCollection('Reports', 'all', { [response.data.id]: response.data }, [response.data.id]));
     });
 
