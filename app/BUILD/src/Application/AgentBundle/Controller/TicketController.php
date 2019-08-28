@@ -1224,6 +1224,8 @@ class TicketController extends AbstractController
 
         $person = $this->em->find(Person::class, $this->in->getUInt('person_id'));
 
+        $newUser = false;
+
         if ($person) {
             $this->db->beginTransaction();
 
@@ -1231,7 +1233,15 @@ class TicketController extends AbstractController
                 $part = $ticket->removeParticipantPerson($person);
 
                 if (!$part) {
-                    return $this->createJsonResponse(['success' => false]);
+                    if ($person->getId() === $ticket->getPersonId() && $this->in->getBool('confirmed')) {
+                        $newUser = $this->em->find(Person::class, $this->in->getUInt('new_user_id'));
+                        if (!$newUser) {
+                            return $this->createJsonResponse(['success' => false]);
+                        }
+                        $ticket->setPerson($newUser);
+                    } else {
+                        return $this->createJsonResponse(['success' => false]);
+                    }
                 }
 
                 $ticket->getTicketLogger()->done();
@@ -1258,7 +1268,20 @@ class TicketController extends AbstractController
             }
         }
 
-        return $this->createJsonResponse(['success' => true, 'cc_list' => $this->_getTicketCcList($ticket)]);
+        $vars = [
+            'success' => true,
+            'cc_list' => $this->_getTicketCcList($ticket),
+        ];
+
+        if ($newUser) {
+            $userVars = [
+                'ticket'      => $ticket,
+                'person_repo' => $this->em->getRepository(Person::class),
+            ];
+            $vars['new_user'] = $this->renderView('AgentBundle:Ticket:view-ticket-person-holder.html.twig', $userVars);
+        }
+
+        return $this->createJsonResponse($vars);
     }
 
     public function setAgentParticipantsAction($ticket_id)

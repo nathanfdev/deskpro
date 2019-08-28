@@ -4789,6 +4789,7 @@ agent.tickets.close_tab_tip: 'Close this tab after your message is saved'
 agent.tickets.coment_after_ticket_created: 'comment after ticket is created'
 agent.tickets.commented_on: 'Commented on'
 agent.tickets.confirm_remove_absent: 'Are you sure you want to remove {{person}} from this ticket?'
+agent.tickets.confirm_remove_user: 'Removing {{person}} will result in {{sender}} becoming the ticket owner'
 agent.tickets.count_agents:
   one: '1 agent'
   other: '{{count}} agents'
