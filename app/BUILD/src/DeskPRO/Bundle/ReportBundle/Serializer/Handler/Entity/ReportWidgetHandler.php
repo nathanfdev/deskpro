@@ -16,7 +16,6 @@ use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportWidget as ReportWidgetModel;
 use Doctrine\ORM\EntityManager;
-use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class ReportWidgetHandler.
@@ -104,8 +103,6 @@ class ReportWidgetHandler extends AbstractEntityHandler
 
             if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
                 $extendedQuery = true;
-            } else {
-                SystemErrorHandler::logException($e);
             }
         }
 
@@ -174,8 +171,6 @@ class ReportWidgetHandler extends AbstractEntityHandler
 
             return $result;
         } catch (\Exception $e) {
-            SystemErrorHandler::logException($e);
-
             return;
         }
     }
