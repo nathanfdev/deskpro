@@ -1232,6 +1232,55 @@ LIMIT 100
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
+        'count-ticket-approvals-by-status' => [
+            'title'         => 'Count of approvals that are ${status} grouped by ${grouping}',
+            'labels'        => 'tickets,approvals',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 316,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'Ticket Approvals\'
+                FROM ticket_approvals
+                WHERE ${status}
+                GROUP BY ${grouping}
+            ',
+            'variables' => '[{"type":"statuses","name":"status","table":"","default":"pending","field_type":"ticket_approvals"},{"type":"fields","name":"grouping","default":"type","field_type":"ticket_approvals"}]',
+        ],
+        'average-resolution-time-ticket-approvals' => [
+            'title'         => 'Average resolution time for approvals created ${date} grouped by ${grouping}',
+            'labels'        => 'tickets,approvals',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 317,
+            'query'         => '
+                SELECT COALESCE(AVG(UNIX_TIMESTAMP(IF(ticket_approvals.status = \'cancelled\', ticket_approvals.cancelled_at, ticket_approvals.completed_at)) - UNIX_TIMESTAMP(ticket_approvals.created_at)), 0) / (60 * 60) AS \'Average Time (Hours)\'
+                FROM ticket_approvals
+                WHERE ticket_approvals.created_at = ${date}
+                GROUP BY ${grouping}
+            ',
+            'variables' => '[{"type":"dates","name":"date","default":"today"},{"name":"grouping","type":"fields","default":"type","field_type":"ticket_approvals"}]',
+        ],
+        'ticket-approval-responses-by-ballot' => [
+            'title'         => 'Approval responses by ballot grouped by ${grouping} created ${date}',
+            'labels'        => 'tickets,approvals',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 318,
+            'query'         => '
+                SELECT DPQL_COUNT(IF(approval_responses.vote = 1, 1, NULL)) AS \'Approvals\', \'Responses\' AS \'value_axis_title\'
+                FROM approval_responses
+                WHERE approval_responses.approval.created_at = ${date} 
+                GROUP BY ${grouping}
+                
+                LAYER WITH
+                
+                SELECT DPQL_COUNT(IF(approval_responses.vote = -1, 1, NULL)) AS \'Rejections\'
+                FROM approval_responses
+                WHERE approval_responses.approval.created_at = ${date} 
+                GROUP BY ${grouping}
+            ',
+            'variables' => '[{"type":"fields","name":"grouping","default":"approval_template","value":"","field_type":"ticket_approvals","field_value":"","table":"approval_responses.approval"},{"type":"dates","name":"date","default":"today"}]',
+        ],
     ];
 
     /**

@@ -8,6 +8,10 @@ use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -335,6 +339,10 @@ class SelectPart
         'voice_queue_agents'                => VoiceQueueAgent::class,
         'voice_recordings'                  => VoiceRecording::class,
         'agent_data'                        => AgentData::class,
+        'approval_types'                     => ApprovalType::class,
+        'approval_templates'                 => ApprovalTemplate::class,
+        'approval_responses'                 => ApprovalResponse::class,
+        'ticket_approvals'                   => TicketApproval::class,
     ];
 
     /**

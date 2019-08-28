@@ -9,7 +9,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class ApprovalType
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketApprovalRepository")
  * @ORM\Table(name="ticket_approvals")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  *

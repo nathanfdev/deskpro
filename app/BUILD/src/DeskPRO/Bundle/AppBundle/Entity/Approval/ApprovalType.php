@@ -13,7 +13,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class ApprovalType
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalTypeRepository")
  * @ORM\Table(name="approval_types")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
