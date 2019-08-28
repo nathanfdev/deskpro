@@ -76,7 +76,9 @@ class TicketMessageListener implements EventSubscriber
         $participants[] = $ticket->getPerson();
 
         foreach ($ticket->getParticipants() as $participant) {
-            $participants[] = $participant->getPerson();
+            if (!$participant->getPerson()->isAgent()) {
+                $participants[] = $participant->getPerson();
+            }
         }
         // We won't display anything if there's only on recipient
         if (count($recipients) <= 0 && count($participants) <= 1) {
