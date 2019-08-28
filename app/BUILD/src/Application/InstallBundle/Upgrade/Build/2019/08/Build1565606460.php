@@ -26,7 +26,7 @@ class Build1565606460 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'RENAME TABLE ticket_feedback_links TO ticket_community_topics_links');
 
         // change columns
-        $this->getSchemaHelper()->renameColumn('community_topic_revisions', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_topic_revisions', 'feedback_id', 'community_topic_id');
         $this->getSchemaHelper()->renameColumn('custom_data_community_topic', 'feedback_id', 'topic_id');
         $this->getSchemaHelper()->renameColumn('community_topic_subscriptions', 'feedback_id', 'topic_id');
         $this->getSchemaHelper()->renameColumn('community_topic_slug_history', 'feedback_id', 'topic_id');
@@ -36,6 +36,7 @@ class Build1565606460 extends AbstractBuild implements BlockingBuildInterface, S
         $this->getSchemaHelper()->renameColumn('community_channel2usergroup', 'category_id', 'community_channel_id');
         $this->getSchemaHelper()->renameColumn('content_subscriptions', 'feedback_id', 'topic_id');
         $this->getSchemaHelper()->renameColumn('community_topics', 'category_id', 'channel_id');
+        $this->getSchemaHelper()->renameColumn('labels_community_topics', 'feedback_id', 'topic_id');
     }
 
     public function run()
