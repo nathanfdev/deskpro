@@ -238,14 +238,18 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function getMacros()
     {
-        return App::$container->get('doctrine.orm.default_entity_manager')->getRepository(TicketMacro::class)->findAll();
+        return App::$container->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TicketMacro::class)
+            ->findAll()
+        ;
     }
 
-    public function getApprovalTemplates()
+    public function getApprovalTemplatesWhereAgentCannotSelect()
     {
-        return App::$container->get('doctrine.orm.default_entity_manager')->getRepository(ApprovalTemplate::class)->findBy([], [
-            'name' => 'ASC',
-        ]);
+        return App::$container->get('doctrine.orm.default_entity_manager')
+            ->getRepository(ApprovalTemplate::class)
+            ->findByAgentNotAllowedToSelectApprovers()
+        ;
     }
 
     public function getCustomFieldManager($type)

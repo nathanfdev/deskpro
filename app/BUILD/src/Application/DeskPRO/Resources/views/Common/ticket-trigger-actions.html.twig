@@ -246,7 +246,7 @@
 		<div>
 			<label for="approval_template_id">{{ phrase('agent.tickets.approval_template') }}</label><br />
 			<select name="approval_template_id">
-				{% for approvalTemplate in app.getApprovalTemplates() %}
+				{% for approvalTemplate in app.getApprovalTemplatesWhereAgentCannotSelect() %}
 					<option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
 				{% endfor %}
 			</select>

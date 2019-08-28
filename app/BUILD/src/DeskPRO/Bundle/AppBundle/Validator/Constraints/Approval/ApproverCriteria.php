@@ -8,6 +8,8 @@ use Symfony\Component\Validator\Constraint;
  * Class ApproverCriteria
  *
  * @package DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval
+ *
+ * @Annotation
  */
 class ApproverCriteria extends Constraint
 {
@@ -19,4 +21,5 @@ class ApproverCriteria extends Constraint
     public $invalidUserListMessage = 'Invalid list of users';
     public $invalidTeamListMessage = 'Invalid list of teams';
     public $invalidDepartmentListMessage = 'Invalid list of departments';
+    public $ifCannotChooseApproversMustDefineApproversMessage = 'If an agent cannot choose approvers, then agent and/or user approvers must be supplied';
 }

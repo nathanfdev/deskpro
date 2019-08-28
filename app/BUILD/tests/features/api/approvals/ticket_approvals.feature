@@ -21,14 +21,16 @@ Feature: /ticket_approvals endpoint
       | atype2 | Approval Type 2 | Description 2 | true      |
 
     And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |
-      | ac2    | [1,2,3]   | 0         | []    | 0        | 0                    | []    | []          |
+      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | canChooseApprovers |
+      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          | 1                  |
+      | ac2    | [1,2,3]   | 0         | []    | 0        | 0                    | []    | []          | 0                  |
+      | ac3    | []        | 1         | []    | 0        | 0                    | []    | []          | 1                  |
 
     And only the following ApprovalTemplate records exist:
       | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
       | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 1                  | {ac1}            | 1                       |
       | at2 | Templ 2 | Approval Templ 2 | {atype2} | 1                 | 1                  | {ac2}            | 0                       |
+      | at3 | Templ 3 | Approval Templ 3 | {atype2} | 2                 | 0                  | {ac3}            | 1                       |
 
     And only the following TicketApproval records exist:
       | #   | ticket | template | approvers | name               | type     | description | status    |
@@ -53,6 +55,20 @@ Feature: /ticket_approvals endpoint
     And the response status code should be 400
     And the JSON node "errors.fields.template.errors[0].code" should be equal to "required"
     And the JSON node "errors.fields.template.errors[0].message" should be equal to "This value should not be blank."
+
+  Scenario: I POST a ticket approval as admin and don't have enough approvers to meet min threshold
+    Given I'm authenticated as "agent"
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals" with body:
+            """
+{
+  "description": "Approval description 01",
+  "template": ~at3~,
+  "approvers": [1]
+}
+            """
+    Then the response status code should be 400
+    Then the response should be in JSON
+    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
 
   Scenario: I POST a valid ticket approval as admin
     Given I'm authenticated as "agent"

@@ -46,7 +46,6 @@ class ApproverCriteriaValidator extends ConstraintValidator
         if (!($value instanceof ApproverCriteriaObj)) {
             $context
                 ->buildViolation($constraint->invalidObjectMessage)
-                ->setCode(ApproverCriteria::APPROVER_CRITERIA)
                 ->addViolation()
             ;
         }
@@ -66,7 +65,6 @@ class ApproverCriteriaValidator extends ConstraintValidator
         if ((count(array_unique($objectFlags)) === 1) && current($objectFlags) === false) {
             $context
                 ->buildViolation($constraint->mustProvideAtLeastOneCriteriaMessage)
-                ->setCode(ApproverCriteria::APPROVER_CRITERIA)
                 ->addViolation()
             ;
         }
@@ -75,7 +73,6 @@ class ApproverCriteriaValidator extends ConstraintValidator
         if (!$this->isAgentListValid($value->getAgents())) {
             $context
                 ->buildViolation($constraint->invalidAgentListMessage)
-                ->setCode(ApproverCriteria::APPROVER_CRITERIA)
                 ->addViolation()
             ;
         }
@@ -84,7 +81,6 @@ class ApproverCriteriaValidator extends ConstraintValidator
         if (!$this->isUserListValid($value->getUsers())) {
             $context
                 ->buildViolation($constraint->invalidUserListMessage)
-                ->setCode(ApproverCriteria::APPROVER_CRITERIA)
                 ->addViolation()
             ;
         }
@@ -93,7 +89,6 @@ class ApproverCriteriaValidator extends ConstraintValidator
         if (!$this->isTeamListValid($value->getTeams())) {
             $context
                 ->buildViolation($constraint->invalidTeamListMessage)
-                ->setCode(ApproverCriteria::APPROVER_CRITERIA)
                 ->addViolation()
             ;
         }
@@ -102,9 +97,18 @@ class ApproverCriteriaValidator extends ConstraintValidator
         if (!$this->isDepartmentListValid($value->getDepartments())) {
             $context
                 ->buildViolation($constraint->invalidDepartmentListMessage)
-                ->setCode(ApproverCriteria::APPROVER_CRITERIA)
                 ->addViolation()
             ;
+        }
+
+        // If agent cannot choose approvers, make sure that approvers are explicitly defined
+        if (! $value->canChooseApprovers()) {
+            if (!count($value->getAgents()) && !count($value->getUsers())) {
+                $context
+                    ->buildViolation($constraint->ifCannotChooseApproversMustDefineApproversMessage)
+                    ->addViolation()
+                ;
+            }
         }
     }
 

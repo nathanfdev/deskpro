@@ -23,6 +23,9 @@ class ApproverCriteriaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('can_choose_approvers', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('agents', CollectionType::class, [
                 'required' => false,
                 'entry_type' => IntegerType::class,

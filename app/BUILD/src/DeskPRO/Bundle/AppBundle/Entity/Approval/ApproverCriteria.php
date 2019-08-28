@@ -13,6 +13,14 @@ use Orb\Types\JsonObjectSerializable;
 class ApproverCriteria implements JsonObjectSerializable
 {
     /**
+     * @var bool
+     *
+     * @JMS\Expose
+     * @JMS\Type("boolean")
+     */
+    private $canChooseApprovers = true;
+
+    /**
      * @var int[]
      *
      * @JMS\Expose
@@ -67,6 +75,26 @@ class ApproverCriteria implements JsonObjectSerializable
      * @JMS\Type("array<integer>")
      */
     private $departments = [];
+
+    /**
+     * @return bool
+     */
+    public function canChooseApprovers()
+    {
+        return $this->canChooseApprovers;
+    }
+
+    /**
+     * @param bool $canChooseApprovers
+     * @return ApproverCriteria
+     */
+    public function setCanChooseApprovers($canChooseApprovers)
+    {
+        $this->canChooseApprovers = (bool) $canChooseApprovers;
+
+        return $this;
+    }
+
 
     /**
      * @return int[]|null

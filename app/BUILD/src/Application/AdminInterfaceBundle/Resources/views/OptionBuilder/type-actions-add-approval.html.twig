@@ -13,7 +13,7 @@
                         <tr>
                             <td>
                                 <select ui-select2 ng-model="model.approval_template_id" style="min-width: 140px">
-                                    {% for approvalTemplate in app.getApprovalTemplates() %}
+                                    {% for approvalTemplate in app.getApprovalTemplatesWhereAgentCannotSelect() %}
                                         <option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
                                     {% endfor %}
                                 </select>

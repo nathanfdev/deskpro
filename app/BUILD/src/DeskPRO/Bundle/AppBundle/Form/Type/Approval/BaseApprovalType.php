@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Approval;
 
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApprovalThresholds;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -42,8 +43,8 @@ class BaseApprovalType extends AbstractType
                 'allow_delete' => false,
                 'by_reference' => false,
                 'constraints' => [
-                    new Assert\Count(['min' => 0, 'max' => AbstractBaseApproval::APPROVERS_MAX, 'groups' => ['if_criteria_contains_users']]),
-                    new Assert\Count(['min' => 1, 'max' => AbstractBaseApproval::APPROVERS_MAX, 'groups' => ['if_criteria_doesnt_contains_users']]),
+                    new Assert\Count(['min' => 1, 'max' => AbstractBaseApproval::APPROVERS_MAX, 'groups' => ['can_choose_approvers']]),
+                    new Assert\Count(['min' => 0, 'max' => 0, 'groups' => ['cannot_choose_approvers']]),
                 ],
             ])
             ->add('description', TextType::class, [
@@ -73,15 +74,21 @@ class BaseApprovalType extends AbstractType
             'csrf_protection' => false,
             'csrf_double_submit_protection' => false,
             'validation_groups' => function (FormInterface $form) {
-                if ($template = $form->get('template')->getData()) {
-                    return $template->getApproverCriteria()->hasPeople()
-                        ? ['Default', 'if_criteria_contains_users']
-                        : ['Default', 'if_criteria_doesnt_contains_users']
-                    ;
+                /** @var ApprovalTemplate $template */
+                $template = $form->get('template')->getData();
+
+                if (!$template) {
+                    return ['Default'];
                 }
 
-                return ['Default'];
-            }
+                return $template->getApproverCriteria()->canChooseApprovers()
+                    ? ['can_choose_approvers', 'Default']
+                    : ['cannot_choose_approvers', 'Default']
+                ;
+            },
+            'constraints' => [
+                new ApprovalThresholds(),
+            ],
         ]);
 
         $resolver->setRequired([

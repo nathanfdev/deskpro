@@ -6,6 +6,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\Webhooks\TriggerActionsFormType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApprovalThresholds;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApproverCriteria;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -117,6 +118,9 @@ class ApprovalTemplateType extends AbstractType
 
                 return ['Default'];
             },
+            'constraints' => [
+                new ApprovalThresholds(),
+            ],
         ]);
     }
 }

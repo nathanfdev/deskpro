@@ -157,12 +157,16 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $approval->setActionsOnApproved($template->getActionsOnApproved());
         $approval->setActionsOnRejected($template->getActionsOnRejected());
 
-        foreach ($template->getApproverCriteria()->getAgents() as $agentId) {
-            $approval->addApprover($agentId);
-        }
+        $approverCriteria = $template->getApproverCriteria();
 
-        foreach ($template->getApproverCriteria()->getUsers() as $userId) {
-            $approval->addApprover($userId);
+        if (!$approverCriteria->canChooseApprovers()) {
+            foreach ($approverCriteria->getAgents() as $agentId) {
+                $approval->addApprover($agentId);
+            }
+
+            foreach ($approverCriteria->getUsers() as $userId) {
+                $approval->addApprover($userId);
+            }
         }
 
         $approval->setTemplate($template);
