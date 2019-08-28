@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompileException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
@@ -16,6 +17,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportWidget as ReportWidgetModel;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class ReportWidgetHandler.
@@ -94,7 +96,6 @@ class ReportWidgetHandler extends AbstractEntityHandler
         }
 
         $extendedQuery = false;
-
         try {
             $statement  = $this->compiler->compile($entity->getQuery());
             $queryParts = $statement->getDpqlPartsForInput();
@@ -103,6 +104,16 @@ class ReportWidgetHandler extends AbstractEntityHandler
 
             if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
                 $extendedQuery = true;
+            } elseif ($e instanceof DpqlCompileException) {
+                $extendedQuery = true;
+                $context->setIncludes(array_merge($context->getIncludes(), ['additional_info']));
+                $sideloads = $context->getSideloadStore();
+                $sideloads->addCustomSideload('additional_info',
+                    $entity->getId(),
+                    new CallbackDeferredProperty([$this, 'getAdditionalInfo'], [$entity, $e])
+                );
+            } else {
+                SystemErrorHandler::logException($e);
             }
         }
 
@@ -189,5 +200,10 @@ class ReportWidgetHandler extends AbstractEntityHandler
         }
 
         return array_values($reports);
+    }
+
+    public function getAdditionalInfo(ReportWidgetEntity $entity, DpqlCompileException $e)
+    {
+        return $e->getMessage();
     }
 }

@@ -280,7 +280,7 @@ export class EditFormComponent extends React.Component {
   }
 
   static isExtendedQuery(props) {
-    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 || !props.queryValues.additional_info : false;
   }
 
   constructor(props) {
