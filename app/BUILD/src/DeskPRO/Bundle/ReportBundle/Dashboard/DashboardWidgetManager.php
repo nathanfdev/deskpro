@@ -182,7 +182,7 @@ class DashboardWidgetManager
      *
      * @throws \Exception
      *
-     * @return array|bool|string
+     * @return array|bool|string|null
      */
     public function renderWidget(DashboardWidgetEntity $widget, Person $person = null)
     {
@@ -216,8 +216,10 @@ class DashboardWidgetManager
                 $widget->getOptions()
             );
         } catch (\Exception $e) {
-            SystemErrorHandler::logException($e);
-            throw $e;
+            $info = SystemErrorHandler::getExceptionInfo($e);
+            $this->logger->error(sprintf('[Widget %d] %s -- %s', $widget->getWidget()->getId(), $widget->getWidget()->getTitle(), $info['summary']));
+
+            return;
         }
 
         // todo just single result for widgets for now
