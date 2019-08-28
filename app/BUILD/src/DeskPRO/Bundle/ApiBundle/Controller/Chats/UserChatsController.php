@@ -23,6 +23,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class UserChatsController.
@@ -125,6 +126,7 @@ class UserChatsController extends CrudController
      * @param int     $id
      * @param int     $agentId
      *
+     * @throws NotFoundHttpException
      * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View

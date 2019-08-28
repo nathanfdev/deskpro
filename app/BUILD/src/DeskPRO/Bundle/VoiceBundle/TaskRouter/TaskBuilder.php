@@ -12,6 +12,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DpSys\LowError\SystemErrorHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -30,15 +31,22 @@ class TaskBuilder
     private $dispatcher;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param StorageAdapterInterface  $storage
      * @param EventDispatcherInterface $dispatcher
+     * @param LoggerInterface          $logger
      */
-    public function __construct(StorageAdapterInterface  $storage, EventDispatcherInterface $dispatcher)
+    public function __construct(StorageAdapterInterface $storage, EventDispatcherInterface $dispatcher, LoggerInterface $logger)
     {
         $this->storage    = $storage;
         $this->dispatcher = $dispatcher;
+        $this->logger     = $logger;
     }
 
     /**
@@ -69,6 +77,11 @@ class TaskBuilder
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
+
+        $this->logger->info(sprintf(
+            '[TaskBuilder] New voice task for direct agent call, task_id = %s, call_id = %s, agent_id = %s',
+            $task->getId(), $phoneCall->getId(), $agent->getId()
+        ));
 
         return $task;
     }
@@ -101,6 +114,11 @@ class TaskBuilder
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
+
+        $this->logger->info(sprintf(
+            '[TaskBuilder] New voice task for queue call, task_id = %s, call_id = %s, queue_id = %s',
+            $task->getId(), $phoneCall->getId(), $queue->getId()
+        ));
 
         return $task;
     }
@@ -137,6 +155,11 @@ class TaskBuilder
             SystemErrorHandler::logException($e);
         }
 
+        $this->logger->info(sprintf(
+            '[TaskBuilder] New voice task for call transfer to agent, task_id = %s, call_id = %s, agent_id = %s',
+            $task->getId(), $phoneCall->getId(), $agent->getId()
+        ));
+
         return $task;
     }
 
@@ -165,6 +188,11 @@ class TaskBuilder
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
+
+        $this->logger->info(sprintf(
+            '[TaskBuilder] New voice task for outgoing call, task_id = %s, call_id = %s, agent_id = %s',
+            $task->getId(), $phoneCall->getId(), $agent->getId()
+        ));
 
         return $task;
     }
@@ -203,6 +231,11 @@ class TaskBuilder
             SystemErrorHandler::logException($e);
         }
 
+        $this->logger->info(sprintf(
+            '[TaskBuilder] New voice task for call transfer to queue, task_id = %s, call_id = %s, queue_id = %s',
+            $task->getId(), $phoneCall->getId(), $queue->getId()
+        ));
+
         return $task;
     }
 
@@ -226,6 +259,11 @@ class TaskBuilder
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
+
+        $this->logger->info(sprintf(
+            '[TaskBuilder] New chat task for queue, task_id = %s, chat_id = %s, department_id = %s',
+            $task->getId(), $chat->getId(), $chat->getDepartmentId()
+        ));
 
         return $task;
     }
