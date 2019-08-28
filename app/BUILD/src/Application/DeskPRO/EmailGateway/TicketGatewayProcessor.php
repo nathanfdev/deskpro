@@ -492,7 +492,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             return $this->runReply($ticketEmail);
         } else {
-            return $this->runNew($ticketEmail, $replyAsNew && $isMatchedBySubject);
+            return $this->runNew($ticketEmail, $replyAsNew && !$isMatchedBySubject);
         }
     }
 
