@@ -212,6 +212,11 @@ define([
         value: 'AddApproval'
       });
 
+      options.push({
+        title: 'Cancel Approval',
+        value: 'CancelApproval'
+      });
+
       set_options.push({
         title:      'Ticket Actions',
         subOptions: options
@@ -912,6 +917,36 @@ define([
               value.options = {};
               value.options.approval_template_id = model.approval_template_id || 0;
               value.options.description = model.description || '';
+              return value;
+            }
+          };
+        }
+      };
+    }
+
+    getCancelApproval(options) {
+      if (options == null) { options = {}; }
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-actions-cancel-approval.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+              return {
+                approval_template_id: options.approval_template_id || 0,
+                all_approvals: options.all_approvals || false
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'CancelApproval';
+              value.options = {};
+              value.options.approval_template_id = model.approval_template_id || 0;
+              value.options.all_approvals = model.all_approvals || false;
               return value;
             }
           };

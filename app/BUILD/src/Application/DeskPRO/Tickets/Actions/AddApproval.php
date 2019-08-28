@@ -65,6 +65,10 @@ class AddApproval extends AbstractContainerAwareAction implements ActionInterfac
      */
     private function getTemplateById($id)
     {
+        if (empty($id)) {
+            return null;
+        }
+
         return $this->getContainer()->getEm()->getRepository(ApprovalTemplate::class)->find($id);
     }
 
