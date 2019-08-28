@@ -119,17 +119,22 @@ class SchemaHelper
      */
     public function renameColumn($tableName, $oldColName, $newColName)
     {
-        $fks   = $this->getSchemaManager()->listTableForeignKeys($tableName);
-        $table = $this->getSchemaManager()->listTableDetails($tableName);
-        $col   = $table->getColumn($oldColName);
+        $fks        = $this->getSchemaManager()->listTableForeignKeys($tableName);
+        $table      = $this->getSchemaManager()->listTableDetails($tableName);
+        $col        = $table->getColumn($oldColName);
+        $droppedFKs = [];
 
         foreach ($fks as $fk) {
+            if (!in_array($oldColName, $fk->getColumns())) {
+                continue;
+            }
+            $droppedFKs[] = $fk;
             $this->db->executeQuery(sprintf('ALTER TABLE `%s` DROP FOREIGN KEY `%s`', $tableName, $fk->getName()));
         }
         $this->db->executeQuery(sprintf('ALTER TABLE `%s` CHANGE COLUMN `%s` `%s` %s', $tableName, $oldColName,
             $newColName, $col->getType()->getSQLDeclaration($col->toArray(), $this->db->getDatabasePlatform())));
 
-        foreach ($fks as $fk) {
+        foreach ($droppedFKs as $fk) {
             $addFKQuery = sprintf(
                 'ALTER TABLE `%s` ADD CONSTRAINT `%s` FOREIGN KEY (`%s`) REFERENCES `%s` (`%s`)',
                 $tableName,
