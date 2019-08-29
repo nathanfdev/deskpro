@@ -3230,13 +3230,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         $.ajax({
           url: event.target.dataset.deleteUrl,
           data: {
-            person_id: event.target.dataset.personId
+            person_id: event.target.dataset.personId,
+            new_user_id: event.target.dataset.newUserId,
+            confirmed: true
           },
           dataType: 'json',
           withActionAlerts: true,
           success: function(data) {
             if (data.success) {
               self.getEl('cc_row_list').html(data.cc_list);
+              if (data.new_user) {
+                self.getEl('ticket-person-holder').html(data.new_user);
+              }
               var recipients = event.target.parentElement.parentElement;
               event.target.parentElement.remove();
               var absents = $('.absent', recipients);
