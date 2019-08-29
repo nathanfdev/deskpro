@@ -64,6 +64,7 @@ use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -466,6 +467,8 @@ class TicketController extends AbstractController
             'incidents'      => $incidents,
             'system_account' => $this->getAccount($ticket),
             'person_repo'    => $this->em->getRepository(Person::class),
+
+            'ticket_approvals' => $this->em->getRepository(TicketApproval::class)->getTicketApprovalsByTicket($ticket),
         ];
 
         // include api_v2_data

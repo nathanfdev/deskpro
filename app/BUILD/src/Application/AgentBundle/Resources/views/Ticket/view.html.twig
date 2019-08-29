@@ -415,6 +415,13 @@
                                     <span id="{{ baseId }}_billing_tab_counter"></span>
                                 </li>
                             {% endif %}
+
+                            {% if app.hasBeta('approvals') %}
+                                <li data-tab-for="#{{ baseId }}_approvals_wrap">
+                                    {{ phrase('agent.tickets.approvals') }}
+                                </li>
+                            {% endif %}
+
                             <!--
                             temporarily disable the ticket properties locations because by default it appears as an empty tab
                             <li data-deskproapp="ticket-properties-new-tab"></li>
@@ -672,6 +679,11 @@
                     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
                         <article id="{{ baseId }}_billing_wrap" style="display: none; overflow-x: auto;">
                             {% include 'AgentBundle:Ticket:view-billing.html.twig' %}
+                        </article>
+                    {% endif %}
+                    {% if app.hasBeta('approvals') %}
+                        <article id="{{ baseId }}_approvals_wrap" style="display: none; overflow-x: auto;">
+                            {% include 'AgentBundle:Ticket:view-approvals.html.twig' %}
                         </article>
                     {% endif %}
                     {{ dp_app_loc(baseId, 'properties.tab') }}

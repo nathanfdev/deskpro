@@ -1,0 +1,78 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table linked-community-topics-table">
+    <tbody>
+    <tr class="linked-title">
+        <th colspan="8" style="background: #eee;">{{ phrase('agent.tickets.approvals') }}</th>
+    </tr>
+    <tr class="linked-head-title">
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.type') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.description') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.tickets.approvals.approvers') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.tickets.approvals.success') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.tickets.approvals.failure') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
+        <th width="10">&nbsp;</th>
+    </tr>
+
+    {#TEMP -- Remove when we have real data#}
+    <tr class="linked-community-topics">
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            <a data-route="#">
+                <span class="extra"><i class="fas fa-caret-down"></i></span>
+                <span class="text">542</span>
+            </a>
+        </td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            Expenditure
+        </td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            Permission to spend £856.50 on the new printer copier for the 3rd floor legal office?
+        </td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            John Doe & Hannah Scott
+        </td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            2
+        </td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            1
+        </td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+            Pending
+        </td>
+        <td>
+            <i class="fas fa-spin"></i>
+        </td>
+    </tr>
+    {#TEMP -- Remove when we have real data#}
+
+
+    {% for approval in ticket_approvals %}
+        <tr class="linked-community-topics">
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                <a data-route="#">
+                    {{ approval.id }}
+                </a>
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                {{ approval.type.name }}
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                {{ approval.description }}
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #approvers
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #success
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #failure
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #status
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
