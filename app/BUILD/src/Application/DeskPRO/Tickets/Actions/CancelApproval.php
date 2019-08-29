@@ -4,10 +4,9 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketApprovalRepository;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -35,13 +34,13 @@ class CancelApproval extends AbstractContainerAwareAction implements ActionInter
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         if ($this->getActionOption('all_approvals')) {
-            $approvals = $this->getApprovalRepository()->getTicketApprovalsByTicket($ticket);
+            $approvals = $this->getTicketApprovalRepository()->getTicketApprovalsByTicket($ticket);
         } else {
             $template = $this->getTemplateById($this->getActionOption('approval_template_id'));
             if (!$template) {
                 return;
             }
-            $approvals = $this->getApprovalRepository()->getTicketApprovalsByTicketAndTemplate($ticket, $template);
+            $approvals = $this->getTicketApprovalRepository()->getTicketApprovalsByTicketAndTemplate($ticket, $template);
         }
 
         $approvalManager = $this->getContainer()->get('approval.approval_manager');
@@ -73,10 +72,10 @@ class CancelApproval extends AbstractContainerAwareAction implements ActionInter
     }
 
     /**
-     * @return ApprovalRepository
+     * @return TicketApprovalRepository
      */
-    private function getApprovalRepository()
+    private function getTicketApprovalRepository()
     {
-        return $this->getContainer()->getEm()->getRepository(AbstractBaseApproval::class);
+        return $this->getContainer()->getEm()->getRepository(TicketApproval::class);
     }
 }
