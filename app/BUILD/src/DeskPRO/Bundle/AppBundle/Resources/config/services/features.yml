@@ -86,3 +86,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.approvals:
+    class: DeskPRO\Bundle\AppBundle\Features\ApprovalsFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
