@@ -112,6 +112,15 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $number;
 
     /**
+     * Keep plain number in case if the number is disabled or removed.
+     *
+     * @ORM\Column(name="number_plain", type="string", length=50, nullable=false)
+     *
+     * @var string
+     */
+    private $numberPlain;
+
+    /**
      * @ORM\Column(name="external_number", type="string", length=50)
      *
      * @Assert\NotBlank()
@@ -287,9 +296,32 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setNumber($number)
+    public function setNumber(VoiceNumber $number = null)
     {
         $this->setModelField('number', $number);
+        if ($number) {
+            $this->setNumberPlain($number->getNumber());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumberPlain()
+    {
+        return $this->numberPlain;
+    }
+
+    /**
+     * @param string $numberPlain
+     *
+     * @return $this
+     */
+    public function setNumberPlain($numberPlain)
+    {
+        $this->setModelField('numberPlain', $numberPlain);
 
         return $this;
     }
