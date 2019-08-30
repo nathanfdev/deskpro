@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ImportBundle\Command;
 
 use DeskPRO\Bundle\ImportBundle\Event\ProgressEvent;
 use DeskPRO\ImporterTools\AbstractImporter;
+use DeskPRO\ImporterTools\Exceptions\PagerException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -80,9 +81,22 @@ class ImportCommand extends AbstractImporterCommand
             $sourceScript->runImport();
             $container->get('dp.importer.source.helper.progress')->finishImport();
         } catch (\Exception $exception) {
+            $options = ['failed_step' => self::STEP_IMPORT];
+
+            if ($exception instanceof PagerException) {
+                $options = array_merge(
+                    $options,
+                    [
+                        'failed_pages' => [
+                            $exception->getFailedStepName() => $exception->getFailedPage(),
+                        ],
+                    ]
+                );
+            }
+
             $container
                 ->get('dp.importer.event_dispatcher')
-                ->dispatch(ProgressEvent::ERROR, new ProgressEvent(null, ['failed_step' => self::STEP_IMPORT]));
+                ->dispatch(ProgressEvent::ERROR, new ProgressEvent(null, $options));
 
             throw $exception;
         } finally {
