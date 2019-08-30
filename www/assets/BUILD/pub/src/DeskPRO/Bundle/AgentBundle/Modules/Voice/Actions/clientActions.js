@@ -309,6 +309,7 @@ export const voiceBootstrap = createAction(
             };
 
             clients[id] = new window.Twilio.Device(credentials.get('phone_token'), options);
+            clients[id].soundcache.cache.outgoing.sounds = [];
             clients[id].ready(() => {
               console.log('phone ready');
             });
