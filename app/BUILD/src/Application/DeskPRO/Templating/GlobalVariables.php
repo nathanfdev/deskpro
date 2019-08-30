@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DpSys\License;
 use Orb\Util\Strings;
@@ -250,6 +251,19 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
             ->getRepository(ApprovalTemplate::class)
             ->findByAgentNotAllowedToSelectApprovers()
         ;
+    }
+
+    public function getApprovalTemplates()
+    {
+        return App::$container->get('doctrine.orm.default_entity_manager')
+            ->getRepository(ApprovalTemplate::class)
+            ->findBy([], ['name' => 'ASC'])
+        ;
+    }
+
+    public function getApprovalStatuses()
+    {
+        return AbstractBaseApproval::getStatusNameMap();
     }
 
     public function getCustomFieldManager($type)

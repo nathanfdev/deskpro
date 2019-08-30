@@ -17,7 +17,6 @@ Feature: /approval_types endpoint
 
   Scenario: I try to POST an approval type without authentication
     When I send a POST request to "/api/v2/approval_types"
-    And print last response body
     Then the response status code should be 401
 
   Scenario: I try to POST an approval type as an agent

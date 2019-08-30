@@ -33,10 +33,10 @@ Feature: /ticket_approvals endpoint
       | at3 | Templ 3 | Approval Templ 3 | {atype2} | 2                 | 0                  | {ac3}            | 1                       |
 
     And only the following TicketApproval records exist:
-      | #   | ticket | template | approvers | name               | type     | description | status    |
-      | ta1 | {t1}   | {at1}    | [1]       | Ticket approval 01 | {atype1} | TA 01       | pending   |
-      | ta2 | {t1}   | {at2}    | [1,2,3]   | Ticket approval 02 | {atype2} | TA 02       | pending   |
-      | ta3 | {t1}   | {at2}    | [1,2,3]   | Ticket approval 03 | {atype2} | TA 03       | completed |
+      | #   | ticket | template | approvers         | name               | type     | description | status    |
+      | ta1 | {t1}   | {at1}    | [{user}]          | Ticket approval 01 | {atype1} | TA 01       | pending   |
+      | ta2 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 02 | {atype2} | TA 02       | pending   |
+      | ta3 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 03 | {atype2} | TA 03       | completed |
 
   Scenario: I try to POST a ticket approval without authentication
     When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
@@ -50,7 +50,6 @@ Feature: /ticket_approvals endpoint
   Scenario: I try to POST a ticket approval without required fields as agent
     Given I'm authenticated as "agent"
     When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
-    And print last response
     Then the response should be in JSON
     And the response status code should be 400
     And the JSON node "errors.fields.template.errors[0].code" should be equal to "required"
@@ -63,7 +62,7 @@ Feature: /ticket_approvals endpoint
 {
   "description": "Approval description 01",
   "template": ~at3~,
-  "approvers": [1]
+  "approvers": [~user~]
 }
             """
     Then the response status code should be 400

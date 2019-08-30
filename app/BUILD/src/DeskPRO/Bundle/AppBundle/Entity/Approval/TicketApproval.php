@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
 use Application\DeskPRO\Entity\Ticket;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -20,9 +21,14 @@ use JMS\Serializer\Annotation as JMS;
 class TicketApproval extends AbstractBaseApproval implements TicketApprovalInterface
 {
     /**
+     * Filter name used in agent UI search templates
+     */
+    const FILTER_NAME = 'ticket_approval';
+
+    /**
      * @var Ticket
      *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket", inversedBy="approvals")
      * @ORM\JoinColumn(name="ticket_id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
@@ -30,6 +36,14 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
      * @JMS\Accessor(getter="getTicketId")
      */
     protected $ticket;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function notifyAssociationChanges(EntityManagerInterface $em)
+    {
+        $this->ticket->getStateChangeRecorder()->record('approvals', null, $this);
+    }
 
     /**
      * @return Ticket

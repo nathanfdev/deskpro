@@ -71,6 +71,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_IP_ADDRESS            = 'ip_address';
     const TERM_PROBLEMS              = 'problems';
     const TERM_BRAND                 = 'brand';
+    const TERM_TICKET_APPROVAL       = 'ticket_approval';
 
     /**
      * True to search in the non-search tables (aka all tickets not just active).
@@ -542,6 +543,9 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.problems';
                         break;
                     case self::TERM_DAY_CREATED:
+                        break;
+                    case self::TERM_TICKET_APPROVAL:
+                        $this->affected_fields[] = 'ticket.approvals';
                         break;
                 }
             }
@@ -1963,6 +1967,29 @@ class TicketSearch extends SearcherAbstract
 
                         if ($w) {
                             $wheres[] = '('.$w.')';
+                        }
+                        break;
+                    case self::TERM_TICKET_APPROVAL:
+                        $joins[] = [
+                            'ticket_approvals',
+                            "INNER JOIN approvals AS $join_name ON ($join_name.ticket_id = $tickets_table.id AND $join_name.dtype = 'ticket_approval')",
+                        ];
+
+                        if (isset($choice['approval_template_id']) && $choice['approval_template_id']) {
+                            $wheres[] = $this->_choiceMatch("$join_name.template_id", self::OP_IS, $choice['approval_template_id']);
+                        }
+
+                        if (isset($choice['approval_status']) && $choice['approval_status']) {
+                            $wheres[] = $this->_choiceMatch("$join_name.status", self::OP_IS, $choice['approval_status']);
+                        }
+
+                        if (isset($choice['approver_includes_me']) && $choice['approver_includes_me'] && $this->person) {
+                            $join_name2 = $join_name.'_aa';
+                            $joins[] = [
+                                'approval_approvers',
+                                "INNER JOIN approval_approvers AS $join_name2 ON ($join_name.id = $join_name2.approval_id)",
+                            ];
+                            $wheres[] = $this->_choiceMatch("$join_name2.person_id", self::OP_IS, $this->person->getId());
                         }
                         break;
                     case self::TERM_HIDDEN_STATUS:

@@ -129,7 +129,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
         $approverMock = m::mock(Person::class)->shouldIgnoreMissing();
         $approverMock->shouldReceive('getId')->withNoArgs()->andReturn(1);
 
-        $approval->addApprover(1);
+        $approval->addApprover($this->makeApprover(1));
 
         $responseMock = m::mock(ApprovalResponse::class)->shouldIgnoreMissing();
         $responseMock->shouldReceive('getApprover')->withNoArgs()->andReturn($approverMock);
@@ -149,9 +149,9 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
-        $approval->addApprover(3);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
+        $approval->addApprover($this->makeApprover(3));
 
         $this->assertCount(0, $approval->getResponses());
 
@@ -174,8 +174,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
 
         $this->assertCount(0, $approval->getResponses());
 
@@ -195,7 +195,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
+        $approval->addApprover($this->makeApprover(1));
 
         $approval->addResponse($this->buildResponseMock(1, 'approve'));
 
@@ -210,7 +210,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
+        $approval->addApprover($this->makeApprover(1));
 
         $approval->addResponse($this->buildResponseMock(1, 'reject'));
 
@@ -222,8 +222,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
 
         $approval->setRequiredApprovals(1);
         $approval->setRequiredRejections(1);
@@ -234,8 +234,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
 
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
 
         $approval->setRequiredApprovals(2);
         $approval->setRequiredRejections(1);
@@ -253,8 +253,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
 
         $approval->setRequiredApprovals(1);
         $approval->setRequiredRejections(1);
@@ -265,8 +265,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
 
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
 
         $approval->setRequiredApprovals(1);
         $approval->setRequiredRejections(2);
@@ -284,8 +284,8 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->addApprover(1);
-        $approval->addApprover(2);
+        $approval->addApprover($this->makeApprover(1));
+        $approval->addApprover($this->makeApprover(2));
 
         $approval->setRequiredApprovals(2);
         $approval->setRequiredRejections(0);
@@ -317,5 +317,17 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
         }
 
         return $responseMock;
+    }
+
+    /**
+     * @param int $id
+     * @return m\Mock|Person
+     */
+    private function makeApprover($id)
+    {
+        $person = m::mock(Person::class)->shouldIgnoreMissing();
+        $person->shouldReceive('getId')->withNoArgs()->andReturn($id);
+
+        return $person;
     }
 }

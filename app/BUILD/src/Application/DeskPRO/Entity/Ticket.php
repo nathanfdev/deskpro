@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
 use DeskPRO\Bundle\AppBundle\Entity\TicketAttribute;
@@ -624,6 +625,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $attributes;
 
     /**
+     * @var TicketApproval[]
+     */
+    protected $approvals;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -648,6 +654,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->followUps        = new ArrayCollection();
         $this->logs             = new ArrayCollection();
         $this->attributes       = new ArrayCollection();
+        $this->approvals        = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -5013,6 +5020,54 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketApproval[]|ArrayCollection
+     */
+    public function getApprovals()
+    {
+        return $this->approvals;
+    }
+
+    /**
+     * Used in @see \Application\DeskPRO\Tickets\TicketTerms to determine if filter criteria for the
+     * ticket approval filter matches this ticket's approvals
+     *
+     * @param Person $personContext
+     * @param int|null $templateId NULL for any template
+     * @param string $status
+     * @param int|null $includesApproverId NULL for all approvals
+     * @return bool
+     */
+    public function isApprovalsMatchingTicketFilter(Person $personContext, $templateId, $status, $includesApproverId)
+    {
+        $filter = function (TicketApproval $approval) use ($personContext, $templateId, $status, $includesApproverId) {
+            // If there is no person context then we can't safely filter, return nothing
+            if (!$personContext) {
+                return false;
+            }
+
+            $matchesTemplate = !empty($templateId)
+                ? ($approval->getTemplate()->getId() == $templateId)
+                : null
+            ;
+
+            $matchesStatus = $approval->isStatus($status);
+
+            $matchesPersonContext = !empty($includesApproverId)
+                ? in_array($includesApproverId, $approval->getApproverIds())
+                : null
+            ;
+
+            return (
+                $matchesStatus &&
+                (is_null($matchesTemplate) || $matchesTemplate) &&
+                (is_null($matchesPersonContext) || $matchesPersonContext)
+            );
+        };
+
+        return !$this->approvals->filter($filter)->isEmpty();
+    }
+
+    /**
      * @return TicketLog[]|ArrayCollection
      */
     public function getLogs()
@@ -5767,6 +5822,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'cascade'       => ['persist', 'merge', 'remove'],
                 'mappedBy'      => 'ticket',
                 'orphanRemoval' => true,
+                'dpApi'         => false,
+                'dpApiDeep'     => false,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'approvals',
+                'targetEntity'  => TicketApproval::class,
+                'mappedBy'      => 'ticket',
                 'dpApi'         => false,
                 'dpApiDeep'     => false,
             ]

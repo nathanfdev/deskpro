@@ -69,6 +69,7 @@ class ApprovalManager
         $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
             $isNew = !$em->contains($approval);
 
+            $approval->notifyAssociationChanges($em);
             $em->persist($approval);
 
             if ($isNew) {
@@ -93,6 +94,7 @@ class ApprovalManager
         $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
             $approval->cancel();
 
+            $approval->notifyAssociationChanges($em);
             $em->persist($approval);
 
             $context->setEventType(ExecutorContext::EVENT_ON_CANCEL);
@@ -118,6 +120,7 @@ class ApprovalManager
 
             $approval->addResponse($response);
 
+            $approval->notifyAssociationChanges($em);
             $em->persist($approval);
 
             $context->setApproval($approval);

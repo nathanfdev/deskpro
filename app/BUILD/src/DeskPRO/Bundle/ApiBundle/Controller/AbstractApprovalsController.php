@@ -187,12 +187,23 @@ abstract class AbstractApprovalsController extends CrudController
      */
     protected function createExecutionContext()
     {
-        $isApi = ($this->get('security.token_storage')->getToken() instanceof ApiKeySecurityToken);
-
         return $this->getApprovalManager()->createContext(
-            $isApi ? ExecutorContext::METHOD_API : ExecutorContext::METHOD_WEB,
+            $this->getExecutorContextMethod(),
             $this->getUser()
         );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getExecutorContextMethod()
+    {
+        $isApi = ($this->get('security.token_storage')->getToken() instanceof ApiKeySecurityToken);
+
+        return $isApi
+            ? ExecutorContext::METHOD_API
+            : ExecutorContext::METHOD_WEB
+        ;
     }
 
     /**

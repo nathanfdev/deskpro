@@ -53,10 +53,10 @@ class ApproverCriteriaValidator extends ConstraintValidator
         // Reduce criteria to flags for validation
         $objectFlags = [
             (bool) count($value->getAgents()),
-            $value->isAllAgents(),
+            is_bool($value->isAllAgents()),
             (bool) count($value->getUsers()),
-            $value->isAllUsers(),
-            $value->isOrganizationManagers(),
+            is_bool($value->isAllUsers()),
+            is_bool($value->isOrganizationManagers()),
             (bool) count($value->getTeams()),
             (bool) count($value->getDepartments()),
         ];

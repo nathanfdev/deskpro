@@ -27,8 +27,8 @@ Feature: /person/{id}/approval_responses endpoint
       | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 4                  | {ac1}            | 1                       |
 
     And only the following TicketApproval records exist:
-      | #   | ticket | template | approvers | name               | type     | description | status    |
-      | ta1 | {t1}   | {at1}    | [1, 2]    | Ticket approval 01 | {atype1} | TA 01       | pending   |
+      | #   | ticket | template | approvers         | name               | type     | description | status    |
+      | ta1 | {t1}   | {at1}    | [{user}, {agent}] | Ticket approval 01 | {atype1} | TA 01       | pending   |
 
     And only the following ApprovalResponse records exist:
       | #   | vote | message                      | approval | approver |

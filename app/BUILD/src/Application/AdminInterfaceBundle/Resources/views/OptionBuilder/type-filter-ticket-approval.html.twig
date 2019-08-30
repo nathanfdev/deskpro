@@ -1,0 +1,27 @@
+<dp-optionbuilder-row>
+    <div class="dp-ob-standard-row">
+        <table class="display-table" width="100%">
+            <tr>
+                <td width="80" class="nowrap" style="padding-right: 8px;"><label>{{ ng_var('type_title') }}</label></td>
+                <td>
+                    <select ui-select2 ng-model="model.approval_template_id" style="min-width: 200px">
+                        <option value="">{{ phrase('admin.general.any') }}</option>
+                        {% for template in app.getApprovalTemplates() %}
+                            <option value="{{ template.id }}">{{ template.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select ui-select2 ng-model="model.approval_status" style="min-width: 200px">
+                        {% for status,name in app.getApprovalStatuses() %}
+                            <option value="{{ status }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                    {{ phrase('admin.general.and') }}
+                    <label>
+                        <input type="checkbox" ng-model="model.approver_includes_me" />
+                        {{ phrase('admin.tickets.i_am_an_approver') }}
+                    </label>
+                </td>
+            </tr>
+        </table>
+    </div>
+</dp-optionbuilder-row>

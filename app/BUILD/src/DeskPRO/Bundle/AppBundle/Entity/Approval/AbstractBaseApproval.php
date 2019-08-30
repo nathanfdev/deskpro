@@ -2,9 +2,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractApproval;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -34,6 +36,16 @@ abstract class AbstractBaseApproval extends AbstractApproval
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
     const STATUS_CANCELLED = 'cancelled';
+
+    /**
+     * @var array Map of approval statuses to their UI names
+     */
+    protected static $statusNameMap = [
+        self::STATUS_PENDING => 'pending',
+        self::STATUS_APPROVED => 'approved',
+        self::STATUS_REJECTED => 'rejected',
+        self::STATUS_CANCELLED => 'cancelled',
+    ];
 
     /**
      * Maximum number of approvers assigned to an approval
@@ -75,14 +87,19 @@ abstract class AbstractBaseApproval extends AbstractApproval
     protected $responses;
 
     /**
-     * @var int[] Person IDs @see Application\DeskPRO\Entity\Person
+     * @var Person[]|ArrayCollection
      *
-     * @ORM\Column(name="approvers", type="json_array", nullable=false)
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinTable(name="approval_approvers",
+     *      joinColumns={@ORM\JoinColumn(name="approval_id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="person_id", onDelete="CASCADE")}
+     *  )
      *
      * @JMS\Expose
      * @JMS\Type("array<integer>")
+     * @JMS\Accessor(getter="getApproverIds")
      */
-    protected $approvers = [];
+    protected $approvers;
 
     /**
      * @var \DateTime|null
@@ -132,16 +149,27 @@ abstract class AbstractBaseApproval extends AbstractApproval
         parent::__construct();
 
         $this->responses = new ArrayCollection();
+        $this->approvers = new ArrayCollection();
     }
+
+    /**
+     * Is invoked during @see \DeskPRO\Bundle\AppBundle\Approval\ApprovalManager operations to
+     * notify changes on associated entities
+     *
+     * @param EntityManagerInterface $em
+     * @return void
+     */
+    abstract public function notifyAssociationChanges(EntityManagerInterface $em);
 
     /**
      * Create a new approval from a given template
      *
+     * @param EntityManagerInterface $em
      * @param ApprovalTemplate $template
      * @return AbstractBaseApproval
      * @throws \Exception
      */
-    public static function createFromTemplate(ApprovalTemplate $template)
+    public static function createFromTemplate(EntityManagerInterface $em, ApprovalTemplate $template)
     {
         $approval = new static();
 
@@ -157,15 +185,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $approval->setActionsOnApproved($template->getActionsOnApproved());
         $approval->setActionsOnRejected($template->getActionsOnRejected());
 
-        if ($approverCriteria = $template->getApproverCriteria()) {
-            if (!$approverCriteria->canChooseApprovers()) {
-                foreach ($approverCriteria->getAgents() as $agentId) {
-                    $approval->addApprover($agentId);
-                }
+        $approverCriteria = $template->getApproverCriteria();
 
-                foreach ($approverCriteria->getUsers() as $userId) {
-                    $approval->addApprover($userId);
-                }
+        if (!$approverCriteria->canChooseApprovers()) {
+            foreach ($approverCriteria->getAgents() as $agentId) {
+                $approval->addApprover($em->getReference(Person::class, $agentId));
+            }
+            foreach ($approverCriteria->getUsers() as $userId) {
+                $approval->addApprover($em->getReference(Person::class, $userId));
             }
         }
 
@@ -335,7 +362,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @return int[] Person IDs @see Application\DeskPRO\Entity\Person
+     * @return Person[]|ArrayCollection
      */
     public function getApprovers()
     {
@@ -343,10 +370,10 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @param int $approver Person ID @see Application\DeskPRO\Entity\Person
+     * @param Person $approver
      * @return self
      */
-    public function addApprover($approver)
+    public function addApprover(Person $approver)
     {
         if (count($this->approvers) >= self::APPROVERS_MAX) {
             throw new \DomainException(
@@ -354,10 +381,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
             );
         }
 
-        $this->setModelField(
-            'approvers',
-            array_merge($this->approvers, [(int) $approver])
-        );
+        $this->approvers->add($approver);
+
+        $this->setModelField('approvers', $this->approvers);
 
         return $this;
     }
@@ -368,6 +394,16 @@ abstract class AbstractBaseApproval extends AbstractApproval
     public function removeApprover($approver)
     {
         // NoOp, approvers cannot be removed once added
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getApproverIds()
+    {
+        return $this->approvers->map(function (Person $person) {
+            return $person->getId();
+        })->toArray();
     }
 
     /**
@@ -465,6 +501,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @return array
+     */
+    public static function getStatusNameMap()
+    {
+        return self::$statusNameMap;
+    }
+
+    /**
      * @return self
      * @throws \Exception
      */
@@ -503,7 +547,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     {
         $approver = $response->getApprover();
 
-        if (!in_array($approver->getId(), $this->approvers)) {
+        if (!in_array($approver->getId(), $this->getApproverIds())) {
             throw new \DomainException(
                 sprintf('%s is not listed as an approver for this approval', (string) $approver)
             );

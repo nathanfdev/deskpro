@@ -1374,6 +1374,8 @@ admin.general.agent_perms: 'Agent Permissions'
 admin.general.alphabetical: Alphabetical
 admin.general.app_agents: Agents
 admin.general.apps: Apps
+admin.general.any: any
+admin.general.and: and
 admin.general.apps_agents: Agents
 admin.general.apps_chat: Chat
 admin.general.apps_chat_explain: 'The chat application allows your users to start a real-time chat with your agents. When enabled, a small "Start Chat" button will be added to the bottom of every page on the portal, and you can easily add a widget to your own website too.'
@@ -2389,6 +2391,7 @@ admin.tickets.x_since_time_resolved: '&gt; {{time}} since status was set to reso
 admin.tickets.x_since_time_total_user_waiting: 'Total user waiting &gt; {{time}}'
 admin.tickets.x_since_time_user_waiting: 'User waiting &gt; {{time}}'
 admin.tickets.x_since_total_user_waiting: 'User has been waiting &gt; {{time}}'
+admin.tickets.i_am_an_approver: 'I am an approver'
 admin.tickets.add_approval: 'Add Approval'
 admin.tickets.cancel_all_ticket_approvals: 'Cancel all approvals for this ticket'
 admin.tickets.cancel_all_ticket_approvals_against_this_ticket: 'Cancel all approvals that are still pending against this ticket'
@@ -3001,6 +3004,7 @@ agent.general.assigned_agent: 'Assigned Agent'
 agent.general.assigned_agent_id: 'Agent Id'
 agent.general.assigned_team: 'Assigned team'
 agent.general.assigned_to: 'Assigned to'
+agent.general.i_am_an_approver: 'I am an approver'
 agent.general.assignment: Assignment
 agent.general.assignments: Assignments
 agent.general.attach: Attach
@@ -4339,6 +4343,7 @@ agent.problems.closed_problems: 'Closed Problems'
 agent.problems.create_problem: 'Create Problem'
 agent.problems.incidents: Incidents
 agent.problems.no_problems_boss: 'There are no open problems'
+agent.problems.no_ticket_approvals_boss: 'There are no ticket approvals'
 agent.problems.open_problems: 'Open Problems'
 agent.problems.problem: Problem
 agent.problems.reopen_problem: 'Reopen Problem'
@@ -5281,6 +5286,8 @@ agent.tickets.add_approval: 'Add Approval'
 agent.tickets.approval_template: 'Approval Template'
 agent.tickets.approval_description: 'Description'
 agent.tickets.approval_add_approval_template_not_found: 'Add approval: (error, approval template not found)'
+agent.tickets.ticket_approval: 'Ticket Approval'
+agent.tickets.ticket_approvals: 'Ticket Approvals'
 agent.time.future: Future
 agent.time.group_12_to_24_hours: '12 - 24 hours'
 agent.time.group_15_to_30_mins: '15 - 30 minutes'

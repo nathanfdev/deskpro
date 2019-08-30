@@ -2,9 +2,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Approval;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApprovalThresholds;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -23,6 +25,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BaseApprovalType extends AbstractType
 {
     /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
+     * BaseApprovalType constructor.
+     *
+     * @param EntityManagerInterface $em
+     */
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -38,7 +55,13 @@ class BaseApprovalType extends AbstractType
             ])
             ->add('approvers', CollectionType::class, [
                 'required' => true,
-                'entry_type' => IntegerType::class,
+                'entry_type' => EntityType::class,
+                'entry_options' => [
+                    'class' => Person::class,
+                    'constraints' => [
+                        new Assert\NotBlank(),
+                    ],
+                ],
                 'allow_add' => true,
                 'allow_delete' => false,
                 'by_reference' => false,
@@ -57,6 +80,7 @@ class BaseApprovalType extends AbstractType
             if ($template = $form->get('template')->getData()) {
                 return call_user_func(
                     [$options['data_class'], 'createFromTemplate'],
+                    $this->em,
                     $template
                 );
             }

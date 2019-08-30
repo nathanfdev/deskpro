@@ -370,7 +370,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.actions_on_approved.actions[0].options.headers.X-FunctionalTestToken" should be equal to "E"
     And the JSON node "data.actions_on_rejected.actions[0].options.headers.X-FunctionalTestToken" should be equal to "F"
 
-  Scenario: I POST a valid approval template as admin
+  Scenario: I POST an invalid approval template as admin where there aren't enough approvers
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
             """
@@ -381,14 +381,15 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 3,
   "can_approvers_view_subject": true,
-  "approver_criteria": { }
+  "approver_criteria": {
+    "can_choose_approvers": false,
+    "agents": [1]
+  }
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
-    And the JSON node "errors.errors[1].message" should be equal to "At least one approver criteria must be provided"
-    And the JSON node "errors.errors[2].message" should be equal to "If an agent cannot choose approvers, then agent and/or user approvers must be supplied"
 
 
   Scenario: I try to GET an approval template without authentication
@@ -541,8 +542,7 @@ Feature: /approval_templates endpoint
             """
     Then the response status code should be 400
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
-    And the JSON node "errors.errors[1].message" should be equal to "At least one approver criteria must be provided"
-    And the JSON node "errors.errors[2].message" should be equal to "If an agent cannot choose approvers, then agent and/or user approvers must be supplied"
+    And the JSON node "errors.errors[1].message" should be equal to "If an agent cannot choose approvers, then agent and/or user approvers must be supplied"
 
   Scenario: I try to DELETE an approval template without authentication
     When I send a DELETE request to "/api/v2/approval_templates/{at1}"

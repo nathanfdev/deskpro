@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
@@ -62,10 +63,13 @@ class AddApprovalAction extends AbstractAction implements PersonContextInterface
             return;
         }
 
-        $this->approval = TicketApproval::createFromTemplate($template);
+        $this->approval = TicketApproval::createFromTemplate(
+            App::getContainer()->getEm(),
+            $template
+        );
 
-        $this->approval->setTicket($ticket);
         $this->approval->setDescription($this->description);
+        $this->approval->setTicket($ticket);
 
         $manager = App::getContainer()->get('approval.approval_manager');
 

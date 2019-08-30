@@ -30,8 +30,8 @@ Feature: Ticket approval triggers
   "required_rejections": 1,
   "can_approvers_view_subject": true,
   "approver_criteria": {
-    "can_choose_approvers": false,
-    "agents": [1,2,3]
+    "can_choose_approvers": true,
+    "all_agents": true
   },
   "actions_on_approved": [{
 			"type": "SetSubject",
@@ -51,7 +51,7 @@ Feature: Ticket approval triggers
 {
   "description": "Approval description 01",
   "template": ~lastCreatedId~,
-  "approvers": []
+  "approvers": [~admin~]
 }
             """
     Then the response status code should be 201

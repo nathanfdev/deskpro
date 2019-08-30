@@ -39,7 +39,7 @@ class ApprovalRepository extends AbstractEntityRepository
             ->innerJoin('p.primary_email', 'pe')
             ->andWhere('p.is_deleted = FALSE AND p.is_disabled = FALSE')
             ->andWhere('p.id IN (:approverIds)')
-            ->setParameter('approverIds', $approval->getApprovers(), Connection::PARAM_INT_ARRAY)
+            ->setParameter('approverIds', $approval->getApproverIds(), Connection::PARAM_INT_ARRAY)
         ;
     }
 }
