@@ -18,7 +18,7 @@
       <span class="dp-po-description">{{ phrase('helpcenter.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}</span>
       <span class="dp-IconsWrapper">
           <a href="{{ path('portal_articles_pdf', {slug: article.slug, print: 1}) }}" class="dp-po-Icon Icon--print Icon--grey-dark"></a>
-          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-Icon Icon--zip-file-left Icon--grey-dark"></a>
+          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-Icon Icon--pdf-file Icon--grey-dark"></a>
       </span>
     </div>
 
@@ -109,8 +109,9 @@
     } %}
 
     {% if article.labels | length %}
-        {% include 'Theme:Common:sidebar-block.html.twig' with {
-            title: phrase('portal.general.labels')
+        {% include 'Theme:Common:Labels/sidebar-block.html.twig' with {
+            title: phrase('portal.general.labels'),
+            labels: article.labels
         } %}
     {% endif %}
 
@@ -130,6 +131,12 @@
         {% endembed %}
     {% endif %}
 
+    {% include'Theme:Articles:meta.html.twig' %}
+
     {# TODO related content #}
     {#{% show related_content %}#}
+{% endblock %}
+
+{% block doc_end %}
+    {{ insert_glossary_js(article) }}
 {% endblock %}

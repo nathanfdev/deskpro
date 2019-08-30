@@ -1,12 +1,14 @@
 <header>
     <ul class="dp-po-nav">
         <li class="dp-po-Logo-wrap">
-            {% if portal_custom_logo() %}
-                <span class="dp-po-Icon Icon-Tech-company">
-                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
-                    </span>
-            {% endif %}
-            <span class="dp-po-Logo-descript">{{ brand_setting('core.deskpro_name')|e }}</span>
+                {% if portal_custom_logo() %}
+                    <a href="{{ path('portal_home') }}">
+                        <span class="dp-po-Icon">
+                            <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
+                        </span>
+                    </a>
+                {% endif %}
+            <a href="{{ path('portal_home') }}"><span class="dp-po-Logo-descript">{{ brand_setting('core.deskpro_name')|e }}</span></a>
         </li>
         <li class="dp-po-nav-control">
             <ul>
