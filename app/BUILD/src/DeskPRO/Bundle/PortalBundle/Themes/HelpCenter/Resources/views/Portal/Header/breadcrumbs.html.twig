@@ -1,7 +1,15 @@
 <section class="dp-po-Breadcrumbs-wrap">
     <div class="dp-po-container">
         <ul class="dp-po-Breadcrumbs Breadcrumbs--custom">
-            {# TODO SMALL LOGO <li class="dp-po-Breadcrumb-item"><span class="dp-po-Icon Icon-Tech-company"></span></li> #}
+            {% if portal_custom_logo() %}
+                <li class="dp-po-Breadcrumb-item">
+                    <a href="{{ path('portal_home') }}">
+                            <span class="dp-po-Icon">
+                                <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
+                            </span>
+                    </a>
+                </li>
+            {% endif %}
             <li class="dp-po-Breadcrumb-item dp-po-support-centre"><a href="{{ path('portal_home') }}" class="dp-po-Breadcrumb-link">{{ brand_setting('core.deskpro_name')|e }}</a></li>
             {% if breadcrumbs is defined %}
                 {% for item in breadcrumbs %}
