@@ -1092,7 +1092,8 @@ user.lang.lang_title_japanese: Japanese
 user.lang.lang_title_norwegian: Norwegian
 user.lang.lang_title_persian: Persian
 user.lang.lang_title_polish: Polish
-user.lang.lang_title_portuguese: Portuguese
+user.lang.lang_title_portuguese_br: Portuguese (Brazil)
+user.lang.lang_title_portuguese_pt: Portuguese (Portugal)
 user.lang.lang_title_romanian: Romanian
 user.lang.lang_title_russian: Russian
 user.lang.lang_title_spanish: Spanish
