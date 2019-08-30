@@ -1,35 +1,36 @@
-<section class="dp-po-Breadcrumbs-wrap">
-    <div class="dp-po-container">
-        <ul class="dp-po-Breadcrumbs Breadcrumbs--custom">
+<div class="dp-po">
+    <nav class="breadcrumb-outer" aria-label="breadcrumb">
+        <div class="container d-flex align-items-center">
             {% if portal_custom_logo() %}
-                <li class="dp-po-Breadcrumb-item">
+                <div class="breadcrumb-image">
                     <a href="{{ path('portal_home') }}">
-                            <span class="dp-po-Icon">
-                                <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
-                            </span>
+                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
                     </a>
-                </li>
+                </div>
             {% endif %}
-            <li class="dp-po-Breadcrumb-item dp-po-support-centre"><a href="{{ path('portal_home') }}" class="dp-po-Breadcrumb-link">{{ brand_setting('core.deskpro_name')|e }}</a></li>
-            {% if breadcrumbs is defined %}
-                {% for item in breadcrumbs %}
-                    <li class="dp-po-Breadcrumb-item {% if loop.last %}is-selected{% endif %}">
-                        <a href="{{ item.url }}" class="dp-po-Breadcrumb-link">
-                            {%- if item.phrase -%}
-                                {{ phrase(item.phrase) }}
-                            {%- elseif item.var['translated_title'] is defined -%}
-                                {{ item.var.translated_title }}
-                            {%- elseif item.var.title is defined -%}
-                                {{ item.var.title }}
-                            {%- elseif item.var.name is defined -%}
-                                {{ item.var.name }}
-                            {%- else -%}
-                                {{ item.url }}
-                            {%- endif -%}
-                        </a>
-                    </li>
-                {% endfor %}
-            {% endif %}
-        </ul>
-    </div>
-</section>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Support Centre</a></li>
+                {% if breadcrumbs is defined %}
+                    {% for item in breadcrumbs %}
+                        <li class="breadcrumb-item">
+                            <i class="dp-po-icon fal fa-angle-right"></i>
+                            <a href="{{ item.url }}" class="dp-po-Breadcrumb-link">
+                                {%- if item.phrase -%}
+                                    {{ phrase(item.phrase) }}
+                                {%- elseif item.var['translated_title'] is defined -%}
+                                    {{ item.var.translated_title }}
+                                {%- elseif item.var.title is defined -%}
+                                    {{ item.var.title }}
+                                {%- elseif item.var.name is defined -%}
+                                    {{ item.var.name }}
+                                {%- else -%}
+                                    {{ item.url }}
+                                {%- endif -%}
+                            </a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+            </ol>
+        </div>
+    </nav>
+</div>

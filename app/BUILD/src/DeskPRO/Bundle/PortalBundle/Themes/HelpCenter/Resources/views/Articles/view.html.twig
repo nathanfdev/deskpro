@@ -4,83 +4,85 @@
 {# Main page body #}
 {# ------------------------------------------ #}
 {% block page_body %}
-    <h2 class="dp-po-Title-page">{{ article.translated_title }}</h2>
-    <ul class="dp-po-List List--avatars">
-      <li>
-          <span class="dp-po-Avatar Avatar--circle">
-              <img class="dp-po-Avatar-icon" src="{{ avatar_url(article.person) }}" alt="" />
-              <span class="dp-po-Avatar-tooltip">{{ article.person.display_name_user }}</span>
-          </span>
-      </li>
-    </ul>
-
-    <div class="dp-po-description-wrap">
-      <span class="dp-po-description">{{ phrase('helpcenter.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}</span>
-      <span class="dp-IconsWrapper">
-          <a href="{{ path('portal_articles_pdf', {slug: article.slug, print: 1}) }}" class="dp-po-Icon Icon--print Icon--grey-dark"></a>
-          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-Icon Icon--pdf-file Icon--grey-dark"></a>
-      </span>
+    <div class="dp-po-section">
+        <div class="dp-po-title">
+            {#<img class="dp-po-title-svg"
+                 src="/portal-components/portal-style/static/img/page-icons/knowledgebase.svg">#}
+            <h2 class="dp-po-title-text">{{ article.translated_title }}</h2>
+        </div>
     </div>
 
-    <div class="dp-po-mobile-subscribe mobileCutBtn">
-        <div class="dp-po-dropdown-share">
-            <div class="dp-po-Icon Icon--Dots Icon--grey-darkest"></div>
-            <ul class="dp-po-dropdown-menu Dropdown-share">
-              <li class="dp-po-dropdown-menu-item dp-po-close"><span class="dp-po-Icon Icon--close"></span></li>
-              <li class="dp-po-dropdown-menu-item dp-po-share"><span class="dp-po-Icon Icon--share"></span>Share<span class="dp-po-Icon Icon--caret-right dp-po-share-btn"></span>
-                  <ul class="dp-po-dropdown-menu">
-                      <li class="dp-po-dropdown-menu-item dp-po-back-btn"><span class="dp-po-Icon Icon--back"></span></li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--ticket"></span>Email</li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--fb"></span>Facebook</li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--Messenger"></span>Messenger</li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--tw"></span>Twitter</li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--whatsapp"></span>Whats app</li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--linkedin"></span>Linkedin</li>
-                      <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--Instagram"></span>Instagram</li>
-                      <li class="dp-po-dropdown-menu-item">Copy this link</li>
-                      <li class="dp-po-dropdown-menu-item"><a href="" class="dp-po-support-btn">www.support.deskpro.com/guides/admin/h...</a></li>
-                  </ul>
-              </li>
-              <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--pdf-file"></span>Download this article</li>
-              <li class="dp-po-dropdown-menu-item"><span class="dp-po-Icon Icon--print"></span>Print this article</li>
-            </ul>
+    {% include 'Theme:PublishCommon:post-avatars.html.twig' %}
+
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="dp-po-post-info">
+                <ul class="dp-po-post-info-list">
+                    <li class="dp-po-post-info-item">
+                        {{ phrase('helpcenter.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}
+                    </li>
+                    {#<li class="dp-po-post-info-item">
+                        News type: <b>Product Release</b>
+                    </li>#}
+                </ul>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="dp-po-post-extra">
+                <ul class="dp-po-post-extra-list">
+                    <li class="dp-po-post-extra-item">
+                        <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                    </li>
+                    <li class="dp-po-post-extra-item">
+                        <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
     {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
-        <div class="dp-po-publish-date dp-po-hidden-md">
-          <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon--article-notification Icon--danger"></span></span>
-          <span class="dp-po-description">{{ phrase('portal.articles.view-as-agent') }}</span>
-        </div>
-
-        <!-- mobile -->
-        <div class="dp-po-publish-date dp-po-hidden-md-up">
-          <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon--article-notification Icon--danger"></span></span>
-          <span class="dp-po-description">{{ phrase('portal.articles.view-as-agent') }}</span>
+        <div class="alert alert-icon alert-danger" role="alert">
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('portal.articles.view-as-agent') }}
         </div>
     {% endif %}
 
     {% if article.end_action == 'unpublish' and app.user.is_agent %}
-        <div class="dp-po-publish-date dp-po-hidden-md">
-            <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon-calendar Icon--danger"></span></span>
-            <span class="dp-po-description">{{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
-        </div>
-
-        <!-- mobile -->
-        <div class="dp-po-publish-date dp-po-hidden-md-up">
-            <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon--article-notification Icon--danger"></span></span>
-            <span class="dp-po-description">{{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
+        <div class="alert alert-icon alert-danger" role="alert">
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}
         </div>
     {% endif %}
 
-    <div class="dp-po-tex-wrap">
-        <div class="dpx-kb-article-content">
-            {{ article.translated_content|raw }}
-        </div>
+    <div class="dp-po-post-content dp-po-block">
+        {{ article.translated_content|raw }}
 
         {# TODO attachments #}
         {#{% show kb_attachments %} #}
+        {#
+        <div class="dp-po-kb-attachments">
+          <h4 class="dp-po-kb-attachments-title">Attachments</h4>
+          <ul class="dp-po-kb-attachments-list">
+            <li class="dp-po-kb-attachments-item">
+              <a href="" class="dp-po-kb-attachments-link">
+                <i class="dp-po-icon fal fa-file-pdf"></i> craft-sync-user-guide.pdf
+              </a>
+            </li>
+            <li class="dp-po-kb-attachments-item">
+              <a href="" class="dp-po-kb-attachments-link">
+                <i class="dp-po-icon fal fa-file-word"></i> craft-sync-photoshop-help.docx
+              </a>
+            </li>
+            <li class="dp-po-kb-attachments-item">
+              <a href="" class="dp-po-kb-attachments-link">
+                <i class="dp-po-icon fal fa-file-excel"></i> craft-sync-photoshop-help.xlsx
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      #}
     </div>
+
 
     {% if can_rate_article(article) %}
         {% include 'Theme:PublishCommon:rating.html.twig' %}
@@ -99,17 +101,19 @@
 {# Page sidebar #}
 {# ------------------------------------------ #}
 {% block page_sidebar %}
+    <div class="dp-po-sidebar-spacer"></div>
+
     {# TODO active subscription state #}
     {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
         subscriptionInfo: [
-            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'Icon--subscribe-article', title: phrase('portal.forms.label_kb_article'), active: false },
-            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'Icon--subscribe-category', title: phrase('portal.forms.label_category'), active: false },
-            { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'Icon--subscribe-Knowledgebase', title: phrase('portal.articles.section-title'), active: false },
+            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('portal.forms.label_kb_article'), active: false },
+            { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('portal.forms.label_category'), active: false },
+            { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('portal.articles.section-title'), active: false },
         ]
     } %}
 
     {% if article.labels | length %}
-        {% include 'Theme:Common:Labels/sidebar-block.html.twig' with {
+        {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
             title: phrase('portal.general.labels'),
             labels: article.labels
         } %}

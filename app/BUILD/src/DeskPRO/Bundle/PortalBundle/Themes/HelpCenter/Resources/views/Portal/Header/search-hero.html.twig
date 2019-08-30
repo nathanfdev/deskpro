@@ -1,9 +1,9 @@
-<section class="dp-po-Header-container">
-    <form class="dp-po-Forms dp-po-Search-bar" method="POST" action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
-        <div class="dp-po-Searchbar-wrap">
-            <input type="search" class="omnisearch" name="q" autocomplete="off" placeholder="{{ phrase('helpcenter.general.search') }}" />
+<div class="dp-po">
+    <section class="dp-po-search">
+        <form class="dp-po-search-form" method="POST" action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
+            <input type="search" class="omnisearch"  name="q" autocomplete="off" placeholder="{{ phrase('helpcenter.general.search') }}" />
             <input type="hidden" name="search_log_id" {% if search_log_id is defined %} value="{{search_log_id}} {% endif %}"/>
-            <span class="dp-po-Icon Icon--find Icon--primary"></span>
-        </div>
-    </form>
-</section>
+            <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+        </form>
+    </section>
+</div>

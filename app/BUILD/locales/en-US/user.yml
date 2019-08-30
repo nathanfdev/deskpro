@@ -1,7 +1,7 @@
 helpcenter.articles.article_details : 'Article details'
 helpcenter.articles.unpublished_date : 'Unpublished date'
 helpcenter.flashes.article_unpublish: 'This article will unpublish on {{date}}.'
-helpcenter.general.last-updated: 'Last updated: <span class="dp-po-bold">{{date}}</span> by <span class="dp-po-bold">{{person}}</span>'
+helpcenter.general.last-updated: 'Last updated: <b>{{date}}</b> by <b>{{person}}</b>'
 helpcenter.general.rate-page-positive: 'Helpful'
 helpcenter.general.rate-page-negative: 'Unhelpful'
 helpcenter.general.search: 'How can we help you today?'

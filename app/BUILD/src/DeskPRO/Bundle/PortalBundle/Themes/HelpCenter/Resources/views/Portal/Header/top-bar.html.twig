@@ -1,42 +1,52 @@
-<header>
-    <ul class="dp-po-nav">
-        <li class="dp-po-Logo-wrap">
-                {% if portal_custom_logo() %}
-                    <a href="{{ path('portal_home') }}">
-                        <span class="dp-po-Icon">
-                            <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
-                        </span>
-                    </a>
-                {% endif %}
-            <a href="{{ path('portal_home') }}"><span class="dp-po-Logo-descript">{{ brand_setting('core.deskpro_name')|e }}</span></a>
-        </li>
-        <li class="dp-po-nav-control">
-            <ul>
-                {# TODO lang selector #}
-                {% if is_multi_lang() and false %}
-                    <li class="dp-po-Select-Language">
-                        <form method="POST" action="{{ path('portal_change_language') }}" id="language-changer" class="as-no-dpui">
-                            <select name="lang_code" class="button button-dropdown button-dropdown-language">
-                                {% for language in enabled_languages() %}
-                                    <option
-                                            value="{{ language.urlCode }}"
-                                            {% if language.urlCode == current_language().urlCode %}selected="selected"{% endif %}
-                                    >
-                                        {{ language.title|capitalize }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                            <button class="button button-plain button-small" type="submit">Go</button>
-                        </form>
-                    </li>
-                {% endif %}
-                {% if can_view_tickets_link() %}
-                    <li>
-                        <a class="dp-po-Button Button--small" href="{{ path('portal_new_ticket') }}">{{ phrase('portal.general.nav-newticket') }}</a>
-                    </li>
-                {% endif %}
-                {# TODO USER INFO #}
-            </ul>
-        </li>
-    </ul>
-</header>
+<div class="dp-po">
+    <header class="dp-po-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="dp-po-brand-left">
+                        <a href="{{ path('portal_home') }}" class="dp-po-homelink">
+                            {% if portal_custom_logo() %}
+                                <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" />
+                            {% endif %}
+                            <span class="dp-po-brand-name">{{ brand_setting('core.deskpro_name')|e }}</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="dp-po-header-right">
+                        <div class="dp-po-language">
+                            <a class="dp-po-language-link" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="/portal-components/portal-style/static/img/docs/flag-uk.jpg" /> English
+                                <i class="dp-po-icon far fa-angle-down"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left">
+                                <a class="dropdown-item" href="#">
+                                    <img class="dp-po-icon" src="/portal-components/portal-style/static/img/docs/flag-germany.jpg" />
+                                    German
+                                </a>
+                                <a class="dropdown-item" href="#">
+                                    <img class="dp-po-icon" src="/portal-components/portal-style/static/img/docs/flag-france.jpg" />
+                                    French
+                                </a>
+                            </div>
+                        </div>
+                        <div class="dp-po-header-button">
+                            <a href="javascript:void(0)" class="btn btn-primary" title="{{ phrase('portal.general.nav-newticket') }}">{{ phrase('portal.general.nav-newticket') }}</a>
+                        </div>
+                        <div class="dp-po-user">
+                            <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">Login</a>
+                            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
+                                <h4 class="dropdown-item-text dp-po-user-dropdown-title">New to Deskpro? <a href="">Register for an
+                                        account</a></h4>
+                                <%- include('_form-login.ejs'); %>
+                                <%- include('_form-login-social.ejs'); %>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+</div>

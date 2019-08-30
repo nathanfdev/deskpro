@@ -1,19 +1,7 @@
-<div class="dp-po-article-wrap Voting-section">
-    <div class="dp-po-title">{{ phrase('portal.general.rate-page') }}</div>
-    <div class="dp-po-buttons-wrap">
-        <a href="{{ portal_path(article, 'vote_up') }}" class="dp-po-Button Button--small Button--success post-link" rel="noindex, nofollow">
-            <span class="dp-po-Icon Icon--check Icon--success"></span>
-            {{ phrase('helpcenter.general.rate-page-positive') }}
-        </a>
-        <a href="{{ portal_path(article, 'vote_down') }}" class="dp-po-Button Button--small Button--danger post-link" rel="noindex, nofollow">
-            <span class="dp-po-Icon Icon--close Icon--danger"></span>
-            {{ phrase('helpcenter.general.rate-page-negative') }}
-        </a>
-    </div>
-
-    {% if show_rating_counts %}
-        <span class="dp-po-description">
-            <p>{{ phrase('portal.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
-        </span>
-    {% endif %}
+<div class="dp-po-section db-po-post-rating">
+    <a href="{{ portal_path(article, 'vote_up') }}" class="btn btn-icon btn-outline-success"> <i class="dp-po-icon far fa-check"></i>
+        {{ phrase('helpcenter.general.rate-page-positive') }} </a>
+    <a href="{{ portal_path(article, 'vote_down') }}" class="btn btn-icon btn-outline-danger"> <i class="dp-po-icon far fa-times"></i>
+        {{ phrase('helpcenter.general.rate-page-negative') }} </a>
+    <p class="db-po-post-rating-count">{{ phrase('portal.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
 </div>

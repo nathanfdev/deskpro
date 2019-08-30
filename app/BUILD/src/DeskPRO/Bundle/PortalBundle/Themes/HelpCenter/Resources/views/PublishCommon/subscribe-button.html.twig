@@ -1,20 +1,21 @@
-<div class="dp-po-Dropdown-container subscribe--dropdown">
-    <span class="dp-po-dropdown-atom">
-        <span class="dp-po-dropdown-Title">
-            <span class="dp-po-Icon Icon--subscribe"></span>
-            {{ phrase('portal.general.btn-subscribe') }}
-        </span>
-    </span>
-    <ul class="dp-po-dropdown-menu">
-        {% for sub in subscriptionInfo %}
-            <li class="dp-po-dropdown-menu-item is-selected">
-                <a href="{{ sub.toggleUrl }}" class="post-link" rel="noindex, nofollow">
-                    <span class="dp-po-Icon {{ sub.icon }}"></span>{{ sub.title }}{% if sub.active %}<span class="dp-po-Icon Icon--check Icon--success"></span>{% endif %}
-                </a>
-            </li>
-        {% endfor %}
-        <li class="dp-po-dropdown-menu-item">
-            <a href="{{ url('portal_user_profile') }}">{{ phrase('portal.general.btn-manage_subscriptions') }}</a>
-        </li>
-    </ul>
+<div class="dp-po-subscribe dp-po-subscribe-large">
+    <div class="dropdown">
+        <button class="dp-po-subscribe-btn" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false" data-offset="0,10">
+            <i class="dp-po-icon fad fa-envelope"></i> {{ phrase('portal.general.btn-subscribe') }} <i class="dp-po-icon far fa-check"></i>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+            {% for sub in subscriptionInfo %}
+                <a class="dropdown-item disabled" href="{{ sub.toggleUrl }}">
+                    <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i
+                            class="dp-po-icon far fa-check"></i></a>
+            {% endfor %}
+            <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-spreadsheet"></i> Category <i
+                        class="dp-po-icon far fa-check"></i></a>
+            <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-chart-line"></i> Knowledgebase <i
+                        class="dp-po-icon far fa-check"></i></a>
+            <span class="dp-po-subscribe-divider"></span>
+            <a class="dropdown-item dp-po-subscribe-manage" href="{{ url('portal_user_profile') }}">{{ phrase('portal.general.btn-manage_subscriptions') }}</a>
+        </div>
+    </div>
 </div>

@@ -279,6 +279,7 @@ class ArticlesController extends AbstractController
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             [
+                'main_class'         => 'dp-po-knowledgebase-article',
                 'article'            => $article,
                 'articleData'        => $articleData,
                 'custom_data'        => $customData,

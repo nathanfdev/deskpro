@@ -1,28 +1,44 @@
-<div class="dp-po-wrap-collapse-md">
-    <div class="dp-po-comments comments-list dp-po-md-collapse-title dp-po-title">
-        <span class="dp-po-comments-title-wrap">{{ phrase('portal.general.comments-title', { count: comments|length }) }}</span>
+<div class="dp-po-section dp-po-comments">
+    <div class="dp-po-title">
+        <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('portal.general.comments-title', { count: comments|length }) }}</h2>
     </div>
-    <div class="dp-po-comments-wrap dp-po-md-collapse-content">
-        {% for comment in comments %}
-            <div class="dp-po-comments-item">
-                <div class="dp-po-subtitle">
-                    <span class="dp-po-Avatar">
-                        <img class="dp-po-Avatar-icon" src="{{ avatar_url(comment.person) }}" aria-hidden="true">
-                        <span class="dp-po-Avatar-name">{{ comment.userName(true) }}</span>
-                    </span>
-                    <span class="dp-po-label label--time">
-                        <span class="dp-po-Icon Icon--history Icon--primary"></span>
-                        {{ comment.date_created|date }}
-                    </span>
+    <div class="dp-po-block">
+        <div class="dp-po-comments-thread">
+            {% for comment in comments %}
+                <div class="dp-po-comments-wrap">
+                    <div class="dp-po-comments-item">
+                        <div class="row">
+                            <div class="col-sm-9">
+                                <div class="dp-po-avatar">
+                                    <img src="{{ avatar_url(comment.person) }}" />
+                                    <strong>{{ comment.userName(true) }}</strong>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="dp-po-comments-extras">
+                                    <div class="dp-po-comments-time">
+                                        <i class="dp-po-icon far fa-clock"></i> {{ date_ago(comment.date_created) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="dp-po-comments-desc">
+                            <div class="dp-po-comments-content">
+                                {{ comment.content_html_plain|raw }}
+                            </div>
+                        </div>
+                        {% if not comment.is_visible %}
+                            <p class="dp-po-comment-subtitle">{{ phrase('portal.general.comments-pending-validation') }}</p>
+                        {% endif %}
+                        {#<div class="dp-po-comments-vote">
+                            <a href="" class="dp-po-comments-upvote"><i class="dp-po-icon fal fa-angle-up"></i> 2</a>
+                            <a href="" class="dp-po-comments-downvote"><i class="dp-po-icon fal fa-angle-down"></i> 2</a>
+                        </div>#}
+                    </div>
                 </div>
-                <p class="dp-po-comment-subtitle">
-                    <p>{{ comment.content_html_plain|raw }}</p>
-                </p>
-                {% if not comment.is_visible %}
-                    <p class="dp-po-comment-subtitle">{{ phrase('portal.general.comments-pending-validation') }}</p>
-                {% endif %}
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 </div>
 

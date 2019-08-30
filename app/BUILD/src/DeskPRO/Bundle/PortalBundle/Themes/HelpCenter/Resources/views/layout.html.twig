@@ -5,8 +5,7 @@
     <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
 
     {# TODO -- real css #}
-    <link rel="stylesheet" href="http://localhost:3001/portal-components/style/css/main.css" />
-    <link rel="stylesheet" href="http://localhost:3001/portal-components/style/css/style.css" />
+    <link rel="stylesheet" href="https://deskpro.github.io/portal-components/portal-style/dist/style.css" />
 </head>
 <body class="dp-Template portal-mode-{{ portal_mode() }}">
 
@@ -22,17 +21,16 @@
         {% show section flashes %}
 
         {% block page_content %}
-            <section class="dp-po-main">
-                <div class="dp-po-container">
-                    <div class="dp-po-row">
+        <div class="dp-po">
+            <section class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+                <div class="container">
+                    <div class="row">
                         {% if block("page_sidebar") is defined %}
-                            <div class="dp-po-col-9 dp-po-md-12">
+                            <div class="col-sm-9">
                                 {{ block("page_body") }}
                             </div>
-                            <div class="dp-po-col-3 dp-po-md-12">
-                                <div class="dp-po-Sidebar Sidebar--right">
-                                    {{ block("page_sidebar") }}
-                                </div>
+                            <div class="col-sm-3">
+                                {{ block("page_sidebar") }}
                             </div>
                         {% else %}
                             <div class="dp-po-col-9 dp-po-md-12">
@@ -45,13 +43,24 @@
         {% endblock %}
     {% endblock %}
 
+    <div class="dp-po-overlay"></div>
+
     {% include 'Theme:Internal:custom-footer.html.twig' %}
     {% block doc_end %}{% endblock %}
     {% include 'Theme:Internal:foot-include.html.twig' %}
 
-    <footer class="dp-po-footer">
-        <div class="dp-po-frame-copyright">{{ phrase('helpcenter.general.software_power_by') }} <span class="dp-po-copyright-deskpro"><span class="dp-po-Icon Icon--elephant Icon--primary"></span>Deskpro</span></div>
-    </footer>
+    <div class="dp-po">
+        <footer class="dp-po-footer">
+            <div class="container">
+                <div class="dp-po-footer-copyright">
+                    <span class="dp-po-footer-powered">{{ phrase('helpcenter.general.software_power_by') }}</span>
+                    <a href="javascript:void(0)" class="dp-po-footer-deskpro"><img
+                                src="/portal-components/portal-style/static/img/dp-logo.svg" />
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
 </div>
 
 <script type="text/javascript">
