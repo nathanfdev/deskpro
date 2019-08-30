@@ -8,7 +8,7 @@
     <ul class="dp-po-List List--avatars">
       <li>
           <span class="dp-po-Avatar Avatar--circle">
-              <img class="dp-po-Avatar-icon" src="{{ avatar_url(article.person) }}" alt=""></img>
+              <img class="dp-po-Avatar-icon" src="{{ avatar_url(article.person) }}" alt="" />
               <span class="dp-po-Avatar-tooltip">{{ article.person.display_name_user }}</span>
           </span>
       </li>
@@ -60,7 +60,7 @@
         </div>
     {% endif %}
 
-    {% if article.end_action == 'unpublish' %}
+    {% if article.end_action == 'unpublish' and app.user.is_agent %}
         <div class="dp-po-publish-date dp-po-hidden-md">
             <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon-calendar Icon--danger"></span></span>
             <span class="dp-po-description">{{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
