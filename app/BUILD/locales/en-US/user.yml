@@ -1,3 +1,5 @@
+helpcenter.flashes.article_unpublish: 'This article will unpublish on {{date}}.'
+helpcenter.general.last-updated: 'Last updated: <span class="dp-po-bold">{{date}}</span> by <span class="dp-po-bold">{{person}}</span>'
 portal.account.automatically_join_org_tickets: 'Automatically join {{org_name}}''s tickets?'
 portal.account.change-password: 'Change Password'
 portal.account.change-password-btn: 'Update Password'

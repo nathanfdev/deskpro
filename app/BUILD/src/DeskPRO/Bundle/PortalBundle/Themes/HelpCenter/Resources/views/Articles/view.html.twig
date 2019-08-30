@@ -15,7 +15,7 @@
     </ul>
 
     <div class="dp-po-description-wrap">
-      <span class="dp-po-description">{{ phrase('portal.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}</span>
+      <span class="dp-po-description">{{ phrase('helpcenter.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}</span>
       <span class="dp-IconsWrapper">
           <a href="{{ path('portal_articles_pdf', {slug: article.slug, print: 1}) }}" class="dp-po-Icon Icon--print Icon--grey-dark"></a>
           <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-Icon Icon--zip-file-left Icon--grey-dark"></a>
@@ -63,13 +63,13 @@
     {% if article.end_action == 'unpublish' %}
         <div class="dp-po-publish-date dp-po-hidden-md">
             <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon-calendar Icon--danger"></span></span>
-            <span class="dp-po-description">{{ phrase('portal.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
+            <span class="dp-po-description">{{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
         </div>
 
         <!-- mobile -->
         <div class="dp-po-publish-date dp-po-hidden-md-up">
             <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon--article-notification Icon--danger"></span></span>
-            <span class="dp-po-description">{{ phrase('portal.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
+            <span class="dp-po-description">{{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
         </div>
     {% endif %}
 
