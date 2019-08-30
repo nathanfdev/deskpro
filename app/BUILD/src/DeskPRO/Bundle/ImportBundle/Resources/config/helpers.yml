@@ -46,6 +46,7 @@ services:
     class: DeskPRO\ImporterTools\Helpers\DbHelper
     arguments:
       - "@dp.importer_logger"
+      - "@dp.importer.event_dispatcher"
     tags:
       - { name: dp.importer.source.helper }
 

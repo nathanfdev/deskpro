@@ -75,6 +75,7 @@ class JobProgressEventListener implements EventSubscriberInterface
             ProgressEvent::POST_MODEL_IMPORT => ['onPostModelImport'],
 //            ProgressEvent::PRE_IMPORT        => ['onPreImport'],
             ProgressEvent::POST_IMPORT       => ['onPostImport'],
+            ProgressEvent::POST_STEP_IMPORT  => ['onPostStepImport'],
 //            ProgressEvent::PRE_BATCH_APPLY   => ['onPreBatchApply'],
             ProgressEvent::POST_BATCH_APPLY  => ['onPostBatchApply'],
 //            ProgressEvent::PRE_APPLY         => ['onPreApply'],
@@ -135,6 +136,28 @@ class JobProgressEventListener implements EventSubscriberInterface
             $this->em->persist($job);
             $this->em->flush();
         }
+    }
+
+    /**
+     * @param ProgressEvent $event
+     */
+    public function onPostStepImport(ProgressEvent $event)
+    {
+        if (!$job = $this->getJob()) {
+            return;
+        }
+
+        $offsets  = $job->getDataKey('import_offsets', []);
+        $options = $event->getOptions();
+
+        if (array_key_exists('offset', $options)) {
+            $offsets = array_merge($offsets, $options['offset']);
+        }
+
+        $job->setDataKey('import_offsets', $offsets);
+
+        $this->em->persist($job);
+        $this->em->flush();
     }
 
     /**

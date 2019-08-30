@@ -75,28 +75,17 @@ class ImportCommand extends AbstractImporterCommand
         // run import
         /** @var AbstractImporter $sourceScript */
         $sourceScript = $sourceResolver->getSourceScript($filename, $config);
-        $sourceScript->setJob($job);
 
         try {
-            $sourceScript->runImport();
+            $sourceScript->runImport(
+                $job->getDataKey('imported_steps', []),
+                $job->getDataKey('import_offsets', [])
+            );
             $container->get('dp.importer.source.helper.progress')->finishImport();
         } catch (\Exception $exception) {
-            $options = ['failed_step' => self::STEP_IMPORT];
-
-            if ($exception instanceof PagerException) {
-                $options = array_merge(
-                    $options,
-                    [
-                        'failed_pages' => [
-                            $exception->getFailedStepName() => $exception->getFailedPage(),
-                        ],
-                    ]
-                );
-            }
-
             $container
                 ->get('dp.importer.event_dispatcher')
-                ->dispatch(ProgressEvent::ERROR, new ProgressEvent(null, $options));
+                ->dispatch(ProgressEvent::ERROR, new ProgressEvent(null, ['failed_step' => self::STEP_IMPORT]));
 
             throw $exception;
         } finally {
