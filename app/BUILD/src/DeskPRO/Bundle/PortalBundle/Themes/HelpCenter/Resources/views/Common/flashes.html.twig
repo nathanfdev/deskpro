@@ -1,9 +1,10 @@
 {% if flashes|length > 0 %}
-    <div class="flashes">
+    <div class="dp-po-Info-wrap">
         {% for type, flashMessages in flashes %}
             {% for flash in flashMessages %}
-                <div class="flash flash-{{ type }}">
-                    {{ flash }}
+                <div class="dp-po-Info Info--{{ type }}">
+                    <span class="dp-po-Icon Icon--check Icon--{{ type }}"></span>
+                    <span class="dp-po-info-txt">{{ flash }}</span>
                 </div>
             {% endfor %}
         {% endfor %}
