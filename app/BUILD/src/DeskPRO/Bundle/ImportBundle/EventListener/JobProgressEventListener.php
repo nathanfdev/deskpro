@@ -131,7 +131,6 @@ class JobProgressEventListener implements EventSubscriberInterface
             $job->setStatus(Job::STATUS_PROCESSING);
             $job->setDataKey('imported_steps', $imported);
             $job->setDataKey('failed_step', null);
-            $job->setDataKey('failed_pages', []);
 
             $this->em->persist($job);
             $this->em->flush();
@@ -187,7 +186,6 @@ class JobProgressEventListener implements EventSubscriberInterface
         $job->setStatus(Job::STATUS_PROCESSING);
         $job->setDataKey('applied_counts', $counts);
         $job->setDataKey('failed_step', null);
-        $job->setDataKey('failed_pages', []);
 
         $this->em->persist($job);
         $this->em->flush();
@@ -212,7 +210,6 @@ class JobProgressEventListener implements EventSubscriberInterface
             $job->setStatus(Job::STATUS_PROCESSING);
             $job->setDataKey('applied_steps', $applied);
             $job->setDataKey('failed_step', null);
-            $job->setDataKey('failed_pages', []);
 
             $this->em->persist($job);
             $this->em->flush();
@@ -289,10 +286,6 @@ class JobProgressEventListener implements EventSubscriberInterface
 
         if (array_key_exists('failed_step', $options)) {
             $job->setDataKey('failed_step', $options['failed_step']);
-        }
-
-        if (array_key_exists('failed_pages', $options)) {
-            $job->setDataKey('failed_pages', $options['failed_pages']);
         }
 
         $this->em->persist($job);
