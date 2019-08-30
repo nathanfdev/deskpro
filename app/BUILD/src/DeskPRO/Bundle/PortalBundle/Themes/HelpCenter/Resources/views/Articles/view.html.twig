@@ -15,7 +15,7 @@
     </ul>
 
     <div class="dp-po-description-wrap">
-      <span class="dp-po-description">{{ phrase('portal.general.updated') }}: <span class="dp-po-bold">{{ article.date_updated | date('day') }}</span></span>
+      <span class="dp-po-description">{{ phrase('portal.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}</span>
       <span class="dp-IconsWrapper">
           <a href="{{ path('portal_articles_pdf', {slug: article.slug, print: 1}) }}" class="dp-po-Icon Icon--print Icon--grey-dark"></a>
           <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-Icon Icon--zip-file-left Icon--grey-dark"></a>
@@ -60,6 +60,19 @@
         </div>
     {% endif %}
 
+    {% if article.end_action == 'unpublish' %}
+        <div class="dp-po-publish-date dp-po-hidden-md">
+            <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon-calendar Icon--danger"></span></span>
+            <span class="dp-po-description">{{ phrase('portal.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
+        </div>
+
+        <!-- mobile -->
+        <div class="dp-po-publish-date dp-po-hidden-md-up">
+            <span class="dp-po-publish-icon"><span class="dp-po-Icon Icon--article-notification Icon--danger"></span></span>
+            <span class="dp-po-description">{{ phrase('portal.flashes.article_unpublish', {date: article.date_end | date('day')}) }}</span>
+        </div>
+    {% endif %}
+
     <div class="dp-po-tex-wrap">
         <div class="dpx-kb-article-content">
             {{ article.translated_content|raw }}
@@ -96,41 +109,26 @@
     } %}
 
     {% if article.labels | length %}
-        {% embed 'Theme:Common:sidebar-block.html.twig' %}
-            {% block title %}{{ phrase('portal.general.labels') }}{% endblock %}
-            {% block body %}
-                {% for l in  article.labels %}
-                    <span class="dp-po-label label--large"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></span>
-                {% endfor %}
-            {% endblock %}
-        {% endembed %}
+        {% include 'Theme:Common:sidebar-block.html.twig' with {
+            title: phrase('portal.general.labels')
+        } %}
     {% endif %}
 
-    {# TODO share #}
-
-    {% if article.labels | length %}
-        {% embed 'Theme:Common:sidebar-block.html.twig' %}
-            {% block body %}
-                {% for l in  article.labels %}
-                    <span class="dp-po-label label--large"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></span>
-                {% endfor %}
-            {% endblock %}
+    {% if false %}
+        {% embed 'Theme:Common:sidebar-block.html.twig' with {
+            propertyList: [
+                { label: phrase('portal.sidebar.article_posted_by'), value: article.person.display_name_user },
+                { label: phrase('portal.tickets.list_date_created'), value: article.date_published | date('day') },
+                { block: 'customFields' }
+            ]
+        } %}
+            {% if custom_data | length %}
+                {% block customFields %}
+                    {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
+                {% endblock %}
+            {% endif %}
         {% endembed %}
     {% endif %}
-
-    {% embed 'Theme:Common:sidebar-block.html.twig' with {
-        propertyList: [
-            { label: phrase('portal.sidebar.article_posted_by'), value: article.person.display_name_user },
-            { label: phrase('portal.tickets.list_date_created'), value: article.date_published | date('day') },
-            { block: 'customFields' }
-        ]
-    } %}
-        {% if custom_data | length %}
-            {% block customFields %}
-                {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
-            {% endblock %}
-        {% endif %}
-    {% endembed %}
 
     {# TODO related content #}
     {#{% show related_content %}#}

@@ -4,14 +4,14 @@
  * DeskPRO.
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Themes\Portal;
+namespace DeskPRO\Bundle\PortalBundle\Themes\HelpCenter;
 
 use DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
 
-class PortalTheme extends AbstractTheme
+class HelpCenterTheme extends AbstractTheme
 {
-    const THEME_ID = 'portal';
+    const THEME_ID = 'helpcenter';
 
     /**
      * {@inheritdoc}
@@ -34,7 +34,7 @@ class PortalTheme extends AbstractTheme
      */
     public function getName()
     {
-        return 'Portal';
+        return 'HelpCenter';
     }
 
     public static function getHardCodedTags()

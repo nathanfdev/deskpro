@@ -35,10 +35,10 @@ class BrandFixture extends AbstractDpFixture implements OrderedFixtureInterface
         $manager->persist($sidebarTheme);
         $this->setReference('sidebar_theme', $sidebarTheme);
 
-        $portalTheme = new ThemeSet();
-        $portalTheme->setThemeId('portal');
-        $manager->persist($portalTheme);
-        $this->setReference('portal_theme', $portalTheme);
+        $helpCenterTheme = new ThemeSet();
+        $helpCenterTheme->setThemeId('helpcenter');
+        $manager->persist($helpCenterTheme);
+        $this->setReference('helpcenter_theme', $helpCenterTheme);
 
         // Insert brand
         $brand = new Brand();

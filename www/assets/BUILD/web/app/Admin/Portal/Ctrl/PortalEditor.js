@@ -78,7 +78,8 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.advanced = { main_scss: '', custom_scss: '', javascript: '' };
       this.available_themes = [
         { id: 'standard', title: 'Standard' },
-        { id: 'sidebar', title: 'Sidebar' }
+        { id: 'sidebar', title: 'Sidebar' },
+        { id: 'helpcenter', title: 'HelpCenter' }
       ];
       this.$scope.brand_id = this.$stateParams.brandId;
 

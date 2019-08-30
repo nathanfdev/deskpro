@@ -9,7 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag as TagAnnotation;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
-use DeskPRO\Bundle\PortalBundle\Themes\Portal\PortalTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\HelpCenter\HelpCenterTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 use Doctrine\Common\Annotations\Reader;
@@ -105,7 +105,7 @@ class ThemeRepository
             new BaseTheme(),
             new StandardTheme(),
             new SidebarTheme(),
-            new PortalTheme(),
+            new HelpCenterTheme(),
         ];
 
         $this->theme_map = [];
