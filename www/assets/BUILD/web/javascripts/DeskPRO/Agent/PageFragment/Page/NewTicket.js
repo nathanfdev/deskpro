@@ -2038,6 +2038,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				selectDepartment.select2('val', val).change();
 			});
 		});
+
+    selectBrand.trigger('change');
 	},
 
 	focusOnReply: function() {
