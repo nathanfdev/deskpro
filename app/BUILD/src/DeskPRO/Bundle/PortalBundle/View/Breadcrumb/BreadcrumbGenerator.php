@@ -20,6 +20,7 @@ use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -50,13 +51,19 @@ class BreadcrumbGenerator
      */
     private $language_manager;
 
-    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage, ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager)
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brandThemeLoader;
+
+    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage, ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager, PortalBrandThemeLoader $brandThemeLoader)
     {
         $this->permissions_manager = $permissions_manager;
         $this->token_storage       = $token_storage;
         $this->object_router       = $object_router;
         $this->url_generator       = $url_generator;
         $this->language_manager    = $language_manager;
+        $this->brandThemeLoader    = $brandThemeLoader;
     }
 
     /**
@@ -64,7 +71,7 @@ class BreadcrumbGenerator
      */
     public function createBuilder()
     {
-        return new BreadcrumbBuilder($this->object_router, $this->url_generator, $this->language_manager);
+        return new BreadcrumbBuilder($this->object_router, $this->url_generator, $this->language_manager, $this->brandThemeLoader);
     }
 
     //####################################################################################################################
