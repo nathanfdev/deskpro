@@ -18,6 +18,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Util\LazyPropObject;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Util\Util;
@@ -101,9 +102,49 @@ class PortalController extends AbstractController
             return $redirectToApp;
         }
 
+        $person = $this->getCurrentPerson();
+
+        $newsData = new LazyPropObject([
+            'pager' => function () use ($person) {
+                return $pager = $this->getNewsDataService()->getNewsPager(
+                    null,
+                    (int) 1,
+                    (int) 3,
+                    $person
+                );
+            },
+        ]);
+
+        $kbData = new LazyPropObject([
+            'data' => function () {
+                $category = null;
+
+                $person = $this->getCurrentPerson();
+                $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+                $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
+
+                $categoryChildrenPagers = [];
+                foreach ($categoryChildren as $childCat) {
+                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
+                }
+
+                return [
+                    'category'                 => $category,
+                    'category_pager'           => $categoryPager,
+                    'category_children'        => $categoryChildren,
+                    'category_children_pagers' => $categoryChildrenPagers,
+                    'articles_count'           => 3,
+                    'with_tree'                => true,
+                ];
+            },
+        ]);
+
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
                 'page_title'        => $this->createPageTitle()->homepage(),
+                'news_data'         => $newsData,
+                'kb_data'           => $kbData,
                 'communityChannels' => $allowedCommunityChannelIds,
             ]
         );

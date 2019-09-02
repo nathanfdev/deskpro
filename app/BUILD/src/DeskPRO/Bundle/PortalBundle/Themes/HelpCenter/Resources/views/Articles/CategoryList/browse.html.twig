@@ -1,25 +1,20 @@
 {% if category_children|length > 0 %}
-  <div class="kb-home">
+<div class="dp-po-block">
     {% for category in category_children %}
-        <div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
-            <article class="article-categories">
-                <header>
-                    <h1>
-                        <i class="fas fa-star"></i>
-                        <a href="{{ portal_path(category) }}">{{ object_phrase(category) }}</a>
-                        <span class="count">({{ category_children_pagers[category.id]|length }})</span>
-                    </h1>
-                    <hr>
-                </header>
-
-                {% show kb_list_simple with {
-                  category: category,
-                  show_category_link: true,
-                  count: 5,
-                  with_tree: with_tree
-                } %}
-            </article>
+        {% if loop.index0 % 2 == 0 %}<div class="row mb-4">{% endif %}
+        <div class="col-sm-6 ">
+                <div class="dp-po-category-title">
+                        <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
+{#                                <i class="dp-po-icon far fa-rocket text-danger"></i>#}
+                                <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span class="count">({{ category_children_pagers[category.id]|length }})</span></h2>
+                        </a>
+                </div>
+                {% include 'Theme:Articles:ArticleList/simple.html.twig' with {
+                        pager: category_children_pagers[category.id],
+                        show_category_link: true,
+                }%}
         </div>
+        {% if loop.index0 % 2 == 1 %}</div>{% endif %}
     {% endfor %}
-  </div>
+</div>
 {% endif %}
