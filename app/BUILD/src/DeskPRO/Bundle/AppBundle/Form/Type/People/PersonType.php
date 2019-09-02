@@ -80,6 +80,9 @@ class PersonType extends AbstractType
             ->add('organization_position', TextType::class, [
                 'required' => false,
             ])
+            ->add('organization_manager', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('language', EntityType::class, [
                 'class'    => Language::class,
                 'required' => false,
