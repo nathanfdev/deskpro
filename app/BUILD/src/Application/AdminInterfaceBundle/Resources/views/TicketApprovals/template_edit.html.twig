@@ -2,84 +2,42 @@
 {% block editpane_content %}
     <form role="form" name="form_props" ng-submit="form_props.$valid && TicketApprovalsTemplateEdit.saveForm()">
         <section class="dp-paneblock dp-editpane">
+
+            <nav class="dp-blocktabs">
+                <ul>
+                    <li class="active" dp-tab-btn="main.props">
+                        <a href="#">
+                            <i class="fas fa-pencil-alt"></i> {{ phrase('adm.ticket_approvals.tabs.properties') }}
+                        </a>
+                    </li>
+                    <li class="pipe">|</li>
+                    <li dp-tab-btn="main.perms">
+                        <a href="#"><i class="fas fa-users"></i> {{ phrase('adm.ticket_approvals.tabs.permissions') }}
+                        </a>
+                    </li>
+                    <li class="pipe">|</li>
+                    <li dp-tab-btn="main.triggers">
+                        <a href="#">
+                            <i class="fas fa-columns"></i> {{ phrase('adm.ticket_approvals.tabs.triggers') }}
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
             <article class="form-horizontal dp-form">
-                <div class="panel panel-fill indent">
-                    <div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
-                        <div class="form-group">
-                            <div class="col-lg-2">
-                                <h3>{{ phrase('adm.ticket_approvals.template.name') }} *</h3>
-                            </div>
-                            <div class="col-lg-10">
-                                <div class="inner-group" dp-error-class="form_props.name">
-                                    <input type="text"
-                                           class="form-control"
-                                           name="name"
-                                           ng-model="TicketApprovalsTemplateEdit.form.name"
-                                           required autofocus
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-lg-2">
-                                <h3>{{ phrase('adm.ticket_approvals.template.type') }} *</h3>
-                            </div>
-                            <div class="col-lg-10">
-                                <div class="inner-group" dp-error-class="form_props.type">
-                                    <select name="type"
-                                            ui-select2
-                                            ng-model="TicketApprovalsTemplateEdit.form.type"
-                                            style="min-width: 240px"
-                                    >
-                                        <option value="{{ ng_var('type.id') }}" ng-repeat="type in TicketApprovalsList.types">{{ ng_var('type.name') }}</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-lg-2">
-                                <h3>{{ phrase('adm.ticket_approvals.template.description') }}</h3>
-                            </div>
-                            <div class="col-lg-10">
-                                <div class="inner-group" dp-error-class="form_props.description">
-                                    <textarea class="form-control"
-                                              name="description"
-                                              ng-model="TicketApprovalsTemplateEdit.form.description"
-                                    ></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-lg-2">
-                                <h3>{{ phrase('adm.ticket_approvals.template.required_approvals') }} *</h3>
-                            </div>
-                            <div class="col-lg-10">
-                                <div class="inner-group" dp-error-class="form_props.required_approvals">
-                                    <input type="number"
-                                           name="required_approvals"
-                                           class="form-control"
-                                           ng-model="TicketApprovalsTemplateEdit.form.required_approvals"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-lg-2">
-                                <h3>{{ phrase('adm.ticket_approvals.template.required_rejections') }} *</h3>
-                            </div>
-                            <div class="col-lg-10">
-                                <div class="inner-group" dp-error-class="form_props.required_rejections">
-                                    <input type="number"
-                                           name="required_rejections"
-                                           class="form-control"
-                                           ng-model="TicketApprovalsTemplateEdit.form.required_rejections"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div dp-tab-body="main.props">
+                    {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:properties.html.twig' %}
+                </div>
+
+                <div dp-tab-body="main.perms">
+                    {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:permissions.html.twig' %}
+                </div>
+
+                <div dp-tab-body="main.layout">
+                    {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:triggers.html.twig' %}
                 </div>
             </article>
+
             <footer>
                 <div class="dp-content">
                     <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
