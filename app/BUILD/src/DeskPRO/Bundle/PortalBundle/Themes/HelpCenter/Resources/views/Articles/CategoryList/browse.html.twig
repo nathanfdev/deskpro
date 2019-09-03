@@ -3,16 +3,18 @@
     {% for category in category_children %}
         {% if loop.index0 % 2 == 0 %}<div class="row mb-4">{% endif %}
         <div class="col-sm-6 ">
-                <div class="dp-po-category-title">
-                        <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
-                                <i class="dp-po-icon fas fa-folder" style="color: {{ icon_color(category) }};"></i>
-                                <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span class="count">({{ category_children_pagers[category.id]|length }})</span></h2>
-                        </a>
+                <div class="dp-po-kb-category">
+                        <div class="dp-po-category-title">
+                                <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
+                                        <i class="dp-po-icon fas fa-folder" style="color: {{ icon_color(category) }};"></i>
+                                        <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span class="count">({{ category_children_pagers[category.id]|length }})</span></h2>
+                                </a>
+                        </div>
+                        {% include 'Theme:Articles:ArticleList/simple.html.twig' with {
+                                pager: category_children_pagers[category.id],
+                                show_category_link: true,
+                        }%}
                 </div>
-                {% include 'Theme:Articles:ArticleList/simple.html.twig' with {
-                        pager: category_children_pagers[category.id],
-                        show_category_link: true,
-                }%}
         </div>
         {% if loop.index0 % 2 == 1 %}</div>{% endif %}
     {% endfor %}
