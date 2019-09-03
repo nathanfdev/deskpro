@@ -28,19 +28,23 @@ class MembersController extends AbstractController
     {
         $this->isCommunityEnabledOrNotFoundException();
 
-        $page  = $request->get('page', 1);
-        $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getPersonDataService()->getPortalMembersPager($page, $count);
+        $page    = $request->get('page', 1);
+        $orderBy = $request->get('order', 'last_name');
+        $search  = $request->get('q', '');
+        $count   = $this->getBrandSetting('portal.per_page_content');
+        $pager   = $this->getPersonDataService()->getPortalMembersPager($page, $count, $orderBy, $search);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildMembersList();
 
         return $this->renderThemeView(
             'Theme:Members:index.html.twig',
             [
-                'breadcrumbs' => $breadcrumbs,
-                'pager'       => $pager,
-                'count'       => $count,
-                'page'        => $page,
+                'breadcrumbs'    => $breadcrumbs,
+                'pager'          => $pager,
+                'count'          => $count,
+                'page'           => $page,
+                'q'              => $search,
+                'avatarResolver' => $this->get('avatar_resolver'),
             ]
         );
     }
