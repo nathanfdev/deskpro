@@ -82,7 +82,11 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="dp-po-block">
-                            {% show  community_list_simple with { count: 5, show_category_link: true, types: communityChannels  } %}
+                            {% include 'Theme:Community:CommunityTopicsList/simple.html.twig' with {
+                                pager: community_data.pager,
+                                show_category_link: true,
+                                show_pager: false
+                            } %}
                         </div>
                     </div>
                 </div>

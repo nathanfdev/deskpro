@@ -16,8 +16,10 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Component\Util\LazyPropObject;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -144,6 +146,30 @@ class PortalController extends AbstractController
            'channels' => function () use ($person) {
                return $this->getCommunityDataService()->getCommunityChannelsForPerson($person);
            },
+            'pager' => function () use ($allowedCommunityChannelIds) {
+                $person = $this->getUser() ?: new PersonGuest();
+
+                $filter = new CommunityFilter([
+                    'status'            => 'all',
+                    'status_categories' => [],
+                    'types'             => $allowedCommunityChannelIds,
+                    'sort'              => 'date',
+                    'sort_direction'    => 'desc',
+                ]);
+
+                $pager = $this->getCommunityDataService()->getItemsPager(
+                    1,
+                    5,
+                    $filter,
+                    $person
+                );
+
+                foreach ($pager as $topic) {
+                    $topic->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic);
+                }
+
+                return $pager;
+            },
         ]);
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',

@@ -1,0 +1,31 @@
+<div class="dp-po-community-featured">
+    <h2 class="dp-po-community-featured-title">{{ phrase('helpcenter.community.featured-topics') }}</h2>
+    {% if pager|length %}
+        <ul class="dp-po-community-featured-list">
+            {% for topic in pager %}
+                <li class="dp-po-community-featured-item">
+                    <a href="{{ portal_path(topic, 'vote_up') }}" class="dp-po-like dp-po-like-small" rel="noindex, nofollow">
+                        <span class="dp-po-like-count">{{ topic.total_rating }}</span>
+                        <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
+                    </a>
+                    {#                    <span class="text-tag">{{ topic.status_category ? object_phrase(topic.status_category) : topic.status }}</span>#}
+                    <a href="{{ portal_path(topic) }}" class="dp-po-community-featured-link">{{ topic.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong>{{ phrase('portal.community.none') }}</strong>
+    {% endif %}
+
+    {% if show_category_link and pager|length > 0 %}
+        <div class="dp-po-viewall">
+            <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
+                {{ phrase('portal.community.view-x-community-topics', {count: pager|length}) }} <i class="dp-po-icon far fa-angle-right"></i>
+            </a>
+        </div>
+    {% endif %}
+
+    {% if show_pager %}
+        {% show community_pager %}
+    {% endif %}
+</div>
