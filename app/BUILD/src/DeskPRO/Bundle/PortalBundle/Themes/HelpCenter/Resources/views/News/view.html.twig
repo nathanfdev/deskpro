@@ -2,80 +2,94 @@
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
 {% block page_body %}
-  <div class="breadcrumbs">
-    {% show breadcrumbs %}
-  </div>
-  <article class="news kb-article">
-    {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
-    <header>
-      <div class="news-header main-list">
+  <div class="dp-po-section">
+    <div class="dp-po-post-day">
+      <span class="dp-po-post-day-month">{{ post.date_published | date('M') }}</span>
+      <span class="dp-po-post-day-date">{{ post.date_published | date('j') }}</span>
+      <span class="dp-po-post-day-year">{{ post.date_published | date('Y') }}</span>
+    </div>
 
-        <div class="header-buttons">
-          {% show news_subscription_link %}
-          <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" id="pdf_download">{{ phrase('portal.general.btn-download-pdf') }} <i class="far fa-file-pdf"></i></a>
+    <div class="dp-po-title">
+      <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
+      <h2 class="dp-po-title-text">{{ post.realTitle }}</h2>
+    </div>
+
+    {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
+      item: post
+    } %}
+
+    <div class="row">
+      <div class="col-sm-10">
+        <div class="dp-po-post-info">
+          <ul class="dp-po-post-info-list">
+            <li class="dp-po-post-info-item">
+              {{ phrase('helpcenter.general.last-updated', {date: post.date_updated | date('day'), person: post.person}) | raw }}
+            </li>
+{#            <li class="dp-po-post-info-item">#}
+{#              News type: <b>{{ post.type }}</b>#}
+{#            </li>#}
+          </ul>
         </div>
-        <div class="deskpro-calendar-decoration-flat">
-          <div class="dcdf-month">{{ post.date_published | date('M') }}</div>
-          <div class="dcdf-day">{{ post.date_published | date('j') }}</div>
-        </div>
-
-        <div class="news-header-info">
-          <h1>{{ post.realTitle }}</h1>
-        </div>
-
-        <div class="article-meta">
-
-          <span style="background: url({{ avatar_url(post.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ post.person.display_name_user }}
-
-          {% if brand_setting('user.publish_comments') %}
-            <hr>
-
-            <span class="comments"><i class="fas fa-comments"></i>
-              <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.calc_num_comments}) }}</a>
-            </span>
-         {%  endif %}
-
-          {% if post.category %}
-          <hr>
-          {{ phrase('portal.general.in') }} <a href="{{ portal_path(post.category) }}">{{ object_phrase(post.category) }}</a>
-          {% endif %}
-
-        </div>
-
       </div>
-      {% if post.status != 'published' and post.status != 'archived' and app.user.is_agent %}
-        <div class="sub-note">{{ phrase('portal.news.view-as-agent') }}</div>
-      {% endif %}
-    </header>
+      <div class="col-sm-2">
+        <div class="dp-po-post-extra">
+          <ul class="dp-po-post-extra-list">
+            <li class="dp-po-post-extra-item">
+              <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+            </li>
+            <li class="dp-po-post-extra-item">
+              <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-
-    <div class="article-content padded">
+    <div class="dp-po-post-content dp-po-block">
       {{ post.realContent|raw }}
     </div>
+  </div>
 
-    {% if post.labels|length %}
-      <div class="tag-list">
-        <ul>
-          <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
-          {% for l in post.labels %}
-            <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
-  </article>
-
-  {% show news_attachments %}
-  {% show news_ratings %}
-  {% show related_content %}
+  {% if can_rate_post(post) %}
+    {% include 'Theme:PublishCommon:rating.html.twig' with {
+      item: post
+    } %}
+  {% endif %}
 
   {% if brand_setting('user.publish_comments') and (post.calc_num_comments or new_comment_form) %}
-    <div class="comment-box" id="comments">
-      <div class="titled-header">
-        <h1>{{ phrase('portal.general.comments-title', {count: post.calc_num_comments}) }}</h1>
-      </div>
-      {% show news_comments %}
-      {% show comment_form %}
-    </div>
+    {% if postData.comments | length %}
+      {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: postData.comments } %}
+    {% endif %}
+
+    {% include 'Theme:PublishCommon:comments-form.html.twig' %}
   {% endif %}
 {% endblock page_body %}
+
+{% block page_sidebar %}
+  {# TODO active subscription state #}
+  {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+    subscriptionInfo: [
+      { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('portal.forms.label_kb_article'), active: false },
+      { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('portal.forms.label_category'), active: false },
+      { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('portal.articles.section-title'), active: false },
+    ]
+  } %}
+
+  {% if post.labels | length %}
+    {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
+      title: phrase('portal.general.labels'),
+      labels: post.labels
+    } %}
+  {% endif %}
+
+  {% if postData.related_content %}
+    {% include 'Theme:PublishCommon:related-content.html.twig' with {
+      related_content: postData.related_content
+    } %}
+  {% endif %}
+
+  {% include'Theme:PublishCommon:meta.html.twig' with {
+    item: post,
+    custom_data: []
+  } %}
+{% endblock page_sidebar %}

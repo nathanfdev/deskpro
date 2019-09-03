@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -14,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -248,12 +250,25 @@ class NewsController extends AbstractController
             $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_NEWS, $post->getId());
         }
 
+        // OTHER ARTICLE DATA
+        $postData = new LazyPropObject([
+            'comments' => function () use ($post) {
+                return $this->getNewsDataService()->getPostComments($post, $this->getUser());
+            },
+            'related_content' => function () use ($post) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $post);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         // RENDER THEME
 
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             [
                 'post'               => $post,
+                'postData'           => $postData,
                 'is_subscribed'      => $isSubscribed,
                 'rating'             => $rating,
                 'category'           => $post->getCategory(),
@@ -266,6 +281,7 @@ class NewsController extends AbstractController
                 'rating_counts'      => $ratingCounts,
                 'lockout'            => $check->isLockoutRecommended(),
                 'lockout_time'       => $check->getLockoutTime(true),
+                'main_class'         => 'dp-po-news-post',
             ]
         );
     }

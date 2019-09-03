@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
@@ -263,6 +264,11 @@ class ArticlesController extends AbstractController
         $articleData = new LazyPropObject([
             'comments' => function () use ($article) {
                 return $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
+            },
+            'related_content' => function () use ($article) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $article);
+
+                return $relatedFinder->getRelatedEntities(true);
             },
         ]);
 

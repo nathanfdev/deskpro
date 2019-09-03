@@ -5,7 +5,7 @@
     <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
 
     {# TODO -- real css #}
-    <link rel="stylesheet" href="https://deskpro.github.io/portal-components/portal-style/dist/style.css" />
+    <link rel="stylesheet" href="http://localhost:3000/portal-components/portal-style/dist/style.css" />
 </head>
 <body class="dp-Template portal-mode-{{ portal_mode() }}">
 
@@ -30,6 +30,7 @@
                                 {{ block("page_body") }}
                             </div>
                             <div class="col-sm-3">
+                                <div class="dp-po-sidebar-spacer"></div>
                                 {{ block("page_sidebar") }}
                             </div>
                         {% else %}

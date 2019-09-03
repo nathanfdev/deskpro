@@ -12,7 +12,9 @@
         </div>
     </div>
 
-    {% include 'Theme:PublishCommon:post-avatars.html.twig' %}
+    {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
+        item: article
+    } %}
 
     <div class="row">
         <div class="col-sm-10">
@@ -34,7 +36,7 @@
                         <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
                     </li>
                     <li class="dp-po-post-extra-item">
-                        <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                        <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
                     </li>
                 </ul>
             </div>
@@ -85,7 +87,9 @@
 
 
     {% if can_rate_article(article) %}
-        {% include 'Theme:PublishCommon:rating.html.twig' %}
+        {% include 'Theme:PublishCommon:rating.html.twig' with {
+            item: article
+        } %}
     {% endif %}
 
     {% if brand_setting('user.publish_comments') %}
@@ -101,8 +105,6 @@
 {# Page sidebar #}
 {# ------------------------------------------ #}
 {% block page_sidebar %}
-    <div class="dp-po-sidebar-spacer"></div>
-
     {# TODO active subscription state #}
     {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
         subscriptionInfo: [
@@ -119,23 +121,15 @@
         } %}
     {% endif %}
 
-    {% if false %}
-        {% embed 'Theme:Common:sidebar-block.html.twig' with {
-            propertyList: [
-                { label: phrase('portal.sidebar.article_posted_by'), value: article.person.display_name_user },
-                { label: phrase('portal.tickets.list_date_created'), value: article.date_published | date('day') },
-                { block: 'customFields' }
-            ]
+    {% if articleData.related_content %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with {
+            related_content: articleData.related_content
         } %}
-            {% if custom_data | length %}
-                {% block customFields %}
-                    {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
-                {% endblock %}
-            {% endif %}
-        {% endembed %}
     {% endif %}
 
-    {% include'Theme:Articles:meta.html.twig' %}
+    {% include'Theme:PublishCommon:meta.html.twig' with {
+        item: article
+    } %}
 
     {# TODO related content #}
     {#{% show related_content %}#}
