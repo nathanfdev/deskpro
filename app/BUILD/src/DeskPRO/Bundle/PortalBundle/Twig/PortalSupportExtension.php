@@ -3,7 +3,9 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Translate\HasPhraseName;
 use Carbon\Carbon;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
@@ -92,6 +94,8 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('date_ago', [$this, 'dateAgo'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('date_diff', [$this, 'dateDiff'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('theme_option', [$this, 'getThemeSetting']),
+            new \Twig_SimpleFunction('generate_color', [$this, 'generateColor'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('icon_color', [$this, 'getIconColor'], ['is_safe' => ['html']]),
         ];
 
         return $funcs;
@@ -107,6 +111,50 @@ class PortalSupportExtension extends \Twig_Extension
         ];
 
         return $filters;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return string
+     */
+    public function generateColor($id = null)
+    {
+        if (!$id) {
+            $id = md5(uniqid(''));
+        }
+
+        // Generated via https://randomcolor.lllllllllllllllll.com/
+        static $definedColors = ['#d1146f', '#00753c', '#e00690', '#059345', '#09318e', '#00165b', '#a3002e', '#bc2210', '#016d57', '#477f03', '#d39910', '#0a1466', '#0c8e52', '#637c07', '#0c997f', '#480d9b', '#003377', '#467a06', '#97a010', '#a8034a', '#0ea324', '#0c2b7f', '#912a0e', '#d1b60c', '#bc01bc', '#005e5c', '#11aa2a', '#4a077c', '#d615d2', '#fced19', '#560996', '#ce9402', '#05717f', '#0c9694', '#a00c27', '#24930e', '#0a2d70', '#bf09b6', '#ef17e4', '#06356b', '#bb11c1', '#127702', '#c67801', '#0a9b5c', '#23ad0d', '#f4db18', '#b70747', '#798209', '#407503', '#8c0406'];
+
+        static $definedColorSize;
+        if (!$definedColorSize) {
+            $definedColorSize = count($definedColors);
+        }
+
+        $idx = abs(crc32($id)) % $definedColorSize;
+
+        return $definedColors[$idx];
+    }
+
+    public function getIconColor($obj)
+    {
+        // TODO when things can have their own color defined, we should return it as-is
+
+        $id = null;
+        if ($obj instanceof EntityInterface) {
+            $id = $obj->getId();
+        } elseif ($obj instanceof HasPhraseName) {
+            $id = $obj->getPhraseName();
+        } elseif (is_object($obj)) {
+            $id = spl_object_hash($obj);
+        } elseif (is_scalar($obj)) {
+            $id = crc32($obj);
+        } elseif (is_array($obj)) {
+            $id = count($obj);
+        }
+
+        return $this->generateColor($id);
     }
 
     /**
