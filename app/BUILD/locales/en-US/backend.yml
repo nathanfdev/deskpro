@@ -2945,6 +2945,9 @@ agent.general.archive: Archive
 agent.general.are_you_sure: 'Are you sure?'
 agent.general.article: Article
 agent.general.articles: Articles
+agent.general.templates_menu: 'Templates'
+agent.general.create_article_from_template: 'Create Article From Template'
+agent.general.manage_templates: 'Manage Templates'
 agent.general.ask_delete_selected: 'Are you sure you would like to delete the selected items?'
 agent.general.assign: Assign
 agent.general.assign_agent: 'Assign Agent'
