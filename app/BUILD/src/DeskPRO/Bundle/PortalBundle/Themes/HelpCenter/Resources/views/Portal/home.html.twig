@@ -5,117 +5,125 @@
         <main class="dp-po-main dp-po-homepage">
             <div class="container">
 
-    {% block content_header %}
-        {% include 'Theme:Portal:nav_buttons_big.html.twig' %}
+                {% block content_header %}
+                    {% include 'Theme:Portal:nav_buttons_big.html.twig' %}
 
-        {% include 'Theme:Portal:welcome-box.html.twig' %}
-    {% endblock content_header %}
+                    {% include 'Theme:Portal:welcome-box.html.twig' %}
+                {% endblock content_header %}
 
-    {% if can_use_news() %}
-        <div class="dp-po-homepage-news">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="dp-po-title">
-                        <a href="{{ path('portal_news') }}" class="dp-po-title-link">
-                            <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
-                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h2>
-                        </a>
+                {% if can_use_news() %}
+                    <div class="dp-po-homepage-news">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="dp-po-title">
+                                    <a href="{{ path('portal_news') }}" class="dp-po-title-link">
+                                        <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
+                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h2>
+                                    </a>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6 d-flex justify-content-end">
+            {#                    <%- include('_partials/_subscribe-1.ejs'); %>#}
+                            </div>
+                        </div>
+
+                        <div class="dp-po-block">
+                            {% include 'Theme:News:blocks/news-carousel.html.twig' with {
+                                posts: helpcenter.getNewsPosts({ count: 3, category: null }),
+                                showSectionLink: true
+                            } %}
+                        </div>
                     </div>
+                {% endif %}
 
-                </div>
-                <div class="col-sm-6 d-flex justify-content-end">
-{#                    <%- include('_partials/_subscribe-1.ejs'); %>#}
-                </div>
-            </div>
-
-            <div class="dp-po-block">
-                {% include 'Theme:News:PostList/excerpts.html.twig' with {
-                    pager: news_data.pager,
-                    show_category_link: true,
-                    category: null
-                } %}
-            </div>
-        </div>
-    {% endif %}
-
-    {% if can_use_articles() %}
-        <div class="dp-po-homepage-kb">
-            <div class="dp-po-title">
-                <a href="{{ path('portal_kb') }}" class="dp-po-title-link">
-                    <img class="dp-po-title-svg"
-                         src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/knowledgebase.svg">
-                    <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section-title') }}</h2>
-                </a>
-            </div>
-            {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
-                category_children: kb_data.data.category_children,
-                category: kb_data.data.category,
-                category_pager: kb_data.data.category_pager,
-                category_children: kb_data.data.category_children,
-                category_children_pagers: kb_data.data.category_children_pagers,
-                articles_count: kb_data.data.articles_count,
-                with_tree: kb_data.data.with_tree,
-            } %}
-        </div>
-    {% endif %}
-
-    {% group min 1 %}
-    <section class="with-{{ group.count }}-columns">
-        {% item if has_any_community() %}
-            <div class="dp-po-homepage-community">
-                <div class="row">
-                    <div class="col-sm-3">
+                {% if can_use_articles() %}
+                    <div class="dp-po-homepage-kb">
                         <div class="dp-po-title">
-                            <a href="{{ path('portal_community') }}" class="dp-po-title-link">
+                            <a href="{{ path('portal_kb') }}" class="dp-po-title-link">
                                 <img class="dp-po-title-svg"
-                                     src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/community.svg">
-                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+                                     src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/knowledgebase.svg">
+                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section-title') }}</h2>
                             </a>
                         </div>
-                    </div>
-                    <div class="col-sm-9">
-                        {% include "Theme:Community:channel_tags.html.twig" with {
-                            channels: community_data.channels
+                        {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
+                            category_children: kb_data.data.category_children,
+                            category: kb_data.data.category,
+                            category_pager: kb_data.data.category_pager,
+                            category_children: kb_data.data.category_children,
+                            category_children_pagers: kb_data.data.category_children_pagers,
+                            articles_count: kb_data.data.articles_count,
+                            with_tree: kb_data.data.with_tree,
                         } %}
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="dp-po-block">
-                            {% include 'Theme:Community:CommunityTopicsList/simple.html.twig' with {
-                                pager: community_data.pager,
-                                show_category_link: true,
-                                show_pager: false
-                            } %}
-                        </div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="dp-po-block">
-                            {% include 'Theme:Community:statuses.html.twig' with {
-                                topics: community_data.last_statuses
-                            } %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% enditem %}
+                {% endif %}
 
-{#        {% item if has_any_downloads() %}#}
-{#        <div class="column">#}
-{#            <article class="panel-tiny front-page-downloads">#}
-{#                <div class="large-title">#}
-{#                    <h1>#}
-{#                        <a href="{{ path('portal_downloads') }}">#}
-{#                            {{ phrase('portal.downloads.recent-downloads') }}#}
-{#                        </a>#}
-{#                    </h1>#}
-{#                </div>#}
-{#                {% show section download_list_simple with { count: 5, show_category_link: true } %}#}
-{#            </article>#}
-{#        </div>#}
-{#        {% enditem %}#}
-    </section>
-    {% endgroup %}
+                {% if has_any_community() %}
+                    {# TODO margin #}
+                    <section class="with-2-columns">
+                        <div class="dp-po-homepage-community">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <div class="dp-po-title">
+                                        <a href="{{ path('portal_community') }}" class="dp-po-title-link">
+                                            <img class="dp-po-title-svg"
+                                                 src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/community.svg">
+                                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="dp-po-community-channel-tags">
+                                        <ul class="dp-po-community-channel-tags-list">
+                                            {% for info in helpcenter.getCommunityChannelsWithCounts() %}
+                                                <li class="dp-po-community-channel-tags-item">
+                                                    <a href="{{ portal_path(info.channel) }}" class="dp-po-community-channel-tags-link">
+                                                        #{{info.channel.title}}
+                                                        <span class="dp-po-community-channel-tags-count">({{ info.count }})</span>
+                                                    </a>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="dp-po-block">
+                                        <div class="dp-po-community-status">
+                                            <h2 class="dp-po-community-status-title">Latest status changes</h2>
+                                            {% include 'Theme:Community:blocks/simple-topics-list-voter.html.twig' with {
+                                                topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'most-popular' })
+                                            } %}
+                                            <div class="dp-po-viewall">
+                                                <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
+                                                    {{ phrase('helpcenter.general.view_all') }}
+                                                    <i class="dp-po-icon far fa-angle-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="dp-po-block">
+                                        <div class="dp-po-community-status">
+                                            <h2 class="dp-po-community-status-title">Latest status changes</h2>
+                                            {% include 'Theme:Community:blocks/simple-topics-list-status.html.twig' with {
+                                                topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'status-change' })
+                                            } %}
+                                            <div class="dp-po-viewall">
+                                                <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
+                                                    {{ phrase('helpcenter.general.view_all') }}
+                                                    <i class="dp-po-icon far fa-angle-right"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                {% endif %}
 
             </div>
         </main>

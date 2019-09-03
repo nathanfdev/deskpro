@@ -60,7 +60,7 @@ class CommunityDataService extends AbstractDataService
      *
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person)
+    public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person = null)
     {
         $em                  = $this->em;
         $permissions_manager = $this->permissions_manager;
@@ -127,8 +127,6 @@ class CommunityDataService extends AbstractDataService
                 // array(1,3,5) $community_topic->chanel
                 if (count($types = $filter->getTypes())) {
                     $qb->andWhere('ct.channel IN (:types)')->setParameter('types', $types);
-                } else {
-                    $qb->andWhere('ct.channel = 0');
                 }
 
                 // sort
@@ -148,6 +146,10 @@ class CommunityDataService extends AbstractDataService
                         break;
                     case CommunityFilter::SORT_VIEWS:
                         $qb->orderBy('ct.view_count', $filter->getSortDirection());
+                        break;
+                    case CommunityFilter::SORT_STATUS_CHANGE:
+                        $qb->andWhere('ct.status_category > 1');
+                        $qb->orderBy('ct.date_updated', $filter->getSortDirection());
                         break;
                     default:
                         $qb->orderBy('ct.date_created', $filter->getSortDirection());
@@ -216,7 +218,7 @@ class CommunityDataService extends AbstractDataService
      *
      * @return CommunityChannel[]
      */
-    public function getCommunityChannelsForPerson(Person $person)
+    public function getCommunityChannelsForPerson(Person $person = null)
     {
         $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
 

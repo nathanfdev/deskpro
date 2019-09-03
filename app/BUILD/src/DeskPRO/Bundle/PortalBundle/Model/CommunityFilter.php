@@ -12,11 +12,12 @@ class CommunityFilter
     const STATUS_ACTIVE = 'active';
     const STATUS_CLOSED = 'closed';
 
-    const SORT_DATE       = 'date';
-    const SORT_POPULARITY = 'most-popular';
-    const SORT_COMMENTS   = 'most-discussed';
-    const SORT_RATING     = 'highest-rating';
-    const SORT_VIEWS      = 'most-views';
+    const SORT_DATE          = 'date';
+    const SORT_POPULARITY    = 'most-popular';
+    const SORT_COMMENTS      = 'most-discussed';
+    const SORT_RATING        = 'highest-rating';
+    const SORT_VIEWS         = 'most-views';
+    const SORT_STATUS_CHANGE = 'status-change';
 
     const SORT_DIRECTION_DESC = 'desc';
     const SORT_DIRECTION_ASC  = 'asc';
@@ -39,14 +40,16 @@ class CommunityFilter
         self::SORT_DATE,
         self::SORT_COMMENTS,
         self::SORT_VIEWS,
+        self::SORT_STATUS_CHANGE,
     ];
 
     public static $sorts_translated = [
-        self::SORT_POPULARITY => 'portal.community.sort_popularity',
-        self::SORT_RATING     => 'portal.community.sort_rating',
-        self::SORT_DATE       => 'portal.community.sort_date',
-        self::SORT_COMMENTS   => 'portal.community.sort_comments',
-        self::SORT_VIEWS      => 'portal.community.sort_views',
+        self::SORT_POPULARITY    => 'portal.community.sort_popularity',
+        self::SORT_RATING        => 'portal.community.sort_rating',
+        self::SORT_DATE          => 'portal.community.sort_date',
+        self::SORT_COMMENTS      => 'portal.community.sort_comments',
+        self::SORT_VIEWS         => 'portal.community.sort_views',
+        self::SORT_STATUS_CHANGE => 'portal.community.sort_status_change',
     ];
 
     public static $sort_directions = [
