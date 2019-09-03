@@ -6,7 +6,9 @@
                     <div class="dp-po-brand-left">
                         <a href="{{ path('portal_home') }}" class="dp-po-homelink">
                             {% if portal_custom_logo() %}
-                                <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" />
+                                <span class="dp-po-logo">
+                                    <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" />
+                                </span>
                             {% endif %}
                             <span class="dp-po-brand-name">{{ brand_setting('core.deskpro_name')|e }}</span>
                         </a>
