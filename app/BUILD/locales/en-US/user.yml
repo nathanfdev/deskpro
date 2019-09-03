@@ -750,7 +750,12 @@ portal.direct_messages.title: Messages
 portal.direct_messages.none: No messages
 portal.direct_messages.create_thread: Create
 portal.members.title: Members
-portal.members.none: No members
+helpcenter.members.title: Member Directory
+helpcenter.members.none: No members
+helpcenter.members.name: Name
+helpcenter.members.email: Email
+helpcenter.members.company: Job Title & Company
+helpcenter.members.phone: Phone Number
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
 portal.sidebar.agents_x_online:

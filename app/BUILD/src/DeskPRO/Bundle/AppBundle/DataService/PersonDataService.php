@@ -116,7 +116,7 @@ class PersonDataService extends AbstractDataService
      *
      * @return Pagerfanta
      */
-    public function getPortalMembersPager($page, $maxPerPage)
+    public function getPortalMembersPager($page, $maxPerPage, $orderBy = null)
     {
         $em = $this->em;
         $qb = $em->createQueryBuilder();
