@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -40,11 +41,11 @@ class NewsController extends AbstractController
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
+        $pager = $this->getNewsPager($request, $page, $person);
+
         // RSS
 
         if ('rss' === $_format) {
-            $pager = $this->getNewsPager($request, $page, $person);
-
             return $this->render('PortalBundle:News:feed.rss.twig', [
                 'page_title' => $this->createPageTitle()->news(),
                 'pager'      => $pager,
@@ -87,11 +88,23 @@ class NewsController extends AbstractController
 
         // RENDER THEME
 
+        $newsData = new LazyPropObject([
+            'categories' => function () {
+                return $this->getNewsDataService()->getCategoryList($this->getUser());
+            },
+
+            'ymCounts' => function () {
+                return $this->getNewsDataService()->getMonthsWithPosts(null, $this->getUser());
+            },
+        ]);
+
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             [
                 'page'          => $page,
                 'count'         => $this->getBrandSetting('portal.per_page_content'),
+                'newsData'      => $newsData,
+                'pager'         => $pager,
                 'page_title'    => $this->createPageTitle()->news(),
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,

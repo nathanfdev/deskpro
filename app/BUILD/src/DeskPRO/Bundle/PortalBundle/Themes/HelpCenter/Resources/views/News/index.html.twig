@@ -1,23 +1,104 @@
 {% extends 'Theme::layout.html.twig' %}
 
+{# ------------------------------------------ #}
+{# Main page body #}
+{# ------------------------------------------ #}
 {% block page_body %}
-  <div class="breadcrumbs">
-    {% show breadcrumbs %}
-  </div>
-
-  <article class="news main-news">
-
-    <header class="large-title">
-        <div class="header-buttons">
-            {% show ics_link %}
-            {% show rss_link %}
-            {% show news_root_subscription_link %}
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="dp-po-title">
+                <img class="dp-po-title-svg"
+                     src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
+                <h2 class="dp-po-title-text">{{ phrase('portal.news.section-title') }}</h2>
+            </div>
         </div>
-        <h1>{{ phrase('portal.news.section-title') }}</h1>
-        <p>{{ phrase('portal.news.section-desc') }}</p>
-    </header>
-
-    {% show news_cats_tabs %}
-    {% show news_list_full %}
-  </article>
+    </div>
+    <div class="dp-po-section dp-po-block">
+        <div class="dp-po-news-listing">
+            {% if pager|length %}
+                {% for item in pager %}
+                    <div class="dp-po-news-listing-item">
+                        <a href="{{ portal_path(item) }}" class="dp-po-news-listing-link">
+                            <div class="dp-po-news-listing-date">
+                                <span class="dp-po-news-listing-month">{{ item.date_published | date('M') | upper }} {{ item.date_published | date('j') }}</span>
+                                <span class="dp-po-news-listing-year">{{ item.date_published | date('Y') }}</span>
+                            </div>
+                            <div class="dp-po-news-listing-content">
+                                <h3 class="dp-po-news-listing-title">{{ item.title }}</h3>
+                                <div class="dp-po-avatar dp-po-avatar-round">
+                                    <img src="{{ avatar_url(item.person) }}" alt="" />
+                                    <strong>{{ item.person.display_name }}</strong>
+                                </div>
+                                <div class="dp-po-news-listing-comments">
+                                    <i class="dp-po-icon far fa-comment-alt-lines"></i> {{ item.num_comments }}
+                                </div>
+                                <span class="badge badge-info" style="background-color: {{ icon_color(item.category) }}">{{ object_phrase(item.category) }}</span>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <strong>{{ phrase('portal.news.none') }}</strong>
+            {% endif %}
+        </div>
+    </div>
 {% endblock page_body %}
+
+{# ------------------------------------------ #}
+{# Page sidebar #}
+{# ------------------------------------------ #}
+{% block page_sidebar %}
+    {# TODO active subscription state #}
+    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+        subscriptionInfo: [
+            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('portal.articles.section-title'), active: false },
+        ]
+    } %}
+
+    <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
+        <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
+        <a class="dp-po-news-filter-collapse" href="#">
+            <i class="dp-po-icon far fa-angle-down"></i>
+        </a>
+        <div class="collapse show">
+            <ul class="dp-po-news-filter-type-list">
+                {% for cat in newsData.categories %}
+                    <li class="dp-po-news-filter-type-item">
+                        <div class="form-group dp-po-form-check">
+                            <input type="checkbox" class="form-check-input" id="filter_news_check_{{ cat.id }}" checked>
+                            <label class="form-check-label" for="filter_news_check_{{ cat.id }}">{{ object_phrase(cat) }}</label>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
+        <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
+        <a class="dp-po-news-filter-collapse" href="#">
+            <i class="dp-po-icon far fa-angle-down"></i>
+        </a>
+        <div class="collapse show">
+            <div class="dp-po-news-filter-date-option">
+                <ul class="dp-po-news-filter-date-year-list">
+                    {% for y in newsData.ymCounts %}
+                        <li class="dp-po-news-filter-date-year-item">
+                            <a href="" class="dp-po-news-filter-date-year-link">{{ y.year }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <ul class="dp-po-news-filter-date-month-list">
+                    {% for y in newsData.ymCounts if y.year == 2019 %}
+                        {% for m in y.months %}
+                            <li class="dp-po-news-filter-date-month-item">
+                                <a href="" class="dp-po-news-filter-date-month-link">{{ date(m.year ~ '-' ~ m.month ~ '-01') | date('M') | upper }}</a>
+                            </li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
