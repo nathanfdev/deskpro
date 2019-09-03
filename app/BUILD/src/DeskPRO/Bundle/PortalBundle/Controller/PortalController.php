@@ -6,6 +6,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsersourceAuthAdapterFactoryService;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TmpData;
@@ -176,6 +177,16 @@ class PortalController extends AbstractController
                 }
 
                 return $pager;
+            },
+            'last_statuses' => function () {
+                $qb = $this->getEm()->createQueryBuilder();
+                $qb->select('ct')
+                    ->from(CommunityTopic::class, 'ct')
+                    ->where('ct.status_category > 1')
+                    ->orderBy('ct.date_updated', 'desc')
+                    ->setMaxResults(5);
+
+                return $qb->getQuery()->getResult();
             },
         ]);
 

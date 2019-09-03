@@ -1,0 +1,18 @@
+<div class="dp-po-community-status">
+    <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.community.last-status-changes') }}</h2>
+    <ul class="dp-po-community-status-list">
+        {% for topic in topics %}
+        <li class="dp-po-community-status-item">
+            <a href="" class="dp-po-community-status-link">
+                <div class="dp-po-status-ribbon">
+                    {% include 'Theme:Community:status_update.html.twig' %}
+                </div>
+                {{ topic.title }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    <div class="dp-po-viewall">
+        <a class="dp-po-viewall-link" href="">{{ phrase('helpcenter.community.view-all-status-changes') }} <i class="dp-po-icon far fa-angle-right"></i></a>
+    </div>
+</div>

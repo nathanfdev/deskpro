@@ -89,6 +89,13 @@
                             } %}
                         </div>
                     </div>
+                    <div class="col-sm-6">
+                        <div class="dp-po-block">
+                            {% include 'Theme:Community:statuses.html.twig' with {
+                                topics: community_data.last_statuses
+                            } %}
+                        </div>
+                    </div>
                 </div>
             </div>
         {% enditem %}
