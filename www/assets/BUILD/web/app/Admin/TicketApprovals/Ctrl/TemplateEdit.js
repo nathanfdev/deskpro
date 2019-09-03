@@ -13,12 +13,25 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         ? parseInt(this.$stateParams.id.replace(/^template-(\d+)$/, '$1'))
         : null;
 
+      this.setDescription = false;
+      this.agents = [];
+
       this.form = {
         name: '',
         type: '',
         description: '',
-        required_approvals: '',
-        required_rejections: '',
+        required_approvals: 1,
+        required_rejections: 1,
+        can_approvers_view_subject: false,
+        approver_criteria: {
+          can_choose_approvers: false,
+          agents: [1,2,3,4,5],
+          number_of_approvers: null,
+          ticket_user: false,
+          organization_manager: false,
+          all_agents: false,
+          actions_on_approved: []
+        }
       };
     }
 

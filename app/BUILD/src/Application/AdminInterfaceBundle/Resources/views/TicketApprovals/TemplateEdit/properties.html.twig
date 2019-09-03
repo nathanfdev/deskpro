@@ -1,0 +1,161 @@
+<div class="panel panel-fill indent">
+    <div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+
+        {#Template name#}
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.name') }} *</h3>
+            </div>
+            <div class="col-md-9">
+                <div class="inner-group" dp-error-class="form_props.name">
+                    <input type="text"
+                           class="form-control"
+                           name="name"
+                           ng-model="TicketApprovalsTemplateEdit.form.name"
+                           required autofocus
+                    >
+                </div>
+            </div>
+        </div>
+
+        {#Approval type#}
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.type') }} *</h3>
+            </div>
+            <div class="col-md-9">
+                <select name="type"
+                        ui-select2
+                        ng-model="TicketApprovalsTemplateEdit.form.type"
+                        style="min-width: 250px"
+                >
+                    <option value="{{ ng_var('type.id') }}" ng-repeat="type in TicketApprovalsList.types">{{ ng_var('type.name') }}</option>
+                </select>
+            </div>
+        </div>
+
+        {#Template description#}
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.description') }}</h3>
+            </div>
+            <div class="col-md-9">
+                <div class="inner-group">
+                    <label>
+                        <input style="margin-right: 5px;" type="checkbox" ng-model="EditCtrl.setDescription" />
+                        <h4 style="display: inline; padding-right: 5px;">
+                            {{ phrase('adm.ticket_approvals.template.set_description') }}
+                        </h4>
+                    </label>
+                </div>
+                <div class="inner-group" dp-error-class="form_props.description" ng-show="EditCtrl.setDescription">
+                    <textarea class="form-control"
+                              name="description"
+                              ng-model="TicketApprovalsTemplateEdit.form.description"
+                    ></textarea>
+                </div>
+            </div>
+        </div>
+
+        {#Approvers#}
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.approvers.label') }}</h3>
+            </div>
+            <div class="col-md-9">
+
+                <div class="inner-group">
+                    <label>
+                        <input style="margin-right: 5px;" type="checkbox" ng-model="EditCtrl.form.approver_criteria.ticket_user" />
+                        <h4 style="display: inline; padding-right: 5px;">
+                            {{ phrase('adm.ticket_approvals.template.approvers.ticket_user') }}
+                        </h4>
+                    </label>
+
+                    <label>
+                        <input style="margin-right: 5px;" type="checkbox" ng-model="EditCtrl.form.approver_criteria.organization_manager" />
+                        <h4 style="display: inline; padding-right: 5px;">
+                            {{ phrase('adm.ticket_approvals.template.approvers.organization_manager') }}
+                        </h4>
+                    </label>
+
+                    <label>
+                        <input style="margin-right: 5px;" type="checkbox" ng-model="EditCtrl.form.approver_criteria.all_agents" />
+                        <h4 style="display: inline; padding-right: 5px;">
+                            {{ phrase('adm.ticket_approvals.template.approvers.all_agents') }}
+                        </h4>
+                    </label>
+                </div>
+
+                <div class="inner-group">
+                    <input class="form-control"
+                           type="text"
+                           placeholder="{{ phrase('adm.ticket_approvals.template.approvers.search_approvers') }}"
+                    />
+                </div>
+
+                <div class="inner-group">
+                    <ul class="checkbox-list" style="min-width: 250px; min-height: 100px;">
+                        <li ng-repeat="agent in TicketApprovalsTemplateEdit.agents">
+                            <label>
+                                <input type="checkbox" ng-model="agent.value" />
+                                <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
+                                <span>{{ ng_var('agent.display_name') }}</span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="inner-group" style="margin-top: 0;">
+                    <label>
+                        <input style="margin-right: 5px;" type="checkbox" ng-model="EditCtrl.form.approver_criteria.can_choose_approvers" />
+                        <h4>{{ phrase('adm.ticket_approvals.template.approvers.allow_choose') }}</h4>
+                    </label>
+                </div>
+
+                <div class="inner-group" ng-show="EditCtrl.form.approver_criteria.can_choose_approvers">
+                    <span style="padding-right: 10px;">{{ phrase('adm.ticket_approvals.template.approvers.number_of_approvers') }}</span>
+                    <input class="form-control" placeholder="max of 100" style="max-width: 120px;" type="number" min="0" max="100" ng-model="EditCtrl.form.approver_criteria.number_of_approvers">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.approvers.required_approvals') }} *</h3>
+            </div>
+            <div class="col-md-9">
+                <div class="inner-group" dp-error-class="form_props.required_approvals">
+                    <input class="form-control" placeholder="max of 100" style="max-width: 250px;" type="number" min="1" max="100" ng-model="EditCtrl.form.approver_criteria.required_approvals">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.approvers.required_rejections') }} *</h3>
+            </div>
+            <div class="col-md-9">
+                <div class="inner-group" dp-error-class="form_props.required_rejections">
+                    <input class="form-control" placeholder="max of 100" style="max-width: 250px;" type="number" min="1" max="100" ng-model="EditCtrl.form.approver_criteria.required_rejections">
+                </div>
+            </div>
+        </div>
+
+        {#Allow approvers view subject#}
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.can_approvers_view_subject') }}</h3>
+            </div>
+            <div class="col-md-9">
+                <div class="inner-group" dp-error-class="form_props.required_rejections">
+                    <label>
+                        <input type="checkbox" ng-model="TicketApprovalsTemplateEdit.form.can_approvers_view_subject" />
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
