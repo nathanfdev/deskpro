@@ -9,7 +9,12 @@
             <div class="dp-po-title">
                 <img class="dp-po-title-svg"
                      src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
-                <h2 class="dp-po-title-text">{{ phrase('portal.news.section-title') }}</h2>
+
+                {% if viewCategory %}
+                    <h2 class="dp-po-title-text">{{ object_phrase(viewCategory) }}</h2>
+                {% else %}
+                    <h2 class="dp-po-title-text">{{ phrase('portal.news.section-title') }}</h2>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -65,8 +70,8 @@
                 {% for cat in newsData.categories %}
                     <li class="dp-po-news-filter-type-item">
                         <div class="form-group dp-po-form-check">
-                            <input type="checkbox" class="form-check-input" id="filter_news_check_{{ cat.id }}" checked>
-                            <label class="form-check-label" for="filter_news_check_{{ cat.id }}">{{ object_phrase(cat) }}</label>
+                            <input type="checkbox" class="form-check-input" id="filter_news_check_{{ cat.id }}" {% if not viewCategory or viewCategory.id == cat.id %}checked{% endif %}>
+                            <label class="form-check-label" for="filter_news_check_{{ cat.id }}"><a href="{{ portal_path(cat) }}">{{ object_phrase(cat) }}</a></label>
                         </div>
                     </li>
                 {% endfor %}
