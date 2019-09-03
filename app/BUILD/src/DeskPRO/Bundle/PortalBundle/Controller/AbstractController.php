@@ -626,4 +626,12 @@ class AbstractController extends BaseController
 
         return [$show_rating_counts, $rating_counts];
     }
+
+    /**
+     * @return bool
+     */
+    public function isHelpCenterTheme()
+    {
+        return $this->getPortalBrandTheme()->getActiveThemeSet()->getThemeId() === 'helpcenter';
+    }
 }
