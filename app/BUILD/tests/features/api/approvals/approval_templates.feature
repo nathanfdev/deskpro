@@ -15,9 +15,9 @@ Feature: /approval_templates endpoint
       | atype2 | Approval Type 2 | Description 2 | true      |
 
     And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |
-      | ac2    | [1,2]     | 0         | []    | 0        | 0                    | []    | []          |
+      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | requiredNumberOfApprovers |
+      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |                           |
+      | ac2    | [1,2]     | 0         | []    | 0        | 0                    | []    | []          | 4                         |
 
     And only the following ApprovalTemplate records exist:
       | #   | name             | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
@@ -228,10 +228,10 @@ Feature: /approval_templates endpoint
   "description": "Approval template 1 description",
   "type": ~atype1~,
   "required_approvals": 2,
-  "required_rejections": 3,
+  "required_rejections": 2,
   "can_approvers_view_subject": true,
   "approver_criteria": {
-    "agents": [1, 2]
+    "agents": [1,2]
   }
 }
             """
@@ -243,7 +243,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.description" should be equal to "Approval template 1 description"
     And the JSON node "data.type" should be equal to "{atype1}"
     And the JSON node "data.required_approvals" should be equal to "2"
-    And the JSON node "data.required_rejections" should be equal to "3"
+    And the JSON node "data.required_rejections" should be equal to "2"
     And the JSON node "data.can_approvers_view_subject" should be true
     And the JSON node "data.approver_criteria.agents" should have "2" elements
     And the JSON node "data.actions_on_create" should exist
@@ -262,7 +262,7 @@ Feature: /approval_templates endpoint
   "description": "Approval template 1 description",
   "type": ~atype1~,
   "required_approvals": 2,
-  "required_rejections": 3,
+  "required_rejections": 2,
   "can_approvers_view_subject": true,
   "approver_criteria": {
     "agents": [1, 2]
@@ -349,7 +349,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.description" should be equal to "Approval template 1 description"
     And the JSON node "data.type" should be equal to "{atype1}"
     And the JSON node "data.required_approvals" should be equal to "2"
-    And the JSON node "data.required_rejections" should be equal to "3"
+    And the JSON node "data.required_rejections" should be equal to "2"
     And the JSON node "data.can_approvers_view_subject" should be true
     And the JSON node "data.approver_criteria.agents" should have "2" elements
     And the JSON node "data.actions_on_create" should exist

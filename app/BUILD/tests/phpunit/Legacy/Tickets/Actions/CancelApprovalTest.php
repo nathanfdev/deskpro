@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketApprovalRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use DpTest\DeskProTestCase;
@@ -115,7 +116,7 @@ class CancelApprovalTest extends DeskProTestCase
 
         $em = m::mock(EntityManagerInterface::class)->shouldIgnoreMissing();
         $approvalTemplateRepo = m::mock(EntityRepository::class)->shouldIgnoreMissing();
-        $approvalRepo = m::spy(ApprovalRepository::class)->shouldIgnoreMissing();
+        $approvalRepo = m::spy(TicketApprovalRepository::class)->shouldIgnoreMissing();
         $template = m::mock(ApprovalTemplate::class)->shouldIgnoreMissing();
         $approverCriteria = m::mock(ApproverCriteria::class)->shouldIgnoreMissing();
 
@@ -133,7 +134,7 @@ class CancelApprovalTest extends DeskProTestCase
         $approvalRepo->shouldReceive('getTicketApprovalsByTicketAndTemplate')->withAnyArgs()->andReturn($approvals);
 
         $em->shouldReceive('getRepository')->with(ApprovalTemplate::class)->andReturn($approvalTemplateRepo);
-        $em->shouldReceive('getRepository')->with(AbstractBaseApproval::class)->andReturn($approvalRepo);
+        $em->shouldReceive('getRepository')->with(TicketApproval::class)->andReturn($approvalRepo);
 
         $containerMock = ContainerMock::create()->get();
 

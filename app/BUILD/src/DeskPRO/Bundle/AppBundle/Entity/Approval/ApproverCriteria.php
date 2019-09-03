@@ -77,6 +77,14 @@ class ApproverCriteria implements JsonObjectSerializable
     private $departments = [];
 
     /**
+     * @var int|null
+     *
+     * @JMS\Expose
+     * @JMS\Type("integer")
+     */
+    private $requiredNumberOfApprovers;
+
+    /**
      * @return bool
      */
     public function canChooseApprovers()
@@ -237,6 +245,25 @@ class ApproverCriteria implements JsonObjectSerializable
     public function hasPeople()
     {
         return (!empty($this->getAgents()) || !empty($this->getUsers()));
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getRequiredNumberOfApprovers()
+    {
+        return $this->requiredNumberOfApprovers;
+    }
+
+    /**
+     * @param int|null $requiredNumberOfApprovers
+     * @return ApproverCriteria
+     */
+    public function setRequiredNumberOfApprovers($requiredNumberOfApprovers)
+    {
+        $this->requiredNumberOfApprovers = $requiredNumberOfApprovers;
+
+        return $this;
     }
 
     /**

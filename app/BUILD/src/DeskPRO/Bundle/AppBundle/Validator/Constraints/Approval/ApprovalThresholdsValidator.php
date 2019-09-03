@@ -21,8 +21,11 @@ class ApprovalThresholdsValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
+        $minNumberOfApprovers = null;
+
         if ($value instanceof AbstractBaseApproval) {
             $approvers = count($value->getApprovers());
+            $minNumberOfApprovers = $value->getTemplate()->getApproverCriteria()->getRequiredNumberOfApprovers();
         } elseif ($value instanceof ApprovalTemplate) {
             // If agent can choose approvers then we don't need to validate until approval is created from template
             if ($value->getApproverCriteria()->canChooseApprovers()) {
@@ -30,6 +33,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
             }
             $approvers = count($value->getApproverCriteria()->getAgents());
             $approvers += count($value->getApproverCriteria()->getUsers());
+            $minNumberOfApprovers = $value->getApproverCriteria()->getRequiredNumberOfApprovers();
         } else {
             return;
         }
@@ -43,7 +47,9 @@ class ApprovalThresholdsValidator extends ConstraintValidator
             return;
         }
 
-        if ($approvers < min($thresholds)) {
+        $minNumberOfApprovers = $minNumberOfApprovers ?: max($thresholds);
+
+        if ($approvers < $minNumberOfApprovers) {
             $this
                 ->context
                 ->buildViolation($constraint->message)

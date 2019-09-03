@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ApproverCriteriaType
@@ -58,6 +59,12 @@ class ApproverCriteriaType extends AbstractType
                 'entry_type' => IntegerType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
+            ])
+            ->add('required_number_of_approvers', IntegerType::class, [
+                'required' => false,
+                'constraints' => [
+                    new Assert\GreaterThan(['value' => 0]),
+                ],
             ])
         ;
     }

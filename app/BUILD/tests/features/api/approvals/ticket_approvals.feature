@@ -21,16 +21,18 @@ Feature: /ticket_approvals endpoint
       | atype2 | Approval Type 2 | Description 2 | true      |
 
     And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | canChooseApprovers |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          | 1                  |
-      | ac2    | [1,2,3]   | 0         | []    | 0        | 0                    | []    | []          | 0                  |
-      | ac3    | []        | 1         | []    | 0        | 0                    | []    | []          | 1                  |
+      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | canChooseApprovers | requiredNumberOfApprovers |
+      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          | 1                  |                           |
+      | ac2    | [1,2,3]   | 0         | []    | 0        | 0                    | []    | []          | 0                  |                           |
+      | ac3    | []        | 1         | []    | 0        | 0                    | []    | []          | 1                  |                           |
+      | ac4    | []        | 1         | []    | 0        | 0                    | []    | []          | 1                  | 3                         |
 
     And only the following ApprovalTemplate records exist:
       | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
       | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 1                  | {ac1}            | 1                       |
       | at2 | Templ 2 | Approval Templ 2 | {atype2} | 1                 | 1                  | {ac2}            | 0                       |
       | at3 | Templ 3 | Approval Templ 3 | {atype2} | 2                 | 0                  | {ac3}            | 1                       |
+      | at4 | Templ 3 | Approval Templ 3 | {atype2} | 1                 | 0                  | {ac4}            | 1                       |
 
     And only the following TicketApproval records exist:
       | #   | ticket | template | approvers         | name               | type     | description | status    |
@@ -68,6 +70,21 @@ Feature: /ticket_approvals endpoint
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+
+  Scenario: I POST a ticket approval as admin and don't have enough approvers to meet required number of approvers criteria
+    Given I'm authenticated as "agent"
+    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals" with body:
+            """
+{
+  "description": "Approval description 01",
+  "template": ~at4~,
+  "approvers": [~user~]
+}
+            """
+    Then the response status code should be 400
+    Then the response should be in JSON
+    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+
 
   Scenario: I POST a valid ticket approval as admin
     Given I'm authenticated as "agent"
