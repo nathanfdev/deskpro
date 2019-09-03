@@ -73,12 +73,17 @@
                             </a>
                         </div>
                     </div>
+                    <div class="col-sm-9">
+                        {% include "Theme:Community:channel_tags.html.twig" with {
+                            channels: community_data.channels
+                        } %}
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="dp-po-block">
-                        {% show  community_list_simple with { count: 5, show_category_link: true, types: communityChannels  } %}
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dp-po-block">
+                            {% show  community_list_simple with { count: 5, show_category_link: true, types: communityChannels  } %}
+                        </div>
                     </div>
                 </div>
             </div>

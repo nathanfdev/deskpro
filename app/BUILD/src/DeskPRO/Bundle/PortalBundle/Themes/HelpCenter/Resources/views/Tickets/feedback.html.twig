@@ -67,7 +67,7 @@
 
         {#<article class="news kb-article dpx-form padded">#}
 
-        {#<form class="form-ticket" action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">#}
+        {#<form class="form-ticket" action="{{ path('portal_tickets_community', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">#}
 
         {#<div class="rate-article">#}
             {#<div class="titled-header">#}
@@ -80,16 +80,16 @@
             {#&#123;&#35;<div class="rate-article">&#35;&#125;#}
                         {#<div class=" dp-choice-widget-group with-dpx">#}
                             {#<div class="radio-button dpx-radio-button" tabindex="0">#}
-                                {#<input type="radio" id="feedback_rating_p" name="rating" value="1" {% if feedback.rating == 1 %}checked="checked"{% endif %} />#}
-                                {#<label style="text-align: left" class="title" for="feedback_rating_p">{{ phrase('portal.tickets.rate-positive') }}</label>#}
+                                {#<input type="radio" id="community_rating_p" name="rating" value="1" {% if community.rating == 1 %}checked="checked"{% endif %} />#}
+                                {#<label style="text-align: left" class="title" for="community_rating_p">{{ phrase('portal.tickets.rate-positive') }}</label>#}
                             {#</div>#}
                             {#<div class="radio-button dpx-radio-button" tabindex="0">#}
-                                {#<input id="feedback_rating_0" type="radio" name="rating" value="0" {% if feedback.rating == 0 %}checked="checked"{% endif %} />#}
-                                {#<label class="title" style="text-align: left" for="feedback_rating_0">{{ phrase('portal.tickets.rate-neutral') }}</label>#}
+                                {#<input id="community_rating_0" type="radio" name="rating" value="0" {% if community.rating == 0 %}checked="checked"{% endif %} />#}
+                                {#<label class="title" style="text-align: left" for="community_rating_0">{{ phrase('portal.tickets.rate-neutral') }}</label>#}
                             {#</div>#}
                             {#<div class="radio-button dpx-radio-button" tabindex="0">#}
-                                {#<input type="radio" id="feedback_rating_n" name="rating" value="-1" {% if feedback.rating == -1 %}checked="checked"{% endif %} />#}
-                                {#<label class="title" style="text-align: left" for="feedback_rating_n">{{ phrase('portal.tickets.rate-negative') }}</label>#}
+                                {#<input type="radio" id="community_rating_n" name="rating" value="-1" {% if community.rating == -1 %}checked="checked"{% endif %} />#}
+                                {#<label class="title" style="text-align: left" for="community_rating_n">{{ phrase('portal.tickets.rate-negative') }}</label>#}
                             {#</div>#}
                         {#</div>#}
             {#</div>#}
@@ -126,21 +126,21 @@
 
                                       {#</span>#}
                                   {#</label>#}
-                                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>#}
+                                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.community_message_leave_comment') }}">{{ community.message }}</textarea>#}
 
-                                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>#}
+                                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.community.submit_community') }}</button>#}
 
                       {#</form>#}
           {#{% else %}#}
               {#<p>{{ phrase('user.tickets.rate-thanks-vialink') }}</p>#}
 
-              {#<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">#}
+              {#<form action="{{ path('user_tickets_community_save', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">#}
                   {#&#123;&#35;{{ form_token() }}&#35;&#125;#}
-                  {#<input type="hidden" name="rating" value="{{ feedback.rating }}" />#}
-                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('user.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>#}
+                  {#<input type="hidden" name="rating" value="{{ community.rating }}" />#}
+                  {#<textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('user.tickets.community_message_leave_comment') }}">{{ community.message }}</textarea>#}
 
                   {#<br />#}
-                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('user.feedback.submit_feedback') }}</button>#}
+                  {#<button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('user.community.submit_community') }}</button>#}
               {#</form>#}
           {#{% endif %}#}
     {#</article>#}

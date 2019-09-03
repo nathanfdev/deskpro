@@ -1,10 +1,10 @@
-<div class="feedback-item-controls" ref="feedbackItemControls">
+<div class="community-item-controls" ref="communityItemControls">
     <a
         {% if (not item.isClosed) %}
         href="{{ portal_path(item, user_up_voted(item) ? 'vote_down' : 'vote_up') }}"
         data-vote-up-url="{{ portal_path(item, 'vote_up') }}"
         data-vote-down-url="{{ portal_path(item, 'vote_down') }}"
-        title="{{ phrase('portal.feedback.btn-vote') }}"
+        title="{{ phrase('portal.community.btn-vote') }}"
         {% endif %}
        class="i-agree {% if user_up_voted(item) %} agreed{% endif %}{% if item.isClosed %} closed{% endif %}{% if not item.can_rate %} rate_forbidden{% endif %}"
        rel="noindex, nofollow"
@@ -12,9 +12,9 @@
         <i class="fas fa-thumbs-up"></i>
         <div>
             {% if item.isClosed %}
-                {{ phrase('portal.feedback.btn-closed') }}
+                {{ phrase('portal.community.btn-closed') }}
             {% else %}
-                {{ phrase('portal.feedback.btn-vote') }}
+                {{ phrase('portal.community.btn-vote') }}
             {% endif %}
         </div>
         <span class="counter-wrapper">

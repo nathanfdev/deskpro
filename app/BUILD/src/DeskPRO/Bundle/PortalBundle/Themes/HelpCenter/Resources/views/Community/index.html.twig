@@ -5,29 +5,29 @@
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
-    <article class="feedback main-feedback" id="feedback_page">
-        {{  macros.lockout_notice(phrase('portal.account.feedback-lockout'), lockout, lockout_time) }}
+    <article class="community main-community" id="community_page">
+        {{  macros.lockout_notice(phrase('portal.account.community-lockout'), lockout, lockout_time) }}
         <header class="large-title">
             <div class="header-buttons">
-                {% show feedback_root_subscription_link %}
+                {% show community_root_subscription_link %}
             </div>
-            <h1>{{ phrase('portal.feedback.section-title') }}</h1>
-            <p>{{ phrase('portal.feedback.section-desc') }}</p>
+            <h1>{{ phrase('portal.community.section-title') }}</h1>
+            <p>{{ phrase('portal.community.section-desc') }}</p>
         </header>
 
         {% if can_login() or app.user %}
-            <article class="feedback-form-interactive">
+            <article class="community-topic-form-interactive">
                 {% if rerendering_saved %}
                     <strong>{{ phrase('portal.general.rerender-form') }}</strong>
                 {% endif %}
-                {% show feedback_form %}
+                {% show community_topic_form %}
             </article>
         {% endif %}
 
-       <article class="feedback-filter-interactive  as-no-dpui">
-           {% show feedback_filter_controls %}
+       <article class="community-filter-interactive  as-no-dpui">
+           {% show community_filter_controls %}
            <div class="paged-results">
-               {% show feedback_list_detail %}
+               {% show community_list_detail %}
            </div>
        </article>
     </article>

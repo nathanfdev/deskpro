@@ -140,11 +140,18 @@ class PortalController extends AbstractController
             },
         ]);
 
+        $communityData = new LazyPropObject([
+           'channels' => function () use ($person) {
+               return $this->getCommunityDataService()->getCommunityChannelsForPerson($person);
+           },
+        ]);
+
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
                 'page_title'        => $this->createPageTitle()->homepage(),
                 'news_data'         => $newsData,
                 'kb_data'           => $kbData,
+                'community_data'    => $communityData,
                 'communityChannels' => $allowedCommunityChannelIds,
             ]
         );

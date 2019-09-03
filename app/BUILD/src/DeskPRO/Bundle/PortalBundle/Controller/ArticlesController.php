@@ -83,24 +83,7 @@ class ArticlesController extends AbstractController
             'data' => function () {
                 $category = null;
 
-                $person = $this->getCurrentPerson();
-                $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
-
-                $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
-
-                $categoryChildrenPagers = [];
-                foreach ($categoryChildren as $childCat) {
-                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
-                }
-
-                return [
-                    'category'                 => $category,
-                    'category_pager'           => $categoryPager,
-                    'category_children'        => $categoryChildren,
-                    'category_children_pagers' => $categoryChildrenPagers,
-                    'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
-                    'with_tree'                => true,
-                ];
+                return $this->getKbData($category);
             },
         ]);
 
@@ -186,24 +169,7 @@ class ArticlesController extends AbstractController
 
         $kbData = new LazyPropObject([
             'data' => function () use ($category) {
-                $person = $this->getCurrentPerson();
-                $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
-
-                $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
-
-                $categoryChildrenPagers = [];
-                foreach ($categoryChildren as $childCat) {
-                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
-                }
-
-                return [
-                    'category'                 => $category,
-                    'category_pager'           => $categoryPager,
-                    'category_children'        => $categoryChildren,
-                    'category_children_pagers' => $categoryChildrenPagers,
-                    'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
-                    'with_tree'                => true,
-                ];
+                return $this->getKbData($category);
             },
         ]);
 
@@ -580,5 +546,27 @@ class ArticlesController extends AbstractController
                 )
             );
         $this->get('anti_abuse')->check($check);
+    }
+
+    protected function getKbData($category)
+    {
+        $person           = $this->getCurrentPerson();
+        $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+        $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
+
+        $categoryChildrenPagers = [];
+        foreach ($categoryChildren as $childCat) {
+            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
+        }
+
+        return [
+            'category'                 => $category,
+            'category_pager'           => $categoryPager,
+            'category_children'        => $categoryChildren,
+            'category_children_pagers' => $categoryChildrenPagers,
+            'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
+            'with_tree'                => true,
+        ];
     }
 }
