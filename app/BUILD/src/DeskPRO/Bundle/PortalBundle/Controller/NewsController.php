@@ -14,6 +14,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -35,16 +36,16 @@ class NewsController extends AbstractController
      *
      * @return Response
      */
-    public function indexAction(Request $request, $_format)
+    public function indexAction(Request $request, $_format, NewsCategory $category = null)
     {
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
+        $pager = $this->getNewsPager($request, $page, $person, $category);
+
         // RSS
 
         if ('rss' === $_format) {
-            $pager = $this->getNewsPager($request, $page, $person);
-
             return $this->render('PortalBundle:News:feed.rss.twig', [
                 'page_title' => $this->createPageTitle()->news(),
                 'pager'      => $pager,
@@ -59,8 +60,6 @@ class NewsController extends AbstractController
         // iCalendar
 
         if ('ics' === $_format) {
-            $pager = $this->getNewsPager($request, $page, $person);
-
             return $this->render('PortalBundle:News:feed.ics.twig', [
                 'page_title' => $this->createPageTitle()->news(),
                 'pager'      => $pager,
@@ -87,11 +86,24 @@ class NewsController extends AbstractController
 
         // RENDER THEME
 
+        $newsData = new LazyPropObject([
+            'categories' => function () {
+                return $this->getNewsDataService()->getCategoryList($this->getUser());
+            },
+
+            'ymCounts' => function () {
+                return $this->getNewsDataService()->getMonthsWithPosts(null, $this->getUser());
+            },
+        ]);
+
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             [
                 'page'          => $page,
                 'count'         => $this->getBrandSetting('portal.per_page_content'),
+                'viewCategory'  => $category,
+                'newsData'      => $newsData,
+                'pager'         => $pager,
                 'page_title'    => $this->createPageTitle()->news(),
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,
@@ -116,6 +128,10 @@ class NewsController extends AbstractController
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
+        if ($this->isHelpCenterTheme()) {
+            return $this->indexAction($request, $_format, $category);
+        }
+
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
@@ -464,13 +480,14 @@ class NewsController extends AbstractController
      * @param Request                                                                    $request
      * @param int                                                                        $page
      * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest $person
+     * @param NewsCategory                                                               $cat
      *
      * @return \Pagerfanta\Pagerfanta
      */
-    private function getNewsPager(Request $request, $page, $person)
+    private function getNewsPager(Request $request, $page, $person, $cat = null)
     {
         return $this->getNewsDataService()->getNewsPager(
-            null,
+            $cat,
             $page,
             $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
             $person
