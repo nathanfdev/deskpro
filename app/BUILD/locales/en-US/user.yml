@@ -31,6 +31,14 @@ helpcenter.general.viewed_by_agents_only: 'Viewed by agents only'
 helpcenter.news.section-title: 'News'
 helpcenter.news.filter-cat: 'Select Category'
 helpcenter.news.filter-date: 'Select Date'
+helpcenter.members.title: 'Member Directory'
+helpcenter.members.none: 'No members'
+helpcenter.members.name: 'Name'
+helpcenter.members.email: 'Email'
+helpcenter.members.company: 'Job Title & Company'
+helpcenter.members.phone: 'Phone Number'
+helpcenter.general.go: 'Go'
+helpcenter.general.go_to_page: 'Go to page'
 portal.account.automatically_join_org_tickets: 'Automatically join {{org_name}}''s tickets?'
 portal.account.change-password: 'Change Password'
 portal.account.change-password-btn: 'Update Password'
@@ -757,14 +765,6 @@ portal.direct_messages.title: Messages
 portal.direct_messages.none: No messages
 portal.direct_messages.create_thread: Create
 portal.members.title: Members
-helpcenter.members.title: Member Directory
-helpcenter.members.none: No members
-helpcenter.members.name: Name
-helpcenter.members.email: Email
-helpcenter.members.company: Job Title & Company
-helpcenter.members.phone: Phone Number
-helpcenter.general.go: Go
-helpcenter.general.go_to_page: Go to page
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
 portal.sidebar.agents_x_online:
