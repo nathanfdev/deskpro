@@ -1,13 +1,15 @@
-<div class="content-list-wrap simple {% if pager|length %}with-items{% else %}with-no-items{% endif %}">
+<div class="dp-po-community-featured">
+    <h2 class="dp-po-community-featured-title">Featured topics</h2>
     {% if pager|length %}
-        <ul>
+        <ul class="dp-po-community-featured-list">
             {% for topic in pager %}
-                <li>
-                    <a href="{{ portal_path(topic, 'vote_up') }}" class="post-link thumbs" rel="noindex, nofollow">
-                        <span><i class="fas fa-thumbs-up"></i> {{ topic.total_rating }}</span>
+                <li class="dp-po-community-featured-item">
+                    <a href="{{ portal_path(topic, 'vote_up') }}" class="dp-po-like dp-po-like-small" rel="noindex, nofollow">
+                        <span class="dp-po-like-count">{{ topic.total_rating }}</span>
+                        <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
                     </a>
-                    <span class="text-tag">{{ topic.status_category ? object_phrase(topic.status_category) : topic.status }}</span>
-                    <a href="{{ portal_path(topic) }}">{{ topic.title }}</a>
+{#                    <span class="text-tag">{{ topic.status_category ? object_phrase(topic.status_category) : topic.status }}</span>#}
+                    <a href="{{ portal_path(topic) }}" class="dp-po-community-featured-link">{{ topic.title }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -16,9 +18,9 @@
     {% endif %}
 
     {% if show_category_link and pager|length > 0 %}
-        <div class="list-meta">
-            <a href="{{ path('portal_community') }}">
-                {{ phrase('portal.community.view-x-community-topics', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
+        <div class="dp-po-viewall">
+            <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
+                {{ phrase('portal.community.view-x-community-topics', {count: pager|length}) }} <i class="dp-po-icon far fa-angle-right"></i>
             </a>
         </div>
     {% endif %}

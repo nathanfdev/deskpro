@@ -1,15 +1,15 @@
-{% if display_alerts %}
+{% if alerts.display_alerts %}
     <div class="alerts as-dpui" id="dpx-alerts" style="display: none;">
-        {% if lang_diff %}
+        {% if alerts.lang_diff %}
             <span class="alert" data-dismiss-handler="{{ path('portal_dismiss_lang_alert') }}">
               <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
-                {{ phrase('portal.general.lang-diff', { active_lang: lang_diff.active_lang.title, person_lang: lang_diff.person_lang.title }) }}
-              <a href="{{ path('portal_change_language', {lang_code: lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-change-to-current', { lang: lang_diff.active_lang.title }) }}</a>
-              <a href="{{ path('portal_change_language', {lang_code: lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-switch', { lang: lang_diff.person_lang.title }) }}</a>
+                {{ phrase('portal.general.lang-diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
+              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
+              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
             </span>
         {% endif %}
 
-        {% for saved in saved_forms %}
+        {% for saved in alerts.saved_forms %}
             {% set alert_id = saved.link %}
             <span class="alert" data-alert-id="{{ alert_id }}">
                 <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
@@ -18,7 +18,7 @@
             </span>
         {% endfor %}
 
-        {% for ticket in tickets_awaiting_reply %}
+        {% for ticket in alerts.tickets_awaiting_reply %}
             {% set last_msg = ticket.getLastAgentMessage() %}
             {% if last_msg.person.display_name_user is defined %}
                 {% set alert_id = portal_path(ticket) %}

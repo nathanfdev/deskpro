@@ -17,12 +17,12 @@
     {% endblock %}
 
     {% block page %}
-        {% show section alerts %}
-        {% show section flashes %}
+        {% include 'Theme:Common:alerts.html.twig' with { alerts: pageData.alerts } %}
+        {% include 'Theme:Common:flashes.html.twig' with { flashes: pageData.flashes } %}
 
         {% block page_content %}
         <div class="dp-po">
-            <section class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
                 <div class="container">
                     <div class="row">
                         {% if block("page_sidebar") is defined %}
@@ -39,7 +39,7 @@
                         {% endif %}
                     </div>
                 </div>
-            </section>
+            </main>
         {% endblock %}
     {% endblock %}
 
@@ -55,7 +55,7 @@
                 <div class="dp-po-footer-copyright">
                     <span class="dp-po-footer-powered">{{ phrase('helpcenter.general.software_power_by') }}</span>
                     <a href="javascript:void(0)" class="dp-po-footer-deskpro"><img
-                                src="/portal-components/portal-style/static/img/dp-logo.svg" />
+                                src="https://deskpro.github.io/portal-components/portal-style/static/img/dp-logo.svg" />
                     </a>
                 </div>
             </div>

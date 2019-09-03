@@ -1,63 +1,101 @@
-<ul class="big-button-collection big-buttons dpx-toggle-mobile">
+<div class="dp-po-homepage-navigation">
+    <div class="dp-po-navigation-block">
+        <ul class="dp-po-navigation-block-list">
 
-    {% if can_use_articles() and show_tab_articles() %}
-      <li class="item-kb">
-        <a href="{{ path('portal_kb') }}">
-          <i class="far fa-list-alt"></i>
-          <span class="title">{{ phrase('portal.general.nav-kb') }}</span>
-          <span class="subtitle">{{ phrase('portal.general.nav-kb-desc') }}</span>
-        </a>
-      </li>
-    {% endif %}
+            {% if can_use_community() and show_tab_community() %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_community') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/community.svg">
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('helpcenter.general.nav-feedback') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('helpcenter.general.nav-feedback-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
 
-    {% if app.hasBeta('guides') and can_use_guides() and show_tab_guides() and has_any_guides() %}
-      <li class="item-guides">
-        <a href="{{ path('portal_guides') }}">
-          <i class="fas fa-book"></i>
-          <span class="title">{{ phrase('portal.general.nav-guides') }}</span>
-          <span class="subtitle">{{ phrase('portal.general.nav-guides-desc') }}</span>
-        </a>
-      </li>
-    {% endif %}
+            {% if app.hasBeta('guides') and can_use_guides() and show_tab_guides() and has_any_guides() %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_guides') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/guides.svg">
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('helpcenter.general.nav-guides') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('helpcenter.general.nav-guides-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
 
-    {% if can_use_news() and show_tab_news() %}
-      <li class="item-news">
-        <a href="{{ path('portal_news') }}">
-          <i class="far fa-calendar"></i>
-          <span class="title">{{ phrase('portal.general.nav-news') }}</span>
-          <span class="subtitle">{{ phrase('portal.general.nav-news-desc') }}</span>
-        </a>
-      </li>
-    {% endif %}
+            {% if can_use_articles() and show_tab_articles() %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_kb') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/knowledgebase.svg">
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('helpcenter.general.nav-kb') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('helpcenter.general.nav-kb-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
 
-    {% if can_use_feedback() and show_tab_feedback() %}
-      <li class="item-feedback">
-        <a href="{{ path('portal_feedback') }}">
-          <i class="far fa-thumbs-up"></i>
-          <span class="title">{{ phrase('portal.general.nav-feedback') }}</span>
-          <span class="subtitle">{{ phrase('portal.general.nav-feedback-desc') }}</span>
-        </a>
-      </li>
-    {% endif %}
+            {% if can_use_news() and show_tab_news() %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_news') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('helpcenter.general.nav-news') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('helpcenter.general.nav-news-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
 
-    {% if can_use_downloads() and show_tab_downloads() %}
-      <li class="item-downloads {{ is_page_downloads() ? 'active' }}">
-        <a href="{{ path('portal_downloads') }}">
-          <i class="far fa-copy"></i>
-          <span class="title">{{ phrase('portal.general.nav-downloads') }}</span>
-          <span class="subtitle">{{ phrase('portal.general.nav-downloads-desc') }}</span>
-        </a>
-      </li>
-    {% endif %}
+            {% if can_view_tickets_link() and show_tab_tickets() %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_tickets') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/tickets.svg">
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('helpcenter.general.nav-tickets') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('helpcenter.general.nav-tickets-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
 
-    {% if can_view_tickets_link() and show_tab_tickets() %}
-      <li class="item-newticket">
-        <a href="{{ path('portal_new_ticket') }}">
-          <i class="far fa-envelope"></i>
-          <span class="title">{{ phrase('portal.general.nav-newticket') }}</span>
-          <span class="subtitle">{{ phrase('portal.general.nav-newticket-desc') }}</span>
-        </a>
-      </li>
-    {% endif %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_new_ticket') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/contact-us.svg">
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('helpcenter.general.nav-contact') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('helpcenter.general.nav-contact-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
 
-</ul>
+        </ul>
+    </div>
+</div>
