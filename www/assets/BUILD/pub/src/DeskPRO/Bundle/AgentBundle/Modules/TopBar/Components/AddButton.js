@@ -125,11 +125,28 @@ class AddButton extends React.Component {
   };
 
   createFromArticleTemplate = () => {
-    console.log('createFromArticleTemplate');
+    const event = new CustomEvent('dpLeftDrawer', {
+      detail: {
+        module: 'UseContentTemplates',
+        width:  745,
+        type:   'article'
+      }
+    });
+
+    window.document.dispatchEvent(event);
+    this.closePopup();
   };
 
   manageTemplates = () => {
-    console.log('manageTemplates');
+    const event = new CustomEvent('dpLeftDrawer', {
+      detail: {
+        module: 'ManageContentTemplates',
+        width:  745
+      }
+    });
+
+    window.document.dispatchEvent(event);
+    this.closePopup();
   };
 
   runCustomAddBtnClick = () => {
@@ -174,7 +191,7 @@ class AddButton extends React.Component {
             positionMy="center top"
             positionAt="center bottom"
             elementId="add-menu-popup"
-            zIndex={99998}
+            zIndex={99999}
             content={content}
             ref={(c) => { this.addPopup = c; }}
             className="add_menu_popup"
