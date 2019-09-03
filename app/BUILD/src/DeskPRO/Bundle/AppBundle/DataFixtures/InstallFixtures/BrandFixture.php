@@ -63,11 +63,6 @@ class BrandFixture extends AbstractDpFixture implements OrderedFixtureInterface
 
     public function getDefaultThemeId()
     {
-        $var  = $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', 'standard');
-        $var2 = $this->container->get('deskpro.app_env')->getConfig('settings.install.with_theme', 'standard');
-        var_dump(file_get_contents($this->container->get('deskpro.app_env')->getDpRoot().'/config/advanced/config.settings.php'));
-        var_dump('INSTALL_WITH_THEME '.$var, $var2);
-
-        return $var;
+        return $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', 'standard');
     }
 }
