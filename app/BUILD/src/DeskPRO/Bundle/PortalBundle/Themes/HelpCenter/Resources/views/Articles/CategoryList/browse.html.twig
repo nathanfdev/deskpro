@@ -5,7 +5,7 @@
         <div class="col-sm-6 ">
                 <div class="dp-po-category-title">
                         <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
-{#                                <i class="dp-po-icon far fa-rocket text-danger"></i>#}
+                                <i class="dp-po-icon fas fa-folder" style="color: {{ icon_color(category) }};"></i>
                                 <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span class="count">({{ category_children_pagers[category.id]|length }})</span></h2>
                         </a>
                 </div>
