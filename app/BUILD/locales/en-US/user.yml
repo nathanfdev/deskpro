@@ -757,6 +757,8 @@ helpcenter.members.name: Name
 helpcenter.members.email: Email
 helpcenter.members.company: Job Title & Company
 helpcenter.members.phone: Phone Number
+helpcenter.general.go: Go
+helpcenter.general.go_to_page: Go to page
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
 portal.sidebar.agents_x_online:
