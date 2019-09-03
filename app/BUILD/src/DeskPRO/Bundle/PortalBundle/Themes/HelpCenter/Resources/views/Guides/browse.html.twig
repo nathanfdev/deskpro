@@ -1,6 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block inner_content %}
+{% block page_body %}
     <div class="guides browse-page">
         <header class="section-header padded">
             <h1>{{ guide.title }}</h1>
@@ -9,4 +9,4 @@
             {% show topic_list with {guide: guide} %}
         </div>
     </div>
-{% endblock inner_content %}
+{% endblock page_body %}

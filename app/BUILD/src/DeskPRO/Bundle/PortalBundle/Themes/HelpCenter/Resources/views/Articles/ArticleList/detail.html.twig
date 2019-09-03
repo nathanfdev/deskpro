@@ -1,27 +1,45 @@
 {% if pager|length > 0 %}
-  <ul class="categories-article-list">
+<div class="dp-po-section dp-po-block">
+  <div class="dp-po-article">
+    <ul class="dp-po-article-list">
     {% for article in pager %}
-      <li>
-        <div class="news-header">
-          <div class="news-header-info">
-            <a href="{{ portal_path(article) }}"><h1>{{ article.translated_title }}</h1></a>
-            <div class="article-meta">
-              Posted by <span style="background: url({{ avatar_url(article.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ article.person.display_name_user }}
-              in {{ article.date_updated | date('Y-m-d') }}
-              <hr>
+      <li class="dp-po-article-item">
+        <div class="row">
+          <div class="col-sm-9">
+            <a href="{{ portal_path(article) }}" class="dp-po-article-linktitle">{{ article.translated_title }}</a>
+            <div class="dp-po-article-extras">
+              <div class="dp-po-article-author">
+                <a href="" class="dp-po-article-linkauthor">
+                  <div class="dp-po-avatar dp-po-avatar-round">
+                    <img src="{{ avatar_url(article.person) }}">
+                    <strong>{{ article.person.display_name_user }}</strong>
+                  </div>
+                </a>
+              </div>
+              <div class="dp-po-article-date">
+                <p>Published: <span>{{ article.date_published | date('day') }}</span></p>
+              </div>
               {% if brand_setting('user.publish_comments') %}
-                <span class="comments"><i class="far fa-comments"></i> <a href="{{ portal_path(article) }}#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
-                <hr>
+              <div class="dp-po-article-comments">
+                <i class="dp-po-icon far fa-comment-alt-lines"></i> {{ article.calc_num_comments }}
+              </div>
               {% endif %}
-              in <a href="{{ portal_path(article.primary_category) }}">{{ article.primary_category }}</a>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="dp-po-article-time">
+              <i class="dp-po-icon far fa-clock"></i>
+              {{ article.date_updated | date('day') }}
             </div>
           </div>
         </div>
       </li>
     {% endfor %}
-  </ul>
+    </ul>
+  </div>
+</div>
     {% if show_pager %}
-        {% show download_pager %}
+        {% include 'Theme:Common:pager.html.twig' %}
     {% endif %}
 {% else %}
   <strong>{{ phrase('portal.articles.none') }}</strong>

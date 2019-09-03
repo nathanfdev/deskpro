@@ -1,18 +1,25 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block inner_content %}
-  <div class="breadcrumbs">
-    {% show breadcrumbs %}
-  </div>
-
-  <header class="large-title">
-      <div class="header-buttons">
-          {% show rss_link %}
-          {% show kb_root_subscription_link %}
-      </div>
-      <h1>{{ phrase('portal.articles.section-title') }}</h1>
-      <p>{{ phrase('portal.articles.section-desc') }}</p>
-  </header>
-
-  {% show section kb with { articles_count: 5, with_tree: true } %}
-{% endblock inner_content %}
+{% block page_body %}
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="dp-po-title">
+                <img class="dp-po-title-svg"
+                     src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/knowledgebase.svg">
+                <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section-title') }}</h2>
+            </div>
+        </div>
+        <div class="col-sm-3">
+{#            <%- include('_partials/_subscribe.ejs'); %>#}
+        </div>
+    </div>
+    {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
+        category_children: kb_data.data.category_children,
+        category: kb_data.data.category,
+        category_pager: kb_data.data.category_pager,
+        category_children: kb_data.data.category_children,
+        category_children_pagers: kb_data.data.category_children_pagers,
+        articles_count: kb_data.data.articles_count,
+        with_tree: kb_data.data.with_tree,
+    } %}
+{% endblock page_body %}

@@ -4,6 +4,8 @@
     <li class="dp-po-kb-category-item">
         <a href="{{ portal_path(article) }}" class="dp-po-kb-category-link">
             <span class="dp-po-kb-category-text">{{ article.translated_title }}</span>
+            {{ article.status }}
+            {% include 'Theme:Articles:ArticleList/article_status.html.twig' %}
         </a>
     </li>
   {% endfor %}
