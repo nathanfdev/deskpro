@@ -1,6 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block inner_content %}
+{% block page_body %}
    <header class="section-header">
         <h1>{{ phrase('portal.account.section-title-usersource-email') }}</h1>
     </header>
@@ -11,4 +11,4 @@
     {{ form_rest(form) }}
     <button type="submit">{{ phrase('portal.account.email-btn-usersource-set') }}</button>
     {{ form_end(form) }}
-{% endblock inner_content %}
+{% endblock page_body %}

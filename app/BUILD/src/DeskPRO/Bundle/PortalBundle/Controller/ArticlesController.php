@@ -79,6 +79,31 @@ class ArticlesController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
         }
 
+        $kbData = new LazyPropObject([
+            'data' => function () {
+                $category = null;
+
+                $person = $this->getCurrentPerson();
+                $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+                $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
+
+                $categoryChildrenPagers = [];
+                foreach ($categoryChildren as $childCat) {
+                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
+                }
+
+                return [
+                    'category'                 => $category,
+                    'category_pager'           => $categoryPager,
+                    'category_children'        => $categoryChildren,
+                    'category_children_pagers' => $categoryChildrenPagers,
+                    'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
+                    'with_tree'                => true,
+                ];
+            },
+        ]);
+
         // RENDER THEME
 
         return $this->renderThemeView(
@@ -90,6 +115,7 @@ class ArticlesController extends AbstractController
                 'page_title'    => $this->get('portal_view.page_title_generator')->kb(),
                 'rss_link'      => $rssLink,
                 'is_subscribed' => $isSubscribed,
+                'kb_data'       => $kbData,
             ]
         );
     }
@@ -158,6 +184,29 @@ class ArticlesController extends AbstractController
         $count = $this->getBrandSetting('portal.per_page_content');
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false);
 
+        $kbData = new LazyPropObject([
+            'data' => function () use ($category) {
+                $person = $this->getCurrentPerson();
+                $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+                $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
+
+                $categoryChildrenPagers = [];
+                foreach ($categoryChildren as $childCat) {
+                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
+                }
+
+                return [
+                    'category'                 => $category,
+                    'category_pager'           => $categoryPager,
+                    'category_children'        => $categoryChildren,
+                    'category_children_pagers' => $categoryChildrenPagers,
+                    'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
+                    'with_tree'                => true,
+                ];
+            },
+        ]);
+
         // RENDER THEME
 
         return $this->renderThemeView(
@@ -171,6 +220,7 @@ class ArticlesController extends AbstractController
                 'count'         => $count,
                 'page'          => $page,
                 'rss_link'      => $rssLink,
+                'kb_data'       => $kbData,
             ]
         );
     }

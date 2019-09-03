@@ -1,0 +1,7 @@
+{% if app.user.is_agent %}
+    {% if article.status == 'published' %}
+    <span class="badge badge-success badge-small">PUBLISHED</span>
+    {% elseif article.status == 'draft' %}
+    <span class="badge badge-dark badge-small">DRAFT</span>
+    {% endif %}
+{% endif %}

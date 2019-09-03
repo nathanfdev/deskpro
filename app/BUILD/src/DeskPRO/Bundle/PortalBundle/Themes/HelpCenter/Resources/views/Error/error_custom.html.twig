@@ -1,6 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block inner_content %}
+{% block page_body %}
     <article class="news kb-article">
         <header>
             <h1>{{ phrase(error_title) ?: error_title }}</h1>
@@ -12,4 +12,4 @@
             {% endif %}
         </header>
     </article>
-{% endblock inner_content %}
+{% endblock page_body %}

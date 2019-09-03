@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
-{% block inner_content %}
+{% block page_body %}
     <div class="breadcrumbs">
         {% show breadcrumbs %}
     </div>
@@ -28,7 +28,7 @@
             {% show new_ticket_form %}
         </section>
     </div>
-{% endblock inner_content %}
+{% endblock page_body %}
 {% block doc_end %}
     <!-- DESKPRO_TICKET_DISPLAY -->
     <script type="text/javascript">
