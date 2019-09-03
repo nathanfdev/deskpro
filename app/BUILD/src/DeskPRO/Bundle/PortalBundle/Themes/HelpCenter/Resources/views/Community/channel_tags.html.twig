@@ -4,7 +4,7 @@
         <li class="dp-po-community-channel-tags-item">
             <a href="{{ portal_path(channel) }}" class="dp-po-community-channel-tags-link">
                 #{{channel}}
-{#                <span class="dp-po-community-channel-tags-count">(96)</span>#}
+                <span class="dp-po-community-channel-tags-count">({{ channel.count }})</span>
             </a>
         </li>
         {% endfor %}

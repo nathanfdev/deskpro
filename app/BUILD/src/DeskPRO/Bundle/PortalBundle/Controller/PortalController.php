@@ -144,7 +144,14 @@ class PortalController extends AbstractController
 
         $communityData = new LazyPropObject([
            'channels' => function () use ($person) {
-               return $this->getCommunityDataService()->getCommunityChannelsForPerson($person);
+               $channels = $this->getCommunityDataService()->getCommunityChannelsForPerson($person);
+
+               $counts = $this->getCommunityDataService()->getItemsRepo()->countAllChannelsGrouped();
+               foreach ($channels as $channel) {
+                   $channel->count = $counts[$channel->getId()];
+               }
+
+               return $channels;
            },
             'pager' => function () use ($allowedCommunityChannelIds) {
                 $person = $this->getUser() ?: new PersonGuest();
