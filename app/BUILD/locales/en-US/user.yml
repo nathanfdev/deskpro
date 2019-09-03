@@ -28,6 +28,7 @@ helpcenter.general.translations: 'Translations'
 helpcenter.general.updated: 'Updated'
 helpcenter.general.software_power_by: 'Powered by'
 helpcenter.general.viewed_by_agents_only: 'Viewed by agents only'
+helpcenter.general.view_all: 'Viewed All'
 helpcenter.news.section-title: 'News'
 helpcenter.news.filter-cat: 'Select Category'
 helpcenter.news.filter-date: 'Select Date'
@@ -449,6 +450,7 @@ portal.community.sort_date: Date
 portal.community.sort_popularity: Popularity
 portal.community.sort_rating: Rating
 portal.community.sort_views: Views
+portal.community.sort_status_change: Last Status Change
 portal.community.status_active: 'Open items'
 portal.community.status_all: 'All items'
 portal.community.status_closed: 'Closed items'

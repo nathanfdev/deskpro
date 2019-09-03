@@ -1,4 +1,7 @@
 services:
+  helpcenter_data_helper:
+    class: DeskPRO\Bundle\PortalBundle\View\HelpCenterData
+    arguments: ["@service_container"]
 
   person_manipulator:
     class: DeskPRO\Bundle\PortalBundle\Person\PersonManipulator

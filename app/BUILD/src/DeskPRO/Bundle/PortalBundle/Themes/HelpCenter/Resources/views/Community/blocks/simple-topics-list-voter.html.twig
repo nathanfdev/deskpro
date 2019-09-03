@@ -1,0 +1,11 @@
+<ul class="dp-po-community-featured-list">
+    {% for topic in topics %}
+        <li class="dp-po-community-featured-item">
+            <a href="{{ portal_path(topic, 'vote_up') }}" class="dp-po-like dp-po-like-small post-link" rel="noindex, nofollow">
+                <span class="dp-po-like-count">12</span>
+                <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
+            </a>
+            <a class="dp-po-community-featured-link" href="{{ portal_path(topic) }}">{{ topic.title }}</a>
+        </li>
+    {% endfor %}
+</ul>

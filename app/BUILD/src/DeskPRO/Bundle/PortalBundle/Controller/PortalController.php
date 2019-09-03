@@ -6,7 +6,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsersourceAuthAdapterFactoryService;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TmpData;
@@ -17,10 +16,8 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
-use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
-use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Component\Util\LazyPropObject;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -105,19 +102,6 @@ class PortalController extends AbstractController
             return $redirectToApp;
         }
 
-        $person = $this->getCurrentPerson();
-
-        $newsData = new LazyPropObject([
-            'pager' => function () use ($person) {
-                return $pager = $this->getNewsDataService()->getNewsPager(
-                    null,
-                    (int) 1,
-                    (int) 3,
-                    $person
-                );
-            },
-        ]);
-
         $kbData = new LazyPropObject([
             'data' => function () {
                 $category = null;
@@ -143,59 +127,11 @@ class PortalController extends AbstractController
             },
         ]);
 
-        $communityData = new LazyPropObject([
-           'channels' => function () use ($person) {
-               $channels = $this->getCommunityDataService()->getCommunityChannelsForPerson($person);
-
-               $counts = $this->getCommunityDataService()->getItemsRepo()->countAllChannelsGrouped();
-               foreach ($channels as $channel) {
-                   $channel->count = $counts[$channel->getId()];
-               }
-
-               return $channels;
-           },
-            'pager' => function () use ($allowedCommunityChannelIds) {
-                $person = $this->getUser() ?: new PersonGuest();
-
-                $filter = new CommunityFilter([
-                    'status'            => 'all',
-                    'status_categories' => [],
-                    'types'             => $allowedCommunityChannelIds,
-                    'sort'              => 'date',
-                    'sort_direction'    => 'desc',
-                ]);
-
-                $pager = $this->getCommunityDataService()->getItemsPager(
-                    1,
-                    5,
-                    $filter,
-                    $person
-                );
-
-                foreach ($pager as $topic) {
-                    $topic->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic);
-                }
-
-                return $pager;
-            },
-            'last_statuses' => function () {
-                $qb = $this->getEm()->createQueryBuilder();
-                $qb->select('ct')
-                    ->from(CommunityTopic::class, 'ct')
-                    ->where('ct.status_category > 1')
-                    ->orderBy('ct.date_updated', 'desc')
-                    ->setMaxResults(5);
-
-                return $qb->getQuery()->getResult();
-            },
-        ]);
-
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
                 'page_title'        => $this->createPageTitle()->homepage(),
-                'news_data'         => $newsData,
+                'helpcenter'        => $this->get('helpcenter_data_helper'),
                 'kb_data'           => $kbData,
-                'community_data'    => $communityData,
                 'communityChannels' => $allowedCommunityChannelIds,
             ]
         );

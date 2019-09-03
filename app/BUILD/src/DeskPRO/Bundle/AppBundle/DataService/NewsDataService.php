@@ -58,7 +58,7 @@ class NewsDataService extends AbstractDataService
      *
      * @return Pagerfanta
      */
-    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person)
+    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person = null)
     {
         $em                 = $this->em;
         $permissionsManager = $this->permissionsManager;
