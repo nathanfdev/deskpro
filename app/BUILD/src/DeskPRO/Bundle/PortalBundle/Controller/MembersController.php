@@ -29,9 +29,10 @@ class MembersController extends AbstractController
         $this->isCommunityEnabledOrNotFoundException();
 
         $page    = $request->get('page', 1);
-        $orderBy = $request->get('order', 'id');
+        $orderBy = $request->get('order', 'last_name');
+        $search  = $request->get('q', '');
         $count   = $this->getBrandSetting('portal.per_page_content');
-        $pager   = $this->getPersonDataService()->getPortalMembersPager($page, $count, $orderBy);
+        $pager   = $this->getPersonDataService()->getPortalMembersPager($page, $count, $orderBy, $search);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildMembersList();
 
@@ -42,6 +43,7 @@ class MembersController extends AbstractController
                 'pager'          => $pager,
                 'count'          => $count,
                 'page'           => $page,
+                'q'              => $search,
                 'avatarResolver' => $this->get('avatar_resolver'),
             ]
         );

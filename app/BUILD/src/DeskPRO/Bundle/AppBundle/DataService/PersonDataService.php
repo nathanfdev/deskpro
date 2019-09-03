@@ -116,7 +116,7 @@ class PersonDataService extends AbstractDataService
      *
      * @return Pagerfanta
      */
-    public function getPortalMembersPager($page, $maxPerPage, $orderBy = null)
+    public function getPortalMembersPager($page, $maxPerPage, $orderBy = null, $search = '')
     {
         $em = $this->em;
         $qb = $em->createQueryBuilder();
@@ -127,12 +127,32 @@ class PersonDataService extends AbstractDataService
             ->andWhere('p.is_agent = 0')
             ->andWhere('p.is_user = 1');
 
+        if ($search) {
+            $qb->andWhere('p.override_display_name LIKE :override OR p.first_name LIKE :first OR p.last_name LIKE :last');
+            $qb->setParameters([
+                'override' => '%'.$search.'%',
+                'first'    => '%'.$search.'%',
+                'last'     => '%'.$search.'%',
+            ]);
+        }
+
         $qbCount = clone $qb;
         $qbCount->select('count(p.id)');
         $cnt = $qbCount->getQuery()->getSingleScalarResult();
 
+        switch ($orderBy) {
+            case 'last_name':
+                $orderBy = 'last_name';
+                break;
+            case 'first_name':
+                $orderBy = 'first_name';
+                break;
+            default:
+                $orderBy = 'id';
+        }
+
         if ($cnt < 5000) {
-            $qb->orderBy('p.last_name', 'ASC');
+            $qb->orderBy('p.'.$orderBy, 'ASC');
         }
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));

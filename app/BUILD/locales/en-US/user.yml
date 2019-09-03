@@ -689,6 +689,7 @@ portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"
 portal.general.no-search-results-general: 'We couldn''t find any results'
 portal.general.on: 'on'
 portal.general.or: or
+portal.general.search: Search
 portal.general.prop_comments_asc: 'Least comments first'
 portal.general.prop_comments_desc: 'Most comments first'
 portal.general.prop_date_asc: 'Oldest first'
