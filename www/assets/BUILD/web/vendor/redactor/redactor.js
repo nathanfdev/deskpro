@@ -2826,34 +2826,37 @@ var RLANG = {
 				markerSpan.parentNode.removeChild(markerSpan);
 			}
 		},
-		getSelectedHtml: function()
-		{
-			var html = '';
-			if (this.window.getSelection)
-			{
-				var sel = this.window.getSelection();
-				if (sel.rangeCount)
-				{
-					var container = this.document.createElement("div");
-					for (var i = 0, len = sel.rangeCount; i < len; ++i)
-					{
-						container.appendChild(sel.getRangeAt(i).cloneContents());
-					}
+    getSelectedHtml: function () {
+      let html = '';
+      const wrappers = ['u', 'b', 'i', 'span'];
 
-					html = container.innerHTML;
+      if (this.window.getSelection) {
+        let sel = this.window.getSelection();
+        const selParent = $(`:contains('${sel.toString()}')`).filter(wrappers.join(', ')).last();
 
-				}
-			}
-			else if (this.document.selection)
-			{
-				if (this.document.selection.type === "Text")
-				{
-					html = this.document.selection.createRange().htmlText;
-				}
-			}
+        if (sel.rangeCount) {
+          if (selParent.length) {
+            sel.removeAllRanges();
+            const range = this.document.createRange();
+            range.selectNode(selParent[0]);
+            sel.addRange(range);
+          }
 
-			return html;
-		},
+          const container = this.document.createElement("div");
+          for (let i = 0, len = sel.rangeCount; i < len; ++i) {
+            container.appendChild(sel.getRangeAt(i).cloneContents());
+          }
+
+          html = container.innerHTML;
+        }
+      } else if (this.document.selection) {
+        if (this.document.selection.type === "Text") {
+          html = this.document.selection.createRange().htmlText;
+        }
+      }
+
+      return html;
+    },
 
 		// RESIZE IMAGES
 		resizeImage: function(resize)
