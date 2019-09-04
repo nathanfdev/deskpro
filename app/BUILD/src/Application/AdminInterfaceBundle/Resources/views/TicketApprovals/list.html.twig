@@ -34,7 +34,7 @@
             <ul class="dp-item-list" dp-list-autoload>
                 <li ng-repeat="template in TicketApprovalsList.templates" dp-state-mark="tickets.approvals.template-{{ ng_var('template.id') }}">
                     <a href="{{ ng_href('tickets.approvals.template_edit', "{id: 'template-' + template.id}") }}">
-                        {{ ng_var('template.title') }}
+                        {{ ng_var('template.name') }}
                     </a>
                 </li>
             </ul>
