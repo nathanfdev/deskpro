@@ -112,8 +112,12 @@ class PortalController extends AbstractController
                 $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
 
                 $categoryChildrenPagers = [];
-                foreach ($categoryChildren as $childCat) {
+                foreach ($categoryChildren as $key => &$childCat) {
                     $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
+                    if ($categoryChildrenPagers[$childCat->getId()]->getNbResults() === 0) {
+                        unset($categoryChildrenPagers[$childCat->getId()]);
+                        unset($categoryChildren[$key]);
+                    }
                 }
 
                 return [

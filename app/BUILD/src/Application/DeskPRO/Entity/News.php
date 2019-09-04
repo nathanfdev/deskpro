@@ -101,7 +101,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         return $content;
     }
 
-    public function getExcerptHtml()
+    public function getExcerptHtml($wordsLimit = 50)
     {
         $content = Strings::html2Text($this->getContent());
         if ($pos = strpos($content, '![more]')) {
@@ -112,9 +112,9 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
             $excerpt = $content;
         }
 
-        if (str_word_count($excerpt) > 50) {
+        if (str_word_count($excerpt) > $wordsLimit) {
             $words   = str_word_count($excerpt, 2);
-            $pos     = Arrays::getNthKey($words, 50);
+            $pos     = Arrays::getNthKey($words, $wordsLimit);
             $excerpt = substr($excerpt, 0, $pos);
             $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
             $excerpt .= '...';
@@ -126,9 +126,9 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     public function getCountWordsAfterExcerpt()
     {
         $content = strip_tags($this->getContentHtml());
-        $exceprt = strip_tags($this->getExcerptHtml());
+        $excerpt = strip_tags($this->getExcerptHtml());
 
-        $diff = str_word_count($content) - str_word_count($exceprt);
+        $diff = str_word_count($content) - str_word_count($excerpt);
 
         return $diff;
     }
