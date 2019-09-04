@@ -39,12 +39,11 @@ class MembersController extends AbstractController
         return $this->renderThemeView(
             'Theme:Members:index.html.twig',
             [
-                'breadcrumbs'    => $breadcrumbs,
-                'pager'          => $pager,
-                'count'          => $count,
-                'page'           => $page,
-                'q'              => $search,
-                'avatarResolver' => $this->get('avatar_resolver'),
+                'breadcrumbs' => $breadcrumbs,
+                'pager'       => $pager,
+                'count'       => $count,
+                'page'        => $page,
+                'q'           => $search,
             ]
         );
     }
