@@ -187,11 +187,7 @@ class PlivoAccountsController extends AbstractVoiceCrudController
             $options['pattern'] = $query->get('phrase');
         }
 
-        $types = $query->get('types');
-        if (!$types || !is_array($types)) {
-            $types = [];
-        }
-
+        $types   = (array) $query->get('type');
         $numbers = [];
         foreach ($types as $type) {
             $numbers = array_merge($numbers, $adapter->getAvailablePhoneNumbers($account, $countryCode, $type, $options));
