@@ -161,7 +161,7 @@
 
 {%- block date_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-date with-dpx {{ form.vars.calendar }}{% if widget != 'single_text' %} form-control{% endif %}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
+        <div class="dpx-date with-dpx {{ form.vars.calendar }}{% if widget != 'single_text' %} form-control not-single-text{% endif %}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
@@ -183,7 +183,7 @@
 
 {%- block time_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-time with-dpx{% if widget != 'single_text' %} form-control{% endif %}">
+        <div class="dpx-time with-dpx{% if widget != 'single_text' %} form-control not-single-text{% endif %}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
@@ -320,7 +320,7 @@
     {%- if required and placeholder is none and not placeholder_in_choices and not multiple -%}
         {% set required = false %}
     {%- endif -%}
-    <div class="with-dpx form-control">
+    <div class="with-dpx">
         <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {%- if placeholder is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? placeholder|trans({}, translation_domain) }}</option>
@@ -720,7 +720,7 @@ END HEIRARCHY
     </div>
 {%- endblock entity_hierarchy_collapsed %}
 
-{% block entity_hierarchy_widget_options -%}
+2{% block entity_hierarchy_widget_options -%}
     {% for group_label, choice in options %}
         {%- if choice is not iterable -%}
             {% set def = choice.data %}
