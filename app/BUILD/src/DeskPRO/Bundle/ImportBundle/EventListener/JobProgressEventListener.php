@@ -73,12 +73,9 @@ class JobProgressEventListener implements EventSubscriberInterface
     {
         return [
             ProgressEvent::POST_MODEL_IMPORT => ['onPostModelImport'],
-//            ProgressEvent::PRE_IMPORT        => ['onPreImport'],
             ProgressEvent::POST_IMPORT       => ['onPostImport'],
             ProgressEvent::POST_STEP_IMPORT  => ['onPostStepImport'],
-//            ProgressEvent::PRE_BATCH_APPLY   => ['onPreBatchApply'],
             ProgressEvent::POST_BATCH_APPLY  => ['onPostBatchApply'],
-//            ProgressEvent::PRE_APPLY         => ['onPreApply'],
             ProgressEvent::POST_APPLY        => ['onPostApply'],
             ProgressEvent::FINISH            => ['onFinish'],
             ProgressEvent::CLEAN             => ['onClean'],
@@ -146,7 +143,7 @@ class JobProgressEventListener implements EventSubscriberInterface
             return;
         }
 
-        $offsets  = $job->getDataKey('import_offsets', []);
+        $offsets = $job->getDataKey('import_offsets', []);
         $options = $event->getOptions();
 
         if (array_key_exists('offset', $options)) {
