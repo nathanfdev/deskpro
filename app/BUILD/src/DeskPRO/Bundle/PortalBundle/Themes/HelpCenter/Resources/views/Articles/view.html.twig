@@ -51,7 +51,7 @@
 
     {% if article.end_action == 'unpublish' and app.user.is_agent %}
         <div class="alert alert-icon alert-danger" role="alert">
-            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article_unpublish', {date: article.date_end | date('day')}) }}
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article-unpublish', {date: article.date_end | date('day')}) }}
         </div>
     {% endif %}
 
@@ -130,9 +130,6 @@
     {% include'Theme:PublishCommon:meta.html.twig' with {
         item: article
     } %}
-
-    {# TODO related content #}
-    {#{% show related_content %}#}
 {% endblock %}
 
 {% block doc_end %}

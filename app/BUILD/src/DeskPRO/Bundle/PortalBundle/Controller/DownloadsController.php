@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\CustomDefDownload;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -18,6 +19,7 @@ use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -169,6 +171,7 @@ class DownloadsController extends AbstractController
                 'is_subscribed' => $isSubscribed,
                 'page_title'    => $this->createPageTitle()->downloads($category),
                 'rss_link'      => $rssLink,
+                'helpcenter'    => $this->get('helpcenter_data_helper'),
             ]
         );
     }
@@ -274,6 +277,18 @@ class DownloadsController extends AbstractController
             ];
         }
 
+        // OTHER ARTICLE DATA
+        $downloadData = new LazyPropObject([
+            'comments' => function () use ($file) {
+                return $this->getDownloadsDataService()->getDownloadComments($file, $this->getUser());
+            },
+            'related_content' => function () use ($file) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $file);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             [
@@ -291,6 +306,7 @@ class DownloadsController extends AbstractController
                 'lockout'            => $check->isLockoutRecommended(),
                 'lockout_time'       => $check->getLockoutTime(true),
                 'sd'                 => $request->get('sd'),
+                'downloadData'       => $downloadData,
             ]
         );
     }
