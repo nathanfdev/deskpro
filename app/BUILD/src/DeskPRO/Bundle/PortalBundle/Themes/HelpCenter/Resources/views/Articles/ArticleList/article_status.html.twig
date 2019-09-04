@@ -1,7 +1,11 @@
 {% if is_agent() %}
     {% if article.status == 'published' %}
     <span class="badge badge-success badge-small">PUBLISHED</span>
-    {% elseif article.status == 'draft' %}
-    <span class="badge badge-dark badge-small">DRAFT</span>
+    {% elseif article.status == 'archived' %}
+    <span class="badge badge-dark badge-small">ARCHIVED</span>
+    {% elseif article.status == 'hidden' %}
+        {% if article.hidden_status == 'draft' %}
+            <span class="badge badge-dark badge-small">DRAFT</span>
+        {% endif %}
     {% endif %}
 {% endif %}

@@ -82,9 +82,7 @@ class ArticlesController extends AbstractController
 
         $kbData = new LazyPropObject([
             'data' => function () {
-                $category = null;
-
-                return $this->getKbData($category);
+                return $this->getKbData(null);
             },
         ]);
 
@@ -166,7 +164,7 @@ class ArticlesController extends AbstractController
         // PAGER
 
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false, $person->isAgent());
 
         $kbData = new LazyPropObject([
             'data' => function () use ($category) {
@@ -562,8 +560,12 @@ class ArticlesController extends AbstractController
         $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
 
         $categoryChildrenPagers = [];
-        foreach ($categoryChildren as $childCat) {
-            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true);
+        foreach ($categoryChildren as $key => &$childCat) {
+            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true, $person->isAgent());
+            if ($categoryChildrenPagers[$childCat->getId()]->getNbResults() === 0) {
+                unset($categoryChildrenPagers[$childCat->getId()]);
+                unset($categoryChildren[$key]);
+            }
         }
 
         return [

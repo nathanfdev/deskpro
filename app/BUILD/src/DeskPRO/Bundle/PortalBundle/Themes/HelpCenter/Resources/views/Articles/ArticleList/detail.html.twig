@@ -7,6 +7,7 @@
         <div class="row">
           <div class="col-sm-9">
             <a href="{{ portal_path(article) }}" class="dp-po-article-linktitle">{{ article.translated_title }}</a>
+            {% if article.status != 'published' %}{% include 'Theme:Articles:ArticleList/article_status.html.twig' %}{% endif %}
             <div class="dp-po-article-extras">
               <div class="dp-po-article-author">
                 <a href="" class="dp-po-article-linkauthor">
@@ -27,7 +28,7 @@
             </div>
           </div>
           <div class="col-sm-3">
-            <div class="dp-po-article-time">
+            <div class="dp-po-time">
               <i class="dp-po-icon far fa-clock"></i>
               {{ article.date_updated | date('day') }}
             </div>

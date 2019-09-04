@@ -51,10 +51,11 @@ class ArticlesDataService extends AbstractDataService
      * @param                 $maxPerPage
      * @param Person          $person
      * @param bool            $withTree
+     * @param bool            $allStatuses
      *
      * @return Pagerfanta
      */
-    public function getArticlesPager(ArticleCategory $category = null, $page, $maxPerPage, Person $person, $withTree = false)
+    public function getArticlesPager(ArticleCategory $category = null, $page, $maxPerPage, Person $person, $withTree = false, $allStatuses = false)
     {
         $em                 = $this->em;
         $permissionsManager = $this->permissionsManager;
@@ -67,14 +68,20 @@ class ArticlesDataService extends AbstractDataService
                 (int) $maxPerPage,
                 $person,
                 (bool) $withTree,
+                (bool) $allStatuses,
             ],
-            function () use ($em, $permissionsManager, $category, $maxPerPage, $page, $person, $withTree) {
+            function () use ($em, $permissionsManager, $category, $maxPerPage, $page, $person, $withTree, $allStatuses) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('a')
                     ->from(Article::class, 'a')
-                    ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
                     ->orderBy('a.id', 'DESC');
+                if (!$allStatuses) {
+                    $qb->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED);
+                } else {
+                    $qb->where('a.status <> :status')->setParameter('status', Article::STATUS_HIDDEN);
+                    $qb->orWhere('a.hidden_status = :hidden_status')->setParameter('hidden_status', Article::HIDDEN_STATUS_DRAFT);
+                }
 
                 $allowedIds = $permissionsManager->getPortalPermissionsBag($person)->getAllowedArticleCategories();
                 if ($category) {

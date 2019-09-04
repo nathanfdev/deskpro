@@ -2,7 +2,7 @@
 <ul class="dp-po-kb-category-list">
   {% for article in pager %}
     <li class="dp-po-kb-category-item">
-        <a href="{{ portal_path(article) }}" class="dp-po-kb-category-link">
+        <a href="{{ portal_path(article) }}" class="dp-po-kb-category-link {% if article.hidden_status == 'draft' %}dp-po-kb-category-link-draft{% endif %}">
             <span class="dp-po-kb-category-text">{{ article.translated_title }}</span>
             {% include 'Theme:Articles:ArticleList/article_status.html.twig' %}
         </a>
