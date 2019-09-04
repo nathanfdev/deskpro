@@ -472,9 +472,7 @@
 {% endblock deskpro_recaptcha_widget %}
 
 {% block captcha_widget %}
-{% spaceless %}
-    <div class="captcha-field">
-        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+    {% spaceless %}
         {% if reload %}
             <script type="text/javascript">
                 function reload_{{ image_id }}() {
@@ -482,11 +480,28 @@
                     img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
                 }
             </script>
-            <a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fas fa-sync" aria-hidden="true"></i></a>
         {% endif %}
-        {{ form_widget(form, { attr: { class: 'shorter' } } ) }}
-    </div>
-{% endspaceless %}
+        <div class="form-group dp-po-form-captcha">
+            <div class="row align-items-center no-gutters">
+                <div class="col-sm-5">
+                    <label for="exampleInputEmail1">CAPTCHA</label>
+                    <div class="dp-po-form-captcha-text">
+                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+                    </div>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label for="exampleInputEmail1">&nbsp;</label>
+                    <a href="javascript:reload_{{ image_id }}();" class="dp-po-form-captcha-reload"><i class="dp-po-icon far fa-sync"></i></a>
+                </div>
+                <div class="col-sm-5">
+                    <label for="exampleInputEmail1">&nbsp;</label>
+                    {{ form_widget(form, { attr: { class: 'form-control', placeholder: 'Insert text' } } ) }}
+                </div>
+            </div>
+            <small id="emailHelp" class="form-text">To prove you are human, please insert the text you can see in the box
+                above.</small>
+        </div>
+    {% endspaceless %}
 {% endblock %}
 
 {###
@@ -720,7 +735,7 @@ END HEIRARCHY
     </div>
 {%- endblock entity_hierarchy_collapsed %}
 
-2{% block entity_hierarchy_widget_options -%}
+{% block entity_hierarchy_widget_options -%}
     {% for group_label, choice in options %}
         {%- if choice is not iterable -%}
             {% set def = choice.data %}
