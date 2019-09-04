@@ -2827,23 +2827,23 @@ var RLANG = {
 			}
 		},
     getSelectedHtml: function () {
-      let html = '';
-      const wrappers = ['u', 'b', 'i', 'span'];
+      var html = '';
+      var wrappers = ['u', 'b', 'i', 'span'];
 
       if (this.window.getSelection) {
-        const sel = this.window.getSelection();
-        const selParent = $(`:contains('${sel.toString()}')`).filter(wrappers.join(', ')).last();
+        var sel = this.window.getSelection();
+        var selParent = $(":contains('" + sel.toString() + "')").filter(wrappers.join(', ')).last();
 
         if (sel.rangeCount) {
           if (selParent.length) {
             sel.removeAllRanges();
-            const range = this.document.createRange();
+            var range = this.document.createRange();
             range.selectNode(selParent[0]);
             sel.addRange(range);
           }
 
-          const container = this.document.createElement("div");
-          for (let i = 0, len = sel.rangeCount; i < len; ++i) {
+          var container = this.document.createElement("div");
+          for (var i = 0, len = sel.rangeCount; i < len; ++i) {
             container.appendChild(sel.getRangeAt(i).cloneContents());
           }
 
