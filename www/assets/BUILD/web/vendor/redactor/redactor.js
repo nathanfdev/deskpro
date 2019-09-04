@@ -2831,7 +2831,7 @@ var RLANG = {
       const wrappers = ['u', 'b', 'i', 'span'];
 
       if (this.window.getSelection) {
-        let sel = this.window.getSelection();
+        const sel = this.window.getSelection();
         const selParent = $(`:contains('${sel.toString()}')`).filter(wrappers.join(', ')).last();
 
         if (sel.rangeCount) {
