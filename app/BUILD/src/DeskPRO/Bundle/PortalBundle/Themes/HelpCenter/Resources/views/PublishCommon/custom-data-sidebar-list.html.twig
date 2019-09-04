@@ -1,6 +1,6 @@
 {% for custom in custom_data %}
     {% if custom['value'] %}
-        <h3 class="dp-po-kbmeta-title">{{ custom['label'] }}</h3>
+        <h3 class="dp-po-post-meta-title">{{ custom['label'] }}</h3>
         {% if custom['type'] == 'url' %}
             <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
         {% elseif custom['type'] == 'date' %}
