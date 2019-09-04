@@ -1,10 +1,29 @@
 {% if pager|length > 0 %}
 <ul class="download-list">
     {% for dl in pager %}
-        <li>
-            {{ content_icon(dl) }}
-            <a href="{{ portal_path(dl) }}">{{ dl.title }}</a>
-        </li>
+        <div class="dp-po-download-listing-item">
+            <a href="{{ portal_path(dl) }}" class="dp-po-download-listing-link">
+                <figure class="dp-po-download-listing-figure">
+                    {{ content_icon(dl) }}
+                    <img src="/portal-components/portal-style/static/img/file-icons/DOC.svg"
+                         class="dp-po-download-listing-icon img-fluid" />
+                </figure>
+                <div class="dp-po-download-listing-content">
+                    <h3 class="dp-po-download-listing-title">{{ dl.title }}</h3>
+                    <div class="dp-po-avatar dp-po-avatar-round">
+                        <img src="{{ avatar_url(dl.person) }}">
+                        <strong>{{ dl.person }}</strong>
+                    </div>
+                    <div class="dp-po-download-listing-count">
+                        <i class="dp-po-icon fal fa-arrow-to-bottom"></i> {{ dl.num_downloads }}
+                    </div>
+                    <div class="dp-po-download-listing-time">
+                        <i class="dp-po-icon far fa-clock"></i>
+                        {{ dl.date_published | date('day') }}
+                    </div>
+                </div>
+            </a>
+        </div>
     {% endfor %}
     {% if show_category_link %}
         <div class="list-meta">

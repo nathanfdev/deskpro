@@ -3,9 +3,20 @@
 namespace DeskPRO\Bundle\PortalBundle\View;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService;
+use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
+use DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService;
+use DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService;
+use DeskPRO\Bundle\AppBundle\DataService\DownloadsDataService;
+use DeskPRO\Bundle\AppBundle\DataService\GuidesDataService;
+use DeskPRO\Bundle\AppBundle\DataService\NewsDataService;
+use DeskPRO\Bundle\AppBundle\DataService\TicketsDataService;
+use DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Component\Util\MapUtils;
+use Pagerfanta\Pagerfanta;
 
 /**
  * Wrapper for loaders that users can call from Portal Home template.
@@ -36,7 +47,7 @@ class HelpCenterData
      *
      * @param array $userOptions
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return Pagerfanta
      */
     public function getNewsPosts(array $userOptions = [])
     {
@@ -97,7 +108,7 @@ class HelpCenterData
     /**
      * @param array $userOptions
      *
-     * @return \Pagerfanta\Pagerfanta
+     * @return Pagerfanta
      */
     public function getCommunityTopics(array $userOptions)
     {
@@ -118,7 +129,38 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\NewsDataService
+     * @param array $userOptions
+     *
+     * @return DownloadCategory[]
+     */
+    public function getDownloadsCategories(array $userOptions)
+    {
+        $options = array_merge([
+            'count'    => 5,
+            'category' => null,
+        ], $userOptions);
+
+        return $this->getDownloadsDataService()->getCategoryChildren($options['category'], $this->getUser());
+    }
+
+    public function getDownloads(array $userOptions)
+    {
+        $options = array_merge([
+            'page'     => 1,
+            'count'    => 10,
+            'category' => null,
+        ], $userOptions);
+
+        return $this->getDownloadsDataService()->getDownloadsPager(
+            $options['category'],
+            (int) $options['page'],
+            (int) $options['count'],
+            $this->getUser()
+        );
+    }
+
+    /**
+     * @return NewsDataService
      */
     private function getNewsDataService()
     {
@@ -126,7 +168,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService
+     * @return CommunityDataService
      */
     private function getCommunityDataService()
     {
@@ -134,7 +176,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\GuidesDataService
+     * @return GuidesDataService
      */
     private function getGuidesDataService()
     {
@@ -142,7 +184,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
+     * @return ArticlesDataService
      */
     private function getArticlesDataService()
     {
@@ -150,7 +192,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
+     * @return TicketsDataService
      */
     private function getTicketsDataService()
     {
@@ -158,7 +200,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService
+     * @return ChatDataService
      */
     private function getChatDataService()
     {
@@ -166,7 +208,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService
+     * @return DirectMessageThreadDataService
      */
     private function getDirectMessageThreadDataService()
     {
@@ -174,7 +216,7 @@ class HelpCenterData
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService
+     * @return TicketViewDataService
      */
     private function getTicketsViewService()
     {
@@ -187,6 +229,14 @@ class HelpCenterData
     }
 
     /**
+     * @return DownloadsDataService
+     */
+    private function getDownloadsDataService()
+    {
+        return $this->get('data.downloads');
+    }
+
+    /**
      * @return Person|null
      */
     public function getUser()
@@ -195,7 +245,7 @@ class HelpCenterData
             return;
         }
 
-        if (!\is_object($user = $token->getUser())) {
+        if (!is_object($user = $token->getUser())) {
             // e.g. anonymous authentication
             return;
         }

@@ -92,6 +92,7 @@ class DownloadsController extends AbstractController
                 'page_title'         => $this->createPageTitle()->downloads(),
                 'rss_link'           => $rssLink,
                 'is_subscribed'      => $isSubscribed,
+                'helpcenter'         => $this->get('helpcenter_data_helper'),
             ]
         );
     }

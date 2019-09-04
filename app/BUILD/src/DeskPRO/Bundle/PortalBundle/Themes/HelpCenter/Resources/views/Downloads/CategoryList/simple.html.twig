@@ -1,15 +1,9 @@
+<div class="dp-po-download-listing">
 {% for category in category_children %}
-    <div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
-        <article class="article-categories">
-            <header>
-                <h1>
-                    <i class="fas fa-folder-open"></i>
-                    <a href="{{ portal_path(category) }}">{{ object_phrase(category) }}</a>
-                </h1>
-                <hr>
-            </header>
-
-            {% show download_list_simple with {category: category.id, show_category_link: true } %}
-        </article>
-    </div>
+    <h2 class="dp-po-download-listing-heading"><a href="{{ portal_path(category) }}">{{ object_phrase(category) }}</a></h2>
+    {% include 'Theme:Downloads:DownloadList/simple.html.twig' with {
+        pager: helpcenter.getDownloads({category: category}),
+        show_category_link: true
+    } %}
 {% endfor %}
+</div>

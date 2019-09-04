@@ -1,18 +1,23 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block page_body %}
-    <div class="downloads main-downloads">
-        <header class="large-title">
-            <div class="header-buttons">
-                {% show rss_link %}
-                {% show download_root_subscription_link %}
+{% block page_content %}
+<div class="dp-po">
+    <main class="dp-po-main dp-po-download-home">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-7 col-centered">
+                    <div class="dp-po-title">
+                        <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/download.svg">
+                        <h1 class="dp-po-title-text">{{ phrase('portal.downloads.section-title') }}</h1>
+                    </div>
+                    <div class="dp-po-block">
+                        {% include 'Theme:Downloads:CategoryList/simple.html.twig' with {
+                            category_children: helpcenter.getDownloadsCategories({})
+                        } %}
+                    </div>
+                </div>
             </div>
-            <h1>{{ phrase('portal.downloads.section-title') }}</h1>
-            <p>{{ phrase('portal.downloads.section-desc') }}</p>
-        </header>
-
-        <section>
-            {% show section download_cats_simple %}
-        </section>
-    </div>
-{% endblock page_body %}
+        </div>
+    </main>
+</div>
+{% endblock page_content %}
