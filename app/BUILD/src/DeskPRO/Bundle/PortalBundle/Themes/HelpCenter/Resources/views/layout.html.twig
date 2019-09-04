@@ -28,6 +28,9 @@
         <div class="dp-po">
             <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
                 <div class="container">
+                    {% if block("page_top") is defined %}
+                        {{ block("page_top") }}
+                    {% endif %}
                     <div class="row">
                         {% if block("page_sidebar") is defined %}
                             <div class="col-sm-9">
