@@ -1,0 +1,84 @@
+<dp:subject>New Approval: {{ approval.name }}</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+<container>
+
+    {% if approval.responses|length %}
+        <table cellpadding="5" cellspacing="0" border="1">
+            <tbody>
+            {% for response in approval.responses %}
+                <tr>
+                    <td>{{ response.isApproved ? 'Approved' : 'Rejected' }} by</td>
+                    <td>
+                        {{ response.approver.display_name }} ({{ response.createdAt|date }})<br />
+                        "{{ response.message }}"
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <table cellpadding="5" cellspacing="0" border="1">
+        <tbody>
+        <tr>
+            <td colspan="2">{{ approval.description }}</td>
+        </tr>
+        {% if ticket.agent %}
+            <tr>
+                <th>Requesting Agent</th>
+                <td>{{ ticket.agent.display_name }}</td>
+            </tr>
+        {% endif %}
+        {% if ticket.person %}
+            <tr>
+                <th>User</th>
+                <td>{{ ticket.person.display_name }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <th>Status</th>
+            <td>{{ approval.status_name|capitalize }}</td>
+        </tr>
+        <tr>
+            <th>Approved</th>
+            <td>{{ approval.approved_responses_count }}/{{ approval.required_approvals }}</td>
+        </tr>
+        <tr>
+            <th>Rejected</th>
+            <td>{{ approval.rejected_responses_count }}/{{ approval.required_rejections }}</td>
+        </tr>
+        <tr>
+            <th>Awaiting Response</th>
+            <td>
+                {% for awaitingApprover in approval.approvers_pending_response %}
+                    <div>{{ awaitingApprover.display_name }}</div>
+                {% else %}
+                    <em>All approvers have responded</em>
+                {% endfor %}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                Approval Criteria - To approve: {{ approval.required_approvals }}/{{ approval.approvers_count }} |
+                To reject: {{ approval.required_rejections }}/{{ approval.approvers_count }}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

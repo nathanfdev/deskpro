@@ -26,7 +26,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
     {
         $approval = new TicketApproval();
 
-        $approval->cancel();
+        $approval->cancel(new Person());
 
         $this->assertEquals(TicketApproval::STATUS_CANCELLED, $approval->getStatus());
         $this->assertNotNull($approval->getCancelledAt());
@@ -60,7 +60,7 @@ class TicketApprovalTest extends \PHPUnit_Framework_TestCase
         $statusRef->setAccessible(true);
         $statusRef->setValue($approval, $status);
 
-        $approval->cancel();
+        $approval->cancel(new Person());
     }
 
     /**

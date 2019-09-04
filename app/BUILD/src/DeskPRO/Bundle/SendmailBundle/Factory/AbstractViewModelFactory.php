@@ -22,6 +22,8 @@ use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
@@ -127,6 +129,12 @@ abstract class AbstractViewModelFactory
                 break;
             case FieldDisplayArray::class:
                 $handler = $this->container->get('api_serializer.handler.field_display_array');
+                break;
+            case TicketApproval::class:
+                $handler = $this->container->get('api_serializer.handler.ticket_approval');
+                break;
+            case ApprovalResponse::class:
+                $handler = $this->container->get('api_serializer.handler.approval_response');
                 break;
             default:
                 throw new \Exception('Unset handler for class '.$className);

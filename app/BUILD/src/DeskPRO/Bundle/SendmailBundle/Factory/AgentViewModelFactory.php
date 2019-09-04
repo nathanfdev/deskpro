@@ -348,7 +348,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     ) {
         return $this->convertParameters(
             $this->getViewModelByTicketApprovalEvent($event),
-            [$ticket, $approval, $recipient, $isOwner, $approvalResponse]
+            ['agent', $ticket, $approval, $recipient, $isOwner, $approvalResponse]
         );
     }
 }

@@ -9,5 +9,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
  */
 class TicketApprovalCreate extends TicketApprovalType
 {
-    protected $templateFile = 'emails_common:ticket_approval_create.html.twig';
+    protected $templateFile = 'emails_%s:ticket_approval_create.html.twig';
 }

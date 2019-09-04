@@ -1,0 +1,71 @@
+<dp:subject>Cancelled Approval: {{ approval.name }}</dp:subject>
+
+<table cellpadding="5" cellspacing="0" border="1">
+    <tbody>
+    {% if approval.cancelledBy and approval.isStatus('cancelled') %}
+        <tr>
+            <td>Cancelled by</td>
+            <td>
+                {{ approval.cancelledBy }} ({{ approval.cancelledAt|date }})
+            </td>
+        </tr>
+    {% endif %}
+    {% for response in approval.responses %}
+        <tr>
+            <td>{{ response.isApproved ? 'Approved' : 'Rejected' }} by</td>
+            <td>
+                {{ response.approver }} ({{ response.createdAt|date }})<br />
+                "{{ response.message }}"
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<table cellpadding="5" cellspacing="0" border="1">
+    <tbody>
+    <tr>
+        <td colspan="2">{{ approval.description }}</td>
+    </tr>
+    {% if ticket.agent %}
+        <tr>
+            <th>Requesting Agent</th>
+            <td>{{ ticket.agent }}</td>
+        </tr>
+    {% endif %}
+    {% if ticket.person %}
+        <tr>
+            <th>User</th>
+            <td>{{ ticket.person }}</td>
+        </tr>
+    {% endif %}
+    <tr>
+        <th>Status</th>
+        <td>{{ approval.statusName|capitalize }}</td>
+    </tr>
+    <tr>
+        <th>Approved</th>
+        <td>{{ approval.approvedResponsesCount }}/{{ approval.requiredApprovals }}</td>
+    </tr>
+    <tr>
+        <th>Rejected</th>
+        <td>{{ approval.rejectedResponsesCount }}/{{ approval.requiredRejections }}</td>
+    </tr>
+    <tr>
+        <th>Awaiting Response</th>
+        <td>
+            {% for awaitingApprover in approval.approversPendingResponse %}
+                <div>{{ awaitingApprover }} ({{ awaitingApprover.primary_email }})</div>
+            {% else %}
+                <em>All approvers have responded</em>
+            {% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            Approval Criteria - To approve: {{ approval.requiredApprovals }}/{{ approval.approversCount }} |
+            To reject: {{ approval.requiredRejections }}/{{ approval.approversCount }}
+        </td>
+    </tr>
+    </tbody>
+</table>

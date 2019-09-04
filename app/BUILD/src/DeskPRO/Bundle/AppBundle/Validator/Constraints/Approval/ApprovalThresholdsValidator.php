@@ -24,7 +24,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
         $minNumberOfApprovers = null;
 
         if ($value instanceof AbstractBaseApproval) {
-            $approvers = count($value->getApprovers());
+            $approvers = $value->getApproversCount();
             $minNumberOfApprovers = $value->getTemplate()->getApproverCriteria()->getRequiredNumberOfApprovers();
         } elseif ($value instanceof ApprovalTemplate) {
             // If agent can choose approvers then we don't need to validate until approval is created from template

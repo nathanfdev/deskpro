@@ -92,7 +92,7 @@ class ApprovalManager
     public function cancelApproval(AbstractBaseApproval $approval, ExecutorContext $context)
     {
         $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
-            $approval->cancel();
+            $approval->cancel($context->getPersonContext());
 
             $approval->notifyAssociationChanges($em);
             $em->persist($approval);

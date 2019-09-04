@@ -27,7 +27,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     /**
      * Approval email template
      */
-    const EMAIL_TEMPLATE = 'DeskPRO:emails_common:ticket-approval-%s.html.twig';
+    const EMAIL_TEMPLATE = 'DeskPRO:emails_%s:ticket-approval-%s.html.twig';
 
     /**
      * {@inheritdoc}
@@ -81,12 +81,12 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
         }
 
         $agentEmailBuilder = $this
-            ->getTicketEmailBuilder($ticket, $context)
+            ->getTicketEmailBuilder('agent', $ticket, $context)
             ->setAgentMode()
         ;
 
         $userEmailBuilder = $this
-            ->getTicketEmailBuilder($ticket, $context)
+            ->getTicketEmailBuilder('user', $ticket, $context)
             ->setUserMode()
         ;
 
@@ -149,15 +149,16 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
+     * @param string $recipientType user|agent
      * @param Ticket $ticket
      * @param ExecutorContextInterface $context
      * @return TicketEmailBuilder|bool
      * @throws \Exception
      */
-    private function getTicketEmailBuilder(Ticket $ticket, ExecutorContextInterface $context)
+    private function getTicketEmailBuilder($recipientType, Ticket $ticket, ExecutorContextInterface $context)
     {
         try {
-            $templateName = $this->buildEmailTemplateName($context);
+            $templateName = $this->buildEmailTemplateName($recipientType, $context);
             $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
             $context->getLogger()->warn("[SendTicketApprovalEmail] Error {$e->getMessage()}");
@@ -197,14 +198,16 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
+     * @param string $recipientType user|agent
      * @param ExecutorContextInterface $context
      * @return string
      * @throws \Exception
      */
-    private function buildEmailTemplateName(ExecutorContextInterface $context)
+    private function buildEmailTemplateName($recipientType, ExecutorContextInterface $context)
     {
         $templateName = sprintf(
             self::EMAIL_TEMPLATE,
+            $recipientType,
             str_replace('_', '-', $context->getEventType())
         );
 

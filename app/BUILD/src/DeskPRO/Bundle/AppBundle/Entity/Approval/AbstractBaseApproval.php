@@ -82,7 +82,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *     mappedBy="approval",
      *     cascade={"persist"},
      * )
-     * @ORM\OrderBy({"createdAt"="ASC"})
+     * @ORM\OrderBy({"createdAt"="DESC"})
      */
     protected $responses;
 
@@ -140,6 +140,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
      * @JMS\Type("DateTime<'c'>")
      */
     protected $cancelledAt;
+
+    /**
+     * @var Person|null
+     *
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="cancelled_by", onDelete="CASCADE", nullable=true)
+     */
+    protected $cancelledBy;
 
     /**
      * {@inheritDoc}
@@ -212,17 +220,25 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $requiredApprovals = $this->getRequiredApprovals();
         $requiredRejections = $this->getRequiredRejections();
 
-        if (count($this->getApprovers()) === $requiredApprovals && 0 === $requiredRejections) {
+        if ($this->getApproversCount() === $requiredApprovals && 0 === $requiredRejections) {
             $requiredRejections = 1;
         }
 
-        if (count($this->getApproveResponses()) >= $requiredApprovals) {
+        if ($this->getApprovedResponsesCount() >= $requiredApprovals) {
             return self::STATUS_APPROVED;
-        } elseif (count($this->getRejectResponses()) >= $requiredRejections) {
+        } elseif ($this->getRejectedResponsesCount() >= $requiredRejections) {
             return self::STATUS_REJECTED;
         }
 
         return null;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 
     /**
@@ -247,15 +263,17 @@ abstract class AbstractBaseApproval extends AbstractApproval
     /**
      * Cancel this approval
      *
+     * @param Person $cancelledBy
      * @return self
      * @throws \Exception
      */
-    public function cancel()
+    public function cancel(Person $cancelledBy)
     {
         if ($this->status !== self::STATUS_PENDING) {
             throw new \DomainException('Cannot cancel approval if it is already completed or cancelled');
         }
 
+        $this->setModelField('cancelledBy', $cancelledBy);
         $this->setStatus(self::STATUS_CANCELLED);
         $this->markCancelledAt();
 
@@ -322,6 +340,22 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @return int
+     */
+    public function getApprovedResponsesCount()
+    {
+        return count($this->getApproveResponses());
+    }
+
+    /**
+     * @return int
+     */
+    public function getRejectedResponsesCount()
+    {
+        return count($this->getRejectResponses());
+    }
+
+    /**
      * @param ApprovalResponse $response
      * @return self
      * @throws \Exception
@@ -370,6 +404,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @return int
+     */
+    public function getApproversCount()
+    {
+        return count($this->getApprovers());
+    }
+
+    /**
      * @param Person $approver
      * @return self
      */
@@ -412,6 +454,28 @@ abstract class AbstractBaseApproval extends AbstractApproval
     public function getLastApprovedResponseAt()
     {
         return $this->lastApprovedResponseAt;
+    }
+
+    /**
+     * @return ArrayCollection|Person[]
+     */
+    public function getApproversPendingResponse()
+    {
+        $criteria = Criteria::create()
+            ->andWhere(Criteria::expr()->notIn('id', $this->responses->map(function (ApprovalResponse $response) {
+                return $response->getApprover()->getId();
+            })->toArray()))
+        ;
+
+        return $this->approvers->matching($criteria);
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getCancelledBy()
+    {
+        return $this->cancelledBy;
     }
 
     /**
@@ -506,6 +570,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
     public static function getStatusNameMap()
     {
         return self::$statusNameMap;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusName()
+    {
+        return self::$statusNameMap[$this->status];
     }
 
     /**

@@ -9,5 +9,5 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
  */
 class TicketApprovalPartialRejectionResponse extends TicketApprovalType
 {
-    protected $templateFile = 'emails_common:ticket_approval_partial_rejection_response.html.twig';
+    protected $templateFile = 'emails_%s:ticket_approval_partial_rejection_response.html.twig';
 }

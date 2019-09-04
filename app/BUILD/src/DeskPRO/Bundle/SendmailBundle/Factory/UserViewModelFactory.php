@@ -676,7 +676,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         return $this->convertParameters(
             $this->getViewModelByTicketApprovalEvent($event),
-            [$ticket, $approval, $recipient, $isOwner, $approvalResponse]
+            ['user', $ticket, $approval, $recipient, $isOwner, $approvalResponse]
         );
     }
 }
