@@ -2828,11 +2828,19 @@ var RLANG = {
 		},
     getSelectedHtml: function () {
       var html = '';
-      var wrappers = ['u', 'b', 'i', 'span'];
+      var wrappers = ['u', 'b', 'i', 'span', 'pre', 'blockquote', 'p'];
+      for (var i = 1; i < 5; i++) {
+        wrappers.push('h' + i);
+      }
 
       if (this.window.getSelection) {
         var sel = this.window.getSelection();
-        var selParent = $(":contains('" + sel.toString() + "')").filter(wrappers.join(', ')).last();
+        var selString = sel.toString();
+        var selParent = $(":contains('" + selString + "')")
+          .filter(function () {
+            return $(this).is(wrappers.join(', ')) && this.innerText === selString;
+          })
+          .first();
 
         if (sel.rangeCount) {
           if (selParent.length) {
