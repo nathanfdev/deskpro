@@ -101,7 +101,10 @@ class TicketMessageListener implements EventSubscriber
             $present = false;
             if (!empty($result['cc'])) {
                 foreach ($result['cc'] as $cc) {
-                    if ($cc->getEmailAddress() === $recipient) {
+                    if ($cc instanceof Person && $cc->getEmailAddress() === $recipient) {
+                        $present = true;
+                        break 1;
+                    } elseif ($cc === $recipient) {
                         $present = true;
                         break 1;
                     }
