@@ -1,7 +1,38 @@
 define(['Admin/Main/DataService/BaseListEdit'], (BaseListEdit) => {
   class Admin_TicketApprovals_DataService_TicketApprovals extends BaseListEdit {
     static initClass() {
-      this.$inject = ['$q', 'Api2'];
+      this.$inject = ['$q', 'Api', 'Api2'];
+    }
+
+    /**
+     * Search people
+     *
+     * @param {String} term
+     */
+    searchPeople(term) {
+      const deferred = this.$q.defer();
+
+      this.Api.sendGet('/people',
+        {
+          name: term,
+          is_any_person: true
+        }).then(
+          ({ data }) => deferred.resolve(data),
+          () => deferred.reject()
+        );
+
+      return deferred.promise;
+    }
+
+    getPerson(id) {
+      const deferred = this.$q.defer();
+
+      this.Api.sendGet(`/people/${id}`).then(
+          ({ data }) => deferred.resolve(data),
+          () => deferred.reject()
+        );
+
+      return deferred.promise;
     }
 
     /**

@@ -9,10 +9,10 @@
             <div class="col-md-9">
                 <div class="inner-group" dp-error-class="form_props.name">
                     <input type="text"
-                           class="form-control"
                            name="name"
-                           ng-model="TicketApprovalsTemplateEdit.form.name"
-                           required autofocus
+                           class="form-control"
+                           ng-model="form.name"
+                           ng-required="true" required autofocus
                     >
                 </div>
             </div>
@@ -24,10 +24,11 @@
                 <h3>{{ phrase('adm.ticket_approvals.template.type') }} *</h3>
             </div>
             <div class="col-md-9">
-                <select name="type"
-                        ui-select2
-                        ng-model="TicketApprovalsTemplateEdit.form.type"
+                <select ui-select2
+                        name="type"
+                        ng-model="form.type"
                         style="min-width: 250px"
+                        ng-required="true"
                 >
                     <option value="{{ ng_var('type.id') }}" ng-repeat="type in TicketApprovalsList.types">{{ ng_var('type.name') }}</option>
                 </select>
@@ -44,7 +45,7 @@
                     <label>
                         <input style="margin-right: 5px;"
                                type="checkbox"
-                               ng-model="TicketApprovalsTemplateEdit.setDescription" />
+                               ng-model="setDescription" />
                         <h4 style="display: inline; padding-right: 5px;">
                             {{ phrase('adm.ticket_approvals.template.set_description') }}
                         </h4>
@@ -52,10 +53,11 @@
                 </div>
                 <div class="inner-group"
                      dp-error-class="form_props.description"
-                     ng-show="TicketApprovalsTemplateEdit.setDescription">
+                     ng-show="setDescription">
                     <textarea class="form-control"
                               name="description"
-                              ng-model="TicketApprovalsTemplateEdit.form.description"
+                              ng-model="form.description"
+                              ng-required="false"
                     ></textarea>
                 </div>
             </div>
@@ -72,7 +74,7 @@
                     <label>
                         <input style="margin-right: 5px;"
                                type="checkbox"
-                               ng-model="TicketApprovalsTemplateEdit.form.approver_criteria.all_users" />
+                               ng-model="form.approver_criteria.all_users" />
                         <h4 style="display: inline; padding-right: 5px;">
                             {{ phrase('adm.ticket_approvals.template.approvers.ticket_user') }}
                         </h4>
@@ -81,7 +83,7 @@
                     <label>
                         <input style="margin-right: 5px;"
                                type="checkbox"
-                               ng-model="TicketApprovalsTemplateEdit.form.approver_criteria.organization_managers" />
+                               ng-model="form.approver_criteria.organization_managers" />
                         <h4 style="display: inline; padding-right: 5px;">
                             {{ phrase('adm.ticket_approvals.template.approvers.organization_manager') }}
                         </h4>
@@ -90,7 +92,7 @@
                     <label>
                         <input style="margin-right: 5px;"
                                type="checkbox"
-                               ng-model="TicketApprovalsTemplateEdit.form.approver_criteria.all_agents" />
+                               ng-model="form.approver_criteria.all_agents" />
                         <h4 style="display: inline; padding-right: 5px;">
                             {{ phrase('adm.ticket_approvals.template.approvers.all_agents') }}
                         </h4>
@@ -98,19 +100,22 @@
                 </div>
 
                 <div class="inner-group">
-                    <input class="form-control"
-                           type="text"
-                           placeholder="{{ phrase('adm.ticket_approvals.template.approvers.search_approvers') }}"
-                    />
+                    <input type="hidden"
+                           ui-select2="{query: searchTerm, minimumInputLength: 3, allowClear: true}"
+                           ng-model="selectedUser"
+                           style="min-width: 250px"
+                           data-placeholder="{{ phrase('adm.ticket_approvals.template.approvers.search_approvers') }}" />
                 </div>
 
                 <div class="inner-group">
                     <ul class="checkbox-list" style="min-width: 250px; min-height: 100px;">
-                        <li ng-repeat="agent in TicketApprovalsTemplateEdit.agents">
+                        <li ng-repeat="person in people">
                             <label>
-                                <input type="checkbox" ng-model="agent.value" />
-                                <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + agent.picture_url_16 + ')'}"></span>
-                                <span>{{ ng_var('agent.display_name') }}</span>
+                                <input style="margin-right: 5px;"
+                                       type="checkbox"
+                                       ng-model="person.value" />
+                                <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + person.picture_url_16 + ')'}"></span>
+                                <span>{{ ng_var('person.display_name') }}</span>
                             </label>
                         </li>
                     </ul>
@@ -120,19 +125,21 @@
                     <label>
                         <input style="margin-right: 5px;"
                                type="checkbox"
-                               ng-model="TicketApprovalsTemplateEdit.form.approver_criteria.can_choose_approvers" />
+                               ng-model="form.approver_criteria.can_choose_approvers" />
                         <h4>{{ phrase('adm.ticket_approvals.template.approvers.allow_choose') }}</h4>
                     </label>
                 </div>
 
-                <div class="inner-group" ng-show="TicketApprovalsTemplateEdit.form.approver_criteria.can_choose_approvers">
+                <div class="inner-group" ng-show="form.approver_criteria.can_choose_approvers">
                     <span style="padding-right: 10px;">{{ phrase('adm.ticket_approvals.template.approvers.number_of_approvers') }}</span>
                     <input class="form-control"
+                           name="required_number_of_approvers"
                            placeholder="max of 100"
                            style="max-width: 120px;"
                            type="number"
                            min="0" max="100" step="1"
-                           ng-model="TicketApprovalsTemplateEdit.form.approver_criteria.required_number_of_approvers" />
+                           ng-required="false"
+                           ng-model="form.approver_criteria.required_number_of_approvers" />
                 </div>
 
             </div>
@@ -146,10 +153,12 @@
                 <div class="inner-group" dp-error-class="form_props.approver_criteria.required_approvals">
                     <input class="form-control"
                            placeholder="max of 100"
+                           name="required_approvals"
                            style="max-width: 250px;"
                            type="number"
                            min="1" max="100"
-                           ng-model="TicketApprovalsTemplateEdit.form.required_approvals" />
+                           ng-required="true"
+                           ng-model="form.required_approvals" />
                 </div>
             </div>
         </div>
@@ -162,12 +171,13 @@
                 <div class="inner-group" dp-error-class="form_props.approver_criteria.required_rejections">
                     <input class="form-control"
                            placeholder="max of 100"
+                           name="required_rejections"
                            style="max-width: 250px;"
                            type="number"
-                           min="1"
-                           max="100"
-                           step="1"
-                           ng-model="TicketApprovalsTemplateEdit.form.required_rejections" />
+                           min="1" max="100" step="1"
+                           ng-required="true"
+                           ng-model="form.required_rejections"
+                    />
                 </div>
             </div>
         </div>
@@ -181,7 +191,7 @@
                 <div class="inner-group" dp-error-class="form_props.can_approvers_view_subject">
                     <label>
                         <input type="checkbox"
-                               ng-model="TicketApprovalsTemplateEdit.form.can_approvers_view_subject" />
+                               ng-model="form.can_approvers_view_subject" />
                     </label>
                 </div>
             </div>

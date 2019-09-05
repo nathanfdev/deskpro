@@ -64,12 +64,12 @@
                         </ul>
                     </div>
 
-                    <div class="dp-delete-control" ng-if="TicketApprovalsTemplateEdit.templateId"
+                    <div class="dp-delete-control" ng-if="templateId"
                          ng-hide="form_props.$attempted && form_props.$invalid">
 
                         <div dp-hide-spinning="deleting">
                             <button class="btn btn-danger"
-                                    ng-click="$event.preventDefault(); TicketApprovalsTemplateEdit.deleteTemplate(TicketApprovalsTemplateEdit.templateId);">
+                                    ng-click="$event.preventDefault(); TicketApprovalsTemplateEdit.deleteTemplate(templateId);">
                                 {{ phrase('agent.general.delete') }}
                             </button>
                         </div>
