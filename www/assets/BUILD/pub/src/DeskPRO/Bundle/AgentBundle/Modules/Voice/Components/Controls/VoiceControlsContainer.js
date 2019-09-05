@@ -16,7 +16,8 @@ import {
   coldTransferToQueue,
   coldTransferToAutoAttendant,
   cancelInvite,
-  checkIsActive
+  checkIsActive,
+  refreshConferenceStatus
 } from '../../Actions/clientActions';
 import { agentVoicemailTimeoutSelector, busyAgentsSelector, connectionsSelector, onlineAgentsSelector, forwardingAgentsSelector } from '../../Selectors/client';
 import { allQueuesSelector } from '../../Selectors/queue';
@@ -130,6 +131,13 @@ class VoiceControlsContainer extends React.Component {
         target: null
       });
     });
+
+    // we can't rely just on the 'conference.status' event
+    // because we don't know if we will get it after the ticket is loaded
+    // so refresh the conference status after the controls are displayed
+    if (this.getCallId()) {
+      dispatch(refreshConferenceStatus(this.getCallId()));
+    }
   }
 
   componentWillUnmount() {

@@ -33,6 +33,26 @@ use Symfony\Component\HttpFoundation\Response;
 class VoiceClientPhoneCallController extends BaseController
 {
     /**
+     * @ApiDoc(
+     *     description="Get conference status",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Get("/status")
+     *
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return View
+     */
+    public function getCallStatusAction(VoicePhoneCall $phoneCall)
+    {
+        return new View($this->get('dp.voice.event_helper')->prepareConferenceStatus($phoneCall));
+    }
+
+    /**
      * Agent accepts a call.
      *
      * @ApiDoc(

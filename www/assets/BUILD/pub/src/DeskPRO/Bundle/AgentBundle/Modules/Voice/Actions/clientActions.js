@@ -691,3 +691,20 @@ export const deleteMessage = createAction(
     $(`.voice-ticket-message.message-${messageId}`).remove();
   })
 );
+
+export const refreshConferenceStatus = createAction(
+  'VOICE_AGENT_REFRESH_CONFERENCE_STATUS',
+  phoneCallId => (dispatch, getState) => api.sendGet(`DP_API/voice_client/phone_call/${phoneCallId}/status`).success(() => {
+    const phoneCall = Immutable.fromJS(event.phone_call);
+
+    // realtime phone call updates
+    const state = getState();
+    const phoneCalls = allPhoneCallsSelector(state);
+
+    if (phoneCalls.get(phoneCall.get('id'))) {
+      dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+    } else {
+      dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+    }
+  })
+);

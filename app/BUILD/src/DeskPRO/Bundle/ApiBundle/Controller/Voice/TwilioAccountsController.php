@@ -156,11 +156,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
             $options['Contains'] = $query->get('phrase');
         }
 
-        $types = $query->get('types');
-        if (!$types || !is_array($types)) {
-            $types = [];
-        }
-
+        $types   = (array) $query->get('type');
         $numbers = [];
         foreach ($types as $type) {
             if ($type === 'tollfree') {
