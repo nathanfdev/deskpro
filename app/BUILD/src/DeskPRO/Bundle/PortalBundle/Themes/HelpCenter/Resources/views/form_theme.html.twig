@@ -32,13 +32,16 @@
         not meant to be completely hidden to the user (input type=hidden)
         #}
         {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
-        {% if root_and_not_hidden %}<div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">{% endif %}
 
-        {{- form_label(child, null, {'label_attr': {'class': 'title'}}) -}}
-        {{- form_widget(child) -}}
+        {% if root_and_not_hidden %}
+            <div class="form-group">
+        {% endif %}
+
+        {{- form_label(child, null) -}}
+        {{- form_widget(child, {'attr': {'class': 'form-control'}}) -}}
         {{- form_errors(child) -}}
 
-        {% if root_and_not_hidden %}</div></div>{% endif %}
+        {% if root_and_not_hidden %}</div>{% endif %}
     {% endfor %}
 {%- endblock repeated_row -%}
 
@@ -49,16 +52,17 @@
     not meant to be completely hidden to the user (input type=hidden)
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
-
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+   
     {# containers #}
-    {% if root_and_not_hidden %}<div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">{% endif %}
+    {% if root_and_not_hidden %}<div class="form-group">{% endif %}
 
-    {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
-    {{- form_widget(form) -}}
+    {{- form_label(form, null) -}}
+    {{- form_widget(form, applyClass ? {'attr': {'class': 'form-control'}} : {}) -}}
     {{- form_errors(form) -}}
 
     {# /containers #}
-    {% if root_and_not_hidden %}</div></div>{% endif %}
+    {% if root_and_not_hidden %}</div>{% endif %}
 {%- endblock form_row_nohelp -%}
 
 {%- block form_row_help_text -%}
@@ -67,19 +71,16 @@
     not meant to be completely hidden to the user (input type=hidden)
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
-
-    {% if root_and_not_hidden %}<div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">{% endif %}
-
-    {{- form_label(form, null, {'label_attr': {'class': 'title with-sub'}}) -}}
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% if root_and_not_hidden %}<div class="form-group">{% endif %}
+    {{- form_label(form, null) -}}
     {% if root_and_not_hidden %}
-        <div class="form-help">
-            <p>{{ help }}</p>
-        </div>
+        <small class="form-text">{{ help }}</small>
     {% endif %}
-    {{- form_widget(form) -}}
+    {{- form_widget(form, applyClass ? {'attr': {'class': 'form-control'}} : {}) -}}
     {{- form_errors(form) -}}
 
-    {% if root_and_not_hidden %}</div></div>{% endif %}
+    {% if root_and_not_hidden %}</div>{% endif %}
 {%- endblock form_row_help_text -%}
 
 {%- block form_row_help_col -%}
@@ -88,14 +89,14 @@
     not meant to be completely hidden to the user (input type=hidden)
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
-
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
     {% if root_and_not_hidden %}
-        <div class="column-full"><div class="bucket{% if not valid %} error{% endif %}">
+        <div class="form-group">
         <table class="dp-formtable-tablerow" width="100%"><tr><td class="dp-formtable-controls" valign="top">
     {% endif %}
 
-    {{- form_label(form, null, {'label_attr': {'class': 'title'}}) -}}
-    {{- form_widget(form) -}}
+    {{- form_label(form, null) -}}
+    {{- form_widget(form, 1 ? {'attr': {'class': 'form-control'}} : {}) -}}
     {{- form_errors(form) -}}
 
     {% if root_and_not_hidden %}
@@ -107,13 +108,13 @@
                 </td>
             </tr>
         </table>
-        </div></div>
+        </div>
     {% endif %}
 {%- endblock form_row_help_col -%}
 
 {%- block submit_widget -%}
     {%- set type = type|default('submit') -%}
-    <div class="column-full"><div class="bucket">{{ block('button_widget') }}</div></div>
+    <div class="form-group dp-po-form-check">{{ block('button_widget') }}</div>
 {%- endblock submit_widget -%}
 
 {%- block combined_row -%}
@@ -142,7 +143,7 @@
 {# Date and Time #}
 
 {%- block datetime_widget -%}
-    <div class="dpx-date-time with-dpx" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
+    <div class="dpx-date-time with-dpx{% if widget != 'single_text' %} form-control{% endif %}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
         {% if widget == 'single_text' %}
             {{- block('form_widget_simple') -}}
         {%- else -%}
@@ -160,7 +161,7 @@
 
 {%- block date_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-date with-dpx {{ form.vars.calendar }}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
+        <div class="dpx-date with-dpx {{ form.vars.calendar }}{% if widget != 'single_text' %} form-control not-single-text{% endif %}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
@@ -182,7 +183,7 @@
 
 {%- block time_widget -%}
     {% if not (nodpx is defined and nodpx) %}
-        <div class="dpx-time with-dpx">
+        <div class="dpx-time with-dpx{% if widget != 'single_text' %} form-control not-single-text{% endif %}">
     {% endif %}
         {%- if widget == 'single_text' -%}
             {{ block('form_widget_simple') }}
@@ -269,7 +270,7 @@
     <div {{ block('widget_container_attributes') }}>
         {% set count = choices|length %}
         {% if count > 1 %}
-           <div class="with-dpx">
+           <div class="with-dpx form-control">
                <select dpx-select="" id="{{ id }}" name="{{ full_name }}">
                    {% for choice in choices %}
                        <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
@@ -277,7 +278,7 @@
                </select>
            </div>
         {% else %}
-                <input class="email-present" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
+                <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
     </div>
 {% endblock deskpro_person_email_choice_widget %}
@@ -305,7 +306,7 @@
 {% endblock %}
 
 {% block custom_javascript_widget %}
-    <div class="with-dpx">
+    <div class="with-dpx form-control">
         <div
                 class="dpx-javascript"
                 data-code="{{ form.vars.custom_def.getOption('code') }}"
@@ -471,9 +472,7 @@
 {% endblock deskpro_recaptcha_widget %}
 
 {% block captcha_widget %}
-{% spaceless %}
-    <div class="captcha-field">
-        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+    {% spaceless %}
         {% if reload %}
             <script type="text/javascript">
                 function reload_{{ image_id }}() {
@@ -481,11 +480,25 @@
                     img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
                 }
             </script>
-            <a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fas fa-sync" aria-hidden="true"></i></a>
         {% endif %}
-        {{ form_widget(form, { attr: { class: 'shorter' } } ) }}
-    </div>
-{% endspaceless %}
+        <div class="form-group dp-po-form-captcha">
+            <div class="row align-items-center no-gutters">
+                <div class="col-sm-5">
+                    <label>CAPTCHA</label>
+                    <div class="dp-po-form-captcha-text">
+                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="165" height="3" />
+                    </div>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <a href="javascript:reload_{{ image_id }}();" class="dp-po-form-captcha-reload"><i class="dp-po-icon far fa-sync"></i></a>
+                </div>
+                <div class="col-sm-5">
+                    {{ form_widget(form, { attr: { class: 'form-control', placeholder: 'Insert text' } } ) }}
+                </div>
+            </div>
+            <small id="emailHelp" class="form-text">To prove you are human, please insert the text you can see in the box above.</small>
+        </div>
+    {% endspaceless %}
 {% endblock %}
 
 {###
@@ -566,7 +579,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group with-dpx">
+        <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group with-dpx form-control">
             {%- for child in form %}
                 {% if not multiple %}
                     <div class="radio-button dpx-radio-button">
@@ -623,7 +636,7 @@ END HEIRARCHY
 ###}
 
 {% block custom_field_file_collection_widget %}
-    <div class="bucket">
+    <div class="form-group">
         <div class="with-dpx">
             <div
                 class="dpx-custom-field-attach"
