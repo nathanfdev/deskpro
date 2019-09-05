@@ -95,6 +95,8 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $this->getContainer()->getEm()->persist($source);
             $this->getContainer()->getEm()->flush();
         } else {
+            $account = null;
+
             if ($input->getOption('file')) {
                 if (file_exists($input->getOption('file'))) {
                     $rawSource = file_get_contents($input->getOption('file'));
@@ -165,8 +167,6 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             return 1;
         }
-
-        $account = null;
 
         if ($accountId) {
             $accountManager = $this->getContainer()->getEmailAccountManager();
