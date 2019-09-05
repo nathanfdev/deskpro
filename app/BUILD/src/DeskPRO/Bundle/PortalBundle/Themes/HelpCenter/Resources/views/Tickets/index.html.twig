@@ -1,10 +1,220 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block page_body %}
-    <div class="breadcrumbs">
-        {% show breadcrumbs %}
-    </div>
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-tickets-home">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/tickets.svg">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.tickets.my-tickets') }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <a href="" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit-a-ticket') }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="dp-po-ticket-sidebar">
 
+                            <div class="dp-po-ticket-pages">
+                                <ul class="dp-po-ticket-pages-list">
+                                    <li class="dp-po-ticket-pages-item active">
+                                        <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                        </a>
+                                    </li>
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-closed-captioning"></i> Tickets i’m CC’d on
+                                        </a>
+                                    </li>
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-comments-alt"></i> My chats
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="dp-po-ticket-filter">
+                                <div class="row mb-4">
+                                    <div class="col-sm-6">
+                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter-by') }}</h4>
+                                    </div>
+                                    <div class="col-sm-6 text-right">
+                                        <a href="" class="dp-po-ticket-filter-clearall">{{ phrase('helpcenter.general.clear-all') }}</a>
+                                    </div>
+                                </div>
+
+                                <ul class="dp-po-ticket-filter-list">
+
+                                    <li class="dp-po-ticket-filter-item">
+                                        <div class="form-group dp-po-form-check">
+                                            <input type="checkbox" class="form-check-input" id="departmentCheck" checked>
+                                            <label class="form-check-label" for="departmentCheck">Department</label>
+                                        </div>
+                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample" role="button"
+                                           aria-expanded="false" aria-controls="collapseExample">
+                                            <i class="dp-po-icon far fa-angle-down"></i>
+                                        </a>
+                                        <div class="collapse show" id="collapseExample">
+                                            <ul class="dp-po-ticket-filter-list">
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="supportCheck">
+                                                        <label class="form-check-label" for="supportCheck">Support</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="hrCheck">
+                                                        <label class="form-check-label" for="hrCheck">HR</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="rndCheck" checked>
+                                                        <label class="form-check-label" for="rndCheck">R&D</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="salesCheck">
+                                                        <label class="form-check-label" for="salesCheck">Sales</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="customerCheck">
+                                                        <label class="form-check-label" for="customerCheck">Customer Success</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </li>
+
+                                    <li class="dp-po-ticket-filter-item">
+                                        <div class="form-group dp-po-form-check">
+                                            <input type="checkbox" class="form-check-input" id="userCheck">
+                                            <label class="form-check-label" for="userCheck">User</label>
+                                        </div>
+                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample1"
+                                           role="button" aria-expanded="false" aria-controls="collapseExample1">
+                                            <i class="dp-po-icon far fa-angle-down"></i>
+                                        </a>
+                                        <div class="collapse show" id="collapseExample1">
+                                            <ul class="dp-po-ticket-filter-list">
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="user1">
+                                                        <label class="form-check-label" for="user1"><img
+                                                                    src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/avatar.png"> Jonathan Jones</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="user2">
+                                                        <label class="form-check-label" for="user2"><img
+                                                                    src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/avatar.png"> Wendy Pride</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="user3" checked>
+                                                        <label class="form-check-label" for="user3"><img
+                                                                    src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/avatar.png"> Elaine
+                                                            Fredericks</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    <li class="dp-po-ticket-filter-item">
+                                        <div class="form-group dp-po-form-check">
+                                            <input type="checkbox" class="form-check-input" id="activityCheck" checked>
+                                            <label class="form-check-label" for="activityCheck">{{ phrase('helpcenter.tickets.last-activity') }}</label>
+                                        </div>
+                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample2"
+                                           role="button" aria-expanded="false" aria-controls="collapseExample">
+                                            <i class="dp-po-icon far fa-angle-down"></i>
+                                        </a>
+                                        <div class="collapse show" id="collapseExample2">
+                                            <ul class="dp-po-ticket-filter-list">
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="lasthour" checked>
+                                                        <label class="form-check-label" for="lasthour">Last 24 hours</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="lastweek" checked>
+                                                        <label class="form-check-label" for="lastweek">Last week</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="lastmonth" checked>
+                                                        <label class="form-check-label" for="lastmonth">Last month</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="6months">
+                                                        <label class="form-check-label" for="6months">Last 6 month</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="lastyear">
+                                                        <label class="form-check-label" for="lastyear">Last year</label>
+                                                    </div>
+                                                </li>
+                                                <li class="dp-po-ticket-filter-item">
+                                                    <div class="form-group dp-po-form-check">
+                                                        <input type="checkbox" class="form-check-input" id="moreyear">
+                                                        <label class="form-check-label" for="moreyear">More than 1 year</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="dp-po-section dp-po-block">
+                            {% set search_displayed = false %}
+                            {% for table in ticket_list_tables %}
+                                {% if table.pager|length > 0 %}
+                                    {% set displayed_at_least_one_table = true %}
+                                    {% if table.ticketCategory == 'awaiting_agent' %}
+                                        {% set table_type = 'neutral' %}
+                                    {% elseif table.ticketCategory == 'resolved'%}
+                                        {% set table_type = 'success' %}
+                                    {% else %}
+                                        {% set table_type = 'dander' %}
+                                    {% endif %}
+                                    {{ _self.tickets_table(table, loop.index0, table_type, not search_displayed) }}
+                                    {% set search_displayed = true %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <%- include('_partials/_pagination.ejs'); %>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
     <header class="large-title">
         {% if type == 'own' and person.organization and person.organization_manager %}
             <a class="button right" href="{{ path('portal_tickets', { type: 'organization' }) }}">
@@ -142,64 +352,62 @@
                 {% if col.id == 'department_subject' %}
                     <span class="focus">[{{ ticket.department_or_default.user_title }}]</span>
                     {{ ticket.subject }}
-                {% else %}
-                    {% if col.id == 'agent' %}
-                        {% if ticket.agent %}
+                {% elseif col.id == 'agent' %}
+                    {% if ticket.agent %}
 
-                            <span class="person">{{ ticket.agent.display_name_user }} <img src="{{ avatar_url(ticket.agent) }}" class="avatar"></span>
-                        {% endif %}
-                    {% elseif col.id == 'department' %}
-                        {{ ticket.department_or_default.user_title }}
-                    {% elseif col.id == 'subject' %}
-                        {{ ticket.subject }}
-                    {% elseif col.id == 'user' %}
+                        <span class="person">{{ ticket.agent.display_name_user }} <img src="{{ avatar_url(ticket.agent) }}" class="avatar"></span>
+                    {% endif %}
+                {% elseif col.id == 'department' %}
+                    {{ ticket.department_or_default.user_title }}
+                {% elseif col.id == 'subject' %}
+                    {{ ticket.subject }}
+                {% elseif col.id == 'user' %}
+                    {% if ticket.person %}
+                        <span class="person">{{ ticket.person.display_name_user }} <img src="{{ avatar_url(ticket.person) }}" class="avatar"></span>
+                    {% endif %}
+                {% elseif col.id == 'date_activity' %}
+                    {% if ticket_exceprpt %}
+                        <img src="{{ avatar_url(ticket_exceprpt.person) }}" class="avatar">
+                        <span class="person">{{ ticket_exceprpt.person.display_name_user }}</span>
+                        <span class="date">{{ ticket.last_activity_date|date }}</span>
+                    {% endif %}
+                {% elseif col.id == 'date_created' %}
+                    <span class="date">{{ ticket.date_created|date }}</span>
+                {% elseif col.id == 'date_user' %}
+                    {% if ticket.date_last_user_reply %}
                         {% if ticket.person %}
-                            <span class="person">{{ ticket.person.display_name_user }} <img src="{{ avatar_url(ticket.person) }}" class="avatar"></span>
+                            <img src="{{ avatar_url(ticket.person) }}" class="avatar">
+                            <span class="person">{{ ticket.person.display_name_user }}</span>
                         {% endif %}
-                    {% elseif col.id == 'date_activity' %}
-                        {% if ticket_exceprpt %}
-                            <img src="{{ avatar_url(ticket_exceprpt.person) }}" class="avatar">
-                            <span class="person">{{ ticket_exceprpt.person.display_name_user }}</span>
-                            <span class="date">{{ ticket.last_activity_date|date }}</span>
+                        <span class="date">{{ ticket.date_last_user_reply|date }}</span>
+                    {% endif %}
+                {% elseif col.id == 'date_agent' %}
+                    {% if ticket.date_last_agent_reply %}
+                        {% if ticket.agent %}
+                            <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                            <span class="person">{{ ticket.agent.display_name_user }}</span>
                         {% endif %}
-                    {% elseif col.id == 'date_created' %}
-                        <span class="date">{{ ticket.date_created|date }}</span>
-                    {% elseif col.id == 'date_user' %}
-                        {% if ticket.date_last_user_reply %}
-                            {% if ticket.person %}
-                                <img src="{{ avatar_url(ticket.person) }}" class="avatar">
-                                <span class="person">{{ ticket.person.display_name_user }}</span>
-                            {% endif %}
-                            <span class="date">{{ ticket.date_last_user_reply|date }}</span>
-                        {% endif %}
-                    {% elseif col.id == 'date_agent' %}
-                        {% if ticket.date_last_agent_reply %}
-                            {% if ticket.agent %}
-                                <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
-                                <span class="person">{{ ticket.agent.display_name_user }}</span>
-                            {% endif %}
-                            <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
-                        {% endif %}
-                    {% else  %}
-                        {% set property = ticket_view.getProperty(col.id) %}
-                        {% if property and property.isVisible() %}
-                            {% if property.value is iterable %}
-                                {% for item in property.value %}
-                                    <div>
-                                        {% if col.widgetType == 'file' %}
-                                            <a href="{{ item.downloadUrl }}{{ item.is_image ? '' : '?dl=1' }}" target="_blank">
-                                                {{ content_icon(item) }}
-                                                {{ item.filename }}
-                                                ({{ item.readableFilesize }})
-                                            </a>
-                                        {% else %}
-                                            {{ item }}
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% else %}
-                                {{ property.value }}
-                            {% endif %}
+                        <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
+                    {% endif %}
+                {% else  %}
+                    {% set property = ticket_view.getProperty(col.id) %}
+                    {% if property and property.isVisible() %}
+                        {% if property.value is iterable %}
+                            {% for item in property.value %}
+                                <div>
+                                    {% if col.widgetType == 'file' %}
+                                        <a href="{{ item.downloadUrl }}{{ item.is_image ? '' : '?dl=1' }}" target="_blank">
+                                            {{ content_icon(item) }}
+                                            {{ item.filename }}
+                                            ({{ item.readableFilesize }})
+                                        </a>
+                                    {% else %}
+                                        {{ item }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {{ property.value }}
                         {% endif %}
                     {% endif %}
                 {% endif %}
@@ -216,73 +424,102 @@
                 {%- endif -%}
             {%- endmacro -%}
 
-            {% macro tickets_table(ticket_table, id) %}
+            {% macro tickets_table(ticket_table, id, type, with_search) %}
                 {% if ticket_table.pager|length > 0 %}
-                    <div class="column-full">
-                        <div class="ticket-table" data-id="{{ id }}">
-                            <header class="titled-header">
-                                <h1>{{ ticket_table.title }}</h1>
-                            </header>
-
-                            <div class="table-meta">
-                                <div class="table-controls">
-                                    {% set table_list_id = "table_list_" ~ id %}
-                                    <a href="#" class="column-control"></a>
-                                    <div class="popup-tiny" style="display:none;">
-                                    </div>
-                                    {# below was an old idea of expanding the table over the sdiebar, if present #}
-                                    {#<a href="#" class="expand-control"><i class="fas fa-caret-right"></i></a>#}
+                    {% if with_search %}
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+                                    <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
                                 </div>
                             </div>
-
-                            <!-- Table -->
-                            <table class="user-ticket-list">
-                                <thead>
-                                <tr>
-                                    <td class="table-header ticket-ref">
-                                        {{ phrase('portal.tickets.list_ticket_ref') }}
-                                    </td>
-                                    {% for col in ticket_table.columns %}
-                                        <td class="table-header" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
-                                            {{ _self.col_header(ticket_table, col) }}
-                                        </td>
-                                    {% endfor %}
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% if ticket_table.ticketFilter.searchQuery %}
-                                    <tr class="first-in-line">
-                                        <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
-                                            <div class="filter-warning">
-                                                <i class="far fa-eye"></i> {{ phrase('portal.tickets.list_filter') }} <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">{{ phrase('portal.tickets.list_filter_clear') }}</a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                                {% set ticket_exceprpts = ticket_excerpts(ticket_table.pager) %}
-                                {% for ticket in ticket_table.pager %}
-                                    {% set ticket_view = ticket_view(ticket) %}
-                                    {% set ticket_exceprpt = ticket_exceprpts[ticket.id] is defined ? ticket_exceprpts[ticket.id] : null %}
-                                    <tr class="item-row dpx-ticket-list-row" data-status="{{ ticket.status }}">
-                                        <td class="first-in-line ticket-ref">
-                                            <span>{{ ticket_public_id(ticket) }}</span>
-                                        </td>
-                                        {% for col in ticket_table.columns %}
-                                            <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
-                                                <a href="{{ portal_path(ticket) }}">
-                                                    {{ _self.col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) }}
-                                                </a>
-                                            </td>
-                                        {% endfor %}
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-
-                            {% if ticket_table.pager.haveToPaginate() %}
-                                {{ pagerfanta(ticket_table.pager, null, { pageParameter: '['~ticket_table.pageName~']' }) }}
-                            {% endif %}
+                            <div class="col-sm-7">
+                                <form class="dp-po-ticket-search">
+                                    <input type="text" name="" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}"></input>
+                                    <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                                </form>
+                            </div>
+                            <div class="col-sm-1 text-right">
+                                <div class="dp-po-columnfilter">
+                                    <a href="javascript:void(0)" class="dp-po-columnfilter-link" data-toggle="dropdown"
+                                       aria-haspopup="true" aria-expanded="false"><i class="dp-po-icon far fa-ballot-check"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
+                                        <ul class="dp-po-columnfilter-list">
+                                            <li class="dp-po-columnfilter-item">
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="idCheck">
+                                                    <label class="form-check-label" for="idCheck">ID</label>
+                                                </div>
+                                            </li>
+                                            <li class="dp-po-columnfilter-item">
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="SubjectCheck">
+                                                    <label class="form-check-label" for="SubjectCheck">Subject</label>
+                                                </div>
+                                            </li>
+                                            <li class="dp-po-columnfilter-item">
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="DepartmentCheck" checked>
+                                                    <label class="form-check-label" for="DepartmentCheck">Department</label>
+                                                </div>
+                                            </li>
+                                            <li class="dp-po-columnfilter-item">
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="UserCheck">
+                                                    <label class="form-check-label" for="UserCheck">User</label>
+                                                </div>
+                                            </li>
+                                            <li class="dp-po-columnfilter-item">
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="agentCheck">
+                                                    <label class="form-check-label" for="agentCheck">Assigned agent</label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    {% else %}
+                        <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+                            <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
+                        </div>
+                    {% endif %}
+
+                    <div class="dp-po-table dp-po-table-col6 dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
+                        <div class="dp-po-table-row dp-po-table-row-head">
+                            <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
+                            <span class="dp-po-table-cell">{{ phrase('portal.tickets.list_ticket_ref') }}</span>
+                            {% for col in ticket_table.columns %}
+                                <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
+                                    {{ _self.col_header(ticket_table, col) }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                        {% for ticket in ticket_table.pager %}
+                            {% set ticket_view = ticket_view(ticket) %}
+                            {% set ticket_exceprpt = ticket_exceprpts[ticket.id] is defined ? ticket_exceprpts[ticket.id] : null %}
+                            <div class="dp-po-table-row">
+                                <span class="dp-po-table-cell dp-po-table-cell-indicator"><i class="dp-po-icon fas fa-circle"></i></span>
+                                <span class="dp-po-table-cell">
+                                    <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ ticket_public_id(ticket) }}</a>
+                                </span>
+                                {% for col in ticket_table.columns %}
+                                    <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
+                                        <a href="" class="dp-po-table-cell-link">{{ _self.col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) }}</a>
+                                    </span>
+                                {% endfor %}
+{#                                <span class="dp-po-table-cell dp-po-table-cell-ratingwrap">#}
+{#                                    <div class="dp-po-table-cell-rating">#}
+{#                                        <img class="dp-po-table-cell-rating-img" src="/portal-components/portal-style/static/img/docs/avatar.png">#}
+{#                                        <!--<i class="dp-po-icon fal fa-smile"></i>-->#}
+{#                                        <i class="dp-po-icon fal fa-frown"></i>#}
+{#                                        <!--<i class="dp-po-icon fal fa-meh"></i>-->#}
+{#                                    </div>#}
+{#                                    <a href="" class="dp-po-table-cell-rating-link">Add</a>#}
+{#                                </span>#}
+                            </div>
+                        {% endfor %}
                     </div>
                 {% endif %}
             {% endmacro %}
@@ -300,7 +537,7 @@
             {% endif %}
         </div>
     </div>
-{% endblock page_body %}
+{% endblock page_content %}
 {% block doc_end %}
     <!-- DESKPRO_TICKET_DISPLAY -->
     <script type="text/javascript">

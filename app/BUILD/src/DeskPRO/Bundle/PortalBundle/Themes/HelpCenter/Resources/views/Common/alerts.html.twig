@@ -1,5 +1,5 @@
 {% if alerts.display_alerts %}
-    <div class="alerts as-dpui" id="dpx-alerts" style="display: none;">
+    <div class="dp-po">
         {% if alerts.lang_diff %}
             <span class="alert" data-dismiss-handler="{{ path('portal_dismiss_lang_alert') }}">
               <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
@@ -18,17 +18,16 @@
             </span>
         {% endfor %}
 
-        {% for ticket in alerts.tickets_awaiting_reply %}
-            {% set last_msg = ticket.getLastAgentMessage() %}
-            {% if last_msg.person.display_name_user is defined %}
-                {% set alert_id = portal_path(ticket) %}
-                <span class="alert" data-alert-id="{{ alert_id }}" data-alert-version="{{ last_msg.getDateCreated().getTimestamp() }}">
-                    <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
-                    <a href="{{ portal_path(ticket) }}">
-                        You have a new reply on your ticket "<span class="ticket-title">{{ ticket.subject }}</span>" by {{ last_msg.person.display_name_user }}: <span class="post-content">{{ last_msg.getMessagePreviewText(100) }}</span>
-                    </a>
-                </span>
-            {% endif %}
-        {% endfor %}
+        {% if alerts.tickets_awaiting_reply | length > 0 %}
+            <div class="dp-po-notification">
+                <figure class="dp-po-notification-figure">
+                    <img class="dp-po-notification-image" src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/notification.png">
+                    <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
+                </figure>
+                <h3 class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}
+                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">Click here to view</a>
+                </h3>
+            </div>
+        {% endif %}
     </div>
 {% endif %}
