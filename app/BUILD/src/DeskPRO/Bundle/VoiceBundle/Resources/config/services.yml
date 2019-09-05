@@ -6,6 +6,12 @@ services:
     arguments:
       - "@service_container"
 
+  dp.voice.task_router.logger:
+    class: Psr\Log\LoggerInterface
+    factory: ['DeskPRO\Bundle\VoiceBundle\Monolog\VoiceTaskRouterLoggerFactory', createLogger]
+    arguments:
+      - "@service_container"
+
   voice_settings_resolver:
     class: DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver
     arguments:
@@ -43,6 +49,7 @@ services:
     arguments:
       - "@dp.voice.task_router.storage"
       - "@dp.voice.event_dispatcher"
+      - "@dp.voice.task_router.logger"
 
   dp.voice.task_router_lock:
     class: Symfony\Component\Lock\Lock
@@ -57,6 +64,7 @@ services:
       - "@dp.voice.task_router.storage"
       - "@dp.voice.event_dispatcher"
       - "@dp.voice.task_router_lock"
+      - "@dp.voice.task_router.logger"
 
   dp.voice.task_router.storage:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface
@@ -105,6 +113,7 @@ services:
       - "@dp.voice.task_router.storage"
       - "@dp.voice.chat_queue_targets_loader"
       - "@dp.voice.user_chat_permissions_checker"
+      - "@dp.voice.task_router.logger"
     tags:
       - { name: dp.voice.task_router_workflow }
 

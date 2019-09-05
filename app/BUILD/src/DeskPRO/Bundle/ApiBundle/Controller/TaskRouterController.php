@@ -68,6 +68,8 @@ class TaskRouterController extends BaseController
     /**
      * @ApiUserContext("open")
      * @Rest\Get("/evaluate")
+     *
+     * @return View
      */
     public function callRouterAction()
     {
@@ -84,5 +86,24 @@ class TaskRouterController extends BaseController
             $lastVoiceTaskTimestamp ? new \DateTime('@'.$lastVoiceTaskTimestamp) : null,
             $lastChatTaskTimestamp ? new \DateTime('@'.$lastChatTaskTimestamp) : null
         )));
+    }
+
+    /**
+     * @Rest\Get("/logs")
+     *
+     * @return Response
+     */
+    public function logsAction()
+    {
+        $path    = $this->get('deskpro.app_env')->getUserLogsDir().'/task_router.log';
+        $content = '';
+        if (file_exists($path)) {
+            $content = file_get_contents($path);
+            if (!$content) {
+                $content = '';
+            }
+        }
+
+        return new Response($content);
     }
 }
