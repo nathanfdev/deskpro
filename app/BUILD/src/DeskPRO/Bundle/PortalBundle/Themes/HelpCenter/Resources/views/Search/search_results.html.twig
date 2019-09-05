@@ -2,10 +2,6 @@
 {% import 'Theme:Search:search_macros.html.twig' as search_macros %}
 
 {% block page_body %}
-    <div class="breadcrumbs">
-        {% show breadcrumbs %}
-    </div>
-
     <div id="search-results-page" data-query="{{ query }}">
 
         {% set ticket_info = results.ticket is defined ? results.ticket.pageinfo : null %}

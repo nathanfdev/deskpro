@@ -2,9 +2,6 @@
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
 {% block page_body %}
-    <div class="breadcrumbs">
-        {% show breadcrumbs %}
-    </div>
     <div>
         {% if no_login %}
             {{  macros.user_notice('auth', phrase('portal.account.new-ticket-no-login')) }}

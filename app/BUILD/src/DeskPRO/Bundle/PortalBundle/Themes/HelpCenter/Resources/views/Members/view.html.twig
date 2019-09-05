@@ -1,11 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block page_body %}
-
-  <div class="breadcrumbs">
-    {% show breadcrumbs %}
-  </div>
-
   <article class="news kb-article">
     <header>
       <h1>{{ person.id }} {% if person.community_name %}-{{ person.community_name }} {% endif %}</h1>

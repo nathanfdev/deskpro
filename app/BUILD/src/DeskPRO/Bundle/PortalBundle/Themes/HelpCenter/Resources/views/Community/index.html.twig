@@ -2,9 +2,6 @@
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
 {% block page_body %}
-    <div class="breadcrumbs">
-        {% show breadcrumbs %}
-    </div>
     <article class="community main-community" id="community_page">
         {{  macros.lockout_notice(phrase('portal.account.community-lockout'), lockout, lockout_time) }}
         <header class="large-title">
