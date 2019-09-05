@@ -194,6 +194,14 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
     /**
      * @return string
      */
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
@@ -441,6 +449,14 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
     public function getActionsOnRejected()
     {
         return $this->actionsOnRejected;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
     }
 
     /**

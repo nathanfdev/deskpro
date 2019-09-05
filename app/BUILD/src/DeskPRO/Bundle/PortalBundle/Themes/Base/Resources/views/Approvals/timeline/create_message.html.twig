@@ -1,0 +1,11 @@
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
+<div class="ticket-message user-message">
+    <div class="ticket-owner">
+        {{ macros.person_inline(approval.createdBy, false) }}
+        <span>({{ approval.createdAt|date('full') }})</span>
+        <span>{{ phrase('portal.tickets.timeline_wrote') }}</span>
+    </div>
+    <div class="ticket-message-content">
+        {{ approval.description }}
+    </div>
+</div>

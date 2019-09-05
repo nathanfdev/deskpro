@@ -150,6 +150,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
     protected $cancelledBy;
 
     /**
+     * @var Person
+     *
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="created_by", onDelete="CASCADE", nullable=false)
+     */
+    protected $createdBy;
+
+    /**
      * {@inheritDoc}
      */
     public function __construct()
@@ -231,6 +239,25 @@ abstract class AbstractBaseApproval extends AbstractApproval
         }
 
         return null;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param Person $createdBy
+     * @return AbstractBaseApproval
+     */
+    public function setCreatedBy(Person $createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
     }
 
     /**
@@ -356,6 +383,17 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @param Person $person
+     * @return bool
+     */
+    public function hasResponded(Person $person)
+    {
+        return !$this->responses->filter(function (ApprovalResponse $response) use ($person) {
+            return $response->getApprover()->isEqualTo($person);
+        })->isEmpty();
+    }
+
+    /**
      * @param ApprovalResponse $response
      * @return self
      * @throws \Exception
@@ -471,6 +509,17 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
+     * @param Person $person
+     * @return bool
+     */
+    public function hasApprover(Person $person)
+    {
+        return !$this->approvers->filter(function (Person $approver) use ($person) {
+            return $person->isEqualTo($approver);
+        })->isEmpty();
+    }
+
+    /**
      * @return Person|null
      */
     public function getCancelledBy()
@@ -565,19 +614,19 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @return array
-     */
-    public static function getStatusNameMap()
-    {
-        return self::$statusNameMap;
-    }
-
-    /**
      * @return string
      */
     public function getStatusName()
     {
         return self::$statusNameMap[$this->status];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusNameMap()
+    {
+        return self::$statusNameMap;
     }
 
     /**

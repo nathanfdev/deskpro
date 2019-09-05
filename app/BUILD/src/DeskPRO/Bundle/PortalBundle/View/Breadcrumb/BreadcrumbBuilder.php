@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -430,12 +431,34 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    public function addTicketApprovalList()
+    {
+        $this->b->add(
+            $this->url_generator->generate('ticket_approvals'),
+            Breadcrumbs::TICKETS,
+            ['phrase' => 'portal.general.nav-approvals']
+        );
+
+        return $this;
+    }
+
     public function addTicketView(Ticket $t)
     {
         $this->b->add(
             $this->object_router->getPortalPath($t),
             Breadcrumbs::TICKETS_VIEW,
             $t
+        );
+
+        return $this;
+    }
+
+    public function addApprovalView(TicketApproval $a)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($a),
+            Breadcrumbs::APPROVALS_VIEW,
+            $a
         );
 
         return $this;

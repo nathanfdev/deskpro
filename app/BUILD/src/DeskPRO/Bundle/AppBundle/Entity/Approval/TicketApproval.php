@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -14,6 +15,7 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\Table(name="ticket_approvals")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  *
+ * @PortalLinkRoute("ticket_approvals_view", route_param_map={"id"="id"})
  * @JMS\ExclusionPolicy("all")
  *
  * @category Entities

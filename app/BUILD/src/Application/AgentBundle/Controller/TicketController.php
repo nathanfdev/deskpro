@@ -6005,6 +6005,10 @@ body {
 	background: #eee;
 }
 
+.type-ticket_approval {
+	background: #eee;
+}
+
 .log-row {
 	padding: 10px;
 	border-top: 1px solid #eee;

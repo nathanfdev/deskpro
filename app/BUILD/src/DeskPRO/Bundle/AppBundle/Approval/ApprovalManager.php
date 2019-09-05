@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Approval;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\ExecutorContextVars;
@@ -66,10 +67,21 @@ class ApprovalManager
      */
     public function saveApproval(AbstractBaseApproval $approval, ExecutorContext $context)
     {
-        $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
+        $isNew = false;
+
+        $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, &$context, &$isNew) {
             $isNew = !$em->contains($approval);
 
+            if ($context->getPersonContext()->isAgent()) {
+                $approval->setCreatedBy($context->getPersonContext());
+            } elseif (($approval instanceof TicketApprovalInterface) && ($agent = $approval->getTicket()->getAgent())) {
+                $approval->setCreatedBy($agent);
+            } else {
+                throw new \DomainException('Unable to set creating agent on approval');
+            }
+
             $approval->notifyAssociationChanges($em);
+
             $em->persist($approval);
 
             if ($isNew) {
@@ -82,6 +94,11 @@ class ApprovalManager
                 );
             }
         });
+
+        if ($isNew) {
+            $this->appendToLog($this->em, $approval, $context);
+            $this->em->flush();
+        }
     }
 
     /**
@@ -91,7 +108,7 @@ class ApprovalManager
      */
     public function cancelApproval(AbstractBaseApproval $approval, ExecutorContext $context)
     {
-        $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $context) {
+        $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, &$context) {
             $approval->cancel($context->getPersonContext());
 
             $approval->notifyAssociationChanges($em);
@@ -105,6 +122,8 @@ class ApprovalManager
                 $context,
                 'getActionsOnCancel'
             );
+
+            $this->appendToLog($em, $approval, $context);
         });
     }
 
@@ -116,7 +135,7 @@ class ApprovalManager
      */
     public function addApprovalResponse(AbstractBaseApproval $approval, ApprovalResponse $response, ExecutorContext $context)
     {
-        $this->em->transactional(function (EntityManagerInterface $em) use ($approval, $response, $context) {
+        $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, $response, &$context) {
 
             $approval->addResponse($response);
 
@@ -159,6 +178,8 @@ class ApprovalManager
                     );
                 }
             }
+
+            $this->appendToLog($em, $approval, $context, $response);
         });
     }
 
@@ -272,5 +293,68 @@ class ApprovalManager
         }
 
         return $logger;
+    }
+
+    /**
+     * @param EntityManagerInterface $em
+     * @param AbstractBaseApproval $approval
+     * @param ExecutorContext $context
+     * @param ApprovalResponse|null $latestResponse
+     */
+    protected function appendToLog(
+        EntityManagerInterface $em,
+        AbstractBaseApproval $approval,
+        ExecutorContext $context,
+        ApprovalResponse $latestResponse = null
+    ) {
+        if (! ($approval instanceof TicketApprovalInterface)) {
+            return;
+        }
+
+        $ticketLog = new TicketLog();
+        $ticketLog
+            ->setTicket($approval->getTicket())
+            ->setIdObject($approval->getId())
+            ->setActionType('ticket_approval')
+        ;
+
+        if ($context->getPersonContext()) {
+            $ticketLog->setPerson($context->getPersonContext());
+        }
+
+        $ticketLog->setDetailItem('event', $context->getEventType());
+        $ticketLog->setDetailItem('event_performer', $context->getEventPerformer());
+
+        $em->persist($ticketLog);
+
+        $ticketLogDetails = new TicketLog();
+        $ticketLogDetails
+            ->setTicket($approval->getTicket())
+            ->setIdObject($approval->getId())
+            ->setActionType('ticket_approval_details')
+            ->setParent($ticketLog)
+        ;
+
+        if ($context->getPersonContext()) {
+            $ticketLogDetails->setPerson($context->getPersonContext());
+        }
+
+        $ticketLogDetails->setDetailItem('event', $context->getEventType());
+        $ticketLogDetails->setDetailItem('name', $approval->getName());
+        $ticketLogDetails->setDetailItem('description', $approval->getDescription());
+        $ticketLogDetails->setDetailItem('status', $approval->getStatus());
+        $ticketLogDetails->setDetailItem('status_name', $approval->getStatusName());
+        $ticketLogDetails->setDetailItem('number_of_approvals', count($approval->getApproveResponses()));
+        $ticketLogDetails->setDetailItem('number_of_rejections', count($approval->getRejectResponses()));
+        $ticketLogDetails->setDetailItem('number_of_required_approvals', $approval->getRequiredApprovals());
+        $ticketLogDetails->setDetailItem('number_of_required_rejections', $approval->getRequiredRejections());
+
+        if ($latestResponse) {
+            $ticketLogDetails->setDetailItem('response_vote', $latestResponse->getVote());
+            $ticketLogDetails->setDetailItem('response_vote_type', $latestResponse->getVoteType());
+            $ticketLogDetails->setDetailItem('response_message', $latestResponse->getMessage());
+        }
+
+        $em->persist($ticketLogDetails);
     }
 }

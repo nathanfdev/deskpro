@@ -1,0 +1,107 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
+
+{% block inner_content %}
+    <div class="breadcrumbs" style="margin-bottom: 16px;">
+        {% show breadcrumbs %}
+    </div>
+    <article class="ticket-page" id="ticket_view_page">
+        <div class="container relative-height">
+            <div class="column-full">
+                <div class="ticket-view">
+                    <div class="full-column">
+                        <div class="ticket-view-content-container">
+                            <div class="header">
+                                <h1>{{ approval.name }}</h1>
+                            </div>
+                            {% block page_specific_content %}
+                                <div class="ticket-messages">
+                                    {% include 'Theme:Approvals:timeline/create_message.html.twig' with {approval: approval} %}
+                                    {% for response in approval.responses %}
+                                        {% include 'Theme:Approvals:timeline/response_message.html.twig' with {response: response} %}
+                                    {% endfor %}
+                                    {% if not approval.hasResponded(app.user) and approval.isStatus('pending') %}
+                                        {% include 'Theme:Approvals:response_form.html.twig' with {approval: approval, form: form} %}
+                                    {% elseif approval.isStatus('approved') %}
+                                        <div class="approval-completed-wrapper">
+                                            <div class="approval-completed approval-completed-approved">
+                                                {{ phrase('portal.tickets.approvals.view_approved') }}
+                                            </div>
+                                        </div>
+                                    {% elseif approval.isStatus('rejected') %}
+                                        <div class="approval-completed-wrapper">
+                                            <div class="approval-completed approval-completed-rejected">
+                                                {{ phrase('portal.tickets.approvals.view_rejected') }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endblock page_specific_content %}
+                        </div>
+                        {% block page_sidebar %}
+                            <div class="approval-view-sidebar-wrapper">
+                                <div class="approval-view-sidebar">
+                                    <div class="ticket-sidebar-container ticket-sidebar-info">
+                                        <h1>{{ phrase('portal.tickets.approvals.view_approval_info') }}:</h1>
+                                        <ul class="major">
+                                            <li class="item-assigned">
+                                                <span class="sidebar-small-title">
+                                                    {{ phrase('portal.tickets.approvals.view_requesting_agent') }}:
+                                                </span>
+                                                <ul>
+                                                    <li>
+                                                        {{ macros.person_sidebar(approval.createdBy) }}
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="item-assigned">
+                                                <span class="sidebar-small-title">
+                                                    {{ phrase('portal.tickets.approvals.view_user') }}:
+                                                </span>
+                                                <ul>
+                                                    <li>
+                                                        {{ macros.person_sidebar(approval.ticket.person, false, true) }}
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="item-assigned item-to-approve">
+                                                <span class="sidebar-small-title">
+                                                    {{ phrase('portal.tickets.approvals.view_to_approve') }}:
+                                                </span>
+                                                <ul>
+                                                    <li>
+                                                        {{ approval.requiredApprovals }}/{{ approval.approversCount }}
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="item-assigned item-to-reject">
+                                                <span class="sidebar-small-title">
+                                                    {{ phrase('portal.tickets.approvals.view_to_reject') }}:
+                                                </span>
+                                                <ul>
+                                                    <li>
+                                                        {{ approval.requiredRejections }}/{{ approval.approversCount }}
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li class="item-assigned">
+                                                <span class="sidebar-small-title">
+                                                    {{ phrase('portal.tickets.approvals.view_approvers') }}:
+                                                </span>
+                                                <ul>
+                                                    {% for approver in approval.approvers %}
+                                                        <li>{{ macros.person_sidebar(approver, false, true) }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endblock page_sidebar %}
+                    </div>
+                </div>
+            </div><!-- end .column-half-plus -->
+        </div>
+    </article>
+{% endblock inner_content %}

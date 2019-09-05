@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
@@ -292,6 +293,19 @@ class BreadcrumbGenerator
     public function buildTicketList()
     {
         return $this->createBuilder()->addTicketList()->done();
+    }
+
+    public function buildTicketApprovalList()
+    {
+        return $this->createBuilder()->addTicketApprovalList()->done();
+    }
+
+    public function buildTicketApprovalView(TicketApproval $a)
+    {
+        return $this->createBuilder()->addTicketApprovalList()
+            ->addApprovalView($a)
+            ->done()
+        ;
     }
 
     public function buildTicketView(Ticket $t)

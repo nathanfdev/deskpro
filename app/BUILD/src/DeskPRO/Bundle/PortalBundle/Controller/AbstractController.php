@@ -388,6 +388,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketApprovalsDataService
+     */
+    protected function getTicketApprovalsDataService()
+    {
+        return $this->get('data.ticket_approvals');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService
      */
     protected function getDirectMessageThreadDataService()
