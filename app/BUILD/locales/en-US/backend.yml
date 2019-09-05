@@ -663,7 +663,7 @@ adm.ticket_approvals.template.approvers.number_of_approvers: 'Number of approver
 adm.ticket_approvals.template.approvers.ticket_user: 'Ticket User'
 adm.ticket_approvals.template.approvers.organization_manager: 'Organization Manager'
 adm.ticket_approvals.template.approvers.all_agents: 'All Agents'
-adm.ticket_approvals.template.approvers.search_approvers: 'Search for specific Team, Agent or User'
+adm.ticket_approvals.template.approvers.search_approvers: 'Search for specific Agent or User'
 adm.ticket_approvals.template.approvers.required_approvals: 'To approve'
 adm.ticket_approvals.template.approvers.required_rejections: 'To reject'
 adm.ticket_approvals.template.can_approvers_view_subject: 'Allow approvers to view ticket'

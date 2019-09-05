@@ -1,25 +1,25 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define([
+  'Admin/Main/Ctrl/Base'
+], function(Admin_Ctrl_Base) {
   class Admin_TicketApprovals_Ctrl_TemplateEdit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketApprovals_Ctrl_TemplateEdit';
       this.CTRL_AS = 'TicketApprovalsTemplateEdit';
-      this.DEPS    = ['$scope', '$state', '$stateParams', 'DataService', 'Growl', 'Api'];
+      this.DEPS    = ['$scope', '$state', '$stateParams', 'DataService', 'Growl'];
     }
 
     init() {
       this.dataService = this.DataService.get('TicketApprovals');
 
-      this.templateId = (this.$stateParams.id)
+      this.$scope.templateId = (this.$stateParams.id)
         ? parseInt(this.$stateParams.id.replace(/^template-(\d+)$/, '$1'))
         : null;
 
-      this.setDescription = false;
+      this.$scope.setDescription = false;
 
-      this.agents = [];
-      this.users = [];
-      this.teams = [];
+      this.$scope.people = [];
 
-      this.form = {
+      this.$scope.form = {
         type: null,
         name: null,
         description: null,
@@ -45,33 +45,68 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         actions_on_approved: [],
         actions_on_rejected: []
       };
+
+      // define search funtion for ui-select2
+      this.$scope.searchTerm = function (query) {
+
+        this.dataService.searchPeople(query.term)
+          .then(({ people }) => {
+
+            let selected = this.$scope.people.map(item => item.id);
+            let result = { results: [] };
+            result.results = Object.values(people)
+              .filter(person => selected.indexOf(person.id) === -1)
+              .map(person => ({ ...person, text: `${person.first_name} ${person.last_name}` }));
+
+            query.callback(result);
+          });
+
+      }.bind(this);
+
+      this.$scope.selectedUser = null;
+      this.$scope.$watch('selectedUser', (person) => {
+        if (person === null || person.length < 1) {
+          return;
+        }
+
+        // tick user
+        person.value = true;
+
+        this.$scope.people.push(person);
+        this.$scope.selectedUser = null;
+      });
+
     }
 
     initialLoad() {
       let promises = [];
 
-      if (this.templateId) {
-        let promise = this.dataService.loadApprovalTemplates(this.templateId)
+      if (this.$scope.templateId) {
+        let promise = this.dataService.loadApprovalTemplates(this.$scope.templateId)
           .then(data => {
-            this.form = data;
+            // set description flag
             if (data.description.length > 0) {
-              this.setDescription = true;
+              this.$scope.setDescription = true;
             }
+
+            // merge agents and users into people array
+            [
+              ...data.approver_criteria.users,
+              ...data.approver_criteria.agents,
+            ].forEach(id => {
+              this.dataService.getPerson(id)
+                .then(result => {
+                  result.person.value = true;
+                  this.$scope.people.push(result.person);
+                });
+            });
+
+            // assign data to form
+            this.$scope.form = data;
           });
 
         promises.push(promise);
       }
-
-      this.Api.sendDataGet({
-        agents: '/agents',
-        //teams:  '/agent_teams',
-      })
-        .then(res => {
-          this.agents = res.data.agents.agents;
-          this.agents.map((x) => {
-            if (Array.from(this.form.approver_criteria.agents).includes(x.id)) { return x.value = true; }
-          });
-        });
 
       return this.$q.all(promises);
     }
@@ -84,19 +119,24 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       let msgSuccess = this.getRegisteredMessage('approval_template_save_success');
       let msgFailure = this.getRegisteredMessage('approval_template_save_failure');
 
-      let agents = [];
-      this.agents.forEach(item=> {
-        if (item.value === true) {
-          agents.push(item.id);
+      this.$scope.form.approver_criteria.agents = [];
+      this.$scope.form.approver_criteria.users  = [];
+
+      this.$scope.people.forEach(person => {
+        if (person.value === true) {
+          if (person.is_agent === true) {
+            this.$scope.form.approver_criteria.agents.push(person.id);
+          } else {
+            this.$scope.form.approver_criteria.users.push(person.id);
+          }
         }
       });
-      this.form.approver_criteria.agents = agents;
 
       // start spinner
       this.startSpinner('saving');
 
       // perform api call via data service
-      this.dataService.saveApprovalTemplate(this.form, this.templateId)
+      this.dataService.saveApprovalTemplate(this.$scope.form, this.templateId)
         .then(response => {
 
           // get List controller
@@ -108,7 +148,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
               listController.addTemplate(response.data.data);
               break;
             case response.status === 204:
-              listController.updateTemplateById(this.templateId, this.form);
+              listController.updateTemplateById(this.templateId, this.$scope.form);
               break;
           }
 
