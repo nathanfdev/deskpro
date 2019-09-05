@@ -302,6 +302,37 @@ class ArticlesController extends AbstractController
             ];
         }
 
+        $viewVars = [
+            'main_class'         => 'dp-po-knowledgebase-article',
+            'article'            => $article,
+            'articleData'        => $articleData,
+            'custom_data'        => $customData,
+            'rating'             => $rating,
+            'is_subscribed'      => $isSubscribed,
+            'category'           => $article->getPrimaryCategory(),
+            'breadcrumbs'        => $breadcrumbs,
+            'content_id'         => $article->getId(),
+            'content_type'       => Article::CONTENT_TYPE,
+            'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
+            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+            'show_rating_counts' => $showRatingCounts,
+            'rating_counts'      => $ratingCounts,
+            'can_share'          => $canShare,
+            'lockout'            => $check->isLockoutRecommended(),
+            'lockout_time'       => $check->getLockoutTime(true),
+        ];
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
+
+        return $this->renderThemeView(
+            'Theme:Articles:view.html.twig',
+            $viewVars
+        );
+    }
+    private function getAuthComponents(Request $request)
+    {
         $lastUsername = $request->hasPreviousSession() ? $this->getSession()->get('last_username') : null;
         $capthcaForm  = null;
         $abuseCheck   = new LoginAbuseCheck($lastUsername, $request->getClientIp());
@@ -338,33 +369,12 @@ class ArticlesController extends AbstractController
 
         $formView = $registerForm->createView();
 
-        return $this->renderThemeView(
-            'Theme:Articles:view.html.twig',
-            [
-                'main_class'         => 'dp-po-knowledgebase-article',
-                'article'            => $article,
-                'articleData'        => $articleData,
-                'custom_data'        => $customData,
-                'rating'             => $rating,
-                'is_subscribed'      => $isSubscribed,
-                'category'           => $article->getPrimaryCategory(),
-                'breadcrumbs'        => $breadcrumbs,
-                'content_id'         => $article->getId(),
-                'content_type'       => Article::CONTENT_TYPE,
-                'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'can_share'          => $canShare,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-
-                'auth_manager'  => $this->get('dp_authentication_manager.user'),
-                'last_username' => $lastUsername,
-                'captcha_form'  => $capthcaForm,
-                'register_form' => $formView,
-            ]
-        );
+        return [
+            'auth_manager'  => $this->get('dp_authentication_manager.user'),
+            'last_username' => $lastUsername,
+            'captcha_form'  => $capthcaForm,
+            'register_form' => $formView,
+        ];
     }
 
     /**
