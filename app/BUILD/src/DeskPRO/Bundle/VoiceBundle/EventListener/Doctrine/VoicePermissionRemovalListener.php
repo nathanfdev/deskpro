@@ -79,7 +79,8 @@ class VoicePermissionRemovalListener implements EventSubscriber
     public function preUpdate(AgentData $agentData, PreUpdateEventArgs $args)
     {
         if ($args->hasChangedField('isVoiceEnabled') && !$agentData->isVoiceEnabled()) {
-            $this->removeVoiceRelations($agentData);
+            $this->updateQueue[] = $agentData->getPerson();
+            $agentData->setExtensionNumber(null);
         }
     }
 
@@ -90,15 +91,9 @@ class VoicePermissionRemovalListener implements EventSubscriber
      */
     public function preRemove(AgentData $agentData)
     {
-        $this->removeVoiceRelations($agentData);
-    }
-
-    /**
-     * @param AgentData $agentData
-     */
-    private function removeVoiceRelations(AgentData $agentData)
-    {
         $this->updateQueue[] = $agentData->getPerson();
-        $agentData->setExtensionNumber(null);
+
+        $agentData->getPerson()->setAgentData(null);
+        $agentData->setPerson(null);
     }
 }
