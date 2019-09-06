@@ -45,7 +45,7 @@ class OriginalUrlGenerator
         try {
             $originalContext = $router->getContext();
             $globalContext   = clone $originalContext;
-            $globalContext->setBaseUrl($request->getBaseUrl());
+            $globalContext->setBaseUrl($name === 'serve_blob' ? '' : $request->getBaseUrl());
 
             $router->setContext($globalContext);
 
