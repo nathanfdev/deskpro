@@ -8,7 +8,7 @@
 
 {% block page_content %}
     <div class="dp-po">
-        <main class="dp-po-main dp-po-tickets-home">
+        <main class="dp-po-main dp-po-tickets-home" id="hc_ticket_list_page">
             <div class="container">
                 <div class="row">
                     <div class="col-sm-6">
@@ -385,41 +385,10 @@
                 </div>
                 <div class="col-sm-1 text-right">
                     <div class="dp-po-columnfilter">
-                        <a href="javascript:void(0)" class="dp-po-columnfilter-link" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false"><i class="dp-po-icon far fa-ballot-check"></i></a>
+                        <a href="javascript:void(0)" class="dp-po-columnfilter-link">
+                            <i class="dp-po-icon far fa-ballot-check"></i>
+                        </a>
                         <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
-                            <ul class="dp-po-columnfilter-list">
-                                <li class="dp-po-columnfilter-item">
-                                    <div class="form-group dp-po-form-check">
-                                        <input type="checkbox" class="form-check-input" id="idCheck">
-                                        <label class="form-check-label" for="idCheck">ID</label>
-                                    </div>
-                                </li>
-                                <li class="dp-po-columnfilter-item">
-                                    <div class="form-group dp-po-form-check">
-                                        <input type="checkbox" class="form-check-input" id="SubjectCheck">
-                                        <label class="form-check-label" for="SubjectCheck">Subject</label>
-                                    </div>
-                                </li>
-                                <li class="dp-po-columnfilter-item">
-                                    <div class="form-group dp-po-form-check">
-                                        <input type="checkbox" class="form-check-input" id="DepartmentCheck" checked>
-                                        <label class="form-check-label" for="DepartmentCheck">Department</label>
-                                    </div>
-                                </li>
-                                <li class="dp-po-columnfilter-item">
-                                    <div class="form-group dp-po-form-check">
-                                        <input type="checkbox" class="form-check-input" id="UserCheck">
-                                        <label class="form-check-label" for="UserCheck">User</label>
-                                    </div>
-                                </li>
-                                <li class="dp-po-columnfilter-item">
-                                    <div class="form-group dp-po-form-check">
-                                        <input type="checkbox" class="form-check-input" id="agentCheck">
-                                        <label class="form-check-label" for="agentCheck">Assigned agent</label>
-                                    </div>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -465,6 +434,10 @@
                 </div>
             {% endfor %}
         </div>
+        {% include 'Theme:Common:pager.html.twig' with {
+            pager: ticket_table.pager,
+            pager_options: { pageParameter: '['~ticket_table.pageName~']' }
+        } %}
     {% endif %}
 {% endmacro %}
 

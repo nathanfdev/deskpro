@@ -8,9 +8,9 @@
                 next_message: '<i class="dp-po-icon far fa-angle-right"></i>',
                 css_next_class: 'page-item-icon',
                 css_active_class: 'active'
-            }) }}
+            }|merge(pager_options|default({}))) }}
         </nav>
-        {% if pager.count > 10  %}
+        {% if pager.nbPages > 10  %}
         <div class="dp-po-pagination-goto">
             <form action="">
                 <span>{{ phrase('helpcenter.general.go-to-page') }}</span>

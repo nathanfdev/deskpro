@@ -4,6 +4,7 @@ import TicketForm from './TicketForm';
 import PortalFormWidget from './PortalFormWidget';
 import { TicketView } from './TicketView';
 import { TicketList } from './TicketList';
+import { HcTicketList } from './HcTicketList';
 import { DownloadsList } from './DownloadsList';
 import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { CommunityTopicPage } from './CommunityTopicPage';
@@ -39,6 +40,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(TicketForm, '#edit_ticket_form');
     this.addWidgetDef(TicketView, '#ticket_view_page');
     this.addWidgetDef(TicketList, '#ticket_list_page');
+    this.addWidgetDef(HcTicketList, '#hc_ticket_list_page');
     this.addWidgetDef(DownloadPopupWidget, '.dpx-download-popup');
     this.addWidgetDef(DownloadsList, '.download-list');
     this.addWidgetDef(CommunityTopicPage, '#community_page');
