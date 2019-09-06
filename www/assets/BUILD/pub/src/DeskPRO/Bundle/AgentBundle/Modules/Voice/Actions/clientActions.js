@@ -1,5 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
+import { Device } from 'twilio-client';
 import $ from 'jquery';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
@@ -308,8 +309,8 @@ export const voiceBootstrap = createAction(
               debug: true
             };
 
-            clients[id] = new window.Twilio.Device(credentials.get('phone_token'), options);
-            clients[id].soundcache.cache.outgoing.sounds = [];
+            clients[id] = new Device(credentials.get('phone_token'), options);
+            clients[id]._enabledSounds.outgoing = false; // eslint-disable-line
             clients[id].ready(() => {
               console.log('phone ready');
             });
