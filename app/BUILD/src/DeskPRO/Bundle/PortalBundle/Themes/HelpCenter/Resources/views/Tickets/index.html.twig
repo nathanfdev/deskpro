@@ -1,5 +1,11 @@
 {% extends 'Theme::layout.html.twig' %}
 
+{% if type == 'own' %}
+    {% set page_title = phrase('helpcenter.tickets.my-tickets') %}
+{% else %}
+    {% set page_title = phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) %}
+{% endif %}
+
 {% block page_content %}
     <div class="dp-po">
         <main class="dp-po-main dp-po-tickets-home">
@@ -8,11 +14,11 @@
                     <div class="col-sm-6">
                         <div class="dp-po-title">
                             <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/tickets.svg">
-                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.tickets.my-tickets') }}</h2>
+                            <h2 class="dp-po-title-text">{{ page_title }}</h2>
                         </div>
                     </div>
                     <div class="col-sm-6 text-right">
-                        <a href="" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit-a-ticket') }}</a>
+                        <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit-a-ticket') }}</a>
                     </div>
                 </div>
             </div>
@@ -23,18 +29,25 @@
 
                             <div class="dp-po-ticket-pages">
                                 <ul class="dp-po-ticket-pages-list">
-                                    <li class="dp-po-ticket-pages-item active">
+                                    <li class="dp-po-ticket-pages-item{% if type == 'own' %} active{% endif %}">
                                         <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
                                             <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
                                         </a>
                                     </li>
-                                    <li class="dp-po-ticket-pages-item">
-                                        <a href="" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-closed-captioning"></i> Tickets i’m CC’d on
+{#                                    <li class="dp-po-ticket-pages-item{% if type == 'cc' %} active{% endif %}">#}
+{#                                        <a href="{{ path('portal_tickets', {type: 'cc'}) }}" class="dp-po-ticket-pages-link">#}
+{#                                            <i class="dp-po-icon fal fa-closed-captioning"></i> {{ phrase('helpcenter.tickets.tickets-i-m-cc-on') }}#}
+{#                                        </a>#}
+{#                                    </li>#}
+                                    {% if person.organization and person.organization_manager %}
+                                    <li class="dp-po-ticket-pages-item{% if type == 'organization' %} active{% endif %}">
+                                        <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
                                         </a>
                                     </li>
+                                    {% endif %}
                                     <li class="dp-po-ticket-pages-item">
-                                        <a href="" class="dp-po-ticket-pages-link">
+                                        <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
                                             <i class="dp-po-icon fal fa-comments-alt"></i> My chats
                                         </a>
                                     </li>
@@ -204,12 +217,11 @@
                                     {% else %}
                                         {% set table_type = 'danger' %}
                                     {% endif %}
-                                    {{ _self.tickets_table(table, loop.index0, table_type, not search_displayed) }}
+                                    {{ _self.tickets_table(table, loop.index0, table_type, not search_displayed, search_query) }}
                                     {% set search_displayed = true %}
                                 {% endif %}
                             {% endfor %}
                         </div>
-{#                        <%- include('_partials/_pagination.ejs'); %>#}
                     </div>
                 </div>
             </div>
@@ -230,8 +242,11 @@
     {% endif %}
     {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir, type: ticket_table.getTicketType()}) %}
     {% set url = path(app.request.attributes.get('_route'), queryParams) %}
-    {% set sort_icon = sort_dir == 'desc' ? '&darr;' : '&uarr;' %}
-    <a href="{{ url }}">{{ label }}{% if isActive %}<span>{{ sort_icon|raw }}</span>{% endif %}</a>
+    {% set sort_icon = sort_dir == 'desc' ? '<i
+        class="dp-po-icon far fa-long-arrow-up"></i>' : '<i
+        class="dp-po-icon far fa-long-arrow-down"></i>' %}
+    {{ label }}<a href="{{ url }}">{% if isActive %}<span>{{ sort_icon|raw }}</span>{% else %}<i
+        class="dp-po-icon far fa-arrows-v"></i>{% endif %}</a>
 {%- endmacro -%}
 
 {%- macro col_header(ticket_table, col) -%}
@@ -288,7 +303,7 @@
     {% elseif col.id == 'agent' %}
         {% if ticket.agent %}
 
-            <span class="person">{{ ticket.agent.display_name_user }} <img src="{{ avatar_url(ticket.agent) }}" class="avatar"></span>
+            <span class="person">{{ ticket.agent.display_name_user }}</span>
         {% endif %}
     {% elseif col.id == 'department' %}
         {{ ticket.department_or_default.user_title }}
@@ -296,14 +311,10 @@
         {{ ticket.subject }}
     {% elseif col.id == 'user' %}
         {% if ticket.person %}
-            <span class="person">{{ ticket.person.display_name_user }} <img src="{{ avatar_url(ticket.person) }}" class="avatar"></span>
+            <span class="person">{{ ticket.person.display_name_user }}</span>
         {% endif %}
     {% elseif col.id == 'date_activity' %}
-        {% if ticket_exceprpt %}
-            <img src="{{ avatar_url(ticket_exceprpt.person) }}" class="avatar">
-            <span class="person">{{ ticket_exceprpt.person.display_name_user }}</span>
-            <span class="date">{{ ticket.last_activity_date|date }}</span>
-        {% endif %}
+        <span class="date">{{ date_ago(ticket.last_activity_date) }}</span>
     {% elseif col.id == 'date_created' %}
         <span class="date">{{ ticket.date_created|date }}</span>
     {% elseif col.id == 'date_user' %}
@@ -357,7 +368,7 @@
     {%- endif -%}
 {%- endmacro -%}
 
-{% macro tickets_table(ticket_table, id, type, with_search) %}
+{% macro tickets_table(ticket_table, id, type, with_search, search_query) %}
     {% if ticket_table.pager|length > 0 %}
         {% if with_search %}
             <div class="row">
@@ -367,8 +378,8 @@
                     </div>
                 </div>
                 <div class="col-sm-7">
-                    <form class="dp-po-ticket-search">
-                        <input type="text" name="" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}"></input>
+                    <form class="dp-po-ticket-search" method="get">
+                        <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}"></input>
                         <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
                     </form>
                 </div>
