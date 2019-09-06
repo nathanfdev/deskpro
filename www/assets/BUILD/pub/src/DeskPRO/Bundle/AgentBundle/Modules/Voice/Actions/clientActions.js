@@ -695,8 +695,8 @@ export const deleteMessage = createAction(
 
 export const refreshConferenceStatus = createAction(
   'VOICE_AGENT_REFRESH_CONFERENCE_STATUS',
-  phoneCallId => (dispatch, getState) => api.sendGet(`DP_API/voice_client/phone_call/${phoneCallId}/status`).success(() => {
-    const phoneCall = Immutable.fromJS(event.phone_call);
+  phoneCallId => (dispatch, getState) => api.sendGet(`DP_API/voice_client/phone_call/${phoneCallId}/status`).success((response) => {
+    const phoneCall = Immutable.fromJS(response.phone_call);
 
     // realtime phone call updates
     const state = getState();
