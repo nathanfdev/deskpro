@@ -3458,10 +3458,11 @@ agent.general.off: 'Off'
 agent.general.okay: Okay
 agent.general.ok: OK
 agent.general.on: 'On'
-agent.general.online_now: 'Onlne Now'
+agent.general.online_now: 'Online Now'
 agent.general.open: Open
 agent.general.open_tab: 'Open Tab'
 agent.general.open_tickets: 'Open Tickets'
+agent.general.close: Close
 agent.general.or_sep: or
 agent.general.order_by: 'Order By'
 agent.general.ordered_by: 'Ordered by'
