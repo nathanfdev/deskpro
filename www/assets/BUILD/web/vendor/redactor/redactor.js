@@ -2838,7 +2838,8 @@ var RLANG = {
         var selString = sel.toString();
         var selParent = $(":contains('" + selString + "')")
           .filter(function () {
-            return $(this).is(wrappers.join(', ')) && this.innerText === selString;
+            var $el = $(this);
+            return $el.parents().hasClass('redactor_editor') && $el.is(wrappers.join(', ')) && this.innerText === selString;
           })
           .first();
 
