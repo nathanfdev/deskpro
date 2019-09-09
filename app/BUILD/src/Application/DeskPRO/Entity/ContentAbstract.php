@@ -10,6 +10,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Labels\LabelManager;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
@@ -20,7 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Basic properties on content.
  */
-abstract class ContentAbstract extends DomainObject
+abstract class ContentAbstract extends DomainObject implements HasIconProperty
 {
     const CONTENT_TYPE = null;
 
@@ -196,6 +198,11 @@ abstract class ContentAbstract extends DomainObject
     protected $_label_manager = null;
 
     protected $slug_history;
+
+    /**
+     * @var IconProperty
+     */
+    protected $icon_property;
 
     /**
      * @return array
@@ -953,6 +960,18 @@ abstract class ContentAbstract extends DomainObject
     public function getViewCount()
     {
         return $this->view_count;
+    }
+
+    public function getIcon()
+    {
+        return $this->icon_property;
+    }
+
+    public function setIcon($iconProperty)
+    {
+        $this->setModelField('icon_property', $iconProperty);
+
+        return $this;
     }
 
     /**
