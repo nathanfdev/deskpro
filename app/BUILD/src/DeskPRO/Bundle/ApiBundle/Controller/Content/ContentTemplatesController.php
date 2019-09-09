@@ -30,10 +30,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ContentTemplatesController extends CrudController
 {
-    public static $entity    = ContentTemplate::class;
-    public static $type      = ContentTemplateType::class;
-    public static $listSort  = 'id';
-    public static $listOrder = 'asc';
+    public static $entity       = ContentTemplate::class;
+    public static $type         = ContentTemplateType::class;
+    public static $listSort     = 'id';
+    public static $listOrder    = 'asc';
+    public static $listPaginate = false;
 
     /**
      * {@inheritdoc}

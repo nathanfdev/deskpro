@@ -6,12 +6,15 @@ import Isvg from 'react-inlinesvg';
 import { FormattedMessage } from 'react-intl';
 import { List } from 'react-virtualized';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { allContentTemplatesSelector } from '../Selectors/contentTemplates';
+import Loader from '@deskpro/react-loader';
+import $ from 'jquery';
+import { allContentTemplatesSelector, isContentTemplatesLoadedSelector } from '../Selectors/contentTemplates';
 import { loadContentTemplates } from '../Actions/contentTemplateActions';
 
 @connect(state => ({
-  contentTemplates: allContentTemplatesSelector(state),
-  agents:           agentsSelector(state)
+  contentTemplates:       allContentTemplatesSelector(state),
+  contentTemplatesLoaded: isContentTemplatesLoadedSelector(state),
+  agents:                 agentsSelector(state)
 }), null, null, { withRef: true })
 class ManageContentTemplatesModalContainer extends React.Component {
 
@@ -19,14 +22,38 @@ class ManageContentTemplatesModalContainer extends React.Component {
     dispatch: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      height: 0
+    };
+  }
+
   componentDidMount() {
     this.props.dispatch(loadContentTemplates(true));
+    this.updateWindowDimensions();
+    window.addEventListener('resize', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.updateWindowDimensions();
+          this.ticking = false;
+        });
+      }
+      this.ticking = true;
+    });
   }
+
+  updateWindowDimensions = () => {
+    this.setState({
+      height: window.innerHeight - $('.left-drawer .header').height()
+    });
+  };
 
   render() {
     return (
       <ManageContentTemplatesModal
         {...this.props}
+        {...this.state}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -36,10 +63,11 @@ class ManageContentTemplatesModalContainer extends React.Component {
 class ManageContentTemplatesModal extends React.Component {
 
   static propTypes = {
-    agents:           PropTypes.object,
-    height:           PropTypes.number,
-    closeMenu:        PropTypes.func,
-    contentTemplates: PropTypes.object
+    agents:                 PropTypes.object,
+    height:                 PropTypes.number,
+    closeMenu:              PropTypes.func,
+    contentTemplates:       PropTypes.object,
+    contentTemplatesLoaded: PropTypes.bool
   };
 
   static noRowsRenderer() {
@@ -58,12 +86,14 @@ class ManageContentTemplatesModal extends React.Component {
   }
 
   componentDidMount() {
-    this.offsetTop = this.listRef.offsetTop;
+    this.offsetTop = this.listRef ? this.listRef.offsetTop : 0;
   }
 
   componentWillReceiveProps(nextProps) {
     if (!nextProps.contentTemplates.equals(this.props.contentTemplates)) {
-      this.listRef.forceUpdateGrid();
+      if (this.listRef) {
+        this.listRef.forceUpdateGrid();
+      }
     }
   }
 
@@ -91,8 +121,8 @@ class ManageContentTemplatesModal extends React.Component {
   }
 
   render() {
-    const { closeMenu, contentTemplates } = this.props;
-    let height = this.props.height;
+    const { closeMenu, contentTemplates, contentTemplatesLoaded } = this.props;
+    let { height } = this.props;
     if (isNaN(height)) {
       height = 400;
     }
@@ -111,7 +141,9 @@ class ManageContentTemplatesModal extends React.Component {
           <div className="top">
             <h1><FormattedMessage id="agent.general.manage_templates" /></h1> <span className="count">({contentTemplates.size})</span>
           </div>
-          <div className="body">
+        </div>
+        <div className="body">
+          <Loader loaded={contentTemplatesLoaded}>
             <List
               className="snippets__list"
               rowCount={contentTemplates.size}
@@ -123,7 +155,7 @@ class ManageContentTemplatesModal extends React.Component {
               overscanRowCount={2}
               ref={(c) => { this.listRef = c; }}
             />
-          </div>
+          </Loader>
         </div>
       </div>
     );
