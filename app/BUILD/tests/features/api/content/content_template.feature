@@ -4,9 +4,14 @@ Feature: Content Templates
   As an API user
   I want an API endpoint
 
-  Scenario: I select my content templates
+  Background:
     Given I'm authenticated as agent
-    And only the following ContentTemplate records exist:
+    And I add "agent" usergroup relation "agent_all_perms"
+    And I add "agent" usergroup relation "agent_all_safe_perms"
+    And I set permission "articles.use" = 1 for "registered" usergroup
+
+  Scenario: I select my content templates
+    Given only the following ContentTemplate records exist:
       | #   | Title            | Type     | Person  | Template         |
       | ct1 | Test template #1 | article  | {agent} | {"test": "test"} |
       | ct2 | Test template #2 | news     | {agent} | {"test": "test"} |
@@ -21,8 +26,7 @@ Feature: Content Templates
     And the JSON node "data[0].template.test" should be equal to "test"
 
   Scenario: I select my content template
-    Given I'm authenticated as agent
-    And only the following ContentTemplate records exist:
+    Given only the following ContentTemplate records exist:
       | #   | Title            | Type    | Person  | Template         |
       | ct1 | Test template #1 | article | {agent} | {"test": "test"} |
 
@@ -32,8 +36,7 @@ Feature: Content Templates
     And the JSON node "data.template.test" should be equal to "test"
 
   Scenario: I create a new content template
-    Given I'm authenticated as agent
-    And there are no "ContentTemplate" records
+    Given there are no "ContentTemplate" records
     When I send a POST request to "/api/v2/content_templates" with body:
     """
 {
@@ -57,8 +60,7 @@ Feature: Content Templates
     And the JSON node "data.template.name" should be equal to "test article template"
 
   Scenario: I update the content template
-    Given I'm authenticated as agent
-    And only the following ContentTemplate records exist:
+    Given only the following ContentTemplate records exist:
       | #   | Title            | Type    | Person  | Template         |
       | ct1 | Test template #1 | article | {agent} | {"test": "test"} |
     When I send a PUT request to "/api/v2/content_templates/{ct1}" with body:
@@ -81,8 +83,7 @@ Feature: Content Templates
     And the JSON node "data.template.name" should be equal to "test article template"
 
   Scenario: I delete the content template
-    Given I'm authenticated as agent
-    And only the following ContentTemplate records exist:
+    Given only the following ContentTemplate records exist:
       | #   | Title            | Type    | Person  | Template         |
       | ct1 | Test template #1 | article | {agent} | {"test": "test"} |
     When I send a DELETE request to "/api/v2/content_templates/{ct1}"
@@ -91,8 +92,7 @@ Feature: Content Templates
     And the response status code should be 404
 
   Scenario: I try to delete, update and view content template that's not mine
-    Given I'm authenticated as agent
-    And "rival@deskprodemo.com" agent exists
+    Given "rival@deskprodemo.com" agent exists
     And I remove "agent" usergroup relation "agent_all_perms"
     And I remove "agent" usergroup relation "agent_all_safe_perms"
     And I set permission "articles.use" = 1 for "registered" usergroup

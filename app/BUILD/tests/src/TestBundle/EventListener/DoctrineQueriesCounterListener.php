@@ -18,7 +18,7 @@ class DoctrineQueriesCounterListener
      *
      * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-2914
      */
-    const MAX_QUERIES_COUNT = 170;
+    const MAX_QUERIES_COUNT = 200;
     const MAX_FETCH_ROWS    = 1000;
 
     /**
