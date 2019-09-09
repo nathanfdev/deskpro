@@ -418,7 +418,7 @@
 
                             {% if app.hasBeta('approvals') %}
                                 <li data-tab-for="#{{ baseId }}_approvals_wrap">
-                                    {{ phrase('agent.tickets.approvals') }}
+                                    {{ phrase('agent.tickets.approvals.title') }}
                                 </li>
                             {% endif %}
 
@@ -682,9 +682,7 @@
                         </article>
                     {% endif %}
                     {% if app.hasBeta('approvals') %}
-                        <article id="{{ baseId }}_approvals_wrap" style="display: none; overflow-x: auto;">
-                            {% include 'AgentBundle:Ticket:view-approvals.html.twig' %}
-                        </article>
+                        <article id="{{ baseId }}_approvals_wrap" style="display: none; overflow-x: auto;"></article>
                     {% endif %}
                     {{ dp_app_loc(baseId, 'properties.tab') }}
                 </section>

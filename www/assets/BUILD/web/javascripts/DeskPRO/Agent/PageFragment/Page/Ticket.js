@@ -220,7 +220,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this._initSlas,
       this._initProblems,
       this._initForward,
-      this.updateBillingTabTitle
+      this._initApprovals,
+      this.updateBillingTabTitle,
     ].forEach(function(fn, idx) {
       window.requestIdleCallback(function() {
         if (self.wrapper) {
@@ -4192,6 +4193,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     var $trigger = this.getEl('status_menu_trigger');
     $trigger.on('click', function(ev) {
       showMenu();
+    });
+  },
+
+  //#################################################################
+  //# Approvals
+  //#################################################################
+
+  _initApprovals: function() {
+    if (!window.DP_HAS_APPROVALS) {
+      return;
+    }
+
+    window.AgentLegacyBundle.renderApprovalTab(this.getEl('approvals_wrap')[0], {
+      ticketId:    this.meta.ticket_id,
+      ticketPerms: this.meta.ticket_perms
     });
   },
 

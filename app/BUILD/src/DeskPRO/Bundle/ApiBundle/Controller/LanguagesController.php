@@ -306,6 +306,17 @@ class LanguagesController extends CrudController
             'agent.snippets.variables',
             'agent.snippets.visibility',
             'agent.snippets.your_language',
+
+            'agent.tickets.approvals.title',
+            'agent.tickets.approvals.make_request',
+            'agent.tickets.approvals.id',
+            'agent.tickets.approvals.type',
+            'agent.tickets.approvals.description',
+            'agent.tickets.approvals.approvers',
+            'agent.tickets.approvals.success',
+            'agent.tickets.approvals.failure',
+            'agent.tickets.approvals.status',
+
             'agent.tickets.add_reply_action',
             'agent.tickets.add_note_action',
             'agent.tickets.assign_agent',

@@ -19,5 +19,35 @@ class TicketRepository extends ApiRepository {
   deleteFollowUp(ticketId, followUpId) {
     return this.api.sendDelete(`DP_API/${this.url}/${ticketId}/follow-ups/${followUpId}`);
   }
+
+  loadApprovals(ticketId, status = null) {
+    let endpoint = `DP_API/${this.url}/${ticketId}/ticket_approvals`;
+
+    if (status !== null) {
+      endpoint += `/${status}`;
+    }
+
+    return this.api.sendGet(endpoint);
+  }
+
+  loadApprovalTemplates() {
+    return this.api.sendGet(`DP_API_OLD/${this.url}/approval_templates`);
+  }
+
+  createApprovalRequest(tiketId, record) {
+
+  }
+
+  cancelApprovalRequest(ticketId, approvalRequestId) {
+
+  }
+
+  acceptApprovalRequest(ticketId, approvalRequestId) {
+
+  }
+
+  rejectApprovalRequest(ticketId, approvalRequestId) {
+
+  }
 }
 export default TicketRepository;
