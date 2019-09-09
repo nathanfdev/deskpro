@@ -6,7 +6,7 @@ class Build1568025284 extends AbstractBuild implements OnlineBuildInterface, Ski
 {
     public function addNewTables()
     {
-        $this->execDbQuery('default', 'CREATE TABLE icon_property (id INT AUTO_INCREMENT NOT NULL, blob_id INT DEFAULT NULL, urn VARCHAR(255) NOT NULL, options LONGTEXT NOT NULL COMMENT \'(DC2Type:json_array)\', UNIQUE INDEX UNIQ_96E733E1ED3E8EA5 (blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        $this->execDbQuery('default', 'CREATE TABLE icon_property (id INT AUTO_INCREMENT NOT NULL, blob_id INT DEFAULT NULL, urn VARCHAR(255) NOT NULL, options LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', UNIQUE INDEX UNIQ_96E733E1ED3E8EA5 (blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->execDbQuery('default', 'ALTER TABLE icon_property ADD CONSTRAINT FK_96E733E1ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE');
     }
 

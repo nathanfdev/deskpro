@@ -12,8 +12,11 @@ use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
+use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use Exception;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -143,6 +146,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
             new \Twig_SimpleFunction('category_color_css', [$this, 'categoryColorCss']),
+            new \Twig_SimpleFunction('render_icon_from', [$this, 'renderIconFrom']),
+            new \Twig_SimpleFunction('render_icon', [$this, 'renderIcon']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -641,6 +646,32 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         if ($category->getColor()) {
             return 'background-color: #'.$category->getColor().';';
         }
+    }
+
+    /**
+     * @param HasIconProperty $object
+     * @param array           $options
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function renderIconFrom(HasIconProperty $object, $options = [])
+    {
+        return $this->container->get('portal_icon.renderer')->getIconHtmlFrom($object, $options);
+    }
+
+    /**
+     * @param IconProperty $icon
+     * @param array        $options
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function renderIcon(IconProperty $icon, $options = [])
+    {
+        return $this->container->get('portal_icon.renderer')->getIconHtml($icon, $options);
     }
 
     /**
