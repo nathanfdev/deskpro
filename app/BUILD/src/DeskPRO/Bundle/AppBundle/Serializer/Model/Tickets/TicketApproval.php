@@ -163,6 +163,20 @@ class TicketApproval
     private $approversPendingResponse;
 
     /**
+     * @var Person
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     */
+    private $createdBy;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $hasRecipientResponded;
+
+    /**
      * @param TicketApprovalEntity $ticketApproval
      * @return TicketApproval
      */
@@ -191,6 +205,7 @@ class TicketApproval
         $model->setRequiredRejections($ticketApproval->getRequiredRejections());
         $model->setApproversCount($ticketApproval->getApproversCount());
         $model->setApproversPendingResponse($ticketApproval->getApproversPendingResponse()->toArray());
+        $model->setCreatedBy($ticketApproval->getCreatedBy());
 
         return $model;
     }
@@ -590,6 +605,44 @@ class TicketApproval
     public function setApproversPendingResponse(array $approversPendingResponse)
     {
         $this->approversPendingResponse = $approversPendingResponse;
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getCreatedBy()
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param Person $createdBy
+     * @return TicketApproval
+     */
+    public function setCreatedBy(Person $createdBy)
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasRecipientResponded()
+    {
+        return $this->hasRecipientResponded;
+    }
+
+    /**
+     * @param bool $hasRecipientResponded
+     * @return TicketApproval
+     */
+    public function setHasRecipientResponded($hasRecipientResponded)
+    {
+        $this->hasRecipientResponded = $hasRecipientResponded;
 
         return $this;
     }

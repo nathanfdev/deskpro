@@ -662,6 +662,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param TicketApproval $approval
      * @param Person $recipient
      * @param bool $isOwner
+     * @param $hasRecipientResponded
+     * @param $approveUrl
+     * @param $rejectUrl
      * @param ApprovalResponse|null $approvalResponse
      * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
      * @throws \Exception
@@ -672,11 +675,14 @@ class UserViewModelFactory extends AbstractViewModelFactory
         TicketApproval $approval,
         Person $recipient,
         $isOwner,
+        $hasRecipientResponded,
+        $approveUrl,
+        $rejectUrl,
         ApprovalResponse $approvalResponse = null
     ) {
         return $this->convertParameters(
             $this->getViewModelByTicketApprovalEvent($event),
-            ['user', $ticket, $approval, $recipient, $isOwner, $approvalResponse]
+            ['user', $ticket, $approval, $recipient, $isOwner, $hasRecipientResponded, $approveUrl, $rejectUrl, $approvalResponse]
         );
     }
 }

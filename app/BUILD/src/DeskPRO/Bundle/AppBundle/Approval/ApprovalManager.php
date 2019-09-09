@@ -82,20 +82,19 @@ class ApprovalManager
 
             $approval->notifyAssociationChanges($em);
 
-            $em->persist($approval);
+            $context->setEventType(ExecutorContext::EVENT_ON_CREATE);
+            $context->setApproval($approval);
 
-            if ($isNew) {
-                $context->setEventType(ExecutorContext::EVENT_ON_CREATE);
-                $context->setApproval($approval);
-                $this->applyActions(
-                    $approval,
-                    $context,
-                    'getActionsOnCreate'
-                );
-            }
+            $em->persist($approval);
         });
 
         if ($isNew) {
+            $this->applyActions(
+                $approval,
+                $context,
+                'getActionsOnCreate'
+            );
+
             $this->appendToLog($this->em, $approval, $context);
             $this->em->flush();
         }
@@ -117,14 +116,14 @@ class ApprovalManager
             $context->setEventType(ExecutorContext::EVENT_ON_CANCEL);
             $context->setApproval($approval);
 
-            $this->applyActions(
-                $approval,
-                $context,
-                'getActionsOnCancel'
-            );
-
             $this->appendToLog($em, $approval, $context);
         });
+
+        $this->applyActions(
+            $approval,
+            $context,
+            'getActionsOnCancel'
+        );
     }
 
     /**
@@ -145,42 +144,42 @@ class ApprovalManager
             $context->setApproval($approval);
             $context->setApprovalResponse($response);
 
-            if ($approval->isComplete()) {
-                if ($approval->isStatus(AbstractBaseApproval::STATUS_APPROVED)) {
-                    $context->setEventType(ExecutorContext::EVENT_ON_APPROVED);
-                    $this->applyActions(
-                        $approval,
-                        $context,
-                        'getActionsOnApproved'
-                    );
-                } elseif ($approval->isStatus(AbstractBaseApproval::STATUS_REJECTED)) {
-                    $context->setEventType(ExecutorContext::EVENT_ON_REJECTED);
-                    $this->applyActions(
-                        $approval,
-                        $context,
-                        'getActionsOnRejected'
-                    );
-                }
-            } else {
-                if ($response->isApproved()) {
-                    $context->setEventType(ExecutorContext::EVENT_ON_PARTIAL_APPROVAL_RESPONSE);
-                    $this->applyActions(
-                        $approval,
-                        $context,
-                        'getActionsOnPartialApprovalResponse'
-                    );
-                } elseif ($response->isRejected()) {
-                    $context->setEventType(ExecutorContext::EVENT_ON_PARTIAL_REJECTION_RESPONSE);
-                    $this->applyActions(
-                        $approval,
-                        $context,
-                        'getActionsOnPartialRejectionResponse'
-                    );
-                }
-            }
-
             $this->appendToLog($em, $approval, $context, $response);
         });
+
+        if ($approval->isComplete()) {
+            if ($approval->isStatus(AbstractBaseApproval::STATUS_APPROVED)) {
+                $context->setEventType(ExecutorContext::EVENT_ON_APPROVED);
+                $this->applyActions(
+                    $approval,
+                    $context,
+                    'getActionsOnApproved'
+                );
+            } elseif ($approval->isStatus(AbstractBaseApproval::STATUS_REJECTED)) {
+                $context->setEventType(ExecutorContext::EVENT_ON_REJECTED);
+                $this->applyActions(
+                    $approval,
+                    $context,
+                    'getActionsOnRejected'
+                );
+            }
+        } else {
+            if ($response->isApproved()) {
+                $context->setEventType(ExecutorContext::EVENT_ON_PARTIAL_APPROVAL_RESPONSE);
+                $this->applyActions(
+                    $approval,
+                    $context,
+                    'getActionsOnPartialApprovalResponse'
+                );
+            } elseif ($response->isRejected()) {
+                $context->setEventType(ExecutorContext::EVENT_ON_PARTIAL_REJECTION_RESPONSE);
+                $this->applyActions(
+                    $approval,
+                    $context,
+                    'getActionsOnPartialRejectionResponse'
+                );
+            }
+        }
     }
 
     /**

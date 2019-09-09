@@ -58,6 +58,27 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $isOwner;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    protected $hasRecipientResponded;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $approveUrl;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $rejectUrl;
+
+    /**
      * TicketApprovalType constructor.
      *
      * @param string $recipientType
@@ -65,6 +86,9 @@ abstract class TicketApprovalType extends EmailBaseType
      * @param TicketApproval $approval
      * @param Person $recipient
      * @param bool $isOwner
+     * @param bool $hasRecipientResponded
+     * @param $approveUrl
+     * @param $rejectUrl
      * @param ApprovalResponse|null $approvalResponse
      */
     public function __construct(
@@ -73,6 +97,9 @@ abstract class TicketApprovalType extends EmailBaseType
         TicketApproval $approval,
         Person $recipient,
         $isOwner,
+        $hasRecipientResponded,
+        $approveUrl,
+        $rejectUrl,
         ApprovalResponse $approvalResponse = null
     )
     {
@@ -82,6 +109,9 @@ abstract class TicketApprovalType extends EmailBaseType
         $this->approvalResponse = $approvalResponse;
         $this->recipient = $recipient;
         $this->isOwner = $isOwner;
+        $this->approveUrl = $approveUrl;
+        $this->rejectUrl = $rejectUrl;
+        $this->hasRecipientResponded = $hasRecipientResponded;
     }
 
     /**
@@ -138,5 +168,29 @@ abstract class TicketApprovalType extends EmailBaseType
     public function isOwner()
     {
         return $this->isOwner;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHasRecipientResponded()
+    {
+        return $this->hasRecipientResponded;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApproveUrl()
+    {
+        return $this->approveUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectUrl()
+    {
+        return $this->rejectUrl;
     }
 }

@@ -1,11 +1,16 @@
-<dp:subject>Approval Updated: {{ approval.name }}</dp:subject>
+<dp:subject>{{ phrase('agent.emails.agent_approval_updated') }}: {{ approval.name }}</dp:subject>
+
+<h3 class="dp-approval-name">{{ approval.name }}</h3>
 
 {% if approval.responses|length %}
-    <table cellpadding="5" cellspacing="0" border="1">
+    <table class="dp-approval-table">
         <tbody>
         {% for response in approval.responses %}
             <tr>
-                <td>{{ response.isApproved ? 'Approved' : 'Rejected' }} by</td>
+                <td class="label-col">
+                    {{ phrase(response.isApproved ? 'agent.emails.agent_approval_approved' : 'agent.emails.agent_approval_rejected') }}
+                    {{ phrase('agent.emails.agent_by') }}
+                </td>
                 <td>
                     {{ response.approver }} ({{ response.createdAt|date }})<br />
                     "{{ response.message }}"
@@ -16,50 +21,77 @@
     </table>
 {% endif %}
 
-<table cellpadding="5" cellspacing="0" border="1">
+<table class="dp-approval-table">
     <tbody>
     <tr>
         <td colspan="2">{{ approval.description }}</td>
     </tr>
-    {% if ticket.agent %}
+    {% if approval.createdBy %}
         <tr>
-            <th>Requesting Agent</th>
-            <td>{{ ticket.agent }}</td>
+            <td class="label-col">{{ phrase('agent.emails.agent_requesting_agent') }}</td>
+            <td>{{ approval.createdBy }}</td>
         </tr>
     {% endif %}
     {% if ticket.person %}
         <tr>
-            <th>User</th>
+            <td class="label-col">{{ phrase('agent.emails.agent_requesting_user') }}</td>
             <td>{{ ticket.person }}</td>
         </tr>
     {% endif %}
     <tr>
-        <th>Status</th>
+        <td class="label-col">{{ phrase('agent.emails.agent_status') }}</td>
         <td>{{ approval.statusName|capitalize }}</td>
     </tr>
     <tr>
-        <th>Approved</th>
+        <td class="label-col">{{ phrase('agent.emails.agent_approval_approved') }}</td>
         <td>{{ approval.approvedResponsesCount }}/{{ approval.requiredApprovals }}</td>
     </tr>
     <tr>
-        <th>Rejected</th>
+        <td class="label-col">{{ phrase('agent.emails.agent_approval_rejected') }}</td>
         <td>{{ approval.rejectedResponsesCount }}/{{ approval.requiredRejections }}</td>
     </tr>
     <tr>
-        <th>Awaiting Response</th>
+        <td class="label-col">{{ phrase('agent.emails.agent_awaiting_response') }}</td>
         <td>
             {% for awaitingApprover in approval.approversPendingResponse %}
                 <div>{{ awaitingApprover }} ({{ awaitingApprover.primary_email }})</div>
             {% else %}
-                <em>All approvers have responded</em>
+                <em>{{ phrase('agent.emails.agent_all_approvers_have_responded') }}</em>
             {% endfor %}
         </td>
     </tr>
     <tr>
         <td colspan="2">
-            Approval Criteria - To approve: {{ approval.requiredApprovals }}/{{ approval.approversCount }} |
-            To reject: {{ approval.requiredRejections }}/{{ approval.approversCount }}
+            {{ phrase('agent.emails.agent_approval_criteria', {
+                requiredApprovals: approval.requiredApprovals,
+                approversCount: approval.approversCount,
+                requiredRejections: approval.requiredRejections,
+                approversCount: approval.approversCount,
+            }) }}
         </td>
     </tr>
     </tbody>
 </table>
+
+{% if not has_recipient_responded %}
+    <table class="dp-approval-table">
+        <tbody>
+        <tr>
+            <td class="label-col">{{ phrase('agent.emails.agent_approval_approve') }}</td>
+            <td>
+                <a href="{{ approve_url }}" title="{{ phrase('agent.emails.agent_approval_approve')|e }}">
+                    {{ approve_url }}
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td class="label-col">{{ phrase('agent.emails.agent_approval_reject') }}</td>
+            <td>
+                <a href="{{ reject_url }}" title="{{ phrase('agent.emails.agent_approval_reject')|e }}">
+                    {{ reject_url }}
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endif %}

@@ -10,8 +10,10 @@ use DeskPRO\Bundle\AppBundle\Approval\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
+use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Sender\EmailSender;
 use Orb\Util\CheckedOptionsArray;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class SendTicketApprovalEmail
@@ -98,11 +100,22 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             'ticket' => $ticket,
             'approval' => $approval,
             'approval_response' => $approvalResponse,
+            'approve_url' => $this->getContainer()->get('router')->generate(
+                'ticket_approvals_approve',
+                ['id' => $approval->getId()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ),
+            'reject_url' => $this->getContainer()->get('router')->generate(
+                'ticket_approvals_reject',
+                ['id' => $approval->getId()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            ),
         ];
 
         foreach ($recipients as $recipient) {
             $vars['recipient'] = $recipient;
             $vars['is_owner'] = $recipient->isEqualTo($ticket->getPerson());
+            $vars['has_recipient_responded'] = $approval->hasResponded($recipient);
             try {
                 if ($recipient->isAgent()) {
                     if ($this->hasEmailTemplatesFeature()) {
@@ -112,6 +125,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
                             $vars['approval'],
                             $vars['recipient'],
                             $vars['is_owner'],
+                            $vars['has_recipient_responded'],
+                            $vars['approve_url'],
+                            $vars['reject_url'],
                             $vars['approval_response']
                         );
                         $this->getEmailSender()->send($viewModel, ['to' => $recipient]);
@@ -128,6 +144,9 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
                             $vars['approval'],
                             $vars['recipient'],
                             $vars['is_owner'],
+                            $vars['has_recipient_responded'],
+                            $vars['approve_url'],
+                            $vars['reject_url'],
                             $vars['approval_response']
                         );
                         $this->getEmailSender()->send($viewModel, ['to' => $recipient]);
@@ -282,7 +301,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @return AgentViewModelFactory
+     * @return UserViewModelFactory
      * @throws \Exception
      */
     private function getUserViewModelFactory()

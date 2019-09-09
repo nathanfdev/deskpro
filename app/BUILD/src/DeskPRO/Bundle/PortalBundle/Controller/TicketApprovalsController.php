@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TicketApprovalsController
@@ -92,6 +93,60 @@ class TicketApprovalsController extends AbstractController
             'approval' => $approval,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/approvals/{id}/approve", name="ticket_approvals_approve", requirements={"id"="\d+"})
+     * @Security("is_granted('ROLE_USER') and approval.hasApprover(user)")
+     * @param TicketApproval $approval
+     * @return Response
+     * @throws \Exception
+     */
+    public function approveAction(TicketApproval $approval)
+    {
+        $approvalResponse = (new ApprovalResponse())
+            ->setApprover($this->getUser())
+            ->setVote(ApprovalResponse::VOTE_APPROVE)
+        ;
+
+        try {
+            $this->getApprovalManager()->addApprovalResponse(
+                $approval,
+                $approvalResponse,
+                $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
+            );
+        } catch (\DomainException $e) {
+            throw new NotFoundHttpException($e->getMessage(), $e);
+        }
+
+        return $this->redirectToRoute('ticket_approvals_view', ['id' => $approval->getId()]);
+    }
+
+    /**
+     * @Route("/approvals/{id}/reject", name="ticket_approvals_reject", requirements={"id"="\d+"})
+     * @Security("is_granted('ROLE_USER') and approval.hasApprover(user)")
+     * @param TicketApproval $approval
+     * @return Response
+     * @throws \Exception
+     */
+    public function rejectAction(TicketApproval $approval)
+    {
+        $approvalResponse = (new ApprovalResponse())
+            ->setApprover($this->getUser())
+            ->setVote(ApprovalResponse::VOTE_REJECT)
+        ;
+
+        try {
+            $this->getApprovalManager()->addApprovalResponse(
+                $approval,
+                $approvalResponse,
+                $this->getApprovalManager()->createContext(ExecutorContext::METHOD_WEB, $this->getUser())
+            );
+        } catch (\DomainException $e) {
+            throw new NotFoundHttpException($e->getMessage(), $e);
+        }
+
+        return $this->redirectToRoute('ticket_approvals_view', ['id' => $approval->getId()]);
     }
 
     /**
