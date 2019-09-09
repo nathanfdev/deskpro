@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class ApprovalTemplatesController
  *
  * @ApiModes("all")
- * @ApiUserContext("admin")
+ * @ApiUserContext("admin", agent={"list", "get", "count"})
  * @Rest\Route("/approval_templates")
  * @ApiDoc(
  *     target="all",

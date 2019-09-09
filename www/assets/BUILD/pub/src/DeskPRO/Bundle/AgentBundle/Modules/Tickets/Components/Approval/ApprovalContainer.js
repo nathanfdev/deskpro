@@ -2,12 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/people';
-import * as approvalActions from "../../Actions/approvalActions";
-import {Approval} from "./Approval";
+import { allSelectorFactory } from "../../../../../AppBundle/Modules/RecordsStore";
+import * as actions from "../../Actions/approvalRequestActions";
+import { Approval } from "./Approval";
 
 @connect(state => ({
-  people: allPeopleSelector(state),
+  people:    allSelectorFactory('Person')(state),
+  templates: allSelectorFactory('ApprovalTemplate')(state),
 }))
 export class ApprovalContainer extends React.Component {
   static propTypes = {
@@ -17,10 +18,11 @@ export class ApprovalContainer extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       approvals: Immutable.List()
     };
-    this.loadApprovals();
+    this.loadApprovalRequests();
   }
 
   componentWillMount() {
@@ -33,12 +35,12 @@ export class ApprovalContainer extends React.Component {
 
   dpApprovalUpdate = (e) => {
     if (e.detail.ticketId === this.props.ticketId) {
-      this.loadApprovals();
+      this.loadApprovalRequests();
     }
   };
 
-  loadApprovals() {
-    this.props.dispatch(approvalActions.loadApprovals(this.props.ticketId))
+  loadApprovalRequests() {
+    this.props.dispatch(actions.loadApprovalRequests(this.props.ticketId))
       .then((res) => {
         const approvals = Immutable.fromJS(res.data);
         this.setState({

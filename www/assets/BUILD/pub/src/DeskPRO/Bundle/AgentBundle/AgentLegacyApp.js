@@ -309,9 +309,6 @@ class AgentLegacyApp {
   }
 
   renderApprovalTab(node, data) {
-
-    console.log(agentPhrases.getPhrases());
-
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>

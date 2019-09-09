@@ -21,17 +21,12 @@ class TicketRepository extends ApiRepository {
   }
 
   loadApprovals(ticketId, status = null) {
-    let endpoint = `DP_API/${this.url}/${ticketId}/ticket_approvals`;
-
+    let endpoint = `DP_API/${this.url}/${ticketId}/ticket_approvals?count=100`;
     if (status !== null) {
       endpoint += `/${status}`;
     }
 
     return this.api.sendGet(endpoint);
-  }
-
-  loadApprovalTemplates() {
-    return this.api.sendGet(`DP_API_OLD/${this.url}/approval_templates`);
   }
 
   createApprovalRequest(tiketId, record) {

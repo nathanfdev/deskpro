@@ -1,0 +1,24 @@
+.approvals {
+  * {
+    box-sizing: border-box !important;
+  }
+
+  table {
+    width: 100%;
+    margin-bottom: 10px;
+    .delete-follow-up {
+      cursor: pointer;
+    }
+    td:last-child {
+      max-width: 30px;
+    }
+  }
+
+  .errors {
+    background-color: $dp-knuckles-secondary;
+    border: solid 1px $dp-knuckles-midnight;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 10px 20px;
+  }
+}

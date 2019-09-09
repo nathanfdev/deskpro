@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {Container, Button} from "@deskpro/react-components";
-import { injectIntl, FormattedMessage } from 'react-intl';
+import {injectIntl, FormattedMessage, intlShape} from "react-intl";
 import ApprovalTable from "./ApprovalTable";
 import ApprovalForm from "./ApprovalForm";
 
@@ -10,40 +10,64 @@ export class Approval extends React.Component {
   static propTypes = {
     approvals:      PropTypes.object.isRequired,
     people:         PropTypes.object.isRequired,
-    ticketPerms:    PropTypes.object
+    templates:      PropTypes.object.isRequired,
+    ticketPerms:    PropTypes.object,
+    intl:           intlShape.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      displayForm: false
+      showForm: false
     };
   }
 
   render() {
-    const buttonStyle = {
-      float: 'right',
-      marginTop: '10px',
-      marginBottom: '10px'
+    const styles = {
+      button: {
+        float: 'right',
+        marginTop: '10px',
+        marginBottom: '10px'
+      }
     };
+
+    const button = (
+      <Button
+        size="m"
+        style={styles.button}
+        className="dp-btn"
+        onClick={() => this.setState({ showForm: !this.state.showForm })}
+      >
+        <FormattedMessage id={
+          this.state.showForm
+            ? 'agent.tickets.approvals.cancel_make_request'
+            : 'agent.tickets.approvals.make_request'
+        } />
+      </Button>
+    );
 
     return (
       <Container className="approval">
-        {this.state.displayForm ?
-          <ApprovalForm
-            people={this.props.people}
-            ticketPerms={this.props.ticketPerms}
-          />
+        {this.state.showForm ?
+          (<div>
+            <ApprovalForm
+              people={this.props.people}
+              templates={this.props.templates}
+              ticketPerms={this.props.ticketPerms}
+              intl={this.props.intl}
+            />
+            {button}
+          </div>)
           :
-          <ApprovalTable
-            people={this.props.people}
-            approvals={this.props.approvals}
-          />
+          (<div>
+            <ApprovalTable
+              people={this.props.people}
+              approvals={this.props.approvals}
+            />
+            {button}
+          </div>)
         }
-        <Button size="m" style={buttonStyle} className="dp-btn" onClick={this.displayForm}>
-          <FormattedMessage id="agent.tickets.approvals.make_request" />
-        </Button>
       </Container>
     );
   }

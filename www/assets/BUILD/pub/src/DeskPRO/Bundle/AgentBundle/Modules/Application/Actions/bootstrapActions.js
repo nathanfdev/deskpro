@@ -82,6 +82,10 @@ export const preloadData    = createAction(
         batchComponents.ticket_macros  = { endpoint: 'ticket_macros' };
       }
 
+      if (window.DP_HAS_APPROVALS) {
+        batchComponents.approval_templates  = { endpoint: 'approval_templates' };
+      }
+
       if (window.DP_HAS_NEW_FILTERS) {
         batchComponents.ticket_filters     = { endpoint: 'ticket_filters2', query: 'mine=1' };
         batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets', query: 'mine=1' };
@@ -146,6 +150,10 @@ export const preloadData    = createAction(
 
         if (window.DP_HAS_FOLLOW_UP) {
           dispatch(setCollection('TicketMacros', 'all', data.ticket_macros));
+        }
+
+        if (window.DP_HAS_APPROVALS) {
+          dispatch(setCollection('ApprovalTemplate', 'all', data.approval_templates));
         }
 
         if (window.DP_HAS_NEW_FILTERS) {

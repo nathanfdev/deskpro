@@ -1,21 +1,10 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-export const loadApprovals = createAction(
-  'TICKET_LOAD_APPROVALS',
+export const loadApprovalRequests = createAction(
+  'TICKET_LOAD_APPROVAL_REQUESTS',
   (ticketId, params) => new Promise((resolve) => {
     repository('Ticket').loadApprovals(ticketId, params).then((promise) => {
-      const res = promise.getData();
-
-      resolve(res);
-    });
-  })
-);
-
-export const loadApprovalTemplates = createAction(
-  'TICKET_LOAD_APPROVAL_TEMPLATES',
-  () => new Promise((resolve) => {
-    repository('Ticket').loadApprovalTemplates().then((promise) => {
       const res = promise.getData();
 
       resolve(res);
