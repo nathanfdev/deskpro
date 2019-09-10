@@ -201,7 +201,8 @@ define([
         this.account.id = result.email_account_id || this.account.id;
         this.account.is_enabled = this.$scope.form.is_enabled;
         return triggerSaver().then(() => {
-          this.stopSpinner('saving_account', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_account')));
+          this.stopSpinner('saving_account', true)
+            .then(() => this.Growl.success(this.getRegisteredMessage('saved_account')));
           this.form_model.apply();
           this.TicketAccountsData.updateModel(this.account);
           return this.uploadFiles().then(() => {
@@ -216,7 +217,9 @@ define([
       });
       promise.error((info, code) => {
         this.stopSpinner('saving_account', true);
-        if (((info != null ? info.error_code : undefined) === 'invalid_data') && (info != null ? info.error_message : undefined)) {
+        if (((info != null ? info.error_code : undefined) === 'invalid_data') &&
+          (info != null ? info.error_message : undefined)
+        ) {
           return this.showAlert(info.error_message);
         }
         return this.applyErrorResponseToView(info);
@@ -232,7 +235,8 @@ define([
      * @return {promise}
      */
     loadAccountTest() {
-      return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success(result => this.didPassTest = result.is_success);
+      return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData())
+        .success(result => this.didPassTest = result.is_success);
     }
 
 
@@ -388,15 +392,26 @@ define([
       return true;
     }
 
-    getCode(url) {
-      const newWindow = window.open(url, 'name', 'height=600,width=450');
-      if (window.focus) { return newWindow.focus(); }
-    }
+    getCode(url, type) {
+      const gmailAccount = this.$scope.form[`${type}_gmail_account`];
 
+      if (gmailAccount.type === 'oauth') {
+        if (!gmailAccount.client_id || !gmailAccount.client_secret) {
+          this.gmailCredentialsModal(url, type);
+        } else {
+          this.openGmailOAuthWindow(url, type);
+        }
+      }
+    }
 
     getAccessToken(url, type) {
       if (!(this.$scope.form[`${type}_gmail_account`].code || '').length) { return; }
-      url = `${url}?code=${encodeURIComponent(this.$scope.form[`${type}_gmail_account`].code)}`;
+
+      const gmailAccount = this.$scope.form[`${type}_gmail_account`];
+      url = `${url}?code=${encodeURIComponent(gmailAccount.code)}` +
+        `&client_id=${encodeURIComponent(gmailAccount.client_id)}` +
+        `&client_secret=${encodeURIComponent(gmailAccount.client_secret)}`;
+
       return this.$http({ method: 'GET', url }).then((res) => {
         if (res.data != null ? res.data.error : undefined) {
           return this.Growl.error(res.data.error);
@@ -406,6 +421,46 @@ define([
       });
     }
 
+    /**
+     * Show Gmail credentials modal
+     */
+    gmailCredentialsModal(url, type) {
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketAccounts/gmail-credentials-modal.html'),
+        resolve:     {
+          form: () => this.$scope.form
+        },
+        controller: ['$scope', '$modalInstance', 'form', ($scope, $modalInstance, form) => {
+          $scope.dismiss = () => $modalInstance.dismiss();
+          $scope.form = form[`${type}_gmail_account`];
+          console.log('SUBMIT', $scope.submit);
+          $scope.submit = () => {
+            Object.assign(form[`${type}_gmail_account`], $scope.form);
+
+            return $modalInstance.close(true)
+          };
+        }
+        ]
+      });
+
+      inst.result.then(result => {
+        if (!result) return;
+
+        this.openGmailOAuthWindow(url, type);
+      });
+    }
+
+    openGmailOAuthWindow(url, type) {
+      const gmailAccount = this.$scope.form[`${type}_gmail_account`];
+      const newWindow = window.open(
+        `${url}?client_id=${encodeURIComponent(gmailAccount.client_id)}` +
+          `&client_secret=${encodeURIComponent(gmailAccount.client_secret)}`,
+        'name',
+        'height=600,width=450'
+      );
+
+      if (window.focus) { return newWindow.focus(); }
+    }
 
     onFileSelect(files, type) {
       if (!this.$scope.files) {
@@ -429,7 +484,11 @@ define([
         }
         return this.$upload.upload({
           url:  this.Api2.formatUrl(`/email_accounts/${this.form_model.account.id}/encryption`),
-          data: { cert: this.$scope.files.certificate, key: this.$scope.files.key, pass_phrase: this.form_model.form.key_pass_phrase }
+          data: {
+            cert: this.$scope.files.certificate,
+            key: this.$scope.files.key,
+            pass_phrase: this.form_model.form.key_pass_phrase
+          }
         }).success((data) => {
           this.setCertificate(data.data.cert_blob);
           this.setKey(data.data.key_blob);
@@ -452,9 +511,33 @@ define([
       return this.$scope.form.key_file = blob.filename;
     }
 
+    setGmailOAuthType(accountType, clientId = '', clientSecret = '') {
+      const accountKey = `${accountType}_gmail_account`;
+
+      this.$scope.form[accountKey].type = 'oauth';
+      this.$scope.form[accountKey].client_id = this.$scope.form[accountKey].client_id || clientId;
+      this.$scope.form[accountKey].client_secret = this.$scope.form[accountKey].client_secret || clientSecret;
+    }
+
+    isGmailOAuthSettingsShown() {
+      if (!this.$scope.form) return false;
+
+      return (
+          this.$scope.form.account_type === 'tickets' &&
+          this.$scope.form.incoming_type === 'gmail' &&
+          this.$scope.form.in_gmail_account.type === 'oauth'
+        ) ||
+        (
+          this.$scope.form.account_type === 'outgoing' &&
+          this.$scope.form.outgoing_type === 'gmail' &&
+          this.$scope.form.out_gmail_account.type === 'oauth'
+        )
+    }
+
     deleteCertificate() {
       if (this.form_model.account.cert_blob) {
-        return this.Api2.sendDelete(`/email_accounts/${this.form_model.account.id}/certificate`).success(() => this.$scope.form.cert_file = null);
+        return this.Api2.sendDelete(`/email_accounts/${this.form_model.account.id}/certificate`)
+          .success(() => this.$scope.form.cert_file = null);
       }
       this.$scope.files.certificate = null;
       return this.$scope.form.cert_file = null;
@@ -463,7 +546,8 @@ define([
 
     deleteKey() {
       if (this.form_model.account.cert_blob) {
-        return this.Api2.sendDelete(`/email_accounts/${this.form_model.account.id}/key`).success(() => this.$scope.form.key_file = null);
+        return this.Api2.sendDelete(`/email_accounts/${this.form_model.account.id}/key`)
+          .success(() => this.$scope.form.key_file = null);
       }
       this.$scope.files.key = null;
       return this.$scope.form.key_file = null;

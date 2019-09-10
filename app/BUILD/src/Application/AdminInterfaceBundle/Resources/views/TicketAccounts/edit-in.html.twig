@@ -22,7 +22,7 @@
 				<option value="imap">IMAP</option>
 				<option value="pop3">POP3</option>
 				<option value="gmail">GMail or Google Apps</option>
-        <option value="office365_exchange">Office365 (Exchange)</option>
+				<option value="office365_exchange">Office365 (Exchange)</option>
 				<option value="office365">Office365 (POP3/SMTP)</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
@@ -209,7 +209,10 @@
 					<tr ng-show="form.in_gmail_account.type === 'oauth' && !form.in_gmail_account.token && !form.in_gmail_account.code">
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.getCode('{{ path('gmail_access_code') }}')">
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getCode('{{ path('gmail_access_code') }}', 'in')"
+							>
 								Get Access Code
 							</button>
 						</td>
@@ -225,7 +228,10 @@
 						<td>
 							<input type="hidden" ng-model="form.in_gmail_account.token" />
 							<input type="hidden" ng-model="form.in_gmail_account.refreshToken" />
-							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.getAccessToken('{{ path('gmail_token') }}', 'in')">
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getAccessToken('{{ path('gmail_token') }}', 'in')"
+							>
 								Get Access Token
 							</button>
 						</td>
@@ -255,17 +261,14 @@
 								Use POP3 instead
 							</button>
 						</td>
-						{% if
-							app.getSetting('core_email.google_oauth_client_id')
-							and
-							app.getSetting('core_email.google_oauth_secret')
-						%}
 						<td ng-show="form.in_gmail_account.type === 'pop3'">
-							<button class="btn btn-warning" type="button" ng-click="form.in_gmail_account.type = 'oauth'">
+							<button class="btn btn-warning"
+									type="button"
+									ng-click="TicketAccountsEdit.setGmailOAuthType('in', '{{ app.getSetting('core_email.google_oauth_client_id', '') }}', '{{ app.getSetting('core_email.google_oauth_secret', '') }}')"
+							>
 								Use OAuth instead
 							</button>
 						</td>
-						{% endif %}
 					</tr>
 					<tr ng-show="form.in_gmail_account.type === 'pop3' || form.in_gmail_account.token">
 						<th>&nbsp;</th>
@@ -284,7 +287,7 @@
 		<div class="ng-hide" ng-show="form.incoming_type == 'office365_exchange'">
 			{% if server_capable('soap') %}
 				<div class="inner-group">
-          <br/><br/>
+				<br/><br/>
 					<div class="alert alert-info">
 						<p>
 							This is the recommended option for connecting to Office365 accounts
