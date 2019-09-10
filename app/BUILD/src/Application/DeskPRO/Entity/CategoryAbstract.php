@@ -100,6 +100,11 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     protected $icon_property;
 
     /**
+     * @var string
+     */
+    protected $color;
+
+    /**
      * {@inheritdoc}
      */
     public function getId()
@@ -359,6 +364,26 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     public function setIcon($iconProperty)
     {
         $this->setModelField('icon_property', $iconProperty);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     *
+     * @return CategoryAbstract
+     */
+    public function setColor($color)
+    {
+        $this->setModelField('color', $color);
 
         return $this;
     }

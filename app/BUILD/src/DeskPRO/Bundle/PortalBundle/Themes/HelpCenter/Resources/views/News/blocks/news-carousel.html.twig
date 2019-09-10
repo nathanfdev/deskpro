@@ -16,7 +16,7 @@
                     <div class="dp-po-news-carousel-cover">
                         {#            <img src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/news.png"#}
                         {#                 class="dp-po-news-carousel-photo img-fluid" />#}
-                        <span class="badge badge-info">{{ object_phrase(item.category) }}</span>
+                        <span class="badge badge-info" style="{{ category_color_css(item.category) }}">{{ object_phrase(item.category) }}</span>
                         {#            Person there if banner#}
                         {#            {% if item.person %}#}
                         {#              <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />#}
