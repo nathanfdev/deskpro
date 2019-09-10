@@ -369,20 +369,27 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     }
 
     /**
+     * @param bool $withHash
+     *
      * @return string
      */
-    public function getColor()
+    public function getColor($withHash = true)
     {
+        if ($withHash && $this->color) {
+            return '#'.$this->color;
+        }
+
         return $this->color;
     }
 
     /**
      * @param string $color
      *
-     * @return CategoryAbstract
+     * @return $this
      */
     public function setColor($color)
     {
+        $color = str_replace('#', '', $color);
         $this->setModelField('color', $color);
 
         return $this;

@@ -3032,6 +3032,7 @@ agent.general.click_learn_more: 'Click here to learn more'
 agent.general.click_to_upload_picture: 'Click to upload a new picture'
 agent.general.close_lc: close
 agent.general.close_tab: 'Close Tab'
+agent.general.color: Color
 agent.general.comment: Comment
 agent.general.comments: Comments
 agent.general.compare: Compare

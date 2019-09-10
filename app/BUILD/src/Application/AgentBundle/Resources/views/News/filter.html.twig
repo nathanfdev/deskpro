@@ -87,6 +87,38 @@
 {##################################}
 
 {% if category %}
+	<style>
+		.picker {
+			display: table-row;
+			height: 25px;
+			list-style: none;
+		}
+		.picker li {
+			display: table-cell;
+			width: 25px;
+		}
+		.picker-color {
+			display: block;
+			width: 25px;
+			height: 25px;
+			text-align: center;
+			cursor: pointer;
+		}
+		label[for="picker-input"] {
+			position: absolute;
+			display: block;
+			top: 8px;
+			left: 13px;
+			height: 19px;
+			width: 19px;
+			border-radius: 2px;
+			cursor: pointer;
+			z-index: 1;
+		}
+		#picker-input {
+			padding-left: 30px;
+		}
+	</style>
 <div class="list-listing {% if not perms.can_delete %}perm-no-delete{% endif %} {% if not perms.can_edit %}perm-no-edit{% endif %}">
 <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
@@ -115,6 +147,36 @@
 								<input type="text" name="category[title]"
 									   autocomplete="{{ "now" | date("U") }}"
 									   value="{{ category.title }}" {% if not perms.can_edit %} disabled {% endif %} />
+							</td>
+						</tr>
+						<tr>
+							<th width="100">{{ phrase('agent.general.color') }}</th>
+							<td style="position: relative" id="{{ tplvars.baseId }}_color_picker">
+								<label for="picker-input" style="background-color: {{ category.color }}"></label>
+								<input
+										id="picker-input"
+										type="text"
+										name="category[color]"
+										autocomplete="{{ "now" | date("U") }}"
+										value="{{ category.color }}" {% if not perms.can_edit %} disabled {% endif %} />
+								<div style="position: absolute; display:none" class="picker-modal">
+									<ul class="picker">
+										{% for color in colors|slice(0, colors|length / 2) %}
+										<li>
+											<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
+											</span>
+										</li>
+										{% endfor %}
+									</ul>
+									<ul class="picker">
+										{% for color in colors|slice(colors|length / 2, colors|length / 2) %}
+											<li>
+											<span data-color="{{ color }}" class="picker-color" style="background-color: {{ color }}">
+											</span>
+											</li>
+										{% endfor %}
+									</ul>
+								</div>
 							</td>
 						</tr>
 						<tr class="vtop">
