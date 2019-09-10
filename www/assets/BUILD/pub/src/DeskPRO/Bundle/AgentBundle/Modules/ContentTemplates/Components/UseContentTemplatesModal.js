@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Modal, Select, Button } from '@deskpro/react-components';
 import { FormattedMessage } from 'react-intl';
-import $ from 'jquery';
 import { allContentTemplatesSelector } from '../Selectors/contentTemplates';
-import { loadContentTemplates } from '../Actions/contentTemplateActions';
+import { loadContentTemplates, openContentTemplate } from '../Actions/contentTemplateActions';
 
 @connect(state => ({
   contentTemplates: allContentTemplatesSelector(state)
@@ -13,7 +12,6 @@ import { loadContentTemplates } from '../Actions/contentTemplateActions';
 class UseContentTemplatesModalContainer extends React.Component {
 
   static propTypes = {
-    type:             PropTypes.string,
     contentTemplates: PropTypes.object,
     dispatch:         PropTypes.func,
     closeMenu:        PropTypes.func
@@ -31,7 +29,7 @@ class UseContentTemplatesModalContainer extends React.Component {
   }
 
   createFromTemplate = () => {
-    const { type, closeMenu, contentTemplates } = this.props;
+    const { dispatch, closeMenu, contentTemplates } = this.props;
     const { selectedTemplate } = this.state;
     if (!selectedTemplate) {
       return;
@@ -42,29 +40,7 @@ class UseContentTemplatesModalContainer extends React.Component {
       return;
     }
 
-    const setFormFields = (page) => {
-      contentTemplate.get('template').forEach((field) => {
-        const $el = $(page.form).find(`[name="${field.get('name')}"]`);
-        if ($el.is('textarea')) {
-          if ($el.closest('.fr-box')) {
-            $el.froalaEditor('html.set', field.get('value'));
-          } else {
-            $el.html(field.get('value')).trigger('change');
-          }
-        } else if ($el.is(':checkbox, :radio')) {
-          $el.each((i, v) => {
-            $(v).attr('checked', field.get('value') === $(v).val());
-          });
-        } else {
-          $el.val(field.get('value')).trigger('change');
-        }
-      });
-    };
-
-    if (type === 'article') {
-      window.DeskPRO_Window.newArticleLoader.open(setFormFields);
-    }
-
+    dispatch(openContentTemplate(contentTemplate));
     closeMenu();
   };
 
