@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Modal, Select, Button } from '@deskpro/react-components';
 import { FormattedMessage } from 'react-intl';
 import { allContentTemplatesSelector } from '../Selectors/contentTemplates';
-import { loadContentTemplates, openContentTemplate } from '../Actions/contentTemplateActions';
+import { loadContentTemplates, openNewContentPage } from '../Actions/contentTemplateActions';
 
 @connect(state => ({
   contentTemplates: allContentTemplatesSelector(state)
@@ -40,7 +40,7 @@ class UseContentTemplatesModalContainer extends React.Component {
       return;
     }
 
-    dispatch(openContentTemplate(contentTemplate));
+    dispatch(openNewContentPage(contentTemplate));
     closeMenu();
   };
 
@@ -76,7 +76,7 @@ class UseContentTemplatesModal extends React.Component {
   getModalTitle = () => {
     const { type } = this.props;
     if (type === 'article') {
-      return <FormattedMessage id="agent.general.create_article_from_template" />;
+      return <FormattedMessage id="agent.content_templates.create_article_from_template" />;
     }
 
     return '';

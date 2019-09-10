@@ -7,9 +7,10 @@ import { FormattedMessage } from 'react-intl';
 import { List } from 'react-virtualized';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import Loader from '@deskpro/react-loader';
+import { Modal, Label, Button, ConfirmButton, Input } from '@deskpro/react-components';
 import $ from 'jquery';
 import { allContentTemplatesSelector, isContentTemplatesLoadedSelector } from '../Selectors/contentTemplates';
-import { loadContentTemplates } from '../Actions/contentTemplateActions';
+import { editContentTemplate, deleteContentTemplate, loadContentTemplates, openContentTemplateEditor } from '../Actions/contentTemplateActions';
 
 @connect(state => ({
   contentTemplates:       allContentTemplatesSelector(state),
@@ -27,10 +28,12 @@ class ManageContentTemplatesModalContainer extends React.Component {
     this.state = {
       height: 0
     };
+
+    window.ManageContentTemplatesModal = this;
   }
 
   componentDidMount() {
-    this.props.dispatch(loadContentTemplates(true));
+    this.reloadTemplates();
     this.updateWindowDimensions();
     window.addEventListener('resize', () => {
       if (!this.ticking) {
@@ -43,10 +46,30 @@ class ManageContentTemplatesModalContainer extends React.Component {
     });
   }
 
+  reloadTemplates = () => {
+    this.props.dispatch(loadContentTemplates(true));
+  };
+
   updateWindowDimensions = () => {
     this.setState({
       height: window.innerHeight - $('.left-drawer .header').height()
     });
+  };
+
+  editTemplate = (contentTemplate) => {
+    this.props.dispatch(openContentTemplateEditor(contentTemplate));
+  };
+
+  updateTemplate = (editTemplate) => {
+    if (!editTemplate) {
+      return;
+    }
+
+    this.props.dispatch(editContentTemplate(editTemplate.id, editTemplate.data));
+  };
+
+  deleteTemplate = (contentTemplate) => {
+    this.props.dispatch(deleteContentTemplate(contentTemplate.get('id')));
   };
 
   render() {
@@ -55,6 +78,9 @@ class ManageContentTemplatesModalContainer extends React.Component {
         {...this.props}
         {...this.state}
         ref={(c) => { this.modal = c; }}
+        editTemplate={this.editTemplate}
+        updateTemplate={this.updateTemplate}
+        deleteTemplate={this.deleteTemplate}
       />
     );
   }
@@ -67,7 +93,10 @@ class ManageContentTemplatesModal extends React.Component {
     height:                 PropTypes.number,
     closeMenu:              PropTypes.func,
     contentTemplates:       PropTypes.object,
-    contentTemplatesLoaded: PropTypes.bool
+    contentTemplatesLoaded: PropTypes.bool,
+    editTemplate:           PropTypes.func,
+    updateTemplate:         PropTypes.func,
+    deleteTemplate:         PropTypes.func
   };
 
   static noRowsRenderer() {
@@ -83,6 +112,10 @@ class ManageContentTemplatesModal extends React.Component {
   constructor(props) {
     super(props);
     this.rowRenderer = this.rowRenderer.bind(this);
+    this.state = {
+      confirmDeletion: null,
+      editTemplate:    null
+    };
   }
 
   componentDidMount() {
@@ -97,12 +130,8 @@ class ManageContentTemplatesModal extends React.Component {
     }
   }
 
-  editTemplate = () => {};
-  renameTemplate = () => {};
-  deleteTemplate = () => {};
-
   rowRenderer({ key, index, style }) {
-    const { contentTemplates, agents } = this.props;
+    const { contentTemplates, agents, editTemplate } = this.props;
     const contentTemplate = contentTemplates.toArray()[index];
     if (!contentTemplate) {
       return null;
@@ -113,15 +142,67 @@ class ManageContentTemplatesModal extends React.Component {
         contentTemplate={contentTemplate}
         style={style}
         agents={agents}
-        editTemplate={this.editTemplate}
-        renameTemplate={this.renameTemplate}
-        deleteTemplate={this.deleteTemplate}
+        editTemplate={editTemplate}
+        renameTemplate={this.showEditModal}
+        deleteTemplate={this.showDeleteConfirmation}
       />
     );
   }
 
+  showDeleteConfirmation = (contentTemplate) => {
+    this.setState({
+      confirmDeletion: contentTemplate
+    });
+  };
+
+  confirmDeletion = () => {
+    this.props.deleteTemplate(this.state.confirmDeletion);
+    this.setState({
+      confirmDeletion: null
+    });
+  };
+
+  showEditModal = (contentTemplate) => {
+    this.setState({
+      confirmDeletion: null,
+      editTemplate:    {
+        id:   contentTemplate.get('id'),
+        data: {
+          title: contentTemplate.get('title')
+        }
+      }
+    });
+  };
+
+  changeEditTemplateTitle = (newTitle) => {
+    this.setState({
+      editTemplate: {
+        ...this.state.editTemplate,
+        data: {
+          title: newTitle
+        }
+      }
+    });
+  };
+
+  updateTemplate = () => {
+    this.props.updateTemplate(this.state.editTemplate);
+    this.setState({
+      editTemplate: null
+    });
+  };
+
+  cancelModal = () => {
+    this.setState({
+      confirmDeletion: null,
+      editTemplate:    null
+    });
+  };
+
   render() {
     const { closeMenu, contentTemplates, contentTemplatesLoaded } = this.props;
+    const { confirmDeletion, editTemplate } = this.state;
+
     let { height } = this.props;
     if (isNaN(height)) {
       height = 400;
@@ -129,6 +210,62 @@ class ManageContentTemplatesModal extends React.Component {
 
     return (
       <div id="snippets__menu">
+        <div id="content_template__modal">
+          {confirmDeletion &&
+          <Modal
+            title={<FormattedMessage id="agent.general.confirm_deletion" />}
+            closeModal={this.cancelModal}
+            buttons={
+              <div>
+                <Button type="secondary" size="large" className="right" onClick={this.cancelModal}>
+                  <FormattedMessage id="agent.general.cancel" />
+                </Button>
+                <ConfirmButton
+                  type="secondary"
+                  size="large"
+                  className="right"
+                  onClick={this.confirmDeletion}
+                  message={<FormattedMessage id="agent.general.are_you_sure" />}
+                >
+                  <FormattedMessage id="agent.general.delete" />
+                </ConfirmButton>
+              </div>
+            }
+          >
+            Do you really want to delete this template? This cannot be undone.
+          </Modal>}
+          {editTemplate &&
+          <Modal
+            title={<FormattedMessage id="agent.content_templates.edit_template" />}
+            closeModal={this.cancelModal}
+            buttons={
+              <div>
+                <Button type="secondary" size="large" className="right" onClick={this.cancelModal}>
+                  <FormattedMessage id="agent.general.cancel" />
+                </Button>
+                <Button
+                  type="secondary"
+                  size="large"
+                  className="right"
+                  onClick={this.updateTemplate}
+                >
+                  <FormattedMessage id="agent.general.save" />
+                </Button>
+              </div>
+            }
+          >
+            <Label htmlFor="content_template_title">
+              <FormattedMessage id="agent.general.title" />
+            </Label>
+            <Input
+              id="content_template_title"
+              type="text"
+              value={editTemplate.data.title}
+              onChange={this.changeEditTemplateTitle}
+            />
+          </Modal>}
+        </div>
+
         <div className="header">
           <div className="search">
             <a className="close-icon" onClick={closeMenu}>
@@ -139,7 +276,7 @@ class ManageContentTemplatesModal extends React.Component {
             </a>
           </div>
           <div className="top">
-            <h1><FormattedMessage id="agent.general.manage_templates" /></h1> <span className="count">({contentTemplates.size})</span>
+            <h1><FormattedMessage id="agent.content_templates.manage_templates" /></h1> <span className="count">({contentTemplates.size})</span>
           </div>
         </div>
         <div className="body">
@@ -177,21 +314,21 @@ class ContentTemplateItem extends React.Component {
     event.preventDefault();
 
     const { contentTemplate, editTemplate } = this.props;
-    editTemplate(contentTemplate.get('id'));
+    editTemplate(contentTemplate);
   };
 
   renameTemplate = (event) => {
     event.preventDefault();
 
     const { contentTemplate, renameTemplate } = this.props;
-    renameTemplate(contentTemplate.get('id'));
+    renameTemplate(contentTemplate);
   };
 
   deleteTemplate = (event) => {
     event.preventDefault();
 
     const { contentTemplate, deleteTemplate } = this.props;
-    deleteTemplate(contentTemplate.get('id'));
+    deleteTemplate(contentTemplate);
   };
 
   render() {

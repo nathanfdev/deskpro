@@ -27,6 +27,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
     $('button.submit-template-trigger', this.wrapper).on('click', this.submitTemplate.bind(this));
+    $('button.submit-template-update-trigger', this.wrapper).on('click', this.submitTemplateUpdate.bind(this));
 
     if (window.DP_HAS_NEW_CONTENT_EDITOR) {
       this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
@@ -212,6 +213,10 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
             $('.is-not-loading', overlayEl).show();
             $('.success', overlayEl).show();
             $('.is-loading', overlayEl).hide();
+
+            if (window.ManageContentTemplatesModal) {
+              window.ManageContentTemplatesModal.reloadTemplates();
+            }
           },
           error: function() {
             $('.is-not-loading', overlayEl).show();
@@ -221,6 +226,38 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
       });
     }
     this.overlay.open();
+  },
+
+  submitTemplateUpdate: function() {
+    var formData = this.collectFormData();
+    var data = {
+      "template": formData
+    };
+
+    $('div.error.section', this.wrapper).removeClass('error');
+    $('.error-message-on', this.wrapper).removeClass('error-message-on');
+
+    this.stateSaver.stop();
+    this.stateSaver.resetState();
+    this.wrapper.addClass('loading');
+
+    var self = this;
+    var wrapper = this.wrapper;
+
+    $.ajax({
+      url:  DP_BASE_API_URL + "/v2/content_templates/"+this.meta.contentTemplateId,
+      type: 'PUT',
+      data: data,
+      dataType: 'json',
+      complete: function() {
+        wrapper.removeClass('loading');
+        if (window.ManageContentTemplatesModal) {
+          window.ManageContentTemplatesModal.reloadTemplates();
+        }
+
+        self.closeSelf();
+      }
+    });
   },
 
   collectFormData: function() {

@@ -2945,9 +2945,6 @@ agent.general.archive: Archive
 agent.general.are_you_sure: 'Are you sure?'
 agent.general.article: Article
 agent.general.articles: Articles
-agent.general.templates_menu: 'Templates'
-agent.general.create_article_from_template: 'Create Article From Template'
-agent.general.manage_templates: 'Manage Templates'
 agent.general.ask_delete_selected: 'Are you sure you would like to delete the selected items?'
 agent.general.assign: Assign
 agent.general.assign_agent: 'Assign Agent'
@@ -3042,6 +3039,7 @@ agent.general.comparing_revisions: 'Comparing Revisions'
 agent.general.comparison: Comparison
 agent.general.complete: Complete
 agent.general.confirm: Confirm
+agent.general.confirm_deletion: Confirm deletion
 agent.general.contact_address: 'Contact Address'
 agent.general.contact_instant_messaging: 'Contact Instant Messaging'
 agent.general.contact_phone: 'Contact Phone'
@@ -5574,6 +5572,11 @@ agent.voice.call_user_joined: 'User {{person}} joined the call'
 agent.voice.call_user_left: 'User {{person}} left the call'
 agent.voice.incoming_call_title: 'Inbound call record'
 agent.voice.outgoing_call_title: 'Outbound call record'
+agent.content_templates.templates: 'Templates'
+agent.content_templates.create_article_from_template: 'Create Article From Template'
+agent.content_templates.manage_templates: 'Manage Templates'
+agent.content_templates.edit_template: 'Edit Template'
+agent.content_templates.update_template: 'Update Template'
 api.error_codes.accept_failed_upload: 'There was a problem uploading this file. Please try again.'
 api.error_codes.accept_no_file: 'You cannot upload an empty file.'
 api.error_codes.accept_not_allowed_exts: 'You cannot upload a file with any of the following file extensions: {{detail}}'
