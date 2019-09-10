@@ -433,7 +433,6 @@ define([
         controller: ['$scope', '$modalInstance', 'form', ($scope, $modalInstance, form) => {
           $scope.dismiss = () => $modalInstance.dismiss();
           $scope.form = form[`${type}_gmail_account`];
-          console.log('SUBMIT', $scope.submit);
           $scope.submit = () => {
             Object.assign(form[`${type}_gmail_account`], $scope.form);
 
