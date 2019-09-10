@@ -38,6 +38,17 @@ class Guide extends DomainObject
     protected $title;
 
     /**
+     * Category`s description.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups("list")
+     *
+     * @var string
+     */
+    protected $description;
+
+    /**
      * @JMS\Expose()
      * @JMS\Type("string")
      * @JMS\Groups("list")
@@ -257,6 +268,26 @@ class Guide extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->setModelField('description', $description);
+
+        return $this;
+    }
+
+    /**
      * @JMS\VirtualProperty()
      */
     public function getGuidePdf()
@@ -309,6 +340,17 @@ class Guide extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'title',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'description',
+                'type'       => 'text',
+                'length'     => 255,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'description',
             ]
         );
         $metadata->mapField(
