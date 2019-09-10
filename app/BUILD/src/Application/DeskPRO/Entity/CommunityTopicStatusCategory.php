@@ -156,7 +156,11 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
      */
     public function getColor()
     {
-        return $this->color;
+        if ($this->color) {
+            return '#'.$this->color;
+        }
+
+        return '';
     }
 
     /**
@@ -166,6 +170,7 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
      */
     public function setColor($color)
     {
+        $color = str_replace('#', '', $color);
         $this->setModelField('color', $color);
 
         return $this;

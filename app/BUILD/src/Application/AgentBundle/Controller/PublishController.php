@@ -924,6 +924,13 @@ class PublishController extends AbstractController
                 $this->db->update($table, $changes, ['id' => $cat->getId()]);
             }
 
+            if ($type === 'news') {
+                $cat->setColor($this->in->getString('category.color'));
+                $this->db->update($table, [
+                    'color' => $cat->getColor(false),
+                ], ['id' => $cat->id]);
+            }
+
             $this->db->delete($permTable, [$categoryField => $cat->id]);
 
             // Everyone implies all groups
