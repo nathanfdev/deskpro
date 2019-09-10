@@ -71,6 +71,14 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
     protected $title;
 
     /**
+     * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
+    protected $color;
+
+    /**
      * @var int
      */
     protected $display_order = 0;
@@ -139,6 +147,26 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
     public function setStatusType($string)
     {
         $this->setModelField('status_type', $string);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     *
+     * @return CommunityTopicStatusCategory
+     */
+    public function setColor($color)
+    {
+        $this->setModelField('color', $color);
 
         return $this;
     }
@@ -288,6 +316,17 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'display_order',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'color',
+                'type'       => 'string',
+                'length'     => 6,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'color',
             ]
         );
         $metadata->mapManyToOne(

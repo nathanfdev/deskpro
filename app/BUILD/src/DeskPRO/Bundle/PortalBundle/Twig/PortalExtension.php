@@ -8,6 +8,8 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
@@ -140,6 +142,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
+            new \Twig_SimpleFunction('category_color_css', [$this, 'categoryColorCss']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -625,6 +628,19 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function canLogin()
     {
         return $this->container->get('dp_authentication_manager.user')->isAuthVisible();
+    }
+
+    /**
+     * @param CategoryAbstract|CommunityTopicStatusCategory $category
+     */
+    public function categoryColorCss($category)
+    {
+        if (!($category instanceof CategoryAbstract) && !($category instanceof CommunityTopicStatusCategory)) {
+            throw new \InvalidArgumentException('the category_color_css twig function requires one of: CategoryAbstract or CommunityTopicStatusCategory but did not get one');
+        }
+        if ($category->getColor()) {
+            return 'background-color: #'.$category->getColor().';';
+        }
     }
 
     /**
