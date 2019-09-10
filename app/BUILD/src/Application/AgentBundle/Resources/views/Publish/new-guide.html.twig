@@ -35,6 +35,12 @@ pageMeta.baseId = '{{ baseId }}';
 						</td>
 					</tr>
 					<tr>
+						<th width="120">{{ phrase('agent.general.description') }}</th>
+						<td>
+							<input type="text" name="category[description]" autocomplete="{{ "now" | date("U") }}" style="width: 200px;" />
+						</td>
+					</tr>
+					<tr>
 						<th width="80">{{ phrase('agent.general.permissions') }}</th>
 						<td>
 							<ul>

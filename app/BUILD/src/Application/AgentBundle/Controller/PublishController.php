@@ -885,6 +885,10 @@ class PublishController extends AbstractController
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
         ];
 
+        if ($type === 'topics') {
+            $saveCategory['description'] = $this->in->getString('category.description') ?: '';
+        }
+
         $saveStructure = $this->in->getRaw('category_structure');
         if ($saveStructure) {
             $saveStructure = @json_decode($saveStructure, true);
@@ -912,12 +916,12 @@ class PublishController extends AbstractController
             }
 
             if ($type === 'topics') {
-                $brandId = $this->in->getUInt('category.brand_id');
+                $brandId                = $this->in->getUInt('category.brand_id');
+                $changes['description'] = $saveCategory['description'];
                 if ($brandId && $cat->getBrand()->getId() !== $brandId) {
-                    $this->db->update($table, [
-                        'brand_id' => $brandId,
-                    ], ['id' => $cat->getId()]);
+                    $changes['brand_id'] = $brandId;
                 }
+                $this->db->update($table, $changes, ['id' => $cat->getId()]);
             }
 
             $this->db->delete($permTable, [$categoryField => $cat->id]);
@@ -1112,6 +1116,9 @@ class PublishController extends AbstractController
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
             'brand_id'   => $this->in->getUInt('category.brand_id'),
         ];
+        if ($type === 'guide') {
+            $saveCategory['description'] = $this->in->getString('category.description') ?: '';
+        }
 
         $parentCat = null;
         if ($saveCategory['parent_id']) {
@@ -1130,6 +1137,9 @@ class PublishController extends AbstractController
         }
         if ($parentCat) {
             $cat->parent = $parentCat;
+        }
+        if ($type === 'guide') {
+            $cat->setDescription($saveCategory['description']);
         }
         $this->em->persist($cat);
         $this->em->flush();
