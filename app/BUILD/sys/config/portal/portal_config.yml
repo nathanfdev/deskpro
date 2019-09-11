@@ -109,6 +109,7 @@ security:
                 require_previous_session: false
                 remember_me: true
                 default_target_path: /
+                always_use_default_target_path: false
                 target_path_parameter: _destination
                 use_referer: false
             anonymous:

@@ -20,3 +20,15 @@ Feature: Login
   Scenario: I login as admin
     When I login with admin credentials from the login page
     Then I should be authenticated as admin
+
+  Scenario: If I try to access a secured resource then I must be redirected to that resource after login
+    Given the following tickets exist:
+      | who  | subject        | ref            | status  |
+      | user | My Test Ticket | YOMG-1633-MDDC | pending |
+    When I am not logged in
+    And I go to "/tickets/YOMG-1633-MDDC"
+    Then I should be on "/login"
+    When I fill in "username" with "user@deskpro.dev"
+    And I fill in "password" with "12345"
+    And I press "login_button"
+    Then I should be on "/tickets/YOMG-1633-MDDC"
