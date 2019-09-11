@@ -39,7 +39,6 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
     /**
      * @var array
      * @ORM\Column(name="options", type="json_array")
-     * @Assert\NotNull()
      */
     protected $options;
 
