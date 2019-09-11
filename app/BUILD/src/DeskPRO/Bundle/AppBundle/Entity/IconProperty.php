@@ -39,7 +39,6 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
     /**
      * @var array
      * @ORM\Column(name="options", type="json_array")
-     * @Assert\NotNull()
      */
     protected $options;
 
@@ -81,7 +80,7 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
      */
     public function getUrnNs()
     {
-        return $this->urn;
+        return implode(':', array_slice(explode(':', $this->urn), 0, -1));
     }
 
     /**
@@ -89,7 +88,9 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
      */
     public function getUrnPath()
     {
-        return $this->urn;
+        $parts = explode(':', $this->urn);
+
+        return $parts[count($parts) - 1];
     }
 
     /**

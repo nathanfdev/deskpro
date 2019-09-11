@@ -10,3 +10,6 @@ services:
 
   news.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\NewsRenderer
+
+  portal_icon.renderer:
+    class: DeskPRO\Bundle\AppBundle\Renderer\PortalIconRenderer
