@@ -141,8 +141,7 @@ class SsoListener implements EventSubscriberInterface
             }
         }
 
-        $returnUrl = $request->get('return') ?: $request->getUri();
-        if (!$request->isXmlHttpRequest() && $returnUrl) {
+        if (!$request->isXmlHttpRequest() && $returnUrl = $request->get('return')) {
             $session->set('_security.portal.target_path', $returnUrl);
         }
 

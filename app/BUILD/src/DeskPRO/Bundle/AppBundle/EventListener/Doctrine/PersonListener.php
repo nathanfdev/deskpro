@@ -3,27 +3,44 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\PostFlushEventArgs;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class PersonListener.
  */
-class PersonListener
+class PersonListener implements EventSubscriber
 {
     /**
-     * @var DefaultBrandFinder
+     * @var ContainerInterface
      */
-    private $defaultBrandFinder;
+    private $container;
+
+    /**
+     * @var Person[]
+     */
+    private $updateQueue = [];
 
     /**
      * Constructor.
      *
-     * @param DefaultBrandFinder $defaultBrandFinder
+     * @param ContainerInterface $container
      */
-    public function __construct(DefaultBrandFinder $defaultBrandFinder)
+    public function __construct(ContainerInterface $container)
     {
-        $this->defaultBrandFinder = $defaultBrandFinder;
+        $this->container = $container;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSubscribedEvents()
+    {
+        return [
+            'postFlush',
+            'onClear',
+        ];
     }
 
     /**
@@ -35,16 +52,11 @@ class PersonListener
     }
 
     /**
-     * @param Person             $entity
-     * @param LifecycleEventArgs $args
+     * @param Person $entity
      */
-    public function preUpdate(Person $entity, LifecycleEventArgs $args)
+    public function preUpdate(Person $entity)
     {
         $this->verifyBrand($entity);
-
-        $em   = $args->getEntityManager();
-        $meta = $em->getClassMetadata(get_class($entity));
-        $em->getUnitOfWork()->computeChangeSet($meta, $entity);
     }
 
     /**
@@ -53,11 +65,33 @@ class PersonListener
     private function verifyBrand(Person $entity)
     {
         if (!count($entity->getBrands())) {
+            $this->updateQueue[] = $entity;
+        }
+    }
+
+    public function onClear()
+    {
+        $this->updateQueue = [];
+    }
+
+    /**
+     * @param PostFlushEventArgs $args
+     */
+    public function postFlush(PostFlushEventArgs $args)
+    {
+        if ($this->updateQueue) {
             // person should have at least one brand
             // set a default one
-            $brand = $this->defaultBrandFinder->getDefaultBrand();
+            $em    = $args->getEntityManager();
+            $brand = $this->container->get('default_brand_finder')->getDefaultBrand();
             if ($brand) {
-                $entity->addBrand($brand);
+                foreach ($this->updateQueue as $entity) {
+                    $entity->addBrand($brand);
+                    $em->persist($entity);
+                }
+
+                $this->updateQueue = [];
+                $em->flush();
             }
         }
     }

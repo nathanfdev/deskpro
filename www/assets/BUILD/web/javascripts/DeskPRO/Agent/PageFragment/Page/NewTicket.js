@@ -939,7 +939,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				self.wrapper.removeClass('loading');
+			  if (self.wrapper) {
+          self.wrapper.removeClass('loading');
+        }
+
 				self.getEl('send_btn').show();
 				self.getEl('send_loading').hide();
 			},
@@ -987,7 +990,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 					}
 					this.closeSelf();
-					this.draft.reset();
+					if (this.draft) {
+            this.draft.reset();
+          }
 				}
 			},
 			error: function(xhr) {

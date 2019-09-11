@@ -53,7 +53,7 @@
   pageMeta.person_id = {{ ticket.person.id }};
   pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
   pageMeta.person_name = {{ ticket.person.display_name|json_encode|raw }};
-  pageMeta.person_phone_numbers = [{{ ticket.person.phone_numbers|map(p => "\"#{p.number}\"")|join(', ')|raw }}];
+  pageMeta.person_phone_numbers = {{ ticket.person.phone_numbers|default([])|map(p => p.number)|json_encode|raw }};
 
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
