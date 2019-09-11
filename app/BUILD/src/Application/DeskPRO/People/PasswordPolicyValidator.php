@@ -130,11 +130,7 @@ class PasswordPolicyValidator
             return true;
         }
 
-        if ($person->is_agent) {
-            $policy = $this->agent_policy;
-        } else {
-            $policy = $this->user_policy;
-        }
+        $policy = $this->getPolicy($person);
 
         if (!$policy->max_age) {
             return false;
@@ -145,12 +141,15 @@ class PasswordPolicyValidator
         return $days > $policy->max_age && ($person->hasDeskproUsersource('user') || $person->hasDeskproUsersource('agent'));
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return PasswordPolicy
+     */
     public function getPolicy(Person $person)
     {
-        if ($person->is_agent) {
-            return $this->agent_policy;
-        } else {
-            return $this->user_policy;
-        }
+        return $person->is_agent
+            ? $this->agent_policy
+            : $this->user_policy;
     }
 }
