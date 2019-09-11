@@ -646,11 +646,9 @@ adm.tasks.label_disabled: 'Disable Task Application'
 adm.tasks.label_enabled: 'Enable Task Application'
 adm.tasks.settings: Settings
 adm.tasks.task_reminder_time: 'Send agent task reminders at'
-
 adm.ticket_approvals.tabs.properties: 'Properties'
 adm.ticket_approvals.tabs.permissions: 'Permissions'
 adm.ticket_approvals.tabs.triggers: 'Action Triggers'
-
 adm.ticket_approvals.type.name: 'Type Name'
 adm.ticket_approvals.type.description: 'Description'
 adm.ticket_approvals.template.name: 'Template Name'
@@ -667,14 +665,11 @@ adm.ticket_approvals.template.approvers.search_approvers: 'Search for specific A
 adm.ticket_approvals.template.approvers.required_approvals: 'To approve'
 adm.ticket_approvals.template.approvers.required_rejections: 'To reject'
 adm.ticket_approvals.template.can_approvers_view_subject: 'Allow approvers to view ticket'
-
-
 adm.ticket_approvals.type.error.name: 'You must enter a valid type name'
 adm.ticket_approvals.template.error.name: 'You must enter a valid template name'
 adm.ticket_approvals.template.error.type: 'You must select a valid approval type'
 adm.ticket_approvals.template.error.required_approvals: 'You must provide a number of required approvals'
 adm.ticket_approvals.template.error.required_rejections: 'You must provide a number of required rejections'
-
 adm.ticket_approvals.type_save_success: 'Approval Type was saved successfully.'
 adm.ticket_approvals.type_save_failure: 'An error has occurred while saving Approval Type.'
 adm.ticket_approvals.type_delete_success: 'Approval Type was deleted successfully.'
@@ -683,7 +678,18 @@ adm.ticket_approvals.template_save_success: 'Approval Template was saved success
 adm.ticket_approvals.template_save_failure: 'An error has occurred while saving Approval Template.'
 adm.ticket_approvals.template_delete_success: 'Approval Template was deleted successfully.'
 adm.ticket_approvals.template_delete_failure: 'An error has occurred while deleting Approval Template.'
-
+adm.ticket_approvals.actions.send_ticket_approval_email: 'Send Ticket Approval Email'
+adm.ticket_approvals.actions.send_to_owner: 'Send to owner'
+adm.ticket_approvals.actions.send_to_approvers: 'Send to approvers'
+adm.ticket_approvals.actions.the_following_actions_will_run: 'The following actions will run'
+adm.ticket_approvals.actions.action: 'Action'
+adm.ticket_approvals.actions.then: 'then'
+adm.ticket_approvals.actions.request_is_created: 'Request is Created'
+adm.ticket_approvals.actions.partial_approval_response: 'Partial Approval Response'
+adm.ticket_approvals.actions.partial_rejection_response: 'Partial Rejection Response'
+adm.ticket_approvals.actions.request_approved: 'Request Approved'
+adm.ticket_approvals.actions.request_rejected: 'Request Rejected'
+adm.ticket_approvals.actions.request_cancelled: 'Request Cancelled'
 adm.ticket_accounts.advanced_settings: 'Advanced Settings'
 adm.ticket_accounts.agent_attachments: 'Agent Attachments'
 adm.ticket_accounts.allow_all: 'Allow all files'

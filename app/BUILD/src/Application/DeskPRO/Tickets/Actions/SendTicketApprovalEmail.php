@@ -57,8 +57,13 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     {
         $context->getLogger()->debug('[SendTicketApprovalEmail] Begin');
 
-        $sendToOwner = $this->getActionOption('send_to_owner', false);
-        $sendToApprovers = $this->getActionOption('send_to_approvers', false);
+        $sendToOwner = $this->duckTypeBoolean(
+            $this->getActionOption('send_to_owner', false)
+        );
+
+        $sendToApprovers = $this->duckTypeBoolean(
+            $this->getActionOption('send_to_approvers', false)
+        );
 
         if (!$sendToOwner && !$sendToApprovers) {
             $context->getLogger()->debug('[SendTicketApprovalEmail] Not sending to owner or approvers');
@@ -316,5 +321,18 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     private function getEmailSender()
     {
         return $this->getContainer()->get('email.email_sender');
+    }
+
+    /**
+     * @param mixed $value
+     * @return boolean
+     */
+    private function duckTypeBoolean($value)
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        return !(bool) empty($value);
     }
 }
