@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
 import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field, BlurInput, Select, CountryCodeSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, BlurInput, Select, CountryCodeSelect, Radio } from 'DeskPRO/Component/Semantic/ReactForm';
 import AccountChoiceWrapper from '../../../Common/AccountChoiceWrapper';
 
 const defaultCountryCodes = [
@@ -183,11 +183,14 @@ class AvailableListForm extends React.Component {
       const { accounts } = this.props;
       const account = accounts.get(formData.value.account);
 
-      formData.value.types = [];
+      formData.value.type = null;
       if (account) {
-        formData.value.types = defaultNumberTypes[account.get('type')];
-        if (account.get('type') === 'twilio' && formData.value.country_code && twilioCountryCodes[formData.value.country_code]) {
-          formData.value.types = [...twilioCountryCodes[formData.value.country_code]];
+        formData.value.type = 'mobile';
+        if (account.get('type') === 'twilio' && formData.value.country_code) {
+          const allowedTypes = twilioCountryCodes[formData.value.country_code];
+          if (allowedTypes.indexOf('mobile') === -1) {
+            formData.value.type = allowedTypes[0];
+          }
         }
       }
     }
@@ -245,7 +248,7 @@ class AvailableListForm extends React.Component {
               </Field>
             </div>
             <div className="inline-field">
-              <Field select="types" label="Types of number *">
+              <Field select="type" label="Types of number *">
                 <TypesOfNumber availableTypes={availableTypes} />
               </Field>
             </div>
@@ -275,36 +278,20 @@ class TypesOfNumber extends React.Component {
     onChange:       PropTypes.func
   };
 
-  onChange = (item) => {
-    const { value = [], onChange } = this.props;
-    const index = value.indexOf(item);
-
-    if (index !== -1) {
-      value.splice(index, 1);
-    } else {
-      value.push(item);
-    }
-
-    onChange(value);
-  };
-
   render() {
-    const { availableTypes, value = [] } = this.props;
+    const { availableTypes, value = [], onChange } = this.props;
 
     return (
       <div className="number-types">
-        {availableTypes.map((type, index) => {
-          const checked = value.indexOf(type) !== -1;
-
-          return (
-            <Checkbox
-              key={index}
-              value={checked}
-              label={numberTypes[type]}
-              onChange={() => this.onChange(type)}
-            />
-          );
-        })}
+        {availableTypes.map((type, index) =>
+          <Radio
+            key={index}
+            choice={type}
+            value={value}
+            label={numberTypes[type]}
+            onChange={() => onChange(type)}
+          />
+        )}
       </div>
     );
   }

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
+import { debounce } from 'lodash'
 import {
   clipboardHasImages,
   clipboardIEHasImages,
@@ -45,7 +46,7 @@ export default class RteEditor extends React.Component {
 
     const node = this.getNode();
     let firstChange = true;
-    const onChangeContent = () => {
+    const onChangeContent = debounce(() => {
       // remove empty blocks
       $('p', node).each((i, p) => {
         const $p = $(p);
@@ -73,7 +74,7 @@ export default class RteEditor extends React.Component {
       this.updated = true;
 
       onChange(node.innerHTML);
-    };
+    }, 100);
 
     // Override default paste listener to upload images
     node.addEventListener('paste', this.onPaste);

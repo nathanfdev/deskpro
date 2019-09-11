@@ -4,7 +4,7 @@
 // $buildInput = include('build-input.php');
 
 if (!isset($GLOBALS['__DESKPRO_DEMO_BUILD_INPUT'])) {
-    $GLOBALS['__DESKPRO_DEMO_BUILD_INPUT'] = json_decode(file_get_contents(__DIR__.'/build-input.json'));
+    $GLOBALS['__DESKPRO_DEMO_BUILD_INPUT'] = json_decode(file_get_contents(__DIR__.'/build-input.json'), true);
 }
 
 return $GLOBALS['__DESKPRO_DEMO_BUILD_INPUT'];

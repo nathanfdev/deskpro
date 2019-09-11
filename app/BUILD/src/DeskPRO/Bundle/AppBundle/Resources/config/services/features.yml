@@ -93,3 +93,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.template_editor:
+    class: DeskPRO\Bundle\AppBundle\Features\TemplateEditorFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

@@ -1255,13 +1255,9 @@ article.content-message .message-recipients {
     vertical-align: top;
   }
   background-color: #EFEFEF;
-  height: 20px;
   padding: 3px 6px;
   font-size: 12px;
 
-  overflow: hidden;
-  display: flex;
-  white-space: nowrap;
   .absent {
     color: #d34b43;
   }
@@ -1273,6 +1269,8 @@ article.content-message .message-recipients {
       overflow: hidden;
       text-overflow: ellipsis;
       text-decoration: underline;
+      height: 18px;
+      white-space: nowrap;
     }
   }
   .recipient-absent {

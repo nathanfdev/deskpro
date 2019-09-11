@@ -45,6 +45,9 @@ class TicketMessageListener implements EventSubscriber
 
     public function getRecipients(TicketMessage $ticketMessage, EntityManager $em)
     {
+        if ($ticketMessage->isAgentNote()) {
+            return [];
+        }
         $recipients = [];
         $keyArray   = [];
         $attribute  = $ticketMessage->getAttribute('email_recipients');
@@ -69,17 +72,17 @@ class TicketMessageListener implements EventSubscriber
 
             return true;
         });
-        // We won't display anything if there's only on recipient
-        if (count($recipients) <= 1) {
-            return [];
-        }
-
-        $ticket = $ticketMessage->getTicket();
-
+        $ticket         = $ticketMessage->getTicket();
         $participants[] = $ticket->getPerson();
 
         foreach ($ticket->getParticipants() as $participant) {
-            $participants[] = $participant->getPerson();
+            if (!$participant->getPerson()->isAgent()) {
+                $participants[] = $participant->getPerson();
+            }
+        }
+        // We won't display anything if there's only on recipient
+        if (count($recipients) <= 0 && count($participants) <= 1) {
+            return [];
         }
 
         $result = [];

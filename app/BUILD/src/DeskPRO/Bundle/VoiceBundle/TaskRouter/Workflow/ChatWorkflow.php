@@ -13,6 +13,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsLoader;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ChatWorkflow.
@@ -45,6 +46,11 @@ class ChatWorkflow implements WorkflowInterface
     private $permissionsChecker;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param ChatTaskHelper             $taskHelper
@@ -52,19 +58,22 @@ class ChatWorkflow implements WorkflowInterface
      * @param StorageAdapterInterface    $storage
      * @param UserChatQueueTargetsLoader $targetsLoader
      * @param UserChatPermissionsChecker $permissionsChecker
+     * @param LoggerInterface            $logger
      */
     public function __construct(
         ChatTaskHelper             $taskHelper,
         ChatSettingsResolver       $settingsResolver,
         StorageAdapterInterface    $storage,
         UserChatQueueTargetsLoader $targetsLoader,
-        UserChatPermissionsChecker $permissionsChecker
+        UserChatPermissionsChecker $permissionsChecker,
+        LoggerInterface            $logger
     ) {
         $this->taskHelper         = $taskHelper;
         $this->settingsResolver   = $settingsResolver;
         $this->storage            = $storage;
         $this->targetsLoader      = $targetsLoader;
         $this->permissionsChecker = $permissionsChecker;
+        $this->logger             = $logger;
     }
 
     /**
@@ -94,6 +103,11 @@ class ChatWorkflow implements WorkflowInterface
             $availableAgentWorkers[$worker->getId()] = $worker;
         }
 
+        $this->logger->info(sprintf(
+            '[ChatWorkflow] Online agent workers = [%s], task_id = %s',
+            implode(', ', array_keys($availableAgentWorkers)), $task->getId()
+        ));
+
         $activeAgentIds        = $this->targetsLoader->getActiveAgentIdsForUserChat();
         $maxChatsCount         = $this->settingsResolver->getMaxChatsCount();
         $availableAgentWorkers = array_filter(
@@ -101,6 +115,11 @@ class ChatWorkflow implements WorkflowInterface
             function (Worker $worker) use ($task, $maxChatsCount, $activeAgentIds, $ignoreRejected) {
                 // ignore if agent has already rejected task
                 if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
+                    $this->logger->info(sprintf(
+                        '[ChatWorkflow] Worker rejected the task, worker_id = %s, task_id = %s',
+                        $worker->getTypeId(), $task->getId()
+                    ));
+
                     return false;
                 }
 
@@ -111,8 +130,18 @@ class ChatWorkflow implements WorkflowInterface
                     || count($worker->getActiveTaskIdsForChannel(self::getChannelName())) >= $maxChatsCount
                     || !in_array($worker->getTypeId(), $activeAgentIds)
                 ) {
+                    $this->logger->info(sprintf(
+                        '[ChatWorkflow] Worker is busy, worker_id = %s, task_id = %s',
+                        $worker->getTypeId(), $task->getId()
+                    ));
+
                     return false;
                 }
+
+                $this->logger->info(sprintf(
+                    '[ChatWorkflow] Available worker is found, worker_id = %s, task_id = %s',
+                    $worker->getTypeId(), $task->getId()
+                ));
 
                 return true;
             }
@@ -128,8 +157,15 @@ class ChatWorkflow implements WorkflowInterface
     {
         $chatQueue = $this->taskHelper->getChatQueue($task);
         if (!$chatQueue) {
+            $this->logger->info(sprintf('[ChatWorkflow] No chat queue, skipping, task_id = %s', $task->getId()));
+
             return;
         }
+
+        $this->logger->info(sprintf(
+            '[ChatWorkflow] Selected chat queue for the task, queue_id = %s, task_id = %s',
+            $chatQueue->getId(), $task->getId()
+        ));
 
         // get available workers
         $workerToAgentMap = [];
@@ -160,6 +196,21 @@ class ChatWorkflow implements WorkflowInterface
         usort($targets, function (AbstractUserChatQueueTarget $target1, AbstractUserChatQueueTarget $target2) {
             return $target1->getSort() - $target2->getSort();
         });
+
+        $this->logger->info(sprintf(
+            '[ChatWorkflow] Routing model = %s, queue_id = %s, task_id = %s',
+            $chatQueue->getRoutingModel(), $chatQueue->getId(), $task->getId()
+        ));
+        $this->logger->info(sprintf(
+            '[ChatWorkflow] Filtered queue targets, queue_id = %s, target_ids = [%s], task_id = %s',
+            $chatQueue->getId(), implode(', ',
+            array_map(function (AbstractUserChatQueueTarget $target) {
+                $targetInfo = $target->toArray();
+
+                return 'type = '.$targetInfo['type'].', id = '.$targetInfo['id'];
+            }, $targets)),
+            $task->getId()
+        ));
 
         switch ($chatQueue->getRoutingModel()) {
             case UserChatQueue::ROUTING_MODEL_ROUND_ROBIN:

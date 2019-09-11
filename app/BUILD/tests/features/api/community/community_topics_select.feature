@@ -93,7 +93,7 @@ Feature: /community_topics endpoint
   Scenario: I GET list of community topics tagged with one label
     Given only the following custom community fields exist:
       | #     | parent  | app_id | sys_name | js_class | has_form_template | has_display_template | title   | description | handler_class                                           | options | is_user_enabled | is_enabled | display_order | default_value | is_agent_field |
-      | cdct1 |         |        | chan     |          | 0                 | 0                    | Channel | Channel     | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
+      | cdct1 |         |        | cat      |          | 0                 | 0                    | Channel | Channel     | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
       | cdct2 | {cdct1} |        |          |          | 0                 | 0                    | Windows |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct3 | {cdct1} |        |          |          | 0                 | 0                    | Mac     |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct4 | {cdct1} |        |          |          | 0                 | 0                    | Linux   |             |                                                         |         | 1               | 1          | 0             |               | 1              |
@@ -103,7 +103,7 @@ Feature: /community_topics endpoint
       | {ct2} | {cdct2} | {cdct1}    | 0     |
       | {ct3} | {cdct3} | {cdct1}    | 0     |
       | {ct4} | {cdct4} | {cdct1}    | 0     |
-    When I send a GET request to "/api/v2/community_topics?custom_channel=Windows"
+    When I send a GET request to "/api/v2/community_topics?category=Windows"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist

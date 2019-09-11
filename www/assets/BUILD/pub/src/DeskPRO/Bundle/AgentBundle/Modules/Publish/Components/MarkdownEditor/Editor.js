@@ -11,7 +11,7 @@ import MarkdownEditor from './MarkdownEditor';
 import * as actions from '../../Actions/publishEditorActions';
 
 @connect()
-export class EditorContainer extends React.Component {
+export class MarkdownEditorContainer extends React.Component {
   static propTypes = {
     value:        PropTypes.string,
     inputType:    PropTypes.string,

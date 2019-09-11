@@ -280,7 +280,7 @@ export class EditFormComponent extends React.Component {
   }
 
   static isExtendedQuery(props) {
-    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 || props.initialValues.additional_info : false;
   }
 
   constructor(props) {
@@ -412,6 +412,7 @@ export class EditFormComponent extends React.Component {
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
+                  {this.props.initialValues.additional_info ? <div className="form-error-message"><span>{this.props.initialValues.additional_info}<br /></span></div> : null }
                   <reduxForm.Textarea disabled={!isCustom} onChange={() => {}} name="raw" autosize />
                 </Section>
               </FormSection>

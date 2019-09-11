@@ -16,6 +16,7 @@ use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioCountry;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
+use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\CallContextProxy;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
@@ -389,41 +390,6 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
-     * @param TwilioVoiceAccount $account
-     * @param string             $conferenceSid
-     *
-     * @throws \Exception
-     * @throws \Twilio\Exceptions\ConfigurationException
-     *
-     * @return \Twilio\Rest\Api\V2010\Account\ConferenceInstance
-     */
-    public function getConference(TwilioVoiceAccount $account, $conferenceSid)
-    {
-        return $this->getConferenceContext($account, $conferenceSid)->fetch();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
-
-        foreach ($participants as $participant) {
-            if ($participant->callSid === $callSid) {
-                $participant->update([
-                    'muted' => $mute ? 'true' : 'false',
-                ]);
-            }
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
@@ -676,22 +642,23 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
-     * @param VoicePhoneCall $phoneCall
-     * @param string         $callSid
+     * @param TwilioVoiceAccount $account
+     * @param string             $callSid
+     * @param bool               $initial
      *
      * @throws \Exception
      *
-     * @return CallInstance
+     * @return CallInstance|null
      */
-    public function getCallInfo(VoicePhoneCall $phoneCall, $callSid)
+    public function getCallInfo(TwilioVoiceAccount $account, $callSid, $initial)
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
         try {
-            return  $this->getClient($account)->calls($callSid)->fetch();
+            $context = $this->getClient($account)->calls($callSid);
+            if ($context instanceof CallContextProxy) {
+                return $context->fetch($initial);
+            }
+
+            return $context->fetch();
         } catch (\Exception $e) {
         }
 

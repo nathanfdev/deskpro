@@ -373,7 +373,7 @@ portal.community.form_logged_in_as: 'Masuk sebagai: <span>{{name}}</span>, dari 
 portal.community.form_logout: 'Bukan Anda?'
 portal.community.form_tell_us_more: 'Beritahu kami lebih'
 portal.community.form_title: Judul
-portal.community.form_custom_chan: Kategori
+portal.community.form_custom_cat: Kategori
 portal.community.module_forbidden: 'Anda tidak memiliki akses terhadap modul ini'
 portal.community.no_matching: 'Tidak ada tanggapan yang sesuai'
 portal.community.none: 'Belum ada tanggapan'
@@ -1023,7 +1023,8 @@ user.lang.lang_title_japanese: Jepang
 user.lang.lang_title_norwegian: Norwegia
 user.lang.lang_title_persian: Iran
 user.lang.lang_title_polish: Polandia
-user.lang.lang_title_portuguese: Portugis
+user.lang.lang_title_portuguese_br: Portugis (Brasil)
+user.lang.lang_title_portuguese_pt: Portugis (Portugal)
 user.lang.lang_title_romanian: Romania
 user.lang.lang_title_russian: Rusia
 user.lang.lang_title_spanish: Spanyol

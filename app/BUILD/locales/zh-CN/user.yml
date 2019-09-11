@@ -365,7 +365,7 @@ portal.community.form_i_have_a: 我有一个
 portal.community.form_logout: 不是你？
 portal.community.form_tell_us_more: 请告诉我们更多
 portal.community.form_title: 标题
-portal.community.form_custom_chan: 類別
+portal.community.form_custom_cat: 類別
 portal.community.module_forbidden: 您无权访问此模块
 portal.community.no_matching: 没有匹配的反馈
 portal.community.none: 没有回复
@@ -1015,7 +1015,8 @@ user.lang.lang_title_japanese: 日语
 user.lang.lang_title_norwegian: 挪威语
 user.lang.lang_title_persian: 波斯语
 user.lang.lang_title_polish: 波兰语
-user.lang.lang_title_portuguese: 葡萄牙语
+user.lang.lang_title_portuguese_br: 葡萄牙语（巴西）
+user.lang.lang_title_portuguese_pt: 葡萄牙语（葡萄牙）
 user.lang.lang_title_romanian: 罗马语
 user.lang.lang_title_russian: 俄语
 user.lang.lang_title_spanish: 西班牙语

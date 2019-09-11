@@ -387,7 +387,7 @@ portal.community.form_logged_in_as: 'Inloggad som: <span>{{name}}</span>, från 
 portal.community.form_logout: 'Inte du?'
 portal.community.form_tell_us_more: 'Berätta mer'
 portal.community.form_title: Titel
-portal.community.form_custom_chan: Kategori
+portal.community.form_custom_cat: Kategori
 portal.community.module_forbidden: 'Du har inte behörighet att se denna modul'
 portal.community.no_matching: 'Ingen matchande community topic'
 portal.community.none: 'Ingen community topic ännu'
@@ -1053,7 +1053,8 @@ user.lang.lang_title_japanese: Japanska
 user.lang.lang_title_norwegian: Norska
 user.lang.lang_title_persian: Persiska
 user.lang.lang_title_polish: Polska
-user.lang.lang_title_portuguese: Portugisiska
+user.lang.lang_title_portuguese_br: Portugisiska (Brasilien)
+user.lang.lang_title_portuguese_pt: Portugisiska (Portugal)
 user.lang.lang_title_romanian: Rumänska
 user.lang.lang_title_russian: Ryska
 user.lang.lang_title_spanish: Spanska

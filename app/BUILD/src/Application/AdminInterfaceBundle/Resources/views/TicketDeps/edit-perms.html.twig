@@ -34,7 +34,12 @@
 					<span class="text-middle"><a href="{{ ng_href('crm.groups.edit', '{id: usergroup.id}') }}">{{ ng_var('usergroup.title') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button dp-toggle-switch ng-model="EditCtrl.form.usergroup_perms[usergroup.id].full" locked-model="usergroups_locked[usergroup.id]"  locked-tip="{{ phrase('adm.departments.perm_assign_locked_priv') }}"></button>
+					<button
+						dp-toggle-switch
+						ng-model="EditCtrl.form.usergroup_perms[usergroup.id].full"
+						locked-model="usergroups_locked[usergroup.id]"
+						locked-tip="{{ phrase('adm.departments.perm_assign_locked_priv') | escape }}"
+					></button>
 				</td>
 			</tr>
 		</tbody>
@@ -89,18 +94,42 @@
 				</td>
 				<td class="text-center">
 					<div ng-if="groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'">
-						<button locked-model="true" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="Permissions are always enabled for this built-in group."></button>
+						<button
+							dp-toggle-switch
+							locked-model="true"
+							ng-model="groupObj.perms.assign.state"
+							ng-change="EditCtrl.propogatePermission(groupObj, 'assign')"
+							locked-tip="Permissions are always enabled for this built-in group."
+						></button>
 					</div>
 					<div ng-if="!(groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms')">
-						<button locked-model="groupObj.perms.assign.locked" dp-toggle-switch ng-model="groupObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(groupObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+						{{ phrase('adm.departments.perm_assign_locked_tip') | escape }}
+						<button
+							dp-toggle-switch
+							locked-model="groupObj.perms.assign.locked"
+							ng-model="groupObj.perms.assign.state"
+							ng-change="EditCtrl.propogatePermission(groupObj, 'assign')"
+							locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') | escape }}"
+						></button>
 					</div>
 				</td>
 				<td class="text-center">
 					<div ng-if="groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'">
-						<button locked-model="true" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')" locked-tip="Permissions are always enabled for this built-in group."></button>
+						<button
+							dp-toggle-switch
+							locked-model="true"
+							ng-model="groupObj.perms.full.state"
+							ng-change="EditCtrl.propogatePermission(groupObj, 'full')"
+							locked-tip="Permissions are always enabled for this built-in group."
+						></button>
 					</div>
 					<div ng-if="!(groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms')">
-						<button locked-model="groupObj.perms.full.locked" dp-toggle-switch ng-model="groupObj.perms.full.state" ng-change="EditCtrl.propogatePermission(groupObj, 'full')"></button>
+						<button
+							dp-toggle-switch
+							locked-model="groupObj.perms.full.locked"
+							ng-model="groupObj.perms.full.state"
+							ng-change="EditCtrl.propogatePermission(groupObj, 'full')"
+						></button>
 					</div>
 				</td>
 			</tr>
@@ -111,10 +140,22 @@
 					<span class="text-middle" style="position:relative; top: 1px;"><a href="{{ ng_href('agents.agents.edit', '{id: agentObj.model.id}') }}">{{ ng_var('agentObj.model.display_name') }}</a></span>
 				</td>
 				<td class="text-center">
-					<button locked-model="agentObj.perms.assign.locked" dp-toggle-switch ng-model="agentObj.perms.assign.state" ng-change="EditCtrl.propogatePermission(agentObj, 'assign')" locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') }}"></button>
+					<button
+						dp-toggle-switch
+						locked-model="agentObj.perms.assign.locked"
+						ng-model="agentObj.perms.assign.state"
+						ng-change="EditCtrl.propogatePermission(agentObj, 'assign')"
+						locked-tip="{{ phrase('adm.departments.perm_assign_locked_tip') | escape}}"
+					></button>
 				</td>
 				<td class="text-center">
-					<button locked-model="agentObj.perms.full.locked" dp-toggle-switch ng-model="agentObj.perms.full.state" ng-change="EditCtrl.propogatePermission(agentObj, 'full')" locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') }}"></button>
+					<button
+						dp-toggle-switch
+						locked-model="agentObj.perms.full.locked"
+						ng-model="agentObj.perms.full.state"
+						ng-change="EditCtrl.propogatePermission(agentObj, 'full')"
+						locked-tip="{{ phrase('adm.departments.perm_group_locked_tip') | escape }}"
+					></button>
 				</td>
 			</tr>
 		</tbody>

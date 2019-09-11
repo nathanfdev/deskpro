@@ -168,7 +168,7 @@ portal.community.attachments: Liitetiedostot
 portal.community.btn-closed: Suljettu
 portal.community.btn-vote: 'Samaa mieltä'
 portal.community.form_title: Aihe
-portal.community.form_custom_chan: Kategoria
+portal.community.form_custom_cat: Kategoria
 portal.community.search-title: Palaute
 portal.community.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
 portal.community.section-title: Palaute
@@ -446,7 +446,8 @@ user.lang.lang_title_japanese: Japani
 user.lang.lang_title_norwegian: Norja
 user.lang.lang_title_persian: Persia
 user.lang.lang_title_polish: Puola
-user.lang.lang_title_portuguese: Portugali
+user.lang.lang_title_portuguese_br: Portugali (Brasilia)
+user.lang.lang_title_portuguese_pt: Portugali (Portugali)
 user.lang.lang_title_romanian: Romania
 user.lang.lang_title_russian: Venäjä
 user.lang.lang_title_spanish: Espanja

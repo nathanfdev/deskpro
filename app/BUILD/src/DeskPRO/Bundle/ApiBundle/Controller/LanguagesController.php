@@ -431,7 +431,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Get("/email_phrases/{group}/{languageId}")
-     * @Feature("email_templates")
      *
      * @param $languageId
      *
@@ -521,7 +520,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Get("/translations/{phraseName}")
-     * @Feature("email_templates")
      *
      * @param $phraseName
      *
@@ -559,6 +557,8 @@ class LanguagesController extends CrudController
      *
      * @param Request $request
      * @param $phraseName
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View
      */

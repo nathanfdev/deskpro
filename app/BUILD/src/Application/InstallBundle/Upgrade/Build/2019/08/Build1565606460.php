@@ -26,20 +26,17 @@ class Build1565606460 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'RENAME TABLE ticket_feedback_links TO ticket_community_topics_links');
 
         // change columns
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_revisions CHANGE COLUMN feedback_id community_topic_id INT(11) NULL DEFAULT NULL AFTER id;');
-        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic ALTER feedback_id DROP DEFAULT;');
-        $this->execDbQuery('default', 'ALTER TABLE custom_data_community_topic CHANGE COLUMN feedback_id topic_id INT(11) NOT NULL AFTER id;');
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_subscriptions CHANGE COLUMN feedback_id topic_id INT(11) NULL DEFAULT NULL AFTER person_id;');
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_slug_history ALTER feedback_id DROP DEFAULT;');
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_slug_history CHANGE COLUMN feedback_id topic_id INT(11) NOT NULL AFTER id;');
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_attachments CHANGE COLUMN feedback_id topic_id INT(11) NULL DEFAULT NULL AFTER id;');
-        $this->execDbQuery('default', 'ALTER TABLE community_topic_comments CHANGE COLUMN feedback_id topic_id INT(11) NULL DEFAULT NULL AFTER id;');
-        $this->execDbQuery('default', 'ALTER TABLE labels_community_topics CHANGE COLUMN feedback_id topic_id INT(11) NOT NULL;');
-        $this->execDbQuery('default', 'ALTER TABLE ticket_community_topics_links ALTER feedback_id DROP DEFAULT;');
-        $this->execDbQuery('default', 'ALTER TABLE ticket_community_topics_links CHANGE COLUMN feedback_id topic_id INT(11) NOT NULL AFTER ticket_id;');
-        $this->execDbQuery('default', 'ALTER TABLE community_channel2usergroup CHANGE COLUMN category_id community_channel_id INT(11) NOT NULL;');
-        $this->execDbQuery('default', 'ALTER TABLE content_subscriptions CHANGE feedback_id topic_id INT DEFAULT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE community_topics CHANGE category_id channel_id INT DEFAULT NULL');
+        $this->getSchemaHelper()->renameColumn('community_topic_revisions', 'feedback_id', 'community_topic_id');
+        $this->getSchemaHelper()->renameColumn('custom_data_community_topic', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_topic_subscriptions', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_topic_slug_history', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_topic_attachments', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_topic_comments', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('ticket_community_topics_links', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_channel2usergroup', 'category_id', 'community_channel_id');
+        $this->getSchemaHelper()->renameColumn('content_subscriptions', 'feedback_id', 'topic_id');
+        $this->getSchemaHelper()->renameColumn('community_topics', 'category_id', 'channel_id');
+        $this->getSchemaHelper()->renameColumn('labels_community_topics', 'feedback_id', 'topic_id');
     }
 
     public function run()

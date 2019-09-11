@@ -694,7 +694,7 @@ RedactorPlugins.clean_text = {
 			html = html.replace(/\s*<br[^>]*>\s*/g, "\n");
 
 			// Strip out html
-			html = html.replace(/(<([^>]+)>)/ig,"");
+			html = html.replace(/(<([^>]+)>)/ig, "");
 			html = $.trim(html);
 			html = html.replace(/\r|\r\n|\n/g, "\n<br/>");
 

@@ -1274,22 +1274,34 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return;
         }
 
-        if ($ticket_part = $this->hasParticipantPerson($person)) {
-            return $ticket_part;
+        if ($ticketPart = $this->hasParticipantPerson($person)) {
+            return $ticketPart;
         }
 
-        $ticket_part           = new TicketParticipant();
-        $ticket_part['person'] = $person;
-        $ticket_part['ticket'] = $this;
-        $this->participants->add($ticket_part);
+        $removedCCs = $this->getAttribute('removed_ccs');
+        if (!$removedCCs) {
+            $removedCCs = new TicketAttribute('removed_ccs');
+        }
+        $removedAddresses = json_decode($removedCCs->getValue());
+        if (!$removedAddresses) {
+            $removedAddresses = [];
+        }
+        $removedAddresses = array_diff($removedAddresses, $person->getEmailAddresses(false, false));
+        $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
+        $this->addAttribute($removedCCs);
+
+        $ticketPart           = new TicketParticipant();
+        $ticketPart['person'] = $person;
+        $ticketPart['ticket'] = $this;
+        $this->participants->add($ticketPart);
 
         if ($this->_user_participants !== null && !$person['is_agent']) {
-            $this->_user_participants[] = $ticket_part;
+            $this->_user_participants[] = $ticketPart;
         }
 
         $this->_onPropertyChanged('participants', null, $this->participants);
 
-        return $ticket_part;
+        return $ticketPart;
     }
 
     /**

@@ -70,7 +70,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
     /**
      * @var string[]
      */
-    private $communityChannels = ['Windows', 'Linux', 'Mac'];
+    private $communityCategories = ['Windows', 'Linux', 'Mac'];
 
     /**
      * @var string[]
@@ -119,21 +119,21 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
         );
 
         $this->loadCommunityTopics();
-        $this->loadCommunityChannels();
+        $this->loadCommunityCategories();
         $this->loadCommunityLabels();
         $this->loadCommunityTopicComments();
     }
 
     private function loadCommunityTopicChoices()
     {
-        $customChanDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
-            'sys_name' => 'chan',
+        $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
+            'sys_name' => 'cat',
         ]);
 
-        foreach ($this->communityChannels as $order => $title) {
-            $customChanChoice = new CustomDefCommunityTopic();
-            $customChanChoice
-                ->setParent($customChanDef)
+        foreach ($this->communityCategories as $order => $title) {
+            $customCatChoice = new CustomDefCommunityTopic();
+            $customCatChoice
+                ->setParent($customCatDef)
                 ->setTitle($title)
                 ->setDescription('')
                 ->setIsUserEnabled(true)
@@ -142,7 +142,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
                 ->setOption('parent_id', 0)
             ;
 
-            $customChanDef->addChild($customChanChoice);
+            $customCatDef->addChild($customCatChoice);
         }
 
         $this->manager->flush();
@@ -273,19 +273,19 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
         return ceil($values['total_rating'] / sqrt($days));
     }
 
-    private function loadCommunityChannels()
+    private function loadCommunityCategories()
     {
-        $customChanDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
-            'sys_name' => 'chan',
+        $customCatDef = $this->manager->getRepository(CustomDefCommunityTopic::class)->findOneBy([
+            'sys_name' => 'cat',
         ]);
 
         $batch = [];
-        $ids   = $customChanDef->getChoiceIds();
+        $ids   = $customCatDef->getChoiceIds();
 
         foreach ($this->communityTopics as $topicId) {
             $batch[] = [
                 'topic_id'      => $topicId,
-                'root_field_id' => $customChanDef->getId(),
+                'root_field_id' => $customCatDef->getId(),
                 'field_id'      => $ids[array_rand($ids)],
                 'value'         => 1,
             ];

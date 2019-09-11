@@ -200,7 +200,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 						self.endChat();
 					});
 
-					obj.addBtnAfter('dp_end_chat', 'dp_send_message', 'Send your message (or press the Enter or Return key on your keyboard)', function(){
+					obj.addBtnAfter('clean_text', 'dp_send_message', 'Send your message (or press the Enter or Return key on your keyboard)', function(){
 						self.doSendMsg();
 					});
 
@@ -218,6 +218,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 					tmp = obj.$toolbar.find('.redactor_btn_dp_send_message').closest('li');
 					tmp.addClass('dp_send_message');
 					tmp.find('a').text('Send');
+
+          tmp = obj.$toolbar.find('.redactor_btn_clean_text').parent();
+          tmp.css('flex', 1);
 				}
 			});
 			this.getEl('is_html_reply').val(1);

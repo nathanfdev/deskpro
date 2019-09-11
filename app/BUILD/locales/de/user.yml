@@ -385,7 +385,7 @@ portal.community.form_logged_in_as: 'Angemeldet als: <span>{{name}}</span>, mit 
 portal.community.form_logout: 'Nicht Sie?'
 portal.community.form_tell_us_more: 'Erzählen Sie uns mehr'
 portal.community.form_title: Titel
-portal.community.form_custom_chan: Kategorie
+portal.community.form_custom_cat: Kategorie
 portal.community.module_forbidden: 'Sie haben auf dieses Modul keinen Zugriff'
 portal.community.no_matching: 'Kein passendes Community Topic'
 portal.community.none: 'Bisher kein Community Topic'
@@ -1052,7 +1052,8 @@ user.lang.lang_title_japanese: Japanisch
 user.lang.lang_title_norwegian: Norwegisch
 user.lang.lang_title_persian: Persisch
 user.lang.lang_title_polish: Polnisch
-user.lang.lang_title_portuguese: Portugiesisch
+user.lang.lang_title_portuguese_br: Portugiesisch (Brasilien)
+user.lang.lang_title_portuguese_pt: Portugiesisch (Portugal)
 user.lang.lang_title_romanian: Rumänisch
 user.lang.lang_title_russian: Russisch
 user.lang.lang_title_spanish: Spanisch

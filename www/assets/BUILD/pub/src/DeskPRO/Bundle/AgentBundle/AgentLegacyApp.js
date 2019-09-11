@@ -131,7 +131,7 @@ class AgentLegacyApp {
         setInterval(() => {
           api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`).success((data) => {
             if (data.task_router_workers) {
-              this.store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(data)));
+              this.store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(data.task_router_workers)));
             }
           });
         }, 10000);

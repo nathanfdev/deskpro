@@ -1,5 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
+import { Device } from 'twilio-client';
 import $ from 'jquery';
 import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
@@ -308,7 +309,8 @@ export const voiceBootstrap = createAction(
               debug: true
             };
 
-            clients[id] = new window.Twilio.Device(credentials.get('phone_token'), options);
+            clients[id] = new Device(credentials.get('phone_token'), options);
+            clients[id]._enabledSounds.outgoing = false; // eslint-disable-line
             clients[id].ready(() => {
               console.log('phone ready');
             });
@@ -688,5 +690,22 @@ export const deleteMessage = createAction(
   (ticketId, messageId) => api.sendDelete(`DP_API/tickets/${ticketId}/messages/${messageId}`).success(() => {
     $(`article.message-${messageId}`).remove();
     $(`.voice-ticket-message.message-${messageId}`).remove();
+  })
+);
+
+export const refreshConferenceStatus = createAction(
+  'VOICE_AGENT_REFRESH_CONFERENCE_STATUS',
+  phoneCallId => (dispatch, getState) => api.sendGet(`DP_API/voice_client/phone_call/${phoneCallId}/status`).success((response) => {
+    const phoneCall = Immutable.fromJS(response.phone_call);
+
+    // realtime phone call updates
+    const state = getState();
+    const phoneCalls = allPhoneCallsSelector(state);
+
+    if (phoneCalls.get(phoneCall.get('id'))) {
+      dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+    } else {
+      dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+    }
   })
 );

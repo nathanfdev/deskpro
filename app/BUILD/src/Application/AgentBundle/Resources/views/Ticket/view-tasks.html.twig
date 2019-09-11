@@ -25,7 +25,7 @@
 							<option value="0">{{ phrase('agent.general.private') }}</option>
 							<option value="1">{{ phrase('agent.general.public') }}</option>
 							<optgroup label="{{ phrase('agent.general.department') }}">
-								{% for department in app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign') %}
+								{% for department in app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign', ticket.brand) %}
 									{% if department.children %}
 										<option disabled="disabled">{{ department.title }}</option>
 										{% for subDepartment in department.children %}

@@ -414,7 +414,7 @@ portal.community.form_logged_in_as: 'Zalogowany jako: <span>{{name}}</span>, z a
 portal.community.form_logout: 'Nie ty?'
 portal.community.form_tell_us_more: 'Powiedz nam więcej'
 portal.community.form_title: Tytuł
-portal.community.form_custom_chan: Kategoria
+portal.community.form_custom_cat: Kategoria
 portal.community.module_forbidden: 'Nie masz dostępu do tego modułu'
 portal.community.no_matching: 'Brak pasującej opinii'
 portal.community.none: 'Na razie brak opinii'
@@ -1144,7 +1144,8 @@ user.lang.lang_title_japanese: Japoński
 user.lang.lang_title_norwegian: Norweski
 user.lang.lang_title_persian: Perski
 user.lang.lang_title_polish: Polski
-user.lang.lang_title_portuguese: Portugalski
+user.lang.lang_title_portuguese_br: Portugalski (Brazylia)
+user.lang.lang_title_portuguese_pt: Portugalski (Portugalia)
 user.lang.lang_title_romanian: Rumuński
 user.lang.lang_title_russian: Rosyjski
 user.lang.lang_title_spanish: Hiszpański

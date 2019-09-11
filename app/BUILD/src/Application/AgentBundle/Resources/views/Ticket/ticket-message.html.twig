@@ -185,35 +185,46 @@
 				&nbsp;
 				{% for recipient in recipients.cc %}
 					{% if recipient.email_address %}
-					<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}">
+					<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient.display_name|default(recipient.email_address), user: message.person }) }}">
 						{{ recipient.display_name }}
 						<span class="email" title="{{ recipient.email_address }}">{{ recipient.email_address }}</span>
 					</span>
 					{% else %}
-						<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient}) }}">
+						<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient, user: message.person}) }}">
 							<span class="email" title="{{ recipient }}">{{ recipient }}</span>
 						</span>
 					{% endif %}
 				{% endfor %}
 				{% for recipient in recipients.absent %}
-					<span class="recipient recipient-absent" title="{{ phrase('agent.tickets.recipient_absent', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}">
-						<span
-								class="remove"
-								title="Remove from ticket"
-								data-confirm="{{ phrase('agent.tickets.confirm_remove_absent', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}"
-								data-delete-url="{{ path('agent_ticket_delabsent', {'ticket_id': ticket.id}) }}"
-								data-person-id="{{ recipient.id }}"
-						/>
+					<span class="recipient recipient-absent" title="{{ phrase('agent.tickets.recipient_absent', {person: recipient.display_name|default(recipient.email_address), user: message.person }) }}">
+						{% if recipient.id == ticket.person.id %}
+							<span
+									class="remove"
+									title="Remove from ticket"
+									data-confirm="{{ phrase('agent.tickets.confirm_remove_user', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>', sender: message.person}) }}"
+									data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
+                                    data-new-user-id="{{ message.person.id }}"
+									data-person-id="{{ recipient.id }}"
+							/>
+						{% else %}
+							<span
+									class="remove"
+									title="Remove from ticket"
+									data-confirm="{{ phrase('agent.tickets.confirm_remove_absent', {person: recipient.display_name ~ ' <' ~ recipient.email_address ~ '>'}) }}"
+									data-delete-url="{{ path('agent_ticket_delpart', {'ticket_id': ticket.id}) }}"
+									data-person-id="{{ recipient.id }}"
+							/>
+						{% endif %}
 						{{ recipient.display_name }}
 						<span class="email" title="{{ recipient.email_address }}">{{ recipient.email_address }}</span>
 					</span>
 				{% endfor %}
 			</div>
 			<div class="dp-stickytip" id="{{ elid }}_recipient_cc" style="display: none">
-				{{ phrase('agent.tickets.recipients_cc_tooltip', {count: recipients.cc | length}) }}
+				{{ phrase('agent.tickets.recipients_cc_tooltip', {count: recipients.cc | length, user: message.person}) }}
 			</div>
 			<div class="dp-stickytip" id="{{ elid }}_recipient_absent" style="display: none">
-				{{ phrase('agent.tickets.recipients_absent_tooltip', {count: recipients.absent | length}) }}
+				{{ phrase('agent.tickets.recipients_absent_tooltip', {count: recipients.absent | length, user: message.person}) }}
 			</div>
 		{% endif %}
 		{% set message_translated = ticket_messages_translated[message.id] %}

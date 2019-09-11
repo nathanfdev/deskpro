@@ -32,8 +32,8 @@ class CommunityTopicCustomDefFixture extends AbstractDpFixture implements Ordere
             $customCatDef = new CustomDefCommunityTopic();
             $customCatDef
                 ->setBrand($brand)
-                ->setSysName('chan')
-                ->setTitle('Custom Channel')
+                ->setSysName('cat')
+                ->setTitle('Category')
                 ->setDescription('e.g., maybe Windows, Mac, Linux.')
                 ->setHandlerClass(Choice::class)
             ;

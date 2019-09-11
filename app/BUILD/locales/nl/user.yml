@@ -383,7 +383,7 @@ portal.community.form_logged_in_as: 'Ingelogd als: <span>{{name}}</span>, vanuit
 portal.community.form_logout: 'Bent u dit niet?'
 portal.community.form_tell_us_more: 'Vertel ons meer'
 portal.community.form_title: Titel
-portal.community.form_custom_chan: Kategori
+portal.community.form_custom_cat: Kategori
 portal.community.module_forbidden: 'U heeft geen toegang tot deze module'
 portal.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
 portal.community.none: 'Nog geen gemeenschapsonderwerpen'
@@ -1046,7 +1046,8 @@ user.lang.lang_title_japanese: Japans
 user.lang.lang_title_norwegian: Noors
 user.lang.lang_title_persian: Perzisch
 user.lang.lang_title_polish: Pools
-user.lang.lang_title_portuguese: Portugees
+user.lang.lang_title_portuguese_br: Portugees (Brazilië)
+user.lang.lang_title_portuguese_pt: Portugees (Portugal)
 user.lang.lang_title_romanian: Roemeens
 user.lang.lang_title_russian: Russisch
 user.lang.lang_title_spanish: Spaans

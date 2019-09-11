@@ -151,7 +151,7 @@
 						<div class="dp-mpadded">
 							<div ng-hide="support_sent">
 								<div dp-hide-spinning="sending_support_request">
-									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="fas fa-envelope-o"></i> Send Message</button>
+									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="fas fa-envelope"></i> Send Message</button>
 									&nbsp;&nbsp;&nbsp;
 									<div style="display: inline-block" ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
 										We will reply to <strong>{{ app.user.primary_email_address }}</strong>.

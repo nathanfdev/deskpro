@@ -421,7 +421,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         $url = App::get('router')->generate('serve_blob', ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()], $absolute);
 
-        // We are specifically requestinga local url,
+        // We are specifically requesting a local url,
         // make sure serve_file doesn't redirect.
         if ($this->getFileUrl() && !$use_file_url) {
             $url = str_replace('/file.php/', '/file.php/local/', $url);

@@ -37,7 +37,7 @@ class AvailableListContainer extends BaseSearchContainer {
         account:      null,
         country_code: null,
         region:       null,
-        types:        ['local', 'tollfree', 'mobile', 'fixed', 'national'],
+        type:         'mobile',
         phrase:       ''
       }
     };
@@ -78,7 +78,7 @@ class AvailableListContainer extends BaseSearchContainer {
 
   onChangeFilter = (filter) => {
     const { dispatch, accounts } = this.props;
-    if (filter.account && filter.country_code && filter.types.length > 0) {
+    if (filter.account && filter.country_code && filter.type) {
       this.setState({
         loading: true,
         numbers: []

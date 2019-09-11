@@ -4,7 +4,8 @@
 @import "../../../../../../node_modules/codemirror/lib/codemirror.css";
 @import "../../../../../../node_modules/codemirror/theme/monokai.css";
 
-.dp-email-templates {
+.dp-email-templates,
+.dp-portal-editor {
   font-family: Open Sans, Helvetica, Arial, sans-serif;
   .editor {
     width: 55%;
@@ -160,9 +161,9 @@
       padding: 10px;
       div {
         display: inline-block;
-        &.right.floated {
-          float: right;
-        }
+      }
+      .right.floated {
+        float: right;
       }
     }
   }
@@ -184,6 +185,7 @@
     .CodeMirror {
       margin: 0 20px;
     }
+    .template-preview,
     .email-preview {
       background-color: $dp-greyscale-150;
       position: absolute;
@@ -266,6 +268,9 @@
 }
 .dp-email-templates .editor,
 .template-popup {
+  pre {
+    font-size: 11px;
+  }
   .CodeMirror {
     user-select: none;
     span.twig-variable {
@@ -300,12 +305,26 @@
       }
     }
   }
-}
-.email-dropdown-menu {
-    .ui.bottom.left.popup:before {
-      display: none;
+  .footer {
+    button {
+      margin-right: 5px;
     }
-    .ui.bottom.left.popup .menu-button-cover {
+    button:last-of-type {
+      margin-right: 0;
+      float: right;
+    }
+    button.floated.right {
+      margin-right: 0;
+      margin-left: 5px;
+      float: right;
+    }
+  }
+}
+.editor-dropdown-menu {
+  .ui.bottom.left.popup:before {
+    display: none;
+  }
+  .ui.bottom.left.popup .menu-button-cover {
     left: 1px;
     width: 50px;
     transform: rotate(0deg);
@@ -314,6 +333,20 @@
     z-index: 2;
     top: 0;
     height: 1px;
+  }
+  .ui.bottom.right.popup .menu-button-cover {
+    left: auto;
+    right: 1px;
+    width: 50px;
+    transform: rotate(0deg);
+    position: absolute;
+    background: #FFFFFF;
+    z-index: 2;
+    top: 0;
+    height: 1px;
+  }
+  .ui.popup {
+    max-width: none;
   }
   user-select: none;
   &.active {
@@ -387,6 +420,9 @@
       left: auto;
       transform: rotate(315deg);
     }
+  }
+  .ui.popup {
+    max-width: none;
   }
 }
 .variables {
@@ -583,7 +619,8 @@
   }
 }
 .phrase-popup,
-.variable-popup {
+.variable-popup,
+.show-tag-popup {
   width: 700px;
   .phrase {
     margin-left: 5px;
@@ -622,7 +659,7 @@
     text-align: left;
     line-height: 1.21428571em;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    padding: 0.67857143em 1em;
+    padding: 0.66em 1em;
     background: #FFFFFF;
     border: 1px solid rgba(34, 36, 38, 0.15);
     color: #2b2f2f;
@@ -634,6 +671,22 @@
       height: 100px;
       margin-bottom: 5px;
     }
+  }
+  .footer {
+    button {
+      margin-right: 5px;
+    }
+  }
+}
+.show-tag-popup {
+  span.twig-include {
+    color: $dp-emerald-primary;
+    border: solid 1px $dp-emerald-primary;
+    padding: 0 2px;
+    cursor: pointer;
+  }
+  .template + .footer {
+    margin-top: 15px;
   }
 }
 .template-popup {
@@ -692,4 +745,31 @@
       top: 0;
     }
   }
+}
+.dp-portal-editor {
+  .editor {
+    width: 100%;
+    .header {
+      height: 39px;
+      & > div:first-child {
+        padding: 0;
+      }
+    }
+    .dp-code-editor {
+      height: calc(100% - 79px);
+      .ui.dimmer {
+        top:39px !important;
+        height: calc(100% - 79px);
+      }
+    }
+    .footer {
+      height: 40px;
+      .dp-button {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+.assets-menu {
+  padding: 20px;
 }

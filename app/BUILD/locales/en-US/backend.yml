@@ -429,13 +429,13 @@ adm.email_templates.user_tickets: 'Ticket Emails'
 adm.email_templates.user_validation: Validation
 adm.email_templates.user_warnings: 'Warnings, alerts & errors'
 adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community channel will be moved to:'
-adm.community_categories.delete_cummunity_custom_channel: 'Delete Custom Community Channel'
+adm.community_categories.delete_cummunity_custom_channel: 'Delete Category'
 adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community channel?'
-adm.custom_community_channels.new_channel: 'New Custom Community Channel'
-adm.custom_community_channels.parent_explain: 'By setting a parent category, this category becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
-adm.custom_community_channels.title: Title
-adm.custom_community_channels.title_error: 'You must enter a valid title'
-adm.custom_community_channels.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
+adm.community_categories.new_channel: 'New Category'
+adm.community_categories.parent_explain: 'By setting a parent category, this category becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
+adm.community_categories.title: Title
+adm.community_categories.title_error: 'You must enter a valid title'
+adm.community_categories.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
 adm.community_statuses.delete_community_status: 'Delete Community Status'
 adm.community_statuses.delete_community_status_confirm: 'Are you sure you want to delete this community status?'
 adm.community_statuses.delete_community_statuses_moved: 'Any community topic that is currently under this community status will be moved to:'
@@ -510,9 +510,9 @@ adm.general.x_email_bans:
 adm.general.x_community_active_statuses:
   one: '{{count}} Community Active Status'
   other: '{{count}} Community Active Statuses'
-adm.general.x_custom_community_channels:
-  one: '{{count}} Custom Community Channel'
-  other: '{{count}} Custom Community Channels'
+adm.general.x_community_categories:
+  one: '{{count}} Category'
+  other: '{{count}} Categories'
 adm.general.x_community_closed_statuses:
   one: '{{count}} Community Closed Status'
   other: '{{count}} Community Closed Statuses'
@@ -1316,9 +1316,9 @@ admin.community.count_closed_statuses:
 admin.community.count_community_topics:
   one: '{{count}} community topic'
   other: '{{count}} community topics'
-admin.community.create_new_category: 'Create New Custom Channel'
+admin.community.create_new_category: 'Create New Category'
 admin.community.create_new_status: 'Create New Status'
-admin.community.delete_category: 'Delete Custom Channel'
+admin.community.delete_category: 'Delete Category'
 admin.community.delete_status: 'Delete Status'
 admin.community.edit_status: 'Edit Status'
 admin.community.explain_active_status: 'An active status is a status assigned to community topic that have been reviewed, but have not been implemented or have not been decided on.'
@@ -2902,7 +2902,7 @@ agent.emails.whitelist_ip_note: 'Once the IP address has been validated, you wil
 agent.emails.whitelist_ip_subject: 'Verify DeskPRO Login - New IP Address'
 agent.emails.whitelist_ip_validation_link: 'If this is a valid login attempt by you, click the following link to validate the new IP address:'
 agent.emails.your_initial_password: 'Your initial password'
-agent.community.community_custom_channel: 'Custom Channel'
+agent.community.category: 'Category'
 agent.community.any_channel: 'Any Channel'
 agent.community.any_status: 'Any Status'
 agent.community.count_votes:
@@ -3533,10 +3533,11 @@ agent.general.off: 'Off'
 agent.general.okay: Okay
 agent.general.ok: OK
 agent.general.on: 'On'
-agent.general.online_now: 'Onlne Now'
+agent.general.online_now: 'Online Now'
 agent.general.open: Open
 agent.general.open_tab: 'Open Tab'
 agent.general.open_tickets: 'Open Tickets'
+agent.general.close: Close
 agent.general.or_sep: or
 agent.general.order_by: 'Order By'
 agent.general.ordered_by: 'Ordered by'
@@ -4865,6 +4866,7 @@ agent.tickets.close_tab_tip: 'Close this tab after your message is saved'
 agent.tickets.coment_after_ticket_created: 'comment after ticket is created'
 agent.tickets.commented_on: 'Commented on'
 agent.tickets.confirm_remove_absent: 'Are you sure you want to remove {{person}} from this ticket?'
+agent.tickets.confirm_remove_user: 'Removing {{person}} will result in {{sender}} becoming the ticket owner'
 agent.tickets.count_agents:
   one: '1 agent'
   other: '{{count}} agents'
@@ -5164,10 +5166,10 @@ agent.tickets.real_time_updates_refresh: 'Refresh List'
 agent.tickets.recalculate_sla_status_action: 'Recalcalculate SLA status'
 agent.tickets.receiving_gateway: 'Receiving gateway'
 agent.tickets.receiving_gateway_account: 'Receiving gateway account'
-agent.tickets.recipients_cc_tooltip: 'This message was submitted via email. In addition to the helpdesk, the user CC''d {{count}} other people.'
-agent.tickets.recipients_absent_tooltip: 'This message was submitted via email. This ticket contains {{count}} CC''d people that were NOT on the users original email message. These extra people may have been added by a different reply or may have been added by someone else.'
-agent.tickets.recipient_cc: '{{person}} was CC''d in the users original email message.'
-agent.tickets.recipient_absent: '{{person}} was NOT included in the users original email message, but is currently a CC on this ticket.'
+agent.tickets.recipients_cc_tooltip: '{{user}} CC''ed these {{count}} people.'
+agent.tickets.recipients_absent_tooltip: '{{user}} did NOT CC these {{count}} people.'
+agent.tickets.recipient_cc: '{{person}} received {{user}}''s message.'
+agent.tickets.recipient_absent: '{{person}} who is CC''ed on this ticket, did NOT receive {{user}}''s message.'
 agent.tickets.remove_all_slas_action: 'Remove all SLAs'
 agent.tickets.remove_category_action: 'Remove category'
 agent.tickets.remove_labels_action: 'Remove labels: {{labels}}'

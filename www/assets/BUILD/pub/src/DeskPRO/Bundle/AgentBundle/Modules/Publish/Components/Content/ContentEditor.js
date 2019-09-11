@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ArticleEditor } from '@deskpro/product-content-editor';
+import '@deskpro/content-editor/styles/content.css';
 
 
 class ContentEditor extends React.PureComponent {
@@ -30,6 +31,19 @@ class ContentEditor extends React.PureComponent {
         }}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
+        uppyOptions={{
+          autoProceed: false,
+          xhrUpload:   {
+            endpoint:             `${window.ASSETS_BASE_URL_FULL.replace(/^http(s)?:/, window.location.protocol).replace(window.ASSETS_BASE_URL, '')}/agent/misc/accept-redactor-image-upload`,
+            fieldName:            'file',
+            responseUrlFieldName: 'link',
+            method:               'POST',
+            meta:                 {
+              _rt:  window.DP_REQUEST_TOKEN,
+              json: true
+            }
+          }
+        }}
       />
     );
   }

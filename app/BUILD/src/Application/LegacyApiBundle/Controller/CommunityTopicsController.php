@@ -152,7 +152,7 @@ class CommunityTopicsController extends AbstractController
 
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
-            $field         = $this->_getCustomCommunityChannelField();
+            $field         = $this->_getCommunityCategoryField();
             $field_manager = $this->container->getSystemService('community_fields_manager');
             $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $communityTopic, true);
         }
@@ -247,7 +247,7 @@ class CommunityTopicsController extends AbstractController
 
         $user_category_id = $this->in->getUint('user_category_id');
         if ($user_category_id) {
-            $field         = $this->_getCustomCommunityChannelField();
+            $field         = $this->_getCommunityCategoryField();
             $field_manager = $this->container->getSystemService('community_fields_manager');
             $field_manager->saveFormToObject(['field_'.$field->id => $user_category_id], $communityTopic, true);
         }
@@ -689,7 +689,7 @@ class CommunityTopicsController extends AbstractController
      */
     public function getCustomChannelsAction()
     {
-        $field    = $this->_getCustomCommunityChannelField();
+        $field    = $this->_getCommunityCategoryField();
         $children = $field->getAllChildren();
 
         return $this->createApiResponse(['categories' => $this->getApiData($children)]);
@@ -742,13 +742,13 @@ class CommunityTopicsController extends AbstractController
      *
      * @return \Application\DeskPRO\Entity\CustomDefCommunityTopic
      */
-    protected function _getCustomCommunityChannelField(Brand $brand = null)
+    protected function _getCommunityCategoryField(Brand $brand = null)
     {
         if (!$brand) {
             $brand = $this->get('default_brand_finder')->getDefaultBrand();
         }
 
-        return $this->container->getSystemService('custom_community_channels')->getParentCategory($brand);
+        return $this->container->getSystemService('community_categories')->getParentCategory($brand);
     }
 
     /**

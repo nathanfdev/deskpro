@@ -136,8 +136,9 @@ class TwilioCallbacksController extends BaseController
                     // get call price
                     // store call price
                     $this->get('job.queue')->addJob(new Job(LoadTwilioPriceProcessor::JOB_TYPE, [
-                        'call_id'  => $phoneCall->getId(),
-                        'call_sid' => $callSid,
+                        'call_id'    => $phoneCall->getId(),
+                        'call_sid'   => $callSid,
+                        'account_id' => $account->getId(),
                     ]));
 
                     if ($participant instanceof VoicePhoneCallParticipantUser) {

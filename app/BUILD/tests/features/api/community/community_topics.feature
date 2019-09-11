@@ -82,10 +82,10 @@ Feature: /community_topics/counts endpoint
     And the JSON node "data.nested[1].count" should be equal to 2
     And the JSON node "data.nested[1].title" should be equal to "Accepted"
 
-  Scenario: I GET count of community topics grouped by custom_channel
+  Scenario: I GET count of community topics grouped by category
     Given only the following custom community fields exist:
       | #     | parent  | app_id | sys_name | js_class | has_form_template | has_display_template | title    | description | handler_class                                           | options | is_user_enabled | is_enabled | display_order | default_value | is_agent_field |
-      | cdct1 |         |        | chan     |          | 0                 | 0                    | Category | Category    | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
+      | cdct1 |         |        | cat      |          | 0                 | 0                    | Category | Category    | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
       | cdct2 | {cdct1} |        |          |          | 0                 | 0                    | Windows  |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct3 | {cdct1} |        |          |          | 0                 | 0                    | Mac      |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct4 | {cdct1} |        |          |          | 0                 | 0                    | Linux    |             |                                                         |         | 1               | 1          | 0             |               | 1              |
@@ -104,12 +104,12 @@ Feature: /community_topics/counts endpoint
       | {ct3} | {cdct3} | {cdct1}    | 0     |
       | {ct4} | {cdct4} | {cdct1}    | 0     |
 
-    When I send a GET request to "/api/v2/community_topics/counts?group_by=custom_channel"
+    When I send a GET request to "/api/v2/community_topics/counts?group_by=category"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 6
-    And the JSON node "data.grouped_by" should be equal to "custom_channel"
+    And the JSON node "data.grouped_by" should be equal to "category"
 
     And the JSON node "data.nested[0].title" should be equal to "Windows"
     And the JSON node "data.nested[0].count" should be equal to 2

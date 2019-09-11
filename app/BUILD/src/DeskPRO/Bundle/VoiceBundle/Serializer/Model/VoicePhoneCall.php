@@ -61,6 +61,13 @@ class VoicePhoneCall
      *
      * @var string
      */
+    private $numberPlain;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     private $externalNumber;
 
     /**
@@ -220,6 +227,7 @@ class VoicePhoneCall
         $this->callSid            = $phoneCall->getCallSid();
         $this->conferenceSid      = $phoneCall->getConferenceSid();
         $this->number             = $phoneCall->getNumber();
+        $this->numberPlain        = $phoneCall->getNumberPlain();
         $this->externalNumber     = $phoneCall->getExternalNumber();
         $this->externalNumberType = $phoneCall->getExternalNumberType();
         $this->person             = $phoneCall->getPerson();

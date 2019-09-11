@@ -5,17 +5,18 @@ import classNames from 'classnames';
 import { fromJS } from 'immutable';
 import debounce from 'lodash/debounce';
 import { Select, Toggle } from 'DeskPRO/Component/Semantic/Form';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
+import { ConfirmButton, Button, Icon } from '@deskpro/react-components';
+import CodeMirror from 'DeskPRO/Component/CMEditor/CodeMirror';
+import Editor from 'DeskPRO/Component/CMEditor/Editor';
+import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import DropDownMenu from 'DeskPRO/Component/CMEditor/Menus/DropDownMenu';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
 import { MediaMenuContainer } from './Menus/MediaMenu';
 import { PhrasesMenuContainer } from './Menus/PhrasesMenu';
 import { VariablesMenuContainer } from './Menus/VariablesMenu';
-import DropDownMenu from './Menus/DropDownMenu';
 import LanguageSelector from './Menus/LanguageSelector';
 import * as actions from '../Actions/templatesActions';
 import PreviewEmail from './PreviewEmail';
-import CodeMirror from './CodeMirror';
-import Editor from './Editor';
 import NewCustomTemplate from './NewCustomTemplate';
 
 @connect(state => ({
@@ -84,14 +85,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        editor: this.editor.editor.bodyEditor
-      });
-    }, 100);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.emailTemplates.get('phrases') !== this.props.emailTemplates.get('phrases')) {
       const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
@@ -113,6 +106,12 @@ class EmailTemplatesEditorContainer extends React.Component {
       this.state.currentWidget.closePopup();
     }
   }
+
+  setEditor = (editor) => {
+    this.setState({
+      editor
+    });
+  };
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
 
@@ -523,6 +522,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       setTemplateValue={this.setTemplateValue}
       getPhraseTranslations={this.getPhraseTranslations}
       savePhraseTranslations={this.savePhraseTranslations}
+      setEditor={this.setEditor}
       previewSubmit={this.state.previewSubmit}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
@@ -565,6 +565,7 @@ class EmailTemplatesEditor extends React.Component {
     setCurrentWidget:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
+    setEditor:              PropTypes.func,
     previewSubmit:          PropTypes.bool,
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
@@ -790,6 +791,7 @@ class EmailTemplatesEditor extends React.Component {
               </Button>
               {this.props.emailTemplates.get('legacyTemplates').size ?
                 <Button
+                  type="secondary"
                   className="right basic small floated upgrade-legacy"
                   onClick={this.openLegacyTemplatesEditor}
                   title="Upgrade Legacy Templates"
@@ -845,6 +847,7 @@ class EmailTemplatesEditor extends React.Component {
                     closeMenu={this.closePhrasesMenu}
                     languages={window.DP_ENABLED_LANGS}
                     insertPhrase={this.props.insertPhrase}
+                    data={this.props.emailTemplates}
                   />
                 </DropDownMenu>
               </div>
@@ -884,51 +887,59 @@ class EmailTemplatesEditor extends React.Component {
             savePhraseTranslations={this.props.savePhraseTranslations}
             setCurrentWidget={this.props.setCurrentWidget}
             setTemplateValue={this.setTemplateValue}
+            setEditor={this.props.setEditor}
           />
           <div className="footer">
             <Button
-              className={classNames('primary small', { loading: this.props.saveSubmit })}
+              size="medium"
               disabled={textareaDisabled || !contentChanged}
+              loading={this.props.saveSubmit}
               onClick={this.props.saveTemplate}
             >
               Save changes
             </Button>
-            <Button
-              className={classNames('basic small', { loading: this.props.undoSubmit })}
+            <ConfirmButton
+              type="secondary"
+              size="medium"
+              loading={this.props.undoSubmit}
               disabled={textareaDisabled || !contentChanged}
               onClick={this.undoChanges}
-              confirm
             >
               Undo changes
-            </Button>
+            </ConfirmButton>
             { this.props.emailTemplates.get('legacyTemplate') ?
-              <Button
-                className={classNames('basic small', { loading: this.props.asConvertedSubmit })}
+              <ConfirmButton
+                type="secondary"
+                loading={this.props.asConvertedSubmit}
                 disabled={textareaDisabled}
                 onClick={this.markAsConverted}
-                confirm
               >
                 Save and Mark as converted
-              </Button>
+              </ConfirmButton>
               : null }
             { this.props.emailTemplates.getIn(['currentTemplate', 'is_custom'], false) ?
-              <Button
-                className={classNames('right floated negative basic small', { loading: this.props.resetSubmit })}
+              <ConfirmButton
+                type="secondary"
+                size="medium"
+                className={classNames('right floated negative')}
+                loading={this.props.resetSubmit}
                 disabled={textareaDisabled}
                 onClick={this.props.deleteTemplate}
-                confirm
               >
+                <Icon name={faExclamationTriangle} />
                 Delete
-              </Button>
+              </ConfirmButton>
               :
-              <Button
-                className={classNames('right floated basic small', { loading: this.props.resetSubmit })}
+              <ConfirmButton
+                type="secondary"
+                size="medium"
+                className={classNames('right floated')}
+                loading={this.props.resetSubmit}
                 disabled={textareaDisabled}
                 onClick={this.props.resetTemplate}
-                confirm
               >
                 Reset template
-              </Button>
+              </ConfirmButton>
             }
           </div>
         </div>

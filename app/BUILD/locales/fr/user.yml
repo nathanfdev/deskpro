@@ -381,7 +381,7 @@ portal.community.form_logged_in_as: 'Connecté en tant que: <span>{{name}}</span
 portal.community.form_logout: 'Pas toi?'
 portal.community.form_tell_us_more: 'Dis nous en plus'
 portal.community.form_title: Titre
-portal.community.form_custom_chan: Catégorie
+portal.community.form_custom_cat: Catégorie
 portal.community.module_forbidden: 'Vous n''avez pas accès à ce module'
 portal.community.no_matching: 'Aucun commentaire correspondant'
 portal.community.none: 'Pas encore de retour'
@@ -1049,7 +1049,8 @@ user.lang.lang_title_japanese: Japonais
 user.lang.lang_title_norwegian: Norvégien
 user.lang.lang_title_persian: Perse
 user.lang.lang_title_polish: Polonais
-user.lang.lang_title_portuguese: Portugais
+user.lang.lang_title_portuguese_br: Portugais (Brésil)
+user.lang.lang_title_portuguese_pt: Portugais (Portugal)
 user.lang.lang_title_romanian: Roumain
 user.lang.lang_title_russian: Russe
 user.lang.lang_title_spanish: Espagnol

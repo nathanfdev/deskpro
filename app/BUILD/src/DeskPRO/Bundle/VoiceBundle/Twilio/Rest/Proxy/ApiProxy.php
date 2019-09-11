@@ -22,4 +22,16 @@ class ApiProxy extends Api
             $this->baseUrl = $client->getApiProxyUrl();
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getV2010()
+    {
+        if (!$this->_v2010) {
+            $this->_v2010 = new V2010Proxy($this);
+        }
+
+        return $this->_v2010;
+    }
 }

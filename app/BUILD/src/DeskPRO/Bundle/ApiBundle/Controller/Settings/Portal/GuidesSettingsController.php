@@ -60,7 +60,7 @@ class GuidesSettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GuidesSettingsType"
      *     },
      *     noOutput=true
-     *)
+     * )
      * @Rest\Post("")
      *
      * @param Request $request

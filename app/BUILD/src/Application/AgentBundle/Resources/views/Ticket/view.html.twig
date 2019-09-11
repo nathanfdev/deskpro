@@ -220,7 +220,7 @@
                 </table>
             </div>
             <div class="row author last">
-                <span class="ticket-person-holder">
+                <span class="ticket-person-holder" id="{{ baseId }}_ticket-person-holder">
                     {% include 'AgentBundle:Ticket:view-ticket-person-holder.html.twig' %}
                 </span>
 
@@ -307,7 +307,7 @@
                     'selected': ticket.department.id|default(0),
                     'id': baseId ~ '_department_id',
                     'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header" data-style-type="icons" data-select-icon-size="22"',
-                    'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
+                    'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign', ticket.brand)
                     } %}
 
                     <span id="{{ baseId }}_department_icon" class="avatar"

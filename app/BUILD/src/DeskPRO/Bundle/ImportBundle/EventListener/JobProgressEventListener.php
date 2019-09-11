@@ -74,10 +74,12 @@ class JobProgressEventListener implements EventSubscriberInterface
         return [
             ProgressEvent::POST_MODEL_IMPORT => ['onPostModelImport'],
             ProgressEvent::POST_IMPORT       => ['onPostImport'],
+            ProgressEvent::POST_STEP_IMPORT  => ['onPostStepImport'],
             ProgressEvent::POST_BATCH_APPLY  => ['onPostBatchApply'],
             ProgressEvent::POST_APPLY        => ['onPostApply'],
             ProgressEvent::FINISH            => ['onFinish'],
             ProgressEvent::CLEAN             => ['onClean'],
+            ProgressEvent::ERROR             => ['onError'],
         ];
     }
 
@@ -125,10 +127,33 @@ class JobProgressEventListener implements EventSubscriberInterface
 
             $job->setStatus(Job::STATUS_PROCESSING);
             $job->setDataKey('imported_steps', $imported);
+            $job->setDataKey('failed_step', null);
 
             $this->em->persist($job);
             $this->em->flush();
         }
+    }
+
+    /**
+     * @param ProgressEvent $event
+     */
+    public function onPostStepImport(ProgressEvent $event)
+    {
+        if (!$job = $this->getJob()) {
+            return;
+        }
+
+        $offsets = $job->getDataKey('import_offsets', []);
+        $options = $event->getOptions();
+
+        if (array_key_exists('offset', $options)) {
+            $offsets = array_merge($offsets, $options['offset']);
+        }
+
+        $job->setDataKey('import_offsets', $offsets);
+
+        $this->em->persist($job);
+        $this->em->flush();
     }
 
     /**
@@ -157,6 +182,7 @@ class JobProgressEventListener implements EventSubscriberInterface
 
         $job->setStatus(Job::STATUS_PROCESSING);
         $job->setDataKey('applied_counts', $counts);
+        $job->setDataKey('failed_step', null);
 
         $this->em->persist($job);
         $this->em->flush();
@@ -180,6 +206,7 @@ class JobProgressEventListener implements EventSubscriberInterface
 
             $job->setStatus(Job::STATUS_PROCESSING);
             $job->setDataKey('applied_steps', $applied);
+            $job->setDataKey('failed_step', null);
 
             $this->em->persist($job);
             $this->em->flush();
@@ -236,6 +263,27 @@ class JobProgressEventListener implements EventSubscriberInterface
         $job->setLog('');
         $job->setDateCreated(new \DateTime());
         $job->setStatus(Job::STATUS_WAITING);
+
+        $this->em->persist($job);
+        $this->em->flush();
+    }
+
+    /**
+     * @internal
+     */
+    public function onError(ProgressEvent $event)
+    {
+        if (!$job = $this->getJob()) {
+            return;
+        }
+
+        $options = $event->getOptions();
+
+        $job->setStatus(Job::STATUS_ERROR);
+
+        if (array_key_exists('failed_step', $options)) {
+            $job->setDataKey('failed_step', $options['failed_step']);
+        }
 
         $this->em->persist($job);
         $this->em->flush();

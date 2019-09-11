@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ScrollArea from 'react-scrollbar';
+import { Scrollbars } from 'react-custom-scrollbars';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';
@@ -93,7 +93,10 @@ export class ReplyForm extends React.Component {
 
   renderRte() {
     return (
-      <ScrollArea vertical>
+      <Scrollbars
+        style={{ height: 60 }}
+        autoHide
+      >
         <RteEditor
           inline
           ref={(c) => { this.editor = c; }}
@@ -119,7 +122,7 @@ export class ReplyForm extends React.Component {
             }
           }}
         />
-      </ScrollArea>
+      </Scrollbars>
     );
   }
 

@@ -402,7 +402,7 @@ select.dpe_select, select.with-select2 {
 .flag-bm { background-image: url("../../images/flags/bm.png"); }
 .flag-bn { background-image: url("../../images/flags/bn.png"); }
 .flag-bo { background-image: url("../../images/flags/bo.png"); }
-.flag-br { background-image: url("../../images/flags/br.png"); }
+.flag-br { background-image: url("../../images/flags/locale_pt-BR.png"); }
 .flag-bs { background-image: url("../../images/flags/bs.png"); }
 .flag-bt { background-image: url("../../images/flags/bt.png"); }
 .flag-bv { background-image: url("../../images/flags/bv.png"); }
@@ -555,7 +555,7 @@ select.dpe_select, select.with-select2 {
 .flag-pn { background-image: url("../../images/flags/pn.png"); }
 .flag-pr { background-image: url("../../images/flags/pr.png"); }
 .flag-ps { background-image: url("../../images/flags/ps.png"); }
-.flag-pt { background-image: url("../../images/flags/locale_pt.png"); }
+.flag-pt { background-image: url("../../images/flags/locale_pt-PT.png"); }
 .flag-pw { background-image: url("../../images/flags/pw.png"); }
 .flag-py { background-image: url("../../images/flags/py.png"); }
 .flag-qa { background-image: url("../../images/flags/qa.png"); }
@@ -4563,6 +4563,18 @@ blockquote {
 	cursor: pointer;
 }
 
+.redactor_toolbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  height: auto !important;
+  min-height: 32px;
+}
+
+.redactor_toolbar li {
+  float: none !important;
+}
+
 .redactor_toolbar li a.redactor_btn_dp_attach {
 	position: relative;
 	overflow: hidden;
@@ -4628,7 +4640,7 @@ blockquote {
 }
 
 .redactor_toolbar li.dp_send_message {
-	float: right !important;
+  flex: 0;
 }
 .redactor_toolbar li a.redactor_btn_dp_send_message {
 	background: transparent url(../../images/agent/icons/email_go.png) no-repeat 5px 50%;

@@ -51,6 +51,19 @@ class VoiceEventHelper
      */
     public function sendConferenceStatus(VoicePhoneCall $phoneCall)
     {
+        $this->dispatcher->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('agent.voice.conference.status', $this->prepareConferenceStatus($phoneCall))
+        );
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return array
+     */
+    public function prepareConferenceStatus(VoicePhoneCall $phoneCall)
+    {
         // make sure we send latest phone call
         $this->em->refresh($phoneCall);
 
@@ -66,9 +79,6 @@ class VoiceEventHelper
         $statusParams['phone_call'] = $this->serializer->toArray(new ApiWrapper($phoneCall), $context)['data'];
         unset($statusParams['phone_call']['ticket']);
 
-        $this->dispatcher->dispatch(
-            LegacySystemEvent::EVENT_NAME,
-            new LegacySystemEvent('agent.voice.conference.status', $statusParams)
-        );
+        return $statusParams;
     }
 }

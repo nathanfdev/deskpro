@@ -13,12 +13,14 @@ class ProgressEvent extends Event
     const PRE_MODEL_IMPORT  = 'importer.pre_model_import';
     const POST_MODEL_IMPORT = 'importer.post_model_import';
     const POST_IMPORT       = 'importer.post_import';
+    const POST_STEP_IMPORT  = 'importer.post_step_import';
     const PRE_APPLY         = 'importer.pre_apply';
     const PRE_BATCH_APPLY   = 'importer.pre_batch_apply';
     const POST_BATCH_APPLY  = 'importer.post_batch_apply';
     const POST_APPLY        = 'importer.post_apply';
     const FINISH            = 'importer.finish';
     const CLEAN             = 'importer.clean';
+    const ERROR             = 'importer.error';
 
     /**
      * @var string

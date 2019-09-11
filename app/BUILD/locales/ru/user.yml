@@ -415,7 +415,7 @@ portal.community.form_logged_in_as: 'Зашел в систему как <span>{
 portal.community.form_logout: 'Не Вы?'
 portal.community.form_tell_us_more: 'Расскажите нам больше'
 portal.community.form_title: Заголовок
-portal.community.form_custom_chan: Пользовательский канал
+portal.community.form_custom_cat: Пользовательский канал
 portal.community.module_forbidden: 'У Вас нет доступа к этому разделу'
 portal.community.no_matching: 'Нет подходящих отзывов'
 portal.community.none: 'Ещё нет отзывов'
@@ -1147,7 +1147,8 @@ user.lang.lang_title_japanese: Японский
 user.lang.lang_title_norwegian: Норвежский
 user.lang.lang_title_persian: Персидский
 user.lang.lang_title_polish: Польский
-user.lang.lang_title_portuguese: Португальский
+user.lang.lang_title_portuguese_br: Португальский (Бразилия)
+user.lang.lang_title_portuguese_pt: Португальский (Португалия)
 user.lang.lang_title_romanian: Румынский
 user.lang.lang_title_russian: Русский
 user.lang.lang_title_spanish: Испанский

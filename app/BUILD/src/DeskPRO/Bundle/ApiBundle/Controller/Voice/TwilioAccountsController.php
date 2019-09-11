@@ -156,11 +156,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
             $options['Contains'] = $query->get('phrase');
         }
 
-        $types = $query->get('types');
-        if (!$types || !is_array($types)) {
-            $types = [];
-        }
-
+        $types   = (array) $query->get('type');
         $numbers = [];
         foreach ($types as $type) {
             if ($type === 'tollfree') {
@@ -256,6 +252,8 @@ class TwilioAccountsController extends AbstractVoiceCrudController
     public function postAction(Request $request)
     {
         $isManaged = $request->request->get('isManaged');
+        $request->request->remove('isManaged');
+
         if (!$isManaged && !$this->get('voice_settings_resolver')->isPrivateAccountsEnabled()) {
             throw $this->createAccessDeniedException('Cannot create private accounts');
         }

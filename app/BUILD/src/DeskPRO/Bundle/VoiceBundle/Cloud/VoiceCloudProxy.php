@@ -124,6 +124,8 @@ class VoiceCloudProxy
         $response = $client->send();
         $data     = json_decode($response->getBody(), true);
 
+        $data['twilioProxyServiceUrl'] = rtrim($data['twilioProxyServiceUrl'], '/');
+
         if (!$data || !empty($data['error'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)));
             throw new InsufficientBalanceException(@$data['code']);
@@ -174,7 +176,7 @@ class VoiceCloudProxy
 
         $url = sprintf(
             '%s/api/member-services-call/%s/%s/register-twilio',
-            DP_MA_SERVER_SECURE,
+            License::getSecureLicServer(),
             'LICENSE',
             License::getLicense()->getLicenseId()
         );
@@ -190,6 +192,8 @@ class VoiceCloudProxy
 
         $response = $client->send();
         $data     = json_decode($response->getBody(), true);
+
+        $data['twilioProxyServiceUrl'] = rtrim($data['twilioProxyServiceUrl'], '/');
 
         if (!$data || !empty($data['error']) || empty($data['twilioProxyServiceUrl'])) {
             SystemErrorHandler::logException(new \Exception(json_encode($data)), false, null, true);
