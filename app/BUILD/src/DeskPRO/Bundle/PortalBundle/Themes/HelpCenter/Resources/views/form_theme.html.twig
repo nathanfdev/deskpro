@@ -37,8 +37,10 @@
             <div class="form-group">
         {% endif %}
 
+        {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+
         {{- form_label(child, null) -}}
-        {{- form_widget(child, {'attr': {'class': 'form-control'}}) -}}
+        {{- form_widget(child, {'attr': {'class': widgetClass}}) -}}
         {{- form_errors(child) -}}
 
         {% if root_and_not_hidden %}</div>{% endif %}
@@ -53,12 +55,12 @@
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
     {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
-   
+    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
     {# containers #}
     {% if root_and_not_hidden %}<div class="form-group">{% endif %}
 
     {{- form_label(form, null) -}}
-    {{- form_widget(form, applyClass ? {'attr': {'class': 'form-control'}} : {}) -}}
+    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
     {{- form_errors(form) -}}
 
     {# /containers #}
@@ -72,12 +74,13 @@
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
     {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
     {% if root_and_not_hidden %}<div class="form-group">{% endif %}
     {{- form_label(form, null) -}}
+    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
     {% if root_and_not_hidden %}
         <small class="form-text">{{ help }}</small>
     {% endif %}
-    {{- form_widget(form, applyClass ? {'attr': {'class': 'form-control'}} : {}) -}}
     {{- form_errors(form) -}}
 
     {% if root_and_not_hidden %}</div>{% endif %}
@@ -90,13 +93,14 @@
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
     {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
     {% if root_and_not_hidden %}
         <div class="form-group">
         <table class="dp-formtable-tablerow" width="100%"><tr><td class="dp-formtable-controls" valign="top">
     {% endif %}
 
     {{- form_label(form, null) -}}
-    {{- form_widget(form, 1 ? {'attr': {'class': 'form-control'}} : {}) -}}
+    {{- form_widget(form, 1 ? {'attr': {'class': widgetClass}} : {}) -}}
     {{- form_errors(form) -}}
 
     {% if root_and_not_hidden %}
@@ -135,7 +139,7 @@
 {% block form_errors -%}
     {% if errors|length > 0 -%}
         {%- for error in errors -%}
-            <div class="error-large no-hover">{{ phrase_form_error(error) }}</div>
+            <small class="form-text text-danger">{{ phrase_form_error(error) }}</small>
         {%- endfor -%}
     {%- endif %}
 {%- endblock form_errors %}
@@ -486,17 +490,19 @@
                 <div class="col-sm-5">
                     <label>CAPTCHA</label>
                     <div class="dp-po-form-captcha-text">
-                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="165" height="3" />
+                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" height="36" />
                     </div>
                 </div>
                 <div class="col-sm-2 text-center">
+                    <label>&nbsp;</label>
                     <a href="javascript:reload_{{ image_id }}();" class="dp-po-form-captcha-reload"><i class="dp-po-icon far fa-sync"></i></a>
                 </div>
                 <div class="col-sm-5">
-                    {{ form_widget(form, { attr: { class: 'form-control', placeholder: 'Insert text' } } ) }}
+                    <label>&nbsp;</label>
+                    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+                    {{ form_widget(form, { attr: { class: widgetClass, placeholder: 'Insert text' } } ) }}
                 </div>
             </div>
-            <small id="emailHelp" class="form-text">To prove you are human, please insert the text you can see in the box above.</small>
         </div>
     {% endspaceless %}
 {% endblock %}
