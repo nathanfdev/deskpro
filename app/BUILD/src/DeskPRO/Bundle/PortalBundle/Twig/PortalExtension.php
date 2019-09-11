@@ -146,8 +146,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
             new \Twig_SimpleFunction('category_color_css', [$this, 'categoryColorCss']),
-            new \Twig_SimpleFunction('render_icon_from', [$this, 'renderIconFrom']),
-            new \Twig_SimpleFunction('render_icon', [$this, 'renderIcon']),
+            new \Twig_SimpleFunction('render_icon_from', [$this, 'renderIconFrom'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_icon', [$this, 'renderIcon'], ['is_safe' => ['html']]),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
