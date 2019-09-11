@@ -17,10 +17,11 @@ define([
         controller:   DeskPRO_OptionBuilder_Controller.FACTORY,
         controllerAs: 'OptionBuilder',
         scope:        {
-          getTypesDef: '&typesDef',
-          getOptions:  '&options',
-          optionTypes: '=optionTypes',
-          saveTarget:  '=saveTarget'
+          getTypesDef:    '&typesDef',
+          getOptions:     '&options',
+          optionTypes:    '=optionTypes',
+          saveTarget:     '=saveTarget',
+          allowReArrange: '&allowReArrange'
         }
       })
 
@@ -31,6 +32,8 @@ define([
         template: `\
 <div class="dp-ob-row">
   <div class="remove-row-trigger" ng-click="rowFn.removeRow()" ng-if="!rowOpts.hideRemove"><i class="fas fa-times-circle"></i></div>
+  <div class="up-row-trigger" ng-click="rowFn.moveUp()" ng-if="!rowOpts.hideRemove && rowFn.canMoveUp()"><i class="fas fa-arrow-circle-up"></i></div>
+  <div class="down-row-trigger" ng-click="rowFn.moveDown()" ng-if="!rowOpts.hideRemove && rowFn.canMoveDown()"><i class="fas fa-arrow-circle-down"></i></div>
   <table cellspacing="0" cellpadding="0" width="100%" style="margin: 0; padding: 0; border: none;">
     <tr>
       <td style="vertical-align: middle; padding: 0; margin: 0;"><div class="dp-ob-row-tag-wrap"></div></td>

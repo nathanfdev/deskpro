@@ -62,7 +62,13 @@
 											</h4>
 										</label>
 										<article ng-show="ctrl.trigger.is_enabled">
-											<dp-option-builder types-def="ctrl.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixOn: []}" option-types="actionOptionTypes">
+											<dp-option-builder
+                                                    types-def="ctrl.actionsTypeDef"
+                                                    save-target="form.actions"
+                                                    options="{tag_first: '', tag_after: 'then', fixOn: []}"
+                                                    option-types="actionOptionTypes"
+                                                    allow-re-arrange="1"
+                                            >
 												<add-btn-label>Action</add-btn-label>
 											</dp-option-builder>
 										</article>
