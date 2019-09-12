@@ -1275,12 +1275,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if (!$removedCCs) {
             $removedCCs = new TicketAttribute('removed_ccs');
         }
-        $removedAddresses = json_decode($removedCCs->getValue());
+        $removedAddresses = json_decode($removedCCs->getValue(), true);
         if (!$removedAddresses) {
             $removedAddresses = [];
         }
         $removedAddresses = array_diff($removedAddresses, $person->getEmailAddresses(false, false));
-        $removedCCs->setValue(json_encode(array_unique($removedAddresses)));
+        $removedCCs->setValue(json_encode(array_unique($removedAddresses ?: [])));
         $this->addAttribute($removedCCs);
 
         $ticketPart           = new TicketParticipant();
