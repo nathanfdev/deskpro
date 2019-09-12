@@ -21,4 +21,38 @@
     margin: 10px;
     padding: 10px 20px;
   }
+
+  .request-form {
+    color: #6b6b69;
+
+    [type="text"], textarea, .select {
+      font-family: monaco, monospace;
+      font-size: 0.9em;
+      color: #6e6e6e;
+      width: 100%;
+      display: block;
+      line-height: 1.7em;
+      background: #fff;
+    }
+
+    textarea {
+      font-size: 11px;
+      /*margin: 0;
+      padding: 3px;
+      border: 1px solid #888;
+      box-shadow: none;
+      background: transparent;
+      color: #888;
+      overflow: auto;
+      resize: none;*/
+
+      width: 100%;
+      height: 55px;
+    }
+
+    .select {
+      text-decoration: none;
+      i { float: right; top: 3px; }
+    }
+  }
 }

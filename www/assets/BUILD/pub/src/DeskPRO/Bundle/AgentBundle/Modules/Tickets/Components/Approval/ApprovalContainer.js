@@ -7,7 +7,6 @@ import * as actions from "../../Actions/approvalRequestActions";
 import { Approval } from "./Approval";
 
 @connect(state => ({
-  people:    allSelectorFactory('Person')(state),
   templates: allSelectorFactory('ApprovalTemplate')(state),
 }))
 export class ApprovalContainer extends React.Component {
@@ -49,11 +48,62 @@ export class ApprovalContainer extends React.Component {
       });
   }
 
+  createApprovalRequest = data => this.props.dispatch(actions.createApprovalRequest(this.props.ticketId, data))
+    .then(approvalRequest => {
+      const approvals = this.state.approvals.push(Immutable.fromJS(approvalRequest));
+      this.setState({
+        approvals
+      });
+    });
+
+  cancelApprovalRequest = requestId => this.props.dispatch(actions.cancelApprovalRequest(this.props.ticketId, requestId))
+    .then(approvalRequest => {
+      const approvals = this.state.approvals;
+      const index = approvals.findIndex(obj => obj.id === approvalRequest.id);
+
+      if (index > -1) {
+        approvals.splice(index, 1, Immutable.fromJS(approvalRequest));
+        this.setState({
+          approvals
+        });
+      }
+    });
+
+  acceptApprovalRequest = (requestId, data) => this.props.dispatch(actions.acceptApprovalRequest(this.props.ticketId, requestId, data))
+    .then(approvalRequest => {
+      const approvals = this.state.approvals;
+      const index = approvals.findIndex(obj => obj.id === approvalRequest.id);
+
+      if (index > -1) {
+        approvals.splice(index, 1, Immutable.fromJS(approvalRequest));
+        this.setState({
+          approvals
+        });
+      }
+    });
+
+  rejectApprovalRequest = (requestId, data) => this.props.dispatch(actions.rejectApprovalRequest(this.props.ticketId, requestId, data))
+    .then(approvalRequest => {
+      const approvals = this.state.approvals;
+      const index = approvals.findIndex(obj => obj.id === approvalRequest.id);
+
+      if (index > -1) {
+        approvals.splice(index, 1, Immutable.fromJS(approvalRequest));
+        this.setState({
+          approvals
+        });
+      }
+    });
+
   render() {
     const props = this.props;
     return (
       <Approval
         approvals={this.state.approvals}
+        createApprovalRequest={this.createApprovalRequest}
+        cancelApprovalRequest={this.cancelApprovalRequest}
+        acceptApprovalRequest={this.acceptApprovalRequest}
+        rejectApprovalRequest={this.rejectApprovalRequest}
         {...props}
       />
     );

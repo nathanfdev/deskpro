@@ -4,15 +4,18 @@ import {Container, Button} from "@deskpro/react-components";
 import {injectIntl, FormattedMessage, intlShape} from "react-intl";
 import ApprovalTable from "./ApprovalTable";
 import ApprovalForm from "./ApprovalForm";
+import * as actions from "../../Actions/approvalRequestActions";
 
 @injectIntl
 export class Approval extends React.Component {
   static propTypes = {
-    approvals:      PropTypes.object.isRequired,
-    people:         PropTypes.object.isRequired,
-    templates:      PropTypes.object.isRequired,
-    ticketPerms:    PropTypes.object,
-    intl:           intlShape.isRequired
+    approvals:             PropTypes.object.isRequired,
+    templates:             PropTypes.object.isRequired,
+    ticketPerms:           PropTypes.object,
+    intl:                  intlShape.isRequired,
+    dispatch:              PropTypes.func,
+    createApprovalRequest: PropTypes.func,
+    cancelApprovalRequest: PropTypes.func,
   };
 
   constructor(props) {
@@ -22,6 +25,15 @@ export class Approval extends React.Component {
       showForm: false
     };
   }
+
+  getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
+
+  createApprovalRequest = data => this.props.createApprovalRequest(data)
+    .then(() => {
+      this.setState({
+        showForm: false
+      });
+    });
 
   render() {
     const styles = {
@@ -48,7 +60,7 @@ export class Approval extends React.Component {
     );
 
     return (
-      <Container className="approval">
+      <Container className="approvals">
         {this.state.showForm ?
           (<div>
             <ApprovalForm
@@ -56,6 +68,8 @@ export class Approval extends React.Component {
               templates={this.props.templates}
               ticketPerms={this.props.ticketPerms}
               intl={this.props.intl}
+              getPeople={this.getPeople}
+              createApprovalRequest={this.createApprovalRequest}
             />
             {button}
           </div>)
@@ -64,6 +78,8 @@ export class Approval extends React.Component {
             <ApprovalTable
               people={this.props.people}
               approvals={this.props.approvals}
+              getPeople={this.getPeople}
+              cancelApprovalRequest={this.props.cancelApprovalRequest}
             />
             {button}
           </div>)
