@@ -35,10 +35,10 @@ Feature: /ticket_approvals endpoint
       | at4 | Templ 3 | Approval Templ 3 | {atype2} | 1                 | 0                  | {ac4}            | 1                       |
 
     And only the following TicketApproval records exist:
-      | #   | ticket | template | approvers         | name               | type     | description | status    |
-      | ta1 | {t1}   | {at1}    | [{user}]          | Ticket approval 01 | {atype1} | TA 01       | pending   |
-      | ta2 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 02 | {atype2} | TA 02       | pending   |
-      | ta3 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 03 | {atype2} | TA 03       | completed |
+      | #   | ticket | template | approvers         | name               | type     | description | status    | createdBy |
+      | ta1 | {t1}   | {at1}    | [{user}]          | Ticket approval 01 | {atype1} | TA 01       | pending   | {agent}   |
+      | ta2 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 02 | {atype2} | TA 02       | pending   | {agent}   |
+      | ta3 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 03 | {atype2} | TA 03       | approved  | {agent}   |
 
   Scenario: I try to POST a ticket approval without authentication
     When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"
@@ -109,16 +109,10 @@ Feature: /ticket_approvals endpoint
     And the JSON node "data.status" should be equal to "pending"
     And the JSON node "data.approvers" should have "1" element
     And the JSON node "data.last_approved_response_at" should be null
-    And the JSON node "data.last_reject_response_at" should be null
+    And the JSON node "data.last_rejected_response_at" should be null
     And the JSON node "data.completed_at" should be null
     And the JSON node "data.cancelled_at" should be null
     And the JSON node "data.ticket" should be equal to "{t1}"
-    And the JSON node "data.actions_on_create" should exist
-    And the JSON node "data.actions_on_partial_approval_response" should exist
-    And the JSON node "data.actions_on_partial_rejection_response" should exist
-    And the JSON node "data.actions_on_cancel" should exist
-    And the JSON node "data.actions_on_approved" should exist
-    And the JSON node "data.actions_on_rejected" should exist
 
   Scenario: I GET a list of ticket approvals as an agent without authentication
     When I send a GET request to "/api/v2/tickets/{t1}/ticket_approvals"

@@ -34,8 +34,7 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
      * @ORM\JoinColumn(name="ticket_id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
-     * @JMS\Type("integer")
-     * @JMS\Accessor(getter="getTicketId")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
      */
     protected $ticket;
 
@@ -64,13 +63,5 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
         $this->setModelField('ticket', $ticket);
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTicketId()
-    {
-        return $this->ticket->getId();
     }
 }

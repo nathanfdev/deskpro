@@ -69,8 +69,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      * @ORM\JoinColumn(name="template_id", nullable=true, onDelete="SET NULL")
      *
      * @JMS\Expose
-     * @JMS\Type("integer")
-     * @JMS\Accessor(getter="getTemplateId")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate>")
      */
     protected $template;
 
@@ -83,6 +82,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *     cascade={"persist"},
      * )
      * @ORM\OrderBy({"createdAt"="DESC"})
+     *
+     * @JMS\Expose
+     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>>")
      */
     protected $responses;
 
@@ -96,8 +98,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *  )
      *
      * @JMS\Expose
-     * @JMS\Type("array<integer>")
-     * @JMS\Accessor(getter="getApproverIds")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
      */
     protected $approvers;
 
@@ -146,6 +147,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="cancelled_by", onDelete="CASCADE", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $cancelledBy;
 
@@ -154,6 +158,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="created_by", onDelete="CASCADE", nullable=false)
+     *
+     * @JMS\Expose
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     protected $createdBy;
 
@@ -255,7 +262,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      */
     public function setCreatedBy(Person $createdBy)
     {
-        $this->createdBy = $createdBy;
+        $this->setModelField('createdBy', $createdBy);
 
         return $this;
     }

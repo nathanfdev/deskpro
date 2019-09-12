@@ -82,8 +82,7 @@ abstract class AbstractApproval implements EntityInterface, NotifyPropertyChange
      * @ORM\JoinColumn(name="type_id", nullable=false)
      *
      * @JMS\Expose
-     * @JMS\Type("integer")
-     * @JMS\Accessor(getter="getTypeId")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType>")
      */
     protected $type;
 

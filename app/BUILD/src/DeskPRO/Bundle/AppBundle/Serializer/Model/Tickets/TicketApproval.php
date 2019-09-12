@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval as TicketApprovalEntity;
 use JMS\Serializer\Annotation as JMS;
 
@@ -37,6 +38,13 @@ class TicketApproval
     private $description;
 
     /**
+     * @var ApprovalType
+     *
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType>")
+     */
+    private $type;
+
+    /**
      * @var \Application\DeskPRO\Entity\Ticket
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
@@ -67,14 +75,14 @@ class TicketApproval
     /**
      * @var ApprovalResponse[]
      *
-     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>")
+     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>>")
      */
     private $responses;
 
     /**
      * @var Person[]
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Person>")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
      */
     private $approvers;
 
@@ -158,7 +166,7 @@ class TicketApproval
     /**
      * @var Person[]
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Person>")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
      */
     private $approversPendingResponse;
 
@@ -177,6 +185,13 @@ class TicketApproval
     private $hasRecipientResponded;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $canApproversViewSubject;
+
+    /**
      * @param TicketApprovalEntity $ticketApproval
      * @return TicketApproval
      */
@@ -185,6 +200,7 @@ class TicketApproval
         $model = new self();
 
         $model->setId($ticketApproval->getId());
+        $model->setType($ticketApproval->getType());
         $model->setName($ticketApproval->getName());
         $model->setDescription($ticketApproval->getDescription());
         $model->setTicket($ticketApproval->getTicket());
@@ -206,6 +222,7 @@ class TicketApproval
         $model->setApproversCount($ticketApproval->getApproversCount());
         $model->setApproversPendingResponse($ticketApproval->getApproversPendingResponse()->toArray());
         $model->setCreatedBy($ticketApproval->getCreatedBy());
+        $model->setCanApproversViewSubject($ticketApproval->canApproversViewSubject());
 
         return $model;
     }
@@ -225,6 +242,25 @@ class TicketApproval
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return ApprovalType
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param ApprovalType $type
+     * @return TicketApproval
+     */
+    public function setType(ApprovalType $type)
+    {
+        $this->type = $type;
 
         return $this;
     }
@@ -643,6 +679,25 @@ class TicketApproval
     public function setHasRecipientResponded($hasRecipientResponded)
     {
         $this->hasRecipientResponded = $hasRecipientResponded;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCanApproversViewSubject()
+    {
+        return $this->canApproversViewSubject;
+    }
+
+    /**
+     * @param bool $canApproversViewSubject
+     * @return TicketApproval
+     */
+    public function setCanApproversViewSubject($canApproversViewSubject)
+    {
+        $this->canApproversViewSubject = $canApproversViewSubject;
 
         return $this;
     }

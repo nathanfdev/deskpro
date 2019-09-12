@@ -84,6 +84,14 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getId()
@@ -97,14 +105,6 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->getName();
     }
 
     /**

@@ -90,8 +90,7 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="approver_id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
-     * @JMS\Type("integer")
-     * @JMS\Accessor(getter="getApproverId")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      */
     private $approver;
 
@@ -102,8 +101,7 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="approval_id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose
-     * @JMS\Type("integer")
-     * @JMS\Accessor(getter="getApprovalId")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval>")
      */
     private $approval;
 

@@ -96,6 +96,7 @@ class ApprovalManager
             );
 
             $this->appendToLog($this->em, $approval, $context);
+
             $this->em->flush();
         }
     }
@@ -124,6 +125,8 @@ class ApprovalManager
             $context,
             'getActionsOnCancel'
         );
+
+        $this->em->flush();
     }
 
     /**
@@ -180,6 +183,8 @@ class ApprovalManager
                 );
             }
         }
+
+        $this->em->flush();
     }
 
     /**
