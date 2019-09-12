@@ -150,7 +150,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           const { month }  = hol;
           const { day }    = hol;
           const title  = hol.name;
-          const repeat = year === 0;
+          const repeat = !year;
 
           if (repeat) {
             y_str = 'Every Year';
