@@ -90,6 +90,7 @@ class ManageContentTemplatesModal extends React.Component {
 
   static propTypes = {
     agents:                 PropTypes.object,
+    width:                  PropTypes.number,
     height:                 PropTypes.number,
     closeMenu:              PropTypes.func,
     contentTemplates:       PropTypes.object,
@@ -200,7 +201,7 @@ class ManageContentTemplatesModal extends React.Component {
   };
 
   render() {
-    const { closeMenu, contentTemplates, contentTemplatesLoaded } = this.props;
+    const { width, closeMenu, contentTemplates, contentTemplatesLoaded } = this.props;
     const { confirmDeletion, editTemplate } = this.state;
 
     let { height } = this.props;
@@ -208,8 +209,13 @@ class ManageContentTemplatesModal extends React.Component {
       height = 400;
     }
 
+    const style = {};
+    if (width) {
+      style.width = width - 5;
+    }
+
     return (
-      <div id="snippets__menu">
+      <div id="snippets__menu" style={style}>
         <div id="content_template__modal">
           {confirmDeletion &&
           <Modal
@@ -284,7 +290,7 @@ class ManageContentTemplatesModal extends React.Component {
             <List
               className="snippets__list"
               rowCount={contentTemplates.size}
-              width={700}
+              width={width - 5}
               height={height}
               rowHeight={60}
               rowRenderer={this.rowRenderer}
