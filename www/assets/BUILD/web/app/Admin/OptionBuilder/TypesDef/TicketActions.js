@@ -223,6 +223,22 @@ define([
       });
 
       //------------------------------
+      // Ticket Approval Actions
+      //------------------------------
+
+      options = [];
+
+      options.push({
+        title: 'Send Ticket Approval Email',
+        value: 'SendTicketApprovalEmail'
+      });
+
+      set_options.push({
+        title:      'Ticket Approval Actions',
+        subOptions: options
+      });
+
+      //------------------------------
       // Ticket Actions
       //------------------------------
 
@@ -1287,6 +1303,39 @@ define([
       options.placeholder = 'Enter text here to add to the ticket log';
       const def = this.getStandardInput(options);
       return def;
+    }
+
+    getSendTicketApprovalEmail(options) {
+      if (options == null) { options = {}; }
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-actions-sent-ticket-approval-email.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+              return {
+                send_to_owner: !!options.send_to_owner,
+                send_to_approvers: !!options.send_to_approvers
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'SendTicketApprovalEmail';
+              value.options = {};
+              value.options.send_to_owner = !!model.send_to_owner;
+              value.options.send_to_approvers = !!model.send_to_approvers;
+              value.options.from_name = 'helpdesk_name';
+              value.options.from_account = 0;
+              value.options.headers = [];
+              return value;
+            }
+          };
+        }
+      };
     }
 
     getSendUserNewEmail(options) {

@@ -11,11 +11,6 @@
                         </a>
                     </li>
                     <li class="pipe">|</li>
-                    <li dp-tab-btn="main.perms">
-                        <a href="#"><i class="fas fa-users"></i> {{ phrase('adm.ticket_approvals.tabs.permissions') }}
-                        </a>
-                    </li>
-                    <li class="pipe">|</li>
                     <li dp-tab-btn="main.triggers">
                         <a href="#">
                             <i class="fas fa-columns"></i> {{ phrase('adm.ticket_approvals.tabs.triggers') }}
@@ -28,12 +23,7 @@
                 <div dp-tab-body="main.props">
                     {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:properties.html.twig' %}
                 </div>
-
-                <div dp-tab-body="main.perms">
-                    {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:permissions.html.twig' %}
-                </div>
-
-                <div dp-tab-body="main.layout">
+                <div dp-tab-body="main.triggers">
                     {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:triggers.html.twig' %}
                 </div>
             </article>

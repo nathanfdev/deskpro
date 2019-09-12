@@ -5,7 +5,7 @@ define([
     static initClass() {
       this.CTRL_ID = 'Admin_TicketApprovals_Ctrl_TemplateEdit';
       this.CTRL_AS = 'TicketApprovalsTemplateEdit';
-      this.DEPS    = ['$scope', '$state', '$stateParams', 'DataService', 'Growl'];
+      this.DEPS    = ['$scope', '$state', '$stateParams', 'DataService', 'Growl', 'dpObTypesDefTicketActions'];
     }
 
     init() {
@@ -37,7 +37,6 @@ define([
           departments: [],
           required_number_of_approvers: null,
         },
-        // triggers, @fixme Ashley please change this if needed
         actions_on_create: [],
         actions_on_partial_approval_response: [],
         actions_on_partial_rejection_response: [],
@@ -76,10 +75,27 @@ define([
         this.$scope.selectedUser = null;
       });
 
+      this.actionsTypeDef = this.dpObTypesDefTicketActions;
+      // this.actionsTypeDef.setVar('object_type', 'trigger');
+      this.$scope.actionOptionTypes = [];
+    }
+
+    updateCriteriaOptionTypes() {
+      let set = this.actionsTypeDef.getOptionsForTypes([], {});
+      this.$scope.actionOptionTypes.length = 0;
+      return (() => {
+        const result = [];
+        for (let opt of Array.from(set)) {
+          result.push(this.$scope.actionOptionTypes.push(opt));
+        }
+        return result;
+      })();
     }
 
     initialLoad() {
-      let promises = [];
+      let promises = [
+        this.actionsTypeDef.loadDataOptions()
+      ];
 
       if (this.$scope.templateId) {
         let promise = this.dataService.loadApprovalTemplates(this.$scope.templateId)
@@ -101,6 +117,18 @@ define([
                 });
             });
 
+            // Correct actions structure
+            data.actions_on_create = data.actions_on_create.actions || [];
+            data.actions_on_partial_approval_response = data.actions_on_partial_approval_response.actions || [];
+            data.actions_on_partial_rejection_response = data.actions_on_partial_rejection_response.actions || [];
+            data.actions_on_cancel = data.actions_on_cancel.actions || [];
+            data.actions_on_approved = data.actions_on_approved.actions || [];
+            data.actions_on_rejected = data.actions_on_rejected.actions || [];
+
+            // Remove redundant fields
+            delete data.id;
+            delete data.created_at;
+
             // assign data to form
             this.$scope.form = data;
           });
@@ -108,7 +136,19 @@ define([
         promises.push(promise);
       }
 
-      return this.$q.all(promises);
+      return this.$q.all(promises).then(() => this.$timeout(() => {
+        this.updateCriteriaOptionTypes();
+      }));
+    }
+
+    rebaseActions(form, actionSet) {
+      let actions = [];
+      for (const _x of Object.keys(form[actionSet] || {})) {
+        actions.push(form[actionSet][_x]);
+      }
+      form[actionSet] = actions;
+
+      return form;
     }
 
     /**
@@ -135,8 +175,21 @@ define([
       // start spinner
       this.startSpinner('saving');
 
+      const actionSets = [
+        'actions_on_create',
+        'actions_on_partial_approval_response',
+        'actions_on_partial_rejection_response',
+        'actions_on_approved',
+        'actions_on_rejected',
+        'actions_on_cancel'
+      ];
+
+      for (const set of actionSets) {
+        this.$scope.form = this.rebaseActions(this.$scope.form, set);
+      }
+
       // perform api call via data service
-      this.dataService.saveApprovalTemplate(this.$scope.form, this.templateId)
+      this.dataService.saveApprovalTemplate(this.$scope.form, this.$scope.templateId)
         .then(response => {
 
           // get List controller
