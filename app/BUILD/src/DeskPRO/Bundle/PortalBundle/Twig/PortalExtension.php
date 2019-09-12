@@ -10,6 +10,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
@@ -148,6 +149,9 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('category_color_css', [$this, 'categoryColorCss']),
             new \Twig_SimpleFunction('render_icon_from', [$this, 'renderIconFrom'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_icon', [$this, 'renderIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
+            new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
+            new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -414,11 +418,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param Entity\ContentAbstract $content
+     * @param ContentAbstract $content
      *
      * @return array
      */
-    public function getSecureCats(Entity\ContentAbstract $content)
+    public function getSecureCats(ContentAbstract $content)
     {
         $permission_bag = $this->getPermissionBagForCurrentUser();
 
@@ -672,6 +676,31 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function renderIcon(IconProperty $icon, $options = [])
     {
         return $this->container->get('portal_icon.renderer')->getIconHtml($icon, $options);
+    }
+
+    public function hasSplashImage(ContentAbstract $object)
+    {
+        return (bool) $object->getSplashImage()->getId();
+    }
+
+    public function getSplashUrl(ContentAbstract $object, $orientation)
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $orientation);
+        }
+
+        return '';
+    }
+
+    public function getSplashBgcss(ContentAbstract $object, $orientation)
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $orientation);
+        }
+
+        return '';
     }
 
     /**
