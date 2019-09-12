@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse as ApprovalResponseEntity;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval as TicketApprovalEntity;
@@ -73,7 +73,7 @@ class TicketApproval
     private $template;
 
     /**
-     * @var ApprovalResponse[]
+     * @var ApprovalResponseEntity[]
      *
      * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>>")
      */
@@ -380,7 +380,7 @@ class TicketApproval
     }
 
     /**
-     * @return ApprovalResponse[]
+     * @return ApprovalResponseEntity[]
      */
     public function getResponses()
     {
@@ -388,7 +388,7 @@ class TicketApproval
     }
 
     /**
-     * @param ApprovalResponse[] $responses
+     * @param ApprovalResponseEntity[] $responses
      * @return TicketApproval
      */
     public function setResponses(array $responses)
