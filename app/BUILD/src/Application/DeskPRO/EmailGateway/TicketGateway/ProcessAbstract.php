@@ -179,7 +179,7 @@ abstract class ProcessAbstract
         $removed   = [];
         $reAddedCC = false;
         if ($ticket->getAttribute('removed_ccs')) {
-            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue());
+            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue(), true);
         }
 
         $count = 0;

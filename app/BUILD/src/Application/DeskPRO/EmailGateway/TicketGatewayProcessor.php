@@ -211,7 +211,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         $removed = [];
         if ($ticket && $ticket->getAttribute('removed_ccs')) {
-            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue());
+            $removed = json_decode($ticket->getAttribute('removed_ccs')->getValue(), true);
         }
 
         if ($ticket and !$person and $canAddNewPerson) {
