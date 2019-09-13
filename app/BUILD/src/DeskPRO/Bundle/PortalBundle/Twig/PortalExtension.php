@@ -678,26 +678,47 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         return $this->container->get('portal_icon.renderer')->getIconHtml($icon, $options);
     }
 
+    /**
+     * @param ContentAbstract $object
+     *
+     * @return bool
+     */
     public function hasSplashImage(ContentAbstract $object)
     {
         return (bool) $object->getSplashImage()->getId();
     }
 
-    public function getSplashUrl(ContentAbstract $object, $orientation)
+    /**
+     * @param ContentAbstract $object
+     * @param string          $orientation
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function getSplashUrl(ContentAbstract $object, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
-            $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $orientation);
+            return $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $orientation);
         }
 
         return '';
     }
 
-    public function getSplashBgcss(ContentAbstract $object, $orientation)
+    /**
+     * @param ContentAbstract $object
+     * @param string          $orientation
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function getSplashBgcss(ContentAbstract $object, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
-            $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $orientation);
+            return $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $orientation);
         }
 
         return '';

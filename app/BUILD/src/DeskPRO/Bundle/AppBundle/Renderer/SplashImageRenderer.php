@@ -12,9 +12,9 @@ class SplashImageRenderer
         if (!in_array($orientation, ['landscape', 'portrait', 'squarish'])) {
             throw new Exception(sprintf('Invalid orientation %s', $orientation));
         }
-        if ($splashImage->getUrnNs() === 'urn:deskpro:local:blobs') {
+        if ($splashImage->getUrnNs() === SplashImageProperty::$blobNs) {
             if ($splashImage->getBlob()) {
-                return $splashImage->getBlob()->getFileUrl();
+                return $splashImage->getBlob()->getDownloadUrl();
             }
         }
         throw new Exception(sprintf('No url for splash image %d', $splashImage->getId()));
@@ -32,6 +32,6 @@ class SplashImageRenderer
     {
         $url = $this->getSplashUrl($splashImage, $orientation);
 
-        return '<div style="background-image: \''.$url.'\'; background-position: 0 0; background-size: cover;">';
+        return '<div class="dp-po-splash-image" style="background-image: url('.$url.'); background-position: 0 0; background-size: cover;"></div>';
     }
 }

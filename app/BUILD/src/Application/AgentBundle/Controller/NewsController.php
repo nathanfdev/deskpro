@@ -287,6 +287,20 @@ class NewsController extends AbstractController
             case 'remove-auto-pub':
                 $news->date_published = null;
                 break;
+
+            case 'remove-splash-image':
+                $splashImage = $news->getSplashImage();
+                $this->em->remove($splashImage);
+                $news->setSplashImage(null);
+                $data['content_html'] = $this->renderView('AgentBundle:News:splash-image-tab.html.twig', [
+                    'news'   => $news,
+                    'baseId' => $this->in->getString('baseId'),
+                    'perms'  => [
+                        'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
+                    ],
+                ]);
+
+                break;
         }
 
         $this->em->persist($news);

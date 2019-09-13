@@ -21,6 +21,8 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    public static $blobNs = 'urn:deskpro:local:blobs';
+
     /**
      * @var int
      * @ORM\Id()
@@ -38,7 +40,7 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
-     * @ORM\Column(name="options", type="json_array")
+     * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected $options;
 

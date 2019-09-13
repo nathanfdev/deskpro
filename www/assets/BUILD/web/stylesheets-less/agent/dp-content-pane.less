@@ -874,7 +874,7 @@ header.page-header .meta-line .set-hold { display: none; }
 /*****************************************************************************/
 
 section.description-area {
-	padding: 10px 15px;
+	padding: 10px 0 0;
 }
 
 section.description-area .info-list {
@@ -6560,10 +6560,16 @@ header.page-header input[type="text"] {
 .content-tab-item {
 	background-color: #fff;
 
-	&.comments-tab, &.revisions-tab, &.related-content-tab, &.search-tab {
+	&.comments-tab, &.revisions-tab, &.related-content-tab, &.search-tab, &.splash-image-tab {
 		padding: 15px;
 	}
 
+  &.splash-image-tab .splash-image-image {
+    margin-top: 20px;
+    max-width: 300px;
+    max-height: 200px;
+    overflow: auto;
+  }
 	.article-editor-wrap {
 		padding: 15px;
 	}

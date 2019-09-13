@@ -21,6 +21,9 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    public static $blobNs = 'urn:deskpro:local:blobs';
+    public static $faNs   = 'urn:deskpro:product:icons:fontawesome';
+
     /**
      * @var int
      * @ORM\Id()
@@ -38,7 +41,7 @@ class IconProperty implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
-     * @ORM\Column(name="options", type="json_array")
+     * @ORM\Column(name="options", type="json_array", nullable=true)
      */
     protected $options;
 

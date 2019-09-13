@@ -29,6 +29,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		if (this.meta.canEdit) {
 			this._initMenus();
 			this._initPostArea();
+			this._initSplashTab();
 		}
 		this._initActions();
 		this._initLabels();
@@ -744,6 +745,37 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		this.hideEditor();
 	},
+
+  _initSplashTab: function() {
+    var self = this;
+    var splashImageTab = this.getEl('splash_image_tab');
+
+    var splashUpload = this.getEl('splash_upload');
+    DeskPRO_Window.util.fileupload(splashUpload, {
+      url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=news&splash_image=true&object_id=' + this.meta.news_id,
+      uploadTemplate: $('.template-upload', this.el),
+      downloadTemplate: $('.template-download', this.el),
+      page: this
+    });
+    splashUpload.bind('fileuploaddone', function(e, data) {
+      splashImageTab.find('.upload').hide();
+      splashImageTab.find('.view_image img').attr('src', data.result[0]['download_url']);
+      splashImageTab.find('.view_image').show();
+    });
+
+    this.getEl('remove_splash_image_btn').on('click', function () {
+      $.ajax({
+        url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+        type: 'POST',
+        context: this,
+        data: {action: 'remove-splash-image', baseId: self.meta.baseId},
+        dataType: 'json',
+        success: function(data) {
+          splashImageTab.html(data.content_html).ready(self._initSplashTab.bind(self));
+        }
+      });
+    })
+  },
 
 	showEditor: function() {
 
