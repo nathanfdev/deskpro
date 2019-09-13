@@ -1,0 +1,18 @@
+{% if items | length > 0 %}
+	<div class="dp-po-sidebar dp-po-news-recent">
+		<h3 class="dp-po-sidebar-title">{{ title }}</h3>
+		<ul class="dp-po-news-recent-list">
+			{% for item in items %}
+				<li class="dp-po-news-recent-item ">
+					<a href="{{ portal_path(item) }}" class="dp-po-news-recent-link">
+						<span class="dp-po-news-recent-link-date">{{ date(item.date_created, 'M d') }}</span>
+						{{ item.title }}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<div class="dp-po-viewall">
+			<a class="dp-po-viewall-link" href="{{ viewAllPath }}">{{ viewAllTitle }}<i class="dp-po-icon far fa-angle-right"></i></a>
+		</div>
+	</div>
+{% endif %}

@@ -159,6 +159,22 @@ class HelpCenterData
         );
     }
 
+    public function getRecentNews(array $userOptions)
+    {
+        $options = array_merge([
+            'page'     => 1,
+            'count'    => 5,
+            'category' => null,
+        ], $userOptions);
+
+        return $this->getNewsDataService()->getNewsPager(
+            $options['category'],
+            (int) $options['page'],
+            (int) $options['count'],
+            $this->getUser()
+        );
+    }
+
     /**
      * @return NewsDataService
      */
