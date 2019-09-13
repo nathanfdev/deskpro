@@ -46,7 +46,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     const END_ACTION_ARCHIVE = 'archive';
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection|ArticleCategory[]
+     * @var \Doctrine\Common\Collections\ArrayCollection|ArticleToCategory[]
      */
     protected $categories;
 
@@ -377,7 +377,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function isInCategory(ArticleCategory $cat)
     {
-        return $this->categories->contains($cat);
+        return $this->getCategories()->contains($cat);
     }
 
     /**
@@ -387,7 +387,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function addToCategory(ArticleCategory $cat)
     {
-        $this->categories->add($cat);
+        $this->categories->add(ArticleToCategory::create($this, $cat));
 
         return $this;
     }
@@ -399,7 +399,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function removeFromCategory(ArticleCategory $cat)
     {
-        $this->categories->removeElement($cat);
+        $targets = $this->categories->filter(function (ArticleToCategory $pivot) use ($cat) {
+            return $cat->getId() == $pivot->getCategory()->getId();
+        });
+
+        if (1 === $targets->count()) {
+            $this->categories->removeElement($targets->first());
+        }
 
         return $this;
     }
@@ -411,8 +417,12 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function setCategories(array $cats)
     {
+        $pivots = array_map(function (ArticleCategory $category) {
+            return ArticleToCategory::create($this, $category);
+        }, $cats);
+
         $helper = new \Application\DeskPRO\ORM\CollectionHelper($this, 'categories');
-        $helper->setCollection($cats);
+        $helper->setCollection($pivots);
 
         return $this;
     }
@@ -426,7 +436,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     public function getCategoryNames($sep = ', ', $full = true)
     {
         $cats = [];
-        foreach ($this->categories as $cat) {
+        foreach ($this->getCategories() as $cat) {
             if ($full) {
                 if ($full !== true) {
                     // If its not a boolean, then its a string separator
@@ -447,14 +457,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function getCategoryIds()
     {
-        $ids = [];
-
-        foreach ($this->categories as $cat) {
-            /* @var ArticleCategory $cat */
-            $ids[] = $cat->getId();
-        }
-
-        return $ids;
+        return $this->getCategories()->map(function (ArticleCategory $category) {
+            return $category->getId();
+        });
     }
 
     /**
@@ -466,7 +471,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     {
         $path = [];
 
-        $cat    = $this->categories[$index];
+        $cat    = $this->categories[$index]->getCategory();
         $path[] = $cat;
         while ($cat['parent']) {
             $cat    = $cat['parent'];
@@ -485,9 +490,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             return;
         }
 
-        foreach ($this->categories as $c) {
-            return $c;
-        }
+        return $this->getCategories()->first();
     }
 
     /**
@@ -495,7 +498,9 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
      */
     public function getCategories()
     {
-        return $this->categories;
+        return $this->categories->map(function (ArticleToCategory $pivot) {
+            return $pivot->getCategory();
+        });
     }
 
     /**
@@ -947,38 +952,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToMany(
+        $metadata->mapOneToMany(
             [
                 'fieldName'    => 'categories',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'cascade'      => ['persist', 'merge'],
-                'inversedBy'   => 'articles',
-                'joinTable'    => [
-                    'name'        => 'article_to_categories',
-                    'schema'      => null,
-                    'joinColumns' => [
-                        0 => [
-                            'name'                 => 'article_id',
-                            'referencedColumnName' => 'id',
-                            'nullable'             => true,
-                            'onDelete'             => 'cascade',
-                            'columnDefinition'     => null,
-                        ],
-                    ],
-                    'inverseJoinColumns' => [
-                        0 => [
-                            'name'                 => 'category_id',
-                            'referencedColumnName' => 'id',
-                            'nullable'             => true,
-                            'onDelete'             => 'cascade',
-                            'columnDefinition'     => null,
-                        ],
-                    ],
-                ],
-                'dpApi' => true,
+                'targetEntity' => ArticleToCategory::class,
+                'mappedBy'     => 'article',
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
             ]
         );
-
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'revisions',
