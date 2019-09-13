@@ -16,17 +16,17 @@ class ArticleToCategory extends DomainObject
     /**
      * @var Article
      */
-    private $article;
+    protected $article;
 
     /**
      * @var ArticleCategory
      */
-    private $category;
+    protected $category;
 
     /**
      * @var int
      */
-    private $display_order = 0;
+    protected $display_order = 0;
 
     /**
      * @param Article $article

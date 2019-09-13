@@ -22,6 +22,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -958,6 +959,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'targetEntity' => ArticleToCategory::class,
                 'mappedBy'     => 'article',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'orderBy'      => ['display_order' => Criteria::ASC],
             ]
         );
         $metadata->mapOneToMany(
