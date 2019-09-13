@@ -103,7 +103,6 @@
 						></button>
 					</div>
 					<div ng-if="!(groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms')">
-						{{ phrase('adm.departments.perm_assign_locked_tip') | escape }}
 						<button
 							dp-toggle-switch
 							locked-model="groupObj.perms.assign.locked"
