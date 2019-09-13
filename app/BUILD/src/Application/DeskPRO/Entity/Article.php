@@ -384,11 +384,12 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     /**
      * @param ArticleCategory $cat
      *
+     * @param int $displayOrder
      * @return $this
      */
-    public function addToCategory(ArticleCategory $cat)
+    public function addToCategory(ArticleCategory $cat, $displayOrder = 0)
     {
-        $this->categories->add(ArticleToCategory::create($this, $cat));
+        $this->categories->add(ArticleToCategory::create($this, $cat, $displayOrder));
 
         return $this;
     }
@@ -412,18 +413,17 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
-     * @param array $cats
+     * @param array|Collection $cats
      *
      * @return $this
      */
-    public function setCategories(array $cats)
+    public function setCategories($cats)
     {
         $pivots = array_map(function (ArticleCategory $category) {
             return ArticleToCategory::create($this, $category);
-        }, $cats);
+        }, $cats instanceof Collection ? $cats->toArray() : $cats);
 
-        $helper = new \Application\DeskPRO\ORM\CollectionHelper($this, 'categories');
-        $helper->setCollection($pivots);
+        $this->setModelField('categories', new ArrayCollection($pivots));
 
         return $this;
     }
@@ -460,7 +460,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     {
         return $this->getCategories()->map(function (ArticleCategory $category) {
             return $category->getId();
-        });
+        })->toArray();
     }
 
     /**

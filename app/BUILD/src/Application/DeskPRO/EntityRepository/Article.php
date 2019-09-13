@@ -341,7 +341,7 @@ class Article extends AbstractEntityRepository
 
     public function getDataForTagOptions(array $options)
     {
-        $options['category'] = is_object($options['category']) ? $options['category'] : $this->getEntityManager()->getRepository('DeskPRO:ArticleCAtegory')->find($options['category']);
+        $options['category'] = is_object($options['category']) ? $options['category'] : $this->getEntityManager()->getRepository('DeskPRO:ArticleCategory')->find($options['category']);
 
         // get the articles
 
@@ -377,13 +377,15 @@ class Article extends AbstractEntityRepository
 
     protected function filterArticles(QueryBuilder $qb, array $options)
     {
-        $qb->join('a.categories', 'cs');
+        $qb->join('a.categories', 'artToCat');
+        $qb->join('artToCat.category', 'cs');
+
         // TODO: allow sub categories
 //		just one cat or the cat + all sub cats
 //		if ($options['include_subcategories']) {
 //			$qb->andWhere('EXISTS (SELECT c FROM DeskPRO:ArticleCategory c WHERE c.root = :cat AND a MEMBER OF c.articles)');
 //		} else {
-            $qb->andWhere(':cat MEMBER OF a.categories');
+            $qb->andWhere('cs = :cat');
 //		}
         $qb->setParameter('cat', $options['category']);
 
