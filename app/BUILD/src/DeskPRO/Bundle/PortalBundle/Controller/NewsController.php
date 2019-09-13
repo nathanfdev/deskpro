@@ -297,6 +297,7 @@ class NewsController extends AbstractController
                 'lockout'            => $check->isLockoutRecommended(),
                 'lockout_time'       => $check->getLockoutTime(true),
                 'main_class'         => 'dp-po-news-post',
+                'helpcenter'         => $this->get('helpcenter_data_helper'),
             ]
         );
     }

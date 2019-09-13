@@ -94,4 +94,12 @@
       labels: post.labels
     } %}
   {% endif %}
+  
+  {% include 'Theme:PublishCommon:recent-items.html.twig' with {
+    title: phrase('portal.news.recent-title'),
+    items: helpcenter.getRecentNews({category: category}),
+    viewAllPath: path('portal_news_browse', {slug: category.slug}),
+    viewAllTitle: phrase('helpcenter.general.nav-news-desc-short')
+  } %}
+  
 {% endblock page_sidebar %}
