@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\EntityRepository\ArticleToCategoryRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -110,6 +111,7 @@ class ArticleToCategory extends DomainObject
             'name' => 'article_to_categories',
         ]);
 
+        $metadata->customRepositoryClassName = ArticleToCategoryRepository::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
