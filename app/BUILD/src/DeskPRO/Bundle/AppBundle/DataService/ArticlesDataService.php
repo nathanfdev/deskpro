@@ -105,8 +105,12 @@ class ArticlesDataService extends AbstractDataService
                     // no categories are allowed, so no articles are either, returning a blank array pager
                     $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
-                    $qb->leftJoin('a.categories', 'c')
-                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds);
+                    $qb
+                        ->leftJoin('a.categories', 'artToCat')
+                        ->leftJoin('artToCat.category', 'c')
+                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds)
+                        ->orderBy('artToCat.display_order', 'ASC')
+                    ;
 
                     $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 }
@@ -146,8 +150,12 @@ class ArticlesDataService extends AbstractDataService
                     // nocategories are allowed, so no articles are either, returning a blank array pager
                     $pager = new Pagerfanta(new ArrayAdapter([]));
                 } else {
-                    $qb->leftJoin('a.categories', 'c')
-                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds);
+                    $qb
+                        ->leftJoin('a.categories', 'artToCat')
+                        ->leftJoin('artToCat.category', 'c')
+                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $usingIds)
+                        ->orderBy('artToCat.display_order', 'ASC')
+                    ;
 
                     $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
                 }
