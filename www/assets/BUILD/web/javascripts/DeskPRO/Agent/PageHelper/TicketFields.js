@@ -122,12 +122,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     });
 
     this.page.changeManager.addEvent('updateResult', function (data) {
-      if (data.holders) {
-        if (self.mode == 'view') {
-          self.replaceHolders(data.holders);
-          self.initFileCustomFields();
-          self.initJavascriptCustomFields();
-        }
+      if (data.holders && self.mode == 'view') {
+        self.replaceHolders(data.holders);
+        self.initFileCustomFields();
+        self.initJavascriptCustomFields();
       }
     });
   },
@@ -210,7 +208,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
       if (!$scope.editables[field]) return;
       if ($scope.isEditMode(field)) return;
-      if ($event.target.tagName === 'A') return;
+      if ($event.target && $event.target.tagName === 'A') return;
 
       var getSelected = function () {
         if (window.getSelection) {
@@ -560,6 +558,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             });
           }
         );
+
+        self.$scope.edit_fields   = [];
+        self.edit_fields_map = {};
+        self.$scope.editables     = {
+          language: 1,
+          problem:  1
+        };
       }, function () {
         self.$scope.is_saving = false;
       });
@@ -568,6 +573,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
   replaceHolders: function (html) {
     var labels = this.display.find('tbody.labels-row');
     var last   = this.display.find('tbody.controls-row');
+    var oldScope = this.$scope;
+    var fieldsOnEdit = {};
+    for (var fieldName of this.$scope.edit_fields) {
+      fieldsOnEdit[fieldName] = this.ticketReader.getTicketFieldValue(fieldName);
+    }
+
     $('select', this.display).select2('close');
     this.$scope.$destroy();
 
@@ -588,6 +599,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     this.lastDepId = null;
     this.updateDisplayNow();
     this.$scope.$apply();
+
+    this.$scope.edit_fields = oldScope.edit_fields;
+    this.$scope.editables = oldScope.editables;
+    for (var fieldName in fieldsOnEdit) {
+      this.$scope.editField(new Event('click'), fieldName);
+      this.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
+    }
   },
 
   initDateCustomFields: function () {
