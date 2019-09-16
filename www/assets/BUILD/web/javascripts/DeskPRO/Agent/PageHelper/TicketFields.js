@@ -602,7 +602,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     this.$scope.edit_fields = oldScope.edit_fields;
     this.$scope.editables = oldScope.editables;
-    for (var fieldName in fieldsOnEdit) {
+    for (var fieldName of Object.keys(fieldsOnEdit)) {
       this.$scope.editField(new Event('click'), fieldName);
       this.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
     }
