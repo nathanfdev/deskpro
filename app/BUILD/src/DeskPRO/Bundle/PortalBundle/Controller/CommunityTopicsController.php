@@ -14,9 +14,11 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType;
 use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -481,10 +483,21 @@ class CommunityTopicsController extends AbstractController
 
         // RENDER THEME
 
+        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
+        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
+
+        $self = $this;
+
+        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
+            /* @var TicketCommunityTopicLink $linkedTicket */
+            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
+        });
+
         return $this->renderThemeView(
             'Theme:Community:view.html.twig',
             [
                 'topic'              => $topic,
+                'linked_tickets'     => $ticketCommunityTopicsLinks,
                 'is_subscribed'      => $isSubscribed,
                 'content_id'         => $topic->getId(),
                 'content_type'       => CommunityTopic::CONTENT_TYPE,
