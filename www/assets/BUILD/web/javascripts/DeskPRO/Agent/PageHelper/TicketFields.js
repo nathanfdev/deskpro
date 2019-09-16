@@ -575,7 +575,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     var last   = this.display.find('tbody.controls-row');
     var oldScope = this.$scope;
     var fieldsOnEdit = {};
-    for (var fieldName of this.$scope.edit_fields) {
+    var fieldName, i;
+
+    for (i = 0; i < this.$scope.edit_fields.length; i++) {
+      fieldName = this.$scope.edit_fields[i];
       fieldsOnEdit[fieldName] = this.ticketReader.getTicketFieldValue(fieldName);
     }
 
@@ -602,7 +605,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     this.$scope.edit_fields = oldScope.edit_fields;
     this.$scope.editables = oldScope.editables;
-    for (var fieldName of Object.keys(fieldsOnEdit)) {
+
+    for (i = 0; i < this.$scope.edit_fields.length; i++) {
+      fieldName = this.$scope.edit_fields[i];
       this.$scope.editField(new Event('click'), fieldName);
       this.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
     }
