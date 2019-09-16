@@ -241,7 +241,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
         if ($this->getApprovedResponsesCount() >= $requiredApprovals) {
             return self::STATUS_APPROVED;
-        } elseif ($this->getRejectedResponsesCount() >= $requiredRejections) {
+        }
+
+        if ($this->getRejectedResponsesCount() >= $requiredRejections) {
             return self::STATUS_REJECTED;
         }
 

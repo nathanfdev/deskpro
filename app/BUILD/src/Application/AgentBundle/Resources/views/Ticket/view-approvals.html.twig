@@ -1,0 +1,50 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table linked-community-topics-table">
+    <tbody>
+    <tr class="linked-title">
+        <th colspan="8" style="background: #eee;">{{ phrase('agent.tickets.approvals') }}</th>
+    </tr>
+    <tr class="linked-head-title">
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.type') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.description') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.tickets.approvals.approvers') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.tickets.approvals.success') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.tickets.approvals.failure') }}</th>
+        <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
+        <th width="10">&nbsp;</th>
+    </tr>
+
+    {% for approval in ticket_approvals %}
+        <tr class="linked-community-topics">
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                <a data-route="#">
+                    {{ approval.id }}
+                </a>
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                {{ approval.type.name }}
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                {{ approval.description }}
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #approvers
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #success
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #failure
+            </td>
+            <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
+                #status
+            </td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="8">
+            <a href="#" class="dp-btn submit-trigger" style="float: right;">Make a request</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
