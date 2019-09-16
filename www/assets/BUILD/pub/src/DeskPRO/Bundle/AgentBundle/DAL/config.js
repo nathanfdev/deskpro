@@ -10,6 +10,8 @@ import GuideRepository from './Repositories/GuideRepository';
 import OnboardingRepository from './Repositories/OnboardingRepository';
 import SnippetsRepository from './Repositories/SnippetsRepository';
 import TicketRepository from './Repositories/TicketRepository';
+import TicketApprovalRepository from './Repositories/TicketApprovalRepository';
+import TicketApprovalResponseRepository from './Repositories/TicketApprovalResponseRepository';
 
 export const repositoriesConfig = {
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
@@ -48,6 +50,8 @@ export const repositoriesConfig = {
   TicketPriorities:     { type: 'api', url: '/ticket_priorities', allowAll: true },
   TicketProducts:       { type: 'api', url: '/ticket_products', allowAll: true },
   TicketWorkflows:      { type: 'api', url: '/ticket_workflows', allowAll: true },
+  TicketApproval:       { type: 'api', url: '/ticket_approvals', allowAll: true, repositoryClass: TicketApprovalRepository },
+  TicketApprovalResponse: { type: 'api', url: '/approval_responses', allowAll: true, repositoryClass: TicketApprovalResponseRepository },
   EmailAccount:         { type: 'api', url: '/email_accounts', allowAll: true },
   UserGroups:           { type: 'api', url: '/user_groups', allowAll: true },
   ApprovalTemplate:     { type: 'api', url: '/approval_templates', allowAll: true }

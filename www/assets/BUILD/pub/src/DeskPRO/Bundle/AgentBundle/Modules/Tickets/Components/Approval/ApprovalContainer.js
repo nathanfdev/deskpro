@@ -38,73 +38,96 @@ export class ApprovalContainer extends React.Component {
     }
   };
 
+  getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
+
+  getResponses = id => this.props.dispatch(actions.loadApprovalResponses(id));
+
   loadApprovalRequests() {
     this.props.dispatch(actions.loadApprovalRequests(this.props.ticketId))
-      .then((res) => {
-        const approvals = Immutable.fromJS(res.data);
-        this.setState({
-          approvals,
+      .then(({ data }) => {
+        let approvals = data;//.filter(item => item.status !== 'cancelled');
+
+        let allDone = approvals.reduce((promise, approval) => {
+          return promise.then(() => {
+            return Promise.all([
+              this.getPeople(approval.approvers)
+                .then(({ data }) => {
+                  approval.people = data;
+                }),
+              this.getResponses(approval.id)
+                .then(({ data }) => {
+                  approval.votes = data;
+                })
+            ]);
+          });
+        }, Promise.resolve());
+
+        allDone.then(e => {
+          this.setState({
+            approvals: Immutable.fromJS(approvals),
+          });
         });
+
       });
   }
 
   createApprovalRequest = data => this.props.dispatch(actions.createApprovalRequest(this.props.ticketId, data))
     .then(approvalRequest => {
-      const approvals = this.state.approvals.push(Immutable.fromJS(approvalRequest));
-      this.setState({
-        approvals
+
+      let allDone = [approvalRequest].reduce((promise, approval) => {
+        return promise.then(() => {
+          return Promise.all([
+            this.getPeople(approval.approvers)
+              .then(({ data }) => {
+                approval.people = data;
+              }),
+            this.getResponses(approval.id)
+              .then(({ data }) => {
+                approval.votes = data;
+              })
+          ]);
+        });
+      }, Promise.resolve());
+
+      allDone.then(e => {
+        this.setState({
+          approvals: this.state.approvals.push(Immutable.fromJS(approvalRequest))
+        });
       });
     });
 
-  cancelApprovalRequest = requestId => this.props.dispatch(actions.cancelApprovalRequest(this.props.ticketId, requestId))
-    .then(approvalRequest => {
-      const approvals = this.state.approvals;
-      const index = approvals.findIndex(obj => obj.id === approvalRequest.id);
+  cancelApprovalRequest = requestId => this.props.dispatch(actions.cancelApprovalRequest(requestId))
+    .then(() => {
+      const { approvals } = this.state;
+      const index = approvals.toArray().findIndex(obj => obj.get('id') === requestId);
 
       if (index > -1) {
-        approvals.splice(index, 1, Immutable.fromJS(approvalRequest));
         this.setState({
-          approvals
+          approvals: approvals.delete(index)
         });
       }
     });
 
-  acceptApprovalRequest = (requestId, data) => this.props.dispatch(actions.acceptApprovalRequest(this.props.ticketId, requestId, data))
-    .then(approvalRequest => {
-      const approvals = this.state.approvals;
-      const index = approvals.findIndex(obj => obj.id === approvalRequest.id);
-
-      if (index > -1) {
-        approvals.splice(index, 1, Immutable.fromJS(approvalRequest));
-        this.setState({
-          approvals
-        });
-      }
+  acceptApprovalRequest = (requestId, data = {}) => this.props.dispatch(actions.acceptApprovalRequest(requestId, data))
+    .then(approvalResponse => {
+      this.loadApprovalRequests();
     });
 
-  rejectApprovalRequest = (requestId, data) => this.props.dispatch(actions.rejectApprovalRequest(this.props.ticketId, requestId, data))
-    .then(approvalRequest => {
-      const approvals = this.state.approvals;
-      const index = approvals.findIndex(obj => obj.id === approvalRequest.id);
-
-      if (index > -1) {
-        approvals.splice(index, 1, Immutable.fromJS(approvalRequest));
-        this.setState({
-          approvals
-        });
-      }
+  rejectApprovalRequest = (requestId, data = {}) => this.props.dispatch(actions.rejectApprovalRequest(requestId, data))
+    .then(approvalResponse => {
+      this.loadApprovalRequests();
     });
 
   render() {
-    const props = this.props;
     return (
       <Approval
         approvals={this.state.approvals}
+        getPeople={this.getPeople}
         createApprovalRequest={this.createApprovalRequest}
         cancelApprovalRequest={this.cancelApprovalRequest}
         acceptApprovalRequest={this.acceptApprovalRequest}
         rejectApprovalRequest={this.rejectApprovalRequest}
-        {...props}
+        {...this.props}
       />
     );
   }

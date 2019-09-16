@@ -16,6 +16,8 @@ export class Approval extends React.Component {
     dispatch:              PropTypes.func,
     createApprovalRequest: PropTypes.func,
     cancelApprovalRequest: PropTypes.func,
+    acceptApprovalRequest: PropTypes.func,
+    rejectApprovalRequest: PropTypes.func,
   };
 
   constructor(props) {
@@ -25,8 +27,6 @@ export class Approval extends React.Component {
       showForm: false
     };
   }
-
-  getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
 
   createApprovalRequest = data => this.props.createApprovalRequest(data)
     .then(() => {
@@ -64,11 +64,10 @@ export class Approval extends React.Component {
         {this.state.showForm ?
           (<div>
             <ApprovalForm
-              people={this.props.people}
               templates={this.props.templates}
               ticketPerms={this.props.ticketPerms}
               intl={this.props.intl}
-              getPeople={this.getPeople}
+              getPeople={this.props.getPeople}
               createApprovalRequest={this.createApprovalRequest}
             />
             {button}
@@ -76,10 +75,11 @@ export class Approval extends React.Component {
           :
           (<div>
             <ApprovalTable
-              people={this.props.people}
               approvals={this.props.approvals}
-              getPeople={this.getPeople}
+              ticketPerms={this.props.ticketPerms}
               cancelApprovalRequest={this.props.cancelApprovalRequest}
+              acceptApprovalRequest={this.props.acceptApprovalRequest}
+              rejectApprovalRequest={this.props.rejectApprovalRequest}
             />
             {button}
           </div>)

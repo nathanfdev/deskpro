@@ -25,6 +25,18 @@
   .request-form {
     color: #6b6b69;
 
+    div.row {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    div.col {
+      flex-grow: 1;
+      width: 33%;
+      height: 100px;
+      padding: 2px;
+    }
+
     [type="text"], textarea, .select {
       font-family: monaco, monospace;
       font-size: 0.9em;
@@ -35,17 +47,24 @@
       background: #fff;
     }
 
+    ul.approvers-list {
+      list-style: none;
+
+      li {
+        position: relative;
+        display: inline-block;
+        white-space: nowrap;
+        margin: 2px;
+
+        span {
+          font-size: 9px;
+        }
+
+      }
+    }
+
     textarea {
       font-size: 11px;
-      /*margin: 0;
-      padding: 3px;
-      border: 1px solid #888;
-      box-shadow: none;
-      background: transparent;
-      color: #888;
-      overflow: auto;
-      resize: none;*/
-
       width: 100%;
       height: 55px;
     }

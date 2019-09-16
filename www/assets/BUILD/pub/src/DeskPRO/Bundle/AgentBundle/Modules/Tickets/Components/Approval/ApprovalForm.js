@@ -192,7 +192,22 @@ export class ApprovalForm extends React.Component {
         </div>
       ) : '';
 
-      approversList = <ul>{this.state.approvers.map(approver => <li key={approver.id}>{approver.name}</li>)}</ul>;
+      approversList = <ul className="approvers-list">
+        {this.state.approvers.map(approver => {
+
+          const avatarStyle = {
+            backgroundImage: approver.avatar,
+            backgroundSize: 'containt'
+          };
+
+          return (
+            <li className="dp-btn" key={approver.id}>
+              <span className="text" style={avatarStyle}>{approver.name}</span>
+            </li>
+          );
+
+        })}
+      </ul>;
 
       approversInfo = this.state.approvers.length < maxApprovers ?
         <FormattedMessage
@@ -210,7 +225,7 @@ export class ApprovalForm extends React.Component {
       <div>
         <Form className="request-form" onSubmit={this.createApprovalRequest}>
           <div className="row">
-            <div className="col-md-3">
+            <div className="col">
               <Label>
                 <FormattedMessage id="agent.tickets.approvals.template" />
               </Label>
@@ -221,12 +236,12 @@ export class ApprovalForm extends React.Component {
                 onChange={this.handleTemplateChange}
               />
             </div>
-            <div className="col-md-3">{approversSelect}</div>
-            <div className="col-md-4">{approversList}</div>
-            <div className="col-md-2">{approversInfo}</div>
+            <div className="col">{approversSelect}</div>
+            <div className="col">{approversList}</div>
+            <div className="col">{approversInfo}</div>
           </div>
           <div className="row">
-            <div className="col-md-12">
+            <div className="col">
               <Label>
                 <FormattedMessage id="agent.tickets.approvals.description" />
               </Label>

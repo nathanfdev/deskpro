@@ -12,6 +12,17 @@ export const loadApprovalRequests = createAction(
   })
 );
 
+export const loadApprovalRequest = createAction(
+  'TICKET_LOAD_APPROVAL_REQUEST',
+  (ticketId, params) => new Promise((resolve) => {
+    repository('Ticket').loadApprovals(ticketId, params).then(promise => {
+      const res = promise.getData();
+
+      resolve(res);
+    });
+  })
+);
+
 export const loadApproversList = createAction(
   'TICKET_LOAD_APPROVERS_LIST',
   (ids, params) => new Promise((resolve) => {
@@ -20,6 +31,17 @@ export const loadApproversList = createAction(
 
       resolve(res);
     });
+  })
+);
+
+export const loadApprovalResponses = createAction(
+  'TICKET_LOAD_APPROVAL_RESPONSES',
+  (approvalId) => new Promise((resolve) => {
+    repository('TicketApprovalResponse').getAll(approvalId).then(promise => {
+      const res = promise.getData();
+
+      resolve(res);
+    })
   })
 );
 
@@ -37,18 +59,17 @@ export const createApprovalRequest = createAction(
 
 export const cancelApprovalRequest = createAction(
   'TICKET_CANCEL_APPROVAL_REQUEST',
-  (ticketId, approvalRequestId) => new Promise((resolve) => {
-    repository('Ticket').cancelApprovalRequest(ticketId, approvalRequestId).then(promise => {
-      const res = promise.getData();
-      resolve(res.data);
+  (approvalRequestId) => new Promise((resolve) => {
+    repository('TicketApproval').cancelApprovalRequest(approvalRequestId).then(promise => {
+      resolve();
     });
   })
 );
 
 export const acceptApprovalRequest = createAction(
   'TICKET_ACCEPT_APPROVAL_REQUEST',
-  (ticketId, approvalRequestId) => new Promise((resolve) => {
-    repository('Ticket').acceptApprovalRequest(ticketId, approvalRequestId).then(promise => {
+  (approvalRequestId, data) => new Promise((resolve) => {
+    repository('TicketApproval').acceptApprovalRequest(approvalRequestId, data).then(promise => {
       const res = promise.getData();
       resolve(res.data);
     });
@@ -57,8 +78,8 @@ export const acceptApprovalRequest = createAction(
 
 export const rejectApprovalRequest = createAction(
   'TICKET_REJECT_APPROVAL_REQUEST',
-  (ticketId, approvalRequestId) => new Promise((resolve) => {
-    repository('Ticket').rejectApprovalRequest(ticketId, approvalRequestId).then(promise => {
+  (approvalRequestId, data) => new Promise((resolve) => {
+    repository('TicketApproval').rejectApprovalRequest(approvalRequestId, data).then(promise => {
       const res = promise.getData();
       resolve(res.data);
     });
