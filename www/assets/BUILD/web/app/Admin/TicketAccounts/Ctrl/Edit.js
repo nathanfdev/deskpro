@@ -431,12 +431,17 @@ define([
           form: () => this.$scope.form
         },
         controller: ['$scope', '$modalInstance', 'form', ($scope, $modalInstance, form) => {
+          $scope.valid = true;
           $scope.dismiss = () => $modalInstance.dismiss();
           $scope.form = form[`${type}_gmail_account`];
           $scope.submit = () => {
-            Object.assign(form[`${type}_gmail_account`], $scope.form);
+            if (!$scope.form.client_id || !$scope.form.client_secret) {
+              $scope.valid = false;
+            } else {
+              Object.assign(form[`${type}_gmail_account`], $scope.form);
 
-            return $modalInstance.close(true)
+              return $modalInstance.close(true)
+            }
           };
         }
         ]
