@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {FormattedMessage, injectIntl} from 'react-intl';
+import {FormattedMessage} from 'react-intl';
 import moment from 'moment';
 import { Icon, Button } from '@deskpro/react-components';
 import { faTimes, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
-@injectIntl
 class ApprovalTableRow extends React.Component {
   static propTypes = {
     me:                    PropTypes.object,

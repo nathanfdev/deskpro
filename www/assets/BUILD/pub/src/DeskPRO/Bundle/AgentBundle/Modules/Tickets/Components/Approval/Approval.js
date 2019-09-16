@@ -1,18 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {Container, Button} from "@deskpro/react-components";
-import {injectIntl, FormattedMessage, intlShape} from "react-intl";
+import {FormattedMessage} from "react-intl";
 import ApprovalTable from "./ApprovalTable";
 import ApprovalForm from "./ApprovalForm";
 import * as actions from "../../Actions/approvalRequestActions";
 
-@injectIntl
 export class Approval extends React.Component {
   static propTypes = {
     approvals:             PropTypes.object.isRequired,
     templates:             PropTypes.object.isRequired,
     ticketPerms:           PropTypes.object,
-    intl:                  intlShape.isRequired,
     dispatch:              PropTypes.func,
     createApprovalRequest: PropTypes.func,
     cancelApprovalRequest: PropTypes.func,
@@ -66,7 +64,6 @@ export class Approval extends React.Component {
             <ApprovalForm
               templates={this.props.templates}
               ticketPerms={this.props.ticketPerms}
-              intl={this.props.intl}
               getPeople={this.props.getPeople}
               createApprovalRequest={this.createApprovalRequest}
             />

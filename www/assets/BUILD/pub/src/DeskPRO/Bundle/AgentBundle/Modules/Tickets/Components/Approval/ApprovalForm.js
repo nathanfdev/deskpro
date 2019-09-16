@@ -8,7 +8,6 @@ export class ApprovalForm extends React.Component {
   static propTypes = {
     templates:             PropTypes.object.isRequired,
     ticketPerms:           PropTypes.object,
-    intl:                  intlShape.isRequired,
     getPeople:             PropTypes.func,
     createApprovalRequest: PropTypes.func
   };

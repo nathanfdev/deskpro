@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import {connect} from "react-redux";
 import { meSelector } from '../../../../../AppBundle/Modules/RecordsStore/Shortcuts/me';
 import ApprovalTableRow from "./ApprovalTableRow";
@@ -8,7 +8,6 @@ import ApprovalTableRow from "./ApprovalTableRow";
 @connect(state => ({
   me: meSelector(state),
 }))
-@injectIntl
 class ApprovalTable extends React.Component {
   static propTypes = {
     approvals:             PropTypes.object,
