@@ -4376,6 +4376,7 @@ agent.publish.guide_list_title:
   one: '1 Guide'
   other: '{{count}} Guides'
 agent.publish.helpful: Helpful
+agent.publish.image_browser: 'Image Browser'
 agent.publish.kb_list_title:
   one: '1 Articles'
   other: '{{count}} Articles'

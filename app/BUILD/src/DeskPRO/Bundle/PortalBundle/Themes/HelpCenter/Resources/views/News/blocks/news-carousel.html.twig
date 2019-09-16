@@ -14,20 +14,25 @@
                         <span class="dp-po-news-carousel-date">{{ item.date_published | date('j') }}</span>
                     </p>
                     <div class="dp-po-news-carousel-cover">
-                        {#            <img src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/news.png"#}
-                        {#                 class="dp-po-news-carousel-photo img-fluid" />#}
+                        {% if has_splash(item) %}
+                                    <img src="{{ get_splash_url(item, 300) }}"
+                                         class="dp-po-news-carousel-photo img-fluid" />
+                        {% endif %}
                         <span class="badge badge-info" style="{{ category_color_css(item.category) }}">{{ object_phrase(item.category) }}</span>
-                        {#            Person there if banner#}
-                        {#            {% if item.person %}#}
-                        {#              <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />#}
-                        {#            {% endif %}#}
+                        {% if has_splash(item) %}
+                            {% if item.person %}
+                              <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />
+                            {% endif %}
+                        {% endif %}
                     </div>
                     <h3 class="dp-po-news-carousel-title">{{ item.title }}</h3>
                     <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(30)|raw }}<i
                                 class="dp-po-icon far fa-angle-right"></i>
                     </p>
-                    {% if item.person %}
-                        <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />
+                    {% if not has_splash(item) %}
+                        {% if item.person %}
+                            <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />
+                        {% endif %}
                     {% endif %}
                 </a>
                 {#        {% if brand_setting('user.publish_comments') %}#}

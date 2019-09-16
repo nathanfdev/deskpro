@@ -774,7 +774,32 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
           splashImageTab.html(data.content_html).ready(self._initSplashTab.bind(self));
         }
       });
-    })
+    });
+    this.getEl('browse_unsplash').on('click', function(e) {
+      var event = new CustomEvent('dpLeftDrawer', {detail: {
+          module: 'SplashImage',
+          width: 0,
+          selectImage: self.selectSplashImage.bind(self),
+          style: {
+            zIndex: 22000
+          }
+        }});
+      window.document.dispatchEvent(event);
+    });
+  },
+
+  selectSplashImage: function(image) {
+    var splashImageTab = this.getEl('splash_image_tab');
+    $.ajax({
+      url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/ajax-save',
+      type: 'POST',
+      context: this,
+      data: {action: 'select-unsplash-image', baseId: this.meta.baseId, image: JSON.stringify(image)},
+      dataType: 'json',
+      success: function(data) {
+        splashImageTab.html(data.content_html).ready(this._initSplashTab.bind(this));
+      }
+    });
   },
 
 	showEditor: function() {

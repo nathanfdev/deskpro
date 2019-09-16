@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { SnippetsMenuContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import SearchContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Search/Components/SearchContainer';
+import UnsplashImageModal from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/UnsplashImageBrowser/UnsplashImageModal';
 
 export class LeftDrawerContainer extends SeparateComponent {
   static getType() {
@@ -51,6 +52,14 @@ export class LeftDrawerContainer extends SeparateComponent {
           module = SearchContainer;
           props = {
             closeMenu: this.closeDrawer,
+          };
+          break;
+        }
+        case 'SplashImage': {
+          module = UnsplashImageModal;
+          props = {
+            closeModal:  this.closeDrawer,
+            selectImage: e.detail.selectImage,
           };
           break;
         }
@@ -102,7 +111,7 @@ export class LeftDrawerContainer extends SeparateComponent {
     if (this.onClose) {
       this.onClose();
     }
-    if (this.module && this.module.getWrappedInstance().onClose) {
+    if (this.module && this.module.getWrappedInstance && this.module.getWrappedInstance().onClose) {
       this.module.getWrappedInstance().onClose();
     }
     this.setState({

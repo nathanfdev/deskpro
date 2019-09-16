@@ -4,7 +4,7 @@
     <div class="upload" style="display: {% if has_splash(news) %}none{% else %}block{% endif %}">
         <input id="{{baseId}}_splash_upload" type="file" name="file-upload" style="display: none" />
         <a href="#" class="clean-white"><label for="{{baseId}}_splash_upload">{{ phrase('agent.general.upload_image') }}</label></a>
-        <button class="clean-white">{{ phrase('agent.publish.browse_free_image') }}</button>
+        <button class="clean-white" id="{{baseId}}_browse_unsplash">{{ phrase('agent.publish.browse_free_image') }}</button>
         <script class="template-upload" type="text/x-tmpl">
             {{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
             <p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
@@ -27,7 +27,7 @@
     <div class="view_image" style="display: {% if not has_splash(news) %}none{% else %}block{% endif %}">
         <button id="{{baseId}}_remove_splash_image_btn" class="clean-white">{{ phrase('agent.publish.remove_splash_image') }}</button>
         <div class="splash-image-image">
-            <img src="{{ get_splash_url(news) }}" />
+            <img src="{{ get_splash_url(news, 300) }}" />
         </div>
     </div>
 {% endif %}

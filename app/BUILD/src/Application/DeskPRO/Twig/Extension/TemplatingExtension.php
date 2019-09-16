@@ -2026,22 +2026,23 @@ class TemplatingExtension extends \Twig_Extension
      */
     public function hasSplashImage(ContentAbstract $object)
     {
-        return (bool) $object->getSplashImage() && $object->getSplashImage()->getId();
+        return (bool) $object->getSplashImage() && $object->getSplashImage();
     }
 
     /**
      * @param ContentAbstract $object
+     * @param int             $width
      * @param string          $orientation
      *
      * @throws \Exception
      *
      * @return string
      */
-    public function getSplashUrl(ContentAbstract $object, $orientation = 'landscape')
+    public function getSplashUrl(ContentAbstract $object, $width = 200, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
-            return $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $orientation);
+            return $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $width, $orientation);
         }
 
         return '';
@@ -2049,17 +2050,18 @@ class TemplatingExtension extends \Twig_Extension
 
     /**
      * @param ContentAbstract $object
+     * @param int             $width
      * @param string          $orientation
      *
      * @throws \Exception
      *
      * @return string
      */
-    public function getSplashBgcss(ContentAbstract $object, $orientation = 'landscape')
+    public function getSplashBgcss(ContentAbstract $object, $width = 200, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
-            return $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $orientation);
+            return $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $width, $orientation);
         }
 
         return '';

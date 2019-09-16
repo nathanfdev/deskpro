@@ -21,7 +21,8 @@ class SplashImageProperty implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    public static $blobNs = 'urn:deskpro:local:blobs';
+    public static $blobNs     = 'urn:deskpro:local:blobs';
+    public static $unsplashNs = 'urn:deskpro:product:splash:unsplash';
 
     /**
      * @var int
