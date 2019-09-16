@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use GuzzleHttp\Client;
@@ -16,11 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/apps/unsplash")
  */
-class UnsplashController
+class UnsplashController extends BaseController
 {
-    // TODO Move id to settings
-    public static $unsplashAccessKey = '3d9c27e1cb7a6e77f038d7c8beb0759d37f7a825be8a0c79d03f0f1554407bc1';
-
     /**
      * @ApiDoc(
      *     section="Apps",
@@ -88,10 +86,11 @@ class UnsplashController
      */
     private function requestApi($path, $params = [])
     {
-        $client = new Client();
-        $res    = $client->request('GET', 'https://api.unsplash.com/'.$path, [
+        $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
+        $client    = new Client();
+        $res       = $client->request('GET', 'https://api.unsplash.com/'.$path, [
             'headers' => [
-                'Authorization' => 'Client-ID '.self::$unsplashAccessKey,
+                'Authorization' => 'Client-ID '.$accessKey,
             ],
             'query' => $params,
         ]);

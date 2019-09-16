@@ -21,6 +21,7 @@ use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\DBAL\Connection;
+use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -296,6 +297,8 @@ class NewsController extends AbstractController
                 $splashImage->setOptions(['url' => $image->urls->raw]);
                 $this->em->persist($splashImage);
                 $news->setSplashImage($splashImage);
+                $client = new Client();
+                $client->request('GET', $image->links->download);
                 $data['content_html'] = $this->renderView('AgentBundle:News:splash-image-tab.html.twig', [
                     'news'   => $news,
                     'baseId' => $this->in->getString('baseId'),

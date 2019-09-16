@@ -56,12 +56,18 @@ export default class UnsplashImageBrowser extends React.Component {
     }
   };
 
-  randomImages = () => {
+  randomImages = (clear = false) => {
     const { unsplash } = this.state;
     return api.sendGet('DP_API/apps/unsplash/random?count=12').success((response) => {
-      this.setState({
-        unsplash: unsplash.concat(response)
-      });
+      if (clear) {
+        this.setState({
+          unsplash: Seq(response)
+        });
+      } else {
+        this.setState({
+          unsplash: unsplash.concat(response)
+        });
+      }
     }).then(() => {
       this.setState({
         imagesLoading: false
@@ -71,6 +77,9 @@ export default class UnsplashImageBrowser extends React.Component {
 
   searchImages = () => {
     const { query, page, unsplash } = this.state;
+    if (query === '') {
+      return this.randomImages(true);
+    }
     return api.sendGet(`DP_API/apps/unsplash/search?per_page=12&page=${page}&query=${query}`).success((response) => {
       if (page === 1) {
         this.setState({
