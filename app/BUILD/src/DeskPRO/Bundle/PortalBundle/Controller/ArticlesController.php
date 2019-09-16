@@ -11,15 +11,11 @@ use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
-use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
-use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonRegistrationType;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\LazyPropObject;
@@ -29,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ArticlesController extends AbstractController
+class ArticlesController extends AbstractPublishController
 {
     /**
      * @Route("/kb.{_format}", name="portal_kb", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
@@ -328,51 +324,6 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             $viewVars
         );
-    }
-    private function getAuthComponents(Request $request)
-    {
-        $lastUsername = $request->hasPreviousSession() ? $this->getSession()->get('last_username') : null;
-        $capthcaForm  = null;
-        $abuseCheck   = new LoginAbuseCheck($lastUsername, $request->getClientIp());
-        $abuseCheck->markAsCheckOnly();
-        $this->getAntiAbuseService()->check($abuseCheck);
-        if ($abuseCheck->isCaptchaRecommended()) {
-            $capthcaForm = $this->createForm(DpCaptchaType::class);
-        }
-
-        $person = $this->getPersonFactory()->createNewPerson();
-
-        // FORM
-        $registerForm = $this->createForm(PersonRegistrationType::class, $person, [
-            'settings'              => $this->getBrandContainer()->getSettings(),
-            'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
-            'action'                => $this->generateUrl('portal_user_registration'),
-        ]);
-
-        if ($request->isMethod('get') && $request->query->count()) {
-            // to set form default values from request query
-            $formOptions['validation_groups']             = false;
-            $formOptions['csrf_double_submit_skip_check'] = true;
-        }
-
-        $registerForm->handleRequest($request);
-
-        // pre-fill form values
-        if ($request->isMethod('get') && $request->query->has('person_registration')) {
-            // set default values
-            // using the string constant to acquire data from query instead of Form::getName for BC
-            $registerForm->submit($request->query->get('person_registration') ?: []);
-            FormValidatorChecker::clearFormErrors($registerForm);
-        }
-
-        $formView = $registerForm->createView();
-
-        return [
-            'auth_manager'  => $this->get('dp_authentication_manager.user'),
-            'last_username' => $lastUsername,
-            'captcha_form'  => $capthcaForm,
-            'register_form' => $formView,
-        ];
     }
 
     /**
