@@ -19,7 +19,9 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\DBAL\Connection;
+use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -286,6 +288,38 @@ class NewsController extends AbstractController
 
             case 'remove-auto-pub':
                 $news->date_published = null;
+                break;
+
+            case 'select-unsplash-image':
+                $splashImage = new SplashImageProperty();
+                $image       = json_decode($this->in->getString('image'));
+                $splashImage->setUrn($splashImage::$unsplashNs.':'.$image->id);
+                $splashImage->setOptions(['url' => $image->urls->raw]);
+                $this->em->persist($splashImage);
+                $news->setSplashImage($splashImage);
+                $client = new Client();
+                $client->request('GET', $image->links->download);
+                $data['content_html'] = $this->renderView('AgentBundle:News:splash-image-tab.html.twig', [
+                    'news'   => $news,
+                    'baseId' => $this->in->getString('baseId'),
+                    'perms'  => [
+                        'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
+                    ],
+                ]);
+                break;
+
+            case 'remove-splash-image':
+                $splashImage = $news->getSplashImage();
+                $this->em->remove($splashImage);
+                $news->setSplashImage(null);
+                $data['content_html'] = $this->renderView('AgentBundle:News:splash-image-tab.html.twig', [
+                    'news'   => $news,
+                    'baseId' => $this->in->getString('baseId'),
+                    'perms'  => [
+                        'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($news),
+                    ],
+                ]);
+
                 break;
         }
 

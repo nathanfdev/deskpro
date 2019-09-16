@@ -18,12 +18,12 @@ class PortalIconRenderer
 {
     public function getIconHtml(IconProperty $icon, $object = null)
     {
-        if ($icon->getUrnNs() === 'urn:deskpro:local:blobs') {
+        if ($icon->getUrnNs() === IconProperty::$blobNs) {
             if ($icon->getBlob()) {
                 return '<img src="'.$icon->getBlob()->getFileUrl().'" alt="icon" />';
             }
         }
-        if ($icon->getUrnNs() === 'urn:deskpro:product:icons:fontawesome') {
+        if ($icon->getUrnNs() === IconProperty::$faNs) {
             $iconOptions = $icon->getOptions();
             $iconStyle   = 'fas';
             if (isset($iconOptions['style'])) {

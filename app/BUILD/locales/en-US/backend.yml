@@ -3630,6 +3630,7 @@ agent.general.sort_desc: DESC
 agent.general.sort_desc_highlow: Highest-Lowest
 agent.general.source_code: 'Source Code'
 agent.general.spam: Spam
+agent.general.splash_image: Splash Image
 agent.general.start: Start
 agent.general.status: Status
 agent.general.status_is: 'Status is {{status}}'
@@ -4319,6 +4320,7 @@ agent.publish.article_comments: 'Article Comments'
 agent.publish.article_id: 'Article ID'
 agent.publish.ask_set_to_draft: 'Are you sure you would like to set the selected items as drafts?'
 agent.publish.awaiting_validation_info: 'Awaiting Validation: An agent with permission to validate content will need to approve this before it is displayed in the portal.'
+agent.publish.browse_free_image: 'Browse Free Images'
 agent.publish.change_category: 'Change Category'
 agent.publish.click_to_set_date: '(click to set date)'
 agent.publish.comment_by: 'Comment by {{name}}'
@@ -4374,6 +4376,7 @@ agent.publish.guide_list_title:
   one: '1 Guide'
   other: '{{count}} Guides'
 agent.publish.helpful: Helpful
+agent.publish.image_browser: 'Image Browser'
 agent.publish.kb_list_title:
   one: '1 Articles'
   other: '{{count}} Articles'
@@ -4417,6 +4420,7 @@ agent.publish.please_select_category: 'Please select a category'
 agent.publish.please_select_guide: 'Please select a guide'
 agent.publish.post: Post
 agent.publish.primary_lang_explain: 'The primary language for this article. After the article has been created you will be able to translate it into other languages.'
+agent.publish.remove_splash_image: 'Remove Splash Image'
 agent.publish.reorder_category_title: 'Reorder Category (Drag & Drop)'
 agent.publish.reorder_guide_title: 'Reorder Guide (Drag & Drop)'
 agent.publish.requires_validation: 'Requires Validation'
@@ -4442,6 +4446,7 @@ agent.publish.set_contents_from_article: 'Set contents from article'
 agent.publish.slug: 'URL Slug'
 agent.publish.slug_edit: 'Edit Slug'
 agent.publish.slug_edit_prompt: 'Enter new URL slug (only letters, numbers, dashes and underscores)'
+agent.publish.splash_image_explain: 'The splash image is a cover image displayed when rendering this content in the help center. It can be used as a backdrop to decorate the title to help give context and visual flare.'
 agent.publish.status_archived: Archived
 agent.publish.status_hidden_deleted: Deleted
 agent.publish.status_hidden_draft: Draft
