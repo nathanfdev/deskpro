@@ -14,6 +14,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class VoiceQueue.
@@ -27,8 +28,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity("name")
  *
  * @VoiceAssert\VoiceQueueAgentPermissions()
+ * @Assert\GroupSequenceProvider
  */
-class VoiceQueue implements EntityInterface, NotifyPropertyChanged
+class VoiceQueue implements EntityInterface, NotifyPropertyChanged, GroupSequenceProviderInterface
 {
     use NotifyPropertyChangedTrait;
 
@@ -155,7 +157,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="answer_timeout", type="integer")
      *
-     * @Assert\GreaterThanOrEqual("10")
+     * @Assert\GreaterThanOrEqual("10", groups="AnswerTimeout")
      *
      * @var int
      */
@@ -174,7 +176,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="max_queue_size", type="integer")
      *
-     * @Assert\GreaterThanOrEqual("1")
+     * @Assert\GreaterThanOrEqual("1", groups="MaxQueueSize")
      *
      * @var int
      */
@@ -570,5 +572,21 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('recordingEnabled', $recordingEnabled);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['VoiceQueue'];
+        if ($this->routingModel !== self::ROUTING_MODEL_SIMULRING) {
+            $groups[] = 'AnswerTimeout';
+        }
+        if ($this->routingModel === self::ROUTING_MODEL_LEAST_UTILIZED) {
+            $groups[] = 'MaxQueueSize';
+        }
+
+        return $groups;
     }
 }
