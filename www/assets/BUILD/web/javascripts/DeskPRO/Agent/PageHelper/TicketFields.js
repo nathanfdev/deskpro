@@ -256,6 +256,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
       setTimeout(function () {
         if ($simpleField.length) {
+          $simpleField.find('.dp-two-select').val(Array.isArray(value) ? value : (value + '').split(',')).change();
           $simpleField.focus();
         }
       }, 0);
