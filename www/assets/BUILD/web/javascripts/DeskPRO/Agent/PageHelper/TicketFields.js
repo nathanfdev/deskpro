@@ -586,9 +586,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     for (i = 0; i < this.$scope.edit_fields.length; i++) {
       fieldName = this.$scope.edit_fields[i];
-       if (fieldName.startsWith('user_field_')) {
+       if (fieldName.indexOf('user_field_') === 0) {
         fieldsOnEdit[fieldName] = this.ticketReader.getUserFieldValue(fieldName);
-      } else if (fieldName.startsWith('org_field_')) {
+      } else if (fieldName.indexOf('org_field_') === 0) {
         fieldsOnEdit[fieldName] = this.ticketReader.getOrgFieldValue(fieldName);
       } else {
         fieldsOnEdit[fieldName] = this.ticketReader.getTicketFieldValue(fieldName);
