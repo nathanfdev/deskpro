@@ -43,6 +43,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         var catId = self.display.find('select.prop-input-workflow_id').first().val();
         return parseInt(catId) || 0;
       },
+      getLanguageId:       function () {
+        var langId = self.display.find('select.prop-input-language_id').first().val();
+        return parseInt(langId) || 0;
+      },
       getFieldValue:       function (name) {
         var $holders = self.page.getEl('field_holders');
 
@@ -87,6 +91,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             return this.getPriorityId();
           case 'product':
             return this.getProductId();
+          case 'language':
+            return this.getLanguageId()
         }
         fieldId = ((fieldId || '') + '').replace('ticket_field_', '');
         return this.getFieldValue('custom_fields[field_' + fieldId + ']');
@@ -163,6 +169,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
           return $(this).parents('.with-select2').length === 0;
         }).val(value);
         $el.find('.with-select2').val(Array.isArray(value) ? value : (value + '').split(',')).change();
+        $el.find('.dp-two-select').val(Array.isArray(value) ? value : (value + '').split(',')).change();
         $el.find('input[type=radio]').each(function (i, field) {
           var $field = $(field);
 
@@ -579,7 +586,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     for (i = 0; i < this.$scope.edit_fields.length; i++) {
       fieldName = this.$scope.edit_fields[i];
-      fieldsOnEdit[fieldName] = this.ticketReader.getTicketFieldValue(fieldName);
+       if (fieldName.startsWith('user_field_')) {
+        fieldsOnEdit[fieldName] = this.ticketReader.getUserFieldValue(fieldName);
+      } else if (fieldName.startsWith('org_field_')) {
+        fieldsOnEdit[fieldName] = this.ticketReader.getOrgFieldValue(fieldName);
+      } else {
+        fieldsOnEdit[fieldName] = this.ticketReader.getTicketFieldValue(fieldName);
+      }
     }
 
     $('select', this.display).select2('close');
@@ -601,16 +614,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     this.lastDepId = null;
     this.updateDisplayNow();
-    this.$scope.$apply();
-
-    this.$scope.edit_fields = oldScope.edit_fields;
-    this.$scope.editables = oldScope.editables;
-
-    for (i = 0; i < this.$scope.edit_fields.length; i++) {
-      fieldName = this.$scope.edit_fields[i];
-      this.$scope.editField(new Event('click'), fieldName);
-      this.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
-    }
+    this.$scope.$apply(() => {
+      for (i = 0; i < oldScope.edit_fields.length; i++) {
+        fieldName = oldScope.edit_fields[i];
+        this.$scope.editField(new Event('click'), fieldName);
+        this.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
+      }
+    });
   },
 
   initDateCustomFields: function () {
