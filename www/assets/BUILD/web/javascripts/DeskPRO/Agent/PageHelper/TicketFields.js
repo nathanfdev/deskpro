@@ -578,6 +578,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
   },
 
   replaceHolders: function (html) {
+    var self = this;
     var labels = this.display.find('tbody.labels-row');
     var last   = this.display.find('tbody.controls-row');
     var oldScope = this.$scope;
@@ -614,11 +615,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     this.lastDepId = null;
     this.updateDisplayNow();
-    this.$scope.$apply(() => {
+    this.$scope.$apply(function() {
       for (i = 0; i < oldScope.edit_fields.length; i++) {
         fieldName = oldScope.edit_fields[i];
-        this.$scope.editField(new Event('click'), fieldName);
-        this.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
+        self.$scope.editField(new Event('click'), fieldName);
+        self.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
       }
     });
   },
