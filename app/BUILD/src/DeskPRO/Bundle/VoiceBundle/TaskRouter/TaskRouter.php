@@ -429,7 +429,7 @@ class TaskRouter
                 }
             }
 
-            $this->logger->info(sprintf('[TaskRouter] The task, is ended task_id = %s', $taskId));
+            $this->logger->info(sprintf('[TaskRouter] The task is ended, task_id = %s', $taskId));
 
             return true;
         } catch (\Exception $e) {
