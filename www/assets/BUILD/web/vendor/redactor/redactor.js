@@ -971,6 +971,37 @@ var RLANG = {
 				{
 					return this.safariShiftKeyEnter(e, key);
 				}
+
+        // Bug in Chrome on Win/Linux that shift page to side when press PageUp/PageDown on textarea.
+        // Prevent PageUp/PageDown and simulate Home/End against them.
+        // Uncomment conditions if want to use fix only form depended OS/Browser.
+        if (
+          // navigator.userAgent.indexOf('Chrome') !== -1 &&
+          // (navigator.userAgent.indexOf('Win') !== -1 || navigator.userAgent.indexOf("Linux") !== -1) &&
+          (key === 33 || key === 34) // PageUp, PageDown
+        ) {
+          e.preventDefault();
+
+          var editorNode = this.$editor.get(0);
+          var selection = this.document.getSelection
+            ? this.document.getSelection()
+            : this.document.selection;
+
+          if (key === 33) {
+            // Move caret to the start of text
+            selection.collapse(editorNode, 0);
+          }
+
+          if (key === 34) {
+            // Move caret to the end of text
+            var range = new Range();
+            range.setEndAfter(editorNode.lastChild);
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+            selection.collapseToEnd();
+          }
+        }
 			}, this));
 		},
 		build: function(mobile, whendone)
