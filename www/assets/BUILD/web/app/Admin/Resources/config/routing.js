@@ -2498,6 +2498,13 @@ define(function() {
     controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
+  routes.push({
+    id:           'voice-channel.billing_summary',
+    url:          '/billing_summary',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
   // ##################################################################################################################
   // Dev
   // ##################################################################################################################
