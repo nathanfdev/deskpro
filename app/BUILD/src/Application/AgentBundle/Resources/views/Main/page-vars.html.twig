@@ -42,7 +42,7 @@
     window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
 
     {% if app.hasVoice() %}
-        window.DP_VOICE_USE_LOCAL_POLLING = {% if app.getSetting('voice.use_local_polling') or app.isQa() %}true{% else %}false{% endif %};
+        window.DP_VOICE_USE_LOCAL_POLLING = {% if app.voiceUseLocalPolling() %}true{% else %}false{% endif %};
     {% endif %}
 
 	// Legacy vars

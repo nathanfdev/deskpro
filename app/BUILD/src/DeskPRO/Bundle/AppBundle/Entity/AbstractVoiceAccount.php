@@ -207,4 +207,9 @@ abstract class AbstractVoiceAccount implements EntityInterface, NotifyPropertyCh
      * @return string
      */
     abstract public function getRouterPrefix();
+
+    /**
+     * @return bool
+     */
+    abstract public function isManagedAccount();
 }
