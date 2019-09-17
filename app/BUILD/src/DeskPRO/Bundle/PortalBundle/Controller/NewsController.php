@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class NewsController extends AbstractController
+class NewsController extends AbstractPublishController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
@@ -279,26 +279,32 @@ class NewsController extends AbstractController
 
         // RENDER THEME
 
+        $viewVars = [
+            'post'               => $post,
+            'postData'           => $postData,
+            'is_subscribed'      => $isSubscribed,
+            'rating'             => $rating,
+            'category'           => $post->getCategory(),
+            'content_id'         => $post->getId(),
+            'content_type'       => News::CONTENT_TYPE,
+            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+            'page_title'         => $this->createPageTitle()->news($post),
+            'breadcrumbs'        => $breadcrumbs,
+            'show_rating_counts' => $showRatingCounts,
+            'rating_counts'      => $ratingCounts,
+            'lockout'            => $check->isLockoutRecommended(),
+            'lockout_time'       => $check->getLockoutTime(true),
+            'main_class'         => 'dp-po-news-post',
+            'helpcenter'         => $this->get('helpcenter_data_helper'),
+        ];
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
+
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
-            [
-                'post'               => $post,
-                'postData'           => $postData,
-                'is_subscribed'      => $isSubscribed,
-                'rating'             => $rating,
-                'category'           => $post->getCategory(),
-                'content_id'         => $post->getId(),
-                'content_type'       => News::CONTENT_TYPE,
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'page_title'         => $this->createPageTitle()->news($post),
-                'breadcrumbs'        => $breadcrumbs,
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-                'main_class'         => 'dp-po-news-post',
-                'helpcenter'         => $this->get('helpcenter_data_helper'),
-            ]
+            $viewVars
         );
     }
 

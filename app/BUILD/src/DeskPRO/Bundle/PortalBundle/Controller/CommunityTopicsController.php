@@ -14,9 +14,11 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType;
 use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -37,7 +39,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Class CommunityTopicsController.
  */
-class CommunityTopicsController extends AbstractController
+class CommunityTopicsController extends AbstractPublishController
 {
     /**
      * @Route("/community.{_format}", name="portal_community", defaults={"_format":"html"},
@@ -481,22 +483,39 @@ class CommunityTopicsController extends AbstractController
 
         // RENDER THEME
 
+        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
+        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
+
+        $self = $this;
+
+        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
+            /* @var TicketCommunityTopicLink $linkedTicket */
+            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
+        });
+
+        $viewVars = [
+            'topic'              => $topic,
+            'linked_tickets'     => $ticketCommunityTopicsLinks,
+            'is_subscribed'      => $isSubscribed,
+            'content_id'         => $topic->getId(),
+            'content_type'       => CommunityTopic::CONTENT_TYPE,
+            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+            'page_title'         => $this->createPageTitle()->community($topic),
+            'breadcrumbs'        => $breadcrumbs,
+            'rating'             => $rating,
+            'show_rating_counts' => $showRatingCounts,
+            'rating_counts'      => $ratingCounts,
+            'lockout'            => $check->isLockoutRecommended(),
+            'lockout_time'       => $check->getLockoutTime(true),
+        ];
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
+
         return $this->renderThemeView(
             'Theme:Community:view.html.twig',
-            [
-                'topic'              => $topic,
-                'is_subscribed'      => $isSubscribed,
-                'content_id'         => $topic->getId(),
-                'content_type'       => CommunityTopic::CONTENT_TYPE,
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'page_title'         => $this->createPageTitle()->community($topic),
-                'breadcrumbs'        => $breadcrumbs,
-                'rating'             => $rating,
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-            ]
+            $viewVars
         );
     }
 
