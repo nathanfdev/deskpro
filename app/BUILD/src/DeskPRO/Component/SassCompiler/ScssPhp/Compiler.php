@@ -6,8 +6,9 @@
 
 namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
-use Leafo\ScssPhp\Compiler as BaseCompiler;
-use Leafo\ScssPhp\Parser as ScssPhpParser;
+use ScssPhp\ScssPhp\Compiler as BaseCompiler;
+use ScssPhp\ScssPhp\Formatter\OutputBlock;
+use Scssphp\ScssPhp\Parser as ScssPhpParser;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -187,7 +188,7 @@ class Compiler extends BaseCompiler
     /**
      * {@inheritdoc}
      */
-    protected function importFile($path, $out)
+    protected function importFile($path, OutputBlock $out)
     {
         // see if tree is cached
         $realPath = @realpath($path);

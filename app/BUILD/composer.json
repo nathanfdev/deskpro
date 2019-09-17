@@ -56,7 +56,6 @@
     "vaites/php-apache-tika": "^0.3.5",
     "friendsofsymfony/rest-bundle": "2.1.1",
     "nelmio/api-doc-bundle": "~2.10",
-    "leafo/scssphp": "0.6.3",
     "beberlei/DoctrineExtensions": "^1.0",
     "willdurand/negotiation": "^2.0",
     "defuse/php-encryption": "^1.2",
@@ -114,7 +113,8 @@
     "gorhill/php-fine-diff": "^0.1.0",
     "symfony/lock": "3.4",
     "giggsey/libphonenumber-for-php": "^8.10",
-    "jumbojett/openid-connect-php": "^0.8.0"
+    "jumbojett/openid-connect-php": "^0.8.0",
+    "scssphp/scssphp": "^1.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
