@@ -152,17 +152,23 @@ class CallLogView extends React.Component {
             <tr>
               <th>Call data</th>
               <td>
-                <table>
-                  <tbody>
-                    {Object.keys(rawData).map(key =>
-                      <tr key={key}>
-                        <th width="140">{key}</th>
-                        <td x-ms-format-detection="none">{rawData[key]}</td>
-                      </tr>
-                    )}
-                  </tbody>
-
-                </table>
+                <div contentEditable className="voice-phone-call-details">
+                  {call.getIn(['participants', 0, 'data']).size > 0
+                    ? call.get('participants').toArray().map(participant =>
+                      <ParticipantCallDetails participant={participant} />
+                    )
+                    : <table>
+                      <tbody>
+                        {Object.keys(rawData).map(key =>
+                          <tr key={key}>
+                            <th width="140">{key}</th>
+                            <td x-ms-format-detection="none">{rawData[key]}</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  }
+                </div>
               </td>
             </tr>
             <tr>
@@ -236,6 +242,31 @@ class CallLogView extends React.Component {
               </td>
             </tr>
           </tbody>
+        </table>
+      </div>
+    );
+  }
+}
+
+class ParticipantCallDetails extends React.Component {
+
+  static propTypes = {
+    participant: PropTypes.object
+  };
+
+  render() {
+    const { participant } = this.props;
+    const rawData = participant.get('data').toJS();
+
+    return (
+      <div>
+        <table>
+          {Object.keys(rawData).map(key => rawData[key] &&
+            <tr key={key}>
+              <th width="140">{key}</th>
+              <td x-ms-format-detection="none">{rawData[key]}</td>
+            </tr>
+          )}
         </table>
       </div>
     );

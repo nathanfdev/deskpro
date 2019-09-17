@@ -819,3 +819,29 @@
 .agent-settings-form {
   width: 328px;
 }
+
+.voice-phone-call-details {
+  max-height: 400px;
+  overflow-y: scroll;
+  padding-right: 10px;
+  width: 85%;
+
+  > div {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  table {
+    th, td {
+      padding: 0 5px;
+    }
+
+    th {
+      text-align: right;
+    }
+  }
+}
