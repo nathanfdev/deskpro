@@ -181,11 +181,13 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection|ArticleCategory[]
      */
     public function getArticles()
     {
-        return $this->articles;
+        return $this->articles->map(function (ArticleToCategory $pivot) {
+            return $pivot->getArticle();
+        });
     }
 
     /**
@@ -356,11 +358,11 @@ class ArticleCategory extends CategoryAbstract
                 'dpApi' => true,
             ]
         );
-        $metadata->mapManyToMany(
+        $metadata->mapOneToMany(
             [
                 'fieldName'    => 'articles',
-                'targetEntity' => Article::class,
-                'mappedBy'     => 'categories',
+                'targetEntity' => ArticleToCategory::class,
+                'mappedBy' => 'category',
             ]
         );
         $metadata->mapManyToOne(

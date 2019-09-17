@@ -72,7 +72,8 @@ class ArticlesController extends AbstractContentController
         $brands   = $request->query->get('brands');
 
         if ($category || $brands) {
-            $qb->leftJoin("$alias.categories", 'cat');
+            $qb->leftJoin("$alias.categories", 'artToCat');
+            $qb->leftJoin('artToCat.category', 'cat');
         }
 
         if ($category) {
@@ -94,7 +95,8 @@ class ArticlesController extends AbstractContentController
             $qb
                 ->addSelect('cat.id as group_name')
                 ->addSelect('cat.title as title')
-                ->leftJoin("$alias.categories", 'cat')
+                ->leftJoin("$alias.categories", 'artToCat')
+                ->leftJoin('artToCat.category', 'cat')
                 ->groupBy('group_name')
             ;
         } else {
