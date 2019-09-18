@@ -91,10 +91,18 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
                 RouterInterface::ABSOLUTE_PATH
             );
         } else {
-            if ($textDirection === 'RTL') {
-                return $this->getAssetsExtension()->getAssetUrl(self::$default_rtl_css_asset, 'app_assets');
+            if ($this->container->get('brand_stack')->getActive()->getBrand()->getThemeSet()->getThemeId() === 'helpcenter') {
+                if ($this->container->get('brand_aware_settings_resolver')->getSetting('dev.use_local_portal_style_css')) {
+                    return 'http://localhost:3000/portal-components/portal-style/dist/style.css';
+                } else {
+                    return 'https://deskpro.github.io/portal-components/portal-style/dist/style.css';
+                }
             } else {
-                return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
+                if ($textDirection === 'RTL') {
+                    return $this->getAssetsExtension()->getAssetUrl(self::$default_rtl_css_asset, 'app_assets');
+                } else {
+                    return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
+                }
             }
         }
     }

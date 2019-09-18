@@ -31,7 +31,7 @@ services:
       - "@=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()"
       - "@=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()"
       - "@twig"
-      - "@=service('deskpro.app_env').getAppWwwAssetDir() ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss'"
+      - "@=service('deskpro.app_env').getAppWwwAssetDir()"
 
   dp.portal.designer.styles_manager:
     class: DeskPRO\Bundle\PortalBundle\Designer\StylesManager

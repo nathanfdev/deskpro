@@ -7,6 +7,7 @@
 namespace DeskPRO\Component\SassCompiler\ScssPhp;
 
 use ScssPhp\ScssPhp\Compiler as BaseCompiler;
+use ScssPhp\ScssPhp\Compiler\Environment;
 use ScssPhp\ScssPhp\Formatter\OutputBlock;
 use Scssphp\ScssPhp\Parser as ScssPhpParser;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
@@ -214,5 +215,58 @@ class Compiler extends BaseCompiler
         array_unshift($this->importPaths, $pi['dirname']);
         $this->compileChildrenNoReturn($tree->children, $out);
         array_shift($this->importPaths);
+    }
+
+    public function get($name, $shouldThrow = true, Environment $env = null, $unreduced = false)
+    {
+        $normalizedName    = $this->normalizeName($name);
+        $specialContentKey = static::$namespaces['special'].'content';
+
+        if (!isset($env)) {
+            $env = $this->getStoreEnv();
+        }
+
+        $nextIsRoot   = false;
+        $hasNamespace = $normalizedName[0] === '^' || $normalizedName[0] === '@' || $normalizedName[0] === '%';
+
+        $maxDepth = 10000;
+
+        for (; ;) {
+            if ($maxDepth-- <= 0) {
+                break;
+            }
+
+            if (array_key_exists($normalizedName, $env->store)) {
+                if ($unreduced && isset($env->storeUnreduced[$normalizedName])) {
+                    return $env->storeUnreduced[$normalizedName];
+                }
+
+                return $env->store[$normalizedName];
+            }
+
+            // Fix mixin looking up for values at root in bootstrap : https://github.com/scssphp/scssphp/issues/46
+            if (false && !$hasNamespace && isset($env->marker)) {
+                if (!$nextIsRoot && !empty($env->store[$specialContentKey])) {
+                    $env = $env->store[$specialContentKey]->scope;
+                    continue;
+                }
+
+                $env = $this->rootEnv;
+                continue;
+            }
+
+            if (!isset($env->parent)) {
+                break;
+            }
+
+            $env = $env->parent;
+        }
+
+        if ($shouldThrow) {
+            $this->throwError("Undefined variable \$$name".($maxDepth <= 0 ? ' (infinite recursion)' : ''));
+        }
+
+        // found nothing
+        return null;
     }
 }

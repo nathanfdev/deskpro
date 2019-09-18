@@ -66,7 +66,7 @@ class AdvancedEditsManager
      * @param ThemeSet           $themeSet
      * @param ThemeSet           $editThemeSet
      * @param \Twig_Environment  $twig
-     * @param string             $mainScssPath
+     * @param string             $assetDir
      */
     public function __construct(
         EntityManager $entityManager,
@@ -74,14 +74,18 @@ class AdvancedEditsManager
         ThemeSet $themeSet,
         ThemeSet $editThemeSet,
         \Twig_Environment $twig,
-        $mainScssPath
+        $assetDir
     ) {
         $this->entityManager = $entityManager;
         $this->blobStorage   = $blobStorage;
         $this->themeSet      = $themeSet;
         $this->editThemeSet  = $editThemeSet;
         $this->twig          = $twig;
-        $this->mainScssPath  = $mainScssPath;
+        if ($editThemeSet->getThemeId() === 'helpcenter') {
+            $this->mainScssPath = $assetDir.'/pub/node_modules/@deskpro/portal-style/src/main.scss';
+        } else {
+            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
+        }
     }
 
     /**

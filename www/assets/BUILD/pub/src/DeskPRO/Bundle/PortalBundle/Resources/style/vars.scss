@@ -580,3 +580,22 @@ $page-header-border-color:    $gray-lighter !default;
 $dl-horizontal-offset:        $component-offset-horizontal !default;
 //** Horizontal line color.
 $hr-border:                   $gray-lighter !default;
+
+// Bootstrap fixes
+
+$danger: $brand-danger;
+$warning: $brand-warning;
+$success: $brand-success;
+$info: $brand-info;
+
+$theme-colors: (
+  "primary" : $brand-primary,
+  "danger" : $brand-danger,
+  "warning" : $brand-warning,
+  "success" : $brand-success,
+  "info" : $brand-info,
+);
+
+$progress-height:             1rem !default;
+$grid-columns:                12 !default;
+$grid-gutter-width:           30px !default;
