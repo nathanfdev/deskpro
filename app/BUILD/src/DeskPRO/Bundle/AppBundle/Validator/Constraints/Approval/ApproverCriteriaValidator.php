@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria as ApproverCriteriaObj;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria as ApproverCriteriaObj;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;

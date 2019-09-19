@@ -105,7 +105,7 @@ class BaseApprovalType extends AbstractType
                     return ['Default'];
                 }
 
-                return $template->getApproverCriteria()->canChooseApprovers()
+                return $template->getApproverSelectionCriteria()->canChooseApprovers()
                     ? ['can_choose_approvers', 'Default']
                     : ['cannot_choose_approvers', 'Default']
                 ;

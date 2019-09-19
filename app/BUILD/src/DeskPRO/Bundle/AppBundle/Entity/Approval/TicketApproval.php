@@ -41,6 +41,18 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
     /**
      * {@inheritDoc}
      */
+    protected function getExtraApproversWhenCreatingFromTemplate(
+        EntityManagerInterface $em,
+        SelectedApprovers $selectedApprovers
+    ) {
+        if ($selectedApprovers->hasTicketUser()) {
+            $this->addApprover($this->getTicket()->getPerson());
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function notifyAssociationChanges(EntityManagerInterface $em)
     {
         $this->ticket->getStateChangeRecorder()->record('approvals', null, $this);

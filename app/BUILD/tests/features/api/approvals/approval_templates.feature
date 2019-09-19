@@ -14,15 +14,19 @@ Feature: /approval_templates endpoint
       | atype1 | Approval Type 1 | Description 1 | false     |
       | atype2 | Approval Type 2 | Description 2 | true      |
 
-    And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | requiredNumberOfApprovers |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |                           |
-      | ac2    | [1,2]     | 0         | []    | 0        | 0                    | []    | []          | 4                         |
+    And the following ApproverSelectionCriteria objects exist:
+      | #      | canSelectTicketUser | canSelectOrganizationManagers | canSelectFromAllAgents | selectFromPeople | minNumberOfApprovers |
+      | ac1    | 1                   | 1                             | 1                      | [1,2]            | 1                    |
+      | ac2    | 1                   | 1                             | 1                      | []               | 1                    |
+
+    And the following SelectedApprovers objects exist:
+      | #      | hasTicketUser | hasOrganizationManagers | hasAllAgents | people |
+      | sa1    | 1             | 0                       | 0            | [1]    |
 
     And only the following ApprovalTemplate records exist:
-      | #   | name             | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
-      | at1 | Templ 1          | Approval Templ 1 | {atype1} | 1                 | 4                  | {ac1}            | 1                       |
-      | at2 | Templ 2          | Approval Templ 2 | {atype2} | 2                 | 1                  | {ac2}            | 0                       |
+      | #   | name             | description      | type     | requiredApprovals | requiredRejections | canApproversViewSubject | canChooseApprovers | selectedApprovers | approverSelectionCriteria |
+      | at1 | Templ 1          | Approval Templ 1 | {atype1} | 1                 | 4                  | 1                       | 0                  | {sa1}             |                           |
+      | at2 | Templ 2          | Approval Templ 2 | {atype2} | 2                 | 1                  | 0                       | 1                  |                   | {ac1}                     |
 
   Scenario: I try to POST an approval template without authentication
     When I send a POST request to "/api/v2/approval_templates"
@@ -63,8 +67,8 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 3,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
+  "can_choose_approvers": false,
+  "selected_approvers": {
     "agents": [99999]
   }
 }
@@ -84,8 +88,8 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 3,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
+  "can_choose_approvers": false,
+  "selected_approvers": {
     "users": [99999]
   }
 }

@@ -21,40 +21,41 @@ class ApprovalThresholdsValidator extends ConstraintValidator
      */
     public function validate($value, Constraint $constraint)
     {
-        $minNumberOfApprovers = null;
-
-        if ($value instanceof AbstractBaseApproval) {
-            $approvers = $value->getApproversCount();
-            $minNumberOfApprovers = $value->getTemplate()->getApproverCriteria()->getRequiredNumberOfApprovers();
-        } elseif ($value instanceof ApprovalTemplate) {
-            // If agent can choose approvers then we don't need to validate until approval is created from template
-            if ($value->getApproverCriteria()->canChooseApprovers()) {
-                return;
-            }
-            $approvers = count($value->getApproverCriteria()->getAgents());
-            $approvers += count($value->getApproverCriteria()->getUsers());
-            $minNumberOfApprovers = $value->getApproverCriteria()->getRequiredNumberOfApprovers();
-        } else {
-            return;
-        }
-
-        $thresholds = array_filter([
-            $value->getRequiredApprovals(),
-            $value->getRequiredRejections(),
-        ]);
-
-        if (empty($thresholds)) {
-            return;
-        }
-
-        $minNumberOfApprovers = $minNumberOfApprovers ?: max($thresholds);
-
-        if ($approvers < $minNumberOfApprovers) {
-            $this
-                ->context
-                ->buildViolation($constraint->message)
-                ->addViolation()
-            ;
-        }
+        // fixme
+//        $minNumberOfApprovers = null;
+//
+//        if ($value instanceof AbstractBaseApproval) {
+//            $approvers = $value->getApproversCount();
+//            $minNumberOfApprovers = $value->getTemplate()->getApproverSelectionCriteria()->getMinNumberOfApprovers();
+//        } elseif ($value instanceof ApprovalTemplate) {
+//            // If agent can choose approvers then we don't need to validate until approval is created from template
+//            if ($value->getApproverSelectionCriteria()->canChooseApprovers()) {
+//                return;
+//            }
+//            $approvers = count($value->getApproverSelectionCriteria()->getAgents());
+//            $approvers += count($value->getApproverSelectionCriteria()->getUsers());
+//            $minNumberOfApprovers = $value->getApproverSelectionCriteria()->getMinNumberOfApprovers();
+//        } else {
+//            return;
+//        }
+//
+//        $thresholds = array_filter([
+//            $value->getRequiredApprovals(),
+//            $value->getRequiredRejections(),
+//        ]);
+//
+//        if (empty($thresholds)) {
+//            return;
+//        }
+//
+//        $minNumberOfApprovers = $minNumberOfApprovers ?: max($thresholds);
+//
+//        if ($approvers < $minNumberOfApprovers) {
+//            $this
+//                ->context
+//                ->buildViolation($constraint->message)
+//                ->addViolation()
+//            ;
+//        }
     }
 }
