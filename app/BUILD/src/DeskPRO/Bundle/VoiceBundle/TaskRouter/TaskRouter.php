@@ -97,7 +97,13 @@ class TaskRouter
 
     public function evaluate()
     {
-        $this->lock->acquire(true);
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info('[TaskRouter] Failed to aquire lock: '.$e->getMessage());
+
+            return;
+        }
         $this->logger->info('[TaskRouter] Evaluate task router');
 
         try {
