@@ -91,8 +91,9 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
       this.$scope.values = {};
       this.$scope.errors = {
-        favicon: false,
-        logo:    false
+        favicon:      false,
+        logo:         false,
+        splash_image: false
       };
 
       this.values = angular.copy(this.$scope.values);
@@ -243,6 +244,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           this.loadAssetFiles(),
           this.loadLogo(),
           this.loadFavicon(),
+          this.loadSplashImage(),
           this.loadTemplateOptions(),
           this.loadThemeSet(),
           this.loadWelcomeBox()
@@ -457,6 +459,9 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     loadFavicon() {
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/favicon`).success(response => this.custom_favicon = response.data != null ? response.data.url : undefined);
     }
+    loadSplashImage() {
+      return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/splash_image`).success(response => this.custom_splash_image = response.data != null ? response.data.url : undefined);
+    }
 
     upload(files) {
       return (() => {
@@ -499,6 +504,16 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           },
           response => this.$scope.errors.favicon = response.data.fields.file.errors[0].message);
     }
+    uploadSplashImage(files) {
+      return this.$upload
+        .upload({ url: `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/splash_image`, file: files[0] })
+        .then(
+          (response) => {
+            this.$scope.errors.splash_image = false;
+            return this.custom_splash_image = response.data.data.url;
+          },
+          response => this.$scope.errors.splash_image = response.data.fields.file.errors[0].message);
+    }
 
     copyUrl(file) {
       window.prompt('Copy this:', file.url);
@@ -528,6 +543,32 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     deleteFavicon() {
       return this.$http.delete(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/favicon`).success(() => this.custom_favicon = null);
+    }
+
+    deleteSplashImage() {
+      return this.$http.delete(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/splash_image`).success(() => this.custom_splash_image = null);
+    }
+
+    openUnsplashModal() {
+      var event = new CustomEvent('dpLeftDrawer', {detail: {
+          module: 'SplashImage',
+          width: 0,
+          selectImage: this.selectSplashImage.bind(this),
+          style: {
+            zIndex: 22000
+          }
+        }});
+      window.parent.document.dispatchEvent(event);
+    }
+
+    selectSplashImage(image) {
+      this.$http.post(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/unsplash`, image)
+        .then(
+          (response) => {
+            this.$scope.errors.splash_image = false;
+            return this.custom_splash_image = response.data.data.url;
+          },
+          response => this.$scope.errors.splash_image = response.data.fields.file.errors[0].message);
     }
 
     openAdvancedTab(tab) { return this.advanced_tab = tab; }

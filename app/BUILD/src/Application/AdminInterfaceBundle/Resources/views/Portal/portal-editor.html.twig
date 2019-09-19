@@ -103,6 +103,36 @@
                 </div>
 
 
+                <div ng-show="Portal.selected_theme == 'helpcenter'">
+                    <!-- Splash Image -->
+                    <div class="panel-title">
+                        <a ng-click="Portal.togglePanel('splash_image')">
+                            Splash Image
+                            <i class="fas fa-caret-right" ng-show="!Portal.isOpen('splash_image')"></i>
+                            <i class="fas fa-caret-down" ng-show="Portal.isOpen('splash_image')"></i>
+                        </a>
+                    </div>
+                    <div class="alert alert-danger inner-group" ng-show="errors.splash_image">
+                        <span ng-if="errors.splash_image">{{ ng_var('errors.favicon') }}</span>
+                    </div>
+                    <div ng-show="Portal.isOpen('splash_image')">
+                        <div class="logo-box logo-size-desktop">
+                            <div ng-hide="Portal.custom_splash_image">
+                                <input type="file" ng-file-select="Portal.uploadSplashImage($files)" />
+
+                                <button ng-click="Portal.openUnsplashModal()" >Browse Free Images</button>
+                            </div>
+                            <div class="bucket" ng-if="Portal.custom_splash_image">
+                                <div class="splash-image">
+                                    <img ng-src="{{ '{{ Portal.custom_splash_image }}' }}">
+                                </div>
+                                <a href ng-click="Portal.deleteSplashImage()">Delete splash image</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <!-- Vars -->
 
                 <div ng-repeat="(group, variables) in Portal.groups">

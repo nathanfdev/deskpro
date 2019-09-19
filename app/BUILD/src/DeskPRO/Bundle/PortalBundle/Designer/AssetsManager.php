@@ -29,6 +29,8 @@ class AssetsManager
 
     const CUSTOM_FAVICON_TAG = 'custom_favicon';
 
+    const CUSTOM_SPLASH_IMAGE_TAG = 'custom_splash_image';
+
     const CUSTOM_FAVICON_FALLBACK = 'custom_favicon_fallback';
 
     /**

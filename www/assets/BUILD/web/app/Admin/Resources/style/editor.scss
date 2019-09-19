@@ -278,6 +278,13 @@ $transition: all 0.15s ease;
       }
     }
 
+    .splash-image {
+      margin-top: 20px;
+      max-width: 300px;
+      max-height: 200px;
+      overflow: auto;
+    }
+
     // Top title with current theme name
     .current-theme {
       position: relative;
