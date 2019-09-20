@@ -1572,6 +1572,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         $timeout(function() {
           console.log('[TicketList] refreshCursor :: done render (%dms)', (new Date()).getTime() - time2.getTime());
           $scope.refreshCursorLoading = false;
+          DeskPRO_Window.sections.tickets_section.getUpdatedSlaCounts();
         }, 10);
       },
       error:    function() {
