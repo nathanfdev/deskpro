@@ -40,6 +40,7 @@
                                                            save-target="ctrl.form.actions"
                                                            options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserNewEmail'], fixOn: []}"
                                                            option-types="actionOptionTypes"
+                                                           allow-re-arrange="1"
                                                 >
                                             <add-btn-label>Action</add-btn-label>
                                         </dp-option-builder>
@@ -48,6 +49,7 @@
                                                            save-target="ctrl.form.actions"
                                                            options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserEmail'], fixOn: []}"
                                                            option-types="actionOptionTypes"
+                                                           allow-re-arrange="1"
                                                 >
                                             <add-btn-label>Action</add-btn-label>
                                         </dp-option-builder>
@@ -60,13 +62,17 @@
                                     {% if app.hasBeta('email_templates') %}
                                         <dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
                                                            options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserNewEmail'], fixOn: []}"
-                                                           option-types="actionOptionTypes">
+                                                           option-types="actionOptionTypes"
+                                                           allow-re-arrange="1"
+                                        >
                                             <add-btn-label>Action</add-btn-label>
                                         </dp-option-builder>
                                      {% else %}
                                         <dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
                                                            options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserEmail'], fixOn: []}"
-                                                           option-types="actionOptionTypes">
+                                                           option-types="actionOptionTypes"
+                                                           allow-re-arrange="1"
+                                        >
                                             <add-btn-label>Action</add-btn-label>
                                         </dp-option-builder>
                                     {% endif %}
@@ -76,7 +82,9 @@
                                 {% else %}
                                     <dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
                                                        options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetStatus'], fixOn: []}"
-                                                       option-types="actionOptionTypes">
+                                                       option-types="actionOptionTypes"
+                                                       allow-re-arrange="1"
+                                    >
                                         <add-btn-label>Action</add-btn-label>
                                     </dp-option-builder>
                                     <span class="help-block">
