@@ -76,9 +76,12 @@ class ImportCommand extends AbstractImporterCommand
         $sourceScript = $sourceResolver->getSourceScript($filename, $config);
 
         try {
+            $importedSteps   = $job ? $job->getDataKey('imported_steps', []) : [];
+            $importedOffsets = $job ? $job->getDataKey('import_offsets', []) : [];
+
             $sourceScript->runImport(
-                $job->getDataKey('imported_steps', []),
-                $job->getDataKey('import_offsets', [])
+                $importedSteps,
+                $importedOffsets
             );
             $container->get('dp.importer.source.helper.progress')->finishImport();
         } catch (\Exception $exception) {
