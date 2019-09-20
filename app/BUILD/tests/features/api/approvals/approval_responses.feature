@@ -18,13 +18,18 @@ Feature: /approval_responses endpoint
       | #      | name           | description    | isDeleted |
       | atype1 | Approval Type 1 | Description 1 | false     |
 
-    And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |
+    And the following ApproverSelectionCriteria objects exist:
+      | #      | canSelectTicketUser | canSelectOrganizationManagers | canSelectFromAllAgents | selectFromPeople | minNumberOfApprovers |
+      | ac1    | 1                   | 1                             | 1                      | [1,2]            | 1                    |
+      | ac2    | 1                   | 1                             | 1                      | []               | 1                    |
+
+    And the following SelectedApprovers objects exist:
+      | #      | hasTicketUser | hasOrganizationManagers | hasAllAgents | people |
+      | sa1    | 1             | 0                       | 0            | [1]    |
 
     And only the following ApprovalTemplate records exist:
-      | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
-      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 4                  | {ac1}            | 1                       |
+      | #   | name    | description      | type     | requiredApprovals | requiredRejections | canApproversViewSubject | canChooseApprovers | selectedApprovers | approverSelectionCriteria |
+      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 4                  | 1                       | 0                  | {sa1}             |                           |
 
     And only the following TicketApproval records exist:
       | #   | ticket | template | approvers         | name               | type     | description | status    | createdBy |

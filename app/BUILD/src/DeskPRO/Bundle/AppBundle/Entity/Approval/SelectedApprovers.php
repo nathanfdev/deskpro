@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
+use Doctrine\Common\Collections\Collection;
 use Orb\Types\JsonObjectSerializable;
 
 /**
@@ -47,7 +48,7 @@ class SelectedApprovers implements JsonObjectSerializable
      */
     public function setHasTicketUser($hasTicketUser)
     {
-        $this->hasTicketUser = $hasTicketUser;
+        $this->hasTicketUser = (bool) $hasTicketUser;
 
         return $this;
     }
@@ -66,7 +67,7 @@ class SelectedApprovers implements JsonObjectSerializable
      */
     public function setHasOrganizationManagers($hasOrganizationManagers)
     {
-        $this->hasOrganizationManagers = $hasOrganizationManagers;
+        $this->hasOrganizationManagers = (bool) $hasOrganizationManagers;
 
         return $this;
     }
@@ -85,7 +86,7 @@ class SelectedApprovers implements JsonObjectSerializable
      */
     public function setHasAllAgents($hasAllAgents)
     {
-        $this->hasAllAgents = $hasAllAgents;
+        $this->hasAllAgents = (bool) $hasAllAgents;
 
         return $this;
     }
@@ -99,12 +100,15 @@ class SelectedApprovers implements JsonObjectSerializable
     }
 
     /**
-     * @param int[] $people
+     * @param int[]|Collection $people
      * @return SelectedApprovers
      */
-    public function setPeople(array $people)
+    public function setPeople($people)
     {
-        $this->people = $people;
+        $this->people = $people instanceof Collection
+            ? $people->toArray()
+            : $people
+        ;
 
         return $this;
     }

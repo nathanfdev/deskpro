@@ -20,19 +20,22 @@ Feature: /ticket_approvals endpoint
       | atype1 | Approval Type 1 | Description 1 | false     |
       | atype2 | Approval Type 2 | Description 2 | true      |
 
-    And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | canChooseApprovers | requiredNumberOfApprovers |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          | 1                  |                           |
-      | ac2    | [1,2,3]   | 0         | []    | 0        | 0                    | []    | []          | 0                  |                           |
-      | ac3    | []        | 1         | []    | 0        | 0                    | []    | []          | 1                  |                           |
-      | ac4    | []        | 1         | []    | 0        | 0                    | []    | []          | 1                  | 3                         |
+    And the following ApproverSelectionCriteria objects exist:
+      | #      | canSelectTicketUser | canSelectOrganizationManagers | canSelectFromAllAgents | selectFromPeople | minNumberOfApprovers |
+      | ac1    | 1                   | 1                             | 1                      | [1,2]            | 2                    |
+      | ac2    | 1                   | 1                             | 1                      | []               | 1                    |
+
+    And the following SelectedApprovers objects exist:
+      | #      | hasTicketUser | hasOrganizationManagers | hasAllAgents | people  |
+      | sa1    | 1             | 0                       | 0            | [1]     |
+      | sa2    | 1             | 0                       | 0            | [1,2,3] |
 
     And only the following ApprovalTemplate records exist:
-      | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
-      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 1                  | {ac1}            | 1                       |
-      | at2 | Templ 2 | Approval Templ 2 | {atype2} | 1                 | 1                  | {ac2}            | 0                       |
-      | at3 | Templ 3 | Approval Templ 3 | {atype2} | 2                 | 0                  | {ac3}            | 1                       |
-      | at4 | Templ 3 | Approval Templ 3 | {atype2} | 1                 | 0                  | {ac4}            | 1                       |
+      | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverSelectionCriteria | selectedApprovers |canApproversViewSubject | canChooseApprovers |
+      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 3                 | 1                  | {ac1}                     |                   | 1                      | 1                  |
+      | at2 | Templ 2 | Approval Templ 2 | {atype2} | 1                 | 1                  | {ac2}                     |                   | 0                      | 1                  |
+      | at3 | Templ 3 | Approval Templ 3 | {atype2} | 2                 | 0                  |                           | {sa1}             | 0                      | 0                  |
+      | at4 | Templ 3 | Approval Templ 3 | {atype2} | 1                 | 0                  |                           | {sa2}             | 0                      | 0                  |
 
     And only the following TicketApproval records exist:
       | #   | ticket | template | approvers         | name               | type     | description | status    | createdBy |
@@ -63,28 +66,13 @@ Feature: /ticket_approvals endpoint
             """
 {
   "description": "Approval description 01",
-  "template": ~at3~,
+  "template": ~at1~,
   "approvers": [~user~]
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
-
-  Scenario: I POST a ticket approval as admin and don't have enough approvers to meet required number of approvers criteria
-    Given I'm authenticated as "agent"
-    When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals" with body:
-            """
-{
-  "description": "Approval description 01",
-  "template": ~at4~,
-  "approvers": [~user~]
-}
-            """
-    Then the response status code should be 400
-    Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
-
 
   Scenario: I POST a valid ticket approval as admin
     Given I'm authenticated as "agent"
@@ -93,7 +81,7 @@ Feature: /ticket_approvals endpoint
 {
   "description": "Approval description 01",
   "template": ~at1~,
-  "approvers": [1]
+  "approvers": [1,2,3]
 }
             """
     Then the response status code should be 201
@@ -103,11 +91,11 @@ Feature: /ticket_approvals endpoint
     And the JSON node "data.name" should be equal to "Templ 1"
     And the JSON node "data.description" should be equal to "Approval description 01"
     And the JSON node "data.type" should be equal to "{atype1}"
-    And the JSON node "data.required_approvals" should be equal to "1"
+    And the JSON node "data.required_approvals" should be equal to "3"
     And the JSON node "data.required_rejections" should be equal to "1"
     And the JSON node "data.can_approvers_view_subject" should be equal to true
     And the JSON node "data.status" should be equal to "pending"
-    And the JSON node "data.approvers" should have "1" element
+    And the JSON node "data.approvers" should have "3" element
     And the JSON node "data.last_approved_response_at" should be null
     And the JSON node "data.last_rejected_response_at" should be null
     And the JSON node "data.completed_at" should be null

@@ -2,13 +2,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Approval;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\SelectedApprovers;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\EntityIdType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SelectedApproversType
@@ -32,11 +34,14 @@ class SelectedApproversType extends AbstractType
             ->add('has_all_agents', ApiBooleanType::class, [
                 'required' => false,
             ])
-            ->add('people', CollectionType::class, [
+            ->add('people', EntityIdType::class, [
                 'required' => false,
-                'entry_type' => IntegerType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
+                'class' => Person::class,
+                'multiple' => true,
+                'keep_as_ids' => true,
+                'constraints' => [
+                    new Assert\Count(['min' => 1, 'groups' => ['mandate_people']]),
+                ],
             ])
         ;
     }
@@ -50,6 +55,17 @@ class SelectedApproversType extends AbstractType
             'data_class' => SelectedApprovers::class,
             'csrf_protection' => false,
             'csrf_double_submit_protection' => false,
+            'validation_groups' => function (FormInterface $form) {
+                $hasTicketUser = $form->get('has_ticket_user')->getData();
+                $hasOrganizationManagers = $form->get('has_organization_managers')->getData();
+                $hasAllAgents = $form->get('has_all_agents')->getData();
+
+                if ($hasTicketUser || $hasOrganizationManagers || $hasAllAgents) {
+                    return ['Default'];
+                }
+
+                return ['Default', 'mandate_people'];
+            },
         ]);
     }
 

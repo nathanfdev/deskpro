@@ -190,12 +190,13 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *
      * @param EntityManagerInterface $em
      * @param ApprovalTemplate $template
+     * @param AbstractBaseApproval|null $prototype
      * @return AbstractBaseApproval
-     * @throws \Exception
+     * @throws \Doctrine\ORM\ORMException
      */
-    public static function createFromTemplate(EntityManagerInterface $em, ApprovalTemplate $template)
+    public static function createFromTemplate(EntityManagerInterface $em, ApprovalTemplate $template, self $prototype = null)
     {
-        $approval = new static();
+        $approval = $prototype ?: new static();
 
         $approval->setType($template->getType());
         $approval->setName($template->getName());

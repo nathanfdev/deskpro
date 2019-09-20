@@ -9,8 +9,6 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApprovalThresholds;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -53,17 +51,10 @@ class BaseApprovalType extends AbstractType
                     new Assert\NotBlank(),
                 ],
             ])
-            ->add('approvers', CollectionType::class, [
+            ->add('approvers', EntityType::class, [
                 'required' => true,
-                'entry_type' => EntityType::class,
-                'entry_options' => [
-                    'class' => Person::class,
-                    'constraints' => [
-                        new Assert\NotBlank(),
-                    ],
-                ],
-                'allow_add' => true,
-                'allow_delete' => false,
+                'class' => Person::class,
+                'multiple' => true,
                 'by_reference' => false,
                 'constraints' => [
                     new Assert\Count(['min' => 1, 'max' => AbstractBaseApproval::APPROVERS_MAX, 'groups' => ['can_choose_approvers']]),
@@ -105,7 +96,7 @@ class BaseApprovalType extends AbstractType
                     return ['Default'];
                 }
 
-                return $template->getApproverSelectionCriteria()->canChooseApprovers()
+                return $template->canChooseApprovers()
                     ? ['can_choose_approvers', 'Default']
                     : ['cannot_choose_approvers', 'Default']
                 ;

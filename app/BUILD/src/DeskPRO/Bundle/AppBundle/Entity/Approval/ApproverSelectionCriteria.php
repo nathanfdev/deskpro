@@ -2,11 +2,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
+use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Types\JsonObjectSerializable;
 
 /**
- * Class ApproverCriteria
+ * Class ApproverSelectionCriteria
  *
  * Forms the basis of which users are available to select in the agent UI
  *
@@ -57,7 +58,7 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
     /**
      * @return bool
      */
-    public function isCanSelectTicketUser()
+    public function canSelectTicketUser()
     {
         return $this->canSelectTicketUser;
     }
@@ -68,7 +69,7 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
      */
     public function setCanSelectTicketUser($canSelectTicketUser)
     {
-        $this->canSelectTicketUser = $canSelectTicketUser;
+        $this->canSelectTicketUser = (bool) $canSelectTicketUser;
 
         return $this;
     }
@@ -76,7 +77,7 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
     /**
      * @return bool
      */
-    public function isCanSelectOrganizationManagers()
+    public function canSelectOrganizationManagers()
     {
         return $this->canSelectOrganizationManagers;
     }
@@ -87,7 +88,7 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
      */
     public function setCanSelectOrganizationManagers($canSelectOrganizationManagers)
     {
-        $this->canSelectOrganizationManagers = $canSelectOrganizationManagers;
+        $this->canSelectOrganizationManagers = (bool) $canSelectOrganizationManagers;
 
         return $this;
     }
@@ -95,7 +96,7 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
     /**
      * @return bool
      */
-    public function isCanSelectFromAllAgents()
+    public function canSelectFromAllAgents()
     {
         return $this->canSelectFromAllAgents;
     }
@@ -106,7 +107,7 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
      */
     public function setCanSelectFromAllAgents($canSelectFromAllAgents)
     {
-        $this->canSelectFromAllAgents = $canSelectFromAllAgents;
+        $this->canSelectFromAllAgents = (bool) $canSelectFromAllAgents;
 
         return $this;
     }
@@ -120,12 +121,15 @@ class ApproverSelectionCriteria implements JsonObjectSerializable
     }
 
     /**
-     * @param int[] $selectFromPeople
+     * @param int[]|Collection $selectFromPeople
      * @return ApproverSelectionCriteria
      */
-    public function setSelectFromPeople(array $selectFromPeople)
+    public function setSelectFromPeople($selectFromPeople)
     {
-        $this->selectFromPeople = $selectFromPeople;
+        $this->selectFromPeople = $selectFromPeople instanceof Collection
+            ? $selectFromPeople->toArray()
+            : $selectFromPeople
+        ;
 
         return $this;
     }

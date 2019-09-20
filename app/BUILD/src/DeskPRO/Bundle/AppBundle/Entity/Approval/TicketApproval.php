@@ -39,6 +39,21 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
     protected $ticket;
 
     /**
+     * @param Ticket $ticket
+     * @param EntityManagerInterface $em
+     * @param ApprovalTemplate $template
+     * @return AbstractBaseApproval
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function createTicketApprovalFromTemplate(
+        Ticket $ticket,
+        EntityManagerInterface $em,
+        ApprovalTemplate $template
+    ) {
+        return self::createFromTemplate($em, $template, (new self)->setTicket($ticket));
+    }
+
+    /**
      * {@inheritDoc}
      */
     protected function getExtraApproversWhenCreatingFromTemplate(
@@ -46,8 +61,10 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
         SelectedApprovers $selectedApprovers
     ) {
         if ($selectedApprovers->hasTicketUser()) {
-            $this->addApprover($this->getTicket()->getPerson());
+            return [$this->getTicket()->getPerson()];
         }
+
+        return [];
     }
 
     /**

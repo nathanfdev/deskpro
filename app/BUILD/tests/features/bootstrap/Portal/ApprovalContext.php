@@ -90,13 +90,13 @@ class ApprovalContext extends BasePortalContext
         $agent = $this->getWho('agent');
 
         foreach ($table->getHash() as $row) {
-            $approval = TicketApproval::createFromTemplate(
+            $approval = TicketApproval::createTicketApprovalFromTemplate(
+                self::$tickets[$row['ticket']],
                 $this->em(),
                 self::$approvalTemplates[$row['template']]
             );
 
             $approval
-                ->setTicket(self::$tickets[$row['ticket']])
                 ->setCreatedBy($agent)
                 ->setDescription($row['description'])
             ;

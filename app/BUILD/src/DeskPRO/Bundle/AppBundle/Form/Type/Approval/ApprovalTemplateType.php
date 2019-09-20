@@ -107,16 +107,20 @@ class ApprovalTemplateType extends AbstractType
                 $form
                     ->add('approver_selection_criteria', ApproverSelectionCriteriaType::class, [
                         'by_reference' => false,
-                        // todo: add constraint
                     ])
                 ;
+                if ($form->has('selected_approvers')) {
+                    $form->remove('selected_approvers');
+                }
             } else {
                 $form
                     ->add('selected_approvers', SelectedApproversType::class, [
                         'by_reference' => false,
-                        // todo: add constraint
                     ])
                 ;
+                if ($form->has('approver_selection_criteria')) {
+                    $form->remove('approver_selection_criteria');
+                }
             }
         };
 
@@ -139,8 +143,6 @@ class ApprovalTemplateType extends AbstractType
             'csrf_protection' => false,
             'csrf_double_submit_protection' => false,
             'validation_groups' => function (FormInterface $form) {
-
-                // fixme
                 if (!$form->get('required_approvals')->getData() && !$form->get('required_rejections')->getData()) {
                     return ['required_approvals_disallow_zero', 'required_rejections_disallow_zero', 'Default'];
                 }

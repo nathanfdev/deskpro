@@ -24,10 +24,12 @@ class ApprovalTemplate extends AbstractApproval
     /**
      * @var bool if TRUE then approverSelectionCriteria is used, else selectedApprovers is used
      *
+     * @ORM\Column(name="can_choose_approvers", type="boolean")
+     *
      * @JMS\Expose
      * @JMS\Type("boolean")
      */
-    protected $canChooseApprovers = false;
+    protected $canChooseApprovers;
 
     /**
      * @var SelectedApprovers|null
@@ -45,7 +47,7 @@ class ApprovalTemplate extends AbstractApproval
      * @ORM\Column(name="approver_selection_criteria", type="dp_json_obj", nullable=true)
      *
      * @JMS\Expose
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria")
      */
     protected $approverSelectionCriteria;
 
@@ -82,7 +84,7 @@ class ApprovalTemplate extends AbstractApproval
      */
     public function setCanChooseApprovers($canChooseApprovers)
     {
-        $this->setModelField('canChooseApprovers', $canChooseApprovers);
+        $this->setModelField('canChooseApprovers', (bool) $canChooseApprovers);
 
         return $this;
     }
