@@ -126,6 +126,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('brand_setting', [$this, 'getBrandSetting'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('brand', [$this, 'getBrand']),
             new \Twig_SimpleFunction('avatar_url', [$this, 'getAvatarUrl']),
+            new \Twig_SimpleFunction('avatar_default_url', [$this, 'getAvatarDefaultUrl']),
             new \Twig_SimpleFunction('render_message', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_news', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('get_secure_content_cats', [$this, 'getSecureCats']),
@@ -530,6 +531,19 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getAvatarUrl($obj = null, $size = 80)
     {
         return $this->getAvatarResolver()->getAvatar($obj, $size);
+    }
+
+    /**
+     * Get URL to a profile picture/avatar.
+     *
+     * @param mixed $obj
+     * @param int   $size
+     *
+     * @return string the url
+     */
+    public function getAvatarDefaultUrl($obj = null, $size = 80)
+    {
+        return $this->getAvatarResolver()->getDefaultPersonAvatar($size);
     }
 
     /**

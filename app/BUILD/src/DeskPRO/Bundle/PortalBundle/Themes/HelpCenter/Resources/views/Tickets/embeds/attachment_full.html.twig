@@ -1,0 +1,10 @@
+{% if attachment.blob %}
+	<a href="{{ attachment.blob.downloadUrl }}" class="dp-po-ticket-attachments-link">
+		{{ attachment.blob.filename }} ({{ attachment.blob.readable_filesize }})
+		{% if attachment.blob.is_image %}
+			<img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+		{% else %}
+			{{ file_icon(attachment.blob) }}
+		{% endif %}
+	</a>
+{% endif %}
