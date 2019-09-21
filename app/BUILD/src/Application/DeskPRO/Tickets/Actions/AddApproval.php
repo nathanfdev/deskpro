@@ -46,13 +46,13 @@ class AddApproval extends AbstractContainerAwareAction implements ActionInterfac
             return;
         }
 
-        $this->approval = TicketApproval::createFromTemplate(
+        $this->approval = TicketApproval::createTicketApprovalFromTemplate(
+            $ticket,
             $this->getContainer()->getEm(),
             $template
         );
 
         $this->approval->setDescription($description);
-        $this->approval->setTicket($ticket);
 
         $manager = $this->getContainer()->get('approval.approval_manager');
 

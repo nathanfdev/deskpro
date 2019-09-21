@@ -5,7 +5,7 @@ namespace DpBehat\Portal;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -59,14 +59,14 @@ class ApprovalContext extends BasePortalContext
         $user = $this->getWho('user');
 
         foreach ($table->getHash() as $row) {
-            $criteria = (new ApproverCriteria())
+            $criteria = (new ApproverSelectionCriteria())
                 ->setCanChooseApprovers(false)
                 ->setAgents([$agent->getId()])
                 ->setUsers([$user->getId()])
             ;
 
             $template = (new ApprovalTemplate())
-                ->setApproverCriteria($criteria)
+                ->setApproverSelectionCriteria($criteria)
                 ->setType(self::$approvalTypes[$row['type']])
                 ->setName($row['name'])
                 ->setDescription($row['description'])
@@ -90,13 +90,13 @@ class ApprovalContext extends BasePortalContext
         $agent = $this->getWho('agent');
 
         foreach ($table->getHash() as $row) {
-            $approval = TicketApproval::createFromTemplate(
+            $approval = TicketApproval::createTicketApprovalFromTemplate(
+                self::$tickets[$row['ticket']],
                 $this->em(),
                 self::$approvalTemplates[$row['template']]
             );
 
             $approval
-                ->setTicket(self::$tickets[$row['ticket']])
                 ->setCreatedBy($agent)
                 ->setDescription($row['description'])
             ;

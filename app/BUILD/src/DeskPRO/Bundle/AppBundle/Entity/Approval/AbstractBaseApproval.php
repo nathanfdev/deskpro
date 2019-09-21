@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractApproval;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
@@ -50,7 +51,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     /**
      * Maximum number of approvers assigned to an approval
      */
-    const APPROVERS_MAX = 100;
+    const APPROVERS_MAX = 1000;
 
     /**
      * @var string
@@ -189,12 +190,13 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *
      * @param EntityManagerInterface $em
      * @param ApprovalTemplate $template
+     * @param AbstractBaseApproval|null $prototype
      * @return AbstractBaseApproval
-     * @throws \Exception
+     * @throws \Doctrine\ORM\ORMException
      */
-    public static function createFromTemplate(EntityManagerInterface $em, ApprovalTemplate $template)
+    public static function createFromTemplate(EntityManagerInterface $em, ApprovalTemplate $template, self $prototype = null)
     {
-        $approval = new static();
+        $approval = $prototype ?: new static();
 
         $approval->setType($template->getType());
         $approval->setName($template->getName());
@@ -208,20 +210,55 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $approval->setActionsOnApproved($template->getActionsOnApproved());
         $approval->setActionsOnRejected($template->getActionsOnRejected());
 
-        $approverCriteria = $template->getApproverCriteria();
+        // If we cannot choose approvers in agent UI, then the users must come from selected approvers object
+        if (!$template->canChooseApprovers()) {
+            $selectedApprovers = $template->getSelectedApprovers();
 
-        if (!$approverCriteria->canChooseApprovers()) {
-            foreach ($approverCriteria->getAgents() as $agentId) {
-                $approval->addApprover($em->getReference(Person::class, $agentId));
+            /** @var PersonRepository $personRepo */
+            $personRepo = $em->getRepository(Person::class);
+
+            // Get approvers from the implementation of this abstract approval
+            foreach ($approval->getExtraApproversWhenCreatingFromTemplate($em, $selectedApprovers) as $extraApprover) {
+                $approval->addApprover($extraApprover);
             }
-            foreach ($approverCriteria->getUsers() as $userId) {
-                $approval->addApprover($em->getReference(Person::class, $userId));
+
+            // Add an organization managers
+            if ($selectedApprovers->hasOrganizationManagers()) {
+                foreach ($personRepo->getOrganizationManagers() as $orgManager) {
+                    $approval->addApprover($orgManager);
+                }
+            }
+
+            // Add all agents
+            if ($selectedApprovers->hasAllAgents()) {
+                foreach ($personRepo->getAgents() as $agent) {
+                    $approval->addApprover($agent);
+                }
+            }
+
+            // Add any specific people (agents or users)
+            foreach ($selectedApprovers->getPeople() as $personId) {
+                $approval->addApprover($em->getReference(Person::class, $personId));
             }
         }
 
         $approval->setTemplate($template);
 
         return $approval;
+    }
+
+    /**
+     * Use the sub class to determine extra approvers from selected approvers object
+     *
+     * @param EntityManagerInterface $em
+     * @param SelectedApprovers $selectedApprovers
+     * @return Person[]
+     */
+    protected function getExtraApproversWhenCreatingFromTemplate(
+        EntityManagerInterface $em,
+        SelectedApprovers $selectedApprovers
+    ) {
+        return [];
     }
 
     /**

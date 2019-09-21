@@ -29,9 +29,9 @@ Feature: Ticket approval triggers
   "required_approvals": 1,
   "required_rejections": 1,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "all_agents": true
+  "can_choose_approvers": true,
+  "approver_selection_criteria": {
+    "can_select_from_all_agents": true
   },
   "actions_on_approved": [{
 			"type": "SetSubject",

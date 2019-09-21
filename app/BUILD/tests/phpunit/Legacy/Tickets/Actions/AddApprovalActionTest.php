@@ -10,7 +10,7 @@ use DeskPRO\Bundle\AppBundle\Approval\ApprovalManager;
 use DeskPRO\Bundle\AppBundle\Approval\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use DpTest\DeskProTestCase;
@@ -88,7 +88,7 @@ class AddApprovalActionTest extends DeskProTestCase
         $em = m::mock(EntityManagerInterface::class)->shouldIgnoreMissing();
         $repo = m::mock(EntityRepository::class)->shouldIgnoreMissing();
         $template = m::mock(ApprovalTemplate::class)->shouldIgnoreMissing();
-        $approverCriteria = m::mock(ApproverCriteria::class)->shouldIgnoreMissing();
+        $approverCriteria = m::mock(ApproverSelectionCriteria::class)->shouldIgnoreMissing();
 
         $approverCriteria->shouldReceive('getAgents')->withNoArgs()->andReturn([]);
         $approverCriteria->shouldReceive('getUsers')->withNoArgs()->andReturn([]);

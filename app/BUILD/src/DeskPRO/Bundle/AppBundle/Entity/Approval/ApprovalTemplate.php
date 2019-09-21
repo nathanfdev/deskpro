@@ -22,30 +22,88 @@ use JMS\Serializer\Annotation as JMS;
 class ApprovalTemplate extends AbstractApproval
 {
     /**
-     * @var ApproverCriteria
+     * @var bool if TRUE then approverSelectionCriteria is used, else selectedApprovers is used
      *
-     * @ORM\Column(name="approval_criteria", type="dp_json_obj", nullable=false)
+     * @ORM\Column(name="can_choose_approvers", type="boolean")
      *
      * @JMS\Expose
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria")
+     * @JMS\Type("boolean")
      */
-    protected $approverCriteria;
+    protected $canChooseApprovers;
 
     /**
-     * @return ApproverCriteria
+     * @var SelectedApprovers|null
+     *
+     * @ORM\Column(name="selected_approvers", type="dp_json_obj", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\SelectedApprovers")
      */
-    public function getApproverCriteria()
+    protected $selectedApprovers;
+
+    /**
+     * @var ApproverSelectionCriteria|null
+     *
+     * @ORM\Column(name="approver_selection_criteria", type="dp_json_obj", nullable=true)
+     *
+     * @JMS\Expose
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria")
+     */
+    protected $approverSelectionCriteria;
+
+    /**
+     * @return ApproverSelectionCriteria
+     */
+    public function getApproverSelectionCriteria()
     {
-        return $this->approverCriteria;
+        return $this->approverSelectionCriteria;
     }
 
     /**
-     * @param ApproverCriteria $approverCriteria
+     * @param ApproverSelectionCriteria $approverSelectionCriteria
      * @return self
      */
-    public function setApproverCriteria(ApproverCriteria $approverCriteria)
+    public function setApproverSelectionCriteria(ApproverSelectionCriteria $approverSelectionCriteria)
     {
-        $this->setModelField('approverCriteria', $approverCriteria);
+        $this->setModelField('approverSelectionCriteria', $approverSelectionCriteria);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canChooseApprovers()
+    {
+        return $this->canChooseApprovers;
+    }
+
+    /**
+     * @param bool $canChooseApprovers
+     * @return ApprovalTemplate
+     */
+    public function setCanChooseApprovers($canChooseApprovers)
+    {
+        $this->setModelField('canChooseApprovers', (bool) $canChooseApprovers);
+
+        return $this;
+    }
+
+    /**
+     * @return SelectedApprovers
+     */
+    public function getSelectedApprovers()
+    {
+        return $this->selectedApprovers;
+    }
+
+    /**
+     * @param SelectedApprovers $selectedApprovers
+     * @return ApprovalTemplate
+     */
+    public function setSelectedApprovers(SelectedApprovers $selectedApprovers)
+    {
+        $this->setModelField('selectedApprovers', $selectedApprovers);
 
         return $this;
     }

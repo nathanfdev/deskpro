@@ -122,6 +122,18 @@ class Person extends AbstractEntityRepository
         return $deleted_agents;
     }
 
+    public function getOrganizationManagers()
+    {
+        $organization_managers = $this->getEntityManager()->createQuery('
+            SELECT p
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.organization_manager = true AND p.is_deleted = false
+            ORDER BY p.first_name ASC, p.last_name ASC
+        ')->execute();
+
+        return $organization_managers;
+    }
+
     /**
      * Gets a count of active agents (suitable for license checks).
      *

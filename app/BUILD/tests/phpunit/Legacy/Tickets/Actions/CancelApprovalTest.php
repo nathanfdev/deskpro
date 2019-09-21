@@ -9,7 +9,7 @@ use DeskPRO\Bundle\AppBundle\Approval\ApprovalManager;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketApprovalRepository;
@@ -118,7 +118,7 @@ class CancelApprovalTest extends DeskProTestCase
         $approvalTemplateRepo = m::mock(EntityRepository::class)->shouldIgnoreMissing();
         $approvalRepo = m::spy(TicketApprovalRepository::class)->shouldIgnoreMissing();
         $template = m::mock(ApprovalTemplate::class)->shouldIgnoreMissing();
-        $approverCriteria = m::mock(ApproverCriteria::class)->shouldIgnoreMissing();
+        $approverCriteria = m::mock(ApproverSelectionCriteria::class)->shouldIgnoreMissing();
 
         $approverCriteria->shouldReceive('getAgents')->withNoArgs()->andReturn([]);
         $approverCriteria->shouldReceive('getUsers')->withNoArgs()->andReturn([]);

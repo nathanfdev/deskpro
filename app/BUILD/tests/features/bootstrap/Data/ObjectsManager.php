@@ -98,7 +98,8 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\SelectedApprovers;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
@@ -420,7 +421,8 @@ class ObjectsManager
             'ApprovalTemplate'                 => [Factory\SimpleFactory::class, 'create', ApprovalTemplate::class],
             'ApprovalResponse'                 => [Factory\SimpleFactory::class, 'create', ApprovalResponse::class],
             'TicketApproval'                   => [Factory\SimpleFactory::class, 'create', TicketApproval::class],
-            'ApproverCriteria'                 => [Factory\SimpleFactory::class, 'create', ApproverCriteria::class],
+            'ApproverSelectionCriteria'        => [Factory\SimpleFactory::class, 'create', ApproverSelectionCriteria::class],
+            'SelectedApprovers'                => [Factory\SimpleFactory::class, 'create', SelectedApprovers::class],
         ];
     }
 

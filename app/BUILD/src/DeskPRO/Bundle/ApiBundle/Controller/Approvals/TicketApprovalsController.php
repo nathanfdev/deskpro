@@ -80,7 +80,9 @@ class TicketApprovalsController extends AbstractApprovalsController
         $this->checkExposed(__METHOD__);
         $this->denyAccessUnlessGranted(TicketsVoter::ADD_APPROVAL, new PermissionGroupContext($ticket));
 
-        $form = $this->createForm(static::$type);
+        $form = $this->createForm(static::$type, null, [
+            'ticket' => $ticket,
+        ]);
 
         $form->submit($request->request->all());
 
@@ -90,7 +92,6 @@ class TicketApprovalsController extends AbstractApprovalsController
 
         /** @var TicketApproval $approval */
         $approval = $form->getData();
-        $approval->setTicket($ticket);
 
         try {
             $this->getApprovalManager()->saveApproval(

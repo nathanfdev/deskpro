@@ -39,6 +39,35 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
     protected $ticket;
 
     /**
+     * @param Ticket $ticket
+     * @param EntityManagerInterface $em
+     * @param ApprovalTemplate $template
+     * @return AbstractBaseApproval
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public static function createTicketApprovalFromTemplate(
+        Ticket $ticket,
+        EntityManagerInterface $em,
+        ApprovalTemplate $template
+    ) {
+        return self::createFromTemplate($em, $template, (new self)->setTicket($ticket));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getExtraApproversWhenCreatingFromTemplate(
+        EntityManagerInterface $em,
+        SelectedApprovers $selectedApprovers
+    ) {
+        if ($selectedApprovers->hasTicketUser()) {
+            return [$this->getTicket()->getPerson()];
+        }
+
+        return [];
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function notifyAssociationChanges(EntityManagerInterface $em)

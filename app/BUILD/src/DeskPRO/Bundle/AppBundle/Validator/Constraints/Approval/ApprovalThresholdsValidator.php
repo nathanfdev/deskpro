@@ -24,16 +24,33 @@ class ApprovalThresholdsValidator extends ConstraintValidator
         $minNumberOfApprovers = null;
 
         if ($value instanceof AbstractBaseApproval) {
-            $approvers = $value->getApproversCount();
-            $minNumberOfApprovers = $value->getTemplate()->getApproverCriteria()->getRequiredNumberOfApprovers();
-        } elseif ($value instanceof ApprovalTemplate) {
-            // If agent can choose approvers then we don't need to validate until approval is created from template
-            if ($value->getApproverCriteria()->canChooseApprovers()) {
+            $template = $value->getTemplate();
+            if (!$template->canChooseApprovers()) {
                 return;
             }
-            $approvers = count($value->getApproverCriteria()->getAgents());
-            $approvers += count($value->getApproverCriteria()->getUsers());
-            $minNumberOfApprovers = $value->getApproverCriteria()->getRequiredNumberOfApprovers();
+
+            $selectionCriteria = $template->getApproverSelectionCriteria();
+
+            $approvers = $value->getApproversCount();
+            $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
+        } elseif ($value instanceof ApprovalTemplate) {
+            if ($value->canChooseApprovers()) {
+                $selectionCriteria = $value->getApproverSelectionCriteria();
+
+                // Don't need to validate until the actual approval is created if approvers are inferred
+                if ($selectionCriteria->canSelectTicketUser() ||
+                    $selectionCriteria->canSelectOrganizationManagers() ||
+                    $selectionCriteria->canSelectFromAllAgents()
+                ) {
+                    return;
+                }
+
+                $approvers = count($selectionCriteria->getSelectFromPeople());
+                $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
+            } else {
+                $selectedApprovers = $value->getSelectedApprovers();
+                $approvers = count($selectedApprovers->getPeople());
+            }
         } else {
             return;
         }

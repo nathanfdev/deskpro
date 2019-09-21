@@ -7,12 +7,13 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApprovalThresholds;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval\ApproverCriteria;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -69,10 +70,10 @@ class ApprovalTemplateType extends AbstractType
                     new Assert\NotNull(),
                 ],
             ])
-            ->add('approver_criteria', ApproverCriteriaType::class, [
-                'by_reference' => false,
+            ->add('can_choose_approvers', ApiBooleanType::class, [
+                'required' => true,
                 'constraints' => [
-                    new ApproverCriteria(),
+                    new Assert\NotNull(),
                 ],
             ])
             ->add('actions_on_create', TriggerActionsFormType::class, [
@@ -100,6 +101,36 @@ class ApprovalTemplateType extends AbstractType
                 'data_key' => null,
             ])
         ;
+
+        $onCanChooseApprovers = function (FormInterface $form, $canChooseApprovers) {
+            if ($canChooseApprovers) {
+                $form
+                    ->add('approver_selection_criteria', ApproverSelectionCriteriaType::class, [
+                        'by_reference' => false,
+                    ])
+                ;
+                if ($form->has('selected_approvers')) {
+                    $form->remove('selected_approvers');
+                }
+            } else {
+                $form
+                    ->add('selected_approvers', SelectedApproversType::class, [
+                        'by_reference' => false,
+                    ])
+                ;
+                if ($form->has('approver_selection_criteria')) {
+                    $form->remove('approver_selection_criteria');
+                }
+            }
+        };
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($onCanChooseApprovers) {
+            $onCanChooseApprovers($event->getForm(), $event->getData()->canChooseApprovers());
+        });
+
+        $builder->get('can_choose_approvers')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use ($onCanChooseApprovers) {
+            $onCanChooseApprovers($event->getForm()->getParent(), $event->getForm()->getData());
+        });
     }
 
     /**

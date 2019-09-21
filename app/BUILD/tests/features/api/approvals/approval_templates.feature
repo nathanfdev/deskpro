@@ -14,15 +14,19 @@ Feature: /approval_templates endpoint
       | atype1 | Approval Type 1 | Description 1 | false     |
       | atype2 | Approval Type 2 | Description 2 | true      |
 
-    And the following ApproverCriteria objects exist:
-      | #      | agents    | allAgents | users | allUsers | organizationManagers | teams | departments | requiredNumberOfApprovers |
-      | ac1    | [1]       | 0         | []    | 0        | 0                    | []    | []          |                           |
-      | ac2    | [1,2]     | 0         | []    | 0        | 0                    | []    | []          | 4                         |
+    And the following ApproverSelectionCriteria objects exist:
+      | #      | canSelectTicketUser | canSelectOrganizationManagers | canSelectFromAllAgents | selectFromPeople | minNumberOfApprovers |
+      | ac1    | 1                   | 1                             | 1                      | [1,2]            | 1                    |
+      | ac2    | 1                   | 1                             | 1                      | []               | 1                    |
+
+    And the following SelectedApprovers objects exist:
+      | #      | hasTicketUser | hasOrganizationManagers | hasAllAgents | people |
+      | sa1    | 1             | 0                       | 0            | [1]    |
 
     And only the following ApprovalTemplate records exist:
-      | #   | name             | description      | type     | requiredApprovals | requiredRejections | approverCriteria | canApproversViewSubject |
-      | at1 | Templ 1          | Approval Templ 1 | {atype1} | 1                 | 4                  | {ac1}            | 1                       |
-      | at2 | Templ 2          | Approval Templ 2 | {atype2} | 2                 | 1                  | {ac2}            | 0                       |
+      | #   | name             | description      | type     | requiredApprovals | requiredRejections | canApproversViewSubject | canChooseApprovers | selectedApprovers | approverSelectionCriteria |
+      | at1 | Templ 1          | Approval Templ 1 | {atype1} | 1                 | 4                  | 1                       | 0                  | {sa1}             |                           |
+      | at2 | Templ 2          | Approval Templ 2 | {atype2} | 2                 | 1                  | 0                       | 1                  |                   | {ac1}                     |
 
   Scenario: I try to POST an approval template without authentication
     When I send a POST request to "/api/v2/approval_templates"
@@ -63,36 +67,15 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 3,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "agents": [99999]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [99999]
   }
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "Invalid list of agents"
-
-  Scenario: I POST an approval template as admin with invalid users in criteria
-    Given I'm authenticated as "admin"
-    When I send a POST request to "/api/v2/approval_templates" with body:
-            """
-{
-  "name": "Approval Template 1",
-  "description": "Approval template 1 description",
-  "type": ~atype1~,
-  "required_approvals": 2,
-  "required_rejections": 3,
-  "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "users": [99999]
-  }
-}
-            """
-    Then the response status code should be 400
-    Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "Invalid list of users"
+    And the JSON node "errors.fields.selected_approvers.fields.people.errors[0].message" should be equal to "One or more of the given values is invalid."
 
   Scenario: I POST an approval template as admin with invalid approval and rejection thresholds
     Given I'm authenticated as "admin"
@@ -105,8 +88,9 @@ Feature: /approval_templates endpoint
   "required_approvals": 0,
   "required_rejections": 0,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "agents": [1]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [1]
   }
 }
             """
@@ -126,9 +110,9 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 0,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": false,
-    "agents": [1]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [1]
   }
 }
             """
@@ -147,77 +131,15 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 0,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "agents": [1]
-  }
-}
-            """
-    Then the response status code should be 201
-    Then the response should be in JSON
-
-  Scenario: I POST an approval template as admin with invalid users in criteria
-    Given I'm authenticated as "admin"
-    When I send a POST request to "/api/v2/approval_templates" with body:
-            """
-{
-  "name": "Approval Template 1",
-  "description": "Approval template 1 description",
-  "type": ~atype1~,
-  "required_approvals": 2,
-  "required_rejections": 3,
-  "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "users": [99999]
+  "can_choose_approvers": true,
+  "approver_selection_criteria": {
+    "select_from_people": [1]
   }
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "Invalid list of users"
-
-  Scenario: I POST an approval template as admin with invalid teams in criteria
-    Given I'm authenticated as "admin"
-    When I send a POST request to "/api/v2/approval_templates" with body:
-            """
-{
-  "name": "Approval Template 1",
-  "description": "Approval template 1 description",
-  "type": ~atype1~,
-  "required_approvals": 2,
-  "required_rejections": 3,
-  "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "teams": [99999]
-  }
-}
-            """
-    Then the response status code should be 400
-    Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "Invalid list of teams"
-
-  Scenario: I POST an approval template as admin with invalid departments in criteria
-    Given I'm authenticated as "admin"
-    When I send a POST request to "/api/v2/approval_templates" with body:
-            """
-{
-  "name": "Approval Template 1",
-  "description": "Approval template 1 description",
-  "type": ~atype1~,
-  "required_approvals": 2,
-  "required_rejections": 3,
-  "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": true,
-    "departments": [99999]
-  }
-}
-            """
-    Then the response status code should be 400
-    Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "Invalid list of departments"
+    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
 
   Scenario: I POST a valid approval template as admin
     Given I'm authenticated as "admin"
@@ -230,8 +152,9 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 2,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "agents": [1,2]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [1,2]
   }
 }
             """
@@ -245,7 +168,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.required_approvals" should be equal to "2"
     And the JSON node "data.required_rejections" should be equal to "2"
     And the JSON node "data.can_approvers_view_subject" should be true
-    And the JSON node "data.approver_criteria.agents" should have "2" elements
+    And the JSON node "data.selected_approvers.people" should have "2" elements
     And the JSON node "data.actions_on_create" should exist
     And the JSON node "data.actions_on_partial_approval_response" should exist
     And the JSON node "data.actions_on_partial_rejection_response" should exist
@@ -264,8 +187,9 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 2,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "agents": [1, 2]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [1,2]
   },
   "actions_on_create": [{
     "type": "SendUserEmail",
@@ -351,7 +275,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.required_approvals" should be equal to "2"
     And the JSON node "data.required_rejections" should be equal to "2"
     And the JSON node "data.can_approvers_view_subject" should be true
-    And the JSON node "data.approver_criteria.agents" should have "2" elements
+    And the JSON node "data.selected_approvers.people" should have "2" elements
     And the JSON node "data.actions_on_create" should exist
     And the JSON node "data.actions_on_partial_approval_response" should exist
     And the JSON node "data.actions_on_partial_rejection_response" should exist
@@ -381,16 +305,15 @@ Feature: /approval_templates endpoint
   "required_approvals": 2,
   "required_rejections": 3,
   "can_approvers_view_subject": true,
-  "approver_criteria": {
-    "can_choose_approvers": false,
-    "agents": [1]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [1,2]
   }
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
-
 
   Scenario: I try to GET an approval template without authentication
     When I send a GET request to "/api/v2/approval_templates/{at1}"
@@ -426,7 +349,8 @@ Feature: /approval_templates endpoint
     And the JSON node "data.required_approvals" should be equal to "1"
     And the JSON node "data.required_rejections" should be equal to "4"
     And the JSON node "data.can_approvers_view_subject" should be true
-    And the JSON node "data.approver_criteria.agents[0]" should be equal to "1"
+    And the JSON node "data.selected_approvers.has_ticket_user" should be equal to "1"
+    And the JSON node "data.selected_approvers.people[0]" should be equal to "1"
 
   Scenario: I try to GET a list of approval templates without authentication
     When I send a GET request to "/api/v2/approval_templates"
@@ -455,7 +379,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data[0].required_approvals" should be equal to "1"
     And the JSON node "data[0].required_rejections" should be equal to "4"
     And the JSON node "data[0].can_approvers_view_subject" should be true
-    And the JSON node "data[0].approver_criteria.agents" should have "1" element
+    And the JSON node "data[0].selected_approvers.people" should have "1" element
     And the JSON node "data[1].id" should be equal to "{at2}"
     And the JSON node "data[1].type" should be equal to "{atype2}"
     And the JSON node "data[1].name" should be equal to "Templ 2"
@@ -463,7 +387,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data[1].required_approvals" should be equal to "2"
     And the JSON node "data[1].required_rejections" should be equal to "1"
     And the JSON node "data[1].can_approvers_view_subject" should be false
-    And the JSON node "data[1].approver_criteria.agents" should have "2" elements
+    And the JSON node "data[1].approver_selection_criteria.select_from_people" should have "2" elements
 
   Scenario: I PUT an existing approval template as user
     Given I'm authenticated as "user"
@@ -489,18 +413,19 @@ Feature: /approval_templates endpoint
     And the JSON node "data.required_approvals" should be equal to "1"
     And the JSON node "data.required_rejections" should be equal to "4"
     And the JSON node "data.can_approvers_view_subject" should be true
-    And the JSON node "data.approver_criteria.agents" should have "1" element
+    And the JSON node "data.selected_approvers.people" should have "1" element
     When I send a PUT request to "/api/v2/approval_templates/{at1}" with body:
             """
 {
   "name": "Approval Template Delta",
   "description": "Approval template delta description",
   "type": ~atype2~,
-  "required_approvals": 18,
-  "required_rejections": 20,
+  "required_approvals": 2,
+  "required_rejections": 1,
   "can_approvers_view_subject": false,
-  "approver_criteria": {
-    "agents": [1, 2]
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": [1,2]
   }
 }
             """
@@ -509,10 +434,10 @@ Feature: /approval_templates endpoint
     Then the response status code should be 200
     And the JSON node "data.id" should be equal to "{at1}"
     And the JSON node "data.type" should be equal to "{atype2}"
-    And the JSON node "data.required_approvals" should be equal to "18"
-    And the JSON node "data.required_rejections" should be equal to "20"
+    And the JSON node "data.required_approvals" should be equal to "2"
+    And the JSON node "data.required_rejections" should be equal to "1"
     And the JSON node "data.can_approvers_view_subject" should be false
-    And the JSON node "data.approver_criteria.agents" should have "2" elements
+    And the JSON node "data.selected_approvers.people" should have "2" elements
 
   Scenario: I PUT an existing approval template as admin and expect error when I cannot choose approvers and don't define any
     Given I'm authenticated as "admin"
@@ -523,7 +448,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.required_approvals" should be equal to "1"
     And the JSON node "data.required_rejections" should be equal to "4"
     And the JSON node "data.can_approvers_view_subject" should be true
-    And the JSON node "data.approver_criteria.agents" should have "1" element
+    And the JSON node "data.selected_approvers.people" should have "1" element
     When I send a PUT request to "/api/v2/approval_templates/{at1}" with body:
             """
 {
@@ -533,16 +458,14 @@ Feature: /approval_templates endpoint
   "required_approvals": 18,
   "required_rejections": 20,
   "can_approvers_view_subject": false,
-  "approver_criteria": {
-    "can_choose_approvers": false,
-    "agents": [],
-    "users": []
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "people": []
   }
 }
             """
     Then the response status code should be 400
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
-    And the JSON node "errors.errors[1].message" should be equal to "If an agent cannot choose approvers, then agent and/or user approvers must be supplied"
 
   Scenario: I try to DELETE an approval template without authentication
     When I send a DELETE request to "/api/v2/approval_templates/{at1}"
