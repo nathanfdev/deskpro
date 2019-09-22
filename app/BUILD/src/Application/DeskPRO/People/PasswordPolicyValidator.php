@@ -136,7 +136,7 @@ class PasswordPolicyValidator
             return false;
         }
 
-        $days = floor((time() - $person->date_password_set->getTimestamp()) / 86400);
+        $days = (time() - $person->date_password_set->getTimestamp()) / 86400;
 
         return $days > $policy->max_age && ($person->hasDeskproUsersource('user') || $person->hasDeskproUsersource('agent'));
     }
