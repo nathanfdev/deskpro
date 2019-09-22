@@ -114,7 +114,19 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      */
     public function unserialize($serialized)
     {
-        return unserialize($serialized);
+        if (version_compare(phpversion(), '7.0.0', '>')) {
+            $this->settings = unserialize($serialized, [
+                'allowed_classes' => [
+                    self::class,
+                ],
+            ]);
+
+            if ($this->settings instanceof \__PHP_Incomplete_Class) {
+                $this->settings = [];
+            }
+        } else {
+            $this->settings = unserialize($serialized);
+        }
     }
 
     /**

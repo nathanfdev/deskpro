@@ -4948,7 +4948,20 @@ class Person extends DomainObject implements
      */
     public function unserialize($serialized)
     {
-        $this->id = unserialize($serialized);
+        if (version_compare(phpversion(), '7.0.0', '>=')) {
+            $this->id = unserialize($serialized, [
+                'allowed_classes' => [
+                    self::class,
+                ],
+            ]);
+        } else {
+            $this->id = unserialize($serialized);
+        }
+
+        if (!is_numeric($this->id)) {
+            // handle bad unserialize
+            $this->id = 0;
+        }
     }
 
     /**

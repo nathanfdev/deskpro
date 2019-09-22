@@ -1250,9 +1250,15 @@ class SystemErrorHandler
         if (is_resource($var)) {
             return '[resource]';
         }
-        $str = (string) $var;
-        if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000).'...(clipped)';
+        if (is_scalar($var)) {
+            $str = (string) $var;
+            if (strlen($str) > 1000) {
+                $str = substr($str, 0, 1000).'...(clipped)';
+            }
+        } elseif (is_callable($var)) {
+            return 'callable';
+        } else {
+            return '?';
         }
 
         return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));
