@@ -60,6 +60,13 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     protected $topic_fields;
 
     /**
+     * @var bool
+     *
+     * If TRUE then voting is enabled for this forum
+     */
+    protected $is_voting_enabled = true;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -157,6 +164,25 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         });
     }
 
+    /**
+     * @return bool
+     */
+    public function isIsVotingEnabled()
+    {
+        return $this->is_voting_enabled;
+    }
+
+    /**
+     * @param bool $is_voting_enabled
+     * @return CommunityForum
+     */
+    public function setIsVotingEnabled($is_voting_enabled)
+    {
+        $this->setModelField('is_voting_enabled', (bool) $is_voting_enabled);
+
+        return $this;
+    }
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################
@@ -240,6 +266,16 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'root',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_voting_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_voting_enabled',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
