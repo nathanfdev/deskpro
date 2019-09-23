@@ -167,7 +167,7 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     /**
      * @return bool
      */
-    public function isIsVotingEnabled()
+    public function isVotingEnabled()
     {
         return $this->is_voting_enabled;
     }

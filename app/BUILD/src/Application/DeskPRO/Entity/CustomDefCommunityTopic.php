@@ -149,7 +149,7 @@ class CustomDefCommunityTopic extends CustomDefAbstract
     /**
      * @return bool
      */
-    public function isIsGlobal()
+    public function isGlobal()
     {
         return $this->is_global;
     }
