@@ -13,6 +13,9 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
@@ -41,6 +44,22 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class AppsController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getPackageAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getInstanceAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getCustomAssetsAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getAppV2ArchiveBundle');
+
+        return $multi;
+    }
+
     //###################################################################################################################
     // list
     //###################################################################################################################
@@ -287,10 +306,12 @@ class AppsController extends AbstractController
 
     /**
      * @param $name
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function installPackageAction( $name)
+    public function installPackageAction($name)
     {
         // we are expecting the client to double url encode $name
         // in case it contains forward slashes, e.g @deskproapps/app-name
@@ -335,13 +356,12 @@ class AppsController extends AbstractController
                 $context->setInlineSideloads(true);
 
                 $this->container->get('event_dispatcher')->dispatch(
-                    LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS
-                        , [
-                            'type'        => 'admin',
-                            'person_id'   => 0,
-                            'person_name' => 'System',
-                            'appStatus' => 'updated',
-                            'applicationId'   => $instance->getApplicationId(),
+                    LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS, [
+                            'type'          => 'admin',
+                            'person_id'     => 0,
+                            'person_name'   => 'System',
+                            'appStatus'     => 'updated',
+                            'applicationId' => $instance->getApplicationId(),
                         ])
                 );
 
@@ -972,13 +992,12 @@ class AppsController extends AbstractController
 
             if ($installDetails->reloadRequired()) {
                 $this->container->get('event_dispatcher')->dispatch(
-                    LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS
-                        , [
-                        'type'        => 'admin',
-                        'person_id'   => 0,
-                        'person_name' => 'System',
-                        'appStatus' => 'updated',
-                        'applicationId'   => $installDetails->getApp()->getId(),
+                    LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS, [
+                        'type'          => 'admin',
+                        'person_id'     => 0,
+                        'person_name'   => 'System',
+                        'appStatus'     => 'updated',
+                        'applicationId' => $installDetails->getApp()->getId(),
                     ])
                 );
             }
@@ -992,9 +1011,9 @@ class AppsController extends AbstractController
                 array_merge(
                     $serialized,
                     [
-                        'version'      => 2,
-                        'package_name' => $manifest->getName(),
-                        'install_type' => $installDetails->getInstallType(),
+                        'version'             => 2,
+                        'package_name'        => $manifest->getName(),
+                        'install_type'        => $installDetails->getInstallType(),
                         'force_configuration' => $installDetails->getForceConfiguration(),
                     ]
                 ),

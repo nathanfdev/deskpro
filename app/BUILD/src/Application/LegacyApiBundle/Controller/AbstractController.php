@@ -27,7 +27,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  *
  * @ApiModes("all")
  */
-abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
+abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController implements ProtectedControllerInterface
 {
     /**
      * @var \Application\LegacyApiBundle\ApiUser

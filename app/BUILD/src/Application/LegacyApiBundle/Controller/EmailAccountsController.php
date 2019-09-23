@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @ApiModes("all")
  */
-class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
+class EmailAccountsController extends AbstractController
 {
     /** @var array|null */
     protected $emailSettings = null;

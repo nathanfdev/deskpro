@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  */
-class TicketFiltersController extends AbstractController implements ProtectedControllerInterface
+class TicketFiltersController extends AbstractController
 {
     /**
      * {@inheritdoc}

@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class ChatRoundRobinController extends AbstractController implements ProtectedControllerInterface
+class ChatRoundRobinController extends AbstractController
 {
     /**
      * {@inheritdoc}

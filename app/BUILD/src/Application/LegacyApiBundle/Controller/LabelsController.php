@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class LabelsController extends AbstractController implements ProtectedControllerInterface
+class LabelsController extends AbstractController
 {
     /**
      * {@inheritdoc}

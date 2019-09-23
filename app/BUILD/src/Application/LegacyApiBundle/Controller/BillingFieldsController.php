@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  *
  * @ApiModes("all")
  */
-class BillingFieldsController extends AbstractController implements ProtectedControllerInterface
+class BillingFieldsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -27,6 +27,7 @@ class BillingFieldsController extends AbstractController implements ProtectedCon
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
         $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new PassPermission(), 'getCustomFieldAction');
 
         return $multi;
     }

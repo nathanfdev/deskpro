@@ -11,7 +11,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class TicketBrandsController extends AbstractController implements ProtectedControllerInterface
+class TicketBrandsController extends AbstractController
 {
     /**
      * {@inheritdoc}

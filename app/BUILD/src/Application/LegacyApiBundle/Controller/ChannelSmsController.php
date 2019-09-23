@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @ApiModes("all")
  */
-class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
+class ChannelSmsController extends AbstractController
 {
     /**
      * {@inheritdoc}

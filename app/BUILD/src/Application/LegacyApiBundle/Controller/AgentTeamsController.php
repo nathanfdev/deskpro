@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @ApiModes("all")
  */
-class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
+class AgentTeamsController extends AbstractController
 {
     /**
      * {@inheritdoc}

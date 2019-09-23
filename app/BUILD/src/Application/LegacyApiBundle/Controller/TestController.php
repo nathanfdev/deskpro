@@ -3,6 +3,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,6 +14,14 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TestController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new PassPermission();
+    }
+
     /**
      * {@inheritdoc}
      */

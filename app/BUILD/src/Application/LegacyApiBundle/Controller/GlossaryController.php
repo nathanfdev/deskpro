@@ -8,6 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -21,6 +22,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class GlossaryController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new UserTypePermission(UserTypePermission::AGENT);
+    }
+
     /**
      * SWG\Api(
      *    path="/glossary",

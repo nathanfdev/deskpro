@@ -21,7 +21,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  *
  * @ApiModes("all")
  */
-class ChannelFacebookController extends AbstractController implements ProtectedControllerInterface
+class ChannelFacebookController extends AbstractController
 {
     /**
      * {@inheritdoc}

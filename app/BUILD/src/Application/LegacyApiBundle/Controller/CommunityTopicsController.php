@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\EntityRepository\Rating as RatingRepository;
 use Application\DeskPRO\Searcher\CommunitySearch;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,6 +24,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class CommunityTopicsController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new UserTypePermission(UserTypePermission::AGENT);
+    }
+
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */

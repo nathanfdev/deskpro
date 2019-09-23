@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
+class CustomFieldsController extends AbstractController
 {
     protected $allowed = [
         'owner'   => ['ticket', 'person'],

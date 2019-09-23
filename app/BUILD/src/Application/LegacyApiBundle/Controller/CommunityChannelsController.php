@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * @ApiModes("all")
  */
-class CommunityChannelsController extends AbstractController implements ProtectedControllerInterface
+class CommunityChannelsController extends AbstractController
 {
     /**
      * {@inheritdoc}

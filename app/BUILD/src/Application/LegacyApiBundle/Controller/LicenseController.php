@@ -18,7 +18,7 @@ use Orb\Validator\StringEmail;
 /**
  * @ApiModes("all")
  */
-class LicenseController extends AbstractController implements ProtectedControllerInterface
+class LicenseController extends AbstractController
 {
     /**
      * {@inheritdoc}

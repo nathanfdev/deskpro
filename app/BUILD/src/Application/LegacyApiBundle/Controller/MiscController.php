@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
@@ -27,6 +28,14 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class MiscController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new PassPermission();
+    }
+
     /**
      * {@inheritdoc}
      */

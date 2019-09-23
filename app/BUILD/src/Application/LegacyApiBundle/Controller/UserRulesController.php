@@ -15,7 +15,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class UserRulesController extends AbstractController implements ProtectedControllerInterface
+class UserRulesController extends AbstractController
 {
     /**
      * {@inheritdoc}

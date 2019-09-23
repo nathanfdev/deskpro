@@ -16,7 +16,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  *
  * @ApiModes("all")
  */
-class ChatFieldsController extends AbstractController implements ProtectedControllerInterface
+class ChatFieldsController extends AbstractController
 {
     /**
      * {@inheritdoc}

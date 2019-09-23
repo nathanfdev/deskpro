@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  */
-class AgentGroupsController extends AbstractController implements ProtectedControllerInterface
+class AgentGroupsController extends AbstractController
 {
     /**
      * {@inheritdoc}

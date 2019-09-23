@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * @ApiModes("all")
  */
-class CommunityStatusesController extends AbstractController implements ProtectedControllerInterface
+class CommunityStatusesController extends AbstractController
 {
     /**
      * {@inheritdoc}

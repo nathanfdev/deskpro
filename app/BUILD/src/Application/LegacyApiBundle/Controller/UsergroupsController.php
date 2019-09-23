@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @ApiModes("all")
  */
-class UsergroupsController extends AbstractController implements ProtectedControllerInterface
+class UsergroupsController extends AbstractController
 {
     /**
      * {@inheritdoc}

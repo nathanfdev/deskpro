@@ -35,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @ApiModes("all")
  */
-class ServerController extends AbstractController implements ProtectedControllerInterface
+class ServerController extends AbstractController
 {
     /**
      * {@inheritdoc}

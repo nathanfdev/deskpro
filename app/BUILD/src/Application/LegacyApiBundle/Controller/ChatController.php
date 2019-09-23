@@ -8,6 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -24,6 +25,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ChatController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new UserTypePermission(UserTypePermission::AGENT);
+    }
+
     // todo: better search - ordering, more criteria
 
     /**

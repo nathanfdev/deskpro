@@ -23,7 +23,7 @@ use Orb\Util\Numbers;
 /**
  * @ApiModes("all")
  */
-class LanguagesController extends AbstractController implements ProtectedControllerInterface
+class LanguagesController extends AbstractController
 {
     /**
      * {@inheritdoc}

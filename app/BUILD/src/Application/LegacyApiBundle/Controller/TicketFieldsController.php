@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
+class TicketFieldsController extends AbstractController
 {
     /**
      * {@inheritdoc}

@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\Form\FormFields;
  *
  * @ApiModes("all")
  */
-class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
+class TicketLayoutsController extends AbstractController
 {
     /**
      * {@inheritdoc}

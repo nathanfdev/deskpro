@@ -15,6 +15,7 @@ use Application\DeskPRO\Searcher\PersonSearch;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Orb\Util\Util;
@@ -27,11 +28,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @ApiModes("all")
  */
-class PersonController extends AbstractController implements ProtectedControllerInterface
+class PersonController extends AbstractController
 {
     public function getPermissionStrategy()
     {
         $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new UserTypePermission(UserTypePermission::AGENT));
         $multi->addPermissionStrategy(new SuperKeyPermission(), 'authLoginAction');
 
         return $multi;

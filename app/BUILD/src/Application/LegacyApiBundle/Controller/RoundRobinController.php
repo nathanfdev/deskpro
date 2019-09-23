@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class RoundRobinController extends AbstractController implements ProtectedControllerInterface
+class RoundRobinController extends AbstractController
 {
     /**
      * {@inheritdoc}
