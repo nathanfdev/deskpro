@@ -13,6 +13,7 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Tickets\Slas\SlaCalculator;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -400,7 +401,11 @@ class Sla extends DomainObject
         } else {
             $work_hours = App::getSetting('core_tickets.work_hours');
             if ($work_hours && !is_array($work_hours)) {
-                $work_hours = @unserialize($work_hours);
+                try {
+                    $work_hours = UnserializeUtil::unserializeArray($work_hours);
+                } catch (\Exception $e) {
+                    $work_hours = null;
+                }
             }
             if ($work_hours) {
                 $work_hours = Arrays::removeEmptyArray($work_hours);

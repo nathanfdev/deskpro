@@ -81,7 +81,13 @@ class TagRequestFactory
         // set base url from main request
         $property = new \ReflectionProperty(Request::class, 'baseUrl');
         $property->setAccessible(true);
-        $property->setValue($tagRequest, $currentRequest->getBaseUrl());
+
+        if ($currentRequest->attributes->has('original_request')) {
+            $property->setValue($tagRequest, $currentRequest->attributes->get('original_request')->getBaseUrl());
+        } else {
+            $property->setValue($tagRequest, $currentRequest->getBaseUrl());
+        }
+
         $property->setAccessible(false);
 
         return $tagRequest;
@@ -144,6 +150,14 @@ class TagRequestFactory
         $newAttributes = [];
 
         $tagParams = ['_tag_name' => $tag->getName()];
+
+        if (isset($currentAttributes['_dp_brand_slug'])) {
+            $tagParams['_dp_brand_slug'] = $currentAttributes['_dp_brand_slug'];
+        }
+        if (isset($currentAttributes['_dp_brand_slug_path'])) {
+            $tagParams['_dp_brand_slug_path'] = $currentAttributes['_dp_brand_slug_path'];
+        }
+
         if ($tag->allowRouteParams()) {
             $tagParams['_route']        = isset($currentAttributes['_route']) ? $currentAttributes['_route'] : null;
             $tagParams['_route_params'] = isset($currentAttributes['_route_params']) ? $currentAttributes['_route_params'] : null;
