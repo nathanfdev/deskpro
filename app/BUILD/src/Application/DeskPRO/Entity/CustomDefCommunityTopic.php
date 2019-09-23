@@ -52,6 +52,13 @@ class CustomDefCommunityTopic extends CustomDefAbstract
     protected $forums;
 
     /**
+     * @var bool
+     *
+     * If TRUE then this field is added to every forum
+     */
+    protected $is_global = true;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -137,6 +144,25 @@ class CustomDefCommunityTopic extends CustomDefAbstract
         return $this->forums->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
             return $pivot->getForum();
         });
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIsGlobal()
+    {
+        return $this->is_global;
+    }
+
+    /**
+     * @param bool $is_global
+     * @return CustomDefCommunityTopic
+     */
+    public function setIsGlobal($is_global)
+    {
+        $this->setModelField('is_global', (bool) $is_global);
+
+        return $this;
     }
 
     //###########################################################################
@@ -295,6 +321,16 @@ class CustomDefCommunityTopic extends CustomDefAbstract
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'is_agent_field',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_global',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_global',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
