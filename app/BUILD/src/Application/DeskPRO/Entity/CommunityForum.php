@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityForumListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -69,6 +70,11 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
      * If TRUE then voting is enabled for this forum
      */
     protected $is_voting_enabled = true;
+
+    /**
+     * @var SplashImageProperty
+     */
+    protected $splash_image_property;
 
     /**
      * Constructor.
@@ -187,6 +193,25 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         return $this;
     }
 
+    /**
+     * @return SplashImageProperty
+     */
+    public function getSplashImageProperty()
+    {
+        return $this->splash_image_property;
+    }
+
+    /**
+     * @param SplashImageProperty $splash_image_property
+     * @return CommunityForum
+     */
+    public function setSplashImageProperty(SplashImageProperty $splash_image_property)
+    {
+        $this->setModelField('splash_image_property', $splash_image_property);
+
+        return $this;
+    }
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################
@@ -239,6 +264,18 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'slug',
+                'unique'     => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'color',
+                'type'       => 'string',
+                'length'     => 6,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'color',
                 'unique'     => true,
             ]
         );
@@ -386,6 +423,42 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
                 'mappedBy'      => 'forum',
                 'orderBy'       => ['display_order' => 'ASC'],
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'icon_property',
+                'targetEntity' => IconProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'icon_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'splash_image_property',
+                'targetEntity' => SplashImageProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'splash_image_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }
