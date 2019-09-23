@@ -3063,8 +3063,8 @@ $collection->create(
 $collection->create(
     'api_community_categories',
     [
-        'path'       => '/community/channels',
-        'controller' => 'LegacyApiBundle:CommunityTopics:getChannels',
+        'path'       => '/community/forums',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getForums',
         'methods'    => ['GET'],
     ]
 );
@@ -3081,8 +3081,8 @@ $collection->create(
 $collection->create(
     'api_community_user_categories',
     [
-        'path'       => '/community/custom_channels',
-        'controller' => 'LegacyApiBundle:CommunityTopics:getCustomChannels',
+        'path'       => '/community/custom_forums',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getCustomForums',
         'methods'    => ['GET'],
     ]
 );
@@ -5353,66 +5353,66 @@ $collection->create(
 );
 
 //#######################################################################################################################
-// Community Channels
+// Community Forums
 //#######################################################################################################################
 
 $collection->create(
-    'api_community_channels',
+    'api_community_forums',
     [
-        'path'       => '/community_channels',
-        'controller' => 'LegacyApiBundle:CommunityChannels:list',
+        'path'       => '/community_forums',
+        'controller' => 'LegacyApiBundle:CommunityForums:list',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_order',
+    'api_community_forums_order',
     [
-        'path'       => '/community_channels/display_order',
-        'controller' => 'LegacyApiBundle:CommunityChannels:saveDisplayOrder',
+        'path'       => '/community_forums/display_order',
+        'controller' => 'LegacyApiBundle:CommunityForums:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_get',
+    'api_community_forums_get',
     [
-        'path'       => '/community_channels/{id}',
-        'controller' => 'LegacyApiBundle:CommunityChannels:get',
+        'path'       => '/community_forums/{id}',
+        'controller' => 'LegacyApiBundle:CommunityForums:get',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_create',
+    'api_community_forums_create',
     [
-        'path'       => '/community_channels',
-        'controller' => 'LegacyApiBundle:CommunityChannels:save',
+        'path'       => '/community_forums',
+        'controller' => 'LegacyApiBundle:CommunityForums:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_save',
+    'api_community_forums_save',
     [
-        'path'       => '/community_channels/{id}',
-        'controller' => 'LegacyApiBundle:CommunityChannels:save',
+        'path'       => '/community_forums/{id}',
+        'controller' => 'LegacyApiBundle:CommunityForums:save',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_community_channels_delete',
+    'api_community_forums_delete',
     [
-        'path'       => '/community_channels/{id}',
-        'controller' => 'LegacyApiBundle:CommunityChannels:remove',
+        'path'       => '/community_forums/{id}',
+        'controller' => 'LegacyApiBundle:CommunityForums:remove',
         'methods'    => ['DELETE'],
     ]
 );
 
 //#######################################################################################################################
-// Custom Community channels
+// Custom Community forums
 //#######################################################################################################################
 
 $collection->create(

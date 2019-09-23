@@ -69,7 +69,7 @@ class Column extends AbstractPart
         'agent_teams'                       => ['id', 'name'],
         'article_categories'                => ['id', 'title'],
         'download_categories'               => ['id', 'title'],
-        'community_channels'                => ['id', 'title'],
+        'community_forums'                  => ['id', 'title'],
         'news_categories'                   => ['id', 'title'],
         'brands'                            => ['id', 'name'],
         'custom_field_definition'           => ['id', 'title'],

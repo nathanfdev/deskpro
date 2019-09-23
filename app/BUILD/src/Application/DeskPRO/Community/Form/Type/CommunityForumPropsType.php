@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\Community\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -11,9 +11,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CommunityChannelPropsType.
+ * Class CommunityForumPropsType.
  */
-class CommunityChannelPropsType extends AbstractType
+class CommunityForumPropsType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -46,7 +46,7 @@ class CommunityChannelPropsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => CommunityChannel::class,
+            'data_class' => CommunityForum::class,
         ]);
     }
 
@@ -55,6 +55,6 @@ class CommunityChannelPropsType extends AbstractType
      */
     public function getName()
     {
-        return 'community_channel';
+        return 'community_forum';
     }
 }

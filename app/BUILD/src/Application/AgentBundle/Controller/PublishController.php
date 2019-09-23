@@ -1198,7 +1198,7 @@ class PublishController extends AbstractController
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
                 break;
             case 'community':
-                $url = $this->generateUrl('agent_community_channels', ['$channelId' => $cat->getId()]);
+                $url = $this->generateUrl('agent_community_forums', ['forumId' => $cat->getId()]);
                 break;
         }
 
@@ -1270,7 +1270,7 @@ class PublishController extends AbstractController
                 $searcher = new CommunitySearch();
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'CommunityTopicResults';
-                $cats   = $this->in->getCleanValueArray('community_channels', 'uint', 'discard');
+                $cats   = $this->in->getCleanValueArray('community_forums', 'uint', 'discard');
                 break;
 
             default:

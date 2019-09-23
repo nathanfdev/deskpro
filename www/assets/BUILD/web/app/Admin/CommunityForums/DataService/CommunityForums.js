@@ -7,7 +7,7 @@ define([
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
 ) => {
-  class Admin_CommunityChannels_DataService_CommunityChannels extends Admin_Main_DataService_Base {
+  class Admin_CommunityForums_DataService_CommunityForums extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q   = $q;
@@ -18,7 +18,7 @@ define([
     }
 
     /**
-    * Loads all community channels
+    * Loads all community forums
       * Returns a promise.
       *
       * @return {Promise}
@@ -35,7 +35,7 @@ define([
         return deferred.promise;
       }
 
-      const http_def = this.Api.sendGet('/community_channels').success((data, status, headers, config) => {
+      const http_def = this.Api.sendGet('/community_forums').success((data, status, headers, config) => {
         this._setListData(data.types);
         return deferred.resolve(this.recs);
       }
@@ -53,10 +53,10 @@ define([
     */
 
     remove(id) {
-      const model = this.em.getById('community_channel', id);
+      const model = this.em.getById('community_forum', id);
       if (model != null) {
         this.recs.remove(id);
-        this.em.removeById('community_channel', 'id');
+        this.em.removeById('community_forum', 'id');
       }
 
       return this._updateOrderOfData();
@@ -67,7 +67,7 @@ define([
   * with new model provided. Or adds it to the list if it doesnt exist.
   */
     updateModel(model) {
-      const new_model = this.em.createEntity('community_channel', 'id', model);
+      const new_model = this.em.createEntity('community_forum', 'id', model);
       this.recs.set(new_model.id, new_model);
 
       this._updateOrderOfData();
@@ -76,8 +76,8 @@ define([
     }
 
     /*
-    * Returns list of community_channels where community topic of specified community_channel could be moved to
-  * @param model - specified community_channel model
+    * Returns list of community_forums where community topic of specified community_forum could be moved to
+  * @param model - specified community_forum model
     * @return array
     */
 
@@ -94,7 +94,7 @@ define([
     }
 
     /**
-        * Creates entities for community channels raw data
+        * Creates entities for community forums raw data
         *
         * @return {Promise}
     */
@@ -102,7 +102,7 @@ define([
       return (() => {
         const result = [];
         for (const rec of Array.from(raw_recs)) {
-          const model = this.em.createEntity('community_channel', 'id', rec);
+          const model = this.em.createEntity('community_forum', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));
         }
@@ -132,5 +132,5 @@ define([
     }
   }
 
-  return Admin_CommunityChannels_DataService_CommunityChannels;
+  return Admin_CommunityForums_DataService_CommunityForums;
 });

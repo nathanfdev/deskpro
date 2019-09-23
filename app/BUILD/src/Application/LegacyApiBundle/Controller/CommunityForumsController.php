@@ -6,8 +6,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Community\CommunityChannelEdit;
-use Application\DeskPRO\Community\Form\Type\CommunityChannelType;
+use Application\DeskPRO\Community\CommunityForumEdit;
+use Application\DeskPRO\Community\Form\Type\CommunityForumType;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * @ApiModes("all")
  */
-class CommunityChannelsController extends AbstractController implements ProtectedControllerInterface
+class CommunityForumsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
      * {@inheritdoc}
@@ -38,11 +38,11 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function listAction()
     {
-        $communityChannels = $this->container->getSystemService('community_channels');
+        $communityForums = $this->container->getSystemService('community_forums');
 
         return $this->createApiResponse(
             [
-                'types' => $this->getApiData(Arrays::flatten($communityChannels->getAll())),
+                'types' => $this->getApiData(Arrays::flatten($communityForums->getAll())),
             ]
         );
     }
@@ -52,19 +52,19 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function getAction($id)
     {
-        $communityChannels = $this->container->getSystemService('community_channels');
-        $communityChannel  = $communityChannels->getById($id);
+        $communityForums = $this->container->getSystemService('community_forums');
+        $communityForum  = $communityForums->getById($id);
 
-        if (!$communityChannel) {
+        if (!$communityForum) {
             throw $this->createNotFoundException();
         }
 
-        $returnedData               = $this->getApiData($communityChannel);
-        $returnedData['usergroups'] = $communityChannels->getNonAgentUserGroups($communityChannel);
+        $returnedData               = $this->getApiData($communityForum);
+        $returnedData['usergroups'] = $communityForums->getNonAgentUserGroups($communityForum);
 
         return $this->createApiResponse(
             [
-                'community_channel' => $returnedData,
+                'community_forum' => $returnedData,
             ]
         );
     }
@@ -75,35 +75,35 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function saveAction($id)
     {
-        $communityChannels = $this->container->getSystemService('community_channels');
+        $communityForums = $this->container->getSystemService('community_forums');
 
         if ($id) {
-            $communityChannel = $communityChannels->getById($id);
+            $communityForum = $communityForums->getById($id);
 
-            if (!$communityChannel) {
+            if (!$communityForum) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $communityChannel = $communityChannels->createNew();
+            $communityForum = $communityForums->createNew();
         }
 
         $postData = $this->in->getAll('post');
 
-        $communityChannelEdit = new CommunityChannelEdit($communityChannel);
+        $communityForumEdit = new CommunityForumEdit($communityForum);
 
-        $form = $this->createForm(CommunityChannelType::class, $communityChannelEdit, ['cascade_validation' => true]);
-        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_channel'), true);
+        $form = $this->createForm(CommunityForumType::class, $communityForumEdit, ['cascade_validation' => true]);
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_forum'), true);
 
         if ($form->isValid()) {
-            $communityChannelEdit->save($this->em);
+            $communityForumEdit->save($this->em);
         } else {
-            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($communityChannel));
+            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($communityForum));
         }
 
         return $this->createApiResponse([
             'success' => true,
-            'id'      => $communityChannel->getId(),
-            'brand'   => $communityChannel->getBrand() ? $communityChannel->getBrand()->getId() : null,
+            'id'      => $communityForum->getId(),
+            'brand'   => $communityForum->getBrand() ? $communityForum->getBrand()->getId() : null,
         ]);
     }
 
@@ -113,41 +113,41 @@ class CommunityChannelsController extends AbstractController implements Protecte
 
     public function removeAction($id)
     {
-        $communityChannels = $this->container->getSystemService('community_channels');
-        $communityChannel  = $communityChannels->getById($id);
+        $communityForums = $this->container->getSystemService('community_forums');
+        $communityForum  = $communityForums->getById($id);
 
-        if (!$communityChannel) {
+        if (!$communityForum) {
             throw $this->createNotFoundException();
         }
 
         $move_to                   = $this->in->getUint('move_to');
-        $move_to_community_channel = $communityChannels->getById($move_to);
+        $move_to_community_forum = $communityForums->getById($move_to);
 
-        if (!$move_to_community_channel) {
+        if (!$move_to_community_forum) {
             throw ValidationException::create(
-                'community_channel.remove.move_community_channels',
-                'You must select a community channel to move existing community topics into'
+                'community_forum.remove.move_community_forums',
+                'You must select a community forum to move existing community topics into'
             );
         }
 
-        if ($move_to_community_channel->getId() == $communityChannel->getId()) {
+        if ($move_to_community_forum->getId() == $communityForum->getId()) {
             throw ValidationException::create(
-                'community_channel.remove.move_community_channels',
-                'You must choose a different community channels'
+                'community_forum.remove.move_community_forums',
+                'You must choose a different community forums'
             );
         }
 
-        $old_id = $communityChannel->getId();
+        $old_id = $communityForum->getId();
 
         $this->db->beginTransaction();
 
         try {
             $this->db->executeUpdate(
-                'UPDATE community_topics SET channel_id = ? WHERE channel_id = ?',
+                'UPDATE community_topics SET forum_id = ? WHERE forum_id = ?',
                 [$move_to, $old_id]
             );
 
-            $this->em->remove($communityChannel);
+            $this->em->remove($communityForum);
             $this->em->flush();
 
             $this->db->commit();
@@ -167,8 +167,8 @@ class CommunityChannelsController extends AbstractController implements Protecte
     {
         $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-        $communityChannels = $this->container->getSystemService('community_channels');
-        $communityChannels->updateDisplayOrders($display_orders);
+        $communityForums = $this->container->getSystemService('community_forums');
+        $communityForums->updateDisplayOrders($display_orders);
 
         return $this->createSuccessResponse();
     }

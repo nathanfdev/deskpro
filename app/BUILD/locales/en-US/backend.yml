@@ -420,9 +420,9 @@ adm.email_templates.user_rating: Rating
 adm.email_templates.user_tickets: 'Ticket Emails'
 adm.email_templates.user_validation: Validation
 adm.email_templates.user_warnings: 'Warnings, alerts & errors'
-adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community channel will be moved to:'
+adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community forum will be moved to:'
 adm.community_categories.delete_cummunity_custom_channel: 'Delete Category'
-adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community channel?'
+adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community forum?'
 adm.community_categories.new_channel: 'New Category'
 adm.community_categories.parent_explain: 'By setting a parent category, this category becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
 adm.community_categories.title: Title
@@ -435,15 +435,15 @@ adm.community_statuses.no_delete_last: 'At least one community status must alway
 adm.community_statuses.title: Title
 adm.community_statuses.title_error: 'You must enter a valid title'
 adm.community_statuses.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
-adm.community_channels.delete_community_channel: 'Delete Community Channel'
-adm.community_channels.delete_community_channel_confirm: 'Are you sure you want to delete this community channel?'
-adm.community_channels.delete_community_channels_moved: 'Any community topic that is currently under this community channel will be moved to:'
-adm.community_channels.no_delete_last: 'At least one community channel must always exist. You cannot delete the last community channel.'
-adm.community_channels.title: Title
-adm.community_channels.title_error: 'You must enter a valid title'
-adm.community_channels.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
-adm.community_channels.usergroups: Usergroups
-adm.community_channels.usergroups_explain: 'These are usergroups to which this community channel belongs.'
+adm.community_forums.delete_community_forum: 'Delete Community Forum'
+adm.community_forums.delete_community_forum_confirm: 'Are you sure you want to delete this community forum?'
+adm.community_forums.delete_community_forums_moved: 'Any community topic that is currently under this community forum will be moved to:'
+adm.community_forums.no_delete_last: 'At least one community forum must always exist. You cannot delete the last community forum.'
+adm.community_forums.title: Title
+adm.community_forums.title_error: 'You must enter a valid title'
+adm.community_forums.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
+adm.community_forums.usergroups: Usergroups
+adm.community_forums.usergroups_explain: 'These are usergroups to which this community forum belongs.'
 adm.general.action_cannot_be_undone: 'This action cannot be undone.'
 adm.general.agent_perms: 'Agent Permissions'
 adm.general.api_keys: 'API Keys'
@@ -511,9 +511,9 @@ adm.general.x_community_closed_statuses:
 adm.general.x_community_statuses:
   one: '{{count}} Community Status'
   other: '{{count}} Community Statuses'
-adm.general.x_community_channels:
-  one: '{{count}} Community Channel'
-  other: '{{count}} Community Channels'
+adm.general.x_community_forums:
+  one: '{{count}} Community Forum'
+  other: '{{count}} Community Forums'
 adm.general.x_ip_bans:
   one: '{{count}} IP Ban'
   other: '{{count}} IP Bans'
@@ -1277,7 +1277,7 @@ admin.community.delete_status: 'Delete Status'
 admin.community.edit_status: 'Edit Status'
 admin.community.explain_active_status: 'An active status is a status assigned to community topic that have been reviewed, but have not been implemented or have not been decided on.'
 admin.community.explain_closed_status: 'A closed status is a status assigned to community topic that are finished. Users cannot vote or comment on closed community topic.'
-admin.community.community_channels: 'Community Channels'
+admin.community.community_forums: 'Community Forums'
 admin.community.community_statuses: 'Community Statuses'
 admin.community.community_topics_using_this_category: 'Community Topics using this category'
 admin.community.notice_has_children: 'This category has children. Delete the child categories first, and then you can delete this one.'
@@ -2829,7 +2829,7 @@ agent.emails.whitelist_ip_subject: 'Verify DeskPRO Login - New IP Address'
 agent.emails.whitelist_ip_validation_link: 'If this is a valid login attempt by you, click the following link to validate the new IP address:'
 agent.emails.your_initial_password: 'Your initial password'
 agent.community.category: 'Category'
-agent.community.any_channel: 'Any Channel'
+agent.community.any_forum: 'Any Forum'
 agent.community.any_status: 'Any Status'
 agent.community.count_votes:
   one: '{{display_count}} vote'
@@ -2846,7 +2846,7 @@ agent.community.merge_community_topics_submit: 'Merge these two community topics
 agent.community.merge_howto: 'Open an additional community topic tab to merge'
 agent.community.new_community_topic: 'New Community Topic:'
 agent.community.newest_on_top: 'Newest on top'
-agent.community.no_community_channels_error: 'There are no channels defined. Before you can add types to the community section, you need to define a channel from the Admin Interface.'
+agent.community.no_community_forums_error: 'There are no forums defined. Before you can add types to the community section, you need to define a forum from the Admin Interface.'
 agent.community.no_labels_explain: 'You have not labelled any community topics yet. View a community topic to add labels to it.'
 agent.community.oldest_on_top: 'Oldest on top'
 agent.community.popularity_least_most: 'Popularity (Least-Most)'
@@ -3694,9 +3694,11 @@ agent.general.triggers_urgency_base: 'Default urgency for new tickets'
 agent.general.twitter: Twitter
 agent.general.twitter_username: 'Twitter username'
 agent.general.type: Type
-agent.general.channel: Channel
 agent.general.types: Types
+agent.general.forum: Forum
+agent.general.forums: Forums
 agent.general.channels: Channels
+agent.general.channel: Channel
 agent.general.tz_wrong_explain: 'The timezone region saved in your profile appears to differ from the region reported by your computer.'
 agent.general.ucfirst_edit: Edit
 agent.general.unassign: Unassign

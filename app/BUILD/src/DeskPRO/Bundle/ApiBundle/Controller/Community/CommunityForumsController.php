@@ -2,23 +2,23 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Community;
 
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * API access to community channels.
+ * API access to community forums.
  *
  * @ApiModes("all")
- * @Rest\Route("/community_channels")
- * @ApiDoc(target="all", section="Community", output="Application\DeskPRO\Entity\CommunityChannel")
+ * @Rest\Route("/community_forums")
+ * @ApiDoc(target="all", section="Community", output="Application\DeskPRO\Entity\CommunityForum")
  */
-class CommunityChannelsController extends CrudController
+class CommunityForumsController extends CrudController
 {
     public static $exposeOnly = ['get', 'list', 'count'];
-    public static $entity     = CommunityChannel::class;
+    public static $entity     = CommunityForum::class;
     public static $listSort   = 'title';
     public static $listOrder  = 'asc';
 }

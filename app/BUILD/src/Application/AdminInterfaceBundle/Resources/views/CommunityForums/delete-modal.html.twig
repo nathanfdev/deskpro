@@ -1,20 +1,20 @@
 <div>
 	<div class="modal-header">
 		<button type="button" class="close" ng-click="dismiss()">&times;</button>
-		<h4 class="modal-title">{{ phrase('adm.community_channels.delete_community_type') }}</h4>
+		<h4 class="modal-title">{{ phrase('adm.community_forums.delete_community_type') }}</h4>
 	</div>
 	<div class="modal-body">
 		<p>
-			{{ phrase('adm.community_channels.delete_community_type_confirm') }}
+			{{ phrase('adm.community_forums.delete_community_type_confirm') }}
 		</p>
 
 		<p>
-			{{ phrase('adm.community_channels.delete_community_types_moved') }}
+			{{ phrase('adm.community_forums.delete_community_types_moved') }}
 		</p>
 
 		<p style="margin-bottom: 0;">
 			<select ui-select2 ng-model="selected.move_to_id" style="width: 240px">
-				<option value="{{ ng_var('type.id') }}" ng-repeat="type in move_community_channels_list">{{ ng_var('type.title') }}</option>
+				<option value="{{ ng_var('type.id') }}" ng-repeat="type in move_community_forums_list">{{ ng_var('type.title') }}</option>
 			</select>
 		</p>
 	</div>

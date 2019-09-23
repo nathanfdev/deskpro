@@ -1,43 +1,43 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form role="form" name="form_props" ng-submit="form_props.$valid && CommunityChannelsEdit.saveCommunityChannel()">
+	<form role="form" name="form_props" ng-submit="form_props.$valid && CommunityForumsEdit.saveCommunityForum()">
 		<section class="dp-paneblock dp-editpane">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
 					<div class="panel-body">
 						<div class="form-group">
 							<div class="col-lg-3">
-								<h3>{{ phrase('adm.community_channels.title') }} *</h3>
+								<h3>{{ phrase('adm.community_forums.title') }} *</h3>
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text"
 										   class="form-control"
 										   name="title"
-										   ng-model="CommunityChannelsEdit.community_channel.title"
+										   ng-model="CommunityForumsEdit.community_forum.title"
 										   dp-server-validation="title.not_blank"
 										   style="width: 50%;"
 										   autofocus required>
 								<span class="help-block">
-									{{ phrase('adm.community_channels.title_explain') }}
+									{{ phrase('adm.community_forums.title_explain') }}
 								</span>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="col-lg-3">
-								<h3>{{ phrase('adm.community_channels.usergroups') }}</h3>
+								<h3>{{ phrase('adm.community_forums.usergroups') }}</h3>
 							</div>
 							<div class="col-lg-9">
 								<div class="inner-group">
 									<div style="padding-top:6px;">
-										<label ng-repeat="usergroup in CommunityChannelsEdit.usergroups" style="font-weight: normal; display: block;">
-											<input type="checkbox" ng-model="CommunityChannelsEdit.selected_usergroups[usergroup.id]">
+										<label ng-repeat="usergroup in CommunityForumsEdit.usergroups" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="CommunityForumsEdit.selected_usergroups[usergroup.id]">
 											{{ ng_var('usergroup.title') }}
 										</label>
 									</div>
 								<span class="help-block">
-									{{ phrase('adm.community_channels.usergroups_explain') }}
+									{{ phrase('adm.community_forums.usergroups_explain') }}
 								</span>
 								</div>
 							</div>
@@ -51,23 +51,23 @@
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
 							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
-								{{ phrase('adm.community_channels.title_error') }}
+								{{ phrase('adm.community_forums.title_error') }}
 							</li>
 						</ul>
 					</div>
 
-					<div class="dp-delete-control" ng-if="CommunityChannelsEdit.community_channel.id" ng-hide="form_props.$attempted && form_props.$invalid">
+					<div class="dp-delete-control" ng-if="CommunityForumsEdit.community_forum.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger"
-								ng-click="$event.preventDefault(); $parent.CommunityChannelsList.startDelete(CommunityChannelsEdit.community_channel);">
+								ng-click="$event.preventDefault(); $parent.CommunityForumsList.startDelete(CommunityForumsEdit.community_forum);">
 							Delete
 						</button>
 					</div>
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-						<div dp-hide-spinning="saving_community_channel">
+						<div dp-hide-spinning="saving_community_forum">
 							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
 						</div>
-						<div dp-show-spinning="saving_community_channel">
+						<div dp-show-spinning="saving_community_forum">
 							<i class="spinner-flat"></i>
 						</div>
 					</div>
@@ -75,5 +75,5 @@
 			</footer>
 		</section>
 	</form>
-	<div dp-register-message="saved_community_channel">{{ ng_var('CommunityChannelsEdit.community_channel.title') }} was saved successfully</div>
+	<div dp-register-message="saved_community_forum">{{ ng_var('CommunityForumsEdit.community_forum.title') }} was saved successfully</div>
 {% endblock %}

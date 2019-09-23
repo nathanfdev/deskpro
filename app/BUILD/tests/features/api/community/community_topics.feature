@@ -14,7 +14,7 @@ Feature: /community_topics/counts endpoint
       | csc2 | active      | Accepted  | 0             |
       | csc3 | closed      | Declined  | 0             |
       | csc4 | closed      | Spam      | 0             |
-    And only the following "CommunityChannel" records exist:
+    And only the following "CommunityForum" records exist:
       | #   | title    | slug     |
       | cc1 | Feature  | feature  |
       | cc2 | Question | question |
@@ -22,29 +22,29 @@ Feature: /community_topics/counts endpoint
 
   Scenario: I GET count of community topics with hidden_status set to validating
     Given only the following "CommunityTopic" records exist:
-      | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
-      | {csc2}          | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
-      | {csc3}          | {cc3}   | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
-      | {csc1}          | {cc3}   | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
-      | {csc2}          | {cc2}   | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
-      | {csc3}          | {cc1}   | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
+      | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | {csc2}          | {cc2} | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
+      | {csc3}          | {cc3} | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
+      | {csc1}          | {cc3} | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
+      | {csc2}          | {cc2} | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
+      | {csc3}          | {cc1} | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
     When I send a GET request to "/api/v2/community_topics/counts?awaiting_validation=1"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
     And the JSON node "data.count" should be equal to 6
 
-  Scenario: I GET count of community topics grouped by channel
+  Scenario: I GET count of community topics grouped by forum
     Given only the following "CommunityTopic" records exist:
-      | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
-      | {csc2}          | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
-      | {csc3}          | {cc3}   | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
-      | {csc1}          | {cc3}   | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
-      | {csc2}          | {cc2}   | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
-      | {csc3}          | {cc1}   | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
-    When I send a GET request to "/api/v2/community_topics/counts?group_by=channel"
+      | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | {csc2}          | {cc2} | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
+      | {csc3}          | {cc3} | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
+      | {csc1}          | {cc3} | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
+      | {csc2}          | {cc2} | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
+      | {csc3}          | {cc1} | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
+    When I send a GET request to "/api/v2/community_topics/counts?group_by=forum"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -62,13 +62,13 @@ Feature: /community_topics/counts endpoint
 
   Scenario: I GET count of community topics with status active grouped by status_category
     Given only the following "CommunityTopic" records exist:
-      | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
-      | {csc2}          | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
-      | {csc3}          | {cc3}   | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
-      | {csc1}          | {cc3}   | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
-      | {csc2}          | {cc2}   | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
-      | {csc3}          | {cc1}   | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
+      | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | {csc2}          | {cc2} | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
+      | {csc3}          | {cc3} | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
+      | {csc1}          | {cc3} | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
+      | {csc2}          | {cc2} | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
+      | {csc3}          | {cc1} | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
     When I send a GET request to "/api/v2/community_topics/counts?status=active&group_by=status_category"
     Then the response should be in JSON
     And the response status code should be 200
@@ -90,13 +90,13 @@ Feature: /community_topics/counts endpoint
       | cdct3 | {cdct1} |        |          |          | 0                 | 0                    | Mac      |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct4 | {cdct1} |        |          |          | 0                 | 0                    | Linux    |             |                                                         |         | 1               | 1          | 0             |               | 1              |
     And only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
-      | ct2 | {csc2}          | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
-      | ct3 | {csc3}          | {cc3}   | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
-      | ct4 | {csc1}          | {cc3}   | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
-      | ct5 | {csc2}          | {cc2}   | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
-      | ct6 | {csc3}          | {cc1}   | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | ct2 | {csc2}          | {cc2} | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
+      | ct3 | {csc3}          | {cc3} | {admin} | 0           | topic3 | Topic3 | Topic3  | closed |
+      | ct4 | {csc1}          | {cc3} | {admin} | 0           | topic4 | Topic4 | Topic4  | active |
+      | ct5 | {csc2}          | {cc2} | {admin} | 0           | topic5 | Topic5 | Topic5  | active |
+      | ct6 | {csc3}          | {cc1} | {admin} | 0           | topic6 | Topic6 | Topic6  | closed |
     And only the following "CustomDataCommunityTopic" records exist:
       | topic | field   | root_field | value |
       | {ct1} | {cdct2} | {cdct1}    | 0     |

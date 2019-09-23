@@ -9,18 +9,18 @@
                 <span class="dp-po-post-day-date">{{ topic.date_published | date('j') }}</span>
                 <span class="dp-po-post-day-year">{{ topic.date_published | date('Y') }}</span>
             </div>
-            
+
             <div class="dp-po-title">
                 <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
                 <h2 class="dp-po-title-text">{{ topic.realTitle }}</h2>
             </div>
-            
+
             <div class="row align-items-end">
                 <div class="col-sm-10">
                     {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
                         item: topic
                     } %}
-                    
+
                     <div class="dp-po-post-info">
                         <ul class="dp-po-post-info-list">
                             <li class="dp-po-post-info-item">
@@ -35,8 +35,8 @@
             {# TODO active subscription state #}
             {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
                 subscriptionInfo: [
-                    { toggleUrl: portal_path(topic.channel, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('portal.forms.label_kb_article'), active: false },
-                    { toggleUrl: portal_path(topic.channel, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('portal.forms.label_category'), active: false },
+                    { toggleUrl: portal_path(topic.forum, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('portal.forms.label_kb_article'), active: false },
+                    { toggleUrl: portal_path(topic.forum, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('portal.forms.label_category'), active: false },
                     { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('portal.articles.section-title'), active: false },
                 ]
             } %}
@@ -51,31 +51,31 @@
             {{ topic.getContentHtml()|raw }}
         </div>
     </div>
-    
+
     {% if can_rate_post(topic) and not topic.isClosed %}
         {% include 'Theme:PublishCommon:rating.html.twig' with {
             item: topic
         } %}
     {% endif %}
-    
+
     {% if brand_setting('user.publish_comments') and (topic.calc_num_comments or new_comment_form) %}
         {% if topic.comments | length %}
             {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.comments } %}
         {% endif %}
-        
+
         {% include 'Theme:PublishCommon:comments-form.html.twig' %}
     {% endif %}
 {% endblock page_body %}
 
 {% block page_sidebar %}
-    
+
     {% if topic.labels | length %}
         {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
             title: phrase('portal.general.labels'),
             labels: topic.labels
         } %}
     {% endif %}
-    
+
     {% if linked_tickets %}
         <div class="dp-po-sidebar dp-po-chat-links">
             <h3 class="dp-po-sidebar-title">{{ phrase('portal.chat.log_linked_ticket') }}</h3>
@@ -92,7 +92,7 @@
             </ul>
         </div>
     {% endif %}
-    
+
     {% if topic.attachments|length  > 0 %}
         <div class="dp-po-sidebar dp-po-chat-attachments">
             <h3 class="dp-po-sidebar-title">Files on this Chat</h3>
@@ -114,7 +114,7 @@
            class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
            {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
         >
-            
+
             {% if attachment.is_image %}
                 <img class="thumbnail" src="{{ attachment.download_url }}" />
             {% endif %}

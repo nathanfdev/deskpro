@@ -89,7 +89,7 @@ DeskPRO.Agent.PageFragment.ListPane.CommunityFilter = new Orb.Class({
 						});
 						break;
 
-					case 'community-channel-menu':
+					case 'community-forum-menu':
 
 						action = 'set-category';
 

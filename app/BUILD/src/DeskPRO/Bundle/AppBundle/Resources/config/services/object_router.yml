@@ -9,7 +9,7 @@ services:
         - "@object_router.link_generator.content.news"
         - "@object_router.link_generator.content.downloads"
         - "@object_router.link_generator.content.guides"
-        - "@object_router.link_generator.community_channel"
+        - "@object_router.link_generator.community_forum"
         - "@object_router.link_generator.community_topic"
         - "@object_router.link_generator.portal"
         - "@object_router.link_generator.agent"
@@ -102,9 +102,9 @@ services:
       - "@object_router.annotation_config"
 
 
-  object_router.link_generator.community_channel:
+  object_router.link_generator.community_forum:
     public: false
-    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityChannelLinkGenerator
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityForumLinkGenerator
     arguments:
       - "@router"
 

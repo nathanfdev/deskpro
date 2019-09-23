@@ -73,11 +73,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     protected $hidden_status = null;
 
     /**
-     * Channel the topic belongs to.
+     * Forum the topic belongs to.
      *
-     * @var CommunityChannel
+     * @var CommunityForum
      */
-    protected $channel;
+    protected $forum;
 
     /**
      * Revisions of this topic.
@@ -268,16 +268,16 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         return 'topic';
     }
 
-    public function setChannelId($id)
+    public function setForumId($id)
     {
-        $this->setModelField('channel', App::getEntityRepository('DeskPRO:CommunityChannel')->find($id));
+        $this->setModelField('forum', App::getEntityRepository('DeskPRO:CommunityForum')->find($id));
 
         return $this;
     }
 
     public function getCategoryName()
     {
-        return $this->channel->getFullTitle();
+        return $this->forum->getFullTitle();
     }
 
     /**
@@ -398,7 +398,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     {
         $path = [];
 
-        $cat = $this->channel;
+        $cat = $this->forum;
 
         if ($cat) {
             $path[] = $cat;
@@ -656,19 +656,19 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         return $this->attachments;
     }
 
-    public function getChannel()
+    public function getForum()
     {
-        return $this->channel;
+        return $this->forum;
     }
 
     public function getCategory()
     {
-        return $this->channel;
+        return $this->forum;
     }
 
-    public function setChannel(CommunityChannel $channel = null)
+    public function setForum(CommunityForum $forum = null)
     {
-        $this->setModelField('channel', $channel);
+        $this->setModelField('forum', $forum);
 
         return $this;
     }
@@ -945,11 +945,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         );
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'channel',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityChannel',
+                'fieldName'    => 'forum',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityForum',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
-                'joinColumns'  => [0 => ['name' => 'channel_id', 'referencedColumnName' => 'id']],
+                'joinColumns'  => [0 => ['name' => 'forum_id', 'referencedColumnName' => 'id']],
                 'dpApi'        => true,
             ]
         );

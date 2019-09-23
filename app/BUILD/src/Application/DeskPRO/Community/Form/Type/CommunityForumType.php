@@ -2,22 +2,22 @@
 
 namespace Application\DeskPRO\Community\Form\Type;
 
-use Application\DeskPRO\Community\CommunityChannelEdit;
+use Application\DeskPRO\Community\CommunityForumEdit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CommunityChannelType.
+ * Class CommunityForumType.
  */
-class CommunityChannelType extends AbstractType
+class CommunityForumType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('community_channel', CommunityChannelPropsType::class);
+        $builder->add('community_forum', CommunityForumPropsType::class);
     }
 
     /**
@@ -26,7 +26,7 @@ class CommunityChannelType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'         => CommunityChannelEdit::class,
+            'data_class'         => CommunityForumEdit::class,
             'cascade_validation' => true,
         ]);
     }
@@ -36,6 +36,6 @@ class CommunityChannelType extends AbstractType
      */
     public function getName()
     {
-        return 'community_channel_edit';
+        return 'community_forum_edit';
     }
 }

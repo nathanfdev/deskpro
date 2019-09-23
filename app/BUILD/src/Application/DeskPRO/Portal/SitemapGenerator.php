@@ -306,7 +306,7 @@ class SitemapGenerator
      */
     protected function getCommunityTopics()
     {
-        $cat_ids = $this->structure->getCommunityChannelsIds();
+        $cat_ids = $this->structure->getCommunityForumsIds();
         if (!$cat_ids) {
             return [];
         }
@@ -326,7 +326,7 @@ class SitemapGenerator
             '
             SELECT PARTIAL topic.{id,slug,title}
             FROM DeskPRO:CommunityTopic topic
-            WHERE topic.hidden_status IS NULL AND topic.channel IN (?0)
+            WHERE topic.hidden_status IS NULL AND topic.forum IN (?0)
         '
         )->execute([$cat_ids]);
 

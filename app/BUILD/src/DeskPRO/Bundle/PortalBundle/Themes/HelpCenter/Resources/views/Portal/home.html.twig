@@ -72,13 +72,13 @@
                                 </div>
                             </div>
                             <div class="col-sm-9">
-                                <div class="dp-po-community-channel-tags">
-                                    <ul class="dp-po-community-channel-tags-list">
-                                        {% for info in helpcenter.getCommunityChannelsWithCounts() %}
-                                            <li class="dp-po-community-channel-tags-item">
-                                                <a href="{{ portal_path(info.channel) }}" class="dp-po-community-channel-tags-link">
-                                                    #{{info.channel.title}}
-                                                    <span class="dp-po-community-channel-tags-count">({{ info.count }})</span>
+                                <div class="dp-po-community-forum-tags">
+                                    <ul class="dp-po-community-forum-tags-list">
+                                        {% for info in helpcenter.getCommunityForumsWithCounts() %}
+                                            <li class="dp-po-community-forum-tags-item">
+                                                <a href="{{ portal_path(info.forum) }}" class="dp-po-community-forum-tags-link">
+                                                    #{{info.forum.title}}
+                                                    <span class="dp-po-community-forum-tags-count">({{ info.count }})</span>
                                                 </a>
                                             </li>
                                         {% endfor %}

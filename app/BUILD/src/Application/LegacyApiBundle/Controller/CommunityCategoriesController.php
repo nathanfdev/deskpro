@@ -36,11 +36,11 @@ class CommunityCategoriesController extends AbstractController implements Protec
 
     public function listAction()
     {
-        $communityChannels = $this->container->getSystemService('community_categories');
+        $communityForums = $this->container->getSystemService('community_categories');
 
         return $this->createApiResponse(
             [
-                'community_categories' => $communityChannels->getAll(),
+                'community_categories' => $communityForums->getAll(),
             ]
         );
     }
@@ -51,14 +51,14 @@ class CommunityCategoriesController extends AbstractController implements Protec
 
     public function getAction($id)
     {
-        $communityChannelsCustomService = $this->container->getSystemService('community_categories');
-        $communityChannel               = $communityChannelsCustomService->getById($id);
+        $communityForumsCustomService = $this->container->getSystemService('community_categories');
+        $communityForum               = $communityForumsCustomService->getById($id);
 
-        if (!$communityChannel) {
+        if (!$communityForum) {
             throw $this->createNotFoundException();
         }
 
-        $returnedData = $this->getApiData($communityChannel);
+        $returnedData = $this->getApiData($communityForum);
 
         return $this->createApiResponse(
             [
@@ -150,8 +150,8 @@ class CommunityCategoriesController extends AbstractController implements Protec
 
         if (!$skipMoving && $moveToCommunityChannel->getId() == $communityCategory->getId()) {
             throw ValidationException::create(
-                'community_channel.remove.move_community_category',
-                'You must choose a different community channel'
+                'community_forum.remove.move_community_category',
+                'You must choose a different community forum'
             );
         }
 

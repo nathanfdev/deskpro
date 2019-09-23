@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService\Community;
 
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\Person;
@@ -80,7 +80,7 @@ class CommunityDataService extends AbstractDataService
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
                 $permissions_bag = $permissions_manager->getPortalPermissionsBag($person);
-                $allowed_types = $permissions_bag->getAllowedCommunityChannelIds();
+                $allowed_types = $permissions_bag->getAllowedCommunityForumIds();
                 $requested_types = $filter->getTypes();
                 $types = [];
                 if (null === $requested_types) {
@@ -124,9 +124,9 @@ class CommunityDataService extends AbstractDataService
                 }
 
                 // types
-                // array(1,3,5) $community_topic->chanel
+                // array(1,3,5) $community_topic->forum
                 if (count($types = $filter->getTypes())) {
-                    $qb->andWhere('ct.channel IN (:types)')->setParameter('types', $types);
+                    $qb->andWhere('ct.forum IN (:types)')->setParameter('types', $types);
                 }
 
                 // sort
@@ -216,15 +216,15 @@ class CommunityDataService extends AbstractDataService
     /**
      * @param Person $person
      *
-     * @return CommunityChannel[]
+     * @return CommunityForum[]
      */
-    public function getCommunityChannelsForPerson(Person $person = null)
+    public function getCommunityForumsForPerson(Person $person = null)
     {
         $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
 
-        return $this->getCommunityChannelsRepo()->findBy(
+        return $this->getCommunityForumsRepo()->findBy(
             [
-                'id' => $permissions_bag->getAllowedCommunityChannelIds(),
+                'id' => $permissions_bag->getAllowedCommunityForumIds(),
             ]
         );
     }
@@ -270,11 +270,11 @@ class CommunityDataService extends AbstractDataService
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\CommunityChannel
+     * @return \Application\DeskPRO\EntityRepository\CommunityForum
      */
-    public function getCommunityChannelsRepo()
+    public function getCommunityForumsRepo()
     {
-        return $this->em->getRepository('DeskPRO:CommunityChannel');
+        return $this->em->getRepository('DeskPRO:CommunityForum');
     }
 
     /**

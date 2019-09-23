@@ -13,7 +13,7 @@ Feature: /community_categories endpoint
       | cdf3 | {cdf1} |        |          |          | 0                 | 0                    | Mac      |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdf4 | {cdf1} |        |          |          | 0                 | 0                    | Linux    |             |                                                         |         | 1               | 1          | 0             |               | 1              |
 
-  Scenario: I GET all custom channels
+  Scenario: I GET all custom forums
 
     When I send a GET request to "/api/v2/community_categories"
     Then the response should be in JSON

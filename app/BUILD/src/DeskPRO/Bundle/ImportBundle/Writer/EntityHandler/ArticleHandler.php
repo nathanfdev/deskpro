@@ -74,7 +74,7 @@ class ArticleHandler extends AbstractEntityHandler
 
         if (!$entity->getCategories()->count()) {
             // use default category
-            $defaultCategory = $this->mappers->getArticleCategoryMapper()->getDefaultChannel();
+            $defaultCategory = $this->mappers->getArticleCategoryMapper()->getDefaultForum();
             if ($defaultCategory) {
                 $entity->addToCategory($defaultCategory);
             }

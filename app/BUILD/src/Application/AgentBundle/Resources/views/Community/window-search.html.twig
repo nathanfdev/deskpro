@@ -39,13 +39,13 @@
 
 	<div class="input-row">
 		<div class="input-row-title">
-			<strong>{{ phrase('agent.general.channels') }}</strong>
+			<strong>{{ phrase('agent.general.forums') }}</strong>
 		</div>
 		<div class="input-row-body add-to-search">
 			<div class="cat-select-type cat-select-articles">
-				<select class="dp-select-widget-simple" name="community_channels[]" multiple="multiple" data-target-menu="auto">
-					{% for channel in community_channels %}
-						{{ _self.render_cat_option(channel, '', 0) }}
+				<select class="dp-select-widget-simple" name="community_forums[]" multiple="multiple" data-target-menu="auto">
+					{% for forum in community_forums %}
+						{{ _self.render_cat_option(forum, '', 0) }}
 					{% endfor %}
 				</select>
 			</div>

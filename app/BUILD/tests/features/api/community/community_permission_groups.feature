@@ -9,11 +9,11 @@ Feature: /community_topics endpoint
     And only the following "CommunityTopicStatusCategory" records exist:
       | #    | status_type | title     | display_order |
       | csc1 | active      | Collected | 0             |
-    And only the following "CommunityChannel" records exist:
+    And only the following "CommunityForum" records exist:
       | #   | title   | slug    |
       | cc1 | Feature | feature |
     And only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
       | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
       | #       | topic | person  | content  | is_reviewed |

@@ -31,7 +31,7 @@ abstract class AbstractDpFixture extends AbstractFixture implements ContainerAwa
     const TABLE_DOWNLOAD_CATEGORIES               = 'download_categories';
     const TABLE_DOWNLOAD_COMMENTS                 = 'download_comments';
     const TABLE_COMMUNITY_TOPICS                  = 'community_topics';
-    const TABLE_COMMUNITY_CHANNELS                = 'community_channels';
+    const TABLE_COMMUNITY_FORUMS                  = 'community_forums';
     const TABLE_COMMUNITY_TOPIC_COMMENTS          = 'community_topic_comments';
     const TABLE_COMMUNITY_TOPIC_STATUS_CATEGORIES = 'community_topic_status_categories';
     const TABLE_GLOSSARY_WORD_DEFINITIONS         = 'glossary_word_definitions';

@@ -34,9 +34,9 @@
 		<input type="hidden" name="terms[category][type]" value="category" />
 		<input type="hidden" name="terms[category][op]" value="is" />
 		<select name="terms[category][category]">
-			<option value="DP_DISCARD_TERM">{{ phrase('agent.community.any_channel') }}</option>
-			{% for channel in community_channels %}
-				<option {% if filter_form.category.category == channel.id %}selected="selected"{% endif %} value="{{channel.id}}">{% if channel.depth %}{% for x in 1..channel.depth%}--{% endfor %} {% endif %}{{ channel.title }}</option>
+			<option value="DP_DISCARD_TERM">{{ phrase('agent.community.any_forum') }}</option>
+			{% for forum in community_forums %}
+				<option {% if filter_form.category.category == forum.id %}selected="selected"{% endif %} value="{{forum.id}}">{% if forum.depth %}{% for x in 1..forum.depth%}--{% endfor %} {% endif %}{{ forum.title }}</option>
 			{% endfor %}
 		</select>
 

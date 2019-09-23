@@ -613,7 +613,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
 
         $object_groups[] = ['id' => 'community_statuses',  'title' => 'Community Statuses'];
-        $object_groups[] = ['id' => 'community_channels',  'title' => 'Community Channels'];
+        $object_groups[] = ['id' => 'community_forums',    'title' => 'Community Forums'];
         $object_groups[] = ['id' => 'kb_categories',       'title' => 'Knowledgebase Categories'];
 
         if ($this->container->getSystemService('ticket_fields_manager')->count()) {
@@ -762,8 +762,8 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 $phrases = $phrase_data->getCommunityStatusPhrases($lang);
                 break;
 
-            case 'community_channels':
-                $phrases = $phrase_data->getCommunityChannelsPhrases($lang);
+            case 'community_forums':
+                $phrases = $phrase_data->getCommunityForumsPhrases($lang);
                 break;
 
             case 'kb_categories':

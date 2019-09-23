@@ -10,7 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
-use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityChannelListener;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityForumListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
@@ -21,21 +21,21 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 /**
- * Community channels.
+ * Community forums.
  *
  * @JMS\ExclusionPolicy("all")
  *
  * @PortalLinkCustom()
  */
-class CommunityChannel extends CategoryAbstract implements HasValidationMetadataInterface
+class CommunityForum extends CategoryAbstract implements HasValidationMetadataInterface
 {
     /**
-     * @var CommunityChannel
+     * @var CommunityForum
      */
     protected $parent;
 
     /**
-     * @var CommunityChannel[]
+     * @var CommunityForum[]
      */
     protected $children;
 
@@ -78,9 +78,9 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
     }
 
     /**
-     * @return CommunityChannel
+     * @return CommunityForum
      */
-    public static function createCommunityChannel()
+    public static function createCommunityForum()
     {
         $category = new self();
 
@@ -140,11 +140,11 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->addEntityListener(Events::prePersist, CommunityChannelListener::class, 'prePersist');
-        $metadata->addEntityListener(Events::preUpdate, CommunityChannelListener::class, 'preUpdate');
+        $metadata->addEntityListener(Events::prePersist, CommunityForumListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, CommunityForumListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityChannel';
-        $metadata->setPrimaryTable(['name' => 'community_channels']);
+        $metadata->customRepositoryClassName = \Application\DeskPRO\EntityRepository\CommunityForum::class;
+        $metadata->setPrimaryTable(['name' => 'community_forums']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             [
@@ -214,7 +214,7 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'parent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityChannel',
+                'targetEntity' => self::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'children',
                 'joinColumns'  => [
@@ -229,7 +229,7 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'children',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityChannel',
+                'targetEntity' => self::class,
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
             ]
@@ -243,11 +243,11 @@ class CommunityChannel extends CategoryAbstract implements HasValidationMetadata
                     'merge',
                 ],
                 'joinTable' => [
-                    'name'        => 'community_channel2usergroup',
+                    'name'        => 'community_forum2usergroup',
                     'schema'      => null,
                     'joinColumns' => [
                         0 => [
-                            'name'                 => 'community_channel_id',
+                            'name'                 => 'community_forum_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'columnDefinition'     => null,

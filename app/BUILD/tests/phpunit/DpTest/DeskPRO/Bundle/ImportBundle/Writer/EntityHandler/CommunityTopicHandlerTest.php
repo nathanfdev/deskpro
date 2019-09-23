@@ -16,7 +16,7 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
     public function setUp()
     {
         $this->clearTable('community_topics');
-        $this->clearTable('community_channels');
+        $this->clearTable('community_forums');
         $this->clearTable('people');
 
         parent::setUp();
@@ -69,7 +69,7 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
         $model->setDatePublished(new \DateTime('2016-07-20'));
         $model->setViewCount(100);
         $model->setLanguage('en-US');
-        $model->setChannel('Channel 1 > Sub channel 1');
+        $model->setForum('Forum 1 > Sub forum 1');
         $model->setLabels(['label 1', 'label 2']);
         $model->addCustomField($customField1);
         $model->addAttachment($attachment);
@@ -86,7 +86,7 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('2016-07-20', $entity->getDatePublished()->format('Y-m-d'));
         $this->assertEquals(100, $entity->getViewCount());
         $this->assertEquals('en-US', $entity->getLanguage()->getLocale());
-        $this->assertEquals('Sub channel 1', $entity->getChannel()->getTitle());
+        $this->assertEquals('Sub forum 1', $entity->getForum()->getTitle());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
         $this->assertEquals('label 2', $entity->getLabels()[1]->getLabel());
         $this->assertCount(1, $entity->getCustomData());
@@ -94,12 +94,12 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(1, $entity->getAttachments());
     }
 
-    public function test_default_channel()
+    public function test_default_forum()
     {
-        $channel = new Entity\CommunityChannel();
-        $channel->setRealTitle('chan');
+        $forum = new Entity\CommunityForum();
+        $forum->setRealTitle('forum');
 
-        $this->em()->persist($channel);
+        $this->em()->persist($forum);
         $this->em()->flush();
 
         $model = $this->createBaseModel();
@@ -108,7 +108,7 @@ class CommunityTopicHandlerTest extends AbstractEntityHandlerTest
 
         $entity = $this->getBaseEntity();
         $this->assertNotNull($entity);
-        $this->assertNotNull($entity->getChannel());
+        $this->assertNotNull($entity->getForum());
     }
 
     /**

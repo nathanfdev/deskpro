@@ -9,9 +9,9 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class CommunityChannelType.
+ * Class CommunityForumType.
  */
-class CommunityChannelType extends AbstractType
+class CommunityForumType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class CommunityChannelType extends AbstractType
                     /** @var \DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator $hierarchyGenerator */
                     $hierarchyGenerator = $options['hierarchy_generator'];
 
-                    return $hierarchyGenerator->generateForCommunityChannels($options['person'])->getChoiceLoader();
+                    return $hierarchyGenerator->generateForCommunityForums($options['person'])->getChoiceLoader();
                 },
             ])
         ;

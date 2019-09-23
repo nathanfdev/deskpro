@@ -93,7 +93,7 @@ class PortalController extends AbstractController
      */
     public function homeAction()
     {
-        $allowedCommunityChannelIds = $this->getPermissionBagForCurrentUser()->getAllowedCommunityChannelIds();
+        $allowedCommunityForumIds = $this->getPermissionBagForCurrentUser()->getAllowedCommunityForumIds();
         if (!$this->getUser() && $this->canUseNothing()) {
             return $this->redirectToRoute('portal_login');
         }
@@ -136,7 +136,7 @@ class PortalController extends AbstractController
                 'page_title'        => $this->createPageTitle()->homepage(),
                 'helpcenter'        => $this->get('helpcenter_data_helper'),
                 'kb_data'           => $kbData,
-                'communityChannels' => $allowedCommunityChannelIds,
+                'communityForums' => $allowedCommunityForumIds,
             ]
         );
     }

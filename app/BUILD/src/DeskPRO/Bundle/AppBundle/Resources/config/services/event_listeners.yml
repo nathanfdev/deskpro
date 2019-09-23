@@ -90,8 +90,8 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.community_channel:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityChannelListener
+  event_listener.doctrine.community_forum:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityForumListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }

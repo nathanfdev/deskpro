@@ -56,7 +56,7 @@ class CommunityTopicsSearchController extends AbstractController
         /** @var CommunityTopicRepository $entityRepository */
         $entityRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(CommunityTopic::class);
         foreach ($entityRepository->getByIds($results, true) as $topic) {
-            //@TODO: prefetch Community Channels and StatusCategories
+            //@TODO: prefetch Community Forums and StatusCategories
             $output[] = $this->formatCommunityTopicResultRow($topic);
         }
 

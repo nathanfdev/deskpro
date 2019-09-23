@@ -12,9 +12,9 @@ class TicketCommunityTopicLinkRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('tctl');
         $qb
-            ->select('tctl', 'topic', 'channel', 'status_category')
+            ->select('tctl', 'topic', 'forum', 'status_category')
             ->leftJoin('tctl.topic', 'topic')
-            ->leftJoin('topic.channel', 'channel')
+            ->leftJoin('topic.forum', 'forum')
             ->leftJoin('topic.status_category', 'status_category')
             ->where('tctl.ticket = :ticket')
             ->setParameter('ticket', $ticket)

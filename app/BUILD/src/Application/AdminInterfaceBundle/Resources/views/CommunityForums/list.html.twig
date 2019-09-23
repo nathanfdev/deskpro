@@ -20,19 +20,19 @@
 				<span dp-ping-flash="display_orders" class="saved-ping"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
-			<h3 ng-pluralize count="CommunityChannelsList.community_channels.length || 0" when="{{ ng_plural_phrase('adm.general.x_community_channels') }}"></h3>
+			<h3 ng-pluralize count="CommunityForumsList.community_forums.length || 0" when="{{ ng_plural_phrase('adm.general.x_community_forums') }}"></h3>
 		</header>
 		<article>
-			<ul class="dp-item-list" ui-sortable="CommunityChannelsList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="channel in CommunityChannelsList.community_channels" dp-state-mark="portal.community_channels.edit.{{ ng_var('channel.id') }}" data-id="{{ ng_var('channel.id') }}" ng-if="channel.brand == brand_id">
-					<a href="{{ ng_href('portal.community_channels.edit', '{id: channel.id}') }}">
+			<ul class="dp-item-list" ui-sortable="CommunityForumsList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="forum in CommunityForumsList.community_forums" dp-state-mark="portal.community_forums.edit.{{ ng_var('forum.id') }}" data-id="{{ ng_var('forum.id') }}" ng-if="forum.brand == brand_id">
+					<a href="{{ ng_href('portal.community_forums.edit', '{id: forum.id}') }}">
 						<i class="fas fa-bars drag-handle"></i>
-						<h4><span class="title-id" title="ID">#{{ ng_var('channel.id') }}</span> <span class="title-text">{{ ng_var('channel.title') }}</span></h4>
+						<h4><span class="title-id" title="ID">#{{ ng_var('forum.id') }}</span> <span class="title-text">{{ ng_var('forum.title') }}</span></h4>
 					</a>
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('portal.community_channels.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" href="{{ ng_href('portal.community_forums.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
 	</section>
@@ -51,23 +51,23 @@
 	</section>
 
 	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
-	<div dp-register-message="no_delete_last">{{ phrase('adm.community_channels.no_delete_last') }}</div>
+	<div dp-register-message="no_delete_last">{{ phrase('adm.community_forums.no_delete_last') }}</div>
 {% endblock %}
 {% block listpane_help %}
 	<header>
 		<h1>Channels help agents to organize incoming community topics.</h1>
-		<p>Users have to choose a channel when they submit a topic. The channel field can be used to record whether the topic is a suggestion, complaint, bug report etc.</p>
+		<p>Users have to choose a forum when they submit a topic. The forum field can be used to record whether the topic is a suggestion, complaint, bug report etc.</p>
 	</header>
 
 	<article>
 			<section>
-				<p>Customize the channels available here. Click to edit, or drag to change the order in which they are displayed to users and agents.</p>
+				<p>Customize the forums available here. Click to edit, or drag to change the order in which they are displayed to users and agents.</p>
 			</section>
 
 		<section class="related-content">
 				<h2><span>Related Content</span></h2>
 				<ul>
-				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Community channels</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Community forums</a></li>
 
 				</ul>
 			</section>

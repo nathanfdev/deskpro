@@ -35,7 +35,7 @@ class NewCommunityTopic
     public $brand;
 
     /** @var int */
-    public $channel_id;
+    public $forum_id;
 
     /** @var string */
     public $status_code;
@@ -106,8 +106,8 @@ class NewCommunityTopic
             ? App::$container->getInputCleaner()->clean($this->content ?: '', 'string', ['noclean' => true])
             : App::$container->getInputCleaner()->clean($this->content ?: '', 'html');
 
-        $cat = $this->em->find('DeskPRO:CommunityChannel', $this->channel_id);
-        $communityTopic->setChannel($cat);
+        $cat = $this->em->find('DeskPRO:CommunityForum', $this->forum_id);
+        $communityTopic->setForum($cat);
         $this->em->persist($communityTopic);
         $this->em->flush();
 

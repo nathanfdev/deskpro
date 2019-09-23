@@ -2,30 +2,30 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories;
 
-use Application\DeskPRO\Entity\CommunityChannel as CommunityChannelEntity;
+use Application\DeskPRO\Entity\CommunityForum as CommunityForumEntity;
 use Application\DeskPRO\Entity\Usergroup;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class CommunityChannel.
+ * Class CommunityForum.
  */
-class CommunityChannel extends CategoryAbstract
+class CommunityForum extends CategoryAbstract
 {
     /**
-     * Category`s parent.
+     * Forums's parent.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityChannel>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityForum>")
      *
-     * @var \Application\DeskPRO\Entity\CommunityChannel
+     * @var \Application\DeskPRO\Entity\CommunityForum
      */
     protected $parent;
 
     /**
-     * Category`s children.
+     * Forum's children.
      *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\CommunityChannel>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\CommunityForum>>")
      *
-     * @var \Application\DeskPRO\Entity\CommunityChannel[]
+     * @var \Application\DeskPRO\Entity\CommunityForum[]
      */
     protected $children;
 
@@ -41,9 +41,9 @@ class CommunityChannel extends CategoryAbstract
     /**
      * Constructor.
      *
-     * @param CommunityChannelEntity $entity
+     * @param CommunityForumEntity $entity
      */
-    public function __construct(CommunityChannelEntity $entity)
+    public function __construct(CommunityForumEntity $entity)
     {
         parent::__construct($entity);
 

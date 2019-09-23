@@ -69,7 +69,7 @@ class HelpCenterData
     }
 
     /**
-     * Get a list of community channels with their counts.
+     * Get a list of community forums with their counts.
      *
      * Options:
      * - orderByCount: True to order the list by count; default is to order by display_order
@@ -78,21 +78,21 @@ class HelpCenterData
      *
      * @return array
      */
-    public function getCommunityChannelsWithCounts(array $userOptions = [])
+    public function getCommunityForumsWithCounts(array $userOptions = [])
     {
         $options = array_merge([
             'orderByCount' => false,
         ], $userOptions);
 
-        $channels = $this->getCommunityDataService()->getCommunityChannelsForPerson($this->getUser());
+        $forums = $this->getCommunityDataService()->getCommunityForumsForPerson($this->getUser());
 
-        $counts = $this->getCommunityDataService()->getItemsRepo()->countAllChannelsGrouped();
+        $counts = $this->getCommunityDataService()->getItemsRepo()->countAllForumsGrouped();
 
         $ret = [];
-        foreach ($channels as $channel) {
-            $ret[$channel->getId()] = [
-                'channel' => $channel,
-                'count'   => @$counts[$channel->getId()] ?: 0,
+        foreach ($forums as $forum) {
+            $ret[$forum->getId()] = [
+                'forum' => $forum,
+                'count'   => @$counts[$forum->getId()] ?: 0,
             ];
         }
 

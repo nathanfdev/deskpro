@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * for security and to increment count + redirect
  * this avoids both security and the download increment, so be careful with the "serve" type on Downloads!
  */
-class CommunityChannelLinkGenerator implements LinkGeneratorInterface
+class CommunityForumLinkGenerator implements LinkGeneratorInterface
 {
     /**
      * @var UrlGeneratorInterface
@@ -37,7 +37,7 @@ class CommunityChannelLinkGenerator implements LinkGeneratorInterface
      */
     public function supports($object, $type, $context)
     {
-        return $object instanceof CommunityChannel || $object instanceof CommunityTopicStatusCategory;
+        return $object instanceof CommunityForum || $object instanceof CommunityTopicStatusCategory;
     }
 
     /**
@@ -47,7 +47,7 @@ class CommunityChannelLinkGenerator implements LinkGeneratorInterface
     {
         $filter = new CommunityFilter();
 
-        if ($object instanceof CommunityChannel) {
+        if ($object instanceof CommunityForum) {
             $filter->setTypes([$object->getId()]);
         } elseif ($object instanceof CommunityTopicStatusCategory) {
             $filter->setStatus($object->getStatusType());

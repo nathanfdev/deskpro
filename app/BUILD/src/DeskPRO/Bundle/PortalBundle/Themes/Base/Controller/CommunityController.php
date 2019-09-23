@@ -71,7 +71,7 @@ class CommunityController extends AbstractController
         }
 
         $types   = $filter->getTypes();
-        $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedCommunityChannelIds();
+        $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedCommunityForumIds();
 
         return $this->renderThemeView(
             sprintf('Theme:Community:CommunityTopicsList/%s.html.twig', $options['style']),

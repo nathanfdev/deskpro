@@ -13,7 +13,7 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <div class="form-header-error" style="display: none">
-	{{ phrase('agent.community.no_community_channels_error') }}
+	{{ phrase('agent.community.no_community_forums_error') }}
 </div>
 <div class="form-outer">
 
@@ -47,7 +47,7 @@ pageMeta.baseId = '{{ baseId }}';
   </div>
 {% endif %}
 
-<div class="{% if not ticket %}first{% endif %} section chan-section" id="{{baseId}}_chan_section">
+<div class="{% if not ticket %}first{% endif %} section forum-section" id="{{baseId}}_forum_section">
 	<div class="content">
         <div class="col">
             <h4>{{ phrase('agent.general.brand') }}</h4>
@@ -60,16 +60,16 @@ pageMeta.baseId = '{{ baseId }}';
             </select>
         </div>
 		<div class="col">
-			<h4>{{ phrase('agent.general.channel') }}</h4>
+			<h4>{{ phrase('agent.general.forum') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
-				'name': 'newcommunitytopic[channel_id]',
+				'name': 'newcommunitytopic[forum_id]',
 				'id': baseId ~ '_chan',
-				'add_classname': 'channel_id',
+				'add_classname': 'forum_id',
 				'add_attr': '',
-				'categories': community_channels,
-				'selected': state.newcommunitytopic.channel_id|default(0)
+				'categories': community_forums,
+				'selected': state.newcommunitytopic.forum_id|default(0)
 			} %}
-			<div class="error-message channel_id">{{ phrase('agent.general.choose_a_type') }}</div>
+			<div class="error-message forum_id">{{ phrase('agent.general.choose_a_type') }}</div>
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>

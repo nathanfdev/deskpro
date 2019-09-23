@@ -9,7 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\View\PageTitle;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CategoryAbstract;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -196,14 +196,14 @@ class PageTitleGenerator
 
         $section_title = $this->phrase('portal.community.section-title');
 
-        if ($content_or_cat instanceof CommunityChannel) {
+        if ($content_or_cat instanceof CommunityForum) {
             $builder->prependSection(
                 $this->getCategorySection($content_or_cat, $section_title)
             );
         } elseif ($content_or_cat instanceof CommunityTopic) {
             $builder->prependSection(
                 $this->getCategorySection(
-                    $content_or_cat instanceof CommunityTopic ? $content_or_cat->getChannel() : $content_or_cat->getCategory(),
+                    $content_or_cat instanceof CommunityTopic ? $content_or_cat->getForum() : $content_or_cat->getCategory(),
                     $section_title
                 )
             );

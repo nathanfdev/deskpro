@@ -9,11 +9,11 @@
 namespace Application\DeskPRO\People\PermissionLoader;
 
 /**
- * Loads community channels permissions.
+ * Loads community forums permissions.
  *
  * @deprecated use new PermissionsManager to get the PermissionsBag instead of people helpers
  */
-class CommunityChannels extends BasicTreeCategoryPermission
+class CommunityForums extends BasicTreeCategoryPermission
 {
     protected function getCategoryPermissionEntity()
     {
@@ -22,6 +22,6 @@ class CommunityChannels extends BasicTreeCategoryPermission
 
     protected function getCategoryEntity()
     {
-        return 'DeskPRO:CommunityChannel';
+        return 'DeskPRO:CommunityForum';
     }
 }

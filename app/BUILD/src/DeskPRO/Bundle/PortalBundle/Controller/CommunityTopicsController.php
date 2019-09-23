@@ -191,17 +191,17 @@ class CommunityTopicsController extends AbstractPublishController
 
         // FILTER CATEGORIES
 
-        $communityChannels = $this->get('data.community')->getCommunityChannelsForPerson($person);
+        $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
 
         // JS INITIAL DATA
 
         $filter             = new CommunityFilter(); // get the defaults$allowed_types_parsed = array();
         $allowedTypesParsed = [];
-        foreach ($communityChannels as $cat) {
+        foreach ($communityForums as $cat) {
             $allowedTypesParsed[] = $cat->getId();
         }
         $filter->setTypes($allowedTypesParsed);
-        $filterJs = $this->generateFilterJs($filter, $communityChannels, $page);
+        $filterJs = $this->generateFilterJs($filter, $communityForums, $page);
 
         $check = $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp(), false);
 
@@ -211,7 +211,7 @@ class CommunityTopicsController extends AbstractPublishController
             'Theme:Community:index.html.twig',
             [
                 'page'               => $page,
-                'community_channels' => $communityChannels,
+                'community_forums' => $communityForums,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination'    => true,
                 'status'             => $filter->getStatus(),
@@ -314,9 +314,9 @@ class CommunityTopicsController extends AbstractPublishController
         }
 
         // SECURITY
-        // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityChannel)
+        // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityForum)
         $permissionsBag       = $this->getPermissionBag($person);
-        $allowed_category_ids = $permissionsBag->getAllowedCommunityChannelIds();
+        $allowed_category_ids = $permissionsBag->getAllowedCommunityForumIds();
         foreach ($filter->getTypes() as $type) {
             if (!in_array($type, $allowed_category_ids)) {
                 throw new AccessDeniedException(
@@ -356,12 +356,12 @@ class CommunityTopicsController extends AbstractPublishController
 
         // FILTER CATEGORIES
 
-        $communityChannels = $this->get('data.community')->getCommunityChannelsForPerson($person);
-        $filterJs          = $this->generateFilterJs($filter, $communityChannels, $page);
+        $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
+        $filterJs          = $this->generateFilterJs($filter, $communityForums, $page);
 
         $pageOptions = [
             'page'               => $page,
-            'community_channels' => $communityChannels,
+            'community_forums' => $communityForums,
             'count'              => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination'    => true,
             'status'             => $filter->getStatus(),
@@ -614,7 +614,7 @@ class CommunityTopicsController extends AbstractPublishController
      * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
      * @AutoPostOnGetRequest()
      */
-    public function communityRootChannelSubscriptionAction()
+    public function communityRootForumSubscriptionAction()
     {
         $person              = $this->getUser();
         $subscriptionsHelper = $this->getSubscriptionsHelper();
@@ -662,14 +662,14 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @param $filter
-     * @param $communityChannels
+     * @param $communityForums
      *
      * @return string
      */
-    public function generateFilterJs(CommunityFilter $filter, array $communityChannels, $page)
+    public function generateFilterJs(CommunityFilter $filter, array $communityForums, $page)
     {
         $allowedTypesParsed = [];
-        foreach ($communityChannels as $cat) {
+        foreach ($communityForums as $cat) {
             $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 

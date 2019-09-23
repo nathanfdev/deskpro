@@ -2,23 +2,23 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories;
 
-use Application\DeskPRO\Entity\CommunityChannel;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories\CommunityChannel as CommunityChannelModel;
+use Application\DeskPRO\Entity\CommunityForum;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories\CommunityForum as CommunityForumModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class CommunityChannelHandler.
+ * Class CommunityForumHandler.
  */
-class CommunityChannelHandler extends AbstractCategoryHandler
+class CommunityForumHandler extends AbstractCategoryHandler
 {
     /**
      * {@inheritdoc}
      *
-     * @param CommunityChannel $entity
+     * @param CommunityForum $entity
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        $model = new CommunityChannelModel($entity);
+        $model = new CommunityForumModel($entity);
         $model->setTitleTranslations($this->getTitleTranslations($entity));
 
         return $model;
@@ -29,6 +29,6 @@ class CommunityChannelHandler extends AbstractCategoryHandler
      */
     public static function getClassNames()
     {
-        return CommunityChannel::class;
+        return CommunityForum::class;
     }
 }

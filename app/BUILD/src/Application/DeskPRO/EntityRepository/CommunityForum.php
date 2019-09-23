@@ -17,12 +17,12 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
- * Class CommunityChannel.
+ * Class CommunityForum.
  *
  * @method array getFlatHierarchy()
  * @method array getInHierarchy()
  */
-class CommunityChannel extends AbstractCategoryRepository
+class CommunityForum extends AbstractCategoryRepository
 {
     /** @var array|null */
     protected $all_cats = null;
@@ -56,12 +56,12 @@ class CommunityChannel extends AbstractCategoryRepository
 
     public function getPermissionTableName()
     {
-        return 'community_channel2usergroup';
+        return 'community_forum2usergroup';
     }
 
     public function getCategoryField()
     {
-        return 'community_channel_id';
+        return 'community_forum_id';
     }
 
     /**
@@ -77,7 +77,7 @@ class CommunityChannel extends AbstractCategoryRepository
 
         $this->all_cats = App::getDb()->fetchAllKeyed('
             SELECT id, parent_id title
-            FROM community_channels
+            FROM community_forums
             ORDER BY display_order DESC
         ', [], 'id');
 
@@ -108,9 +108,9 @@ class CommunityChannel extends AbstractCategoryRepository
     public function getAll()
     {
         return $this->getEntityManager()->createQuery('
-            SELECT c
-            FROM DeskPRO:CommunityChannel c INDEX BY c.id
-            ORDER BY c.display_order ASC
+            SELECT f
+            FROM DeskPRO:CommunityForum f INDEX BY f.id
+            ORDER BY f.display_order ASC
         ')->execute();
     }
 
@@ -126,9 +126,9 @@ class CommunityChannel extends AbstractCategoryRepository
             $this->getEntityManager()
             ->createQuery(
                 'SELECT u.id, u.title
-                FROM DeskPRO:CommunityChannel c
-                JOIN c.usergroups u
-                WHERE c.id = :id AND u.is_agent_group = :agent_only'
+                FROM DeskPRO:CommunityForum f
+                JOIN f.usergroups u
+                WHERE f.id = :id AND u.is_agent_group = :agent_only'
             )
             ->setParameter('id', $id)
             ->setParameter('agent_only', $agent_only)
@@ -143,19 +143,19 @@ class CommunityChannel extends AbstractCategoryRepository
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_FORUM, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_FORUM, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_FORUM, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopicEntity::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 
