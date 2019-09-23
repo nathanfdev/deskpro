@@ -221,7 +221,7 @@ class PortalController extends AbstractController
         $personRepo = $this->getRepo(Person::class);
         $person     = $personRepo->findOneByEmail($tmpData->getData('email'));
 
-        if (!$person instanceof Person) {
+        if (!$person instanceof Person || !$person->isAgent()) {
             return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
                 'error_title' => 'portal.account.link-expired',
             ]);
