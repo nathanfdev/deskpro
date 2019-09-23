@@ -31,6 +31,11 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 class CommunityForum extends CategoryAbstract implements HasValidationMetadataInterface
 {
     /**
+     * @var string|null
+     */
+    protected $description;
+
+    /**
      * @var CommunityForum
      */
     protected $parent;
@@ -84,6 +89,25 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         $this->usergroups     = new ArrayCollection();
         $this->topic_statuses = new ArrayCollection();
         $this->topic_fields   = new ArrayCollection();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     * @return CommunityForum
+     */
+    public function setDescription($description)
+    {
+        $this->setModelField('description', $description);
+
+        return $this;
     }
 
     /**
@@ -257,6 +281,14 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         );
         $metadata->mapField(
             [
+                'fieldName'  => 'description',
+                'type'       => 'text',
+                'nullable'   => true,
+                'columnName' => 'description',
+            ]
+        );
+        $metadata->mapField(
+            [
                 'fieldName'  => 'slug',
                 'type'       => 'string',
                 'length'     => 255,
@@ -423,24 +455,6 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
                 'mappedBy'      => 'forum',
                 'orderBy'       => ['display_order' => 'ASC'],
-            ]
-        );
-        $metadata->mapManyToOne(
-            [
-                'fieldName'    => 'icon_property',
-                'targetEntity' => IconProperty::class,
-                'mappedBy'     => null,
-                'inversedBy'   => null,
-                'joinColumns'  => [
-                    0 => [
-                        'name'                 => 'icon_property_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => true,
-                        'onDelete'             => 'set null',
-                        'columnDefinition'     => null,
-                    ],
-                ],
-                'dpApi' => true,
             ]
         );
         $metadata->mapManyToOne(

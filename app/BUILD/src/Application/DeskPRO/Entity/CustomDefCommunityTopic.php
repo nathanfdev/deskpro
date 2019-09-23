@@ -56,7 +56,7 @@ class CustomDefCommunityTopic extends CustomDefAbstract
      *
      * If TRUE then this field is added to every forum
      */
-    protected $is_global = true;
+    protected $is_global = false;
 
     /**
      * Constructor.
