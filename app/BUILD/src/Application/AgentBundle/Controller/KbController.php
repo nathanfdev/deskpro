@@ -75,7 +75,8 @@ class KbController extends AbstractController
         $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities(true);
 
-        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        //$state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        $state = null;
 
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($article);
 
@@ -150,6 +151,11 @@ class KbController extends AbstractController
 
             'word_defs' => $word_defs,
         ];
+
+        if ($perms['can_edit'] && $this->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $vars['collab_editor_options'] = $this->get('content.collab_manager')
+                ->getEditorCollabOptions('article', $article->getId());
+        }
 
         if ($isPdf) {
             $contentHtml = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);

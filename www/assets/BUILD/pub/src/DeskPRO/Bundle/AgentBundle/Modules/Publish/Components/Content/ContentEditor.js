@@ -22,7 +22,7 @@ class ContentEditor extends React.PureComponent {
   };
 
   render() {
-    const { value  } = this.props;
+    const { value, useCollab  } = this.props;
     return (
       <ArticleEditor
         ref={this.editor}
@@ -31,6 +31,7 @@ class ContentEditor extends React.PureComponent {
         }}
         onFocus={this.onFocus}
         onBlur={this.onBlur}
+        useCollab={useCollab}
         uppyOptions={{
           autoProceed: false,
           xhrUpload:   {
@@ -50,9 +51,10 @@ class ContentEditor extends React.PureComponent {
 }
 
 ContentEditor.propTypes = {
-  value:   PropTypes.PropTypes.object,
-  onFocus: PropTypes.PropTypes.func,
-  onBlur:  PropTypes.PropTypes.func,
+  value:     PropTypes.PropTypes.object,
+  onFocus:   PropTypes.PropTypes.func,
+  onBlur:    PropTypes.PropTypes.func,
+  useCollab: PropTypes.PropTypes.object
 };
 
 ContentEditor.defaultProps = {

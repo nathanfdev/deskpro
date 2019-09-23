@@ -1124,17 +1124,21 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 
 			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
+        console.log("EDIT NEW CONTENT EDITOR");
+
 			  var contentInput = null;
 			  if (window[this.meta.baseId + '_content_input']) {
 			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
         }
-        self.reactContentNode = txt[0];
-			  this.rte = window.AgentLegacyBundle.renderContentEditor(
+			  this.rte = window.AgentLegacyBundle.renderContentEditorCollab(
 					self.reactContentNode,
 					contentInput,
           self.editStateSaver.triggerChange.bind(self.editStateSaver),
-          this.onBlur.bind(this)
-				);
+		      this.onBlur.bind(this),
+          this.meta.collabEditorOptions.documentUrn,
+          this.meta.collabEditorOptions.userUrn,
+          this.meta.collabEditorOptions.token
+        );
 			} else {
 				this.rte = window.LegacyRteTextarea.init(txt, {
 					height: h,

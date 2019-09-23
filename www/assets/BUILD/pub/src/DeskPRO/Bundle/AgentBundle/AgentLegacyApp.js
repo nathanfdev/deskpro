@@ -25,6 +25,7 @@ import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Ap
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { ExternalEventsContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/ExternalEvents/Components/ExternalEventsContainer';
+import { CollabManager } from 'DeskPRO/Bundle/AgentBundle/Services/Collab';
 import { isVoiceEnabledSelector, connectionsSelector, incomingCallSelector, outgoingCallSelector, waitingConnectionSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
 import { canOpenDialpadSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
 import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
@@ -355,6 +356,48 @@ class AgentLegacyApp {
               value={value}
               onFocus={onFocus}
               onBlur={onBlur}
+            />
+          </IntlProvider>
+        </Provider>
+      </AppContainer>,
+      node
+    );
+
+    return editor;
+  }
+
+  renderContentEditorCollab(
+    node,
+    value,
+    onFocus,
+    onBlur,
+    documentUrn,
+    userUrn,
+    joinToken,
+  ) {
+    const editor = React.createRef();
+    const collabOpt = {
+      documentUrn,
+      auth:             joinToken,
+      userIdentity:     userUrn,
+      webSocketManager: CollabManager.getWebsocketManager()
+    };
+
+    console.log('Collab option', collabOpt);
+
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={this.store}>
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ContentEditor
+              ref={editor}
+              value={value}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              useCollab={collabOpt}
             />
           </IntlProvider>
         </Provider>

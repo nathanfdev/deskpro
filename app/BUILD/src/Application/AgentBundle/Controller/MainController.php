@@ -180,9 +180,18 @@ class MainController extends AbstractController
             $is_billing_error = true;
         }
 
+        if ($this->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $collabManager = $this->get('content.collab_manager');
+            $collabConnectionToken = $collabManager->getConnectionToken();
+            $collabWebsocketUrl  = $collabManager->getWebsocketUrl();
+        } else {
+            $collabConnectionToken = false;
+            $collabWebsocketUrl = false;
+        }
+        
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $passwordValidator */
         $passwordValidator = $this->container->getSystemService('password_policy_validator');
-
+        
         return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'               => $has_raw_assets,
             'is_demo'                      => $this->in->checkIsset('show-demo-bar'),
@@ -203,6 +212,11 @@ class MainController extends AbstractController
             'password_expired'             => $passwordValidator->isPasswordExpired($this->person),
             'sys_filter_refresh_interval'  => 60 * 10,
             'cust_filter_refresh_interval' => 60 * 20,
+
+            // Colab Editing
+            // @TODO: pass this to js in some different way
+            'collab_connection_token'      => $collabConnectionToken,
+            'collab_websocket_url'         => $collabWebsocketUrl
         ]);
     }
 
