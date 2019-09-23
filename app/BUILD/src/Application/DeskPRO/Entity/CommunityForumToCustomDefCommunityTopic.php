@@ -8,13 +8,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class CommunityForumToStatus
+ * Class CommunityForumToCustomDefCommunityTopic
  *
  * @package Application\DeskPRO\Entity
  *
  * @JMS\ExclusionPolicy("all")
  */
-class CommunityForumToStatus extends DomainObject
+class CommunityForumToCustomDefCommunityTopic extends DomainObject
 {
     /**
      * @var CommunityForum
@@ -22,9 +22,9 @@ class CommunityForumToStatus extends DomainObject
     protected $forum;
 
     /**
-     * @var CommunityTopicStatusCategory
+     * @var CustomDefCommunityTopic
      */
-    protected $status;
+    protected $field;
 
     /**
      * @var int
@@ -44,7 +44,7 @@ class CommunityForumToStatus extends DomainObject
 
     /**
      * @param CommunityForum $forum
-     * @return CommunityForumToStatus
+     * @return CommunityForumToCustomDefCommunityTopic
      */
     public function setForum(CommunityForum $forum)
     {
@@ -54,20 +54,20 @@ class CommunityForumToStatus extends DomainObject
     }
 
     /**
-     * @return CommunityTopicStatusCategory
+     * @return CustomDefCommunityTopic
      */
-    public function getStatus()
+    public function getField()
     {
-        return $this->status;
+        return $this->field;
     }
 
     /**
-     * @param CommunityTopicStatusCategory $status
-     * @return CommunityForumToStatus
+     * @param CustomDefCommunityTopic $field
+     * @return CommunityForumToCustomDefCommunityTopic
      */
-    public function setStatus(CommunityTopicStatusCategory $status)
+    public function setField(CustomDefCommunityTopic $field)
     {
-        $this->setModelField('status', $status);
+        $this->setModelField('field', $field);
 
         return $this;
     }
@@ -82,7 +82,7 @@ class CommunityForumToStatus extends DomainObject
 
     /**
      * @param int $display_order
-     * @return CommunityForumToStatus
+     * @return CommunityForumToCustomDefCommunityTopic
      */
     public function setDisplayOrder($display_order)
     {
@@ -98,7 +98,7 @@ class CommunityForumToStatus extends DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = \Application\DeskPRO\EntityRepository\CommunityForumToStatus::class;
-        $metadata->setPrimaryTable(['name' => 'community_forum_to_status']);
+        $metadata->setPrimaryTable(['name' => 'community_forum_to_custom_def_community_topic']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->mapField(
@@ -130,12 +130,12 @@ class CommunityForumToStatus extends DomainObject
 
         $metadata->mapManyToOne([
             'id' => true,
-            'fieldName' => 'status',
-            'targetEntity' => CommunityTopicStatusCategory::class,
+            'fieldName' => 'field',
+            'targetEntity' => CustomDefCommunityTopic::class,
             'inversedBy' => 'forums',
             'joinColumns' => [
                 [
-                    'name' => 'status_id',
+                    'name' => 'field_id',
                     'referencedColumnName' => 'id',
                     'nullable' => false,
                     'onDelete' => 'CASCADE',

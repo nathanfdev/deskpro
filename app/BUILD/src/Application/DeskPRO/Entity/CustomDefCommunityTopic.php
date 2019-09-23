@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -44,6 +45,21 @@ class CustomDefCommunityTopic extends CustomDefAbstract
      * @var Brand
      */
     protected $brand;
+
+    /**
+     * @var ArrayCollection|CommunityForumToCustomDefCommunityTopic[]
+     */
+    protected $forums;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->forums = new ArrayCollection();
+    }
 
     /**
      * @param $string
@@ -111,6 +127,16 @@ class CustomDefCommunityTopic extends CustomDefAbstract
         $data['brand'] = $this->brand ? $this->brand->getId() : null;
 
         return $data;
+    }
+
+    /**
+     * @return CommunityForum[]|ArrayCollection
+     */
+    public function getForums()
+    {
+        return $this->forums->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
+            return $pivot->getForum();
+        });
     }
 
     //###########################################################################
@@ -335,6 +361,13 @@ class CustomDefCommunityTopic extends CustomDefAbstract
                     ],
                 ],
                 'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'forums',
+                'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
+                'mappedBy'      => 'field',
             ]
         );
     }

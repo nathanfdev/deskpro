@@ -55,12 +55,18 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     protected $topic_statuses;
 
     /**
+     * @var ArrayCollection|CommunityForumToCustomDefCommunityTopic[]
+     */
+    protected $topic_fields;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->usergroups = new ArrayCollection();
+        $this->usergroups     = new ArrayCollection();
         $this->topic_statuses = new ArrayCollection();
+        $this->topic_fields   = new ArrayCollection();
     }
 
     /**
@@ -138,6 +144,16 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     {
         return $this->topic_statuses->map(function (CommunityForumToStatus $pivot) {
             return $pivot->getStatus();
+        });
+    }
+
+    /**
+     * @return CustomDefCommunityTopic[]|ArrayCollection
+     */
+    public function getTopicFields()
+    {
+        return $this->topic_fields->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
+            return $pivot->getField();
         });
     }
 
@@ -322,6 +338,14 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'targetEntity' => CommunityForumToStatus::class,
                 'mappedBy'     => 'forum',
                 'orderBy'      => ['display_order' => 'ASC'],
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'topic_fields',
+                'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
+                'mappedBy'      => 'forum',
+                'orderBy'       => ['display_order' => 'ASC'],
             ]
         );
     }
