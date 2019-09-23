@@ -12,7 +12,7 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Builder;
 use Application\DeskPRO\Reports\Form\Type\ReportType;
 use Application\DeskPRO\Reports\ReportEdit;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -25,7 +25,7 @@ class ReportsBuilderController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new UserTypePermission(UserTypePermission::AGENT);
+        return new AgentPermission();
     }
 
     //###################################################################################################################

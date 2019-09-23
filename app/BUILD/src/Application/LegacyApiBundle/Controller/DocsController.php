@@ -6,7 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class DocsController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new PassPermission();
+        return new OpenPermission();
     }
 
     public function preActionHandler(Request $request, $action, $arguments = null)

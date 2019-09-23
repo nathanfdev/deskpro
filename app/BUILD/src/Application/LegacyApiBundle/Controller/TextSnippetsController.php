@@ -8,7 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,7 +23,7 @@ class TextSnippetsController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new UserTypePermission(UserTypePermission::AGENT);
+        return new AgentPermission();
     }
 
     //###################################################################################################################

@@ -9,7 +9,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Searcher\TaskSearch;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -30,7 +30,7 @@ class TaskController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new UserTypePermission(UserTypePermission::AGENT);
+        return new AgentPermission();
     }
 
     /**

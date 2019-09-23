@@ -8,8 +8,8 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -26,8 +26,8 @@ class BrandController extends AbstractController
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'showAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'showAction');
 
         return $multi;
     }

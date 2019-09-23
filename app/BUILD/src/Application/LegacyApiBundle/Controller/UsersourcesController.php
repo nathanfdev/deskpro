@@ -13,8 +13,8 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
@@ -34,10 +34,10 @@ class UsersourcesController extends AbstractController
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listByTypeAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'availableAppPackagesAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'getUsersourceAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'getSyncInformationAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listByTypeAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'availableAppPackagesAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'getUsersourceAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'getSyncInformationAction');
 
         return $multi;
     }

@@ -32,7 +32,7 @@ use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -52,7 +52,7 @@ class OrganizationController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new UserTypePermission(UserTypePermission::AGENT);
+        return new AgentPermission();
     }
 
     /**

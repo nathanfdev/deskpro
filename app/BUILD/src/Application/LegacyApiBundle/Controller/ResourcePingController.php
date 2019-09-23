@@ -6,7 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -24,7 +24,7 @@ class ResourcePingController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new PassPermission();
+        return new OpenPermission();
     }
 
     /**

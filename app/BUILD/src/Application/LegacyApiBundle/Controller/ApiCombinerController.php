@@ -6,7 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -21,7 +21,7 @@ class ApiCombinerController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new PassPermission();
+        return new AgentPermission();
     }
 
     public function getAction()

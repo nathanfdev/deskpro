@@ -10,7 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,7 +24,7 @@ class OpenTicketController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new PassPermission();
+        return new OpenPermission();
     }
 
     /**

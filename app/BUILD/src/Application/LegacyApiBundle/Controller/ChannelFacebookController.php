@@ -6,14 +6,13 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\FacebookApp;
 use Application\DeskPRO\Entity\FacebookPage;
 use Application\DeskPRO\Facebook\EditPage;
 use Application\DeskPRO\Facebook\Type\EditPageType;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -30,7 +29,7 @@ class ChannelFacebookController extends AbstractController
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

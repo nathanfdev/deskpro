@@ -17,7 +17,7 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -40,7 +40,7 @@ class TicketController extends AbstractController
     public function getPermissionStrategy()
     {
         $multi = new MultiPermissions();
-        $multi->addPermissionStrategy(new PassPermission());
+        $multi->addPermissionStrategy(new OpenPermission());
         $multi->addPermissionStrategy(new SuperKeyPermission(), 'updateTicketDatesAction');
 
         return $multi;

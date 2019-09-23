@@ -15,8 +15,8 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\EmailBundle\Queue\QueueProc;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotAgentEmail;
 use Orb\Util\Env;
@@ -38,7 +38,7 @@ class EmailAccountsController extends AbstractController
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

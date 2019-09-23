@@ -6,7 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
 
@@ -20,7 +20,7 @@ class SaveLogController extends AbstractController
      */
     public function getPermissionStrategy()
     {
-        return new PassPermission();
+        return new OpenPermission();
     }
 
     public function logJsErrorAction()
