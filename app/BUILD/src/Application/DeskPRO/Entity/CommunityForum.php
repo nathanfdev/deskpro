@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityForumListener;
@@ -28,7 +29,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  *
  * @PortalLinkCustom()
  */
-class CommunityForum extends CategoryAbstract implements HasValidationMetadataInterface
+class CommunityForum extends CategoryAbstract implements HasValidationMetadataInterface, HasSplashImageProperty
 {
     /**
      * @var string|null
@@ -220,18 +221,19 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     /**
      * @return SplashImageProperty
      */
-    public function getSplashImageProperty()
+    public function getSplashImage()
     {
         return $this->splash_image_property;
     }
 
     /**
-     * @param SplashImageProperty $splash_image_property
-     * @return CommunityForum
+     * @param SplashImageProperty $splashImageProperty
+     *
+     * @return mixed
      */
-    public function setSplashImageProperty(SplashImageProperty $splash_image_property)
+    public function setSplashImage($splashImageProperty)
     {
-        $this->setModelField('splash_image_property', $splash_image_property);
+        $this->setModelField('splash_image_property', $splashImageProperty);
 
         return $this;
     }
