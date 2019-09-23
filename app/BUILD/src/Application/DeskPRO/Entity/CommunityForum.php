@@ -51,11 +51,15 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
 
     /**
      * @var ArrayCollection|CommunityForumToStatus[]
+     *
+     * As set of topic statuses that may be used with this forum
      */
     protected $topic_statuses;
 
     /**
      * @var ArrayCollection|CommunityForumToCustomDefCommunityTopic[]
+     *
+     * A set of custom fields that may be used with this forum
      */
     protected $topic_fields;
 
