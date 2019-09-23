@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Component\Util\TypeUtils;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * DEPRECEATED way of getting settings.
@@ -170,6 +171,17 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     public function setSetting($setting, $value)
     {
         // it is not an option in the new settings resolver to SET settings directly. This is left for BC.
+
+        if ($setting === 'core_tickets.work_hours') {
+            // core_tickets.work_hours can be set in a few places
+            // this verifies its an array to prevent someone arbitrarily setting the value
+            // to something nasty via the api
+            try {
+                UnserializeUtil::unserializeArray($value);
+            } catch (\Exception $e) {
+                $value = serialize([]);
+            }
+        }
 
         $this->db->beginTransaction();
         $this->reloadSettings();
