@@ -26,6 +26,7 @@ use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceTicketListener;
 use DeskPRO\Component\Util\RegexUtils;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -4203,7 +4204,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             try {
                 $work_hours = App::getSetting('core_tickets.work_hours');
                 if ($work_hours && !is_array($work_hours)) {
-                    $work_hours = @unserialize($work_hours);
+                    try {
+                        $work_hours = UnserializeUtil::unserializeArray($work_hours);
+                    } catch (\Exception $e) {
+                        $work_hours = null;
+                    }
                 }
                 if ($work_hours) {
                     $work_hours = Arrays::removeEmptyArray($work_hours);

@@ -10,6 +10,7 @@ use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
+use DeskPRO\Component\Util\UnserializeUtil;
 
 /**
  * Creates and returns an array of k=>V settings from the `settings` mysql table.
@@ -79,7 +80,11 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
                     foreach ($this->whitelistedKeys as $key) {
                         if (array_key_exists($key, $config)) {
                             $value = $config[$key];
-                            $newValue = @unserialize($value);
+                            try {
+                                $newValue = UnserializeUtil::safeUnserialize($value, UnserializeUtil::ALLOW_NONE);
+                            } catch (\Exception $e) {
+                                $newValue = null;
+                            }
                             if ($value === 'b:0;' || false !== $newValue) {
                                 $config[$key] = $newValue;
                             }
