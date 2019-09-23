@@ -28,7 +28,6 @@ use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
-use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\CodePlugin\DpPlugins;
@@ -169,7 +168,6 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
             new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
             new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash'], ['is_safe' => ['html']]),
 
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
@@ -2064,26 +2062,6 @@ class TemplatingExtension extends \Twig_Extension
         $splashImage = $object->getSplashImage();
         if ($splashImage) {
             return $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $width, $orientation);
-        }
-
-        return '';
-    }
-
-    public function getHelpcenterSplash()
-    {
-        $themeSet = $this->container->get('brand_stack')->getActive()->getBrand()->getThemeSet();
-        $image    = $themeSet->getOption('unsplash_image');
-        $url      = false;
-        if ($image) {
-            $url = $image['url'].'&w=1800';
-        } else {
-            $themeSetAsset = $this->container->get('dp.portal.designer.assets_manager')->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_SPLASH_IMAGE_TAG);
-            if ($themeSetAsset) {
-                $url = $themeSetAsset->getBlob()->getDownloadUrl();
-            }
-        }
-        if ($url) {
-            return 'background: no-repeat url('.$url.'); background-position: 0 0; background-size: cover;';
         }
 
         return '';

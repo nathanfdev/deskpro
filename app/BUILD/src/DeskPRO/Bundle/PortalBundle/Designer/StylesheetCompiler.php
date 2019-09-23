@@ -28,7 +28,7 @@ class StylesheetCompiler
      *
      * @return string
      */
-    public function compile($style_path, array $variables, $mainScss, $customScss = '')
+    public function compile($style_path, array $variables, $mainScss = '', $customScss = '')
     {
         $compiler = new ScssPhpCompiler();
         $project  = new SassProject();

@@ -6,7 +6,9 @@
             <div class="container">
 
                 {% block content_header %}
-                    {% include 'Theme:Portal:nav_buttons_big.html.twig' %}
+                    {% if theme_option('theme_options') is null or theme_option('theme_options', {}).show_section_navigation %}
+                        {% include 'Theme:Portal:nav_buttons_big.html.twig' %}
+                    {% endif %}
 
                     {% include 'Theme:Portal:welcome-box.html.twig' %}
                 {% endblock content_header %}

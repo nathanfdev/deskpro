@@ -142,6 +142,8 @@ class BrandController extends AbstractApiController
      *
      * @param Request $request
      *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      * @return ApiWrapper
      */
     public function updateWelcomeMessageAction(Request $request)
@@ -167,6 +169,54 @@ class BrandController extends AbstractApiController
         return $this->wrap([
             'title'   => $title,
             'message' => $message,
+        ]);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/theme_options")
+     * @Method({"GET"})
+     *
+     * @return ApiWrapper
+     */
+    public function getThemeOptionsAction()
+    {
+        $themeSet = $this->getEditThemeSet();
+
+        $options = $themeSet->getOption('theme_options');
+
+        if (!$options) {
+            $options['show_section_navigation'] = true;
+        }
+
+        return $this->wrap($options);
+    }
+
+    /**
+     * @Route("/portal/api/style/edit-theme-set/theme-options")
+     * @Method({"PUT"})
+     *
+     * @param Request $request
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return ApiWrapper
+     */
+    public function updateThemeOptionsAction(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $showSectionNavigation = @$data['show_section_navigation'] ?: false;
+        $themeSet              = $this->getEditThemeSet();
+
+        $themeSet->setOption('theme_options', [
+            'show_section_navigation' => $showSectionNavigation,
+        ]);
+
+        $this->getManager()->persist($themeSet);
+        $this->getManager()->flush();
+
+        return $this->wrap([
+            'show_section_navigation' => $showSectionNavigation,
         ]);
     }
 }

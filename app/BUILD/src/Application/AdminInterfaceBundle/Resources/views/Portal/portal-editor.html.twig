@@ -113,7 +113,7 @@
                         </a>
                     </div>
                     <div class="alert alert-danger inner-group" ng-show="errors.splash_image">
-                        <span ng-if="errors.splash_image">{{ ng_var('errors.favicon') }}</span>
+                        <span ng-if="errors.splash_image">{{ ng_var('errors.splash_image') }}</span>
                     </div>
                     <div ng-show="Portal.isOpen('splash_image')">
                         <div class="logo-box logo-size-desktop">
@@ -129,6 +129,24 @@
                                 <a href ng-click="Portal.deleteSplashImage()">Delete splash image</a>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Theme Options -->
+                    <div class="panel-title">
+                        <a ng-click="Portal.togglePanel('theme_options')">
+                            Theme Options
+                            <i class="fas fa-caret-right" ng-show="!Portal.isOpen('theme_options')"></i>
+                            <i class="fas fa-caret-down" ng-show="Portal.isOpen('theme_options')"></i>
+                        </a>
+                    </div>
+                    <div ng-show="Portal.isOpen('theme_options')">
+                        <form>
+                            <input type="checkbox" id="show_section_navigation" ng-model="theme_options.show_section_navigation" /> <label
+                                    for="show_section_navigation">Show section navigation buttons on the home page</label>
+                            <div class="footer">
+                                <button ng-click="Portal.saveThemeOptions()">Set &amp; Preview</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

@@ -45,6 +45,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
             new \Twig_SimpleFunction('portal_custom_js', [$this, 'getPortalCustomJs']),
             new \Twig_SimpleFunction('portal_custom_logo', [$this, 'getPortalCustomLogo']),
             new \Twig_SimpleFunction('portal_custom_favicon', [$this, 'getPortalCustomFavicon']),
+            new \Twig_SimpleFunction('helpcenter_css_url', [$this, 'getHelpcenterCssUrl']),
         ];
     }
 
@@ -91,19 +92,58 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
                 RouterInterface::ABSOLUTE_PATH
             );
         } else {
-            if ($this->container->get('brand_stack')->getActive()->getBrand()->getThemeSet()->getThemeId() === 'helpcenter') {
-                if ($this->container->get('brand_aware_settings_resolver')->getSetting('dev.use_local_portal_style_css')) {
-                    return 'http://localhost:3000/portal-components/portal-style/dist/style.css';
-                } else {
-                    return 'https://deskpro.github.io/portal-components/portal-style/dist/style.css';
-                }
+            if ($textDirection === 'RTL') {
+                return $this->getAssetsExtension()->getAssetUrl(self::$default_rtl_css_asset, 'app_assets');
             } else {
-                if ($textDirection === 'RTL') {
-                    return $this->getAssetsExtension()->getAssetUrl(self::$default_rtl_css_asset, 'app_assets');
-                } else {
-                    return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
-                }
+                return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
             }
+        }
+    }
+
+    /**
+     * Get URL of the portal CSS file.
+     *
+     * Depending on custom styles availability returns link to the custom .css or link to the default file
+     *
+     * @param string $textDirection LTR or RTL, or null to use the current language
+     *
+     * @return string
+     */
+    public function getHelpcenterCssUrl($textDirection = null)
+    {
+        if ($textDirection === null) {
+            /** @var Language $lang */
+            if (!$lang = $this->container->get('language_stack')->getActive()) {
+                $lang = $this->container->get('language_stack')->getDefaultLanguage();
+            }
+            $textDirection = $lang->getDirection();
+        }
+
+        $textDirection = strtoupper($textDirection);
+
+        $blob = $this->isPreviewMode($this->container)
+                ? $this->getStylesManager()->getEditThemeSetCssBlob($textDirection)
+                : $this->getStylesManager()->getCssBlob($textDirection);
+
+        if ($blob) {
+            $parameters = [
+                'filename'     => $blob->getFilenameSafe(),
+                'blob_auth_id' => $blob->getAuthId(),
+                'local'        => true,
+            ];
+            /** @var BlobRepository $blobRepository */
+            $blobRepository = $this->container->getEm()->getRepository(Blob::class);
+            if ($gzBlob = $blobRepository->getSystemBlob("blob-$blob[id]-gzip")) {
+                $parameters['g'] = $gzBlob->getAuthCode();
+            }
+
+            return $this->getRouter()->generate(
+                'serve_blob',
+                $parameters,
+                RouterInterface::ABSOLUTE_PATH
+            );
+        } else {
+            return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
         }
     }
 

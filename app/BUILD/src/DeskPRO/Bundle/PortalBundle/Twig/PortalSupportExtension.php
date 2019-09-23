@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -94,6 +95,8 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('theme_option', [$this, 'getThemeSetting']),
             new \Twig_SimpleFunction('generate_color', [$this, 'generateColor'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('icon_color', [$this, 'getIconColor'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash'], ['is_safe' => ['html']]),
+
         ];
 
         return $funcs;
@@ -762,6 +765,26 @@ class PortalSupportExtension extends \Twig_Extension
         $themeSet = $this->getActiveThemeSet();
 
         return $themeSet->getOption($name, $default);
+    }
+
+    public function getHelpcenterSplash()
+    {
+        $themeSet = $this->getActiveThemeSet();
+        $image    = $themeSet->getOption('unsplash_image');
+        $url      = false;
+        if ($image) {
+            $url = $image['url'].'&w=1800';
+        } else {
+            $themeSetAsset = $this->container->get('dp.portal.designer.assets_manager')->getEditThemeSetBlobAsset(AssetsManager::CUSTOM_SPLASH_IMAGE_TAG);
+            if ($themeSetAsset) {
+                $url = $themeSetAsset->getBlob()->getDownloadUrl();
+            }
+        }
+        if ($url) {
+            return 'background: no-repeat url('.$url.'); background-position: 0 0; background-size: cover;';
+        }
+
+        return '';
     }
 
     /**

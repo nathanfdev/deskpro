@@ -4,7 +4,12 @@
     {% include 'Theme:Internal:head-include.html.twig' %}
     <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
 
-    <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+    {% if app.getSetting('dev.use_local_portal_style_css') %}
+        <link rel="stylesheet" href="http://localhost:3000/portal-components/portal-style/dist/style.css" />
+    {% else %}
+        <link rel="stylesheet" href="https://deskpro.github.io/portal-components/portal-style/dist/style.css" />
+    {% endif %}
+    <link href="{{ helpcenter_css_url() }}" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body class="dp-Template portal-mode-{{ portal_mode() }}">
 
@@ -43,6 +48,7 @@
                     </div>
                 </div>
             </main>
+        </div>
         {% endblock %}
     {% endblock %}
 
@@ -50,7 +56,6 @@
 
     {% include 'Theme:Internal:custom-footer.html.twig' %}
     {% block doc_end %}{% endblock %}
-    {% include 'Theme:Internal:foot-include.html.twig' %}
 
     <div class="dp-po">
         <footer class="dp-po-footer">
@@ -65,6 +70,8 @@
         </footer>
     </div>
 </div>
+
+{% include 'Theme:Internal:foot-include.html.twig' %}
 
 <script type="text/javascript">
     {{ portal_custom_js()|raw }}
