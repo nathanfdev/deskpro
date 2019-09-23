@@ -297,6 +297,7 @@ class NewsController extends AbstractController
                 $splashImage->setOptions(['url' => $image->urls->raw]);
                 $this->em->persist($splashImage);
                 $news->setSplashImage($splashImage);
+                // Trigger Download on unsplash api to register photo usage
                 $client = new Client();
                 $client->request('GET', $image->links->download);
                 $data['content_html'] = $this->renderView('AgentBundle:News:splash-image-tab.html.twig', [

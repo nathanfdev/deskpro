@@ -21,31 +21,32 @@ class StylesheetCompiler
     /**
      * Compiles a SCSS stylesheet with custom vars and custom SCSS.
      *
-     * @param string $style_path  Path to the file to compile
-     * @param array  $variables   Array of vars to set
+     * @param string $style_path Path to the file to compile
+     * @param array  $variables  Array of vars to set
      * @param string $mainScss
-     * @param string $custom_scss Custom stylesheet content
+     * @param string $customScss Custom stylesheet content
      *
      * @return string
      */
-    public function compile($style_path, array $variables, $mainScss, $custom_scss = '')
+    public function compile($style_path, array $variables, $mainScss = '', $customScss = '')
     {
         $compiler = new ScssPhpCompiler();
         $project  = new SassProject();
 
         // Can't simply set source file and need to retrieve source as string to hack it so that scssphp can compile
-        $source_file = realpath($style_path);
-        $source_dir  = dirname($source_file);
-        $source      = file_get_contents($source_file);
-        $source      = $this->hackScss($source, $source_dir, $variables);
-        $project->addIncludePath($source_dir);
+        $sourceFile = realpath($style_path);
+        $sourceDir  = dirname($sourceFile);
+        $source     = file_get_contents($sourceFile);
+        $source     = $this->hackScss($source, $sourceDir, $variables);
+        $project->addIncludePath($sourceDir);
         $project->addIncludePath(DP_WEB_ROOT.'/pub/src');
         $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules');
+        $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules/@deskpro/portal-style/src');
         $project->setSource($source);
 
         // Compile custom_vars.scss from $variables
-        $custom_vars_scss = '';
-        $variables        = $this->precompileVariables($variables);
+        $customVarsScss = '';
+        $variables      = $this->precompileVariables($variables);
 
         // compiled custom css file has path like http://deskpro-dev/file.php/901TAXMZQMTDTBXXKN0/portal.css
         // so rely on this file path to prover work with sub-dirs
@@ -57,15 +58,15 @@ class StylesheetCompiler
         $variables['modules-path']    = "'../../assets/{$buildDir}/pub/node_modules'";
 
         foreach ($variables as $variable => $value) {
-            $custom_vars_scss .= '$'."$variable: $value;\n";
+            $customVarsScss .= '$'."$variable: $value;\n";
         }
 
-        $project->addFileSource("$source_dir/".self::CUSTOM_VARS_FILENAME, $custom_vars_scss);
+        $project->addFileSource("$sourceDir/".self::CUSTOM_VARS_FILENAME, $customVarsScss);
 
         // Set custom style contents ('custom_style.scss' and 'main.scss')
         // they could be modified via portal editor
-        $project->addFileSource("$source_dir/".self::MAIN_SCSS_FILENAME, $mainScss);
-        $project->addFileSource("$source_dir/".self::CUSTOM_SCSS_FILENAME, $custom_scss);
+        $project->addFileSource("$sourceDir/".self::MAIN_SCSS_FILENAME, $mainScss);
+        $project->addFileSource("$sourceDir/".self::CUSTOM_SCSS_FILENAME, $customScss);
 
         $result = $compiler->compile($project);
 

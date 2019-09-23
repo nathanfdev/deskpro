@@ -1,0 +1,36 @@
+@import "custom_vars";
+@import "setup";
+@import "vars";
+
+// FA mixins for people to use
+@import "../../../../../../node_modules/font-awesome/scss/variables";
+@import "../../../../../../node_modules/font-awesome/scss/mixins";
+
+// Color contrast
+@function color-yiq($color) {
+  $r: red($color);
+  $g: green($color);
+  $b: blue($color);
+
+  $yiq: (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+  @if ($yiq >= 150) {
+    @return #212529;
+  } @else {
+    @return #fff;
+  }
+}
+
+// Set a specific jump point for requesting color jumps
+$theme-color-interval:      8% !default;
+
+@function theme-color-level($color, $level: 0) {
+  $color-base: if($level > 0, #000, #fff);
+  $level: abs($level);
+
+  @return mix($color-base, $color, $level * $theme-color-interval);
+}
+
+@import "dpx";
+@import "main";
+@import "custom_style";

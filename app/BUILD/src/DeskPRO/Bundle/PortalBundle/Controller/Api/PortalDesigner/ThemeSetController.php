@@ -81,6 +81,6 @@ class ThemeSetController extends AbstractApiController
     {
         $this->getStylesManager()->discardEditThemeSet();
 
-        return new JsonResponse();
+        return new JsonResponse(['id' => $this->getTheme()->getId()]);
     }
 }

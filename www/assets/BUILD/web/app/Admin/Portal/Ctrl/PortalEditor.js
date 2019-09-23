@@ -14,6 +14,8 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.saveWelcomeBox = this.saveWelcomeBox.bind(this);
       this.clearWelcomeBox = this.clearWelcomeBox.bind(this);
       this.editWelcomeBox = this.editWelcomeBox.bind(this);
+      this.saveThemeOptions = this.saveThemeOptions.bind(this);
+      this.editThemeOptions = this.editThemeOptions.bind(this);
       this.saveValues = this.saveValues.bind(this);
       this.commit = this.commit.bind(this);
       this.discard = this.discard.bind(this);
@@ -41,15 +43,18 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.loadWelcomeBox = this.loadWelcomeBox.bind(this);
       this.loadLogo = this.loadLogo.bind(this);
       this.loadFavicon = this.loadFavicon.bind(this);
+      this.loadSplashImage = this.loadSplashImage.bind(this);
       this.upload = this.upload.bind(this);
       this.uploadLogo = this.uploadLogo.bind(this);
       this.uploadFavicon = this.uploadFavicon.bind(this);
+      this.uploadSplashImage = this.uploadSplashImage.bind(this);
       this.copyUrl = this.copyUrl.bind(this);
       this.isDirtyState = this.isDirtyState.bind(this);
       this.notifyUrlCopied = this.notifyUrlCopied.bind(this);
       this.delete = this.delete.bind(this);
       this.deleteLogo = this.deleteLogo.bind(this);
       this.deleteFavicon = this.deleteFavicon.bind(this);
+      this.deleteSplashImage = this.deleteSplashImage.bind(this);
       this.openAdvancedTab = this.openAdvancedTab.bind(this);
       this.isAdvancedTab = this.isAdvancedTab.bind(this);
       this.isAdvancedExpanded = this.isAdvancedExpanded.bind(this);
@@ -88,11 +93,16 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         message: ''
       };
       this.welcome_box = angular.copy(this.$scope.welcome_box);
+      this.$scope.theme_options = {
+        show_section_navigation: true,
+      };
+      this.theme_options = angular.copy(this.$scope.theme_options);
 
       this.$scope.values = {};
       this.$scope.errors = {
-        favicon: false,
-        logo:    false
+        favicon:      false,
+        logo:         false,
+        splash_image: false
       };
 
       this.values = angular.copy(this.$scope.values);
@@ -117,7 +127,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     save() {
-      const promises = [this.saveValues(), this.editWelcomeBox()];
+      const promises = [this.saveValues(), this.editWelcomeBox(), this.editThemeOptions()];
       this.savingMulti = true;
       const all = this.$q.all(promises);
       return all.then(() => this.$http({
@@ -139,6 +149,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     editTheme() {
+      console.log('editTheme');
       const request = this.$http({
         method: 'PUT',
         url:    `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/info`,
@@ -148,7 +159,11 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       });
       this.recompiling = true;
       return request.then(
-        () => { this.refreshPreviewUrl(); return this.recompiling = false; },
+        () => {
+          this.loadGroups();
+          this.refreshPreviewUrl();
+          return this.recompiling = false;
+        },
         () => {
           this.serverError(); return this.recompiling = false;
         });
@@ -180,6 +195,28 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         });
     }
 
+    saveThemeOptions() {
+      return this.editThemeOptions().then(
+        () => {
+          if (!this.savingMulti) { return this.refreshPreviewUrl(); }
+        });
+    }
+
+    editThemeOptions() {
+      console.log(this.$scope);
+      const request = this.$http({
+        method: 'PUT',
+        url:    `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/theme-options`,
+        data:   this.$scope.theme_options
+      });
+      this.recompiling = true;
+      return request.then(
+        () => { this.recompiling = false; return this.theme_options = angular.copy(this.$scope.theme_options); },
+        () => {
+          this.serverError(); return this.recompiling = false;
+        });
+    }
+
     saveValues() {
       const request = this.$http({
         method: 'PUT',
@@ -201,7 +238,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           let promises;
           this.commiting = true;
           if (this.isDirtyState()) {
-            promises = [this.saveValues(), this.editWelcomeBox()];
+            promises = [this.saveValues(), this.editWelcomeBox(), this.editThemeOptions()];
           } else {
             promises = [true];
           }
@@ -219,8 +256,10 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       return this.showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
         () => {
           this.recompiling = true;
-          const request = this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/discard`);
-          const promises = [request, this.loadAdvancedEdits(), this.loadLogo(), this.loadFavicon(), this.loadValues()];
+          const request = this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/discard`).success((response) => {
+            return this.selected_theme = response.id;
+          });
+          const promises = [request, this.loadAdvancedEdits(), this.loadLogo(), this.loadFavicon(), this.loadValues(), this.loadGroups()];
           const all = this.$q.all(promises);
           return all.then(
             () => new Promise(resolve => resolve(this.refreshPreviewUrl())).then(() => { this.success('Changes were discarded'); return this.recompiling = false; }),
@@ -237,12 +276,14 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         this.refreshPreviewUrl();
 
         return this.$q.all([
-          this.$http.get(`${this.$scope.baseUrl}/portal/api/style/variable-groups`).success(data => this.groups = data),
+          this.loadGroups(),
           this.loadValues(),
           this.loadAdvancedEdits(),
           this.loadAssetFiles(),
           this.loadLogo(),
           this.loadFavicon(),
+          this.loadSplashImage(),
+          this.loadThemeOptions(),
           this.loadTemplateOptions(),
           this.loadThemeSet(),
           this.loadWelcomeBox()
@@ -273,6 +314,13 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       if (this.preview_as === 'myself') { preview_url += '&_preview_as=_exit'; }
       if (this.preview_as === 'guest') { preview_url += '&_preview_as=_anon'; }
       return this.preview_url = preview_url;
+    }
+
+    loadGroups() {
+      console.log('loadGroups');
+      return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/variable-groups`).success(
+        data => this.groups = data
+      )
     }
 
     loadValues(success) {
@@ -457,6 +505,16 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     loadFavicon() {
       return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/favicon`).success(response => this.custom_favicon = response.data != null ? response.data.url : undefined);
     }
+    loadSplashImage() {
+      return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/splash_image`).success(response => this.custom_splash_image = response.data != null ? response.data.url : undefined);
+    }
+
+    loadThemeOptions() {
+      return this.$http.get(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/theme_options`).success((response) => {
+        this.$scope.theme_options = response.data;
+        return this.theme_options = angular.copy(this.$scope.theme_options);
+      });
+    }
 
     upload(files) {
       return (() => {
@@ -499,6 +557,16 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           },
           response => this.$scope.errors.favicon = response.data.fields.file.errors[0].message);
     }
+    uploadSplashImage(files) {
+      return this.$upload
+        .upload({ url: `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/splash_image`, file: files[0] })
+        .then(
+          (response) => {
+            this.$scope.errors.splash_image = false;
+            return this.custom_splash_image = response.data.data.url;
+          },
+          response => this.$scope.errors.splash_image = response.data.fields.file.errors[0].message);
+    }
 
     copyUrl(file) {
       window.prompt('Copy this:', file.url);
@@ -528,6 +596,32 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     deleteFavicon() {
       return this.$http.delete(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/favicon`).success(() => this.custom_favicon = null);
+    }
+
+    deleteSplashImage() {
+      return this.$http.delete(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/splash_image`).success(() => this.custom_splash_image = null);
+    }
+
+    openUnsplashModal() {
+      var event = new CustomEvent('dpLeftDrawer', {detail: {
+          module: 'SplashImage',
+          width: 0,
+          selectImage: this.selectSplashImage.bind(this),
+          style: {
+            zIndex: 22000
+          }
+        }});
+      window.parent.document.dispatchEvent(event);
+    }
+
+    selectSplashImage(image) {
+      this.$http.post(`${this.$scope.baseUrl}/portal/api/style/edit-theme-set/unsplash`, image)
+        .then(
+          (response) => {
+            this.$scope.errors.splash_image = false;
+            return this.custom_splash_image = response.data.data.url;
+          },
+          response => this.$scope.errors.splash_image = response.data.fields.file.errors[0].message);
     }
 
     openAdvancedTab(tab) { return this.advanced_tab = tab; }
