@@ -123,7 +123,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
 
         $blob = $this->isPreviewMode($this->container)
                 ? $this->getStylesManager()->getEditThemeSetCssBlob($textDirection)
-                : $this->getStylesManager()->getCssBlob($textDirection);
+                : $this->getStylesManager()->getCssBlob($textDirection, 'helpcenter');
 
         if ($blob) {
             $parameters = [
@@ -143,7 +143,7 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
                 RouterInterface::ABSOLUTE_PATH
             );
         } else {
-            return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');
+            return null;
         }
     }
 
