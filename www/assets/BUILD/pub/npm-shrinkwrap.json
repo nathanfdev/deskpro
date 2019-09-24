@@ -306,9 +306,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/portal-style": {
-      "version": "0.0.6",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.0.6.tgz",
-      "integrity": "sha512-aix0dTregKVvvIPHrkP3cUStES0cEq6vgsrJOAlgI1n3gDtCttXT9H94WJzZy1fq96sZYJk1ULfu/PDVJ1zwXg==",
+      "version": "0.0.10",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.0.10.tgz",
+      "integrity": "sha512-ZnZR8aiUreXHK/h+LNPplAyjay/xBXZMh3aXq/8I36cd9KKSOzZZTZGScUpwuTwh9aRcZZSsWj6JNQhAkoXHjg==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
