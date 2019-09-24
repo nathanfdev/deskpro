@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 
@@ -14,6 +15,14 @@ use Orb\Util\Arrays;
  */
 class ReportsAgentActivityController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AgentPermission();
+    }
+
     //###################################################################################################################
     // list
     //###################################################################################################################

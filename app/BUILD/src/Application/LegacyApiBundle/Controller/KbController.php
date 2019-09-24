@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Doctrine\ExplicitIdPersister;
 use Orb\Util\Numbers;
@@ -30,6 +31,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class KbController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AgentPermission();
+    }
+
     public function searchAction()
     {
         $search_map = [

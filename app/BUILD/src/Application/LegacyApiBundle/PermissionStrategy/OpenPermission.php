@@ -1,25 +1,20 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\LegacyApiBundle\PermissionStrategy;
 
 use Application\LegacyApiBundle\ApiUser;
 
 /**
- * Strategy that says we require an active session.
+ * Class OpenPermission.
  */
-class RequireSessionPermission implements PermissionStrategyInterface
+class OpenPermission implements PermissionStrategyInterface
 {
     /**
      * {@inheritdoc}
      */
     public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
-        return $apiUser->session ? true : false;
+        // always allowed for everyone
+        return true;
     }
 }

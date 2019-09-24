@@ -8,12 +8,21 @@ namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\TmpData;
 use Application\LegacyApiBundle\Controller\AbstractController;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DpSys\License;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CloudCallController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new OpenPermission();
+    }
+
     /**
      * {@inheritdoc}
      */

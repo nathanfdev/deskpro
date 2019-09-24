@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
 
@@ -14,6 +15,14 @@ use DpSys\LowError\SystemErrorHandler;
  */
 class SaveLogController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new OpenPermission();
+    }
+
     public function logJsErrorAction()
     {
         $message     = $this->in->getString('message');

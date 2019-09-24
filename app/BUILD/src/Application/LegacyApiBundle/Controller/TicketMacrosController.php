@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  */
-class TicketMacrosController extends AbstractController implements ProtectedControllerInterface
+class TicketMacrosController extends AbstractController
 {
     /**
      * {@inheritdoc}

@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class ProblemsController extends AbstractController implements ProtectedControllerInterface
+class ProblemsController extends AbstractController
 {
     const KEY_ENABLED = 'core.problems.enabled';
 

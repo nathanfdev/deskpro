@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType;
@@ -554,6 +555,7 @@ class LanguagesController extends CrudController
      * )
      * @Rest\Post("/translations/{phraseName}")
      * @Feature("email_templates")
+     * @ApiUserContext("admin")
      *
      * @param Request $request
      * @param $phraseName
@@ -671,6 +673,7 @@ class LanguagesController extends CrudController
      *     output="Application\DeskPRO\Entity\Phrase",
      * )
      * @Rest\Post("/custom_phrase")
+     * @ApiUserContext("admin")
      *
      * @param Request $request
      *

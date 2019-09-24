@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Logs;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/api_logs")
  * @ApiDoc(target="all", section="Logs", output="DeskPRO\Bundle\AppBundle\Entity\ApiLog")
+ * @ApiUserContext("admin")
  */
 class LogsCrudController extends CrudController
 {

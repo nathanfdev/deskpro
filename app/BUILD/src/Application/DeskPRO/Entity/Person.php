@@ -1010,6 +1010,14 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return !$this->is_deleted && !$this->is_disabled;
+    }
+
+    /**
      * @param bool $yesno
      *
      * @return $this

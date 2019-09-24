@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\PermissionStrategyInterface;
 use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
@@ -27,7 +28,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  *
  * @ApiModes("all")
  */
-abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
+abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController implements ProtectedControllerInterface
 {
     /**
      * @var \Application\LegacyApiBundle\ApiUser
@@ -135,6 +136,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
     /**
      * Always require a valid API key.
+     *
+     * @throws \Exception
      */
     public function preActionHandler(Request $request, $action, $arguments = null)
     {
@@ -184,14 +187,18 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         if ($this instanceof ProtectedControllerInterface) {
-            $perm_strategy = $this->getPermissionStrategy();
-            $context_info  = [
+            $permissionStrategy = $this->getPermissionStrategy();
+            if (!$permissionStrategy instanceof PermissionStrategyInterface) {
+                throw new \Exception('Unable to get permission strategy');
+            }
+
+            $context_info = [
                 'controller' => $this,
                 'action'     => $action,
                 'arguments'  => $arguments,
                 'type'       => $action,
             ];
-            if (!$perm_strategy->userHasPermission($this->api_user, $context_info)) {
+            if (!$permissionStrategy->userHasPermission($this->api_user, $context_info)) {
                 return $this->createApiErrorResponse('no_permission', 'You do not have permission to use this resource', 403);
             }
         }

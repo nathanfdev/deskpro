@@ -7,6 +7,7 @@ use Cloud\LegacyApiBundle\Helper\CloudBrandHelper;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
@@ -91,6 +92,7 @@ class BrandsController extends CrudController
      *     output="Application\DeskPRO\Entity\Brand"
      * )
      * @Rest\Post("")
+     * @ApiUserContext("admin")
      *
      * @param Request $request
      *
@@ -172,6 +174,7 @@ class BrandsController extends CrudController
      *      }
      * )
      * @Rest\Delete("/{id}", requirements={"id"="\d+"})
+     * @ApiUserContext("admin")
      *
      * @param int     $id
      * @param Request $request
