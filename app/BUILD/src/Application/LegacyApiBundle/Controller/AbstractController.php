@@ -186,6 +186,12 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             ], ['id' => $this->api_token->id]);
         }
 
+        if ($this->api_token) {
+            if (!$this->api_token->person || !$this->api_token->person->isAgent()) {
+                return $this->createApiErrorResponse('invalid_person', 'API tokens can only be used on APIv1 with agents.', 403);
+            }
+        }
+
         if ($this instanceof ProtectedControllerInterface) {
             $permissionStrategy = $this->getPermissionStrategy();
             if (!$permissionStrategy instanceof PermissionStrategyInterface) {

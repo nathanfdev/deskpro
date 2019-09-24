@@ -395,6 +395,10 @@ class ApiTokensController extends BaseController
      */
     private function createToken(Person $person)
     {
+        if (!$person || !$person->isAgent()) {
+            $this->throwUnauthorized();
+        }
+
         $token = new ApiToken();
         $token->setPerson($person);
         $token->setScope(ApiToken::SCOPE_CLIENT);
