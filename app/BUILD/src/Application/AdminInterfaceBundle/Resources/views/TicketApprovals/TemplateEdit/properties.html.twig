@@ -64,7 +64,7 @@
         </div>
 
         {#Approvers#}
-        <div class="form-group">
+        {#<div class="form-group">
             <div class="col-md-3">
                 <h3>{{ phrase('adm.ticket_approvals.template.approvers.label') }}</h3>
             </div>
@@ -143,7 +143,163 @@
                 </div>
 
             </div>
+        </div>#}
+
+        <div class="form-group">
+            <div class="col-md-3">
+                <h3>{{ phrase('adm.ticket_approvals.template.approvers.label') }}</h3>
+            </div>
+            <div class="col-md-9">
+
+                <div class="inner-group">
+
+                    <div style="border-bottom: 1px dotted #aaa; padding-bottom: 10px;">
+                        <label>
+                            <input type="radio" name="can_choose_approvers" value="n" ng-model="can_choose_approvers" />
+                            <h4 style="display: inline; padding-left: 5px;">
+                                {{ phrase('adm.ticket_approvals.template.can_choose.specific_approvers') }}
+                            </h4>
+                        </label>
+
+                        <div style="margin-top: 15px; margin-left: 15px;" ng-show="can_choose_approvers === 'n'">
+
+                            <div class="inner-group">
+                                <label>
+                                    <input style="margin-right: 5px;"
+                                           type="checkbox"
+                                           ng-model="form.selected_approvers.has_ticket_user" />
+                                    <h4 style="display: inline; padding-right: 5px;">
+                                        {{ phrase('adm.ticket_approvals.template.approvers.ticket_user') }}
+                                    </h4>
+                                </label>
+
+                                <label>
+                                    <input style="margin-right: 5px;"
+                                           type="checkbox"
+                                           ng-model="form.selected_approvers.has_organization_managers" />
+                                    <h4 style="display: inline; padding-right: 5px;">
+                                        {{ phrase('adm.ticket_approvals.template.approvers.organization_manager') }}
+                                    </h4>
+                                </label>
+
+                                <label>
+                                    <input style="margin-right: 5px;"
+                                           type="checkbox"
+                                           ng-model="form.selected_approvers.has_all_agents" />
+                                    <h4 style="display: inline; padding-right: 5px;">
+                                        {{ phrase('adm.ticket_approvals.template.approvers.all_agents') }}
+                                    </h4>
+                                </label>
+                            </div>
+
+                            <div class="inner-group">
+                                <input type="hidden"
+                                       ui-select2="{query: searchTerm, minimumInputLength: 3, allowClear: true}"
+                                       ng-model="selectedUser"
+                                       style="min-width: 250px"
+                                       data-placeholder="{{ phrase('adm.ticket_approvals.template.approvers.search_approvers') }}" />
+                            </div>
+
+                            <div class="inner-group">
+                                <ul class="checkbox-list" style="min-width: 250px; min-height: 100px;">
+                                    <li ng-repeat="person in people">
+                                        <label>
+                                            <input style="margin-right: 5px;"
+                                                   type="checkbox"
+                                                   ng-model="person.value" />
+                                            <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + person.picture_url_16 + ')'}"></span>
+                                            <span>{{ ng_var('person.display_name') }}</span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div style="padding-top: 5px;">
+                        <label>
+                            <input type="radio" name="cant_choose_approvers"  value="y"  ng-model="can_choose_approvers" />
+                            <h4 style="display: inline; padding-left: 5px;">
+                                {{ phrase('adm.ticket_approvals.template.can_choose.let_agent_choose') }}
+                            </h4>
+
+                            <div style="margin-top: 15px; margin-left: 15px;" ng-show="can_choose_approvers === 'y'">
+
+                                <div class="inner-group">
+                                    <label>
+                                        <input style="margin-right: 5px;"
+                                               type="checkbox"
+                                               ng-model="form.approver_selection_criteria.can_select_ticket_user" />
+                                        <h4 style="display: inline; padding-right: 5px;">
+                                            {{ phrase('adm.ticket_approvals.template.approvers.ticket_user') }}
+                                        </h4>
+                                    </label>
+
+                                    <label>
+                                        <input style="margin-right: 5px;"
+                                               type="checkbox"
+                                               ng-model="form.approver_selection_criteria.can_select_organization_managers" />
+                                        <h4 style="display: inline; padding-right: 5px;">
+                                            {{ phrase('adm.ticket_approvals.template.approvers.organization_manager') }}
+                                        </h4>
+                                    </label>
+
+                                    <label>
+                                        <input style="margin-right: 5px;"
+                                               type="checkbox"
+                                               ng-model="form.approver_selection_criteria.can_select_from_all_agents" />
+                                        <h4 style="display: inline; padding-right: 5px;">
+                                            {{ phrase('adm.ticket_approvals.template.approvers.all_agents') }}
+                                        </h4>
+                                    </label>
+                                </div>
+
+                                <div class="inner-group">
+                                    <input type="hidden"
+                                           ui-select2="{query: searchTerm, minimumInputLength: 3, allowClear: true}"
+                                           ng-model="selectedUser"
+                                           style="min-width: 250px"
+                                           data-placeholder="{{ phrase('adm.ticket_approvals.template.approvers.search_approvers') }}" />
+                                </div>
+
+                                <div class="inner-group">
+                                    <ul class="checkbox-list" style="min-width: 250px; min-height: 100px;">
+                                        <li ng-repeat="person in people">
+                                            <label>
+                                                <input style="margin-right: 5px;"
+                                                       type="checkbox"
+                                                       ng-model="person.value" />
+                                                <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + person.picture_url_16 + ')'}"></span>
+                                                <span>{{ ng_var('person.display_name') }}</span>
+                                            </label>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="inner-group">
+                                    <span style="padding-right: 10px;">{{ phrase('adm.ticket_approvals.template.approvers.number_of_approvers') }}</span>
+                                    <input class="form-control"
+                                           name="min_number_of_approvers"
+                                           placeholder="max of 100"
+                                           style="max-width: 120px;"
+                                           type="number"
+                                           min="0" max="100" step="1"
+                                           ng-required="false"
+                                           ng-model="form.approver_selection_criteria.min_number_of_approvers" />
+                                </div>
+
+                            </div>
+
+                        </label>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
+
 
         <div class="form-group">
             <div class="col-md-3">

@@ -18,6 +18,7 @@ define([
       this.$scope.setDescription = false;
 
       this.$scope.people = [];
+      this.$scope.can_choose_approvers = 'n';
 
       this.$scope.form = {
         type: null,
@@ -26,16 +27,19 @@ define([
         required_approvals: 0,
         required_rejections: 0,
         can_approvers_view_subject: false,
-        approver_criteria: {
-          can_choose_approvers: false,
-          agents: [],
-          all_agents: false,
-          users: [],
-          all_users: false,
-          organization_managers: false,
-          teams: [],
-          departments: [],
-          required_number_of_approvers: null,
+        can_choose_approvers: false,
+        selected_approvers: {
+          has_ticket_user: false,
+          has_organization_managers: false,
+          has_all_agents: false,
+          people: []
+        },
+        approver_selection_criteria: {
+          can_select_ticket_user: false,
+          can_select_organization_managers: false,
+          can_select_from_all_agents: false,
+          select_from_people: [],
+          min_number_of_approvers: 1,
         },
         actions_on_create: [],
         actions_on_partial_approval_response: [],
@@ -48,7 +52,11 @@ define([
       // define search funtion for ui-select2
       this.$scope.searchTerm = function (query) {
 
-        this.dataService.searchPeople(query.term)
+        const excludeAgents =
+                this.$scope.form.selected_approvers.has_all_agents ||
+                this.$scope.form.approver_selection_criteria.can_select_from_all_agents;
+
+        this.dataService.searchPeople(query.term, excludeAgents)
           .then(({ people }) => {
 
             let selected = this.$scope.people.map(item => item.id);
@@ -105,11 +113,18 @@ define([
               this.$scope.setDescription = true;
             }
 
+            let people = [];
+            this.$scope.form.can_choose_approvers = data.can_choose_approvers;
+            if (data.can_choose_approvers) {
+              this.$scope.can_choose_approvers = 'y';
+              people = data.approver_selection_criteria.select_from_people;
+            } else {
+              this.$scope.can_choose_approvers = 'n';
+              people = data.selected_approvers.people;
+            }
+
             // merge agents and users into people array
-            [
-              ...data.approver_criteria.users,
-              ...data.approver_criteria.agents,
-            ].forEach(id => {
+            people.forEach(id => {
               this.dataService.getPerson(id)
                 .then(result => {
                   result.person.value = true;
@@ -159,18 +174,17 @@ define([
       let msgSuccess = this.getRegisteredMessage('approval_template_save_success');
       let msgFailure = this.getRegisteredMessage('approval_template_save_failure');
 
-      this.$scope.form.approver_criteria.agents = [];
-      this.$scope.form.approver_criteria.users  = [];
+      this.$scope.form.can_choose_approvers = this.$scope.can_choose_approvers === 'y';
 
-      this.$scope.people.forEach(person => {
-        if (person.value === true) {
-          if (person.is_agent === true) {
-            this.$scope.form.approver_criteria.agents.push(person.id);
-          } else {
-            this.$scope.form.approver_criteria.users.push(person.id);
-          }
-        }
-      });
+      if (this.$scope.form.can_choose_approvers) {
+        delete this.$scope.form.selected_approvers;
+
+        this.$scope.form.approver_selection_criteria.select_from_people = this.$scope.people.map(person => person.id);
+      } else {
+        delete this.$scope.form.approver_selection_criteria;
+
+        this.$scope.form.selected_approvers.people = this.$scope.people.map(person => person.id);
+      }
 
       // start spinner
       this.startSpinner('saving');

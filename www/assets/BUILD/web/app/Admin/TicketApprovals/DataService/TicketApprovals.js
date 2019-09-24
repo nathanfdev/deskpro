@@ -8,15 +8,22 @@ define(['Admin/Main/DataService/BaseListEdit'], (BaseListEdit) => {
      * Search people
      *
      * @param {String} term
+     * @param {Boolean} excludeAgents
      */
-    searchPeople(term) {
+    searchPeople(term, excludeAgents = false) {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/people',
-        {
-          name: term,
-          is_any_person: true
-        }).then(
+      let params = {
+        name: term
+      };
+
+      if (excludeAgents) {
+        params.is_agent = 0;
+      } else {
+        params.is_any_person = 1;
+      }
+
+      this.Api.sendGet('/people', params).then(
           ({ data }) => deferred.resolve(data),
           () => deferred.reject()
         );
