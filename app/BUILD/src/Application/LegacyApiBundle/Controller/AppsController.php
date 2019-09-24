@@ -14,7 +14,6 @@ use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
@@ -51,11 +50,6 @@ class AppsController extends AbstractController
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
-        $multi->addPermissionStrategy(new AgentPermission(), 'getPackageAction');
-        $multi->addPermissionStrategy(new AgentPermission(), 'getInstanceAction');
-        $multi->addPermissionStrategy(new AgentPermission(), 'getCustomAssetsAction');
-        $multi->addPermissionStrategy(new AgentPermission(), 'getAppV2ArchiveBundle');
 
         return $multi;
     }
