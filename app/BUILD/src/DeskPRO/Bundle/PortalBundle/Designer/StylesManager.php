@@ -113,7 +113,7 @@ class StylesManager
         if ($themeId === 'helpcenter') {
             $criteria = [
                 'theme_set' => $this->themeSet,
-                'name'      => 'helpcenter.css',
+                'name'      => 'portal.css',
             ];
         } else {
             $criteria = [

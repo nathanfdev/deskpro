@@ -1,31 +1,45 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
-{% block page_body %}
-    <div>
-        {% if no_login %}
-            {{  macros.user_notice('auth', phrase('portal.account.new-ticket-no-login')) }}
-        {% else %}
-            {{  macros.lockout_notice(phrase('portal.account.tickets-lockout'), lockout, lockout_time) }}
-        {% endif %}
-        <header class="large-title">
-            <h1>{{ phrase('portal.tickets.new-section-title') }}</h1>
-            <p>{{ phrase('portal.tickets.new-intro') }}</p>
-        </header>
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-ticket-create">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-centered">
+                        {% if no_login %}
+                            {{  macros.user_notice('auth', phrase('portal.account.new-ticket-no-login')) }}
+                        {% else %}
+                            {{  macros.lockout_notice(phrase('portal.account.tickets-lockout'), lockout, lockout_time) }}
+                        {% endif %}
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/contact-us.svg">
+                            <h2 class="dp-po-title-text">{{ phrase('portal.tickets.new-section-title') }}</h2>
+                        </div>
+                        <div class="dp-po-block">
+                            <div class="dp-po-ticket-create">
+                                <form action="" class="dp-po-ticket-create-form">
+                                    <p>{{ phrase('portal.tickets.new-intro') }}</p>
+                                    <form action="" class="dp-po-form">
+                                        {% if rerendering %}
+                                            <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
+                                        {% endif %}
 
-        <section class="padded">
-            {% if rerendering %}
-                <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
-            {% endif %}
+                                        {% if rerendering_saved %}
+                                            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+                                        {% endif %}
 
-            {% if rerendering_saved %}
-                <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-            {% endif %}
-
-            {% show new_ticket_form %}
-        </section>
+                                        {% show new_ticket_form %}
+                                    </form>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-{% endblock page_body %}
+{% endblock page_content %}
 {% block doc_end %}
     <!-- DESKPRO_TICKET_DISPLAY -->
     <script type="text/javascript">
