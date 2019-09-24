@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import {injectIntl, FormattedMessage, intlShape} from "react-intl";
 import {Form, Label, Button, Select, Textarea} from "@deskpro/react-components";
+import {template} from "handlebars/lib/handlebars/runtime";
 
 @injectIntl
 export class ApprovalForm extends React.Component {
@@ -18,7 +19,7 @@ export class ApprovalForm extends React.Component {
     this.state = {
       // data
       template:  {
-        canChoose: false
+        canChoose: null
       },
       people:    [],
       approvers: [],
@@ -45,13 +46,13 @@ export class ApprovalForm extends React.Component {
       approvers: this.state.approvers.map(approver => approver.id),
     }};
 
-    const totalApprovers = parseInt(this.state.template.criteria.get('required_number_of_approvers'));
-    if (data.approvers.length < totalApprovers) {
-      let message = this.state.template.canChoose
-        ? ` Please pick ${this.state.template.criteria.get('required_number_of_approvers')} approvers`
-        : '';
-
-      errors.push(`List of approver must be supplied. ${message}`)
+    if (this.state.template.canChoose) {
+      const totalApprovers = parseInt(this.state.template.criteria.number_of_approvers);
+      if (data.approvers.length < totalApprovers) {
+        errors.push(
+          `List of approver must be supplied. Please choose ${this.state.template.criteria.number_of_approvers} approvers`
+        );
+      }
     }
 
     if (errors.length < 1) {
@@ -88,14 +89,34 @@ export class ApprovalForm extends React.Component {
 
     // get selected template
     const template = templates.toArray().find(template => template.get('id') === value.value);
-    const criteria = template.get('approver_criteria');
+
+    let criteria = {};
+    if (template.get('can_choose_approvers')) {
+      const tplCriteria = template.get('approver_selection_criteria');
+      criteria = {
+        all_agents: tplCriteria.get('can_select_from_all_agents'),
+        organization_managers: tplCriteria.get('can_select_organization_managers'),
+        ticket_user: tplCriteria.get('can_select_ticket_user'),
+        people: tplCriteria.get('select_from_people').toArray().map(id => id),
+        number_of_approvers: tplCriteria.get('min_number_of_approvers')
+      };
+    } else {
+      const tplCriteria = template.get('selected_approvers');
+      criteria = {
+        all_agents: tplCriteria.get('has_all_agents'),
+        organization_managers: tplCriteria.get('has_organization_managers'),
+        ticket_user: tplCriteria.get('has_ticket_user'),
+        people: tplCriteria.get('people').toArray().map(id => id),
+        number_of_approvers: tplCriteria.get('people').toArray().length
+      };
+    }
 
     // update state
     this.setState({
       template: {
         id:          template.get('id'),
         criteria:    criteria,
-        canChoose:   criteria.get('can_choose_approvers'),
+        canChoose:   template.get('can_choose_approvers'),
         toApprove:   template.get('required_approvals'),
         toReject:    template.get('required_rejections'),
         canViewSubj: template.get('can_approvers_view_subject')
@@ -103,35 +124,35 @@ export class ApprovalForm extends React.Component {
     });
 
     // concat list of possible approvers and fetch people by ids
-    this.props.getPeople([
-      ...criteria.get('users').toArray().map(id => id),
-      ...criteria.get('agents').toArray().map(id => id),
-    ]).then(res => {
-      const people = res.data.map(person => ({
-        // select
-        value:   person.id,
-        label:   person.display_name,
-        // data
-        id:      person.id,
-        avatar:  person.gravatar_url,
-        name:    person.display_name,
-        isAgent: person.is_agent
-      }));
+    if (criteria.people.length > 0) {
+      this.props.getPeople(criteria.people).then(res => {
+        const people = res.data.map(person => ({
+          // select
+          value:   person.id,
+          label:   person.display_name,
+          // data
+          id:      person.id,
+          avatar:  person.gravatar_url,
+          name:    person.display_name,
+          isAgent: person.is_agent
+        }));
 
-      if (!criteria.get('can_choose_approvers')) {
+        if (!template.get('can_choose_approvers')) {
+          this.setState({
+            people: people,
+          });
+        }
+
+        // update state
         this.setState({
-          approvers: people,
+          people: people
         });
-      }
-
-      // update state
-      this.setState({
-        people: people
       });
-    });
+    }
+
 
     // if agent can choose approvers
-    if (criteria.get('can_choose_approvers')) {
+    if (template.get('can_choose_approvers')) {
       // update state
       this.setState({
         approvers: [],
@@ -180,8 +201,8 @@ export class ApprovalForm extends React.Component {
     let approversList   = '';
     let approversInfo   = '';
 
-    if (this.state.template.canChoose) {
-      const maxApprovers = parseInt(this.state.template.criteria.get('required_number_of_approvers'));
+    if (this.state.template.canChoose === true) {
+      const maxApprovers = parseInt(this.state.template.criteria.number_of_approvers);
       approversSelect  = this.state.approvers.length < maxApprovers ? (
         <div>
           <Label>
@@ -218,6 +239,8 @@ export class ApprovalForm extends React.Component {
           id="agent.tickets.approvals.approve_condition"
           values={{m: maxApprovers, reqa: this.state.template.toApprove, reqr: this.state.template.toReject}}
         />;
+    } else if (this.state.template.canChoose === false) {
+      approversInfo = <FormattedMessage id="agent.tickets.approvals.approvers_set_from_template" />;
     }
 
     return (
@@ -236,8 +259,10 @@ export class ApprovalForm extends React.Component {
               />
             </div>
             <div className="col">{approversSelect}</div>
-            <div className="col">{approversList}</div>
-            <div className="col">{approversInfo}</div>
+            <div className="col">
+              <div>{approversList}</div>
+              <div className="info">{approversInfo}</div>
+            </div>
           </div>
           <div className="row">
             <div className="col">

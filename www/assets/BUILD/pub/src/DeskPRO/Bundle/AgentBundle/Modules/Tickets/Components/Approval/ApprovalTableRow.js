@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {FormattedMessage} from 'react-intl';
 import moment from 'moment';
 import { Icon, Button } from '@deskpro/react-components';
-import { faTimes, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faClock, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {faEnvelope} from "@fortawesome/free-regular-svg-icons";
 
 class ApprovalTableRow extends React.Component {
   static propTypes = {
@@ -44,7 +45,7 @@ class ApprovalTableRow extends React.Component {
 
     // @fixme
     const data = {
-      message: 'Approved'
+      message: ''
     };
 
     this.props.acceptApprovalRequest(id, data)
@@ -62,7 +63,7 @@ class ApprovalTableRow extends React.Component {
 
     // @fixme
     const data = {
-      message: 'Rejected'
+      message: ''
     };
 
     this.props.rejectApprovalRequest(id, data)
@@ -101,7 +102,8 @@ class ApprovalTableRow extends React.Component {
         id:        vote.get('id'),
         approver:  approvers.find(obj => obj.id === parseInt(vote.get('approver'))),
         message:   vote.get('message'),
-        vote_type: vote.get('vote_type')
+        vote_type: vote.get('vote_type'),
+        created_at: moment(vote.get('created_at')).format(),
       }))
     };
 
@@ -117,7 +119,7 @@ class ApprovalTableRow extends React.Component {
           if (approval.approvers_pending.includes(meId)) {
             controls = (
               <div>
-                <Button size="small" loading={this.state.saving} onClick={() => this.acceptApprovalRequest(approval.id)}>Accept</Button>
+                <Button style={{ marginRight: '3px' }} size="small" loading={this.state.saving} onClick={() => this.acceptApprovalRequest(approval.id)}>Accept</Button>
                 <Button size="small" loading={this.state.saving} onClick={() => this.rejectApprovalRequest(approval.id)}>Reject</Button>
               </div>
             );
@@ -129,18 +131,17 @@ class ApprovalTableRow extends React.Component {
     const votesList = approval.votes.map(vote => {
       return (
         <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
-          <td width="10">&nbsp;</td>
-          <td width="100">{vote.approver.name}</td>
-          <td width="200">{vote.message}</td>
-          <td width="100">&nbsp;</td>
-          <td width="10">&nbsp;</td>
-          <td width="10">&nbsp;</td>
-          <td width="20">
-            <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
-          </td>
-          <td width="10">
+          <td>&nbsp;</td>
+          <td>{vote.approver.name}</td>
+          <td>{vote.message}</td>
+          <td>{vote.created_at}</td>
+          <td>
             <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
           </td>
+          <td>
+            <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
+          </td>
+          <td>&nbsp;</td>
         </tr>
       );
     });
@@ -149,14 +150,28 @@ class ApprovalTableRow extends React.Component {
       display: this.state.showResponses ? '' : 'none'
     };
 
+    const approversList = approval.approvers.length <= 2
+      ? approval.approvers.map(approver => approver.name).join(', ')
+      : approval.approvers.slice(0, 1).map(approver => approver.name) + ` + ${approval.approvers.length - 1} more`;
+
+    const approvalStatusIcon = <Icon
+      name={
+        approval.status === 'pending'
+          ? faClock
+          : approval.status === 'approved'
+          ? faCheck : faTimes
+      }
+    />;
+
     return [
       <tr key={`approval_${approval.id}_data`}>
         <td>
+          <Icon name={faCaretRight} style={{ marginRight: '5px' }} />
           <a href="#" onClick={this.toggleVotes}>{approval.id}</a>
         </td>
         <td>{approval.name}</td>
         <td>{approval.description}</td>
-        <td>{approval.approvers.map(approver => approver.name).join(', ')}</td>
+        <td>{approversList}</td>
         <td>{approval.required_approvals}</td>
         <td>{approval.required_rejections}</td>
         <td>
@@ -164,13 +179,25 @@ class ApprovalTableRow extends React.Component {
             id={`agent.tickets.approvals.status_name.${approval.status}`}
           />
         </td>
-        <td>
+        <td style={{ textAlign: 'center' }}>
           {controls}
+        </td>
+        <td>
+          {approvalStatusIcon}
         </td>
       </tr>,
       <tr key={`approval_${approval.id}_responses`} style={responsesStyle}>
-        <td colSpan="8">
-          <table>
+        <td colSpan="9" style={{ padding: '10px' }}>
+          <table style={{ tableLayout: 'fixed', width: '100%' }}>
+            <colgroup>
+              <col style={{ width: '40px' }} />
+              <col style={{ width: '100px' }} />
+              <col style={{ width: '20%' }} />
+              <col style={{ width: '20%' }} />
+              <col style={{ width: '100px' }} />
+              <col style={{ width: '70px' }} />
+              <col style={{ width: '30px' }} />
+            </colgroup>
             <tbody>
               {votesList}
             </tbody>

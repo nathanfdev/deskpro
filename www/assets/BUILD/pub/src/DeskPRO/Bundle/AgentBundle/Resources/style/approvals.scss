@@ -28,13 +28,17 @@
     div.row {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     div.col {
       flex-grow: 1;
       width: 33%;
-      height: 100px;
       padding: 2px;
+
+      div.info {
+        text-align: center;
+      }
     }
 
     [type="text"], textarea, .select {
@@ -49,6 +53,7 @@
 
     ul.approvers-list {
       list-style: none;
+      text-align: center;
 
       li {
         position: relative;

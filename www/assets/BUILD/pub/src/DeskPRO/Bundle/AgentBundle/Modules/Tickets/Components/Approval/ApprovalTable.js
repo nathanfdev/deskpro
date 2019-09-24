@@ -47,36 +47,48 @@ class ApprovalTable extends React.Component {
     });
 
     return (
-      <table cellSpacing="0" cellPadding="0" width="100%" className="field-holders-table th-la sla-table">
+      <table cellSpacing="0" cellPadding="0" style={{ tableLayout: 'fixed' }} className="field-holders-table th-la">
+        <colgroup>
+          <col style={{ width: '40px' }} />
+          <col style={{ width: '100px' }} />
+          <col style={{ width: '20%' }} />
+          <col style={{ width: '20%' }} />
+          <col style={{ width: '50px' }} />
+          <col style={{ width: '50px' }} />
+          <col style={{ width: '70px' }} />
+          <col style={{ width: '140px' }} />
+          <col style={{ width: '30px' }} />
+        </colgroup>
         <tbody>
           <tr>
-            <th colSpan="8" style={titleStyle}>
+            <th colSpan="9" style={titleStyle}>
               <FormattedMessage id="agent.tickets.approvals.title" />
             </th>
           </tr>
           <tr className="linked-head-title">
-            <th width="10" style={colsStyle}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.id" />
             </th>
-            <th width="100" style={colsStyle}>
-              <FormattedMessage id="agent.tickets.approvals.name" />
+            <th style={colsStyle}>
+              <FormattedMessage id="agent.tickets.approvals.type" />
             </th>
-            <th width="200" style={colsStyle}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.description" />
             </th>
-            <th width="100" style={colsStyle}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.approvers" />
             </th>
-            <th width="10" style={colsStyle}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.success" />
             </th>
-            <th width="10" style={colsStyle}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.failure" />
             </th>
-            <th  width="20" style={colsStyle}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.status" />
             </th>
-            <th width="10">&nbsp;</th>
+            <th style={colsStyle}>&nbsp;</th>
+            <th style={colsStyle}>&nbsp;</th>
           </tr>
           {approvalsList}
         </tbody>

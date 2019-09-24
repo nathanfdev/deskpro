@@ -331,6 +331,7 @@ class LanguagesController extends CrudController
             'agent.tickets.approvals.request.cancel',
             'agent.tickets.approvals.select_approvers',
             'agent.tickets.approvals.approve_condition',
+            'agent.tickets.approvals.approvers_set_from_template',
             // <--
             'agent.tickets.add_reply_action',
             'agent.tickets.add_note_action',
