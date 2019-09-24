@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Widget\WidgetLiveDemoState;
@@ -23,6 +24,7 @@ use Orb\Data\ContentTypes;
  * Class WidgetLiveDemoController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/widget/live_demo")
  */
 class WidgetLiveDemoController extends BaseController

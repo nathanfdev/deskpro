@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\DefaultDepartmentSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/departments")
  */
 class DepartmentSettingsController extends BaseController
