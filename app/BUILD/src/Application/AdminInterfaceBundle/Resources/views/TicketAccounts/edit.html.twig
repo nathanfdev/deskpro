@@ -49,7 +49,7 @@
 																<h5>Gmail OAuth Settings</h5>
 																<button class="btn btn-danger"
 																		role="button"
-																		ng-click="TicketAccountsEdit.gmailCredentialsModal(); $event.preventDefault();"
+																		ng-click="TicketAccountsEdit.gmailCredentialsModal('{{ path('gmail_access_code') }}', 'in'); $event.preventDefault();"
 																>
 																	Change Gmail OAuth Credentials
 																</button>
