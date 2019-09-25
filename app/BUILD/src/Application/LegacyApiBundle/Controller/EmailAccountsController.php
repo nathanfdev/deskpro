@@ -53,7 +53,22 @@ class EmailAccountsController extends AbstractController
 
         $manager = $this->container->getEmailAccountManager();
         foreach ($manager->getAllAccounts() as $acc) {
-            $data['email_accounts'][] = $acc->toApiData();
+            if ($this->person->canAdmin()) {
+                $data['email_accounts'][] = $acc->toApiData();
+            } else {
+                // list can be used to show search options for agents
+                $data['email_accounts'][] = [
+                    'id'              => $acc->getId(),
+                    'address'         => $acc->getAddress(),
+                    'other_addresses' => $acc->getAllAddresses(),
+                    'account_type'    => $acc->account_type,
+                    'is_enabled'      => $acc->is_enabled,
+                    'is_all_brands'   => $acc->is_all_brands,
+                    'brands'          => $acc->getBrands()->map(function ($b) {
+                        return $b->getId();
+                    }),
+                ];
+            }
         }
 
         return $this->createApiResponse($data);
