@@ -5,5 +5,70 @@
 {% endif %}
 
 {% block page_content %}
-
+  <div class="dp-po">
+    <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+      <div class="container">
+        <div class="dp-po-block">
+          <div class="dp-po-messages dp-po-messages-thread">
+            <a href="{{ path('portal_dm') }}" class="dp-po-messages-back">
+              <i class="dp-po-icon fal fa-angle-left"></i>
+              {{ phrase('portal.direct_messages.back_to_messages') }}
+            </a>
+            <div class="dp-po-messages-list">
+              {% for message in messages %}
+                <div class="dp-po-messages-item dp-po-messages-item-their">
+                  <figure class="dp-po-messages-figure">
+                    <img src="{{ avatar_url(message.author.person, 50) }}" class="dp-po-messages-avatar">
+                  </figure>
+                  <div class="dp-po-messages-wrap">
+                    <h3 class="dp-po-messages-name">
+                      {% if message.author.person.id == app.user.id %}
+                        {{ phrase('portal.chat.you') }}
+                      {% else %}
+                        {{ message.author.person.display_name }}
+                      {% endif %}
+                    </h3>
+                    <p class="dp-po-messages-msg">
+                      {{ message.messageHtml|nl2br }}
+                    </p>
+                  </div>
+                  <div class="dp-po-time">
+                    {{ message.dateCreated|date('j M Y') }}
+                  </div>
+                </div>
+              {% else %}
+                <p>{{ phrase('portal.direct_messages.none') }}</p>
+              {% endfor %}
+              {% if reply_form %}
+                <div class="dp-po-messages-item dp-po-messages-item-compose">
+                  <figure class="dp-po-messages-figure">
+                    <img src="{{ avatar_url(app.user, 50) }}" class="dp-po-messages-avatar">
+                  </figure>
+                  <div class="dp-po-messages-wrap">
+                    {{ form_start(reply_form, { attr: { class: 'form-ticket dpx-form' } }) }}
+                      {{ form_row(reply_form.message, {label: phrase('portal.direct_messages.reply.message')}) }}
+                      <div class="row align-items-center">
+                        <div class="col-sm-2">
+                          {{ form_widget(reply_form.submit, {
+                            label: phrase('portal.direct_messages.reply.send_message'),
+                            attr: {class: 'btn btn-block btn-primary'},
+                          }) }}
+                        </div>
+                        <div class="col-sm-2">
+                          <div class="form-group dp-po-form-check">
+                            <a href="" class="btn btn-block btn-outline-secondary">{{ phrase('portal.direct_messages.reply.cancel') }}</a>
+                          </div>
+                        </div>
+                      </div>
+                    {{ form_rest(reply_form) }}
+                    {{ form_end(reply_form) }}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 {% endblock page_content %}
