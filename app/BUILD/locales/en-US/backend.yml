@@ -5333,6 +5333,8 @@ agent.tickets.your_teams_tickets: 'Your teams tickets'
 agent.tickets.your_tickets: 'Your tickets'
 
 agent.tickets.add_approval: 'Add Approval'
+agent.tickets.approvals.no_approvals: 'There are no approval requests yet'
+agent.tickets.approvals.no_votes: 'There are no votes on this request yet'
 agent.tickets.approvals.title: 'Approvals'
 agent.tickets.approvals.make_request: 'Make a request'
 agent.tickets.approvals.cancel_make_request: 'Cancel'

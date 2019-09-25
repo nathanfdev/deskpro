@@ -31,20 +31,31 @@ class ApprovalTable extends React.Component {
       padding: '1px 4px'
     };
 
-    const approvalsList = this.props.approvals.toArray().map(approval => {
+    let approvalsList = [];
+    if (this.props.approvals.toArray().length > 0) {
+      approvalsList = this.props.approvals.toArray().map(approval => {
 
-      return (
-        <ApprovalTableRow
-          key={`approval_${approval.get('id')}_row`}
-          me={this.props.me}
-          approval={approval}
-          ticketPerms={this.props.ticketPerms}
-          cancelApprovalRequest={this.props.cancelApprovalRequest}
-          acceptApprovalRequest={this.props.acceptApprovalRequest}
-          rejectApprovalRequest={this.props.rejectApprovalRequest}
-        />
-      )
-    });
+        return (
+          <ApprovalTableRow
+            key={`approval_${approval.get('id')}_row`}
+            me={this.props.me}
+            approval={approval}
+            ticketPerms={this.props.ticketPerms}
+            cancelApprovalRequest={this.props.cancelApprovalRequest}
+            acceptApprovalRequest={this.props.acceptApprovalRequest}
+            rejectApprovalRequest={this.props.rejectApprovalRequest}
+          />
+        )
+      });
+    } else {
+      approvalsList = (
+        <tr>
+          <td colSpan="9" style={{ textAlign: 'center' }}>
+            <FormattedMessage id="agent.tickets.approvals.no_approvals" />
+          </td>
+        </tr>
+      );
+    }
 
     return (
       <table cellSpacing="0" cellPadding="0" style={{ tableLayout: 'fixed' }} className="field-holders-table th-la">

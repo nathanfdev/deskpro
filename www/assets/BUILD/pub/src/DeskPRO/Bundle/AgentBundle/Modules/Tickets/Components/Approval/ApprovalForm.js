@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {injectIntl, FormattedMessage, intlShape} from "react-intl";
-import {Form, Label, Button, Select, Textarea} from "@deskpro/react-components";
-import {template} from "handlebars/lib/handlebars/runtime";
+import {injectIntl, FormattedMessage } from "react-intl";
+import {Form, Label, Button, Select } from "@deskpro/react-components";
 
 @injectIntl
 export class ApprovalForm extends React.Component {

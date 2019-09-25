@@ -4,7 +4,6 @@ import {FormattedMessage} from 'react-intl';
 import moment from 'moment';
 import { Icon, Button } from '@deskpro/react-components';
 import { faTimes, faCheck, faClock, faCaretRight } from '@fortawesome/free-solid-svg-icons';
-import {faEnvelope} from "@fortawesome/free-regular-svg-icons";
 
 class ApprovalTableRow extends React.Component {
   static propTypes = {
@@ -103,8 +102,11 @@ class ApprovalTableRow extends React.Component {
         approver:  approvers.find(obj => obj.id === parseInt(vote.get('approver'))),
         message:   vote.get('message'),
         vote_type: vote.get('vote_type'),
-        created_at: moment(vote.get('created_at')).format(),
-      }))
+        created_at: moment(vote.get('created_at')).format('DD/MM/YYYY'),
+      })),
+      created_at: moment(this.props.approval.get('created_at')).format('DD/MM/YYYY'),
+      completed_at: moment(this.props.approval.get('completed_at')).format('DD/MM/YYYY'),
+      cancelled_at: moment(this.props.approval.get('cancelled_at')).format('DD/MM/YYYY'),
     };
 
     let controls = '';
@@ -114,37 +116,60 @@ class ApprovalTableRow extends React.Component {
         const iAmApprover = approval.approvers.findIndex(approver => meId === approver.id) > -1;
 
         if (meId === approval.creator) {
-          controls = <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
-        } else if (iAmApprover) {
-          if (approval.approvers_pending.includes(meId)) {
+          if (iAmApprover && approval.approvers_pending.includes(meId)) {
             controls = (
               <div>
+                <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
                 <Button style={{ marginRight: '3px' }} size="small" loading={this.state.saving} onClick={() => this.acceptApprovalRequest(approval.id)}>Accept</Button>
                 <Button size="small" loading={this.state.saving} onClick={() => this.rejectApprovalRequest(approval.id)}>Reject</Button>
               </div>
-            );
+            )
+          } else {
+            controls = (
+              <div>
+                <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
+              </div>
+            )
           }
+        } else {
+          controls = (
+            <div>
+              <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
+            </div>
+          )
         }
       }
     }
 
-    const votesList = approval.votes.map(vote => {
-      return (
-        <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
-          <td>&nbsp;</td>
-          <td>{vote.approver.name}</td>
-          <td>{vote.message}</td>
-          <td>{vote.created_at}</td>
-          <td>
-            <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
+    let votesList = '';
+    if (approval.votes.length > 0) {
+      votesList = approval.votes.map(vote => {
+        return (
+          <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
+            <td>&nbsp;</td>
+            <td>{vote.approver.name}</td>
+            <td>{vote.message}</td>
+            <td>
+              <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
+              <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
+                {vote.created_at}
+              </small>
+            </td>
+            <td>
+              <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
+            </td>
+          </tr>
+        );
+      });
+    } else {
+      votesList = (
+        <tr>
+          <td colSpan="5" style={{ textAlign: 'center' }}>
+            <FormattedMessage id="agent.tickets.approvals.no_votes" />
           </td>
-          <td>
-            <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
-          </td>
-          <td>&nbsp;</td>
         </tr>
       );
-    });
+    }
 
     const responsesStyle = {
       display: this.state.showResponses ? '' : 'none'
@@ -170,14 +195,24 @@ class ApprovalTableRow extends React.Component {
           <a href="#" onClick={this.toggleVotes}>{approval.id}</a>
         </td>
         <td>{approval.name}</td>
-        <td>{approval.description}</td>
+        <td>
+          {approval.description}
+          <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
+            {approval.created_at}
+          </small>
+        </td>
         <td>{approversList}</td>
         <td>{approval.required_approvals}</td>
         <td>{approval.required_rejections}</td>
         <td>
-          <FormattedMessage
-            id={`agent.tickets.approvals.status_name.${approval.status}`}
-          />
+          <FormattedMessage id={`agent.tickets.approvals.status_name.${approval.status}`} />
+          <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
+            {
+              approval.status === 'cancelled'
+                ? approval.cancelled_at
+                : approval.status !== 'pending' ? approval.completed_at : ''
+            }
+          </small>
         </td>
         <td style={{ textAlign: 'center' }}>
           {controls}
@@ -193,9 +228,7 @@ class ApprovalTableRow extends React.Component {
               <col style={{ width: '40px' }} />
               <col style={{ width: '100px' }} />
               <col style={{ width: '20%' }} />
-              <col style={{ width: '20%' }} />
               <col style={{ width: '100px' }} />
-              <col style={{ width: '70px' }} />
               <col style={{ width: '30px' }} />
             </colgroup>
             <tbody>

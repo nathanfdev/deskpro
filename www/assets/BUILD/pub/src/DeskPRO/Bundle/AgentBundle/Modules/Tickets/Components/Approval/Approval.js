@@ -4,7 +4,6 @@ import {Container, Button} from "@deskpro/react-components";
 import {FormattedMessage} from "react-intl";
 import ApprovalTable from "./ApprovalTable";
 import ApprovalForm from "./ApprovalForm";
-import * as actions from "../../Actions/approvalRequestActions";
 
 export class Approval extends React.Component {
   static propTypes = {
