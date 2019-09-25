@@ -71,15 +71,14 @@
                         {{ form_widget(form.ticket_message) }}
                     </div>
                     {{ form_widget(form.attachments) }}
-                    <div class="as-no-dpui">{{ form_widget(form.more_attachments) }}</div>
+                    <div class="as-no-dpui">{{ form_widget(form.more_attachments, { attr: { class: 'btn btn-primary' }}) }}</div>
                 
                     <div class="row align-items-center">
                         <div class="col-sm-2">
-                            {{ form_rest(form, { attr: { class: 'btn btn-primary' }}) }}
+                            {{ form_widget(form.submit, { attr: { class: 'btn btn-primary' }}) }}
                         </div>
                     </div>
-                
-                    
+                    {{ form_rest(form) }}
                 {{ form_end(form) }}
             </div>
         </div>
