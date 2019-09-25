@@ -1,24 +1,34 @@
-{% import 'Theme:Tickets:macros.html.twig' as macros %}
-<div class="ticket-message agent-message">
-  <div class="ticket-owner">
-    <div class="ticket-action-date">{{ date_ago(msg.date_created) }}</div>
-    {{ macros.person_inline(msg.person) }}
-    <span>{{ phrase('portal.tickets.timeline_wrote') }}</span>
+<div class="dp-po-ticket-block dp-po-ticket-block-their">
+  <span class="badge badge-purple">Agent reply</span>
+  <div class="dp-po-avatar dp-po-avatar-round">
+    {% include "Theme:Tickets:embeds/person_inline.html.twig" with {person: msg.person, include_email: false } %}
   </div>
-
-  <div class="ticket-message-content">
-    {{ render_message(msg) }}
-    {% if msg.getAttachmentsList()|length > 0 %}
-      <div class="ticket-message-files">
-        <h1>{{ phrase('portal.tickets.timeline_attached') }}</h1>
-        <ul>
-          {% for attachment in msg.getAttachmentsList() %}
-            <li>
-              {{ macros.attachment_full(attachment) }}
-            </li>
-          {% endfor %}
-        </ul>
-      </div>
-    {% endif %}
+  <div class="dp-po-time">
+    <i class="dp-po-icon far fa-clock"></i>
+    {{ date_ago(msg.date_created) }}
   </div>
+  {#<div class="dp-po-ticket-block-cc">#}
+  {#  <ul class="dp-po-ticket-block-cc-list">#}
+  {#    <li class="dp-po-ticket-block-cc-item">CC</li>#}
+  {#    <li class="dp-po-ticket-block-cc-item">Wendy Pride</li>#}
+  {#  </ul>#}
+  {#</div>#}
+  <div class="dp-po-ticket-block-content">
+    <p class="dp-po-ticket-block-msg">
+      {{ render_message(msg) }}
+    </p>
+  </div>
+  
+  {% if msg.getAttachmentsList()|length > 0 %}
+    <div class="dp-po-ticket-attachments">
+      <h4 class="dp-po-ticket-attachments-title">{{ phrase('portal.tickets.timeline_attached') }}</h4>
+      <ul class="dp-po-ticket-attachments-list">
+        {% for attachment in msg.getAttachmentsList() %}
+          <li class="dp-po-ticket-attachments-item">
+            {% include "Theme:Tickets:embeds/attachment_full.html.twig" with {attachment: attachment } %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
 </div>
