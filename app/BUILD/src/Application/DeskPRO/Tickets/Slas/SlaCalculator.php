@@ -223,7 +223,12 @@ class SlaCalculator
             $times[] = $ticket->date_archived->getTimestamp();
         }
 
-        if (($ticket->status == 'resolved' || $ticket->status == 'archived') && $ticket->date_resolved) {
+        if (
+            // First reply SLA should not be completed when the ticket status is changed and no agent reply exists
+            $this->type !== self::TYPE_FIRST_RESPONSE
+            && ($ticket->status == 'resolved' || $ticket->status == 'archived')
+            && $ticket->date_resolved
+        ) {
             $times[] = $ticket->date_resolved->getTimestamp();
         }
 
