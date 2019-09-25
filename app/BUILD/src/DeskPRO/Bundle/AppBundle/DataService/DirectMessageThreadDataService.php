@@ -18,13 +18,16 @@ class DirectMessageThreadDataService extends AbstractDataService
      * @TODO: return
      *
      * @param Person $user
-     * @param bool   $isUnread
+     * @param bool $isUnread
      *
-     * @return DirectMessageThread[]
+     * @param $page
+     * @param $maxPerPage
+     * @param bool $includesLatestMessage TRUE to include the latest message content
+     * @return Pagerfanta
      */
-    public function getForUser(Person $user, $isUnread, $page, $maxPerPage)
+    public function getForUser(Person $user, $isUnread, $page, $maxPerPage, $includesLatestMessage = false)
     {
-        $qb    = $this->em->getRepository(DirectMessageThread::class)->getForUser($user, $isUnread, true);
+        $qb    = $this->em->getRepository(DirectMessageThread::class)->getForUser($user, $isUnread, true, $includesLatestMessage);
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($maxPerPage);
         $pager->setCurrentPage($page);
@@ -35,11 +38,12 @@ class DirectMessageThreadDataService extends AbstractDataService
     /**
      * @param DirectMessageThread[] $threads
      *
+     * @param null|int $entityIndex
      * @return array
      */
-    public function getParticipantsGroupedByThreads($threads)
+    public function getParticipantsGroupedByThreads($threads, $entityIndex = null)
     {
-        return $this->em->getRepository(DirectMessageParticipant::class)->getGroupedForThreads($threads);
+        return $this->em->getRepository(DirectMessageParticipant::class)->getGroupedForThreads($threads, $entityIndex);
     }
 
     /**
