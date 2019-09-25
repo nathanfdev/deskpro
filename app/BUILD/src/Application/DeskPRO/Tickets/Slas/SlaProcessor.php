@@ -248,7 +248,7 @@ class SlaProcessor
                         // - means ticket was resolved/asnwered/etc.. before SLA fail date.
                         // - but somehow TicketSla was not marked as completed and still can't calucate complete date
                         // = mark it as completed to not stuck on it in cron job
-                        $context->getLogger()->error(sprintf(
+                        $context->getLogger()->warning(sprintf(
                             '[SlaProcessor] TicketSLA#%d passed threshold but not failed and not completed. Cron may stuck on this entity. Mark complete.',
                             $ticket_sla->id
                         ));
