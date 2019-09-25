@@ -25,7 +25,7 @@ class DirectMessagesController extends AbstractController
     /**
      * Number of direct messages per page
      */
-    const DIRECT_MESSAGES_PER_PAGE = 1;
+    const DIRECT_MESSAGES_PER_PAGE = 20;
 
     /**
      * @Route("/dm", name="portal_dm")
