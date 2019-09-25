@@ -1,6 +1,5 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
   {% for line in timeline_pager %}
-    <div class="dp-po-ticket-block dp-po-ticket-block-{{ line.type == 'agent_message' ? 'their' : 'mine' }}">
       {% if line.type == 'ticket_created' %}
         <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
           <div class="dp-po-avatar dp-po-avatar-round">
@@ -50,7 +49,6 @@
         {% set msg = line.message %}
         {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
       {% endif %}
-    </div>
   {% endfor %}
 
 {#  {% if timeline_pager.haveToPaginate %}#}
