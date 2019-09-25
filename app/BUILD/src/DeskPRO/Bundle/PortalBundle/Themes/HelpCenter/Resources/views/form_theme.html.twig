@@ -126,14 +126,14 @@
 {%- endblock submit_widget -%}
 
 {%- block combined_row -%}
-    <div class="column-full">
-        <div class="column-half">
-            <div class="bucket">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
                 {{ form_row(form.children|first) }}
             </div>
         </div>
-        <div class="column-half omega">
-            <div class="bucket">
+        <div class="col-sm-6">
+            <div class="form-group">
                 {{ form_row(form.children|last) }}
             </div>
         </div>
@@ -275,20 +275,20 @@
 
 {# letting logged in users choose their email #}
 {% block deskpro_person_email_choice_widget %}
-    <div {{ block('widget_container_attributes') }}>
         {% set count = choices|length %}
         {% if count > 1 %}
-           <div class="with-dpx form-control">
-               <select dpx-select="" id="{{ id }}" name="{{ full_name }}">
-                   {% for choice in choices %}
-                       <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
-                   {% endfor %}
-               </select>
-           </div>
+            <div {{ block('widget_container_attributes') }}>
+               <div class="with-dpx form-control">
+                   <select dpx-select="" id="{{ id }}" name="{{ full_name }}">
+                       {% for choice in choices %}
+                           <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+                       {% endfor %}
+                   </select>
+               </div>
+            </div>
         {% else %}
-                <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
+            <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
-    </div>
 {% endblock deskpro_person_email_choice_widget %}
 
 {# letting logged in users choose their email #}
@@ -511,48 +511,48 @@
 {% endblock %}
 
 {###
-HEIRARCHY
+HIERARCHY
 ###}
-{% block deskpro_heirarchical_entity_widget %}
+{% block deskpro_hierarchical_entity_widget %}
     {% if expanded %}
-        {{- block('deskpro_heirarchical_choice_widget_expanded') -}}
+        {{- block('deskpro_hierarchical_choice_widget_expanded') -}}
     {% else %}
-        {{- block('deskpro_heirarchical_choice_widget_collapsed') -}}
+        {{- block('deskpro_hierarchical_choice_widget_collapsed') -}}
     {% endif %}
 {% endblock %}
 
-{% block deskpro_heirarchical_choice_widget_expanded -%}
+{% block deskpro_hierarchical_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
         {%- for child in form %}
             {{- form_widget(child) -}}
             {{- form_label(child) -}}
         {% endfor -%}
     </div>
-{% endblock deskpro_heirarchical_choice_widget_expanded %}
+{% endblock deskpro_hierarchical_choice_widget_expanded %}
 
-{% block deskpro_heirarchical_choice_widget_collapsed -%}
+{% block deskpro_hierarchical_choice_widget_collapsed -%}
     <div class="with-dpx">
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select data-heirarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %} class="as-no-dpui">
+        <select data-hierarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %} class="as-no-dpui">
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
             {%- if preferred_choices|length > 0 -%}
                 {% set options = preferred_choices %}
-                {{- block('deskpro_heirarchical_choice_widget_options') -}}
+                {{- block('deskpro_hierarchical_choice_widget_options') -}}
                 {% if choices|length > 0 and separator is not none -%}
                     <option disabled="disabled">{{ separator }}</option>
                 {%- endif %}
             {%- endif -%}
             {% set options = choices -%}
-            {{- block('deskpro_heirarchical_choice_widget_options') -}}
+            {{- block('deskpro_hierarchical_choice_widget_options') -}}
         </select>
     </div>
-{%- endblock deskpro_heirarchical_choice_widget_collapsed %}
+{%- endblock deskpro_hierarchical_choice_widget_collapsed %}
 
-{% block deskpro_heirarchical_choice_widget_options -%}
+{% block deskpro_hierarchical_choice_widget_options -%}
     {% for group_label, choice in options %}
         {%- if choice is not iterable -%}
             {% set def = choice.data %}
@@ -566,10 +566,10 @@ HEIRARCHY
             >{% if def.parent is defined and def.parent is not null %}&mdash; {% endif %}{% if def.depth > 1 %}{% for i in range(2, def.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
         {%- endif -%}
     {% endfor %}
-{%- endblock deskpro_heirarchical_choice_widget_options %}
+{%- endblock deskpro_hierarchical_choice_widget_options %}
 
 {###
-END HEIRARCHY
+END HIERARCHY
 ###}
 
 
@@ -614,7 +614,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
             {%- endif %}
             {%- if preferred_choices|length > 0 -%}
                 {% set options = preferred_choices %}
-                {{- block('deskpro_heirarchical_choice_widget_options') -}}
+                {{- block('deskpro_hierarchical_choice_widget_options') -}}
                 {% if choices|length > 0 and separator is not none -%}
                     <option disabled="disabled">{{ separator }}</option>
                 {%- endif %}
@@ -641,7 +641,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 {%- endblock deskpro_custom_field_choice_widget_options %}
 
 {###
-END HEIRARCHY
+END HIERARCHY
 ###}
 
 {% block custom_field_file_collection_widget %}
