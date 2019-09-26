@@ -61,9 +61,18 @@ helpcenter.tickets.search-tickets: 'Search Tickets'
 helpcenter.tickets.submit-a-ticket: 'Submit a ticket'
 helpcenter.tickets.tickets-i-m-cc-on: 'Tickets i’m CC’d on'
 helpcenter.tickets.you-need-to-respond: 'You need to respond'
+helpcenter.tickets.view_ticket_id: 'Ticket ID'
+helpcenter.tickets.view_ticket_status_title: 'Ticket status'
+helpcenter.tickets.view_assigned_agent: 'Assigned agent'
+helpcenter.tickets.view_requester: 'Requester'
+helpcenter.tickets.view_participants: 'Also on this ticket ({{count}})'
+helpcenter.tickets.view_btn_add_cc: 'CC +'
 helpcenter.chat.last_updated_by: 'Last updated: <b>{{date}}</b> by <b>{{person}}</b>'
 helpcenter.chat.last_activity: 'Last activity'
 helpcenter.chat.assigned_agent: 'Assigned agent'
+helpcenter.tickets.view_you_created: '<h3 class="dp-po-ticket-meta-title">Created</h3><p>{{ago}}</p>'
+helpcenter.tickets.view_last_message: '<h3 class="dp-po-ticket-meta-title">Last message</h3><p>{{ago}}</p>'
+helpcenter.tickets.view_awaiting_user: 'Waiting for your message'
 portal.account.automatically_join_org_tickets: 'Automatically join {{org_name}}''s tickets?'
 portal.account.change-password: 'Change Password'
 portal.account.change-password-btn: 'Update Password'
@@ -791,6 +800,10 @@ portal.direct_messages.title: My Messages
 portal.direct_messages.none: No messages
 portal.direct_messages.create_thread: Create
 portal.direct_messages.block_user: 'block user'
+portal.direct_messages.reply.message: Message
+portal.direct_messages.reply.cancel: Cancel
+portal.direct_messages.reply.send_message: 'Send Message'
+portal.direct_messages.back_to_messages: 'Back to my messages'
 portal.members.title: Members
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'

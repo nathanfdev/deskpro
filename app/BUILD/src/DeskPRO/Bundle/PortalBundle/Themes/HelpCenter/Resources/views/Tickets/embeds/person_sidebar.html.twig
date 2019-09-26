@@ -1,0 +1,10 @@
+<div class="dp-po-avatar dp-po-avatar-round">
+	{% if avatar_link %}
+		<a href="{{ avatar_link }}">
+	{% endif %}
+		<img src="{{ avatar_url(person, 30) }}" />
+		<span>{{person.display_name_user}}</span>
+	{% if avatar_link %}
+	</a>
+	{% endif %}
+</div>

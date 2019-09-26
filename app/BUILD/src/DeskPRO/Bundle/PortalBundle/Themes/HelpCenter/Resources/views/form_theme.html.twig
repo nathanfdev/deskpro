@@ -55,7 +55,11 @@
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
     {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
-    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+    {% if prototype is not defined %}
+      {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+    {% else %}
+        {% set widgetClass = '' %}
+    {% endif %}
     {# containers #}
     {% if root_and_not_hidden %}<div class="form-group">{% endif %}
 
@@ -342,28 +346,26 @@
     </div>
 {%- endblock choice_widget_collapsed -%}
 
+{% block ticket_message_inline_attachments_widget %}
+    {{ form_widget(form) }}
+{% endblock ticket_message_inline_attachments_widget %}
+
 {# TICKET ATTACHMENTS #}
 {% block ticket_message_attachment_widget %}
     {% if form.blob is defined %}
         {{ form_widget(form.blob) }}
         {{ form_errors(form.blob) }}
     {% else %}
-        <div
-            class="attach-row"
+        <li
+            class="dp-po-comments-attachments-item"
             data-blob-id="{{ form.vars.data.blob.id }}"
             data-blob-auth="{{ form.vars.data.blob.authcode }}"
             data-blob-filename="{{ form.vars.data.blob.filename }}"
             data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
             data-blob-filesize="{{ form.vars.data.blob.readableFilesize }}"
             {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
-            >
-            <div class="attach-row-icon" style="display: none;">
-                {{ file_icon(form.vars.data.blob) }}
-            </div>
-            <div class="attach-row-errors">
-                {{ form_errors(form) }}
-            </div>
-            <a href="{{ form.vars.data.blob.downloadUrl }}">
+        >
+            <a href="{{ form.vars.data.blob.downloadUrl }}" class="dp-po-comments-attachments-link">
                 {% if form.vars.data.blob.is_image %}
                     <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
                 {% else %}
@@ -373,30 +375,31 @@
             </a>
             [ {{ form_widget(form.delete) }} Delete? ]
             {{ form_widget(form.blob_auth) }}
-        </div>
+        </li>
     {% endif %}
 {% endblock ticket_message_attachment_widget %}
 
 {% block ticket_message_attachment_collection_widget %}
-<div class="bucket">
-    {% if prototype is defined %}
-        {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
-    {% endif %}
-    <div class="attach-field">
-       <div class="with-dpx">
-            <div class="dpx-attach" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
-                <div {{ block('widget_container_attributes') }}>
-                    {%- if form.parent is empty -%}
-                        {{ form_errors(form) }}
-                    {%- endif -%}
-                    {{- block('form_rows') -}}
-                    {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
-                    {{- form_rest(form) -}}
-                </div>
-            </div>
-        </div>
+
+{% if prototype is defined %}
+    {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+{% endif %}
+<div class="form-group dp-po-form-upload with-dpx">
+    <div class="dp-po-tiket-attachments">
+        <ul class="dp-po-tiket-attachments-list">
+            {{- block('form_rows') -}}
+        </ul>
+    </div>
+    
+    <div class="dp-po-form-upload-wrap dpx-attach" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
+        {%- if form.parent is empty -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+        {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+        {{- form_rest(form) -}}
     </div>
 </div>
+
 {% endblock ticket_message_attachment_collection_widget %}
 
 {# COMMUNITY TOPICS ATTACHMENTS #}
