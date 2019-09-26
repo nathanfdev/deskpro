@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -44,6 +45,28 @@ class CustomDefCommunityTopic extends CustomDefAbstract
      * @var Brand
      */
     protected $brand;
+
+    /**
+     * @var ArrayCollection|CommunityForumToCustomDefCommunityTopic[]
+     */
+    protected $forums;
+
+    /**
+     * @var bool
+     *
+     * If TRUE then this field is added to every forum
+     */
+    protected $is_global = false;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->forums = new ArrayCollection();
+    }
 
     /**
      * @param $string
@@ -111,6 +134,35 @@ class CustomDefCommunityTopic extends CustomDefAbstract
         $data['brand'] = $this->brand ? $this->brand->getId() : null;
 
         return $data;
+    }
+
+    /**
+     * @return CommunityForum[]|ArrayCollection
+     */
+    public function getForums()
+    {
+        return $this->forums->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
+            return $pivot->getForum();
+        });
+    }
+
+    /**
+     * @return bool
+     */
+    public function isGlobal()
+    {
+        return $this->is_global;
+    }
+
+    /**
+     * @param bool $is_global
+     * @return CustomDefCommunityTopic
+     */
+    public function setIsGlobal($is_global)
+    {
+        $this->setModelField('is_global', (bool) $is_global);
+
+        return $this;
     }
 
     //###########################################################################
@@ -271,6 +323,16 @@ class CustomDefCommunityTopic extends CustomDefAbstract
                 'columnName' => 'is_agent_field',
             ]
         );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_global',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_global',
+            ]
+        );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(
             [
@@ -335,6 +397,13 @@ class CustomDefCommunityTopic extends CustomDefAbstract
                     ],
                 ],
                 'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'forums',
+                'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
+                'mappedBy'      => 'field',
             ]
         );
     }

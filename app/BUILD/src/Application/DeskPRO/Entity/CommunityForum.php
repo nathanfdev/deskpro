@@ -9,7 +9,9 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityForumListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,8 +29,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  *
  * @PortalLinkCustom()
  */
-class CommunityForum extends CategoryAbstract implements HasValidationMetadataInterface
+class CommunityForum extends CategoryAbstract implements HasValidationMetadataInterface, HasSplashImageProperty
 {
+    /**
+     * @var string|null
+     */
+    protected $description;
+
     /**
      * @var CommunityForum
      */
@@ -50,11 +57,58 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     protected $brand;
 
     /**
+     * @var ArrayCollection|CommunityForumToStatus[]
+     *
+     * As set of topic statuses that may be used with this forum
+     */
+    protected $topic_statuses;
+
+    /**
+     * @var ArrayCollection|CommunityForumToCustomDefCommunityTopic[]
+     *
+     * A set of custom fields that may be used with this forum
+     */
+    protected $topic_fields;
+
+    /**
+     * @var bool
+     *
+     * If TRUE then voting is enabled for this forum
+     */
+    protected $is_voting_enabled = true;
+
+    /**
+     * @var SplashImageProperty
+     */
+    protected $splash_image_property;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->usergroups = new ArrayCollection();
+        $this->usergroups     = new ArrayCollection();
+        $this->topic_statuses = new ArrayCollection();
+        $this->topic_fields   = new ArrayCollection();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string|null $description
+     * @return CommunityForum
+     */
+    public function setDescription($description)
+    {
+        $this->setModelField('description', $description);
+
+        return $this;
     }
 
     /**
@@ -125,6 +179,65 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         return $data;
     }
 
+    /**
+     * @return CommunityTopicStatusCategory[]|ArrayCollection
+     */
+    public function getTopicStatuses()
+    {
+        return $this->topic_statuses->map(function (CommunityForumToStatus $pivot) {
+            return $pivot->getStatus();
+        });
+    }
+
+    /**
+     * @return CustomDefCommunityTopic[]|ArrayCollection
+     */
+    public function getTopicFields()
+    {
+        return $this->topic_fields->map(function (CommunityForumToCustomDefCommunityTopic $pivot) {
+            return $pivot->getField();
+        });
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVotingEnabled()
+    {
+        return $this->is_voting_enabled;
+    }
+
+    /**
+     * @param bool $is_voting_enabled
+     * @return CommunityForum
+     */
+    public function setIsVotingEnabled($is_voting_enabled)
+    {
+        $this->setModelField('is_voting_enabled', (bool) $is_voting_enabled);
+
+        return $this;
+    }
+
+    /**
+     * @return SplashImageProperty
+     */
+    public function getSplashImage()
+    {
+        return $this->splash_image_property;
+    }
+
+    /**
+     * @param SplashImageProperty $splashImageProperty
+     *
+     * @return mixed
+     */
+    public function setSplashImage($splashImageProperty)
+    {
+        $this->setModelField('splash_image_property', $splashImageProperty);
+
+        return $this;
+    }
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################
@@ -170,6 +283,14 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         );
         $metadata->mapField(
             [
+                'fieldName'  => 'description',
+                'type'       => 'text',
+                'nullable'   => true,
+                'columnName' => 'description',
+            ]
+        );
+        $metadata->mapField(
+            [
                 'fieldName'  => 'slug',
                 'type'       => 'string',
                 'length'     => 255,
@@ -177,6 +298,18 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'slug',
+                'unique'     => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'color',
+                'type'       => 'string',
+                'length'     => 6,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'color',
                 'unique'     => true,
             ]
         );
@@ -208,6 +341,16 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'root',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_voting_enabled',
+                'type'       => 'boolean',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'is_voting_enabled',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
@@ -291,6 +434,40 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'icon_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'topic_statuses',
+                'targetEntity' => CommunityForumToStatus::class,
+                'mappedBy'     => 'forum',
+                'orderBy'      => ['display_order' => 'ASC'],
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'topic_fields',
+                'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
+                'mappedBy'      => 'forum',
+                'orderBy'       => ['display_order' => 'ASC'],
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'splash_image_property',
+                'targetEntity' => SplashImageProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'splash_image_property_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',

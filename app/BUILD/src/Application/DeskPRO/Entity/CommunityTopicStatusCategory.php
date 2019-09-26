@@ -14,6 +14,7 @@ use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicStatusCategoryListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -82,6 +83,19 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
      * @var int
      */
     protected $display_order = 0;
+
+    /**
+     * @var ArrayCollection|CommunityForumToStatus[]
+     */
+    protected $forums;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->forums = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -238,6 +252,16 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
         return $this->title;
     }
 
+    /**
+     * @return CommunityForum[]|ArrayCollection
+     */
+    public function getForums()
+    {
+        return $this->forums->map(function (CommunityForumToStatus $pivot) {
+            return $pivot->getForum();
+        });
+    }
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################
@@ -348,6 +372,13 @@ class CommunityTopicStatusCategory extends DomainObject implements HasPhraseName
                     ],
                 ],
                 'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'forums',
+                'targetEntity' => CommunityForumToStatus::class,
+                'mappedBy'     => 'status',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
