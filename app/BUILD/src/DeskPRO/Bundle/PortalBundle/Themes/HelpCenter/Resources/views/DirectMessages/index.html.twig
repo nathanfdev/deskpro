@@ -4,9 +4,18 @@
     <div class="dp-po">
         <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
             <div class="container">
-                <div class="dp-po-title">
-                    <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
-                    <h2 class="dp-po-title-text">{{ phrase('helpcenter.direct_messages.title') }}</h2>
+                <div class="row">
+                    <div class="col">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.direct_messages.title') }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ path('portal_dm_send') }}" class="btn btn-primary">
+                            {{ phrase('helpcenter.direct_messages.reply.send_message') }}
+                        </a>
+                    </div>
                 </div>
                 <div class="dp-po-block">
                     <div class="dp-po-messages">

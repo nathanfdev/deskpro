@@ -56,14 +56,15 @@ helpcenter.members.send_message: 'Send Message'
 helpcenter.members.recent_activity: 'Recent Activity'
 helpcenter.members.no_activities: 'No Activities'
 helpcenter.chat.you: You
-helpcenter.direct_messages.title: My Messages
-helpcenter.direct_messages.none: No messages
+helpcenter.direct_messages.title: 'My Messages'
+helpcenter.direct_messages.none: 'No messages'
 helpcenter.direct_messages.create_thread: Create
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.reply.message: Message
 helpcenter.direct_messages.reply.cancel: Cancel
 helpcenter.direct_messages.reply.send_message: 'Send Message'
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
+helpcenter.direct_messages.new_message: 'New Message'
 helpcenter.news.section-title: 'News'
 helpcenter.news.filter-cat: 'Select Category'
 helpcenter.news.filter-date: 'Select Date'
@@ -812,8 +813,9 @@ portal.news.view-as-agent: 'You can see this page because you are an agent. Norm
 portal.news.view-x-news:
   one: 'View 1 article'
   other: 'View {{count}} articles'
-portal.direct_messages.title: My Messages
-portal.direct_messages.none: No messages
+portal.direct_messages.title: 'My Messages'
+portal.direct_messages.new_message: 'New Message'
+portal.direct_messages.none: 'No messages'
 portal.direct_messages.create_thread: Create
 portal.direct_messages.block_user: 'block user'
 portal.direct_messages.reply.message: Message
