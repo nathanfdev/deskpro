@@ -23,6 +23,11 @@ use Symfony\Component\HttpFoundation\Response;
 class DirectMessagesController extends AbstractController
 {
     /**
+     * Number of direct messages per page
+     */
+    const DIRECT_MESSAGES_PER_PAGE = 20;
+
+    /**
      * @Route("/dm", name="portal_dm")
      * @Security("is_granted('ROLE_USER')")
      *
@@ -33,8 +38,15 @@ class DirectMessagesController extends AbstractController
         $this->isCommunityEnabledOrNotFoundException();
 
         $dataService  = $this->getDirectMessageThreadDataService();
-        $pager        = $dataService->getForUser($this->getUser(), $request->query->has('unread') ? true : false, 1, 500);
-        $participants = $dataService->getParticipantsGroupedByThreads($pager->getCurrentPageResults());
+        $pager = $dataService->getForUser(
+            $this->getUser(),
+            $request->query->has('unread'),
+            $request->query->get('page', 1),
+            self::DIRECT_MESSAGES_PER_PAGE,
+            true
+        );
+
+        $participants = $dataService->getParticipantsGroupedByThreads($pager->getCurrentPageResults(), 0);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDirectMessagesList();
 

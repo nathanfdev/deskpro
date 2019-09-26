@@ -16,7 +16,7 @@ class DirectMessageParticipantRepository extends AbstractEntityRepository
      *
      * @return DirectMessageThread[]
      */
-    public function getGroupedForThreads($threads)
+    public function getGroupedForThreads($threads, $entityIndex = null)
     {
         if (!count($threads)) {
             return [];
@@ -24,21 +24,32 @@ class DirectMessageParticipantRepository extends AbstractEntityRepository
 
         $ids = [];
         foreach ($threads as $thread) {
-            $ids[] = $thread->getId();
+            if (null !== $entityIndex) {
+                $ids[] = $thread[$entityIndex]->getId();
+            } else {
+                $ids[] = $thread->getId();
+            }
         }
 
         $qb = $this->createQueryBuilder('dm_participant');
         $qb
             ->addSelect('person')
             ->leftJoin('dm_participant.person', 'person')
-            ->where($qb->expr()->in('dm_participant.thread', $ids));
+            ->where($qb->expr()->in('dm_participant.thread', $ids))
+        ;
 
         $participant = $qb->getQuery()->getResult();
 
         $res = [];
         foreach ($threads as $thread) {
-            if (!isset($res[$thread->getId()])) {
-                $res[$thread->getId()] = [];
+            if (null !== $entityIndex) {
+                if (!isset($res[$thread[$entityIndex]->getId()])) {
+                    $res[$thread[$entityIndex]->getId()] = [];
+                }
+            } else {
+                if (!isset($res[$thread->getId()])) {
+                    $res[$thread->getId()] = [];
+                }
             }
         }
         foreach ($participant as $participant) {

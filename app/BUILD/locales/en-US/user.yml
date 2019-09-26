@@ -796,9 +796,10 @@ portal.news.view-as-agent: 'You can see this page because you are an agent. Norm
 portal.news.view-x-news:
   one: 'View 1 article'
   other: 'View {{count}} articles'
-portal.direct_messages.title: Messages
+portal.direct_messages.title: My Messages
 portal.direct_messages.none: No messages
 portal.direct_messages.create_thread: Create
+portal.direct_messages.block_user: 'block user'
 portal.direct_messages.reply.message: Message
 portal.direct_messages.reply.cancel: Cancel
 portal.direct_messages.reply.send_message: 'Send Message'
