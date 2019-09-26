@@ -60,4 +60,36 @@ class PendingTasksCount
         $this->lastPendingVoiceTask = $lastPendingVoiceTask;
         $this->lastPendingChatTask  = $lastPendingChatTask;
     }
+
+    /**
+     * @return int
+     */
+    public function getNumPendingVoiceTasks()
+    {
+        return $this->numPendingVoiceTasks;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumPendingChatTasks()
+    {
+        return $this->numPendingChatTasks;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastPendingVoiceTask()
+    {
+        return $this->lastPendingVoiceTask;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastPendingChatTask()
+    {
+        return $this->lastPendingChatTask;
+    }
 }

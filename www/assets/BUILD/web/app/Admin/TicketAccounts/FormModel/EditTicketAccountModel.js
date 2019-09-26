@@ -179,6 +179,10 @@ define([
           if (this.account.incoming_account.mode === 'archive') {
             this.form.in_gmail_account.archive_mailbox = this.account.incoming_account.archive_mailbox;
           }
+          if (this.account.incoming_account.type === 'oauth') {
+            this.form.in_gmail_account.client_id = this.account.incoming_account.client_id || '';
+            this.form.in_gmail_account.client_secret = this.account.incoming_account.client_secret || '';
+          }
         }
 
         if (this.form.incoming_type === 'office365') {
@@ -216,6 +220,11 @@ define([
           this.form.out_gmail_account.token        = this.account.outgoing_account.token;
           this.form.out_gmail_account.refreshToken = this.account.outgoing_account.refreshToken;
           this.form.out_gmail_account.type         = this.account.outgoing_account.type || 'pop3';
+
+          if (this.account.outgoing_account.type === 'oauth') {
+            this.form.out_gmail_account.client_id = this.account.outgoing_account.client_id || '';
+            this.form.out_gmail_account.client_secret = this.account.outgoing_account.client_secret || '';
+          }
         }
 
         if (this.form.outgoing_type === 'office365') {

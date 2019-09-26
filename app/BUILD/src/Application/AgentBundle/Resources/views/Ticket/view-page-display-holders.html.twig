@@ -1,9 +1,9 @@
 {% if not baseId %}{% set baseId = el_uid() %}{% endif %}
 {% if app.languages.isMultiLang() %}
-	<tbody class="ticket_language language_id language standard-field item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
+	<tbody class="ticket_language language_id language standard-field item item-on {% if not ticket.language.title %}no-value{% endif %}" data-item-type="ticket_language">
 		<tr class="mode-display" ng-show="!isEditMode('language')" ng-click="editField($event, 'language')">
 			<th width="150">
-				<span class="language_id label">{{ phrase('agent.general.language') }}:</span>
+				<span class="language_id label"> {{ phrase('agent.general.language') }}:</span>
 			</th>
 			<td>
 				<span class="prop-val language_id">{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}None{% endif %}</span>

@@ -38,6 +38,27 @@
 												This type of email account is not often used unless you plan to configure a more advanced
 												email setup where emails are forwarded into some other ticket account.
 											</p>
+
+											<div class="form-group" ng-show="TicketAccountsEdit.isGmailOAuthSettingsShown()">
+												<div class="col-lg-9">
+													<div class="inner-group" style="margin-left: 23px; margin-top: 15px;">
+														<a style="cursor: pointer" ng-click="show_adv = true" ng-show="!show_adv">Advanced Options &downarrow;</a>
+														<a style="cursor: pointer" ng-click="show_adv = false" ng-show="show_adv">Advanced Options &uparrow;</a>
+														<div ng-show="show_adv" style="margin-top: 5px;">
+															<div style="margin-bottom: 5px;">
+																<h5>Gmail OAuth Settings</h5>
+																<button class="btn btn-danger"
+																		role="button"
+																		ng-click="TicketAccountsEdit.gmailCredentialsModal('{{ path('gmail_access_code') }}', 'in'); $event.preventDefault();"
+																>
+																	Change Gmail OAuth Credentials
+																</button>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
 										</div>
 									</div>
 								</div>
@@ -85,6 +106,7 @@
 	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:new-account-confirm.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-account-modal.html.twig') }}
 	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:test-outgoing-modal.html.twig') }}
+	{{ ng_tpl('AdminInterfaceBundle:TicketAccounts:gmail-credentials-modal.html.twig') }}
 
 	<div dp-register-message="saved_account">{{ ng_var('form.email_address') }} was saved successfully</div>
 {% endblock %}
