@@ -36,8 +36,10 @@
       width: 33%;
       padding: 2px;
 
-      div.info {
+      .info {
         text-align: center;
+        font-size: 9px;
+        padding-left: 5px;
       }
     }
 
@@ -51,9 +53,23 @@
       background: #fff;
     }
 
+    .dp-select {
+      width: 100%;
+      background: #fff;
+      color: #000;
+      border: 1px solid #aaa;
+      border-top: 0;
+      -webkit-border-radius: 0 0 4px 4px;
+      -moz-border-radius: 0 0 4px 4px;
+      border-radius: 0 0 4px 4px;
+      /*-webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+      -moz-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+      box-shadow: 0 4px 5px rgba(0, 0, 0, .15);*/
+    }
+
     ul.approvers-list {
       list-style: none;
-      text-align: center;
+      float: left;
 
       li {
         position: relative;
@@ -61,10 +77,23 @@
         white-space: nowrap;
         margin: 2px;
 
-        span {
+        a.dp-btn {
+          //padding: 0 5px 0 3px;
+          //margin-bottom: 5px;
+          padding: 2px 5px;
           font-size: 9px;
-        }
+          -webkit-border-radius: 3px;
+          -moz-border-radius: 3px;
+          border-radius: 3px;
 
+          span.text {
+            background-position: 0 50%;
+            background-repeat: no-repeat;
+            padding-left: 19px;
+            line-height: 21px;
+            white-space: nowrap;
+          }
+        }
       }
     }
 

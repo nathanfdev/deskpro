@@ -199,34 +199,10 @@ export class ApprovalForm extends React.Component {
     let approversSelect = '';
     let approversList   = '';
     let approversInfo   = '';
+    let maxApprovers    = 0;
 
     if (this.state.template.canChoose === true) {
-      const maxApprovers = parseInt(this.state.template.criteria.number_of_approvers);
-      approversSelect  = this.state.approvers.length < maxApprovers ? (
-        <div>
-          <Label>
-            <FormattedMessage id="agent.tickets.approvals.approvers" />
-          </Label>
-          <Select options={this.state.people} onChange={this.handleApproverChoice} />
-        </div>
-      ) : '';
-
-      approversList = <ul className="approvers-list">
-        {this.state.approvers.map(approver => {
-
-          const avatarStyle = {
-            backgroundImage: approver.avatar,
-            backgroundSize: 'containt'
-          };
-
-          return (
-            <li className="dp-btn" key={approver.id}>
-              <span className="text" style={avatarStyle}>{approver.name}</span>
-            </li>
-          );
-
-        })}
-      </ul>;
+      maxApprovers = parseInt(this.state.template.criteria.number_of_approvers);
 
       approversInfo = this.state.approvers.length < maxApprovers ?
         <FormattedMessage
@@ -238,6 +214,36 @@ export class ApprovalForm extends React.Component {
           id="agent.tickets.approvals.approve_condition"
           values={{m: maxApprovers, reqa: this.state.template.toApprove, reqr: this.state.template.toReject}}
         />;
+
+      approversSelect  = this.state.approvers.length < maxApprovers ? (
+        <div className="col" style={{ maxWidth: '230px' }}>
+          <Label>
+            <FormattedMessage id="agent.tickets.approvals.approvers" />
+            <span className="info">( {approversInfo} )</span>
+          </Label>
+          <Select options={this.state.people} onChange={this.handleApproverChoice} />
+        </div>
+      ) : '';
+
+      approversList = <ul className="approvers-list">
+        {this.state.approvers.map(approver => {
+
+          const avatarStyle = {
+            backgroundImage: `url(${approver.avatar})`,
+            backgroundSize: 'contain'
+          };
+
+          return (
+            <li key={approver.id}>
+              <a className="dp-btn dp-btn-small" >
+                <span className="text" style={avatarStyle}>{approver.name}</span>
+              </a>
+            </li>
+          );
+
+        })}
+      </ul>;
+
     } else if (this.state.template.canChoose === false) {
       approversInfo = <FormattedMessage id="agent.tickets.approvals.approvers_set_from_template" />;
     }
@@ -246,7 +252,7 @@ export class ApprovalForm extends React.Component {
       <div>
         <Form className="request-form" onSubmit={this.createApprovalRequest}>
           <div className="row">
-            <div className="col">
+            <div className="col" style={{ maxWidth: '230px' }}>
               <Label>
                 <FormattedMessage id="agent.tickets.approvals.template" />
               </Label>
@@ -257,10 +263,23 @@ export class ApprovalForm extends React.Component {
                 onChange={this.handleTemplateChange}
               />
             </div>
-            <div className="col">{approversSelect}</div>
+            {/*<div className="col" style={
+              this.state.approvers.length < maxApprovers
+              ? { display: 'block' }
+              : { display: 'none' }
+            }>{approversSelect}</div>*/}
+            {approversSelect}
             <div className="col">
+              {
+                (maxApprovers !== 0 && this.state.approvers.length === maxApprovers)
+                  ? <Label>
+                      <FormattedMessage id="agent.tickets.approvals.approvers" />
+                      <span className="info">( {approversInfo} )</span>
+                    </Label>
+                  : ''
+              }
               <div>{approversList}</div>
-              <div className="info">{approversInfo}</div>
+              {/*<div className="info">{approversInfo}</div>*/}
             </div>
           </div>
           <div className="row">
