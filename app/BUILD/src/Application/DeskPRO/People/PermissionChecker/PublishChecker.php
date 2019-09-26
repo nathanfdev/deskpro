@@ -34,7 +34,7 @@ class PublishChecker extends AbstractChecker
     }
 
     /**
-     * @param mixed $content
+     * @param object $content
      *
      * @return bool
      */
@@ -44,7 +44,11 @@ class PublishChecker extends AbstractChecker
             return true;
         }
 
-        if (property_exists($content, 'person') && $content->person && $content->person->getId() == $this->person->getId()) {
+        if (is_object($content) &&
+            property_exists($content, 'person') &&
+            $content->person &&
+            $content->person->getId() == $this->person->getId()
+        ) {
             return true;
         }
 
