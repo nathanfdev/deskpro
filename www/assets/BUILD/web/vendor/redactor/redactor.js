@@ -2322,9 +2322,25 @@ var RLANG = {
 				}
 				else
 				{
-					var top = this.$toolbar.offset().top + 30;
-					$(dropdown).css({ position: 'absolute', left: left + 'px', top: top + 'px' }).show();
-				}
+          var toolbarOffsetTop = this.$toolbar.offset().top;
+          var top = toolbarOffsetTop + 30;
+          dropdown.css({
+            position: 'absolute',
+            visibility: 'hidden',
+            display: 'block',
+            left: left + 'px',
+            top: top + 'px',
+          });
+          var boundingRect = dropdown[0].getBoundingClientRect();
+
+          if (boundingRect.bottom > window.innerHeight) {
+            dropdown.css({
+              top: (toolbarOffsetTop - boundingRect.height) + 'px',
+            });
+          }
+
+          dropdown.css({ visibility: 'visible' }).show();
+        }
 			}
 
 			var hdlHideDropDown = $.proxy(function(e) { this.hideDropDown(e, dropdown, key); }, this);
