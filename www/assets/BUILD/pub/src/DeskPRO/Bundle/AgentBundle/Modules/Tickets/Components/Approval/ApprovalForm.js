@@ -296,8 +296,8 @@ export class ApprovalForm extends React.Component {
           </div>
           <div>
             <Button
-              size="medium"
-              type="primary"
+              style={{ float: 'right', marginTop: '10px', marginBottom: '10px', marginLeft: '10px' }}
+              size="small"
               loading={this.state.saving}
             >
               <FormattedMessage id="agent.general.create" />

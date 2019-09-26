@@ -33,19 +33,10 @@ export class Approval extends React.Component {
     });
 
   render() {
-    const styles = {
-      button: {
-        float: 'right',
-        marginTop: '10px',
-        marginBottom: '10px'
-      }
-    };
-
     const button = (
       <Button
-        size="m"
-        style={styles.button}
-        className="dp-btn"
+        size="small"
+        style={{ float: 'right', marginTop: '10px', marginBottom: '10px' }}
         onClick={() => this.setState({ showForm: !this.state.showForm })}
       >
         <FormattedMessage id={
