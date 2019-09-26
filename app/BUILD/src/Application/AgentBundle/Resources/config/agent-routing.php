@@ -1794,6 +1794,11 @@ $collection->create('agent_kb_newarticle', [
     'controller' => 'AgentBundle:Kb:newArticle',
 ]);
 
+$collection->create('agent_kb_edit_content_template', [
+    'path'       => '/kb/article/edit_content_template/{contentTemplate}',
+    'controller' => 'AgentBundle:Kb:editContentTemplate',
+]);
+
 $collection->create('agent_kb_article', [
     'path'         => '/kb/article/{article_id}',
     'controller'   => 'AgentBundle:Kb:viewArticle',

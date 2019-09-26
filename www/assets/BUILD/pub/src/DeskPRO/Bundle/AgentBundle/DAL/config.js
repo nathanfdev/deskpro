@@ -50,4 +50,5 @@ export const repositoriesConfig = {
   TicketWorkflows:      { type: 'api', url: '/ticket_workflows', allowAll: true },
   EmailAccount:         { type: 'api', url: '/email_accounts', allowAll: true },
   UserGroups:           { type: 'api', url: '/user_groups', allowAll: true },
+  ContentTemplate:      { type: 'api', url: '/content_templates', allowAll: true }
 };

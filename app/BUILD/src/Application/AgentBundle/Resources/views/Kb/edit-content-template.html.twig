@@ -1,8 +1,9 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewArticle';
 
-pageMeta.title = '{{ phrase('agent.general.new_article') }}';
-pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
+pageMeta.contentTemplateId = '{{ content_template.id }}';
+pageMeta.title = '{{ content_template.title }}';
+pageMeta.uploadAttachUrl = '{{ path('agent_accept_upload') }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -54,8 +55,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'with_blank': 0,
 				'blank_title': '',
 				'categories': article_categories,
-				'allow_parent_sel': true,
-				'selected': state.newarticle.category_id|default(0)
+				'allow_parent_sel': true
 			} %}
 			<div class="error-message category_id">{{ phrase('agent.publish.please_select_category') }}</div>
 		</div>
@@ -77,7 +77,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="text" name="newarticle[title]" id="{{ baseId }}_title" value="{{ state.newarticle.title }}"
+		<input type="text" name="newarticle[title]" id="{{ baseId }}_title"
 			   autocomplete="{{ "now" | date("U") }}"
 			   style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
@@ -90,13 +90,11 @@ pageMeta.baseId = '{{ baseId }}';
 		<div style="width: 98%">
 			{% if app.hasBeta('content_editor') %}
 				<script type="text/javascript">
-					var {{ baseId }}_content_input = {{ state.newarticle.content_input|json_encode|raw }};
+					var {{ baseId }}_content_input = '';
 				</script>
 				<div id="{{baseId}}_content" class="edit-content-field"></div>
 			{%  else  %}
-				<textarea type="text" name="newarticle[content]" id="{{baseId}}_content" autocomplete="{{ "now" | date("U") }}">
-                    {{ state.newarticle.content }}
-                </textarea>
+				<textarea type="text" name="newarticle[content]" id="{{baseId}}_content" autocomplete="{{ "now" | date("U") }}"></textarea>
 			{% endif %}
 			<div class="error-message content">{{ phrase('agent.publish.please_enter_content') }}</div>
 		</div>
@@ -123,7 +121,6 @@ pageMeta.baseId = '{{ baseId }}';
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
 					<li data-tab-for="> .tab-fields">{{ phrase('agent.general.fields') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -134,7 +131,6 @@ pageMeta.baseId = '{{ baseId }}';
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<input type="text" autocomplete="{{ "now" | date("U") }}"
-									   value="{% for label in state.newarticle.labels %}{{label}},{% endfor %}"
 									   data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
 							</div>
 						</dd>
@@ -147,30 +143,15 @@ pageMeta.baseId = '{{ baseId }}';
 					{% include 'AgentBundle:Kb:view-customfields-edit-rows.html.twig' %}
 				</div>
 				{# / Tab Fields #}
-
-				{# Tab Attach #}
-				<div class="tab-attach" style="display: none">
-					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newarticle[attach][]'} %}
-					<h6>{{ phrase('agent.general.attachments') }}</h6>
-					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" />
-					</div>
-					<ul class="files file-list"></ul>
-				</div>
-				{# /Tab Attach #}
 			</div>
 		</div>
 		{# /Tab Container #}
 	</div>
 </div>
-<div class="newarticle-template-overlay-wrapper" style="display: none">
-	{% include 'AgentBundle:Kb:newarticle_template_overlay.html.twig' %}
-</div>
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_article') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
-		<button class="submit-template-trigger clean-white">{{ phrase('agent.general.save_as_new_template') }}</button>
+		<button class="submit-template-update-trigger clean-white">{{ phrase('agent.content_templates.update_template') }}</button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

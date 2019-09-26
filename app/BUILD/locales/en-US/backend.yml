@@ -3039,6 +3039,7 @@ agent.general.comparing_revisions: 'Comparing Revisions'
 agent.general.comparison: Comparison
 agent.general.complete: Complete
 agent.general.confirm: Confirm
+agent.general.confirm_deletion: Confirm deletion
 agent.general.contact_address: 'Contact Address'
 agent.general.contact_instant_messaging: 'Contact Instant Messaging'
 agent.general.contact_phone: 'Contact Phone'
@@ -3065,6 +3066,8 @@ agent.general.create: Create
 agent.general.create_a_new_organization: 'Create a new organization'
 agent.general.create_a_new_person: 'Create a new person'
 agent.general.create_article: 'Create Article'
+agent.general.save_as_new_template: 'Save as New Template'
+agent.general.article_template_explanation: "Article template can be used for quick article creation.<br/><br/>All labels, fields and other article properties including brand, category and initial status would be stored in template which you can raise when creating an article."
 agent.general.create_content: 'Create Content'
 agent.general.create_deal: 'Create Deal'
 agent.general.create_download: 'Create Download'
@@ -5569,6 +5572,11 @@ agent.voice.call_user_joined: 'User {{person}} joined the call'
 agent.voice.call_user_left: 'User {{person}} left the call'
 agent.voice.incoming_call_title: 'Inbound call record'
 agent.voice.outgoing_call_title: 'Outbound call record'
+agent.content_templates.templates: 'Templates'
+agent.content_templates.create_article_from_template: 'Create Article From Template'
+agent.content_templates.manage_templates: 'Manage Templates'
+agent.content_templates.edit_template: 'Edit Template'
+agent.content_templates.update_template: 'Update Template'
 api.error_codes.accept_failed_upload: 'There was a problem uploading this file. Please try again.'
 api.error_codes.accept_no_file: 'You cannot upload an empty file.'
 api.error_codes.accept_not_allowed_exts: 'You cannot upload a file with any of the following file extensions: {{detail}}'

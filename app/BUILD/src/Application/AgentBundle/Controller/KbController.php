@@ -22,6 +22,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -1141,6 +1142,36 @@ class KbController extends AbstractController
                 'success' => false,
             ]);
         }
+    }
+
+    public function editContentTemplateAction(ContentTemplate $contentTemplate)
+    {
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $articleCategories = $this->getFilteredCategory($brandId);
+
+        if (count($articleCategories) === 0) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            $brand  = array_shift($brands);
+            while (count($articleCategories) === 0 && $brand->getId()) {
+                $brandId           = $brand->getId();
+                $articleCategories = $this->getFilteredCategory($brandId);
+                $brand             = array_shift($brands);
+            }
+        }
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        /** @var FieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
+        $customfields = $fieldManager->getDisplayArrayForObject(new Article());
+
+        return $this->render('AgentBundle:Kb:edit-content-template.html.twig', [
+            'content_template'   => $contentTemplate,
+            'article_categories' => $articleCategories,
+            'brands'             => $brands,
+            'selected_brand_id'  => $brandId,
+            'custom_fields'      => $customfields,
+        ]);
     }
 
     /**

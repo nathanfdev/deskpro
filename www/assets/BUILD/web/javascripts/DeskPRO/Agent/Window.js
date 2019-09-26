@@ -2862,6 +2862,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new',
 				autostart: autostart
 			});
+      this.createEditArticleContentTemplateLoader = function (contentTemplateId) {
+        return new DeskPRO.Agent.Widget.BackgroundPopout({
+          loadUrl: BASE_URL + 'agent/kb/article/edit_content_template',
+          tabRoute: 'page:' + BASE_URL + 'agent/kb/article/edit_content_template/'+contentTemplateId,
+          autostart: autostart
+        });
+      }
 			this.newNewsLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/news/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/news/new',
