@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Pagerfanta\Adapter\CallbackAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
@@ -111,6 +112,97 @@ class PersonDataService extends AbstractDataService
     }
 
     /**
+     * @param Person $member
+     * @param int $page
+     * @param int $maxPerPage
+     * @param bool $groupChronologically Group results by today, this week, this month, etc.
+     * @return Pagerfanta
+     */
+    public function getPortalMemberActivitiesPager(Person $member, $page, $maxPerPage, $groupChronologically = false)
+    {
+        $params = [
+            'subLimit' => 250,
+            'truncateDescription' => 200,
+            'personId' => (int) $member->getId(),
+        ];
+
+        $types = [
+            'subLimit' => 'integer',
+            'truncateDescription' => 'integer',
+            'personId' => 'integer',
+        ];
+
+        $sqlTemplate = file_get_contents(__DIR__.'/sql/member_profile_activities.sql');
+
+        $group = function ($activities) {
+            $groups = [];
+            $today = (new \DateTimeImmutable())
+                ->setTime(0, 0, 0)
+            ;
+
+            foreach ($activities as $activity) {
+                $date = (new \DateTimeImmutable($activity['date']))
+                    ->setTime(0, 0, 0)
+                ;
+
+                if ($date == $today) {
+                    $groups['today'][] = $activity;
+                } elseif ($date >= $today->modify('monday this week')) {
+                    $groups['this_week'][] = $activity;
+                } elseif ($date >= $today->modify('monday last week')) {
+                    $groups['last_week'][] = $activity;
+                } elseif ($date >= $today->modify('first day of this month')) {
+                    $groups['this_month'][] = $activity;
+                } elseif ($date >= $today->modify('first day of last month')) {
+                    $groups['last_month'][] = $activity;
+                } elseif ($date >= $today->modify(sprintf('first day of january %d', $today->format('Y')))) {
+                    $groups['this_year'][] = $activity;
+                } elseif ($date >= $today->modify(sprintf('first day of january %d', $today->format('Y') - 1))) {
+                    $groups['last_year'][] = $activity;
+                } else {
+                    $groups['everything_else'][] = $activity;
+                }
+            }
+
+            return $groups;
+        };
+
+        $count = function () use ($sqlTemplate, $params, $types) {
+            return (int) $this
+                ->em
+                ->getConnection()
+                ->executeQuery($this->parseMemberActivitiesSql($sqlTemplate, 'COUNT(*)'), $params, $types)
+                ->fetchColumn(0)
+            ;
+        };
+
+        $slice = function ($offset, $length) use ($sqlTemplate, $params, $types, $group, $groupChronologically) {
+            $activities = $this
+                ->em
+                ->getConnection()
+                ->executeQuery($this->parseMemberActivitiesSql(
+                    $sqlTemplate,
+                    't.id, t.slug, t.type, t.date, t.description', 'ORDER BY t.date DESC',
+                    sprintf('LIMIT %d, %d', $offset, $length)
+                ), $params, $types)
+                ->fetchAll()
+            ;
+
+            if ($groupChronologically) {
+                $activities = $group($activities);
+            }
+
+            return $activities;
+        };
+
+        $pager = new Pagerfanta(new CallbackAdapter($count, $slice));
+        $pager->setMaxPerPage($maxPerPage);
+        $pager->setCurrentPage($page);
+
+        return $pager;
+    }
+
+    /**
      * @param type $page
      * @param type $maxPerPage
      *
@@ -176,5 +268,23 @@ class PersonDataService extends AbstractDataService
     public function getPersonRepo()
     {
         return $this->em->getRepository('DeskPRO:Person');
+    }
+
+    /**
+     * Parse the SQL template that builds the unified list of member activities
+     *
+     * @param string $template
+     * @param string $columns
+     * @param string $order
+     * @param string $limit
+     * @return string
+     */
+    private function parseMemberActivitiesSql($template, $columns, $order = '', $limit = '')
+    {
+        return str_replace(
+            ['{columns}', '{order}', '{limit}'],
+            [$columns, $order, $limit],
+            $template
+        );
     }
 }

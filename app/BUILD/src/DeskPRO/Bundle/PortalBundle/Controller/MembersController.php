@@ -19,6 +19,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MembersController extends AbstractController
 {
     /**
+     * Number of member activities per page
+     */
+    const MEMBER_ACTIVITIES_PER_PAGE = 10;
+
+    /**
      * @Route("/members", name="portal_members")
      * @Security("is_granted('ROLE_USER')")
      *
@@ -97,6 +102,13 @@ class MembersController extends AbstractController
             ];
         }
 
+        $activities = $this->getPersonDataService()->getPortalMemberActivitiesPager(
+            $person,
+            $request->query->get('page', 1),
+            self::MEMBER_ACTIVITIES_PER_PAGE,
+            true
+        );
+
         return $this->renderThemeView(
             'Theme:Members:view.html.twig',
             [
@@ -104,6 +116,7 @@ class MembersController extends AbstractController
                 'person'      => $person,
                 'avatar'      => $avatar,
                 'custom_data' => $customData,
+                'activities'  => $activities,
             ]
         );
     }

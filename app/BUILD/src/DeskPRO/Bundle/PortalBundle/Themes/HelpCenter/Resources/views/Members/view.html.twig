@@ -1,52 +1,89 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block page_body %}
-  <article class="news kb-article">
-    <header>
-      <h1>{{ person.id }} {% if person.community_name %}-{{ person.community_name }} {% endif %}</h1>
-    </header>
-
-    <div class="article-content-wrapper">
-      <div class="article-content padded dpx-kb-article-content">
-        Id: {{ person.id }} <br/>
-        Display name: {% if person.community_name %}{{ person.community_name }}{% else %}Not set{% endif %}<br/>
-        Avatar: {% if avatar %}<img src="{{ avatar }}"/>{% else %}Not set{% endif %}
-      </div>
-      {% if custom_data|length %}
-        <div class="ticket-view-sidebar">
-          <div class="ticket-sidebar-container ticket-sidebar-meta">
-            <ul>
-              {% for custom in custom_data %}
-                {% if custom['value'] %}
-                  <li>
-                    <h3>{{ custom['label'] }}</h3>
-                    {% if custom['type'] == 'url' %}
-                      <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
-                    {% elseif custom['type'] == 'date' %}
-                      <p>{{ custom['value']|date('full') }}</p>
-                    {% elseif custom['type'] == 'datetime' %}
-                      <p>{{ custom['value']|date('fulltime') }}</p>
-                    {% elseif custom['type'] == 'file' %}
-                      {% for file in custom['value'] %}
-                        <div>
-                          <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
-                            {{ content_icon(file) }}
-                            {{ file.filename }}
-                            ({{ file.readableFilesize }})
-                          </a>
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="dp-po-block">
+                            <div class="dp-po-profile">
+                                <figure class="dp-po-profile-figure">
+                                    <img src="{{ avatar_url(person, 140) }}" alt="{{ person.community_name|e }}" class="dp-po-profile-image">
+                                </figure>
+                                <h2 class="dp-po-profile-name">
+                                    {{ person.community_name ? person.community_name : phrase('helpcenter.members.not_set') }}
+                                </h2>
+                                {% if person.organization %}
+                                    <p class="dp-po-profile-title">
+                                        {{ (person.organization_position ? "#{person.organization_position}, ") ~ person.organization.name }}
+                                    </p>
+                                {% endif %}
+                                <hr>
+                                <div class="dp-po-profile-extras">
+                                    {% if person.primary_email %}
+                                        <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.email') }}</h3>
+                                        <p class="dp-po-profile-extras-desc">{{ person.primary_email }}</p>
+                                    {% endif %}
+                                    {% if person.language %}
+                                        <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.language') }}</h3>
+                                        <p class="dp-po-profile-extras-desc">
+                                            <img class="dp-po-icon" src="{{ asset('images/flags/' ~ person.language.flag_image) }}" />
+                                            {{ person.language.title_local }}
+                                        </p>
+                                    {% endif %}
+                                    {% if person.timezone %}
+                                        <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.timezone') }}</h3>
+                                        <p class="dp-po-profile-extras-desc">{{ null|date('(e P) ', person.timezone) ~ " #{person.timezone}" }}</p>
+                                    {% endif %}
+                                    <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.joined_portal') }}</h3>
+                                    <p class="dp-po-profile-extras-desc">{{ date_ago(person.date_created) }}</p>
+                                </div>
+                                <div>
+                                    <a href="" class="btn btn-primary">{{ phrase('helpcenter.members.send_message') }}</a>
+                                </div>
+                            </div>
                         </div>
-                      {% endfor %}
-                    {% else %}
-                      <p>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</p>
-                    {% endif %}
-                  </li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-      {% endif %}
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="dp-po-block">
+                            <div class="dp-po-profile-activity">
+                                <h3 class="dp-po-profile-activity-title">{{ phrase('helpcenter.members.recent_activity') }}</h3>
+                                {% for group, activities in activities %}
+                                    <div class="dp-po-timeline">
+                                        <span class="dp-po-timeline-block">
+                                            <i class="dp-po-icon far fa-calendar"></i>
+                                            {{ phrase("portal.members.activity_group.#{group}") }}
+                                        </span>
+                                    </div>
+                                    <ul class="dp-po-profile-activity-list">
+                                        {% for activity in activities %}
+                                            <li class="dp-po-profile-activity-item">
+                                                {% include "Theme:Members:Activity/type_#{activity.type}.html.twig" with {
+                                                    activity: activity,
+                                                    truncateDescription: 100,
+                                                } %}
+                                                <div class="dp-po-time">
+                                                    <i class="dp-po-icon far fa-clock"></i>
+                                                    {{ date_ago(activity.date) }}
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p>{{ phrase('helpcenter.members.no_activities') }}</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            {% include 'Theme:Common:pager.html.twig' with {
+                                pager: activities,
+                                pager_options: { pageParameter: '[page]' }
+                            } %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-  </article>
-
-{% endblock page_body %}
+{% endblock %}
