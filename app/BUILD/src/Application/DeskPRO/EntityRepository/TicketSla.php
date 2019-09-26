@@ -204,6 +204,7 @@ class TicketSla extends AbstractEntityRepository
             WHERE ts.is_completed = 0
                 AND ts.sla_status IN ($statuses)
                 AND ts.$date_field < ?0
+            ORDER BY ts.id DESC
         ")->setMaxResults($limit)->execute([new \DateTime('now', new \DateTimeZone('UTC'))]);
     }
 
