@@ -7,7 +7,7 @@
     "@amcharts/amcharts3-react": "^3.0.3",
     "@deskpro/apps-components-style": "0.12.5",
     "@deskpro/js-utils": "^1.0.4",
-    "@deskpro/portal-style": "0.0.10",
+    "@deskpro/portal-style": "0.0.12",
     "@deskpro/product-content-editor": "0.1.10",
     "@deskpro/react-components": "1.4.6",
     "@deskpro/react-forms": "^2.0.0-beta41",
