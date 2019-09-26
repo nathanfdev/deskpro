@@ -50,6 +50,14 @@ framework:
     fragments:       ~
     http_method_override: true
 
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                dql:
+                    string_functions:
+                        FIRST: DeskPRO\Bundle\AppBundle\DBAL\Functions\FirstFunction
+
 monolog:
     channels: # you MUST also update api_config.yml if you change these
         - "dp.tickets.filters.tengine.dbal.engine"

@@ -1,45 +1,61 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
-{% for line in timeline_pager %}
-  {% if line.type == 'ticket_created' %}
-    <div class="ticket-message">
-      <div class="ticket-owner">
-        {{ macros.person_inline(line.person) }}
-        <span>{{ phrase('portal.tickets.timeline_opened') }}</span>
-        <span class="ticket-actual-date">({{ line.datetime|date('day') }})</span>
-      </div>
-    </div>
-  {% elseif line.type == 'ticket_reopened' %}
-    <div class="ticket-message">
-      <div class="ticket-owner">
-        <div class="ticket-action-date">{{ date_ago(line.datetime) }}</div>
-        {{ macros.person_inline(line.person) }}
-        <span>{{ phrase('portal.tickets.timeline_re_opened') }}</span>
-      </div>
-    </div>
-  {% elseif line.type == 'ticket_closed' %}
-    <div class="ticket-message">
-      <div class="ticket-owner">
-        <div class="ticket-action-date">{{ date_ago(line.datetime) }}</div>
-        {{ macros.person_inline(line.person) }}
-        <span>{{ phrase('portal.tickets.timeline_marked') }}</span>
-        <span class="mark-resolved">{{ phrase('portal.tickets.timeline_marked_resolved') }}</span>
-      </div>
-    </div>
-  {% elseif line.type == 'agent_message' %}
-    {% set msg = line.message %}
-    {% include 'Theme:Tickets:timeline/agent_message.html.twig' %}
-  {% elseif line.type == 'user_message' %}
-    {% set msg = line.message %}
-    {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
-  {% endif %}
+  {% for line in timeline_pager %}
+      {% if line.type == 'ticket_created' %}
+        <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
+          <div class="dp-po-avatar dp-po-avatar-round">
+            {% include "Theme:Tickets:embeds/person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+          </div>
+          <div class="dp-po-ticket-block-status">
+            {{ phrase('portal.tickets.timeline_opened') }}
+            <span class="badge"><i class="dp-po-icon far fa-envelope-open"></i>{{ phrase('portal.tickets.timeline_opened') }}</span>
+          </div>
+          <div class="dp-po-time">
+            <i class="dp-po-icon far fa-clock"></i>
+            {{ line.datetime|date('day') }}
+          </div>
+        </div>
+      {% elseif line.type == 'ticket_reopened' %}
+        <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
+          <div class="dp-po-avatar dp-po-avatar-round">
+            {% include "Theme:Tickets:embeds/person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+          </div>
+          <div class="dp-po-ticket-block-status">
+            {{ phrase('portal.tickets.timeline_re_opened') }}
+            <span class="badge"><i class="dp-po-icon far fa-envelope-open"></i>{{ phrase('portal.tickets.timeline_re_opened') }}</span>
+          </div>
+          <div class="dp-po-time">
+            <i class="dp-po-icon far fa-clock"></i>
+            {{ line.datetime|date('day') }}
+          </div>
+        </div>
+      {% elseif line.type == 'ticket_closed' %}
+        <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
+          <div class="dp-po-avatar dp-po-avatar-round">
+            {% include "Theme:Tickets:embeds/person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+          </div>
+          <div class="dp-po-ticket-block-status">
+            {{ phrase('portal.tickets.timeline_marked') }}
+            <span class="badge"><i class="dp-po-icon far fa-check"></i>{{ phrase('portal.tickets.timeline_marked_resolved') }}</span>
+          </div>
+          <div class="dp-po-time">
+            <i class="dp-po-icon far fa-clock"></i>
+            {{ line.datetime|date('day') }}
+          </div>
+        </div>
+      {% elseif line.type == 'agent_message' %}
+        {% set msg = line.message %}
+        {% include 'Theme:Tickets:timeline/agent_message.html.twig' %}
+      {% elseif line.type == 'user_message' %}
+        {% set msg = line.message %}
+        {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
+      {% endif %}
+  {% endfor %}
 
-  {% if timeline.isMultipleUserActions(line) %}
-    {# Only between multiple user messages #}
-    <hr>
-  {% endif %}
-{% endfor %}
-{% if timeline_pager.haveToPaginate %}
-    <div class="deskpro-pager">
-      {{ pagerfanta(timeline_pager) }}
-    </div>
-{% endif %}
+{#  {% if timeline_pager.haveToPaginate %}#}
+{#    <div class="deskpro-pager">#}
+{#      {{ pagerfanta(timeline_pager) }}#}
+{#    </div>#}
+{#  {% endif %}#}
+
+
+
