@@ -86,6 +86,7 @@ class AppContainer extends React.Component {
                 <Route path="agents" component={Voice.AgentsVoiceToggle} />
                 <Route path="call_logs" component={Voice.CallLogsList} />
                 <Route path="call_logs/:callId" component={Voice.CallLogView} />
+                <Route path="billing_summary" component={Voice.BillingSummary} />
               </Route> : null}
             {window.DP_HAS_DEV ?
               <Route path="dev">
