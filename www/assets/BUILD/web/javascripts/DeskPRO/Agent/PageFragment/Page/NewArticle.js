@@ -380,7 +380,6 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		var txt = this.getEl('content');
 
 		if (window.DP_HAS_NEW_CONTENT_EDITOR) {
-      console.log("NEW EDITOR!");
       var contentInput = null;
       if (window[this.meta.baseId + '_content_input']) {
         contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
