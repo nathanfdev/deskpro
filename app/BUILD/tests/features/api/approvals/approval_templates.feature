@@ -180,13 +180,37 @@ Feature: /approval_templates endpoint
   "can_approvers_view_subject": true,
   "can_choose_approvers": true,
   "approver_selection_criteria": {
-    "select_from_people": [1]
+    "select_from_people": [1],
+    "min_number_of_approvers": 1
   }
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+
+  Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers but is valid as agent can approve approvers later
+    Given I'm authenticated as "admin"
+    When I send a POST request to "/api/v2/approval_templates" with body:
+            """
+{
+  "name": "Approval Template 1",
+  "description": "Approval template 1 description",
+  "type": ~atype1~,
+  "required_approvals": 2,
+  "required_rejections": 0,
+  "can_approvers_view_subject": true,
+  "can_choose_approvers": true,
+  "approver_selection_criteria": {
+    "select_from_people": [1],
+    "can_select_ticket_user": true,
+    "min_number_of_approvers": 1
+  }
+}
+            """
+    Then the response status code should be 400
+    Then the response should be in JSON
+    And the JSON node "errors.errors[0].message" should be equal to "The minimum number of approvers is not enough, 2 or more are required based on your criteria"
 
   Scenario: I POST a valid approval template as admin
     Given I'm authenticated as "admin"
@@ -196,32 +220,18 @@ Feature: /approval_templates endpoint
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
   "type": ~atype1~,
-  "required_approvals": 2,
-  "required_rejections": 2,
+  "required_approvals": 1,
+  "required_rejections": 1,
   "can_approvers_view_subject": true,
-  "can_choose_approvers": false,
-  "selected_approvers": {
-    "people": [1,2]
+  "can_choose_approvers": true,
+  "approver_selection_criteria": {
+    "select_from_people": [1],
+    "min_number_of_approvers": 1
   }
 }
             """
     Then the response status code should be 201
     Then the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.id" should be equal to "{lastCreatedId}"
-    And the JSON node "data.name" should be equal to "Approval Template 1"
-    And the JSON node "data.description" should be equal to "Approval template 1 description"
-    And the JSON node "data.type" should be equal to "{atype1}"
-    And the JSON node "data.required_approvals" should be equal to "2"
-    And the JSON node "data.required_rejections" should be equal to "2"
-    And the JSON node "data.can_approvers_view_subject" should be true
-    And the JSON node "data.selected_approvers.people" should have "2" elements
-    And the JSON node "data.actions_on_create" should exist
-    And the JSON node "data.actions_on_partial_approval_response" should exist
-    And the JSON node "data.actions_on_partial_rejection_response" should exist
-    And the JSON node "data.actions_on_cancel" should exist
-    And the JSON node "data.actions_on_approved" should exist
-    And the JSON node "data.actions_on_rejected" should exist
 
   Scenario: I POST a valid approval template as admin with trigger actions
     Given I'm authenticated as "admin"
