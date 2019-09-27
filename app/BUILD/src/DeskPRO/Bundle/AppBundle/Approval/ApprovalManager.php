@@ -72,14 +72,6 @@ class ApprovalManager
         $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, &$context, &$isNew) {
             $isNew = !$em->contains($approval);
 
-            if ($context->getPersonContext()->isAgent()) {
-                $approval->setCreatedBy($context->getPersonContext());
-            } elseif (($approval instanceof TicketApprovalInterface) && ($agent = $approval->getTicket()->getAgent())) {
-                $approval->setCreatedBy($agent);
-            } else {
-                throw new \DomainException('Unable to set creating agent on approval');
-            }
-
             $approval->notifyAssociationChanges($em);
 
             $context->setEventType(ExecutorContext::EVENT_ON_CREATE);

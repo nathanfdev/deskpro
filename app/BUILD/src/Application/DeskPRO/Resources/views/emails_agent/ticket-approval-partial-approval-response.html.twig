@@ -26,10 +26,10 @@
     <tr>
         <td colspan="2">{{ approval.description }}</td>
     </tr>
-    {% if approval.createdBy %}
+    {% if approval.ticket.agent %}
         <tr>
             <td class="label-col">{{ phrase('agent.emails.agent_requesting_agent') }}</td>
-            <td>{{ approval.createdBy }}</td>
+            <td>{{ approval.ticket.agent }}</td>
         </tr>
     {% endif %}
     {% if ticket.person %}

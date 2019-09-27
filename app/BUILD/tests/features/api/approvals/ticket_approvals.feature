@@ -38,10 +38,10 @@ Feature: /ticket_approvals endpoint
       | at4 | Templ 3 | Approval Templ 3 | {atype2} | 1                 | 0                  |                           | {sa2}             | 0                      | 0                  |
 
     And only the following TicketApproval records exist:
-      | #   | ticket | template | approvers         | name               | type     | description | status    | createdBy |
-      | ta1 | {t1}   | {at1}    | [{user}]          | Ticket approval 01 | {atype1} | TA 01       | pending   | {agent}   |
-      | ta2 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 02 | {atype2} | TA 02       | pending   | {agent}   |
-      | ta3 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 03 | {atype2} | TA 03       | approved  | {agent}   |
+      | #   | ticket | template | approvers         | name               | type     | description | status    |
+      | ta1 | {t1}   | {at1}    | [{user}]          | Ticket approval 01 | {atype1} | TA 01       | pending   |
+      | ta2 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 02 | {atype2} | TA 02       | pending   |
+      | ta3 | {t1}   | {at2}    | [{user}, {agent}] | Ticket approval 03 | {atype2} | TA 03       | approved  |
 
   Scenario: I try to POST a ticket approval without authentication
     When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals"

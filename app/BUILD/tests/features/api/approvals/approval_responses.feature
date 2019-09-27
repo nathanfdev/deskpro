@@ -32,8 +32,8 @@ Feature: /approval_responses endpoint
       | at1 | Templ 1 | Approval Templ 1 | {atype1} | 1                 | 4                  | 1                       | 0                  | {sa1}             |                           |
 
     And only the following TicketApproval records exist:
-      | #   | ticket | template | approvers         | name               | type     | description | status    | createdBy |
-      | ta1 | {t1}   | {at1}    | [{user}, {agent}] | Ticket approval 01 | {atype1} | TA 01       | pending   | {agent}   |
+      | #   | ticket | template | approvers         | name               | type     | description | status    |
+      | ta1 | {t1}   | {at1}    | [{user}, {agent}] | Ticket approval 01 | {atype1} | TA 01       | pending   |
 
     And only the following ApprovalResponse records exist:
       | #   | vote | message                      | approval | approver |

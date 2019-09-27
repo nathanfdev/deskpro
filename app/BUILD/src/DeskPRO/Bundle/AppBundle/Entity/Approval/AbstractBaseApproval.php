@@ -155,17 +155,6 @@ abstract class AbstractBaseApproval extends AbstractApproval
     protected $cancelledBy;
 
     /**
-     * @var Person
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="created_by", onDelete="CASCADE", nullable=false)
-     *
-     * @JMS\Expose
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     */
-    protected $createdBy;
-
-    /**
      * {@inheritDoc}
      */
     public function __construct()
@@ -285,25 +274,6 @@ abstract class AbstractBaseApproval extends AbstractApproval
         }
 
         return null;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getCreatedBy()
-    {
-        return $this->createdBy;
-    }
-
-    /**
-     * @param Person $createdBy
-     * @return AbstractBaseApproval
-     */
-    public function setCreatedBy(Person $createdBy)
-    {
-        $this->setModelField('createdBy', $createdBy);
-
-        return $this;
     }
 
     /**

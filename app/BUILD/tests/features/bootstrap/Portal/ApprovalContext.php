@@ -87,8 +87,6 @@ class ApprovalContext extends BasePortalContext
      */
     public function theFollowingTicketApprovalsExist(TableNode $table)
     {
-        $agent = $this->getWho('agent');
-
         foreach ($table->getHash() as $row) {
             $approval = TicketApproval::createTicketApprovalFromTemplate(
                 self::$tickets[$row['ticket']],
@@ -97,7 +95,6 @@ class ApprovalContext extends BasePortalContext
             );
 
             $approval
-                ->setCreatedBy($agent)
                 ->setDescription($row['description'])
             ;
 

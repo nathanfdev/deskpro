@@ -1,7 +1,11 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
 <div class="ticket-message user-message">
     <div class="ticket-owner">
-        {{ macros.person_inline(approval.createdBy, false) }}
+        {% if approval.ticket.agent %}
+            {{ macros.person_inline(approval.ticket.agent, false) }}
+        {% else %}
+            {{ phrase('portal.tickets.approvals.agent_not_assigned') }}
+        {% endif %}
         <span>({{ approval.createdAt|date('full') }})</span>
         <span>{{ phrase('portal.tickets.timeline_wrote') }}</span>
     </div>

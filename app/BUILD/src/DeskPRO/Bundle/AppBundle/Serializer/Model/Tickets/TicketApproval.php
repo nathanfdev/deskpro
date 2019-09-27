@@ -221,7 +221,7 @@ class TicketApproval
         $model->setRequiredRejections($ticketApproval->getRequiredRejections());
         $model->setApproversCount($ticketApproval->getApproversCount());
         $model->setApproversPendingResponse($ticketApproval->getApproversPendingResponse()->toArray());
-        $model->setCreatedBy($ticketApproval->getCreatedBy());
+        $model->setCreatedBy($ticketApproval->getTicket()->getAgent());
         $model->setCanApproversViewSubject($ticketApproval->canApproversViewSubject());
 
         return $model;
@@ -657,7 +657,7 @@ class TicketApproval
      * @param Person $createdBy
      * @return TicketApproval
      */
-    public function setCreatedBy(Person $createdBy)
+    public function setCreatedBy(Person $createdBy = null)
     {
         $this->createdBy = $createdBy;
 
