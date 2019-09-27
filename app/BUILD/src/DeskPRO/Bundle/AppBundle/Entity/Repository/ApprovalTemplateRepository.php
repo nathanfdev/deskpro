@@ -28,7 +28,7 @@ class ApprovalTemplateRepository extends AbstractEntityRepository
         ;
 
         return array_filter($templates, function (ApprovalTemplate $template) {
-            return !($template->getApproverSelectionCriteria() && $template->getApproverSelectionCriteria()->canChooseApprovers());
+            return !($template->getApproverSelectionCriteria() && $template->canChooseApprovers());
         });
     }
 }
