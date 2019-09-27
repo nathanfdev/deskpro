@@ -5,7 +5,7 @@ namespace DpBehat\Portal;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\SelectedApprovers;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -59,14 +59,13 @@ class ApprovalContext extends BasePortalContext
         $user = $this->getWho('user');
 
         foreach ($table->getHash() as $row) {
-            $criteria = (new ApproverSelectionCriteria())
-                ->setCanChooseApprovers(false)
-                ->setAgents([$agent->getId()])
-                ->setUsers([$user->getId()])
+            $selection = (new SelectedApprovers())
+                ->setPeople([$agent->getId(), $user->getId()])
             ;
 
             $template = (new ApprovalTemplate())
-                ->setApproverSelectionCriteria($criteria)
+                ->setCanChooseApprovers(false)
+                ->setSelectedApprovers($selection)
                 ->setType(self::$approvalTypes[$row['type']])
                 ->setName($row['name'])
                 ->setDescription($row['description'])
