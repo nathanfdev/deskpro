@@ -72,7 +72,7 @@ Feature: /ticket_approvals endpoint
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I POST a valid ticket approval as admin
     Given I'm authenticated as "agent"

@@ -659,7 +659,7 @@ adm.ticket_approvals.template.can_choose.specific_approvers: 'Specific approvers
 adm.ticket_approvals.template.can_choose.let_agent_choose: 'Let agent choose'
 adm.ticket_approvals.template.approvers.allow_choose: 'Allow agent to choose approvers from set list'
 adm.ticket_approvals.template.approvers.label: 'Approvers'
-adm.ticket_approvals.template.approvers.number_of_approvers: 'Number of approvers'
+adm.ticket_approvals.template.approvers.number_of_approvers: 'Minimum number of approvers'
 adm.ticket_approvals.template.approvers.ticket_user: 'Ticket User'
 adm.ticket_approvals.template.approvers.organization_manager: 'Organization Manager'
 adm.ticket_approvals.template.approvers.all_agents: 'All Agents'

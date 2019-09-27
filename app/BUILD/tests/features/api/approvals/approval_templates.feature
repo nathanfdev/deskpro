@@ -118,7 +118,7 @@ Feature: /approval_templates endpoint
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I POST an approval template as admin with selected approvers that have deferred selection critiera (ticket user, org managers or all agents)
     Given I'm authenticated as "admin"
@@ -165,7 +165,7 @@ Feature: /approval_templates endpoint
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers but is valid as agent can approve approvers later
     Given I'm authenticated as "admin"
@@ -187,7 +187,7 @@ Feature: /approval_templates endpoint
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers but is valid as agent can approve approvers later
     Given I'm authenticated as "admin"
@@ -204,13 +204,13 @@ Feature: /approval_templates endpoint
   "approver_selection_criteria": {
     "select_from_people": [1],
     "can_select_ticket_user": true,
-    "min_number_of_approvers": 1
+    "min_number_of_approvers": 3
   }
 }
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "The minimum number of approvers is not enough, 2 or more are required based on your criteria"
+    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the specified minimum number of required approvers"
 
   Scenario: I POST a valid approval template as admin
     Given I'm authenticated as "admin"
@@ -370,7 +370,7 @@ Feature: /approval_templates endpoint
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I try to GET an approval template without authentication
     When I send a GET request to "/api/v2/approval_templates/{at1}"
@@ -522,7 +522,7 @@ Feature: /approval_templates endpoint
 }
             """
     Then the response status code should be 400
-    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I try to DELETE an approval template without authentication
     When I send a DELETE request to "/api/v2/approval_templates/{at1}"

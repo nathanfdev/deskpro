@@ -45,10 +45,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
             if (!$template->canChooseApprovers()) {
                 return;
             } else {
-                $selectionCriteria = $template->getApproverSelectionCriteria();
-
                 $approvers = $value->getApproversCount();
-                $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
             }
         } elseif ($value instanceof ApprovalTemplate) {
             if ($value->canChooseApprovers()) {
@@ -70,9 +67,8 @@ class ApprovalThresholdsValidator extends ConstraintValidator
 
                 $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
 
-                // If we can tell how many approvers may be selected as a maximum, then make sure that the min
-                // number of approvers is enough
-                if ($minNumberOfApprovers < $approvers) {
+                // Make sure we have enough approvers to meet the minimum threshold
+                if ($approvers < $minNumberOfApprovers) {
                     $this
                         ->context
                         ->buildViolation(sprintf($constraint->minNumberOfApproversMessage, $approvers))
@@ -94,6 +90,16 @@ class ApprovalThresholdsValidator extends ConstraintValidator
 
                 if ($selectedApprovers->hasAllAgents()) {
                     $approvers += $personRepo->countAgents();
+                }
+
+                if (0 === $approvers) {
+                    $this
+                        ->context
+                        ->buildViolation($constraint->atLeastOneApproverMustBeSelectedMessage)
+                        ->addViolation()
+                    ;
+
+                    return;
                 }
             }
         } else {

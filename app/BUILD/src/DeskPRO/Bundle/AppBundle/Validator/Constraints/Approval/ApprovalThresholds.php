@@ -15,6 +15,7 @@ class ApprovalThresholds extends Constraint
 {
     const APPROVAL = 'invalid_approval_thresholds';
 
-    public $message = 'There aren\'t enough approvers to meet the approval/rejection thresholds';
-    public $minNumberOfApproversMessage = 'The minimum number of approvers is not enough, %d or more are required based on your criteria';
+    public $message = 'You must provide a number of required approvals or rejections, that does not exceed the number of approvers';
+    public $minNumberOfApproversMessage = 'There aren\'t enough approvers to meet the specified minimum number of required approvers';
+    public $atLeastOneApproverMustBeSelectedMessage = 'You must specify a minimum of 1 approver';
 }
