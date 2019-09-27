@@ -120,6 +120,53 @@ Feature: /approval_templates endpoint
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
 
+  Scenario: I POST an approval template as admin with selected approvers that have deferred selection critiera (ticket user, org managers or all agents)
+    Given I'm authenticated as "admin"
+    When I send a POST request to "/api/v2/approval_templates" with body:
+            """
+{
+  "name": "Approval Template 1",
+  "description": "Approval template 1 description",
+  "type": ~atype1~,
+  "required_approvals": 2,
+  "required_rejections": 0,
+  "can_approvers_view_subject": true,
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "has_ticket_user": true,
+    "has_organization_managers": true,
+    "has_all_agents": true,
+    "people": [1]
+  }
+}
+            """
+    Then the response status code should be 201
+    Then the response should be in JSON
+
+  Scenario: I POST an approval template as admin with selected approvers that have deferred selection critiera (ticket user, org managers or all agents) and I haven't selected enough approvers
+    Given I'm authenticated as "admin"
+    When I send a POST request to "/api/v2/approval_templates" with body:
+            """
+{
+  "name": "Approval Template 1",
+  "description": "Approval template 1 description",
+  "type": ~atype1~,
+  "required_approvals": 8,
+  "required_rejections": 2,
+  "can_approvers_view_subject": true,
+  "can_choose_approvers": false,
+  "selected_approvers": {
+    "has_ticket_user": true,
+    "has_organization_managers": true,
+    "has_all_agents": true,
+    "people": [1]
+  }
+}
+            """
+    Then the response status code should be 400
+    Then the response should be in JSON
+    And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the approval/rejection thresholds"
+
   Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers but is valid as agent can approve approvers later
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:

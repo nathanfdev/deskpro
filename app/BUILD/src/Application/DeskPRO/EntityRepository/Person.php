@@ -103,6 +103,15 @@ class Person extends AbstractEntityRepository
         return $agents;
     }
 
+    public function countAgents()
+    {
+        return (int) $this->getEntityManager()->createQuery('
+            SELECT COUNT(p)
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.is_agent = true AND p.is_deleted = false
+        ')->getSingleScalarResult();
+    }
+
     public function getAgent($id)
     {
         $agents = $this->getAgents();
@@ -132,6 +141,15 @@ class Person extends AbstractEntityRepository
         ')->execute();
 
         return $organization_managers;
+    }
+
+    public function countOrganizationManagers()
+    {
+        return (int) $this->getEntityManager()->createQuery('
+            SELECT COUNT(p)
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.organization_manager = true AND p.is_deleted = false
+        ')->getSingleScalarResult();
     }
 
     /**
