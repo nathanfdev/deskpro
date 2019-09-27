@@ -24,10 +24,7 @@ class ApprovalResponseType extends AbstractType
     {
         $builder
             ->add('message', TextareaType::class, [
-                'required' => true,
-                'constraints' => [
-                    new NotBlank(['message' => 'portal.tickets.approvals.view_no_message_error']),
-                ],
+                'required' => false,
             ])
             ->add('approve', SubmitType::class)
             ->add('reject', SubmitType::class)

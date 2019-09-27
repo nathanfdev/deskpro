@@ -9,10 +9,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Approval\ApprovalTypeType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ApprovalTypesController
@@ -143,6 +147,47 @@ class ApprovalTypesController extends CrudController
     public function countAction(Request $request)
     {
         return parent::countAction($request);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Delete a resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="\d+",
+     *              "description"="The id of the resource",
+     *              "dataType"="integer"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned if everything is ok and there is no such resource anymore",
+     *          404="Well, looks like either resource already deleted either it doesn't exists at all"
+     *      }
+     * )
+     * @Rest\Delete("/{id}", requirements={"id"="\d+"})
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function deleteAction($id, Request $request)
+    {
+        $this->checkExposed(__METHOD__);
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupEntityContext($id, $request));
+
+        $entity = $this->findEntity($id, $request);
+
+        try {
+            $this->deleteEntity($entity);
+        } catch (ForeignKeyConstraintViolationException $e) {
+            throw new BadRequestHttpException('It is not possible to delete a Type while there are Templates '
+                .'associated with it. Please delete or reassign the Templates, before deleting the Type.', $e);
+        }
+
+        return View::create([], Response::HTTP_OK);
     }
 
     /**

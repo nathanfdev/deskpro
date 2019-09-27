@@ -5,10 +5,11 @@
         {{ macros.person_inline(response.approver, true) }}
         <span>
             {% if response.isApproved %}
-                {{ phrase('portal.tickets.approvals.view_approved') }}:
+                {{ phrase('portal.tickets.approvals.view_approved') }}
             {% elseif response.isRejected %}
-                {{ phrase('portal.tickets.approvals.view_rejected') }}:
+                {{ phrase('portal.tickets.approvals.view_rejected') }}
             {% endif %}
+            {{ response.message ? ':' }}
         </span>
     </div>
     <div class="ticket-message-content">
