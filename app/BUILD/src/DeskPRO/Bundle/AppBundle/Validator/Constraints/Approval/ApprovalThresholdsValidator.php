@@ -103,16 +103,13 @@ class ApprovalThresholdsValidator extends ConstraintValidator
         $thresholds = array_filter([
             $value->getRequiredApprovals(),
             $value->getRequiredRejections(),
-            $minNumberOfApprovers
         ]);
 
         if (empty($thresholds)) {
             return;
         }
 
-        $minNumberOfApprovers = max($thresholds);
-
-        if ($approvers < $minNumberOfApprovers) {
+        if ($approvers < max($thresholds)) {
             $this
                 ->context
                 ->buildViolation($constraint->message)
