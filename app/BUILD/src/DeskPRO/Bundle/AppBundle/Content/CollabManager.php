@@ -2,39 +2,38 @@
 
 namespace DeskPRO\Bundle\AppBundle\Content;
 
-use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
-use Application\DeskPRO\Entity\Person;
-use Firebase\JWT\JWT;
-use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\HttpFoundation\Session;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use Firebase\JWT\JWT;
 
+/**
+ * Collaborative editing manager.
+ */
 class CollabManager
 {
     /**
-     *
      * @var BrandAwareSettingsResolver
      */
     protected $settingsResolver;
 
     /**
-     *
      * @var Session
      */
     protected $session;
 
     /**
-     *
      * @param BrandAwareSettingsResolver $settingsResolver
-     * @param Session $session
+     * @param Session                    $session
      */
     public function __construct(BrandAwareSettingsResolver $settingsResolver, Session $session)
     {
         $this->settingsResolver = $settingsResolver;
-        $this->session = $session;
+        $this->session          = $session;
     }
 
     /**
-     *
      * @return string
      */
     public function getWebsocketUrl()
@@ -43,7 +42,6 @@ class CollabManager
     }
 
     /**
-     *
      * @return string
      */
     public function getConnectionToken()
@@ -54,18 +52,18 @@ class CollabManager
         }
 
         $payload = [
-            'sub' => $this->getUserUrn($user),
-            'iss' => $this->settingsResolver->getSetting('collab_deskpro_client_id'),
-            'name' => $user->getDisplayName()
+            'sub'  => $this->getUserUrn($user),
+            'iss'  => $this->settingsResolver->getSetting('collab_deskpro_client_id'),
+            'name' => $user->getDisplayName(),
         ];
 
         return JWT::encode($payload, $this->settingsResolver->getSetting('collab_token_secret'));
     }
 
     /**
-     *
      * @param string $resourceType
      * @param string $resourceIdentity
+     *
      * @return string
      */
     public function getResourceJoinToken($resourceType, $resourceIdentity)
@@ -76,21 +74,21 @@ class CollabManager
         }
 
         $payload = [
-            'sub' => $this->getUserUrn($user),
-            'iss' => $this->settingsResolver->getSetting('collab_deskpro_client_id'),
+            'sub'  => $this->getUserUrn($user),
+            'iss'  => $this->settingsResolver->getSetting('collab_deskpro_client_id'),
             'name' => $user->getDisplayName(),
-            'aud' => $this->getResourceUrn($resourceType, $resourceIdentity)
+            'aud'  => $this->getResourceUrn($resourceType, $resourceIdentity),
         ];
 
         return JWT::encode($payload, $this->settingsResolver->getSetting('collab_token_secret'));
-
     }
 
     /**
-     * Used to pass as editor options
+     * Used to pass as editor options.
      *
      * @param string $resourceType
      * @param string $resourceIdentity
+     *
      * @return []
      */
     public function getEditorCollabOptions($resourceType, $resourceIdentity)
@@ -99,15 +97,14 @@ class CollabManager
 
         return [
             'documentUrn' => $this->getResourceUrn($resourceType, $resourceIdentity),
-            'userUrn' => $this->getUserUrn($user),
-            'token' => $this->getResourceJoinToken($resourceType, $resourceIdentity)
+            'userUrn'     => $this->getUserUrn($user),
+            'token'       => $this->getResourceJoinToken($resourceType, $resourceIdentity),
         ];
     }
 
-
     /**
-     *
      * @param \DeskPRO\Bundle\AppBundle\Content\Person $user
+     *
      * @return string
      */
     protected function getUserUrn(Person $user)
@@ -116,15 +113,15 @@ class CollabManager
     }
 
     /**
-     *
      * @param string $resourceType
      * @param string $resourceIdentity
+     *
      * @return string
      */
     protected function getResourceUrn($resourceType, $resourceIdentity)
     {
         $dpClientId = $this->settingsResolver->getSetting('collab_deskpro_client_id');
-        
+
         return "urn:deskpro:client:{$dpClientId}:instance:resource:{$resourceType}/$resourceIdentity";
     }
 }
