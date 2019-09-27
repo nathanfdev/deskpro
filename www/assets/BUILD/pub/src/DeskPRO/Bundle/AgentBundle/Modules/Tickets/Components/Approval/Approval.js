@@ -4,7 +4,6 @@ import {Container, Button} from "@deskpro/react-components";
 import {FormattedMessage} from "react-intl";
 import ApprovalTable from "./ApprovalTable";
 import ApprovalForm from "./ApprovalForm";
-import * as actions from "../../Actions/approvalRequestActions";
 
 export class Approval extends React.Component {
   static propTypes = {
@@ -34,19 +33,10 @@ export class Approval extends React.Component {
     });
 
   render() {
-    const styles = {
-      button: {
-        float: 'right',
-        marginTop: '10px',
-        marginBottom: '10px'
-      }
-    };
-
     const button = (
       <Button
-        size="m"
-        style={styles.button}
-        className="dp-btn"
+        size="small"
+        style={{ float: 'right', marginTop: '10px', marginBottom: '10px' }}
         onClick={() => this.setState({ showForm: !this.state.showForm })}
       >
         <FormattedMessage id={

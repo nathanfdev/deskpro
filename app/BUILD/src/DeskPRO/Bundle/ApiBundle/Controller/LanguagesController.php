@@ -307,6 +307,8 @@ class LanguagesController extends CrudController
             'agent.snippets.visibility',
             'agent.snippets.your_language',
             // Ticket approvals in agent interface -->
+            'agent.tickets.approvals.no_approvals',
+            'agent.tickets.approvals.no_votes',
             'agent.tickets.approvals.title',
             'agent.tickets.approvals.make_request',
             'agent.tickets.approvals.cancel_make_request',
@@ -331,6 +333,7 @@ class LanguagesController extends CrudController
             'agent.tickets.approvals.request.cancel',
             'agent.tickets.approvals.select_approvers',
             'agent.tickets.approvals.approve_condition',
+            'agent.tickets.approvals.approvers_set_from_template',
             // <--
             'agent.tickets.add_reply_action',
             'agent.tickets.add_note_action',
