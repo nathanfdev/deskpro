@@ -211,7 +211,7 @@ class CommunityTopicsController extends AbstractPublishController
             'Theme:Community:index.html.twig',
             [
                 'page'               => $page,
-                'community_forums' => $communityForums,
+                'community_forums'   => $communityForums,
                 'count'              => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination'    => true,
                 'status'             => $filter->getStatus(),
@@ -357,25 +357,25 @@ class CommunityTopicsController extends AbstractPublishController
         // FILTER CATEGORIES
 
         $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
-        $filterJs          = $this->generateFilterJs($filter, $communityForums, $page);
+        $filterJs        = $this->generateFilterJs($filter, $communityForums, $page);
 
         $pageOptions = [
-            'page'               => $page,
-            'community_forums' => $communityForums,
-            'count'              => $this->getBrandSetting('portal.per_page_content'),
-            'show_pagination'    => true,
-            'status'             => $filter->getStatus(),
-            'status_categories'  => $filter->getStatusCategories(),
-            'types'              => $filter->getTypes(),
-            'sort'               => $filter->getSort(),
-            'sort_direction'     => $filter->getSortDirection(),
-            'breadcrumbs'        => $breadcrumbs,
-            'page_title'         => $this->createPageTitle()->community(),
-            'filter_js'          => $filterJs,
-            'rerendering_saved'  => false, // wont happen here because we always rerender on index
-            'is_subscribed'      => $isSubscribed,
-            'lockout'            => $request->get('lockout', false),
-            'lockout_time'       => 0,
+            'page'              => $page,
+            'community_forums'  => $communityForums,
+            'count'             => $this->getBrandSetting('portal.per_page_content'),
+            'show_pagination'   => true,
+            'status'            => $filter->getStatus(),
+            'status_categories' => $filter->getStatusCategories(),
+            'types'             => $filter->getTypes(),
+            'sort'              => $filter->getSort(),
+            'sort_direction'    => $filter->getSortDirection(),
+            'breadcrumbs'       => $breadcrumbs,
+            'page_title'        => $this->createPageTitle()->community(),
+            'filter_js'         => $filterJs,
+            'rerendering_saved' => false, // wont happen here because we always rerender on index
+            'is_subscribed'     => $isSubscribed,
+            'lockout'           => $request->get('lockout', false),
+            'lockout_time'      => 0,
         ];
 
         if ($request->isXmlHttpRequest()) {
@@ -432,7 +432,7 @@ class CommunityTopicsController extends AbstractPublishController
         // COMMENT FORM
 
         $newCommentForm = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $topic)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $topic) && !$topic->isClosed()) {
             $formHandler = $this->get('form_handler.comment');
             $comment     = new CommunityTopicComment();
             $comment->setVisitorId($visitor_id);
