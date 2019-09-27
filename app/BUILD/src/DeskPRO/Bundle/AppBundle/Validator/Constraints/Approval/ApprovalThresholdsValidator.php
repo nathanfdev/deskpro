@@ -55,7 +55,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
                 $selectionCriteria = $value->getApproverSelectionCriteria();
 
                 // Don't need to validate until the actual approval is created if approvers are inferred
-                if ($selectionCriteria->canSelectTicketUser() ||
+                if (
                     $selectionCriteria->canSelectOrganizationManagers() ||
                     $selectionCriteria->canSelectFromAllAgents()
                 ) {
@@ -63,7 +63,22 @@ class ApprovalThresholdsValidator extends ConstraintValidator
                 }
 
                 $approvers = count($selectionCriteria->getSelectFromPeople());
+
+                if ($selectionCriteria->canSelectTicketUser()) {
+                    $approvers ++;
+                }
+
                 $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
+
+                // If we can tell how many approvers may be selected as a maximum, then make sure that the min
+                // number of approvers is enough
+                if ($minNumberOfApprovers < $approvers) {
+                    $this
+                        ->context
+                        ->buildViolation(sprintf($constraint->minNumberOfApproversMessage, $approvers))
+                        ->addViolation()
+                    ;
+                }
             } else {
                 $personRepo = $this->em->getRepository(Person::class);
                 $selectedApprovers = $value->getSelectedApprovers();
