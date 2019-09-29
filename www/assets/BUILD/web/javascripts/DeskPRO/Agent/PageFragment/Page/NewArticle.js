@@ -196,7 +196,16 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
         contentElement: overlayEl,
         zIndex: 1900
       });
+
+      // Reset overlay on close
+      this.overlay.addEvent('overlayClosed', function() {
+        $('.submit-template-trigger', overlayEl).removeAttr('disabled') ;
+        $('input[name=title]', overlayEl).val('');
+        $('.success', overlayEl).hide();
+      });
+
       $('.submit-template-trigger', overlayEl).on('click', function() {
+        var $submitTrigger = this;
         var data = {
           "type": "article",
           "template": formData,
@@ -213,6 +222,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
             $('.is-not-loading', overlayEl).show();
             $('.success', overlayEl).show();
             $('.is-loading', overlayEl).hide();
+            $submitTrigger.disabled = true;
 
             if (window.ManageContentTemplatesModal) {
               window.ManageContentTemplatesModal.reloadTemplates();
