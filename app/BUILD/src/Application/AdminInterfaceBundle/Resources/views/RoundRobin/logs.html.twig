@@ -19,7 +19,7 @@
                     <td>{{ entry.ticketId }}</td>
                     <td>
                         <a href="{{ path('agent') }}#app.tickets,t.o:{{ entry.ticketId }}" target="_blank">
-                            {{ entry.ticketSubject|escape_curlies|raw }}
+                            <span ng-non-bindable>{{ entry.ticketSubject }}</span>
                         </a>
                     </td>
                     <td>

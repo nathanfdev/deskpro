@@ -213,7 +213,6 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('strip_html', [$this, 'stripHtml']),
             new \Twig_SimpleFilter('text_wrap_marks', [$this, 'textWrapMarks']),
             new \Twig_SimpleFilter('regex_replace', [$this, 'regexReplace']),
-            new \Twig_SimpleFilter('escape_curlies', [$this, 'escapeCurlies']),
             new \Twig_SimpleFilter('hex2rgb', [$this, 'hex2rgb']),
             new \Twig_SimpleFilter('trans', [$this, 'dummy']),
             new \Twig_SimpleFilter('transchoice', [$this, 'dummy']),
@@ -1797,17 +1796,6 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $result = RegexUtils::safePregReplace($regex, $replace, $string, $limit);
-
-        if ($result === null) {
-            return $string;
-        }
-
-        return $result;
-    }
-
-    public function escapeCurlies($string)
-    {
-        $result = RegexUtils::safePregReplace('/\{\{(.*)\}\}/', '<span ng-non-bindable> {{ $1 }} </span>', $string);
 
         if ($result === null) {
             return $string;
