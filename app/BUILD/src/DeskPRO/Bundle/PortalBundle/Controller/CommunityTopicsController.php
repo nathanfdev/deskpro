@@ -189,9 +189,11 @@ class CommunityTopicsController extends AbstractPublishController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
         }
 
-        // FILTER CATEGORIES
+        // FILTER FORUMS
 
         $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
+        $topicCountPerForum = $this->get('data.community')->getCommunityForumTopicCountsForPerson($person);
+        $latestComments = $this->get('data.community')->getLatestCommentsPerForum($person);
 
         // JS INITIAL DATA
 
@@ -210,26 +212,28 @@ class CommunityTopicsController extends AbstractPublishController
         return $this->renderThemeView(
             'Theme:Community:index.html.twig',
             [
-                'page'               => $page,
-                'community_forums'   => $communityForums,
-                'count'              => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination'    => true,
-                'status'             => $filter->getStatus(),
-                'status_categories'  => $filter->getStatusCategories(),
-                'types'              => $filter->getTypes(),
-                'sort'               => $filter->getSort(),
-                'sort_direction'     => $filter->getSortDirection(),
-                'form'               => $form->createView(),
-                'form_was_submitted' => $formWasSubmitted,
-                'user'               => $this->getUser(),
-                'rerendering_saved'  => $rerenderingSaved,
-                'breadcrumbs'        => $breadcrumbs,
-                'page_title'         => $this->createPageTitle()->community(),
-                'rss_link'           => $rssLink,
-                'filter_js'          => $filterJs,
-                'is_subscribed'      => $isSubscribed,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
+                'page'                  => $page,
+                'community_forums'      => $communityForums,
+                'count'                 => $this->getBrandSetting('portal.per_page_content'),
+                'show_pagination'       => true,
+                'status'                => $filter->getStatus(),
+                'status_categories'     => $filter->getStatusCategories(),
+                'types'                 => $filter->getTypes(),
+                'sort'                  => $filter->getSort(),
+                'sort_direction'        => $filter->getSortDirection(),
+                'form'                  => $form->createView(),
+                'form_was_submitted'    => $formWasSubmitted,
+                'user'                  => $this->getUser(),
+                'rerendering_saved'     => $rerenderingSaved,
+                'breadcrumbs'           => $breadcrumbs,
+                'page_title'            => $this->createPageTitle()->community(),
+                'rss_link'              => $rssLink,
+                'filter_js'             => $filterJs,
+                'is_subscribed'         => $isSubscribed,
+                'lockout'               => $check->isLockoutRecommended(),
+                'lockout_time'          => $check->getLockoutTime(true),
+                'topic_count_per_forum'     => $topicCountPerForum,
+                'latest_comments_per_forum' => $latestComments,
             ]
         );
     }
@@ -360,22 +364,22 @@ class CommunityTopicsController extends AbstractPublishController
         $filterJs        = $this->generateFilterJs($filter, $communityForums, $page);
 
         $pageOptions = [
-            'page'              => $page,
-            'community_forums'  => $communityForums,
-            'count'             => $this->getBrandSetting('portal.per_page_content'),
-            'show_pagination'   => true,
-            'status'            => $filter->getStatus(),
-            'status_categories' => $filter->getStatusCategories(),
-            'types'             => $filter->getTypes(),
-            'sort'              => $filter->getSort(),
-            'sort_direction'    => $filter->getSortDirection(),
-            'breadcrumbs'       => $breadcrumbs,
-            'page_title'        => $this->createPageTitle()->community(),
-            'filter_js'         => $filterJs,
-            'rerendering_saved' => false, // wont happen here because we always rerender on index
-            'is_subscribed'     => $isSubscribed,
-            'lockout'           => $request->get('lockout', false),
-            'lockout_time'      => 0,
+            'page'               => $page,
+            'community_forums'   => $communityForums,
+            'count'              => $this->getBrandSetting('portal.per_page_content'),
+            'show_pagination'    => true,
+            'status'             => $filter->getStatus(),
+            'status_categories'  => $filter->getStatusCategories(),
+            'types'              => $filter->getTypes(),
+            'sort'               => $filter->getSort(),
+            'sort_direction'     => $filter->getSortDirection(),
+            'breadcrumbs'        => $breadcrumbs,
+            'page_title'         => $this->createPageTitle()->community(),
+            'filter_js'          => $filterJs,
+            'rerendering_saved'  => false, // wont happen here because we always rerender on index
+            'is_subscribed'      => $isSubscribed,
+            'lockout'            => $request->get('lockout', false),
+            'lockout_time'       => 0,
         ];
 
         if ($request->isXmlHttpRequest()) {

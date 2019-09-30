@@ -9,10 +9,12 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\CommunitySearch;
+use Doctrine\ORM\Query;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -112,6 +114,59 @@ class CommunityForum extends AbstractCategoryRepository
             FROM DeskPRO:CommunityForum f INDEX BY f.id
             ORDER BY f.display_order ASC
         ')->execute();
+    }
+
+    /**
+     * @param int[] $forumIds
+     * @return array
+     */
+    public function getTopicCountPerForum(array $forumIds)
+    {
+        $counts = $this->createQueryBuilder('f')
+            ->select('f.id AS forum_id, COUNT(t.id) AS topic_count')
+            ->leftJoin(\Application\DeskPRO\Entity\CommunityTopic::class, 't', 'WITH', 'f.id = IDENTITY(t.forum)')
+            ->andWhere('f.id IN (:forumIds)')
+            ->setParameter('forumIds', $forumIds)
+            ->groupBy('f')
+            ->getQuery()
+            ->getResult(Query::HYDRATE_ARRAY)
+        ;
+        return array_reduce($counts, function (array $all, array $row) {
+            $all[(int) $row['forum_id']] = (int) $row['topic_count'];
+
+            return $all;
+        }, []);
+    }
+
+    /**
+     * @param array $forumIds
+     * @param int $numberOfComments
+     * @return array
+     */
+    public function getLatestCommentsPerForum(array $forumIds, $numberOfComments = 5)
+    {
+        $latestCommentsByForum = [];
+        $latestCommentsQuery = $this->getEntityManager()->createQueryBuilder()
+            ->select('c, p, t')
+            ->from(\Application\DeskPRO\Entity\CommunityTopicComment::class, 'c')
+            ->innerJoin('c.person', 'p')
+            ->innerJoin('c.topic', 't')
+            ->andWhere('c.status != \'hidden\'')
+            ->andWhere('IDENTITY(t.forum) = :forumId')
+            ->orderBy('c.date_created', 'DESC')
+            ->setMaxResults($numberOfComments)
+        ;
+
+        /** @var \Application\DeskPRO\Entity\CommunityForum $forum */
+        foreach ($this->findBy(['id' => $forumIds]) as $forum) {
+            $latestCommentsByForum[$forum->getId()] = $latestCommentsQuery
+                ->setParameter('forumId', $forum->getId())
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        return $latestCommentsByForum;
     }
 
     /**
