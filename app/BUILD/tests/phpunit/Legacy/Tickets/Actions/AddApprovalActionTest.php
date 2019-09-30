@@ -10,7 +10,7 @@ use DeskPRO\Bundle\AppBundle\Approval\ApprovalManager;
 use DeskPRO\Bundle\AppBundle\Approval\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
-use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\SelectedApprovers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use DpTest\DeskProTestCase;
@@ -88,16 +88,15 @@ class AddApprovalActionTest extends DeskProTestCase
         $em = m::mock(EntityManagerInterface::class)->shouldIgnoreMissing();
         $repo = m::mock(EntityRepository::class)->shouldIgnoreMissing();
         $template = m::mock(ApprovalTemplate::class)->shouldIgnoreMissing();
-        $approverCriteria = m::mock(ApproverSelectionCriteria::class)->shouldIgnoreMissing();
+        $selectedApprovers = m::mock(SelectedApprovers::class)->shouldIgnoreMissing();
 
-        $approverCriteria->shouldReceive('getAgents')->withNoArgs()->andReturn([]);
-        $approverCriteria->shouldReceive('getUsers')->withNoArgs()->andReturn([]);
+        $selectedApprovers->shouldReceive('getPeople')->withNoArgs()->andReturn([]);
 
         $template->shouldReceive('getType')->withNoArgs()->andReturn(
             m::mock(ApprovalType::class)->shouldIgnoreMissing()
         );
 
-        $template->shouldReceive('getApproverCriteria')->withNoArgs()->andReturn($approverCriteria);
+        $template->shouldReceive('getSelectedApprovers')->withNoArgs()->andReturn($selectedApprovers);
 
         $repo->shouldReceive('find')->withAnyArgs()->andReturn($returnNullTemplate ? null : $template);
         $em->shouldReceive('getRepository')->with(ApprovalTemplate::class)->andReturn($repo);
