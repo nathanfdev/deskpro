@@ -1088,6 +1088,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
       window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
     }
 
+
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
 		var el = $('.article-editor-wrap', this.getEl('content_ed'));
@@ -1124,12 +1125,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 
 			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
-        console.log("EDIT NEW CONTENT EDITOR");
 
 			  var contentInput = null;
 			  if (window[this.meta.baseId + '_content_input']) {
 			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
         }
+        this.reactContentNode = txt[0];
 			  this.rte = window.AgentLegacyBundle.renderContentEditorCollab(
 					self.reactContentNode,
 					contentInput,
