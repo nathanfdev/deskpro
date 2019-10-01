@@ -1,16 +1,14 @@
 <div class="dp-po-ticket-create" id="new_ticket_page">
-    <div class="dp-po-ticket-create-form helpcenter-form">
+    <div class="dp-po-ticket-create-form helpcenter-form dp_ticket_form">
         <p>{{ phrase('portal.tickets.new-intro') }}</p>
         <form method="POST" class="dp-po-form" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data" data-visibility="{{ form.vars.visibility }}">
             {% if form_errors|length > 0 %}
-                <div class="column-full">
-                    <div class="bucket">
-                        <div class="form-error-list" style="max-width: 620px;">
-                            <h1>There are some errors with your submission.</h1>
-                            <ul>
-                                {% for error in form_errors %}
-                                    {% set error_view = error.origin.createView() %}
-                                    <li>
+                <div class="alert alert-danger" role="alert">
+                    <h4>{{ phrase('portal.tickets.view_reply_errors') }}</h4>
+                    <ul>
+                        {% for error in form_errors %}
+                            {% set error_view = error.origin.createView() %}
+                            <li>
                                     <span>
                                         {{ phrase_form_error(error) }}
                                         {% if error.cause %}
@@ -21,16 +19,14 @@
                                             -->
                                         {% endif %}
                                     </span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
             {% endif %}
 
             <div class="dynamic-fields-container">
-                {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
+                {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token', 'submit'] %}
                     {% set hidden = widget.vars.name == 'department' and app.request.get('hide_department') %}
                     <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}"
                          data-field="{{ widget.vars.name }}"
@@ -39,6 +35,7 @@
                     </div>
                 {% endfor %}
             </div>
+            {{ form_widget(form.submit) }}
             {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>

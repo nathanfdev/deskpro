@@ -1,10 +1,21 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
-import { HelpcenterSelectBox } from './Common/Form/Helpcenter/HelpcenterSelectBox';
+import { HcDateWidget } from './Common/Form/Helpcenter/HcDateWidget';
+import DpxCustomFieldAttach from './Common/Form/DpxCustomFieldAttach';
+import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';
+import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
+import DpxJavascript from './Common/Form/DpxJavascript';
+import HcFileUpload from './Common/Form/Helpcenter/HcFileUpload';
 
 export default class HelpcenterFormWidget extends PageWidget {
 
   init() {
-    this.addWidgetDef(HelpcenterSelectBox, 'select[dpx-select], select.dpx-select');
+    this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
+    this.addWidgetDef(DpxCustomFieldAttach, '.dpx-custom-field-attach');
+    this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
+    this.addWidgetDef(DpxJavascript, '.dpx-javascript');
+    this.addWidgetDef(HcFileUpload, '.helpcenter-file-upload');
+    this.addWidgetDef(HcDateWidget, '.dpx-date');
+    this.addWidgetDef(HcDateWidget, '.dpx-date-time');
 
     if (this.$element.is('form')) {
       HelpcenterFormWidget.initForms(this.$element);

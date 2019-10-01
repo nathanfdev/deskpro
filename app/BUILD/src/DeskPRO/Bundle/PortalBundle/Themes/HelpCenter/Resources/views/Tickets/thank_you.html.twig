@@ -1,24 +1,37 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{% block page_body %}
-<div class="ticket-success-blurb">
-    <div class="icon-mark"></div>
-    {% if verify_email %}
-        <h1>{{ phrase('portal.tickets.thank_you_check_email') }}</h1>
-    {% else  %}
-        <h1>{{ phrase('portal.tickets.thank_you') }}</h1>
-        <p>{{ phrase('portal.tickets.thank_you_desc') }}</p>
-    {% endif %}
-    <div class="footer">
-        {% if is_confirmed_user and create_pw_link %}
-            {{ phrase('portal.tickets.thank_you_create_pw_link', { create_pw_link: create_pw_link }) }}
-        {% elseif ticket_ref %}
-            {{ phrase('portal.tickets.thank_you_ticket_link', { ticket_link: path('portal_tickets_view', { ticket_ref: ticket_ref } ) }) }}
-        {% elseif verify_email %}
-            <p>{{ phrase('portal.tickets.thank_you_check_email_desc') }}</p>
-        {% else %}
-            <p>&nbsp;</p>
-        {% endif %}
-    </div>
+{% block page_content %}
+<div class="dp-po">
+    <main class="dp-po-main dp-po-ticket-create">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-7 col-centered">
+                    <div class="dp-po-block">
+                        <div class="dp-po-ticket-success">
+                            <i class="dp-po-icon fal fa-user"></i>
+                            {% if verify_email %}
+                                <h2 class="dp-po-ticket-success-title">{{ phrase('portal.tickets.thank_you_check_email') }}</h2>
+                            {% else  %}
+                                <h2 class="dp-po-ticket-success-title">{{ phrase('portal.tickets.thank_you') }}</h2>
+                                <p class="dp-po-ticket-success-number">{{ phrase('helpcenter.tickets.reference_number', {ref: ticket_ref}) }}</p>
+                                <p>{{ phrase('portal.tickets.thank_you_desc') }}</p>
+                            {% endif %}
+                            <div class="footer">
+                                {% if is_confirmed_user and create_pw_link %}
+                                    {{ phrase('portal.tickets.thank_you_create_pw_link', { create_pw_link: create_pw_link }) }}
+                                {% elseif ticket_ref %}
+                                    {{ phrase('portal.tickets.thank_you_ticket_link', { ticket_link: path('portal_tickets_view', { ticket_ref: ticket_ref } ) }) }}
+                                {% elseif verify_email %}
+                                    <p>{{ phrase('portal.tickets.thank_you_check_email_desc') }}</p>
+                                {% else %}
+                                    <p>&nbsp;</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </div>
 {% endblock %}

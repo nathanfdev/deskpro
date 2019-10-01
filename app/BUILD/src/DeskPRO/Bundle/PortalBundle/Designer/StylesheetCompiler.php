@@ -41,7 +41,6 @@ class StylesheetCompiler
         $project->addIncludePath($sourceDir);
         $project->addIncludePath(DP_WEB_ROOT.'/pub/src');
         $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules');
-        $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules/@deskpro/portal-style/src');
         $project->setSource($source);
 
         // Compile custom_vars.scss from $variables

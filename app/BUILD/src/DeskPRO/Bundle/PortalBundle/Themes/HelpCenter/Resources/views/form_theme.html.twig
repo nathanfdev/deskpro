@@ -120,6 +120,22 @@
     {% endif %}
 {%- endblock form_row_help_col -%}
 
+{% block button_widget %}
+    {% spaceless %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        {% if type == 'submit' %}
+            {% set attr = attr|merge({class: 'btn btn-lg btn-primary'}) %}
+        {% else %}
+            {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
+        {% endif %}
+        <button data-test="test" type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+    {% endspaceless %}
+{% endblock button_widget %}
+
+{% block reset_widget %}{% endblock reset_widget %}
+
 {%- block submit_widget -%}
     {%- set type = type|default('submit') -%}
     <div class="form-group dp-po-form-check">{{ block('button_widget') }}</div>
@@ -259,10 +275,16 @@
                         type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
             </label>
         {% else %}
-            {{ parent() }}
+            <label class="title" for="{{ id }}"><input type="checkbox" id="{{ id }}" {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
         {% endif %}
     {% endspaceless %}
 {% endblock checkbox_widget %}
+
+{% block radio_widget %}
+    {% spaceless %}
+        <label class="title" for="{{ id }}"><input type="radio" id="{{ id }}" {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
+    {% endspaceless %}
+{% endblock radio_widget %}
 
 {% block single_checkbox_widget %}
     {# we use a special type if its a single checkbox (toggle type) #}
@@ -385,13 +407,14 @@
     {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
 {% endif %}
 <div class="form-group dp-po-form-upload with-dpx">
+    {{ form_label(form) }}
     <div class="dp-po-tiket-attachments">
         <ul class="dp-po-tiket-attachments-list">
             {{- block('form_rows') -}}
         </ul>
     </div>
-    
-    <div class="dp-po-form-upload-wrap dpx-attach" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
+
+    <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
         {%- if form.parent is empty -%}
             {{ form_errors(form) }}
         {%- endif -%}
@@ -588,16 +611,9 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div {{ block('widget_container_attributes') }}>
-        <div class="{% if multiple %}dpx-checkbox-group{% endif %} dp-choice-widget-group with-dpx form-control">
+        <div class="{% if multiple %}dpx-checkbox-group checkboxes{% else %}radios{% endif %} dp-choice-widget-group with-dpx form-control">
             {%- for child in form %}
-                {% if not multiple %}
-                    <div class="radio-button dpx-radio-button">
-                {% endif %}
                 {{- form_widget(child) -}}
-                {{- form_label(child, null, { dp_no_validation_indicator: true, required: false }) -}}
-                {% if not multiple %}
-                    </div>
-                {% endif %}
             {% endfor -%}
         </div>
     </div>

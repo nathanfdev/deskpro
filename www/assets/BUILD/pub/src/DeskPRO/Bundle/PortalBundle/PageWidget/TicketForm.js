@@ -185,7 +185,6 @@ export default class TicketForm extends PageWidget {
         }
 
         const hasOrganization = !!$formEl.find('#ticket_person_user_name').data('organization-id');
-        console.log(newFields);
         if (!hasOrganization) {
           newFields = newFields.filter(field => !/^org_field_/.test(field.id));
         }
@@ -222,6 +221,11 @@ export default class TicketForm extends PageWidget {
     }
 
     const updateHitter = throttle(() => this.dynamicForm.update(), 250);
-    allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
+    allFormFields.on('change', () => {
+      setTimeout(() => updateHitter(), 0);
+    });
+    allFormFields.change(() => {
+      setTimeout(() => updateHitter(), 0);
+    });
   }
 }
