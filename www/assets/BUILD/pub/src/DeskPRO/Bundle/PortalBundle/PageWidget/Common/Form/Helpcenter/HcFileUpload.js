@@ -6,8 +6,11 @@ import { FileUploadInput } from '@deskpro/portal-components';
 
 export default class HcFileUpload extends PageWidget {
 
+  onChange = (name, files) => {
+    this.input.trigger('blobs', [files]);
+  };
+
   renderWidget() {
-    console.log(this.$element);
     this.$element.hide();
     this.$rElement = $('<div class="dp-react-widget dp-pc_field as-dpui"></div>').insertAfter(this.$element);
 
@@ -31,10 +34,25 @@ export default class HcFileUpload extends PageWidget {
       $file.remove();
     });
 
+    this.input = this.$element.find('input');
+
+    const inputName = this.input.attr('name') ? this.input.attr('name').replace(/\[\d+\]\[blob\]\[upload\]/, '') : null;
+
     const uploadUrl = this.$element.data('uploadUrl') || undefined;
+
+    let csrfToken = null;
+    if (window.dp_get_csrf_token) {
+      csrfToken = window.dp_get_csrf_token();
+    }
+
+    console.log(inputName);
+
     const component = React.createElement(FileUploadInput, {
+      name:     inputName,
       url:      uploadUrl,
-      multiple: true,
+      csrfToken,
+      onChange: this.onChange,
+      multiple: false,
     });
 
     ReactDOM.render(component, this.$rElement.get(0));

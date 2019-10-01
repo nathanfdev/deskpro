@@ -306,9 +306,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/portal-components": {
-      "version": "0.2.8",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.8.tgz",
-      "integrity": "sha512-IPg7qQN263uUMVXuZln+h46xMOEDq+YZDVmG3RMU1VNM4fbIikDpWQjpFDqgSqJjtjCSt44qkWouCSnJmZVKGA==",
+      "version": "0.2.9",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.9.tgz",
+      "integrity": "sha512-j1HDoEth6jCR2MIglNEGajn+h48uRurYFabhSoPngA11tdvNJFS/CxMiTwATOunUxJc+qbnF00hIKhMzmWsmuw==",
       "requires": {
         "@deskpro/js-utils": "^1.0.4",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -319,7 +319,7 @@
         "immutable": "^3.8.2",
         "isomorphic-fetch": "^2.2.1",
         "libphonenumber-js": "^1.3.1",
-        "lodash": "^4.17.10",
+        "lodash": "4.17.13",
         "moment": "^2.22.1",
         "moment-hijri": "^2.0.1",
         "raw-loader": "^0.5.1",
@@ -344,6 +344,11 @@
           "version": "3.8.2",
           "resolved": "https://registry.npmjs.org/immutable/-/immutable-3.8.2.tgz",
           "integrity": "sha1-wkOZUUVbs5kT2vKBN28VMOEErfM="
+        },
+        "lodash": {
+          "version": "4.17.13",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.13.tgz",
+          "integrity": "sha512-vm3/XWXfWtRua0FkUyEHBZy8kCPjErNBT9fJx8Zvs+U6zjqPbTUOpkaoum3O5uiA8sm+yNMHXfYkTUHFoMxFNA=="
         },
         "memoize-one": {
           "version": "5.1.1",
@@ -387,9 +392,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.2.8",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.8.tgz",
-      "integrity": "sha512-lpXlg3+TAwf75EozroDga4lG49XHRMzYwJyxzDfDd3qEE3dex7EQg9MdXJyzBqccaOHgfVR7sgfK8Ij9VPD5wA==",
+      "version": "0.2.9",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.9.tgz",
+      "integrity": "sha512-QuT71TYDiKDnkqVE2Ki2M9D1pAr8Ts45b+OpwNtdhRHhLZZXcwgk7GIHTor3VoqBiA2+3+qjQ38YfS0u+AmQCg==",
       "requires": {
         "bootstrap": "^4.3.1"
       }

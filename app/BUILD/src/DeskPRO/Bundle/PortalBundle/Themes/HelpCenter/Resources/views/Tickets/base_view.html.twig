@@ -45,15 +45,15 @@
 
 {% block ticket_attachment %}
     <div class="dpx-attachment">
-        <a href="{{ attachment.download_url }}?dl=1"
-           class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
-           {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
+        <a href="{{ attachment.blob.download_url }}?dl=1"
+           class="dp-po-chat-attachments-link {% if attachment.blob.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
+           {% if not attachment.blob.is_image %}data-content-type="{{ attachment.blob.content_type }}"{% endif %}
         >
 
-            {% if attachment.is_image %}
-                <img class="thumbnail" src="{{ attachment.download_url }}" />
+            {% if attachment.blob.is_image %}
+                <img class="thumbnail" src="{{ attachment.blob.thumbnailUrl }}" />
             {% endif %}
-            {{ attachment.filename }} <span>({{ attachment.filesize_readable }})</span>
+            {{ attachment.blob.filename }} <span>({{ attachment.blob.readable_filesize }})</span>
         </a>
     </div>
 {% endblock %}

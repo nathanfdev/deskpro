@@ -48,6 +48,7 @@ export default class DpxFormDraft extends PageWidget {
     this.addWidgetDef(DpxFormHiddenDraft, 'input[type="hidden"]');
     this.addWidgetDef(DpxFormRteBlobsDraft, 'textarea[data-rte-field="html"]');
     this.addWidgetDef(DpxFormAttachDraft, '.dpx-attach input[type="file"]');
+    this.addWidgetDef(DpxFormAttachDraft, '.helpcenter-file-upload input[type="file"]');
   }
 
   getFormName() {
