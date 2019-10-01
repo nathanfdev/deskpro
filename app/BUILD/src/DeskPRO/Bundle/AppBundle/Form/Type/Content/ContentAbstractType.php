@@ -4,11 +4,11 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -23,11 +23,15 @@ class ContentAbstractType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('content', TextareaType::class, [
-                'filter_clean' => isset($options['filter_clean']) ? $options['filter_clean'] : true,
+            ->add('title', TextType::class, [
+                'required' => true,
             ])
-            ->add('person', PersonAssignType::class, ['required' => false])
+            ->add('content', HtmlTextareaType::class, [
+                'required' => true,
+            ])
+            ->add('person', PersonAssignType::class, [
+                'required' => false,
+            ])
             ->add('language', EntityType::class, [
                 'class'    => Language::class,
                 'required' => false,
