@@ -28,7 +28,7 @@
                                 {{ comment.content_html_plain|raw }}
                             </div>
                         </div>
-                        {% if not comment.is_visible %}
+                        {% if not comment.is_visible and comment.person == get_user() %}
                             <p class="dp-po-comment-subtitle">{{ phrase('portal.general.comments-pending-validation') }}</p>
                         {% endif %}
                         {#<div class="dp-po-comments-vote">
