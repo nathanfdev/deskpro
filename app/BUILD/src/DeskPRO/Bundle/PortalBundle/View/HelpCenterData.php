@@ -92,7 +92,7 @@ class HelpCenterData
         foreach ($forums as $forum) {
             $ret[$forum->getId()] = [
                 'forum' => $forum,
-                'count'   => @$counts[$forum->getId()] ?: 0,
+                'count' => @$counts[$forum->getId()] ?: 0,
             ];
         }
 
@@ -267,5 +267,12 @@ class HelpCenterData
         }
 
         return $user;
+    }
+
+    public function getTicketsLayout()
+    {
+        $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
+
+        return $layouts->compileJsObj();
     }
 }

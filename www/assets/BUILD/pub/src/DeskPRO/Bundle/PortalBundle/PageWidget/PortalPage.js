@@ -2,6 +2,7 @@ import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import TicketForm from './TicketForm';
 import PortalFormWidget from './PortalFormWidget';
+import HelpcenterFormWidget from './HelpcenterFormWidget';
 import { TicketView } from './TicketView';
 import { TicketList } from './TicketList';
 import { HcTicketList } from './HcTicketList';
@@ -32,6 +33,7 @@ class PortalPage extends PageWidget {
 
   init() {
     this.addWidgetDef(PortalFormWidget, '.dpx-form');
+    this.addWidgetDef(HelpcenterFormWidget, '.helpcenter-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');

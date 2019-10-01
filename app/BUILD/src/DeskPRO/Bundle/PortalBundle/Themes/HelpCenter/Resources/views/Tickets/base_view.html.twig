@@ -15,17 +15,17 @@
                             <div class="col-sm-10">
                                 <div class="dp-po-post-info">
                                     <ul class="dp-po-post-info-list">
-                                    
+
                                     </ul>
                                 </div>
                             </div>
                             <div class="col-sm-2">
-                            
+
                             </div>
                         </div>
                     </div>
                     <div class="col-sm-3">
-                    
+
                     </div>
                 </div>
                 <div class="row">
@@ -45,15 +45,15 @@
 
 {% block ticket_attachment %}
     <div class="dpx-attachment">
-        <a href="{{ attachment.download_url }}?dl=1"
-           class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
-           {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
+        <a href="{{ attachment.blob.download_url }}?dl=1"
+           class="dp-po-chat-attachments-link {% if attachment.blob.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
+           {% if not attachment.blob.is_image %}data-content-type="{{ attachment.blob.content_type }}"{% endif %}
         >
-            
-            {% if attachment.is_image %}
-                <img class="thumbnail" src="{{ attachment.download_url }}" />
+
+            {% if attachment.blob.is_image %}
+                <img class="thumbnail" src="{{ attachment.blob.thumbnailUrl }}" />
             {% endif %}
-            {{ attachment.filename }} <span>({{ attachment.filesize_readable }})</span>
+            {{ attachment.blob.filename }} <span>({{ attachment.blob.readable_filesize }})</span>
         </a>
     </div>
 {% endblock %}
@@ -65,20 +65,24 @@
       {% set icon = ticket.isResolved() == 'resolved' ? 'fa-check' : 'fa-clock' %}
       <span class="badge {{ class }} badge-icon"><i class="dp-po-icon far {{ icon }}"></i> {{ ticket.status }}</span>
     </div>
-	
+
     <div class="dp-po-ticket-meta">
         <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_ticket_id') }}</h3>
         <p>
             {{ ticket_public_id(ticket) }}
             <div class="item-clear"></div>
         </p>
-    
-        <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_requester') }}</h3>
-        {% include "Theme:Tickets:embeds/person_sidebar.html.twig" with {person: ticket.person, avatar_link: false }%}
-        
-        <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_assigned_agent') }}</h3>
-        {% include "Theme:Tickets:embeds/person_sidebar.html.twig" with {person: ticket.agent, avatar_link: false }%}
-    
+
+        {% if (ticket.person) %}
+            <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_requester') }}</h3>
+            {% include "Theme:Tickets:embeds/person_sidebar.html.twig" with {person: ticket.person, avatar_link: false }%}
+        {% endif %}
+
+        {% if (ticket.agent) %}
+            <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_assigned_agent') }}</h3>
+            {% include "Theme:Tickets:embeds/person_sidebar.html.twig" with {person: ticket.agent, avatar_link: false }%}
+        {% endif %}
+
         <div class="dp-po-ticket-meta-cc">
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_participants', {count: ticket.getCcs()|length} ) }}</h3>
             <ul class="dp-po-ticket-meta-cc-list">
@@ -97,12 +101,12 @@
                 </li>
             {% endif %}
             </ul>
-            
+
             {% block page_sidebar_add_participant_form %}
                 <a href="#" data-clickaway-target="add-cc-user-popover" class="dp-po-ticket-meta-cc-link clickaway-dropdown">{{ phrase('helpcenter.tickets.view_btn_add_cc') }}</a>
                 <div class="dp-po-ticket-meta-cc-form" id="add-cc-user-popover" style="display: none;">
                     <form action="{{ portal_path(ticket, 'add-cc') }}" method="POST" class="do-po-form">
-                
+
                         <div class="form-group">
                             <input type="text" name="name" required class="form-control" placeholder="{{ phrase('portal.tickets.view_label_your_name_placeholder') }}" />
                         </div>
@@ -114,7 +118,7 @@
                 </div>
             {% endblock page_sidebar_add_participant_form %}
         </div>
-    
+
         {% if ticket.isAwaitingUser() %}
         {# AWAITING USER #}
             <h3 class="dp-po-ticket-meta-title">{{ phrase('helpcenter.tickets.view_awaiting_user') }}</h3>
@@ -134,7 +138,7 @@
             {% endif %}
         {% endif %}
     </div>
-    
+
     {% if ticket_view.getAttachments()|length > 0 %}
     <div class="dp-po-sidebar dp-po-chat-attachments">
         <h3 class="dp-po-sidebar-title">{{ phrase('portal.tickets.view_media') }}</h3>
@@ -147,8 +151,8 @@
         </ul>
     </div>
     {% endif %}
-    
-    
+
+
     {% if ticket_view.hasAnyVisibleProperties() %}
     <div class="dp-po-ticket-meta">
         {% if can_edit and ticket.isOpen() and not edit_page %}
@@ -156,7 +160,7 @@
             <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">{{ phrase('portal.tickets.view_btn_edit') }} <i class="fas fa-edit"></i></a>
         </p>
         {% endif %}
-    
+
         {% for property in ticket_view.properties %}
             {% set propValue = property.value is iterable ? property.value : property.value|smart_wrap(35) %}
             {% if property.isVisible %}
@@ -184,7 +188,7 @@
         {% endfor %}
     </div>
     {% endif %}
-    
+
     {% if not ticket_view.hasAnyVisibleProperties() %}
         {% if can_edit and ticket.isOpen() and not edit_page %}
             <div class="dp-po-ticket-meta">

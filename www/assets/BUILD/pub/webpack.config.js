@@ -26,6 +26,8 @@ const config = {
     DeskPRO_PortalBundle_style:     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss',
     DeskPRO_PortalBundle_rtl_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss',
 
+    DeskPRO_PortalBundle_helpcenter_vendors_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_vendor_style.scss',
+
     DeskPRO_PortalBundle_vendors_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss',
 
     DeskPRO_PortalBundle_GuidePdf_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/guide_pdf.scss',

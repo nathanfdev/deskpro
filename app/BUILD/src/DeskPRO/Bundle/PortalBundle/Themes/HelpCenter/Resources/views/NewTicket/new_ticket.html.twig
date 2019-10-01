@@ -17,22 +17,14 @@
                             <h2 class="dp-po-title-text">{{ phrase('portal.tickets.new-section-title') }}</h2>
                         </div>
                         <div class="dp-po-block">
-                            <div class="dp-po-ticket-create">
-                                <form action="" class="dp-po-ticket-create-form">
-                                    <p>{{ phrase('portal.tickets.new-intro') }}</p>
-                                    <form action="" class="dp-po-form">
-                                        {% if rerendering %}
-                                            <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
-                                        {% endif %}
+                            {% if rerendering %}
+                                <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
+                            {% endif %}
 
-                                        {% if rerendering_saved %}
-                                            <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-                                        {% endif %}
-
-                                        {% show new_ticket_form %}
-                                    </form>
-                                </form>
-                            </div>
+                            {% if rerendering_saved %}
+                                <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+                            {% endif %}
+                            {% include 'Theme:NewTicket:new_ticket_form.html.twig' %}
                         </div>
                     </div>
                 </div>

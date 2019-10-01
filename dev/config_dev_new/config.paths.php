@@ -20,4 +20,8 @@ $PATHS_CONFIG['asset_paths'] = [
         'type'    => 'url',
         'value'   => 'http://localhost:9666/pub/build/'
     ],
+    'help_center' => [
+        'type'    => 'url',
+        'value'   => 'http://localhost:3000/portal-components/portal-style/dist/'
+    ]
 ];
