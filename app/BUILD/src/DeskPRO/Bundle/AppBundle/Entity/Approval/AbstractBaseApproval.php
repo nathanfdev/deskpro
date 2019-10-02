@@ -211,13 +211,6 @@ abstract class AbstractBaseApproval extends AbstractApproval
                 $approval->addApprover($extraApprover);
             }
 
-            // Add an organization managers
-            if ($selectedApprovers->hasOrganizationManagers()) {
-                foreach ($personRepo->getOrganizationManagers() as $orgManager) {
-                    $approval->addApprover($orgManager);
-                }
-            }
-
             // Add all agents
             if ($selectedApprovers->hasAllAgents()) {
                 foreach ($personRepo->getAgents() as $agent) {
@@ -228,6 +221,12 @@ abstract class AbstractBaseApproval extends AbstractApproval
             // Add any specific people (agents or users)
             foreach ($selectedApprovers->getPeople() as $personId) {
                 $approval->addApprover($em->getReference(Person::class, $personId));
+            }
+
+            // Check that we have enough approvers
+            $approversCount = $approval->getApprovers()->count();
+            if ($approversCount < max($approval->getRequiredApprovals(), $approval->getRequiredRejections())) {
+                throw new \DomainException('There aren\'t enough approvers defined to meet required approvals/rejections');
             }
         }
 

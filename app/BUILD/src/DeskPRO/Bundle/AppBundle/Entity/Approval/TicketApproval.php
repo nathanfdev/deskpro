@@ -2,7 +2,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -60,11 +62,21 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
         EntityManagerInterface $em,
         SelectedApprovers $selectedApprovers
     ) {
+        $approvers = [];
+        $ticketPerson = $this->getTicket()->getPerson();
+
         if ($selectedApprovers->hasTicketUser()) {
-            return [$this->getTicket()->getPerson()];
+            $approvers[] = $ticketPerson;
         }
 
-        return [];
+        if ($selectedApprovers->hasOrganizationManagers()) {
+            $personRepo = $em->getRepository(Person::class);
+            foreach ($personRepo->getOrganizationManagersForPerson($ticketPerson) as $orgManager) {
+                $approvers[] = $orgManager;
+            }
+        }
+
+        return $approvers;
     }
 
     /**

@@ -143,6 +143,22 @@ class Person extends AbstractEntityRepository
         return $organization_managers;
     }
 
+    public function getOrganizationManagersForPerson(\Application\DeskPRO\Entity\Person $person)
+    {
+        $organization_managers = $this->getEntityManager()->createQuery('
+            SELECT p
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.organization_manager = true AND p.is_deleted = false
+            AND IDENTITY(p.organization) = :organizationId
+            ORDER BY p.first_name ASC, p.last_name ASC
+        ')
+            ->setParameter('organizationId', $person->getOrganizationId())
+            ->execute()
+        ;
+
+        return $organization_managers;
+    }
+
     public function countOrganizationManagers()
     {
         return (int) $this->getEntityManager()->createQuery('
