@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Approval;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\EntityIdType;
@@ -47,7 +48,8 @@ class ApproverSelectionCriteriaType extends AbstractType
             ->add('min_number_of_approvers', IntegerType::class, [
                 'required' => false,
                 'constraints' => [
-                    new Assert\GreaterThan(['value' => 0]),
+                    new Assert\NotBlank(['message' => sprintf('You must provide a minimum number of approvers value between 1 & %d', AbstractBaseApproval::APPROVERS_MAX)]),
+                    new Assert\Range(['min' => 1, 'max' => AbstractBaseApproval::APPROVERS_MAX]),
                 ],
             ])
         ;

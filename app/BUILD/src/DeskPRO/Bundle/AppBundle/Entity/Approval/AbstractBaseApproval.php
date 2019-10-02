@@ -51,7 +51,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     /**
      * Maximum number of approvers assigned to an approval
      */
-    const APPROVERS_MAX = 1000;
+    const APPROVERS_MAX = 100;
 
     /**
      * @var string
