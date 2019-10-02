@@ -31,7 +31,8 @@ Feature: Ticket approval triggers
   "can_approvers_view_subject": true,
   "can_choose_approvers": true,
   "approver_selection_criteria": {
-    "can_select_from_all_agents": true
+    "can_select_from_all_agents": true,
+    "min_number_of_approvers": 1
   },
   "actions_on_approved": [{
 			"type": "SetSubject",
