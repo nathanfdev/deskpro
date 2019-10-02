@@ -230,6 +230,32 @@ class CommunityDataService extends AbstractDataService
     }
 
     /**
+     * @param Person|null $person
+     * @return array
+     */
+    public function getCommunityForumTopicCountsForPerson(Person $person = null)
+    {
+        $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
+
+        return $this->getCommunityForumsRepo()->getTopicCountPerForum(
+            $permissions_bag->getAllowedCommunityForumIds()
+        );
+    }
+
+    /**
+     * @param Person|null $person
+     * @return array
+     */
+    public function getLatestCommentsPerForum(Person $person = null)
+    {
+        $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
+
+        return $this->getCommunityForumsRepo()->getLatestCommentsPerForum(
+            $permissions_bag->getAllowedCommunityForumIds()
+        );
+    }
+
+    /**
      * @param $status_category
      *
      * @return CommunityTopicStatusCategory

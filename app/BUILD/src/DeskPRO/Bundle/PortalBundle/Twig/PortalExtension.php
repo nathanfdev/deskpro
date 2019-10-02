@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
@@ -705,7 +706,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param ContentAbstract $object
+     * @param HasSplashImageProperty $object
      * @param int             $width
      * @param string          $orientation
      *
@@ -713,7 +714,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @return string
      */
-    public function getSplashUrl(ContentAbstract $object, $width = 200, $orientation = 'landscape')
+    public function getSplashUrl(HasSplashImageProperty $object, $width = 200, $orientation = 'landscape')
     {
         $splashImage = $object->getSplashImage();
         if ($splashImage) {

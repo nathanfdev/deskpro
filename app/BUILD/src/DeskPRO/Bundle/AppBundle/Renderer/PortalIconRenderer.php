@@ -16,11 +16,11 @@ use Exception;
 
 class PortalIconRenderer
 {
-    public function getIconHtml(IconProperty $icon, $object = null)
+    public function getIconHtml(IconProperty $icon, $object = null, $asDownloadUrl = false, $isRounded = false)
     {
         if ($icon->getUrnNs() === IconProperty::$blobNs) {
             if ($icon->getBlob()) {
-                return '<img src="'.$icon->getBlob()->getFileUrl().'" alt="icon" />';
+                return '<img src="'.$icon->getBlob()->{$asDownloadUrl ? 'getDownloadUrl' : 'getFileUrl'}().'" alt="icon" class="'.($isRounded ? 'rounded-circle' : '').'" />';
             }
         }
         if ($icon->getUrnNs() === IconProperty::$faNs) {
@@ -43,7 +43,12 @@ class PortalIconRenderer
     public function getIconHtmlFrom(HasIconProperty $object, $options = [])
     {
         if ($object->getIcon()) {
-            $icon = $this->getIconHtml($object->getIcon(), $object);
+            $icon = $this->getIconHtml(
+                $object->getIcon(),
+                $object,
+                isset($options['as_download_url']) && $options['as_download_url'],
+                isset($options['is_rounded']) && $options['is_rounded']
+            );
             if ($icon) {
                 return $icon;
             }

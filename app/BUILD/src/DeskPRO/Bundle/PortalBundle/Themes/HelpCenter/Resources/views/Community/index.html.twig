@@ -1,31 +1,65 @@
 {% extends 'Theme::layout.html.twig' %}
-{% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
-{% block page_body %}
-    <article class="community main-community" id="community_page">
-        {{  macros.lockout_notice(phrase('portal.account.community-lockout'), lockout, lockout_time) }}
-        <header class="large-title">
-            <div class="header-buttons">
-                {% show community_root_subscription_link %}
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="dp-po-title">
+                            <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="dp-po-community-row">
+                            <div class="dp-po-community-row-list">
+                                {% for forum in community_forums %}
+                                    {% set icon = forum.icon_property  %}
+                                    {% set splash = forum.splash_image_property  %}
+                                    <div class="dp-po-community-row-item {{ not splash ? 'dp-po-community-row-item-nocover' }}">
+                                        <div class="dp-po-community-row-left" style="{% if splash %}background: url('{{ get_splash_url(forum) }}'){% endif %}">
+                                            {% if icon %}
+                                                <div class="dp-po-community-row-icon">
+                                                    {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                                                </div>
+                                            {% endif %}
+                                            <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
+                                            <p class="dp-po-community-row-description">{{ forum.description }}</p>
+                                            <a href="{{ path('portal_community_browse', {filter_uri: forum.slug}) }}"
+                                               class="dp-po-community-row-btn">
+                                                {{ phrase('helpcenter.community.view-topics', {count: topic_count_per_forum[forum.id]}) }}
+                                            </a>
+                                        </div>
+                                        <div class="dp-po-community-row-right">
+                                            <div class="dp-po-community-row-activity">
+                                                <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent-activity') }}</h3>
+                                                <ul class="dp-po-community-row-activity-list">
+                                                    {% for comment in latest_comments_per_forum[forum.id] %}
+                                                        <li class="dp-po-community-row-activity-item">
+                                                            <a href="{{ path('portal_community_topic_view', {slug: comment.topic.slug}) }}" class="dp-po-community-row-activity-link">
+                                                                <img src="{{ avatar_url(comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                                <h4 class="dp-po-community-row-activity-title">
+                                                                    {{ comment.content|truncate(80) }}
+                                                                </h4>
+                                                                <span class="dp-po-community-row-activity-time">
+                                                                    {{ date_ago(comment.date_created) }}
+                                                                </span>
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h1>{{ phrase('portal.community.section-title') }}</h1>
-            <p>{{ phrase('portal.community.section-desc') }}</p>
-        </header>
-
-        {% if can_login() or app.user %}
-            <article class="community-topic-form-interactive">
-                {% if rerendering_saved %}
-                    <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-                {% endif %}
-                {% show community_topic_form %}
-            </article>
-        {% endif %}
-
-       <article class="community-filter-interactive  as-no-dpui">
-           {% show community_filter_controls %}
-           <div class="paged-results">
-               {% show community_list_detail %}
-           </div>
-       </article>
-    </article>
-{% endblock page_body %}
+        </main>
+    </div>
+{% endblock page_content %}
