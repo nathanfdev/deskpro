@@ -404,6 +404,7 @@ class CommunityTopicsController extends AbstractPublishController
             'user'               => $this->getUser(),
             'lockout'            => false,
             'lockout_time'       => false,
+            'is_browsing'        => true,
         ]);
 
         // RENDER THEME

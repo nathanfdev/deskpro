@@ -4,61 +4,540 @@
     <div class="dp-po">
         <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
             <div class="container">
-                <div class="row">
-                    <div class="col-sm-9">
-                        <div class="dp-po-title">
-                            <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
-                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+                {% if is_browsing is defined and is_browsing %}
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="dp-po-community-title">
+                                <a class="dp-po-community-title-link" href="" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                <span class="dp-po-community-title-icon dp-po-community-title-icon-success">
+                  <i class="dp-po-icon dp-po-icon-success fad fa-comment-alt-check"></i>
+                </span>
+                                    Suggestions
+                                    <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-left">
+                                    <a class="dropdown-item" href="#">
+                                        <i class="dp-po-icon dp-po-icon-danger fad fa-hands-helping"></i> Help
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="dp-po-icon dp-po-icon-success fad fa-comment-alt-check"></i> Suggestions
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="dp-po-icon dp-po-icon-pink fad fa-comments"></i> Chat
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="dp-po-icon dp-po-icon-warning fad fa-code"></i> Developers
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="dp-po-icon dp-po-icon-info fad fa-receipt"></i> Finance
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="dp-po-icon dp-po-icon-neutral fad fa-rocket"></i> General chat
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="dp-po-community-title">
+                                <div class="dp-po-community-title-button">
+                                    <a href="" class="dp-po-community-title-button-link"><i class="dp-po-icon fad fa-money-check-edit"></i> Submit
+                                        suggestion</a>
+                                    <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">
+                                        <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a class="dropdown-item" href="#">
+                                            <i class="dp-po-icon dp-po-icon-danger fad fa-hands-helping"></i> Ask for Help
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="dp-po-icon dp-po-icon-success fad fa-comment-alt-check"></i> Submit Feedback
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="dp-po-icon dp-po-icon-pink fad fa-comments"></i> Start a Chat
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="dp-po-icon dp-po-icon-warning fad fa-code"></i> Ask Developers
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="dp-po-icon dp-po-icon-info fad fa-receipt"></i> Talk to Finance
+                                        </a>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="dp-po-icon dp-po-icon-neutral fad fa-rocket"></i> Start a Discussion
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="dp-po-subscribe dp-po-subscribe-large">
+                                <div class="dropdown">
+                                    <!--class : dp-po-subscribe-activebtn -->
+                                    <button class="dp-po-subscribe-btn" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+                                            aria-expanded="false" data-offset="0,10">
+                                        <i class="dp-po-icon fad fa-envelope"></i> Subscribe <i class="dp-po-icon far fa-check"></i>
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                        <a class="dropdown-item disabled" href="#"><i class="dp-po-icon fal fa-file-alt"></i> Article <i
+                                                    class="dp-po-icon far fa-check"></i></a>
+                                        <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-spreadsheet"></i> Category <i
+                                                    class="dp-po-icon far fa-check"></i></a>
+                                        <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-chart-line"></i> Knowledgebase <i
+                                                    class="dp-po-icon far fa-check"></i></a>
+                                        <span class="dp-po-subscribe-divider"></span>
+                                        <a class="dropdown-item dp-po-subscribe-manage" href="#">All your subscriptions</a>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="dp-po-community-row">
-                            <div class="dp-po-community-row-list">
-                                {% for forum in community_forums %}
-                                    {% set icon = forum.icon_property  %}
-                                    {% set splash = forum.splash_image_property  %}
-                                    <div class="dp-po-community-row-item {{ not splash ? 'dp-po-community-row-item-nocover' }}">
-                                        <div class="dp-po-community-row-left" style="{% if splash %}background: url('{{ get_splash_url(forum) }}'){% endif %}">
-                                            {% if icon %}
-                                                <div class="dp-po-community-row-icon">
-                                                    {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
-                                                </div>
-                                            {% endif %}
-                                            <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
-                                            <p class="dp-po-community-row-description">{{ forum.description }}</p>
-                                            <a href="{{ path('portal_community_browse', {filter_uri: forum.slug}) }}"
-                                               class="dp-po-community-row-btn">
-                                                {{ phrase('helpcenter.community.view-topics', {count: topic_count_per_forum[forum.id]}) }}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dp-po-community-header">
+                                <div class="dp-po-community-tabs">
+                                    <ul class="dp-po-community-tabs-list">
+                                        <li class="dp-po-community-tabs-item active">
+                                            <a href="" class="dp-po-community-tabs-link">
+                                                <i class="dp-po-icon far fa-list-ul"></i> List view
                                             </a>
+                                        </li>
+                                        <li class="dp-po-community-tabs-item">
+                                            <a href="" class="dp-po-community-tabs-link">
+                                                <i class="dp-po-icon far fa-exchange"></i> Status Change
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <form class="dp-po-community-header-search">
+                                    <input type="text" name="" placeholder="Search suggestions"></input>
+                                    <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                                </form>
+
+                                <div class="dp-po-community-header-right">
+                                    <div class="dp-po-community-header-filter">
+                                        <a class="dp-po-community-header-filter-link" href="" data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">
+                                            <i class="dp-po-icon fad fa-align-center"></i> Filters (11) <i class="dp-po-icon far fa-angle-down"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-left">
+                                            <div class="dp-po-community-header-filter-dropdown">
+
+                                                <h4 class="dp-po-community-header-filter-dropdown-title">My Activity:</h4>
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="voted">
+                                                    <label class="form-check-label" for="voted">I voted</label>
+                                                    <i class="dp-po-icon fad fa-thumbs-up"></i>
+                                                </div>
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="created">
+                                                    <label class="form-check-label" for="created">I created</label>
+                                                    <i class="dp-po-icon fad fa-comment-alt-edit"></i>
+                                                </div>
+                                                <div class="form-group dp-po-form-check">
+                                                    <input type="checkbox" class="form-check-input" id="commented">
+                                                    <label class="form-check-label" for="commented">I commented</label>
+                                                    <i class="dp-po-icon fad fa-comment-alt-lines"></i>
+                                                </div>
+                                                <hr />
+                                                <h4 class="dp-po-community-header-filter-dropdown-title">Status:</h4>
+                                                <ul class="dp-po-community-header-filter-dropdown-list">
+                                                    <li class="dp-po-community-header-filter-dropdown-item">
+                                                        <div class="form-group dp-po-form-check">
+                                                            <input type="checkbox" class="form-check-input" id="open">
+                                                            <label class="form-check-label" for="open">Open</label>
+                                                        </div>
+                                                        <ul class="dp-po-community-header-filter-dropdown-sublist">
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="started">
+                                                                    <label class="form-check-label" for="started"><span
+                                                                                class="badge badge-success">Started</span></label>
+                                                                </div>
+                                                            </li>
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="development">
+                                                                    <label class="form-check-label" for="development"><span
+                                                                                class="badge badge-danger">Development</span></label>
+                                                                </div>
+                                                            </li>
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="review">
+                                                                    <label class="form-check-label" for="review"><span class="badge badge-warning">Review</span></label>
+                                                                </div>
+                                                            </li>
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="deferred">
+                                                                    <label class="form-check-label" for="deferred"><span
+                                                                                class="badge badge-info">Deferred</span></label>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                    <li class="dp-po-community-header-filter-dropdown-item">
+                                                        <div class="form-group dp-po-form-check">
+                                                            <input type="checkbox" class="form-check-input" id="open">
+                                                            <label class="form-check-label" for="open">Closed</label>
+                                                        </div>
+                                                        <ul class="dp-po-community-header-filter-dropdown-sublist">
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="started">
+                                                                    <label class="form-check-label" for="started"><span
+                                                                                class="badge badge-success">Finished</span></label>
+                                                                </div>
+                                                            </li>
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="development">
+                                                                    <label class="form-check-label" for="development"><span
+                                                                                class="badge badge-danger">Declined</span></label>
+                                                                </div>
+                                                            </li>
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="review">
+                                                                    <label class="form-check-label" for="review"><span
+                                                                                class="badge badge-warning">Duplicate</span></label>
+                                                                </div>
+                                                            </li>
+                                                            <li class="dp-po-community-header-filter-dropdown-item">
+                                                                <div class="form-group dp-po-form-check">
+                                                                    <input type="checkbox" class="form-check-input" id="deferred">
+                                                                    <label class="form-check-label" for="deferred"><span
+                                                                                class="badge badge-info">Archived</span></label>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                                <hr />
+                                                <a href="" class="dp-po-community-header-filter-dropdown-clear">
+                                                    <i class="dp-po-icon fal fa-times"></i> Clear all filters
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="dp-po-community-row-right">
-                                            <div class="dp-po-community-row-activity">
-                                                <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent-activity') }}</h3>
-                                                <ul class="dp-po-community-row-activity-list">
-                                                    {% for comment in latest_comments_per_forum[forum.id] %}
-                                                        <li class="dp-po-community-row-activity-item">
-                                                            <a href="{{ path('portal_community_topic_view', {slug: comment.topic.slug}) }}" class="dp-po-community-row-activity-link">
-                                                                <img src="{{ avatar_url(comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
-                                                                <h4 class="dp-po-community-row-activity-title">
-                                                                    {{ comment.content|truncate(80) }}
-                                                                </h4>
-                                                                <span class="dp-po-community-row-activity-time">
-                                                                    {{ date_ago(comment.date_created) }}
-                                                                </span>
-                                                            </a>
-                                                        </li>
-                                                    {% endfor %}
+                                    </div>
+
+                                    <div class="dp-po-community-header-view">
+                                        <a href="javascript:void(0)"
+                                           class="dp-po-community-header-view-link dp-po-community-header-view-compact active"><i
+                                                    class="dp-po-icon far fa-minus"></i></a>
+                                        <a href="javascript:void(0)" class="dp-po-community-header-view-link dp-po-community-header-view-expanded"><i
+                                                    class="dp-po-icon far fa-equals"></i></a>
+                                    </div>
+
+                                    <div class="dp-po-community-header-sort">
+                                        <a class="dp-po-community-header-sort-link" href="javascript:void(0)" data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false"><i class="dp-po-icon fad fa-sort-alt"></i></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" href="#">Most popular first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Least popular first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Highest rated first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Lowest rated first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Newest <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Oldest <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Most comments first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Least comments first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Most views first <i class="dp-po-icon far fa-check"></i></a>
+                                            <a class="dropdown-item" href="#">Least views first <i class="dp-po-icon far fa-check"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="dp-po-section dp-po-block">
+                                <div class="dp-po-community-view">
+                                    <div class="dp-po-community-view-list">
+                                        <div class="dp-po-community-view-item dp-po-community-view-item-head">
+                                            <div class="dp-po-community-view-votes">
+                                                Votes
+                                            </div>
+                                            <div class="dp-po-community-view-title">
+                                                Title / Author
+                                            </div>
+                                            <div class="dp-po-community-view-status">
+                                                Status
+                                            </div>
+                                            <div class="dp-po-community-view-comments">
+                                                Comments
+                                            </div>
+                                            <div class="dp-po-community-view-activity">
+                                                Activity
+                                            </div>
+                                        </div>
+                                        <div class="dp-po-community-view-item">
+                                            <div class="dp-po-community-view-votes">
+                                                <a href="" class="dp-po-like" data-toggle="modal" data-target="#messageMember">
+                                                    <span class="dp-po-like-count">99</span>
+                                                    <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="dp-po-community-view-title">
+                                                <a href="/en/community/view/1" class="dp-po-community-view-link"> Allow the ability for admins to restrict date/time custom and this
+                                                    might be the long title</a>
+                                                <div class="dp-po-avatar dp-po-avatar-round">
+                                                    <img src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                    Nick Green
+                                                </div>
+                                                <span class="dp-po-community-view-time">15 Aug 2019</span>
+                                            </div>
+                                            <div class="dp-po-community-view-status">
+                                                <span class="badge badge-success">Planning</span>
+                                            </div>
+                                            <div class="dp-po-community-view-comments">
+                                                28
+                                            </div>
+                                            <div class="dp-po-community-view-activity">
+                                                <ul class="dp-po-community-view-activity-list">
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Lily James 1 day ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            1d
+                                                        </a>
+                                                    </li>
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Jeff Weies 2 hours ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            2h
+                                                        </a>
+                                                    </li>
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Lily James 1 hour ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            1h
+                                                        </a>
+                                                    </li>
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Chris 1 hour ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            1h
+                                                        </a>
+                                                    </li>
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Nick Green 30 mins ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            30m
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="dp-po-community-view-official">
+                                                <span class="dp-po-community-view-official-time">57min</span>
+                                                <div class="dp-po-community-view-official-wrap">
+                                                    <h4 class="dp-po-community-view-official-title">Official response</h4>
+                                                </div>
+                                                <div class="dp-po-community-view-official-wrap">
+                                                    <img src="{{ asset('img/docs/avatar.png', 'help_center') }}"
+                                                         class="dp-po-community-view-official-author">
+                                                    <p class="dp-po-community-view-official-response">Hi Pamela. If you add a date variable to your stat you
+                                                        should then be able to use this on a dashboard. For example the built in more words here. If you add a date
+                                                        variable to your stat you should then be able to use this on a dashboard. For example the built in more
+                                                        words here.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="dp-po-community-view-item">
+                                            <div class="dp-po-community-view-votes">
+                                                <a href="" class="dp-po-like" data-toggle="modal" data-target="#messageMember">
+                                                    <span class="dp-po-like-count">99</span>
+                                                    <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="dp-po-community-view-title">
+                                                <a href="/en/community/view/1" class="dp-po-community-view-link"> Allow the ability for admins to restrict date/time custom and this
+                                                    might be the long title</a>
+                                                <div class="dp-po-avatar dp-po-avatar-round">
+                                                    <img src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                    Nick Green
+                                                </div>
+                                                <span class="dp-po-community-view-time">15 Aug 2019</span>
+                                            </div>
+                                            <div class="dp-po-community-view-status">
+                                                <span class="badge badge-danger">Started</span>
+                                            </div>
+                                            <div class="dp-po-community-view-comments">
+                                                28
+                                            </div>
+                                            <div class="dp-po-community-view-activity">
+                                                <ul class="dp-po-community-view-activity-list">
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Lily James 1 hour ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            1d
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="dp-po-community-view-item">
+                                            <div class="dp-po-community-view-votes">
+                                                <a href="" class="dp-po-like" data-toggle="modal" data-target="#messageMember">
+                                                    <span class="dp-po-like-count">99</span>
+                                                    <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
+                                                </a>
+                                            </div>
+                                            <div class="dp-po-community-view-title">
+                                                <a href="/en/community/view/1" class="dp-po-community-view-link"> Allow the ability for admins answer.</a>
+                                                <div class="dp-po-avatar dp-po-avatar-round">
+                                                    <img src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                    Nick Green
+                                                </div>
+                                                <span class="dp-po-community-view-time">15 Aug 2019</span>
+                                            </div>
+                                            <div class="dp-po-community-view-status">
+                                                <span class="badge badge-info">Development</span>
+                                            </div>
+                                            <div class="dp-po-community-view-comments">
+                                                28
+                                            </div>
+                                            <div class="dp-po-community-view-activity">
+                                                <ul class="dp-po-community-view-activity-list">
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Lily James 1 hour ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            1d
+                                                        </a>
+                                                    </li>
+                                                    <li class="dp-po-community-view-activity-item">
+                                                        <a href="javascript:void(0)" class="dp-po-community-view-activity-link" data-toggle="tooltip"
+                                                           data-placement="bottom" title="Latest comment, Lily James 1 hour ago">
+                                                            <img class="dp-po-community-view-activity-image"
+                                                                 src="{{ asset('img/docs/avatar.png', 'help_center') }}">
+                                                            2h
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         </div>
                                     </div>
-                                {% endfor %}
+                                </div>
+
+                            </div>
+                            <div class="dp-po-pagination">
+                                <nav aria-label="...">
+                                    <ul class="pagination">
+                                        <li class="page-item page-item-icon disabled">
+                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true"><i
+                                                        class="dp-po-icon far fa-angle-left"></i></a>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item active" aria-current="page">
+                                            2 <span class="sr-only">(current)</span>
+                                        </li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">6</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">7</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">8</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">9</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">10</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">11</a></li>
+                                        <li class="page-item page-item-dots"><a class="page-link" href="javascript:void(0)">...</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">75</a></li>
+                                        <li class="page-item page-item-icon">
+                                            <a class="page-link" href="#"><i class="dp-po-icon far fa-angle-right"></i></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <div class="dp-po-pagination-goto">
+                                    <form>
+                                        <span>Go to page</span>
+                                        <input type="text" class="dp-po-pagination-goto-text" />
+                                        <input type="submit" class="dp-po-pagination-goto-button" value="Go">
+                                    </form>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                {% else %}
+
+
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <div class="dp-po-title">
+                                <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="dp-po-community-row">
+                                <div class="dp-po-community-row-list">
+                                    {% for forum in community_forums %}
+                                        {% set icon = forum.icon_property  %}
+                                        {% set splash = forum.splash_image_property  %}
+                                        <div class="dp-po-community-row-item {{ not splash ? 'dp-po-community-row-item-nocover' }}">
+                                            <div class="dp-po-community-row-left" style="{% if splash %}background: url('{{ get_splash_url(forum) }}'){% endif %}">
+                                                {% if icon %}
+                                                    <div class="dp-po-community-row-icon">
+                                                        {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                                                    </div>
+                                                {% endif %}
+                                                <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
+                                                <p class="dp-po-community-row-description">{{ forum.description }}</p>
+                                                <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
+                                                   class="dp-po-community-row-btn">
+                                                    {{ phrase('helpcenter.community.view-topics', {count: topic_count_per_forum[forum.id]}) }}
+                                                </a>
+                                            </div>
+                                            <div class="dp-po-community-row-right">
+                                                <div class="dp-po-community-row-activity">
+                                                    <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent-activity') }}</h3>
+                                                    <ul class="dp-po-community-row-activity-list">
+                                                        {% for comment in latest_comments_per_forum[forum.id] %}
+                                                            <li class="dp-po-community-row-activity-item">
+                                                                <a href="{{ path('portal_community_topic_view', {slug: comment.topic.slug}) }}" class="dp-po-community-row-activity-link">
+                                                                    <img src="{{ avatar_url(comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                                    <h4 class="dp-po-community-row-activity-title">
+                                                                        {{ comment.content|truncate(80) }}
+                                                                    </h4>
+                                                                    <span class="dp-po-community-row-activity-time">
+                                                                    {{ date_ago(comment.date_created) }}
+                                                                </span>
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                {% endif %}
             </div>
         </main>
     </div>
