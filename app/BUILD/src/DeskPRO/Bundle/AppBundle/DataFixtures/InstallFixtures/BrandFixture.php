@@ -64,6 +64,8 @@ class BrandFixture extends AbstractDpFixture implements OrderedFixtureInterface
     public function getDefaultThemeId()
     {
         // For the first approach it should work only until we have ch1043 branch not merged
-        return $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', 'helpcenter');
+        $defaultTheme = $this->container->get('deskpro.app_env')->isQa() ? 'helpcenter' : 'standard';
+
+        return $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', $defaultTheme);
     }
 }
