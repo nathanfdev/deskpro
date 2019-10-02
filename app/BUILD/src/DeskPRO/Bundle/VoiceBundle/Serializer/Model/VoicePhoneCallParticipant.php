@@ -79,6 +79,13 @@ class VoicePhoneCallParticipant
     private $costCurrency;
 
     /**
+     * @JMS\Type("array")
+     *
+     * @var array
+     */
+    private $data;
+
+    /**
      * Constructor.
      *
      * @param AbstractVoicePhoneCallParticipant $participant
@@ -93,6 +100,7 @@ class VoicePhoneCallParticipant
         $this->dateLeft     = $participant->getDateLeft();
         $this->cost         = $participant->getCost() ? number_format($participant->getCost(), 3, '.', ',') : null;
         $this->costCurrency = $participant->getCostCurrency();
+        $this->data         = $participant->getData();
 
         if ($participant instanceof VoicePhoneCallParticipantUser) {
             $this->type = 'user';

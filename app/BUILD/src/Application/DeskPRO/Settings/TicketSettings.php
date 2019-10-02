@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Settings;
 
+use DeskPRO\Component\Util\UnserializeUtil;
 use Orb\Util\Arrays;
 
 class TicketSettings
@@ -161,7 +162,11 @@ class TicketSettings
 
         $wh = $this->settings->get('core_tickets.work_hours');
         if ($wh) {
-            $wh = @unserialize($wh);
+            try {
+                $wh = UnserializeUtil::unserializeArray($wh);
+            } catch (\Exception $e) {
+                $wh = null;
+            }
         }
         if ($wh) {
             $this->working_hours = $wh;

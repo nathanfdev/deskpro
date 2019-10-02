@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import { SnippetsMenuContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import SearchContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Search/Components/SearchContainer';
+import UseContentTemplatesModal from '../../ContentTemplates/Components/UseContentTemplatesModal';
+import ManageContentTemplatesModal from '../../ContentTemplates/Components/ManageContentTemplatesModal';
 
 export class LeftDrawerContainer extends SeparateComponent {
   static getType() {
@@ -52,6 +54,23 @@ export class LeftDrawerContainer extends SeparateComponent {
           props = {
             closeMenu: this.closeDrawer,
           };
+          break;
+        }
+        case 'UseContentTemplates': {
+          module = UseContentTemplatesModal;
+          props = {
+            closeMenu: this.closeDrawer,
+            type:      'article'
+          };
+          this.resize();
+          break;
+        }
+        case 'ManageContentTemplates': {
+          module = ManageContentTemplatesModal;
+          props = {
+            closeMenu: this.closeDrawer,
+          };
+          this.resize();
           break;
         }
         default:

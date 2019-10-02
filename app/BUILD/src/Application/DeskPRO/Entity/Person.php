@@ -23,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Events;
@@ -4948,7 +4949,11 @@ class Person extends DomainObject implements
      */
     public function unserialize($serialized)
     {
-        $this->id = unserialize($serialized);
+        try {
+            $this->id = UnserializeUtil::unserializeInteger($serialized);
+        } catch (\Exception $e) {
+            $this->id = null;
+        }
     }
 
     /**

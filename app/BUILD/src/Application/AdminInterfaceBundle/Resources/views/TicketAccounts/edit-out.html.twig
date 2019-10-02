@@ -127,13 +127,16 @@
 					<tr ng-show="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token && !form.out_gmail_account.code">
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.getCode('{{ path('gmail_access_code') }}')">
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getCode('{{ path('gmail_access_code') }}', 'out')"
+							>
 								Get Access Code
 							</button>
 						</td>
 					</tr>
 					<tr ng-if="form.out_gmail_account.type === 'oauth' && !form.out_gmail_account.token">
-						<th></th>
+						<th> </th>
 						<td>
 							<input type="text" class="form-control" style="width: 50%;" ng-model="form.out_gmail_account.code" placeholder="Access Code" />
 						</td>
@@ -143,7 +146,10 @@
 						<td>
 							<input type="hidden" ng-model="form.out_gmail_account.token" />
 							<input type="hidden" ng-model="form.out_gmail_account.refreshToken" />
-							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.getAccessToken('{{ path('gmail_token') }}', 'out')">
+							<button class="btn btn-info"
+									type="button"
+									ng-click="TicketAccountsEdit.getAccessToken('{{ path('gmail_token') }}', 'out')"
+							>
 								Get Access Token
 							</button>
 						</td>
@@ -159,7 +165,9 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td ng-show="form.out_gmail_account.type === 'oauth'">
-							<button class="btn btn-warning" type="button" ng-click="form.out_gmail_account.type = 'password'">
+							<button class="btn btn-warning"
+									type="button"
+									ng-click="TicketAccountsEdit.setGmailOAuthType('out', '{{ app.getSetting('core_email.google_oauth_client_id', '') }}', '{{ app.getSetting('core_email.google_oauth_secret', '') }}')">
 								Use password instead
 							</button>
 						</td>

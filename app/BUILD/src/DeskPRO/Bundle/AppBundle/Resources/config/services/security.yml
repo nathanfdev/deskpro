@@ -132,6 +132,11 @@ services:
     tags:
       - { name: security.voter }
 
+  security.voter.permission_groups.content_template:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ContentTemplateVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.articles:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticlesVoter
     tags:

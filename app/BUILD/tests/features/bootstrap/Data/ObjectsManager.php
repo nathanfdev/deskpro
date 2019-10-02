@@ -105,6 +105,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
+use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
@@ -297,6 +298,7 @@ class ObjectsManager
             'Article'                          => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'                  => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
             'PendingArticle'                   => [Factory\SimpleFactory::class, 'create', ArticlePendingCreate::class],
+            'ContentTemplate'                  => [Factory\SimpleFactory::class, 'create', ContentTemplate::class],
             'Chat'                             => [Factory\CommonFactories::class, 'chat'],
             'ChatMessage'                      => [Factory\SimpleFactory::class, 'create', ChatMessage::class],
             'AgentChat'                        => [Factory\SimpleFactory::class, 'create', AgentChat::class],
@@ -486,6 +488,7 @@ class ObjectsManager
             'CustomPerUserDef'                 => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
             'CustomPerOrgDef'                  => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Organization::class]],
             'Article'                          => [$this, 'find', Article::class],
+            'ContentTemplate'                  => [$this, 'find', ContentTemplate::class],
             'PendingArticle'                   => [$this, 'find', ArticlePendingCreate::class],
             'News'                             => [$this, 'find', News::class],
             'NewsCategory'                     => [$this, 'find', NewsCategory::class],

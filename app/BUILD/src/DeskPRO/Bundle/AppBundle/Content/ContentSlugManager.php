@@ -67,7 +67,7 @@ class ContentSlugManager
         $expectedSlug = $this->slugifyTitle($content->getTitle());
 
         if ($expectedSlug === '') {
-            $expectedSlug = strtolower(TypeUtils::getBaseTypeName($content));
+            $expectedSlug = $this->combineSlug($content);
         }
 
         if ($existingSlug === $expectedSlug) {
@@ -85,7 +85,11 @@ class ContentSlugManager
         $i = 1;
         while (!$this->isValidSlug($newSlug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()) ?: strtolower(TypeUtils::getBaseTypeName($content)), ++$i);
+            $newSlug = $this->slugifyTitle($content->getTitle());
+            if ($newSlug === '') {
+                $newSlug = $this->combineSlug($content);
+            }
+            $newSlug = sprintf('%s-%d', $newSlug, ++$i);
         }
 
         return $content->setSlug($newSlug);
@@ -179,6 +183,43 @@ class ContentSlugManager
     protected function getContentBySlug($newSlug, ContentAbstract $content)
     {
         return $this->getRepoForContent($content)->findOneBy(['slug' => $newSlug]);
+    }
+
+    /**
+     * @param ContentAbstract $content
+     *
+     * @return int|null
+     */
+    protected function getLatestContentId($content)
+    {
+        $qb = $this->getRepoForContent($content)->createQueryBuilder('c');
+        $qb->select('c.id')->orderBy('c.id', 'DESC')->setMaxResults(1);
+        $rows = $qb->getQuery()->execute();
+        if ($rows) {
+            $row = array_pop($rows);
+
+            return ++$row['id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param ContentAbstract $content
+     *
+     * @return string
+     */
+    protected function combineSlug($content)
+    {
+        $slug = strtolower(TypeUtils::getBaseTypeName($content));
+        if ($content->getId()) {
+            $slug .= '-'.$content->getId();
+        } else {
+            $latestContentId = $this->getLatestContentId($content);
+            $slug .= $latestContentId ? '-'.$latestContentId : '';
+        }
+
+        return $slug;
     }
 
     /**

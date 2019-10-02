@@ -93,7 +93,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 	submit: function() {
 		var formData = this.form.serializeArray();
 		if (this.labelsInput) {
-			formData.append(this.labelsInput.getFormData());
+      formData = formData.concat(this.labelsInput.getFormData());
 		}
 
 		$('div.error.section', this.wrapper).removeClass('error');

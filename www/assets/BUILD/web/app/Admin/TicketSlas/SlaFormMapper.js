@@ -40,6 +40,7 @@ define([
           holidays:   model.work_holidays,
           timezone:   model.work_timezone
         };
+        form.work_holidays = model.work_holidays || [];
       }
 
       if (model.warn_time && model.warn_time_unit) {

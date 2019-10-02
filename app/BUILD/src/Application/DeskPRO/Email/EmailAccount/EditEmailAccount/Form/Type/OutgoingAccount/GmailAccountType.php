@@ -17,6 +17,8 @@ class GmailAccountType extends AbstractType
     {
         $builder->add('user', 'email', ['required' => true]);
         $builder->add('password', 'dp_enc_password', ['required' => false]);
+        $builder->add('client_id', 'text', ['required' => true]);
+        $builder->add('client_secret', 'text', ['required' => true]);
         $builder->add('token', 'text', ['required' => true]);
         $builder->add('refreshToken', 'text', ['required' => true]);
         $builder->add('type', 'choice', [

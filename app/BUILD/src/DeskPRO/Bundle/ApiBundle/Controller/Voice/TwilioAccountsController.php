@@ -186,13 +186,7 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      */
     public function getExistingNumbersAction(TwilioVoiceAccount $account)
     {
-        if ($this->get('deskpro.app_env')->isQa() || in_array($this->get('deskpro.app_env')->getEnvId(), ['dev', 'test'])) {
-            $view = new View($this->wrap($this->get('twilio_adapter')->getExistingPhoneNumbers($account)));
-        } else {
-            $view = new View($this->wrap([]));
-        }
-
-        return $view;
+        return new View($this->wrap($this->get('twilio_adapter')->getExistingPhoneNumbers($account)));
     }
 
     /**
@@ -246,6 +240,8 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      * @Rest\Post("")
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -328,6 +324,8 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      * @param Request $request
      * @SerializerView(serializeNull=true)
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function putAction($id, Request $request)
@@ -355,10 +353,14 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      * @param TwilioVoiceAccount $account
      * @param string             $sid
      * @param Request            $request
+     *
+     * @return View
      */
     public function releaseAction(TwilioVoiceAccount $account, $sid, Request $request)
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupContext($request));
         $this->get('twilio_adapter')->releaseNumber($account, $sid);
+
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 }

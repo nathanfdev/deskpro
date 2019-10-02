@@ -81,11 +81,21 @@ class TaskRouterController extends BaseController
         $lastVoiceTaskTimestamp = $voiceSettings->getLastVoiceTaskTimestamp();
         $lastChatTaskTimestamp  = $voiceSettings->getLastChatTaskTimestamp();
 
-        return new View($this->wrap(new PendingTasksCount(
+        $pendingCounts = new PendingTasksCount(
             $this->get('dp.voice.task_router.storage')->getActiveTasks(),
             $lastVoiceTaskTimestamp ? new \DateTime('@'.$lastVoiceTaskTimestamp) : null,
             $lastChatTaskTimestamp ? new \DateTime('@'.$lastChatTaskTimestamp) : null
-        )));
+        );
+
+        $this->get('dp.voice.task_router.logger')->info(sprintf(
+            '[TaskRouter] Pending counts, num_pending_voice_tasks = %s, num_pending_chat_tasks = %s, last_pending_voice_task = %s, last_pending_chat_task = %s',
+            $pendingCounts->getNumPendingVoiceTasks(),
+            $pendingCounts->getNumPendingChatTasks(),
+            $pendingCounts->getLastPendingVoiceTask() ? $pendingCounts->getLastPendingVoiceTask()->format('c') : null,
+            $pendingCounts->getLastPendingChatTask() ? $pendingCounts->getLastPendingChatTask()->format('c') : null
+        ));
+
+        return new View($this->wrap($pendingCounts));
     }
 
     /**

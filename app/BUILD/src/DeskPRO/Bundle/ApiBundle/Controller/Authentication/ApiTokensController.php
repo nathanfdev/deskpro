@@ -62,7 +62,7 @@ class ApiTokensController extends BaseController
     public function newSessionTokenAction(Request $request)
     {
         $person = $this->getUser();
-        if (!$person) {
+        if (!$person || !$person->isAgent()) {
             $this->throwUnauthorized();
         }
 
@@ -136,7 +136,7 @@ class ApiTokensController extends BaseController
         }
 
         $person = $this->getManager()->getRepository(Person::class)->find($personId);
-        if (!$person) {
+        if (!$person || !$person->isAgent()) {
             $this->throwUnauthorized();
         }
 
@@ -348,6 +348,14 @@ class ApiTokensController extends BaseController
 
         $email  = $form->get('email')->getData();
         $target = $form->get('target')->getData();
+
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $person = $this->getManager()->getRepository(Person::class);
+        $person     = $personRepo->findOneByEmail($email);
+
+        if (!$person || !$person->isAgent()) {
+            $this->throwUnauthorized();
+        }
 
         // generate tmp token
         $tmpData = new TmpData();

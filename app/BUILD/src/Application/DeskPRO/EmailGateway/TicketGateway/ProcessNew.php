@@ -257,6 +257,14 @@ class ProcessNew extends ProcessAbstract
         $ticketMessage->setMessageHtml($emailInfo->body);
         $ticketMessage->withNewSubject  = $subject;
         $ticketMessage->creation_system = 'gateway.person';
+
+        // $this->ticketEmail->force_reply_cutter - true if processing some reply as a new ticket
+        // i.e. reply to resolved ticket that can't be reopened anymore
+        // initialize `message_full`, so user can view full message in case if it was cutted
+        if ($this->ticketEmail->force_reply_cutter) {
+            $ticketMessage->message_full = $emailInfo->body_full;
+        }
+
         if ($this->reader->isSigned() !== null) {
             $signed = new TicketMessageAttribute('signed');
             $signed->setValue($this->reader->isSigned());

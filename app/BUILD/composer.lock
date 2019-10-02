@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ac093254252238fae7ed9ed8e3810ab",
+    "content-hash": "26570795a16c43896c11223fa95be95f",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4855,16 +4855,16 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "7.0.0.2a",
+            "version": "7.0.0.3a",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ImmRanneft/mpdf.git",
-                "reference": "611690f581d405c1b47019e8d257a626c55fea53"
+                "reference": "a964070cbc34f80646ca88c2e06397158f53bebd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ImmRanneft/mpdf/zipball/611690f581d405c1b47019e8d257a626c55fea53",
-                "reference": "611690f581d405c1b47019e8d257a626c55fea53",
+                "url": "https://api.github.com/repos/ImmRanneft/mpdf/zipball/a964070cbc34f80646ca88c2e06397158f53bebd",
+                "reference": "a964070cbc34f80646ca88c2e06397158f53bebd",
                 "shasum": ""
             },
             "require": {
@@ -4895,10 +4895,7 @@
             "autoload": {
                 "psr-4": {
                     "Mpdf\\": "src/"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
+                }
             },
             "autoload-dev": {
                 "psr-4": {
@@ -4938,7 +4935,7 @@
                 "source": "https://github.com/mpdf/mpdf",
                 "docs": "http://mpdf.github.io"
             },
-            "time": "2017-10-03T13:15:39+00:00"
+            "time": "2019-09-25T11:34:29+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -6349,58 +6346,6 @@
             ],
             "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
-        },
-        {
-            "name": "plivo/php-sdk",
-            "version": "v4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/plivo/plivo-php.git",
-                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/plivo/plivo-php/zipball/0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
-                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0"
-            },
-            "require-dev": {
-                "justinrainbow/json-schema": "^5.2",
-                "phpunit/phpunit": "^4.8"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/",
-                    "tests/"
-                ],
-                "exclude-from-classmap": []
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Plivo SDKs Team",
-                    "email": "sdks@plivo.com",
-                    "homepage": "https://developers.plivo.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A PHP SDK to make voice calls & send SMS using Plivo and to generate Plivo XML",
-            "homepage": "http://github.com/plivo/plivo-php",
-            "keywords": [
-                "api",
-                "plivo",
-                "plivo xml",
-                "sms",
-                "voice calls"
-            ],
-            "time": "2018-07-05T12:35:52+00:00"
         },
         {
             "name": "predis/predis",
@@ -13305,6 +13250,58 @@
             "description": "CLI frontend for PHP_CodeCoverage",
             "homepage": "https://github.com/sebastianbergmann/phpcov",
             "time": "2015-10-05T09:24:23+00:00"
+        },
+        {
+            "name": "plivo/php-sdk",
+            "version": "v4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/plivo/plivo-php.git",
+                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/plivo/plivo-php/zipball/0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
+                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0"
+            },
+            "require-dev": {
+                "justinrainbow/json-schema": "^5.2",
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/",
+                    "tests/"
+                ],
+                "exclude-from-classmap": []
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Plivo SDKs Team",
+                    "email": "sdks@plivo.com",
+                    "homepage": "https://developers.plivo.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP SDK to make voice calls & send SMS using Plivo and to generate Plivo XML",
+            "homepage": "http://github.com/plivo/plivo-php",
+            "keywords": [
+                "api",
+                "plivo",
+                "plivo xml",
+                "sms",
+                "voice calls"
+            ],
+            "time": "2018-07-05T12:35:52+00:00"
         },
         {
             "name": "satooshi/php-coveralls",

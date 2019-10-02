@@ -1082,10 +1082,10 @@ class PlivoCallbacksController extends BaseController
         if (in_array($callStatus, ['busy', 'no-answer'])) {
             // in case the call was hanged up immediately
             // try to set user participant here as well before hanging up the phone call
-            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
+            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid, $details);
             $this->get('dp.voice.callbacks_helper')->callBusyByUser($callSid, $details);
         } elseif ($callStatus === 'in-progress') {
-            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
+            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid, $details);
             $this->get('dp.voice.callbacks_helper')->createTicketForOutgoingPhoneCall($callId);
 
             /** @var VoicePhoneCall $phoneCall */
@@ -1101,7 +1101,7 @@ class PlivoCallbacksController extends BaseController
         } elseif ($callStatus === 'completed') {
             // in case the call was hanged up immediately
             // try to set user participant here as well before hanging up the phone call
-            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
+            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid, $details);
             $this->get('dp.voice.callbacks_helper')->callHangupByUser($callSid, $details);
         }
 

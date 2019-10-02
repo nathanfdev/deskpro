@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Validator\Constraints as VoiceAssert;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,5 +49,13 @@ class TwilioVoiceAccount extends AbstractVoiceAccount
     public function getRouterPrefix()
     {
         return 'twilio';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManagedAccount()
+    {
+        return $this->accountId === VoiceSettingsResolver::TWILIO_PROXY_ACCOUNT_PLACEHOLDER;
     }
 }

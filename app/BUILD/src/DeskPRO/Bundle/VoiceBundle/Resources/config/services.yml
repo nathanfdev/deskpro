@@ -141,3 +141,8 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@blob.storage"
+
+  dp.voice.billing_summary:
+    class: DeskPRO\Bundle\VoiceBundle\Reports\BillingSummary
+    arguments:
+      - "@doctrine.orm.entity_manager"

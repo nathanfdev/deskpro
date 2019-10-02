@@ -1,17 +1,15 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
+/**
+ * Class GmailConfig
+ * @package Application\DeskPRO\Email\EmailAccount\OutgoingAccount
+ */
 class GmailConfig implements AccountConfigInterface
 {
     const TYPE_PASSWORD = 'password';
@@ -59,11 +57,13 @@ class GmailConfig implements AccountConfigInterface
     public function serializeJsonArray()
     {
         return [
-            'user'         => $this->user,
-            'password'     => $this->password,
-            'token'        => $this->token,
-            'refreshToken' => $this->refreshToken,
-            'type'         => $this->type,
+            'user'          => $this->user,
+            'password'      => $this->password,
+            'client_id'     => $this->clientId,
+            'client_secret' => $this->clientSecret,
+            'token'         => $this->token,
+            'refreshToken'  => $this->refreshToken,
+            'type'          => $this->type,
         ];
     }
 
@@ -88,6 +88,38 @@ class GmailConfig implements AccountConfigInterface
         return 'gmail';
     }
 
+    /**
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
+
+    /**
+     * @param string $clientId
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+    }
+
+    /**
+     * @param string $clientSecret
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
+    }
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################
@@ -95,6 +127,8 @@ class GmailConfig implements AccountConfigInterface
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('client_id', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('client_secret', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('token', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('refreshToken', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('type', new Constraints\Choice([

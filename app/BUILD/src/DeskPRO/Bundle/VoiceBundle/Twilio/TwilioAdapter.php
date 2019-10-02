@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\VoiceBundle\Exception\BlacklistException;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
+use DeskPRO\Bundle\VoiceBundle\Model\BillingSummary\ProviderBillingSummaryRecord;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioCountry;
@@ -667,6 +668,38 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * @param TwilioVoiceAccount $account
+     * @param \DateTime          $startDate
+     * @param \DateTime          $endDate
+     * @param array              $categories
+     *
+     * @return \Twilio\Rest\Api\V2010\Account\Usage\RecordInstance[]
+     */
+    public function getUsage(TwilioVoiceAccount $account, \DateTime $startDate, \DateTime $endDate, array $categories = [])
+    {
+        try {
+            $options = [
+                'startDate'          => $startDate,
+                'endDate'            => $endDate,
+                'includeSubaccounts' => false,
+            ];
+
+            $records = $this->getClient($account)->usage->records->read($options);
+            $result  = [];
+
+            foreach ($records as $record) {
+                if (($categories && in_array($record->category, $categories)) || !$categories) {
+                    $result[] = new ProviderBillingSummaryRecord($record);
+                }
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
      *
      * @throws \Twilio\Exceptions\ConfigurationException
      *
@@ -675,12 +708,15 @@ class TwilioAdapter implements VoiceProviderInterface
     protected function getClient(TwilioVoiceAccount $account)
     {
         $client = new ClientProxy($account->getAccountId(), $account->getAuthToken());
-        $client
-            ->setApiProxyUrl($this->voiceSettingsResolver->getTwilioProxyApiUrl())
-            ->setTaskRouterProxyUrl($this->voiceSettingsResolver->getTwilioProxyTaskRouterUrl())
-            ->setAccountsProxyUrl($this->voiceSettingsResolver->getTwilioProxyAccountsUrl())
-            ->setProxyPricingUrl($this->voiceSettingsResolver->getTwilioProxyPricingUrl())
-        ;
+        if ($account->isManagedAccount()) {
+            // only use proxy for managed accounts
+            $client
+                ->setApiProxyUrl($this->voiceSettingsResolver->getTwilioProxyApiUrl())
+                ->setTaskRouterProxyUrl($this->voiceSettingsResolver->getTwilioProxyTaskRouterUrl())
+                ->setAccountsProxyUrl($this->voiceSettingsResolver->getTwilioProxyAccountsUrl())
+                ->setProxyPricingUrl($this->voiceSettingsResolver->getTwilioProxyPricingUrl())
+            ;
+        }
 
         return $client;
     }

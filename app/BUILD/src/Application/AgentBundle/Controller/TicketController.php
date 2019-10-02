@@ -1252,7 +1252,7 @@ class TicketController extends AbstractController
                 if (!$removedCCs) {
                     $removedCCs = new TicketAttribute('removed_ccs');
                 }
-                $removedAddresses = json_decode($removedCCs->getValue());
+                $removedAddresses = json_decode($removedCCs->getValue(), true);
                 if (!$removedAddresses) {
                     $removedAddresses = [];
                 }
