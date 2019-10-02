@@ -63,6 +63,7 @@ class BrandFixture extends AbstractDpFixture implements OrderedFixtureInterface
 
     public function getDefaultThemeId()
     {
-        return $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', 'standard');
+        // For the first approach it should work only until we have ch1043 branch not merged
+        return $this->container->get('settings_resolver')->getGlobalSettings(true)->get('install.with_theme', 'help_center');
     }
 }
