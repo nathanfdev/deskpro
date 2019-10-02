@@ -9,7 +9,7 @@ define([
     static initClass() {
       this.CTRL_ID = 'Admin_CommunityForums_Ctrl_Edit';
       this.CTRL_AS = 'CommunityForumsEdit';
-      this.DEPS    = ['Api', 'Growl', 'CommunityForumsData', '$stateParams', '$modal'];
+      this.DEPS    = ['Api', 'Growl', 'CommunityForumsData', '$stateParams', '$modal', '$upload'];
     }
 
     init() {
@@ -94,6 +94,41 @@ define([
       });
 
       return promise;
+    }
+
+    openUnsplashModal() {
+      var event = new CustomEvent('dpLeftDrawer', {detail: {
+          module: 'SplashImage',
+          width: 0,
+          selectImage: this.selectSplashImage.bind(this),
+          style: {
+            zIndex: 22000
+          }
+        }});
+      window.parent.document.dispatchEvent(event);
+    }
+
+    selectSplashImage(image) {
+      this.Api2.sendPost(`community_forums/${this.community_forum.id}/splash_image`, { image: JSON.stringify(image) })
+        .then(
+          (response) => {
+            return this.community_forum.custom_splash_image = response.data.urls.thumb;
+          },
+          response => this.$scope.errors.splash_image = response.data.fields.file.errors[0].message);
+    }
+
+    uploadSplashImage(files) {
+      return this.$upload
+        .upload({ url: `${window.origin}${window.DP_BASE_URL}api/v2/community_forums/${this.community_forum.id}/splash_image_upload`, file: files[0] })
+        .then(
+          (response) => {
+            return this.community_forum.custom_splash_image = response.data.image;
+          },
+          response => this.$scope.errors.splash_image = response.data.fields.file.errors[0].message);
+    }
+
+    deleteSplashImage() {
+      this.Api2.sendDelete(`community_forums/${this.community_forum.id}/splash_image`).success(() => this.community_forum.custom_splash_image = null);
     }
   }
   Admin_CommunityForums_Ctrl_Edit.initClass();

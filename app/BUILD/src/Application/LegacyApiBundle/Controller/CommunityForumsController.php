@@ -59,7 +59,7 @@ class CommunityForumsController extends AbstractController implements ProtectedC
             throw $this->createNotFoundException();
         }
 
-        $returnedData               = $this->getApiData($communityForum);
+        $returnedData               = $this->getApiData($communityForum, true);
         $returnedData['usergroups'] = $communityForums->getNonAgentUserGroups($communityForum);
 
         return $this->createApiResponse(
@@ -120,7 +120,7 @@ class CommunityForumsController extends AbstractController implements ProtectedC
             throw $this->createNotFoundException();
         }
 
-        $move_to                   = $this->in->getUint('move_to');
+        $move_to                 = $this->in->getUint('move_to');
         $move_to_community_forum = $communityForums->getById($move_to);
 
         if (!$move_to_community_forum) {

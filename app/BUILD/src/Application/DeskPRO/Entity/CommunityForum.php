@@ -102,6 +102,7 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
 
     /**
      * @param string|null $description
+     *
      * @return CommunityForum
      */
     public function setDescription($description)
@@ -175,6 +176,13 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         $data = parent::toApiData($primary, $deep, $visited);
 
         $data['brand'] = $this->brand ? $this->brand->getId() : null;
+        if ($splashImage = $this->getSplashImage()) {
+            if ($splashImage->getUrnNs() === $splashImage::$unsplashNs) {
+                $data['custom_splash_image'] = $this->getSplashImage()->getOptions()['url'].'&w=200';
+            } elseif ($splashImage->getUrnNs() === $splashImage::$blobNs) {
+                $data['custom_splash_image'] = $this->getSplashImage()->getBlob()->getThumbnailUrl(200, true);
+            }
+        }
 
         return $data;
     }
@@ -209,6 +217,7 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
 
     /**
      * @param bool $is_voting_enabled
+     *
      * @return CommunityForum
      */
     public function setIsVotingEnabled($is_voting_enabled)
@@ -453,16 +462,17 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
         );
         $metadata->mapOneToMany(
             [
-                'fieldName'     => 'topic_fields',
-                'targetEntity'  => CommunityForumToCustomDefCommunityTopic::class,
-                'mappedBy'      => 'forum',
-                'orderBy'       => ['display_order' => 'ASC'],
+                'fieldName'    => 'topic_fields',
+                'targetEntity' => CommunityForumToCustomDefCommunityTopic::class,
+                'mappedBy'     => 'forum',
+                'orderBy'      => ['display_order' => 'ASC'],
             ]
         );
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'splash_image_property',
                 'targetEntity' => SplashImageProperty::class,
+                'fetch'        => ClassMetadataInfo::FETCH_EAGER,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
