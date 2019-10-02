@@ -21,7 +21,7 @@
         {% if alerts.tickets_awaiting_reply | length > 0 %}
             <div class="dp-po-notification">
                 <figure class="dp-po-notification-figure">
-                    <img class="dp-po-notification-image" src="https://deskpro.github.io/portal-components/portal-style/static/img/docs/notification.png">
+                    <img class="dp-po-notification-image" src="{{ asset('img/docs/notification.png', 'help_center') }}">
                     <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
                 </figure>
                 <h3 class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}

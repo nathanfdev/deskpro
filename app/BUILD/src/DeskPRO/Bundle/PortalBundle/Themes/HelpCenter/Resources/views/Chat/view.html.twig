@@ -6,7 +6,7 @@
        class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
        {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
     >
-    
+
       {% if attachment.is_image %}
         <img class="thumbnail" src="{{ attachment.download_url }}" />
       {% endif %}
@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block chat_message %}
-  
+
   <div class="dp-po-chat-log-item">
     <div class="dp-po-avatar dp-po-avatar-round">
       <img src="{{ avatar_url(message.author, 30) }}" />
@@ -53,12 +53,12 @@
         <div class="row mb-4">
           <div class="col-sm-9">
             <div class="dp-po-title">
-              <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/chats.svg">
+              <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
               <h2 class="dp-po-title-text">{{ phrase('portal.chat.log_title', { person: chat.agent.display_name_user }) }}</h2>
             </div>
             <div class="row align-items-center">
               <div class="col-sm-10">
-  
+
                 <div class="dp-po-post-info">
                   <ul class="dp-po-post-info-list">
                     {% set lastMessage = chat_messages|filter(m => m.author)|last %}
@@ -124,7 +124,7 @@
               {% endfor %}
             </div>
           </div>
-          
+
           <div class="col-sm-3">
             <div class="dp-po-post-meta">
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.assigned_agent' )}}</h3>
@@ -161,7 +161,7 @@
                 {% endif %}
               {% endfor %}
             </div>
-            
+
             {% if chat_attachments|length  > 0 %}
             <div class="dp-po-sidebar dp-po-chat-attachments">
               <h3 class="dp-po-sidebar-title">Files on this Chat</h3>

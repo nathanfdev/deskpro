@@ -11,7 +11,7 @@
       </div>
 
       <div class="dp-po-title">
-        <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/news.svg">
+        <img class="dp-po-title-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
         <h2 class="dp-po-title-text">{{ post.realTitle }}</h2>
       </div>
 
@@ -94,12 +94,12 @@
       labels: post.labels
     } %}
   {% endif %}
-  
+
   {% include 'Theme:PublishCommon:recent-items.html.twig' with {
     title: phrase('portal.news.recent-title'),
     items: helpcenter.getRecentNews({category: category}),
     viewAllPath: path('portal_news_browse', {slug: category.slug}),
     viewAllTitle: phrase('helpcenter.general.nav-news-desc-short')
   } %}
-  
+
 {% endblock page_sidebar %}

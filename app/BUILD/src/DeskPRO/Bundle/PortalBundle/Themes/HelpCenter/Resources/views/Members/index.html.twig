@@ -5,7 +5,7 @@
     <main class="dp-po-main dp-po-member-directory">
       <div class="container">
         <div class="dp-po-title">
-          <img class="dp-po-title-svg" src="https://deskpro.github.io/portal-components/portal-style/static/img/page-icons/direct-message.svg">
+          <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
           <h2 class="dp-po-title-text">{{ phrase('helpcenter.members.title') }}</h2>
         </div>
         <div class="dp-po-section dp-po-block">
@@ -51,7 +51,7 @@
               </div>#}
             </div>
           </div>
-          
+
           <div class="dp-po-table dp-po-table-col5 dp-po-table-member">
             <div class="dp-po-table-row dp-po-table-row-head">
               <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.name') }}
@@ -71,7 +71,7 @@
               <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.company') }}</span>
               {#<span class="dp-po-table-cell dp-po-table-cell-small"></span>#}
             </div>
-  
+
             {% for person in pager %}
               <div class="dp-po-table-row">
                   <span class="dp-po-table-cell dp-po-table-cell-large">
@@ -90,7 +90,7 @@
               </div>
             {% endfor %}
           </div>
-  
+
           {#<!-- Modal -->
           <div class="modal fade" id="messageMember" tabindex="-1" role="dialog" aria-labelledby="messageMember"
                aria-hidden="true">
@@ -123,7 +123,7 @@
           </div>#}
         </div>
         {% show members_pager %}
-      
+
       </div>
     </main>
   </div>
