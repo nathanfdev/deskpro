@@ -99,7 +99,7 @@ class PackagesFactory
 
         if (empty($this->asset_paths['help_center'])) {
             $this->asset_paths['help_center'] = PathMapInfo::create()
-                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/DeskPRO/PortalBundle/portal-style')
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/DeskPRO/Bundle/PortalBundle/portal-style')
                 ->setVersion(PathMapInfo::BUILD_VERSION)
             ;
         }
