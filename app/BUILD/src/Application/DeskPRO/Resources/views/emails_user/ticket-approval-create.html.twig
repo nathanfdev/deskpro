@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('agent.emails.agent_new_approval') }}: {{ approval.name }}</dp:subject>
+<dp:subject>{{ phrase('agent.emails.agent_new_approval') }} : {{ approval.name }} ({{ approval.id }}){% if approval.ticket.agent and ticket.person %} : {{ approval.ticket.agent }} {{ phrase('agent.emails.agent_for') }} {{ ticket.person }}{% endif %}</dp:subject>
 
 <h3 class="dp-approval-name">{{ approval.name }}</h3>
 

@@ -2785,6 +2785,7 @@ agent.emails.agent_assigned_team_tweet: '{{agent}} has assigned a tweet to your 
 agent.emails.agent_assigned_you_tweet: '{{agent}} has assigned a tweet to you'
 agent.emails.agent_completed_task_you_created: '{{agent}} has completed the task {{title}} that you created'
 agent.emails.agent_by: by
+agent.emails.agent_for: for
 agent.emails.agent_new_approval: 'New Approval'
 agent.emails.agent_approval_approved: 'Approved'
 agent.emails.agent_approval_rejected: 'Rejected'

@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('agent.emails.agent_approval_approved') }}: {{ approval.name }}</dp:subject>
+<dp:subject>{{ phrase('agent.emails.agent_approval_approved') }} : {{ approval.name }} ({{ approval.id }}){% if approval.created_by and ticket.person %} : {{ approval.created_by.display_name }} {{ phrase('agent.emails.agent_for') }} {{ ticket.person.display_name }}{% endif %}</dp:subject>
 
 <html>
 <head>
@@ -10,6 +10,8 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 <container>
+
+    <h3>{{ phrase('agent.emails.agent_approval_approved') }}</h3>
 
     <h3 class="dp-approval-name">{{ approval.name }}</h3>
 

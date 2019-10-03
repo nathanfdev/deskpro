@@ -1,4 +1,4 @@
-<dp:subject>{{ phrase('agent.emails.agent_new_approval') }}: {{ approval.name }}</dp:subject>
+<dp:subject>{{ phrase('agent.emails.agent_new_approval') }} : {{ approval.name }} ({{ approval.id }}){% if approval.created_by and ticket.person %} : {{ approval.created_by.display_name }} {{ phrase('agent.emails.agent_for') }} {{ ticket.person.display_name }}{% endif %}</dp:subject>
 
 <html>
 <head>
