@@ -2789,6 +2789,7 @@ agent.emails.agent_for: for
 agent.emails.agent_new_approval: 'New Approval'
 agent.emails.agent_approval_approved: 'Approved'
 agent.emails.agent_approval_rejected: 'Rejected'
+agent.emails.agent_approval_cancelled: 'Cancelled'
 agent.emails.agent_requesting_agent: 'Requesting agent'
 agent.emails.agent_requesting_user: 'User'
 agent.emails.agent_status: 'Status'
