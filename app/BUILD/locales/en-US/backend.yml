@@ -3287,6 +3287,7 @@ agent.general.hostname: Hostname
 agent.general.hour: Hour
 agent.general.hours: hours
 agent.general.html_source: 'HTML source'
+agent.general.icon: Icon
 agent.general.icq: ICQ
 agent.general.id: ID
 agent.general.inbox: Inbox
@@ -4415,6 +4416,7 @@ agent.publish.pending_approval_list_title:
 agent.publish.pending_articles: 'Pending Articles'
 agent.publish.pending_review_articles: 'Articles Awaiting Review'
 agent.publish.permalink_copy_prompt: 'The permalink to this download on the website is:'
+agent.publish.pick_icon: 'Pick Icon'
 agent.publish.please_choose_file: 'Please choose a file'
 agent.publish.please_enter_title: 'Please enter a title'
 agent.publish.please_enter_content: 'Please enter a content'
