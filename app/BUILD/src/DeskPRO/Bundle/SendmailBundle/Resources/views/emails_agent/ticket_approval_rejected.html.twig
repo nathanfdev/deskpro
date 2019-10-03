@@ -13,7 +13,7 @@
 
     <h3>{{ phrase('agent.emails.agent_approval_rejected') }}</h3>
 
-    <h3 class="dp-approval-name">{{ approval.name }}</h3>
+    <h3 class="dp-approval-name">{{ approval.name }} ({{ approval.id }})</h3>
 
     {% if approval.responses|length %}
         <table class="dp-approval-table">
