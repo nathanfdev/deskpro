@@ -28,6 +28,10 @@ class AddApproval extends AbstractContainerAwareAction implements ActionInterfac
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('approval_template_id', 'description');
 
+        $options->addCallbackCheckedOption('description', function ($v) {
+            return !empty($v);
+        });
+
         return $options;
     }
 

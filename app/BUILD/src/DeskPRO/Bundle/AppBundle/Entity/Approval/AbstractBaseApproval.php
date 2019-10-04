@@ -199,6 +199,11 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $approval->setActionsOnApproved($template->getActionsOnApproved());
         $approval->setActionsOnRejected($template->getActionsOnRejected());
 
+        // If the template has a description defined, always use it
+        if ($template->getDescription()) {
+            $approval->setDescription($template->getDescription());
+        }
+
         // If we cannot choose approvers in agent UI, then the users must come from selected approvers object
         if (!$template->canChooseApprovers()) {
             $selectedApprovers = $template->getSelectedApprovers();
