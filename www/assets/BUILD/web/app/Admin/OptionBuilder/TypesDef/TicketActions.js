@@ -652,13 +652,13 @@ define([
         this.loadDataPromise = this.$q.defer();
 
         const promises = [apiV1];
+
         promises.push(this.Api2.sendGet('/ticket_statuses'));
+        promises.push(this.Api2.sendGet('/approval_templates'));
 
         if (window.DP_HAS_NEW_EMAILS) {
           promises.push(this.Api2.sendGet('/email_templates/info'));
         }
-
-        promises.push(this.Api2.sendGet('/approval_templates'));
 
         this.$q.all(promises).then((result) => {
           let f;
@@ -702,22 +702,20 @@ define([
           // ApiV2 results
           options_data['ticket_statuses'] = result[1].data.data
 
+          options_data.approval_templates = result[2].data.data.map(template => {
+            return {
+              id: template.id,
+              name: template.name,
+              can_choose_approvers: template.can_choose_approvers,
+              description: template.description,
+              has_description: !! template.description.trim()
+            };
+          });
+
           if (window.DP_HAS_NEW_EMAILS) {
-            const v2data = result[2].data.data;
+            const v2data = result[3].data.data;
 
             options_data.new_custom_email_tpls = v2data.list.custom.groups.custom.subGroups.primary.templates;
-          }
-
-          if (typeof result[3] !== 'undefined') {
-            options_data.approval_templates = result[3].data.data.map(template => {
-              return {
-                id: template.id,
-                name: template.name,
-                can_choose_approvers: template.can_choose_approvers,
-                description: template.description,
-                has_description: !! template.description.trim()
-              };
-            });
           }
 
           this.options_data = options_data;
