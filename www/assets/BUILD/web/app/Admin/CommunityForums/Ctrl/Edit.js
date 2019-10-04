@@ -15,7 +15,30 @@ define([
     init() {
       this.community_forum = {};
       this.usergroups = [];
-      return this.selected_usergroups = {};
+      this.custom_fields = [];
+      this.selected_usergroups = {};
+      this.display_orders = {};
+
+      return this.sortedListOptions = {
+        axis:   'y',
+        handle: '.drag-handle',
+        update: (ev, data) => {
+          const $list = data.item.closest('div');
+          let x = 0;
+
+          const self = this;
+
+          $list.find('label').each(function () {
+            const field_id = parseInt($(this).data('id'));
+            if (field_id) {
+              self.display_orders[field_id] = x;
+            }
+            x += 10;
+          });
+
+          return this.Api2.sendPostJson(`/community_forums/${this.$stateParams.id}/custom_fields/display_orders`, { display_orders: this.display_orders });
+        }
+      };
     }
 
 
@@ -33,6 +56,12 @@ define([
           return Array.from(ids).map(id =>
             (this.selected_usergroups[id] = true));
         })
+        );
+        promises.push(this.Api2.sendGet(`/community_forums/${this.$stateParams.id}/custom_fields/`)
+          .then(
+            (result) => {
+              this.custom_fields = result.data.data;
+            })
         );
       }
 

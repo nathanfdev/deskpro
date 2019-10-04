@@ -39,6 +39,15 @@ class CommunityForum extends CategoryAbstract
     protected $usergroups;
 
     /**
+     * Custom fields per community.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\CustomDefCommunityTopic>>")
+     *
+     * @var Usergroup[]
+     */
+    protected $customFields;
+
+    /**
      * Constructor.
      *
      * @param CommunityForumEntity $entity
@@ -47,8 +56,9 @@ class CommunityForum extends CategoryAbstract
     {
         parent::__construct($entity);
 
-        $this->parent     = $entity->getParent();
-        $this->children   = $entity->getChildren();
-        $this->usergroups = $entity->getUserGroups();
+        $this->parent       = $entity->getParent();
+        $this->children     = $entity->getChildren();
+        $this->usergroups   = $entity->getUserGroups();
+        $this->customFields = $entity->getTopicFields();
     }
 }
