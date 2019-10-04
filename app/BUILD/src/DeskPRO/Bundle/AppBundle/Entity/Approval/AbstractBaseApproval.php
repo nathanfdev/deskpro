@@ -265,6 +265,12 @@ abstract class AbstractBaseApproval extends AbstractApproval
         $requiredApprovals = $this->getRequiredApprovals();
         $requiredRejections = $this->getRequiredRejections();
 
+        // If all voted and it's a tie, reject
+        if (($this->getApproversCount() === $this->getResponsesCount()) && ($this->getApprovedResponsesCount() === $this->getRejectedResponsesCount())) {
+            return self::STATUS_REJECTED;
+        }
+
+        // Prevent deadlock
         if ($this->getApproversCount() === $requiredApprovals && 0 === $requiredRejections) {
             $requiredRejections = 1;
         }
@@ -360,6 +366,14 @@ abstract class AbstractBaseApproval extends AbstractApproval
     public function getResponses()
     {
         return $this->responses;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResponsesCount()
+    {
+        return count($this->responses);
     }
 
     /**
