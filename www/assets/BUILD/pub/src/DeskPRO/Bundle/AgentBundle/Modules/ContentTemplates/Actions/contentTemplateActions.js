@@ -14,7 +14,7 @@ const setFormFields = contentTemplate => (page) => {
       if (name === 'newarticle[labels][]') {
         labels.push(value);
         $('.article-tags input').val(labels.join(','));
-      } else if (name === 'newarticle[content]') {
+      } else if (name === 'newarticle[content]' && page.rte.current) {
         page.rte.current.editor.current.reactEditor.current.editor.setContent(value);
       } else {
         const $el = $(page.form).find(`[name="${name}"]`);
