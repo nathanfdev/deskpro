@@ -382,7 +382,10 @@ export class SnippetsMenu extends React.Component {
 
   componentWillMount = () => {
     window.document.addEventListener('dpLeftDrawer', () => {
-      this.searchInput.focus();
+      if (this.searchInput) {
+        this.searchInput.focus();
+      }
+
       setTimeout(() => window.document.addEventListener('keydown', this.closeShortCut), 500);
       window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
     });
@@ -391,7 +394,11 @@ export class SnippetsMenu extends React.Component {
   };
 
   componentDidMount = () => {
-    setTimeout(() => this.searchInput.focus(), 500);
+    setTimeout(() => {
+      if (this.searchInput) {
+        this.searchInput.focus();
+      }
+    }, 500);
     this.updateWindowDimensions();
     window.addEventListener('resize', () => {
       if (!this.ticking) {

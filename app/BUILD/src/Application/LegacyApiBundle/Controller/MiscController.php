@@ -302,6 +302,10 @@ class MiscController extends AbstractController
     {
         $person = $this->person;
 
+        if (!$person || !$person->isAgent()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $token = $this->em->getRepository(ApiToken::class)->getTokenForPerson($person);
         if (!$token) {
             $token         = new \Application\DeskPRO\Entity\ApiToken();

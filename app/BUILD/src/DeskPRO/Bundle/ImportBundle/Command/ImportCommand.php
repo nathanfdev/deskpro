@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Command;
 
+use DeskPRO\Bundle\ImportBundle\Event\ProgressEvent;
+use DeskPRO\ImporterTools\AbstractImporter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -70,11 +72,27 @@ class ImportCommand extends AbstractImporterCommand
         }
 
         // run import
+        /** @var AbstractImporter $sourceScript */
         $sourceScript = $sourceResolver->getSourceScript($filename, $config);
-        $sourceScript->runImport();
 
-        $container->get('dp.importer.source.helper.progress')->finishImport();
-        $container->get('dp.importer.logger.job_progress')->flushLog();
-        $container->get('dp.importer.logger.storage_handler')->flushLog();
+        try {
+            $importedSteps   = $job ? $job->getDataKey('imported_steps', []) : [];
+            $importedOffsets = $job ? $job->getDataKey('import_offsets', []) : [];
+
+            $sourceScript->runImport(
+                $importedSteps,
+                $importedOffsets
+            );
+            $container->get('dp.importer.source.helper.progress')->finishImport();
+        } catch (\Exception $exception) {
+            $container
+                ->get('dp.importer.event_dispatcher')
+                ->dispatch(ProgressEvent::ERROR, new ProgressEvent(null, ['failed_step' => self::STEP_IMPORT]));
+
+            throw $exception;
+        } finally {
+            $container->get('dp.importer.logger.job_progress')->flushLog();
+            $container->get('dp.importer.logger.storage_handler')->flushLog();
+        }
     }
 }

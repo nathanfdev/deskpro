@@ -53,7 +53,7 @@
   pageMeta.person_id = {{ ticket.person.id }};
   pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
   pageMeta.person_name = {{ ticket.person.display_name|json_encode|raw }};
-  pageMeta.person_phone_numbers = [{{ ticket.person.phone_numbers|map(p => "\"#{p.number}\"")|join(', ')|raw }}];
+  pageMeta.person_phone_numbers = {{ ticket.person.phone_numbers|default([])|map(p => p.number)|json_encode|raw }};
 
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
@@ -307,7 +307,7 @@
                     'selected': ticket.department.id|default(0),
                     'id': baseId ~ '_department_id',
                     'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header" data-style-type="icons" data-select-icon-size="22"',
-                    'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
+                    'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign', ticket.brand)
                     } %}
 
                     <span id="{{ baseId }}_department_icon" class="avatar"
@@ -443,20 +443,20 @@
                                             <span id="{{ baseId }}_assign_me" class="assign-self-link-wrap"
                                                   style="{% if app.user.id == ticket.agent.id %}display:none;{% endif %}"
                                                   data-me="{{ app.user.id }}">
-								&middot;
-												<a class="assign-self-link">
-									{{ phrase('agent.general.assign_to_me') }}
-								</a>
-							</span>
+                                                &middot;
+                                                <a class="assign-self-link">
+                                                    {{ phrase('agent.general.assign_to_me') }}
+                                                </a>
+                                            </span>
                                         {% endif %}
                                         {% if ticket_perms.modify_assign_agent %}
                                             <span id="{{ baseId }}_unassign_agent" class="assign-self-link-wrap"
                                                   {% if not ticket.agent %}style="display: none;" {% endif %}>
-								&middot;
-												<a class="assign-self-link">
-									{{ phrase('agent.general.unassign') }}
-								</a>
-							</span>
+                                                &middot;
+                                                <a class="assign-self-link">
+                                                    {{ phrase('agent.general.unassign') }}
+                                                </a>
+                                            </span>
                                         {% endif %}
                                     </label>
                                     <select id="{{ baseId }}_agent_sel" class="dpe_select" data-style-type="icons"
@@ -494,23 +494,23 @@
                                                 <span id="{{ baseId }}_assign_team" class="assign-self-link-wrap"
                                                       style="{% if ticket.agent_team and app.user.agent.isTeamMember(ticket.agent_team.id) %}display: none;{% endif %}"
                                                       data-team="{{ app.user.agent.primaryTeam.id }}">
-								&middot;
-													<a class="assign-self-link">
-                                    {% if 1 == app.user.teams|length %}
-                                        {{ phrase('agent.general.assign_to_my_team') }}
-                                    {% else %}
-                                        {{ phrase('agent.general.assign_to_primary_team') }}
-                                    {% endif %}
-								</a>
-                            </span>
+                                                    &middot;
+                                                    <a class="assign-self-link">
+                                                        {% if 1 == app.user.teams|length %}
+                                                            {{ phrase('agent.general.assign_to_my_team') }}
+                                                        {% else %}
+                                                            {{ phrase('agent.general.assign_to_primary_team') }}
+                                                        {% endif %}
+                                                    </a>
+                                                </span>
                                             {% endif %}
                                             <span id="{{ baseId }}_unassign_team" class="assign-self-link-wrap"
                                                   style="{% if not ticket.agent_team  %}display: none;{% endif %}">
-							&middot;
-												<a class="assign-self-link">
-								{{ phrase('agent.general.unassign') }}
-                            </a>
-                        </span>
+                                                &middot;
+                                                <a class="assign-self-link">
+                                                    {{ phrase('agent.general.unassign') }}
+                                                </a>
+                                            </span>
                                         </label>
                                         <select id="{{ baseId }}_agent_team_sel" class="dpe_select"
                                                 data-select-nogrouptitle="1" data-style-type="icons"
@@ -637,10 +637,10 @@
                                 <tbody class="controls-row off ng-hide" ng-show="edit_fields.length">
                                     <tr>
                                         <td colspan="2" style="text-align: center; background: #eee;">
-								<span ng-hide="is_saving">
-									<button class="save clean-white" ng-click="saveFields()">{{ phrase('agent.general.save') }}</button>
-									<button class="cancel clean-white" ng-click="cancelEdit()">{{ phrase('agent.general.cancel') }}</button>
-								</span>
+                                            <span ng-hide="is_saving">
+                                                <button class="save clean-white" ng-click="saveFields()">{{ phrase('agent.general.save') }}</button>
+                                                <button class="cancel clean-white" ng-click="cancelEdit()">{{ phrase('agent.general.cancel') }}</button>
+                                            </span>
                                             <i ng-show="is_saving" class="spinner-flat"></i>
                                         </td>
                                     </tr>

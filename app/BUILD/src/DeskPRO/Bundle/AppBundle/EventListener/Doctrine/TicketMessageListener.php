@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -13,15 +12,8 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 class TicketMessageListener implements EventSubscriber
 {
     /**
-     * @var ArrayCollection
+     * {@inheritdoc}
      */
-    private $accounts = null;
-
-    /**
-     * @var array
-     */
-    private $collectionCache = [];
-
     public function getSubscribedEvents()
     {
         return [
@@ -29,6 +21,11 @@ class TicketMessageListener implements EventSubscriber
         ];
     }
 
+    /**
+     * @internal
+     *
+     * @param LifecycleEventArgs $args
+     */
     public function postLoad(LifecycleEventArgs $args)
     {
         $entity = $args->getEntity();
@@ -43,17 +40,25 @@ class TicketMessageListener implements EventSubscriber
         });
     }
 
+    /**
+     * @param TicketMessage $ticketMessage
+     * @param EntityManager $em
+     *
+     * @return array
+     */
     public function getRecipients(TicketMessage $ticketMessage, EntityManager $em)
     {
         if ($ticketMessage->isAgentNote()) {
             return [];
         }
+
         $recipients = [];
         $keyArray   = [];
         $attribute  = $ticketMessage->getAttribute('email_recipients');
         if (!$attribute) {
             return [];
         }
+
         $value = json_decode($attribute->getValue());
         if ($value) {
             foreach ($value as $recipient) {
@@ -63,8 +68,10 @@ class TicketMessageListener implements EventSubscriber
                 }
             }
         }
-        $recipients = array_filter($recipients, function ($recipient) use ($em) {
-            foreach ($em->getRepository(EmailAccount::class)->findAll() as $emailAccount) {
+
+        $emailAccounts = $em->getRepository(EmailAccount::class)->findAll();
+        $recipients    = array_filter($recipients, function ($recipient) use ($emailAccounts) {
+            foreach ($emailAccounts as $emailAccount) {
                 if ($recipient === $emailAccount->address) {
                     return false;
                 }
@@ -72,6 +79,7 @@ class TicketMessageListener implements EventSubscriber
 
             return true;
         });
+
         $ticket         = $ticketMessage->getTicket();
         $participants[] = $ticket->getPerson();
 
@@ -80,7 +88,8 @@ class TicketMessageListener implements EventSubscriber
                 $participants[] = $participant->getPerson();
             }
         }
-        // We won't display anything if there's only on recipient
+
+        // We won't display anything if there's only one recipient
         if (count($recipients) <= 0 && count($participants) <= 1) {
             return [];
         }
@@ -101,15 +110,25 @@ class TicketMessageListener implements EventSubscriber
             $present = false;
             if (!empty($result['cc'])) {
                 foreach ($result['cc'] as $cc) {
-                    if ($cc->getEmailAddress() === $recipient) {
+                    if ($cc instanceof Person && $cc->getEmailAddress() === $recipient) {
+                        $present = true;
+                        break 1;
+                    } elseif ($cc === $recipient) {
                         $present = true;
                         break 1;
                     }
                 }
             }
             if (!$present) {
-                $person         = $em->getRepository(Person::class)->findOneByEmail($recipient);
-                $result['cc'][] = $person ? $person : $recipient;
+                /** @var Person $person */
+                $person = $em->getRepository(Person::class)->findOneByEmail($recipient);
+                if ($person) {
+                    if (!$person->isAgent()) {
+                        $result['cc'][] = $person;
+                    }
+                } else {
+                    $result['cc'][] = $recipient;
+                }
             }
         }
 

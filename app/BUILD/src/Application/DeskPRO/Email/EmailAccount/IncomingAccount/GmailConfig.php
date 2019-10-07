@@ -1,17 +1,15 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
+/**
+ * Class GmailConfig
+ * @package Application\DeskPRO\Email\EmailAccount\IncomingAccount
+ */
 class GmailConfig implements AccountConfigInterface
 {
     const TYPE_POP3 = 'pop3';
@@ -86,6 +84,8 @@ class GmailConfig implements AccountConfigInterface
             'read_mailbox'    => $this->read_mailbox,
             'archive_mailbox' => $this->archive_mailbox,
             'type'            => $this->type,
+            'client_id'       => $this->clientId,
+            'client_secret'   => $this->clientSecret,
             'token'           => $this->token,
             'refreshToken'    => $this->refreshToken,
         ];
@@ -113,13 +113,45 @@ class GmailConfig implements AccountConfigInterface
     }
 
     /**
-     * Get Ggmail protocol type
+     * Get Gmail protocol type
      *
      * @return string
      */
     public function getProtocolType()
     {
         return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
+
+    /**
+     * @param string $clientId
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+    }
+
+    /**
+     * @param string $clientSecret
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
     }
 
     //###########################################################################
@@ -129,6 +161,8 @@ class GmailConfig implements AccountConfigInterface
     public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
         $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('client_id', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('client_secret', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('token', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('refreshToken', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('mode', new Constraints\Choice([

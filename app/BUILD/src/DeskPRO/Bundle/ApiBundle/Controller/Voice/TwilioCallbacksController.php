@@ -1446,7 +1446,9 @@ class TwilioCallbacksController extends BaseController
     private function phoneNumberAgentOutgoingCallback(TwilioVoiceAccount $account, Request $request)
     {
         /** @var VoicePhoneCall $phoneCall */
-        $callId    = $request->query->get('CallId');
+        $callId  = $request->query->get('CallId');
+        $details = $request->query->all();
+
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
         if (!$phoneCall) {
             throw $this->createBadRequestException('Phone call not found');
@@ -1456,7 +1458,7 @@ class TwilioCallbacksController extends BaseController
             $callId,
             $request->query->get('CallSid'),
             $request->query->get('AgentId'),
-            $request->query->all()
+            $details
         );
 
         $twiml = new Twiml();
@@ -1475,7 +1477,7 @@ class TwilioCallbacksController extends BaseController
         );
 
         if ($callUuid) {
-            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callUuid);
+            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callUuid, $details);
 
             // create and join a new conference
             $twiml->enqueue($phoneCall->getQueueName(), [

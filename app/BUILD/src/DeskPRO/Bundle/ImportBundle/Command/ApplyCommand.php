@@ -168,8 +168,13 @@ class ApplyCommand extends AbstractImporterCommand
             $ticketRepository->fillSearchTable();
         }
 
-        $dispatcher->dispatch(ProgressEvent::FINISH, new ProgressEvent());
-        $output->writeln('<info>Done all.</info>');
+        $job = $this->getJob($input);
+        if ($job && $job->getDataKey('failed_step') === null) {
+            $dispatcher->dispatch(ProgressEvent::FINISH, new ProgressEvent());
+            $output->writeln('<info>Done all.</info>');
+        } else {
+            $output->writeln('<error>Finished with errors.</error>');
+        }
 
         return 0;
     }
@@ -192,21 +197,18 @@ class ApplyCommand extends AbstractImporterCommand
         try {
             $batchConfig = $importer->readBatchConfig();
             $pointer     = $importer->getBatchPointer($batchConfig);
-            if (!$pointer) {
-                return 0;
+
+            if ($pointer) {
+                $dispatcher->dispatch(ProgressEvent::PRE_BATCH_APPLY, new ProgressEvent($pointer->getModelClass()));
+                $data = $importer->getImportData($pointer);
+                $importer->writeData($data, $input->getOption('brand'));
+                $dispatcher->dispatch(ProgressEvent::POST_BATCH_APPLY, new ProgressEvent($pointer->getModelClass(), [
+                    'count' => count($data),
+                ]));
+
+                $output->writeln('');
+                $output->writeln('Done. Import was successful.');
             }
-
-            $dispatcher->dispatch(ProgressEvent::PRE_BATCH_APPLY, new ProgressEvent($pointer->getModelClass()));
-            $data = $importer->getImportData($pointer);
-            $importer->writeData($data, $input->getOption('brand'));
-            $dispatcher->dispatch(ProgressEvent::POST_BATCH_APPLY, new ProgressEvent($pointer->getModelClass(), [
-                'count' => count($data),
-            ]));
-
-            $output->writeln('');
-            $output->writeln('Done. Import was successful.');
-
-            return 0;
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e, true);
             $output->writeln($e->getMessage());
@@ -215,8 +217,10 @@ class ApplyCommand extends AbstractImporterCommand
                 $logger->critical($e);
             }
 
-            // mark batch as successful even an error has occurred
-            return 0;
+            $dispatcher->dispatch(
+                ProgressEvent::ERROR,
+                new ProgressEvent(null, ['failed_step'  => self::STEP_APPLY])
+            );
         } finally {
             if (isset($batchConfig) && isset($pointer)) {
                 // update batch config even there was an error to skip broken batches
@@ -225,6 +229,9 @@ class ApplyCommand extends AbstractImporterCommand
 
             $container->get('dp.importer.logger.job_progress')->flushLog();
             $container->get('dp.importer.logger.storage_handler')->flushLog();
+
+            // mark batch as successful even an error has occurred
+            return 0;
         }
     }
 }

@@ -15,13 +15,14 @@ define(function() {
     getUserInfo() {
       if (this.promise) { return this.promise; }
 
-      const d = this.$q.deferred();
+      const d = this.$q.defer();
+      const self = this;
 
       if (this.userInfo) {
         d.resolve(this.userInfo);
       } else {
         this.loadData().then(function () {
-          return d.resolve(this.userInfo);
+          return d.resolve(self.userInfo);
         }
         , (data, status) => d.reject(data, status));
       }
@@ -33,12 +34,13 @@ define(function() {
       if (this.promise) { return this.promise; }
 
       const d = this.$q.defer();
+      const self = this;
 
       if (this.userPerms) {
         d.resolve(this.userPerms);
       } else {
         this.loadData().then(function () {
-          return d.resolve(this.userPerms);
+          return d.resolve(self.userPerms);
         }
         , (data, status) => d.reject(data, status));
       }
@@ -47,11 +49,14 @@ define(function() {
     }
 
     loadData() {
-      if (this.httpPromise) { return this.httpPromise; }
+      if (this.httpPromise) {
+        return this.httpPromise;
+      }
 
+      const self = this;
       this.httpPromise = this.$http.get('DP_URL/agent/me/info.js').success(function (data) {
-        this.userInfo  = data.agent;
-        return this.userPerms = data.perms;
+        self.userInfo = data.agent;
+        self.userPerms = data.perms;
       });
 
       return this.httpPromise;

@@ -3,9 +3,9 @@
 namespace DeskPRO\Bundle\ImportBundle\Model;
 
 /**
- * Class BatcnPointer.
+ * Class BatchPointer.
  */
-class BatcnPointer
+class BatchPointer
 {
     /**
      * @var string

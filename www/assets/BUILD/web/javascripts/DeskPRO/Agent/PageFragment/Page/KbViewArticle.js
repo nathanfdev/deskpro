@@ -957,6 +957,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this.editStateSaver.destroy();
 		}
 
+    var wrap = this.wrapper;
+
     if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
       this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
         stateId: 'editarticle.' + this.article_id,
@@ -976,8 +978,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
 			page: this
 		});
-
-		var wrap = this.wrapper;
 
 		this.getEl('save_btn').off('click').on('click', (function(ev) {
 			ev.preventDefault();

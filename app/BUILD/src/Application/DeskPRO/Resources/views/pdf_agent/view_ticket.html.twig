@@ -70,8 +70,9 @@
     {{ _self.row('ref', phrase('agent.general.ticket_ref'), ticket.ref) }}
     {% if brands|length > 1 %}{{ _self.row('brand', phrase('agent.general.brand'), ticket.brand.name) }}{% endif %}
     {{ _self.row('urgency', phrase('agent.general.urgency'), ticket.urgency) }}
-    {{ _self.row('status', phrase('agent.general.status'), ticket.ticketStatus.displayTitle) }}
+    {{ _self.row('status', phrase('agent.general.status'), display_ticket_status(ticket)) | convert_encoding('UTF-8', 'HTML-ENTITIES') | raw }}
     {{ _self.row('department', phrase('agent.general.department'), ticket.department.title) }}
+    {{ _self.row('language', phrase('agent.general.language'), ticket.language.title) }}
 
     {% if ticket_flagged %}
         {% set rowVal %}
@@ -127,9 +128,31 @@
     {% if ticket.product %}{{ _self.row('product', phrase('agent.general.product'), ticket.product.title ) }}{% endif %}
     {% if ticket.workflow %}{{ _self.row('workflow', phrase('agent.general.workflow'), ticket.product.workflow ) }}{% endif %}
 
+    {% if ticket.problems|length %}
+        {% set problem %}
+            <ul>
+                {% for problem in ticket.problems %}
+                    {% set transKey = problem.is_open ? 'open' : 'close' %}
+                    <li>{{ problem.title }} ({{ phrase('agent.general.' ~ transKey)}})</li>
+                {% endfor %}
+            </ul>
+        {% endset %}
+        {{ _self.row('problems', phrase('adm.agents.perm_title_problems'), problem, true) }}
+    {% endif %}
+
     {% for f in custom_fields if layout.has('ticket_' ~ f.name) %}
         {% set aliases %}{% for a in f.field_def.getAliases() %}ticket-prop-field-{{ a.getQualifiedName() }}{% endfor %}{% endset %}
         {{ _self.row('field ' ~ aliases, f.title, render_custom_field(f), true) }}
+    {% endfor %}
+
+    {% for f in custom_person_fields if layout.has('user_' ~ f.name) %}
+        {% set aliases %}{% for a in f.field_def.getAliases() %}ticket-person-field-{{ a.getQualifiedName() }}{% endfor %}{% endset %}
+        {{ _self.row('user ' ~ aliases, f.title, render_custom_field(f), true) }}
+    {% endfor %}
+
+    {% for f in custom_org_fields if layout.has('org_' ~ f.name) %}
+        {% set aliases %}{% for a in f.field_def.getAliases() %}ticket-org-field-{{ a.getQualifiedName() }}{% endfor %}{% endset %}
+        {{ _self.row('org ' ~ aliases, f.title, render_custom_field(f), true) }}
     {% endfor %}
 
 </div>

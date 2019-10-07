@@ -971,6 +971,37 @@ var RLANG = {
 				{
 					return this.safariShiftKeyEnter(e, key);
 				}
+
+        // Bug in Chrome on Win/Linux that shift page to side when press PageUp/PageDown on textarea.
+        // Prevent PageUp/PageDown and simulate Home/End against them.
+        // Uncomment conditions if want to use fix only form depended OS/Browser.
+        if (
+          // navigator.userAgent.indexOf('Chrome') !== -1 &&
+          // (navigator.userAgent.indexOf('Win') !== -1 || navigator.userAgent.indexOf("Linux") !== -1) &&
+          (key === 33 || key === 34) // PageUp, PageDown
+        ) {
+          e.preventDefault();
+
+          var editorNode = this.$editor.get(0);
+          var selection = this.document.getSelection
+            ? this.document.getSelection()
+            : this.document.selection;
+
+          if (key === 33) {
+            // Move caret to the start of text
+            selection.collapse(editorNode, 0);
+          }
+
+          if (key === 34) {
+            // Move caret to the end of text
+            var range = new Range();
+            range.setEndAfter(editorNode.lastChild);
+
+            selection.removeAllRanges();
+            selection.addRange(range);
+            selection.collapseToEnd();
+          }
+        }
 			}, this));
 		},
 		build: function(mobile, whendone)
@@ -2291,9 +2322,25 @@ var RLANG = {
 				}
 				else
 				{
-					var top = this.$toolbar.offset().top + 30;
-					$(dropdown).css({ position: 'absolute', left: left + 'px', top: top + 'px' }).show();
-				}
+          var toolbarOffsetTop = this.$toolbar.offset().top;
+          var top = toolbarOffsetTop + 30;
+          dropdown.css({
+            position: 'absolute',
+            visibility: 'hidden',
+            display: 'block',
+            left: left + 'px',
+            top: top + 'px',
+          });
+          var boundingRect = dropdown[0].getBoundingClientRect();
+
+          if (boundingRect.bottom > window.innerHeight) {
+            dropdown.css({
+              top: (toolbarOffsetTop - boundingRect.height) + 'px',
+            });
+          }
+
+          dropdown.css({ visibility: 'visible' }).show();
+        }
 			}
 
 			var hdlHideDropDown = $.proxy(function(e) { this.hideDropDown(e, dropdown, key); }, this);
@@ -2826,34 +2873,46 @@ var RLANG = {
 				markerSpan.parentNode.removeChild(markerSpan);
 			}
 		},
-		getSelectedHtml: function()
-		{
-			var html = '';
-			if (this.window.getSelection)
-			{
-				var sel = this.window.getSelection();
-				if (sel.rangeCount)
-				{
-					var container = this.document.createElement("div");
-					for (var i = 0, len = sel.rangeCount; i < len; ++i)
-					{
-						container.appendChild(sel.getRangeAt(i).cloneContents());
-					}
+    getSelectedHtml: function () {
+      var html = '';
+      var wrappers = ['u', 'b', 'i', 'span', 'pre', 'blockquote', 'p'];
+      for (var i = 1; i < 5; i++) {
+        wrappers.push('h' + i);
+      }
 
-					html = container.innerHTML;
+      if (this.window.getSelection) {
+        var sel = this.window.getSelection();
+        var selString = sel.toString();
+        var selParent = $(":contains('" + selString + "')")
+          .filter(function () {
+            var $el = $(this);
+            return $el.parents().hasClass('redactor_editor') && $el.is(wrappers.join(', ')) && this.innerText === selString;
+          })
+          .first();
 
-				}
-			}
-			else if (this.document.selection)
-			{
-				if (this.document.selection.type === "Text")
-				{
-					html = this.document.selection.createRange().htmlText;
-				}
-			}
+        if (sel.rangeCount) {
+          if (selParent.length) {
+            sel.removeAllRanges();
+            var range = this.document.createRange();
+            range.selectNode(selParent[0]);
+            sel.addRange(range);
+          }
 
-			return html;
-		},
+          var container = this.document.createElement("div");
+          for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+            container.appendChild(sel.getRangeAt(i).cloneContents());
+          }
+
+          html = container.innerHTML;
+        }
+      } else if (this.document.selection) {
+        if (this.document.selection.type === "Text") {
+          html = this.document.selection.createRange().htmlText;
+        }
+      }
+
+      return html;
+    },
 
 		// RESIZE IMAGES
 		resizeImage: function(resize)

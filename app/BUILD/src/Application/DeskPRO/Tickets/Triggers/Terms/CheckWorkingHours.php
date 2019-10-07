@@ -11,6 +11,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\OptionsArray;
@@ -50,7 +51,11 @@ class CheckWorkingHours extends AbstractTriggerTerm
             //todo refactor terms so they can get passed a container
             $working_hours = App::getSetting('core_tickets.work_hours');
             if ($working_hours && !is_array($working_hours)) {
-                $working_hours = @unserialize($working_hours);
+                try {
+                    $working_hours = UnserializeUtil::unserializeArray($working_hours);
+                } catch (\Exception $e) {
+                    $working_hours = [];
+                }
             }
         } else {
             $context->getLogger()->debug('[CheckWorkingHours] Custom hours');

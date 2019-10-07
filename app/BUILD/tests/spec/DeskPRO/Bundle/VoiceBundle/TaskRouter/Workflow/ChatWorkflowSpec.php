@@ -19,6 +19,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsLoader;
 use PhpSpec\ObjectBehavior;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ChatWorkflowSpec.
@@ -32,13 +33,16 @@ class ChatWorkflowSpec extends ObjectBehavior
         ChatSettingsResolver       $settingsResolver,
         StorageAdapterInterface    $storage,
         UserChatQueueTargetsLoader $targetsLoader,
-        UserChatPermissionsChecker $permissionsChecker
+        UserChatPermissionsChecker $permissionsChecker,
+        LoggerInterface            $logger
     ) {
-        $this->beConstructedWith($taskHelper, $settingsResolver, $storage, $targetsLoader, $permissionsChecker);
+        $this->beConstructedWith($taskHelper, $settingsResolver, $storage, $targetsLoader, $permissionsChecker, $logger);
     }
 
     public function it_returns_empty_list_of_workers(Task $task, PersonRepo $personRepo, StorageAdapterInterface $storage)
     {
+        $task->getId()->willReturn(1);
+
         $storage->getOnlineWorkersByType('agent')->willReturn([]);
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([]);
 
@@ -53,6 +57,9 @@ class ChatWorkflowSpec extends ObjectBehavior
         StorageAdapterInterface $storage,
         UserChatQueueTargetsLoader $targetsLoader
     ) {
+        $task->getId()->willReturn(1);
+        $task->getRejectedBy()->willReturn([]);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -83,6 +90,9 @@ class ChatWorkflowSpec extends ObjectBehavior
         StorageAdapterInterface $storage,
         UserChatQueueTargetsLoader $targetsLoader
     ) {
+        $task->getId()->willReturn(1);
+        $task->getRejectedBy()->willReturn([]);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -113,6 +123,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         StorageAdapterInterface $storage,
         UserChatQueueTargetsLoader $targetsLoader
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -238,6 +250,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -294,6 +308,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -355,6 +371,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -481,6 +499,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -488,10 +508,13 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $target1->getSort()->willReturn(10);
         $target1->getAgent()->willReturn($agent1);
+        $target1->toArray()->willReturn(['type' => 'agent', 'id' => 1]);
         $target2->getSort()->willReturn(20);
         $target2->getAgent()->willReturn($agent2);
+        $target2->toArray()->willReturn(['type' => 'agent', 'id' => 2]);
         $target3->getSort()->willReturn(30);
         $target3->getAgent()->willReturn($agent3);
+        $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
 
         $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
 
@@ -536,12 +559,17 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $target1->getSort()->willReturn(10);
         $target1->getAgent()->willReturn($agent1);
+        $target1->toArray()->willReturn(['type' => 'agent', 'id' => 1]);
         $target2->getSort()->willReturn(20);
         $target2->getAgent()->willReturn($agent2);
+        $target2->toArray()->willReturn(['type' => 'agent', 'id' => 2]);
         $target3->getSort()->willReturn(30);
         $target3->getAgent()->willReturn($agent3);
+        $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
 
         $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
 
@@ -585,6 +613,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -638,6 +668,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -704,6 +736,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueTargetsLoader $targetsLoader,
         UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);

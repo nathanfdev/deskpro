@@ -233,6 +233,48 @@ class SlaProcessor
                 $this->executeSlaActions($ticket_sla->ticket, $ticket_sla->sla, 'fail', $context);
                 $tm->saveTicket($ticket_sla->ticket, $context);
             }
+
+            if (!$ticket_sla->is_completed) {
+
+                // Below code might be executed for really old records
+                // Wrap in try/catch to avoid stuck on exceptions
+                try {
+                    $context        = $context_factory($ticket_sla->ticket, $ticket_sla->sla, $ticket_sla, $ticket_sla->sla_status);
+                    $completed_date = $ticket_sla->sla->getCalculator()->calculateCompletedDate($ticket_sla->ticket);
+
+                    if (!$completed_date && $ticket_sla->sla_status !== TicketSla::STATUS_FAIL) {
+                        // We select this TicketSla as passed threshold - means fail date in the past
+                        // But still this sla formally considered as not failed
+                        // - means ticket was resolved/asnwered/etc.. before SLA fail date.
+                        // - but somehow TicketSla was not marked as completed and still can't calucate complete date
+                        // = mark it as completed to not stuck on it in cron job
+                        $context->getLogger()->warning(sprintf(
+                            '[SlaProcessor] TicketSLA#%d passed threshold but not failed and not completed. Cron may stuck on this entity. Mark complete.',
+                            $ticket_sla->id
+                        ));
+                        $completed_date = new \DateTime('now');
+                    }
+
+                    if ($completed_date) {
+                        if ($ticket_sla->sla_status !== TicketSla::STATUS_FAIL) {
+                            ++$count;
+                        }
+
+                        $ticket_sla->setIsCompleted(true, $completed_date);
+                        $this->em->persist($ticket_sla);
+                        $this->em->flush();
+
+                        $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- is_complete: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, true));
+                        $ticket_sla->ticket->getStateChangeRecorder()->recordChange(new ChangeSimple(
+                            'ticket_sla_complete',
+                            ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => false],
+                            ['ticket_sla' => $ticket_sla, 'sla' => $ticket_sla->sla, 'complete' => $ticket_sla->is_completed]
+                        ));
+                    }
+                } catch (\Exception $e) {
+                    SystemErrorHandler::logException($e);
+                }
+            }
         }
 
         return $count;

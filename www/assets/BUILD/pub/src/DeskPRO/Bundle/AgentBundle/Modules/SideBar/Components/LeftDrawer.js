@@ -5,6 +5,8 @@ import { SnippetsMenuContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippe
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import SearchContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Search/Components/SearchContainer';
 import UnsplashImageModal from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/UnsplashImageBrowser/UnsplashImageModal';
+import UseContentTemplatesModal from '../../ContentTemplates/Components/UseContentTemplatesModal';
+import ManageContentTemplatesModal from '../../ContentTemplates/Components/ManageContentTemplatesModal';
 
 export class LeftDrawerContainer extends SeparateComponent {
   static getType() {
@@ -61,6 +63,23 @@ export class LeftDrawerContainer extends SeparateComponent {
             closeModal:  this.closeDrawer,
             selectImage: e.detail.selectImage,
           };
+          break;
+        }
+        case 'UseContentTemplates': {
+          module = UseContentTemplatesModal;
+          props = {
+            closeMenu: this.closeDrawer,
+            type:      'article'
+          };
+          this.resize();
+          break;
+        }
+        case 'ManageContentTemplates': {
+          module = ManageContentTemplatesModal;
+          props = {
+            closeMenu: this.closeDrawer,
+          };
+          this.resize();
           break;
         }
         default:

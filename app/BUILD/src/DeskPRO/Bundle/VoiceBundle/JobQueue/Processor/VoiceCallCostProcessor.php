@@ -45,6 +45,10 @@ class VoiceCallCostProcessor extends AbstractJobProcessor
             if (!$participant) {
                 return;
             }
+            if ($participant->getCost()) {
+                // already loaded, skipping
+                return;
+            }
 
             $phoneCall = $participant->getPhoneCall();
             $phoneCall->addCost($data['cost']);

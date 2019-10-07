@@ -224,11 +224,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					}, 60);
 				}
 			};
-			ed.on('paste', function(ev) {
+			ed.on('paste change', function() {
 				heightUp();
 			});
-			ed.on('keypress change', function() {
-				heightUp();
+			ed.on('keypress', function(e) {
+			  if(!(e.which === 13 && (e.ctrlKey || e.metaKey))) {
+          heightUp();
+        }
 			});
 
 			this._initAgentNotifier(textarea);

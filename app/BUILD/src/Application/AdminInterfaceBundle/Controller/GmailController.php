@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AdminInterfaceBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
@@ -11,6 +7,10 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\OAuthExcepti
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class GmailController
+ * @package Application\AdminInterfaceBundle\Controller
+ */
 class GmailController extends AbstractController
 {
     /**
@@ -20,12 +20,8 @@ class GmailController extends AbstractController
      */
     public function requestAccessCodeAction(Request $request)
     {
-        if (!$id = $this->settings->get('core_email.google_oauth_client_id')) {
-            throw new \RuntimeException('Google OAuth client ID not found');
-        }
-        if (!$secret = $this->settings->get('core_email.google_oauth_secret')) {
-            throw new \RuntimeException('Google OAuth client secret not found');
-        }
+        $id     = $request->get('client_id', $this->settings->get('core_email.google_oauth_client_id'));
+        $secret = $request->get('client_secret', $this->settings->get('core_email.google_oauth_secret'));
 
         $client = new \Google_Client();
         $client->setClientId($id);
@@ -51,13 +47,9 @@ class GmailController extends AbstractController
      */
     public function requestAccessTokenAction(Request $request)
     {
-        if (!$id = $this->settings->get('core_email.google_oauth_client_id')) {
-            throw new \RuntimeException('Google OAuth client ID not found');
-        }
-        if (!$secret = $this->settings->get('core_email.google_oauth_secret')) {
-            throw new \RuntimeException('Google OAuth client secret not found');
-        }
-        $code = $request->get('code');
+        $id     = $request->get('client_id', $this->settings->get('core_email.google_oauth_client_id'));
+        $secret = $request->get('client_secret', $this->settings->get('core_email.google_oauth_secret'));
+        $code   = $request->get('code');
 
         $client = new \Google_Client();
         $client->setClientId($id);

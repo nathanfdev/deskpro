@@ -26,6 +26,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		});
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
+    $('button.submit-template-trigger', this.wrapper).on('click', this.submitTemplate.bind(this));
+    $('button.submit-template-update-trigger', this.wrapper).on('click', this.submitTemplateUpdate.bind(this));
 
     if (window.DP_HAS_NEW_CONTENT_EDITOR) {
       this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
@@ -136,22 +138,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	submit: function() {
-		var formData = this.form.serializeArray();
-
-		if (this.labelsInput) {
-			formData.push(this.labelsInput.getFormData());
-		}
-
-		if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte) {
-		  formData.push({
-		    name:  "newarticle[content]",
-		    value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
-		  });
-		  formData.push({
-		    name:  "newarticle[content_input]",
-		    value: this.rte.current.editor.current.reactEditor.current.editor.getJSON()
-		  });
-		}
+		var formData = this.collectFormData();
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
@@ -199,7 +186,101 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		});
 	},
 
-	showErrorCode: function(code) {
+  submitTemplate: function() {
+    var overlayEl = $('.newarticle-template-overlay', this.wrapper);
+    var triggerEl = $('.submit-template-trigger', this.wrapper);
+	  var formData = this.collectFormData();
+	  if(!this.overlay) {
+      this.overlay = new DeskPRO.UI.Overlay({
+        triggerElement: triggerEl,
+        contentElement: overlayEl,
+        zIndex: 1900
+      });
+      $('.submit-template-trigger', overlayEl).on('click', function() {
+        var data = {
+          "type": "article",
+          "template": formData,
+          "title": $('input[name=title]', overlayEl).val()
+        };
+        $('.is-loading', overlayEl).show();
+        $('.is-not-loading', overlayEl).hide();
+        $.ajax({
+          url:  DP_BASE_API_URL + "/v2/content_templates",
+          type: 'POST',
+          data: data,
+          dataType: 'json',
+          success: function() {
+            $('.is-not-loading', overlayEl).show();
+            $('.success', overlayEl).show();
+            $('.is-loading', overlayEl).hide();
+
+            if (window.ManageContentTemplatesModal) {
+              window.ManageContentTemplatesModal.reloadTemplates();
+            }
+          },
+          error: function() {
+            $('.is-not-loading', overlayEl).show();
+            $('.is-loading', overlayEl).hide();
+          }
+        });
+      });
+    }
+    this.overlay.open();
+  },
+
+  submitTemplateUpdate: function() {
+    var formData = this.collectFormData();
+    var data = {
+      "template": formData
+    };
+
+    $('div.error.section', this.wrapper).removeClass('error');
+    $('.error-message-on', this.wrapper).removeClass('error-message-on');
+
+    this.stateSaver.stop();
+    this.stateSaver.resetState();
+    this.wrapper.addClass('loading');
+
+    var self = this;
+    var wrapper = this.wrapper;
+
+    $.ajax({
+      url:  DP_BASE_API_URL + "/v2/content_templates/"+this.meta.contentTemplateId,
+      type: 'PUT',
+      data: data,
+      dataType: 'json',
+      complete: function() {
+        wrapper.removeClass('loading');
+        if (window.ManageContentTemplatesModal) {
+          window.ManageContentTemplatesModal.reloadTemplates();
+        }
+
+        self.closeSelf();
+      }
+    });
+  },
+
+  collectFormData: function() {
+    var formData = this.form.serializeArray();
+
+    if (this.labelsInput) {
+      formData.push(this.labelsInput.getFormData());
+    }
+
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte) {
+      formData.push({
+        name:  "newarticle[content]",
+        value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
+      });
+      formData.push({
+        name:  "newarticle[content_input]",
+        value: this.rte.current.editor.current.reactEditor.current.editor.getJSON()
+      });
+    }
+    return formData;
+  },
+
+  showErrorCode: function(code) {
 		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
 	},
 
