@@ -38,6 +38,6 @@ class SplashImageRenderer
     {
         $url = $this->getSplashUrl($splashImage, $width, $orientation);
 
-        return '<div class="dp-po-splash-image" style="background-image: url('.$url.'); background-position: 0 0; background-size: cover;"></div>';
+        return '<div class="dp-po-splash-image" style="background-image: url('.$url.'); background-position: 0 0; background-size: cover; background-repeat: no-repeat"></div>';
     }
 }
