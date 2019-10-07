@@ -1,44 +1,4 @@
-class CollabWebSocketManagerSimple {
-  constructor(apiUrl, jwt) {
-    this.apiUrl = apiUrl;
-    this.jwt = jwt;
-    this.socket = undefined;
-    this.listeners = [];
-
-    setInterval(this.tick.bind(this), 500);
-  }
-
-  tick() {
-    console.log('CollabWebSocketManagerSimple tick. Have listeners: ', this.listeners.length);
-    const socket = this.socket;
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      for (const handler of this.listeners) {
-        handler(socket);
-      }
-    } else if (!socket || socket.readyState === WebSocket.CLOSED) {
-      this.socket = new WebSocket(`${this.apiUrl}?authToken=${this.jwt}`);
-    }
-  }
-
-  /**
-   * Subscribe
-   */
-  onOnline(handler) {
-    this.listeners.push(handler);
-  }
-
-  unsibscribe(handler) {
-    let index = null;
-    for (let i = 0; i < this.listeners.length; i++) if (this.listeners[i] === handler) index = i;
-
-    if (index === null) {
-      console.error('[CollabWebSocketManagerSimple] Failed to unsubscribe to event; listener for event was not found.');
-      return;
-    }
-
-    this.listeners.splice(index, 1);
-  }
-}
+import { CollabWebSocketManagerSimple } from '@deskpro/content-editor';
 
 export class CollabManager {
 
