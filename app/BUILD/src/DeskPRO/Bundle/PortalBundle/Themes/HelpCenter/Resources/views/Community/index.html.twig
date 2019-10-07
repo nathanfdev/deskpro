@@ -496,7 +496,7 @@
                                         {% set icon = forum.icon_property  %}
                                         {% set splash = forum.splash_image_property  %}
                                         <div class="dp-po-community-row-item {{ not splash ? 'dp-po-community-row-item-nocover' }}">
-                                            <div class="dp-po-community-row-left" style="{% if splash %}background: url('{{ get_splash_url(forum) }}'){% endif %}">
+                                            <div class="dp-po-community-row-left" style="{% if splash %}background: url('{{ get_splash_url(forum, 750) }}'); background-repeat: no-repeat; background-position: 0 0; background-size: cover;{% endif %}">
                                                 {% if icon %}
                                                     <div class="dp-po-community-row-icon">
                                                         {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
