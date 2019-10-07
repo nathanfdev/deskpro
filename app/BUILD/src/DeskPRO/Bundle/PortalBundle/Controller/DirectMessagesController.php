@@ -151,6 +151,7 @@ class DirectMessagesController extends AbstractController
 
     /**
      * @Route("/dm/send", name="portal_dm_send")
+     * @Route("/dm/send/to/{to}", name="portal_dm_send_to")
      * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
@@ -163,7 +164,7 @@ class DirectMessagesController extends AbstractController
 
         $defaultData = [
             'person'  => null,
-            'email'   => '',
+            'email'   => $request->attributes->get('to', ''),
             'message' => '',
         ];
 
