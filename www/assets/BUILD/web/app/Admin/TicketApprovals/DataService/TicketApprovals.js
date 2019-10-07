@@ -71,13 +71,13 @@ define(['Admin/Main/DataService/BaseListEdit'], (BaseListEdit) => {
      */
     saveApprovalType(data, id = null) {
       const deferred = this.$q.defer();
-      const response = (id == null)
+      const promise = (id == null)
         ? this.Api2.sendPostJson('/approval_types', data)
         : this.Api2.sendPutJson(`/approval_types/${id}`, data);
 
-      response.then(
-        (response) => deferred.resolve(response),
-        (response) => deferred.reject(response)
+      promise.then(
+        response => deferred.resolve(response),
+        response => deferred.reject(response)
       );
 
       return deferred.promise;
@@ -93,8 +93,8 @@ define(['Admin/Main/DataService/BaseListEdit'], (BaseListEdit) => {
       const deferred = this.$q.defer();
 
       this.Api2.sendDelete(`/approval_types/${id}`).then(
-        () => deferred.resolve(),
-        () => deferred.reject()
+        response => deferred.resolve(response),
+        response => deferred.reject(response)
       );
 
       return deferred.promise;

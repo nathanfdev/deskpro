@@ -48,8 +48,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       // perform api call via data service
       this.dataService.saveApprovalType(this.form, this.typeId)
-        .then(response => {
-
+        .then((response) => {
           // get List controller
           const listController = this.$scope['TicketApprovalsList'];
 
@@ -70,21 +69,18 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
               // push state back to "list"
               if (this.$state.current.name === 'tickets.approvals.type_edit') {
-                return this.$state.go('tickets.approvals');
+                this.$state.go('tickets.approvals');
               }
 
               if (this.$state.current.name === 'tickets.approvals.type_create') {
-                return this.$state.go('tickets.approvals.type_edit', { id: `type-${response.data.data.id}` });
+                this.$state.go('tickets.approvals.type_edit', { id: `type-${response.data.data.id}` });
               }
             });
-
         })
-        .catch(() => {
-
+        .catch((response) => {
           // stop spinner and show growl message
           this.stopSpinner('saving', true)
-            .then(() => this.Growl.error(msgFailure));
-
+            .then(() => this.Growl.error(response && response.data && response.data.message ? response.data.message : msgFailure));
         });
     }
 
@@ -104,7 +100,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       // perform api call via data service
       this.dataService.deleteApprovalType(id)
         .then(() => {
-
           // get List controller
           const listController = this.$scope['TicketApprovalsList'];
 
@@ -117,16 +112,15 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           // push state back to "list"
           if (this.$state.current.name === 'tickets.approvals.type_edit') {
-            return this.$state.go('tickets.approvals');
+            this.$state.go('tickets.approvals');
           }
-
         })
-        .catch(() => {
+        .catch((response) => {
+          console.log(response);
 
           // stop spinner and show growl message
           this.stopSpinner('deleting', true)
-            .then(() => this.Growl.error(msgFailure));
-
+            .then(() => this.Growl.error(response && response.data && response.data.message ? response.data.message : msgFailure));
         });
     }
   }
