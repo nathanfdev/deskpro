@@ -204,8 +204,7 @@ define([
 
       // perform api call via data service
       this.dataService.saveApprovalTemplate(this.$scope.form, this.$scope.templateId)
-        .then(response => {
-
+        .then((response) => {
           // get List controller
           const listController = this.$scope['TicketApprovalsList'];
 
@@ -226,20 +225,24 @@ define([
 
               // push state back to "list"
               if (this.$state.current.name === 'tickets.approvals.template_edit') {
-                return this.$state.go('tickets.approvals');
+                this.$state.go('tickets.approvals');
               }
 
               if (this.$state.current.name === 'tickets.approvals.template_create') {
-                return this.$state.go('tickets.approvals.template_edit', { id: `template-${response.data.data.id}` });
+                this.$state.go('tickets.approvals.template_edit', { id: `template-${response.data.data.id}` });
               }
             });
-
         })
-        .catch(() => {
-
+        .catch((response) => {
           // stop spinner and show growl message
           this.stopSpinner('saving', true)
-            .then(() => this.Growl.error(msgFailure));
+            .then(() => {
+              if (response && response.data && response.data.errors && response.data.errors.errors && response.data.errors.errors[0] && response.data.errors.errors[0].message) {
+                msgFailure = response.data.errors.errors[0].message;
+              }
+
+              this.Growl.error(msgFailure);
+            });
 
         });
     }
@@ -251,8 +254,8 @@ define([
      */
     deleteTemplate(id) {
       // Growl messages
-      let msgSuccess = this.getRegisteredMessage('approval_template_delete_success');
-      let msgFailure = this.getRegisteredMessage('approval_template_delete_failure');
+      const msgSuccess = this.getRegisteredMessage('approval_template_delete_success');
+      const msgFailure = this.getRegisteredMessage('approval_template_delete_failure');
 
       // start spinner
       this.startSpinner('deleting');
@@ -260,7 +263,6 @@ define([
       // perform api call via data service
       this.dataService.deleteApprovalTemplate(id)
         .then(() => {
-
           // get List controller
           const listController = this.$scope['TicketApprovalsList'];
 
@@ -273,16 +275,13 @@ define([
 
           // push state back to "list"
           if (this.$state.current.name === 'tickets.approvals.template_edit') {
-            return this.$state.go('tickets.approvals');
+            this.$state.go('tickets.approvals');
           }
-
         })
-        .catch(() => {
-
+        .catch((response) => {
           // stop spinner and show growl message
           this.stopSpinner('deleting', true)
-            .then(() => this.Growl.error(msgFailure));
-
+            .then(() => this.Growl.error(response && response.data && response.data.message ? response.data.message : msgFailure));
         });
     }
   }

@@ -80,7 +80,13 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         .catch((response) => {
           // stop spinner and show growl message
           this.stopSpinner('saving', true)
-            .then(() => this.Growl.error(response && response.data && response.data.message ? response.data.message : msgFailure));
+            .then(() => {
+              if (response && response.data && response.data.errors && response.data.errors.errors && response.data.errors.errors[0] && response.data.errors.errors[0].message) {
+                msgFailure = response.data.errors.errors[0].message;
+              }
+
+              this.Growl.error(msgFailure);
+            });
         });
     }
 
@@ -116,8 +122,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           }
         })
         .catch((response) => {
-          console.log(response);
-
           // stop spinner and show growl message
           this.stopSpinner('deleting', true)
             .then(() => this.Growl.error(response && response.data && response.data.message ? response.data.message : msgFailure));
