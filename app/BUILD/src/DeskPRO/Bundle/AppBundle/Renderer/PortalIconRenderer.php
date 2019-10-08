@@ -108,6 +108,12 @@ class PortalIconRenderer
                 return $obj->getColor();
             }
         }
+        if ($obj->getIcon()) {
+            $option = $obj->getIcon()->getOptions();
+            if (isset($option['color'])) {
+                return $option['color'];
+            }
+        }
         if ($obj instanceof EntityInterface) {
             $id = $obj->getId();
         } elseif ($obj instanceof HasPhraseName) {
