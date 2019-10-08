@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\IdentityFinderInterface;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 
 class UsersourceManager
 {
@@ -83,7 +84,13 @@ class UsersourceManager
 
             if ($adapter instanceof IdentityFinderInterface) {
                 try {
-                    if ($identity = $adapter->findIdentityByInput($input)) {
+                    $identity = $adapter->findIdentityByInput($input);
+                } catch (\Exception $e) {
+                    $identity = null;
+                }
+
+                if ($identity) {
+                    try {
                         // if the usersource can return a person directly, return that now
                         if ($identity instanceof Person) {
                             return $identity;
@@ -93,8 +100,9 @@ class UsersourceManager
                         $login_processor = new LoginProcessor($usersource, $identity);
 
                         return $login_processor->getPerson();
+                    } catch (\Exception $e) {
+                        SystemErrorHandler::logException($e);
                     }
-                } catch (\Exception $e) {
                 }
             }
         }
