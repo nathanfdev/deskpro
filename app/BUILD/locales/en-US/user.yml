@@ -67,6 +67,7 @@ helpcenter.direct_messages.title: 'My Messages'
 helpcenter.direct_messages.none: 'No messages'
 helpcenter.direct_messages.create_thread: Create
 helpcenter.direct_messages.block_user: 'block user'
+helpcenter.direct_messages.unblock_user: 'unblock user'
 helpcenter.direct_messages.reply.message: Message
 helpcenter.direct_messages.reply.cancel: Cancel
 helpcenter.direct_messages.reply.send_message: 'Send Message'

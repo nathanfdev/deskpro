@@ -12,7 +12,7 @@
                         </div>
                     </div>
                     <div class="col-auto">
-                        <a href="{{ path('portal_dm_send') }}" class="btn btn-primary">
+                        <a href="{{ path('portal_dm_send') }}" class="btn btn-primary" id="send_message_action">
                             {{ phrase('helpcenter.direct_messages.reply.send_message') }}
                         </a>
                     </div>
@@ -23,8 +23,9 @@
                             {% for row in pager %}
                                 {% set thread = row[0] %}
                                 {% set me = null %}
+                                {% set is_blocked = is_blocked_by_thread_id[thread.id] %}
                                 {% for p in participants[thread.id] %}{% set me = p.person.id == app.user.id ? p : me %}{% endfor%}
-                                <div class="dp-po-messages-item {{ me and me.isUnread ? 'dp-po-messages-item-new'}}">
+                                <div class="dp-po-messages-item {{ me and me.isUnread ? 'dp-po-messages-item-new'}} {{ is_blocked ? 'dp-po-messages-item-blocked' }}">
                                     <figure class="dp-po-messages-figure">
                                         {% for p in participants[thread.id] %}
                                             {% if p.person.id != app.user.id %}
@@ -41,7 +42,17 @@
                                         </p>
                                     </a>
                                     <div class="dp-po-messages-block">
-                                        <a href="" class="dp-po-messages-block-btn"><i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.block_user') }}</a>
+                                        {% if is_blocked is not null %}
+                                            {% if is_blocked %}
+                                                <a href="{{ path('portal_dm_unblock', {id: thread.id}) }}" class="dp-po-messages-block-btn">
+                                                    <i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.unblock_user') }}
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ path('portal_dm_block', {id: thread.id}) }}" class="dp-po-messages-block-btn">
+                                                    <i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.block_user') }}
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
                                     </div>
                                     <div class="dp-po-time">
                                         {{ thread.dateLastMessage|date('j M Y') }}
