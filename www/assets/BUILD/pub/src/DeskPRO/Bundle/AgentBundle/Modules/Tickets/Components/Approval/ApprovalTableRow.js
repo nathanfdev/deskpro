@@ -196,8 +196,10 @@ class ApprovalTableRow extends React.Component {
     return [
       <tr key={`approval_${approval.id}_data`}>
         <td>
-          <Icon name={faCaretRight} style={{ marginRight: '5px' }} />
-          <a onClick={this.toggleVotes}>{approval.id}</a>
+          <a onClick={this.toggleVotes}>
+            <Icon name={faCaretRight} style={{ marginRight: '5px' }} />
+            {approval.id}
+          </a>
         </td>
         <td>{approval.name}</td>
         <td>
