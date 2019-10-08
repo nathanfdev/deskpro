@@ -1,26 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import {connect} from "react-redux";
+import { connect } from 'react-redux';
 import { meSelector } from '../../../../../AppBundle/Modules/RecordsStore/Shortcuts/me';
-import ApprovalTableRow from "./ApprovalTableRow";
+import ApprovalTableRow from './ApprovalTableRow';
 
 @connect(state => ({
   me: meSelector(state),
 }))
 class ApprovalTable extends React.Component {
   static propTypes = {
+    me:                    PropTypes.object,
     approvals:             PropTypes.object,
-    getPeople:             PropTypes.func,
     ticketPerms:           PropTypes.object,
     cancelApprovalRequest: PropTypes.func,
     acceptApprovalRequest: PropTypes.func,
     rejectApprovalRequest: PropTypes.func,
   };
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const titleStyle = {
@@ -28,25 +24,22 @@ class ApprovalTable extends React.Component {
     };
     const colsStyle = {
       fontSize: '11px',
-      padding: '1px 4px'
+      padding:  '1px 4px'
     };
 
     let approvalsList = [];
     if (this.props.approvals.toArray().length > 0) {
-      approvalsList = this.props.approvals.toArray().map(approval => {
-
-        return (
-          <ApprovalTableRow
-            key={`approval_${approval.get('id')}_row`}
-            me={this.props.me}
-            approval={approval}
-            ticketPerms={this.props.ticketPerms}
-            cancelApprovalRequest={this.props.cancelApprovalRequest}
-            acceptApprovalRequest={this.props.acceptApprovalRequest}
-            rejectApprovalRequest={this.props.rejectApprovalRequest}
-          />
-        )
-      });
+      approvalsList = this.props.approvals.toArray().map(approval => (
+        <ApprovalTableRow
+          key={`approval_${approval.get('id')}_row`}
+          me={this.props.me}
+          approval={approval}
+          ticketPerms={this.props.ticketPerms}
+          cancelApprovalRequest={this.props.cancelApprovalRequest}
+          acceptApprovalRequest={this.props.acceptApprovalRequest}
+          rejectApprovalRequest={this.props.rejectApprovalRequest}
+        />
+      ));
     } else {
       approvalsList = (
         <tr>
@@ -81,7 +74,7 @@ class ApprovalTable extends React.Component {
               <FormattedMessage id="agent.tickets.approvals.id" />
             </th>
             <th style={colsStyle}>
-              <FormattedMessage id="agent.tickets.approvals.type" />
+              <FormattedMessage id="agent.tickets.approvals.name" />
             </th>
             <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.description" />
