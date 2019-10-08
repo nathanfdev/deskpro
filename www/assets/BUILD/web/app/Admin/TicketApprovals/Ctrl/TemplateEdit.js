@@ -57,11 +57,11 @@ define([
                 this.$scope.form.approver_selection_criteria.can_select_from_all_agents;
 
         this.dataService.searchPeople(query.term, excludeAgents)
-          .then(({ people }) => {
+          .then(({ data }) => {
 
             let selected = this.$scope.people.map(item => item.id);
             let result = { results: [] };
-            result.results = Object.values(people)
+            result.results = data
               .filter(person => selected.indexOf(person.id) === -1)
               .map(person => ({ ...person, text: `${person.first_name} ${person.last_name}` }));
 
@@ -81,6 +81,12 @@ define([
 
         this.$scope.people.push(person);
         this.$scope.selectedUser = null;
+      });
+
+      this.$scope.$watch('can_choose_approvers', () => {
+        this.$scope.form.selected_approvers.has_ticket_user = '';
+        this.$scope.form.selected_approvers.has_organization_managers = '';
+        this.$scope.form.selected_approvers.has_all_agents = '';
       });
 
       this.actionsTypeDef = this.dpObTypesDefTicketActions;
