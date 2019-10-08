@@ -227,7 +227,7 @@ class ApprovalTableRow extends React.Component {
           <table style={{ tableLayout: 'fixed', width: '100%' }}>
             <colgroup>
               <col style={{ width: '40px' }} />
-              <col style={{ width: '100px' }} />
+              <col style={{ width: '30%' }} />
               <col style={{ width: '20%' }} />
               <col style={{ width: '100px' }} />
               <col style={{ width: '30px' }} />
