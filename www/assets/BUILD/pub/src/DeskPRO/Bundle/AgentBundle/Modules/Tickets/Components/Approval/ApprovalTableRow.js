@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { Icon, Button } from '@deskpro/react-components';
-import { faTimes, faCheck, faClock, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
 class ApprovalTableRow extends React.Component {
   static propTypes = {
@@ -196,8 +196,7 @@ class ApprovalTableRow extends React.Component {
     return [
       <tr key={`approval_${approval.id}_data`}>
         <td>
-          <a onClick={this.toggleVotes}>
-            <Icon name={faCaretRight} style={{ marginRight: '5px' }} />
+          <a onClick={this.toggleVotes} style={{ width: '100%', display: 'block' }}>
             {approval.id}
           </a>
         </td>
