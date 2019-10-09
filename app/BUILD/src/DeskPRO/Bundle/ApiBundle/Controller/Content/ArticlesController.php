@@ -107,16 +107,11 @@ class ArticlesController extends AbstractContentController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $noClean = false;
-        if ($request->request->get('no_clean')) {
-            $noClean = true;
-            $request->request->remove('no_clean');
-        }
         $options = array_merge($options, [
             'agent_interface' => true,
             'person'          => $this->getUser(),
-            'filter_clean'    => !($this->getUser()->isAdmin() && $noClean),
         ]);
+
         if ($model->getReviewInterval()) {
             $options['with_review_date'] = true;
         }
