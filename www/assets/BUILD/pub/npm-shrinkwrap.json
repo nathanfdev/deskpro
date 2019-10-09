@@ -17305,6 +17305,19 @@
         "tui-image-editor": "^3.4.0"
       }
     },
+    "@twilio/audioplayer": {
+      "version": "1.0.4",
+      "resolved": "https://registry.npmjs.org/@twilio/audioplayer/-/audioplayer-1.0.4.tgz",
+      "integrity": "sha512-efSieo3FzTJWbhhdYI59/7WmU4jdqgLeYOvtBRvE3Rbq5yWz0lYswLEM6fOaubnAeTt1c5JYF3J9W5VzemjOwg==",
+      "requires": {
+        "babel-runtime": "^6.26.0"
+      }
+    },
+    "@twilio/voice-errors": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/@twilio/voice-errors/-/voice-errors-1.0.1.tgz",
+      "integrity": "sha512-iXzCuiOhNMhrr8DVjRRzI14YwGUIBM83kWSWcDktxmXim0Tz9xoCth4QFAQcMkNL2h9DlfXlob6noH+3h2iA4A=="
+    },
     "@types/classnames": {
       "version": "2.2.9",
       "resolved": "https://registry.npmjs.org/@types/classnames/-/classnames-2.2.9.tgz",
@@ -19688,6 +19701,14 @@
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/backo2/-/backo2-1.0.2.tgz",
       "integrity": "sha1-MasayLEpNjRj41s+u2n038+6eUc="
+    },
+    "backoff": {
+      "version": "2.5.0",
+      "resolved": "https://registry.npmjs.org/backoff/-/backoff-2.5.0.tgz",
+      "integrity": "sha1-9hbtqdPktmuMp/ynn2lXIsX44m8=",
+      "requires": {
+        "precond": "0.2"
+      }
     },
     "balanced-match": {
       "version": "1.0.0",
@@ -32335,6 +32356,11 @@
       "resolved": "https://registry.npmjs.org/preact-css-transition-group/-/preact-css-transition-group-1.3.0.tgz",
       "integrity": "sha1-Bv5Giyb3gC6VuCmnYtsLwZmu85k="
     },
+    "precond": {
+      "version": "0.2.3",
+      "resolved": "https://registry.npmjs.org/precond/-/precond-0.2.3.tgz",
+      "integrity": "sha1-qpWRvKokkj8eD0hJ0kD0fvwQdaw="
+    },
     "prefix-style": {
       "version": "2.0.1",
       "resolved": "https://registry.npmjs.org/prefix-style/-/prefix-style-2.0.1.tgz",
@@ -34632,6 +34658,14 @@
       "integrity": "sha512-OfWGQTb9vnwRjwtA2QwpG2ICclHC3pgXZO5xt8H2EfgDquO0qVdSb5T88L4qJVAEugbS56pAuV4XZM58UX8ulw==",
       "dev": true
     },
+    "rtcpeerconnection-shim": {
+      "version": "1.2.8",
+      "resolved": "https://registry.npmjs.org/rtcpeerconnection-shim/-/rtcpeerconnection-shim-1.2.8.tgz",
+      "integrity": "sha512-5Sx90FGru1sQw9aGOM+kHU4i6mbP8eJPgxliu2X3Syhg8qgDybx8dpDTxUwfJvPnubXFnZeRNl59DWr4AttJKQ==",
+      "requires": {
+        "sdp": "^2.6.0"
+      }
+    },
     "run-async": {
       "version": "2.3.0",
       "resolved": "https://registry.npmjs.org/run-async/-/run-async-2.3.0.tgz",
@@ -34872,6 +34906,11 @@
           }
         }
       }
+    },
+    "sdp": {
+      "version": "2.10.0",
+      "resolved": "https://registry.npmjs.org/sdp/-/sdp-2.10.0.tgz",
+      "integrity": "sha512-H+VjfyQpRz9GezhshJmkXTtCAT9/2g9az3GFDPYfGOz0eAOQU1fCrL3S9Dq/eUT9FtOyLi/czdR9PzK3fKUYOQ=="
     },
     "section-iterator": {
       "version": "2.0.0",
@@ -36655,6 +36694,29 @@
         "locutus": "^2.0.5",
         "minimatch": "3.0.x",
         "walk": "2.3.x"
+      }
+    },
+    "twilio-client": {
+      "version": "1.8.1",
+      "resolved": "https://registry.npmjs.org/twilio-client/-/twilio-client-1.8.1.tgz",
+      "integrity": "sha512-nIgvrG1vqBgTgNtjuMp5LZj3FIyjVj4TajnYJ4D3WAd9snxClPIaH6T+ULvzsnYmlp++eDhEVeBm2GuZrwOXQA==",
+      "requires": {
+        "@twilio/audioplayer": "1.0.4",
+        "@twilio/voice-errors": "1.0.1",
+        "backoff": "2.5.0",
+        "rtcpeerconnection-shim": "1.2.8",
+        "ws": "6.1.3",
+        "xmlhttprequest": "1.8.0"
+      },
+      "dependencies": {
+        "ws": {
+          "version": "6.1.3",
+          "resolved": "https://registry.npmjs.org/ws/-/ws-6.1.3.tgz",
+          "integrity": "sha512-tbSxiT+qJI223AP4iLfQbkbxkwdFcneYinM2+x46Gx2wgvbaOMO36czfdfVUBRTHvzAMRhDd98sA5d/BuWbQdg==",
+          "requires": {
+            "async-limiter": "~1.0.0"
+          }
+        }
       }
     },
     "type-check": {
