@@ -21,7 +21,7 @@ use Orb\Util\Strings;
 /**
  * @ApiModes("all")
  */
-class EmailStatusController extends AbstractController implements ProtectedControllerInterface
+class EmailStatusController extends AbstractController
 {
     /**
      * {@inheritdoc}

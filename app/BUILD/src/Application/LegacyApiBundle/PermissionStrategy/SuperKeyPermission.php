@@ -21,11 +21,11 @@ class SuperKeyPermission implements PermissionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
         // The API key itself has the correct flag set
-        if ($api_user->api_key) {
-            if ($api_user->api_key->isFlagSet(ApiKey::FLAG_SUPER_KEY)) {
+        if ($apiUser->api_key) {
+            if ($apiUser->api_key->isFlagSet(ApiKey::FLAG_SUPER_KEY)) {
                 return true;
             }
         }

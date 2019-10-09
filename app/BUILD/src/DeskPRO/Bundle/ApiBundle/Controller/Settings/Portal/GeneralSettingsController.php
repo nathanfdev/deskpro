@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class BrandSettingsController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/brands")
  */
 class GeneralSettingsController extends AbstractBrandAwareSettingsController

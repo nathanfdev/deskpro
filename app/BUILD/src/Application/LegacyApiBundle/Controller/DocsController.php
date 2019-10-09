@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,14 @@ class DocsController extends AbstractController
         $this->in       = $this->get('deskpro.core.input_reader');
         $this->cleaner  = $this->get('deskpro.core.input_cleaner');
         $this->settings = $this->get('deskpro.core.settings');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new OpenPermission();
     }
 
     public function preActionHandler(Request $request, $action, $arguments = null)

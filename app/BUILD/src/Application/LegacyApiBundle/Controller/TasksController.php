@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class TasksController extends AbstractController implements ProtectedControllerInterface
+class TasksController extends AbstractController
 {
     const KEY_ENABLED  = 'core.apps_tasks';
     const KEY_REMINDER = 'task_reminder_time';

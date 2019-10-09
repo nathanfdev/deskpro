@@ -3,14 +3,15 @@
 /**
  * DeskPRO.
  */
+
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use DeskPRO\Kernel\KernelErrorHandler;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-class AuditLogController extends AbstractController implements ProtectedControllerInterface
+class AuditLogController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -20,9 +21,9 @@ class AuditLogController extends AbstractController implements ProtectedControll
         return new AdminManagePermission();
     }
 
-    ####################################################################################################################
-    # list
-    ####################################################################################################################
+    //###################################################################################################################
+    // list
+    //###################################################################################################################
 
     public function listAction()
     {
@@ -40,7 +41,7 @@ class AuditLogController extends AbstractController implements ProtectedControll
             LIMIT $limit_start, $per_page
         ");
 
-        $people_ids = array();
+        $people_ids = [];
         foreach ($recs as $r) {
             $people_ids[] = $r['person_id'] ?: null;
         }
@@ -48,14 +49,14 @@ class AuditLogController extends AbstractController implements ProtectedControll
 
         $people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
 
-        $rec_data = array();
+        $rec_data = [];
         foreach ($recs as $rec) {
             $person = $rec['person_id'] && isset($people[$rec['person_id']]) ? $people[$rec['person_id']] : null;
 
             $new_val = null;
             if ($rec['op'] == 'update') {
                 $data    = unserialize($rec['data']);
-                $new_val = array();
+                $new_val = [];
                 foreach ($data as $r) {
                     $v = $r['new_val'];
                     if ($v === true) {
@@ -90,18 +91,18 @@ class AuditLogController extends AbstractController implements ProtectedControll
             $rec_data[] = $row;
         }
 
-        return $this->createApiResponse(array(
+        return $this->createApiResponse([
             'logs'      => $rec_data,
             'total'     => $total,
             'per_page'  => $per_page,
             'page'      => $page,
             'num_pages' => $num_pages,
-        ));
+        ]);
     }
 
-    ####################################################################################################################
-    # detail
-    ####################################################################################################################
+    //###################################################################################################################
+    // detail
+    //###################################################################################################################
 
     public function getDetailAction($id)
     {
@@ -112,8 +113,8 @@ class AuditLogController extends AbstractController implements ProtectedControll
 
         $data = $log->toApiData();
         unset($data['data']);
-        $data['raw_data'] = KernelErrorHandler::varToString($log->data);
+        $data['raw_data'] = SystemErrorHandler::varToString($log->data);
 
-        return $this->createApiResponse(array('log' => $data));
+        return $this->createApiResponse(['log' => $data]);
     }
 }

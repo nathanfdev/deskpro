@@ -2,7 +2,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\App;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,6 +13,14 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TestController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new OpenPermission();
+    }
+
     /**
      * {@inheritdoc}
      */

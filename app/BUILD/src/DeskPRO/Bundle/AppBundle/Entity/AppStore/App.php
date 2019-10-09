@@ -198,7 +198,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     /**
      * @return AppAssetBlob
      */
-    private function getIconAsset()
+    public function getIconAsset()
     {
         return $this->assets->filter(function (AppAssetBlob $asset) {
             return $asset->getPath() === 'assets/icon.png';
@@ -274,9 +274,9 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
      */
     public function setTimestampsOnPersist()
     {
-        $this->createdAt = new \DateTime();
-        $this->updatedAt   = new \DateTime();
-        $this->bundleUpdatedAt   = new \DateTime();
+        $this->createdAt       = new \DateTime();
+        $this->updatedAt       = new \DateTime();
+        $this->bundleUpdatedAt = new \DateTime();
     }
 
     /**

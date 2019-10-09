@@ -10,15 +10,15 @@ use Application\DeskPRO\Community\CommunityStatusEdit;
 use Application\DeskPRO\Community\Form\Type\CommunityStatusType;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 
 /**
  * @ApiModes("all")
  */
-class CommunityStatusesController extends AbstractController implements ProtectedControllerInterface
+class CommunityStatusesController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -27,7 +27,7 @@ class CommunityStatusesController extends AbstractController implements Protecte
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

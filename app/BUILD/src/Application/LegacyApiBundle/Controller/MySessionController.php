@@ -12,7 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class MySessionController extends AbstractController implements ProtectedControllerInterface
+class MySessionController extends AbstractController
 {
     const TOKEN_LIFETIME = 420;
 

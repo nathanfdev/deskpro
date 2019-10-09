@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class PeopleController.
  *
- * @ApiModes("all")
+ * @ApiModes("key")
  * @Rest\Route("/apps/zapier/hooks")
  * @ApiDoc(target="all", section="Apps", output="DeskPRO\Bundle\AppBundle\Entity\ZapierHook")
  * @ApiDoc(

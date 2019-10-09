@@ -28,10 +28,10 @@ class CompositePermission implements PermissionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
         foreach ($this->perms as $p) {
-            if (!$p->userHasPermission($api_user, $context_info)) {
+            if (!$p->userHasPermission($apiUser, $contextInfo)) {
                 return false;
             }
         }
