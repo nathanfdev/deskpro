@@ -268,6 +268,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         if ($source->email_account_log instanceof EmailAccountLog) {
             try {
                 $emailAccountLogBlob = $source->email_account_log->getBlob();
+                if(!$emailAccountLogBlob) {
+                    throw new \Exception("No blob for email_account_log");
+                }
 
                 $accountLog =
                     $this->getContainer()->get('blob.storage')->copyBlobRecordToString(
