@@ -139,38 +139,6 @@ class ApprovalTableRow extends React.Component {
       }
     }
 
-    let votesList = '';
-    if (approval.votes.length > 0) {
-      votesList = approval.votes.map(vote => (
-        <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
-          <td>&nbsp;</td>
-          <td>{vote.approver.name}</td>
-          <td>{vote.message}</td>
-          <td>
-            <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
-            <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
-              {vote.created_at}
-            </small>
-          </td>
-          <td>
-            <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
-          </td>
-        </tr>
-      ));
-    } else {
-      votesList = (
-        <tr>
-          <td colSpan="5" style={{ textAlign: 'center' }}>
-            <FormattedMessage id="agent.tickets.approvals.no_votes" />
-          </td>
-        </tr>
-      );
-    }
-
-    const responsesStyle = {
-      display: this.state.showResponses ? '' : 'none'
-    };
-
     const approversList = approval.approvers.length <= 2
       ? approval.approvers.map(approver => approver.name).join(', ')
       : `${approval.approvers.slice(0, 1).map(approver => approver.name)} + ${approval.approvers.length - 1} more`;
@@ -193,7 +161,7 @@ class ApprovalTableRow extends React.Component {
       approvalDate = approval.completed_at;
     }
 
-    return [
+    const result = [
       <tr key={`approval_${approval.id}_data`}>
         <td>
           <a onClick={this.toggleVotes} style={{ width: '100%', display: 'block' }}>
@@ -222,24 +190,43 @@ class ApprovalTableRow extends React.Component {
         <td>
           {approvalStatusIcon}
         </td>
-      </tr>,
-      <tr key={`approval_${approval.id}_responses`} style={responsesStyle}>
-        <td colSpan="9">
-          <table style={{ tableLayout: 'fixed', width: '100%' }}>
-            <colgroup>
-              <col style={{ width: '40px' }} />
-              <col style={{ width: '30%' }} />
-              <col style={{ width: '20%' }} />
-              <col style={{ width: '100px' }} />
-              <col style={{ width: '30px' }} />
-            </colgroup>
-            <tbody>
-              {votesList}
-            </tbody>
-          </table>
-        </td>
       </tr>
     ];
+
+    if (this.state.showResponses) {
+      if (approval.votes.length > 0) {
+        approval.votes.forEach(vote => result.push(
+          <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
+            <td>&nbsp;</td>
+            <td>{vote.approver.name}</td>
+            <td>{vote.message}</td>
+            <td />
+            <td />
+            <td />
+            <td>
+              <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
+              <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
+                {vote.created_at}
+              </small>
+            </td>
+            <td />
+            <td>
+              <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
+            </td>
+          </tr>
+        ));
+      } else {
+        result.push(
+          <tr>
+            <td colSpan="9" style={{ textAlign: 'center' }}>
+              <FormattedMessage id="agent.tickets.approvals.no_votes" />
+            </td>
+          </tr>
+        );
+      }
+    }
+
+    return result;
   }
 }
 
