@@ -92,10 +92,16 @@ class NewsController extends AbstractPublishController
                 return $this->getNewsDataService()->getCategoryList($this->getUser());
             },
 
-            'ymCounts' => function () {
-                return $this->getNewsDataService()->getMonthsWithPosts(null, $this->getUser());
+            'ymCounts' => function () use ($category) {
+                return $this->getNewsDataService()->getMonthsWithPosts($category, $this->getUser());
             },
         ]);
+
+        $filterDate = $request->query->get('date');
+        $filterYear = $filterDate
+            ? preg_replace('/\-[0-9]{2}$/', '', $filterDate)
+            : (new \DateTime())->format('Y')
+        ;
 
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
@@ -110,6 +116,8 @@ class NewsController extends AbstractPublishController
                 'rss_link'      => $rssLink,
                 'ics_link'      => $icsLink,
                 'is_subscribed' => $isSubscribed,
+                'filter_date'   => $filterDate,
+                'filter_year'   => $filterYear,
             ]
         );
     }
@@ -512,7 +520,8 @@ class NewsController extends AbstractPublishController
             $cat,
             $page,
             $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
-            $person
+            $person,
+            ['date' => $request->query->get('date')]
         );
     }
 }

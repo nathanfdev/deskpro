@@ -67,11 +67,21 @@
         </a>
         <div class="collapse show">
             <ul class="dp-po-news-filter-type-list">
+                <li class="dp-po-news-filter-type-item">
+                    <div class="form-group dp-po-form-check">
+                        <a href="{{ path('user_news_home') }}">
+                            {% if not viewCategory %}<i class="fa fa-angle-right"></i>{% endif %}
+                            {{ phrase('helpcenter.news.all-news') }}
+                        </a>
+                    </div>
+                </li>
                 {% for cat in newsData.categories %}
                     <li class="dp-po-news-filter-type-item">
                         <div class="form-group dp-po-form-check">
-                            <input type="checkbox" class="form-check-input" id="filter_news_check_{{ cat.id }}" {% if not viewCategory or viewCategory.id == cat.id %}checked{% endif %}>
-                            <label class="form-check-label" for="filter_news_check_{{ cat.id }}"><a href="{{ portal_path(cat) }}">{{ object_phrase(cat) }}</a></label>
+                            <a href="{{ portal_path(cat) }}">
+                                {% if viewCategory and viewCategory.id == cat.id %}<i class="fa fa-angle-right"></i>{% endif %}
+                                {{ object_phrase(cat) }}
+                            </a>
                         </div>
                     </li>
                 {% endfor %}
@@ -81,23 +91,37 @@
 
     <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-date">
         <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-date') }}</h3>
-        <a class="dp-po-news-filter-collapse" href="#">
+        <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#date_filter" role="button"
+           aria-expanded="false" aria-controls="date_filter">
             <i class="dp-po-icon far fa-angle-down"></i>
         </a>
-        <div class="collapse show">
+        <div class="collapse {{ filter_date ? 'show' }}" id="date_filter">
             <div class="dp-po-news-filter-date-option">
                 <ul class="dp-po-news-filter-date-year-list">
+                    <li class="dp-po-news-filter-date-year-item">
+                        <a href="{{ _self.news_date_filter_path({date: ''}) }}"
+                           class="dp-po-news-filter-date-year-link text-uppercase {{ not filter_date ? 'active' }}">
+                            {{ phrase('helpcenter.news.any-date') }}
+                        </a>
+                    </li>
                     {% for y in newsData.ymCounts %}
                         <li class="dp-po-news-filter-date-year-item">
-                            <a href="" class="dp-po-news-filter-date-year-link">{{ y.year }}</a>
+                            <a href="{{ _self.news_date_filter_path({date: y.year}) }}"
+                               class="dp-po-news-filter-date-year-link {{ filter_date matches "/#{y.year}.*/" ? 'active' }}">
+                                {{ y.year }}
+                            </a>
                         </li>
                     {% endfor %}
                 </ul>
                 <ul class="dp-po-news-filter-date-month-list">
-                    {% for y in newsData.ymCounts if y.year == 2019 %}
+                    {% for y in newsData.ymCounts if y.year == filter_year %}
                         {% for m in y.months %}
+                            {% set date = "#{y.year}-#{'%02d'|format(m.month)}" %}
                             <li class="dp-po-news-filter-date-month-item">
-                                <a href="" class="dp-po-news-filter-date-month-link">{{ date(m.year ~ '-' ~ m.month ~ '-01') | date('M') | upper }}</a>
+                                <a href="{{ _self.news_date_filter_path({date: date}) }}"
+                                   class="dp-po-news-filter-date-month-link {{ filter_date matches "/#{date}.*/" ? 'active' }}" style="{{ filter_date and 0 == m.count ? 'color: #DDD;' }}">
+                                    {{ date("#{m.year}-#{m.month}-01") | date('M') | upper }}
+                                </a>
                             </li>
                         {% endfor %}
                     {% endfor %}
@@ -105,5 +129,8 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
+
+{%- macro news_date_filter_path(params) -%}
+    {{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge(params)) }}
+{%- endmacro -%}
