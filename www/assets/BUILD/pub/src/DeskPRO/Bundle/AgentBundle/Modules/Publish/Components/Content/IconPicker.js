@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import '@deskpro/fa-picker/css/icon-mart.css';
-import { FaPicker } from '@deskpro/fa-picker';
+import { FaPicker } from '@deskpro/fa-picker/dist';
+import { Label, Input } from '@deskpro/react-components';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
@@ -28,17 +29,32 @@ export default class IconPicker extends React.PureComponent {
     }
 
     this.state = {
-      opened: false,
+      opened:       false,
+      customOpened: false,
       icon,
       style,
-      color
+      color,
+      accepted:     [],
+      custom:       {
+        name:     '',
+        keywords: ''
+      }
     };
+    this.handleAcceptedFiles = this.handleAcceptedFiles.bind(this);
     this.openPicker = this.openPicker.bind(this);
     this.selectIcon = this.selectIcon.bind(this);
     this.removeIcon = this.removeIcon.bind(this);
     this.renderIcon = this.renderIcon.bind(this);
     this.renderInputs = this.renderInputs.bind(this);
     this.renderPicker = this.renderPicker.bind(this);
+  }
+
+  handleAcceptedFiles(accepted) {
+    this.setState({
+      accepted,
+      opened:       false,
+      customOpened: true
+    });
   }
 
   openPicker() {
@@ -112,8 +128,23 @@ export default class IconPicker extends React.PureComponent {
           <FaPicker
             color="#00F"
             onSelect={this.selectIcon}
+            onAcceptedFiles={this.handleAcceptedFiles}
           />
         </ClickOut>
+      </Detached>
+    );
+  }
+
+  renderCustomModal() {
+    const { custom } = this.state;
+    return (
+      <Detached
+        isOpen={this.state.customOpened}
+      >
+        <Label>Name</Label>
+        <Input name="name" value={custom.name} />
+        <Label>Keywords</Label>
+        <Input name="keywords" value={custom.keywords} />
       </Detached>
     );
   }
@@ -127,6 +158,7 @@ export default class IconPicker extends React.PureComponent {
           <FormattedMessage id="agent.publish.pick_icon" />
         </button>
         {this.renderPicker()}
+        {this.renderCustomModal()}
       </div>
     );
   }

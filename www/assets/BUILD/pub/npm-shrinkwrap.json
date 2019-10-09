@@ -314,15 +314,17 @@
       }
     },
     "@deskpro/fa-picker": {
-      "version": "0.0.6",
-      "resolved": "https://registry.npmjs.org/@deskpro/fa-picker/-/fa-picker-0.0.6.tgz",
-      "integrity": "sha512-A1xaMyIcxcyoWT9FpA8dRktsnPqRtefo9aHz8oQhPc+IjLU97sb6xPDSgZjCxLGc/xgWgguBde4RMsqM9y7A3A==",
+      "version": "0.2.0",
+      "resolved": "https://registry.npmjs.org/@deskpro/fa-picker/-/fa-picker-0.2.0.tgz",
+      "integrity": "sha512-Vv2YcI5R+KC8vT2xLmV9/z2a27D6HXNg1R46V4ZFeZnRUwBhJ4PG+OUvUWCSeWoS9Cv4xGnKb4UIh8pojpHsqg==",
       "requires": {
         "@storybook/storybook-deployer": "^2.8.1",
         "babel-plugin-convert-to-json": "^0.1.0",
+        "classnames": "^2.2.6",
         "pre-commit": "^1.2.2",
         "prop-types": "^15.6.0",
-        "react-color": "^2.17.3"
+        "react-color": "^2.17.3",
+        "react-dropzone": "^10.1.10"
       },
       "dependencies": {
         "lodash": {
