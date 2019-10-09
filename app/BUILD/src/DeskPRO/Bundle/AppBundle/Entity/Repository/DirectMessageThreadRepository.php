@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use Doctrine\ORM\Query\Expr\Join;
 
 /**

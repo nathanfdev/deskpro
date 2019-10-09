@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessageBlock;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageThread;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -70,6 +71,11 @@ class DirectMessageThreadDataService extends AbstractDataService
                 $participantTo->setIsUnread(true);
                 $participantTo->setThread($thread);
 
+                $this->assertNotBeingBlocked(
+                    $thread,
+                    $personFrom
+                );
+
                 $this->em->persist($thread);
                 $this->em->persist($participantFrom);
                 $this->em->persist($participantTo);
@@ -91,9 +97,16 @@ class DirectMessageThreadDataService extends AbstractDataService
 
     /**
      * @param DirectMessage $message
+     * @param Person $sender
+     * @throws \Exception
      */
-    public function saveMessage(DirectMessage $message)
+    public function saveMessage(DirectMessage $message, Person $sender)
     {
+        $this->assertNotBeingBlocked(
+            $message->getAuthor()->getThread(),
+            $sender
+        );
+
         $this->em->beginTransaction();
 
         try {
@@ -119,6 +132,24 @@ class DirectMessageThreadDataService extends AbstractDataService
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;
+        }
+    }
+
+    /**
+     * @param DirectMessageThread $thread
+     * @param Person $sender
+     */
+    private function assertNotBeingBlocked(DirectMessageThread $thread, Person $sender)
+    {
+        $isBeingBlocked = $this
+            ->em
+            ->getRepository(DirectMessageBlock::class)
+            ->isBlockedByThread($thread, $sender)
+        ;
+
+        if ($isBeingBlocked) {
+            throw new \DomainException('Cannot send message to user as either you are blocking this user or '
+                .'they are blocking you');
         }
     }
 }

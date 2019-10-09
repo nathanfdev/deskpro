@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessageBlock;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageThread;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DirectMessageNewThreadType;
@@ -25,7 +26,7 @@ class DirectMessagesController extends AbstractController
     /**
      * Number of direct messages per page
      */
-    const DIRECT_MESSAGES_PER_PAGE = 20;
+    const DIRECT_MESSAGES_PER_PAGE = 10;
 
     /**
      * @Route("/dm", name="portal_dm")
@@ -43,6 +44,7 @@ class DirectMessagesController extends AbstractController
             $request->query->has('unread'),
             $request->query->get('page', 1),
             self::DIRECT_MESSAGES_PER_PAGE,
+            true,
             true
         );
 
@@ -50,12 +52,20 @@ class DirectMessagesController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDirectMessagesList();
 
+        $isBlockedByThreadId = [];
+        foreach ($pager as list($thread)) {
+            $isBlockedByThreadId[$thread->getId()] = $this->getEm()->getRepository(DirectMessageBlock::class)
+                ->isBlockedByThread($thread, $this->getUser())
+            ;
+        }
+
         return $this->renderThemeView(
             'Theme:DirectMessages:index.html.twig',
             [
                 'breadcrumbs'  => $breadcrumbs,
                 'pager'        => $pager,
                 'participants' => $participants,
+                'is_blocked_by_thread_id' => $isBlockedByThreadId,
             ]
         );
     }
@@ -137,7 +147,15 @@ class DirectMessagesController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $message = $form->getData();
-            $this->getDirectMessageThreadDataService()->saveMessage($message);
+
+            try {
+                $this->getDirectMessageThreadDataService()->saveMessage($message, $this->getUser());
+            } catch (\DomainException $e) {
+                $this->addFlash('warning', $e->getMessage());
+
+                return $this->redirectToRoute('portal_dm_view', ['id' => $thread->getId()]);
+            }
+
             $this->sendEmails($message);
             $this->addFlash('success', 'Message added');
 
@@ -151,6 +169,7 @@ class DirectMessagesController extends AbstractController
 
     /**
      * @Route("/dm/send", name="portal_dm_send")
+     * @Route("/dm/send/to/{to}", name="portal_dm_send_to")
      * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
@@ -163,7 +182,7 @@ class DirectMessagesController extends AbstractController
 
         $defaultData = [
             'person'  => null,
-            'email'   => '',
+            'email'   => $request->attributes->get('to', ''),
             'message' => '',
         ];
 
@@ -172,18 +191,25 @@ class DirectMessagesController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data        = $form->getData();
-            $personTo    = $this->getEm()->getRepository(Person::class)->findOneByEmail($data['email']);
-            $thread      = $this->getDirectMessageThreadDataService()->createThread($this->getUser(), $personTo);
-            $participant = $this->getEm()->getRepository(DirectMessageParticipant::class)->findOneBy([
-                'thread' => $thread,
-                'person' => $this->getUser(),
-            ]);
-            $message = new DirectMessage();
-            $message->setAuthor($participant);
-            $message->setMessageHtml($data['message']);
+            try {
+                $data        = $form->getData();
+                $personTo    = $this->getEm()->getRepository(Person::class)->findOneByEmail($data['email']);
+                $thread      = $this->getDirectMessageThreadDataService()->createThread($this->getUser(), $personTo);
+                $participant = $this->getEm()->getRepository(DirectMessageParticipant::class)->findOneBy([
+                    'thread' => $thread,
+                    'person' => $this->getUser(),
+                ]);
+                $message = new DirectMessage();
+                $message->setAuthor($participant);
+                $message->setMessageHtml($data['message']);
 
-            $this->getDirectMessageThreadDataService()->saveMessage($message);
+                $this->getDirectMessageThreadDataService()->saveMessage($message, $this->getUser());
+            } catch (\DomainException $e) {
+                $this->addFlash('warning', $e->getMessage());
+
+                return $this->redirectToRoute('portal_dm');
+            }
+
             $this->sendEmails($message);
 
             $this->addFlash('success', 'Message added');
@@ -200,6 +226,57 @@ class DirectMessagesController extends AbstractController
                 'form'        => $form->createView(),
             ]
         );
+    }
+
+    /**
+     * @Route("/dm/{id}/block", name="portal_dm_block")
+     * @Security("is_granted('ROLE_USER') and thread.hasParticipantId(user.id)")
+     *
+     * @param DirectMessageThread $thread
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function blockAction(DirectMessageThread $thread)
+    {
+        $this->isCommunityEnabledOrNotFoundException();
+
+        $em = $this->getEm();
+        $em->persist(DirectMessageBlock::createFromThread($em, $thread, $this->getUser()));
+        $em->flush();
+
+        $this->addFlash('success', 'User blocked');
+
+        return $this->redirectToRoute('portal_dm');
+    }
+
+    /**
+     * @Route("/dm/{id}/unblock", name="portal_dm_unblock")
+     * @Security("is_granted('ROLE_USER') and thread.hasParticipantId(user.id)")
+     *
+     * @param DirectMessageThread $thread
+     *
+     * @return Response
+     * @throws \Exception
+     */
+    public function unblockAction(DirectMessageThread $thread)
+    {
+        $this->isCommunityEnabledOrNotFoundException();
+
+        try {
+            $this->getEm()->getRepository(DirectMessageBlock::class)->unblockIfUserIsBlocker(
+                $thread,
+                $this->getUser()
+            );
+        } catch (\DomainException $e) {
+            $this->addFlash('warning', $e->getMessage());
+
+            return $this->redirectToRoute('portal_dm');
+        }
+
+        $this->addFlash('success', 'User unblocked');
+
+        return $this->redirectToRoute('portal_dm');
     }
 
     /**

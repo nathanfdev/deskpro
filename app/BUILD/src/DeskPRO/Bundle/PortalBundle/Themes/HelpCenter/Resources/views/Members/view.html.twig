@@ -39,9 +39,11 @@
                                     <h3 class="dp-po-profile-extras-title">{{ phrase('helpcenter.members.joined_portal') }}</h3>
                                     <p class="dp-po-profile-extras-desc">{{ date_ago(person.date_created) }}</p>
                                 </div>
-                                <div>
-                                    <a href="" class="btn btn-primary">{{ phrase('helpcenter.members.send_message') }}</a>
-                                </div>
+                                {% if person.primary_email %}
+                                    <div>
+                                        <a href="{{ path('portal_dm_send_to', {to: person.primary_email}) }}" class="btn btn-primary">{{ phrase('helpcenter.members.send_message') }}</a>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
