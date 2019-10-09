@@ -129,7 +129,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
   },
 
   updateSlaListForTicket: function(info) {
-    if (!info.ticket_id || !info.sla_id || !this.meta.sla_id || info.sla_id !== this.meta.sla_id) {
+    if (!info.ticket_id ||
+      !info.sla_id ||
+      !this.meta.sla_id ||
+      info.sla_id !== this.meta.sla_id ||
+      !this.$scope.realtime
+    ) {
       return;
     }
 
@@ -410,7 +415,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       currentlyInView = $scope.tickets.filter(function(x) {
           return x.id === ticketId;
         }).length === 1;
-      if (currentlyInView) {
+      if (currentlyInView && self.$scope.realtime) {
         self.queueChangeEvent('refreshTicketResults', [ticketId]);
       } else {
         // Need to put this in a post run because currentlyInView needs to know latest state
@@ -419,7 +424,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
           currentlyInView = $scope.tickets.filter(function(x) {
               return x.id === ticketId;
             }).length === 1;
-          if (currentlyInView) {
+          if (currentlyInView && self.$scope.realtime) {
             self.queueChangeEvent('refreshTicketResults', [ticketId]);
           }
         });
@@ -1567,6 +1572,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         $timeout(function() {
           console.log('[TicketList] refreshCursor :: done render (%dms)', (new Date()).getTime() - time2.getTime());
           $scope.refreshCursorLoading = false;
+          DeskPRO_Window.sections.tickets_section.getUpdatedSlaCounts();
         }, 10);
       },
       error:    function() {
