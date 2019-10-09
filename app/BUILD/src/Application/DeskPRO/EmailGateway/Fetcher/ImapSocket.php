@@ -328,8 +328,11 @@ class ImapSocket extends AbstractFetcher
     {
         switch ($this->mode) {
             case self::MODE_READ:
-                // No need to mark message as read, its marked as read automatically by fetching the body
-                //$message->setFlag('seen', 1);
+                // Mark message as read when we cant fetch body on reason of big size.
+                // Otherwise its marked as read automatically by fetching the body
+                if ($rawMessage->too_big) {
+                    $this->storage->markAsSeen($rawMessage->id);
+                }
                 $this->logger->log("Marked {$rawMessage->id} as seen", 'debug');
                 break;
             case self::MODE_ARCHIVE:
