@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import { allSelectorFactory } from "../../../../../AppBundle/Modules/RecordsStore";
-import * as actions from "../../Actions/approvalRequestActions";
-import { Approval } from "./Approval";
+import { allSelectorFactory } from '../../../../../AppBundle/Modules/RecordsStore';
+import * as actions from '../../Actions/approvalRequestActions';
+import { Approval } from './Approval';
 
 @connect(state => ({
   templates: allSelectorFactory('ApprovalTemplate')(state),
@@ -32,24 +32,23 @@ export class ApprovalContainer extends React.Component {
     window.document.removeEventListener('dpApprovalUpdate', this.dpApprovalUpdate);
   }
 
+  getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
+
+  getResponses = id => this.props.dispatch(actions.loadApprovalResponses(id));
+
   dpApprovalUpdate = (e) => {
     if (e.detail.ticketId === this.props.ticketId) {
       this.loadApprovalRequests();
     }
   };
 
-  getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
-
-  getResponses = id => this.props.dispatch(actions.loadApprovalResponses(id));
-
   loadApprovalRequests() {
     this.props.dispatch(actions.loadApprovalRequests(this.props.ticketId))
-      .then(({ data }) => {
-        let approvals = data;//.filter(item => item.status !== 'cancelled');
-
-        let allDone = approvals.reduce((promise, approval) => {
-          return promise.then(() => {
-            return Promise.all([
+      .then((response) => {
+        const approvals = response.data;
+        const allDone = approvals.reduce((promise, approval) =>
+          promise.then(() =>
+            Promise.all([
               this.getPeople(approval.approvers)
                 .then(({ data }) => {
                   approval.people = data;
@@ -58,25 +57,23 @@ export class ApprovalContainer extends React.Component {
                 .then(({ data }) => {
                   approval.votes = data;
                 })
-            ]);
-          });
-        }, Promise.resolve());
+            ])
+          )
+        , Promise.resolve());
 
-        allDone.then(e => {
+        allDone.then(() => {
           this.setState({
             approvals: Immutable.fromJS(approvals),
           });
         });
-
       });
   }
 
-  createApprovalRequest = data => this.props.dispatch(actions.createApprovalRequest(this.props.ticketId, data))
-    .then(approvalRequest => {
-
-      let allDone = [approvalRequest].reduce((promise, approval) => {
-        return promise.then(() => {
-          return Promise.all([
+  createApprovalRequest = requestData => this.props.dispatch(actions.createApprovalRequest(this.props.ticketId, requestData))
+    .then((approvalRequest) => {
+      const allDone = [approvalRequest].reduce((promise, approval) =>
+        promise.then(() =>
+          Promise.all([
             this.getPeople(approval.approvers)
               .then(({ data }) => {
                 approval.people = data;
@@ -85,11 +82,11 @@ export class ApprovalContainer extends React.Component {
               .then(({ data }) => {
                 approval.votes = data;
               })
-          ]);
-        });
-      }, Promise.resolve());
+          ])
+        )
+      , Promise.resolve());
 
-      allDone.then(e => {
+      allDone.then(() => {
         this.setState({
           approvals: this.state.approvals.push(Immutable.fromJS(approvalRequest))
         });
@@ -109,14 +106,10 @@ export class ApprovalContainer extends React.Component {
     });
 
   acceptApprovalRequest = (requestId, data = {}) => this.props.dispatch(actions.acceptApprovalRequest(requestId, data))
-    .then(approvalResponse => {
-      this.loadApprovalRequests();
-    });
+    .then(() => this.loadApprovalRequests());
 
   rejectApprovalRequest = (requestId, data = {}) => this.props.dispatch(actions.rejectApprovalRequest(requestId, data))
-    .then(approvalResponse => {
-      this.loadApprovalRequests();
-    });
+    .then(() => this.loadApprovalRequests());
 
   render() {
     return (

@@ -1,20 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
-import {Container, Button} from "@deskpro/react-components";
-import {FormattedMessage} from "react-intl";
-import ApprovalTable from "./ApprovalTable";
-import ApprovalForm from "./ApprovalForm";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Container, Button } from '@deskpro/react-components';
+import { FormattedMessage } from 'react-intl';
+import ApprovalTable from './ApprovalTable';
+import ApprovalForm from './ApprovalForm';
 
 export class Approval extends React.Component {
   static propTypes = {
     approvals:             PropTypes.object.isRequired,
     templates:             PropTypes.object.isRequired,
     ticketPerms:           PropTypes.object,
-    dispatch:              PropTypes.func,
     createApprovalRequest: PropTypes.func,
     cancelApprovalRequest: PropTypes.func,
     acceptApprovalRequest: PropTypes.func,
     rejectApprovalRequest: PropTypes.func,
+    getPeople:             PropTypes.func,
   };
 
   constructor(props) {
@@ -39,11 +39,11 @@ export class Approval extends React.Component {
         style={{ float: 'right', marginTop: '10px', marginBottom: '10px' }}
         onClick={() => this.setState({ showForm: !this.state.showForm })}
       >
-        <FormattedMessage id={
-          this.state.showForm
+        <FormattedMessage
+          id={this.state.showForm
             ? 'agent.tickets.approvals.cancel_make_request'
-            : 'agent.tickets.approvals.make_request'
-        } />
+            : 'agent.tickets.approvals.make_request'}
+        />
       </Button>
     );
 
