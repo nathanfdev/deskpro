@@ -918,7 +918,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initPostArea: function() {
-		this._hasInitEd = false;
+    this._hasInitEd = false;
+
+    if (window.DP_HAS_NEW_CONTENT_EDITOR
+      && this.meta.content_input_type === 'dped_v1'
+      && this.reactContentNode) {
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
+    }
+
 		this.getEl('cancel_btn').off('click').on('click', (function() {
 			this.hideEditor();
 
@@ -1075,6 +1082,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
 	destroyPage: function() {
+    if (window.DP_HAS_NEW_CONTENT_EDITOR
+      && this.meta.content_input_type === 'dped_v1'
+      && this.reactContentNode) {
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
+    }
+
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
 		var el = $('.article-editor-wrap', this.getEl('content_ed'));
@@ -1114,9 +1127,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			  var contentInput = null;
 			  if (window[this.meta.baseId + '_content_input']) {
 			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
-			  }
+        }
+        self.reactContentNode = txt[0];
 			  this.rte = window.AgentLegacyBundle.renderContentEditor(
-					txt[0],
+					self.reactContentNode,
 					contentInput,
           self.editStateSaver.triggerChange.bind(self.editStateSaver),
           this.onBlur.bind(this)
