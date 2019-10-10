@@ -34,6 +34,7 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use Orb\Util\Arrays;
@@ -885,6 +886,21 @@ class PublishController extends AbstractController
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
         ];
 
+        if ($this->in->getString('icon.urn')) {
+            $icon = new IconProperty();
+            $icon->setUrn($this->in->getString('icon.urn'));
+            $options = [];
+            if ($this->in->getString('icon.style')) {
+                $options['style'] = $this->in->getString('icon.style');
+            }
+            if ($this->in->getString('icon.color')) {
+                $options['color'] = $this->in->getString('icon.color');
+            }
+            if ($options) {
+                $icon->setOptions($options);
+            }
+        }
+
         if ($type === 'topics') {
             $saveCategory['description'] = $this->in->getString('category.description') ?: '';
         }
@@ -928,6 +944,14 @@ class PublishController extends AbstractController
                 $cat->setColor($this->in->getString('category.color'));
                 $this->db->update($table, [
                     'color' => $cat->getColor(false),
+                ], ['id' => $cat->id]);
+            }
+
+            if (isset($icon)) {
+                $this->em->persist($icon);
+                $this->em->flush();
+                $this->db->update($table, [
+                    'icon_property_id' => $icon->getId(),
                 ], ['id' => $cat->id]);
             }
 
