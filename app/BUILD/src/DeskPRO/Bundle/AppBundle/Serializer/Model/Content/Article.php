@@ -13,6 +13,20 @@ use JMS\Serializer\Annotation as JMS;
 class Article extends ContentAbstract
 {
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $contentInput = '';
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $contentInputType = '';
+
+    /**
      * Content category.
      *
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\ArticleCategory>>")
@@ -69,6 +83,8 @@ class Article extends ContentAbstract
         $this->categoryNames       = $entity->getCategoryNames();
         $this->titleTranslations   = $entity->getTitleTranslations();
         $this->contentTranslations = $entity->getContentTranslations();
+        $this->contentInput        = $entity->content_input;
+        $this->contentInputType    = $entity->content_input_type;
         $this->attachments         = $entity->getAttachments();
     }
 }

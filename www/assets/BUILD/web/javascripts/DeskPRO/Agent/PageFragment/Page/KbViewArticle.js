@@ -1127,19 +1127,41 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
 
 			  var contentInput = null;
-			  if (window[this.meta.baseId + '_content_input']) {
-			    contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
+
+        function createEditor() {
+          self.reactContentNode = txt[0];
+          self.rte = window.AgentLegacyBundle.renderContentEditorCollab(
+            self.reactContentNode,
+            contentInput,
+            self.editStateSaver.triggerChange.bind(self.editStateSaver),
+            self.onBlur.bind(self),
+            self.meta.collabEditorOptions.documentUrn,
+            self.meta.collabEditorOptions.userUrn,
+            self.meta.collabEditorOptions.token
+          );
         }
-        this.reactContentNode = txt[0];
-			  this.rte = window.AgentLegacyBundle.renderContentEditorCollab(
-					self.reactContentNode,
-					contentInput,
-          self.editStateSaver.triggerChange.bind(self.editStateSaver),
-		      this.onBlur.bind(this),
-          this.meta.collabEditorOptions.documentUrn,
-          this.meta.collabEditorOptions.userUrn,
-          this.meta.collabEditorOptions.token
-        );
+
+        var showSaving = this.getEl('article_save').find('.mark-loading');
+        showSaving.show();
+
+        $.ajax({
+          url:  DP_BASE_API_URL + "/v2/articles/" + self.meta.article_id,
+          type: 'GET',
+          success: function(data) {
+            contentInput = JSON.parse(data.data.content_input);
+            createEditor();
+          },
+          error: function() {
+            console.error("Can't fetch article");
+            if (window[this.meta.baseId + '_content_input']) {
+              contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
+            }
+            createEditor();
+          },
+          complete: function() {
+            showSaving.hide();
+          }
+        });        
 			} else {
 				this.rte = window.LegacyRteTextarea.init(txt, {
 					height: h,
