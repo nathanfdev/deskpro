@@ -1161,7 +1161,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
           complete: function() {
             showSaving.hide();
           }
-        });        
+        });
 			} else {
 				this.rte = window.LegacyRteTextarea.init(txt, {
 					height: h,
