@@ -1,4 +1,4 @@
-{% if is_agent() %}
+{% if is_agent() and brand_setting('user.non_published_articles_on_helpcenter')%}
     {% if article.status == 'published' %}
     <span class="badge badge-success badge-small">PUBLISHED</span>
     {% elseif article.status == 'archived' %}

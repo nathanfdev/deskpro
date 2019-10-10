@@ -16,6 +16,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Util\LazyPropObject;
@@ -105,6 +106,8 @@ class PortalController extends AbstractController
         $kbData = new LazyPropObject([
             'data' => function () {
                 $category = null;
+                /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+                $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
 
                 $person = $this->getCurrentPerson();
                 $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
@@ -113,7 +116,14 @@ class PortalController extends AbstractController
 
                 $categoryChildrenPagers = [];
                 foreach ($categoryChildren as $key => &$childCat) {
-                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true, $person->isAgent());
+                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager(
+                        $childCat,
+                        1,
+                        5,
+                        $person,
+                        true,
+                        $person->isAgent() && $brandSettingsResolver->getSetting('user.non_published_articles_on_helpcenter')
+                    );
                     if ($categoryChildrenPagers[$childCat->getId()]->getNbResults() === 0) {
                         unset($categoryChildrenPagers[$childCat->getId()]);
                         unset($categoryChildren[$key]);
@@ -133,9 +143,9 @@ class PortalController extends AbstractController
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
-                'page_title'        => $this->createPageTitle()->homepage(),
-                'helpcenter'        => $this->get('helpcenter_data_helper'),
-                'kb_data'           => $kbData,
+                'page_title'      => $this->createPageTitle()->homepage(),
+                'helpcenter'      => $this->get('helpcenter_data_helper'),
+                'kb_data'         => $kbData,
                 'communityForums' => $allowedCommunityForumIds,
             ]
         );
