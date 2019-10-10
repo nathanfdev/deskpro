@@ -117,22 +117,52 @@ class ApprovalTableRow extends React.Component {
           if (iAmApprover && approval.approvers_pending.includes(meId)) {
             controls = (
               <div>
-                <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
-                <Button style={{ marginRight: '3px' }} size="small" loading={this.state.saving} onClick={() => this.acceptApprovalRequest(approval.id)}>Accept</Button>
-                <Button size="small" loading={this.state.saving} onClick={() => this.rejectApprovalRequest(approval.id)}>Reject</Button>
+                <Button
+                  size="small"
+                  loading={this.state.saving}
+                  onClick={() => this.cancelApprovalRequest(approval.id)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  style={{ marginRight: '3px' }}
+                  size="small" loading={this.state.saving}
+                  onClick={() => this.acceptApprovalRequest(approval.id)}
+                >
+                  Accept
+                </Button>
+                <Button
+                  size="small"
+                  loading={this.state.saving}
+                  onClick={() => this.rejectApprovalRequest(approval.id)}
+                >
+                  Reject
+                </Button>
               </div>
             );
           } else {
             controls = (
               <div>
-                <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
+                <Button
+                  size="small"
+                  loading={this.state.saving}
+                  onClick={() => this.cancelApprovalRequest(approval.id)}
+                >
+                  Cancel
+                </Button>
               </div>
             );
           }
         } else {
           controls = (
             <div>
-              <Button size="small" loading={this.state.saving} onClick={() => this.cancelApprovalRequest(approval.id)}>Cancel</Button>
+              <Button
+                size="small"
+                loading={this.state.saving}
+                onClick={() => this.cancelApprovalRequest(approval.id)}
+              >
+                Cancel
+              </Button>
             </div>
           );
         }
