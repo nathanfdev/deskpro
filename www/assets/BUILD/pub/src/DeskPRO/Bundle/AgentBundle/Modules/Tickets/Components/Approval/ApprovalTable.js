@@ -57,8 +57,8 @@ class ApprovalTable extends React.Component {
           <col style={{ width: '30%' }} />
           <col style={{ width: '30%' }} />
           <col style={{ width: '20%' }} />
-          <col style={{ width: '50px' }} />
-          <col style={{ width: '50px' }} />
+          <col style={{ width: '80px' }} />
+          <col style={{ width: '80px' }} />
           <col style={{ width: '70px' }} />
           <col style={{ width: '140px' }} />
           <col style={{ width: '30px' }} />
@@ -83,10 +83,10 @@ class ApprovalTable extends React.Component {
               <FormattedMessage id="agent.tickets.approvals.approvers" />
             </th>
             <th style={colsStyle}>
-              <FormattedMessage id="agent.tickets.approvals.success" />
+              <FormattedMessage id="agent.tickets.approvals.to_approve" />
             </th>
             <th style={colsStyle}>
-              <FormattedMessage id="agent.tickets.approvals.failure" />
+              <FormattedMessage id="agent.tickets.approvals.to_reject" />
             </th>
             <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.status" />
