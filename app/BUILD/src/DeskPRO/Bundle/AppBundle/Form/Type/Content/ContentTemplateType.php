@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\JsonArrayType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,7 +47,26 @@ class ContentTemplateType extends AbstractType
                     ContentTemplate::CONTENT_TYPE_TOPIC,
 
                 ],
-            ]);
+            ])
+//            ->add('attachments', CollectionType::class, [
+//                'type'         => 'hidden',
+//                'required'     => false,
+//                'allow_add'    => true,
+//                'allow_delete' => true,
+//            ])
+            ->add('attach', CollectionType::class, [
+                'type'         => 'hidden',
+                'required'     => false,
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ])
+//            ->add('blob_inline_ids', 'collection', [
+//                'type'         => 'hidden',
+//                'required'     => false,
+//                'allow_add'    => true,
+//                'allow_delete' => true,
+//            ])
+        ;
     }
 
     /**

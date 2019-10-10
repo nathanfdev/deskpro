@@ -206,9 +206,13 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
       $('.submit-template-trigger', overlayEl).on('click', function() {
         var $submitTrigger = this;
+        var attachments = $('input[name="newarticle[attach][]"]').map(function() {
+          return $(this).val();
+        }).get();
         var data = {
           "type": "article",
           "template": formData,
+          "attach": attachments,
           "title": $('input[name=title]', overlayEl).val()
         };
         $('.is-loading', overlayEl).show();

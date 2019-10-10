@@ -6,6 +6,7 @@ import Immutable from 'immutable';
 
 const setFormFields = contentTemplate => (page) => {
   const labels = [];
+  console.log(contentTemplate.get('attachments'));
   const setField = (field) => {
     const name = field.get('name');
     const value = field.get('value');
@@ -16,6 +17,29 @@ const setFormFields = contentTemplate => (page) => {
         $('.article-tags input').val(labels.join(','));
       } else if (name === 'newarticle[content]' && page.rte.current) {
         page.rte.current.editor.current.reactEditor.current.editor.setContent(value);
+      } else if (name === 'newarticle[attach][]') {
+        console.log(contentTemplate.get('attachments').peek());
+        // const attach = contentTemplate.get('attachments').find(attach => {
+        //   console.log(attach, value);
+        //   return attach.id === value;
+        // });
+        //
+        // console.log();
+        $('ul.files.file-list', page.form)
+          .append(`
+            <input type="hidden" name="${name}" value="${value}" />
+            <em class="remove-attach-trigger"></em>
+            <label>
+              <a href="{{ '{%=file.download_url%}' }}"
+                target="_blank"
+                data-blob-id="${value}">
+                {{ '{%=file.filename%}' }}
+              </a>
+              <span>{{ '{%=file.filesize_readable%}' }}</span>
+            </label>
+          `)
+          // .add()
+        ;
       } else {
         const $el = $(page.form).find(`[name="${name}"]`);
         if ($el.is('textarea')) {

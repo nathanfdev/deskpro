@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\HttpKernel\Controller\Controller;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -115,10 +117,30 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
      */
     protected $template;
 
+    /**
+     * Person created this template.
+     *
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ContentTemplateAttachment", mappedBy="contentTemplate")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("ArrayCollection<DeskPRO\Bundle\AppBundle\Entity\ContentTemplateAttachment>")
+     *
+     * @var ArrayCollection|ContentTemplateAttachment[]
+     */
+    protected $attachments;
+
+    public $attach = [];
+
+    /**
+     * ContentTemplate constructor.
+     *
+     * @throws \Exception
+     */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
         $this->setModelField('date_updated', new \DateTime());
+        $this->attachments = new ArrayCollection();
     }
 
     /**
@@ -252,5 +274,35 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('template', $template);
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection|ContentTemplateAttachment[]
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * Reset attachments.
+     *
+     * @return $this
+     */
+    public function resetAttachments()
+    {
+        $this->attachments->clear();
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+
+        return $this;
+    }
+
+    /**
+     * @param ContentTemplateAttachment $attach
+     */
+    public function addAttachment(ContentTemplateAttachment $attach)
+    {
+        $this->attachments->add($attach);
+        $attach->setContentTemplate($this);
     }
 }
