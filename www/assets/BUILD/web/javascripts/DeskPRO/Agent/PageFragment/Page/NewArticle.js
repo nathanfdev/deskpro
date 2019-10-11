@@ -129,7 +129,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	destroyPage: function() {
-    if (window.DP_HAS_NEW_CONTENT_EDITOR) {
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.reactContentNode) {
       window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
     }
 
