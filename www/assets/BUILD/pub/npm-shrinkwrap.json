@@ -338,9 +338,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/portal-components": {
-      "version": "0.2.10",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.10.tgz",
-      "integrity": "sha512-i25uqYUCwRW8ZKhtdkUyYRBACBg7CF66ntIZlodQ9cx0a2h12L+8FPvM/0ATCp8le2/GW2IaCuZkJ6ROEKlsrQ==",
+      "version": "0.2.13",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.13.tgz",
+      "integrity": "sha512-ZS9j8Ob03zufeXForpsDmvP505ISVcCpiaPUZdr7kFX5twpSIdwbAZ1gWtT+rqvkXOjUKyH4zztzZpWZkiV/iA==",
       "requires": {
         "@deskpro/js-utils": "^1.0.4",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -355,7 +355,7 @@
         "moment": "^2.22.1",
         "moment-hijri": "^2.0.1",
         "raw-loader": "^0.5.1",
-        "react-dropzone": "^5.0.1",
+        "react-dropzone": "10.1.10",
         "react-select": "^2.0.0",
         "react-textarea-autosize": "^7.0.4",
         "style": "^0.0.3",
@@ -424,9 +424,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.2.10",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.10.tgz",
-      "integrity": "sha512-7uPrYxdII+Cuo8ccZcOuqiw4IVVdhCiSckoINUoF1yvjhbD1e8zjGLKv9Q8e9KNafww+bntCqrLTl3CeCrrAdQ==",
+      "version": "0.2.13",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.13.tgz",
+      "integrity": "sha512-DlqiQicD29BZxo1z2g2tEQcP7ZsNHc4t77K5l256alhYUo4poeIEpGUggEu0zztXpUwaFO9CIy2suJtghmaZDw==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
@@ -24302,6 +24302,14 @@
       "resolved": "https://registry.npmjs.org/file-saver/-/file-saver-1.3.8.tgz",
       "integrity": "sha512-spKHSBQIxxS81N/O21WmuXA2F6wppUCsutpzenOeZzOCCJ5gEfcbqJP983IrpLXzYmXnMUa6J03SubcNPdKrlg=="
     },
+    "file-selector": {
+      "version": "0.1.12",
+      "resolved": "https://registry.npmjs.org/file-selector/-/file-selector-0.1.12.tgz",
+      "integrity": "sha512-Kx7RTzxyQipHuiqyZGf+Nz4vY9R1XGxuQl/hLoJwq+J4avk/9wxxgZyHKtbyIPJmbD4A66DWGYfyykWNpcYutQ==",
+      "requires": {
+        "tslib": "^1.9.0"
+      }
+    },
     "file-uri-to-path": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz",
@@ -34182,12 +34190,30 @@
       }
     },
     "react-dropzone": {
-      "version": "5.1.1",
-      "resolved": "https://registry.npmjs.org/react-dropzone/-/react-dropzone-5.1.1.tgz",
-      "integrity": "sha512-C9kXI3D95rVXbLLg9DvzCnmjplKwpfj/2F/MwvGVM05kDwWMzKVKZnmgZHZUebmiVj4mFOmBs2ObLiKvAxunGw==",
+      "version": "10.1.10",
+      "resolved": "https://registry.npmjs.org/react-dropzone/-/react-dropzone-10.1.10.tgz",
+      "integrity": "sha512-vcLBdkYo7wgZpw1o4cz7uk8/Mmm+sYHeiTfFSshA/EGthz/TjjrTOrKwvFHm3o1p1LPk+x+KbDDlw5OeIo6eYA==",
       "requires": {
         "attr-accept": "^1.1.3",
-        "prop-types": "^15.6.2"
+        "file-selector": "^0.1.11",
+        "prop-types": "^15.7.2"
+      },
+      "dependencies": {
+        "prop-types": {
+          "version": "15.7.2",
+          "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz",
+          "integrity": "sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==",
+          "requires": {
+            "loose-envify": "^1.4.0",
+            "object-assign": "^4.1.1",
+            "react-is": "^16.8.1"
+          }
+        },
+        "react-is": {
+          "version": "16.10.2",
+          "resolved": "https://registry.npmjs.org/react-is/-/react-is-16.10.2.tgz",
+          "integrity": "sha512-INBT1QEgtcCCgvccr5/86CfD71fw9EPmDxgiJX4I2Ddr6ZsV6iFXsuby+qWJPtmNuMY0zByTsG4468P7nHuNWA=="
+        }
       }
     },
     "react-emojione": {
