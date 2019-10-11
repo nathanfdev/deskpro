@@ -45,28 +45,8 @@ class ContentTemplateType extends AbstractType
                     ContentTemplate::CONTENT_TYPE_NEWS,
                     ContentTemplate::CONTENT_TYPE_DOWNLOAD,
                     ContentTemplate::CONTENT_TYPE_TOPIC,
-
                 ],
-            ])
-//            ->add('attachments', CollectionType::class, [
-//                'type'         => 'hidden',
-//                'required'     => false,
-//                'allow_add'    => true,
-//                'allow_delete' => true,
-//            ])
-            ->add('attach', CollectionType::class, [
-                'type'         => 'hidden',
-                'required'     => false,
-                'allow_add'    => true,
-                'allow_delete' => true,
-            ])
-//            ->add('blob_inline_ids', 'collection', [
-//                'type'         => 'hidden',
-//                'required'     => false,
-//                'allow_add'    => true,
-//                'allow_delete' => true,
-//            ])
-        ;
+            ]);
     }
 
     /**

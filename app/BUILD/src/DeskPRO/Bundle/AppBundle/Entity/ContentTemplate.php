@@ -120,7 +120,7 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
     /**
      * Person created this template.
      *
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ContentTemplateAttachment", mappedBy="contentTemplate")
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ContentTemplateAttachment", mappedBy="contentTemplate", orphanRemoval=true)
      *
      * @JMS\Expose()
      * @JMS\Type("ArrayCollection<DeskPRO\Bundle\AppBundle\Entity\ContentTemplateAttachment>")
@@ -129,6 +129,9 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
      */
     protected $attachments;
 
+    /**
+     * @var array
+     */
     public $attach = [];
 
     /**
@@ -292,7 +295,6 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
     public function resetAttachments()
     {
         $this->attachments->clear();
-        $this->_onPropertyChanged('attachments', null, $this->attachments);
 
         return $this;
     }

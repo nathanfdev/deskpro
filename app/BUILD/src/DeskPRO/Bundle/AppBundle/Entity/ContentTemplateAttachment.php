@@ -50,10 +50,10 @@ class ContentTemplateAttachment implements EntityInterface, NotifyPropertyChange
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ContentTemplate", inversedBy="attachments")
-     * @ORM\JoinColumn(name="content_template_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="content_template_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\ContentTemplate>")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\ContentTemplate")
      *
      * @var ContentTemplate
      */
@@ -64,9 +64,7 @@ class ContentTemplateAttachment implements EntityInterface, NotifyPropertyChange
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Blob>")
-     *
-     * @Assert\Valid()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      *
      * @var Blob
      */
@@ -198,7 +196,7 @@ class ContentTemplateAttachment implements EntityInterface, NotifyPropertyChange
      */
     public function setContentTemplate(ContentTemplate $contentTemplate)
     {
-        $this->setModelField('contentTemplate', $contentTemplate);
+        $this->contentTemplate = $contentTemplate;
 
         return $this;
     }

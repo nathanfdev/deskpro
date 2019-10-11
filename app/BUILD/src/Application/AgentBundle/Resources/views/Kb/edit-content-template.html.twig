@@ -121,7 +121,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
 					<li data-tab-for="> .tab-fields">{{ phrase('agent.general.fields') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attach') }}</li>
+					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -143,7 +143,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<div class="tab-fields" style="display: none">
 					{% include 'AgentBundle:Kb:view-customfields-edit-rows.html.twig' %}
 				</div>
-				{# / Tab Fields #}
+				{# /Tab Fields #}
 
 				{# Tab Attach #}
 				<div class="tab-attach" style="display: none">
@@ -152,23 +152,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="file-input">
 						<input type="file" name="file-upload" multiple="multiple" />
 					</div>
-					<ul class="files file-list">
-						{% if content_template.attachments|length %}
-							{% for attach in content_template.attachments %}
-								<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
-									{% if not noremove %}<em class="remove-attach-trigger"></em>{% endif %}
-									{% if attach.blob.isImage() %}
-										<a href="{{ attach.blob.download_url }}" target="_blank">
-											<img src="{{ path('serve_blob', {'blob_auth_id': attach.blob.auth_id, 'filename': attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />
-										</a>
-									{% endif %}
-									<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
-									<span class="size">({{ attach.blob.readable_filesize }})</span>
-								</li>
-							{% endfor %}
-						{% endif %}
-					</ul>
-
+					<ul class="files file-list"></ul>
 				</div>
 				{# /Tab Attach #}
 			</div>

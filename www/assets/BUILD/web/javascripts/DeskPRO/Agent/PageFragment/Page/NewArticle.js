@@ -244,8 +244,12 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
   submitTemplateUpdate: function() {
     var formData = this.collectFormData();
+    var attachments = $('input[name="newarticle[attach][]"]').map(function() {
+      return $(this).val();
+    }).get();
     var data = {
-      "template": formData
+      "template": formData,
+      "attach": attachments,
     };
 
     $('div.error.section', this.wrapper).removeClass('error');

@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 
 const setFormFields = contentTemplate => (page) => {
   const labels = [];
-  console.log(contentTemplate.get('attachments'));
+  const $fileList = $('ul.files.file-list', page.form);
   const setField = (field) => {
     const name = field.get('name');
     const value = field.get('value');
@@ -18,28 +18,27 @@ const setFormFields = contentTemplate => (page) => {
       } else if (name === 'newarticle[content]' && page.rte.current) {
         page.rte.current.editor.current.reactEditor.current.editor.setContent(value);
       } else if (name === 'newarticle[attach][]') {
-        console.log(contentTemplate.get('attachments').peek());
-        // const attach = contentTemplate.get('attachments').find(attach => {
-        //   console.log(attach, value);
-        //   return attach.id === value;
-        // });
-        //
-        // console.log();
-        $('ul.files.file-list', page.form)
-          .append(`
+        const attachment = contentTemplate
+          .get('attachments')
+          .find(attach => Number(attach.get('blob').get('blob_id')) === Number(value));
+
+        if (attachment) {
+          const blob = attachment.get('blob');
+          $fileList.append(`
+          <li>
             <input type="hidden" name="${name}" value="${value}" />
             <em class="remove-attach-trigger"></em>
             <label>
-              <a href="{{ '{%=file.download_url%}' }}"
+              <a href="${blob.get('download_url')}"
                 target="_blank"
                 data-blob-id="${value}">
-                {{ '{%=file.filename%}' }}
+                ${blob.get('filename')}
               </a>
-              <span>{{ '{%=file.filesize_readable%}' }}</span>
+              <span>${blob.get('filesize_readable')}</span>
             </label>
-          `)
-          // .add()
-        ;
+          </li>
+        `);
+        }
       } else {
         const $el = $(page.form).find(`[name="${name}"]`);
         if ($el.is('textarea')) {
@@ -63,6 +62,11 @@ const setFormFields = contentTemplate => (page) => {
   };
 
   contentTemplate.get('template').forEach(setField);
+
+  $fileList.find('.remove-attach-trigger')
+    .click(function () {
+      $(this).parent('li').remove();
+    });
 };
 
 export const loadContentTemplates = createAction(
