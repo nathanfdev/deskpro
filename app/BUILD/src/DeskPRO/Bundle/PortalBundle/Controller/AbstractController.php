@@ -164,7 +164,8 @@ class AbstractController extends BaseController
             'alerts'  => [$this, 'loadAlerts'],
         ]);
 
-        $pageVars['pageData'] = $pageData;
+        $pageVars['pageData']   = $pageData;
+        $pageVars['helpcenter'] = $this->get('helpcenter_data_helper');
 
         $pageVars = array_merge($options, $pageVars);
 

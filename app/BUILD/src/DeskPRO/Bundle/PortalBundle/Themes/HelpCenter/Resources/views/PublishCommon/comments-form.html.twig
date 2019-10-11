@@ -14,7 +14,7 @@
                 <a href="javascript:void(0)" class="btn btn-outline-secondary">Cancel</a>
             </div>
             <div class="dp-po-avatar">
-                <img src="{{ avatar_url(app.user) }}" />
+                {{ hc_avatar(app.user, '', 30) }}
                 <strong>{{ app.user.display_name }}</strong>
             </div>
             <form class="dp-po-form">
@@ -61,7 +61,7 @@
     {# Login to comment #}
     {# ------------------------------------------ #}
     {% elseif is_guest() and can_login() %}
-        
+
         <p class="dp-po-comment-subtitle">
             {{ phrase('portal.general.comment_login_first') }}
         </p>
@@ -95,24 +95,24 @@
                                 <input type="checkbox" class="form-check-input" id="comments_login_form_rememberme">
                                 <label class="form-check-label" for="comments_login_form_rememberme">{{ phrase('portal.account.login-remember') }}</label>
                             </div>
-                            
+
                             {% if captcha_form is not null %}
                                 {{ form_widget(captcha_form) }}
                             {% endif %}
-                            
+
                             <button type="submit" class="btn btn-primary btn-lg">{{ phrase('portal.account.login-btn') }}</button>
                             {% if auth_manager.isForgotPasswordVisible %}
                                 <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
                                     {{ phrase('portal.account.login-password-reminder') }}
                                 </a>
                             {% endif %}
-                            
+
                         </form>
                     </section>
                     {# ------------------------------------------ #}
                     {# Login form end #}
                     {# ------------------------------------------ #}
-                    
+
                     {# ------------------------------------------ #}
                     {# Register form start #}
                     {# ------------------------------------------ #}
@@ -130,7 +130,7 @@
                     {# ------------------------------------------ #}
                 </div>
                 <div class="col-sm-6">
-            
+
                 </div>
             </div>
         </div>

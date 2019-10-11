@@ -128,6 +128,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('brand', [$this, 'getBrand']),
             new \Twig_SimpleFunction('avatar_url', [$this, 'getAvatarUrl']),
             new \Twig_SimpleFunction('avatar_default_url', [$this, 'getAvatarDefaultUrl']),
+            new \Twig_SimpleFunction('hc_avatar', [$this, 'getHelpcenterAvatar'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_message', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_news', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('get_secure_content_cats', [$this, 'getSecureCats']),
@@ -531,9 +532,15 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @return string the url
      */
-    public function getAvatarUrl($obj = null, $size = 80)
+    public function getAvatarUrl($obj = null, $size = 80, $fallbackOnDefault = true)
     {
-        return $this->getAvatarResolver()->getAvatar($obj, $size);
+        $returnedDefault = false;
+        $avatar          = $this->getAvatarResolver()->getAvatar($obj, $size, $returnedDefault);
+        if (!$fallbackOnDefault && $returnedDefault) {
+            return null;
+        }
+
+        return $avatar;
     }
 
     /**
@@ -547,6 +554,34 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getAvatarDefaultUrl($obj = null, $size = 80)
     {
         return $this->getAvatarResolver()->getDefaultPersonAvatar($size);
+    }
+
+    /**
+     * @param null   $obj
+     * @param int    $size
+     * @param string $className
+     *
+     * @return string
+     */
+    public function getHelpcenterAvatar($obj = null, $className = '', $size = 80)
+    {
+        $avatarUrl = $this->getAvatarUrl($obj, $size, false);
+        if ($avatarUrl) {
+            if ($className) {
+                $className = 'class="'.$className.'-image"';
+            }
+
+            return "<img $className src='$avatarUrl' />";
+        } else {
+            if ($className) {
+                $className = 'class="'.$className.'-name"';
+            } else {
+                $className = 'class="dp-po-avatar-name"';
+            }
+            $initials = substr($obj->getFirstName(), 0, 1).substr($obj->getLastName(), 0, 1);
+
+            return "<span $className>$initials</span>";
+        }
     }
 
     /**
@@ -707,8 +742,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
     /**
      * @param HasSplashImageProperty $object
-     * @param int             $width
-     * @param string          $orientation
+     * @param int                    $width
+     * @param string                 $orientation
      *
      * @throws Exception
      *

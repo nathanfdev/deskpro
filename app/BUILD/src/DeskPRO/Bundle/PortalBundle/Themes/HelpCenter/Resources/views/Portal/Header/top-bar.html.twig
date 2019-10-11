@@ -25,16 +25,7 @@
                         <div class="dp-po-header-button">
                             <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary" title="{{ phrase('portal.general.nav-newticket') }}">{{ phrase('portal.general.nav-newticket') }}</a>
                         </div>
-                        <div class="dp-po-user">
-                            <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">Login</a>
-                            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
-                                <h4 class="dropdown-item-text dp-po-user-dropdown-title">New to Deskpro? <a href="">Register for an
-                                        account</a></h4>
-                                <%- include('_form-login.ejs'); %>
-                                <%- include('_form-login-social.ejs'); %>
-                            </div>
-                        </div>
+                        {% include 'Theme:Portal:Header/user-menu.html.twig' %}
                     </div>
 
                 </div>
