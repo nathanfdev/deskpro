@@ -1,4 +1,4 @@
-<div class="dp-po-sidebar dp-po-post-share">
+<div class="dp-po-sidebar dp-po-post-share" id="social-share">
     <h3 class="dp-po-sidebar-title">Share</h3>
     <ul class="dp-po-post-share-list">
         <li class="dp-po-post-share-item">
@@ -62,9 +62,8 @@
                         Messenger
                     </a>
                     <div class="dp-po-post-share-url">
-                        <input type="text" value="https://deskpro.github.io/portal-components/portal-style/demos/homepage.html"
-                               readonly>
-                        <i class="dp-po-icon far fa-copy"></i>
+                        <input id="item-url" type="text" value="{{ portal_url(item) }}" readonly>
+                        <i class="dp-po-icon far fa-copy" id="share-copy-url"></i>
                     </div>
                 </div>
         </li>
