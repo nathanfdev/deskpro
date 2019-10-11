@@ -129,6 +129,10 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	destroyPage: function() {
+    if (window.DP_HAS_NEW_CONTENT_EDITOR) {
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
+    }
+
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
 		var el = this.wrapper.find('.article-section');
@@ -362,8 +366,9 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
       if (window[this.meta.baseId + '_content_input']) {
         contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
       }
+      self.reactContentNode = txt[0];
 			self.rte = window.AgentLegacyBundle.renderContentEditor(
-				txt[0],
+				self.reactContentNode,
         contentInput,
 				this.onFocus.bind(this),
 				this.onBlur.bind(this)
