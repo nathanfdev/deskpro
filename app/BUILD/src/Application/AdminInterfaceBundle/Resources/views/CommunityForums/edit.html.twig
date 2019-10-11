@@ -61,6 +61,9 @@
 											<a href="" ng-click="$event.stopPropagation(); $event.preventDefault(); CommunityForumsEdit.deleteCustomField(custom_field.id, CommunityForumsEdit.community_forum.id)"><i class="fas fa-times"></i></a>
 										</label>
 									</div>
+									<a class="btn btn-success" href="{{ ng_href('portal.community_forums.custom_fields.create', '{forumId: CommunityForumsEdit.community_forum.id}') }}">
+										+ Add
+									</a>
 								</div>
 							</div>
 						</div>

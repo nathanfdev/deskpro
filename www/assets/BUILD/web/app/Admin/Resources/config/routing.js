@@ -1979,6 +1979,13 @@ define(function() {
   });
 
   routes.push({
+    id:         'portal.community_forums.custom_fields.gocreate',
+    url:        '/{forumId:[0-9]+}/go-create/',
+    template:   '',
+    controller: ['$state', function ($state) { $state.go('portal.community_forums.custom_fields.create', { forumId: $state.params.forumId }); }]
+  });
+
+  routes.push({
     id:           'portal.community_forums.custom_fields.create',
     url:          '/{forumId:[0-9]+}/new',
     templateName: 'CustomFields/Community/edit.html',

@@ -23,6 +23,10 @@ define([
       return 'portal.community_forums.custom_fields';
     }
 
+    getBaseRouteNameParams() {
+      return { forumId: this.$stateParams.forumId };
+    }
+
     type() {
       return 'community';
     }

@@ -2,14 +2,15 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Community;
 
+use Application\DeskPRO\CustomFields;
 use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityForumToCustomDefCommunityTopic;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -135,8 +136,8 @@ class CommunityForumCustomFieldsController extends BaseController
     }
 
     /**
-     * @param CommunityForum          $communityForum
-     * @param CustomDefCommunityTopic $customDefCommunityTopic
+     * @param CommunityForum    $communityForum
+     * @param CustomDefAbstract $customDefCommunityTopic
      *
      * @ApiDoc(
      *      description="Update an existing resource",
@@ -161,38 +162,53 @@ class CommunityForumCustomFieldsController extends BaseController
      *
      * @return View
      */
-    public function putAction(CommunityForum $communityForum, CustomDefCommunityTopic $customDefCommunityTopic, Request $request)
+    public function putAction(CommunityForum $communityForum, CustomDefAbstract $customDefCommunityTopic, Request $request)
     {
         return $this->handleForm($communityForum, $customDefCommunityTopic, $request);
     }
 
     /**
-     * @param object  $model
-     * @param Request $request
-     * @param array   $options
+     * @param CommunityForum    $communityForum
+     * @param CustomDefAbstract $model
+     * @param Request           $request
      *
      * @throws InvalidFormException
+     * @throws \Exception
      *
      * @return View
      */
-    protected function handleForm(CommunityForum $communityForum, $model, Request $request, array $options = [])
-    {
+    protected function handleForm(
+        CommunityForum $communityForum,
+        CustomDefAbstract $model,
+        Request $request
+    ) {
         $isModify = $model && $model->getId();
         $status   = $isModify ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
-        $partialUpdate = $isModify;
+        // empty put requests
+        $formData = $request->request->all();
+        if ($isModify && empty($formData)) {
+            $view = View::create(null, $status);
+            $view->setLocation($this->getLocationUrl($communityForum, $model, $request));
 
-        $form = $this->createForm(CustomFieldType::class, $model, $options);
-        $form->submit($request->request->all(), !$partialUpdate);
+            return $view;
+        }
+
+        $container = $this->getContainer();
+        $helper    = new CustomFields\Form\FormHelper($container->getEm(), $container->getFormFactory());
+
+        $form = $helper->buildForm($model, $formData);
+        $form->submit($formData);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        // in some cases entity will be created in form
-        $model = $form->getData();
-        $em    = $this->getManager();
-        $em->persist($model);
-        $em->flush();
+        $helper->saveFormToField($model, $formData);
+        $forumToDef = new CommunityForumToCustomDefCommunityTopic();
+        $forumToDef->setField($model)->setForum($communityForum);
+        $entityManager = $this->get('doctrine.orm.default_entity_manager');
+        $entityManager->persist($forumToDef);
+        $entityManager->flush();
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
         $view->setLocation($this->getLocationUrl($communityForum, $model, $request));
@@ -201,9 +217,10 @@ class CommunityForumCustomFieldsController extends BaseController
     }
 
     /**
-     * @param object  $entity
-     * @param Request $request
-     * @param array   $params
+     * @param CommunityForum $communityForum
+     * @param object         $entity
+     * @param Request        $request
+     * @param array          $params
      *
      * @return string
      */

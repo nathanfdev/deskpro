@@ -100,7 +100,7 @@ define([
       if (fieldModel.id) {
         promise = this.Api2.sendPutJson(`/community_forums/${this.$state.params.forumId}/custom_fields/${fieldModel.id}`, postData);
       } else {
-        promise = this.Api2.sendPostJson(`/community_forums/${this.$state.params.forumId}/custom_fields/`, postData).success(data => fieldModel.id = data.field_id);
+        promise = this.Api2.sendPostJson(`/community_forums/${this.$state.params.forumId}/custom_fields`, postData).success(data => fieldModel.id = data.field_id);
       }
 
       promise.success(() => {
