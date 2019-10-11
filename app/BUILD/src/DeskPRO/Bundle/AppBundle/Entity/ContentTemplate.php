@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\HttpKernel\Controller\Controller;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -128,11 +127,6 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
      * @var ArrayCollection|ContentTemplateAttachment[]
      */
     protected $attachments;
-
-    /**
-     * @var array
-     */
-    public $attach = [];
 
     /**
      * ContentTemplate constructor.

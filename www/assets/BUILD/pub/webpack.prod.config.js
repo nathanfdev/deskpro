@@ -180,9 +180,9 @@ const config = {
       $:      'jquery',
       jQuery: 'jquery',
     }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   exclude: [/(node_modules|bower_components)/]
-    // })
+    new webpack.optimize.UglifyJsPlugin({
+      exclude: [/(node_modules|bower_components)/]
+    })
   ],
 
   node: { fs: 'empty' }
