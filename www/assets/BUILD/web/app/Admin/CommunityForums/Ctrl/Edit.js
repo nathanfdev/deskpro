@@ -41,6 +41,15 @@ define([
       };
     }
 
+    deleteCustomField(id, forumId) {
+      this.DataService.get('CommunityFields').deleteFieldById(id, forumId).then(() => {
+        this.Api2.sendGet(`/community_forums/${this.$stateParams.id}/custom_fields/`)
+          .then(
+            (result) => {
+              this.custom_fields = result.data.data;
+            });
+      });
+    }
 
     initialLoad() {
       const promises = [];

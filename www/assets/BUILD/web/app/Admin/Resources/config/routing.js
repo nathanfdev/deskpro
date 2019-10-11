@@ -1980,7 +1980,7 @@ define(function() {
 
   routes.push({
     id:           'portal.community_forums.custom_fields.create',
-    url:          '/{forumId:[0-9]+}/{id:[0-9]+}',
+    url:          '/{forumId:[0-9]+}/new',
     templateName: 'CustomFields/Community/edit.html',
     controller:   'Admin_CustomFields_CommunityForums_Ctrl_Edit'
   });
@@ -1990,6 +1990,7 @@ define(function() {
     url:          '/{forumId:[0-9]+}/{id:[0-9]+}',
     templateName: 'CustomFields/Community/edit.html',
     controller:   'Admin_CustomFields_CommunityForums_Ctrl_Edit',
+    data:         { stateMarkId: "portal.community_forums.edit "}
   });
 
   // ###

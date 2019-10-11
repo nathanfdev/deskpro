@@ -10,6 +10,11 @@ define([
       this.DEPS    = [];
     }
 
+    init() {
+      super.init();
+      this.forum = { id: this.$stateParams.forumId }
+    }
+
     getDataService() {
       return this.DataService.get('CommunityFields');
     }

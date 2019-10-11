@@ -36,8 +36,8 @@ define([
       * @param {Integer} id Filter id
       * @return {promise}
     */
-    deleteFieldById(id) {
-      return this.Api.sendDelete(`/kb_fields/${id}`).then(() => this.removeListModelById(id));
+    deleteFieldById(id, forumId = null) {
+      return this.Api2.sendDelete(`/community_forums/${forumId ? forumId : this.$state.params.forumId}/custom_fields/${id}`).then(() => this.removeListModelById(id));
     }
 
 
@@ -98,9 +98,9 @@ define([
       const postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
 
       if (fieldModel.id) {
-        promise = this.Api.sendPostJson(`/kb_fields/${fieldModel.id}`, postData);
+        promise = this.Api2.sendPutJson(`/community_forums/${this.$state.params.forumId}/custom_fields/${fieldModel.id}`, postData);
       } else {
-        promise = this.Api.sendPutJson('/kb_fields', postData).success(data => fieldModel.id = data.field_id);
+        promise = this.Api2.sendPostJson(`/community_forums/${this.$state.params.forumId}/custom_fields/`, postData).success(data => fieldModel.id = data.field_id);
       }
 
       promise.success(() => {
