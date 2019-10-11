@@ -19,6 +19,7 @@ import { LanguageChangerWidget } from './LanguageChangerWidget';
 import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import AgentBarWidget from './AgentBarWidget';
 import { LoginDropdownWidget } from './LoginDropdownWidget';
+import { HelpcenterLoginDropdownWidget } from './HelpcenterLoginDropdownWidget';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
 import { SearchResultsPage } from './SearchResultsPage';
 import { MobileTopbarWidget } from './MobileTopbarWidget';
@@ -37,6 +38,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(HelpcenterFormWidget, '.helpcenter-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
+    this.addWidgetDef(HelpcenterLoginDropdownWidget, '#hc-top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');
     this.addWidgetDef(LanguageChangerWidget, '#language-changer');
     this.addWidgetDef(HelpcenterLanguageChangerWidget, '#hc-language-changer');

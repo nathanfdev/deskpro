@@ -175,6 +175,34 @@ class HelpCenterData
         );
     }
 
+    public function getUserInfo()
+    {
+        static $userInfo = null;
+
+        if ($userInfo) {
+            return $userInfo;
+        }
+        $user = $this->getUser();
+
+        $authManager = $this->get('dp_authentication_manager.user');
+
+        $userInfo = [
+            'display_registration_link'     => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+            'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user, 'own') : 0,
+            'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
+            'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
+            'user'                          => $user,
+            'login_text_button_usersources' => $authManager->getLoginTextButtonUsersources(),
+            'login_icon_usersources'        => $authManager->getLoginIconUsersources(),
+            'show_forgot_password'          => $authManager->isForgotPasswordVisible(),
+            'show_remember_me'              => $authManager->isRememberMeEnabled(),
+            'show_login_form'               => $authManager->isLoginFormVisible(),
+            'show_auth'                     => $authManager->isAuthVisible(),
+        ];
+
+        return $userInfo;
+    }
+
     /**
      * @return NewsDataService
      */

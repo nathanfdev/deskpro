@@ -19,7 +19,7 @@
 
   <div class="dp-po-chat-log-item">
     <div class="dp-po-avatar dp-po-avatar-round">
-      <img src="{{ avatar_url(message.author, 30) }}" />
+      {{ hc_avatar(message.author, '', 30) }}
       {% if message.origin == 'agent' %}
         {{ message.author ? message.author.display_name_user : '' }}
       {% else %}
@@ -130,7 +130,7 @@
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.assigned_agent' )}}</h3>
               <p>
                 <div class="dp-po-avatar dp-po-avatar-round">
-                  <img src="{{ avatar_url(chat.agent, 30) }}" />
+                  {{ hc_avatar(chat.agent, '', 30) }}
                   <span>{{chat.agent.display_name_user}}</span>
                 </div>
               </p>
@@ -140,7 +140,7 @@
               <p>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {% for agent in allAgentsExceptAssigned %}
-                    <img src="{{ avatar_url(agent, 30) }}" />
+                    {{ hc_avatar(agent, '', 30) }}
                     <span>{{ agent.display_name_user }}</span>
                   {% endfor %}
                 </div>

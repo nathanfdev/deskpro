@@ -10,7 +10,7 @@
                         <div class="row">
                             <div class="col-sm-9">
                                 <div class="dp-po-avatar">
-                                    <img src="{{ avatar_url(comment.person) }}" />
+                                    {{ hc_avatar(comment.person, '', 30) }}
                                     <strong>{{ comment.userName(true) }}</strong>
                                 </div>
                             </div>

@@ -76,7 +76,7 @@
               <div class="dp-po-table-row">
                   <span class="dp-po-table-cell dp-po-table-cell-large">
                     <div class="dp-po-avatar dp-po-avatar-round">
-                      <img src="{{ avatar_url(person, 30) }}" />{% if person.community_name %}{{ person.community_name }}{% else %}#{{ person.id }}{% endif %}
+                      {{ hc_avatar(person, '', 30) }}{% if person.community_name %}{{ person.community_name }}{% else %}#{{ person.id }}{% endif %}
                     </div>
                   </span>
                 <span class="dp-po-table-cell dp-po-table-cell-large">{{person.primary_email}}</span>

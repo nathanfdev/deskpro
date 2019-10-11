@@ -155,7 +155,7 @@
                                     <span class="dp-po-table-cell dp-po-table-cell-small">{{ date(chat.date_created) | date('day') }}</span>
                                     <span class="dp-po-table-cell">
                     <div class="dp-po-avatar dp-po-avatar-round">
-                      <img src="{{ avatar_url(chat.agent) }}" /> {{ chat.agent}}
+                      {{ hc_avatar(chat.agent) }} {{ chat.agent}}
                     </div>
                   </span>
                                     <span class="dp-po-table-cell dp-po-table-cell-large">{{ chat.subject_preview }}
