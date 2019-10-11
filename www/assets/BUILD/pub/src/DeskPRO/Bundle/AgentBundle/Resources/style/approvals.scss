@@ -35,6 +35,7 @@
       flex-grow: 1;
       width: 33%;
       padding: 2px;
+      position: relative;
 
       .info {
         text-align: center;
@@ -66,7 +67,6 @@
 
     ul.approvers-list {
       list-style: none;
-      float: left;
 
       li {
         position: relative;
@@ -74,21 +74,27 @@
         white-space: nowrap;
         margin: 2px;
 
-        a.dp-button {
-          //padding: 0 5px 0 3px;
-          //margin-bottom: 5px;
-          padding: 2px 5px;
+        a {
+          padding: 0 5px 0 3px;
           font-size: 9px;
           -webkit-border-radius: 3px;
           -moz-border-radius: 3px;
           border-radius: 3px;
 
-          span.text {
+          .text {
             background-position: 0 50%;
             background-repeat: no-repeat;
             padding-left: 19px;
             line-height: 21px;
             white-space: nowrap;
+            font-size: 11px;
+          }
+
+          .remove-row-trigger {
+            color: #7C7C7C;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 5px;
           }
         }
       }

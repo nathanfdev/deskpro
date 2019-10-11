@@ -38,14 +38,25 @@ class ApprovalForm extends React.Component {
     }));
   };
 
-  handleApproverChoice = (choice) => {
+  addApprover = (choice) => {
     const { approvers } = this.state;
-    let { people } = this.state;
-
     approvers.push(choice);
-    people = people.filter(opt => opt.value !== choice.value);
 
-    this.setState({ approvers, people, });
+    this.setState({ approvers });
+  };
+
+  removeApprover = (id) => {
+    const { approvers } = this.state;
+    const approver = approvers.filter(opt => opt.value === id)[0];
+
+    if (approver) {
+      const index = approvers.indexOf(approver);
+      if (index !== -1) {
+        approvers.splice(index, 1);
+      }
+
+      this.setState({ approvers });
+    }
   };
 
   handleTemplateChange = (value) => {
@@ -214,7 +225,10 @@ class ApprovalForm extends React.Component {
             <FormattedMessage id="agent.tickets.approvals.approvers" />
             <span className="info">( {approversInfo} )</span>
           </Label>
-          <Select options={this.state.people} onChange={this.handleApproverChoice} />
+          <Select
+            options={this.state.people.filter(p => this.state.approvers.indexOf(p) === -1)}
+            onChange={this.addApprover}
+          />
         </div>
       ) : '';
 
@@ -228,8 +242,14 @@ class ApprovalForm extends React.Component {
 
             return (
               <li key={approver.id}>
-                <a className="dp-btn dp-btn-small" >
+                <a className="as-popover dp-btn dp-btn-small">
                   <span className="text" style={avatarStyle}>{approver.name}</span>
+                  <span
+                    className="remove-row-trigger nohide-edit"
+                    onClick={(ev) => { ev.preventDefault(); this.removeApprover(approver.id); }}
+                  >
+                    <i className="fas fa-times" />
+                  </span>
                 </a>
               </li>
             );
@@ -257,11 +277,13 @@ class ApprovalForm extends React.Component {
             </div>
             {approversSelect}
             <div className="col">
-              {maxApprovers !== 0 && this.state.approvers.length === maxApprovers &&
-              <Label>
-                <FormattedMessage id="agent.tickets.approvals.approvers" />
-                <span className="info">( {approversInfo} )</span>
-              </Label>}
+              {maxApprovers !== 0 && this.state.approvers.length === maxApprovers
+                ? <Label>
+                  <FormattedMessage id="agent.tickets.approvals.approvers" />
+                  <span className="info">( {approversInfo} )</span>
+                </Label>
+                : <Label>&nbsp;</Label>
+              }
               <div>{approversList}</div>
             </div>
           </div>
