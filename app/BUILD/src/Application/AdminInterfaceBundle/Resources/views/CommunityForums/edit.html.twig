@@ -58,7 +58,7 @@
 											<i class="fas fa-bars drag-handle"></i>
 											{{ ng_var('custom_field.title') }}
 											<a href="{{ ng_href('portal.community_forums.custom_fields.edit', '{forumId: CommunityForumsEdit.community_forum.id, id: custom_field.id}') }}"><i class="fas fa-edit"></i></a>
-											<i class="fas fa-times" ng-click="CommunityForumsEdit.deleteCustomField(custom_field.id, CommunityForumsEdit.community_forum.id)"></i>
+											<a href="" ng-click="$event.stopPropagation(); $event.preventDefault(); CommunityForumsEdit.deleteCustomField(custom_field.id, CommunityForumsEdit.community_forum.id)"><i class="fas fa-times"></i></a>
 										</label>
 									</div>
 								</div>
