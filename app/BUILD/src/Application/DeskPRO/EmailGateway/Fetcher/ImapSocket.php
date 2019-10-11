@@ -331,7 +331,7 @@ class ImapSocket extends AbstractFetcher
                 // Mark message as read when we cant fetch body on reason of big size.
                 // Otherwise its marked as read automatically by fetching the body
                 if ($rawMessage->too_big) {
-                    $this->storage->markAsSeen($rawMessage->id);
+                    $this->storage->setFlags($rawMessage->id, ['\\Seen']);
                 }
                 $this->logger->log("Marked {$rawMessage->id} as seen", 'debug');
                 break;
