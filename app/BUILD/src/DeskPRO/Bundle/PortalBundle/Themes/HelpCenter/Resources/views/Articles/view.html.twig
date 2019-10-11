@@ -130,6 +130,12 @@
         } %}
     {% endif %}
 
+    {% if brand_setting('user.share_on_social') %}
+        {% include 'Theme:PublishCommon:share.html.twig' with {
+            item: article
+        } %}
+    {% endif %}
+
     {% include'Theme:PublishCommon:meta.html.twig' with {
         item: article
     } %}
