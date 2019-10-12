@@ -2,29 +2,11 @@
     {% for topic in topics %}
         <li class="dp-po-community-status-item">
             <a href="{{ portal_path(topic) }}" class="dp-po-community-status-link">
-                <div class="dp-po-status-ribbon">
-                    {% if topic.status_category %}
-                        {% if topic.status_category.id == 2 %}
-                            <span class="dp-po-status-ribbon-from">development</span>
-                            <span class="dp-po-status-ribbon-to dp-po-status-ribbon-to-grey">{{ topic.status_category }}</span>
-                        {% elseif topic.status_category.id == 3 %}
-                            <span class="dp-po-status-ribbon-from">planning</span>
-                            <span class="dp-po-status-ribbon-to dp-po-status-ribbon-to-purple">{{ topic.status_category }}</span>
-                        {% elseif topic.status_category.id == 4 %}
-                            <span class="dp-po-status-ribbon-from">started</span>
-                            <span class="dp-po-status-ribbon-to dp-po-status-ribbon-to-neutral">{{ topic.status_category }}</span>
-                        {% elseif topic.status_category.id == 5 %}
-                            <span class="dp-po-status-ribbon-from">Under Review</span>
-                            <span class="dp-po-status-ribbon-to dp-po-status-ribbon-to-success">{{ topic.status_category }}</span>
-                        {% elseif topic.status_category.id == 6 %}
-                            <span class="dp-po-status-ribbon-from">Under Review</span>
-                            <span class="dp-po-status-ribbon-to dp-po-status-ribbon-to-grey">{{ topic.status_category }}</span>
-                        {% elseif topic.status_category.id == 7 %}
-                            <span class="dp-po-status-ribbon-from">Under Review</span>
-                            <span class="dp-po-status-ribbon-to dp-po-status-ribbon-to-grey">{{ topic.status_category }}</span>
-                        {% endif %}
-                    {% endif %}
-                </div>
+                {% if topic.status_category %}
+                    {% include 'Theme:Community:blocks/status-change-transition.html.twig' with {
+                        topic: topic,
+                    } %}
+                {% endif %}
                 {{ topic.title }}
             </a>
         </li>

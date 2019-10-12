@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
@@ -26,6 +27,7 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -212,6 +214,7 @@ class CommunityTopicsController extends AbstractPublishController
         return $this->renderThemeView(
             'Theme:Community:index.html.twig',
             [
+                'mode'                  => 'home',
                 'page'                  => $page,
                 'community_forums'      => $communityForums,
                 'count'                 => $this->getBrandSetting('portal.per_page_content'),
@@ -313,6 +316,7 @@ class CommunityTopicsController extends AbstractPublishController
         try {
             $uriHelper = new CommunityFilterUriHelper();
             $filter    = $uriHelper->extractCommunityFilter($filter_uri);
+            $filter->setQ($request->query->get('q', ''));
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
@@ -364,6 +368,7 @@ class CommunityTopicsController extends AbstractPublishController
         $filterJs        = $this->generateFilterJs($filter, $communityForums, $page);
 
         $pageOptions = [
+            'mode'               => 'browse',
             'page'               => $page,
             'community_forums'   => $communityForums,
             'count'              => $this->getBrandSetting('portal.per_page_content'),
@@ -381,6 +386,37 @@ class CommunityTopicsController extends AbstractPublishController
             'lockout'            => $request->get('lockout', false),
             'lockout_time'       => 0,
         ];
+
+        // If there is a single, current type selected
+        $currentForum = $filter->getCurrentType()
+            ? $this->getRepo(CommunityForum::class)->find($filter->getCurrentType())
+            : null
+        ;
+
+        // Lazy load topics list
+        $pageOptions['topics_list'] = new LazyPropObject([
+            'view' => function () use ($filter) {
+                return $filter->getView();
+            },
+            'is_compact' => function () use ($filter) {
+                return ($filter->getViewMode() === CommunityFilter::VIEW_MODE_COMPACT);
+            },
+            'topics_data' => function () use ($page, $filter) {
+                return $this->getCommunityDataService()->getFilteredTopicList([
+                    'page'              => $page,
+                    'count'             => $this->getBrandSetting('portal.per_page_content'),
+                    'status'            => $filter->getStatus(),
+                    'status_categories' => $filter->getStatusCategories(),
+                    'types'             => $filter->getTypes(),
+                    'sort'              => $filter->getSort(),
+                    'sort_direction'    => $filter->getSortDirection(),
+                    'view'              => $filter->getView(),
+                    'q'                 => $filter->getQ(),
+                    'activities'        => $filter->getActivities(),
+                    'view_mode'         => $filter->getViewMode(),
+                ], $this->getUser());
+            },
+        ]);
 
         if ($request->isXmlHttpRequest()) {
             return $this->renderThemeView(
@@ -404,7 +440,7 @@ class CommunityTopicsController extends AbstractPublishController
             'user'               => $this->getUser(),
             'lockout'            => false,
             'lockout_time'       => false,
-            'is_browsing'        => true,
+            'current_forum'      => $currentForum,
         ]);
 
         // RENDER THEME
@@ -679,9 +715,11 @@ class CommunityTopicsController extends AbstractPublishController
         }
 
         $statusCategories       = [];
-        $statusCategoriesEntity = $this->getRepo('DeskPRO:CommunityTopicStatusCategory')->findBy(
+        $statusCategoriesEntity = $this->getRepo(CommunityTopicStatusCategory::class)->findBy(
             ['status_type' => CommunityFilter::$statuses]
         );
+
+        /** @var CommunityTopicStatusCategory $statusCategory */
         foreach ($statusCategoriesEntity as $statusCategory) {
             $statusType = $statusCategory->getStatusType();
             if (!array_key_exists($statusType, $statusCategories)) {
@@ -691,17 +729,20 @@ class CommunityTopicsController extends AbstractPublishController
             $statusCategories[$statusType][] = [
                 'id'    => $statusCategory->getId(),
                 'title' => $this->objectPhrase($statusCategory),
+                'color' => $statusCategory->getColor(),
             ];
         }
 
         $theArray = [
             'filter'    => array_merge($filter->toArray(), ['page' => $page]),
             'available' => [
+                'views'             => $this->transArray(CommunityFilter::$views_translated),
                 'status'            => $this->transArray(CommunityFilter::$statuses_translated),
                 'status_categories' => $statusCategories,
                 'types'             => $allowedTypesParsed,
                 'sorts'             => $this->transArray(CommunityFilter::$sorts_translated),
                 'sort_directions'   => $this->transArray(CommunityFilter::$sort_directions_translated),
+                'activities'        => $this->transArray(CommunityFilter::$activities_translated),
             ],
         ];
 

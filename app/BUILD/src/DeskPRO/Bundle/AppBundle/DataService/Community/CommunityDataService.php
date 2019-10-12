@@ -8,15 +8,19 @@ namespace DeskPRO\Bundle\AppBundle\DataService\Community;
 
 use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use Application\DeskPRO\Entity\Rating;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class CommunityDataService extends AbstractDataService
 {
@@ -29,11 +33,16 @@ class CommunityDataService extends AbstractDataService
      * @var PermissionsManager
      */
     protected $permissions_manager;
+    /**
+     * @var AuthorizationCheckerInterface
+     */
+    private $authorization_checker;
 
-    public function __construct(EntityManager $em, PermissionsManager $permissionsManager)
+    public function __construct(EntityManager $em, PermissionsManager $permissionsManager, AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($em);
         $this->permissions_manager = $permissionsManager;
+        $this->authorization_checker = $authorizationChecker;
     }
 
     /**
@@ -50,6 +59,52 @@ class CommunityDataService extends AbstractDataService
                     false;
             }
         );
+    }
+
+    /**
+     * @param Pagerfanta $pager
+     * @param int $activityCount
+     * @return array
+     */
+    public function getLatestActivityForEachTopicInPager(Pagerfanta $pager, $activityCount)
+    {
+        $topicIds = array_map(function (CommunityTopic $topic) {
+            return $topic->getId();
+        }, iterator_to_array($pager));
+
+        return $this->generateAndCache([__FUNCTION__, $topicIds, $activityCount], function () use ($topicIds, $activityCount) {
+            $selects = array_map(function ($id) use ($activityCount) {
+                return sprintf('(SELECT id FROM community_topic_comments WHERE topic_id = %d ORDER BY date_created LIMIT %d)', $id, $activityCount);
+            }, $topicIds);
+
+            $commentIds = $this->em->getConnection()
+                ->executeQuery(implode(' UNION ', $selects))
+                ->fetchAll()
+            ;
+
+            $commentIds = array_map(function ($row) {
+                return (int) $row['id'];
+            }, $commentIds);
+
+            $qb = $this->em->createQueryBuilder()
+                ->select('t.id AS topic_id, c AS comment, p')
+                ->from(CommunityTopicComment::class, 'c')
+                ->innerJoin('c.topic', 't')
+                ->innerJoin('c.person', 'p')
+                ->andWhere('c.id IN (:commentIds)')
+                ->setParameter('commentIds', $commentIds)
+            ;
+
+            return array_reduce(
+                $qb->getQuery()->getResult(),
+                function (array $collection, array $row) {
+                    $collection[$row['topic_id']][] = $row['comment'];
+
+                    return $collection;
+                },
+                []
+            );
+        });
     }
 
     /**
@@ -127,6 +182,46 @@ class CommunityDataService extends AbstractDataService
                 // array(1,3,5) $community_topic->forum
                 if (count($types = $filter->getTypes())) {
                     $qb->andWhere('ct.forum IN (:types)')->setParameter('types', $types);
+                }
+
+                // Free text search
+                if ($filter->getQ()) {
+                    $qb
+                        ->andWhere('ct.title LIKE :search OR ct.content LIKE :search')
+                        ->setParameter('search', "%{$filter->getQ()}%")
+                    ;
+                }
+
+                // Activity filters
+                if (count($filter->getActivities()) && $person) {
+                    $activitiesClauses = [];
+                    foreach ($filter->getActivities() as $activity) {
+                        switch ($activity) {
+                            case CommunityFilter::ACTIVITY_VOTED:
+                                $qb->leftJoin(
+                                    Rating::class,
+                                    'r',
+                                    'WITH',
+                                    'r.object_type = \'community\' AND r.object_id = ct.id'
+                                );
+                                $activitiesClauses[] ='r.person = :person';
+                                break;
+                            case CommunityFilter::ACTIVITY_CREATED:
+                                $activitiesClauses[] = 'ct.person = :person';
+                                break;
+                            case CommunityFilter::ACTIVITY_COMMENTED:
+                                $qb->leftJoin('ct.comments', 'c');
+                                $activitiesClauses[] = 'c.person = :person';
+                                break;
+                        }
+                    }
+
+                    if (count($activitiesClauses)) {
+                        $qb
+                            ->andWhere(implode(' OR ', $activitiesClauses))
+                            ->setParameter('person', $person)
+                        ;
+                    }
                 }
 
                 // sort
@@ -253,6 +348,61 @@ class CommunityDataService extends AbstractDataService
         return $this->getCommunityForumsRepo()->getLatestCommentsPerForum(
             $permissions_bag->getAllowedCommunityForumIds()
         );
+    }
+
+    /**
+     * @param array $options
+     * @param Person|null $user
+     * @return array
+     */
+    public function getFilteredTopicList(array $options, Person $user = null)
+    {
+        $person = $user ?: new PersonGuest();
+
+        $filter = new CommunityFilter([
+            'view'              => $options['view'],
+            'status'            => $options['status'],
+            'status_categories' => $options['status_categories'],
+            'types'             => $options['types'],
+            'sort'              => $options['sort'],
+            'sort_direction'    => $options['sort_direction'],
+            'q'                 => $options['q'],
+            'activities'        => $options['activities'],
+            'view_mode'         => $options['view_mode'],
+        ]);
+
+        $pager = $this->getItemsPager(
+            (int) $options['page'],
+            (int) $options['count'],
+            $filter,
+            $person
+        );
+
+        foreach ($pager as $topic) {
+            $topic->can_rate = $this
+                ->authorization_checker
+                ->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic)
+            ;
+        }
+
+        $types = $filter->getTypes();
+
+        $allowed = $this
+            ->permissions_manager
+            ->getPortalPermissionsBag($user)
+            ->getAllowedCommunityForumIds()
+        ;
+
+        $activitiesPerTopic = $this->getLatestActivityForEachTopicInPager(
+            $pager,
+            5
+        );
+
+        return [
+            'pager'                => $pager,
+            'filtered'             => (count($allowed) - count(($types)) > 0),
+            'activities_per_topic' => $activitiesPerTopic,
+        ];
     }
 
     /**

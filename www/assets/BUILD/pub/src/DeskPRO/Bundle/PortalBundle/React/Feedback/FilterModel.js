@@ -8,8 +8,12 @@ export class FilterModel {
     this.data = data;
     this.available = available;
     this.sort = data.sort;
+    this.view = data.view;
+    this.view_mode = data.view_mode;
     this.sort_direction = data.sort_direction || 'desc';
     this.status = data.status;
+    this.q = data.q;
+    this.activities = data.activities;
     this.status_categories = map(data.status_categories, val => parseInt(val, 10));
     this.types = map(data.types, val => parseInt(val, 10));
     this.page = parseInt(data.page || 1, 10);
@@ -21,7 +25,11 @@ export class FilterModel {
     this.sort = 'date';
     this.sort_direction = 'desc';
     this.status = 'all';
+    this.view = 'list';
+    this.view_mode = 'compact';
+    this.q = '';
     this.status_categories = [];
+    this.activities = [];
     this.types = map(this.data.types, val => parseInt(val, 10));
     this.checkEmptyStatusCategories();
   }
@@ -49,6 +57,10 @@ export class FilterModel {
     return `/type-${this.types.join(',')}`;
   }
 
+  getSelectedActivities() {
+    return `/activity-${this.activities.join(',')}`;
+  }
+
   createUrl() {
     let url = 'DP_URL/community/browse/';
 
@@ -69,11 +81,37 @@ export class FilterModel {
       }
     }
 
+    if (this.view) {
+      url += `/view-${this.view}`;
+    }
+
+    if (this.view_mode) {
+      url += `/viewmode-${this.view_mode}`;
+    }
+
+    if (this.activities.length > 0) {
+      url += this.getSelectedActivities();
+    }
+
+    const query = [];
+
+    if (this.q) {
+      query.push(`q=${this.q}`);
+    }
+
     if (this.page > 1) {
-      url += `?page=${this.page}`;
+      query.push(`page=${this.page}`);
+    }
+
+    if (query.length) {
+      url += `?${query.join('&')}`;
     }
 
     return url;
+  }
+
+  setPage(page) {
+    this.page = page;
   }
 
   setStatus(status) {
@@ -111,8 +149,48 @@ export class FilterModel {
     this.setStatus(this.available.getStatusForStatusCategory(category));
   }
 
+  toggleActivity(activity) {
+    this.page = 1;
+
+    if (includes(this.activities, activity)) {
+      this.activities = filter(this.activities, n => n !== activity);
+    } else {
+      this.activities.push(activity);
+    }
+  }
+
+  resetActivities() {
+    this.page = 1;
+    this.activities = [];
+  }
+
   getStatus() {
     return this.status;
+  }
+
+  setViewMode(mode) {
+    this.view_mode = mode;
+  }
+
+  getViewMode() {
+    return this.view_mode;
+  }
+
+  setView(viewId) {
+    this.view = viewId;
+  }
+
+  getView() {
+    return this.view;
+  }
+
+  setQ(q) {
+    this.page = 1;
+    this.q = q;
+  }
+
+  getQ() {
+    return this.q;
   }
 
   toggleType(typeId) {
