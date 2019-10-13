@@ -1,4 +1,4 @@
-<div id="hc_community_page">
+<div id="hc_community_page-deleteme">{# todo: delete this #}
     <script>
         window.COMMUNITY_FILTER_STATE = {{ filter_js|raw }};
     </script>
@@ -6,6 +6,7 @@
         <div class="col-sm-6">
             {% include "Theme:Community:CommunityTopicsList/forum-selection.html.twig" with {
                 forums: community_forums,
+                current_forum: current_forum,
             } %}
         </div>
         <div class="col-sm-3">
@@ -67,9 +68,13 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <article class="community-filter-interactive as-no-dpui">
+            <article class="community-filter-interactive {# as-no-dpui #}"> {# todo: revert this #}
                 {% include 'Theme:Community:filter_controls.html.twig' with {
                     filter_js: filter_js,
+                    current_forum: current_forum,
+                    view: view,
+                    filter_params: filter_params,
+                    view_mode: view_mode,
                 } %}
                 <div class="paged-results">
                     {% include 'Theme:Community:CommunityTopicsList/detail.html.twig' with {

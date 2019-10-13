@@ -44,6 +44,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class CommunityTopicsController extends AbstractPublishController
 {
     /**
+     * @var array Used to cache response filter parameters
+     */
+    private static $filterParameters = [];
+
+    /**
      * @Route("/community.{_format}", name="portal_community", defaults={"_format":"html"},
      *     requirements={"_format":"html|rss"})
      * @Route("/community", name="user_community_home")
@@ -344,10 +349,20 @@ class CommunityTopicsController extends AbstractPublishController
                 );
             }
 
-            return $this->redirectToRoute('portal_community_browse', [
+            $context = [
                 'filter_uri' => $generatedUri,
                 'page'       => $page,
-            ], Response::HTTP_MOVED_PERMANENTLY);
+            ];
+
+            if ($filter->getQ()) {
+                $context['q'] = $filter->getQ();
+            }
+
+            return $this->redirectToRoute(
+                'portal_community_browse',
+                $context,
+                Response::HTTP_MOVED_PERMANENTLY
+            );
         }
 
         // BREADCRUMBS
@@ -365,7 +380,7 @@ class CommunityTopicsController extends AbstractPublishController
         // FILTER CATEGORIES
 
         $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
-        $filterJs        = $this->generateFilterJs($filter, $communityForums, $page);
+        $filterJs        = $this->generateFilterJs($filter, $communityForums, $page, true);
 
         $pageOptions = [
             'mode'               => 'browse',
@@ -378,6 +393,9 @@ class CommunityTopicsController extends AbstractPublishController
             'types'              => $filter->getTypes(),
             'sort'               => $filter->getSort(),
             'sort_direction'     => $filter->getSortDirection(),
+            'view'               => $filter->getView(),
+            'view_mode'          => $filter->getViewMode(),
+            'activities'         => $filter->getActivities(),
             'breadcrumbs'        => $breadcrumbs,
             'page_title'         => $this->createPageTitle()->community(),
             'filter_js'          => $filterJs,
@@ -385,6 +403,7 @@ class CommunityTopicsController extends AbstractPublishController
             'is_subscribed'      => $isSubscribed,
             'lockout'            => $request->get('lockout', false),
             'lockout_time'       => 0,
+            'filter_params'      => $this->generateFilterJs($filter, $communityForums, $page, false),
         ];
 
         // If there is a single, current type selected
@@ -702,13 +721,19 @@ class CommunityTopicsController extends AbstractPublishController
     }
 
     /**
-     * @param $filter
-     * @param $communityForums
+     * @param CommunityFilter $filter
+     * @param array $communityForums
      *
-     * @return string
+     * @param $page
+     * @param bool $isEncoded
+     * @return string|array
      */
-    public function generateFilterJs(CommunityFilter $filter, array $communityForums, $page)
+    public function generateFilterJs(CommunityFilter $filter, array $communityForums, $page, $isEncoded = true)
     {
+        if (isset(self::$filterParameters[(int) $isEncoded])) {
+            return self::$filterParameters[(int) $isEncoded];
+        }
+
         $allowedTypesParsed = [];
         foreach ($communityForums as $cat) {
             $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
@@ -746,12 +771,16 @@ class CommunityTopicsController extends AbstractPublishController
             ],
         ];
 
+        if (!$isEncoded) {
+            return self::$filterParameters[(int) $isEncoded] = $theArray;
+        }
+
         $filterJs = json_encode(
             $theArray,
             JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
         );
 
-        return $filterJs;
+        return self::$filterParameters[(int) $isEncoded] = $filterJs;
     }
 
     /**
