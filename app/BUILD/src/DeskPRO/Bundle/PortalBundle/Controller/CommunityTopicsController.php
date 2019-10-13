@@ -673,8 +673,10 @@ class CommunityTopicsController extends AbstractPublishController
      * @Route("/community/root/toggle-subscription", name="portal_community_root_toggle_subscription")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
      * @AutoPostOnGetRequest()
+     * @param Request $request
+     * @return RedirectResponse
      */
-    public function communityRootForumSubscriptionAction()
+    public function communityRootForumSubscriptionAction(Request $request)
     {
         $person              = $this->getUser();
         $subscriptionsHelper = $this->getSubscriptionsHelper();
@@ -685,6 +687,10 @@ class CommunityTopicsController extends AbstractPublishController
         } else {
             $subscriptionsHelper->subscribeToRootCategory('community', $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+        }
+
+        if ($request->query->get('target')) {
+            return $this->redirect($request->query->get('target'));
         }
 
         return $this->redirectToRoute('portal_community');
