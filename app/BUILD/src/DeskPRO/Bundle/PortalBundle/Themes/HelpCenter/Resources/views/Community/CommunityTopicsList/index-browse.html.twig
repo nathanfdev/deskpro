@@ -1,4 +1,4 @@
-<div id="hc_community_page-deleteme">{# todo: delete this #}
+<div id="hc_community_page">
     <script>
         window.COMMUNITY_FILTER_STATE = {{ filter_js|raw }};
     </script>
@@ -68,7 +68,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <article class="community-filter-interactive {# as-no-dpui #}"> {# todo: revert this #}
+            <article class="community-filter-interactive as-no-dpui">
                 {% include 'Theme:Community:filter_controls.html.twig' with {
                     filter_js: filter_js,
                     current_forum: current_forum,
