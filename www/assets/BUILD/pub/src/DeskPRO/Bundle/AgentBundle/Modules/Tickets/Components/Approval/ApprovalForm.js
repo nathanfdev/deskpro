@@ -113,15 +113,13 @@ class ApprovalForm extends React.Component {
           isAgent: person.is_agent
         }));
 
-        if (!template.get('can_choose_approvers')) {
+        if (template.get('can_choose_approvers')) {
           this.setState({ people });
+        } else {
+          this.setState({ people, approvers: people });
         }
-
-        // update state
-        this.setState({ people });
       });
     }
-
 
     // if agent can choose approvers
     if (template.get('can_choose_approvers')) {
@@ -133,7 +131,8 @@ class ApprovalForm extends React.Component {
   };
 
   createApprovalRequest = (event, values) => {
-    if (this.state.saving) {
+    const { saving, template } = this.state;
+    if (saving) {
       return;
     }
 
@@ -146,15 +145,15 @@ class ApprovalForm extends React.Component {
     // prepare submit data
     const data = {
       ...values,
-      template:  this.state.template.id,
+      template:  template.id,
       approvers: this.state.approvers.map(approver => approver.id)
     };
 
-    if (this.state.template.canChoose) {
-      const totalApprovers = parseInt(this.state.template.criteria.number_of_approvers, 10);
+    if (template.canChoose) {
+      const totalApprovers = parseInt(template.criteria.number_of_approvers, 10);
       if (data.approvers.length < totalApprovers) {
         errors.push(
-          `List of approver must be supplied. Please choose ${this.state.template.criteria.number_of_approvers} approvers`
+          `List of approver must be supplied. Please choose ${template.criteria.number_of_approvers} approvers`
         );
       }
     }
@@ -201,64 +200,67 @@ class ApprovalForm extends React.Component {
   };
 
   render() {
+    const { template, approvers } = this.state;
+
     // prepare approvers dropdown, list and info
+    let maxApprovers = 0;
+    if (template.canChoose) {
+      maxApprovers = parseInt(template.criteria.number_of_approvers, 10);
+    } else {
+      maxApprovers = approvers.length;
+    }
+
+    const approversInfo = approvers.length < maxApprovers
+      ? (<FormattedMessage
+        id="agent.tickets.approvals.select_approvers"
+        values={{ n: maxApprovers - approvers.length }}
+      />)
+      : (<FormattedMessage
+        id="agent.tickets.approvals.approve_condition"
+        values={{ m: maxApprovers, reqa: template.toApprove, reqr: template.toReject }}
+      />);
+
     let approversSelect = '';
-    let approversList   = '';
-    let approversInfo   = '';
-    let maxApprovers    = 0;
-
-    if (this.state.template.canChoose === true) {
-      maxApprovers = parseInt(this.state.template.criteria.number_of_approvers, 10);
-      approversInfo = this.state.approvers.length < maxApprovers
-        ? (<FormattedMessage
-          id="agent.tickets.approvals.select_approvers"
-          values={{ n: maxApprovers - this.state.approvers.length }}
-        />)
-        : (<FormattedMessage
-          id="agent.tickets.approvals.approve_condition"
-          values={{ m: maxApprovers, reqa: this.state.template.toApprove, reqr: this.state.template.toReject }}
-        />);
-
-      approversSelect  = this.state.approvers.length < maxApprovers ? (
+    if (template.canChoose && approvers.length < maxApprovers) {
+      approversSelect = (
         <div className="col" style={{ maxWidth: '230px' }}>
           <Label>
             <FormattedMessage id="agent.tickets.approvals.approvers" />
             <span className="info">( {approversInfo} )</span>
           </Label>
           <Select
-            options={this.state.people.filter(p => this.state.approvers.indexOf(p) === -1)}
+            options={this.state.people.filter(p => approvers.indexOf(p) === -1)}
             onChange={this.addApprover}
           />
         </div>
-      ) : '';
-
-      approversList = (
-        <ul className="approvers-list">
-          {this.state.approvers.map((approver) => {
-            const avatarStyle = {
-              backgroundImage: `url(${approver.avatar})`,
-              backgroundSize:  'contain'
-            };
-
-            return (
-              <li key={approver.id}>
-                <a className="as-popover dp-btn dp-btn-small">
-                  <span className="text" style={avatarStyle}>{approver.name}</span>
-                  <span
-                    className="remove-row-trigger nohide-edit"
-                    onClick={(ev) => { ev.preventDefault(); this.removeApprover(approver.id); }}
-                  >
-                    <i className="fas fa-times" />
-                  </span>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
       );
-    } else if (this.state.template.canChoose === false) {
-      approversInfo = <FormattedMessage id="agent.tickets.approvals.approvers_set_from_template" />;
     }
+
+    const approversList = (
+      <ul className="approvers-list">
+        {approvers.map((approver) => {
+          const avatarStyle = {
+            backgroundImage: `url(${approver.avatar})`,
+            backgroundSize:  'contain'
+          };
+
+          return (
+            <li key={approver.id}>
+              <a className="as-popover dp-btn dp-btn-small">
+                <span className="text" style={avatarStyle}>{approver.name}</span>
+                {template.canChoose &&
+                <span
+                  className="remove-row-trigger nohide-edit"
+                  onClick={(ev) => { ev.preventDefault(); this.removeApprover(approver.id); }}
+                >
+                  <i className="fas fa-times" />
+                </span>}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    );
 
     return (
       <div>
@@ -277,7 +279,7 @@ class ApprovalForm extends React.Component {
             </div>
             {approversSelect}
             <div className="col">
-              {maxApprovers !== 0 && this.state.approvers.length === maxApprovers
+              {(maxApprovers !== 0 && approvers.length === maxApprovers) || (!template.canChoose && approvers.length)
                 ? <Label>
                   <FormattedMessage id="agent.tickets.approvals.approvers" />
                   <span className="info">( {approversInfo} )</span>
