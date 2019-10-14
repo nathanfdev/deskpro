@@ -43,12 +43,12 @@
                             </li>
                         </ul>
                         <ul>
-                            <li ng-show="form_props.required_approvals.$error.required">
+                            <li ng-show="form_props.required_approvals.$error.required || form_props.required_approvals.$error.min">
                                 {{ phrase('adm.ticket_approvals.template.error.required_approvals') }}
                             </li>
                         </ul>
                         <ul>
-                            <li ng-show="form_props.required_rejections.$error.required">
+                            <li ng-show="form_props.required_rejections.$error.required || form_props.required_rejections.$error.min">
                                 {{ phrase('adm.ticket_approvals.template.error.required_rejections') }}
                             </li>
                         </ul>
