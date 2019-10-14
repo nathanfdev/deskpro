@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { allSelectorFactory } from '../../../../../AppBundle/Modules/RecordsStore';
 import * as actions from '../../Actions/approvalRequestActions';
 import { Approval } from './Approval';
 
 @connect(state => ({
+  agents:    agentsSelector(state),
   templates: allSelectorFactory('ApprovalTemplate')(state),
 }))
 export class ApprovalContainer extends React.Component {

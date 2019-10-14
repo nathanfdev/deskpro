@@ -8,6 +8,7 @@ class ApprovalForm extends React.Component {
 
   static propTypes = {
     templates:             PropTypes.object.isRequired,
+    agents:                PropTypes.object,
     intl:                  PropTypes.object,
     getPeople:             PropTypes.func,
     createApprovalRequest: PropTypes.func
@@ -61,7 +62,7 @@ class ApprovalForm extends React.Component {
 
   handleTemplateChange = (value) => {
     // get templates from props
-    const { templates } = this.props;
+    const { templates, agents } = this.props;
 
     // get selected template
     const template = templates.toArray().find(t => t.get('id') === value.value);
@@ -99,26 +100,39 @@ class ApprovalForm extends React.Component {
       }
     });
 
+    const personToSelect = person => ({
+      // select
+      value:   person.id,
+      label:   person.display_name,
+      // data
+      id:      person.id,
+      avatar:  person.gravatar_url,
+      name:    person.display_name,
+      isAgent: person.is_agent
+    });
+
+    let people = [];
     // concat list of possible approvers and fetch people by ids
     if (criteria.people.length > 0) {
       this.props.getPeople(criteria.people).then((res) => {
-        const people = res.data.map(person => ({
-          // select
-          value:   person.id,
-          label:   person.display_name,
-          // data
-          id:      person.id,
-          avatar:  person.gravatar_url,
-          name:    person.display_name,
-          isAgent: person.is_agent
-        }));
+        people = res.data.map(personToSelect);
 
         if (template.get('can_choose_approvers')) {
+          if (criteria.all_agents) {
+            people = [...people, ...agents.toArray().map(agent => personToSelect(agent.toJS()))];
+          }
+
           this.setState({ people });
         } else {
           this.setState({ people, approvers: people });
         }
       });
+    } else if (template.get('can_choose_approvers')) {
+      if (criteria.all_agents) {
+        people = [...agents.toArray().map(agent => personToSelect(agent.toJS()))];
+      }
+
+      this.setState({ people });
     }
 
     // if agent can choose approvers
