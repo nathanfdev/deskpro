@@ -88,7 +88,9 @@ class PortalIconRenderer
         }
 
         // Generated via https://learnui.design/tools/data-color-picker.html#divergent
-        static $definedColors = ['#a64e40', '#bc7062', '#cf9387', '#b1f3fb', '#93eefa', '#6deaf8', '#4fa240', '#76b566', '#99c78b', '#ffb7c3', '#ff9eb0', '#fc849d', '#f17444', '#f99168', '#ffad8c', '#b0a4fd', '#9087fc', '#6a6bfa', '#a7eba1', '#b9efb3', '#cbf3c6', '#ffbcca', '#fea5b9', '#fb8da8', '#eae3c9', '#efe9d3', '#f3eede', '#ecddfb', '#e5d2fa', '#dec7f8', '#a3ebab', '#b6efbc', '#c9f3cd', '#ffb4be', '#ff9baa', '#fc8096', '#71e8ea', '#94edee', '#b2f2f2', '#b5d5fc', '#9ac7fa', '#7bbaf9', '#e27ceb', '#ea98ef', '#f1b2f3', '#d1ccfc', '#c1bcfa', '#b0acf9', '#f9c8b6', '#a6f0a9'];
+        // made them 25% darker
+        // ['#a64e40', '#bc7062', '#cf9387', '#b1f3fb', '#93eefa', '#6deaf8', '#4fa240', '#76b566', '#99c78b', '#ffb7c3', '#ff9eb0', '#fc849d', '#f17444', '#f99168', '#ffad8c', '#b0a4fd', '#9087fc', '#6a6bfa', '#a7eba1', '#b9efb3', '#cbf3c6', '#ffbcca', '#fea5b9', '#fb8da8', '#eae3c9', '#efe9d3', '#f3eede', '#ecddfb', '#e5d2fa', '#dec7f8', '#a3ebab', '#b6efbc', '#c9f3cd', '#ffb4be', '#ff9baa', '#fc8096', '#71e8ea', '#94edee', '#b2f2f2', '#b5d5fc', '#9ac7fa', '#7bbaf9', '#e27ceb', '#ea98ef', '#f1b2f3', '#d1ccfc', '#c1bcfa', '#b0acf9', '#f9c8b6', '#a6f0a9']
+        static $definedColors = ['#7d3b30', '#8d544a', '#9b6e65', '#85b6bc', '#6eb3bc', '#52b0ba', '#3b7a30', '#59884d', '#739568', '#bf8992', '#bf7784', '#bd6376', '#b55733', '#bb6d4e', '#bf8269', '#847bbe', '#6c65bd', '#5050bc', '#7db079', '#8bb386', '#98b695', '#bf8d98', '#bf7c8b', '#bc6a7e', '#b0aa97', '#b3af9e', '#b6b3a7', '#b1a6bc', '#ac9ebc', '#a795ba', '#7ab080', '#89b38d', '#97b69a', '#bf878f', '#bf7480', '#bd6071', '#55aeb0', '#6fb2b3', '#86b6b6', '#88a0bd', '#7495bc', '#5c8cbb', '#aa5db0', '#b072b3', '#b586b6', '#9d99bd', '#918dbc', '#8481bb', '#bb9689', '#7db47f'];
 
         static $definedColorSize;
         if (!$definedColorSize) {
