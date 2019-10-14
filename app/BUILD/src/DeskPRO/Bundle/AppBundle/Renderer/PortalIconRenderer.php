@@ -87,8 +87,8 @@ class PortalIconRenderer
             $id = md5(uniqid(''));
         }
 
-        // Generated via https://randomcolor.lllllllllllllllll.com/
-        static $definedColors = ['#d1146f', '#00753c', '#e00690', '#059345', '#09318e', '#00165b', '#a3002e', '#bc2210', '#016d57', '#477f03', '#d39910', '#0a1466', '#0c8e52', '#637c07', '#0c997f', '#480d9b', '#003377', '#467a06', '#97a010', '#a8034a', '#0ea324', '#0c2b7f', '#912a0e', '#d1b60c', '#bc01bc', '#005e5c', '#11aa2a', '#4a077c', '#d615d2', '#fced19', '#560996', '#ce9402', '#05717f', '#0c9694', '#a00c27', '#24930e', '#0a2d70', '#bf09b6', '#ef17e4', '#06356b', '#bb11c1', '#127702', '#c67801', '#0a9b5c', '#23ad0d', '#f4db18', '#b70747', '#798209', '#407503', '#8c0406'];
+        // Generated via https://learnui.design/tools/data-color-picker.html#divergent
+        static $definedColors = ['#a64e40', '#bc7062', '#cf9387', '#b1f3fb', '#93eefa', '#6deaf8', '#4fa240', '#76b566', '#99c78b', '#ffb7c3', '#ff9eb0', '#fc849d', '#f17444', '#f99168', '#ffad8c', '#b0a4fd', '#9087fc', '#6a6bfa', '#a7eba1', '#b9efb3', '#cbf3c6', '#ffbcca', '#fea5b9', '#fb8da8', '#eae3c9', '#efe9d3', '#f3eede', '#ecddfb', '#e5d2fa', '#dec7f8', '#a3ebab', '#b6efbc', '#c9f3cd', '#ffb4be', '#ff9baa', '#fc8096', '#71e8ea', '#94edee', '#b2f2f2', '#b5d5fc', '#9ac7fa', '#7bbaf9', '#e27ceb', '#ea98ef', '#f1b2f3', '#d1ccfc', '#c1bcfa', '#b0acf9', '#f9c8b6', '#a6f0a9'];
 
         static $definedColorSize;
         if (!$definedColorSize) {
