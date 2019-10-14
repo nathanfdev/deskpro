@@ -44,6 +44,31 @@
 						</div>
 						<div class="form-group">
 							<div class="col-lg-3">
+								<h3>{{ phrase('admin.general.custom_fields') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;" ui-sortable="CommunityForumsEdit.sortedListOptions">
+										<label
+												class="with-drag-handle"
+												data-id="{{ ng_var('custom_field.id') }}"
+												ng-repeat="custom_field in CommunityForumsEdit.custom_fields"
+												style="font-weight: normal; display: block;"
+										>
+											<i class="fas fa-bars drag-handle"></i>
+											{{ ng_var('custom_field.title') }}
+											<a href="{{ ng_href('portal.community_forums.custom_fields.edit', '{forumId: CommunityForumsEdit.community_forum.id, id: custom_field.id}') }}"><i class="fas fa-edit"></i></a>
+											<a href="" ng-click="$event.stopPropagation(); $event.preventDefault(); CommunityForumsEdit.deleteCustomField(custom_field.id, CommunityForumsEdit.community_forum.id)"><i class="fas fa-times"></i></a>
+										</label>
+									</div>
+									<a class="btn btn-success" href="{{ ng_href('portal.community_forums.custom_fields.create', '{forumId: CommunityForumsEdit.community_forum.id}') }}">
+										+ Add
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
 								<h3>{{ phrase('agent.general.splash_image') }}</h3>
 							</div>
 							<div class="col-lg-9">

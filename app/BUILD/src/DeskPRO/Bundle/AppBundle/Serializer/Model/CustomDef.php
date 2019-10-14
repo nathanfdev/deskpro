@@ -107,6 +107,13 @@ class CustomDef
     private $widgetType;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $typeName;
+
+    /**
      * @JMS\Type("map<DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation>")
      *
      * @var CustomDefTranslation[]
@@ -137,6 +144,7 @@ class CustomDef
         $this->isAgentField  = $def->isAgentField();
         $this->defaultValue  = $def->getDefaultValue();
         $this->widgetType    = $def->getWidgetType();
+        $this->typeName      = $def->getWidgetType();
         $this->choices       = $def->getChoices();
         $this->aliases       = ListUtils::map($def->getAliases(), function (ObjectAliasInterface $a) {
             return $a->getQualifiedName();

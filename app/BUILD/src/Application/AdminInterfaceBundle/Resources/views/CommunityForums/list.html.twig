@@ -24,7 +24,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list" ui-sortable="CommunityForumsList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="forum in CommunityForumsList.community_forums" dp-state-mark="portal.community_forums.edit.{{ ng_var('forum.id') }}" data-id="{{ ng_var('forum.id') }}" ng-if="forum.brand == brand_id">
+				<li class="with-drag-handle" ng-repeat="forum in CommunityForumsList.community_forums" dp-state-mark="forumId:portal.community_forums.edit.{{ ng_var('forum.id') }}" data-id="{{ ng_var('forum.id') }}" ng-if="forum.brand == brand_id">
 					<a href="{{ ng_href('portal.community_forums.edit', '{id: forum.id}') }}">
 						<i class="fas fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('forum.id') }}</span> <span class="title-text">{{ ng_var('forum.title') }}</span></h4>
