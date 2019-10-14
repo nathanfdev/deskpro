@@ -91,6 +91,10 @@
     } %}
   {% endif %}
 
+  {% include 'Theme:PublishCommon:share.html.twig' with {
+    item: post
+  } %}
+
   {% if post.labels | length %}
     {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
       title: phrase('portal.general.labels'),

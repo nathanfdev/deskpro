@@ -78,7 +78,9 @@
                             } %}
                         {% endif %}
 
-{#                        <%- include('_partials/_post-share.ejs'); %>#}
+                        {% include 'Theme:PublishCommon:share.html.twig' with {
+                            item: file
+                        } %}
 
                         {% include'Theme:Downloads:meta.html.twig' %}
                     </div>
