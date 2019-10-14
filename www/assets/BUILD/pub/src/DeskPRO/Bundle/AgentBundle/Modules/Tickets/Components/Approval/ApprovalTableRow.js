@@ -237,7 +237,9 @@ class ApprovalTableRow extends React.Component {
     ];
 
     if (this.state.showResponses) {
-      if (approval.votes.length > 0) {
+      const voteApproverIds = approval.votes.map(vote => vote.approver.id);
+
+      if (approval.votes.length > 0 || approval.approvers.length > 0) {
         approval.votes.forEach(vote => result.push(
           <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
             <td>&nbsp;</td>
@@ -258,6 +260,27 @@ class ApprovalTableRow extends React.Component {
             </td>
           </tr>
         ));
+        approval.approvers.forEach((approver) => {
+          if (voteApproverIds.indexOf(approver.id) === -1) {
+            result.push(
+              <tr key={`approval_${this.props.approval.get('id')}_vote_approver_${approver.id}`}>
+                <td>&nbsp;</td>
+                <td>{approver.name}</td>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td>
+                  <FormattedMessage id="agent.tickets.approvals.status_name.pending" />
+                </td>
+                <td />
+                <td>
+                  <Icon name={faClock} />
+                </td>
+              </tr>
+            );
+          }
+        });
       } else {
         result.push(
           <tr>
