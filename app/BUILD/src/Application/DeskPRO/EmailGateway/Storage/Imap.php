@@ -182,6 +182,15 @@ class Imap extends Server
     }
 
     /**
+     * @param int|string $uid
+     * @throws \Exception
+     */
+    public function markAsSeen($uid)
+    {
+        imap_setflag_full($this->getImapStreamThrow(), (string) $uid, '\\Seen', CP_UID);
+    }
+
+    /**
      * @param int $uid
      */
     public function deleteMessage($uid)
