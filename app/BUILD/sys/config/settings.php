@@ -304,13 +304,13 @@ return [
     'core.agent_intercept_external_link' => false,
 
     /*
-     * Show the share widget (twitter/facebook/linkedin/gplus)
+     * Show the share widget (twitter/facebook/linkedin/whatsapp)
      */
     'core.show_share_widget'   => false,
     'core.show_share_facebook' => false,
     'core.show_share_twitter'  => false,
     'core.show_share_linkedin' => false,
-    'core.show_share_gplus'    => false,
+    'core.show_share_whatsapp' => false,
 
     /*
      * Enable the KB?

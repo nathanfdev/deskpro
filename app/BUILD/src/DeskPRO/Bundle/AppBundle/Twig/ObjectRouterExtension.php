@@ -50,6 +50,10 @@ class ObjectRouterExtension extends \Twig_Extension
                 'agent_url',
                 [$this, 'generateAgentUrl']
             ),
+            new \Twig_SimpleFunction(
+                'share_social_url',
+                [$this, 'generatePortalSocialUrl']
+            ),
         ];
     }
 
@@ -71,6 +75,21 @@ class ObjectRouterExtension extends \Twig_Extension
     public function generateAgentUrl($object, $type = null, array $extra_params = [])
     {
         return $this->objectRouter->getAgentUrl($object, $type, $extra_params);
+    }
+
+    public function generatePortalSocialUrl($object, $network)
+    {
+        $objectUrl = $this->generatePortalUrl($object);
+        switch ($network) {
+            case 'linkedin':
+                return 'https://www.linkedin.com/shareArticle?mini=true&url='.urlencode($objectUrl).'&title='.urlencode($object->getTitle());
+            case 'facebook':
+                return 'https://www.facebook.com/sharer/sharer.php?u='.urlencode($objectUrl);
+            case 'twitter':
+                return 'https://twitter.com/intent/tweet?url='.urlencode($objectUrl);
+            case 'whatsapp':
+                return 'https://wa.me/?text='.urlencode($objectUrl);
+        }
     }
 
     /**

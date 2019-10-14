@@ -27,6 +27,7 @@ import { MobileMenuWidget } from './MobileMenuWidget';
 import { ArticleHighlighter } from './ArticleHighlighter';
 import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
+import { SocialShare } from './SocialShare';
 import { TouchFocusWidget } from './TouchFocusWidget';
 import { WidgetButton } from './WidgetButton';
 import { DpxTabs } from './Common/DpxTabs';
@@ -67,6 +68,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(TouchFocusWidget, '.as-touch-focus');
     this.addWidgetDef(WidgetButton, '.widget-button');
     this.addWidgetDef(DpxTabs, '.dpx-tabs');
+    this.addWidgetDef(SocialShare, '#social-share');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

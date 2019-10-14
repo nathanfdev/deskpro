@@ -130,6 +130,10 @@
         } %}
     {% endif %}
 
+    {% include 'Theme:PublishCommon:share.html.twig' with {
+        item: article
+    } %}
+
     {% include'Theme:PublishCommon:meta.html.twig' with {
         item: article
     } %}
