@@ -1,0 +1,60 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-centered">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">Create Topic</h2>
+                        </div>
+                        <div class="dp-po-block">
+                            <div class="dp-po-community-form">
+                                <p>Please complete this form and one of our agents will reply to you by email as soon as possible.</p>
+                                {{ form_errors(form) }}
+                                {{ form_start(form, {attr: {class: 'do-po-form'}}) }}
+
+                                    {% if form.name is defined and form.email is defined %}
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                {{ form_row(form.name, {label: 'portal.forms.label_full_name'}) }}
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {{ form_row(form.email, {label: 'portal.community.form_email_not_shown'}) }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {{ form_row(form.title, {label: 'portal.community.form_title'}) }}
+
+                                    {{ form_row(form.content, {label: 'portal.community.form_tell_us_more'}) }}
+
+                                    {{ form_widget(form.custom_data) }}
+
+                                    <div class="bucket new-ticket-attachments">
+                                        {{ form_label(form.attachments, phrase('portal.community.form_attach_files')) }}
+                                        {{ form_errors(form.attachments) }}
+                                        {{ form_widget(form.attachments) }}
+                                        {{ form_widget(form.more_attachments) }}
+                                    </div>
+
+                                    {% if form.captcha is defined %}
+                                        {{ form_row(form.captcha) }}
+                                    {% endif %}
+
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        Submit
+                                    </button>
+
+                                {{ form_rest(form) }}
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

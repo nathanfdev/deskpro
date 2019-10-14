@@ -79,7 +79,7 @@ export class HcCommunityFilter extends React.Component {
 
   render() {
     return (
-      <article className="community-filter-interactive">
+      <div className="community-filter-interactive">
         <HcFilterControls
           filterModel={this.state.filter}
           available={this.state.available}
@@ -92,7 +92,7 @@ export class HcCommunityFilter extends React.Component {
           updateFilter={this.onUpdateFilter}
           doSpin={this.state.doSpin}
         />
-      </article>
+      </div>
     );
   }
 }

@@ -10,38 +10,10 @@
             } %}
         </div>
         <div class="col-sm-3">
-            <div class="dp-po-community-title">
-                <div class="dp-po-community-title-button">
-                    <a href="" class="dp-po-community-title-button-link"><i class="dp-po-icon fad fa-money-check-edit"></i> Submit
-                        suggestion</a>
-                    <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true"
-                       aria-expanded="false">
-                        <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="#">
-                            <i class="dp-po-icon dp-po-icon-danger fad fa-hands-helping"></i> Ask for Help
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="dp-po-icon dp-po-icon-success fad fa-comment-alt-check"></i> Submit Feedback
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="dp-po-icon dp-po-icon-pink fad fa-comments"></i> Start a Chat
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="dp-po-icon dp-po-icon-warning fad fa-code"></i> Ask Developers
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="dp-po-icon dp-po-icon-info fad fa-receipt"></i> Talk to Finance
-                        </a>
-                        <a class="dropdown-item" href="#">
-                            <i class="dp-po-icon dp-po-icon-neutral fad fa-rocket"></i> Start a Discussion
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-
+            {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                community_forums: community_forums,
+                current_forum: current_forum,
+            } %}
         </div>
         <div class="col-sm-3">
             <div class="dp-po-subscribe dp-po-subscribe-large">

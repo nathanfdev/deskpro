@@ -92,7 +92,7 @@ export class HcResultsPartial extends React.Component {
 
     if (partial.length === 0) {
       return (
-        <div className="paged-results centered" ref={(c) => { this.results = c; }}>
+        <div className="paged-results centered dp-po-section dp-po-block" ref={(c) => { this.results = c; }}>
           <img
             role="presentation"
             src={portalUrlGenerator.getSpinnerPath()}

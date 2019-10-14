@@ -91,14 +91,16 @@ class NewCommunityTopicType extends AbstractType
             ])
         ;
 
-        if ($this->hierarchyGenerator->generateForCommunityForums($options['person'])->countSelectable() > 0) {
-            $builder->add('forum', CommunityForumType::class, [
-                'person'      => $options['person'],
-                'empty_value' => $this->phrase('portal.forms.label_select'),
-                'constraints' => [
-                    new NotNull(),
-                ],
-            ]);
+        if ($options['has_forum_selection']) {
+            if ($this->hierarchyGenerator->generateForCommunityForums($options['person'])->countSelectable() > 0) {
+                $builder->add('forum', CommunityForumType::class, [
+                    'person'      => $options['person'],
+                    'empty_value' => $this->phrase('portal.forms.label_select'),
+                    'constraints' => [
+                        new NotNull(),
+                    ],
+                ]);
+            }
         }
 
         $builder
@@ -149,10 +151,12 @@ class NewCommunityTopicType extends AbstractType
     {
         $resolver
             ->setRequired('person')
-            ->setAllowedTypes('person', Person::class)
             ->setDefaults([
-                'data_class' => CommunityTopic::class,
+                'data_class'          => CommunityTopic::class,
+                'has_forum_selection' => true,
             ])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('has_forum_selection', ['bool'])
         ;
     }
 

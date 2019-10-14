@@ -471,6 +471,41 @@ class CommunityTopicsController extends AbstractPublishController
     }
 
     /**
+     * @Route("/community/{id}/create-topic", name="portal_community_topic_create")
+     * @Method({"GET","POST"})
+     * @Security("is_granted('USE_COMMUNITY')")
+     *
+     * @param CommunityForum $forum
+     * @param Request $request
+     */
+    public function createTopicAction(CommunityForum $forum, Request $request)
+    {
+        $person            = $this->getUser() ?: new PersonGuest();
+        $newCommunityTopic = new CommunityTopic();
+
+        $newCommunityTopic->setPerson($person);
+        $newCommunityTopic->setForum($forum);
+
+        $form = $this->createForm(NewCommunityTopicType::class, $newCommunityTopic, [
+            'person'              => $person,
+            'has_forum_selection' => false,
+            'action'              => $this->generateUrl('portal_community_topic_create', [
+                'id' => $forum->getId(),
+            ]),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+//            exit('Submitted!');
+        }
+
+        return $this->renderThemeView('Theme:Community:create-topic.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * @Route("/community/view/{slug}", name="portal_community_topic_view")
      * @Route("/community/view/{slug}", name="user_community_topic_view")
      * @ParamConverter(name="topic", converter="deskpro_slug")

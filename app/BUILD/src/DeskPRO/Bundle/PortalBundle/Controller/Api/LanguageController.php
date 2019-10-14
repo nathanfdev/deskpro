@@ -26,6 +26,21 @@ class LanguageController extends AbstractApiController
     public function widgetPhrasesAction(Request $request)
     {
         $phrases = [
+            'helpcenter.general.prop_comments_asc',
+            'helpcenter.general.prop_comments_desc',
+            'helpcenter.general.prop_date_asc',
+            'helpcenter.general.prop_date_desc',
+            'helpcenter.general.prop_popularity_asc',
+            'helpcenter.general.prop_popularity_desc',
+            'helpcenter.general.prop_rating_asc',
+            'helpcenter.general.prop_rating_desc',
+            'helpcenter.general.prop_views_asc',
+            'helpcenter.general.prop_views_desc',
+            'helpcenter.community.my-activity',
+            'helpcenter.community.reset-all-filters',
+            'helpcenter.community.filters',
+            'helpcenter.community.status',
+            'helpcenter.community.search-suggestions',
             'portal.tickets.related_articles_title',
             'portal.tickets.related_articles_desc',
             'portal.general.btn-share',
