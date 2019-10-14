@@ -51,14 +51,12 @@ define([
 
       // define search funtion for ui-select2
       this.$scope.searchTerm = function (query) {
-
         const excludeAgents =
-                this.$scope.form.selected_approvers.has_all_agents ||
-                this.$scope.form.approver_selection_criteria.can_select_from_all_agents;
+          (this.$scope.form.selected_approvers && this.$scope.form.selected_approvers.has_all_agents) ||
+          (this.$scope.form.approver_selection_criteria && this.$scope.form.approver_selection_criteria.can_select_from_all_agents);
 
         this.dataService.searchPeople(query.term, excludeAgents)
           .then(({ data }) => {
-
             let selected = this.$scope.people.map(item => item.id);
             let result = { results: [] };
             result.results = data
@@ -84,9 +82,11 @@ define([
       });
 
       this.$scope.$watch('can_choose_approvers', () => {
-        this.$scope.form.selected_approvers.has_ticket_user = '';
-        this.$scope.form.selected_approvers.has_organization_managers = '';
-        this.$scope.form.selected_approvers.has_all_agents = '';
+        if (this.$scope.form.selected_approvers) {
+          this.$scope.form.selected_approvers.has_ticket_user = '';
+          this.$scope.form.selected_approvers.has_organization_managers = '';
+          this.$scope.form.selected_approvers.has_all_agents = '';
+        }
       });
 
       this.actionsTypeDef = this.dpObTypesDefTicketActions;
