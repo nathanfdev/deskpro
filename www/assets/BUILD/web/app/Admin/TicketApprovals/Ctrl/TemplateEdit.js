@@ -81,6 +81,12 @@ define([
         this.$scope.selectedUser = null;
       });
 
+      this.$scope.$watch('form', () => {
+        if (this.$scope.form_props.custom_error) {
+          this.$scope.form_props.$invalid = false;
+          this.$scope.form_props.custom_error = '';
+        }
+      }, true);
       this.$scope.$watch('can_choose_approvers', () => {
         if (this.$scope.form.selected_approvers) {
           this.$scope.form.selected_approvers.has_ticket_user = '';
@@ -247,7 +253,8 @@ define([
                 msgFailure = response.data.errors.errors[0].message;
               }
 
-              this.Growl.error(msgFailure);
+              this.$scope.form_props.$invalid = true;
+              this.$scope.form_props.custom_error = msgFailure;
             });
 
         });

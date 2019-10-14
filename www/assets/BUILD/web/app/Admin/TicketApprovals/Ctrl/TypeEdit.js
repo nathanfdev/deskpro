@@ -17,6 +17,13 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         name: '',
         description: ''
       };
+
+      this.$scope.$watch('form', () => {
+        if (this.$scope.form_props.custom_error) {
+          this.$scope.form_props.$invalid = false;
+          this.$scope.form_props.custom_error = '';
+        }
+      }, true);
     }
 
     initialLoad() {
@@ -85,7 +92,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
                 msgFailure = response.data.errors.errors[0].message;
               }
 
-              this.Growl.error(msgFailure);
+              this.$scope.form_props.$invalid = true;
+              this.$scope.form_props.custom_error = msgFailure;
             });
         });
     }

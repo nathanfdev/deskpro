@@ -45,6 +45,11 @@
                                 {{ phrase('adm.ticket_approvals.type.error.name') }}
                             </li>
                         </ul>
+                        <ul>
+                            <li ng-show="form_props.custom_error">
+                                {{ ng_var('form_props.custom_error ') }}
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="dp-delete-control" ng-if="TicketApprovalsTypeEdit.typeId"

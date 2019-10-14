@@ -52,6 +52,11 @@
                                 {{ phrase('adm.ticket_approvals.template.error.required_rejections') }}
                             </li>
                         </ul>
+                        <ul>
+                            <li ng-show="form_props.custom_error">
+                                {{ ng_var('form_props.custom_error ') }}
+                            </li>
+                        </ul>
                     </div>
 
                     <div class="dp-delete-control" ng-if="templateId"
