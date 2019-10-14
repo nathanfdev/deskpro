@@ -328,6 +328,7 @@ class LanguagesController extends CrudController
             'agent.tickets.approvals.status',
             'agent.tickets.approvals.status_name.pending',
             'agent.tickets.approvals.status_name.accepted',
+            'agent.tickets.approvals.status_name.approved',
             'agent.tickets.approvals.status_name.rejected',
             'agent.tickets.approvals.status_name.cancelled',
             'agent.tickets.approvals.response.vote_type.approve',
