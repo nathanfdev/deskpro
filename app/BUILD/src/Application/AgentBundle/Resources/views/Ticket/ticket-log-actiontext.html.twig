@@ -801,8 +801,11 @@
 		{{ phrase('agent.voice.record_deleted', {'phoneCallId': log.id_object}) }} {% if log.details.filesize %}({{ log.details.filesize }} Kb){% endif %}
 	</span>
 {% elseif log.action_type == 'ticket_approval_details' %}
-	<span class="new-val expand" data-set=".set-detail">
-		{{ log.details.name|truncate }}
+    <span class="new-val expand" data-set=".set-detail">
+      {{ phrase('agent.tickets.log_approval_created_approval') }}
+    </span>
+    <span class="type">
+      {{ log.details.name|truncate }}
 	</span>
 	&nbsp;{{ phrase('agent.tickets.log_approval_status') }}: {{ log.details.status_name }}
 	<div class="expand-set set-detail" style="display: none">
