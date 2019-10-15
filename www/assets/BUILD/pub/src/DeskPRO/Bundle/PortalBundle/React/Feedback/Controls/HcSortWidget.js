@@ -47,6 +47,11 @@ export class HcSortWidget extends React.Component {
     this.container = el;
   };
 
+  onSort = (id) => {
+    this.props.setSort(id);
+    this.toggle();
+  };
+
   render() {
     const dropdownStyle = {
       position:   'absolute',
@@ -82,7 +87,7 @@ export class HcSortWidget extends React.Component {
           </a>
           <div className={`dropdown-menu dropdown-menu-right ${this.state.is_shown && 'show'}`} style={dropdownStyle}>
             {map(sorts, (sort, id) =>
-              <a key={id} onClick={() => this.props.setSort(id)} className="dropdown-item">{sort} <i className="dp-po-icon far fa-check" /></a>
+              <a key={id} onClick={() => this.onSort(id)} className="dropdown-item">{sort} <i className="dp-po-icon far fa-check" /></a>
             )}
           </div>
         </ClickOut>

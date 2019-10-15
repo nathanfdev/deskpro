@@ -49,6 +49,7 @@ export class HcFilterFacets extends React.Component {
   resetFilters = () => {
     this.props.onResetActivities();
     this.props.onSetStatus('active');
+    this.toggle();
   };
 
   toggle = () => {
