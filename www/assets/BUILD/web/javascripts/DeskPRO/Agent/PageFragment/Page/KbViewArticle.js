@@ -1126,7 +1126,18 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
 
-			  var contentInput = null;
+        var contentInput = null;
+        var offlineOverlay = this.getEl('collab-offline-overlay');
+
+        function onOffline() {
+          console.log('onOffline');
+          offlineOverlay.show();
+        }
+
+        function onOnline() {
+          console.log('ononline');
+          offlineOverlay.hide();
+        }
 
         function createEditor() {
           self.reactContentNode = txt[0];
@@ -1137,12 +1148,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
             self.onBlur.bind(self),
             self.meta.collabEditorOptions.documentUrn,
             self.meta.collabEditorOptions.userUrn,
-            self.meta.collabEditorOptions.token
+            self.meta.collabEditorOptions.token,
+            onOffline,
+            onOnline
           );
         }
 
-        var showSaving = this.getEl('article_save').find('.mark-loading');
-        showSaving.show();
+        // Show spinner overlay until onOnline event
+        onOffline();
 
         $.ajax({
           url:  DP_BASE_API_URL + "/v2/articles/" + self.meta.article_id,
@@ -1157,9 +1170,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
               contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
             }
             createEditor();
-          },
-          complete: function() {
-            showSaving.hide();
           }
         });
 			} else {

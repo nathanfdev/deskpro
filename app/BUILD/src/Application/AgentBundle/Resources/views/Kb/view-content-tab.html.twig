@@ -35,7 +35,7 @@
 		{% endif %}
 	</div>
 	<div class="article-editor-wrap" style="display: none">
-		<div class="article-editor">
+		<div class="article-editor" style="position:relative;">
 			{% if state.article.real_content %}
 				<div class="revert-message-notice">
 					{{ phrase('agent.general.unsaved_changes_were_restored') }}
@@ -53,6 +53,7 @@
 				<script type="text/javascript">
 					var {{ baseId }}_content_input = {{ state.article.content_input|default(article.content_input)|json_encode|raw }};
 				</script>
+        <div class="collab-offline-overlay" id="{{ baseId }}_collab-offline-overlay"></div>
 				<div class="edit-content-field"></div>
 			{% else %}
 				<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>
