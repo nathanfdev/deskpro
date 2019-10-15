@@ -32,6 +32,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,64 +120,14 @@ class CommunityTopicsController extends AbstractPublishController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            if (
-                !$rerenderingSaved // if we are rerendering dont pass this condition
-                &&
-                (
-                    !$form->getClickedButton() // if user clicked more_attachments dont pass condition
-                    ||
-                    (
-                        $form->getClickedButton()
-                        && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments'
-                    )
-                )
-            ) {
-                // deal with guests via negotiating with PersonFactory
-                if ($person instanceof PersonGuest) {
-                    try {
-                        $this->getPersonFactory()->checkGuestForValidation($person, $request->attributes->get('saved-form'));
-
-                        // the below block only executes during a saved form request (they clicked validation link)
-                        $email  = $person->getPrimaryEmail();
-                        $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
-
-                        // since the guest is set on the form, we need to update all of the associations
-                        $newCommunityTopic->setPerson($person);
-                        foreach ($newCommunityTopic->getAttachments() as $attachment) {
-                            $attachment->setPerson($person);
-                        }
-
-                        return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request);
-                    } catch (LoginRequiredException $e) {
-                        $person = $e->getPerson();
-                        $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
-
-                        if ($person instanceof PersonGuest) {
-                            $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmail(), $person->getDisplayName());
-
-                            return new RedirectResponse(
-                                $this->container->get('router')->generate('portal_login', [
-                                    'saved_form' => $savedForm->getExternalCode(),
-                                ])
-                            );
-                        } else {
-                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $person, $form, $request);
-                        }
-                    } catch (EmailValidationRequiredException $e) {
-                        $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
-
-                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
-                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
-                        $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
-
-                        return $this->redirectToRoute('portal_community');
-                    }
-                }
-
-                $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
-
-                return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request);
-            }
+            return $this->saveNewTopic(
+                $form,
+                $request,
+                $newCommunityTopic,
+                $rerenderingSaved,
+                false,
+                $person
+            );
         }
 
         $formWasSubmitted = false;
@@ -248,15 +199,19 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @param CommunityTopic $newCommunityTopic
-     * @param Person         $person
-     * @param Request        $request
+     * @param Person $person
+     * @param Request $request
      *
-     *@throws \Doctrine\ORM\OptimisticLockException
-     *
+     * @param bool $redirectToBrowseTopic
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    protected function acceptNewCommunityTopic(CommunityTopic $newCommunityTopic, Person $person, Request $request)
-    {
+    protected function acceptNewCommunityTopic(
+        CommunityTopic $newCommunityTopic,
+        Person $person,
+        Request $request,
+        $redirectToBrowseTopic = false
+    ) {
         $this->getEm()->persist($newCommunityTopic);
         $this->getEm()->flush();
 
@@ -276,6 +231,12 @@ class CommunityTopicsController extends AbstractPublishController
         $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
         if ($redirect) {
             return $redirect;
+        }
+
+        if ($redirectToBrowseTopic) {
+            $destination = $this->generateUrl('portal_community_browse', [
+                'filter_uri' => sprintf('type-%d', $newCommunityTopic->getForum()->getId()),
+            ]);
         }
 
         return $this->redirect($destination);
@@ -497,11 +458,19 @@ class CommunityTopicsController extends AbstractPublishController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-//            exit('Submitted!');
+            return $this->saveNewTopic(
+                $form,
+                $request,
+                $newCommunityTopic,
+                false,
+                true,
+                $person
+            );
         }
 
         return $this->renderThemeView('Theme:Community:create-topic.html.twig', [
-            'form' => $form->createView(),
+            'form'        => $form->createView(),
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
         ]);
     }
 
@@ -843,5 +812,83 @@ class CommunityTopicsController extends AbstractPublishController
     public function redirectCommunityAction($url)
     {
         return $this->redirect('/community/'.$url, RedirectResponse::HTTP_MOVED_PERMANENTLY);
+    }
+
+    /**
+     * @param FormInterface $form
+     * @param Request $request
+     * @param CommunityTopic $newCommunityTopic
+     * @param bool $rerenderingSaved
+     * @param bool $redirectToBrowseTopic
+     * @param Person|null $person
+     * @return RedirectResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function saveNewTopic(
+        FormInterface $form,
+        Request $request,
+        CommunityTopic $newCommunityTopic,
+        $rerenderingSaved,
+        $redirectToBrowseTopic,
+        Person $person = null
+    ) {
+        if (
+            !$rerenderingSaved // if we are rerendering dont pass this condition
+            &&
+            (
+                !$form->getClickedButton() // if user clicked more_attachments dont pass condition
+                ||
+                (
+                    $form->getClickedButton()
+                    && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments'
+                )
+            )
+        ) {
+            // deal with guests via negotiating with PersonFactory
+            if ($person instanceof PersonGuest) {
+                try {
+                    $this->getPersonFactory()->checkGuestForValidation($person, $request->attributes->get('saved-form'));
+
+                    // the below block only executes during a saved form request (they clicked validation link)
+                    $email  = $person->getPrimaryEmail();
+                    $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
+
+                    // since the guest is set on the form, we need to update all of the associations
+                    $newCommunityTopic->setPerson($person);
+                    foreach ($newCommunityTopic->getAttachments() as $attachment) {
+                        $attachment->setPerson($person);
+                    }
+
+                    return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request, $redirectToBrowseTopic);
+                } catch (LoginRequiredException $e) {
+                    $person = $e->getPerson();
+                    $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
+
+                    if ($person instanceof PersonGuest) {
+                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmail(), $person->getDisplayName());
+
+                        return new RedirectResponse(
+                            $this->container->get('router')->generate('portal_login', [
+                                'saved_form' => $savedForm->getExternalCode(),
+                            ])
+                        );
+                    } else {
+                        return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $person, $form, $request);
+                    }
+                } catch (EmailValidationRequiredException $e) {
+                    $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
+
+                    $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
+                    $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
+
+                    return $this->redirectToRoute('portal_community');
+                }
+            }
+
+            $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
+
+            return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request, $redirectToBrowseTopic);
+        }
     }
 }
