@@ -15,14 +15,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ApproverSelectionCriteriaType
- *
- * @package DeskPRO\Bundle\AppBundle\Form\Type\Approval
+ * Class ApproverSelectionCriteriaType.
  */
 class ApproverSelectionCriteriaType extends AbstractType
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -37,16 +35,16 @@ class ApproverSelectionCriteriaType extends AbstractType
                 'required' => false,
             ])
             ->add('select_from_people', EntityIdType::class, [
-                'required' => false,
-                'class' => Person::class,
-                'multiple' => true,
+                'required'    => false,
+                'class'       => Person::class,
+                'multiple'    => true,
                 'keep_as_ids' => true,
                 'constraints' => [
                     new Assert\Count(['min' => 1, 'groups' => ['mandate_select_from_people']]),
                 ],
             ])
             ->add('min_number_of_approvers', IntegerType::class, [
-                'required' => false,
+                'required'    => false,
                 'constraints' => [
                     new Assert\NotBlank(['message' => sprintf('You must provide a minimum number of approvers value between 1 & %d', AbstractBaseApproval::APPROVERS_MAX)]),
                     new Assert\Range(['min' => 1, 'max' => AbstractBaseApproval::APPROVERS_MAX]),
@@ -56,14 +54,12 @@ class ApproverSelectionCriteriaType extends AbstractType
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => ApproverSelectionCriteria::class,
-            'csrf_protection' => false,
-            'csrf_double_submit_protection' => false,
+            'data_class'        => ApproverSelectionCriteria::class,
             'validation_groups' => function (FormInterface $form) {
                 $canSelectTicketUser = $form->get('can_select_ticket_user')->getData();
                 $canSelectOrganizationManagers = $form->get('can_select_organization_managers')->getData();
@@ -76,13 +72,5 @@ class ApproverSelectionCriteriaType extends AbstractType
                 return ['Default', 'mandate_select_from_people'];
             },
         ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getName()
-    {
-        return 'approver_selection_criteria';
     }
 }
