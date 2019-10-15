@@ -93,6 +93,7 @@ class ApprovalForm extends React.Component {
       template: {
         criteria,
         id:          template.get('id'),
+        description: template.get('description'),
         canChoose:   template.get('can_choose_approvers'),
         toApprove:   template.get('required_approvals'),
         toReject:    template.get('required_rejections'),
@@ -155,15 +156,14 @@ class ApprovalForm extends React.Component {
     });
 
     const errors = [];
-
-    // prepare submit data
     const data = {
       ...values,
-      template:  template.id,
-      approvers: this.state.approvers.map(approver => approver.id)
+      template: template.id,
     };
 
     if (template.canChoose) {
+      data.approvers = this.state.approvers.map(approver => approver.id);
+
       const totalApprovers = parseInt(template.criteria.number_of_approvers, 10);
       if (data.approvers.length < totalApprovers) {
         errors.push(
@@ -311,6 +311,8 @@ class ApprovalForm extends React.Component {
               <textarea
                 name="description"
                 className="form-control"
+                value={template ? template.description : ''}
+                readOnly={template && template.description ? 'readonly' : null}
                 rows="4"
               />
             </div>
