@@ -124,7 +124,9 @@
                                         <label>
                                             <input style="margin-right: 5px;"
                                                    type="checkbox"
-                                                   ng-model="person.value" />
+                                                   ng-checked="form.selected_approvers.people.indexOf(person.id) > -1"
+                                                   ng-click="TicketApprovalsTemplateEdit.toggleSelectedApprovers(person.id)"
+                                            />
                                             <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + person.picture_url_16 + ')'}"></span>
                                             <span>{{ ng_var('person.display_name') }}</span>
                                         </label>
@@ -188,7 +190,9 @@
                                             <label>
                                                 <input style="margin-right: 5px;"
                                                        type="checkbox"
-                                                       ng-model="person.value" />
+                                                       ng-checked="form.approver_selection_criteria.select_from_people.indexOf(person.id) > -1"
+                                                       ng-click="TicketApprovalsTemplateEdit.toggleChoosedApprovers(person.id)"
+                                                />
                                                 <span class="agent-icon agent-icon-16x" ng-style="{'background-image': 'url(' + person.picture_url_16 + ')'}"></span>
                                                 <span>{{ ng_var('person.display_name') }}</span>
                                             </label>

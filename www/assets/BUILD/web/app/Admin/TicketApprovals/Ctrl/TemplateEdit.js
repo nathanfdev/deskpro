@@ -78,6 +78,12 @@ define([
 
         this.$scope.people.push(person);
         this.$scope.selectedUser = null;
+
+        if (this.$scope.form.can_choose_approvers) {
+          this.toggleChoosedApprovers(person.id);
+        } else {
+          this.toggleSelectedApprovers(person.id);
+        }
       });
 
       this.$scope.$watch('form', () => {
@@ -177,6 +183,46 @@ define([
       return form;
     }
 
+    toggleSelectedApprovers(id) {
+      if (!this.$scope.form) {
+        return;
+      }
+      if (!this.$scope.form.selected_approvers) {
+        this.$scope.form.selected_approvers = {};
+      }
+      if (!this.$scope.form.selected_approvers.people) {
+        this.$scope.form.selected_approvers.people = [];
+      }
+
+      const selected = this.$scope.form.selected_approvers.people;
+      const index = selected.indexOf(id);
+      if (index !== -1) {
+        selected.splice(index, 1);
+      } else {
+        selected.push(id);
+      }
+    }
+
+    toggleChoosedApprovers(id) {
+      if (!this.$scope.form) {
+        return;
+      }
+      if (!this.$scope.form.approver_selection_criteria) {
+        this.$scope.form.approver_selection_criteria = {};
+      }
+      if (!this.$scope.form.approver_selection_criteria.select_from_people) {
+        this.$scope.form.approver_selection_criteria.select_from_people = [];
+      }
+
+      const selected = this.$scope.form.approver_selection_criteria.select_from_people;
+      const index = selected.indexOf(id);
+      if (index !== -1) {
+        selected.splice(index, 1);
+      } else {
+        selected.push(id);
+      }
+    }
+
     /**
      * Save approval template form.
      */
@@ -189,12 +235,8 @@ define([
 
       if (this.$scope.form.can_choose_approvers) {
         delete this.$scope.form.selected_approvers;
-
-        this.$scope.form.approver_selection_criteria.select_from_people = this.$scope.people.map(person => person.id);
       } else {
         delete this.$scope.form.approver_selection_criteria;
-
-        this.$scope.form.selected_approvers.people = this.$scope.people.map(person => person.id);
       }
 
       // start spinner
