@@ -12,7 +12,7 @@ define([
       this.dataService = this.DataService.get('TicketApprovals');
 
       this.$scope.templateId = (this.$stateParams.id)
-        ? parseInt(this.$stateParams.id.replace(/^template-(\d+)$/, '$1'))
+        ? parseInt(this.$stateParams.id.replace(/^template-(\d+)$/, '$1'), 10)
         : null;
 
       this.$scope.setDescription = false;
@@ -21,32 +21,32 @@ define([
       this.$scope.can_choose_approvers = 'n';
 
       this.$scope.form = {
-        type: null,
-        name: null,
-        description: null,
-        required_approvals: 0,
-        required_rejections: 0,
+        type:                       null,
+        name:                       null,
+        description:                null,
+        required_approvals:         0,
+        required_rejections:        0,
         can_approvers_view_subject: false,
-        can_choose_approvers: false,
-        selected_approvers: {
-          has_ticket_user: false,
+        can_choose_approvers:       false,
+        selected_approvers:         {
+          has_ticket_user:           false,
           has_organization_managers: false,
-          has_all_agents: false,
-          people: []
+          has_all_agents:            false,
+          people:                    []
         },
         approver_selection_criteria: {
-          can_select_ticket_user: false,
+          can_select_ticket_user:           false,
           can_select_organization_managers: false,
-          can_select_from_all_agents: false,
-          select_from_people: [],
-          min_number_of_approvers: 1,
+          can_select_from_all_agents:       false,
+          select_from_people:               [],
+          min_number_of_approvers:          1,
         },
-        actions_on_create: [],
-        actions_on_partial_approval_response: [],
+        actions_on_create:                     [],
+        actions_on_partial_approval_response:  [],
         actions_on_partial_rejection_response: [],
-        actions_on_cancel: [],
-        actions_on_approved: [],
-        actions_on_rejected: []
+        actions_on_cancel:                     [],
+        actions_on_approved:                   [],
+        actions_on_rejected:                   []
       };
 
       // define search funtion for ui-select2
@@ -57,15 +57,14 @@ define([
 
         this.dataService.searchPeople(query.term, excludeAgents)
           .then(({ data }) => {
-            let selected = this.$scope.people.map(item => item.id);
-            let result = { results: [] };
+            const selected = this.$scope.people.map(item => item.id);
+            const result = { results: [] };
             result.results = data
               .filter(person => selected.indexOf(person.id) === -1)
               .map(person => ({ ...person, text: `${person.first_name} ${person.last_name}` }));
 
             query.callback(result);
           });
-
       }.bind(this);
 
       this.$scope.selectedUser = null;
@@ -101,11 +100,11 @@ define([
     }
 
     updateCriteriaOptionTypes() {
-      let set = this.actionsTypeDef.getOptionsForTypes([], {});
+      const set = this.actionsTypeDef.getOptionsForTypes([], {});
       this.$scope.actionOptionTypes.length = 0;
       return (() => {
         const result = [];
-        for (let opt of Array.from(set)) {
+        for (const opt of Array.from(set)) {
           result.push(this.$scope.actionOptionTypes.push(opt));
         }
         return result;
@@ -113,13 +112,13 @@ define([
     }
 
     initialLoad() {
-      let promises = [
+      const promises = [
         this.actionsTypeDef.loadDataOptions()
       ];
 
       if (this.$scope.templateId) {
-        let promise = this.dataService.loadApprovalTemplates(this.$scope.templateId)
-          .then(data => {
+        const promise = this.dataService.loadApprovalTemplates(this.$scope.templateId)
+          .then((data) => {
             // set description flag
             if (data.description.length > 0) {
               this.$scope.setDescription = true;
@@ -136,9 +135,9 @@ define([
             }
 
             // merge agents and users into people array
-            people.forEach(id => {
+            people.forEach((id) => {
               this.dataService.getPerson(id)
-                .then(result => {
+                .then((result) => {
                   result.person.value = true;
                   this.$scope.people.push(result.person);
                 });
@@ -169,9 +168,9 @@ define([
     }
 
     rebaseActions(form, actionSet) {
-      let actions = [];
-      for (const _x of Object.keys(form[actionSet] || {})) {
-        actions.push(form[actionSet][_x]);
+      const actions = [];
+      for (const x of Object.keys(form[actionSet] || {})) {
+        actions.push(form[actionSet][x]);
       }
       form[actionSet] = actions;
 
@@ -183,7 +182,7 @@ define([
      */
     saveForm() {
       // Growl messages
-      let msgSuccess = this.getRegisteredMessage('approval_template_save_success');
+      const msgSuccess = this.getRegisteredMessage('approval_template_save_success');
       let msgFailure = this.getRegisteredMessage('approval_template_save_failure');
 
       this.$scope.form.can_choose_approvers = this.$scope.can_choose_approvers === 'y';
@@ -218,16 +217,13 @@ define([
       this.dataService.saveApprovalTemplate(this.$scope.form, this.$scope.templateId)
         .then((response) => {
           // get List controller
-          const listController = this.$scope['TicketApprovalsList'];
+          const listController = this.$scope.TicketApprovalsList;
 
           // add or update approval type
-          switch (true) {
-            case response.status === 201:
-              listController.addTemplate(response.data.data);
-              break;
-            case response.status === 204:
-              listController.updateTemplateById(this.templateId, this.$scope.form);
-              break;
+          if (response.status === 201) {
+            listController.addTemplate(response.data.data);
+          } else if (response.status === 204) {
+            listController.updateTemplateById(this.templateId, this.$scope.form);
           }
 
           // stop spinner and show growl message
@@ -266,7 +262,6 @@ define([
               this.$scope.form_props.$invalid = true;
               this.$scope.form_props.custom_error = msgFailure;
             });
-
         });
     }
 
@@ -287,7 +282,7 @@ define([
       this.dataService.deleteApprovalTemplate(id)
         .then(() => {
           // get List controller
-          const listController = this.$scope['TicketApprovalsList'];
+          const listController = this.$scope.TicketApprovalsList;
 
           // remove type from list
           listController.removeTemplateById(id);
