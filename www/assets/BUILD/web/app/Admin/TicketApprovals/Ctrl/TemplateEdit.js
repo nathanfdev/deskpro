@@ -249,8 +249,18 @@ define([
           // stop spinner and show growl message
           this.stopSpinner('saving', true)
             .then(() => {
-              if (response && response.data && response.data.errors && response.data.errors.errors && response.data.errors.errors[0] && response.data.errors.errors[0].message) {
-                msgFailure = response.data.errors.errors[0].message;
+              if (response && response.data && response.data.errors) {
+                const errors = response.data.errors;
+
+                if (errors.errors && errors.errors[0] && errors.errors[0].message) {
+                  msgFailure = response.data.errors.errors[0].message;
+                }
+                if (errors.fields && errors.fields.approver_selection_criteria && errors.fields.approver_selection_criteria.fields) {
+                  const selectionErrors = errors.fields.approver_selection_criteria.fields;
+                  if (selectionErrors.min_number_of_approvers) {
+                    msgFailure = 'You must provide a minimum number of approvers value between 1 and 100.';
+                  }
+                }
               }
 
               this.$scope.form_props.$invalid = true;
