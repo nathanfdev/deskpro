@@ -46,22 +46,22 @@ export class HcFilterFacets extends React.Component {
     });
   };
 
-  resetFilters = () => {
-    this.props.onResetActivities();
-    this.props.onSetStatus('active');
-    this.toggle();
-  };
-
-  toggle = () => {
-    this.setState({ is_shown: !this.state.is_shown });
-  };
-
   onClickOut = () => {
     this.setState({ is_shown: false });
   };
 
   onGetRef = (el) => {
     this.container = el;
+  };
+
+  toggle = () => {
+    this.setState({ is_shown: !this.state.is_shown });
+  };
+
+  resetFilters = () => {
+    this.props.onResetActivities();
+    this.props.onSetStatus('active');
+    this.toggle();
   };
 
   renderMenu = () => {

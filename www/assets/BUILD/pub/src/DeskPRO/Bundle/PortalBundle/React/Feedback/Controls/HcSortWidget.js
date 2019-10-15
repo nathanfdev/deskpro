@@ -35,10 +35,6 @@ export class HcSortWidget extends React.Component {
     });
   };
 
-  toggle = () => {
-    this.setState({ is_shown: !this.state.is_shown });
-  };
-
   onClickOut = () => {
     this.setState({ is_shown: false });
   };
@@ -50,6 +46,10 @@ export class HcSortWidget extends React.Component {
   onSort = (id) => {
     this.props.setSort(id);
     this.toggle();
+  };
+
+  toggle = () => {
+    this.setState({ is_shown: !this.state.is_shown });
   };
 
   render() {
