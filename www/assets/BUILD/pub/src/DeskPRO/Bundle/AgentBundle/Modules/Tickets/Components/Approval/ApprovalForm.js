@@ -9,6 +9,7 @@ class ApprovalForm extends React.Component {
   static propTypes = {
     templates:             PropTypes.object.isRequired,
     agents:                PropTypes.object,
+    ticketData:            PropTypes.object,
     intl:                  PropTypes.object,
     getPeople:             PropTypes.func,
     createApprovalRequest: PropTypes.func
@@ -62,7 +63,7 @@ class ApprovalForm extends React.Component {
 
   handleTemplateChange = (value) => {
     // get templates from props
-    const { templates, agents } = this.props;
+    const { templates, agents, ticketData } = this.props;
 
     // get selected template
     const template = templates.toArray().find(t => t.get('id') === value.value);
@@ -122,6 +123,9 @@ class ApprovalForm extends React.Component {
           if (criteria.all_agents) {
             people = [...people, ...agents.toArray().map(agent => personToSelect(agent.toJS()))];
           }
+          if (criteria.ticket_user) {
+            people = [...people, personToSelect(ticketData.person)];
+          }
 
           this.setState({ people });
         } else {
@@ -131,6 +135,9 @@ class ApprovalForm extends React.Component {
     } else if (template.get('can_choose_approvers')) {
       if (criteria.all_agents) {
         people = [...agents.toArray().map(agent => personToSelect(agent.toJS()))];
+      }
+      if (criteria.ticket_user) {
+        people = [...people, personToSelect(ticketData.person)];
       }
 
       this.setState({ people });

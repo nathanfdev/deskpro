@@ -4207,7 +4207,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
     window.AgentLegacyBundle.renderApprovalTab(this.getEl('approvals_wrap')[0], {
       ticketId:    this.meta.ticket_id,
-      ticketPerms: this.meta.ticket_perms
+      ticketPerms: this.meta.ticket_perms,
+      ticketData:  this.meta.api_v2_data.data
     });
   },
 
