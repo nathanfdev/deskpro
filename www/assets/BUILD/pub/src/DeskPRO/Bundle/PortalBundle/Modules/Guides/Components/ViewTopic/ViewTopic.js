@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
+import GuideSvg from '@deskpro/portal-style/dist/img/page-icons/guides.svg';
 import { TopicList, TopicSummary, GuideSelector, Anchor, CodeBlock, CommentsBlock } from '../index';
 
 class ViewTopic extends React.Component {
@@ -437,6 +438,56 @@ class ViewTopic extends React.Component {
     const { fixed } = this.state;
     const agentBarHeight = this.sizes ? this.agentBarHeight : 0;
 
+    if (window.currentTheme === 'helpcenter') {
+      return (
+        <div className="row">
+          <div className={classNames('topic-list col-sm-3', { fixed })} ref={(c) => { this.topicList = c; }} >
+            <GuideSelector guideSlug={this.state.guideSlug} selectGuide={this.selectGuide} />
+            <hr />
+            <TopicList topics={topics} guideSlug={guideSlug} />
+          </div>
+          <div className="topic col-sm-9" ref={(c) => { this.topic = c; }}>
+            <div className="dp-po-title">
+              <img
+                className="dp-po-title-svg"
+                src={GuideSvg}
+                role="presentation"
+              />
+              <h2 className="dp-po-title-text">{topic.title}</h2>
+            </div>
+            <div className="row align-items-end">
+              <div className="col-sm-10">
+                <div className="dp-po-post-info">
+                  <ul className="dp-po-post-info-list">
+                    <li className="dp-po-post-info-item">
+                      <label htmlFor="publication-date"><FormattedMessage id="portal.general.published" />: </label>
+                      <b>{moment(topic.date_published).format('DD/MM/YYYY')}</b>
+                    </li>
+                    <li className="dp-po-post-info-item">
+                      <label htmlFor="last-update-date"><FormattedMessage id="portal.general.updated" />: </label>
+                      <b>{moment(topic.date_updated).format('DD/MM/YYYY')}</b>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="topic-content">
+              <div dangerouslySetInnerHTML={{ __html: topic.content }} />
+            </div>
+            <CommentsBlock
+              count={topic.calc_num_comments}
+              flashes={this.state.flashes}
+              postComment={this.postComment}
+              comments={topic.comments}
+            />
+            <div className={classNames('loading', { active: this.state.doSpin || !topic.slug })} />
+          </div>
+          <div className="content-summary">
+            <TopicSummary content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
+          </div>
+        </div>
+      );
+    }
     return (
       <div>
         <div className={classNames('topic-list', { fixed })} ref={(c) => { this.topicList = c; }} >

@@ -157,6 +157,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash']),
             new \Twig_SimpleFunction('get_user', [$this, 'getPerson']),
+            new \Twig_SimpleFunction('current_theme', [$this, 'getCurrentTheme']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -793,6 +794,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return $person;
+    }
+
+    public function getCurrentTheme()
+    {
+        return $this->container->get('brand_stack')->getActive()->getBrand()->getThemeSet()->getThemeId();
     }
 
     /**

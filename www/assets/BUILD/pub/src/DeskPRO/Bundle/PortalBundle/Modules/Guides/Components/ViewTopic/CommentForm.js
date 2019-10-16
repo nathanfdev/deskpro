@@ -156,6 +156,54 @@ class CommentForm extends React.Component {
     if (!window.topicCommentForm) {
       return null;
     }
+    if (window.currentTheme === 'helpcenter') {
+      if (!window.loggedIn) {
+        return (
+          <div>
+            <p className="dp-po-comment-subtitle">
+              <FormattedMessage id="portal.general.comment_login_first" />
+            </p>
+
+          </div>
+        );
+      }
+      return (
+        <div className="dp-po-block">
+          <div className="dp-po-comments-add">
+            <form action="" className="dp-po-form" method="post">
+              <div className="form-group">
+                <label className="title title required" htmlFor="comment_content_real">
+                  <FormattedMessage id="portal.general.your_comment_label" /> *
+                </label>
+                <textarea
+                  className="form-control"
+                  id="comment_content_real"
+                  name="comment[content_real]"
+                  required="required"
+                  value={this.state.comment}
+                  onChange={this.updateComment}
+                />
+                {this.getError('content_real')}
+              </div>
+              <div className="row align-items-center">
+                <div className="col-sm-2">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    onClick={this.onSubmit}
+                    disabled={this.state.loading}
+                    style={{ whiteSpace: 'nowrap' }}
+                  >
+                    <FormattedMessage id="portal.general.comment_btn_save" />&nbsp;
+                    {this.state.loading ? <i className="fas fa-spinner fa-pulse" /> : '' }
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="form-ticket">
         <div className="single-comment reply">
