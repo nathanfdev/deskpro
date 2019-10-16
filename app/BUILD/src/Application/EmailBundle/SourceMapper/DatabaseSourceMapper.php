@@ -226,6 +226,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'exec_count'       => 0,
             'num_targets'      => count($tos) + count($ccs) + count($bccs),
             'num_pending'      => count($tos) + count($ccs) + count($bccs),
+            'context_type'     => '',
         ];
 
         if ($message instanceof MessageOptionsInterface && ($opts = $message->getMessageOptions()->all())) {
