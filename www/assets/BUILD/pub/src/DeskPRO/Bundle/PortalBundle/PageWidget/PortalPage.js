@@ -17,8 +17,10 @@ import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { OmniSearchWidget } from './OmniSearchWidget';
 import { LanguageChangerWidget } from './LanguageChangerWidget';
+import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import AgentBarWidget from './AgentBarWidget';
 import { LoginDropdownWidget } from './LoginDropdownWidget';
+import { HelpcenterLoginDropdownWidget } from './HelpcenterLoginDropdownWidget';
 import { LogoutButtonWidget } from './LogoutButtonWidget';
 import { SearchResultsPage } from './SearchResultsPage';
 import { MobileTopbarWidget } from './MobileTopbarWidget';
@@ -26,6 +28,7 @@ import { MobileMenuWidget } from './MobileMenuWidget';
 import { ArticleHighlighter } from './ArticleHighlighter';
 import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
+import { SocialShare } from './SocialShare';
 import { TouchFocusWidget } from './TouchFocusWidget';
 import { WidgetButton } from './WidgetButton';
 import { DpxTabs } from './Common/DpxTabs';
@@ -37,8 +40,10 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(HelpcenterFormWidget, '.helpcenter-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
+    this.addWidgetDef(HelpcenterLoginDropdownWidget, '#hc-top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');
     this.addWidgetDef(LanguageChangerWidget, '#language-changer');
+    this.addWidgetDef(HelpcenterLanguageChangerWidget, '#hc-language-changer');
     this.addWidgetDef(TicketForm, '#new_ticket_page');
     this.addWidgetDef(TicketForm, '#edit_ticket_form');
     this.addWidgetDef(TicketView, '#ticket_view_page');
@@ -65,6 +70,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(TouchFocusWidget, '.as-touch-focus');
     this.addWidgetDef(WidgetButton, '.widget-button');
     this.addWidgetDef(DpxTabs, '.dpx-tabs');
+    this.addWidgetDef(SocialShare, '#social-share');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

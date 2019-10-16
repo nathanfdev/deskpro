@@ -1,10 +1,12 @@
 <div class="dp-po-post-avatars">
     <ul class="dp-po-post-avatars-list">
+        {% for author in item.authors %}
         <li class="dp-po-post-avatars-item">
             <a href="javascript:void(0)" class="dp-po-post-avatars-link" data-toggle="tooltip" data-placement="bottom"
-               title="{{ item.person.display_name_user }}">
-                <img class="dp-po-post-avatars-image" src="{{ avatar_url(item.person) }}">
+               title="{{ author.display_name_user }}">
+                {{ hc_avatar(author, 'dp-po-post-avatars') }}
             </a>
         </li>
+        {% endfor %}
     </ul>
 </div>

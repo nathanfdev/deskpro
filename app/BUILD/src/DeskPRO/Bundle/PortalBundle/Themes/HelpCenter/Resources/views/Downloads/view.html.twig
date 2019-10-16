@@ -14,7 +14,7 @@
                         </div>
 
                         <div class="dp-po-avatar dp-po-avatar-round">
-                            <img src="{{ avatar_url(file.person) }}" />
+                            {{ hc_avatar(file.person, '', 30) }}
                             {{ file.person }}
                         </div>
 
@@ -78,7 +78,9 @@
                             } %}
                         {% endif %}
 
-{#                        <%- include('_partials/_post-share.ejs'); %>#}
+                        {% include 'Theme:PublishCommon:share.html.twig' with {
+                            item: file
+                        } %}
 
                         {% include'Theme:Downloads:meta.html.twig' %}
                     </div>

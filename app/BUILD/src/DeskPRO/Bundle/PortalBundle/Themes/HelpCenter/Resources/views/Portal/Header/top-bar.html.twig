@@ -16,35 +16,16 @@
                 </div>
                 <div class="col-sm-6">
                     <div class="dp-po-header-right">
-                        <div class="dp-po-language">
-                            <a class="dp-po-language-link" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{{ asset('img/docs/flag-uk.jpg', 'help_center') }}" /> English
+                        <div class="dp-po-language" id="hc-language-changer">
+                            <a class="dp-po-language-link" href="">
+                                <img src="{{ asset('images/flags/locale_en-US.png', 'legacy_web') }}" alt=""> English
                                 <i class="dp-po-icon far fa-angle-down"></i>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-left">
-                                <a class="dropdown-item" href="#">
-                                    <img class="dp-po-icon" src="{{ asset('img/docs/flag-germany.jpg', 'help_center') }}" />
-                                    German
-                                </a>
-                                <a class="dropdown-item" href="#">
-                                    <img class="dp-po-icon" src="{{ asset('img/docs/flag-france.jpg', 'help_center') }}" />
-                                    French
-                                </a>
-                            </div>
                         </div>
                         <div class="dp-po-header-button">
                             <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary" title="{{ phrase('portal.general.nav-newticket') }}">{{ phrase('portal.general.nav-newticket') }}</a>
                         </div>
-                        <div class="dp-po-user">
-                            <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">Login</a>
-                            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
-                                <h4 class="dropdown-item-text dp-po-user-dropdown-title">New to Deskpro? <a href="">Register for an
-                                        account</a></h4>
-                                <%- include('_form-login.ejs'); %>
-                                <%- include('_form-login-social.ejs'); %>
-                            </div>
-                        </div>
+                        {% include 'Theme:Portal:Header/user-menu.html.twig' %}
                     </div>
 
                 </div>

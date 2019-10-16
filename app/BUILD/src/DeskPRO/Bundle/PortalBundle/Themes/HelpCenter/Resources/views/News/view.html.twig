@@ -24,11 +24,14 @@
           <div class="dp-po-post-info">
             <ul class="dp-po-post-info-list">
               <li class="dp-po-post-info-item">
-                {{ phrase('helpcenter.general.last-updated', {date: post.date_updated | date('day'), person: post.person}) | raw }}
+                {{ phrase('helpcenter.general.last-updated', {date: post.date_updated | date('day'), person: post.last_author}) | raw }}
               </li>
-              {#            <li class="dp-po-post-info-item">#}
-              {#              News type: <b>{{ post.type }}</b>#}
-              {#            </li>#}
+              <li class="dp-po-post-info-item">
+                <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ post.date_published | date('day') }}</b>
+              </li>
+              <li class="dp-po-post-info-item">
+                {{ phrase('helpcenter.news.news-type') }}: <b>{{ post.category }}</b>
+              </li>
             </ul>
           </div>
         </div>
@@ -36,7 +39,7 @@
           <div class="dp-po-post-extra">
             <ul class="dp-po-post-extra-list">
               <li class="dp-po-post-extra-item">
-                <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
               </li>
               <li class="dp-po-post-extra-item">
                 <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
@@ -87,6 +90,10 @@
       related_content: postData.related_content
     } %}
   {% endif %}
+
+  {% include 'Theme:PublishCommon:share.html.twig' with {
+    item: post
+  } %}
 
   {% if post.labels | length %}
     {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {

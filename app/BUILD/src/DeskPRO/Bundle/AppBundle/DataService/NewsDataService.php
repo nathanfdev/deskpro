@@ -54,11 +54,12 @@ class NewsDataService extends AbstractDataService
      * @param NewsCategory $category
      * @param              $page
      * @param              $max_per_page
-     * @param Person       $person
+     * @param Person $person
      *
+     * @param array $filters An array of filters, e.g. ['date' => '2019-08']
      * @return Pagerfanta
      */
-    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person = null)
+    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person = null, array $filters = [])
     {
         $em                 = $this->em;
         $permissionsManager = $this->permissionsManager;
@@ -70,14 +71,22 @@ class NewsDataService extends AbstractDataService
                 (int) $page,
                 (int) $max_per_page,
                 $person,
+                $filters,
             ],
-            function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person) {
+            function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person, $filters) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('n')
                     ->from(News::class, 'n')
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
                     ->orderBy('n.date_published', 'DESC');
+
+                if (isset($filters['date']) && $this->isValidFilterDate($filters['date'])) {
+                    $qb
+                        ->andWhere('n.date_published LIKE :date')
+                        ->setParameter(':date', "{$filters['date']}%")
+                    ;
+                }
 
                 $allowed_ids = $permissionsManager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
                 if ($category) {
@@ -389,5 +398,14 @@ class NewsDataService extends AbstractDataService
     public function getRelatedContentRepo()
     {
         return $this->em->getRepository(RelatedContent::class);
+    }
+
+    /**
+     * @param string $date
+     * @return false|int
+     */
+    private function isValidFilterDate($date)
+    {
+        return preg_match('/^([0-9]{4}|[0-9]{4}\-[0-9]{2}|[0-9]{4}\-[0-9]{2}\-[0-9]{2})$/', $date);
     }
 }

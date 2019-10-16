@@ -275,6 +275,7 @@ class LanguagesController extends CrudController
             'agent.onboarding.new_im_start_new_title',
             'agent.onboarding.new_im_start_new_text',
             'agent.publish.image_browser',
+            'agent.publish.pick_icon',
             'agent.search.manage_tickets',
             'agent.search.type_ticket',
             'agent.search.no_results_found',

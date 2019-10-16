@@ -1,7 +1,7 @@
 {% block person_inline %}
 	<div class="dp-po-avatar dp-po-avatar-round">
 	{% if person %}
-		<img src="{{ avatar_url(person, 30) }}" />
+		{{ hc_avatar(person, '', 30) }}
 		{% if include_email and not person.isAgent() %}
 			You ({{ person.primary_email_address }})
 		{% else %}

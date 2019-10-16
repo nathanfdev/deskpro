@@ -208,6 +208,14 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     }
 
     /**
+     * @return CommunityForumToCustomDefCommunityTopic[]|ArrayCollection
+     */
+    public function getTopicJunctionFields()
+    {
+        return $this->topic_fields;
+    }
+
+    /**
      * @return bool
      */
     public function isVotingEnabled()
