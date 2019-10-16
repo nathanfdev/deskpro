@@ -118,48 +118,36 @@ class ApprovalTableRow extends React.Component {
     if (approval.status === 'pending') {
       if (this.props.me) {
         const meId = parseInt(this.props.me.get('id'), 10);
-        const iAmApprover = approval.approvers.findIndex(approver => meId === approver.id) > -1;
 
-        if (meId === approval.creator) {
-          if (iAmApprover && approval.approvers_pending.includes(meId)) {
-            controls = (
-              <div>
-                <Button
-                  size="small"
-                  loading={this.state.saving}
-                  onClick={() => this.cancelApprovalRequest(approval.id)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  style={{ marginRight: '3px' }}
-                  size="small" loading={this.state.saving}
-                  onClick={() => this.acceptApprovalRequest(approval.id)}
-                >
-                  Accept
-                </Button>
-                <Button
-                  size="small"
-                  loading={this.state.saving}
-                  onClick={() => this.rejectApprovalRequest(approval.id)}
-                >
-                  Reject
-                </Button>
-              </div>
-            );
-          } else {
-            controls = (
-              <div>
-                <Button
-                  size="small"
-                  loading={this.state.saving}
-                  onClick={() => this.cancelApprovalRequest(approval.id)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            );
-          }
+        if (meId === approval.creator
+          || (approval.approvers.findIndex(approver => meId === approver.id) > -1 && approval.approvers_pending.includes(meId))
+          || this.props.approval.getIn(['selected_approvers', 'has_all_agents'])
+        ) {
+          controls = (
+            <div>
+              <Button
+                size="small"
+                loading={this.state.saving}
+                onClick={() => this.cancelApprovalRequest(approval.id)}
+              >
+                Cancel
+              </Button>
+              <Button
+                style={{ marginRight: '3px' }}
+                size="small" loading={this.state.saving}
+                onClick={() => this.acceptApprovalRequest(approval.id)}
+              >
+                Accept
+              </Button>
+              <Button
+                size="small"
+                loading={this.state.saving}
+                onClick={() => this.rejectApprovalRequest(approval.id)}
+              >
+                Reject
+              </Button>
+            </div>
+          );
         } else {
           controls = (
             <div>
