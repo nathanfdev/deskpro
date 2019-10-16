@@ -8,16 +8,17 @@ import ApprovalForm from './ApprovalForm';
 export class Approval extends React.Component {
 
   static propTypes = {
-    approvals:             PropTypes.object.isRequired,
-    templates:             PropTypes.object.isRequired,
-    ticketPerms:           PropTypes.object,
-    ticketData:            PropTypes.object,
-    agents:                PropTypes.object,
-    createApprovalRequest: PropTypes.func,
-    cancelApprovalRequest: PropTypes.func,
-    acceptApprovalRequest: PropTypes.func,
-    rejectApprovalRequest: PropTypes.func,
-    getPeople:             PropTypes.func,
+    approvals:               PropTypes.object.isRequired,
+    templates:               PropTypes.object.isRequired,
+    ticketPerms:             PropTypes.object,
+    ticketData:              PropTypes.object,
+    agents:                  PropTypes.object,
+    createApprovalRequest:   PropTypes.func,
+    cancelApprovalRequest:   PropTypes.func,
+    acceptApprovalRequest:   PropTypes.func,
+    rejectApprovalRequest:   PropTypes.func,
+    getPeople:               PropTypes.func,
+    getOrganizationManagers: PropTypes.func,
   };
 
   constructor(props) {
@@ -60,6 +61,7 @@ export class Approval extends React.Component {
               ticketData={this.props.ticketData}
               agents={this.props.agents}
               getPeople={this.props.getPeople}
+              getOrganizationManagers={this.props.getOrganizationManagers}
               createApprovalRequest={this.createApprovalRequest}
             />
             {button}

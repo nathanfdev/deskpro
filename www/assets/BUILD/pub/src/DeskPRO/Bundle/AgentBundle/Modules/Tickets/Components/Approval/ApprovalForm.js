@@ -7,12 +7,13 @@ import { Form, Label, Button, Select } from '@deskpro/react-components';
 class ApprovalForm extends React.Component {
 
   static propTypes = {
-    templates:             PropTypes.object.isRequired,
-    agents:                PropTypes.object,
-    ticketData:            PropTypes.object,
-    intl:                  PropTypes.object,
-    getPeople:             PropTypes.func,
-    createApprovalRequest: PropTypes.func
+    templates:               PropTypes.object.isRequired,
+    agents:                  PropTypes.object,
+    ticketData:              PropTypes.object,
+    intl:                    PropTypes.object,
+    getPeople:               PropTypes.func,
+    getOrganizationManagers: PropTypes.func,
+    createApprovalRequest:   PropTypes.func
   };
 
   constructor(props) {
@@ -64,6 +65,7 @@ class ApprovalForm extends React.Component {
   handleTemplateChange = (value) => {
     // get templates from props
     const { templates, agents, ticketData } = this.props;
+    const { getPeople, getOrganizationManagers } = this.props;
 
     // get selected template
     const template = templates.toArray().find(t => t.get('id') === value.value);
@@ -113,34 +115,45 @@ class ApprovalForm extends React.Component {
       isAgent: person.is_agent
     });
 
-    let people = [];
-    // concat list of possible approvers and fetch people by ids
-    if (criteria.people.length > 0) {
-      this.props.getPeople(criteria.people).then((res) => {
-        people = res.data.map(personToSelect);
-
-        if (template.get('can_choose_approvers')) {
-          if (criteria.all_agents) {
-            people = [...people, ...agents.toArray().map(agent => personToSelect(agent.toJS()))];
-          }
-          if (criteria.ticket_user) {
-            people = [...people, personToSelect(ticketData.person)];
-          }
-
-          this.setState({ people });
-        } else {
-          this.setState({ people, approvers: people });
-        }
-      });
-    } else if (template.get('can_choose_approvers')) {
+    const people = [];
+    const fillCheckboxApprovers = () => {
       if (criteria.all_agents) {
-        people = [...agents.toArray().map(agent => personToSelect(agent.toJS()))];
+        agents.toArray().forEach((agent) => {
+          if (people.map(person => person.id).indexOf(agent.get('id')) === -1) {
+            people.push(personToSelect(agent.toJS()));
+          }
+        });
       }
       if (criteria.ticket_user) {
-        people = [...people, personToSelect(ticketData.person)];
+        if (people.map(person => person.id).indexOf(ticketData.person.id) === -1) {
+          people.push(personToSelect(ticketData.person));
+        }
+      }
+      if (criteria.organization_managers && ticketData.organization) {
+        getOrganizationManagers(ticketData.organization.id).then((res) => {
+          res.data.forEach((orgManager) => {
+            if (people.map(person => person.id).indexOf(orgManager.id) === -1) {
+              people.push(personToSelect(orgManager));
+            }
+          });
+        });
       }
 
-      this.setState({ people });
+      if (template.get('can_choose_approvers')) {
+        this.setState({ people });
+      } else {
+        this.setState({ people, approvers: people });
+      }
+    };
+
+    // concat list of possible approvers and fetch people by ids
+    if (criteria.people.length > 0) {
+      getPeople(criteria.people).then((res) => {
+        res.data.forEach(person => people.push(personToSelect(person)));
+        fillCheckboxApprovers();
+      });
+    } else {
+      fillCheckboxApprovers();
     }
 
     // if agent can choose approvers
@@ -315,13 +328,20 @@ class ApprovalForm extends React.Component {
               <Label>
                 <FormattedMessage id="agent.tickets.approvals.description" />
               </Label>
-              <textarea
-                name="description"
-                className="form-control"
-                value={template ? template.description : ''}
-                readOnly={template && template.description ? 'readonly' : null}
-                rows="4"
-              />
+              {template && template.description
+                ? <textarea
+                  name="description"
+                  className="form-control"
+                  value={template.description}
+                  readOnly="readonly"
+                  rows="4"
+                />
+                : <textarea
+                  name="description"
+                  className="form-control"
+                  rows="4"
+                />
+              }
             </div>
           </div>
           <div>
