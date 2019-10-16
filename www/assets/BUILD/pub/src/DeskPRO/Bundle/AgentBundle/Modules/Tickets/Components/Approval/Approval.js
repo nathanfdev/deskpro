@@ -37,20 +37,6 @@ export class Approval extends React.Component {
     });
 
   render() {
-    const button = (
-      <Button
-        size="small"
-        style={{ float: 'right', marginTop: '10px', marginBottom: '10px' }}
-        onClick={() => this.setState({ showForm: !this.state.showForm })}
-      >
-        <FormattedMessage
-          id={this.state.showForm
-            ? 'agent.tickets.approvals.cancel_make_request'
-            : 'agent.tickets.approvals.make_request'}
-        />
-      </Button>
-    );
-
     return (
       <Container className="approvals">
         {this.state.showForm ?
@@ -63,8 +49,8 @@ export class Approval extends React.Component {
               getPeople={this.props.getPeople}
               getOrganizationManagers={this.props.getOrganizationManagers}
               createApprovalRequest={this.createApprovalRequest}
+              cancelRequest={() => this.setState({ showForm: false })}
             />
-            {button}
           </div>)
           :
           (<div>
@@ -75,7 +61,15 @@ export class Approval extends React.Component {
               acceptApprovalRequest={this.props.acceptApprovalRequest}
               rejectApprovalRequest={this.props.rejectApprovalRequest}
             />
-            {button}
+            <div className="approval-form-buttons">
+              <Button
+                size="small"
+                style={{ marginTop: '10px', marginBottom: '10px' }}
+                onClick={() => this.setState({ showForm: true })}
+              >
+                <FormattedMessage id="agent.tickets.approvals.make_request" />
+              </Button>
+            </div>
           </div>)
         }
       </Container>

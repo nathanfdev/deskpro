@@ -13,7 +13,8 @@ class ApprovalForm extends React.Component {
     intl:                    PropTypes.object,
     getPeople:               PropTypes.func,
     getOrganizationManagers: PropTypes.func,
-    createApprovalRequest:   PropTypes.func
+    createApprovalRequest:   PropTypes.func,
+    cancelRequest:           PropTypes.func
   };
 
   constructor(props) {
@@ -219,6 +220,11 @@ class ApprovalForm extends React.Component {
     }
   };
 
+  cancelRequest = (event) => {
+    event.preventDefault();
+    this.props.cancelRequest();
+  };
+
   renderErrors = () => {
     if (this.state.errors.length === 0) {
       return null;
@@ -344,13 +350,20 @@ class ApprovalForm extends React.Component {
               }
             </div>
           </div>
-          <div>
+          <div className="approval-form-buttons">
             <Button
-              style={{ float: 'right', marginTop: '10px', marginBottom: '10px', marginLeft: '10px' }}
+              style={{ marginTop: '10px', marginBottom: '10px', marginLeft: '10px' }}
               size="small"
               loading={this.state.saving}
             >
               <FormattedMessage id="agent.general.create" />
+            </Button>
+            <Button
+              style={{ marginTop: '10px', marginBottom: '10px', marginLeft: '10px' }}
+              size="small"
+              onClick={this.cancelRequest}
+            >
+              <FormattedMessage id="agent.tickets.approvals.cancel_make_request" />
             </Button>
           </div>
         </Form>
