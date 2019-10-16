@@ -43,6 +43,10 @@ class CommunityFilterUriHelper
                     $types = $this->getIntArrayFromCsv($parts[1]);
 
                     $filter->setTypes($types);
+
+                    if (count($types) === 1) {
+                        $filter->setCurrentType(current($types));
+                    }
                 }
             } elseif ($this->isSort($segment)) {
                 $parts = $this->getSortParts($segment);
@@ -52,6 +56,12 @@ class CommunityFilterUriHelper
                 if (isset($parts[1])) {
                     $filter->setSortDirection($parts[1]);
                 }
+            } elseif ($this->isView($segment)) {
+                $filter->setView(ltrim($segment, 'view-'));
+            } elseif ($this->isViewMode($segment)) {
+                $filter->setViewMode(str_replace('viewmode-', '', $segment));
+            } elseif ($this->hasActivities($segment)) {
+                $filter->setActivities(explode(',', str_replace('activity-', '', $segment)));
             } elseif ($categories = $this->getIntArrayFromCsv($segment)) {
                 $filter->setStatus(CommunityFilter::STATUS_ACTIVE);
                 $filter->setStatusCategories($categories);
@@ -118,6 +128,20 @@ class CommunityFilterUriHelper
         return false;
     }
 
+    private function isView($segment)
+    {
+        $segment = $this->filterSegment($segment);
+
+        return in_array(ltrim($segment, 'view-'), CommunityFilter::$views);
+    }
+
+    private function isViewMode($segment)
+    {
+        $segment = $this->filterSegment($segment);
+
+        return in_array(str_replace('viewmode-', '', $segment), CommunityFilter::$viewModes);
+    }
+
     private function isSort($segment)
     {
         $segment = $this->filterSegment($segment);
@@ -133,6 +157,15 @@ class CommunityFilterUriHelper
         }
 
         return false;
+    }
+
+    /**
+     * @param string $segment
+     * @return false|int
+     */
+    private function hasActivities($segment)
+    {
+        return preg_match('/activity\-.*/', $segment);
     }
 
     /**
@@ -201,6 +234,18 @@ class CommunityFilterUriHelper
             } else {
                 $uri .= sprintf('/%s', $filter->getSort());
             }
+        }
+
+        if ($filter->getView()) {
+            $uri .= sprintf('/view-%s', $filter->getView());
+        }
+
+        if ($filter->getViewMode()) {
+            $uri .= sprintf('/viewmode-%s', $filter->getViewMode());
+        }
+
+        if ($filter->getActivities() != $defaults['activities']) {
+            $uri .= sprintf('/activity-%s', implode(',', $filter->getActivities()));
         }
 
         return ltrim($uri, '/');

@@ -1,0 +1,55 @@
+<div class="row">
+    <div class="col-sm-9">
+        <div class="dp-po-title">
+            <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+            <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="dp-po-community-row">
+            <div class="dp-po-community-row-list">
+                {% for forum in community_forums %}
+                    {% set icon = forum.icon_property  %}
+                    {% set splash = forum.splash_image_property  %}
+                    <div class="dp-po-community-row-item {{ not splash ? 'dp-po-community-row-item-nocover' }}">
+                        <div class="dp-po-community-row-left" style="{% if splash %}background: url('{{ get_splash_url(forum, 750) }}'); background-repeat: no-repeat; background-position: 0 0; background-size: cover;{% endif %}">
+                            {% if icon %}
+                                <div class="dp-po-community-row-icon">
+                                    {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                                </div>
+                            {% endif %}
+                            <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
+                            <p class="dp-po-community-row-description">{{ forum.description }}</p>
+                            <a href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}"
+                               class="dp-po-community-row-btn">
+                                {{ phrase('helpcenter.community.view-topics', {count: topic_count_per_forum[forum.id]}) }}
+                            </a>
+                        </div>
+                        <div class="dp-po-community-row-right">
+                            <div class="dp-po-community-row-activity">
+                                <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent-activity') }}</h3>
+                                <ul class="dp-po-community-row-activity-list">
+                                    {% for comment in latest_comments_per_forum[forum.id] %}
+                                        <li class="dp-po-community-row-activity-item">
+                                            <a href="{{ path('portal_community_topic_view', {slug: comment.topic.slug}) }}" class="dp-po-community-row-activity-link">
+                                                <img src="{{ avatar_url(comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                <h4 class="dp-po-community-row-activity-title">
+                                                    {{ comment.content|truncate(80) }}
+                                                </h4>
+                                                <span class="dp-po-community-row-activity-time">
+                                                    {{ date_ago(comment.date_created) }}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

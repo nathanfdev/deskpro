@@ -9,6 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -265,6 +266,13 @@ class BreadcrumbGenerator
     {
         return $this->createBuilder()->addCommunity()
             ->addCommunityView($a)
+            ->done();
+    }
+
+    public function buildCommunityCreate(CommunityForum $a)
+    {
+        return $this->createBuilder()->addCommunity()
+            ->addCommunityCreate($a)
             ->done();
     }
 

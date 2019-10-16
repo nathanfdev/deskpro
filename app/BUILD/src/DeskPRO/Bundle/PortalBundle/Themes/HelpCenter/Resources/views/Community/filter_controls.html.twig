@@ -1,60 +1,34 @@
-<script>
-    window.community_FILTER_STATE = {{ filter_js|raw }};
-</script>
-<div class="community-filter">
-    <ul class="flat-tabs">
-        <li>
-            <div class="quick-jump">
-                <a href="{{ path('portal_community_browse', { filter_uri: 'all/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
-                        {% if status == 'all' %} class="active"{% endif %}>
-                    {{ phrase('portal.community.filter_all_items') }}
-                </a>
-            </div>
-        </li>
+<div class="dp-po-community-header">
 
-        <li>
-            <div class="quick-jump">
-                <a href="{{ path('portal_community_browse', { filter_uri: 'active/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
-                        {% if status == 'active' %} class="active"{% endif %}>
-                    {{ phrase('portal.community.filter_open_items') }}
+    <div class="dp-po-community-tabs">
+        <ul class="dp-po-community-tabs-list">
+            <li class="dp-po-community-tabs-item {{ 'list' == view ? 'active' }}">
+                <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/view-list" }) }}" class="dp-po-community-tabs-link">
+                    <i class="dp-po-icon far fa-list-ul"></i> {{ phrase('helpcenter.community.view-list') }}
                 </a>
-            </div>
-        </li>
-
-        <li>
-            <div class="quick-jump">
-                <a href="{{ path('portal_community_browse', { filter_uri: 'closed/' ~ (types ? 'type-' ~ types | join (',') : 'type-1,2,3') }) }}"
-                        {% if status == 'closed' %} class="active"{% endif %}>
-                    {{ phrase('portal.community.filter_closed_items') }}
-                </a>
-            </div>
-        </li>
-    </ul>
-
-    {% if community_forums is defined and community_forums|length > 0 %}
-    <div>
-        <ul class="slider-list">
-            {% for type in community_forums %}
-            <li>
-                <div class="slider-panel">
-                    {% if type.id in types or types is empty %}
-                        <a href="{{ path('portal_community_browse', { filter_uri: status ~ '/type-' ~ type.id }) }}" class="slider">
-                            <span class="slider-status">{{ phrase('portal.general.toggle_on') }}</span>
-                            <span class="slider-icon"><i class="fas fa-check"></i></span>
-                        </a>
-                        <span class="slider-label">{{ object_phrase(type) }}</span>
-                    {% else %}
-                        <a href="{{ path('portal_community_browse', { filter_uri: status ~ '/type-' ~ type.id }) }}"
-                           class="slider off">
-                            <span class="slider-icon"><i class="fas fa-times"></i></span>
-                            <span class="slider-status">{{ phrase('portal.general.toggle_off') }}</span>
-                        </a>
-                        <span class="slider-label">{{ object_phrase(type) }}</span>
-                    {% endif %}
-                </div>
             </li>
-            {% endfor %}
+            <li class="dp-po-community-tabs-item {{ 'status-change' == view ? 'active' }}">
+                <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/view-status-change" }) }}" class="dp-po-community-tabs-link">
+                    <i class="dp-po-icon far fa-exchange"></i> {{ phrase('helpcenter.community.view-status-change') }}
+                </a>
+            </li>
         </ul>
     </div>
-    {% endif %}
+
+    <form class="dp-po-community-header-search" action="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}" }) }}" method="get">
+        <input type="text" name="q" placeholder="Search suggestions" value="{{ app.request.get('q') }}" />
+        <button type="submit"><i class="dp-po-icon far fa-search"></i></button>
+    </form>
+
+    <div class="dp-po-community-header-right" style="padding-right: 1rem;">
+        <div class="dp-po-community-header-view">
+            <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/viewmode-compact" }) }}" class="dp-po-community-header-view-link dp-po-community-header-view-compact {{ view_mode == 'compact' ? 'active' }}">
+                <i class="dp-po-icon far fa-minus"></i>
+            </a>
+            <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/viewmode-expanded" }) }}" class="dp-po-community-header-view-link dp-po-community-header-view-expanded {{ view_mode == 'expanded' ? 'active' }}">
+                <i class="dp-po-icon far fa-equals"></i>
+            </a>
+        </div>
+    </div>
+
 </div>

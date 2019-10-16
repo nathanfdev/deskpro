@@ -1,0 +1,52 @@
+<div id="hc_community_page">
+    <script>
+        window.COMMUNITY_FILTER_STATE = {{ filter_js|raw }};
+    </script>
+    <div class="row">
+        <div class="col-sm-6">
+            {% include "Theme:Community:CommunityTopicsList/forum-selection.html.twig" with {
+                forums: community_forums,
+                current_forum: current_forum,
+            } %}
+        </div>
+        <div class="col-sm-3">
+            {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                community_forums: community_forums,
+                current_forum: current_forum,
+            } %}
+        </div>
+        <div class="col-sm-3">
+            <div class="dp-po-subscribe dp-po-subscribe-large">
+                {% if brand_setting('user.community_subscriptions') %}
+                    <a href="{{ path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}) }}"
+                       class="dp-po-subscribe-btn"
+                       rel="noindex, nofollow"
+                    >
+                        <i class="dp-po-icon fad fa-envelope"></i>
+                        {{ phrase(is_subscribed ? 'portal.general.btn-unsubscribe' : 'portal.general.btn-subscribe') }}
+                        <i class="dp-po-icon far fa-check"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <article class="community-filter-interactive as-no-dpui">
+                {% include 'Theme:Community:filter_controls.html.twig' with {
+                    filter_js: filter_js,
+                    current_forum: current_forum,
+                    view: view,
+                    filter_params: filter_params,
+                    view_mode: view_mode,
+                } %}
+                <div class="paged-results">
+                    {% include 'Theme:Community:CommunityTopicsList/detail.html.twig' with {
+                        topics_list: topics_list,
+                    } %}
+                </div>
+            </article>
+        </div>
+    </div>
+
+</div>

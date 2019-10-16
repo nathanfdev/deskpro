@@ -1,0 +1,62 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-centered">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.form_create_topic') }}</h2>
+                        </div>
+                        <div class="dp-po-block">
+                            <div class="dp-po-community-form dpx-form">
+                                <p>{{ phrase('helpcenter.community.form_complete_help_message') }}</p>
+                                {{ form_errors(form) }}
+                                {{ form_start(form, {attr: {class: 'do-po-form'}}) }}
+
+                                    {% if form.name is defined and form.email is defined %}
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                {{ form_row(form.name, {label: 'helpcenter.community.label_full_name'}) }}
+                                            </div>
+                                            <div class="col-sm-6">
+                                                {{ form_row(form.email, {label: 'helpcenter.community.form_email_not_shown'}) }}
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
+                                    {{ form_row(form.title, {label: 'helpcenter.community.form_topic_title'}) }}
+
+                                    {{ form_row(form.content, {label: 'helpcenter.community.form_message'}) }}
+
+                                    {{ form_widget(form.custom_data) }}
+
+                                    <div class="form-group dp-po-form-upload new-ticket-attachments">
+                                        {{ form_label(form.attachments, phrase('helpcenter.community.form_add_attachments')) }}
+                                        <div class="dp-po-form-upload-wrap">
+                                            {{ form_errors(form.attachments) }}
+                                            {{ form_widget(form.attachments) }}
+                                            {{ form_widget(form.more_attachments, {attr: {style: 'display: none;'}}) }}
+                                        </div>
+                                    </div>
+
+                                    {% if form.captcha is defined %}
+                                        {{ form_row(form.captcha) }}
+                                    {% endif %}
+
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        {{ phrase('helpcenter.community.form_submit') }}
+                                    </button>
+
+                                {{ form_rest(form) }}
+                                {{ form_end(form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

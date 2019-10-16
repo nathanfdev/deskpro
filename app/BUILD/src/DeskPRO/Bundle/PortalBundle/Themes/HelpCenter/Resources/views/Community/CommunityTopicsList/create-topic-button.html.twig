@@ -1,0 +1,21 @@
+<div class="dp-po-community-title">
+    <div class="dp-po-community-title-button">
+        <a href="{{ path('portal_community_topic_create', {id: current_forum.id}) }}" class="dp-po-community-title-button-link">
+            <i class="dp-po-icon fad fa-money-check-edit"></i>
+            Submit {{ current_forum.title }}
+        </a>
+        <a class="dp-po-community-title-button-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+            {% for forum in community_forums if forum != current_forum %}
+                <a class="dropdown-item" href="{{ path('portal_community_topic_create', {id: forum.id}) }}">
+                    {% if forum.icon_property %}
+                        {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                    {% endif %}
+                    {{ forum.title }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>

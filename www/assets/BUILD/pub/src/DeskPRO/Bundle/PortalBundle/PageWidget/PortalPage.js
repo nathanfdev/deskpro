@@ -9,6 +9,7 @@ import { HcTicketList } from './HcTicketList';
 import { DownloadsList } from './DownloadsList';
 import { DownloadPopupWidget } from './DownloadPopupWidget';
 import { CommunityTopicPage } from './CommunityTopicPage';
+import { HcCommunityTopicPage } from './HcCommunityTopicPage';
 import { CommunityVoteWidget } from './CommunityVoteWidget';
 import { ClickAwayDropdownWidget } from './ClickAwayDropdownWidget';
 import { AlertsWidget } from './AlertsWidget';
@@ -51,6 +52,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(DownloadPopupWidget, '.dpx-download-popup');
     this.addWidgetDef(DownloadsList, '.download-list');
     this.addWidgetDef(CommunityTopicPage, '#community_page');
+    this.addWidgetDef(HcCommunityTopicPage, '#hc_community_page');
     // this is specifically on the view page, because the vote widget is managed
     // manually via the react component on the filter page
     this.addWidgetDef(CommunityVoteWidget, '#feedback_view .i-agree');
