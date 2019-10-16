@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Approvals;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\AbstractApprovalsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -24,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ApprovalTypesController
+ * Class ApprovalTypesController.
  *
  * @ApiModes("all")
  * @ApiUserContext("agent")
@@ -43,10 +42,10 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  */
 class TicketApprovalsController extends AbstractApprovalsController
 {
-    public static $entity = TicketApproval::class;
-    public static $type = TicketApprovalType::class;
-    public static $listOrder = 'ASC';
-    public static $listSort = 'id';
+    public static $entity     = TicketApproval::class;
+    public static $type       = TicketApprovalType::class;
+    public static $listOrder  = 'ASC';
+    public static $listSort   = 'id';
     public static $exposeOnly = [
         'list',
         'count',
@@ -69,11 +68,12 @@ class TicketApprovalsController extends AbstractApprovalsController
      * @Rest\Post("/tickets/{ticketId}/ticket_approvals", requirements={"ticketId"="\d+"})
      * @ParamConverter(name="ticket", options={"mapping"={"ticketId"="id"}})
      *
-     * @param Ticket $ticket
+     * @param Ticket  $ticket
      * @param Request $request
      *
-     * @return View
      * @throws \Exception
+     *
+     * @return View
      */
     public function postApprovalAction(Ticket $ticket, Request $request)
     {
@@ -124,8 +124,9 @@ class TicketApprovalsController extends AbstractApprovalsController
      *
      * @param Request $request
      *
-     * @return View
      * @throws \Exception
+     *
+     * @return View
      */
     public function listAction(Request $request)
     {
@@ -147,9 +148,9 @@ class TicketApprovalsController extends AbstractApprovalsController
      *
      * @param Request $request
      *
-     * @return View
      * @throws \Exception
      *
+     * @return View
      */
     public function countAction(Request $request)
     {
@@ -176,10 +177,11 @@ class TicketApprovalsController extends AbstractApprovalsController
      * @Rest\Put("/ticket_approvals/{id}/cancel", requirements={"id"="\d+"})
      *
      * @param AbstractBaseApproval $approval
+     * @param Request              $request
      *
-     * @param Request $request
-     * @return View
      * @throws \Exception
+     *
+     * @return View
      */
     public function cancelAction(AbstractBaseApproval $approval, Request $request)
     {
@@ -219,9 +221,11 @@ class TicketApprovalsController extends AbstractApprovalsController
      * @Rest\Post("/ticket_approvals/{id}/approve", requirements={"id"="\d+"})
      *
      * @param AbstractBaseApproval $approval
-     * @param Request $request
-     * @return \FOS\RestBundle\View\View
+     * @param Request              $request
+     *
      * @throws \Exception
+     *
+     * @return \FOS\RestBundle\View\View
      */
     public function approveAction(AbstractBaseApproval $approval, Request $request)
     {
@@ -255,9 +259,11 @@ class TicketApprovalsController extends AbstractApprovalsController
      * @Rest\Post("/ticket_approvals/{id}/reject", requirements={"id"="\d+"})
      *
      * @param AbstractBaseApproval $approval
-     * @param Request $request
-     * @return View
+     * @param Request              $request
+     *
      * @throws \Exception
+     *
+     * @return View
      */
     public function rejectAction(AbstractBaseApproval $approval, Request $request)
     {
@@ -265,7 +271,7 @@ class TicketApprovalsController extends AbstractApprovalsController
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
