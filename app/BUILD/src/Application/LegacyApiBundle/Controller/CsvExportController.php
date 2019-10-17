@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  *
  * @ApiModes("all")
  */
-class CsvExportController extends AbstractController implements ProtectedControllerInterface
+class CsvExportController extends AbstractController
 {
     /**
      * {@inheritdoc}

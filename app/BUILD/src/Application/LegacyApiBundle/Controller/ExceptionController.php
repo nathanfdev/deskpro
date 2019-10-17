@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\Debug\Exception\FlattenException;
 
@@ -14,6 +15,14 @@ use Symfony\Component\Debug\Exception\FlattenException;
  */
 class ExceptionController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new OpenPermission();
+    }
+
     public function showAction(FlattenException $exception, \Symfony\Component\HttpKernel\Log\DebugLoggerInterface $logger = null, $format = 'html')
     {
         return $this->createApiErrorResponse(

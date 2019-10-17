@@ -9,7 +9,6 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
-use DeskPRO\Bundle\ApiBundle\Security\Token\ApiMasterKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\LegacyRememberMeSecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
@@ -42,7 +41,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
     public function __construct(EntityManager $em, SettingsResolver $settingsResolver)
     {
-        $this->em = $em;
+        $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
     }
 
@@ -171,7 +170,6 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             return new AnonymousToken($keyString, $token->getUser(), ['ROLE_API']);
         }
 
-
         /** @var \Application\DeskPRO\EntityRepository\ApiKey $keyRepo */
         $keyRepo = $this->em->getRepository(ApiKey::class);
         if (!$key = $keyRepo->findByKeyString($token->getCredentials())) {
@@ -182,7 +180,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
         }
 
-        if (!$key->getPerson()) {
+        if (!$key->getPerson() || !$key->getPerson()->isActive()) {
             $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
         }
 
@@ -212,7 +210,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized(ErrorsCodes::INVALID_API_TOKEN);
         }
 
-        if (!$apiToken->getPerson()) {
+        if (!$apiToken->getPerson() || !$apiToken->getPerson()->isActive()) {
             $this->throwUnauthorized(ErrorsCodes::INVALID_API_TOKEN);
         }
         if ($apiToken->isExpired()) {
@@ -263,7 +261,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized($unauthorized_msg);
         }
 
-        if (!$person->can_agent && !$person->can_admin) {
+        if ((!$person->canAgent() && !$person->canAdmin()) || !$person->isActiveAgent()) {
             $this->throwUnauthorized($unauthorized_msg);
         }
 

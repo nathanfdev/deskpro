@@ -11,7 +11,6 @@ use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Entity\Product;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketPriority;
@@ -19,8 +18,8 @@ use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -37,7 +36,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
+class TicketFieldsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -46,7 +45,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

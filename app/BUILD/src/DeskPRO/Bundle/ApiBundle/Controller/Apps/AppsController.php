@@ -6,6 +6,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppStoreBundle;
@@ -27,6 +28,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  * Class AppsController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("agent", admin={"createFromZipFile","create","updateApp","deleteApplication"})
  * @Rest\Route("/apps")
  * @ApiUnstable()
  * @ApiDoc(
@@ -128,11 +130,12 @@ class AppsController extends BaseController
         return $instance;
     }
 
-    /**
-     * @Rest\Post("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
+     /**
+      * @Rest\Post("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
+      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
+      *
+      * @throws \Doctrine\ORM\OptimisticLockException
+      */
      public function createAction(Entity\AppStore\App $application = null)
      {
          if (empty($application)) {
@@ -164,8 +167,9 @@ class AppsController extends BaseController
      *
      * @param Entity\AppStore\AppInstance $application
      *
-     * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
      */
     public function updateAppAction(Entity\AppStore\AppInstance $application = null, Request $request)
     {
@@ -181,8 +185,10 @@ class AppsController extends BaseController
             'settings' => function (Entity\AppStore\AppInstance $app, $value) {
                 if (is_array($value)) {
                     $app->setSettings($value);
+
                     return true;
                 }
+
                 return false;
             },
             'is_installed' => function (Entity\AppStore\AppInstance $app, $value) {
@@ -218,11 +224,11 @@ class AppsController extends BaseController
         $this->container
             ->get('event_dispatcher')
             ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS, [
-                'type'        => 'admin',
-                'person_id'   => 0,
-                'person_name' => 'System',
-                'appStatus' => 'updated',
-                'applicationId'   => $application->getId(),
+                'type'          => 'admin',
+                'person_id'     => 0,
+                'person_name'   => 'System',
+                'appStatus'     => 'updated',
+                'applicationId' => $application->getId(),
             ]));
 
         return $this->wrap($application);
@@ -234,8 +240,9 @@ class AppsController extends BaseController
      * @param Entity\AppStore\AppInstance $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
-     * @return View
      * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return View
      */
     public function deleteApplicationAction(Entity\AppStore\AppInstance $application = null)
     {
@@ -254,11 +261,11 @@ class AppsController extends BaseController
         $this->container
             ->get('event_dispatcher')
             ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS, [
-                'type'        => 'admin',
-                'person_id'   => 0,
-                'person_name' => 'System',
-                'appStatus' => 'deleted',
-                'applicationId'   => $application->getId(),
+                'type'          => 'admin',
+                'person_id'     => 0,
+                'person_name'   => 'System',
+                'appStatus'     => 'deleted',
+                'applicationId' => $application->getId(),
             ]));
 
         return new View(null, HttpFoundation\Response::HTTP_NO_CONTENT);

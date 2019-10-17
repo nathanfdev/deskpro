@@ -1,5 +1,8 @@
 #!/usr/bin/env php
 <?php
+
+require_once __DIR__.'/../../php-bin-env.php';
+
 // alternate select command, includes non-staged changes: git diff --name-only --diff-filter=MA HEAD~1 | grep -e "\.php\|\.sh\|\.twig\|\.js\|\.css\|\.md$" | xargs
 $output = array();
 $return = 0;
@@ -12,7 +15,7 @@ foreach ($output as $file) {
     if (!(preg_match($filename_pattern, $file) && file_exists($file))) { continue; }
     $lint_output = array();
     echo "linting $file...";
-    exec("php -l " . escapeshellarg($file), $lint_output, $return);
+    exec(dp_dev_get_php_bin() . " -l " . escapeshellarg($file), $lint_output, $return);
     if ($return == 0) {
         echo 'OK' . PHP_EOL;
     } else {

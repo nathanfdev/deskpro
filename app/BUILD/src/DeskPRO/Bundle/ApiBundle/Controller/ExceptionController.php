@@ -131,6 +131,9 @@ class ExceptionController extends BaseController
                 'file'      => $exception->getFile().':'.$exception->getLine(),
                 'backtrace' => $backtrace,
             ];
+            if ($exception->getPrevious()) {
+                $representation['exception']['previous'] = $this->addExceptionInfo($exception->getPrevious(), []);
+            }
         }
 
         return $representation;

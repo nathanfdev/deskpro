@@ -12,21 +12,21 @@ use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ApiModes("all")
  */
-class RoundRobinController extends AbstractController implements ProtectedControllerInterface
+class RoundRobinController extends AbstractController
 {
     /**
      * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
-        return new UserTypePermission(UserTypePermission::AGENT);
+        return new AgentPermission();
     }
 
     //###################################################################################################################

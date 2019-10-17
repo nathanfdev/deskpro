@@ -37,15 +37,15 @@ class AddButton extends React.Component {
         items.push(<MenuItem key="article" onClick={this.addArticle}>
           <i className="icon edit" /> <FormattedMessage id="agent.general.article" /></MenuItem>);
         items.push(
-          <div className="sub-menu" onMouseOver={this.openSubMenu} onMouseOut={this.closeSubMenu}>
-            <MenuItem key="article" onClick={this.openSubMenu}>
+          <div key="article_templates" className="sub-menu" onMouseOver={this.openSubMenu} onMouseOut={this.closeSubMenu}>
+            <MenuItem key="article_templates_sub" onClick={this.openSubMenu}>
               <i className="icon copy outline" /> <FormattedMessage id="agent.content_templates.templates" />
             </MenuItem>
             <div className="sub-menu-list">
               <MenuItem key="create_from_article_template" onClick={this.createFromArticleTemplate}>
                 <i className="icon edit" /> <FormattedMessage id="agent.content_templates.create_article_from_template" />
               </MenuItem>
-              <MenuItem key="create_from_article_template" onClick={this.manageTemplates}>
+              <MenuItem key="manage_article_template" onClick={this.manageTemplates}>
                 <i className="icon sliders horizontal" /> <FormattedMessage id="agent.content_templates.manage_templates" />
               </MenuItem>
             </div>

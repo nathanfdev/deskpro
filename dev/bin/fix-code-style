@@ -4,6 +4,8 @@ define('PHP_CS_FIXER', realpath(__DIR__ . '/../../app/BUILD/vendor/bin/php-cs-fi
 define('PHP_CS_CONFIG_GIT', realpath(__DIR__ . '/../.php_cs_git'));
 define('PHP_CS_CONFIG_FULL', realpath(__DIR__ . '/../.php_cs'));
 
+require_once __DIR__.'/php-bin-env.php';
+
 /**
  * we should run php-cs without xdebug so probably the best way is to run it with custom config
  * gonna gather all extensions and just skip xdebug
@@ -57,7 +59,7 @@ $outputs = null;
 $return_status = null;
 $config_file = ($full_run ? PHP_CS_CONFIG_FULL : PHP_CS_CONFIG_GIT);
 
-$cmd = sprintf('/usr/bin/env php %s %s --verbose --config-file="%s" fix ', $options_string, PHP_CS_FIXER, $config_file);
+$cmd = sprintf('%s %s %s --verbose --config-file="%s" fix ', dp_dev_get_php_bin(), $options_string, PHP_CS_FIXER, $config_file);
 
 // are we running in verbose mode?
 if ($dry_run) {

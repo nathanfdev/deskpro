@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -27,11 +28,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @ApiModes("all")
  */
-class PersonController extends AbstractController implements ProtectedControllerInterface
+class PersonController extends AbstractController
 {
     public function getPermissionStrategy()
     {
         $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AgentPermission());
         $multi->addPermissionStrategy(new SuperKeyPermission(), 'authLoginAction');
 
         return $multi;

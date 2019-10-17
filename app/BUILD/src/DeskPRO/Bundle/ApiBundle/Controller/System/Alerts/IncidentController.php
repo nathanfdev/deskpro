@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\System\Alerts;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType;
 use Doctrine\ORM\QueryBuilder;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/system/incidents")
+ * @ApiUserContext("admin")
  * @ApiDoc(target="all", section="System", output="DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident\StatefulIncident")
  * @ApiDoc(
  *     target="putAction,dismissAllAction",

@@ -10,8 +10,8 @@ use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\SmsAccount;
 use Application\DeskPRO\Sms\SmsProviderFactory;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsSender;
@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @ApiModes("all")
  */
-class ChannelSmsController extends AbstractController implements ProtectedControllerInterface
+class ChannelSmsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -32,7 +32,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

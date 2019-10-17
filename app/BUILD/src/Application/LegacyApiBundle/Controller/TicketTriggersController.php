@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class TicketTriggersController extends AbstractController implements ProtectedControllerInterface
+class TicketTriggersController extends AbstractController
 {
     /**
      * {@inheritdoc}

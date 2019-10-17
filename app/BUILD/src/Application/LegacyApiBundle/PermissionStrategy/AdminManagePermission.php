@@ -21,17 +21,21 @@ class AdminManagePermission implements PermissionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
         // The API key itself has the correct flag set
-        if ($api_user->api_key) {
-            if ($api_user->api_key->isFlagSet(ApiKey::FLAG_ADMIN_MANAGE)) {
+        if ($apiUser->api_key) {
+            if ($apiUser->api_key->isFlagSet(ApiKey::FLAG_ADMIN_MANAGE)) {
                 return true;
             }
         }
 
         // This is a logged-in session
-        if ($api_user->session && $api_user->person && $api_user->person->can_admin) {
+        if ($apiUser->session
+            && $apiUser->person
+            && $apiUser->person->isActiveAgent()
+            && $apiUser->person->canAdmin()
+        ) {
             return true;
         }
 

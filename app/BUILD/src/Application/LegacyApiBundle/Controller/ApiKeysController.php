@@ -11,8 +11,8 @@ use Application\DeskPRO\Entity\ApiKeyLog;
 use Application\DeskPRO\Form\Type\ApiKeyType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class ApiKeysController extends AbstractController implements ProtectedControllerInterface
+class ApiKeysController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'getAgentsForKeyAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'getAgentsForKeyAction');
 
         return $multi;
     }

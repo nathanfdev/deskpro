@@ -1144,6 +1144,11 @@ class KbController extends AbstractController
         }
     }
 
+    /**
+     * @param ContentTemplate $contentTemplate
+     *
+     * @return Response
+     */
     public function editContentTemplateAction(ContentTemplate $contentTemplate)
     {
         $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');

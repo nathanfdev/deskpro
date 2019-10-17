@@ -44,7 +44,6 @@ class ContentTemplateType extends AbstractType
                     ContentTemplate::CONTENT_TYPE_NEWS,
                     ContentTemplate::CONTENT_TYPE_DOWNLOAD,
                     ContentTemplate::CONTENT_TYPE_TOPIC,
-
                 ],
             ]);
     }

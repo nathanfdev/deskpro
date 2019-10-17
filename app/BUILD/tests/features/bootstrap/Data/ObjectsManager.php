@@ -100,6 +100,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\ContentTemplateAttachment;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;

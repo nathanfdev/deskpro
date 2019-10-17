@@ -347,6 +347,7 @@ class Runner
             'status'      => $source->status,
             'error_code'  => $source->error_code,
             'source_info' => serialize($source->source_info ?: []),
+            'exec_count'  => $source->getExecCount() ?: 1,
         ]);
 
         if ($manual_set) {
@@ -495,6 +496,7 @@ class Runner
         } catch (\Exception $e) {
             $message = substr($e->getMessage(), 0, 500);
             $sourceLogger->logDebug("--> Processor exception: {$e->getCode()} ".$message);
+            $sourceLogger->logDebug(SystemErrorHandler::formatBacktrace($e->getTrace()));
             $result = [
                 'status'      => 'error',
                 'error_code'  => 'server_error',
@@ -508,7 +510,7 @@ class Runner
 
             if ($allowRetry) {
                 $doRetry = true;
-                if (strpos(strtolower($e->getMessage()), 'deadlock') !== false) {
+                if (strpos(strtolower($e->getMessage()), 'deadlock') === false) {
                     SystemErrorHandler::logException($e, true);
                 }
             } else {
