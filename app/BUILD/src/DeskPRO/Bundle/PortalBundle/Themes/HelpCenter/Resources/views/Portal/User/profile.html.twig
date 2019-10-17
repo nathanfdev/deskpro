@@ -20,78 +20,50 @@
     {% endspaceless %}
 {% endblock cf_definition_contextual_choice_widget %}
 
-{% block page_body %}
-    <header class="large-title">
-        <h1>{{ phrase('portal.account.section-title-your-account') }}</h1>
-    </header>
-
-    <section class="padded">
-        <nav class="tabs secondary-tabs">
-            <ul>
-                <li class="tab-active active">
-                    <a href="{{ path('portal_user_profile') }}">
-                        <div>
-                            <span class="title">
-                                {{ phrase('portal.account.section-title-profile') }}
-                            </span>
-                        </div>
-                    </a>
-                </li>
-                <li class="tab-inactive">
-                    <a href="{{ path('portal_user_profile_emails') }}">
-                        <div>
-                            <span class="title">
-                                {{ phrase('portal.account.section-title-emails') }}
-                            </span>
-                        </div>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="column-half">
-            {{ form_start(profile_form, { attr: { class: 'form-ticket dpx-form' } }) }}
-            {{ form_errors(profile_form) }}
-            {{ form_row(profile_form.name) }}
-            {% if app.getSetting('portal.members_community') %}
-              {{ form_row(profile_form.community_name) }}
-            {% endif %}
-            {% if profile_form.language_id is defined %}
-                {{ form_row(profile_form.language_id) }}
-            {% endif %}
-            {% if profile_form.delete_picture is defined %}
-                <img src="{{ person.picture_url }}" alt="{{ person }}"/>
-                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('portal.account.profile-delete-picture'), label: false }) }}
-            {% else %}
-                {{ form_row(profile_form.upload_picture) }}
-            {% endif %}
-            {{ form_row(profile_form.timezone) }}
-            {% if profile_form.manager_auto_add is defined %}
-                {{ form_row(profile_form.manager_auto_add) }}
-            {% endif %}
-            {{ form_rest(profile_form) }}
-            <div class="column-full">
-                <div class="bucket">
-                    <button type="submit">{{ phrase('portal.account.profile-btn-save') }}</button>
+{% block page_content %}
+<div class="dp-po">
+    <main class="dp-po-main dp-po-your-account">
+        <div class="container">
+            <div class="dp-po-title">
+                <img src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" class="dp-po-title-svg">
+                <h2 class="dp-po-title-text">{{ phrase('portal.account.section-title-your-account') }}</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="dp-po-block">
+                        {% include 'Theme:Portal:User/profile-sidebar.html.twig' with { active : 'profile' } %}
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dp-po-block dp-po-section">
+                        <section class="dp-po-account-form">
+                            {{ form_start(profile_form, { attr: { class: 'do-po-form helpcenter-form' } }) }}
+                            {{ form_errors(profile_form) }}
+                            {{ form_row(profile_form.name) }}
+                            {% if app.getSetting('portal.members_community') %}
+                                {{ form_row(profile_form.community_name) }}
+                            {% endif %}
+                            {% if profile_form.language_id is defined %}
+                                {{ form_row(profile_form.language_id) }}
+                            {% endif %}
+                            {% if profile_form.delete_picture is defined %}
+                                <img src="{{ person.picture_url }}" alt="{{ person }}"/>
+                                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('portal.account.profile-delete-picture'), label: false }) }}
+                            {% else %}
+                                {{ form_row(profile_form.upload_picture) }}
+                            {% endif %}
+                            {{ form_row(profile_form.timezone) }}
+                            {% if profile_form.manager_auto_add is defined %}
+                                {{ form_row(profile_form.manager_auto_add) }}
+                            {% endif %}
+                            {{ form_rest(profile_form) }}
+                            <button type="submit" class="btn btn-primary">{{ phrase('portal.account.profile-btn-save') }}</button>
+                            {{ form_end(profile_form) }}
+                        </section>
+                    </div>
                 </div>
             </div>
-            {{ form_end(profile_form) }}
         </div>
-
-        <div class="column-half divide-left omega">
-            {{ form_start(password_form, { attr: { class: 'form-ticket' } }) }}
-            {{ form_errors(password_form) }}
-            {% if password_form.current_password is defined %}
-                {{ form_row(password_form.current_password) }}
-            {% endif %}
-            {{ form_row(password_form.new_password) }}
-            <div class="column-full">
-                <div class="bucket">
-                    <button type="submit">{{ phrase('portal.account.change-password-btn') }}</button>
-                </div>
-            </div>
-        {{ form_rest(password_form) }}
-        {{ form_end(password_form) }}
-        </div>
-    </section>
-{% endblock page_body %}
+    </main>
+</div>
+{% endblock page_content %}

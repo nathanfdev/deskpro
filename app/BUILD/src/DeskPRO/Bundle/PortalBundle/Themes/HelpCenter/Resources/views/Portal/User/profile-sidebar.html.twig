@@ -1,0 +1,25 @@
+<div class="dp-po-account-sidebar">
+    <ul class="dp-po-account-sidebar-list">
+        <li class="dp-po-account-sidebar-item">
+            <a href="{{ path('portal_user_profile') }}" class="dp-po-account-sidebar-link {% if active == 'profile' %}active{% endif %}">
+                <img class="dp-po-account-sidebar-image"
+                     src="{{ asset('img/page-icons/account.svg', 'help_center') }}">
+                {{ phrase('helpcenter.profile.your-account') }} <i class="dp-po-icon fal fa-angle-right"></i>
+            </a>
+        </li>
+        <li class="dp-po-account-sidebar-item">
+            <a href="{{ path('portal_user_profile_password') }}" class="dp-po-account-sidebar-link {% if active == 'password' %}active{% endif %}">
+                <img class="dp-po-account-sidebar-image"
+                     src="{{ asset('img/page-icons/password.svg', 'help_center') }}">
+                {{ phrase('helpcenter.profile.your-password') }} <i class="dp-po-icon fal fa-angle-right"></i>
+            </a>
+        </li>
+        <li class="dp-po-account-sidebar-item">
+            <a href="{{ path('portal_user_profile_emails') }}" class="dp-po-account-sidebar-link {% if active == 'emails' %}active{% endif %}">
+                <img class="dp-po-account-sidebar-image"
+                     src="{{ asset('img/page-icons/email.svg', 'help_center') }}">
+                {{ phrase('helpcenter.profile.your-email-addresses') }} <i class="dp-po-icon fal fa-angle-right"></i>
+            </a>
+        </li>
+    </ul>
+</div>
