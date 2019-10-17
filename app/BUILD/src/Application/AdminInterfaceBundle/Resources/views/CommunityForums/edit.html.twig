@@ -44,6 +44,37 @@
 						</div>
 						<div class="form-group">
 							<div class="col-lg-3">
+								<h3>{{ phrase('admin.community.statuses') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;">
+										<label style="font-weight: normal; display: block;">
+											{{ phrase('admin.community.active_statuses') }}
+										</label>
+									</div>
+									<div style="padding-top:6px;">
+										<label ng-repeat="status in CommunityForumsEdit.community_active_statuses" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="CommunityForumsEdit.community_active_statuses[status.id]">
+											{{ ng_var('status.title') }}
+										</label>
+									</div>
+									<div style="padding-top:6px;">
+										<label style="font-weight: normal; display: block;">
+											{{ phrase('admin.community.closed_statuses') }}
+										</label>
+									</div>
+									<div style="padding-top:6px;">
+										<label ng-repeat="status in CommunityForumsEdit.community_closed_statuses" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="CommunityForumsEdit.community_closed_statuses[status.id]">
+											{{ ng_var('status.title') }}
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
 								<h3>{{ phrase('admin.general.custom_fields') }}</h3>
 							</div>
 							<div class="col-lg-9">

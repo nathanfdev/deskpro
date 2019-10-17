@@ -9,7 +9,7 @@ define([
     static initClass() {
       this.CTRL_ID = 'Admin_CommunityForums_Ctrl_Edit';
       this.CTRL_AS = 'CommunityForumsEdit';
-      this.DEPS    = ['Api', 'Growl', 'CommunityForumsData', '$stateParams', '$modal', '$upload'];
+      this.DEPS    = ['Api', 'Growl', 'CommunityForumsData', 'CommunityStatusesData', '$stateParams', '$modal', '$upload'];
     }
 
     init() {
@@ -18,6 +18,9 @@ define([
       this.custom_fields = [];
       this.selected_usergroups = {};
       this.display_orders = {};
+
+      this.community_active_statuses = [];
+      this.community_closed_statuses = [];
 
       return this.sortedListOptions = {
         axis:   'y',
@@ -53,8 +56,7 @@ define([
 
     initialLoad() {
       const promises = [];
-      promises.push(this.Api.sendDataGet({ usergroups: '/user_groups' }).then(result => this.usergroups = result.data.usergroups.groups)
-      );
+      promises.push(this.Api.sendDataGet({ usergroups: '/user_groups' }).then(result => this.usergroups = result.data.usergroups.groups));
 
       if (this.$stateParams.id) {
         promises.push(this.Api.sendDataGet({
@@ -74,9 +76,34 @@ define([
         );
       }
 
+      promises.push(this.CommunityStatusesData.loadList().then((recs) => {
+          this.community_active_statuses = this.sort(recs.active_statuses.values());
+          this.community_closed_statuses = this.sort(recs.closed_statuses.values());
+
+          this.addManagedListener(this.CommunityStatusesData.recs.active_statuses, 'changed', () => {
+            this.community_active_statuses = this.sort(this.CommunityStatusesData.recs.active_statuses.values());
+            return this.ngApply();
+          });
+
+          return this.addManagedListener(this.CommunityStatusesData.recs.closed_statuses, 'changed', () => {
+            this.community_closed_statuses = this.sort(this.CommunityStatusesData.recs.closed_statuses.values());
+            return this.ngApply();
+          });
+        })
+      );
+
       return this.$q.all(promises);
     }
 
+    sort(values) {
+      return (values || []).sort((a, b) => {
+        const orderA = parseInt(a.display_order);
+        const orderB = parseInt(b.display_order);
+        if (orderA < orderB) { return -1; }
+        if (orderA > orderB) { return 1; }
+        return 0;
+      });
+    }
 
     /*
       * Saves the current form

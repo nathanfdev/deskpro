@@ -1252,6 +1252,7 @@ admin.emailtpl_desc.deskpro_emails_user_ticket-participant_html_twig_desc: 'This
 admin.emailtpl_desc.deskpro_emails_user_ticket-participant_html_twig_title: 'Ticket New Participant'
 admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_desc: 'This is the email sent to the user after their ticket has been resolved to ask them to rate their support and submit feedback.'
 admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_title: 'Ticket Rating Request'
+admin.community.statuses: 'Statuses'
 admin.community.active_status: 'Active Status'
 admin.community.active_statuses: 'Active Statuses'
 admin.community.back_to_categories: '&larr; Back to categories'
