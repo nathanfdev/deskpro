@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 /**
  * Class ZapierController.
  *
- * @ApiModes("all")
+ * @ApiModes("key")
  * @Rest\Route("/apps/zapier")
  */
 class ZapierController extends BaseController

@@ -129,6 +129,10 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	destroyPage: function() {
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.reactContentNode) {
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
+    }
+
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
 		var el = this.wrapper.find('.article-section');
@@ -196,10 +200,23 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
         contentElement: overlayEl,
         zIndex: 1900
       });
+
+      // Reset overlay on close
+      this.overlay.addEvent('overlayClosed', function() {
+        $('.submit-template-trigger', overlayEl).removeAttr('disabled') ;
+        $('input[name=title]', overlayEl).val('');
+        $('.success', overlayEl).hide();
+      });
+
       $('.submit-template-trigger', overlayEl).on('click', function() {
+        var $submitTrigger = this;
+        var attachments = $('input[name="newarticle[attach][]"]').map(function() {
+          return $(this).val();
+        }).get();
         var data = {
           "type": "article",
           "template": formData,
+          "attach": attachments,
           "title": $('input[name=title]', overlayEl).val()
         };
         $('.is-loading', overlayEl).show();
@@ -213,6 +230,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
             $('.is-not-loading', overlayEl).show();
             $('.success', overlayEl).show();
             $('.is-loading', overlayEl).hide();
+            $submitTrigger.disabled = true;
 
             if (window.ManageContentTemplatesModal) {
               window.ManageContentTemplatesModal.reloadTemplates();
@@ -230,8 +248,12 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
   submitTemplateUpdate: function() {
     var formData = this.collectFormData();
+    var attachments = $('input[name="newarticle[attach][]"]').map(function() {
+      return $(this).val();
+    }).get();
     var data = {
-      "template": formData
+      "template": formData,
+      "attach": attachments,
     };
 
     $('div.error.section', this.wrapper).removeClass('error');
@@ -362,8 +384,9 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
       if (window[this.meta.baseId + '_content_input']) {
         contentInput = JSON.parse(window[this.meta.baseId + '_content_input']);
       }
+      self.reactContentNode = txt[0];
 			self.rte = window.AgentLegacyBundle.renderContentEditor(
-				txt[0],
+				self.reactContentNode,
         contentInput,
 				this.onFocus.bind(this),
 				this.onBlur.bind(this)

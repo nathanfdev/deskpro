@@ -54,7 +54,7 @@ class ListTable extends React.Component {
           <div className="column name">Client Name</div>
           <div className="column">Authorized redirect URIs</div>
         </div>
-        {oauthClients.map((client, index) =>
+        {oauthClients.toArray().map((client, index) =>
           <div className="row" key={index}>
             <div className="info">
               <div className="column name">{client.get('name')}</div>

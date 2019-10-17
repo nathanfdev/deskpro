@@ -180,6 +180,9 @@ class MainController extends AbstractController
             $is_billing_error = true;
         }
 
+        /** @var \Application\DeskPRO\People\PasswordPolicyValidator $passwordValidator */
+        $passwordValidator = $this->container->getSystemService('password_policy_validator');
+
         return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'               => $has_raw_assets,
             'is_demo'                      => $this->in->checkIsset('show-demo-bar'),
@@ -197,6 +200,7 @@ class MainController extends AbstractController
             'ticket_snippet_cats'          => $ticket_snippet_cats,
             'chat_snippet_cats'            => $chat_snippet_cats,
             'brand_app_settings'           => $this->getBrandAppSettings(),
+            'password_expired'             => $passwordValidator->isPasswordExpired($this->person),
             'sys_filter_refresh_interval'  => 60 * 10,
             'cust_filter_refresh_interval' => 60 * 20,
         ]);

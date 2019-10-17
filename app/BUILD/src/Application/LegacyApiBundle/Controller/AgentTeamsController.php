@@ -9,8 +9,8 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @ApiModes("all")
  */
-class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
+class AgentTeamsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -29,7 +29,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listTeamsAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listTeamsAction');
 
         return $multi;
     }

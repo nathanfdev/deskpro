@@ -336,19 +336,19 @@ class Exchange extends AbstractFetcher
      * Processes the message after reading it.
      * Moves it to the DP_Mailbox folder marking it "read".
      *
-     * @param int $id ID of the message
+     * @param RawMessage $rawMessage
      */
-    public function _doneRead($id)
+    public function _doneRead(RawMessage $rawMessage)
     {
         switch ($this->mode) {
             case self::MODE_DELETE:
-                $this->storage->deleteMessage($id);
+                $this->storage->deleteMessage($rawMessage->id);
                 break;
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessage($id, $this->archiveMailbox);
+                $this->storage->moveMessage($rawMessage->id, $this->archiveMailbox);
                 break;
             case self::MODE_READ:
-                $this->storage->markRead($id);
+                $this->storage->markRead($rawMessage->id);
                 break;
         }
     }

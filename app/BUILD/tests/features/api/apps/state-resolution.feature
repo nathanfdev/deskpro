@@ -7,7 +7,7 @@ Feature: Test Apps State Resolution
     Given there are no "Person" records
     And there are no "AppState" records
     And there are no "App" records
-    And I'm authenticated as agent
+    And I'm authenticated as admin
     And I package the app from folder "resources/apps/state-tests"
     And I send a "POST" request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
     And I save the JSON node "id" as placeholder "application"

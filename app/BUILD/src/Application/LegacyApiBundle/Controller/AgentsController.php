@@ -47,7 +47,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @ApiModes("all")
  */
-class AgentsController extends AbstractController implements ProtectedControllerInterface
+class AgentsController extends AbstractController
 {
     /**
      * {@inheritdoc}

@@ -10,11 +10,13 @@ namespace Application\LegacyApiBundle\PermissionStrategy;
 
 use Application\LegacyApiBundle\ApiUser;
 
+/**
+ * Class UserTypePermission.
+ */
 class UserTypePermission implements PermissionStrategyInterface
 {
     const ADMIN = 'admin';
     const AGENT = 'agent';
-    const USER  = 'user';
 
     /**
      * @var string
@@ -22,6 +24,8 @@ class UserTypePermission implements PermissionStrategyInterface
     private $type;
 
     /**
+     * Constructor.
+     *
      * @param string $type
      */
     public function __construct($type)
@@ -32,23 +36,21 @@ class UserTypePermission implements PermissionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
-        $person = $api_user->person;
+        $person = $apiUser->person;
         if (!$person) {
             return false;
         }
 
-        switch ($this->type) {
-            case self::ADMIN: if ($person->is_agent && $person->can_admin) {
+        if ($this->type === self::ADMIN) {
+            if ($person->isActiveAgent() && $person->canAdmin()) {
                 return true;
-            } break;
-            case self::AGENT: if ($person->is_agent) {
+            }
+        } elseif ($this->type === self::AGENT) {
+            if ($person->isActiveAgent()) {
                 return true;
-            } break;
-            case self::USER:  if (!$person->is_deleted || !$person->is_disabled) {
-                return true;
-            } break;
+            }
         }
 
         return false;

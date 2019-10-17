@@ -82,8 +82,8 @@ class PersonHandler extends AbstractEntityHandler
             }
         }
 
-        // set or reset password if we get it from the import
-        if ($model->getPassword()) {
+        // set password if we get it from the import and user does not have one yet
+        if ($model->getPassword() !== null && !$entity->isUser()) {
             $entity->setPassword($model->getPassword());
         }
 
@@ -94,13 +94,13 @@ class PersonHandler extends AbstractEntityHandler
                 continue;
             }
 
-            if (!in_array($email, $entity->getEmailAddresses(false))) {
+            if (!in_array($email, $entity->getEmailAddresses(false), true)) {
                 $entity->addEmailAddressString($email);
             }
         }
 
         foreach ($entity->getEmails() as $emailEntity) {
-            if (!in_array($emailEntity->getEmail(), $model->getEmails())) {
+            if (!in_array($emailEntity->getEmail(), $model->getEmails(), true)) {
                 $this->logger->debug("`{$emailEntity->getEmail()}` email was not found in the new email list, removing.");
                 $entity->getEmails()->removeElement($emailEntity);
                 if ($entity->getPrimaryEmailAddress() === $emailEntity->getEmail()) {

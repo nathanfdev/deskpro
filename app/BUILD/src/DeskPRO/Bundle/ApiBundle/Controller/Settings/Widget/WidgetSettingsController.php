@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\DataStore;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\WidgetSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * Class WidgetSettingsController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/brands/{brand}/widget")
  */
 class WidgetSettingsController extends AbstractBrandAwareSettingsController

@@ -20,7 +20,7 @@ use Orb\Util\Numbers;
 /**
  * @ApiModes("all")
  */
-class ElasticSearchController extends AbstractController implements ProtectedControllerInterface
+class ElasticSearchController extends AbstractController
 {
     /**
      * {@inheritdoc}

@@ -29,7 +29,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class SettingsController extends AbstractController implements ProtectedControllerInterface
+class SettingsController extends AbstractController
 {
     /**
      * {@inheritdoc}

@@ -6,11 +6,12 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges\ChangeDetector;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
  * Class AppPackagesController.
  *
  * @ApiModes("standard")
+ * @ApiUserContext("agent", admin={"updateFromUrl"})
  * @Rest\Route("/apps/packages")
  * @ApiUnstable()
  * @ApiDoc(target="all", section="Apps", output="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")

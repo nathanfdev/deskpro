@@ -13,7 +13,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class LoginLogsController extends AbstractController implements ProtectedControllerInterface
+class LoginLogsController extends AbstractController
 {
     /**
      * {@inheritdoc}

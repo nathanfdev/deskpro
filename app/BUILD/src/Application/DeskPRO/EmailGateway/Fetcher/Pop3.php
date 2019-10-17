@@ -480,17 +480,17 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
     /**
      * Deletes the message from the server.
      *
-     * @param  $id
+     * @param RawMessage $rawMessage
      * @throws \Exception
      */
-    protected function _doneRead($id)
+    protected function _doneRead(RawMessage $rawMessage)
     {
         if ($this->backupFile) {
             unlink($this->backupFile);
             $this->backupFile = null;
         }
 
-        if ($this->doneReadFinished !== null && $this->doneReadFinished == $id) {
+        if ($this->doneReadFinished !== null && $this->doneReadFinished == $rawMessage->id) {
             return;
         }
 
@@ -500,9 +500,9 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             return;
         }
 
-        $this->logger->log("Marking message as deleted: $id", 'debug');
+        $this->logger->log("Marking message as deleted: {$rawMessage->id}", 'debug');
         try {
-            $this->getStorage()->removeMessage($id);
+            $this->getStorage()->removeMessage($rawMessage->id);
         } catch (\Exception $e) {
             $this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
 

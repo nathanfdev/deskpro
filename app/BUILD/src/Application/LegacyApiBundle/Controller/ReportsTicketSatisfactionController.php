@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -13,6 +14,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class ReportsTicketSatisfactionController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AgentPermission();
+    }
+
     //###################################################################################################################
     // list
     //###################################################################################################################
