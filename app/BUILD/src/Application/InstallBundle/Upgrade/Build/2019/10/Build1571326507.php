@@ -1,7 +1,7 @@
 <?php
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1569247785 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1571326507 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -25,7 +25,7 @@ class Build1569247785 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function run()
     {
-        $this->execDbQuery('default', 'INSERT INTO community_forum_to_status (forum_id, status_id) VALUES (SELECT f.id, c.id FROM community_forums f CROSS JOIN community_topic_status_categories c)');
+        $this->execDbQuery('default', 'INSERT INTO community_forum_to_status (forum_id, status_id) SELECT f.id, c.id FROM community_forums f CROSS JOIN community_topic_status_categories c');
         $this->execDbQuery('default', "DELETE FROM custom_def_community_topic WHERE id IN (SELECT ID FROM (SELECT DISTINCT tf.id FROM custom_def_community_topic tf LEFT JOIN custom_data_community_topic td ON tf.id = td.field_id WHERE tf.sys_name = 'cat' AND td.id IS NULL) AS t)");
         $this->execDbQuery('default', "UPDATE custom_def_community_topic SET is_global = 1 WHERE id IN (SELECT ID FROM (SELECT DISTINCT tf.id FROM custom_def_community_topic tf INNER JOIN custom_data_community_topic td ON tf.id = td.field_id WHERE tf.sys_name = 'cat') AS t)");
     }

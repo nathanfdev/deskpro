@@ -364,15 +364,15 @@ class CommunityDataService extends AbstractDataService
         $person = $user ?: new PersonGuest();
 
         $filter = new CommunityFilter([
-            'view'              => $options['view'],
+            'view'              => isset($options['view']) ? $options['view'] : null,
             'status'            => $options['status'],
             'status_categories' => $options['status_categories'],
             'types'             => $options['types'],
             'sort'              => $options['sort'],
             'sort_direction'    => $options['sort_direction'],
             'q'                 => $options['q'],
-            'activities'        => $options['activities'],
-            'view_mode'         => $options['view_mode'],
+            'activities'        => isset($options['activities']) ? $options['activities'] : null,
+            'view_mode'         => isset($options['view_mode']) ? $options['view_mode'] : null,
         ]);
 
         $pager = $this->getItemsPager(
