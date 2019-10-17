@@ -64,6 +64,7 @@ class LanguageController extends AbstractApiController
             'portal.account.login-password-reminder',
             'portal.account.login-stay-logged-in',
             'portal.account.logout-confirm',
+            'portal.account.profile-delete-picture',
             'portal.chat.agent_disconnected',
             'portal.chat.agent_typing_message',
             'portal.chat.asset_failed',

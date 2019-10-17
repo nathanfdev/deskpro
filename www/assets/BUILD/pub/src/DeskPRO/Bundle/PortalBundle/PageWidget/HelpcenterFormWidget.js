@@ -5,6 +5,7 @@ import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPreventi
 import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
 import DpxJavascript from './Common/Form/DpxJavascript';
 import HcFileUpload from './Common/Form/Helpcenter/HcFileUpload';
+import HcProfilePicture from './Common/Form/Helpcenter/HcProfilePicture';
 
 export default class HelpcenterFormWidget extends PageWidget {
 
@@ -14,6 +15,7 @@ export default class HelpcenterFormWidget extends PageWidget {
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
     this.addWidgetDef(DpxJavascript, '.dpx-javascript');
     this.addWidgetDef(HcFileUpload, '.helpcenter-file-upload');
+    this.addWidgetDef(HcProfilePicture, '.helpcenter-profile_picture');
     this.addWidgetDef(HcDateWidget, '.dpx-date');
     this.addWidgetDef(HcDateWidget, '.dpx-date-time');
 

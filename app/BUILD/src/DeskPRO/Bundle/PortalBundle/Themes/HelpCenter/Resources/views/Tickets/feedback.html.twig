@@ -8,7 +8,7 @@
       style="background-image: url({{ avatar_url(message.person, 36) }}); background-size: contain;"></span>
       <p>{{ phrase('portal.tickets.rate-intro', {name: message.person.display_name_user, subject: ticket.subject}) }}</p>
     <div class="footer">
-        <article class="news kb-article dpx-form padded">
+        <article class="news kb-article helpcenter-form padded">
             {% if not setrating %}
                 {# this is shown when the user resolves a ticket #}
                 <p>{{ phrase('portal.tickets.rate-question') }}</p>

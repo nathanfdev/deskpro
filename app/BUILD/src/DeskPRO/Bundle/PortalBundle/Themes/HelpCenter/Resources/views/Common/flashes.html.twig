@@ -1,25 +1,22 @@
 {% if flashes|length > 0 %}
     <div class="dp-po">
-        <div class="dp-po-flashes">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-9 col-centered">
-                        {% for type, flashMessages in flashes %}
-                            {% for flash in flashMessages %}
-                                {% if type == 'warning' %}
-                                    <div class="alert alert-icon alert-{{ type }}" role="alert">
-                                        <i class="dp-po-icon fal fa-exclamation-triangle"></i> {{ flash }}
-                                    </div>
-                                {% else %}
-                                    <div class="alert alert-{{ type }}" role="alert">
-                                        {{ flash }}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
+        {% for type, flashMessages in flashes %}
+            {% for flash in flashMessages %}
+                <div class="dp-po-message-bar dp-po-message-bar-{{ type }}">
+                    <p class="dp-po-message-bar-icon">
+                        {% if type == 'warning' %}
+                            <i class="dp-po-icon fal fa-exclamation-triangle"></i>
+                        {% elseif type == 'error' %}
+                            <i class="dp-po-icon far fa-times-circle"></i>
+                        {% else %}
+                            <i class="dp-po-icon far fa-check-circle"></i>
+                        {% endif %}
+                    </p>
+                    <p class="dp-po-message-bar-text">
+                        {{ flash }}
+                    </p>
                 </div>
-            </div>
-        </div>
+            {% endfor %}
+        {% endfor %}
     </div>
 {% endif %}

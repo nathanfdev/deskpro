@@ -7,6 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Ensure that uncompounded forms accept scalar values to prevent array to string conversion errors.
@@ -47,7 +48,7 @@ class ScalarTransformerExtension extends AbstractTypeExtension
     public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (!is_scalar($data)) {
+        if (!is_scalar($data) && !$data instanceof UploadedFile) {
             $event->setData(null);
         }
     }
