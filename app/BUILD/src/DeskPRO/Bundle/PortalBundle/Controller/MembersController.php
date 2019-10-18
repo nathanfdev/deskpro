@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MembersController extends AbstractController
 {
     /**
-     * Number of member activities per page
+     * Number of member activities per page.
      */
     const MEMBER_ACTIVITIES_PER_PAGE = 10;
 
@@ -114,6 +114,7 @@ class MembersController extends AbstractController
             [
                 'breadcrumbs' => $breadcrumbs,
                 'person'      => $person,
+                'page_title'  => $person->getCommunityName(),
                 'avatar'      => $avatar,
                 'custom_data' => $customData,
                 'activities'  => $activities,

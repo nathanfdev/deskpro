@@ -189,6 +189,10 @@ class DirectMessagesController extends AbstractController
         $person = $request->attributes->get('to', '');
         if ($person) {
             $defaultData['person'] = $person;
+            $thread                = $this->getEm()->getRepository(DirectMessageThread::class)->getOneForUsers($this->getUser(), $person);
+            if ($thread) {
+                return $this->redirectToRoute('portal_dm_view', ['id' => $thread->getId()]);
+            }
         }
 
         $form = $this->createForm(DirectMessageNewThreadType::class, $defaultData);
@@ -198,7 +202,7 @@ class DirectMessagesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data        = $form->getData();
-                $personTo    = $this->getEm()->getRepository(Person::class)->find($data['person']);
+                $personTo    = $data['person'];
                 $thread      = $this->getDirectMessageThreadDataService()->createThread($this->getUser(), $personTo);
                 $participant = $this->getEm()->getRepository(DirectMessageParticipant::class)->findOneBy([
                     'thread' => $thread,
