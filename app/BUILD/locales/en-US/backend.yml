@@ -2791,6 +2791,7 @@ agent.emails.agent_approval_approved: 'Approved'
 agent.emails.agent_approval_rejected: 'Rejected'
 agent.emails.agent_approval_cancelled: 'Cancelled'
 agent.emails.agent_requesting_agent: 'Requesting agent'
+agent.emails.agent_requesting_agent_system: System
 agent.emails.agent_requesting_user: 'User'
 agent.emails.agent_status: 'Status'
 agent.emails.agent_awaiting_response: 'Awaiting Response'

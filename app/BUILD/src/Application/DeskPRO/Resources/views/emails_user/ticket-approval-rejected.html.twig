@@ -28,12 +28,10 @@
     <tr>
         <td colspan="2">{{ approval.description }}</td>
     </tr>
-    {% if approval.ticket.agent%}
-        <tr>
-            <td class="label-col">{{ phrase('agent.emails.agent_requesting_agent') }}</td>
-            <td>{{ approval.ticket.agent }}</td>
-        </tr>
-    {% endif %}
+    <tr>
+        <td class="label-col">{{ phrase('agent.emails.agent_requesting_agent') }}</td>
+        <td>{{ approval.createdBy ?: phrase('agent.emails.agent_requesting_agent_system') }}</td>
+    </tr>
     {% if ticket.person %}
         <tr>
             <td class="label-col">{{ phrase('agent.emails.agent_requesting_user') }}</td>

@@ -221,7 +221,7 @@ class TicketApproval
         $model->setRequiredRejections($ticketApproval->getRequiredRejections());
         $model->setApproversCount($ticketApproval->getApproversCount());
         $model->setApproversPendingResponse($ticketApproval->getApproversPendingResponse()->toArray());
-        $model->setCreatedBy($ticketApproval->getTicket()->getAgent());
+        $model->setCreatedBy($ticketApproval->getCreatedBy());
         $model->setCanApproversViewSubject($ticketApproval->canApproversViewSubject());
 
         return $model;

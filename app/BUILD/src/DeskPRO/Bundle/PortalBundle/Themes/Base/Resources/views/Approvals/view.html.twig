@@ -50,11 +50,7 @@
                                                 </span>
                                                 <ul>
                                                     <li>
-                                                        {% if approval.ticket.agent %}
-                                                            {{ macros.person_sidebar(approval.ticket.agent) }}
-                                                        {% else %}
-                                                            {{ phrase('portal.tickets.approvals.agent_not_assigned') }}
-                                                        {% endif %}
+                                                        {{ approval.createdBy ? macros.person_sidebar(approval.createdBy) : phrase('portal.tickets.approvals.system') }}
                                                     </li>
                                                 </ul>
                                             </li>

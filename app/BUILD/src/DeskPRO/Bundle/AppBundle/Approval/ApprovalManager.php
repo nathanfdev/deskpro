@@ -61,15 +61,22 @@ class ApprovalManager
     /**
      * @param AbstractBaseApproval $approval
      * @param ExecutorContext      $context
+     * @param bool                 $asSystem If this approval was saved by the system and not a used
      *
-     * @throws Exception
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function saveApproval(AbstractBaseApproval $approval, ExecutorContext $context)
+    public function saveApproval(AbstractBaseApproval $approval, ExecutorContext $context, $asSystem = false)
     {
         $isNew = false;
 
-        $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, &$context, &$isNew) {
+        $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, &$context, &$isNew, $asSystem) {
             $isNew = !$em->contains($approval);
+
+            if ($isNew && $context->getPersonContext() &&  !$approval->getCreatedBy() && !$asSystem) {
+                if ($context->getPersonContext()->isAgent()) {
+                    $approval->setCreatedBy($context->getPersonContext());
+                }
+            }
 
             $approval->notifyAssociationChanges($em);
 

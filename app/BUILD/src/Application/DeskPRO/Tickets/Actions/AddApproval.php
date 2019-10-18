@@ -62,7 +62,8 @@ class AddApproval extends AbstractContainerAwareAction implements ActionInterfac
 
         $manager->saveApproval(
             $this->approval,
-            $manager->createContext($context->getEventMethod(), $context->getPersonContext())
+            $manager->createContext($context->getEventMethod(), $context->getPersonContext()),
+            true
         );
     }
 

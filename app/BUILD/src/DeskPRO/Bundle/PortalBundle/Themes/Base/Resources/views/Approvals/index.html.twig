@@ -106,11 +106,7 @@
                                 </td>
                                 <td class="info-block left" data-col="requesting_agent">
                                     <a href="{{ viewUrl }}">
-                                        {% if approval.ticket.agent %}
-                                            {{ approval.ticket.agent }}
-                                        {% else %}
-                                            {{ phrase('portal.tickets.approvals.agent_not_assigned') }}
-                                        {% endif %}
+                                        {{ approval.createdBy ?: phrase('portal.tickets.approvals.system') }}
                                     </a>
                                 </td>
                                 <td class="info-block left" data-col="user">

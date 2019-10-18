@@ -39,12 +39,10 @@
         <tr>
             <td colspan="2">{{ approval.description }}</td>
         </tr>
-        {% if approval.created_by %}
-            <tr>
-                <td class="label-col">{{ phrase('agent.emails.agent_requesting_agent') }}</td>
-                <td>{{ approval.created_by.display_name }}</td>
-            </tr>
-        {% endif %}
+        <tr>
+            <td class="label-col">{{ phrase('agent.emails.agent_requesting_agent') }}</td>
+            <td>{{ approval.created_by ? approval.created_by.display_name : phrase('agent.emails.agent_requesting_agent_system') }}</td>
+        </tr>
         {% if ticket.person %}
             <tr>
                 <td class="label-col">{{ phrase('agent.emails.agent_requesting_user') }}</td>
