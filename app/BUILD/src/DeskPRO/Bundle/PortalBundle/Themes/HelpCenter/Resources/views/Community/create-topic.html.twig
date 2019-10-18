@@ -11,7 +11,7 @@
                             <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.form_create_topic') }}</h2>
                         </div>
                         <div class="dp-po-block">
-                            <div class="dp-po-community-form dpx-form">
+                            <div class="dp-po-community-form dpx-form helpcenter-form">
                                 <p>{{ phrase('helpcenter.community.form_complete_help_message') }}</p>
                                 {{ form_errors(form) }}
                                 {{ form_start(form, {attr: {class: 'do-po-form'}}) }}
@@ -19,7 +19,7 @@
                                     {% if form.name is defined and form.email is defined %}
                                         <div class="row">
                                             <div class="col-sm-6">
-                                                {{ form_row(form.name, {label: 'helpcenter.community.label_full_name'}) }}
+                                                {{ form_row(form.name, {label: 'helpcenter.community.form_full_name'}) }}
                                             </div>
                                             <div class="col-sm-6">
                                                 {{ form_row(form.email, {label: 'helpcenter.community.form_email_not_shown'}) }}

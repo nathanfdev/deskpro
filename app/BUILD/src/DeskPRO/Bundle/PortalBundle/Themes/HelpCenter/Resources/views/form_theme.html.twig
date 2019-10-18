@@ -301,7 +301,7 @@
         {% if count > 1 %}
             <div {{ block('widget_container_attributes') }}>
                <div class="with-dpx form-control">
-                   <select dpx-select="" id="{{ id }}" name="{{ full_name }}">
+                   <select id="{{ id }}" name="{{ full_name }}">
                        {% for choice in choices %}
                            <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
                        {% endfor %}
@@ -351,7 +351,7 @@
         {% set required = false %}
     {%- endif -%}
     <div class="with-dpx">
-        <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="form-control">
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {%- if placeholder is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? placeholder|trans({}, translation_domain) }}</option>
             {%- endif -%}
@@ -558,7 +558,7 @@ HIERARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select data-hierarchy="" {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %} class="as-no-dpui" class="form-control">
+        <select data-hierarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="as-no-dpui">
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -624,7 +624,7 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
         {% set required = false %}
     {%- endif -%}
     <div class="with-dpx">
-        <select {{ block('widget_attributes') }}{% if multiple %} dpx-select-multiple="" multiple="multiple"{% else %} dpx-select=""{% endif %}>
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
@@ -740,7 +740,7 @@ END HIERARCHY
         {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
             {% set required = false %}
         {%- endif -%}
-        <select dpx-select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="form-control">
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
             {% if empty_value is not none -%}
                 <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
             {%- endif %}
