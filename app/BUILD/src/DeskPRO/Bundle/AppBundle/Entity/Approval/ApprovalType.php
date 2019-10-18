@@ -9,9 +9,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ApprovalType
+ * Class ApprovalType.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalTypeRepository")
  * @ORM\Table(name="approval_types")
@@ -45,6 +46,9 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
      *
      * @JMS\Expose
      * @JMS\Type("string")
+     *
+     * @Assert\NotBlank()
+     * @Assert\Length(max="255")
      */
     private $name;
 
@@ -92,7 +96,7 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -109,6 +113,7 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $name
+     *
      * @return self
      */
     public function setName($name)
@@ -128,6 +133,7 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string|null $description
+     *
      * @return self
      */
     public function setDescription($description)
@@ -147,6 +153,7 @@ class ApprovalType implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param bool $isDeleted
+     *
      * @return self
      */
     public function setIsDeleted($isDeleted)
