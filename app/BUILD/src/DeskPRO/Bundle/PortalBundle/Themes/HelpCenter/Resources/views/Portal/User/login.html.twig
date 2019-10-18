@@ -6,125 +6,134 @@
 {% endblock sidebar %}
 
 {% block page_content %}
-    <div id="login-page">
-    {% if auth_manager.isAuthVisible %}
-
-        <header class="large-title">
-            <h1>{{ phrase('portal.account.section-title-login') }}</h1>
-            <p>{{ phrase('portal.account.section-desc-login') }}</p>
-        </header>
-
-        <section class="padded">
-            {% if reset_success %}
-                {{ macros.user_notice('auth', phrase('portal.account.reset-password-success')) }}
-            {% endif %}
-
-            {% if set_password_success %}
-                {{ macros.user_notice('auth', phrase('portal.account.set-password-success')) }}
-            {% endif %}
-
-            {% if login_error %}
-                {{ macros.user_notice('auth', phrase(login_error)) }}
-            {% endif %}
-
-            {{  macros.lockout_notice(phrase('portal.account.login-lockout'), lockout_error, lockout_time) }}
-
-            {% if login_captcha_failed %}
-                {{ macros.user_notice('auth', phrase('portal.account.login-captcha-failed')) }}
-            {% endif %}
-
-            {% if saved_form %}
-                {{ macros.user_notice('auth', phrase('portal.account.login-saved-' ~ saved_form_type)) }}
-            {% endif %}
-
-            {% if auth_manager.isLoginFormVisible %}
-                <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post" novalidate>
-                    <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
-                    {% if destination %}
-                        <input type="hidden" name="_destination" value="{{ destination }}"/>
-                    {% endif %}
-
-                    <div class="column-half">
-                        <div class="bucket">
-                            <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}</label>
-                            <input type="text" placeholder="{{ phrase('portal.account.login-email') }}" name="username"
-                                   id="login_username" value="{{ last_username }}" tabindex="1"
-                            >
+<div class="dp-po">
+    <main class="dp-po-main">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-7 col-centered">
+                    <div id="login-page">
+                    {% if auth_manager.isAuthVisible %}
+                        <div class="dp-po-title">
+                            <h2 class="dp-po-title-text">
+                                {{ phrase('portal.account.section-title-login') }}
+                            </h2>
                         </div>
-                    </div>
+                        <p>{{ phrase('portal.account.section-desc-login') }}</p>
 
-                    <div class="column-half omega">
-                        <div class="bucket">
-                            <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}</label>
-                            <input type="password" placeholder="{{ phrase('portal.account.login-password') }}"
-                                   name="password" id="login_password" tabindex="2"
-                            >
-                            {% if auth_manager.isForgotPasswordVisible %}
-                                <div class="form-meta form-meta-grey form-meta-top">
-                                    <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5">
-                                        {{ phrase('portal.account.login-password-reminder') }}
+                        <div class="dp-po-section dp-po-block">
+                            <section class="padded">
+                                {% if reset_success %}
+                                    {{ macros.user_notice('success', phrase('portal.account.reset-password-success')) }}
+                                {% endif %}
+
+                                {% if set_password_success %}
+                                    {{ macros.user_notice('success', phrase('portal.account.set-password-success')) }}
+                                {% endif %}
+
+                                {% if login_error %}
+                                    {{ macros.user_notice('danger', phrase(login_error)) }}
+                                {% endif %}
+
+                                {{  macros.lockout_notice(phrase('portal.account.login-lockout'), lockout_error, lockout_time) }}
+
+                                {% if login_captcha_failed %}
+                                    {{ macros.user_notice('danger', phrase('portal.account.login-captcha-failed')) }}
+                                {% endif %}
+
+                                {% if saved_form %}
+                                    {{ macros.user_notice('auth', phrase('portal.account.login-saved-' ~ saved_form_type)) }}
+                                {% endif %}
+
+                                {% if auth_manager.isLoginFormVisible %}
+                                    <form id="login" class="form-ticket" action="{{ path('portal_login_submit') }}" method="post" novalidate>
+                                        <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+                                        {% if destination %}
+                                            <input type="hidden" name="_destination" value="{{ destination }}"/>
+                                        {% endif %}
+
+                                        <div class="form-group">
+                                            <label for="login_username" class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}</label>
+                                            <input type="text" placeholder="{{ phrase('portal.account.login-email') }}" name="username"
+                                                   id="login_username" value="{{ last_username }}" tabindex="1" class="form-control"
+                                            >
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="login_password" class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-password') }}</label>
+                                            <input type="password" placeholder="{{ phrase('portal.account.login-password') }}"
+                                                   name="password" id="login_password" tabindex="2" class="form-control"
+                                            >
+                                            {% if auth_manager.isForgotPasswordVisible %}
+                                                <div class="form-meta form-meta-grey form-meta-top">
+                                                    <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5">
+                                                        {{ phrase('portal.account.login-password-reminder') }}
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+
+                                        {% if captcha_form is not null %}
+                                            {{ form_widget(captcha_form) }}
+                                        {% endif %}
+
+                                        <button class="btn btn-primary" id="login_button" tabindex="4">{{ phrase('portal.account.login-btn') }}</button>
+                                        {% if auth_manager.isRememberMeEnabled %}
+                                            <div class="form-group">
+                                                <div class="remember-me checkboxes">
+                                                    <label for="remember_me">
+                                                        <input tabindex="3" type="checkbox" name="remember_me" id="remember_me">
+                                                        <i></i>
+                                                        <span>{{ phrase('portal.account.login-remember') }}</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+                            </section>
+
+                            {% if auth_manager.hasLoginIconUsersources or auth_manager.hasLoginTextButtonUsersources %}
+
+                                {% if auth_manager.isLoginFormVisible %}
+                                    <hr class="divider" />
+                                {% endif %}
+                                <header class="large-title">
+                                    <h2>{{ phrase('portal.account.login-external') }}</h2>
+                                    <p>{{ phrase('portal.account.section-desc-login-external') }}</p>
+                                </header>
+
+                                <section class="padded">
+                                    {% for usersource in usersources_view %}
+                                    <a
+                                        href="{{ path('portal_login_authenticate', { usersource_id: usersource.id }) }}"
+                                        class="{{ usersource.classes|join(' ') }}"
+                                    >
+                                        {% if usersource.icon %}<i class="{{ usersource.icon }}"></i>{% endif %}
+                                        {{ usersource.text }}
                                     </a>
-                                </div>
+                                    {% endfor %}
+                                </section>
+                            {% endif %}
+
+                            {% if auth_manager.isRegistrationFormVisible %}
+                                {% if auth_manager.hasLoginIconUsersources or auth_manager.hasLoginTextButtonUsersources or auth_manager.isLoginFormVisible %}
+                                    <hr class="divider" />
+                                {% endif %}
+                                <header class="large-title">
+                                    <h1>{{ phrase('portal.account.login-register-header') }}</h1>
+                                    <p>{{ phrase('portal.account.section-desc-register') }}</p>
+                                </header>
+
+                                <section class="padded">
+                                    <a class="btn btn-secondary" href="{{ path('portal_user_registration') }}">{{ phrase('portal.account.login-register-btn') }}</a>
+                                </section>
                             {% endif %}
                         </div>
-                    </div>
-
-                    {% if captcha_form is not null %}
-                        {{ form_widget(captcha_form) }}
                     {% endif %}
-
-                    <div class="column-full">
-                        <div class="bucket">
-                            <button class="button" id="login_button" tabindex="4">{{ phrase('portal.account.login-btn') }}</button>
-                            {% if auth_manager.isRememberMeEnabled %}
-                            <div class="remember-me"><label for="remember_me">
-                                    <input tabindex="3" type="checkbox" name="remember_me">
-                                    <span>{{ phrase('portal.account.login-remember') }}</span>
-                                </label>
-                            </div>
-                            {% endif %}
-                        </div>
                     </div>
-                </form>
-            {% endif %}
-        </section>
-
-        {% if auth_manager.hasLoginIconUsersources or auth_manager.hasLoginTextButtonUsersources %}
-
-            {% if auth_manager.isLoginFormVisible %}
-                <hr class="divider" />
-            {% endif %}
-            <header class="large-title">
-                <h2>{{ phrase('portal.account.login-external') }}</h2>
-                <p>{{ phrase('portal.account.section-desc-login-external') }}</p>
-            </header>
-
-            <section class="padded">
-                {% for usersource in usersources_view %}
-                <a
-                    href="{{ path('portal_login_authenticate', { usersource_id: usersource.id }) }}"
-                    class="{{ usersource.classes|join(' ') }}"
-                >
-                    {% if usersource.icon %}<i class="{{ usersource.icon }}"></i>{% endif %}
-                    {{ usersource.text }}
-                </a>
-                {% endfor %}
-            </section>
-        {% endif %}
-
-        {% if auth_manager.isRegistrationFormVisible %}
-            {% if auth_manager.hasLoginIconUsersources or auth_manager.hasLoginTextButtonUsersources or auth_manager.isLoginFormVisible %}
-                <hr class="divider" />
-            {% endif %}
-            <header class="large-title">
-                <h1>{{ phrase('portal.account.login-register-header') }}</h1>
-                <p>{{ phrase('portal.account.section-desc-register') }}</p>
-            </header>
-
-            <section class="padded">
-                <a class="button button-secondary" href="{{ path('portal_user_registration') }}">{{ phrase('portal.account.login-register-btn') }}</a>
-            </section>
-        {% endif %}
-    {% endif %}
-    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 {% endblock page_content %}
