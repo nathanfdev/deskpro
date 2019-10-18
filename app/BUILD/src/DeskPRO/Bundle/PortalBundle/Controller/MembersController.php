@@ -45,6 +45,7 @@ class MembersController extends AbstractController
             'Theme:Members:index.html.twig',
             [
                 'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->createPageTitle()->members(),
                 'pager'       => $pager,
                 'count'       => $count,
                 'page'        => $page,
@@ -114,7 +115,7 @@ class MembersController extends AbstractController
             [
                 'breadcrumbs' => $breadcrumbs,
                 'person'      => $person,
-                'page_title'  => $person->getCommunityName(),
+                'page_title'  => $this->createPageTitle()->members($person),
                 'avatar'      => $avatar,
                 'custom_data' => $customData,
                 'activities'  => $activities,

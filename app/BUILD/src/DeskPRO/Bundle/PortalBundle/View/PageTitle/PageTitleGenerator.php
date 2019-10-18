@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -275,6 +276,27 @@ class PageTitleGenerator
                 )
             );
             $builder->prependSection($topicOrGuide->getTranslatedTitle());
+        } else {
+            $builder->prependSection($sectionTitle);
+        }
+
+        return (string) $builder;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return string
+     */
+    public function members($person = null)
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $sectionTitle = $this->phrase('helpcenter.members.title');
+
+        if ($person) {
+            $builder->prependSection($sectionTitle);
+            $builder->prependSection($person->getCommunityName());
         } else {
             $builder->prependSection($sectionTitle);
         }
