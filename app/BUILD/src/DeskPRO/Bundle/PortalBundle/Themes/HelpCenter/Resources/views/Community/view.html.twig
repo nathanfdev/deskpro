@@ -73,9 +73,11 @@
         </div>
     {% endif %}
 
-    {% include 'Theme:PublishCommon:share.html.twig' with {
-        item: file
-    } %}
+    {% if file is defined %}
+        {% include 'Theme:PublishCommon:share.html.twig' with {
+            item: file
+        } %}
+    {% endif %}
 
     {% if topic.labels | length %}
         {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {

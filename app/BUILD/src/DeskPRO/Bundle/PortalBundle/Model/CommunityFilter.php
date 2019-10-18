@@ -211,6 +211,10 @@ class CommunityFilter
      */
     public function setView($view)
     {
+        if (null === $view) {
+            return;
+        }
+
         if (!in_array($view, static::$views)) {
             throw new \InvalidArgumentException(sprintf('"%s" is not a valid community filter view', $view));
         }
