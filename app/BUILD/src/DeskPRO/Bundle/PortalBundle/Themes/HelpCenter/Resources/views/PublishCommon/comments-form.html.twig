@@ -17,11 +17,12 @@
                 {{ hc_avatar(app.user, '', 30) }}
                 <strong>{{ app.user.display_name }}</strong>
             </div>
-            <form class="dp-po-form">
+            {{ form_start(new_comment_form, { attr: { class: 'dp-po-form' } }) }}
                 <div class="form-group">
                     <label for="comment_content_real">{{ phrase('portal.general.your_comment_label') }} *</label>
                     {{ form_widget(new_comment_form.content_real, { attr: { placeholder: phrase('portal.general.enter_comment_placeholder'), class: 'form-control' }}) }}
                 </div>
+                {{ form_rest(new_comment_form) }}
                 {#
                 <div class="form-group dp-po-form-upload">
                     <label for="exampleFormControlFile1">Add attachment</label>
@@ -52,9 +53,7 @@
                     </div>
                     #}
                 </div>
-
-
-            </form>
+            {{ form_end(new_comment_form) }}
         </div>
 
     {# ------------------------------------------ #}
