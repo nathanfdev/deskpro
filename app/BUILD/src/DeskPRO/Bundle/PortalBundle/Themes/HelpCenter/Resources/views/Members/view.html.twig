@@ -41,7 +41,7 @@
                                 </div>
                                 {% if person.primary_email %}
                                     <div>
-                                        <a href="{{ path('portal_dm_send_to', {to: person.primary_email}) }}" class="btn btn-primary">{{ phrase('helpcenter.members.send_message') }}</a>
+                                        <a href="{{ path('portal_dm_send_to', {to: person.id}) }}" class="btn btn-primary">{{ phrase('helpcenter.members.send_message') }}</a>
                                     </div>
                                 {% endif %}
                             </div>

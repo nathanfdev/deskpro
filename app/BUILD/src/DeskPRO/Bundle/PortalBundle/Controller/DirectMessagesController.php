@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 class DirectMessagesController extends AbstractController
 {
     /**
-     * Number of direct messages per page
+     * Number of direct messages per page.
      */
     const DIRECT_MESSAGES_PER_PAGE = 10;
 
@@ -38,8 +38,8 @@ class DirectMessagesController extends AbstractController
     {
         $this->isCommunityEnabledOrNotFoundException();
 
-        $dataService  = $this->getDirectMessageThreadDataService();
-        $pager = $dataService->getForUser(
+        $dataService = $this->getDirectMessageThreadDataService();
+        $pager       = $dataService->getForUser(
             $this->getUser(),
             $request->query->has('unread'),
             $request->query->get('page', 1),
@@ -62,9 +62,9 @@ class DirectMessagesController extends AbstractController
         return $this->renderThemeView(
             'Theme:DirectMessages:index.html.twig',
             [
-                'breadcrumbs'  => $breadcrumbs,
-                'pager'        => $pager,
-                'participants' => $participants,
+                'breadcrumbs'             => $breadcrumbs,
+                'pager'                   => $pager,
+                'participants'            => $participants,
                 'is_blocked_by_thread_id' => $isBlockedByThreadId,
             ]
         );
@@ -170,6 +170,7 @@ class DirectMessagesController extends AbstractController
     /**
      * @Route("/dm/send", name="portal_dm_send")
      * @Route("/dm/send/to/{to}", name="portal_dm_send_to")
+     * @ParamConverter("to", class="DeskPRO:Person")
      * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
@@ -182,9 +183,17 @@ class DirectMessagesController extends AbstractController
 
         $defaultData = [
             'person'  => null,
-            'email'   => $request->attributes->get('to', ''),
             'message' => '',
         ];
+
+        $person = $request->attributes->get('to', '');
+        if ($person) {
+            $defaultData['person'] = $person;
+            $thread                = $this->getEm()->getRepository(DirectMessageThread::class)->getOneForUsers($this->getUser(), $person);
+            if ($thread) {
+                return $this->redirectToRoute('portal_dm_view', ['id' => $thread->getId()]);
+            }
+        }
 
         $form = $this->createForm(DirectMessageNewThreadType::class, $defaultData);
 
@@ -193,7 +202,7 @@ class DirectMessagesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $data        = $form->getData();
-                $personTo    = $this->getEm()->getRepository(Person::class)->findOneByEmail($data['email']);
+                $personTo    = $data['person'];
                 $thread      = $this->getDirectMessageThreadDataService()->createThread($this->getUser(), $personTo);
                 $participant = $this->getEm()->getRepository(DirectMessageParticipant::class)->findOneBy([
                     'thread' => $thread,
@@ -215,6 +224,8 @@ class DirectMessagesController extends AbstractController
             $this->addFlash('success', 'Message added');
 
             return $this->redirectToRoute('portal_dm_view', ['id' => $thread->getId()]);
+        } else {
+            $form->setData($defaultData);
         }
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildDirectMessagesList();
@@ -234,8 +245,9 @@ class DirectMessagesController extends AbstractController
      *
      * @param DirectMessageThread $thread
      *
-     * @return Response
      * @throws \Exception
+     *
+     * @return Response
      */
     public function blockAction(DirectMessageThread $thread)
     {
@@ -256,8 +268,9 @@ class DirectMessagesController extends AbstractController
      *
      * @param DirectMessageThread $thread
      *
-     * @return Response
      * @throws \Exception
+     *
+     * @return Response
      */
     public function unblockAction(DirectMessageThread $thread)
     {

@@ -5,9 +5,9 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -49,13 +49,9 @@ class DirectMessageNewThreadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class, [
-                'label'       => 'Email',
-                'required'    => true,
-                'constraints' => [
-                    new Assert\NotBlank(),
-                    new Assert\Email(['strict' => true]),
-                ],
+            ->add('person', EntityType::class, [
+                'class'    => Person::class,
+                'required' => true,
             ])
             ->add('message', TextareaType::class, [
                 'label'       => 'Message',
@@ -80,7 +76,7 @@ class DirectMessageNewThreadType extends AbstractType
             ))
         ;
 
-        $builder->get('email')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
+        $builder->get('person')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
     }
 
     public function onPreSubmit(FormEvent $event)
@@ -92,7 +88,7 @@ class DirectMessageNewThreadType extends AbstractType
         $personRepository = $this->em->getRepository(Person::class);
 
         if (!empty($data)) {
-            $person = $personRepository->findOneByEmail($data);
+            $person = $personRepository->find($data);
             if (!$person) {
                 $form->addError(new FormError(ErrorsCodes::NO_PERSON, null, ['value' => $data]));
             } elseif ($person->isAgent()) {
