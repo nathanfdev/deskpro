@@ -1,19 +1,9 @@
 {% macro user_notice(type, title, subtitle = null) %}
 
-<div class="inline-form-wrapper">
-  <div class="inline-form-alert">
-      <div class="form-alert-icon">
-          {% if type == 'auth' %}
-              <i class="fas fa-lock"></i>
-          {% endif %}
-      </div>
-      <div class="content-wrapper">
-          <h1>{{ title }}</h1>
-          {% if subtitle %}
-            <p>{{ subtitle }}</p>
-          {% endif %}
-      </div>
-  </div>
+<div class="alert alert-icon alert-{{ type }}">
+    <i class="dp-po-icon fas fa-lock"></i>
+    {{ title }}
+    <p>{{ subtitle }}</p>
 </div>
 {% endmacro %}
 
