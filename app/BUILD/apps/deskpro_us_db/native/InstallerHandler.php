@@ -31,6 +31,10 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             if ($context->getApp()) {
                 $settings['php_code'] = $context->getApp()->getSetting('php_code');
             }
+        } else {
+            /* @var $DP_ENV \DpRun\DpEnv */
+            global $DP_ENV;
+            $options['password_php'] = $DP_ENV->getConfig('settings.database_authentication_php', '');
         }
 
         return $settings;

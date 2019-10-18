@@ -178,6 +178,22 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertTrue($entity->canAdmin());
     }
 
+    public function test_user_password_wont_reset()
+    {
+        $model = $this->createBaseModel();
+        $model->setPassword('password');
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $model = $this->createBaseModel();
+        $model->setPassword('drowssap');
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->checkPassword('password'));
+    }
+
     /**
      * @return Model\Person
      */

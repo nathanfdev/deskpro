@@ -24,7 +24,7 @@ use Orb\Util\Arrays;
  *
  * @ApiModes("all")
  */
-class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
+class TicketStatusesController extends AbstractController
 {
     /**
      * {@inheritdoc}

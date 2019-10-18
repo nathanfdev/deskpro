@@ -18,7 +18,7 @@ class Noop extends AbstractFetcher
         return;
     }
 
-    protected function _doneRead($id)
+    protected function _doneRead(RawMessage $rawMessage)
     {
         // noop
     }

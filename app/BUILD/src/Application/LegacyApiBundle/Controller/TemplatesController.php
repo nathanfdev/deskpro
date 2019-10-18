@@ -18,7 +18,7 @@ use Orb\Util\Strings;
 /**
  * @ApiModes("all")
  */
-class TemplatesController extends AbstractController implements ProtectedControllerInterface
+class TemplatesController extends AbstractController
 {
     /**
      * {@inheritdoc}

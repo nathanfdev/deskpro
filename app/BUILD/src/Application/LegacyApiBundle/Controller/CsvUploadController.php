@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class CsvUploadController extends AbstractController implements ProtectedControllerInterface
+class CsvUploadController extends AbstractController
 {
     /**
      * {@inheritdoc}

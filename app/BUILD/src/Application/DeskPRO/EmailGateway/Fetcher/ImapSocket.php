@@ -7,9 +7,7 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
-use Application\DeskPRO\Log\Logger;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Zend\Mail\Protocol;
 use Zend\Mail\Storage;
@@ -49,7 +47,8 @@ class ImapSocket extends AbstractFetcher
     protected $storage;
 
     /**
-     * Protocol
+     * Protocol.
+     *
      * @var \Zend\Mail\Protocol\Imap
      */
     protected $protocol;
@@ -121,13 +120,13 @@ class ImapSocket extends AbstractFetcher
 
         // set archive mailbox
         $this->archiveMailbox =
-            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+            (isset($options['archive_mailbox']) && !is_null($options['archive_mailbox']))
                 ? $options['archive_mailbox']
                 : 'DP_Archive';
 
         // set read mailbox
         $this->readMailbox =
-            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+            (isset($options['read_mailbox']) && !is_null($options['read_mailbox']))
                 ? $options['read_mailbox']
                 : null;
 
@@ -195,7 +194,7 @@ class ImapSocket extends AbstractFetcher
         }
 
         // select or create mailbox folder
-        if (! is_null($this->readMailbox)) {
+        if (!is_null($this->readMailbox)) {
             try {
                 $this->storage->selectFolder($this->readMailbox);
             } catch (Storage\Exception\RuntimeException $e) {
@@ -221,14 +220,14 @@ class ImapSocket extends AbstractFetcher
     }
 
     /**
-     * Init options
+     * Init options.
      *
      * @param GmailConfig $config
      * @param SettingsBag $settings
      *
-     * @return array
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return array
      */
     public static function initOptions(GmailConfig $config, SettingsBag $settings)
     {
@@ -270,9 +269,10 @@ class ImapSocket extends AbstractFetcher
     /**
      * {@inheritdoc}
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      * @throws Protocol\Exception\RuntimeException
      * @throws Storage\Exception\RuntimeException
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
     {
@@ -322,40 +322,46 @@ class ImapSocket extends AbstractFetcher
      * Processes the message after reading it.
      * Moves it to the DP_Mailbox folder marking it "read".
      *
-     * @param int $id ID of the message
+     * @param RawMessage $rawMessage
+     *
      * @throws Storage\Exception\RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function _doneRead($id)
+    public function _doneRead(RawMessage $rawMessage)
     {
         switch ($this->mode) {
             case self::MODE_READ:
-                // No need to mark message as read, its marked as read automatically by fetching the body
-                //$message->setFlag('seen', 1);
-                $this->logger->log("Marked $id as seen", 'debug');
+                // Mark message as read when we cant fetch body on reason of big size.
+                // Otherwise its marked as read automatically by fetching the body
+                if ($rawMessage->too_big) {
+                    $this->storage->setFlags($rawMessage->id, ['\\Seen']);
+                }
+                $this->logger->log("Marked {$rawMessage->id} as seen", 'debug');
                 break;
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessage($id, $this->archiveMailbox);
-                $this->logger->log("Moved $id to {$this->archiveMailbox}", 'debug');
+                $this->storage->moveMessage($rawMessage->id, $this->archiveMailbox);
+                $this->logger->log("Moved {$rawMessage->id} to {$this->archiveMailbox}", 'debug');
                 break;
             case self::MODE_DELETE:
-                $this->storage->removeMessage($id);
-                $this->logger->log("Deleted $id", 'debug');
+                $this->storage->removeMessage($rawMessage->id);
+                $this->logger->log("Deleted {$rawMessage->id}", 'debug');
                 break;
             default:
-                throw new \InvalidArgumentException('Unvalid mode: '.$this->mode);
+                throw new \InvalidArgumentException('Invalid mode: '.$this->mode);
                 break;
         }
     }
 
     /**
-     * Authenticate
+     * Authenticate.
      *
-     * @param string $email
-     * @param string $accessToken
+     * @param string        $email
+     * @param string        $accessToken
      * @param Protocol\Imap $protocol
-     * @return bool
+     *
      * @throws Protocol\Exception\RuntimeException
+     *
+     * @return bool
      */
     public static function oauth2Authenticate($email, $accessToken, Protocol\Imap $protocol)
     {

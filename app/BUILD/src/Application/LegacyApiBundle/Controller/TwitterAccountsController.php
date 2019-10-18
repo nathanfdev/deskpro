@@ -15,7 +15,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 /**
  * @ApiModes("all")
  */
-class TwitterAccountsController extends AbstractController implements ProtectedControllerInterface
+class TwitterAccountsController extends AbstractController
 {
     /**
      * {@inheritdoc}

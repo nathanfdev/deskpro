@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\CommunitySettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\CommunitySettings;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class CommunitySettingsController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/brands/{brand}/portal/community")
  */
 class CommunitySettingsController extends AbstractBrandAwareSettingsController

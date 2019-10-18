@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -16,6 +17,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  * @Rest\Route("/audit_logs")
+ * @ApiUserContext("admin")
  */
 class AuditLogController extends BaseController
 {

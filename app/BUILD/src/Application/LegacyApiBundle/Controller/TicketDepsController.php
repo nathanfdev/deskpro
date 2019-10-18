@@ -15,14 +15,14 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Settings\SettingHandler\TicketDepartment as TicketDepartmentHandler;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
  * @ApiModes("all")
  */
-class TicketDepsController extends AbstractController implements ProtectedControllerInterface
+class TicketDepsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -31,7 +31,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

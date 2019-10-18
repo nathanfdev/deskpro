@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\AgentProfileType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -25,6 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/agents")
  * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson")
+ * @ApiUserContext("admin", agent={"list", "get", "count", "getAgentsOnline", "listExtended", "getAgentsOnChats", "editProfile"})
  * @SerializerView(mapping={
  *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson"
  * })

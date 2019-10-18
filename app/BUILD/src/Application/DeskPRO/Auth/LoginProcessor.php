@@ -114,15 +114,18 @@ class LoginProcessor
             // If we can trust the email address and there already exists a person
             // with this email address, then we can just link the accounts now
             $setEmail = false;
+
+            $existEmail = null;
+
             // I removed the "email_confirmed" requirement below; after new validation rules, all emails from a usersource are considered valid
             if ($mappedFields->has('email') || $use_email_address) {
-                $setEmail = $mappedFields->get('email', $use_email_address);
-                $email    = App::getEntityRepository(PersonEmail::class)->getEmail($mappedFields->get('email'));
-                /** @var PersonEmail $email */
-                if ($email) {
+                $setEmail   = $mappedFields->get('email', $use_email_address);
+                $existEmail = App::getEntityRepository(PersonEmail::class)->getEmail($mappedFields->get('email'));
+                /** @var PersonEmail $existEmail */
+                if ($existEmail) {
                     // always validate emails sent from a usersource
-                    $email->is_validated = true;
-                    $this->person        = $email->person;
+                    $existEmail->is_validated = true;
+                    $this->person             = $existEmail->person;
                 }
             }
 
@@ -151,7 +154,24 @@ class LoginProcessor
             $this->updateTwitter($mappedFields, $em);
 
             if ($setEmail && !$this->person->findEmailAddress($setEmail)) {
-                $emailObj = $this->person->addEmailAddressString($setEmail);
+                if ($existEmail) {
+                    // This edge case is hit when an existing email record
+                    // exists (see above where $existEmail is set to a lookup)
+                    // but that record has no corresponding person (i.e. person_id null in db)
+                    // normally shouldnt happen, but the db col is nullable, so if there ever
+                    // was a bug in the past then it could pop up.
+                    // So here we're handling this case by re-assigning the existing record
+                    // to the person we just created.
+                    // Without this, you'd hit a dupe exception when we tried to create
+                    // a new people_emails record.
+                    if ($existEmail->person !== null) {
+                        throw new \RuntimeException('This should never happen');
+                    }
+                    $emailObj = $existEmail;
+                    $this->person->addEmail($emailObj);
+                } else {
+                    $emailObj = $this->person->addEmailAddressString($setEmail);
+                }
                 // always validate emails sent from a usersource
                 if ($thisEmail = $this->person->findEmailAddress($setEmail)) {
                     $thisEmail->is_validated = true;
@@ -166,7 +186,14 @@ class LoginProcessor
             $this->assoc['usersource']        = $this->usersource;
             $this->assoc['identity']          = $this->identity->getIdentity();
             $this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity() ?: $this->identity->getIdentity();
-            $this->assoc['data']              = $this->identity->getRawData();
+
+            $data = $this->identity->getRawData();
+
+            // dont save this blob data in this array,
+            // no use for it in the assoc table
+            unset($data['picture_data']);
+            $this->assoc['data'] = $data;
+
             $this->persist($em, $this->assoc);
             $this->flush($em);
 
@@ -190,8 +217,8 @@ class LoginProcessor
             // identity (it could have been updated).
             if ($mappedFields->has('email') && $mappedFields->get('email_confirmed')) {
                 if (!$this->person->hasEmailAddress($mappedFields->get('email'))) {
-                    $email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mappedFields->get('email'));
-                    if (!$email) {
+                    $existEmail = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mappedFields->get('email'));
+                    if (!$existEmail) {
                         $emailObj = $this->person->addEmailAddressString($mappedFields->get('email'));
                         $this->persist($em, $emailObj);
                         // always validate emails sent from a usersource

@@ -66,6 +66,10 @@ class EntityPersister
     /**
      * @param mixed $entity
      * @param mixed $model
+     *
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \RuntimeException
      */
     public function persistAndFlush($entity, $model = null)
     {
@@ -95,6 +99,9 @@ class EntityPersister
 
     /**
      * @param mixed $entity
+     *
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function removeAndFlush($entity)
     {

@@ -175,9 +175,9 @@ abstract class AbstractFetcher
      * Marks the email as 'read' in any way that'll prevent the system from
      * reading it again. For example, deleting it, moving it to a new folder, etc.
      *
-     * @param  $id
+     * @param RawMessage $rawMessage
      */
-    abstract protected function _doneRead($id);
+    abstract protected function _doneRead(RawMessage $rawMessage);
 
     /**
      * Reads the next message from the resource and saves it into the datbaase,
@@ -299,7 +299,7 @@ abstract class AbstractFetcher
             // Delete message on the server
             //------------------------------
 
-            $this->_doneRead($rawMessage->id);
+            $this->_doneRead($rawMessage);
         } catch (\Exception $exception) {
             // Log exception
             $this->logger->log(

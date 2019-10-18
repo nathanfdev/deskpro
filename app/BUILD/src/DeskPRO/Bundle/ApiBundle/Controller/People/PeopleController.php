@@ -14,6 +14,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\SearchHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -151,6 +152,7 @@ class PeopleController extends AbstractPeopleController
      *     }
      * )
      * @Rest\Put("/{id}/permissions")
+     * @ApiUserContext("admin")
      *
      * @param         $id
      * @param Request $request

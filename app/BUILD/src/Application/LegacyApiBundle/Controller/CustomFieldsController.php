@@ -22,8 +22,8 @@ use Application\DeskPRO\EntityRepository\CustomDefAbstract;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\SimpleDefinitionType;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Form\FormView;
@@ -34,7 +34,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @ApiModes("all")
  */
-class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
+class CustomFieldsController extends AbstractController
 {
     protected $allowed = [
         'owner'   => ['ticket', 'person'],
@@ -57,9 +57,9 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'getCommonFieldsAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'setCommonFieldsAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'getCommonFieldsAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'setCommonFieldsAction');
 
         return $multi;
     }

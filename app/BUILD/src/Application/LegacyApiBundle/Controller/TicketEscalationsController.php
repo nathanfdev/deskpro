@@ -12,8 +12,8 @@ use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -28,7 +28,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class TicketEscalationsController extends AbstractController implements ProtectedControllerInterface
+class TicketEscalationsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -37,7 +37,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

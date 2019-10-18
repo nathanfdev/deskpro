@@ -75,7 +75,6 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
     /**
      * Initiates the connection.
      *
-     * @return \Zend\Mail\Storage\Pop3
      * @throws \CannotPerformOperationException
      * @throws \InvalidArgumentException
      * @throws \InvalidCiphertextException
@@ -83,12 +82,14 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \Zend\Mail\Protocol\Exception\RuntimeException
      * @throws \Zend\Mail\Storage\Exception\InvalidArgumentException
+     *
+     * @return \Zend\Mail\Storage\Pop3
      */
     protected function _initConnection()
     {
         // stubs
         $properties = ['user', 'password'];
-        $options = [];
+        $options    = [];
 
         // decrypt account config
         $incomingAccount = $this->decryptIncomingAccount();
@@ -105,9 +106,8 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                     }
                 }
 
-                if (! is_null($protocolConfig->secure_mode) &&
-                    in_array($protocolConfig->secure_mode, ['ssl', 'tls']))
-                {
+                if (!is_null($protocolConfig->secure_mode) &&
+                    in_array($protocolConfig->secure_mode, ['ssl', 'tls'])) {
                     $options['ssl'] = strtoupper($protocolConfig->secure_mode);
                 }
 
@@ -202,7 +202,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
     }
 
     /**
-     * Close connection
+     * Close connection.
      */
     public function close()
     {
@@ -345,8 +345,9 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
     /**
      * Reads the next message in the inbox.
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     protected function _readNext()
     {
@@ -480,17 +481,18 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
     /**
      * Deletes the message from the server.
      *
-     * @param  $id
+     * @param RawMessage $rawMessage
+     *
      * @throws \Exception
      */
-    protected function _doneRead($id)
+    protected function _doneRead(RawMessage $rawMessage)
     {
         if ($this->backupFile) {
             unlink($this->backupFile);
             $this->backupFile = null;
         }
 
-        if ($this->doneReadFinished !== null && $this->doneReadFinished == $id) {
+        if ($this->doneReadFinished !== null && $this->doneReadFinished == $rawMessage->id) {
             return;
         }
 
@@ -500,9 +502,9 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             return;
         }
 
-        $this->logger->log("Marking message as deleted: $id", 'debug');
+        $this->logger->log("Marking message as deleted: {$rawMessage->id}", 'debug');
         try {
-            $this->getStorage()->removeMessage($id);
+            $this->getStorage()->removeMessage($rawMessage->id);
         } catch (\Exception $e) {
             $this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
 
@@ -530,10 +532,11 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
     /**
      * @param string $object_type
-     * @param int $limit
+     * @param int    $limit
+     *
+     * @throws \Exception
      *
      * @return \Application\DeskPRO\Entity\EmailSource[]
-     * @throws \Exception
      */
     public function readBatch($object_type = 'ticket', $limit = 10)
     {

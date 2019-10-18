@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -18,6 +19,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class ResourcePingController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new OpenPermission();
+    }
+
     /**
      * A remote site will ping us when one of their objects has been updated.
      *
