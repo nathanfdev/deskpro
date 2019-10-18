@@ -171,7 +171,7 @@ class SitemapGenerator
             SELECT PARTIAL art.{id,slug,title}
             FROM DeskPRO:Article art
             LEFT JOIN art.categories cat
-            WHERE art.status = 'published' AND cat.id IN (?0)
+            WHERE art.status = 'published' AND cat.category_id IN (?0)
         "
         )->execute([$cat_ids]);
 
