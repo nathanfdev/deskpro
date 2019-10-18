@@ -573,7 +573,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             }
 
             return "<img $className src='$avatarUrl' />";
-        } else {
+        } elseif ($obj) {
             if ($className) {
                 $className = 'class="'.$className.'-name"';
             } else {

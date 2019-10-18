@@ -48,6 +48,7 @@
     window.DP_ASSET_URL = '{{ asset('') }}';
     window.DP_BASE_URL = '/{{ path('portal_home')|trim('/') }}';
 
+    window.DESKPRO_USER_AVAILABLE = {{ app.user ? 'true' : 'false' }};
     window.DESKPRO_USERSOURCES = {{ auth_usersources_js_object() }};
     window.DESKPRO_HAS_LOGIN_FORM = {{ has_login_form() ? 'true' : 'false' }};
     window.DESKPRO_IS_FORGOT_PASSWORD_VISIBLE = {{ has_login_form() ? 'true' : 'false' }};

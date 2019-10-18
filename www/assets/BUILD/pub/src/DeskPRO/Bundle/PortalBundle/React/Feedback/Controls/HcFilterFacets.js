@@ -64,27 +64,15 @@ export class HcFilterFacets extends React.Component {
     this.toggle();
   };
 
-  renderMenu = () => {
-    const {
-      activities,
-      status_categories,
-    } = this.props.filter.available;
-
-    const dropdownStyle = {
-      position:   'absolute',
-      willChange: 'transform',
-      top:        `${this.state.pos.y + 30}px`,
-      left:       `${this.state.pos.x}px`,
-    };
+  renderActivitiesSelection = () => {
+    const { activities } = this.props.filter.available;
 
     const phrases = {
-      myActivity:      portalPhrases.get('helpcenter.community.my-activity'),
-      resetAllFilters: portalPhrases.get('helpcenter.community.reset-all-filters'),
-      status:          portalPhrases.get('helpcenter.community.status'),
+      myActivity: portalPhrases.get('helpcenter.community.my-activity'),
     };
 
-    return (<div className={`dropdown-menu dropdown-menu-left ${this.state.is_shown && 'show'}`} style={dropdownStyle}>
-      <div className="dp-po-community-header-filter-dropdown">
+    return (
+      <div>
         <h4 className="dp-po-community-header-filter-dropdown-title">{phrases.myActivity}:</h4>
         {map(activities, (activity, activityId) =>
           <div key={activityId} className="form-group dp-po-form-check">
@@ -99,6 +87,28 @@ export class HcFilterFacets extends React.Component {
             <i className={`dp-po-icon fad ${HcFilterFacets.activityIconMap[activityId]}`} />
           </div>)}
         <hr />
+      </div>
+    );
+  };
+
+  renderMenu = () => {
+    const { status_categories } = this.props.filter.available;
+
+    const dropdownStyle = {
+      position:   'absolute',
+      willChange: 'transform',
+      top:        `${this.state.pos.y + 30}px`,
+      left:       `${this.state.pos.x}px`,
+    };
+
+    const phrases = {
+      resetAllFilters: portalPhrases.get('helpcenter.community.reset-all-filters'),
+      status:          portalPhrases.get('helpcenter.community.status'),
+    };
+
+    return (<div className={`dropdown-menu dropdown-menu-left ${this.state.is_shown && 'show'}`} style={dropdownStyle}>
+      <div className="dp-po-community-header-filter-dropdown">
+        {window.DESKPRO_USER_AVAILABLE && this.renderActivitiesSelection()}
         <h4 className="dp-po-community-header-filter-dropdown-title">{phrases.status}:</h4>
         <ul className="dp-po-community-header-filter-dropdown-list">
           {map(status_categories, (categories, status) =>

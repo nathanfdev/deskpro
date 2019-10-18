@@ -1,11 +1,11 @@
 <div class="dp-po-community-title">
     {% if current_forum %}
         <a class="dp-po-community-title-link" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="dp-po-community-title-icon">
-                {% if current_forum.icon_property %}
+            {% if current_forum.icon_property %}
+                <span class="dp-po-community-title-icon">
                     {{ render_icon_from(current_forum, {as_download_url: true, is_rounded: true}) }}
-                {% endif %}
-            </span>
+                </span>
+            {% endif %}
             {{ current_forum.title }}
             <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
         </a>
