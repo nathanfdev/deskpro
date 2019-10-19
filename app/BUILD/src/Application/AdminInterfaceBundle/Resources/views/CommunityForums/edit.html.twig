@@ -50,23 +50,43 @@
 								<div class="inner-group">
 									<div style="padding-top:6px;">
 										<label style="font-weight: normal; display: block;">
-											{{ phrase('admin.community.active_statuses') }}
+											<strong>{{ phrase('admin.community.active_statuses') }}</strong>
 										</label>
 									</div>
-									<div style="padding-top:6px;">
-										<label ng-repeat="status in CommunityForumsEdit.community_active_statuses" style="font-weight: normal; display: block;">
-											<input type="checkbox" ng-model="CommunityForumsEdit.community_active_statuses[status.id]">
+									<div
+											data-type="active"
+											style="padding-top:6px;"
+											ui-sortable="CommunityForumsEdit.sortedStatusesOptions"
+									>
+										<label
+												data-id="{{ ng_var('status.id') }}"
+												class="with-drag-handle"
+												ng-repeat="status in CommunityForumsEdit.community_statuses['active']"
+												style="font-weight: normal; display: block;"
+										>
+											<i class="fas fa-bars drag-handle"></i>
+											<input type="checkbox" ng-model="CommunityForumsEdit.community_selected_statuses['active'][status.id]">
 											{{ ng_var('status.title') }}
 										</label>
 									</div>
 									<div style="padding-top:6px;">
 										<label style="font-weight: normal; display: block;">
-											{{ phrase('admin.community.closed_statuses') }}
+											<strong>{{ phrase('admin.community.closed_statuses') }}</strong>
 										</label>
 									</div>
-									<div style="padding-top:6px;">
-										<label ng-repeat="status in CommunityForumsEdit.community_closed_statuses" style="font-weight: normal; display: block;">
-											<input type="checkbox" ng-model="CommunityForumsEdit.community_closed_statuses[status.id]">
+									<div
+											data-type="closed"
+											style="padding-top:6px;"
+											ui-sortable="CommunityForumsEdit.sortedStatusesOptions"
+									>
+										<label
+												data-id="{{ ng_var('status.id') }}"
+												class="with-drag-handle"
+												ng-repeat="status in CommunityForumsEdit.community_statuses['closed']"
+												style="font-weight: normal; display: block;"
+										>
+											<i class="fas fa-bars drag-handle"></i>
+											<input type="checkbox" ng-model="CommunityForumsEdit.community_selected_statuses['closed'][status.id]">
 											{{ ng_var('status.title') }}
 										</label>
 									</div>

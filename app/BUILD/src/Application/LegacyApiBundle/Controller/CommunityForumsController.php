@@ -8,6 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Community\CommunityForumEdit;
 use Application\DeskPRO\Community\Form\Type\CommunityForumType;
+use Application\DeskPRO\Entity\CommunityForumToStatus;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
@@ -88,15 +89,25 @@ class CommunityForumsController extends AbstractController implements ProtectedC
         }
 
         $postData = $this->in->getAll('post');
+        $this->em->beginTransaction();
+
+        // it's much much easier to delete all communtiyForum-2-status relation, cause it have no surrogate id
+        $all = $this->em->getRepository(CommunityForumToStatus::class)->findBy(['forum' => $communityForum]);
+        foreach ($all as $junction) {
+            $this->em->remove($junction);
+        }
+        $this->em->flush();
 
         $communityForumEdit = new CommunityForumEdit($communityForum);
-
-        $form = $this->createForm(CommunityForumType::class, $communityForumEdit, ['cascade_validation' => true]);
+        $form               = $this->createForm(CommunityForumType::class, $communityForumEdit, ['cascade_validation' => true, 'forum' => $communityForum]);
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_forum'), true);
 
         if ($form->isValid()) {
             $communityForumEdit->save($this->em);
+            $this->em->commit();
         } else {
+            $this->em->rollback();
+
             return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($communityForum));
         }
 

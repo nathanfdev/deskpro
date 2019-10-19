@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\CommunityForum;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -34,6 +35,14 @@ class CommunityForumPropsType extends AbstractType
                     );
                 },
             ])
+            ->add('topic_statuses', CollectionType::class, [
+                'entry_type'    => CommunityForumToStatusEmbeddedType::class,
+                'entry_options' => [
+                    'forum' => $options['forum'],
+                ],
+                'allow_add'    => true,
+                'allow_delete' => true,
+            ])
             ->add('brand', EntityType::class, [
                 'class' => Brand::class,
             ])
@@ -45,9 +54,13 @@ class CommunityForumPropsType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => CommunityForum::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => CommunityForum::class,
+            ])
+            ->setRequired('forum')
+            ->setAllowedTypes('forum', CommunityForum::class)
+        ;
     }
 
     /**
