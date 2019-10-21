@@ -196,6 +196,8 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
         $this->setModelField('title', $title);
 
         $this->updateSlug();
+
+        return $this;
     }
 
     /**

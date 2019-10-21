@@ -67,9 +67,14 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
 
         //------------------------------
 
-        foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
+        foreach ([
+            'Suggestion' => 'A forum for suggestion about product from customers which we will investigate',
+            'Feature Request' => 'A forum for feature requests like special custom fields, new email handlers or widgets for reports',
+            'Bug Report' => 'A forum for bug reporting and error messages. Do not forget to attach any log files and STR lists',
+            ] as $title => $desc) {
             $forum = new CommunityForum();
-            $forum->setTitle($title);
+            $forum->setTitle($title)->setDescription($desc);
+
             $manager->persist($forum);
 
             $id = str_replace(' ', '_', strtolower($title));
