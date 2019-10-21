@@ -9,7 +9,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
@@ -118,6 +117,7 @@ class CommunityForum extends AbstractCategoryRepository
 
     /**
      * @param int[] $forumIds
+     *
      * @return array
      */
     public function getTopicCountPerForum(array $forumIds)
@@ -131,6 +131,7 @@ class CommunityForum extends AbstractCategoryRepository
             ->getQuery()
             ->getResult(Query::HYDRATE_ARRAY)
         ;
+
         return array_reduce($counts, function (array $all, array $row) {
             $all[(int) $row['forum_id']] = (int) $row['topic_count'];
 
@@ -140,13 +141,14 @@ class CommunityForum extends AbstractCategoryRepository
 
     /**
      * @param array $forumIds
-     * @param int $numberOfComments
+     * @param int   $numberOfComments
+     *
      * @return array
      */
-    public function getLatestCommentsPerForum(array $forumIds, $numberOfComments = 5)
+    public function getLatestCommentsPerForum(array $forumIds, $numberOfComments = 4)
     {
         $latestCommentsByForum = [];
-        $latestCommentsQuery = $this->getEntityManager()->createQueryBuilder()
+        $latestCommentsQuery   = $this->getEntityManager()->createQueryBuilder()
             ->select('c, p, t')
             ->from(\Application\DeskPRO\Entity\CommunityTopicComment::class, 'c')
             ->innerJoin('c.person', 'p')
