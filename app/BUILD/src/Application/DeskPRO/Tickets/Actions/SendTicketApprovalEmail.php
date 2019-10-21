@@ -105,7 +105,13 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
 
         foreach ($recipients as $recipient) {
             $vars['recipient'] = $recipient;
-            $vars['is_owner'] = $recipient->isEqualTo($ticket->getPerson());
+
+            // If recipient is an approver then is_owner is always false, as the approver email variant must be sent
+            $vars['is_owner'] = $approval->hasApprover($recipient)
+                ? false
+                : $recipient->isEqualTo($ticket->getPerson())
+            ;
+
             $vars['has_recipient_responded'] = $approval->hasResponded($recipient);
 
             $agentEmailBuilder = $this
@@ -282,7 +288,12 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             $recipients = array_reduce([$ticket->getPerson()], $reducer, $recipients);
         }
 
-        return array_values($recipients);
+        $recipientsList = [];
+        foreach ($recipients as $recipient) {
+            $recipientsList[$recipient->getId()] = $recipient;
+        }
+
+        return array_values($recipientsList);
     }
 
     /**
