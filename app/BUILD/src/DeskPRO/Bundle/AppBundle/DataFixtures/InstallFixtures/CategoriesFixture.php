@@ -8,8 +8,10 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Data\ContentTypes;
 
 class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
@@ -68,13 +70,33 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         //------------------------------
 
         foreach ([
-            'Suggestion' => 'A forum for suggestion about product from customers which we will investigate',
-            'Feature Request' => 'A forum for feature requests like special custom fields, new email handlers or widgets for reports',
-            'Bug Report' => 'A forum for bug reporting and error messages. Do not forget to attach any log files and STR lists',
-            ] as $title => $desc) {
-            $forum = new CommunityForum();
-            $forum->setTitle($title)->setDescription($desc);
+            'Suggestion' => [
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community-suggestions.png',
+                'desc' => 'A forum for suggestion about product from customers which we will investigate',
+            ],
+            'Feature Request' => [
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community-feature-request.png',
+                'desc' => 'A forum for feature requests like special custom fields, new email handlers or widgets for reports',
+            ],
+            'Bug Report' => [
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community-bug-report.png',
+                'desc' => 'A forum for bug reporting and error messages. Do not forget to attach any log files and STR lists',
+            ],
+            ] as $title => $info) {
+            $splashFile = new \SplFileInfo($info['splash_image']);
+            $splash     = $this->container->get('deskpro.blob_storage')
+                ->createBlobRecordFromFile(
+                    $splashFile->getRealPath(),
+                    $splashFile->getFilename(),
+                    ContentTypes::getContentTypeFromFilename($splashFile->getFilename())
+                );
 
+            $splashProp = new SplashImageProperty();
+            $splashProp->setBlob($splash)->setUrn(SplashImageProperty::$blobNs.':'.$splash->getAuthId());
+
+            $forum = new CommunityForum();
+            $forum->setTitle($title)->setDescription($info['desc'])->setSplashImage($splashProp);
+            $manager->persist($splashProp);
             $manager->persist($forum);
 
             $id = str_replace(' ', '_', strtolower($title));
