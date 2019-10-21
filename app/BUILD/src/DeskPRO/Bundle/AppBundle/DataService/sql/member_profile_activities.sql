@@ -93,6 +93,24 @@ FROM (
     UNION
     (
         SELECT
+            topics.id,
+            topics.slug AS slug,
+            "topic_comment" AS type,
+            topic_comments.date_created AS date,
+            LEFT(topics.title, :truncateDescription) AS description
+        FROM
+            topic_comments
+        INNER JOIN
+            topics ON topic_comments.topic_id = topics.id
+        WHERE
+            topic_comments.person_id = :personId
+        ORDER BY
+            topic_comments.id DESC
+        LIMIT :subLimit
+    )
+    UNION
+    (
+        SELECT
             news.id,
             news.slug AS slug,
             CONCAT("news_rating_", IF(ratings.rating = 1, 'up', 'down')) AS type,
@@ -120,6 +138,42 @@ FROM (
             ratings
         INNER JOIN
             community_topics ON ratings.object_id = community_topics.id AND ratings.object_type = 'community' AND community_topics.status <> 'hidden'
+        WHERE
+            ratings.person_id = :personId
+        ORDER BY
+            ratings.id DESC
+        LIMIT :subLimit
+    )
+    UNION
+    (
+        SELECT
+            articles.id,
+            articles.slug AS slug,
+            CONCAT("article_rating_", IF(ratings.rating = 1, 'up', 'down')) AS type,
+            ratings.date_created AS date,
+            LEFT(articles.title, :truncateDescription) AS description
+        FROM
+            ratings
+        INNER JOIN
+            articles ON ratings.object_id = articles.id AND ratings.object_type = 'article' AND articles.status <> 'hidden'
+        WHERE
+            ratings.person_id = :personId
+        ORDER BY
+            ratings.id DESC
+        LIMIT :subLimit
+    )
+    UNION
+    (
+        SELECT
+            downloads.id,
+            downloads.slug AS slug,
+            CONCAT("download_rating_", IF(ratings.rating = 1, 'up', 'down')) AS type,
+            ratings.date_created AS date,
+            LEFT(downloads.title, :truncateDescription) AS description
+        FROM
+            ratings
+        INNER JOIN
+            downloads ON ratings.object_id = downloads.id AND ratings.object_type = 'download' AND downloads.status <> 'hidden'
         WHERE
             ratings.person_id = :personId
         ORDER BY

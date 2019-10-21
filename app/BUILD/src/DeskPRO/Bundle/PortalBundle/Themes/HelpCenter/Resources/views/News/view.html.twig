@@ -69,7 +69,7 @@
     </div>
   </div>
 
-  {% if can_rate_post(post) %}
+  {% if can_rate_news(post) %}
     {% include 'Theme:PublishCommon:rating.html.twig' with {
       item: post
     } %}

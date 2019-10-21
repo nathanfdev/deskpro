@@ -66,6 +66,22 @@
             </li>
             {% endif %}
 
+            {% if can_use_downloads() and show_tab_downloads() %}
+            <li class="dp-po-navigation-block-item">
+                <a href="{{ path('portal_downloads') }}" class="dp-po-navigation-block-link">
+                    <figure class="dp-po-navigation-block-figure">
+                        <img class="dp-po-navigation-block-svg"
+                             src="{{ asset('img/page-icons/download.svg', 'help_center') }}" />
+                    </figure>
+                    <div class="dp-po-navigation-block-right">
+                        <span class="dp-po-navigation-block-title">{{ phrase('portal.general.nav-downloads') }}</span>
+                        <span class="dp-po-navigation-block-desc">{{ phrase('portal.general.nav-downloads-desc') }}<i
+                                    class="dp-po-icon far fa-angle-right"></i></span>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
+
             {% if can_view_tickets_link() and show_tab_tickets() %}
             <li class="dp-po-navigation-block-item">
                 <a href="{{ path('portal_tickets') }}" class="dp-po-navigation-block-link">

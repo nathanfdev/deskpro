@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="col-sm-8">
-                        <div class="dp-po-block">
+                        <div class="dp-po-block dp-po-section">
                             <div class="dp-po-profile-activity">
                                 <h3 class="dp-po-profile-activity-title">{{ phrase('helpcenter.members.recent_activity') }}</h3>
                                 {% for group, activities in activities %}
@@ -77,12 +77,10 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div>
-                            {% include 'Theme:Common:pager.html.twig' with {
-                                pager: activities,
-                                pager_options: { pageParameter: '[page]' }
-                            } %}
-                        </div>
+                        {% include 'Theme:Common:pager.html.twig' with {
+                            pager: activities,
+                            pager_options: { pageParameter: '[page]' }
+                        } %}
                     </div>
                 </div>
             </div>
