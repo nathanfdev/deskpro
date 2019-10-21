@@ -119,8 +119,7 @@ class ApprovalTableRow extends React.Component {
       if (this.props.me) {
         const meId = parseInt(this.props.me.get('id'), 10);
 
-        if (meId === approval.creator
-          || (approval.approvers.findIndex(approver => meId === approver.id) > -1 && approval.approvers_pending.includes(meId))
+        if ((approval.approvers.findIndex(approver => meId === approver.id) > -1 && approval.approvers_pending.includes(meId))
           || this.props.approval.getIn(['selected_approvers', 'has_all_agents'])
         ) {
           controls = (
