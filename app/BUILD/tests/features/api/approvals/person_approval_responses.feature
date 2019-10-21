@@ -1,4 +1,3 @@
-@new
 Feature: /person/{id}/approval_responses endpoint
   To CRUD DeskPRO approval responses for a person
   As an API user

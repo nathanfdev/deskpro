@@ -76,7 +76,14 @@ class DataSetContext extends BaseContext
             return; // this scenario was not tagged as @reinstall, exiting
         }
         $install_start = time();
-        $this->dataset_manager->install($set);
+
+        try {
+            $this->dataset_manager->install($set);
+        } catch (\InvalidArgumentException $e) {
+            echo $e->getMessage();
+            return;
+        }
+
         self::$lastInstalledDataSet = $set;
         $this->ran_install          = true;
 

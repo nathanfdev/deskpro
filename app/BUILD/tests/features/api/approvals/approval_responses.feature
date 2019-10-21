@@ -1,4 +1,3 @@
-@new
 Feature: /approval_responses endpoint
   To CRUD DeskPRO approval responses for an approval
   As an API user

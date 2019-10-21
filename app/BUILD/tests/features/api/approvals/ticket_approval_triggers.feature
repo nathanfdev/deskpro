@@ -1,4 +1,3 @@
-@new
 Feature: Ticket approval triggers
   To create and execute ticket approval trigger actions
   As an API user

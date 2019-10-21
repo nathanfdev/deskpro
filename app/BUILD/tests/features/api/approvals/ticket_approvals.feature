@@ -1,4 +1,3 @@
-@new
 Feature: /ticket_approvals endpoint
   To CRUD DeskPRO ticket approvals
   As an API user

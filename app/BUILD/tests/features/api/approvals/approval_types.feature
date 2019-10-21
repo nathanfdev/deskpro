@@ -1,4 +1,3 @@
-@new
 Feature: /approval_types endpoint
   To CRUD DeskPRO approval types
   As an API user

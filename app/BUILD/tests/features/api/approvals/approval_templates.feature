@@ -1,4 +1,3 @@
-@new
 Feature: /approval_templates endpoint
   To CRUD DeskPRO approval templates
   As an API user
