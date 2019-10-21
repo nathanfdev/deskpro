@@ -5062,10 +5062,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 return false;
             }
 
-            $matchesTemplate = !empty($templateId)
-                ? ($approval->getTemplate()->getId() == $templateId)
-                : null
-            ;
+            $matchesTemplate = null;
+
+            if ($approval->getTemplate()) {
+                $matchesTemplate = !empty($templateId)
+                    ? ($approval->getTemplate()->getId() == $templateId)
+                    : null
+                ;
+            }
 
             $matchesStatus = $approval->isStatus($status);
 

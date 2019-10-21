@@ -82,7 +82,7 @@ class TicketApproval
     /**
      * Approval template.
      *
-     * @var ApprovalTemplate
+     * @var ApprovalTemplate|null
      *
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate>")
      */
@@ -422,7 +422,7 @@ class TicketApproval
      * @param ApprovalTemplate $template
      * @return TicketApproval
      */
-    public function setTemplate(ApprovalTemplate $template)
+    public function setTemplate(ApprovalTemplate $template = null)
     {
         $this->template = $template;
 
