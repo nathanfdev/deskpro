@@ -1,11 +1,11 @@
+@New
 Feature: Ticket approval triggers
   To create and execute ticket approval trigger actions
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the fresh data set
-    And no ApprovalTemplate records exist
+    Given no ApprovalTemplate records exist
     And no TicketApproval records exist
     And no ApprovalResponse records exist
     And no ApprovalType records exist
