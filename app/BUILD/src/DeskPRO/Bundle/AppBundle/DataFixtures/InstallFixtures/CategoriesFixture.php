@@ -71,15 +71,15 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
 
         foreach ([
             'Suggestion' => [
-                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community-suggestions.png',
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community/community-suggestions.png',
                 'desc' => 'A forum for suggestion about product from customers which we will investigate',
             ],
             'Feature Request' => [
-                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community-feature-request.png',
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community/community-feature-request.png',
                 'desc' => 'A forum for feature requests like special custom fields, new email handlers or widgets for reports',
             ],
             'Bug Report' => [
-                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community-bug-report.png',
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community/community-bug-report.png',
                 'desc' => 'A forum for bug reporting and error messages. Do not forget to attach any log files and STR lists',
             ],
             ] as $title => $info) {
