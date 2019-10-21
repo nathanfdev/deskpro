@@ -2,9 +2,9 @@
     <i class="dp-po-icon far fa-comment-alt-lines"></i>
 </div>
 <div class="dp-po-profile-activity-desc">
-    <a href="{{ path('portal_news_view', {slug: activity.slug}) }}" class="dp-po-profile-activity-link">
+    <a href="{{ path('portal_guides_topic_permalink', {slug: activity.slug}) }}" class="dp-po-profile-activity-link">
         {{ phrase('portal.members.activity.commented_on') }}
-        <img class="dp-po-profile-activity-image" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
+        <img class="dp-po-profile-activity-image" src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">
         <span>{{ activity.description|truncate(truncateDescription) }}</span>
     </a>
 </div>
