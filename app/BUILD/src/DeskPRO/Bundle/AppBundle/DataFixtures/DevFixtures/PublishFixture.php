@@ -8,8 +8,10 @@ use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Data\ContentTypes;
 
 class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
@@ -45,6 +47,11 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
      * @var int[]
      */
     private $usergroups = [];
+
+    /**
+     * @var int[]
+     */
+    private $splashImages = [];
 
     /**
      * @var string[]
@@ -114,13 +121,15 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
      */
     public function load(ObjectManager $manager)
     {
-        $this->manager    = $manager;
-        $this->tr         = $this->container->get('deskpro.core.translate');
-        $this->admin      = $this->getReference('admin');
-        $this->people     = $this->fetchIds(self::TABLE_PEOPLE);
-        $this->languages  = $this->fetchIds(self::TABLE_LANGUAGES);
-        $this->usergroups = $this->fetchIds(self::TABLE_USERGROUPS);
+        $this->manager      = $manager;
+        $this->tr           = $this->container->get('deskpro.core.translate');
+        $this->admin        = $this->getReference('admin');
+        $this->people       = $this->fetchIds(self::TABLE_PEOPLE);
+        $this->languages    = $this->fetchIds(self::TABLE_LANGUAGES);
+        $this->usergroups   = $this->fetchIds(self::TABLE_USERGROUPS);
+        $this->splashImages = [];
 
+        $this->loadSplashImages();
         $this->loadExampleArticle();
         $this->loadExampleNew();
         $this->loadAPC();
@@ -135,6 +144,29 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
         $this->linkArticlesWithCategories();
 
         $this->loadKbStats();
+    }
+
+    private function loadSplashImages()
+    {
+        $flags = \FilesystemIterator::CURRENT_AS_FILEINFO
+            | \FilesystemIterator::SKIP_DOTS
+            | \FilesystemIterator::UNIX_PATHS;
+
+        $iter  = new \FilesystemIterator(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/', $flags);
+        $files = iterator_to_array($iter, false);
+        foreach ($files as $file) {
+            /** @var $file \SplFileInfo */
+            $splashBlob = $this->container->get('deskpro.blob_storage')->createBlobRecordFromFile(
+                $file->getRealPath(),
+                $file->getFilename(),
+                ContentTypes::getContentTypeFromFilename($file->getFilename())
+            );
+            $splashImageProperty = new SplashImageProperty();
+            $splashImageProperty->setBlob($splashBlob)->setUrn(SplashImageProperty::$blobNs.':'.$splashBlob->getAuthId());
+            $this->manager->persist($splashImageProperty);
+            $this->manager->flush();
+            $this->splashImages[] = $splashImageProperty->getId();
+        }
     }
 
     private function loadExampleArticle()
@@ -247,6 +279,9 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
                 'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
             ];
+            if (in_array($content, [self::TABLE_NEWS])) {
+                $values['splash_image_property_id'] = $this->faker->randomElement($this->splashImages);
+            }
             $values = $this->setStatus($values);
             $values = $this->setTitleAndSlug($values);
             if ($content !== self::TABLE_ARTICLES) {
