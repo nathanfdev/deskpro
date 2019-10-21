@@ -57,7 +57,9 @@ class StylesheetCompiler
         $variables['modules-path']    = "'../../assets/{$buildDir}/pub/node_modules'";
 
         foreach ($variables as $variable => $value) {
-            $customVarsScss .= '$'."$variable: $value;\n";
+            if (!is_array($value)) {
+                $customVarsScss .= '$'."$variable: $value;\n";
+            }
         }
 
         $project->addFileSource("$sourceDir/".self::CUSTOM_VARS_FILENAME, $customVarsScss);
