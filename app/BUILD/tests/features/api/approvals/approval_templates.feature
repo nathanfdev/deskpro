@@ -5,10 +5,12 @@ Feature: /approval_templates endpoint
   I want an API endpoint
 
   Background:
-    Given no ApprovalTemplate records exist
+    Given I install the fresh data set
+    And no ApprovalTemplate records exist
     And no TicketApproval records exist
     And no ApprovalResponse records exist
     And no ApprovalType records exist
+    And agent and user exist
     And only the following ApprovalType records exist:
       | #      | name           | description    | isDeleted |
       | atype1 | Approval Type 1 | Description 1 | false     |

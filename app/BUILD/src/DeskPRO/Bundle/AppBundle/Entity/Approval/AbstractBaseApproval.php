@@ -158,7 +158,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      * @var Person|null
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="created_by", nullable=true)
+     * @ORM\JoinColumn(name="created_by", nullable=true, onDelete="SET NULL")
      */
     protected $createdBy;
 

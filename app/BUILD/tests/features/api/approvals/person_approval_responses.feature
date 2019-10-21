@@ -5,7 +5,8 @@ Feature: /person/{id}/approval_responses endpoint
   I want an API endpoint
 
   Background:
-    Given no ApprovalTemplate records exist
+    Given I install the fresh data set
+    And no ApprovalTemplate records exist
     And no TicketApproval records exist
     And no ApprovalResponse records exist
     And no ApprovalType records exist
