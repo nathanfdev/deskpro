@@ -17,6 +17,8 @@ use JMS\Serializer\Annotation as JMS;
 class TicketApproval
 {
     /**
+     * ID.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -24,6 +26,8 @@ class TicketApproval
     private $id;
 
     /**
+     * Approval name.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -31,6 +35,8 @@ class TicketApproval
     private $name;
 
     /**
+     * Approval description.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -38,6 +44,8 @@ class TicketApproval
     private $description;
 
     /**
+     * Approval type.
+     *
      * @var ApprovalType
      *
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType>")
@@ -45,6 +53,8 @@ class TicketApproval
     private $type;
 
     /**
+     * Ticket.
+     *
      * @var \Application\DeskPRO\Entity\Ticket
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
@@ -52,6 +62,8 @@ class TicketApproval
     private $ticket;
 
     /**
+     * Status.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -59,6 +71,8 @@ class TicketApproval
     private $status;
 
     /**
+     * Status name.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -66,6 +80,8 @@ class TicketApproval
     private $statusName;
 
     /**
+     * Approval template.
+     *
      * @var ApprovalTemplate
      *
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate>")
@@ -73,6 +89,8 @@ class TicketApproval
     private $template;
 
     /**
+     * Approval responses.
+     *
      * @var ApprovalResponseEntity[]
      *
      * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>>")
@@ -80,6 +98,8 @@ class TicketApproval
     private $responses;
 
     /**
+     * Approvers.
+     *
      * @var Person[]
      *
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
@@ -87,6 +107,8 @@ class TicketApproval
     private $approvers;
 
     /**
+     * Created at.
+     *
      * @var \DateTimeInterface
      *
      * @JMS\Type("DateTime")
@@ -94,6 +116,8 @@ class TicketApproval
     private $createdAt;
 
     /**
+     * Completed date/time.
+     *
      * @var \DateTimeInterface
      *
      * @JMS\Type("DateTime")
@@ -101,6 +125,8 @@ class TicketApproval
     private $completedAt;
 
     /**
+     * Cancelled date/time.
+     *
      * @var \DateTimeInterface
      *
      * @JMS\Type("DateTime")
@@ -108,6 +134,8 @@ class TicketApproval
     private $cancelledAt;
 
     /**
+     * Cancelled date/time.
+     *
      * @var Person
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
@@ -115,6 +143,8 @@ class TicketApproval
     private $cancelledBy;
 
     /**
+     * Last approved response date/time.
+     *
      * @var \DateTimeInterface
      *
      * @JMS\Type("DateTime")
@@ -122,6 +152,8 @@ class TicketApproval
     private $lastApprovedResponseAt;
 
     /**
+     * Last rejected response date/time.
+     *
      * @var \DateTimeInterface
      *
      * @JMS\Type("DateTime")
@@ -129,6 +161,8 @@ class TicketApproval
     private $lastRejectedResponseAt;
 
     /**
+     * Number of approve responses.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -136,6 +170,8 @@ class TicketApproval
     private $approvedResponsesCount;
 
     /**
+     * Number of reject responses.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -143,6 +179,8 @@ class TicketApproval
     private $rejectedResponsesCount;
 
     /**
+     * Number of required approvals.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -150,6 +188,8 @@ class TicketApproval
     private $requiredApprovals;
 
     /**
+     * Number of required rejections.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -157,6 +197,8 @@ class TicketApproval
     private $requiredRejections;
 
     /**
+     * Number of approvers
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -164,6 +206,8 @@ class TicketApproval
     private $approversCount;
 
     /**
+     * Number of approvers waiting to respond.
+     *
      * @var Person[]
      *
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
@@ -171,6 +215,8 @@ class TicketApproval
     private $approversPendingResponse;
 
     /**
+     * Created by.
+     *
      * @var Person
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
@@ -178,6 +224,8 @@ class TicketApproval
     private $createdBy;
 
     /**
+     * Has the recipient responded to the approval?
+     *
      * @var bool
      *
      * @JMS\Type("boolean")
@@ -185,6 +233,8 @@ class TicketApproval
     private $hasRecipientResponded;
 
     /**
+     * Can the approvers see the subject (ticket)?
+     *
      * @var bool
      *
      * @JMS\Type("boolean")

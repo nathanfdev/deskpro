@@ -144,6 +144,19 @@ class ApprovalResponse implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * For email preview
+     *
+     * @param int $id
+     * @return ApprovalResponse
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getId()

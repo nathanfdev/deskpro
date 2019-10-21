@@ -16,27 +16,42 @@ trait TicketApprovalViewModelMapTrait
      * @var array
      */
     private static $ticketApprovalEventToViewModelMap = [
-        ExecutorContext::EVENT_ON_CREATE => Model\TicketApprovalCreate::class,
-        ExecutorContext::EVENT_ON_APPROVED => Model\TicketApprovalApproved::class,
-        ExecutorContext::EVENT_ON_REJECTED => Model\TicketApprovalRejected::class,
-        ExecutorContext::EVENT_ON_CANCEL => Model\TicketApprovalCancel::class,
-        ExecutorContext::EVENT_ON_PARTIAL_APPROVAL_RESPONSE => Model\TicketApprovalPartialApprovalResponse::class,
-        ExecutorContext::EVENT_ON_PARTIAL_REJECTION_RESPONSE => Model\TicketApprovalPartialRejectionResponse::class,
+        'owner' => [
+            ExecutorContext::EVENT_ON_CREATE => Model\TicketApprovalOwnerCreate::class,
+            ExecutorContext::EVENT_ON_APPROVED => Model\TicketApprovalOwnerApproved::class,
+            ExecutorContext::EVENT_ON_REJECTED => Model\TicketApprovalOwnerRejected::class,
+            ExecutorContext::EVENT_ON_CANCEL => Model\TicketApprovalOwnerCancel::class,
+            ExecutorContext::EVENT_ON_PARTIAL_APPROVAL_RESPONSE => Model\TicketApprovalOwnerPartialApprovalResponse::class,
+            ExecutorContext::EVENT_ON_PARTIAL_REJECTION_RESPONSE => Model\TicketApprovalOwnerPartialRejectionResponse::class,
+        ],
+        'approver' => [
+            ExecutorContext::EVENT_ON_CREATE => Model\TicketApprovalApproverCreate::class,
+            ExecutorContext::EVENT_ON_APPROVED => Model\TicketApprovalApproverApproved::class,
+            ExecutorContext::EVENT_ON_REJECTED => Model\TicketApprovalApproverRejected::class,
+            ExecutorContext::EVENT_ON_CANCEL => Model\TicketApprovalApproverCancel::class,
+            ExecutorContext::EVENT_ON_PARTIAL_APPROVAL_RESPONSE => Model\TicketApprovalApproverPartialApprovalResponse::class,
+            ExecutorContext::EVENT_ON_PARTIAL_REJECTION_RESPONSE => Model\TicketApprovalApproverPartialRejectionResponse::class,
+        ],
     ];
 
     /**
      * @param string $event
+     * @param bool   $isOwner
      * @return string
-     * @throws \InvalidArgumentException
      */
-    protected function getViewModelByTicketApprovalEvent($event)
+    protected function getViewModelByTicketApprovalEvent($event, $isOwner)
     {
-        if (!isset(self::$ticketApprovalEventToViewModelMap[$event])) {
+        $type = $isOwner
+            ? 'owner'
+            : 'approver'
+        ;
+
+        if (!isset(self::$ticketApprovalEventToViewModelMap[$type][$event])) {
             throw new \InvalidArgumentException(
-                sprintf('Cannot find ticket approval view model for event [%s]', $event)
+                sprintf('Cannot find ticket approval view model for event [%s][%s]', $type, $event)
             );
         }
 
-        return self::$ticketApprovalEventToViewModelMap[$event];
+        return self::$ticketApprovalEventToViewModelMap[$type][$event];
     }
 }

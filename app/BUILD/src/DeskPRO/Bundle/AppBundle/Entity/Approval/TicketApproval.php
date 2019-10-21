@@ -105,4 +105,17 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
 
         return $this;
     }
+
+    /**
+     * Set ID for email template preview
+     *
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

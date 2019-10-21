@@ -14,6 +14,8 @@ use JMS\Serializer\Annotation as JMS;
 class ApprovalResponse
 {
     /**
+     * ID.
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -21,6 +23,8 @@ class ApprovalResponse
     private $id;
 
     /**
+     * Vote, either "1" or "-1"
+     *
      * @var int
      *
      * @JMS\Type("integer")
@@ -28,6 +32,8 @@ class ApprovalResponse
     private $vote;
 
     /**
+     * Vote type
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -35,6 +41,8 @@ class ApprovalResponse
     private $voteType;
 
     /**
+     * Message.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -42,6 +50,8 @@ class ApprovalResponse
     private $message;
 
     /**
+     * Created date/time.
+     *
      * @var \DateTimeInterface
      *
      * @JMS\Type("DateTime")
@@ -49,6 +59,8 @@ class ApprovalResponse
     private $createdAt;
 
     /**
+     * Approver.
+     *
      * @var Person
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")

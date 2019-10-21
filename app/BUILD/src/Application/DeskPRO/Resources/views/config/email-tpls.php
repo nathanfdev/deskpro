@@ -205,6 +205,112 @@ return [
         'viewModel'   => 'AgentPasswordResetAlert',
     ],
 
+    //--------------------
+    // Approvals
+    //--------------------
+
+    // Approver
+
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-approver-approved.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_approver_approved.html.twig',
+        'viewModel'   => 'TicketApprovalApproverApproved',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-approver-cancel.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_approver_cancel.html.twig',
+        'viewModel'   => 'TicketApprovalApproverCancel',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-approver-create.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_approver_create.html.twig',
+        'viewModel'   => 'TicketApprovalApproverCreate',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-approver-partial-approval-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_approver_partial_approval_response.html.twig',
+        'viewModel'   => 'TicketApprovalApproverPartialApprovalResponse',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-approver-partial-rejection-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_approver_partial_rejection_response.html.twig',
+        'viewModel'   => 'TicketApprovalApproverPartialRejectionResponse',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-approver-rejected.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_approver_rejected.html.twig',
+        'viewModel'   => 'TicketApprovalApproverRejected',
+    ],
+
+    // Owner
+
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-owner-approved.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_owner_approved.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerApproved',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-owner-cancel.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_owner_cancel.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerCancel',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-owner-create.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_owner_create.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerCreate',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-owner-partial-approval-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_owner_partial_approval_response.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerPartialApprovalResponse',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-owner-partial-rejection-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_owner_partial_rejection_response.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerPartialRejectionResponse',
+    ],
+    [
+        'typeId'      => 'agent',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_agent:ticket-approval-owner-rejected.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_approval_owner_rejected.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerRejected',
+    ],
+
     //###################################################################################################################
     // User
     //###################################################################################################################
@@ -584,5 +690,111 @@ return [
         'name'        => 'DeskPRO:emails_user:rate-limit-notice.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:rate_limit_notice.html.twig',
         'viewModel'   => 'RateLimitNotice',
+    ],
+
+    //--------------------
+    // Approvals
+    //--------------------
+
+    // Approver
+
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-approver-approved.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_approver_approved.html.twig',
+        'viewModel'   => 'TicketApprovalApproverApproved',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-approver-cancel.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_approver_cancel.html.twig',
+        'viewModel'   => 'TicketApprovalApproverCancel',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-approver-create.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_approver_create.html.twig',
+        'viewModel'   => 'TicketApprovalApproverCreate',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-approver-partial-approval-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_approver_partial_approval_response.html.twig',
+        'viewModel'   => 'TicketApprovalApproverPartialApprovalResponse',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-approver-partial-rejection-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_approver_partial_rejection_response.html.twig',
+        'viewModel'   => 'TicketApprovalApproverPartialRejectionResponse',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_approver',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-approver-rejected.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_approver_rejected.html.twig',
+        'viewModel'   => 'TicketApprovalApproverRejected',
+    ],
+
+    // Owner
+
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-owner-approved.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_owner_approved.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerApproved',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-owner-cancel.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_owner_cancel.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerCancel',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-owner-create.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_owner_create.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerCreate',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-owner-partial-approval-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_owner_partial_approval_response.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerPartialApprovalResponse',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-owner-partial-rejection-response.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_owner_partial_rejection_response.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerPartialRejectionResponse',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'approvals_owner',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-approval-owner-rejected.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_approval_owner_rejected.html.twig',
+        'viewModel'   => 'TicketApprovalOwnerRejected',
     ],
 ];

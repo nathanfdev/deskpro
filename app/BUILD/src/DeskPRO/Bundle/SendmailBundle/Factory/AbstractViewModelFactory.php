@@ -22,7 +22,10 @@ use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -187,5 +190,101 @@ abstract class AbstractViewModelFactory
         $ticketFeedback = $this->container->getEm()->getRepository(TicketFeedback::class)->getFeedbackForTicket($ticket);
 
         return [$ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketFeedback];
+    }
+
+    /**
+     * @param string $type
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @param string $status
+     * @param $mode
+     * @return array
+     * @throws \Exception
+     */
+    protected function getTicketApprovalArguments($type, Ticket $ticket, Person $recipient, $status, $mode = null)
+    {
+        $approval = new TicketApproval();
+        $approval
+            ->setName('Sample Approval Title')
+            ->setDescription('This is a sample approval description')
+            ->setId(83)
+            ->setTicket($ticket)
+            ->setType(new ApprovalType())
+            ->setCreatedBy($recipient)
+            ->addApprover($recipient)
+            ->setTemplate(new ApprovalTemplate())
+        ;
+
+        $approvalResponse = new ApprovalResponse();
+        $approvalResponse
+            ->setId(8)
+            ->setApprover($recipient)
+        ;
+
+        switch ($status) {
+            case AbstractBaseApproval::STATUS_APPROVED:
+                $approval
+                    ->setRequiredApprovals(1)
+                    ->setRequiredRejections(1)
+                ;
+                $approvalResponse
+                    ->setVote(ApprovalResponse::VOTE_APPROVE)
+                    ->setMessage('I approve this')
+                ;
+                $approval->addResponse($approvalResponse);
+                break;
+            case AbstractBaseApproval::STATUS_REJECTED:
+                $approval
+                    ->setRequiredApprovals(1)
+                    ->setRequiredRejections(1)
+                ;
+                $approvalResponse
+                    ->setVote(ApprovalResponse::VOTE_REJECT)
+                    ->setMessage('I reject this')
+                ;
+                $approval->addResponse($approvalResponse);
+                break;
+            case AbstractBaseApproval::STATUS_CANCELLED:
+                $approval
+                    ->setRequiredApprovals(1)
+                    ->setRequiredRejections(1)
+                    ->cancel($recipient)
+                ;
+                break;
+            case AbstractBaseApproval::STATUS_PENDING:
+                $approval
+                    ->setRequiredApprovals(2)
+                    ->setRequiredRejections(2)
+                    ->addApprover($ticket->getPerson())
+                ;
+
+                if ('pending_approval' === $mode) {
+                    $approvalResponse
+                        ->setVote(ApprovalResponse::VOTE_APPROVE)
+                        ->setMessage('I approve this')
+                    ;
+                    $approval->addResponse($approvalResponse);
+                } elseif ('pending_rejection' === $mode) {
+                    $approvalResponse
+                        ->setVote(ApprovalResponse::VOTE_REJECT)
+                        ->setMessage('I reject this')
+                    ;
+                    $approval->addResponse($approvalResponse);
+                }
+                break;
+        }
+
+        return [
+            $type,
+            $ticket,
+            $approval,
+            $recipient,
+            true,
+            false,
+            'https://example.com/approve',
+            'https://example.com/reject',
+            $approvalResponse,
+            $approval->getResponses()->toArray(),
+        ];
     }
 }

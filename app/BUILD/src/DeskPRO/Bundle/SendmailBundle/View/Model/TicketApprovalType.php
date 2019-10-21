@@ -16,6 +16,8 @@ use JMS\Serializer\Annotation as JMS;
 abstract class TicketApprovalType extends EmailBaseType
 {
     /**
+     * Either "user" or "admin".
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -23,6 +25,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $recipientType;
 
     /**
+     * Ticket.
+     *
      * @var Ticket
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
@@ -30,6 +34,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $ticket;
 
     /**
+     * Approval.
+     *
      * @var TicketApproval
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketApproval")
@@ -37,6 +43,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $approval;
 
     /**
+     * Approval Response.
+     *
      * @var ApprovalResponse|null
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse")
@@ -44,6 +52,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $approvalResponse;
 
     /**
+     * Recipient person.
+     *
      * @var Person
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
@@ -51,6 +61,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $recipient;
 
     /**
+     * Is recipient the ticket owner?
+     *
      * @var bool
      *
      * @JMS\Type("boolean")
@@ -58,6 +70,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $isOwner;
 
     /**
+     * Has the recipient responded?
+     *
      * @var bool
      *
      * @JMS\Type("boolean")
@@ -65,6 +79,8 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $hasRecipientResponded;
 
     /**
+     * URL to approve.
+     *
      * @var string
      *
      * @JMS\Type("string")
@@ -72,11 +88,22 @@ abstract class TicketApprovalType extends EmailBaseType
     protected $approveUrl;
 
     /**
+     * URL to reject.
+     *
      * @var string
      *
      * @JMS\Type("string")
      */
     protected $rejectUrl;
+
+    /**
+     * All approval responses.
+     *
+     * @var array
+     *
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\ApprovalResponse>")
+     */
+    protected $allResponses;
 
     /**
      * TicketApprovalType constructor.
@@ -89,7 +116,8 @@ abstract class TicketApprovalType extends EmailBaseType
      * @param bool $hasRecipientResponded
      * @param $approveUrl
      * @param $rejectUrl
-     * @param ApprovalResponse|null $approvalResponse
+     * @param ApprovalResponse|null $approvalResponse The current approval response (for partial completion)
+     * @param ApprovalResponse[] $allResponses
      */
     public function __construct(
         $recipientType,
@@ -100,7 +128,8 @@ abstract class TicketApprovalType extends EmailBaseType
         $hasRecipientResponded,
         $approveUrl,
         $rejectUrl,
-        ApprovalResponse $approvalResponse = null
+        ApprovalResponse $approvalResponse = null,
+        array $allResponses = []
     )
     {
         $this->recipientType = $recipientType;
@@ -112,6 +141,7 @@ abstract class TicketApprovalType extends EmailBaseType
         $this->approveUrl = $approveUrl;
         $this->rejectUrl = $rejectUrl;
         $this->hasRecipientResponded = $hasRecipientResponded;
+        $this->allResponses = $allResponses;
     }
 
     /**
@@ -192,5 +222,21 @@ abstract class TicketApprovalType extends EmailBaseType
     public function getRejectUrl()
     {
         return $this->rejectUrl;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllResponses()
+    {
+        return $this->allResponses;
+    }
+
+    /**
+     * @param array $allResponses
+     */
+    public function setAllResponses(array $allResponses)
+    {
+        $this->allResponses = $allResponses;
     }
 }

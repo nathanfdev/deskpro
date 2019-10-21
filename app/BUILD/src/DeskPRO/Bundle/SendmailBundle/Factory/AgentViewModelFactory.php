@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
@@ -33,6 +34,18 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWelcomeUsersource;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentWhitelistIp;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalApproverApproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalApproverCancel;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalApproverCreate;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalApproverPartialApprovalResponse;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalApproverPartialRejectionResponse;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalApproverRejected;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalOwnerApproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalOwnerCancel;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalOwnerCreate;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalOwnerPartialApprovalResponse;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalOwnerPartialRejectionResponse;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketApprovalOwnerRejected;
 use DeskPRO\Bundle\SendmailBundle\View\TicketApprovalViewModelMapTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -353,8 +366,187 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         ApprovalResponse $approvalResponse = null
     ) {
         return $this->convertParameters(
-            $this->getViewModelByTicketApprovalEvent($event),
-            ['agent', $ticket, $approval, $recipient, $isOwner, $hasRecipientResponded, $approveUrl, $rejectUrl, $approvalResponse]
+            $this->getViewModelByTicketApprovalEvent($event, $isOwner),
+            [
+                'agent',
+                $ticket,
+                $approval,
+                $recipient,
+                $isOwner,
+                $hasRecipientResponded,
+                $approveUrl,
+                $rejectUrl,
+                $approvalResponse,
+                $approval->getResponses()->toArray(),
+            ]
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalApproverApprovedModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalApproverApproved::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_APPROVED)
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalApproverCancelModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalApproverCancel::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_CANCELLED)
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalApproverCreateModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalApproverCreate::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_PENDING, 'created')
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalApproverPartialApprovalResponseModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalApproverPartialApprovalResponse::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_PENDING, 'pending_approval')
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalApproverPartialRejectionResponseModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalApproverPartialRejectionResponse::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_PENDING, 'pending_rejection')
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalApproverRejectedModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalApproverRejected::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_REJECTED)
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalOwnerApprovedModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalOwnerApproved::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_APPROVED)
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalOwnerCancelModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalOwnerCancel::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_CANCELLED)
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalOwnerCreateModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalOwnerCreate::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_PENDING, 'created')
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalOwnerPartialApprovalResponseModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalOwnerPartialApprovalResponse::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_PENDING, 'pending_approval')
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalOwnerPartialRejectionResponseModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalOwnerPartialRejectionResponse::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_PENDING, 'pending_rejection')
+        );
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param Person $recipient
+     * @return \DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType
+     * @throws \Exception
+     */
+    public function createTicketApprovalOwnerRejectedModel(Ticket $ticket, Person $recipient)
+    {
+        return $this->convertParameters(
+            TicketApprovalOwnerRejected::class,
+            $this->getTicketApprovalArguments('agent', $ticket, $recipient, AbstractBaseApproval::STATUS_REJECTED)
         );
     }
 }

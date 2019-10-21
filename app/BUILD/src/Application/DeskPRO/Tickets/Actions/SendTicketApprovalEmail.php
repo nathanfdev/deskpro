@@ -29,7 +29,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     /**
      * Approval email template
      */
-    const EMAIL_TEMPLATE = 'DeskPRO:emails_%s:ticket-approval-%s.html.twig';
+    const EMAIL_TEMPLATE = 'DeskPRO:emails_%s:ticket-approval-%s-%s.html.twig';
 
     /**
      * {@inheritdoc}
@@ -87,20 +87,6 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             return;
         }
 
-        $agentEmailBuilder = $this
-            ->getTicketEmailBuilder('agent', $ticket, $context)
-            ->setAgentMode()
-        ;
-
-        $userEmailBuilder = $this
-            ->getTicketEmailBuilder('user', $ticket, $context)
-            ->setUserMode()
-        ;
-
-        if (!$agentEmailBuilder || !$userEmailBuilder) {
-            return;
-        }
-
         $vars = [
             'ticket' => $ticket,
             'approval' => $approval,
@@ -121,6 +107,21 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
             $vars['recipient'] = $recipient;
             $vars['is_owner'] = $recipient->isEqualTo($ticket->getPerson());
             $vars['has_recipient_responded'] = $approval->hasResponded($recipient);
+
+            $agentEmailBuilder = $this
+                ->getTicketEmailBuilder('agent', $ticket, $context, $vars['is_owner'])
+                ->setAgentMode()
+            ;
+
+            $userEmailBuilder = $this
+                ->getTicketEmailBuilder('user', $ticket, $context, $vars['is_owner'])
+                ->setUserMode()
+            ;
+
+            if (!$agentEmailBuilder || !$userEmailBuilder) {
+                continue;
+            }
+
             try {
                 if ($recipient->isAgent()) {
                     if ($this->hasEmailTemplatesFeature()) {
@@ -173,16 +174,17 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @param string $recipientType user|agent
-     * @param Ticket $ticket
+     * @param string                   $recipientType user|agent
+     * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
+     * @param bool                     $isOwner
      * @return TicketEmailBuilder|bool
      * @throws \Exception
      */
-    private function getTicketEmailBuilder($recipientType, Ticket $ticket, ExecutorContextInterface $context)
+    private function getTicketEmailBuilder($recipientType, Ticket $ticket, ExecutorContextInterface $context, $isOwner)
     {
         try {
-            $templateName = $this->buildEmailTemplateName($recipientType, $context);
+            $templateName = $this->buildEmailTemplateName($recipientType, $context, $isOwner);
             $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
             $context->getLogger()->warn("[SendTicketApprovalEmail] Error {$e->getMessage()}");
@@ -222,16 +224,18 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @param string $recipientType user|agent
+     * @param string                   $recipientType user|agent
      * @param ExecutorContextInterface $context
+     * @param bool                     $isOwner
      * @return string
      * @throws \Exception
      */
-    private function buildEmailTemplateName($recipientType, ExecutorContextInterface $context)
+    private function buildEmailTemplateName($recipientType, ExecutorContextInterface $context, $isOwner)
     {
         $templateName = sprintf(
             self::EMAIL_TEMPLATE,
             $recipientType,
+            $isOwner ? 'owner' : 'approver',
             str_replace('_', '-', $context->getEventType())
         );
 
@@ -246,10 +250,10 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
     }
 
     /**
-     * @param Ticket $ticket
+     * @param Ticket               $ticket
      * @param AbstractBaseApproval $approval
-     * @param bool $sendToApprovers
-     * @param bool $sendToOwner
+     * @param bool                 $sendToApprovers
+     * @param bool                 $sendToOwner
      * @return Person[]
      * @throws \Exception
      */
