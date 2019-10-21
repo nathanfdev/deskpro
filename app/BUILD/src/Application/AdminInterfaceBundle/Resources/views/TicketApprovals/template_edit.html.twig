@@ -43,6 +43,11 @@
                             </li>
                         </ul>
                         <ul>
+                            <li ng-show="form_props.min_number_of_approvers.$error.required || form_props.min_number_of_approvers.$error.min">
+                                {{ phrase('adm.ticket_approvals.template.error.required_min_number_of_approvers') }}
+                            </li>
+                        </ul>
+                        <ul>
                             <li ng-show="form_props.required_approvals.$error.required || form_props.required_approvals.$error.min">
                                 {{ phrase('adm.ticket_approvals.template.error.required_approvals') }}
                             </li>
