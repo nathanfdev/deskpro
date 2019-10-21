@@ -26,6 +26,7 @@ import { SearchResultsPage } from './SearchResultsPage';
 import { MobileTopbarWidget } from './MobileTopbarWidget';
 import { MobileMenuWidget } from './MobileMenuWidget';
 import { ArticleHighlighter } from './ArticleHighlighter';
+import { HcArticleHighlighter } from './HcArticleHighlighter';
 import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
 import { SocialShare } from './SocialShare';
@@ -61,6 +62,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');
     this.addWidgetDef(AgentBarWidget, '#agent-bar');
     this.addWidgetDef(ArticleHighlighter, '.dpx-kb-article-content');
+    this.addWidgetDef(HcArticleHighlighter, '.dpx-hc-kb-article-content');
     this.addWidgetDef(MobileMenuWidget, '.dpx-toggle-big-buttons');
     this.addWidgetDef(MobileTopbarWidget, '.agent-greeting');
     this.addWidgetDef(LoginPage, '#login-page');
