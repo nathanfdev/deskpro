@@ -1,10 +1,66 @@
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-sm">
         <div class="dp-po-title">
             <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
             <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
         </div>
     </div>
+
+    <div class="col-sm-auto">
+        <div class="dp-po-community-title-button">
+            <a href="" class="dp-po-community-title-button-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="dp-po-icon fad fa-money-check-edit"></i>
+                Create
+            </a>
+            <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="#">
+                    <i class="dp-po-icon dp-po-icon-danger fad fa-hands-helping"></i> Ask for Help
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="dp-po-icon dp-po-icon-success fad fa-comment-alt-check"></i> Submit Feedback
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="dp-po-icon dp-po-icon-pink fad fa-comments"></i> Start a Chat
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="dp-po-icon dp-po-icon-warning fad fa-code"></i> Ask Developers
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="dp-po-icon dp-po-icon-info fad fa-receipt"></i> Talk to Finance
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="dp-po-icon dp-po-icon-neutral fad fa-rocket"></i> Start a Discussion
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-3">
+        <div class="dp-po-subscribe dp-po-subscribe-large">
+            <div class="dropdown">
+                <!--class : dp-po-subscribe-activebtn -->
+                <button class="dp-po-subscribe-btn" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" data-offset="0,10">
+                    <i class="dp-po-icon fad fa-envelope"></i> Subscribe <i class="dp-po-icon far fa-check"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <a class="dropdown-item disabled" href="#"><i class="dp-po-icon fal fa-file-alt"></i> Article <i
+                                class="dp-po-icon far fa-check"></i></a>
+                    <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-spreadsheet"></i> Category <i
+                                class="dp-po-icon far fa-check"></i></a>
+                    <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-chart-line"></i> Knowledgebase <i
+                                class="dp-po-icon far fa-check"></i></a>
+                    <span class="dp-po-subscribe-divider"></span>
+                    <a class="dropdown-item dp-po-subscribe-manage" href="#">All your subscriptions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 <div class="row">
     <div class="col-sm-12">
@@ -18,6 +74,10 @@
                             {% if icon %}
                                 <div class="dp-po-community-row-icon">
                                     {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                                </div>
+                            {% else %}
+                                <div class="dp-po-community-row-icon" style="background-color: var(--brand-primary);">
+                                    <i class="dp-po-icon dp-po-icon-white fad fa-comments"></i>
                                 </div>
                             {% endif %}
                             <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
