@@ -9,7 +9,7 @@ define([
     static initClass() {
       this.CTRL_ID = 'Admin_CommunityForums_Ctrl_Edit';
       this.CTRL_AS = 'CommunityForumsEdit';
-      this.DEPS    = ['Api', 'Growl', 'CommunityForumsData', '$stateParams', '$modal', '$upload'];
+      this.DEPS    = ['Api', 'Growl', 'CommunityForumsData', 'CommunityStatusesData', '$stateParams', '$modal', '$upload'];
     }
 
     init() {
@@ -18,6 +18,35 @@ define([
       this.custom_fields = [];
       this.selected_usergroups = {};
       this.display_orders = {};
+      this.status_display_orders = {active: {}, closed: {}};
+      this.all_statuses = {};
+      this.junctionStatuses = {};
+
+      this.community_statuses = {active: [], closed: []};
+      this.community_selected_statuses = {active: [], closed: []};
+
+
+      this.sortedStatusesOptions = {
+        axis:   'y',
+        handle: '.drag-handle',
+        update: (ev, data) => {
+          const $list = data.item.closest('div');
+          const listType = $list.data('type');
+          let x = 0;
+
+          const self = this;
+
+          $list.find('label').each(function () {
+            const status_id = parseInt($(this).data('id'));
+            if (status_id) {
+              self.status_display_orders[listType][status_id] = x;
+            }
+            x += 10;
+          });
+
+          return this.Api2.sendPostJson(`/community_forums/${this.$stateParams.id}/statuses/display_orders`, { display_orders: {...self.status_display_orders['active'], ...self.status_display_orders['closed'] }});
+        }
+      };
 
       return this.sortedListOptions = {
         axis:   'y',
@@ -53,8 +82,8 @@ define([
 
     initialLoad() {
       const promises = [];
-      promises.push(this.Api.sendDataGet({ usergroups: '/user_groups' }).then(result => this.usergroups = result.data.usergroups.groups)
-      );
+      const self = this;
+      promises.push(this.Api.sendDataGet({ usergroups: '/user_groups' }).then(result => this.usergroups = result.data.usergroups.groups));
 
       if (this.$stateParams.id) {
         promises.push(this.Api.sendDataGet({
@@ -74,9 +103,53 @@ define([
         );
       }
 
-      return this.$q.all(promises);
+      promises.push(this.CommunityStatusesData.loadList().then((recs) => {
+          [].concat(recs.active_statuses.values(), recs.closed_statuses.values()).forEach(status => {
+            this.all_statuses[status.id] = status;
+          });
+          this.community_statuses['active'] = _.indexBy(this.sort(recs.active_statuses.values()), 'id');
+          this.community_statuses['closed'] = _.indexBy(this.sort(recs.closed_statuses.values()), 'id');
+        })
+      );
+
+      if (this.$stateParams.id) {
+        promises.push(this.CommunityStatusesData.loadPerForumList(this.$stateParams.id).then((recs) => {
+            this.junctionStatuses = recs;
+          })
+        );
+      }
+
+      const res = this.$q.all(promises);
+
+      const deferred = this.$q.defer();
+
+      res.then(() => {
+        Array.from(self.all_statuses).forEach((status) => {
+          self.community_statuses[status.status_type].display_order += 1000;
+        });
+        Array.from(self.junctionStatuses).forEach((status) => {
+          let type = '';
+          if(self.all_statuses[status.status]) {
+            type = self.all_statuses[status.status].status_type;
+            self.community_statuses[type][status.status].display_order = status.display_order;
+          }
+          self.community_selected_statuses[type][status.status] = true;
+        });
+        deferred.resolve();
+      });
+
+      return deferred.promise;
     }
 
+    sort(values) {
+      return (values || []).sort((a, b) => {
+        const orderA = parseInt(a.display_order);
+        const orderB = parseInt(b.display_order);
+        if (orderA < orderB) { return -1; }
+        if (orderA > orderB) { return 1; }
+        return 0;
+      });
+    }
 
     /*
       * Saves the current form
@@ -88,12 +161,37 @@ define([
         promise;
       this.community_forum.brand = this.$stateParams.brandId;
       this.community_forum.usergroups = [];
+      this.community_forum.topic_statuses = [];
 
-      for (const key of Object.keys(this.selected_usergroups || {})) {
-        const value = this.selected_usergroups[key];
+      for (const ukey of Object.keys(this.selected_usergroups || {})) {
+        const value = this.selected_usergroups[ukey];
         if (value) {
-          const usergroup = _.findWhere(this.usergroups, { id: parseInt(key) });
+          const usergroup = _.findWhere(this.usergroups, { id: parseInt(ukey, 10) });
           if (usergroup) { this.community_forum.usergroups.push(usergroup.id); }
+        }
+      }
+
+      for (const askey of Object.keys(this.community_selected_statuses['active'] || {})) {
+        const value = this.community_selected_statuses['active'][askey];
+        if (value === true) {
+          this.community_forum.topic_statuses.push(
+            {
+              status: this.community_statuses['active'][askey].id,
+              display_order: this.community_statuses['active'][askey].display_order
+            }
+          );
+        }
+      }
+
+      for (const cskey of Object.keys(this.community_selected_statuses['closed'] || {})) {
+        const value = this.community_selected_statuses['closed'][cskey];
+        if (value === true) {
+          this.community_forum.topic_statuses.push(
+            {
+              status: this.community_statuses['closed'][cskey].id,
+              display_order: this.community_statuses['closed'][cskey].display_order
+            }
+          );
         }
       }
 

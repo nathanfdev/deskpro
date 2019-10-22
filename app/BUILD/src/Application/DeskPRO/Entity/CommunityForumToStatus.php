@@ -8,9 +8,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class CommunityForumToStatus
+ * Class CommunityForumToStatus.
  *
- * @package Application\DeskPRO\Entity
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -23,6 +22,8 @@ class CommunityForumToStatus extends DomainObject
 
     /**
      * @var CommunityTopicStatusCategory
+     * @JMS\Expose()
+     * @JMS\Type("entity<CommunityTopicStatusCategory>")
      */
     protected $status;
 
@@ -44,6 +45,7 @@ class CommunityForumToStatus extends DomainObject
 
     /**
      * @param CommunityForum $forum
+     *
      * @return CommunityForumToStatus
      */
     public function setForum(CommunityForum $forum)
@@ -63,6 +65,7 @@ class CommunityForumToStatus extends DomainObject
 
     /**
      * @param CommunityTopicStatusCategory $status
+     *
      * @return CommunityForumToStatus
      */
     public function setStatus(CommunityTopicStatusCategory $status)
@@ -82,6 +85,7 @@ class CommunityForumToStatus extends DomainObject
 
     /**
      * @param int $display_order
+     *
      * @return CommunityForumToStatus
      */
     public function setDisplayOrder($display_order)
@@ -92,7 +96,7 @@ class CommunityForumToStatus extends DomainObject
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -113,33 +117,33 @@ class CommunityForumToStatus extends DomainObject
         );
 
         $metadata->mapManyToOne([
-            'id' => true,
-            'fieldName' => 'forum',
+            'id'           => true,
+            'fieldName'    => 'forum',
             'targetEntity' => CommunityForum::class,
-            'inversedBy' => 'statuses',
-            'joinColumns' => [
+            'inversedBy'   => 'statuses',
+            'joinColumns'  => [
                 [
-                    'name' => 'forum_id',
+                    'name'                 => 'forum_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'CASCADE',
-                    'columnDefinition' => null,
+                    'nullable'             => false,
+                    'onDelete'             => 'CASCADE',
+                    'columnDefinition'     => null,
                 ],
             ],
         ]);
 
         $metadata->mapManyToOne([
-            'id' => true,
-            'fieldName' => 'status',
+            'id'           => true,
+            'fieldName'    => 'status',
             'targetEntity' => CommunityTopicStatusCategory::class,
-            'inversedBy' => 'forums',
-            'joinColumns' => [
+            'inversedBy'   => 'forums',
+            'joinColumns'  => [
                 [
-                    'name' => 'status_id',
+                    'name'                 => 'status_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'CASCADE',
-                    'columnDefinition' => null,
+                    'nullable'             => false,
+                    'onDelete'             => 'CASCADE',
+                    'columnDefinition'     => null,
                 ],
             ],
         ]);

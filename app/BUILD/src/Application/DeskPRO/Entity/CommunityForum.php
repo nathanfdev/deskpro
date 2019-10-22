@@ -190,11 +190,16 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     /**
      * @return CommunityTopicStatusCategory[]|ArrayCollection
      */
-    public function getTopicStatuses()
+    public function getTopicCategoryStatuses()
     {
         return $this->topic_statuses->map(function (CommunityForumToStatus $pivot) {
             return $pivot->getStatus();
         });
+    }
+
+    public function getTopicStatuses()
+    {
+        return $this->topic_statuses;
     }
 
     /**

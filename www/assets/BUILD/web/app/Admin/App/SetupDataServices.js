@@ -36,7 +36,7 @@ define([
   Module.service('em', [() => new Admin_Main_DataService_EntityManager()
   ]);
 
-  Module.service('CommunityStatusesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityStatuses_DataService_CommunityStatuses(em, Api, $q)
+  Module.service('CommunityStatusesData', ['em', 'Api', 'Api2', '$q', (em, Api, Api2, $q) => new Admin_CommunityStatuses_DataService_CommunityStatuses(em, Api, Api2, $q)
   ]);
 
   Module.service('CommunityForumsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityForums_DataService_CommunityForums(em, Api, $q)

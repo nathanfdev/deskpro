@@ -8,15 +8,18 @@ define([
   Admin_Main_Collection_OrderedDictionary
 ) => {
   class Admin_CommunityStatuses_DataService_CommunityStatuses extends Admin_Main_DataService_Base {
-    constructor(em, Api, $q) {
+    constructor(em, Api, Api2, $q) {
       super(em);
       this.$q   = $q;
       this.Api  = Api;
+      this.Api2  = Api2;
 
       this.loadListPromise = null;
       this.recs = {
         active_statuses: new Admin_Main_Collection_OrderedDictionary(),
         closed_statuses: new Admin_Main_Collection_OrderedDictionary()
+      };
+      this.perForumRecs = {
       };
     }
 
@@ -47,6 +50,21 @@ define([
       this.loadListPromise = deferred.promise;
 
       return this.loadListPromise;
+    }
+
+    loadPerForumList(forumId) {
+      const deferred = this.$q.defer();
+
+      this.Api2.sendGet(
+        `/community_forums/${forumId}/statuses`).success((data) => {
+          this.perForumRecs[forumId] = data.data;
+          return deferred.resolve(this.perForumRecs[forumId]);
+        },
+        () => deferred.reject());
+
+      this.loadPerForumListPromise = deferred.promise;
+
+      return this.loadPerForumListPromise;
     }
 
     /**
