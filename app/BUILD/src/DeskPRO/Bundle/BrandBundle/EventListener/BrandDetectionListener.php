@@ -137,6 +137,7 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
                         'slug' => $request->attributes->get('_dp_brand_slug'),
                     ]);
                 } catch (\Exception $e) {
+                    $brand = $this->detectBrandByHost($event);
                 }
             } else {
                 $brand = $this->detectBrandByHost($event);
