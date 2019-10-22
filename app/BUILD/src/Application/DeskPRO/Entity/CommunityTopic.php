@@ -12,6 +12,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
+use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener;
@@ -20,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -121,6 +123,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     protected $_is_new = false;
 
     /**
+     * @var CommunityTopicStatusTransition[]|ArrayCollection
+     */
+    protected $status_transitions;
+
+    /**
      * The search result highlights.
      *
      * @var array
@@ -131,10 +138,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     {
         parent::__construct();
 
-        $this->_is_new     = true;
-        $this->comments    = new ArrayCollection();
-        $this->custom_data = new ArrayCollection();
-        $this->attachments = new ArrayCollection();
+        $this->_is_new            = true;
+        $this->comments           = new ArrayCollection();
+        $this->custom_data        = new ArrayCollection();
+        $this->attachments        = new ArrayCollection();
+        $this->status_transitions = new ArrayCollection();
     }
 
     /**
@@ -345,7 +353,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
             case self::STATUS_CLOSED:
                 $this['status'] = $status;
                 if ($sub_status) {
+                    /** @var CommunityTopicStatusCategory $status_cat */
                     $status_cat = App::findEntity('DeskPRO:CommunityTopicStatusCategory', $sub_status);
+
+                    $this->addStatusCategoryTransition($status_cat, $this->status_category);
+
                     $this->setModelField('status_category', $status_cat);
                     $this->setModelField('date_updated', new \DateTime());
                 } else {
@@ -615,9 +627,12 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
 
     /**
      * @param CommunityTopicStatusCategory $status_category
+     * @throws \Exception
      */
     public function setStatusCategory(CommunityTopicStatusCategory $status_category = null)
     {
+        $this->addStatusCategoryTransition($status_category, $this->status_category);
+
         $this->setModelField('status_category', $status_category);
         $this->setModelField('date_updated', new \DateTime());
     }
@@ -713,6 +728,44 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     public function isClosed()
     {
         return $this->status === static::STATUS_CLOSED;
+    }
+
+    /**
+     * @return CommunityTopicStatusTransition[]|ArrayCollection
+     */
+    public function getStatusTransitions()
+    {
+        $criteria = Criteria::create()
+            ->orderBy(['date_created' => 'DESC'])
+        ;
+
+        return $this->status_transitions->matching($criteria);
+    }
+
+    /**
+     * @return CommunityTopicStatusTransition
+     */
+    public function getLatestTransition()
+    {
+        return $this->getStatusTransitions()->first();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTimeIntervalForLatestTransition()
+    {
+        /** @var CommunityTopicStatusTransition[] $transitions */
+        $transitions = array_values($this->getStatusTransitions()->slice(0, 2));
+
+        if (count($transitions) !== 2) {
+            return null;
+        }
+
+        $dateOne = Carbon::createFromTimestamp($transitions[1]->getDateCreated()->getTimestamp());
+        $dateTwo = Carbon::createFromTimestamp($transitions[0]->getDateCreated()->getTimestamp());
+
+        return $dateOne->diffForHumans($dateTwo, true, true);
     }
 
     //###########################################################################
@@ -1097,6 +1150,16 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
                 'dpApi' => true,
             ]
         );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'status_transitions',
+                'targetEntity' => CommunityTopicStatusTransition::class,
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'topic',
+                'dpApi'        => true,
+                'orderBy'      => ['date_created' => 'DESC'],
+            ]
+        );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
         $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
@@ -1108,6 +1171,34 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $fields = ['num_comments'];
 
         return $fields;
+    }
+
+    /**
+     * @param CommunityTopicStatusCategory $newStatusCategory
+     * @param CommunityTopicStatusCategory $oldStatusCategory
+     * @throws \Exception
+     */
+    protected function addStatusCategoryTransition(
+        CommunityTopicStatusCategory $newStatusCategory = null,
+        CommunityTopicStatusCategory $oldStatusCategory = null
+    ) {
+        if ($newStatusCategory === null) {
+            return;
+        }
+
+        if ($oldStatusCategory !== null) {
+            if ($oldStatusCategory->getId() === $newStatusCategory->getId()) {
+                return;
+            }
+        }
+
+        $transition = (new CommunityTopicStatusTransition())
+            ->setTopic($this)
+            ->setOldStatusCategory($oldStatusCategory)
+            ->setNewStatusCategory($newStatusCategory)
+        ;
+
+        $this->status_transitions->add($transition);
     }
 
     public static function getContentType()

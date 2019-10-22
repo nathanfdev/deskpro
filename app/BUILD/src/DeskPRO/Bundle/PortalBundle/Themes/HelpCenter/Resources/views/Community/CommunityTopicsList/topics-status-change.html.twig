@@ -52,6 +52,7 @@
                         {% if topic.status_category %}
                             {% include 'Theme:Community:blocks/status-change-transition.html.twig' with {
                                 topic: topic,
+                                with_time: true,
                             } %}
                         {% else %}
                             <span class="badge badge-secondary">
