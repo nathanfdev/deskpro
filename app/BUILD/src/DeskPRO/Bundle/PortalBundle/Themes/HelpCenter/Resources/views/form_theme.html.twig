@@ -461,23 +461,22 @@
 {% endblock community_topic_attachment_widget %}
 
 {% block community_topic_attachment_collection_widget %}
-    <div class="bucket">
-        {% if prototype is defined %}
-            {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
-        {% endif %}
-        <div class="attach-field">
-            <div class="with-dpx">
-                <div class="dpx-attach" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}">
-                    <div {{ block('widget_container_attributes') }}>
-                        {%- if form.parent is empty -%}
-                            {{ form_errors(form) }}
-                        {%- endif -%}
-                        {{- block('form_rows') -}}
-                        {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
-                        {{- form_rest(form) -}}
-                    </div>
-                </div>
-            </div>
+    {% if prototype is defined %}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+    {% endif %}
+    <div class="form-group dp-po-form-upload with-dpx">
+        {{ form_label(form) }}
+        <div class="dp-po-tiket-attachments">
+            <ul class="dp-po-tiket-attachments-list">
+                {{- block('form_rows') -}}
+            </ul>
+        </div>
+        <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="/dpblob">
+            {%- if form.parent is empty -%}
+                {{ form_errors(form) }}
+            {%- endif -%}
+            {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+            {{- form_rest(form) -}}
         </div>
     </div>
 {% endblock community_topic_attachment_collection_widget %}
