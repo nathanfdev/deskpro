@@ -5,9 +5,9 @@
         data-vote-down-url="{{ portal_path(topic, 'vote_down') }}"
         title="{{ phrase('portal.community.btn-vote') }}"
     {% endif %}
-    class="dp-po-like {{ is_compact ? 'dp-po-like-small' }}"
+    class="dp-po-like {{ is_compact ? 'dp-po-like-small' }} {{ user_up_voted(topic) ? 'agreed' }}"
     rel="noindex, nofollow"
 >
     <span class="dp-po-like-count counter">{{ topic.total_rating }}</span>
-    <span class="dp-po-like-icon"><i class="dp-po-icon far fa-thumbs-up"></i></span>
+    <span class="dp-po-like-icon"><i class="dp-po-icon fas fa-thumbs-up"></i></span>
 </a>
