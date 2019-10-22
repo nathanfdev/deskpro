@@ -134,7 +134,18 @@ class CommunityDataService extends AbstractDataService
             ],
             function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
-                $qb->select('ct')->from(CommunityTopic::class, 'ct');
+
+                $qb
+                    ->select('ct')
+                    ->from(CommunityTopic::class, 'ct')
+                ;
+
+                $qb
+                    ->addSelect('stn, stnso, stnsn')
+                    ->leftJoin('ct.status_transitions', 'stn')
+                    ->leftJoin('stn.old_status_category', 'stnso')
+                    ->leftJoin('stn.new_status_category', 'stnsn')
+                ;
 
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
