@@ -6,14 +6,10 @@
         </button>
         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
             {% for sub in subscriptionInfo %}
-                <a class="dropdown-item disabled" href="{{ sub.toggleUrl }}">
+                <a class="dropdown-item" href="{{ sub.toggleUrl }}">
                     <i class="dp-po-icon {{ sub.icon }}"></i> {{ sub.title }} <i
                             class="dp-po-icon far fa-check"></i></a>
             {% endfor %}
-            <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-spreadsheet"></i> Category <i
-                        class="dp-po-icon far fa-check"></i></a>
-            <a class="dropdown-item" href="#"><i class="dp-po-icon fal fa-file-chart-line"></i> Knowledgebase <i
-                        class="dp-po-icon far fa-check"></i></a>
             <span class="dp-po-subscribe-divider"></span>
             <a class="dropdown-item dp-po-subscribe-manage" href="{{ url('portal_user_profile') }}">{{ phrase('portal.general.btn-manage_subscriptions') }}</a>
         </div>
