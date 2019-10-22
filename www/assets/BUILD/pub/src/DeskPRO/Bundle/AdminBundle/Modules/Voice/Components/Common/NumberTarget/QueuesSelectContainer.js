@@ -22,12 +22,6 @@ class QueuesSelectContainer extends React.Component {
     };
   }
 
-  onAddNew = () => {
-    this.setState({
-      formOpened: true
-    });
-  };
-
   onClose = () => {
     this.setState({
       formOpened: false
@@ -44,8 +38,6 @@ class QueuesSelectContainer extends React.Component {
           <Select
             {...this.props}
             clearable={false}
-            addNewLabel="Add a new queue..."
-            onAddNew={this.onAddNew}
           />
         </RecordsChoiceWrapper>
         <Modal
