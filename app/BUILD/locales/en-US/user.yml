@@ -47,6 +47,8 @@ helpcenter.community.view-list: 'List View'
 helpcenter.community.view-status-change: 'Status Change'
 helpcenter.community.view-topics: 'View {{count}} topics'
 helpcenter.community.votes: 'Votes'
+helpcenter.community.create-topic-in-forum: 'Submit {{forum}}'
+helpcenter.community.create-topic: 'Create'
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.create_thread: Create
@@ -105,6 +107,9 @@ helpcenter.general.updated: 'Updated'
 helpcenter.general.view_all: 'View All'
 helpcenter.general.view_profile: 'View profile'
 helpcenter.general.viewed_by_agents_only: 'Viewed by agents only'
+helpcenter.general.btn-subscribe: Subscribe
+helpcenter.general.btn-unsubscribe: Unsubscribe
+helpcenter.general.btn-manage_subscriptions: Manage your subscriptions
 helpcenter.members.company: 'Job Title & Company'
 helpcenter.members.email: 'Email'
 helpcenter.members.joined_portal: 'Joined Portal'

@@ -128,8 +128,7 @@ class MembersController extends AbstractController
      */
     protected function isCommunityEnabledOrNotFoundException()
     {
-        $settings = $this->container->get('settings_resolver');
-        if (!$settings->getGlobalSettings()->get('portal.members_community')) {
+        if (!$this->isCommunityEnabled()) {
             throw $this->createNotFoundException();
         }
     }
