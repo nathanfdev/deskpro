@@ -161,10 +161,18 @@ class ArticlesController extends AbstractPublishController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
         // PAGER
 
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false, $person->isAgent());
+        $pager = $this->getArticlesDataService()->getArticlesPager(
+            $category,
+            $page,
+            $count,
+            $person,
+            false,
+            $person->isAgent() && $brandSettingsResolver->getSetting('user.non_published_articles_on_helpcenter'));
 
         $kbData = new LazyPropObject([
             'data' => function () use ($category) {
@@ -565,9 +573,11 @@ class ArticlesController extends AbstractPublishController
 
         $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
 
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
         $categoryChildrenPagers = [];
         foreach ($categoryChildren as $key => &$childCat) {
-            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true, $person->isAgent());
+            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true, $person->isAgent() && $brandSettingsResolver->getSetting('user.non_published_articles_on_helpcenter'));
             if ($categoryChildrenPagers[$childCat->getId()]->getNbResults() === 0) {
                 unset($categoryChildrenPagers[$childCat->getId()]);
                 unset($categoryChildren[$key]);
