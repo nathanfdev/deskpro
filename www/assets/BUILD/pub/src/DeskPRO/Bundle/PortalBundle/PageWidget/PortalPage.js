@@ -57,6 +57,7 @@ class PortalPage extends PageWidget {
     // this is specifically on the view page, because the vote widget is managed
     // manually via the react component on the filter page
     this.addWidgetDef(CommunityVoteWidget, '#feedback_view .i-agree');
+    this.addWidgetDef(CommunityVoteWidget, 'a.dp-po-like');
     this.addWidgetDef(HtmlLinkToPostWidget, 'body');
     this.addWidgetDef(CustomPerFieldEdit, '.form-custom-per-field');
     this.addWidgetDef(ClickAwayDropdownWidget, '.clickaway-dropdown');

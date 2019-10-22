@@ -6,7 +6,12 @@
 
     <div class="row mb-4">
         <div class="col-sm-9">
-            {% include 'Theme:PublishCommon:likes.html.twig' with { counter: topic.total_rating } %}
+            <div class="dp-po-post-like">
+                {% include "Theme:Community:CommunityTopicsList/like-button.html.twig" with {
+                    topic: topic,
+                    is_compact: false
+                } %}
+            </div>
             <div class="dp-po-title">
                 <h2 class="dp-po-title-text">{{ topic.realTitle }}</h2>
             </div>
