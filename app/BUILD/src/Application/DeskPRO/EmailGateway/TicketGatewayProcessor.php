@@ -481,9 +481,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticketEmail->isPublicTac     = $isPtac;
 
         if ($removed && $ticket) {
-            if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
-                $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
-                $ticket = null;
+            $emailAddress = $this->reader->getFromAddress()->getEmail();
+            if (in_array($emailAddress, $removed)) {
+                // Prevent false positive in removed person.
+                if (!$ticket->hasParticipantEmailAddress($emailAddress)) {
+                    $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
+                    $ticket = null;
+                }
             }
         }
 
