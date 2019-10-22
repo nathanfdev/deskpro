@@ -466,11 +466,9 @@
     {% endif %}
     <div class="form-group dp-po-form-upload with-dpx">
         {{ form_label(form) }}
-        <div class="dp-po-tiket-attachments">
-            <ul class="dp-po-tiket-attachments-list">
-                {{- block('form_rows') -}}
-            </ul>
-        </div>
+        <ul>
+            {{- block('form_rows') -}}
+        </ul>
         <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="/dpblob">
             {%- if form.parent is empty -%}
                 {{ form_errors(form) }}
