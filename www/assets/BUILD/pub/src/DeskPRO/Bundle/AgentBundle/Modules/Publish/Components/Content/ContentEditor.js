@@ -77,7 +77,8 @@ class ContentEditor extends React.PureComponent {
     const { collabUsers, collabOnline } = this.state;
 
     return (
-      <div>
+      // Need position:relative to properly show overlay diff
+      <div style={{ position: 'relative' }}>
         {useCollab && !collabOnline && <div className="collab-offline-overlay" />}
         {useCollab && this.getCollabUsersList(collabUsers)}
         <ArticleEditor
