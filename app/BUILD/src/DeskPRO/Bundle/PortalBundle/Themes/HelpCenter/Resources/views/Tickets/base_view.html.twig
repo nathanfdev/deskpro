@@ -25,7 +25,46 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-
+                        {% block close_ticket %}
+                            {% if can_edit and ticket.isOpen() %}
+                                <div class="dp-po-ticket-close">
+                                    <a href="#" class="dp-po-ticket-close-btn" data-toggle="modal" data-target="#closeConfirm">
+                                        <span class="dp-po-icon fa-stack fa-sm">
+                                          <i class="fas fa-envelope  fa-stack-2x"></i>
+                                          <i class="fas fa-times-circle fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                        {{ phrase('helpcenter.tickets.close-ticket') }}
+                                    </a>
+                                    <div class="modal fade" id="closeConfirm" tabindex="-1" role="dialog" aria-labelledby="messageMember"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">{{ phrase('helpcenter.tickets.resolve_ticket_title') }}</h5>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>{{ phrase('helpcenter.tickets.resolve_ticket_explain') }}</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" id="closeTicketBtn" data-url="{{ path('portal_tickets_resolve', { ticket_ref: ticket.ref }) }}" class="btn btn-primary">{{ phrase('portal.tickets.resolve_my_ticket_btn') }}</button>
+                                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">{{ phrase('portal.general.btn-cancel') }}</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% elseif not ticket.isOpen() %}
+                                <div class="dp-po-ticket-close closed">
+                                    <a class="dp-po-ticket-close-btn">
+                                                <span class="dp-po-icon fa-stack fa-sm">
+                                                  <i class="fas fa-envelope  fa-stack-2x"></i>
+                                                  <i class="fas fa-times-circle fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                        {{ phrase('helpcenter.tickets.ticket-closed') }}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endblock %}
                     </div>
                 </div>
                 <div class="row">
@@ -44,26 +83,20 @@
 
 
 {% block ticket_attachment %}
-    <div class="dpx-attachment">
-        <a href="{{ attachment.blob.download_url }}?dl=1"
-           class="dp-po-chat-attachments-link {% if attachment.blob.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
-           {% if not attachment.blob.is_image %}data-content-type="{{ attachment.blob.content_type }}"{% endif %}
-        >
-
-            {% if attachment.blob.is_image %}
-                <img class="thumbnail" src="{{ attachment.blob.thumbnailUrl }}" />
-            {% endif %}
-            {{ attachment.blob.filename }} <span>({{ attachment.blob.readable_filesize }})</span>
-        </a>
-    </div>
+    <a href="{{ attachment.blob.download_url }}?dl=1"
+       class="dp-po-post-attachments-link"
+       {% if not attachment.blob.is_image %}data-content-type="{{ attachment.blob.content_type }}"{% endif %}
+    >
+        {{ attachment.blob.filename }} <span>({{ attachment.blob.readable_filesize }})</span> <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
+    </a>
 {% endblock %}
 
 {% block page_sidebar %}
     <div class="dp-po-sidebar dp-po-ticket-status">
-      <h3 class="dp-po-sidebar-title">{{ phrase('portal.tickets.view_assigned_agent') }}</h3>
+      <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.tickets.ticket-status') }}</h3>
       {% set class = ticket.isResolved() ? 'badge-success' : 'badge-warning' %}
       {% set icon = ticket.isResolved() == 'resolved' ? 'fa-check' : 'fa-clock' %}
-      <span class="badge {{ class }} badge-icon"><i class="dp-po-icon far {{ icon }}"></i> {{ ticket.status }}</span>
+      <span class="badge {{ class }} badge-icon"><i class="dp-po-icon far {{ icon }}"></i> {{ ticket.ticket_status.title }}</span>
     </div>
 
     <div class="dp-po-ticket-meta">
@@ -140,11 +173,11 @@
     </div>
 
     {% if ticket_view.getAttachments()|length > 0 %}
-    <div class="dp-po-sidebar dp-po-chat-attachments">
-        <h3 class="dp-po-sidebar-title">{{ phrase('portal.tickets.view_media') }}</h3>
-        <ul class="dp-po-chat-attachments-list">
+    <div class="dp-po-sidebar dp-po-post-attachments">
+        <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.general.attachments') }}</h3>
+        <ul class="dp-po-post-attachments-list">
             {% for attachment in ticket_view.getAttachments() %}
-                <li class="dp-po-chat-attachments-item">
+                <li class="dp-po-post-attachments-item">
                     {{ block('ticket_attachment') }}
                 </li>
             {% endfor %}
@@ -154,10 +187,11 @@
 
 
     {% if ticket_view.hasAnyVisibleProperties() %}
-    <div class="dp-po-ticket-meta">
+    <div class="dp-po-sidebar dp-po-ticket-meta">
+        <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.tickets.ticket-properties') }}</h3>
         {% if can_edit and ticket.isOpen() and not edit_page %}
         <p>
-            <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">{{ phrase('portal.tickets.view_btn_edit') }} <i class="fas fa-edit"></i></a>
+            <a href="{{ portal_path(ticket, 'edit') }}" class="dp-po-sidebar-edit">{{ phrase('portal.tickets.view_btn_edit') }} <i class="fas fa-pen"></i></a>
         </p>
         {% endif %}
 

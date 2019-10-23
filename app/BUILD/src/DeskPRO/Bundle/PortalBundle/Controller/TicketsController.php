@@ -324,7 +324,7 @@ class TicketsController extends AbstractController
 
         return $this->renderThemeView('Theme:Tickets:resolve.html.twig', [
             'ticket'      => $ticket,
-            'breadrcumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
             'page_title'  => $this->createPageTitle()->tickets($ticket),
         ]);
     }
@@ -568,7 +568,7 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
-            'page_title'  => $this->get('portal_view.page_title_generator')->community(),
+            'page_title'  => $this->get('portal_view.page_title_generator')->tickets($ticket),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,
             'message'     => $message,
