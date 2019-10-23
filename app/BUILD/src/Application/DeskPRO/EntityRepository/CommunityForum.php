@@ -155,7 +155,9 @@ class CommunityForum extends AbstractCategoryRepository
             ->innerJoin('c.topic', 't')
             ->andWhere('c.status != \'hidden\'')
             ->andWhere('IDENTITY(t.forum) = :forumId')
+            ->andWhere('t.status != :hiddenStatus')
             ->orderBy('c.date_created', 'DESC')
+            ->setParameter('hiddenStatus', \Application\DeskPRO\Entity\CommunityTopic::STATUS_HIDDEN)
             ->setMaxResults($numberOfComments)
         ;
 
