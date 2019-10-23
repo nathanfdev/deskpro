@@ -102,9 +102,9 @@
                       <span>
                       {% if message.metadata.phrase_id %}
                         {% if message.is_html %}
-                          {{ phrase('helpcenter.chat.'~ message.metadata.phrase_id, message.metadata, true) }}
+                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata, true) }}
                         {% else %}
-                          {{ phrase('helpcenter.chat.'~ message.metadata.phrase_id, message.metadata) }}
+                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata) }}
                         {% endif %}
                       {% elseif message.is_html %}
                         {{message.content|raw}}

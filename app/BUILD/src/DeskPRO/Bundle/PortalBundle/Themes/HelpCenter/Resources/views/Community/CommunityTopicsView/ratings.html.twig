@@ -2,30 +2,30 @@
 <article class="news kb-article">
     <div class="rate-article">
         <div class="titled-header">
-            <h1>{{ phrase('portal.general.rate-page') }}</h1>
+            <h1>{{ phrase('helpcenter.general.rate-page') }}</h1>
         </div>
 
         {% if rating %}
             <div class="rate-article {% if rating.positive %}as-positive{% else %}as-negative{% endif %}">
                 {% if rating.positive %}
-                    {{ phrase('portal.general.rated-positive') }}
+                    {{ phrase('helpcenter.general.rated-positive') }}
                 {% else %}
-                    {{ phrase('portal.general.rated-negative') }}
+                    {{ phrase('helpcenter.general.rated-negative') }}
                 {% endif %}
             </div>
         {% endif %}
 
         <div class="rate-article">
             <a href="{{ portal_path(topic, 'vote_up') }}" class="rate-up post-link" rel="noindex, nofollow">
-                {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
+                {{ phrase('helpcenter.general.rate-page-positive') }} <span>:)</span>
             </a>
             <a href="{{ portal_path(topic, 'vote_down') }}" class="rate-down post-link" rel="noindex, nofollow">
-                <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
+                <span>:(</span> {{ phrase('helpcenter.general.rate-page-negative') }}
             </a>
         </div>
 
         {% if show_rating_counts %}
-            <p>{{ phrase('portal.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
+            <p>{{ phrase('helpcenter.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
         {% endif %}
     </div>
 </article>

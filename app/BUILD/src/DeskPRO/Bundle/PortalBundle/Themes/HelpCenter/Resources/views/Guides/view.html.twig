@@ -31,11 +31,11 @@
                                         <div class="dp-po-post-info">
                                             <ul class="dp-po-post-info-list">
                                                 <li class="dp-po-post-info-item">
-                                                    <label for="publication-date">{{  phrase('portal.general.published') }}: </label>
+                                                    <label for="publication-date">{{  phrase('helpcenter.general.published') }}: </label>
                                                     <b>{{ topic.date_published|date('d/m/Y') }}</b>
                                                 </li>
                                                 <li class="dp-po-post-info-item">
-                                                    <label for="last-update-date"><{{ phrase('portal.general.updated') }}: </label>
+                                                    <label for="last-update-date">{{ phrase('helpcenter.general.updated') }}: </label>
                                                     <b>{{ topic.date_updated|date('d/m/Y') }}</b>
                                                 </li>
                                             </ul>
@@ -43,7 +43,7 @@
                                     </div>
                                     <hr>
                                     {% if topic.status != 'published' and topic.status != 'archived' and app.user.is_agent %}
-                                        <div class="sub-note">{{ phrase('portal.guides.view-as-agent') }}</div>
+                                        <div class="sub-note">{{ phrase('helpcenter.guides.view-as-agent') }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="topic-content">
@@ -52,7 +52,7 @@
                                 {% if brand_setting('user.publish_comments') and (topic.calc_num_comments or new_comment_form) %}
                                     <div class="comment-box" id="comments">
                                         <div class="titled-header">
-                                            <h1>{{ phrase('portal.general.comments-title', {count: topic.calc_num_comments}) }}</h1>
+                                            <h1>{{ phrase('helpcenter.general.comments-title', {count: topic.calc_num_comments}) }}</h1>
                                         </div>
                                         {% show topic_comments %}
                                         {% show comment_form %}

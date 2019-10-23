@@ -8,7 +8,7 @@
             <div class="row">
                 <div class="col-sm-7 col-centered">
                     <div class="dp-po-title">
-                        <h1 class="dp-po-title-text">{{ phrase('portal.general.eula') }}</h1>
+                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.general.eula') }}</h1>
                     </div>
                     <div class="dp-po-block">
                         <div class="dp-po-download-terms">
@@ -21,7 +21,7 @@
                         {% if for_download %}
                         <div class="text-center">
                             <form method="POST" action="{{ path('portal_downloads_eula', {'id': field.id, 'for_download': for_download}) }}">
-                                <button class="btn btn-primary" type="submit">{{ phrase('portal.general.agree') }}</button>
+                                <button class="btn btn-primary" type="submit">{{ phrase('helpcenter.general.agree') }}</button>
                             </form>
                         </div>
                         {% endif %}

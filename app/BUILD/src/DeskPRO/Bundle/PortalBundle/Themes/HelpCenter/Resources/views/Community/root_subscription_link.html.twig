@@ -1,9 +1,9 @@
 {% if brand_setting('user.community_subscriptions') %}
     <a href="{{ path('portal_community_root_toggle_subscription') }}" class="post-link" rel="noindex, nofollow">
       {% if is_subscribed %}
-        {{ phrase('portal.general.btn-unsubscribe') }}
+        {{ phrase('helpcenter.general.btn-unsubscribe') }}
       {% else %}
-          {{ phrase('portal.general.btn-subscribe') }}
+          {{ phrase('helpcenter.general.btn-subscribe') }}
       {% endif %}
     </a>
 {% endif %}

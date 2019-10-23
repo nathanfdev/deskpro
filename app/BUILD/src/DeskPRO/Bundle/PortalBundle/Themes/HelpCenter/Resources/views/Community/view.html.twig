@@ -39,7 +39,7 @@
 
 {% block page_body %}
     <div class="dp-po-section">
-        {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
+        {{  macros.lockout_notice(phrase('helpcenter.account.comment-lockout'), lockout, lockout_time) }}
         <div class="dp-po-post-content dp-po-block">
             {{ topic.getContentHtml()|raw }}
         </div>
@@ -86,14 +86,14 @@
 
     {% if topic.labels | length %}
         {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
-            title: phrase('portal.general.labels'),
+            title: phrase('helpcenter.general.labels'),
             labels: topic.labels
         } %}
     {% endif %}
 
     {% if topic.attachments|length  > 0 %}
         <div class="dp-po-sidebar dp-po-post-attachments">
-            <h3 class="dp-po-sidebar-title">{{ phrase('portal.community.attachments') }}</h3>
+            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.community.attachments') }}</h3>
             <ul class="dp-po-post-attachments-list">
                 {% for attachment in topic.attachments %}
                     <li class="dp-po-post-attachments-item">
@@ -111,7 +111,7 @@
         <p>{{ date(topic.date_published, 'day')}}</p>
 
         {% if topic.getCustomDataSelection() %}
-            <h3 class="dp-po-post-meta-title">{{ phrase('portal.community.form_custom_cat') }}</h3>
+            <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.community.form_custom_cat') }}</h3>
             <p>{{ topic.getCustomDataSelection().title }}</p>
         {% endif %}
         {% if topic.isClosed() %}

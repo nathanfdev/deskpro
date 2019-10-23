@@ -15,7 +15,7 @@
                                data-vote-down-url="{{ portal_path(dl, 'vote_down') }}"
                                data-vote-agreed="{% if user_up_voted(dl) %}true{% else %}false{% endif %}"
                             >
-                                {{ phrase('portal.downloads.download') }}
+                                {{ phrase('helpcenter.downloads.download') }}
                                 <i class="fas fa-download"></i>
                             </a>
                         </li>
@@ -53,7 +53,7 @@
                 </h1>
                 {% if not dl.fileurl %}
                 <span class="date">
-                    {{ phrase('portal.downloads.uploaded-on') }}: {{ dl.date_updated | date('Y-m-d') }}
+                    {{ phrase('helpcenter.downloads.uploaded-on') }}: {{ dl.date_updated | date('Y-m-d') }}
                 </span>
                 {%  endif %}
 
@@ -66,7 +66,7 @@
     {% if show_category_link %}
         <div class="list-meta">
             <a href="{{ category ? portal_path(category) : path('portal_downloads') }}">
-                {{ phrase('portal.downloads.view-x-files', {count: pager|length}) }}
+                {{ phrase('helpcenter.downloads.view-x-files', {count: pager|length}) }}
                 <i class="fas fa-caret-right"></i>
             </a>
         </div>
@@ -75,5 +75,5 @@
         {% show download_pager %}
     {% endif %}
 {% else %}
-    <strong>{{ phrase('portal.downloads.none') }}</strong>
+    <strong>{{ phrase('helpcenter.downloads.none') }}</strong>
 {% endif %}
