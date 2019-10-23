@@ -54,7 +54,6 @@ class Address extends AbstractContactData
             [
                 'comment'      => $contact_record->getComment(),
                 'address_html' => nl2br(htmlentities($address_txt)),
-                'map_url'      => $this->generateGoogleStaticMapUrl($address_txt),
             ]
         );
     }
@@ -101,21 +100,5 @@ class Address extends AbstractContactData
         $address_txt = Arrays::removeFalsey($segs);
 
         return implode("\n", $address_txt);
-    }
-
-    /**
-     * @param string $address_txt
-     *
-     * @return string
-     */
-    private function generateGoogleStaticMapUrl($address_txt)
-    {
-        $params = [
-            'sensor' => 'false',
-            'size'   => '200x200',
-            'center' => str_replace("\n", ' ', Strings::standardEol($address_txt)),
-        ];
-
-        return 'https://maps.googleapis.com/maps/api/staticmap?'.http_build_query($params, null, '&amp;');
     }
 }
