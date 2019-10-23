@@ -86,6 +86,7 @@ class ApprovalTableRow extends React.Component {
   };
 
   render() {
+    const { me } = this.props;
     const approvers = this.props.approval.get('people').toArray().map(approver => ({
       id:     approver.get('id'),
       name:   approver.get('display_name'),
@@ -119,12 +120,17 @@ class ApprovalTableRow extends React.Component {
       if (this.props.me) {
         const meId = parseInt(this.props.me.get('id'), 10);
 
-        if ((approval.approvers.findIndex(approver => meId === approver.id) > -1 && approval.approvers_pending.includes(meId))
-          || this.props.approval.getIn(['selected_approvers', 'has_all_agents'])
+        if (
+          !this.state.showResponses &&
+          (
+            (approval.approvers.findIndex(approver => meId === approver.id) > -1 && approval.approvers_pending.includes(meId))
+            || this.props.approval.getIn(['selected_approvers', 'has_all_agents'])
+          )
         ) {
           controls = (
             <div>
               <Button
+                style={{ marginRight: '3px' }}
                 size="small"
                 loading={this.state.saving}
                 onClick={() => this.cancelApprovalRequest(approval.id)}
@@ -132,13 +138,14 @@ class ApprovalTableRow extends React.Component {
                 Cancel
               </Button>
               <Button
-                style={{ marginRight: '3px' }}
+                style={{ marginRight: '3px', color: 'green' }}
                 size="small" loading={this.state.saving}
                 onClick={() => this.acceptApprovalRequest(approval.id)}
               >
                 Accept
               </Button>
               <Button
+                style={{ color: 'red' }}
                 size="small"
                 loading={this.state.saving}
                 onClick={() => this.rejectApprovalRequest(approval.id)}
@@ -260,7 +267,26 @@ class ApprovalTableRow extends React.Component {
                 <td>
                   <FormattedMessage id="agent.tickets.approvals.status_name.pending" />
                 </td>
-                <td />
+                <td style={{ textAlign: 'center' }}>
+                  {approval.status === 'pending' && me.get('id') === approver.id &&
+                    <div>
+                      <Button
+                        style={{ marginRight: '3px', color: 'green' }}
+                        size="small" loading={this.state.saving}
+                        onClick={() => this.acceptApprovalRequest(approval.id)}
+                      >
+                        Accept
+                      </Button>
+                      <Button
+                        style={{ color: 'red' }}
+                        size="small"
+                        loading={this.state.saving}
+                        onClick={() => this.rejectApprovalRequest(approval.id)}
+                      >
+                        Reject
+                      </Button>
+                    </div>}
+                </td>
                 <td>
                   <Icon name={faClock} />
                 </td>

@@ -60,7 +60,7 @@ class ApprovalTable extends React.Component {
           <col style={{ width: '80px' }} />
           <col style={{ width: '80px' }} />
           <col style={{ width: '70px' }} />
-          <col style={{ width: '140px' }} />
+          <col style={{ width: '200px' }} />
           <col style={{ width: '30px' }} />
         </colgroup>
         <tbody>
