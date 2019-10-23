@@ -1088,7 +1088,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
       window.AgentLegacyBundle.unmountEmbeddedReactNode(this.reactContentNode);
     }
 
-
 		// Workaround for tinymce bug to do with remove()
 		// We'll manually remove the node ourselves
 		var el = $('.article-editor-wrap', this.getEl('content_ed'));
@@ -1127,17 +1126,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
 
         var contentInput = null;
-        var offlineOverlay = this.getEl('collab-offline-overlay');
-
-        function onOffline() {
-          console.log('onOffline');
-          offlineOverlay.show();
-        }
-
-        function onOnline() {
-          console.log('ononline');
-          offlineOverlay.hide();
-        }
+        var showSaving = this.getEl('article_save').find('.mark-loading');
 
         function createEditor() {
           self.reactContentNode = txt[0];
@@ -1149,17 +1138,17 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
             self.meta.collabEditorOptions.documentUrn,
             self.meta.collabEditorOptions.userUrn,
             self.meta.collabEditorOptions.token,
-            onOffline,
-            onOnline
           );
         }
 
-        // Show spinner overlay until onOnline event
-        onOffline();
+        showSaving.show();
 
         $.ajax({
           url:  DP_BASE_API_URL + "/v2/articles/" + self.meta.article_id,
           type: 'GET',
+          complete: function() {
+            showSaving.hide();
+          },
           success: function(data) {
             contentInput = JSON.parse(data.data.content_input);
             createEditor();

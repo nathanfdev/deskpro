@@ -53,7 +53,6 @@
 				<script type="text/javascript">
 					var {{ baseId }}_content_input = {{ state.article.content_input|default(article.content_input)|json_encode|raw }};
 				</script>
-        <div class="collab-offline-overlay" id="{{ baseId }}_collab-offline-overlay"></div>
 				<div class="edit-content-field"></div>
 			{% else %}
 				<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.real_content) }}</textarea>

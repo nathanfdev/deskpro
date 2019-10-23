@@ -4331,6 +4331,7 @@ agent.publish.awaiting_validation_info: 'Awaiting Validation: An agent with perm
 agent.publish.browse_free_image: 'Browse Free Images'
 agent.publish.change_category: 'Change Category'
 agent.publish.click_to_set_date: '(click to set date)'
+agent.publish.collab_users_editing: '{{count}} more people editing'
 agent.publish.comment_by: 'Comment by {{name}}'
 agent.publish.comment_requires_validation: 'This comment requires validation'
 agent.publish.comments_list_title:
