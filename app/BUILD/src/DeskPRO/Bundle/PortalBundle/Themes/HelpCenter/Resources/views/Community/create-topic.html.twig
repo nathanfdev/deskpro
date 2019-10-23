@@ -33,13 +33,11 @@
 
                                     {{ form_widget(form.custom_data) }}
 
-                                    <div class="form-group dp-po-form-upload new-ticket-attachments">
+                                    <div class="form-group">
                                         {{ form_label(form.attachments, phrase('helpcenter.community.form_add_attachments')) }}
-                                        <div class="dp-po-form-upload-wrap">
-                                            {{ form_errors(form.attachments) }}
-                                            {{ form_widget(form.attachments) }}
-                                            {{ form_widget(form.more_attachments, {attr: {style: 'display: none;'}}) }}
-                                        </div>
+                                        {{ form_errors(form.attachments) }}
+                                        {{ form_widget(form.attachments) }}
+                                        {{ form_widget(form.more_attachments, {attr: {style: 'display: none;'}}) }}
                                     </div>
 
                                     {% if form.captcha is defined %}
