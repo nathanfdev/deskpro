@@ -123,6 +123,9 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
                 $additions,
                 function ($languageFile) use ($output) {
                     $output->writeln(" + Prepended to <info>{$languageFile}</info>");
+                },
+                function ($languageFile) use ($output) {
+                    $output->writeln(" - Failed to write to the file <error>{$languageFile}</error>");
                 }
             );
 

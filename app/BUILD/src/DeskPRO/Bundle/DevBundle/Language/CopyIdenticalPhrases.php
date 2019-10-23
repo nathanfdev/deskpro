@@ -115,12 +115,15 @@ class CopyIdenticalPhrases
     /**
      * @param array $additions
      * @param callable|null $afterPrepend
+     * @param callable|null $onFailure
      */
-    public function prependAdditions(array $additions, callable $afterPrepend = null)
+    public function prependAdditions(array $additions, callable $afterPrepend = null, callable $onFailure = null)
     {
         foreach ($additions as $languageFile => $phrases) {
             if (!is_writable($languageFile)) {
-                throw new \RuntimeException("The language file \"{$languageFile}\" is not writable.");
+                if ($onFailure) {
+                    $onFailure($languageFile);
+                }
             }
 
             file_put_contents(
