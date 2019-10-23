@@ -23,7 +23,7 @@
       {% if message.origin == 'agent' %}
         {{ message.author ? message.author.display_name_user : '' }}
       {% else %}
-        {{ phrase('portal.chat.you') }} ({{ message.author.primary_email }})
+        {{ phrase('helpcenter.chat.you') }} ({{ message.author.primary_email }})
       {% endif %}
       {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">AGENT</span>{% endif %}
     </div>
@@ -54,7 +54,7 @@
           <div class="col-sm-9">
             <div class="dp-po-title">
               <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
-              <h2 class="dp-po-title-text">{{ phrase('portal.chat.log_title', { person: chat.agent.display_name_user }) }}</h2>
+              <h2 class="dp-po-title-text">{{ phrase('helpcenter.chat.log_title', { person: chat.agent.display_name_user }) }}</h2>
             </div>
             <div class="row align-items-center">
               <div class="col-sm-10">
@@ -102,9 +102,9 @@
                       <span>
                       {% if message.metadata.phrase_id %}
                         {% if message.is_html %}
-                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata, true) }}
+                          {{ phrase('helpcenter.chat.'~ message.metadata.phrase_id, message.metadata, true) }}
                         {% else %}
-                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata) }}
+                          {{ phrase('helpcenter.chat.'~ message.metadata.phrase_id, message.metadata) }}
                         {% endif %}
                       {% elseif message.is_html %}
                         {{message.content|raw}}
@@ -136,7 +136,7 @@
               </p>
               {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
               {% if allAgentsExceptAssigned|length > 0 %}
-              <h3 class="dp-po-post-meta-title">{{ phrase('portal.chat.log_agents') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_agents') }}</h3>
               <p>
                 <div class="dp-po-avatar dp-po-avatar-round">
                   {% for agent in allAgentsExceptAssigned %}
@@ -148,9 +148,9 @@
               {% endif %}
             </div>
             <div class="dp-po-post-meta">
-              <h3 class="dp-po-post-meta-title">{{ phrase('portal.chat.log_department') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_department') }}</h3>
               <p>{{ chat.department ? chat.department.user_title : '-' }}</p>
-              <h3 class="dp-po-post-meta-title">{{ phrase('portal.chat.log_chat_time') }}</h3>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_chat_time') }}</h3>
               <p>{{ date_diff(chat.date_created, chat.date_ended) }}</p>
               <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.last_activity') }}</h3>
               <p>{{date(lastMessage.date_created, 'l')}}, {{date(lastMessage.date_created, 'time')}}</p>
@@ -176,11 +176,11 @@
             {% endif %}
             {% if linked_ticket %}
               <div class="dp-po-sidebar dp-po-chat-links">
-                <h3 class="dp-po-sidebar-title">{{ phrase('portal.chat.log_linked_ticket') }}</h3>
+                <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.log_linked_ticket') }}</h3>
                 <ul class="dp-po-chat-links-list">
                   <li class="dp-po-chat-links-item">
                     <a href="{{ portal_path(linked_ticket) }}" class="dp-po-chat-links-link">
-                      {{ phrase('portal.chat.log_view_linked_ticket') }}: {{ linked_ticket.subject }}
+                      {{ phrase('helpcenter.chat.log_view_linked_ticket') }}: {{ linked_ticket.subject }}
                       <i class="dp-po-icon fal fa-link"></i>
                       {{ portal_path(linked_ticket) }}
                     </a>

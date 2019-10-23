@@ -6,7 +6,7 @@
     {{ form_errors(form.forum) }}
 
     <div class="main-input dpx-form">
-        <h3>{{ phrase('portal.community.form_i_have_a') }}:</h3>
+        <h3>{{ phrase('helpcenter.community.form_i_have_a') }}:</h3>
         <div class="question-type">
             {{ form_widget(form.forum) }}
         </div>
@@ -18,9 +18,9 @@
     {% if is_user() %}
         <div>
             <div class="user-logged-in" href="#">
-                <i class="fas fa-user"></i> {{ phrase('portal.community.form_logged_in_as',
+                <i class="fas fa-user"></i> {{ phrase('helpcenter.community.form_logged_in_as',
                 {'name': user.name, 'email': user.primary_email_address}) }}
-                <a href="{{ logout_path('portal') }}">{{ phrase('portal.community.form_logout') }}</a>
+                <a href="{{ logout_path('portal') }}">{{ phrase('helpcenter.community.form_logout') }}</a>
             </div>
         </div>
     {% endif %}

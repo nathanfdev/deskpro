@@ -3,7 +3,7 @@
 {% block page_body %}
     <div class="ticket-success-blurb">
     <div class="icon-mark"></div>
-    <h1>{{ phrase('user.tickets.rate_support') }}</h1>
+    <h1>{{ phrase('helpcenter.tickets.rate_support') }}</h1>
       <span class="agent-avatar agent-avatar-mid"
       style="background-image: url({{ avatar_url(message.person, 36) }}); background-size: contain;"></span>
       <p>{{ phrase('portal.tickets.rate-intro', {name: message.person.display_name_user, subject: ticket.subject}) }}</p>
@@ -33,7 +33,7 @@
                 </form>
             {% else %}
                 {# this is shown when clicking an email link, #}
-                <p>{{ phrase('user.tickets.rate-thanks-vialink') }}</p>
+                <p>{{ phrase('helpcenter.tickets.rate-thanks-vialink') }}</p>
 
                 <form action="{{ path('portal_tickets_feedback', {'ticket_ref': ticket.ref, 'auth': ticket.auth, 'message_id': message.id}) }}" method="post">
                     <input type="hidden" name="rating" value="{{ feedback.rating }}" />
