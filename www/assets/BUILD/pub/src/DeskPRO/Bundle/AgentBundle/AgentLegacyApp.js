@@ -374,17 +374,13 @@ class AgentLegacyApp {
     documentUrn,
     userUrn,
     joinToken,
-    onOffline,
-    onOnline
   ) {
     const editor = React.createRef();
     const collabOpt = {
       documentUrn,
       auth:             joinToken,
       userIdentity:     userUrn,
-      webSocketManager: CollabManager.getWebsocketManager(),
-      onOffline,
-      onOnline
+      webSocketManager: CollabManager.getWebsocketManager()
     };
 
     console.log('Collab option', collabOpt);
