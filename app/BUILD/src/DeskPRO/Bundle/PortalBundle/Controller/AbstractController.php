@@ -635,4 +635,14 @@ class AbstractController extends BaseController
     {
         return $this->getPortalBrandTheme()->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
+
+    /**
+     * @return bool
+     */
+    protected function isCommunityEnabled()
+    {
+        $settings = $this->container->get('settings_resolver');
+
+        return $settings->getGlobalSettings()->get('portal.members_community');
+    }
 }

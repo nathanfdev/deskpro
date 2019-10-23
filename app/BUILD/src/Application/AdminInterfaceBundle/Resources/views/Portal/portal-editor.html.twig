@@ -25,7 +25,7 @@
                 <div class="site-text" ng-show="Portal.isOpen('theme')">
                     <select ng-model="Portal.selected_theme"
                             ng-change="Portal.editTheme()"
-                            ng-options="item.id as item.title for item in Portal.available_themes">
+                            ng-options="item.id as item.title for item in Portal.available_themes {% if not app.getSetting('beta_features.helpcenter') %} | filter:{id: '!helpcenter'} {% endif %}">
                     </select>
                 </div>
 

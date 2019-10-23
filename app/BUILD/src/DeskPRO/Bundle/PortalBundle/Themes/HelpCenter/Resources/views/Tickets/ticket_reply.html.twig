@@ -1,40 +1,6 @@
 {% import 'Theme:Tickets:macros.html.twig' as macros %}
 
 <div class="dp-po-section dp-po-comments">
-    
-    {% if ticket.resolved %}
-        <div class="dp-po-title">
-            <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('portal.tickets.view_now_closed') }}</h2>
-        </div>
-
-        {% if ticket.date_resolved %}
-            <p>{{ phrase('portal.tickets.view_closed', { ago: date_ago(ticket.date_resolved, null, false), day: ticket.date_resolved|date('day') }) }}</p>
-        {% endif %}
-        <hr>
-        <p class="footer">{{ phrase('portal.tickets.view_closed_more', { kb_url: path('portal_kb'), new_ticket_url: path('portal_new_ticket') })|raw }}</p>
-    
-        {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
-            <a href="{{ portal_path(ticket, 'unresolve') }}" class="button post-link">
-                {{ phrase('portal.tickets.mark-unresolved') }}
-            </a>
-        {% endif %}
-        
-        <div class="ticket-reply-closed">
-            <h1>{{ phrase('portal.tickets.view_now_closed') }}</h1>
-            {% if ticket.date_resolved %}
-                <p>{{ phrase('portal.tickets.view_closed', { ago: date_ago(ticket.date_resolved, null, false), day: ticket.date_resolved|date('day') }) }}</p>
-            {% endif %}
-            <hr>
-            <p class="footer">{{ phrase('portal.tickets.view_closed_more', { kb_url: path('portal_kb'), new_ticket_url: path('portal_new_ticket') })|raw }}</p>
-            
-            {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
-                <a href="{{ portal_path(ticket, 'unresolve') }}" class="button post-link">
-                    {{ phrase('portal.tickets.mark-unresolved') }}
-                </a>
-            {% endif %}
-        </div>
-    {% endif %}
-    
     {% if not ticket.archived and not ticket.resolved %}
         <div class="dp-po-title">
             <h2 class="dp-po-title-text dp-po-title-small">
@@ -66,13 +32,13 @@
                             </div>
                         </div>
                     {% endif %}
-                
+
                     <div class="form-group">
                         {{ form_widget(form.ticket_message) }}
                     </div>
                     {{ form_widget(form.attachments) }}
                     <div class="as-no-dpui">{{ form_widget(form.more_attachments, { attr: { class: 'btn btn-primary' }}) }}</div>
-                
+
                     <div class="row align-items-center">
                         <div class="col-sm-2">
                             {{ form_widget(form.submit, { attr: { class: 'btn btn-primary' }}) }}
@@ -83,14 +49,15 @@
             </div>
         </div>
     {% else %}
-        <div class="flashes">
-            <div class="flash flash-notice">
-                {{ phrase('portal.tickets.view_cant_reply_archived') }}
-            </div>
-        </div>
         {% if can_view_tickets_link() %}
-            <a href="{{ path('portal_new_ticket') }}" class="button">
-                <p>{{ phrase('portal.tickets.new_ticket_button') }}</p>
+            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary">
+                {{ phrase('portal.tickets.new_ticket_button') }}
+            </a>
+        {% endif %}
+
+        {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
+            <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-outline-primary post-link">
+                {{ phrase('portal.tickets.mark-unresolved') }}
             </a>
         {% endif %}
     {% endif %}

@@ -31,6 +31,7 @@ import { CustomPerFieldEdit } from './Common/Form/CustomPerFieldEdit';
 import { Attachment } from './Common/Attachment';
 import { SocialShare } from './SocialShare';
 import { TouchFocusWidget } from './TouchFocusWidget';
+import { CloseTicketWidget } from './CloseTicketWidget';
 import { WidgetButton } from './WidgetButton';
 import { DpxTabs } from './Common/DpxTabs';
 
@@ -74,6 +75,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(WidgetButton, '.widget-button');
     this.addWidgetDef(DpxTabs, '.dpx-tabs');
     this.addWidgetDef(SocialShare, '#social-share');
+    this.addWidgetDef(CloseTicketWidget, '#closeTicketBtn');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

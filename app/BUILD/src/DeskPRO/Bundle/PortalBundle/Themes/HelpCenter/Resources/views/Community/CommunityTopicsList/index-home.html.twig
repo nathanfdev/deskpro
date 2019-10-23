@@ -1,9 +1,27 @@
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-sm">
         <div class="dp-po-title">
             <img src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
             <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
         </div>
+    </div>
+    {% if is_community_enabled %}
+        <div class="col-sm-auto">
+            <a href="{{ path('portal_members') }}">
+                <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
+                {{ phrase('helpcenter.members.title') }}
+            </a>
+        </div>
+    {% endif %}
+    <div class="col-sm-auto">
+        {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+            community_forums: community_forums,
+        } %}
+    </div>
+    <div class="col-sm-3">
+        {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
+            is_subscribed: is_subscribed,
+        } %}
     </div>
 </div>
 <div class="row">
@@ -18,6 +36,10 @@
                             {% if icon %}
                                 <div class="dp-po-community-row-icon">
                                     {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                                </div>
+                            {% else %}
+                                <div class="dp-po-community-row-icon" style="background-color: var(--brand-primary);">
+                                    <i class="dp-po-icon dp-po-icon-white fad fa-comments"></i>
                                 </div>
                             {% endif %}
                             <h2 class="dp-po-community-row-title">{{ forum.title }}</h2>
