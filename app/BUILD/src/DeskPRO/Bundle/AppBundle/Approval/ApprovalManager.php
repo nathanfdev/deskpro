@@ -72,7 +72,7 @@ class ApprovalManager
         $this->em->transactional(function (EntityManagerInterface $em) use (&$approval, &$context, &$isNew, $asSystem) {
             $isNew = !$em->contains($approval);
 
-            if ($isNew && $context->getPersonContext() &&  !$approval->getCreatedBy() && !$asSystem) {
+            if ($isNew && $context->getPersonContext() && !$approval->getCreatedBy() && !$asSystem) {
                 if ($context->getPersonContext()->isAgent()) {
                     $approval->setCreatedBy($context->getPersonContext());
                 }
@@ -87,12 +87,6 @@ class ApprovalManager
         });
 
         if ($isNew) {
-            $this->applyActions(
-                $approval,
-                $context,
-                'getActionsOnCreate'
-            );
-
             if ($approval instanceof TicketApprovalInterface) {
                 $approval->getTicket()->getStateChangeRecorder()->recordChange(new ChangeApproval(
                     'ticket_approval',
@@ -100,6 +94,11 @@ class ApprovalManager
                     $context
                 ));
             }
+            $this->applyActions(
+                $approval,
+                $context,
+                'getActionsOnCreate'
+            );
 
             $this->em->flush();
         }
