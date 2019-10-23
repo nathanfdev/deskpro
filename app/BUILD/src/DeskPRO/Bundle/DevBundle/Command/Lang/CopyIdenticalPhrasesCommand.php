@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class CopyIdenticalPhrasesCommand
@@ -69,7 +70,7 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
 
         $isPrepend     = $input->getOption('prepend');
         $idPrefix      = $input->getOption('root-phrase-id-prefix');
-        $localesDir    = $input->getOption('locales-dir') ?: "{$kernelRootDir}/../locales";
+        $localesDir    = $input->getOption('locales-dir') ?: $kernelRootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'locales';
         $rootLanguage  = $input->getOption('root-language');
         $languageFiles = array_map('trim', explode(',', $input->getOption('language-files')));
 
@@ -87,7 +88,7 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
 
             /** @var \Symfony\Component\Console\Helper\TableHelper $table */
             $table = $this->getHelper('table');
-            $table->setHeaders(['Replacement', 'Value', 'Hash']);
+            $table->setHeaders(['Candidate', 'Value', 'Hash']);
             foreach ($replacementTuple as $hash => $replacement) {
                 list ($_, $addId, $value) = $replacement;
                 $table->addRow([
@@ -110,13 +111,7 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
         foreach ($additions as $languageFile => $phrases) {
             $output->writeln("Additions for <info>{$languageFile}</info>:");
             $output->writeln("---------");
-            foreach ($phrases as $id => $phrase) {
-                $output->writeln(sprintf(
-                    '%s: %s',
-                    $id,
-                    is_string($phrase) ? $phrase : print_r($phrase, true)
-                ));
-            }
+            $output->write(Yaml::dump($phrases));
             $output->writeln("---------");
         }
 

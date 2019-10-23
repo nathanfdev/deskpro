@@ -34,7 +34,7 @@ class CopyIdenticalPhrases
         $rootLanguageDirPath = $this->buildRootLanguageDirPath($localesDir, $rootLanguage);
 
         foreach ($languageFiles as $languageFile) {
-            $languageFilepath = "{$rootLanguageDirPath}/{$languageFile}";
+            $languageFilepath = $rootLanguageDirPath.DIRECTORY_SEPARATOR.$languageFile;
 
             if (!is_readable($languageFilepath)) {
                 throw new \RuntimeException("Language file path {$languageFilepath} is not readable");
@@ -87,7 +87,7 @@ class CopyIdenticalPhrases
 
         foreach ($same as $languageFile => $replacementTuples) {
             foreach ($languageDirs as $languageDir) {
-                $languageFilepath = "{$languageDir}/{$languageFile}";
+                $languageFilepath = $languageDir.DIRECTORY_SEPARATOR.$languageFile;
 
                 if (!is_readable($languageFilepath)) {
                     continue;
@@ -140,7 +140,17 @@ class CopyIdenticalPhrases
      */
     private function buildHashValueTuple($value)
     {
-        return [$value, md5(serialize($value))];
+        $toHash = $value;
+
+        if (is_string($value)) {
+            $toHash = strtolower(trim($value));
+        } elseif (is_array($value)) {
+            $toHash = array_map(function ($v) {
+                return is_string($v) ? strtolower(trim($v)) : $v;
+            }, $value);
+        }
+
+        return [$value, md5(serialize($toHash))];
     }
 
     /**
