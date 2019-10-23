@@ -43,12 +43,12 @@
                                 onclick="var event = arguments[0] || window.event; event.stopPropagation();"
                             >
                             <label class="form-check-label" for="login-form-remember-me" onclick="var event = arguments[0] || window.event; event.stopPropagation();">
-                                {{ phrase('portal.account.login-stay-logged-in') }}
+                                {{ phrase('helpcenter.account.login-stay-logged-in') }}
                             </label>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg" tabIndex="24">{{ phrase('helpcenter.account.login-btn') }}</button>
                         {% if has_login_form() %}
-                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('portal.account.login-password-reminder') }}</a>
+                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login-password-reminder') }}</a>
                         {% endif %}
                     </form>
                 </section>
@@ -72,7 +72,7 @@
                 {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
                     <a href="{{ path('portal_chats') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/chats.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}</a> <br />
                 {% endif %}
-                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('portal.account.logout-btn') }}</a>
+                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout-btn') }}</a>
             </div>
         {% endif %}
     </div>

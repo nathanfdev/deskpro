@@ -21,19 +21,19 @@
                         -
 
                         <span class="comments"><i class="fas fa-comments"></i>
-                            <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.calc_num_comments}) }}</a>
+                            <a href="#comments">{{ phrase('helpcenter.general.comments-count', {count: post.calc_num_comments}) }}</a>
                         </span>
                     {% endif %}
 
                     {% if post.category %}
                         -
-                        {{ phrase('portal.general.in') }} <a href="{{ portal_path(post.category) }}">{{ object_phrase(post.category) }}</a>
+                        {{ phrase('helpcenter.general.in') }} <a href="{{ portal_path(post.category) }}">{{ object_phrase(post.category) }}</a>
                     {% endif %}
 
                 </div>
             </div>
             {% if post.status != 'published' and post.status != 'archived' and app.user.is_agent %}
-                <div class="sub-note">{{ phrase('portal.news.view-as-agent') }}</div>
+                <div class="sub-note">{{ phrase('helpcenter.news.view-as-agent') }}</div>
             {% endif %}
         </header>
 
@@ -44,7 +44,7 @@
         {% if post.labels|length %}
             <div class="tag-list">
                 <ul>
-                    <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
+                    <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('helpcenter.general.tags') }}</li>
                     {% for l in post.labels %}
                         <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
                     {% endfor %}
@@ -59,7 +59,7 @@
     {% if brand_setting('user.publish_comments') and post.calc_num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('portal.general.comments-title', {count: post.calc_num_comments}) }}</h1>
+                <h1>{{ phrase('helpcenter.general.comments-title', {count: post.calc_num_comments}) }}</h1>
             </div>
             {% show news_comments %}
         </div>

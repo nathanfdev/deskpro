@@ -10,6 +10,6 @@
 {% macro lockout_notice(title, lockout, lockout_time) %}
     {% import _self as this %}
     {% if lockout %}
-        {{ this.user_notice('auth', title, lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time})) }}
+        {{ this.user_notice('auth', title, lockout_time ? phrase('helpcenter.account.lockout_time', {time: lockout_time})) }}
     {% endif %}
 {% endmacro %}
