@@ -117,29 +117,38 @@ class ApprovalForm extends React.Component {
     });
 
     const people = [];
-    const fillCheckboxApprovers = () => {
-      if (criteria.all_agents) {
-        agents.toArray().forEach((agent) => {
-          if (people.map(person => person.id).indexOf(agent.get('id')) === -1) {
-            people.push(personToSelect(agent.toJS()));
+    const promises = [];
+
+    if (criteria.all_agents) {
+      agents.toArray().forEach((agent) => {
+        if (people.map(person => person.id).indexOf(agent.get('id')) === -1) {
+          people.push(personToSelect(agent.toJS()));
+        }
+      });
+    }
+    if (criteria.ticket_user) {
+      if (people.map(person => person.id).indexOf(ticketData.person.id) === -1) {
+        people.push(personToSelect(ticketData.person));
+      }
+    }
+    if (criteria.organization_managers && ticketData.organization) {
+      promises.push(getOrganizationManagers(ticketData.organization.id).then((res) => {
+        res.data.forEach((orgManager) => {
+          if (people.map(person => person.id).indexOf(orgManager.id) === -1) {
+            people.push(personToSelect(orgManager));
           }
         });
-      }
-      if (criteria.ticket_user) {
-        if (people.map(person => person.id).indexOf(ticketData.person.id) === -1) {
-          people.push(personToSelect(ticketData.person));
-        }
-      }
-      if (criteria.organization_managers && ticketData.organization) {
-        getOrganizationManagers(ticketData.organization.id).then((res) => {
-          res.data.forEach((orgManager) => {
-            if (people.map(person => person.id).indexOf(orgManager.id) === -1) {
-              people.push(personToSelect(orgManager));
-            }
-          });
-        });
-      }
+      }));
+    }
 
+    // concat list of possible approvers and fetch people by ids
+    if (criteria.people.length > 0) {
+      promises.push(getPeople(criteria.people).then((res) => {
+        res.data.forEach(person => people.push(personToSelect(person)));
+      }));
+    }
+
+    const setApprovers = () => {
       if (template.get('can_choose_approvers')) {
         this.setState({ people });
       } else {
@@ -147,14 +156,10 @@ class ApprovalForm extends React.Component {
       }
     };
 
-    // concat list of possible approvers and fetch people by ids
-    if (criteria.people.length > 0) {
-      getPeople(criteria.people).then((res) => {
-        res.data.forEach(person => people.push(personToSelect(person)));
-        fillCheckboxApprovers();
-      });
+    if (promises.length) {
+      Promise.all(promises).then(() => setApprovers());
     } else {
-      fillCheckboxApprovers();
+      setApprovers();
     }
 
     // if agent can choose approvers
