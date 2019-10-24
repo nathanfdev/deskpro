@@ -61,6 +61,8 @@ class FindUntranslatedTemplateContentCommand extends ContainerAwareCommand
         $output->writeln("Searching ({$finder->count()}) files...");
         $output->writeln("--------");
 
+        $contentCount = 0;
+
         /** @var SplFileInfo $file */
         foreach ($finder as $filepath => $file) {
             $stream = $twig->tokenize(file_get_contents($filepath));
@@ -86,10 +88,14 @@ class FindUntranslatedTemplateContentCommand extends ContainerAwareCommand
                 $output->writeln("Found content in <info>{$file->getRelativePathname()}</info>");
                 foreach ($parsed as $content) {
                     $output->writeln(" + \"{$content}\"");
+                    $contentCount ++;
                 }
                 $output->writeln("--------");
             }
         }
+
+        $output->writeln("Done.");
+        $output->writeln("Found <info>{$contentCount}</info> fragments of content.");
     }
 
     /**
