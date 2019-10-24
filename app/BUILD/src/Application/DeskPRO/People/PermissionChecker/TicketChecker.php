@@ -88,6 +88,14 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
+        foreach ($ticket->getApprovals() as $approval) {
+            if ($approval->getTemplate()->canApproversViewSubject()) {
+                if ($approval->hasApprover($this->person)) {
+                    return true;
+                }
+            }
+        }
+
         if (!$this->person->hasPerm('agent_tickets.use')) {
             return false;
         }

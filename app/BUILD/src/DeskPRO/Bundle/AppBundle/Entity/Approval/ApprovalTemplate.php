@@ -3,13 +3,12 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
 use Application\DeskPRO\Tickets\Actions\SendTicketApprovalEmail;
-use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractApproval;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class ApprovalType
+ * Class ApprovalType.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\ApprovalTemplateRepository")
  * @ORM\Table(name="approval_templates")
@@ -61,6 +60,7 @@ class ApprovalTemplate extends AbstractApproval
 
     /**
      * @param ApproverSelectionCriteria $approverSelectionCriteria
+     *
      * @return self
      */
     public function setApproverSelectionCriteria(ApproverSelectionCriteria $approverSelectionCriteria)
@@ -80,6 +80,7 @@ class ApprovalTemplate extends AbstractApproval
 
     /**
      * @param bool $canChooseApprovers
+     *
      * @return ApprovalTemplate
      */
     public function setCanChooseApprovers($canChooseApprovers)
@@ -99,6 +100,7 @@ class ApprovalTemplate extends AbstractApproval
 
     /**
      * @param SelectedApprovers $selectedApprovers
+     *
      * @return ApprovalTemplate
      */
     public function setSelectedApprovers(SelectedApprovers $selectedApprovers)
@@ -110,18 +112,16 @@ class ApprovalTemplate extends AbstractApproval
 
     /**
      * Creates the default email actions for this template if template
-     * is to be used for ticket approvals
-     *
-     * @return void
+     * is to be used for ticket approvals.
      */
     public function addDefaultSendTicketApprovalEmailActions()
     {
         $action = new SendTicketApprovalEmail([
-            'send_to_owner' => false,
+            'send_to_owner'     => false,
             'send_to_approvers' => true,
-            'from_name' => 'helpdesk_name',
-            'from_account' => 0,
-            'headers' => [],
+            'from_name'         => 'helpdesk_name',
+            'from_account'      => 0,
+            'headers'           => [],
         ]);
 
         $this->getActionsOnCreate()->addUniqueAction($action);
