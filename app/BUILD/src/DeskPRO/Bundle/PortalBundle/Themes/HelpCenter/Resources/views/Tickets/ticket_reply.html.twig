@@ -5,14 +5,20 @@
         <div class="dp-po-title">
             <h2 class="dp-po-title-text dp-po-title-small">
                 {% if not ticket.resolved %}
-                    {{ phrase('portal.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
+                    {{ phrase('helpcenter.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
                 {% else %}
                     {{ phrase('portal.tickets.view_reply') }}
                 {% endif %}
             </h2>
         </div>
         <div class="dp-po-block">
-            <div class="dp-po-comments-add">
+            <div class="dp-po-comments-add helpcenter-form">
+                <div class="dp-po-avatar dp-po-avatar-round">
+                    <div class="dp-po-avatar dp-po-avatar-round">
+                        {{ hc_avatar(app.user, '', 30) }}
+                        {{ app.user.display_name_user }}
+                    </div>
+                </div>
                 {{ form_errors(form) }}
                 {{ form_start(form, { attr: { class: 'dp-po-form', id: 'ticket-reply-form'} }) }}
                     {% if form_errors|length > 0 %}
