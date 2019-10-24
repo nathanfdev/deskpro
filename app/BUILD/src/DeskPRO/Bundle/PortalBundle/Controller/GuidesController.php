@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Util\LazyPropObject;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -26,7 +27,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @Feature("guides")
  */
-class GuidesController extends AbstractController
+class GuidesController extends AbstractPublishController
 {
     /**
      * @Route("/guides.{_format}", name="portal_guides", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
@@ -203,16 +204,29 @@ class GuidesController extends AbstractController
 
         $topicJson = Strings::escapeForJson($serializer->serialize($topic, 'json', new SideloadSerializationContext()));
 
+        $topicData = new LazyPropObject([
+            'comments' => function () use ($topic) {
+                return $this->getGuidesDataService()->getTopicComments($topic, $this->getUser());
+            },
+        ]);
+
+        $viewVars = [
+            'topic'            => $topic,
+            'topicData'        => $topicData,
+            'topic_json'       => $topicJson,
+            'captcha'          => $captcha,
+            'guide'            => $topic->getGuide(),
+            'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+            'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,
+        ];
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
+
         return $this->renderThemeView(
             'Theme:Guides:view.html.twig',
-            [
-                'topic'            => $topic,
-                'topic_json'       => $topicJson,
-                'captcha'          => $captcha,
-                'guide'            => $topic->getGuide(),
-                'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
-                'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,
-            ]
+            $viewVars
         );
     }
 

@@ -12,7 +12,7 @@ class Hierarchy
 {
     private static $hierarchicalTables = [
         'departments', 'organizations', 'products', 'custom_field_definition',
-        'article_categories', 'download_categories', 'community_channels', 'news_categories', 'ticket_categories',
+        'article_categories', 'download_categories', 'community_forums', 'news_categories', 'ticket_categories',
     ];
 
     /**

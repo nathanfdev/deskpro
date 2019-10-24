@@ -253,6 +253,14 @@ $transition: all 0.15s ease;
       }
     }
 
+    input[type="checkbox"] {
+      margin-top: 0;
+    }
+
+    input[type="checkbox"] + label {
+      margin-bottom: 0;
+    }
+
     select {
       display: inline-block;
       height: 40px;
@@ -276,6 +284,13 @@ $transition: all 0.15s ease;
       .footer {
         text-align: right;
       }
+    }
+
+    .splash-image {
+      margin-top: 20px;
+      max-width: 300px;
+      max-height: 200px;
+      overflow: auto;
     }
 
     // Top title with current theme name

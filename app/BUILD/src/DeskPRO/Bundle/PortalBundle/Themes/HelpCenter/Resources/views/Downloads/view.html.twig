@@ -1,0 +1,100 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-knowledgebase-article">
+            <div class="container">
+
+                <div class="row align-items-end mb-4">
+                    <div class="col-sm-9">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/file-icons/' ~ helpcenter_content_icon(file), 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ file.title }}</h2>
+                        </div>
+
+                        <div class="dp-po-avatar dp-po-avatar-round">
+                            {{ hc_avatar(file.person, '', 30) }}
+                            {{ file.person }}
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="col-sm-9">
+                                <div class="dp-po-post-info">
+                                    <ul class="dp-po-post-info-list">
+                                        <li class="dp-po-post-info-item">
+                                            {{ phrase('helpcenter.general.last-updated', {date: file.date_updated | date('day'), person: file.person}) | raw }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                {% if file.blob and file.blob.is_image %}
+                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download') }}</a><br>
+                                {% elseif file.blob %}
+                                    <a href="{{ portal_path(file, 'save') }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download') }}</a>
+                                {% elseif file.fileurl %}
+                                    <a href="{{ file.fileurl }}" class="btn btn-icon btn-lg btn-primary" id="file-download-link"><i class="dp-po-icon fal fa-arrow-to-bottom"></i>{{ phrase('helpcenter.downloads.download') }}</a><br>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="dp-po-section dp-po-post-content dp-po-block">
+                            {{ file.content|raw }}
+                        </div>
+
+                        {% if can_rate_download(file) %}
+                            {% include 'Theme:PublishCommon:rating.html.twig' with {
+                                item: file
+                            } %}
+                        {% endif %}
+
+                        {% if brand_setting('user.publish_comments') and file.calc_num_comments or new_comment_form %}
+                            {% if downloadData.comments | length %}
+                                {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: downloadData.comments } %}
+                            {% endif %}
+
+                            {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-3">
+{#                        <div class="dp-po-sidebar dp-po-download-agree">#}
+{#                            <h3 class="dp-po-sidebar-title">EULA</h3>#}
+{#                            <ul class="dp-po-download-agree-list">#}
+{#                                <li class="dp-po-download-agree-item">#}
+{#                                    <i class="dp-po-icon far fa-check text-success"></i> Agreed by you on 27 June 2019#}
+{#                                </li>#}
+{#                            </ul>#}
+{#                        </div>#}
+
+                        {% if downloadData.related_content %}
+                            {% include 'Theme:PublishCommon:related-content.html.twig' with {
+                                related_content: downloadData.related_content
+                            } %}
+                        {% endif %}
+
+                        {% include 'Theme:PublishCommon:share.html.twig' with {
+                            item: file
+                        } %}
+
+                        {% include'Theme:Downloads:meta.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+  {% if sd %}
+    <script type="text/javascript">
+      window.setTimeout(function() {
+        window.location = '{{ path('portal_downloads_download', {'slug': file.slug}) }}';
+      }, 500);
+    </script>
+  {% endif%}
+
+{% endblock page_content %}

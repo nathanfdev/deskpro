@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Guide;
@@ -91,9 +91,9 @@ class PortalPermissionsLoader
      *
      * @return mixed
      */
-    public function getAllowedCommunityChannels(array $userGroups)
+    public function getAllowedCommunityForums(array $userGroups)
     {
-        return $this->getAllowedCategories(CommunityChannel::class, $userGroups);
+        return $this->getAllowedCategories(CommunityForum::class, $userGroups);
     }
 
     /**

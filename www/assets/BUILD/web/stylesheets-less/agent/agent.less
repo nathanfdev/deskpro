@@ -2759,7 +2759,7 @@ ul.pane-tabs {
 		display: inline-block;
 		font-size: 12px;
 	}
-	i.fa, i.fas {
+	i.fa, i.fas, i.far {
 		margin-right: 2px;
 		position: relative;
 		left: -2px;
@@ -3900,7 +3900,7 @@ em.downarrow {
     cursor: pointer;
     text-decoration: underline;
   }
-  
+
   .review-date-control-input {
 			width: 50px;
   }
@@ -4089,4 +4089,24 @@ em.downarrow {
 		font-family: monospace;
 		font-size: 90%;
 	}
+}
+
+.category-icon {
+  .icon-property {
+    position: relative;
+    i:first-child {
+      font-size: 18px;
+    }
+    i.delete {
+      position: absolute;
+      display: none;
+      left: 16px;
+      top: -4px;
+    }
+  }
+  &:hover {
+    .icon-property i.delete {
+      display: inline-block;
+    }
+  }
 }

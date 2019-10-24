@@ -1,0 +1,137 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Search:search_macros.html.twig' as search_macros %}
+
+{% block page_body %}
+    <div id="search-results-page" data-query="{{ query }}">
+
+        {% set ticket_info = results.ticket is defined ? results.ticket.pageinfo : null %}
+        {% set ticket_results = results.ticket is defined ? results.ticket.results : null %}
+        {% set article_info = results.article is defined ? results.article.pageinfo : null %}
+        {% set article_results = results.article is defined ? results.article.results : null %}
+        {% set news_info = results.news is defined ? results.news.pageinfo : null %}
+        {% set news_results = results.news is defined ? results.news.results : null %}
+        {% set community_info = results.community is defined ? results.community.pageinfo : null %}
+        {% set community_results = results.community is defined ? results.community.results : null %}
+        {% set download_info = results.download is defined ? results.download.pageinfo : null %}
+        {% set download_results = results.download is defined ? results.download.results: null %}
+        {% set guide_info = results.topic is defined ? results.topic.pageinfo : null %}
+        {% set guide_results = results.topic is defined ? results.topic.results : null %}
+
+        {% if not is_search %}
+            {{ phrase('portal.general.no-search-query') }}
+        {% elseif combined['total_results'] < 1 %}
+            {{ phrase('portal.general.no-search-results') }}
+        {% else %}
+
+            <br/>
+
+            {% if can_use_tickets() and ticket_results %}
+                <div class="search-result-category-wrapper" id="ticket_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="far fa-list-alt"></i><span class="title">{{ phrase('portal.tickets.search-title') }} <span class="count">({{ ticket_info.total_results }})</span></span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="ticket" data-next="{{ ticket_info.next ? 1 : 0 }}">
+                        {% for result_set in ticket_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if can_use_articles() and article_results %}
+                <div class="search-result-category-wrapper" id="article_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="far fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }} <span class="count">({{ article_info['total_results'] }})</span></span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="article" data-next="{{ article_info.next ? 1 : 0 }}">
+                        {% for result_set in article_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if can_use_news() and news_results %}
+                <div class="search-result-category-wrapper" id="news_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="far fa-calendar"></i><span class="title">{{ phrase('portal.news.search-title') }} <span class="count">({{ news_info['total_results'] }})</span></span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="news" data-next="{{ news_info.next ? 1 : 0 }}">
+                        {% for result_set in news_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if can_use_community() and community_results %}
+                <div class="search-result-category-wrapper" id="community_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.community.search-title') }} <span class="count">({{ community_info['total_results'] }})</span></span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="community" data-next="{{ community_info.next ? 1 : 0 }}">
+                        {% for result_set in community_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if can_use_downloads() and download_results %}
+                <div class="search-result-category-wrapper" id="download_results">
+                  <div class="deskpro-search-results">
+                    <div class="search-result-category"><hr><i class="fas fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }} <span class="count">({{ download_info['total_results'] }})</span></span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="download" data-next="{{ download_info.next ? 1 : 0 }}">
+                        {% for result_set in download_results %}
+                            {{ search_macros.search_result(result_set) }}
+                        {% endfor %}
+                      <li class="dpx-show-more">
+                        <div class="button-wrapper">
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+            {% endif %}
+
+            {% if app.hasBeta('guides') and can_use_guides() and guide_results %}
+                <div class="search-result-category-wrapper" id="guide_results">
+                    <div class="deskpro-search-results">
+                        <div class="search-result-category"><hr><i class="fas fa-book"></i><span class="title">{{ phrase('portal.topics.search-title') }} <span class="count">({{ guide_info['total_results'] }})</span></span></div>
+                        <ul class="dpx-dynamic-search-results" data-type="topic" data-next="{{ guide_info.next ? 1 : 0 }}">
+                            {% for result_set in guide_results %}
+                                {{ search_macros.search_result(result_set) }}
+                            {% endfor %}
+                            <li class="dpx-show-more">
+                                <div class="button-wrapper">
+                                    <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock page_body %}

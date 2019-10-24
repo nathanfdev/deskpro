@@ -1,0 +1,22 @@
+{% if pager|length %}
+<ul class="dp-po-kb-category-list">
+  {% for article in pager %}
+    <li class="dp-po-kb-category-item">
+        <a href="{{ portal_path(article) }}" class="dp-po-kb-category-link {% if article.hidden_status == 'draft' %}dp-po-kb-category-link-draft{% endif %}">
+            <span class="dp-po-kb-category-text">{{ article.translated_title }}</span>
+            {% include 'Theme:Articles:ArticleList/article_status.html.twig' %}
+        </a>
+    </li>
+  {% endfor %}
+</ul>
+{% else %}
+<strong>{{ phrase('portal.articles.none') }}</strong>
+{% endif %}
+
+{% if show_category_link and pager|length > 0 %}
+<div class="dp-po-viewall">
+    <a class="dp-po-viewall-link" href="{{ category ? portal_path(category) : path('portal_kb') }}">
+        {{ phrase('portal.articles.view-x-articles', {count: pager|length}) }}<i class="dp-po-icon far fa-angle-right"></i>
+    </a>
+</div>
+{% endif %}

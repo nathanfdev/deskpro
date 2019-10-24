@@ -3,13 +3,15 @@
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Orb\Data\ContentTypes;
 
 class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
@@ -63,17 +65,42 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
         $manager->persist($cat);
 
         //------------------------------
-        // Initial custom community channels:
+        // Initial custom community forums:
 
         //------------------------------
 
-        foreach (['Suggestion', 'Feature Request', 'Bug Report'] as $title) {
-            $channel = new CommunityChannel();
-            $channel->setTitle($title);
-            $manager->persist($channel);
+        foreach ([
+            'Suggestion' => [
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community/community-suggestions.png',
+                'desc' => 'A forum for suggestion about product from customers which we will investigate',
+            ],
+            'Feature Request' => [
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community/community-feature-request.png',
+                'desc' => 'A forum for feature requests like special custom fields, new email handlers or widgets for reports',
+            ],
+            'Bug Report' => [
+                'splash_image' => DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/DataFixtures/res/splash_images/community/community-bug-report.png',
+                'desc' => 'A forum for bug reporting and error messages. Do not forget to attach any log files and STR lists',
+            ],
+            ] as $title => $info) {
+            $splashFile = new \SplFileInfo($info['splash_image']);
+            $splash     = $this->container->get('deskpro.blob_storage')
+                ->createBlobRecordFromFile(
+                    $splashFile->getRealPath(),
+                    $splashFile->getFilename(),
+                    ContentTypes::getContentTypeFromFilename($splashFile->getFilename())
+                );
+
+            $splashProp = new SplashImageProperty();
+            $splashProp->setBlob($splash)->setUrn(SplashImageProperty::$blobNs.':'.$splash->getAuthId());
+
+            $forum = new CommunityForum();
+            $forum->setTitle($title)->setDescription($info['desc'])->setSplashImage($splashProp);
+            $manager->persist($splashProp);
+            $manager->persist($forum);
 
             $id = str_replace(' ', '_', strtolower($title));
-            $this->setReference('community_channel_'.$id, $channel);
+            $this->setReference('community_forum_'.$id, $forum);
         }
 
         $manager->flush();
@@ -103,9 +130,9 @@ class CategoriesFixture extends AbstractDpFixture implements OrderedFixtureInter
             ['id' => 'article_category_general', 'table' => 'article_category2usergroup', 'cat_attribute' => 'category_id'],
             ['id' => 'news_category_general', 'table' => 'news_category2usergroup', 'cat_attribute' => 'category_id'],
             ['id' => 'downloads_category_general', 'table' => 'download_category2usergroup', 'cat_attribute' => 'category_id'],
-            ['id' => 'community_channel_suggestion', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
-            ['id' => 'community_channel_feature_request', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
-            ['id' => 'community_channel_bug_report', 'table' => 'community_channel2usergroup', 'cat_attribute' => 'community_channel_id'],
+            ['id' => 'community_forum_suggestion', 'table' => 'community_forum2usergroup', 'cat_attribute' => 'community_forum_id'],
+            ['id' => 'community_forum_feature_request', 'table' => 'community_forum2usergroup', 'cat_attribute' => 'community_forum_id'],
+            ['id' => 'community_forum_bug_report', 'table' => 'community_forum2usergroup', 'cat_attribute' => 'community_forum_id'],
         ];
 
         foreach ($ref_perms as $perm) {

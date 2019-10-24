@@ -9,6 +9,7 @@ use Orb\Util\Strings;
  */
 class TicketListTablesCollection implements \IteratorAggregate
 {
+    /** @var TicketListTable[] */
     protected $tables;
 
     public function __construct()

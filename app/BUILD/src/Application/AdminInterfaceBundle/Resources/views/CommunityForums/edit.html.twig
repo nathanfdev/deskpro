@@ -1,0 +1,175 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="form_props.$valid && CommunityForumsEdit.saveCommunityForum()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.community_forums.title') }} *</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text"
+										   class="form-control"
+										   name="title"
+										   ng-model="CommunityForumsEdit.community_forum.title"
+										   dp-server-validation="title.not_blank"
+										   style="width: 50%;"
+										   autofocus required>
+								<span class="help-block">
+									{{ phrase('adm.community_forums.title_explain') }}
+								</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('adm.community_forums.usergroups') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;">
+										<label ng-repeat="usergroup in CommunityForumsEdit.usergroups" style="font-weight: normal; display: block;">
+											<input type="checkbox" ng-model="CommunityForumsEdit.selected_usergroups[usergroup.id]">
+											{{ ng_var('usergroup.title') }}
+										</label>
+									</div>
+								<span class="help-block">
+									{{ phrase('adm.community_forums.usergroups_explain') }}
+								</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('admin.community.statuses') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;">
+										<label style="font-weight: normal; display: block;">
+											<strong>{{ phrase('admin.community.active_statuses') }}</strong>
+										</label>
+									</div>
+									<div
+											data-type="active"
+											style="padding-top:6px;"
+											ui-sortable="CommunityForumsEdit.sortedStatusesOptions"
+									>
+										<label
+												data-id="{{ ng_var('status.id') }}"
+												class="with-drag-handle"
+												ng-repeat="status in CommunityForumsEdit.community_statuses['active']"
+												style="font-weight: normal; display: block;"
+										>
+											<i class="fas fa-bars drag-handle"></i>
+											<input type="checkbox" ng-model="CommunityForumsEdit.community_selected_statuses['active'][status.id]">
+											{{ ng_var('status.title') }}
+										</label>
+									</div>
+									<div style="padding-top:6px;">
+										<label style="font-weight: normal; display: block;">
+											<strong>{{ phrase('admin.community.closed_statuses') }}</strong>
+										</label>
+									</div>
+									<div
+											data-type="closed"
+											style="padding-top:6px;"
+											ui-sortable="CommunityForumsEdit.sortedStatusesOptions"
+									>
+										<label
+												data-id="{{ ng_var('status.id') }}"
+												class="with-drag-handle"
+												ng-repeat="status in CommunityForumsEdit.community_statuses['closed']"
+												style="font-weight: normal; display: block;"
+										>
+											<i class="fas fa-bars drag-handle"></i>
+											<input type="checkbox" ng-model="CommunityForumsEdit.community_selected_statuses['closed'][status.id]">
+											{{ ng_var('status.title') }}
+										</label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('admin.general.custom_fields') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group">
+									<div style="padding-top:6px;" ui-sortable="CommunityForumsEdit.sortedListOptions">
+										<label
+												class="with-drag-handle"
+												data-id="{{ ng_var('custom_field.id') }}"
+												ng-repeat="custom_field in CommunityForumsEdit.custom_fields"
+												style="font-weight: normal; display: block;"
+										>
+											<i class="fas fa-bars drag-handle"></i>
+											{{ ng_var('custom_field.title') }}
+											<a href="{{ ng_href('portal.community_forums.custom_fields.edit', '{forumId: CommunityForumsEdit.community_forum.id, id: custom_field.id}') }}"><i class="fas fa-edit"></i></a>
+											<a href="" ng-click="$event.stopPropagation(); $event.preventDefault(); CommunityForumsEdit.deleteCustomField(custom_field.id, CommunityForumsEdit.community_forum.id)"><i class="fas fa-times"></i></a>
+										</label>
+									</div>
+									<a class="btn btn-success" href="{{ ng_href('portal.community_forums.custom_fields.create', '{forumId: CommunityForumsEdit.community_forum.id}') }}">
+										+ Add
+									</a>
+								</div>
+							</div>
+						</div>
+						{% if app.hasBeta('helpcenter') %}
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>{{ phrase('agent.general.splash_image') }}</h3>
+								</div>
+								<div class="col-lg-9">
+									<div ng-hide="CommunityForumsEdit.community_forum.custom_splash_image">
+										<input type="file" ng-file-select="CommunityForumsEdit.uploadSplashImage($files)" />
+
+										<button class="btn btn-default" ng-click="CommunityForumsEdit.openUnsplashModal()" type="button" >Browse Free Images</button>
+									</div>
+									<div class="bucket" ng-if="CommunityForumsEdit.community_forum.custom_splash_image">
+										<div class="splash-image">
+											<img ng-src="{{ '{{ CommunityForumsEdit.community_forum.custom_splash_image }}' }}">
+										</div>
+										<a href ng-click="CommunityForumsEdit.deleteSplashImage()">Delete splash image</a>
+									</div>
+								</div>
+							</div>
+						{% endif %}
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required || form_props.title.$error.not_blank">
+								{{ phrase('adm.community_forums.title_error') }}
+							</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="CommunityForumsEdit.community_forum.id" ng-hide="form_props.$attempted && form_props.$invalid">
+						<button class="btn btn-danger"
+								ng-click="$event.preventDefault(); $parent.CommunityForumsList.startDelete(CommunityForumsEdit.community_forum);">
+							Delete
+						</button>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving_community_forum">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving_community_forum">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_community_forum">{{ ng_var('CommunityForumsEdit.community_forum.title') }} was saved successfully</div>
+{% endblock %}

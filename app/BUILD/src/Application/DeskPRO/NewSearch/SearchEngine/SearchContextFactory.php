@@ -45,8 +45,8 @@ class SearchContextFactory
             $context->setArticleCategoryIds($ids);
         }
         if ($person->hasPerm('community.use')) {
-            $ids = $permissionBag->getAllowedCommunityChannelIds();
-            $context->setCommunitychannelIds($ids);
+            $ids = $permissionBag->getAllowedCommunityForumIds();
+            $context->setCommunityForumIds($ids);
         }
         if ($person->hasPerm('news.use')) {
             $ids = $permissionBag->getAllowedNewsCategories();

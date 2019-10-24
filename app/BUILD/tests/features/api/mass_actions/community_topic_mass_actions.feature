@@ -12,12 +12,12 @@ Feature: /mass_actions/community_topics endpoint
       | ctsc1 | active      | Collected | 0             |
       | ctsc2 | active      | Accepted  | 0             |
       | ctsc3 | closed      | Declined  | 0             |
-    And only the following "CommunityChannel" records exist:
+    And only the following "CommunityForum" records exist:
       | #   | title      | slug       |
       | cc1 | Feature    | feature    |
       | cc2 | Suggestion | suggestion |
     And only the following "CommunityTopic" records exist:
-      | #     | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
+      | #     | status_category | forum   | person  | is_reviewed | slug   | title  | content | status |
       | topic | {ctsc1}         | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
 
   Scenario: I set incorrect hidden_status for topic
@@ -94,7 +94,7 @@ Feature: /mass_actions/community_topics endpoint
   "params":{
      "set_category": ~cdf2~,
      "set_status_category": ~ctsc1~,
-     "set_channel": ~cc2~,
+     "set_forum": ~cc2~,
      "add_labels": ["first", "second"]
   }
 }
@@ -106,7 +106,7 @@ Feature: /mass_actions/community_topics endpoint
     And the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{topic}"
-    And the JSON node "data.channel" should be equal to "{cc2}"
+    And the JSON node "data.forum" should be equal to "{cc2}"
     And the JSON node "data.status_category" should be equal to "{ctsc1}"
     And the JSON node "data.fields.{cdf1}.value" should be equal to "1"
     And the JSON node "data.labels[0]" should be equal to "first"

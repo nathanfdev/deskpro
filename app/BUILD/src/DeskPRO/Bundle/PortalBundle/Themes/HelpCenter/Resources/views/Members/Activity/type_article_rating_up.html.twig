@@ -1,0 +1,10 @@
+<div class="dp-po-profile-activity-icon">
+    <i class="dp-po-icon far fa-chevron-circle-up"></i>
+</div>
+<div class="dp-po-profile-activity-desc">
+    <a href="{{ path('portal_kb_view', {slug: activity.slug}) }}" class="dp-po-profile-activity-link">
+        {{ phrase('portal.members.activity.up_voted') }}
+        <img class="dp-po-profile-activity-image" src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">
+        <span>{{ activity.description|truncate(truncateDescription) }}</span>
+    </a>
+</div>

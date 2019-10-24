@@ -146,7 +146,7 @@ define([
     }
 
     /**
-        * Creates entities for custom community channels raw data
+        * Creates entities for custom community forums raw data
         *
         * @return {Promise}
     */

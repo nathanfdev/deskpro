@@ -1,0 +1,34 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+<div class="dp-po">
+  <main class="dp-po-main dp-po-knowledgebase-home">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-9">
+          <div class="dp-po-title">
+            <h2 class="dp-po-title-text">{{ object_phrase(category) }}</h2>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          {#            <%- include('_partials/_subscribe.ejs'); %>#}
+        </div>
+      </div>
+
+      {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
+        category_children: kb_data.data.category_children,
+        category: kb_data.data.category,
+        category_pager: kb_data.data.category_pager,
+        category_children: kb_data.data.category_children,
+        category_children_pagers: kb_data.data.category_children_pagers,
+        articles_count: count,
+        with_tree: brand_setting('user.kb_categories_with_tree'),
+      } %}
+
+      {% include 'Theme:Articles:ArticleList/detail.html.twig' with {
+        show_pager: true
+      } %}
+    </div>
+  </main>
+</div>
+{% endblock page_content %}

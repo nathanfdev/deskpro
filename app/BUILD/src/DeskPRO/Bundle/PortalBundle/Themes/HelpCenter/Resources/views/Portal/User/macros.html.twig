@@ -1,0 +1,15 @@
+{% macro user_notice(type, title, subtitle = null) %}
+
+<div class="alert alert-icon alert-{{ type }}">
+    <i class="dp-po-icon fas fa-lock"></i>
+    {{ title }}
+    <p>{{ subtitle }}</p>
+</div>
+{% endmacro %}
+
+{% macro lockout_notice(title, lockout, lockout_time) %}
+    {% import _self as this %}
+    {% if lockout %}
+        {{ this.user_notice('auth', title, lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time})) }}
+    {% endif %}
+{% endmacro %}

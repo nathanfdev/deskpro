@@ -25,7 +25,7 @@
                 <div class="site-text" ng-show="Portal.isOpen('theme')">
                     <select ng-model="Portal.selected_theme"
                             ng-change="Portal.editTheme()"
-                            ng-options="item.id as item.title for item in Portal.available_themes">
+                            ng-options="item.id as item.title for item in Portal.available_themes {% if not app.getSetting('beta_features.helpcenter') %} | filter:{id: '!helpcenter'} {% endif %}">
                     </select>
                 </div>
 
@@ -99,6 +99,54 @@
                             </div>
                             <a href ng-click="Portal.deleteFavicon()">Delete favicon</a>
                         </div>
+                    </div>
+                </div>
+
+
+                <div ng-show="Portal.selected_theme == 'helpcenter'">
+                    <!-- Splash Image -->
+                    <div class="panel-title">
+                        <a ng-click="Portal.togglePanel('splash_image')">
+                            {{ phrase('agent.general.splash_image') }}
+                            <i class="fas fa-caret-right" ng-show="!Portal.isOpen('splash_image')"></i>
+                            <i class="fas fa-caret-down" ng-show="Portal.isOpen('splash_image')"></i>
+                        </a>
+                    </div>
+                    <div class="alert alert-danger inner-group" ng-show="errors.splash_image">
+                        <span ng-if="errors.splash_image">{{ ng_var('errors.splash_image') }}</span>
+                    </div>
+                    <div ng-show="Portal.isOpen('splash_image')">
+                        <div class="logo-box logo-size-desktop">
+                            <div ng-hide="Portal.custom_splash_image">
+                                <input type="file" ng-file-select="Portal.uploadSplashImage($files)" />
+
+                                <button ng-click="Portal.openUnsplashModal()" >Browse Free Images</button>
+                            </div>
+                            <div class="bucket" ng-if="Portal.custom_splash_image">
+                                <div class="splash-image">
+                                    <img ng-src="{{ '{{ Portal.custom_splash_image }}' }}">
+                                </div>
+                                <a href ng-click="Portal.deleteSplashImage()">Delete splash image</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Theme Options -->
+                    <div class="panel-title">
+                        <a ng-click="Portal.togglePanel('theme_options')">
+                            Theme Options
+                            <i class="fas fa-caret-right" ng-show="!Portal.isOpen('theme_options')"></i>
+                            <i class="fas fa-caret-down" ng-show="Portal.isOpen('theme_options')"></i>
+                        </a>
+                    </div>
+                    <div ng-show="Portal.isOpen('theme_options')">
+                        <form>
+                            <input type="checkbox" id="show_section_navigation" ng-model="theme_options.show_section_navigation" /> <label
+                                    for="show_section_navigation">Show section navigation buttons on the home page</label>
+                            <div class="footer">
+                                <button ng-click="Portal.saveThemeOptions()">Set &amp; Preview</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 

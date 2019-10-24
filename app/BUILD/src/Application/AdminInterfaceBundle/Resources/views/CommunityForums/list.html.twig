@@ -1,0 +1,69 @@
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.community_settings') }}">
+			<em><i class="fas fa-chevron-down"></i></em>
+			<h3>Community Settings</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.community_statuses') }}">
+			<em><i class="fas fa-chevron-down"></i></em>
+			<h3>{{ phrase('admin.community.community_statuses') }}</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<nav>
+				<span dp-ping-flash="display_orders" class="saved-ping"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
+				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
+			</nav>
+			<h3 ng-pluralize count="CommunityForumsList.community_forums.length || 0" when="{{ ng_plural_phrase('adm.general.x_community_forums') }}"></h3>
+		</header>
+		<article>
+			<ul class="dp-item-list" ui-sortable="CommunityForumsList.sortedListOptions">
+				<li class="with-drag-handle" ng-repeat="forum in CommunityForumsList.community_forums" dp-state-mark="forumId:portal.community_forums.edit.{{ ng_var('forum.id') }}" data-id="{{ ng_var('forum.id') }}" ng-if="forum.brand == brand_id">
+					<a href="{{ ng_href('portal.community_forums.edit', '{id: forum.id}') }}">
+						<i class="fas fa-bars drag-handle"></i>
+						<h4><span class="title-id" title="ID">#{{ ng_var('forum.id') }}</span> <span class="title-text">{{ ng_var('forum.title') }}</span></h4>
+					</a>
+				</li>
+			</ul>
+			<div class="dp-add-control">
+				<a class="btn btn-default" href="{{ ng_href('portal.community_forums.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+			</div>
+		</article>
+	</section>
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.community_labels') }}">
+			<em><i class="fas fa-chevron-down"></i></em>
+			<h3>Community Topics Labels</h3>
+		</a>
+	</section>
+
+	<div dp-register-message="saved_settings">{{ phrase('adm.general.save_settings_success') }}</div>
+	<div dp-register-message="no_delete_last">{{ phrase('adm.community_forums.no_delete_last') }}</div>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Channels help agents to organize incoming community topics.</h1>
+		<p>Users have to choose a forum when they submit a topic. The forum field can be used to record whether the topic is a suggestion, complaint, bug report etc.</p>
+	</header>
+
+	<article>
+			<section>
+				<p>Customize the forums available here. Click to edit, or drag to change the order in which they are displayed to users and agents.</p>
+			</section>
+
+		<section class="related-content">
+				<h2><span>Related Content</span></h2>
+				<ul>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Community forums</a></li>
+
+				</ul>
+			</section>
+	</article>
+{% endblock %}

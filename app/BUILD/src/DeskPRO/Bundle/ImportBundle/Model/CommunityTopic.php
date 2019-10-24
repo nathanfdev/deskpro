@@ -66,7 +66,7 @@ class CommunityTopic implements PersonAwareInterface, LabelAwareModelInterface, 
      *
      * @JMS\Type("string")
      */
-    private $channel;
+    private $forum;
 
     /**
      * @var string
@@ -106,25 +106,25 @@ class CommunityTopic implements PersonAwareInterface, LabelAwareModelInterface, 
     protected $status;
 
     /**
-     * Community topic channel.
+     * Community topic forum.
      *
      * @return string
      */
-    public function getChannel()
+    public function getForum()
     {
-        return $this->channel;
+        return $this->forum;
     }
 
     /**
-     * Set community topic channel.
+     * Set community topic forum.
      *
-     * @param string $channel
+     * @param string $forum
      *
      * @return $this
      */
-    public function setChannel($channel)
+    public function setForum($forum)
     {
-        $this->channel = $channel;
+        $this->forum = $forum;
 
         return $this;
     }

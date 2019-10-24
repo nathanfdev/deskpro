@@ -1,0 +1,49 @@
+{% if pager|length > 0 %}
+<div class="dp-po-section dp-po-block">
+  <div class="dp-po-article">
+    <ul class="dp-po-article-list">
+    {% for article in pager %}
+      <li class="dp-po-article-item">
+        <div class="row">
+          <div class="col-sm-9">
+            <a href="{{ portal_path(article) }}" class="dp-po-article-linktitle">
+              {{ article.translated_title }}
+              {% if article.status != 'published' %}{% include 'Theme:Articles:ArticleList/article_status.html.twig' %}{% endif %}
+            </a>
+            <div class="dp-po-article-extras">
+              <div class="dp-po-article-author">
+                <a href="" class="dp-po-article-linkauthor">
+                  <div class="dp-po-avatar dp-po-avatar-round">
+                    {{ hc_avatar(article.person) }}
+                    <strong>{{ article.person.display_name_user }}</strong>
+                  </div>
+                </a>
+              </div>
+              <div class="dp-po-article-date">
+                <p>Published: <span>{{ article.date_published | date('day') }}</span></p>
+              </div>
+              {% if brand_setting('user.publish_comments') %}
+              <div class="dp-po-article-comments">
+                <i class="dp-po-icon far fa-comment-alt-lines"></i> {{ article.calc_num_comments }}
+              </div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="dp-po-time">
+              <i class="dp-po-icon far fa-clock"></i>
+              {{ article.date_updated | date('day') }}
+            </div>
+          </div>
+        </div>
+      </li>
+    {% endfor %}
+    </ul>
+  </div>
+</div>
+    {% if show_pager %}
+        {% include 'Theme:Common:pager.html.twig' %}
+    {% endif %}
+{% else %}
+  <strong>{{ phrase('portal.articles.none') }}</strong>
+{% endif %}

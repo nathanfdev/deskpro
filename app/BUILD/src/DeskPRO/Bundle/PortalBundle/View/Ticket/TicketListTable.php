@@ -7,40 +7,42 @@ use DeskPRO\Bundle\AppBundle\DataService\TicketsDataService;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumn;
 use DeskPRO\Bundle\AppBundle\Model\TicketColumns;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 
 class TicketListTable
 {
-    protected $ticket_type;
-    protected $ticket_category;
-    protected $ticket_filter;
+    protected $ticketType;
+    protected $ticketCategory;
+    protected $ticketFilter;
     protected $page;
-    protected $per_page;
+    protected $perPage;
     protected $pager;
-    protected $page_name;
-    protected $sort_name;
-    protected $sort_direction_name;
+    protected $pageName;
+    protected $sortName;
+    protected $sortDirectionName;
     protected $title;
     /**
      * @var TicketColumns
      */
     protected $columns;
-    protected $active_columns_name;
+    protected $activeColumns;
+    protected $activeColumnsName;
 
-    public function __construct($ticket_category, $ticket_type, $title, TicketColumns $columns, Request $request, $per_page)
+    public function __construct($ticketCategory, $ticketType, $title, TicketColumns $columns, Request $request, $perPage)
     {
-        $this->ticket_category     = $ticket_category;
-        $this->ticket_type         = $ticket_type;
-        $this->title               = $title;
-        $this->page_name           = $ticket_category.'_page';
-        $this->sort_name           = $ticket_category.'_sort';
-        $this->sort_direction_name = $ticket_category.'_sort_direction';
-        $this->active_columns_name = $ticket_category.'_cols';
-        $this->ticket_filter       = null;
-        $this->pager               = null;
-        $this->active_columns      = [];
-        $this->columns             = $columns;
-        $this->per_page            = $per_page;
+        $this->ticketCategory    = $ticketCategory;
+        $this->ticketType        = $ticketType;
+        $this->title             = $title;
+        $this->pageName          = $ticketCategory.'_page';
+        $this->sortName          = $ticketCategory.'_sort';
+        $this->sortDirectionName = $ticketCategory.'_sort_direction';
+        $this->activeColumnsName = $ticketCategory.'_cols';
+        $this->ticketFilter      = null;
+        $this->pager             = null;
+        $this->activeColumns     = [];
+        $this->columns           = $columns;
+        $this->perPage           = $perPage;
         $this->makeFilterWithRequest($request);
     }
 
@@ -53,24 +55,24 @@ class TicketListTable
         $js .= "\treturn {\n";
         $js .= "\t\tcolumns: [\n";
 
-        $fields_js = [];
+        $fieldsJs = [];
         foreach ($this->columns->getColumns() as $column) {
-            $bit_js = "\t\t\t{\n";
-            $bit_js .= "\t\t\t\tid:                    '{$column->getId()}',\n";
-            $bit_js .= "\t\t\t\tlabel:                  '{$column->getLabel()}',\n";
-            $bit_js .= "\t\t\t\ttype:                  '{$column->getType()}',\n";
-            $bit_js .= "\t\t\t\tactive:                  ".($this->isActive($column) ? 'true' : 'false')."\n";
-            $bit_js .= "\t\t\t}";
-            $fields_js[] = $bit_js;
+            $bitJs = "\t\t\t{\n";
+            $bitJs .= "\t\t\t\tid:                    '{$column->getId()}',\n";
+            $bitJs .= "\t\t\t\tlabel:                  '{$column->getLabel()}',\n";
+            $bitJs .= "\t\t\t\ttype:                  '{$column->getType()}',\n";
+            $bitJs .= "\t\t\t\tactive:                  ".($this->isActive($column) ? 'true' : 'false')."\n";
+            $bitJs .= "\t\t\t}";
+            $fieldsJs[] = $bitJs;
         }
 
-        $js .= implode(",\n", $fields_js)."\n\t\t],\n";
+        $js .= implode(",\n", $fieldsJs)."\n\t\t],\n";
 
         $js .= "\t\tactive_columns: [\n";
-        $js .= "\t\t\t'".implode("',\n\t\t\t'", $this->active_columns)."'\n";
+        $js .= "\t\t\t'".implode("',\n\t\t\t'", $this->activeColumns)."'\n";
         $js .= "\t\t],\n";
 
-        $js .= "\t\tactive_columns_param: '{$this->active_columns_name}'\n";
+        $js .= "\t\tactive_columns_param: '{$this->activeColumnsName}'\n";
 
         $js .= "\t}\n";
 
@@ -81,22 +83,22 @@ class TicketListTable
 
     public function isActive(TicketColumn $column)
     {
-        return in_array($column->getId(), $this->active_columns);
+        return in_array($column->getId(), $this->activeColumns);
     }
 
     protected function makeFilterWithRequest(Request $request, $per_page = 50)
     {
-        $this->ticket_filter = new TicketFilter(
-            $this->ticket_type,
-            $this->ticket_category,
-            $request->query->get($this->sort_name, 'activity'),
-            $request->query->get($this->sort_direction_name, 'desc'),
+        $this->ticketFilter = new TicketFilter(
+            $this->ticketType,
+            $this->ticketCategory,
+            $request->query->get($this->sortName, 'activity'),
+            $request->query->get($this->sortDirectionName, 'desc'),
             $request->query->get('q')
         );
-        $this->page           = $request->query->get($this->page_name, 1);
-        $this->per_page       = $per_page;
-        $this->active_columns = explode(',', $request->query->get(
-            $this->active_columns_name,
+        $this->page          = $request->query->get($this->pageName, 1);
+        $this->perPage       = $per_page;
+        $this->activeColumns = explode(',', $request->query->get(
+            $this->activeColumnsName,
             implode(',', $this->getDefaultColumnsIds())
         )); //comma seperated list of col ids (consts on this class)
     }
@@ -108,25 +110,25 @@ class TicketListTable
 
     public function makePagerUsingDataService(TicketsDataService $data_service, Person $person)
     {
-        if (!$this->ticket_filter) {
-            throw new \RuntimeException('TicketListTable::makrPagerUsingDataService requires that a filter be present');
+        if (!$this->ticketFilter) {
+            throw new RuntimeException('TicketListTable::makrPagerUsingDataService requires that a filter be present');
         }
 
-        $this->pager = $data_service->getPager($person, $this->ticket_filter, $this->page, $this->per_page);
+        $this->pager = $data_service->getPager($person, $this->ticketFilter, $this->page, $this->perPage);
 
         return $this->pager;
     }
 
     public function getActiveColumns()
     {
-        return $this->active_columns;
+        return $this->activeColumns;
     }
 
     public function getDefaultColumnsIds()
     {
         // get the initial columns to show by default
 
-        if ($this->ticket_type === TicketFilter::TYPE_ORGANIZATION) {
+        if ($this->ticketType === TicketFilter::TYPE_ORGANIZATION) {
             return [
                 TicketColumn::TYPE_SUBJECT,
                 TicketColumn::TYPE_DEPARTMENT,
@@ -149,7 +151,7 @@ class TicketListTable
      */
     public function getTicketType()
     {
-        return $this->ticket_type;
+        return $this->ticketType;
     }
 
     /**
@@ -157,12 +159,12 @@ class TicketListTable
      */
     public function getTicketCategory()
     {
-        return $this->ticket_category;
+        return $this->ticketCategory;
     }
 
     public function getTicketFilter()
     {
-        return $this->ticket_filter;
+        return $this->ticketFilter;
     }
 
     /**
@@ -178,7 +180,7 @@ class TicketListTable
      */
     public function getPerPage()
     {
-        return $this->per_page;
+        return $this->perPage;
     }
 
     public function getPager()
@@ -191,7 +193,7 @@ class TicketListTable
      */
     public function getPageName()
     {
-        return $this->page_name;
+        return $this->pageName;
     }
 
     /**
@@ -199,7 +201,7 @@ class TicketListTable
      */
     public function getSortName()
     {
-        return $this->sort_name;
+        return $this->sortName;
     }
 
     /**
@@ -207,7 +209,7 @@ class TicketListTable
      */
     public function getSortDirectionName()
     {
-        return $this->sort_direction_name;
+        return $this->sortDirectionName;
     }
 
     /**

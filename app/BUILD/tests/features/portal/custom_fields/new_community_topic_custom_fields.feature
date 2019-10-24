@@ -4,14 +4,14 @@ Feature: New community topic form custom fields
   Background:
     Given I'm authenticated as user
     And no "CommunityTopic" records exist
-    And only the following CommunityChannel records exist:
-      | #  | Title      |
-      | cc1 | Channel 1 |
-      | cc2 | Channel 2 |
-      | cc3 | Channel 3 |
-    And I grant the "{cc1}" community channel permission for usergroup everyone
-    And I grant the "{cc2}" community channel permission for usergroup everyone
-    And I grant the "{cc3}" community channel permission for usergroup everyone
+    And only the following CommunityForum records exist:
+      | #   | Title   |
+      | cc1 | Forum 1 |
+      | cc2 | Forum 2 |
+      | cc3 | Forum 3 |
+    And I grant the "{cc1}" community forum permission for usergroup everyone
+    And I grant the "{cc2}" community forum permission for usergroup everyone
+    And I grant the "{cc3}" community forum permission for usergroup everyone
     And I set permission "community.use" = 1 for "everyone" usergroup
 
   Scenario: I check custom fields exist on the form
@@ -30,7 +30,7 @@ Feature: New community topic form custom fields
       | text_field | text | Text field |
     And I go to "/community"
 
-    When I select "Channel 1" from "new_community_topic_channel"
+    When I select "Forum 1" from "new_community_topic_forum"
     And I fill in "new_community_topic_title" with "Title"
     And I fill in "new_community_topic_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"
@@ -43,7 +43,7 @@ Feature: New community topic form custom fields
       | text_field | text | Text field | {"required": true, "min_length": 10} |
     And I go to "/community"
 
-    When I select "Channel 2" from "new_community_topic_channel"
+    When I select "Forum 2" from "new_community_topic_forum"
     And I fill in "new_community_topic_title" with "Title"
     And I fill in "new_community_topic_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic[custom_data][{text_field}][data]" with "12345"

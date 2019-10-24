@@ -1,0 +1,13 @@
+{% for user in users %}
+<li class="dp-po-post-user-item">
+	<div class="dropdown">
+		<a href="#" class="dp-po-post-user-link" role="button" id="userDropdownMenuLink-{{ user.getId() }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			{% include "Theme:Common:person_inline.html.twig" with {person: user, include_email: false } %}
+		</a>
+		<div class="dropdown-menu dropdown-menu-left" aria-labelledby="userDropdownMenuLink-{{ user.getId() }}">
+			<a class="dropdown-item" href="#">User Profile</a>
+			<a class="dropdown-item" href="#">Send user a Direct Message</a>
+		</div>
+	</div>
+</li>
+{% endfor %}

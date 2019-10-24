@@ -1,0 +1,69 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% form_theme profile_form _self %}
+{% block cf_definition_contextual_choice_widget %}
+    {% spaceless %}
+
+        {% for child in form._children %}
+            {{ form_row(child, {attr: {style: 'margin-bottom:5px;'} }) }}
+        {% endfor %}
+
+        {% set idx = form._children|length %}
+        {% if form.vars.allow_edit %}
+        <input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][id]" value="cb_1" />
+        <input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][display_order]" value="10" />
+        <input type="text" name="{{ form._children.vars.full_name }}[{{ idx }}][title]" style="width: 60%;" />&nbsp;
+        <button type="submit" class="dp-btn dp-btn-default" style="width: 37%;">
+            Add
+        </button>
+        {% endif %}
+    {% endspaceless %}
+{% endblock cf_definition_contextual_choice_widget %}
+
+{% block page_content %}
+<div class="dp-po">
+    <main class="dp-po-main dp-po-your-account">
+        <div class="container">
+            <div class="dp-po-title">
+                <img src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" class="dp-po-title-svg">
+                <h2 class="dp-po-title-text">{{ phrase('portal.account.section-title-your-account') }}</h2>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="dp-po-block">
+                        {% include 'Theme:Portal:User/profile-sidebar.html.twig' with { active : 'profile' } %}
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="dp-po-block dp-po-section">
+                        <section class="dp-po-account-form">
+                            {{ form_start(profile_form, { attr: { class: 'do-po-form helpcenter-form' } }) }}
+                            {{ form_errors(profile_form) }}
+                            {{ form_row(profile_form.name) }}
+                            {% if app.getSetting('portal.members_community') %}
+                                {{ form_row(profile_form.community_name) }}
+                            {% endif %}
+                            {% if profile_form.language_id is defined %}
+                                {{ form_row(profile_form.language_id) }}
+                            {% endif %}
+                            {% if profile_form.delete_picture is defined %}
+                                <img src="{{ person.picture_url }}" alt="{{ person }}"/>
+                                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('portal.account.profile-delete-picture'), label: false }) }}
+                            {% else %}
+                                {{ form_row(profile_form.upload_picture) }}
+                            {% endif %}
+                            {{ form_row(profile_form.timezone) }}
+                            {% if profile_form.manager_auto_add is defined %}
+                                {{ form_row(profile_form.manager_auto_add) }}
+                            {% endif %}
+                            {{ form_rest(profile_form) }}
+                            <button type="submit" class="btn btn-primary">{{ phrase('portal.account.profile-btn-save') }}</button>
+                            {{ form_end(profile_form) }}
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock page_content %}

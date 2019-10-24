@@ -1,0 +1,29 @@
+<div class="dp-po-md-collapse dp-po-wrap-item">
+    {% if block("title") is defined %}<span class="dp-po-md-collapse-title dp-po-title">{% block title %}{% endblock %}</span>{% endif %}
+    <div class="dp-po-md-collapse-content">
+        {% block content %}{% endblock %}
+        {% if propertyList is defined %}
+            <ul class="dp-po-List List--col dp-po-user-list">
+                {% for prop in propertyList %}
+                    <li>
+                        {% if prop.label is defined %}
+                            <span class="dp-po-title">
+                                {{ prop.label }}
+                                {% if prop.labelTooltip is defined %}
+                                    <span class="dp-po-tooltip-wrap">
+                                        <span class="dp-po-Icon Icon--info Icon--primary"></span>
+                                        <span class="dp-po-tooltip">{{ prop.labelTooltip }}</span>
+                                    </span>
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                        {% if prop.value is defined %}
+                            <span>{{ prop.value }}</span>
+                        {% endif %}
+                        {% if prop.block is defined and block(prop.block) is defined and block(prop.block)|trim is not empty %}{{ block(prop.block) }}{% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>

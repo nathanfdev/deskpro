@@ -54,15 +54,15 @@ class ContentCommentVoter extends AbstractVoter
 
         switch ($attribute) {
             case static::COMMENT_ARTICLE:
-                return $permissionsBag->get('articles.comment') && $permitted;
+                return $this->isLoggedIn($user) && $permissionsBag->get('articles.comment') && $permitted;
             case static::COMMENT_COMMUNITY:
-                return $permissionsBag->get('community.comment') && $permitted;
+                return $this->isLoggedIn($user) && $permissionsBag->get('community.comment') && $permitted;
             case static::COMMENT_DOWNLOAD:
-                return $permissionsBag->get('downloads.comment') && $permitted;
+                return $this->isLoggedIn($user) && $permissionsBag->get('downloads.comment') && $permitted;
             case static::COMMENT_NEWS:
-                return $permissionsBag->get('news.comment') && $permitted;
+                return $this->isLoggedIn($user) && $permissionsBag->get('news.comment') && $permitted;
             case static::COMMENT_TOPIC:
-                return $permissionsBag->get('guides.comment') && $permitted;
+                return $this->isLoggedIn($user) && $permissionsBag->get('guides.comment') && $permitted;
         }
 
         return false;

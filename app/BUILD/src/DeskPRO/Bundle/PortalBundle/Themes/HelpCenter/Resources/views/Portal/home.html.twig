@@ -1,0 +1,131 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-homepage">
+            <div class="container">
+
+                {% block content_header %}
+                    {% if theme_option('theme_options') is null or theme_option('theme_options', {}).show_section_navigation %}
+                        {% include 'Theme:Portal:nav_buttons_big.html.twig' %}
+                    {% endif %}
+
+                    {% include 'Theme:Portal:welcome-box.html.twig' %}
+                {% endblock content_header %}
+
+                {% if can_use_news() %}
+                    <div class="dp-po-homepage-news">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="dp-po-title">
+                                    <a href="{{ path('portal_news') }}" class="dp-po-title-link">
+                                        <img class="dp-po-title-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
+                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h2>
+                                    </a>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-6 d-flex justify-content-end">
+            {#                    <%- include('_partials/_subscribe-1.ejs'); %>#}
+                            </div>
+                        </div>
+
+                        <div class="dp-po-block">
+                            {% include 'Theme:News:blocks/news-carousel.html.twig' with {
+                                posts: helpcenter.getNewsPosts({ count: 3, category: null }),
+                                showSectionLink: true
+                            } %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if can_use_articles() %}
+                    <div class="dp-po-homepage-kb">
+                        <div class="dp-po-title">
+                            <a href="{{ path('portal_kb') }}" class="dp-po-title-link">
+                                <img class="dp-po-title-svg"
+                                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">
+                                <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section-title') }}</h2>
+                            </a>
+                        </div>
+                        {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
+                            category_children: kb_data.data.category_children,
+                            category: kb_data.data.category,
+                            category_pager: kb_data.data.category_pager,
+                            category_children: kb_data.data.category_children,
+                            category_children_pagers: kb_data.data.category_children_pagers,
+                            articles_count: kb_data.data.articles_count,
+                            with_tree: kb_data.data.with_tree,
+                        } %}
+                    </div>
+                {% endif %}
+
+                {% if has_any_community() %}
+                    {# TODO margin #}
+                    <div class="dp-po-homepage-community">
+                        <div class="row align-items-center">
+                            <div class="col-sm-3">
+                                <div class="dp-po-title">
+                                    <a href="{{ path('portal_community') }}" class="dp-po-title-link">
+                                        <img class="dp-po-title-svg"
+                                             src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+                                        <h2 class="dp-po-title-text">{{ phrase('helpcenter.community.section-title') }}</h2>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <div class="dp-po-community-channel-tags">
+                                    <ul class="dp-po-community-channel-tags-list">
+                                        {% for info in helpcenter.getCommunityForumsWithCounts() %}
+                                            <li class="dp-po-community-channel-tags-item">
+                                                <a href="{{ portal_path(info.forum) }}" class="dp-po-community-channel-tags-link">
+                                                    #{{info.forum.title}}
+                                                    <span class="dp-po-community-channel-tags-count">({{ info.count }})</span>
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="dp-po-block">
+                                    <div class="dp-po-community-status">
+                                        <h2 class="dp-po-community-status-title">Latest status changes</h2>
+                                        {% include 'Theme:Community:blocks/simple-topics-list-voter.html.twig' with {
+                                            topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'most-popular' })
+                                        } %}
+                                        <div class="dp-po-viewall">
+                                            <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
+                                                {{ phrase('helpcenter.general.view_all') }}
+                                                <i class="dp-po-icon far fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="dp-po-block">
+                                    <div class="dp-po-community-status">
+                                        <h2 class="dp-po-community-status-title">Latest status changes</h2>
+                                        {% include 'Theme:Community:blocks/simple-topics-list-status.html.twig' with {
+                                            topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'status-change' })
+                                        } %}
+                                        <div class="dp-po-viewall">
+                                            <a class="dp-po-viewall-link" href="{{ path('portal_community') }}">
+                                                {{ phrase('helpcenter.general.view_all') }}
+                                                <i class="dp-po-icon far fa-angle-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

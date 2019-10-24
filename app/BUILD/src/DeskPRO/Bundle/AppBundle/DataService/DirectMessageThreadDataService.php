@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessageBlock;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\DirectMessageThread;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -18,13 +19,16 @@ class DirectMessageThreadDataService extends AbstractDataService
      * @TODO: return
      *
      * @param Person $user
-     * @param bool   $isUnread
+     * @param bool $isUnread
      *
-     * @return DirectMessageThread[]
+     * @param $page
+     * @param $maxPerPage
+     * @param bool $includesLatestMessage TRUE to include the latest message content
+     * @return Pagerfanta
      */
-    public function getForUser(Person $user, $isUnread, $page, $maxPerPage)
+    public function getForUser(Person $user, $isUnread, $page, $maxPerPage, $includesLatestMessage = false)
     {
-        $qb    = $this->em->getRepository(DirectMessageThread::class)->getForUser($user, $isUnread, true);
+        $qb    = $this->em->getRepository(DirectMessageThread::class)->getForUser($user, $isUnread, true, $includesLatestMessage);
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($maxPerPage);
         $pager->setCurrentPage($page);
@@ -35,11 +39,12 @@ class DirectMessageThreadDataService extends AbstractDataService
     /**
      * @param DirectMessageThread[] $threads
      *
+     * @param null|int $entityIndex
      * @return array
      */
-    public function getParticipantsGroupedByThreads($threads)
+    public function getParticipantsGroupedByThreads($threads, $entityIndex = null)
     {
-        return $this->em->getRepository(DirectMessageParticipant::class)->getGroupedForThreads($threads);
+        return $this->em->getRepository(DirectMessageParticipant::class)->getGroupedForThreads($threads, $entityIndex);
     }
 
     /**
@@ -66,6 +71,11 @@ class DirectMessageThreadDataService extends AbstractDataService
                 $participantTo->setIsUnread(true);
                 $participantTo->setThread($thread);
 
+                $this->assertNotBeingBlocked(
+                    $thread,
+                    $personFrom
+                );
+
                 $this->em->persist($thread);
                 $this->em->persist($participantFrom);
                 $this->em->persist($participantTo);
@@ -87,9 +97,16 @@ class DirectMessageThreadDataService extends AbstractDataService
 
     /**
      * @param DirectMessage $message
+     * @param Person $sender
+     * @throws \Exception
      */
-    public function saveMessage(DirectMessage $message)
+    public function saveMessage(DirectMessage $message, Person $sender)
     {
+        $this->assertNotBeingBlocked(
+            $message->getAuthor()->getThread(),
+            $sender
+        );
+
         $this->em->beginTransaction();
 
         try {
@@ -115,6 +132,24 @@ class DirectMessageThreadDataService extends AbstractDataService
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;
+        }
+    }
+
+    /**
+     * @param DirectMessageThread $thread
+     * @param Person $sender
+     */
+    private function assertNotBeingBlocked(DirectMessageThread $thread, Person $sender)
+    {
+        $isBeingBlocked = $this
+            ->em
+            ->getRepository(DirectMessageBlock::class)
+            ->isBlockedByThread($thread, $sender)
+        ;
+
+        if ($isBeingBlocked) {
+            throw new \DomainException('Cannot send message to user as either you are blocking this user or '
+                .'they are blocking you');
         }
     }
 }

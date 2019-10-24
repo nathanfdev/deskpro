@@ -232,6 +232,14 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Orb.Class({
 			});
 		});
 
+		var iconPicker = this.getEl('pick_cat_icon');
+		var icon = {
+		  urn: iconPicker.find('input[name=icon_urn]').val(),
+      color: iconPicker.find('input[name=icon_color]').val(),
+      style: iconPicker.find('input[name=icon_style]').val()
+    };
+		window.AgentLegacyBundle.renderIconPicker(iconPicker, icon);
+
 		allUg = catEl.find('.ug-check');
 		ugEveryone = allUg.filter('.ug-1');
 		ugOther    = allUg.not('.ug-1');

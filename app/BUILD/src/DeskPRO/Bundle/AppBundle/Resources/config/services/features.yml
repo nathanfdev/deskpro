@@ -93,3 +93,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.helpcenter:
+    class: DeskPRO\Bundle\AppBundle\Features\HelpcenterFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

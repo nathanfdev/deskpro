@@ -1,0 +1,56 @@
+<div class="dp-po-news-carousel">
+    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left">
+        <i class="dp-po-icon far fa-angle-left"></i>
+    </button>
+    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right">
+        <i class="dp-po-icon far fa-angle-right"></i>
+    </button>
+    <ul class="dp-po-news-carousel-list">
+        {% for item in posts %}
+            <li class="dp-po-news-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
+                <a href="{{ portal_path(item) }}" class="dp-po-news-carousel-link">
+                    <p class="dp-po-news-carousel-day">
+                        <span class="dp-po-news-carousel-month">{{ item.date_published | date('M') }}</span>
+                        <span class="dp-po-news-carousel-date">{{ item.date_published | date('j') }}</span>
+                    </p>
+                    <div class="dp-po-news-carousel-cover">
+                        {% if has_splash(item) %}
+                                    <img src="{{ get_splash_url(item, 300) }}"
+                                         class="dp-po-news-carousel-photo img-fluid" />
+                        {% endif %}
+                        <span class="badge badge-info" style="{{ category_color_css(item.category) }}">{{ object_phrase(item.category) }}</span>
+                        {% if has_splash(item) %}
+                            {% if item.person %}
+                              <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    <h3 class="dp-po-news-carousel-title">{{ item.title }}</h3>
+                    <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(30)|raw }}<i
+                                class="dp-po-icon far fa-angle-right"></i>
+                    </p>
+                    {% if not has_splash(item) %}
+                        {% if item.person %}
+                            <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />
+                        {% endif %}
+                    {% endif %}
+                </a>
+                {#        {% if brand_setting('user.publish_comments') %}#}
+                {#          <span class="comments"><i class="fas fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>#}
+                {#          <hr>#}
+                {#        {% endif %}#}
+            </li>
+        {% endfor %}
+        {% if showSectionLink %}
+            <li class="dp-po-news-carousel-item dp-po-news-carousel-item-seeall">
+                <a href="{{ path('portal_news') }}" class="dp-po-news-carousel-link">
+                    <div class="dp-po-news-carousel-wrap">
+                        <img class="dp-po-news-carousel-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
+                        <p class="dp-po-news-carousel-allink">See all news <i class="dp-po-icon far fa-angle-right"></i></p>
+                    </div>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+

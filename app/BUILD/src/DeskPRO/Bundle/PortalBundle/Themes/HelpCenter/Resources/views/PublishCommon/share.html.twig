@@ -1,0 +1,40 @@
+{% if app.getSetting('core.show_share_widget') %}
+<div class="dp-po-sidebar dp-po-post-share" id="social-share">
+    <h3 class="dp-po-sidebar-title">Share</h3>
+    <ul class="dp-po-post-share-list">
+    {% if app.getSetting('core.show_share_linkedin') %}
+        <li class="dp-po-post-share-item">
+            <a rel="external nofollow" href="{{ share_social_url(item, 'linkedin') }}" class="dp-po-post-share-link" target="_blank">
+                <img class="dp-po-icon" src={{ asset('img/brand-icons/linkedin.png', 'help_center') }} />
+            </a>
+        </li>
+    {% endif %}
+    {% if app.getSetting('core.show_share_facebook') %}
+        <li class="dp-po-post-share-item">
+            <a rel="external nofollow" href="{{ share_social_url(item, 'facebook') }}" class="dp-po-post-share-link" target="_blank">
+                <img class="dp-po-icon" src={{ asset('img/brand-icons/facebook.png', 'help_center') }} />
+            </a>
+        </li>
+    {% endif %}
+    {% if app.getSetting('core.show_share_twitter') %}
+        <li class="dp-po-post-share-item">
+            <a rel="external nofollow" href="{{ share_social_url(item, 'twitter') }}" class="dp-po-post-share-link" target="_blank">
+                <img class="dp-po-icon" src={{ asset('img/brand-icons/twitter.png', 'help_center') }} />
+            </a>
+        </li>
+    {% endif %}
+    {% if app.getSetting('core.show_share_whatsapp') %}
+        <li class="dp-po-post-share-item">
+            <a rel="external nofollow" href="{{ share_social_url(item, 'whatsapp') }}" class="dp-po-post-share-link">
+                <img class="dp-po-icon" src={{ asset('img/brand-icons/whatsapp.png', 'help_center') }} />
+            </a>
+        </li>
+    {% endif %}
+    <li class="dp-po-post-share-item">
+        <a href="" class="dp-po-post-share-link">
+            <img class="dp-po-icon" src={{ asset('img/brand-icons/mail.png', 'help_center') }} />
+        </a>
+    </li>
+    </ul>
+</div>
+{% endif %}

@@ -1,0 +1,134 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+  <div class="dp-po">
+    <main class="dp-po-main dp-po-member-directory">
+      <div class="container">
+        <div class="dp-po-title">
+          <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
+          <h2 class="dp-po-title-text">{{ phrase('helpcenter.members.title') }}</h2>
+        </div>
+        <div class="dp-po-section dp-po-block">
+          <div class="row">
+            <div class="col-sm-6">
+              <form class="dp-po-member-search">
+                <input type="text" name="q" placeholder="Search" value="{{ q }}" />
+                <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+              </form>
+            </div>
+            <div class="col-sm-6 text-right">
+              {#<div class="dp-po-columnfilter">
+                <a href="javascript:void(0)" class="dp-po-columnfilter-link" data-toggle="dropdown" aria-haspopup="true"
+                   aria-expanded="false"><i class="dp-po-icon far fa-ballot-check"></i></a>
+                <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
+                  <ul class="dp-po-columnfilter-list">
+                    <li class="dp-po-columnfilter-item">
+                      <div class="form-group dp-po-form-check">
+                        <input type="checkbox" class="form-check-input" id="SubjectCheck">
+                        <label class="form-check-label" for="SubjectCheck">Email</label>
+                      </div>
+                    </li>
+                    <li class="dp-po-columnfilter-item">
+                      <div class="form-group dp-po-form-check">
+                        <input type="checkbox" class="form-check-input" id="DepartmentCheck" checked>
+                        <label class="form-check-label" for="DepartmentCheck">Phone Number</label>
+                      </div>
+                    </li>
+                    <li class="dp-po-columnfilter-item">
+                      <div class="form-group dp-po-form-check">
+                        <input type="checkbox" class="form-check-input" id="UserCheck">
+                        <label class="form-check-label" for="UserCheck">Job Title</label>
+                      </div>
+                    </li>
+                    <li class="dp-po-columnfilter-item">
+                      <div class="form-group dp-po-form-check">
+                        <input type="checkbox" class="form-check-input" id="agentCheck">
+                        <label class="form-check-label" for="agentCheck">Company</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>#}
+            </div>
+          </div>
+
+          <div class="dp-po-table dp-po-table-col5 dp-po-table-member">
+            <div class="dp-po-table-row dp-po-table-row-head">
+              <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.name') }}
+                {#<div class="dropdown">
+                  <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                     aria-expanded="false">
+                    <i class="dp-po-icon far fa-arrows-v"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="#">First Name</a>
+                    <a class="dropdown-item" href="#">Last Name</a>
+                  </div>
+                </div>#}
+              </span>
+              <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.email') }}</span>
+              <span class="dp-po-table-cell">{{ phrase('helpcenter.members.phone') }}</span>
+              <span class="dp-po-table-cell dp-po-table-cell-large">{{ phrase('helpcenter.members.company') }}</span>
+              {#<span class="dp-po-table-cell dp-po-table-cell-small"></span>#}
+            </div>
+
+            {% for person in pager %}
+              <div class="dp-po-table-row">
+                  <span class="dp-po-table-cell dp-po-table-cell-large">
+                    <div class="dp-po-avatar dp-po-avatar-round">
+                      <a href="{{ path('portal_members_view', { id: person.id }) }}">
+                        {{ hc_avatar(person, '', 30) }}{% if person.community_name %}{{ person.community_name }}{% else %}#{{ person.id }}{% endif %}
+                      </a>
+                    </div>
+                  </span>
+                <span class="dp-po-table-cell dp-po-table-cell-large">{{person.primary_email}}</span>
+                <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0] }}{%  else %}None{% endif %}</span>
+                <span class="dp-po-table-cell dp-po-table-cell-large">{% if person.organization %}{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
+                {% if app.getSetting('portal.members_community') %}
+                  <span class="dp-po-table-cell dp-po-table-cell-small dp-po-table-message text-right">
+                    <a href="{{ path('portal_dm_send_to', {to:  person.id } ) }}"><i
+                          class="dp-po-icon far fa-comment-alt-dots" data-toggle="tooltip" title="Send direct message"
+                          data-placement="bottom"></i></a>
+                  </span>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+
+          {#<!-- Modal -->
+          <div class="modal fade" id="messageMember" tabindex="-1" role="dialog" aria-labelledby="messageMember"
+               aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="messageMember">Send a new message</h5>
+                </div>
+                <div class="modal-body">
+                  <form class="dp-po-form">
+                    <div class="form-group">
+                      <div class="dp-po-avatar dp-po-avatar-round">
+                        To: &nbsp; <img src="/portal-components/portal-style/static/img/docs/avatar.png" /> Artem
+                        Berdyshev
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleFormControlTextarea1">Message *</label>
+                      <textarea class="form-control" id="exampleFormControlTextarea1"
+                                placeholder="Your Message"></textarea>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary">Send Message</button>
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>#}
+        </div>
+        {% show members_pager %}
+
+      </div>
+    </main>
+  </div>
+{% endblock page_content %}

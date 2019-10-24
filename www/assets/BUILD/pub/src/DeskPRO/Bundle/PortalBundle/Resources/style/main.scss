@@ -1070,7 +1070,7 @@ button, .button, input[type="submit"] {
     font-weight: normal;
 
     li {
-      i[class*=" fa-file-"] {
+      i[class*=" fa-file-"], svg[class*=" fa-file-"] {
         @include margin-right(5px);
       }
     }
@@ -2170,7 +2170,7 @@ $search-btn-height: $search-height - 24;
               color: inherit;
             }
 
-            i.fa-map-marker {
+            i.fa-map-marker, svg.fa-map-marker {
               color: $text-color-lighter;
               @include margin-right(8px);
               font-size: 1.3em;
@@ -4235,7 +4235,7 @@ ul.kb-checkbox-extra {
     @include margin-right(4px);
   }
 
-  i.fa-caret-down, i.fa-caret-up {
+  i.fa-caret-down, i.fa-caret-up, svg.fa-caret-down, svg.fa-caret-up {
     position: absolute;
     top: 10px;
     @include right(10px);
@@ -8096,12 +8096,12 @@ ul.big-button-collection {
     text-decoration: none;
     background: #fdfeff;
 
-    .title, .subtitle, i {
+    .title, .subtitle, i, svg.svg-inline--fa {
       color: inherit;
     }
   }
 
-  .fa, .far, .fas {
+  .fa, .far, .fas, svg.svg-inline--fa {
     font-size: 3em;
     color: $gray-light;
   }
@@ -8151,7 +8151,7 @@ ul.big-button-collection {
       width: auto;
       height: auto;
 
-      .fa, .far, .fas {
+      .fa, .far, .fas, .svg-inline--fa {
         font-size: 1.20em;
         @include margin-right(5px);
         display: inline-block;
@@ -8205,7 +8205,7 @@ ul.big-button-collection {
         font-weight: normal;
       }
 
-      .fa, .far, .fas {
+      .fa, .far, .fas, svg.svg-inline--fa {
         @include margin-right(2px);
         font-size: 1.5em;
       }
@@ -9322,14 +9322,14 @@ table .form-help {
       border: 1px solid $btn-primary-bg;
     }
 
-    i[class^='fa-caret'], i[class*=' fa-caret'] {
+    i[class^='fa-caret'], i[class*=' fa-caret'], .svg-inline--fa[class*=' fa-caret'] {
       position: absolute;
       top: 9px;
       color: $text-color-lighter;
       @include right(12px);
     }
 
-    i[class^='fa-times'], i[class*=' fa-times'] {
+    i[class^='fa-times'], i[class*=' fa-times'], .svg-inline--fa[class*=' fa-times'] {
       padding: 10px;
       height: 100%;
       position: absolute;
@@ -9344,7 +9344,7 @@ table .form-help {
 
   &.small .default {
     padding: 4px;
-    i[class^='fa-caret'], i[class*=' fa-caret'] {
+    i[class^='fa-caret'], i[class*=' fa-caret'], .svg-inline--fa[class*=' fa-caret'] {
       top: 6px;
       @include right(7px);
     }

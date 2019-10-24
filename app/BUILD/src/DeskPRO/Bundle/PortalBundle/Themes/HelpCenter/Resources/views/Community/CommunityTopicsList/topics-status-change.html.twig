@@ -1,0 +1,111 @@
+<div class="dp-po-section dp-po-block">
+    <div class="dp-po-community-view dp-po-community-view-statuschange {{ is_compact ? 'dp-po-community-view-compact' }}">
+        <div class="dp-po-community-view-list">
+            <div class="dp-po-community-view-item dp-po-community-view-item-head">
+                <div class="dp-po-community-view-title" style="{{ is_compact ? 'flex: 0 0 calc(100% - 696px);' }}">
+                    {{ phrase(is_compact ? 'helpcenter.community.title' : 'helpcenter.community.title-author') }}
+                </div>
+                {% if is_compact %}
+{#                    <div class="dp-po-community-view-office">#}
+{#                        <i class="dp-po-icon fas fa-comment-alt-check" data-toggle="tooltip" data-placement="bottom" title="Official response"></i>#}
+{#                    </div>#}
+                {% endif %}
+                <div class="dp-po-community-view-status">
+                    {{ phrase('helpcenter.community.status-change') }}
+                </div>
+                <div class="dp-po-community-view-comments">
+                    {{ phrase('helpcenter.community.comments') }}
+                </div>
+                {% if is_compact %}
+                    <div class="dp-po-community-view-author">
+                        <i class="dp-po-icon fas fa-user-edit" data-toggle="tooltip" data-placement="bottom" title="Author"></i>
+                    </div>
+                {% endif %}
+                <div class="dp-po-community-view-activity">
+                    {{ phrase('helpcenter.community.activity') }}
+                </div>
+            </div>
+            {% for topic in topics_list.topics_data.pager %}
+                <div class="dp-po-community-view-item">
+                    <div class="dp-po-community-view-title" style="{{ is_compact ? 'flex: 0 0 calc(100% - 696px);' }}">
+                        <a href="{{ portal_path(topic) }}" class="dp-po-community-view-link">
+                            {{ topic.title }}
+                        </a>
+                        {% if not is_compact %}
+                            <div class="dp-po-avatar dp-po-avatar-round">
+                                <img src="{{ avatar_url(topic.person) }}">
+                                {{ topic.person.display_name }}
+                            </div>
+                            <span class="dp-po-community-view-time">
+                                {{ topic.date_published ? topic.date_published|date('day') : topic.date_created|date('day') }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    {% if is_compact %}
+{#                        <div class="dp-po-community-view-office">#}
+{#                            <a href="javascript:void(0)">#}
+{#                                <img src="{{ asset('img/brand/logo.jpg', 'help_center') }}" class="dp-po-community-view-official-logo">#}
+{#                            </a>#}
+{#                        </div>#}
+                    {% endif %}
+                    <div class="dp-po-community-view-status">
+                        {% if topic.status_category %}
+                            {% include 'Theme:Community:blocks/status-change-transition.html.twig' with {
+                                topic: topic,
+                                with_time: true,
+                            } %}
+                        {% else %}
+                            <span class="badge badge-secondary">
+                                {{ topic.status|capitalize }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="dp-po-community-view-comments">
+                        {{ topic.calc_num_comments }}
+                    </div>
+                    {% if is_compact %}
+                        <div class="dp-po-community-view-author">
+                            <a href="javascript:void(0)"
+                               class="dp-po-community-view-author-link"
+                               data-toggle="tooltip"
+                               data-placement="bottom"
+                               title="Author, {{ topic.person.display_name|e }}"
+                            >
+                                <div class="dp-po-avatar dp-po-avatar-round">
+                                    <img src="{{ avatar_url(topic.person) }}">
+                                </div>
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="dp-po-community-view-activity">
+                        {% include 'Theme:Community:CommunityTopicsList/topic-activity.html.twig' with {
+                            activities_per_topic: activities_per_topic,
+                            topic: topic,
+                            is_compact: is_compact,
+                        } %}
+                    </div>
+                    {% if not is_compact %}
+{#                        <div class="dp-po-community-view-official">#}
+{#                            <span class="dp-po-community-view-official-time">57min</span>#}
+{#                            <div class="dp-po-community-view-official-wrap">#}
+{#                                <h4 class="dp-po-community-view-official-title">Official response</h4>#}
+{#                            </div>#}
+{#                            <div class="dp-po-community-view-official-wrap">#}
+{#                                <img src="{{ asset('img/docs/avatar.png', 'help_center') }}"#}
+{#                                     class="dp-po-community-view-official-author">#}
+{#                                <p class="dp-po-community-view-official-response">Hi Pamela. If you add a date variable to your stat you#}
+{#                                    should then be able to use this on a dashboard. For example the built in more words here. If you add a date#}
+{#                                    variable to your stat you should then be able to use this on a dashboard. For example the built in more#}
+{#                                    words here.</p>#}
+{#                            </div>#}
+{#                        </div>#}
+                    {% endif %}
+                </div>
+            {% else %}
+                <strong class="no-data">
+                    {{ phrase(filtered ? 'helpcenter.community.no_matching' : 'helpcenter.community.none') }}
+                </strong>
+            {% endfor %}
+        </div>
+    </div>
+</div>

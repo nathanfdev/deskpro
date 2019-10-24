@@ -1,0 +1,147 @@
+<div class="dp-po-section dp-po-comments no-print">
+    <div class="dp-po-title">
+        <h2 class="dp-po-title-text dp-po-title-small">{{ phrase('portal.general.add-comment') }}</h2>
+    </div>
+
+    {# ------------------------------------------ #}
+    {# Comment Form #}
+    {# ------------------------------------------ #}
+
+    <div class="dp-po-block">
+    {% if new_comment_form and app.user %}
+        <div class="dp-po-comments-add">
+            <div class="dp-po-comments-add-cancel">
+                <a href="javascript:void(0)" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+            <div class="dp-po-avatar">
+                {{ hc_avatar(app.user, '', 30) }}
+                <strong>{{ app.user.display_name }}</strong>
+            </div>
+            {{ form_start(new_comment_form, { attr: { class: 'dp-po-form' } }) }}
+                <div class="form-group">
+                    <label for="comment_content_real">{{ phrase('portal.general.your_comment_label') }} *</label>
+                    {{ form_widget(new_comment_form.content_real, { attr: { placeholder: phrase('portal.general.enter_comment_placeholder'), class: 'form-control' }}) }}
+                </div>
+                {{ form_rest(new_comment_form) }}
+                {#
+                <div class="form-group dp-po-form-upload">
+                    <label for="exampleFormControlFile1">Add attachment</label>
+                    <!--<input type="file" class="form-control-file" id="exampleFormControlFile1">-->
+                    <div class="dp-po-form-upload-wrap">
+                        <div class="btn btn-icon btn-outline-secondary">
+                            <i class="dp-po-icon fal fa-file-alt"></i>
+                            Choose a file
+                        </div>
+                        <span>or</span>
+                        <div class="dp-po-drag">
+                            <i class="dp-po-icon far fa-bring-forward"></i>
+                            Drag and drop
+                        </div>
+                    </div>
+                </div>
+                #}
+                <div class="row align-items-center">
+                    <div class="col-sm-2">
+                        <input type="submit" class="btn btn-primary" value="{{ phrase('portal.general.comment_btn_save') }}" />
+                    </div>
+                    {#
+                    <div class="col-sm-4">
+                        <div class="form-group dp-po-form-check mb-0">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                            <label class="form-check-label" for="exampleCheck1">Subscribe</label>
+                        </div>
+                    </div>
+                    #}
+                </div>
+            {{ form_end(new_comment_form) }}
+        </div>
+
+    {# ------------------------------------------ #}
+    {# Login to comment #}
+    {# ------------------------------------------ #}
+    {% elseif is_guest() and can_login() %}
+
+        <p class="dp-po-comment-subtitle">
+            {{ phrase('portal.general.comment_login_first') }}
+        </p>
+        <div class="dpx-tabs">
+            <ul class="dp-po-tab">
+                <li class="dp-po-tab-item">
+                    <a href="{{ url('portal_login') }}" data-tab-id="comment_login_form" class="dp-po-tab-link dpx-tab">{{ phrase('portal.account.login-btn') }}</a>
+                </li>
+                <li class="dp-po-tab-item" >
+                    <a href="{{ url('portal_user_registration') }}" data-tab-id="comment_register_form" class="dp-po-tab-link dpx-tab">{{ phrase('portal.account.register-btn') }}</a>
+                </li>
+            </ul>
+            <div class="row">
+                <div class="col-sm-6">
+                    {# ------------------------------------------ #}
+                    {# Login form start #}
+                    {# ------------------------------------------ #}
+                    <section class="dp-po-loginform dpx-tab-content" id="comment_login_form">
+                        <form class="do-po-form" action="{{ path('portal_login_submit') }}" method="post" novalidate>
+                            <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="comments_login_form_email_input" aria-describedby="comments_login_form_email"
+                                       name="username" placeholder="{{ phrase('portal.account.login-email-placeholder') }}" tabindex="1"
+                                       value="{{ last_username | default('') }}" />
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="comments_login_form_password_input"
+                                       placeholder="{{ phrase('portal.forms.label_password') }}" name="password" tabindex="2" />
+                            </div>
+                            <div class="form-group dp-po-form-check">
+                                <input type="checkbox" class="form-check-input" id="comments_login_form_rememberme">
+                                <label class="form-check-label" for="comments_login_form_rememberme">{{ phrase('portal.account.login-remember') }}</label>
+                            </div>
+
+                            {% if captcha_form is not null %}
+                                {{ form_widget(captcha_form) }}
+                            {% endif %}
+
+                            <button type="submit" class="btn btn-primary btn-lg">{{ phrase('portal.account.login-btn') }}</button>
+                            {% if auth_manager.isForgotPasswordVisible %}
+                                <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" class="dp-po-form-btntext">
+                                    {{ phrase('portal.account.login-password-reminder') }}
+                                </a>
+                            {% endif %}
+
+                        </form>
+                    </section>
+                    {# ------------------------------------------ #}
+                    {# Login form end #}
+                    {# ------------------------------------------ #}
+
+                    {# ------------------------------------------ #}
+                    {# Register form start #}
+                    {# ------------------------------------------ #}
+                    {% if auth_manager.isRegistrationFormVisible() %}
+                    <section class="dp-po-loginform dpx-tab-content" id="comment_register_form" style="display: none;">
+                        {{ form_start(register_form) }}
+                        {{ form_widget(register_form) }}
+                        {{ form_rest(register_form) }}
+                        <button type="submit" class="btn btn-primary btn-lg">{{ phrase('portal.account.register-btn') }}</button>
+                        {{ form_end(register_form) }}
+                    </section>
+                    {% endif %}
+                    {# ------------------------------------------ #}
+                    {# Register form end #}
+                    {# ------------------------------------------ #}
+                </div>
+                <div class="col-sm-6">
+
+                </div>
+            </div>
+        </div>
+
+    {# ------------------------------------------ #}
+    {# Cannot add a comment #}
+    {# ------------------------------------------ #}
+    {% else %}
+        <div class="alert alert-icon alert-danger" role="alert">
+            <i class="dp-po-icon fas fa-ban"></i>
+            {{ phrase('user.error.permission-denied-title', { login_url: url('portal_login') }) }}
+        </div>
+    {% endif %}
+    </div>
+</div>

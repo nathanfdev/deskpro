@@ -8,14 +8,14 @@
 			{{ phrase('adm.community_categories.delete_community_category_confirm') }}
 		</p>
 
-		<p ng-if="move_community_channels_list">
+		<p ng-if="move_community_forums_list">
 			{{ phrase('adm.community_categories.delete_community_categories_moved') }}
 		</p>
 
-		<p style="margin-bottom: 0;" ng-if="move_community_channels_list">
+		<p style="margin-bottom: 0;" ng-if="move_community_forums_list">
 			<select ui-select2 ng-model="model.move_to" style="width: 240px">
-				<option value="{{ ng_var('channel.id') }}" ng-repeat="channel in move_community_channels_list">
-                    {{ ng_var('channel.title') }}
+				<option value="{{ ng_var('forum.id') }}" ng-repeat="forum in move_community_forums_list">
+                    {{ ng_var('forum.title') }}
                 </option>
 			</select>
 		</p>

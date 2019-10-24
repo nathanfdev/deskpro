@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 
+use Application\DeskPRO\Entity\CommunityForumToStatus;
 use Application\DeskPRO\Entity\DownloadsSubscription;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Session;
@@ -249,8 +250,9 @@ class SelectPart
         'email_sources'                     => 'DeskPRO:EmailSource',
         'community_topics'                  => 'DeskPRO:CommunityTopic',
         'community_topic_attachments'       => 'DeskPRO:CommunityTopicAttachment',
-        'community_channels'                => 'DeskPRO:CommunityChannel',
+        'community_forums'                  => 'DeskPRO:CommunityForum',
         'community_topic_comments'          => 'DeskPRO:CommunityTopicComment',
+        'community_forum_to_status'         => CommunityForumToStatus::class,
         'glossary_words'                    => 'DeskPRO:GlossaryWord',
         'glossary_word_definitions'         => 'DeskPRO:GlossaryWordDefinition',
         'labels_articles'                   => 'DeskPRO:LabelArticle',

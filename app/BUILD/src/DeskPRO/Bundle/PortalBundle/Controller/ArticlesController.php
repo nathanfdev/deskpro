@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
@@ -17,13 +18,14 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ShareContentVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ArticlesController extends AbstractController
+class ArticlesController extends AbstractPublishController
 {
     /**
      * @Route("/kb.{_format}", name="portal_kb", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
@@ -78,6 +80,12 @@ class ArticlesController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('kb', $this->getUser());
         }
 
+        $kbData = new LazyPropObject([
+            'data' => function () {
+                return $this->getKbData(null);
+            },
+        ]);
+
         // RENDER THEME
 
         return $this->renderThemeView(
@@ -89,6 +97,7 @@ class ArticlesController extends AbstractController
                 'page_title'    => $this->get('portal_view.page_title_generator')->kb(),
                 'rss_link'      => $rssLink,
                 'is_subscribed' => $isSubscribed,
+                'kb_data'       => $kbData,
             ]
         );
     }
@@ -152,10 +161,24 @@ class ArticlesController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
         // PAGER
 
         $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $page, $count, $person, false);
+        $pager = $this->getArticlesDataService()->getArticlesPager(
+            $category,
+            $page,
+            $count,
+            $person,
+            false,
+            $person->isAgent() && $brandSettingsResolver->getSetting('user.non_published_articles_on_helpcenter'));
+
+        $kbData = new LazyPropObject([
+            'data' => function () use ($category) {
+                return $this->getKbData($category);
+            },
+        ]);
 
         // RENDER THEME
 
@@ -170,6 +193,7 @@ class ArticlesController extends AbstractController
                 'count'         => $count,
                 'page'          => $page,
                 'rss_link'      => $rssLink,
+                'kb_data'       => $kbData,
             ]
         );
     }
@@ -242,6 +266,18 @@ class ArticlesController extends AbstractController
             $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_ARTICLE, $article->getId());
         }
 
+        // OTHER ARTICLE DATA
+        $articleData = new LazyPropObject([
+            'comments' => function () use ($article) {
+                return $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
+            },
+            'related_content' => function () use ($article) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $article);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         // RENDER THEME
 
         $customData = [];
@@ -268,25 +304,33 @@ class ArticlesController extends AbstractController
             ];
         }
 
+        $viewVars = [
+            'main_class'         => 'dp-po-knowledgebase-article',
+            'article'            => $article,
+            'articleData'        => $articleData,
+            'custom_data'        => $customData,
+            'rating'             => $rating,
+            'is_subscribed'      => $isSubscribed,
+            'category'           => $article->getPrimaryCategory(),
+            'breadcrumbs'        => $breadcrumbs,
+            'content_id'         => $article->getId(),
+            'content_type'       => Article::CONTENT_TYPE,
+            'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
+            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+            'show_rating_counts' => $showRatingCounts,
+            'rating_counts'      => $ratingCounts,
+            'can_share'          => $canShare,
+            'lockout'            => $check->isLockoutRecommended(),
+            'lockout_time'       => $check->getLockoutTime(true),
+        ];
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
+
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
-            [
-                'article'            => $article,
-                'custom_data'        => $customData,
-                'rating'             => $rating,
-                'is_subscribed'      => $isSubscribed,
-                'category'           => $article->getPrimaryCategory(),
-                'breadcrumbs'        => $breadcrumbs,
-                'content_id'         => $article->getId(),
-                'content_type'       => Article::CONTENT_TYPE,
-                'page_title'         => $this->get('portal_view.page_title_generator')->kb($article),
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'can_share'          => $canShare,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-            ]
+            $viewVars
         );
     }
 
@@ -520,5 +564,33 @@ class ArticlesController extends AbstractController
                 )
             );
         $this->get('anti_abuse')->check($check);
+    }
+
+    protected function getKbData($category)
+    {
+        $person           = $this->getCurrentPerson();
+        $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+        $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
+
+        $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
+        $categoryChildrenPagers = [];
+        foreach ($categoryChildren as $key => &$childCat) {
+            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, true, $person->isAgent() && $brandSettingsResolver->getSetting('user.non_published_articles_on_helpcenter'));
+            if ($categoryChildrenPagers[$childCat->getId()]->getNbResults() === 0) {
+                unset($categoryChildrenPagers[$childCat->getId()]);
+                unset($categoryChildren[$key]);
+            }
+        }
+
+        return [
+            'category'                 => $category,
+            'category_pager'           => $categoryPager,
+            'category_children'        => $categoryChildren,
+            'category_children_pagers' => $categoryChildrenPagers,
+            'articles_count'           => $this->getBrandSetting('portal.per_page_content'),
+            'with_tree'                => true,
+        ];
     }
 }

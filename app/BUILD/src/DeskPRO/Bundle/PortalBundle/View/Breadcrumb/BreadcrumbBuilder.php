@@ -9,6 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -19,6 +20,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BreadcrumbBuilder
@@ -41,16 +43,19 @@ class BreadcrumbBuilder
      */
     private $language_manager;
 
-    public function __construct(ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager)
+    public function __construct(ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager, PortalBrandThemeLoader $brandThemeLoader)
     {
         $this->object_router = $object_router;
         $this->url_generator = $url_generator;
         $this->b             = new Breadcrumbs();
-        $this->b->add(
-            $this->url_generator->generate('portal_home'),
-            Breadcrumbs::PORTAL,
-            ['phrase' => 'portal.general.nav-portal']
-        );
+        $themeId             = $brandThemeLoader->getPortalBrandTheme()->getActiveTheme()->getId();
+        if ($themeId !== 'helpcenter') {
+            $this->b->add(
+                $this->url_generator->generate('portal_home'),
+                Breadcrumbs::PORTAL,
+                ['phrase' => 'portal.general.nav-portal']
+            );
+        }
         $this->language_manager = $language_manager;
     }
 
@@ -370,6 +375,17 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->object_router->getPortalPath($a),
             Breadcrumbs::COMMUNITY_VIEW,
+            $a
+        );
+
+        return $this;
+    }
+
+    public function addCommunityCreate(CommunityForum $a)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($a),
+            $a->getTitle(),
             $a
         );
 

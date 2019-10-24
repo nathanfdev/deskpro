@@ -1,0 +1,138 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+{% set main_class = 'dp-po-community-topic' %}
+{% block page_top %}
+
+
+    <div class="row mb-4">
+        <div class="col-sm-9">
+            <div class="dp-po-post-like">
+                {% include "Theme:Community:CommunityTopicsList/like-button.html.twig" with {
+                    topic: topic,
+                    is_compact: false
+                } %}
+            </div>
+            <div class="dp-po-title">
+                <h2 class="dp-po-title-text">{{ topic.realTitle }}</h2>
+            </div>
+            <div class="row align-items-end">
+                <div class="col-sm-10">
+                    <div class="dp-po-post-user">
+                        <ul class="dp-po-post-user-list">
+                            {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
+                            <li class="dp-po-post-user-item">
+                                #{{ topic.forum.title }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-2">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+
+        </div>
+    </div>
+{% endblock page_top %}
+
+{% block page_body %}
+    <div class="dp-po-section">
+        {{  macros.lockout_notice(phrase('portal.account.comment-lockout'), lockout, lockout_time) }}
+        <div class="dp-po-post-content dp-po-block">
+            {{ topic.getContentHtml()|raw }}
+        </div>
+    </div>
+
+    {% if can_rate_community(topic) and not topic.isClosed() %}
+        {% include 'Theme:PublishCommon:rating.html.twig' with {
+            item: topic
+        } %}
+    {% endif %}
+
+    {% if brand_setting('user.publish_comments') %}
+        {% if topic.comments | length %}
+            {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.comments } %}
+        {% endif %}
+
+        {% if new_comment_form %}
+            {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+        {% endif %}
+    {% endif %}
+{% endblock page_body %}
+
+{% block page_sidebar %}
+    {% if linked_tickets %}
+        <div class="dp-po-sidebar dp-po-related-content">
+            <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.community.related_tickets') }}</h3>
+            <ul class="dp-po-related-content-list">
+                {% for linked_ticket in linked_tickets %}
+                    <li class="dp-po-related-content-item">
+                        <a href="{{ portal_path(linked_ticket.ticket) }}" class="dp-po-related-content-link">
+                            <i class="dp-po-icon fal fa-link"></i> {{ linked_ticket.ticket.subject }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    {% if file is defined %}
+        {% include 'Theme:PublishCommon:share.html.twig' with {
+            item: file
+        } %}
+    {% endif %}
+
+    {% if topic.labels | length %}
+        {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
+            title: phrase('portal.general.labels'),
+            labels: topic.labels
+        } %}
+    {% endif %}
+
+    {% if topic.attachments|length  > 0 %}
+        <div class="dp-po-sidebar dp-po-post-attachments">
+            <h3 class="dp-po-sidebar-title">{{ phrase('portal.community.attachments') }}</h3>
+            <ul class="dp-po-post-attachments-list">
+                {% for attachment in topic.attachments %}
+                    <li class="dp-po-post-attachments-item">
+                        {{ block('topic_attachment') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="dp-po-post-meta">
+        <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.created_by') }}</h3>
+        <p>{{ topic.person.display_name_user }}</p>
+        <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.published') }}</h3>
+        <p>{{ date(topic.date_published, 'day')}}</p>
+
+        {% if topic.getCustomDataSelection() %}
+            <h3 class="dp-po-post-meta-title">{{ phrase('portal.community.form_custom_cat') }}</h3>
+            <p>{{ topic.getCustomDataSelection().title }}</p>
+        {% endif %}
+        {% if topic.isClosed() %}
+            <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.unpublished') }}</h3>
+            <p>{{ date(topic.date_updated, 'day')}} {{ topic.status }}</p>
+        {% endif %}
+    </div>
+{% endblock page_sidebar %}
+
+{% block topic_attachment %}
+    <div class="dpx-attachment">
+        <a href="{{ attachment.blob.download_url }}?dl=1"
+           class="dp-po-post-attachments-link {% if attachment.blob.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
+           {% if not attachment.blob.is_image %} data-content-type="{{ attachment.blob.content_type }}"{% endif %}
+            data-no-span="1"
+        >
+            {% if attachment.blob.is_image %}
+                <img class="thumbnail" src="{{ attachment.blob.download_url }}" />
+            {% endif %}
+            {{ attachment.blob.filename|length > 14 ? attachment.blob.filename|slice(0, 14) ~ '...' : attachment.blob.filename  }} <span>({{ attachment.blob.getReadableFilesize() }})</span>
+            <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
+        </a>
+    </div>
+{% endblock %}

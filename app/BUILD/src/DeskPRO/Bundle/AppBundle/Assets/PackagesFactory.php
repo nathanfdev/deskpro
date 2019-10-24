@@ -97,6 +97,13 @@ class PackagesFactory
             ;
         }
 
+        if (empty($this->asset_paths['help_center'])) {
+            $this->asset_paths['help_center'] = PathMapInfo::create()
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/DeskPRO/Bundle/PortalBundle/portal-style')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
+        }
+
         if (empty($this->asset_paths['app_assets'])) {
             $this->asset_paths['app_assets'] = PathMapInfo::create()
                 ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build')

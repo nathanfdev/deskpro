@@ -1,0 +1,33 @@
+<div class="dp-po-ticket-block dp-po-ticket-block-mine">
+  <div class="dp-po-avatar dp-po-avatar-round">
+    {% include "Theme:Common:person_inline.html.twig" with {person: msg.person, include_email: true } %}
+  </div>
+  <div class="dp-po-time">
+    <i class="dp-po-icon far fa-clock"></i>
+    {{ date_ago(msg.date_created) }}
+  </div>
+  {#<div class="dp-po-ticket-block-cc">#}
+  {#  <ul class="dp-po-ticket-block-cc-list">#}
+  {#    <li class="dp-po-ticket-block-cc-item">CC</li>#}
+  {#    <li class="dp-po-ticket-block-cc-item">Wendy Pride</li>#}
+  {#  </ul>#}
+  {#</div>#}
+  <div class="dp-po-ticket-block-content">
+    <p class="dp-po-ticket-block-msg">
+      {{ render_message(msg) }}
+    </p>
+  </div>
+  
+  {% if msg.getAttachmentsList()|length > 0 %}
+    <div class="dp-po-ticket-attachments">
+      <h4 class="dp-po-ticket-attachments-title">{{ phrase('portal.tickets.timeline_attached') }}</h4>
+      <ul class="dp-po-ticket-attachments-list">
+        {% for attachment in msg.getAttachmentsList() %}
+          <li class="dp-po-ticket-attachments-item">
+            {% include "Theme:Tickets:embeds/attachment_full.html.twig" with {attachment: attachment } %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+</div>

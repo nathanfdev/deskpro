@@ -1,0 +1,5 @@
+{% if attachment.blob %}
+	<a href="{{ attachment.blob.downloadUrl }}" class="dp-po-ticket-attachments-link">
+		{{ attachment.blob.filename }} ({{ attachment.blob.readable_filesize }}) <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
+	</a>
+{% endif %}

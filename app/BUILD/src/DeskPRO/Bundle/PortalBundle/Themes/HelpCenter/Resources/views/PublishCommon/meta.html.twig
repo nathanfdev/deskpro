@@ -1,0 +1,35 @@
+<div class="dp-po-post-meta">
+    <h3 class="dp-po-post-meta-title">{{ phrase('portal.sidebar.article_posted_by') }}</h3>
+    <p>{{ item.person.display_name_user }}</p>
+    <h3 class="dp-po-post-meta-title">{{ phrase('portal.tickets.list_date_created') }}</h3>
+    <p>{{ item.date_published | date('day') }}</p>
+    {% if custom_data | length %}
+        {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}
+    {% endif %}
+    {% if item['object_props_translations'] is defined and (item.object_props_translations | length > 0) %}
+    <table class="table table-borderless">
+        <tr>
+            <th>
+                <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.translations') }}</h3>
+            </th>
+            {#<th class="text-right">
+                <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.general.updated') }}</h3>
+            </th>#}
+        </tr>
+        {% for translation in  item.object_props_translations %}
+            {% if translation.prop_name == 'content' %}
+            <tr>
+                <td><img class="dp-po-icon" src="{{ asset('images/flags/' ~ translation.language.flag_image) }}" />
+                    {{ translation.language.title_local }}</td>
+                {#<td class="text-right text-success">23 days</td>#}
+            </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if item['end_action'] is defined and item.end_action == 'unpublish' and app.user.is_agent %}
+    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.articles.unpublished_date') }} <i class="dp-po-icon fal fa-info-circle text-primary"
+                                                       data-toggle="tooltip" title="{{ phrase('helpcenter.general.viewed_by_agents_only') }}" data-placement="right"></i></h3>
+    <p>{{ item.date_end | date('day') }}</p>
+    {% endif %}
+</div>

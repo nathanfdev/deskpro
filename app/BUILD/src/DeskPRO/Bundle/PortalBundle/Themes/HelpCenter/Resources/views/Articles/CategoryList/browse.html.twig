@@ -1,0 +1,23 @@
+{% if category_children|length > 0 %}
+<div class="dp-po-block">
+        <div class="row mb-4">
+            {% for category in category_children %}
+                {% if loop.index0 > 0 and loop.index0 % 2 == 0 %}</div><div class="row mb-4">{% endif %}
+                <div class="col-sm-6 ">
+                        <div class="dp-po-kb-category">
+                                <div class="dp-po-category-title">
+                                        <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
+                                                {{ render_icon_from(category) }}
+                                                <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span class="count">({{ category_children_pagers[category.id]|length }})</span></h2>
+                                        </a>
+                                </div>
+                                {% include 'Theme:Articles:ArticleList/simple.html.twig' with {
+                                        pager: category_children_pagers[category.id],
+                                        show_category_link: true,
+                                }%}
+                        </div>
+                </div>
+            {% endfor %}
+        </div>
+</div>
+{% endif %}

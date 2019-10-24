@@ -120,6 +120,15 @@
                                                value="{{ guide.title }}" {% if not perms.can_edit %} disabled {% endif %}/>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <th width="100">{{ phrase('agent.general.description') }}</th>
+                                    <td>
+                                        <input type="text"
+                                               name="category[description]"
+                                               autocomplete="{{ "now" | date("U") }}"
+                                               value="{{ guide.description }}" {% if not perms.can_edit %} disabled {% endif %} />
+                                    </td>
+                                </tr>
                                 <tr class="vtop">
                                     <th>{{ phrase('agent.general.permissions') }}</th>
                                     <td>

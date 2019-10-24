@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 
 use DeskPRO\Bundle\DevBundle\Template\TemplatesScanner;
 use DeskPRO\Bundle\PortalBundle\Themes\Base\BaseTheme;
+use DeskPRO\Bundle\PortalBundle\Themes\HelpCenter\HelpCenterTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Sidebar\SidebarTheme;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -38,13 +39,15 @@ class GenTemplateMapCommand extends ContainerAwareCommand
 
         /** @var \DeskPRO\Bundle\PortalBundle\Theme\AbstractTheme[] $themes */
         $themes = [
-            'base'     => new BaseTheme(),
-            'standard' => new StandardTheme(),
-            'sidebar'  => new SidebarTheme(),
+            'base'       => new BaseTheme(),
+            'standard'   => new StandardTheme(),
+            'sidebar'    => new SidebarTheme(),
+            'helpcenter' => new HelpCenterTheme(),
         ];
 
         $themes['standard']->setParent($themes['base']);
         $themes['sidebar']->setParent($themes['standard']);
+        $themes['helpcenter']->setParent($themes['base']);
 
         foreach ($themes as $t) {
             $cacheFile = $t->getTemplateMapCachePath();

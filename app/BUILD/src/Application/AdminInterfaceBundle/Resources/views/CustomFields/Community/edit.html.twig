@@ -1,0 +1,13 @@
+{% extends 'AdminInterfaceBundle:CustomFields:Common/edit.html.twig' %}
+{% block form_header %}
+	<article class="form-horizontal dp-form">
+		<div class="panel panel-fill indent">
+			<div class="panel-body">
+				<div class="form-group">
+					<i class="fas fa-arrow-left"></i>
+					<a href="{{ ng_href('portal.community_forums.edit', '{id: EditCtrl.forum.id}') }}">Back to editing the forum</a>
+				</div>
+			</div>
+		</div>
+	</article>
+{% endblock form_header %}

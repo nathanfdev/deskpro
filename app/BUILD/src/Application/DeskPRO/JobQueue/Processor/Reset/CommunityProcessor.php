@@ -13,7 +13,7 @@ class CommunityProcessor extends Base
     {
         $this->connection->executeUpdate('DELETE FROM community_topics');
         $this->connection->executeUpdate('DELETE FROM custom_def_community_topic');
-        $this->connection->executeUpdate('DELETE FROM community_channels');
+        $this->connection->executeUpdate('DELETE FROM community_forums');
         $this->connection->executeUpdate('DELETE FROM community_topic_status_categories');
     }
 }

@@ -1,0 +1,37 @@
+{% if pager|length > 0 %}
+<ul class="download-list">
+    {% for dl in pager %}
+        <div class="dp-po-download-listing-item">
+            <a href="{{ portal_path(dl) }}" class="dp-po-download-listing-link">
+                <figure class="dp-po-download-listing-figure">
+                    <img src="{{ asset('img/file-icons/' ~ helpcenter_content_icon(dl), 'help_center') }}"
+                         class="dp-po-download-listing-icon img-fluid" />
+                </figure>
+                <div class="dp-po-download-listing-content">
+                    <h3 class="dp-po-download-listing-title">{{ dl.title }}</h3>
+                    <div class="dp-po-avatar dp-po-avatar-round">
+                        <img src="{{ avatar_url(dl.person) }}">
+                        <strong>{{ dl.person }}</strong>
+                    </div>
+                    <div class="dp-po-download-listing-count">
+                        <i class="dp-po-icon fal fa-arrow-to-bottom"></i> {{ dl.num_downloads }}
+                    </div>
+                    <div class="dp-po-download-listing-time">
+                        <i class="dp-po-icon far fa-clock"></i>
+                        {{ dl.date_published | date('day') }}
+                    </div>
+                </div>
+            </a>
+        </div>
+    {% endfor %}
+    {% if show_category_link %}
+        <div class="list-meta">
+            <a href="{{ category ? portal_path(category) : path('portal_downloads') }}">
+                {{ phrase('portal.downloads.view-x-files', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
+            </a>
+        </div>
+    {% endif %}
+</ul>
+{% else %}
+    <strong>{{ phrase('portal.downloads.none') }}</strong>
+{% endif %}

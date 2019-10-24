@@ -18,6 +18,37 @@ class Comment extends React.Component {
       background:     `url(${comment.avatar}) no-repeat`,
       backgroundSize: 'cover',
     };
+    if (window.currentTheme === 'helpcenter') {
+      return (
+        <div className="dp-po-comments-wrap">
+          <div className="dp-po-comments-item">
+            <div className="row">
+              <div className="col-sm-9">
+                <div className="dp-po-avatar">
+                  <img src={comment.avatar} className="dp-po-avatar-image" role="presentation" />
+                  <strong>{comment.name}</strong>
+                </div>
+              </div>
+              <div className="col-sm-3">
+                <div className="dp-po-comments-extra">
+                  <dp-po-comments-time>
+                    <i
+                      className="dp-po-icon far fa-clock"
+                      title={moment(comment.date_created).format('MMMM Do YYYY, h:mm a')}
+                    /> {moment(comment.date_created).fromNow()}
+                  </dp-po-comments-time>
+                </div>
+              </div>
+            </div>
+            <div className="dp-po-comments-desc">
+              <div className="dp-po-comments-content">
+                {comment.content}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="single-comment">
         <div className="comment-info">
@@ -75,6 +106,28 @@ class CommentsBlock extends React.Component {
       </div>
     ) : null;
 
+    if (window.currentTheme === 'helpcenter') {
+      return [
+        <div className="dp-po-section dp-po-comments" key="comments">
+          <div className="dp-po-title">
+            <div className="dp-po-title-text dp-po-title-small">
+              <FormattedMessage id="portal.general.comments-title" values={{ count: this.props.count }} />
+            </div>
+          </div>
+          <div className="dp-po-block">
+            <div className="dp-po-comments-thread">
+              {comments}
+            </div>
+          </div>
+        </div>,
+        <div className="dp-po-section dp-po-comments no-print" key="comment-form">
+          <div className="dp-po-title">
+            <h2 className="dp-po-title-text dp-po-title-small"><FormattedMessage id="portal.general.add-comment" /></h2>
+          </div>
+          <CommentForm onSubmit={this.props.postComment} />
+        </div>
+      ];
+    }
     return (
       <div className="comment-box" id="comments">
         <div className="titled-header">

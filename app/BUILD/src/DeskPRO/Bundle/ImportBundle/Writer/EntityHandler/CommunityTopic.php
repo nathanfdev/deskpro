@@ -47,16 +47,16 @@ class CommunityTopic extends AbstractEntityHandler
             $entity->setDatePublished($entity->getDateCreated());
         }
 
-        // update community topic channel
-        if ($model->getChannel()) {
-            $entity->setChannel($this->helpers->getCategoryHelper()->findOrCreateCategory(
-                $this->mappers->getCommunityChannelMapper(),
-                $model->getChannel(),
+        // update community topic forum
+        if ($model->getForum()) {
+            $entity->setForum($this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getCommunityForumMapper(),
+                $model->getForum(),
                 $brandName
             ));
         } else {
-            // use default channel
-            $entity->setChannel($this->mappers->getCommunityChannelMapper()->getDefaultChannel());
+            // use default forum
+            $entity->setForum($this->mappers->getCommunityForumMapper()->getDefaultForum());
         }
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getCommunityCustomDefMapper(), $model, $entity);
