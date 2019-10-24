@@ -1,1 +1,25 @@
+$default-layout-direction: "LTR" !default;
+$layout-direction: "LTR" !default;
+$text-left: left !default;
+$text-right: right !default;
+$float-left: left !default;
+$float-right: right !default;
+@import "../../../../../../node_modules/bi-app-sass/bi-app/bi-app-ltr";
+@import "custom_vars";
+@import "setup";
+@import "vars";
+@import "../../../../../../node_modules/bourbon/app/assets/stylesheets/_bourbon.scss";
+@import "../../../../../../node_modules/bourbon-neat/app/assets/stylesheets/_neat.scss";
+
+// FA mixins for people to use
+@import "../../../../../../node_modules/font-awesome/scss/variables";
+@import "../../../../../../node_modules/font-awesome/scss/mixins";
+
 @import "~@deskpro/portal-components/dist/style.css";
+
+@import "hover/hover";
+@import "../../../AppBundle/Resources/style/message-formatting";
+@import "hover-apply";
+@import "dpx";
+@import "medium-rte";
+
