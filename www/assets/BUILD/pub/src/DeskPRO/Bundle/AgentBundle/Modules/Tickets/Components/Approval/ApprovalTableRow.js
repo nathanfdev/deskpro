@@ -221,16 +221,16 @@ class ApprovalTableRow extends React.Component {
         <td>{approval.required_approvals}</td>
         <td>{approval.required_rejections}</td>
         <td>
-          <FormattedMessage id={`agent.tickets.approvals.status_name.${approval.status}`} />
-          <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
-            {approvalDate}
-          </small>
-        </td>
-        <td style={{ textAlign: 'center' }}>
-          {controls}
-        </td>
-        <td>
-          {approvalStatusIcon}
+          {controls
+            ? <div style={{ textAlign: 'center' }}>{controls}</div>
+            : <div>
+              <FormattedMessage id={`agent.tickets.approvals.status_name.${approval.status}`} />
+              <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
+                {approvalDate}
+              </small>
+              {approvalStatusIcon}
+            </div>
+          }
         </td>
       </tr>
     ];
@@ -248,25 +248,26 @@ class ApprovalTableRow extends React.Component {
             <td />
             <td />
             <td>
-              <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
-              <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
-                {vote.created_at}
-              </small>
-            </td>
-            <td />
-            <td>
-              <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
+              <div className="approval-status">
+                <FormattedMessage id={`agent.tickets.approvals.response.vote_type.${vote.vote_type}`} />
+                <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
+                  {vote.created_at}
+                </small>
+                <Icon name={vote.vote_type === 'approve' ? faCheck : faTimes} />
+              </div>
             </td>
           </tr>
         ));
         approval.approvers.forEach((approver) => {
           if (voteApproverIds.indexOf(approver.id) === -1) {
+            const hasButtons = approval.status === 'pending' && me.get('id') === approver.id;
+
             result.push(
               <tr key={`approval_${this.props.approval.get('id')}_vote_approver_${approver.id}`} className="approval-request-row">
                 <td>&nbsp;</td>
                 <td>{approver.name}</td>
                 <td colSpan="4">
-                  {approval.status === 'pending' && me.get('id') === approver.id &&
+                  {hasButtons &&
                   <Input
                     type="text"
                     value={requestMessage}
@@ -274,11 +275,8 @@ class ApprovalTableRow extends React.Component {
                   />}
                 </td>
                 <td>
-                  <FormattedMessage id="agent.tickets.approvals.status_name.pending" />
-                </td>
-                <td style={{ textAlign: 'center' }}>
-                  {approval.status === 'pending' && me.get('id') === approver.id &&
-                    <div>
+                  {hasButtons
+                    ? <div style={{ textAlign: 'center' }}>
                       <Button
                         style={{ marginRight: '3px', color: 'green' }}
                         size="small" loading={this.state.saving}
@@ -294,10 +292,11 @@ class ApprovalTableRow extends React.Component {
                       >
                         Reject
                       </Button>
-                    </div>}
-                </td>
-                <td>
-                  <Icon name={faClock} />
+                    </div>
+                    : <div className="approval-status">
+                      <FormattedMessage id="agent.tickets.approvals.status_name.pending" /> <Icon name={faClock} />
+                    </div>
+                  }
                 </td>
               </tr>
             );
