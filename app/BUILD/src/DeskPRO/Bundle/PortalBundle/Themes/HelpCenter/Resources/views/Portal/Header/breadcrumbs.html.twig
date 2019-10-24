@@ -9,10 +9,10 @@
                 </div>
             {% endif %}
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ path('portal_home') }}">{{ phrase('helpcenter.general.nav-support-center') }}</a></li>
+                <li class="breadcrumb-item{% if breadcrumbs is not defined or breadcrumbs | length < 1 %} active{% endif %}"><a href="{{ path('portal_home') }}">{{ phrase('helpcenter.general.nav-support-center') }}</a></li>
                 {% if breadcrumbs is defined %}
                     {% for item in breadcrumbs %}
-                        <li class="breadcrumb-item">
+                        <li class="breadcrumb-item{% if loop.last %} active{% endif %}">
                             <i class="dp-po-icon fal fa-angle-right"></i>
                             <a href="{{ item.url }}" class="dp-po-Breadcrumb-link">
                                 {%- if item.phrase -%}
