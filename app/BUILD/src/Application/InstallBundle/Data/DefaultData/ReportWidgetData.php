@@ -1351,7 +1351,7 @@ LIMIT 100
             'variables' => '[]',
         ],
         'voice-answered-calls' => [
-            'title'         => 'Answered Calls',
+            'title'         => 'Answered Calls ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1366,7 +1366,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-missed-calls' => [
-            'title'         => 'Missed Calls',
+            'title'         => 'Missed Calls ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1380,7 +1380,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-voicemail-calls' => [
-            'title'         => 'Voicemail Calls',
+            'title'         => 'Voicemail Calls ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1394,7 +1394,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-outbound-calls' => [
-            'title'         => 'Outbound Calls',
+            'title'         => 'Outbound Calls ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1409,7 +1409,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-average-inbound-wait-time' => [
-            'title'         => 'Average Inbound Wait Time',
+            'title'         => 'Average Inbound Wait Time ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1424,7 +1424,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-average-inbound-duration' => [
-            'title'         => 'Average Inbound Duration',
+            'title'         => 'Average Inbound Duration ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1439,7 +1439,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-average-outbound-duration' => [
-            'title'         => 'Average Outbound Duration',
+            'title'         => 'Average Outbound Duration ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_stat',
@@ -1454,7 +1454,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-queue-calls-per-department' => [
-            'title'         => 'Queue Calls per Department',
+            'title'         => 'Queue Calls per Department ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'simple_bars',
@@ -1491,7 +1491,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-queue-data' => [
-            'title'         => 'Queue Data',
+            'title'         => 'Queue Data ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'table',
@@ -1514,7 +1514,7 @@ LIMIT 100
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'voice-frequent-callers' => [
-            'title'         => 'Frequent Callers',
+            'title'         => 'Frequent Callers ${date}',
             'labels'        => 'voice',
             'description'   => '',
             'display_types' => 'table',

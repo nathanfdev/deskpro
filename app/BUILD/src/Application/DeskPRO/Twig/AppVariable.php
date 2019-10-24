@@ -4,7 +4,6 @@ namespace Application\DeskPRO\Twig;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Templating\GlobalVariablesInterface;
-use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Server\PhpInfo;
 use DpSys\Features;
 use Orb\Util\Env;
@@ -362,17 +361,11 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
      */
     public function voiceUseLocalPolling()
     {
-        /** @var AbstractVoiceAccount[] $accounts */
-        $accounts = $this->container->get('doctrine.orm.entity_manager')->getRepository(AbstractVoiceAccount::class)->findAll();
-
-        $hasUnManagedAccount = false;
-        foreach ($accounts as $account) {
-            if (!$account->isManagedAccount()) {
-                $hasUnManagedAccount = true;
-            }
+        if ($this->getSetting('voice.disable_local_polling')) {
+            return false;
         }
 
-        return $this->getSetting('voice.use_local_polling') || $hasUnManagedAccount;
+        return $this->getSetting('voice.use_local_polling') || $this->container->get('deskpro.app_env')->isQa();
     }
 
     /**
