@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
-import { Icon, Button } from '@deskpro/react-components';
+import { Input, Icon, Button } from '@deskpro/react-components';
 import { faTimes, faCheck, faClock } from '@fortawesome/free-solid-svg-icons';
 
 class ApprovalTableRow extends React.Component {
@@ -18,9 +18,10 @@ class ApprovalTableRow extends React.Component {
     super(props);
 
     this.state = {
-      showResponses: false,
-      showApprovers: false,
-      saving:        false,
+      requestMessage: '',
+      showResponses:  false,
+      showApprovers:  false,
+      saving:         false,
     };
   }
 
@@ -42,9 +43,8 @@ class ApprovalTableRow extends React.Component {
       saving: true
     });
 
-    // @fixme
     const data = {
-      message: ''
+      message: this.state.requestMessage
     };
 
     this.props.acceptApprovalRequest(id, data)
@@ -60,9 +60,8 @@ class ApprovalTableRow extends React.Component {
       saving: true
     });
 
-    // @fixme
     const data = {
-      message: ''
+      message: this.state.requestMessage
     };
 
     this.props.rejectApprovalRequest(id, data)
@@ -85,8 +84,14 @@ class ApprovalTableRow extends React.Component {
     });
   };
 
+  changeRequestMessage = (requestMessage) => {
+    this.setState({ requestMessage });
+  };
+
   render() {
     const { me } = this.props;
+    const { requestMessage } = this.state;
+
     const approvers = this.props.approval.get('people').toArray().map(approver => ({
       id:     approver.get('id'),
       name:   approver.get('display_name'),
@@ -260,10 +265,14 @@ class ApprovalTableRow extends React.Component {
               <tr key={`approval_${this.props.approval.get('id')}_vote_approver_${approver.id}`}>
                 <td>&nbsp;</td>
                 <td>{approver.name}</td>
-                <td />
-                <td />
-                <td />
-                <td />
+                <td colSpan="4">
+                  {approval.status === 'pending' && me.get('id') === approver.id &&
+                  <Input
+                    type="text"
+                    value={requestMessage}
+                    onChange={this.changeRequestMessage}
+                  />}
+                </td>
                 <td>
                   <FormattedMessage id="agent.tickets.approvals.status_name.pending" />
                 </td>

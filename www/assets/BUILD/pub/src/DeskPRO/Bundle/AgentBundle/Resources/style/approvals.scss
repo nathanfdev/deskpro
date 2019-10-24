@@ -12,6 +12,16 @@
     td:last-child {
       max-width: 30px;
     }
+
+    td {
+      .dp-input {
+        width: 100%;
+
+        input {
+          width: 100%;
+        }
+      }
+    }
   }
 
   .errors {
