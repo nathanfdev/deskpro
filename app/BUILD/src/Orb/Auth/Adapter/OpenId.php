@@ -13,6 +13,7 @@ use Orb\Auth\StateHandler\StateHandlerInterface;
 
 class OpenId extends AbstractCallbackAdatper
 {
+    // identity of the provider -- admin setting
     const OPTION_IDENTITY = 'identity';
     const OPTION_REALM    = 'realm';
 
@@ -84,7 +85,11 @@ class OpenId extends AbstractCallbackAdatper
             'timezone'   => !empty($attributes['pref/timezone']) ? $attributes['pref/timezone'] : null,
         ];
 
-        $identity = new \Orb\Auth\Identity($openid->identity, $userinfo);
+        if (empty($userinfo['email'])) {
+            return new Result(Result::FAILURE, null, ['error_code' => 'invalid_validate', 'error_message' => 'Could not validate']);
+        }
+
+        $identity = new \Orb\Auth\Identity($userinfo['email'], $userinfo);
 
         $result = new Result(Result::SUCCESS, $identity);
 
