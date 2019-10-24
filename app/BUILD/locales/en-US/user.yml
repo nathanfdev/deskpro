@@ -61,12 +61,21 @@ helpcenter.account.section-title-usersource-email: 'Enter Your Email'
 helpcenter.account.usersource-set-email-desc: 'Before you can login we need your email address. Please enter your email address below so we can send you a verification email.'
 helpcenter.account.email-btn-usersource-set: 'Add Email Address'
 helpcenter.account.login-email-placeholder: email@example.com
+helpcenter.account.add: Add
+helpcenter.account.add-email: 'Add email'
+helpcenter.account.thank-you-for-registering: 'Thank you for registering'
+helpcenter.account.validation-email-sent: 'We’ve sent you an email to {{email}}<br />Please validate your email address to access your support centre.'
+helpcenter.account.resend-registration-email: 'Resend registration email'
 helpcenter.alerts.tickets-to-respond:
   one: 'You have one ticket to respond to.'
   other: 'You have {{count}} tickets to respond to.'
 helpcenter.articles.article_details: 'Article details'
 helpcenter.articles.section-title: 'Knowledgebase'
 helpcenter.articles.unpublished_date: 'Unpublished date'
+helpcenter.articles.status-published: PUBLISHED
+helpcenter.articles.status-archived: ARCHIVED
+helpcenter.articles.status-draft: DRAFT
+helpcenter.articles.published: Published
 helpcenter.articles.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
 helpcenter.articles.none: 'No articles yet'
 helpcenter.articles.view-x-articles:
@@ -95,6 +104,11 @@ helpcenter.chat.log_agents: Agents
 helpcenter.chat.log_department: Department
 helpcenter.chat.log_chat_time: 'Total Chat Time'
 helpcenter.chat.last_activity: 'Last activity'
+helpcenter.chat.view: View
+helpcenter.chat.agent: Agent
+helpcenter.chat.files-on-this-chat: 'Files on this Chat'
+helpcenter.chat.email-validated-sucessfully: 'Email validated successfully'
+helpcenter.chat.invalid-validation-code: 'Invalid validation code'
 helpcenter.chat.log_linked_ticket: 'Assigned to ticket'
 helpcenter.chat.log_view_linked_ticket: 'View Ticket'
 helpcenter.chat.you_have_been_invited: 'You have been invited to join a chat'
@@ -284,6 +298,19 @@ helpcenter.general.btn-cancel: Cancel
 helpcenter.account.submit-saved-form: 'Your form has not been submitted yet but we have saved it for you.'
 helpcenter.account.submit-saved-form-go: 'Click here to automatically re-submit the form.'
 helpcenter.account.comment-lockout: 'You have submitted a lot of comments. Please wait to submit more.'
+helpcenter.general.latest-status-changes: 'Latest status changes'
+helpcenter.general.helpcenter-disabled-re-enable-from-setup: 'The portal has been disabled. You can re-enable the portal from <a href="{{setup_link}}">Admin > Portal > Setup</a>'
+helpcenter.general.helpcenter-disabled-click-below: 'The portal has been disabled. If you are an agent, click the button below to go to the agent interface.'
+helpcenter.general.agent-iterface: 'Agent interface'
+helpcenter.general.impersonation-mode-off: 'impersonation mode off'
+helpcenter.general.turn-on: 'Turn on'
+helpcenter.general.click-here-to-view: 'Click here to view'
+helpcenter.general.you: You
+helpcenter.general.helpdesk-system: 'Helpdesk system'
+helpcenter.general.cancel: Cancel
+helpcenter.general.share: Share
+helpcenter.general.user-profile: 'User Profile'
+helpcenter.general.send-user-direct-message: 'Send user a Direct Message'
 helpcenter.members.company: 'Job Title & Company'
 helpcenter.members.email: 'Email'
 helpcenter.members.joined_portal: 'Joined Portal'
@@ -297,6 +324,7 @@ helpcenter.members.recent_activity: 'Recent Activity'
 helpcenter.members.send_message: 'Send Message'
 helpcenter.members.timezone: 'Timezone'
 helpcenter.members.title: 'Member Directory'
+helpcenter.members.phone-number-none: 'None'
 helpcenter.members.activity.commented_on: 'Commented on'
 helpcenter.members.activity.down_voted_comment_on: 'Down voted comment on'
 helpcenter.members.activity.up_voted_comment_on: 'Up voted comment on'
@@ -309,6 +337,7 @@ helpcenter.news.filter-cat: 'Select Category'
 helpcenter.news.filter-date: 'Select Date'
 helpcenter.news.news-type: 'News type'
 helpcenter.news.section-title: 'News'
+helpcenter.news.see-all-news: 'See all news'
 helpcenter.news.none: 'No news yet'
 helpcenter.news.view-as-agent: 'You can see this page because you are an agent. Normal users will not be able to view this page.'
 helpcenter.news.recent-title: 'Recent News'
@@ -352,6 +381,16 @@ helpcenter.tickets.view_ticket_id: 'Ticket ID'
 helpcenter.tickets.view_ticket_status_title: 'Ticket status'
 helpcenter.tickets.view_you_created: '<h3 class="dp-po-ticket-meta-title">Created</h3><p>{{ago}}</p>'
 helpcenter.tickets.you-need-to-respond: 'You need to respond'
+helpcenter.tickets.agent-reply: 'Agent reply'
+helpcenter.error.helpdesk: Helpdesk
+helpcenter.error.create-new-account: 'Create a new account'
+helpcenter.error.search: Search
+helpcenter.error.contact-us: 'Contact Us'
+helpcenter.error.an-error-occured: 'An Error Occurred'
+helpcenter.error.an-error-occured-desc: 'Sorry, but there was an error trying to load this page. Please try again later or <a href="{{contact_link}}">contact us</a>.'
+helpcenter.sidebar.customer-satisfaction: 'Customer Satisfaction'
+helpcenter.form.delete-question: 'Delete?'
+helpcenter.guides.download-pdf: 'Download PDF'
 helpcenter.tickets.rate_support: 'Rate your support'
 helpcenter.tickets.rate-thanks-vialink: 'Thank you for submitting your rating. Feel free to leave a comment below.'
 helpcenter.tickets.need-login_title: 'You need to log in to open a ticket'

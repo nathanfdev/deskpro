@@ -14,7 +14,7 @@
         <input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][display_order]" value="10" />
         <input type="text" name="{{ form._children.vars.full_name }}[{{ idx }}][title]" style="width: 60%;" />&nbsp;
         <button type="submit" class="dp-btn dp-btn-default" style="width: 37%;">
-            Add
+            {{ phrase('helpcenter.account.add') }}
         </button>
         {% endif %}
     {% endspaceless %}

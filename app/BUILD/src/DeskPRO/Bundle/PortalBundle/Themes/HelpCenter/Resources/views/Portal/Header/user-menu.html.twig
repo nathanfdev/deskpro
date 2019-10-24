@@ -2,7 +2,7 @@
     <div class="dp-po-user">
         {% if is_guest() %}
             <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="false" id="hc-top-login-btn">Login</a>
+               aria-expanded="false" id="hc-top-login-btn">{{ phrase('helpcenter.account.login-btn') }}</a>
             <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
                 {% if helpcenter.getUserInfo().display_registration_link %}
                 <h4 class="dropdown-item-text dp-po-user-dropdown-title">{{ phrase('helpcenter.account.new-to-brand', {brand: brand_setting('core.deskpro_name')|e}) }} <a href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login-register-header') }}</a></h4>

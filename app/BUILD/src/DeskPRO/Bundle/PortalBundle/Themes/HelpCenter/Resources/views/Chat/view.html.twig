@@ -25,7 +25,7 @@
       {% else %}
         {{ phrase('helpcenter.chat.you') }} ({{ message.author.primary_email }})
       {% endif %}
-      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">AGENT</span>{% endif %}
+      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.chat.agent') }}</span>{% endif %}
     </div>
     <div class="dp-po-time">
       <i class="dp-po-icon far fa-clock"></i>
@@ -164,7 +164,7 @@
 
             {% if chat_attachments|length  > 0 %}
             <div class="dp-po-sidebar dp-po-chat-attachments">
-              <h3 class="dp-po-sidebar-title">Files on this Chat</h3>
+              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.files-on-this-chat') }}</h3>
               <ul class="dp-po-chat-attachments-list">
                 {% for attachment in chat_attachments %}
                   <li class="dp-po-chat-attachments-item">

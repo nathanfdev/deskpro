@@ -9,11 +9,11 @@
                         <div class="dp-po-block">
                             <div class="dp-po-register-success">
                                 <i class="dp-po-icon fal fa-user"></i>
-                                <h2 class="dp-po-register-success-title">Thank you for registering</h2>
-                                <p class="dp-po-register-success-msg">We’ve sent you an email to {{ email }}<br />Please validate
-                                    your
-                                    email address to access your support centre.</p>
-                                <a href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}" class="dp-po-register-success-link">Resend registration email</a>
+                                <h2 class="dp-po-register-success-title">{{ phrase('helpcenter.account.thank-you-for-registering') }}</h2>
+                                <p class="dp-po-register-success-msg">
+                                    {{ phrase('helpcenter.account.validation-email-sent', {email: email}) }}
+                                </p>
+                                <a href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}" class="dp-po-register-success-link">{{ phrase('helpcenter.account.resend-registration-email') }}</a>
                             </div>
                         </div>
                     </div>

@@ -395,7 +395,7 @@
                 {% endif %}
                 {{ form.vars.data.blob.filename }}
             </a>
-            [ {{ form_widget(form.delete) }} Delete? ]
+            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete-question') }} ]
             {{ form_widget(form.blob_auth) }}
         </li>
     {% endif %}
@@ -454,7 +454,7 @@
                 {% endif %}
                 {{ form.vars.data.blob.filename }}
             </a>
-            [ {{ form_widget(form.delete) }} Delete? ]
+            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete-question') }} ]
             {{ form_widget(form.blob_auth) }}
         </div>
     {% endif %}

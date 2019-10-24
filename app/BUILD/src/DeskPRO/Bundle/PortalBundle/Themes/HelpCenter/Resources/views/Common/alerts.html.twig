@@ -25,7 +25,7 @@
                     <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
                 </figure>
                 <h3 class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}
-                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">Click here to view</a>
+                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">{{ phrase('helpcenter.general.click-here-to-view') }}</a>
                 </h3>
             </div>
         {% endif %}
