@@ -72,6 +72,16 @@ helpcenter.articles.none: 'No articles yet'
 helpcenter.articles.view-x-articles:
   one: 'View 1 article'
   other: 'View {{count}} articles'
+helpcenter.articles.search-title: Knowledgebase
+helpcenter.sidebar.article_posted_by: 'Posted by {{name}}'
+helpcenter.sidebar.agents_available: 'Available Agents'
+helpcenter.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
+helpcenter.sidebar.agents_x_online:
+  one: '{{count}} online'
+  other: '{{count}} online'
+helpcenter.sidebar.news_title: News
+helpcenter.sidebar.satisfied_customers: 'satisfied customers'
+helpcenter.sidebar.top_articles_title: 'Top Articles'
 helpcenter.chats.my-chats: 'My chats'
 helpcenter.chat.list_date: Date
 helpcenter.chat.list_agent: Agent
@@ -134,7 +144,9 @@ helpcenter.community.btn-vote: 'I Agree'
 helpcenter.community.btn-closed: Closed
 helpcenter.community.attachments: Attachments
 helpcenter.community.form_custom_cat: Category
+helpcenter.community.search-title: Community
 helpcenter.topics.none: 'No topics yet'
+helpcenter.topics.search-title: Guides
 helpcenter.forms.label_full_name: 'Your Name'
 helpcenter.forms.label_save: Save
 helpcenter.forms.label_password: Password
@@ -158,6 +170,7 @@ helpcenter.downloads.view-x-files:
   one: 'View 1 download'
   other: 'View {{count}} downloads'
 helpcenter.downloads.none: 'No downloads yet'
+helpcenter.downloads.search-title: Downloads
 helpcenter.flashes.article-unpublish: 'This article will unpublish on {{date}}.'
 helpcenter.general.attachments: 'Attachments'
 helpcenter.general.clear-all: 'Clear all'
@@ -255,8 +268,21 @@ helpcenter.general.nav-newticket-desc: 'We are here to help'
 helpcenter.general.your_comment_label: 'Your comment'
 helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
 helpcenter.general.comment_login_first: 'You need to log in before you can submit a comment.'
+helpcenter.general.show: Show
+helpcenter.general.everything: Everything
+helpcenter.general.tagged_with: 'tagged with'
+helpcenter.general.btn-go: Go
+helpcenter.general.x-search-results: '{{num}} search results for "{{query}}"'
+helpcenter.general.x-search-results-no-query: '{{num}} search results'
+helpcenter.general.label-search-enter-label: 'Please provide a label to search for'
+helpcenter.general.by_2: By
+helpcenter.general.on: 'on'
+helpcenter.general.no-search-query: 'Please type a search query into the search box.'
+helpcenter.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
+helpcenter.general.show_more: 'Show more'
+helpcenter.general.btn-cancel: Cancel
 helpcenter.account.submit-saved-form: 'Your form has not been submitted yet but we have saved it for you.'
-helpcenter.account.submit-saved-form-go: 'Click here to automaticalfly re-submit the form.'
+helpcenter.account.submit-saved-form-go: 'Click here to automatically re-submit the form.'
 helpcenter.account.comment-lockout: 'You have submitted a lot of comments. Please wait to submit more.'
 helpcenter.members.company: 'Job Title & Company'
 helpcenter.members.email: 'Email'
@@ -286,13 +312,15 @@ helpcenter.news.section-title: 'News'
 helpcenter.news.none: 'No news yet'
 helpcenter.news.view-as-agent: 'You can see this page because you are an agent. Normal users will not be able to view this page.'
 helpcenter.news.recent-title: 'Recent News'
+helpcenter.news.search-title: 'News Articles'
 helpcenter.profile.email-address: 'Email address'
 helpcenter.profile.your-account: 'Your account'
 helpcenter.profile.your-email-addresses: 'Your email addresses'
 helpcenter.profile.your-password: 'Your password'
+helpcenter.profile.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
 helpcenter.guides.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
 helpcenter.tickets.close-ticket: 'Close ticket'
-helpcenter.profile.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
+helpcenter.tickets.view_reply_or_close: 'Add a reply or <a href="{{close_url}}" class="close-ticket-trigger">close the ticket</a>'
 helpcenter.tickets.filter-by: 'Filter by'
 helpcenter.tickets.last-activity: 'Last Activity'
 helpcenter.tickets.my-tickets: 'My tickets'
@@ -336,6 +364,44 @@ helpcenter.tickets.new-section-title: 'Contact Us'
 helpcenter.tickets.form-changed-notice: 'New fields have been added to the form. Please review these fields and then re-submit the form.'
 helpcenter.tickets.new-intro: 'Please complete this form and one of our agents will reply to you by email as soon as possible.'
 helpcenter.tickets.view_reply_errors: 'There are some errors with your submission.'
+helpcenter.tickets.list_date_created: 'Date Created'
+helpcenter.tickets.search-last-activity: 'Last Activity'
+helpcenter.tickets.search-title: Tickets
+helpcenter.tickets.resolve_my_ticket_btn: 'Resolve my ticket'
+helpcenter.tickets.no_participants: 'No participants'
+helpcenter.tickets.view_label_your_name_placeholder: 'Name (required)'
+helpcenter.tickets.view_label_your_email_placeholder: 'Email Address (required)'
+helpcenter.tickets.view_btn_add_to_ticket: 'Add To Ticket'
+helpcenter.tickets.view_scroll_reply: 'Click here to scroll down to the form.'
+helpcenter.tickets.view_btn_edit: Edit
+helpcenter.tickets.view_btn_edit_full: 'Edit this ticket'
+helpcenter.tickets.switched-department-rerender: 'The structure of this form may have changed. Please review the form and submit again.'
+helpcenter.tickets.cancel-ticket-edit: 'Cancel edit and show me the ticket again'
+helpcenter.tickets.rate-intro: '{{name}} helped you with your ticket "{{subject}}"'
+helpcenter.tickets.rate-question: 'How would you rate the support you received?'
+helpcenter.tickets.rate-negative: 'It was not good'
+helpcenter.tickets.rate-neutral: 'It was OK'
+helpcenter.tickets.rate-positive: 'It was great'
+helpcenter.tickets.feedback_message_leave_comment: 'Optionally leave a comment'
+helpcenter.tickets.submit_feedback: 'Submit feedback'
+helpcenter.tickets.please_login_to_reply: 'Log in to reply.'
+helpcenter.tickets.list_department: Department
+helpcenter.tickets.list_subject: Subject
+helpcenter.tickets.list_agent: 'Assigned Agent'
+helpcenter.tickets.list_user: User
+helpcenter.tickets.list_last_action: 'Last Action'
+helpcenter.tickets.list_date_last_user: 'Last User Reply'
+helpcenter.tickets.list_date_last_agent: 'Last Agent Reply'
+helpcenter.tickets.list_ticket_ref: Reference
+helpcenter.tickets.view_unassigned: Unassigned
+helpcenter.tickets.view_unassigned_more: 'An agent will be assigned'
+helpcenter.tickets.view_reply: 'Add a reply'
+helpcenter.tickets.new_ticket_button: 'Create a new ticket'
+helpcenter.tickets.mark-unresolved: 'Re-open Ticket'
+helpcenter.tickets.timeline_attached: 'Attached with this message:'
+helpcenter.tickets.timeline_re_opened: 'reopened this ticket'
+helpcenter.tickets.timeline_marked: 'marked this ticket:'
+helpcenter.tickets.timeline_marked_resolved: Resolved
 helpcenter.error.permission-denied-title: 'You are not allowed to perform this action'
 helpcenter.error.general-title: 'An Error Occurred'
 helpcenter.error.400-desc: 'Sorry, but your request was malformed.'

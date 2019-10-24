@@ -1,7 +1,7 @@
 <div class="dp-po-post-meta">
-    <h3 class="dp-po-post-meta-title">{{ phrase('portal.sidebar.article_posted_by') }}</h3>
+    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.sidebar.article_posted_by') }}</h3>
     <p>{{ item.person.display_name_user }}</p>
-    <h3 class="dp-po-post-meta-title">{{ phrase('portal.tickets.list_date_created') }}</h3>
+    <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.tickets.list_date_created') }}</h3>
     <p>{{ item.date_published | date('day') }}</p>
     {% if custom_data | length %}
         {% include 'Theme:PublishCommon:custom-data-sidebar-list.html.twig' %}

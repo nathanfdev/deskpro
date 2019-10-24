@@ -3,5 +3,5 @@
         {{ phrase('helpcenter.general.rate-page-positive') }} </a>
     <a href="{{ portal_path(item, 'vote_down') }}" class="btn btn-icon btn-outline-danger"> <i class="dp-po-icon far fa-times"></i>
         {{ phrase('helpcenter.general.rate-page-negative') }} </a>
-    <p class="db-po-post-rating-count">{{ phrase('portal.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
+    <p class="db-po-post-rating-count">{{ phrase('helpcenter.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
 </div>

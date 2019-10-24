@@ -25,8 +25,8 @@
                     <span class="primary {% if is_agent %}single{% endif %}">{% if is_agent %}{{ person.display_name_user }}{% else %}{{ person.display_name }}{% endif %}</span>
                     {% if not is_agent %}<span class="secondary">{{ person.primary_email_address }}</span>{% endif %}
                 {% else %}
-                    <span class="primary">{{ phrase('portal.tickets.view_unassigned') }}</span>
-                    <span class="secondary">{{ phrase('portal.tickets.view_unassigned_more') }}</span>
+                    <span class="primary">{{ phrase('helpcenter.tickets.view_unassigned') }}</span>
+                    <span class="secondary">{{ phrase('helpcenter.tickets.view_unassigned_more') }}</span>
                 {% endif %}
             </span>
         {% if person and not is_agent %}
