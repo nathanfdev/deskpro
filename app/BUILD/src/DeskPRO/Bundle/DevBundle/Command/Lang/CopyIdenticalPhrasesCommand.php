@@ -53,6 +53,13 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
                 'user.yml'
             )
             ->addOption(
+                'match',
+                'm',
+                InputOption::VALUE_OPTIONAL,
+                'Match on either id postfix or phrase (options are: id|phrase, default is "id")',
+                'id'
+            )
+            ->addOption(
                 'prepend',
                 'p',
                 InputOption::VALUE_NONE,
@@ -68,11 +75,12 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
     {
         $kernelRootDir = $this->getContainer()->getParameter('kernel.root_dir');
 
-        $isPrepend     = $input->getOption('prepend');
-        $idPrefix      = $input->getOption('root-phrase-id-prefix');
-        $localesDir    = $input->getOption('locales-dir') ?: $kernelRootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'locales';
-        $rootLanguage  = $input->getOption('root-language');
-        $languageFiles = array_map('trim', explode(',', $input->getOption('language-files')));
+        $isPrepend          = $input->getOption('prepend');
+        $idPrefix           = $input->getOption('root-phrase-id-prefix');
+        $localesDir         = $input->getOption('locales-dir') ?: $kernelRootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'locales';
+        $rootLanguage       = $input->getOption('root-language');
+        $languageFiles      = array_map('trim', explode(',', $input->getOption('language-files')));
+        $isMatchingOnPhrase = strtolower($input->getOption('match')) == 'phrase';
 
         $output->writeln("Analysing...");
 
@@ -80,7 +88,8 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
             $localesDir,
             $rootLanguage,
             $languageFiles,
-            $idPrefix
+            $idPrefix,
+            $isMatchingOnPhrase
         );
 
         foreach ($same as $languageFile => $replacementTuple) {
@@ -115,6 +124,11 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
             $output->writeln("---------");
         }
 
+        $stats = [];
+        foreach ($additions as $languageFile => $phrases) {
+            $stats[$languageFile] = count($phrases);
+        }
+
         if ($isPrepend) {
             $output->writeln("Prepending to language files...");
             $output->writeln("---------");
@@ -132,8 +146,14 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
             $output->writeln("---------");
         }
 
-        $output->writeln("Done.");
+        $output->writeln("** Done **");
 
+        $output->writeln("---------");
+
+        $output->writeln("Stats.");
+        foreach ($stats as $file => $count) {
+            $output->writeln(" * Additions for <info>{$file}</info>: {$count}");
+        }
     }
 
     /**

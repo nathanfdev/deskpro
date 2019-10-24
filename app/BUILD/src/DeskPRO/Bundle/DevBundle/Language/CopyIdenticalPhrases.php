@@ -22,13 +22,14 @@ class CopyIdenticalPhrases
     /**
      * Find the same phrases within the root language (ID prefix vs. non ID prefix)
      *
-     * @param string $localesDir
-     * @param string $rootLanguage
+     * @param string   $localesDir
+     * @param string   $rootLanguage
      * @param string[] $languageFiles
-     * @param string $idPrefix
+     * @param string   $idPrefix
+     * @param bool     $isMatchingOnPhrase
      * @return array
      */
-    public function analyze($localesDir, $rootLanguage, array $languageFiles, $idPrefix)
+    public function analyze($localesDir, $rootLanguage, array $languageFiles, $idPrefix, $isMatchingOnPhrase)
     {
         $same = [];
         $rootLanguageDirPath = $this->buildRootLanguageDirPath($localesDir, $rootLanguage);
@@ -43,10 +44,17 @@ class CopyIdenticalPhrases
             $phrases = Yaml::parse(file_get_contents($languageFilepath));
 
             // Hash the values for comparison
-            $values = array_map(
-                [$this, 'buildHashValueTuple'],
-                $phrases
-            );
+            if ($isMatchingOnPhrase) {
+                // Match on phrase
+                $values = array_map(function ($value) {
+                    return [$value, md5(serialize($value))];
+                }, $phrases);
+            } else {
+                // Match on ID postfix
+                $values = array_reduce(array_keys($phrases), function (array $list, $key) use ($phrases) {
+                    return array_merge($list, [$key => [$phrases[$key], md5($this->onlyPhraseIdPostfix($key))]]);
+                }, []);
+            }
 
             // Split into ID prefix/non ID prefix groups
             $groups = [
@@ -75,9 +83,9 @@ class CopyIdenticalPhrases
     }
 
     /**
-     * @param array $same
-     * @param $localesDir
-     * @param $rootLanguage
+     * @param array  $same
+     * @param string $localesDir
+     * @param string $rootLanguage
      * @return array
      */
     public function buildAdditions(array $same, $localesDir, $rootLanguage)
@@ -113,7 +121,7 @@ class CopyIdenticalPhrases
     }
 
     /**
-     * @param array $additions
+     * @param array         $additions
      * @param callable|null $afterPrepend
      * @param callable|null $onFailure
      */
@@ -126,34 +134,14 @@ class CopyIdenticalPhrases
                 }
             }
 
-            file_put_contents(
-                $languageFile,
-                Yaml::dump($phrases).PHP_EOL.file_get_contents($languageFile)
-            );
+            $existing = Yaml::parse(file_get_contents($languageFile));
+            $existing = array_merge($phrases, $existing);
+            file_put_contents($languageFile, Yaml::dump($existing));
 
             if ($afterPrepend) {
                 $afterPrepend($languageFile);
             }
         }
-    }
-
-    /**
-     * @param mixed $value
-     * @return array
-     */
-    private function buildHashValueTuple($value)
-    {
-        $toHash = $value;
-
-        if (is_string($value)) {
-            $toHash = strtolower(trim($value));
-        } elseif (is_array($value)) {
-            $toHash = array_map(function ($v) {
-                return is_string($v) ? strtolower(trim($v)) : $v;
-            }, $value);
-        }
-
-        return [$value, md5(serialize($toHash))];
     }
 
     /**
@@ -185,6 +173,15 @@ class CopyIdenticalPhrases
      */
     private function buildRootLanguageDirPath($localesDir, $rootLanguage)
     {
-        return "{$localesDir}/{$rootLanguage}";
+        return $localesDir.DIRECTORY_SEPARATOR.$rootLanguage;
+    }
+
+    /**
+     * @param string $id
+     * @return string
+     */
+    private function onlyPhraseIdPostfix($id)
+    {
+        return preg_replace('/^[a-z]*\./', '', $id);
     }
 }
