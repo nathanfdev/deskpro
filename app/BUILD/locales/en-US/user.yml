@@ -264,12 +264,10 @@ helpcenter.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>
 helpcenter.general.add-comment: 'Add a comment'
 helpcenter.general.comment_btn_save: 'Save Comment'
 helpcenter.general.comments-pending-validation: 'This comment is being reviewed. It will be displayed shortly'
-helpcenter.general.ics_subscribe: 'iCalendar'
 helpcenter.general.related-news: 'Related News'
 helpcenter.general.related-pages: 'Related Pages'
 helpcenter.general.related-downloads: 'Related Files'
 helpcenter.general.related-community: 'Related Community Topics'
-helpcenter.general.rss_subscribe: 'RSS Feed'
 helpcenter.general.rate-page: 'Rate the quality of this page'
 helpcenter.general.rating_x_of_y_found_helpful: '{{vote_up}} of {{vote_count}} people found this page helpful'
 helpcenter.general.eula: EULA
