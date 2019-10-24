@@ -16,7 +16,7 @@ class CopyIdenticalPhrases
     /**
      * Group keys
      */
-    const GROUP_PREFIX = 'prefix';
+    const GROUP_PREFIX     = 'prefix';
     const GROUP_NON_PREFIX = 'non_prefix';
 
     /**

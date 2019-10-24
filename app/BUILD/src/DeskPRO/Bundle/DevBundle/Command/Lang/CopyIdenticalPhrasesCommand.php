@@ -80,7 +80,7 @@ class CopyIdenticalPhrasesCommand extends ContainerAwareCommand
         $localesDir         = $input->getOption('locales-dir') ?: $kernelRootDir.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'locales';
         $rootLanguage       = $input->getOption('root-language');
         $languageFiles      = array_map('trim', explode(',', $input->getOption('language-files')));
-        $isMatchingOnPhrase = strtolower($input->getOption('match')) == 'phrase';
+        $isMatchingOnPhrase = strtolower(trim($input->getOption('match'))) == 'phrase';
 
         $output->writeln("Analysing...");
 
