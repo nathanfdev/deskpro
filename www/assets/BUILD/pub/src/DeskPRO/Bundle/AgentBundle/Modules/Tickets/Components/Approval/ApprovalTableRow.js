@@ -240,7 +240,7 @@ class ApprovalTableRow extends React.Component {
 
       if (approval.votes.length > 0 || approval.approvers.length > 0) {
         approval.votes.forEach(vote => result.push(
-          <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`}>
+          <tr key={`approval_${this.props.approval.get('id')}_vote_${vote.id}`} className="approval-request-row">
             <td>&nbsp;</td>
             <td>{vote.approver.name}</td>
             <td>{vote.message}</td>
@@ -262,7 +262,7 @@ class ApprovalTableRow extends React.Component {
         approval.approvers.forEach((approver) => {
           if (voteApproverIds.indexOf(approver.id) === -1) {
             result.push(
-              <tr key={`approval_${this.props.approval.get('id')}_vote_approver_${approver.id}`}>
+              <tr key={`approval_${this.props.approval.get('id')}_vote_approver_${approver.id}`} className="approval-request-row">
                 <td>&nbsp;</td>
                 <td>{approver.name}</td>
                 <td colSpan="4">
