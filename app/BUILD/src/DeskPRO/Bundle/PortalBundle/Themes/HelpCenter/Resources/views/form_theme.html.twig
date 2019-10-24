@@ -55,10 +55,10 @@
     #}
     {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
     {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
-    {% if prototype is not defined %}
-      {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
-    {% else %}
+    {% if attr.attachments is defined and attr.attachments %}
         {% set widgetClass = '' %}
+    {% else %}
+        {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
     {% endif %}
     {# containers #}
     {% if root_and_not_hidden %}<div class="form-group">{% endif %}
@@ -130,7 +130,7 @@
         {% else %}
             {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
         {% endif %}
-        <button data-test="test" type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+        <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
     {% endspaceless %}
 {% endblock button_widget %}
 
@@ -368,9 +368,10 @@
     </div>
 {%- endblock choice_widget_collapsed -%}
 
-{% block ticket_message_inline_attachments_widget %}
-    {{ form_widget(form) }}
-{% endblock ticket_message_inline_attachments_widget %}
+{% block _ticket_message_inline_attachments_row %}
+    {%- set attr = attr|merge({ 'attachments': true }) -%}
+    {{- block('form_row') -}}
+{% endblock _ticket_message_inline_attachments_row %}
 
 {# TICKET ATTACHMENTS #}
 {% block ticket_message_attachment_widget %}
@@ -404,7 +405,7 @@
 {% block ticket_message_attachment_collection_widget %}
 
 {% if prototype is defined %}
-    {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+    {%- set attr = attr|merge({'data-prototype': form_row(prototype), attachments: true }) -%}
 {% endif %}
 <div class="form-group dp-po-form-upload with-dpx">
     {{ form_label(form) }}
@@ -462,7 +463,7 @@
 
 {% block community_topic_attachment_collection_widget %}
     {% if prototype is defined %}
-        {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype), attachments: true }) -%}
     {% endif %}
     <div class="form-group dp-po-form-upload with-dpx">
         {{ form_label(form) }}
@@ -670,7 +671,7 @@ END HIERARCHY
                 data-restriction-set="{{ form.vars.restriction_set }}"
             >
                 {% if prototype is defined %}
-                    {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+                    {%- set attr = attr|merge({'data-prototype': form_row(prototype), attachments: true }) -%}
                 {% endif %}
                 {{- block('form_widget') -}}
             </div>
