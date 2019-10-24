@@ -37,7 +37,7 @@ export const loadApproversList = createAction(
 export const loadOrganizationManagers = createAction(
   'TICKET_LOAD_ORGANIZATION_MANAGERS',
   orgId => new Promise((resolve) => {
-    repository('Person').search({ organization: orgId, organization_manager: true }).then((promise) => {
+    repository('Person').search({ organization: orgId, organization_manager: 1 }).then((promise) => {
       const res = promise.getData();
 
       resolve(res);
