@@ -261,7 +261,7 @@
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
             <span class="form-label-link manage-emails-link">
-                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('helpcenter.account.email-management-from-form') }}<i class="fas fa-angle-double-right"></i></a>
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('helpcenter.account.email-management-from-form') }}</a>
             </span>
     {% endif %}</label>
     {%- endif -%}
@@ -301,15 +301,11 @@
 {% block deskpro_person_email_choice_widget %}
         {% set count = choices|length %}
         {% if count > 1 %}
-            <div {{ block('widget_container_attributes') }}>
-               <div class="with-dpx form-control">
-                   <select id="{{ id }}" name="{{ full_name }}">
-                       {% for choice in choices %}
-                           <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
-                       {% endfor %}
-                   </select>
-               </div>
-            </div>
+           <select id="{{ id }}" name="{{ full_name }}" class="form-control">
+               {% for choice in choices %}
+                   <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+               {% endfor %}
+           </select>
         {% else %}
             <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
