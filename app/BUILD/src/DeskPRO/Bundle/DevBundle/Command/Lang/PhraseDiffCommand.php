@@ -121,7 +121,7 @@ class PhraseDiffCommand extends ContainerAwareCommand
 
         $output->writeln(' - Added (By ID): '.count($added));
         $output->writeln(' - Removed (By ID): '.count($removed));
-        $output->writeln(' - Diff (By Phrase): '.count($phraseDiff));
+        $output->writeln(' - Changes (By Phrase): '.count($phraseDiff));
         $output->writeln('');
     }
 }
