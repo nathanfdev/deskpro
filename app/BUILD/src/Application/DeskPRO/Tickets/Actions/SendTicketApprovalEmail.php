@@ -148,7 +148,7 @@ class SendTicketApprovalEmail extends AbstractEmailAction implements ActionInter
                         $agentTicketEmail->send($vars);
                         $this->recordEmailTicketLog($agentTicketEmail, $ticket, $context);
                     }
-                } elseif ($recipient->isUser()) {
+                } else {
                     if ($this->hasEmailTemplatesFeature()) {
                         $viewModel = $this->getUserViewModelFactory()->createTicketApprovalModelByApprovalEvent(
                             $context->getEventType(),
