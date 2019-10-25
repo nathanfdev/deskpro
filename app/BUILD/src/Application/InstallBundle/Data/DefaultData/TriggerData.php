@@ -51,8 +51,10 @@ class TriggerData extends AbstractDefaultData
      */
     public function runSync()
     {
-        $exist_names = $this->getDb()->fetchAllCol('SELECT sys_name FROM ticket_triggers WHERE sys_name IS NOT NULL');
-        $this->installTriggerRecords($exist_names);
+        // new triggers should not be installed via upgrade command
+        // please put new triggers in a migration script and add them DISABLED,
+        // this default data for an installation purposes only
+        return;
     }
 
     private function installTriggerRecords(array $ignore = [])
