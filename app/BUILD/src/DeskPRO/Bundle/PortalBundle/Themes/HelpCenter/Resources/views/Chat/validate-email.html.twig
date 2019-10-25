@@ -2,8 +2,8 @@
 
 {% block page_body %}
     {% if is_valid %}
-        Email validated sucessfully
+        {{ phrase('helpcenter.chat.email-validated-sucessfully') }}
     {% else %}
-        Invalid validation code
+        {{ phrase('helpcenter.chat.invalid-validation-code') }}
     {% endif %}
 {% endblock page_body %}

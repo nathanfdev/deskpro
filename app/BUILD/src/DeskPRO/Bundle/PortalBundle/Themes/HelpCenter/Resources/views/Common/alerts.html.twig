@@ -3,9 +3,9 @@
         {% if alerts.lang_diff %}
             <span class="alert" data-dismiss-handler="{{ path('portal_dismiss_lang_alert') }}">
               <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
-                {{ phrase('portal.general.lang-diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
-              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
-              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('portal.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
+                {{ phrase('helpcenter.general.lang-diff', { active_lang: alerts.lang_diff.active_lang.title, person_lang: alerts.lang_diff.person_lang.title }) }}
+              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.active_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-change-to-current', { lang: alerts.lang_diff.active_lang.title }) }}</a>
+              <a href="{{ path('portal_change_language', {lang_code: alerts.lang_diff.person_lang.url_code}) }}" class="alert-button post-link">{{ phrase('helpcenter.general.lang-switch', { lang: alerts.lang_diff.person_lang.title }) }}</a>
             </span>
         {% endif %}
 
@@ -13,8 +13,8 @@
             {% set alert_id = saved.link %}
             <span class="alert" data-alert-id="{{ alert_id }}">
                 <div class="click-to-dismiss"><i class="fas fa-times"></i></div>
-                {% if saved.dataType is defined %}{{ phrase('portal.account.submit-saved-form' ~ saved.dataType) }}{% endif %}
-                <a class="alert-button" href="{{ saved.link }}">{{ phrase('portal.account.submit-saved-form-go') }}</a>
+                {% if saved.dataType is defined %}{{ phrase('helpcenter.account.submit-saved-form' ~ saved.dataType) }}{% endif %}
+                <a class="alert-button" href="{{ saved.link }}">{{ phrase('helpcenter.account.submit-saved-form-go') }}</a>
             </span>
         {% endfor %}
 
@@ -25,7 +25,7 @@
                     <span class="dp-po-notification-count">{{ alerts.tickets_awaiting_reply | length }}</span>
                 </figure>
                 <h3 class="dp-po-notification-title">{{ phrase('helpcenter.alerts.tickets-to-respond', { count: alerts.tickets_awaiting_reply | length })}}
-                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">Click here to view</a>
+                    <a href="{{ path('portal_tickets') }}" class="dp-po-notification-link">{{ phrase('helpcenter.general.click-here-to-view') }}</a>
                 </h3>
             </div>
         {% endif %}

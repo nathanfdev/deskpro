@@ -17,14 +17,14 @@
                 {{ article.date_updated | date('Y-m-d') }}
                 -
             {% if brand_setting('user.publish_comments') %}
-                <span class="comments"><i class="far fa-comments"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
+                <span class="comments"><i class="far fa-comments"></i> <a href="#comments">{{ phrase('helpcenter.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
                 -
             {% endif %}
-                {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
+                {{ phrase('helpcenter.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
             </div>
             {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
-                      <div class="sub-note">{{ phrase('portal.articles.view-as-agent') }}</div>
-                    {% endif %}
+              <div class="sub-note">{{ phrase('helpcenter.articles.view-as-agent') }}</div>
+            {% endif %}
         </header>
 
         <div class="article-content padded dpx-kb-article-content">
@@ -34,7 +34,7 @@
         {% if article.labels|length %}
             <div class="tag-list">
                 <ul>
-                    <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
+                    <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('helpcenter.general.tags') }}</li>
                     {% for l in  article.labels %}
                         <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
                     {% endfor %}
@@ -49,7 +49,7 @@
     {% if brand_setting('user.publish_comments') and article.num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
-                <h1>{{ phrase('portal.general.comments-title', {count: article.calc_num_comments}) }}</h1>
+                <h1>{{ phrase('helpcenter.general.comments-title', {count: article.calc_num_comments}) }}</h1>
             </div>
             {% show kb_article_comments %}
         </div>

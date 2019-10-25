@@ -53,9 +53,9 @@
       {# TODO active subscription state #}
       {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
         subscriptionInfo: [
-          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('portal.forms.label_kb_article'), active: false },
-          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('portal.forms.label_category'), active: false },
-          { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('portal.articles.section-title'), active: false },
+          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: false },
+          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: false },
+          { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: false },
         ]
       } %}
     </div>
@@ -97,13 +97,13 @@
 
   {% if post.labels | length %}
     {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
-      title: phrase('portal.general.labels'),
+      title: phrase('helpcenter.general.labels'),
       labels: post.labels
     } %}
   {% endif %}
 
   {% include 'Theme:PublishCommon:recent-items.html.twig' with {
-    title: phrase('portal.news.recent-title'),
+    title: phrase('helpcenter.news.recent-title'),
     items: helpcenter.getRecentNews({category: category}),
     viewAllPath: path('portal_news_browse', {slug: category.slug}),
     viewAllTitle: phrase('helpcenter.general.nav-news-desc-short')

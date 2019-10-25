@@ -259,7 +259,7 @@
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
             <span class="form-label-link manage-emails-link">
-                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-management-from-form') }}<i class="fas fa-angle-double-right"></i></a>
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('helpcenter.account.email-management-from-form') }}<i class="fas fa-angle-double-right"></i></a>
             </span>
     {% endif %}</label>
     {%- endif -%}
@@ -396,7 +396,7 @@
                 {% endif %}
                 {{ form.vars.data.blob.filename }}
             </a>
-            [ {{ form_widget(form.delete) }} Delete? ]
+            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete-question') }} ]
             {{ form_widget(form.blob_auth) }}
         </li>
     {% endif %}
@@ -455,7 +455,7 @@
                 {% endif %}
                 {{ form.vars.data.blob.filename }}
             </a>
-            [ {{ form_widget(form.delete) }} Delete? ]
+            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete-question') }} ]
             {{ form_widget(form.blob_auth) }}
         </div>
     {% endif %}

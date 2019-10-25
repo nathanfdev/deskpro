@@ -13,7 +13,7 @@
                 {% if viewCategory %}
                     <h2 class="dp-po-title-text">{{ object_phrase(viewCategory) }}</h2>
                 {% else %}
-                    <h2 class="dp-po-title-text">{{ phrase('portal.news.section-title') }}</h2>
+                    <h2 class="dp-po-title-text">{{ phrase('helpcenter.news.section-title') }}</h2>
                 {% endif %}
             </div>
         </div>
@@ -43,7 +43,7 @@
                     </div>
                 {% endfor %}
             {% else %}
-                <strong>{{ phrase('portal.news.none') }}</strong>
+                <strong>{{ phrase('helpcenter.news.none') }}</strong>
             {% endif %}
         </div>
     </div>
@@ -56,7 +56,7 @@
     {# TODO active subscription state #}
     {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
         subscriptionInfo: [
-            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('portal.articles.section-title'), active: false },
+            { toggleUrl: path('portal_news_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: false },
         ]
     } %}
 

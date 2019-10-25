@@ -3,13 +3,13 @@
 	{% if person %}
 		{{ hc_avatar(person, '', 30) }}
 		{% if include_email and not person.isAgent() %}
-			You ({{ person.primary_email_address }})
+			{{ phrase('helpcenter.general.you') }} ({{ person.primary_email_address }})
 		{% else %}
 			{{ person.display_name_user }}
 		{% endif %}
 	{% else %}
 		<img src="{{ avatar_default_url(person, 30) }}" />
-		Helpdesk system
+		{{ phrase('helpcenter.general.helpdesk-system') }}
 	{% endif %}
 	</div>
 {% endblock person_inline %}

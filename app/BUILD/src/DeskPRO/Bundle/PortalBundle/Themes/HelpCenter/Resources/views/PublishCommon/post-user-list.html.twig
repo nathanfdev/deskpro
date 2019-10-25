@@ -5,8 +5,8 @@
 			{% include "Theme:Common:person_inline.html.twig" with {person: user, include_email: false } %}
 		</a>
 		<div class="dropdown-menu dropdown-menu-left" aria-labelledby="userDropdownMenuLink-{{ user.getId() }}">
-			<a class="dropdown-item" href="#">User Profile</a>
-			<a class="dropdown-item" href="#">Send user a Direct Message</a>
+			<a class="dropdown-item" href="#">{{ phrase('helpcenter.general.user-profile') }}</a>
+			<a class="dropdown-item" href="#">{{ phrase('helpcenter.general.send-user-direct-message') }}</a>
 		</div>
 	</div>
 </li>

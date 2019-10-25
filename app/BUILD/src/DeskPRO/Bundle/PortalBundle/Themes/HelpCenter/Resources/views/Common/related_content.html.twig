@@ -3,7 +3,7 @@
     {% for type,related in related_content %}
             {% if 'news' == type and related|length %}
                 <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-news') }}</h1>
+                    <h1>{{ phrase('helpcenter.general.related-news') }}</h1>
                 </div>
                 <ul>
                     {% for content in related %}
@@ -18,7 +18,7 @@
             {% endif %}
             {% if 'articles' == type and related|length %}
                 <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-pages') }}</h1>
+                    <h1>{{ phrase('helpcenter.general.related-pages') }}</h1>
                 </div>
                 <ul>
                     {% for content in related %}
@@ -33,7 +33,7 @@
             {% endif %}
             {% if 'downloads' == type and related|length %}
                 <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-downloads') }}</h1>
+                    <h1>{{ phrase('helpcenter.general.related-downloads') }}</h1>
                 </div>
                 <ul>
                     {% for content in related %}
@@ -48,7 +48,7 @@
             {% endif %}
             {% if 'community' == type and related|length %}
                 <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-community') }}</h1>
+                    <h1>{{ phrase('helpcenter.general.related-community') }}</h1>
                 </div>
                 <ul>
                     {% for content in related %}

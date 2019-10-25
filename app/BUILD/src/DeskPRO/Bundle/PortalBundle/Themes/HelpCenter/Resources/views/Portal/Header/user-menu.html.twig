@@ -2,7 +2,7 @@
     <div class="dp-po-user">
         {% if is_guest() %}
             <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
-               aria-expanded="false" id="hc-top-login-btn">Login</a>
+               aria-expanded="false" id="hc-top-login-btn">{{ phrase('helpcenter.account.login-btn') }}</a>
             <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
                 {% if helpcenter.getUserInfo().display_registration_link %}
                 <h4 class="dropdown-item-text dp-po-user-dropdown-title">{{ phrase('helpcenter.account.new-to-brand', {brand: brand_setting('core.deskpro_name')|e}) }} <a href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login-register-header') }}</a></h4>
@@ -43,12 +43,12 @@
                                 onclick="var event = arguments[0] || window.event; event.stopPropagation();"
                             >
                             <label class="form-check-label" for="login-form-remember-me" onclick="var event = arguments[0] || window.event; event.stopPropagation();">
-                                {{ phrase('portal.account.login-stay-logged-in') }}
+                                {{ phrase('helpcenter.account.login-stay-logged-in') }}
                             </label>
                         </div>
                         <button type="submit" class="btn btn-primary btn-lg" tabIndex="24">{{ phrase('helpcenter.account.login-btn') }}</button>
                         {% if has_login_form() %}
-                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('portal.account.login-password-reminder') }}</a>
+                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login-password-reminder') }}</a>
                         {% endif %}
                     </form>
                 </section>
@@ -72,7 +72,7 @@
                 {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
                     <a href="{{ path('portal_chats') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/chats.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}</a> <br />
                 {% endif %}
-                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('portal.account.logout-btn') }}</a>
+                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout-btn') }}</a>
             </div>
         {% endif %}
     </div>
