@@ -107,7 +107,7 @@ class PhraseDiffCommand extends ContainerAwareCommand
         if (count($phraseDiff)) {
             foreach ($phraseDiff as $id => $diff) {
                 $output->writeln(sprintf(
-                    '<fg=cyan;options=bold> > </><options=bold>%s:</> <fg=green>%s</> -> <fg=red>%s</>',
+                    '<fg=cyan;options=bold> > </><options=bold>%s:</> <fg=red>%s</> -> <fg=green>%s</>',
                     $id,
                     print_r($diff[0], true),
                     print_r($diff[1], true)
