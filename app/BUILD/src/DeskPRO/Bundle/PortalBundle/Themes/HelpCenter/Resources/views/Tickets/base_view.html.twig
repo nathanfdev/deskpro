@@ -7,20 +7,24 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-9">
-                        <div class="dp-po-title">
-                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
-                            <h2 class="dp-po-title-text">{{ ticket.subject }}</h2>
-                        </div>
-                        <div class="row align-items-center">
+                        <div class="row">
                             <div class="col-sm-10">
-                                <div class="dp-po-post-info">
-                                    <ul class="dp-po-post-info-list">
-
-                                    </ul>
+                                <div class="dp-po-title">
+                                    <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
+                                    <h2 class="dp-po-title-text">{{ ticket.subject }}</h2>
                                 </div>
                             </div>
                             <div class="col-sm-2">
-
+                                <div class="dp-po-post-extra">
+                                    <ul class="dp-po-post-extra-list">
+                                        <li class="dp-po-post-extra-item">
+                                            <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                                        </li>
+{#                                        <li class="dp-po-post-extra-item">#}
+{#                                            <a href="{{ path('portal_tickets_pdf', {ticket_ref: ticket.ref }) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>#}
+{#                                        </li>#}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
