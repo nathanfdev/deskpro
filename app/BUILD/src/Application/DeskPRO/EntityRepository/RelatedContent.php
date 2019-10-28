@@ -5,6 +5,7 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\Entity\Article as ArticleEntity;
 use Application\DeskPRO\Entity\Download as DownloadEntity;
 use Application\DeskPRO\Entity\News as NewsEntity;
+use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
 
 /**
  * RelatedContent.
@@ -38,6 +39,14 @@ class RelatedContent extends AbstractEntityRepository
             'object_type'     => 'downloads',
             'rel_object_type' => 'downloads',
             'object_id'       => $download->getId(),
+        ]);
+    }
+
+    public function findRelatedCommunityTopic(CommunityTopicEntity $topic)
+    {
+        return $this->findBy([
+            'object_type' => 'community_topics',
+            'object_id'   => $topic->getId(),
         ]);
     }
 }

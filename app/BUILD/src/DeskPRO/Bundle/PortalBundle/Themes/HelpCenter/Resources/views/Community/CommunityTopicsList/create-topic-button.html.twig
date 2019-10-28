@@ -1,5 +1,5 @@
 <div class="dp-po-community-title-button">
-    {% if current_forum is defined %}
+    {% if current_forum is defined and button_label is not defined %}
         <a href="{{ path('portal_community_topic_create', {id: current_forum.id}) }}" class="dp-po-community-title-button-link">
             <i class="dp-po-icon fad fa-money-check-edit"></i>
             {{ phrase('helpcenter.community.create-topic-in-forum', {forum: current_forum.title}) }}
@@ -10,20 +10,24 @@
     {% else %}
         <a href="" class="dp-po-community-title-button-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="dp-po-icon fad fa-money-check-edit"></i>
-            {{ phrase('helpcenter.community.create-topic') }}
+            {{ button_label|default(phrase('helpcenter.community.create-topic')) }}
         </a>
-        <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
-        </a>
-    {% endif %}
-    <div class="dropdown-menu dropdown-menu-right">
-        {% for forum in community_forums if forum != current_forum|default(null) %}
-            <a class="dropdown-item" href="{{ path('portal_community_topic_create', {id: forum.id}) }}">
-                {% if forum.icon_property %}
-                    {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
-                {% endif %}
-                {{ forum.title }}
+        {% if community_forums is defined %}
+            <a class="dp-po-community-title-button-dropdown" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
             </a>
-        {% endfor %}
-    </div>
+        {% endif %}
+    {% endif %}
+    {% if community_forums is defined %}
+        <div class="dropdown-menu dropdown-menu-right">
+            {% for forum in community_forums if forum != current_forum|default(null) %}
+                <a class="dropdown-item" href="{{ path('portal_community_topic_create', {id: forum.id}) }}">
+                    {% if forum.icon_property %}
+                        {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                    {% endif %}
+                    {{ forum.title }}
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
