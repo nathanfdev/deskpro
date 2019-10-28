@@ -59,7 +59,7 @@ class ApprovalTable extends React.Component {
           <col style={{ width: '20%' }} />
           <col style={{ width: '80px' }} />
           <col style={{ width: '80px' }} />
-          <col style={{ width: '200px' }} />
+          <col style={{ width: '220px' }} />
         </colgroup>
         <tbody>
           <tr>
@@ -86,7 +86,7 @@ class ApprovalTable extends React.Component {
             <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.to_reject" />
             </th>
-            <th style={{ ...colsStyle, textAlign: 'center' }}>
+            <th style={colsStyle}>
               <FormattedMessage id="agent.tickets.approvals.status" />
             </th>
           </tr>

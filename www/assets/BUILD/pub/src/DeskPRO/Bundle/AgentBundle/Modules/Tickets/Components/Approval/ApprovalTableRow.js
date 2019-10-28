@@ -222,8 +222,8 @@ class ApprovalTableRow extends React.Component {
         <td>{approval.required_rejections}</td>
         <td>
           {controls
-            ? <div style={{ textAlign: 'center' }}>{controls}</div>
-            : <div>
+            ? <div>{controls}</div>
+            : <div className="approval-status">
               <FormattedMessage id={`agent.tickets.approvals.status_name.${approval.status}`} />
               <small style={{ paddingLeft: '5px', fontSize: '9px', color: '#9e9e9e' }}>
                 {approvalDate}
@@ -276,7 +276,7 @@ class ApprovalTableRow extends React.Component {
                 </td>
                 <td>
                   {hasButtons
-                    ? <div style={{ textAlign: 'center' }}>
+                    ? <div>
                       <Button
                         style={{ marginRight: '3px', color: 'green' }}
                         size="small" loading={this.state.saving}
@@ -305,7 +305,7 @@ class ApprovalTableRow extends React.Component {
       } else {
         result.push(
           <tr>
-            <td colSpan="9" style={{ textAlign: 'center' }}>
+            <td colSpan="9">
               <FormattedMessage id="agent.tickets.approvals.no_votes" />
             </td>
           </tr>
