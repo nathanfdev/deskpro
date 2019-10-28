@@ -46,14 +46,7 @@ class TicketApprovalsController extends AbstractApprovalsController
     public static $type       = TicketApprovalType::class;
     public static $listOrder  = 'ASC';
     public static $listSort   = 'id';
-    public static $exposeOnly = [
-        'list',
-        'count',
-        'approve',
-        'reject',
-        'cancel',
-        'postApproval',
-    ];
+    public static $exposeOnly = ['list', 'count'];
 
     /**
      * @ApiDoc(
@@ -77,7 +70,6 @@ class TicketApprovalsController extends AbstractApprovalsController
      */
     public function postApprovalAction(Ticket $ticket, Request $request)
     {
-        $this->checkExposed(__METHOD__);
         $this->denyAccessUnlessGranted(TicketsVoter::ADD_APPROVAL, new PermissionGroupContext($ticket));
 
         $form = $this->createForm(static::$type, null, [

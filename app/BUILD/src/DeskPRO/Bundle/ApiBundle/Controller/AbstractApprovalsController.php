@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Approval\ApprovalManager;
@@ -11,16 +10,13 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Approval\ApprovalResponseType;
-use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class AbstractApprovalsController
- *
- * @package DeskPRO\Bundle\ApiBundle\Controller
+ * Class AbstractApprovalsController.
  */
 abstract class AbstractApprovalsController extends CrudController
 {
@@ -43,15 +39,14 @@ abstract class AbstractApprovalsController extends CrudController
      * )
      *
      * @param AbstractBaseApproval $approval
+     * @param Request              $request
      *
-     * @param Request $request
-     * @return View
      * @throws \Exception
+     *
+     * @return View
      */
     public function cancelAction(AbstractBaseApproval $approval, Request $request)
     {
-        $this->checkExposed(__METHOD__);
-
         try {
             $this->getApprovalManager()->cancelApproval(
                 $approval,
@@ -90,14 +85,14 @@ abstract class AbstractApprovalsController extends CrudController
      * )
      *
      * @param AbstractBaseApproval $approval
-     * @param Request $request
-     * @return \FOS\RestBundle\View\View
+     * @param Request              $request
+     *
      * @throws \Exception
+     *
+     * @return \FOS\RestBundle\View\View
      */
     public function approveAction(AbstractBaseApproval $approval, Request $request)
     {
-        $this->checkExposed(__METHOD__);
-
         return $this->handleApprovalResponseRequest(
             $request,
             $approval,
@@ -131,14 +126,14 @@ abstract class AbstractApprovalsController extends CrudController
      * )
      *
      * @param AbstractBaseApproval $approval
-     * @param Request $request
-     * @return View
+     * @param Request              $request
+     *
      * @throws \Exception
+     *
+     * @return View
      */
     public function rejectAction(AbstractBaseApproval $approval, Request $request)
     {
-        $this->checkExposed(__METHOD__);
-
         return $this->handleApprovalResponseRequest(
             $request,
             $approval,
@@ -147,21 +142,24 @@ abstract class AbstractApprovalsController extends CrudController
     }
 
     /**
-     * @param Request $request
+     * @param Request              $request
      * @param AbstractBaseApproval $approval
-     * @param ApprovalResponse $approvalResponse
-     * @return View
+     * @param ApprovalResponse     $approvalResponse
+     *
      * @throws \Exception
+     *
+     * @return View
      */
     protected function handleApprovalResponseRequest(
         Request $request,
         AbstractBaseApproval $approval,
         ApprovalResponse $approvalResponse
     ) {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
+        if (!$approval->hasApprover($this->getUser())) {
+            throw $this->createAccessDeniedException('Access denied.');
+        }
 
         $form = $this->createForm(ApprovalResponseType::class, $approvalResponse);
-
         $form->submit($request->request->all());
 
         if (!$form->isValid()) {
@@ -182,8 +180,9 @@ abstract class AbstractApprovalsController extends CrudController
     }
 
     /**
-     * @return ExecutorContext
      * @throws \Exception
+     *
+     * @return ExecutorContext
      */
     protected function createExecutionContext()
     {
