@@ -21,7 +21,7 @@ class TicketRepository extends ApiRepository {
   }
 
   loadApprovals(ticketId, status = null) {
-    let endpoint = `DP_API/${this.url}/${ticketId}/ticket_approvals?count=100`;
+    let endpoint = `DP_API/${this.url}/${ticketId}/ticket_approvals?include=person&count=100`;
     if (status !== null) {
       endpoint += `/${status}`;
     }

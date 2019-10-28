@@ -49,22 +49,18 @@ export class ApprovalContainer extends React.Component {
     this.props.dispatch(actions.loadApprovalRequests(this.props.ticketId))
       .then((response) => {
         const approvals = response.data;
-        const allDone = approvals.reduce((promise, approval) =>
-          promise.then(() =>
-            Promise.all([
-              this.getPeople(approval.approvers)
-                .then(({ data }) => {
-                  approval.people = data;
-                }),
-              this.getResponses(approval.id)
-                .then(({ data }) => {
-                  approval.votes = data;
-                })
-            ])
-          )
-        , Promise.resolve());
+        const promises = [];
+        approvals.forEach((approval) => {
+          approval.people = approval.approvers.map(approver => response.linked.person[approver]);
+          const votesPromise = this.getResponses(approval.id);
+          votesPromise.then(({ data }) => {
+            approval.votes = data;
+          });
 
-        allDone.then(() => {
+          promises.push(votesPromise);
+        });
+
+        Promise.all(promises).then(() => {
           this.setState({
             approvals: Immutable.fromJS(approvals),
           });

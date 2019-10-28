@@ -10,9 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval as TicketApprovalEnt
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class TicketApproval
- *
- * @package DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets
+ * Class TicketApproval.
  */
 class TicketApproval
 {
@@ -197,7 +195,7 @@ class TicketApproval
     private $requiredRejections;
 
     /**
-     * Number of approvers
+     * Number of approvers.
      *
      * @var int
      *
@@ -210,7 +208,7 @@ class TicketApproval
      *
      * @var Person[]
      *
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
      */
     private $approversPendingResponse;
 
@@ -243,6 +241,7 @@ class TicketApproval
 
     /**
      * @param TicketApprovalEntity $ticketApproval
+     *
      * @return TicketApproval
      */
     public static function createFromEntity(TicketApprovalEntity $ticketApproval)
@@ -287,6 +286,7 @@ class TicketApproval
 
     /**
      * @param int $id
+     *
      * @return TicketApproval
      */
     public function setId($id)
@@ -306,6 +306,7 @@ class TicketApproval
 
     /**
      * @param ApprovalType $type
+     *
      * @return TicketApproval
      */
     public function setType(ApprovalType $type)
@@ -325,6 +326,7 @@ class TicketApproval
 
     /**
      * @param string $name
+     *
      * @return TicketApproval
      */
     public function setName($name)
@@ -344,6 +346,7 @@ class TicketApproval
 
     /**
      * @param string $description
+     *
      * @return TicketApproval
      */
     public function setDescription($description)
@@ -363,6 +366,7 @@ class TicketApproval
 
     /**
      * @param \Application\DeskPRO\Entity\Ticket $ticket
+     *
      * @return TicketApproval
      */
     public function setTicket(\Application\DeskPRO\Entity\Ticket $ticket)
@@ -382,6 +386,7 @@ class TicketApproval
 
     /**
      * @param string $status
+     *
      * @return TicketApproval
      */
     public function setStatus($status)
@@ -401,6 +406,7 @@ class TicketApproval
 
     /**
      * @param string $statusName
+     *
      * @return TicketApproval
      */
     public function setStatusName($statusName)
@@ -420,6 +426,7 @@ class TicketApproval
 
     /**
      * @param ApprovalTemplate $template
+     *
      * @return TicketApproval
      */
     public function setTemplate(ApprovalTemplate $template = null)
@@ -439,6 +446,7 @@ class TicketApproval
 
     /**
      * @param ApprovalResponseEntity[] $responses
+     *
      * @return TicketApproval
      */
     public function setResponses(array $responses)
@@ -458,6 +466,7 @@ class TicketApproval
 
     /**
      * @param Person[] $approvers
+     *
      * @return TicketApproval
      */
     public function setApprovers(array $approvers)
@@ -477,6 +486,7 @@ class TicketApproval
 
     /**
      * @param \DateTimeInterface $createdAt
+     *
      * @return TicketApproval
      */
     public function setCreatedAt(\DateTimeInterface $createdAt)
@@ -496,6 +506,7 @@ class TicketApproval
 
     /**
      * @param \DateTimeInterface $completedAt
+     *
      * @return TicketApproval
      */
     public function setCompletedAt(\DateTimeInterface $completedAt = null)
@@ -515,6 +526,7 @@ class TicketApproval
 
     /**
      * @param \DateTimeInterface $cancelledAt
+     *
      * @return TicketApproval
      */
     public function setCancelledAt(\DateTimeInterface $cancelledAt = null)
@@ -534,6 +546,7 @@ class TicketApproval
 
     /**
      * @param Person $cancelledBy
+     *
      * @return TicketApproval
      */
     public function setCancelledBy(Person $cancelledBy = null)
@@ -553,6 +566,7 @@ class TicketApproval
 
     /**
      * @param \DateTimeInterface $lastApprovedResponseAt
+     *
      * @return TicketApproval
      */
     public function setLastApprovedResponseAt(\DateTimeInterface $lastApprovedResponseAt = null)
@@ -572,6 +586,7 @@ class TicketApproval
 
     /**
      * @param \DateTimeInterface $lastRejectedResponseAt
+     *
      * @return TicketApproval
      */
     public function setLastRejectedResponseAt(\DateTimeInterface $lastRejectedResponseAt = null)
@@ -591,6 +606,7 @@ class TicketApproval
 
     /**
      * @param int $approvedResponsesCount
+     *
      * @return TicketApproval
      */
     public function setApprovedResponsesCount($approvedResponsesCount)
@@ -610,6 +626,7 @@ class TicketApproval
 
     /**
      * @param int $rejectedResponsesCount
+     *
      * @return TicketApproval
      */
     public function setRejectedResponsesCount($rejectedResponsesCount)
@@ -629,6 +646,7 @@ class TicketApproval
 
     /**
      * @param int $requiredApprovals
+     *
      * @return TicketApproval
      */
     public function setRequiredApprovals($requiredApprovals)
@@ -648,6 +666,7 @@ class TicketApproval
 
     /**
      * @param int $requiredRejections
+     *
      * @return TicketApproval
      */
     public function setRequiredRejections($requiredRejections)
@@ -667,6 +686,7 @@ class TicketApproval
 
     /**
      * @param int $approversCount
+     *
      * @return TicketApproval
      */
     public function setApproversCount($approversCount)
@@ -686,6 +706,7 @@ class TicketApproval
 
     /**
      * @param Person[] $approversPendingResponse
+     *
      * @return TicketApproval
      */
     public function setApproversPendingResponse(array $approversPendingResponse)
@@ -705,6 +726,7 @@ class TicketApproval
 
     /**
      * @param Person $createdBy
+     *
      * @return TicketApproval
      */
     public function setCreatedBy(Person $createdBy = null)
@@ -724,6 +746,7 @@ class TicketApproval
 
     /**
      * @param bool $hasRecipientResponded
+     *
      * @return TicketApproval
      */
     public function setHasRecipientResponded($hasRecipientResponded)
@@ -743,6 +766,7 @@ class TicketApproval
 
     /**
      * @param bool $canApproversViewSubject
+     *
      * @return TicketApproval
      */
     public function setCanApproversViewSubject($canApproversViewSubject)

@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class AbstractBaseApproval
+ * Class AbstractBaseApproval.
  *
  * Approval superclass used for actual approvals. Contains generic state for responses, etc.
  *
@@ -25,31 +25,29 @@ use JMS\Serializer\Annotation as JMS;
  * })
  *
  * @JMS\ExclusionPolicy("all")
- *
- * @package DeskPRO\Bundle\AppBundle\Entity\Approval
  */
 abstract class AbstractBaseApproval extends AbstractApproval
 {
     /**
-     * Approval statuses
+     * Approval statuses.
      */
-    const STATUS_PENDING = 'pending';
-    const STATUS_APPROVED = 'approved';
-    const STATUS_REJECTED = 'rejected';
+    const STATUS_PENDING   = 'pending';
+    const STATUS_APPROVED  = 'approved';
+    const STATUS_REJECTED  = 'rejected';
     const STATUS_CANCELLED = 'cancelled';
 
     /**
      * @var array Map of approval statuses to their UI names
      */
     protected static $statusNameMap = [
-        self::STATUS_PENDING => 'pending',
-        self::STATUS_APPROVED => 'approved',
-        self::STATUS_REJECTED => 'rejected',
+        self::STATUS_PENDING   => 'pending',
+        self::STATUS_APPROVED  => 'approved',
+        self::STATUS_REJECTED  => 'rejected',
         self::STATUS_CANCELLED => 'cancelled',
     ];
 
     /**
-     * Maximum number of approvers assigned to an approval
+     * Maximum number of approvers assigned to an approval.
      */
     const APPROVERS_MAX = 100;
 
@@ -85,7 +83,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      * @ORM\OrderBy({"createdAt"="DESC"})
      *
      * @JMS\Expose
-     * @JMS\Type("array<entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>>")
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse>>")
      */
     protected $responses;
 
@@ -99,7 +97,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
      *  )
      *
      * @JMS\Expose
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
      */
     protected $approvers;
 
@@ -163,7 +161,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     protected $createdBy;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function __construct()
     {
@@ -175,21 +173,22 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * Is invoked during @see \DeskPRO\Bundle\AppBundle\Approval\ApprovalManager operations to
-     * notify changes on associated entities
+     * notify changes on associated entities.
      *
      * @param EntityManagerInterface $em
-     * @return void
      */
     abstract public function notifyAssociationChanges(EntityManagerInterface $em);
 
     /**
-     * Create a new approval from a given template
+     * Create a new approval from a given template.
      *
-     * @param EntityManagerInterface $em
-     * @param ApprovalTemplate $template
+     * @param EntityManagerInterface    $em
+     * @param ApprovalTemplate          $template
      * @param AbstractBaseApproval|null $prototype
-     * @return AbstractBaseApproval
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return AbstractBaseApproval
      */
     public static function createFromTemplate(EntityManagerInterface $em, ApprovalTemplate $template, self $prototype = null)
     {
@@ -249,10 +248,11 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Use the sub class to determine extra approvers from selected approvers object
+     * Use the sub class to determine extra approvers from selected approvers object.
      *
      * @param EntityManagerInterface $em
-     * @param SelectedApprovers $selectedApprovers
+     * @param SelectedApprovers      $selectedApprovers
+     *
      * @return Person[]
      */
     protected function getExtraApproversWhenCreatingFromTemplate(
@@ -263,14 +263,15 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Determine if this approval is complete and produce an outcome after each response is given
+     * Determine if this approval is complete and produce an outcome after each response is given.
      *
      * @param ApprovalResponse $lastResponse The last approval response to be provided by a user
+     *
      * @return string|null Approval status ("approved" or "rejected"), NULL for no change (still pending)
      */
     protected function determineOutcome(ApprovalResponse $lastResponse)
     {
-        $requiredApprovals = $this->getRequiredApprovals();
+        $requiredApprovals  = $this->getRequiredApprovals();
         $requiredRejections = $this->getRequiredRejections();
 
         // If all voted and it's a tie, reject
@@ -312,6 +313,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param string $status
+     *
      * @return self
      */
     public function setStatus($status)
@@ -322,11 +324,13 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Cancel this approval
+     * Cancel this approval.
      *
      * @param Person $cancelledBy
-     * @return self
+     *
      * @throws \Exception
+     *
+     * @return self
      */
     public function cancel(Person $cancelledBy)
     {
@@ -359,6 +363,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param ApprovalTemplate|null $template
+     *
      * @return self
      */
     public function setTemplate(ApprovalTemplate $template = null)
@@ -385,7 +390,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Get approved responses
+     * Get approved responses.
      *
      * @return ArrayCollection|ApprovalResponse[]
      */
@@ -397,7 +402,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Get reject responses
+     * Get reject responses.
      *
      * @return ArrayCollection|ApprovalResponse[]
      */
@@ -426,6 +431,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param Person $person
+     *
      * @return bool
      */
     public function hasResponded(Person $person)
@@ -437,8 +443,10 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param ApprovalResponse $response
-     * @return self
+     *
      * @throws \Exception
+     *
+     * @return self
      */
     public function addResponse(ApprovalResponse $response)
     {
@@ -493,6 +501,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param Person $approver
+     *
      * @return self
      */
     public function addApprover(Person $approver)
@@ -552,6 +561,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param Person $person
+     *
      * @return bool
      */
     public function hasApprover(Person $person)
@@ -579,6 +589,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param string|array $status
+     *
      * @return bool
      */
     public function isStatus($status)
@@ -590,8 +601,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @return self
      * @throws \Exception
+     *
+     * @return self
      */
     protected function markLastApprovedResponseAt()
     {
@@ -612,8 +624,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @return self
      * @throws \Exception
+     *
+     * @return self
      */
     protected function markLastRejectResponseAt()
     {
@@ -634,8 +647,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @return self
      * @throws \Exception
+     *
+     * @return self
      */
     protected function markCompletedAt()
     {
@@ -665,6 +679,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param Person|null $createdBy
+     *
      * @return AbstractBaseApproval
      */
     public function setCreatedBy(Person $createdBy = null)
@@ -691,8 +706,9 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * @return self
      * @throws \Exception
+     *
+     * @return self
      */
     protected function markCancelledAt()
     {
@@ -705,7 +721,7 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Asserts that an approver has not responded to this approval before
+     * Asserts that an approver has not responded to this approval before.
      *
      * @param ApprovalResponse $response
      */
@@ -737,9 +753,10 @@ abstract class AbstractBaseApproval extends AbstractApproval
     }
 
     /**
-     * Is a status considered complete
+     * Is a status considered complete.
      *
      * @param string $status
+     *
      * @return bool
      */
     private static function isCompletionStatus($status)
@@ -749,7 +766,8 @@ abstract class AbstractBaseApproval extends AbstractApproval
 
     /**
      * @param string $status
-     * @param array $statuses
+     * @param array  $statuses
+     *
      * @return bool
      */
     private static function isOfStatus($status, array $statuses)
