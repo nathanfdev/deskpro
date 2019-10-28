@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadApprovalRequests = createAction(
   'TICKET_LOAD_APPROVAL_REQUESTS',
@@ -34,10 +34,10 @@ export const loadApproversList = createAction(
   })
 );
 
-export const loadOrganizationManagers = createAction(
-  'TICKET_LOAD_ORGANIZATION_MANAGERS',
-  orgId => new Promise((resolve) => {
-    repository('Person').search({ organization: orgId, organization_manager: 1 }).then((promise) => {
+export const loadTemplateApprovers = createAction(
+  'TICKET_LOAD_TEMPLATE_APPROVERS',
+  (approvalId, ticketId) => new Promise((resolve) => {
+    api.sendGet(`DP_API/approval_templates/${approvalId}/ticket/${ticketId}/approvers`).then((promise) => {
       const res = promise.getData();
 
       resolve(res);

@@ -35,7 +35,7 @@ export class ApprovalContainer extends React.Component {
   }
 
   getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
-  getOrganizationManagers = orgId => this.props.dispatch(actions.loadOrganizationManagers(orgId));
+  getTemplateApprovers = approvalId => this.props.dispatch(actions.loadTemplateApprovers(approvalId, this.props.ticketId));
 
   getResponses = id => this.props.dispatch(actions.loadApprovalResponses(id));
 
@@ -114,8 +114,7 @@ export class ApprovalContainer extends React.Component {
     return (
       <Approval
         approvals={this.state.approvals}
-        getPeople={this.getPeople}
-        getOrganizationManagers={this.getOrganizationManagers}
+        getTemplateApprovers={this.getTemplateApprovers}
         createApprovalRequest={this.createApprovalRequest}
         cancelApprovalRequest={this.cancelApprovalRequest}
         acceptApprovalRequest={this.acceptApprovalRequest}

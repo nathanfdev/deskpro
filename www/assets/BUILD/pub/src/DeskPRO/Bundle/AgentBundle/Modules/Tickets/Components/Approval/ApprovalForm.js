@@ -7,14 +7,11 @@ import { Form, Label, Button, Select } from '@deskpro/react-components';
 class ApprovalForm extends React.Component {
 
   static propTypes = {
-    templates:               PropTypes.object.isRequired,
-    agents:                  PropTypes.object,
-    ticketData:              PropTypes.object,
-    intl:                    PropTypes.object,
-    getPeople:               PropTypes.func,
-    getOrganizationManagers: PropTypes.func,
-    createApprovalRequest:   PropTypes.func,
-    cancelRequest:           PropTypes.func
+    templates:             PropTypes.object.isRequired,
+    intl:                  PropTypes.object,
+    getTemplateApprovers:  PropTypes.func,
+    createApprovalRequest: PropTypes.func,
+    cancelRequest:         PropTypes.func
   };
 
   constructor(props) {
@@ -65,8 +62,8 @@ class ApprovalForm extends React.Component {
 
   handleTemplateChange = (value) => {
     // get templates from props
-    const { templates, agents, ticketData } = this.props;
-    const { getPeople, getOrganizationManagers } = this.props;
+    const { templates } = this.props;
+    const { getTemplateApprovers } = this.props;
 
     // get selected template
     const template = templates.toArray().find(t => t.get('id') === value.value);
@@ -116,51 +113,15 @@ class ApprovalForm extends React.Component {
       isAgent: person.is_agent
     });
 
-    const people = [];
-    const promises = [];
+    getTemplateApprovers(template.get('id')).then((res) => {
+      const people = res.data.map(person => personToSelect(person));
 
-    if (criteria.all_agents) {
-      agents.toArray().forEach((agent) => {
-        if (people.map(person => person.id).indexOf(agent.get('id')) === -1) {
-          people.push(personToSelect(agent.toJS()));
-        }
-      });
-    }
-    if (criteria.ticket_user) {
-      if (people.map(person => person.id).indexOf(ticketData.person.id) === -1) {
-        people.push(personToSelect(ticketData.person));
-      }
-    }
-    if (criteria.organization_managers && ticketData.organization) {
-      promises.push(getOrganizationManagers(ticketData.organization.id).then((res) => {
-        res.data.forEach((orgManager) => {
-          if (people.map(person => person.id).indexOf(orgManager.id) === -1) {
-            people.push(personToSelect(orgManager));
-          }
-        });
-      }));
-    }
-
-    // concat list of possible approvers and fetch people by ids
-    if (criteria.people.length > 0) {
-      promises.push(getPeople(criteria.people).then((res) => {
-        res.data.forEach(person => people.push(personToSelect(person)));
-      }));
-    }
-
-    const setApprovers = () => {
       if (template.get('can_choose_approvers')) {
         this.setState({ people });
       } else {
         this.setState({ people, approvers: people });
       }
-    };
-
-    if (promises.length) {
-      Promise.all(promises).then(() => setApprovers());
-    } else {
-      setApprovers();
-    }
+    });
 
     // if agent can choose approvers
     if (template.get('can_choose_approvers')) {
