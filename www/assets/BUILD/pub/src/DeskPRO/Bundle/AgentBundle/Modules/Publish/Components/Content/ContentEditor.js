@@ -100,8 +100,8 @@ class ContentEditor extends React.PureComponent {
 
     return (
       <div className="collab-force-connect">
-        <span>You have been disconnected </span>
-        <button className="clean-white" onClick={this.onForceConnect}>Retry</button>
+        <span><FormattedMessage id="agent.publish.collab_disconnected" /> </span>
+        <button className="clean-white" onClick={this.onForceConnect}><FormattedMessage id="agent.general.retry" /></button>
       </div>
     );
   }

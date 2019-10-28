@@ -9,8 +9,8 @@
     "@deskpro/fa-picker": "0.0.6",
     "@deskpro/js-utils": "^1.0.4",
     "@deskpro/portal-components": "0.2.18",
-    "@deskpro/product-content-editor": "0.1.11"
-    "@deskpro/content-editor": "0.1.11"
+    "@deskpro/product-content-editor": "0.1.11-collab.2",
+    "@deskpro/content-editor": "0.1.11-collab.2",
     "@deskpro/portal-style": "0.2.18",
     "@deskpro/react-components": "1.4.6",
     "@deskpro/react-forms": "^2.0.0-beta41",
