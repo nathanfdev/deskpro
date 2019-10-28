@@ -19,8 +19,9 @@ class ContentEditor extends React.PureComponent {
     }
 
     this.state = {
-      collabUsers:  [],
-      collabOnline: false
+      collabUsers:      [],
+      collabOnline:     false,
+      showForceConnect: false
     };
   }
 
@@ -42,14 +43,27 @@ class ContentEditor extends React.PureComponent {
 
   onCollabOnline = () => {
     this.setState({
-      collabOnline: true
+      collabOnline:     true,
+      showForceConnect: false
     });
   }
 
   onCollabOffline = () => {
+    const { useCollab } = this.props;
     this.setState({
-      collabOnline: false
+      collabOnline:     false,
+      showForceConnect: !useCollab.connectionManager.isOnline()
     });
+  }
+
+  onForceConnect = () => {
+    const { useCollab } = this.props;
+
+    if (!useCollab || !useCollab.connectionManager) {
+      return;
+    }
+
+    useCollab.connectionManager.connect();
   }
 
   getCollabUsersList = (users) => {
@@ -60,7 +74,12 @@ class ContentEditor extends React.PureComponent {
     return (
       <div className="collab-users">
         {users.map((u) => {
-          const id = parseInt(u.identity.split(':').pop(), 10);
+          let id = null;
+          try {
+            id = parseInt(u.identity.split(':').pop(), 10);
+          } catch (err) {
+            return null;
+          }
           return (
             <span className="collab-user" key={id}>
               <AgentAvatar agent={id} border={`solid ${u.cursorColor}`} forceSize />
@@ -72,37 +91,55 @@ class ContentEditor extends React.PureComponent {
     );
   }
 
-  render() {
-    const { value, useCollab } = this.props;
-    const { collabUsers, collabOnline } = this.state;
+  getForceConnectBlock = () => {
+    const { useCollab } = this.props;
+
+    if (!useCollab || !useCollab.connectionManager) {
+      return null;
+    }
 
     return (
-      // Need position:relative to properly show overlay diff
-      <div style={{ position: 'relative' }}>
-        {useCollab && !collabOnline && <div className="collab-offline-overlay" />}
-        {useCollab && this.getCollabUsersList(collabUsers)}
-        <ArticleEditor
-          ref={this.editor}
-          options={{
-            initialContent: value
-          }}
-          onFocus={this.onFocus}
-          onBlur={this.onBlur}
-          useCollab={useCollab}
-          uppyOptions={{
-            autoProceed: false,
-            xhrUpload:   {
-              endpoint:             `${window.ASSETS_BASE_URL_FULL.replace(/^http(s)?:/, window.location.protocol).replace(window.ASSETS_BASE_URL, '')}/agent/misc/accept-redactor-image-upload`,
-              fieldName:            'file',
-              responseUrlFieldName: 'link',
-              method:               'POST',
-              meta:                 {
-                _rt:  window.DP_REQUEST_TOKEN,
-                json: true
+      <div className="collab-force-connect">
+        <span>You have been disconnected </span>
+        <button className="clean-white" onClick={this.onForceConnect}>Retry</button>
+      </div>
+    );
+  }
+
+  render() {
+    const { value, useCollab } = this.props;
+    const { collabUsers, collabOnline, showForceConnect } = this.state;
+
+    return (
+      // Need div position:relative to properly show overlay diff
+      <div>
+        { useCollab && showForceConnect && this.getForceConnectBlock() }
+        <div style={{ position: 'relative' }}>
+          {useCollab && !collabOnline && <div className="collab-offline-overlay" />}
+          {useCollab && this.getCollabUsersList(collabUsers)}
+          <ArticleEditor
+            ref={this.editor}
+            options={{
+              initialContent: value
+            }}
+            onFocus={this.onFocus}
+            onBlur={this.onBlur}
+            useCollab={useCollab}
+            uppyOptions={{
+              autoProceed: false,
+              xhrUpload:   {
+                endpoint:             `${window.ASSETS_BASE_URL_FULL.replace(/^http(s)?:/, window.location.protocol).replace(window.ASSETS_BASE_URL, '')}/agent/misc/accept-redactor-image-upload`,
+                fieldName:            'file',
+                responseUrlFieldName: 'link',
+                method:               'POST',
+                meta:                 {
+                  _rt:  window.DP_REQUEST_TOKEN,
+                  json: true
+                }
               }
-            }
-          }}
-        />
+            }}
+          />
+        </div>
       </div>
     );
   }

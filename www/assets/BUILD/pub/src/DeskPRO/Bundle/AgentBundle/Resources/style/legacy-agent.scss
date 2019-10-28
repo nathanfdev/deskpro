@@ -1479,6 +1479,20 @@ i.icon.fitted {
     }
   }
 
+  .collab-force-connect {
+    z-index: 250;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+
+    span {
+      margin-left: 4px;
+      margin-right: 4px;
+      font-size: smaller;
+    }
+  }
+
   .collab-offline-overlay {
     position: absolute;
     width: 100%;
