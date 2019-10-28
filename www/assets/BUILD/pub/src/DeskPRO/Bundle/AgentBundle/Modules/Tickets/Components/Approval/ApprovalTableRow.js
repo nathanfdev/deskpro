@@ -147,7 +147,7 @@ class ApprovalTableRow extends React.Component {
                 size="small" loading={this.state.saving}
                 onClick={() => this.acceptApprovalRequest(approval.id)}
               >
-                Accept
+                Approve
               </Button>
               <Button
                 style={{ color: 'red' }}
@@ -282,7 +282,7 @@ class ApprovalTableRow extends React.Component {
                         size="small" loading={this.state.saving}
                         onClick={() => this.acceptApprovalRequest(approval.id)}
                       >
-                        Accept
+                        Approve
                       </Button>
                       <Button
                         style={{ color: 'red' }}
