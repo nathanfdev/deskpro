@@ -275,28 +275,31 @@ class ApprovalTableRow extends React.Component {
                   />}
                 </td>
                 <td>
-                  {hasButtons
-                    ? <div>
-                      <Button
-                        style={{ marginRight: '3px', color: 'green' }}
-                        size="small" loading={this.state.saving}
-                        onClick={() => this.acceptApprovalRequest(approval.id)}
-                      >
-                        Approve
-                      </Button>
-                      <Button
-                        style={{ color: 'red' }}
-                        size="small"
-                        loading={this.state.saving}
-                        onClick={() => this.rejectApprovalRequest(approval.id)}
-                      >
-                        Reject
-                      </Button>
-                    </div>
-                    : <div className="approval-status">
-                      <FormattedMessage id="agent.tickets.approvals.status_name.pending" /> <Icon name={faClock} />
-                    </div>
-                  }
+                  {approval.status === 'pending' &&
+                  <div>
+                    {hasButtons
+                      ? <div>
+                        <Button
+                          style={{ marginRight: '3px', color: 'green' }}
+                          size="small" loading={this.state.saving}
+                          onClick={() => this.acceptApprovalRequest(approval.id)}
+                        >
+                          Approve
+                        </Button>
+                        <Button
+                          style={{ color: 'red' }}
+                          size="small"
+                          loading={this.state.saving}
+                          onClick={() => this.rejectApprovalRequest(approval.id)}
+                        >
+                          Reject
+                        </Button>
+                      </div>
+                      : <div className="approval-status">
+                        <FormattedMessage id="agent.tickets.approvals.status_name.pending" /> <Icon name={faClock} />
+                      </div>
+                    }
+                  </div>}
                 </td>
               </tr>
             );
