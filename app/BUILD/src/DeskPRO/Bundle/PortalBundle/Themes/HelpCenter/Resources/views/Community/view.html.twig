@@ -103,9 +103,11 @@
         </div>
     {% endif %}
 
-    {% include 'Theme:PublishCommon:related-content.html.twig' with {
-        related_content: related_content_data.related_content,
-    } %}
+    {% if related_content_data.related_content|length %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with {
+            related_content: related_content_data.related_content,
+        } %}
+    {% endif %}
 
     {% include 'Theme:PublishCommon:share.html.twig' with {
         item: topic,
