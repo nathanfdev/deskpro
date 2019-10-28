@@ -221,7 +221,16 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
                 $baseUrl = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
             }
 
-            $helpdeskUrl = rtrim($baseUrl, '/');
+            if (empty($this->getSetting('core.deskpro_url', $brand))) {
+                $helpdeskUrl = $this->router->generate(
+                    'portal_home',
+                    ['brand' => $brand],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $helpdeskUrl = rtrim($baseUrl, '/');
+            }
+
         } else {
             $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
             $helpdeskUrl = $baseUrl;
@@ -302,7 +311,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $chat->setEnabled($this->isChatEnabled($brand));
 
         $company = $model->getCompany();
-        $company->setName($this->getSetting('core.site_name'));
+        $company->setName($this->getSetting('core.site_name', $brand));
 
         return $model;
     }
