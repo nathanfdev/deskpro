@@ -34,7 +34,6 @@ export class ApprovalContainer extends React.Component {
     window.document.removeEventListener('dpApprovalUpdate', this.dpApprovalUpdate);
   }
 
-  getPeople = ids => this.props.dispatch(actions.loadApproversList(ids));
   getTemplateApprovers = approvalId => this.props.dispatch(actions.loadTemplateApprovers(approvalId, this.props.ticketId));
 
   getResponses = id => this.props.dispatch(actions.loadApprovalResponses(id));
@@ -69,26 +68,12 @@ export class ApprovalContainer extends React.Component {
   }
 
   createApprovalRequest = requestData => this.props.dispatch(actions.createApprovalRequest(this.props.ticketId, requestData))
-    .then((approvalRequest) => {
-      const allDone = [approvalRequest].reduce((promise, approval) =>
-        promise.then(() =>
-          Promise.all([
-            this.getPeople(approval.approvers)
-              .then(({ data }) => {
-                approval.people = data;
-              }),
-            this.getResponses(approval.id)
-              .then(({ data }) => {
-                approval.votes = data;
-              })
-          ])
-        )
-      , Promise.resolve());
+    .then(({ data, linked }) => {
+      data.people = data.approvers.map(approver => linked.person[approver]);
+      data.votes = [];
 
-      allDone.then(() => {
-        this.setState({
-          approvals: this.state.approvals.push(Immutable.fromJS(approvalRequest))
-        });
+      this.setState({
+        approvals: this.state.approvals.push(Immutable.fromJS(data))
       });
     });
 

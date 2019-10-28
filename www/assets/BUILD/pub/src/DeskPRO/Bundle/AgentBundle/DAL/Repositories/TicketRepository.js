@@ -30,11 +30,11 @@ class TicketRepository extends ApiRepository {
   }
 
   loadApproval(ticketId, requestId) {
-    return this.api.sendGet(`DP_API/${this.url}/${ticketId}/ticket_approvals/${requestId}`);
+    return this.api.sendGet(`DP_API/${this.url}/${ticketId}/ticket_approvals/${requestId}?include=person`);
   }
 
   createApprovalRequest(ticketId, record) {
-    return this.api.sendPost(`DP_API/${this.url}/${ticketId}/ticket_approvals`, record);
+    return this.api.sendPost(`DP_API/${this.url}/${ticketId}/ticket_approvals?include=person`, record);
   }
 
   cancelApprovalRequest(ticketId, approvalRequestId) {

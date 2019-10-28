@@ -23,17 +23,6 @@ export const loadApprovalRequest = createAction(
   })
 );
 
-export const loadApproversList = createAction(
-  'TICKET_LOAD_APPROVERS_LIST',
-  (ids, params) => new Promise((resolve) => {
-    repository('Person').loadBatch(ids, params).then((promise) => {
-      const res = promise.getData();
-
-      resolve(res);
-    });
-  })
-);
-
 export const loadTemplateApprovers = createAction(
   'TICKET_LOAD_TEMPLATE_APPROVERS',
   (approvalId, ticketId) => new Promise((resolve) => {
@@ -61,7 +50,7 @@ export const createApprovalRequest = createAction(
   (ticketId, data) => new Promise((resolve, reject) => {
     repository('Ticket').createApprovalRequest(ticketId, data).then((promise) => {
       const res = promise.getData();
-      resolve(res.data);
+      resolve(res);
     }, (error) => {
       reject(error);
     });
