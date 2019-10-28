@@ -16,6 +16,7 @@ import { AlertsWidget } from './AlertsWidget';
 import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { OmniSearchWidget } from './OmniSearchWidget';
+import { HcOmniSearchWidget } from './HcOmniSearchWidget';
 import { LanguageChangerWidget } from './LanguageChangerWidget';
 import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import AgentBarWidget from './AgentBarWidget';
@@ -43,6 +44,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(HelpcenterFormWidget, '.helpcenter-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
+    this.addWidgetDef(HcOmniSearchWidget, '#helpcenter-omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
     this.addWidgetDef(HelpcenterLoginDropdownWidget, '#hc-top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');

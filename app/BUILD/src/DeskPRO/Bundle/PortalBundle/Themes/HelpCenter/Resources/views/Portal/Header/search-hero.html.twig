@@ -1,6 +1,6 @@
 <div class="dp-po">
     <section class="dp-po-search" style="{{ helpcenter_splash() }}">
-        <form class="dp-po-search-form" method="POST" action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
+        <form class="dp-po-search-form" method="POST" action="{{ path('portal_search') }}" id="helpcenter-omnisearch" autocomplete="off">
             <input type="search" class="omnisearch"  name="q" autocomplete="off" placeholder="{{ phrase('helpcenter.general.search') }}" />
             <input type="hidden" name="search_log_id" {% if search_log_id is defined %} value="{{search_log_id}} {% endif %}"/>
             <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
