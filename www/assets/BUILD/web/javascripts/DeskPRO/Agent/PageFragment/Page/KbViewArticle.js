@@ -1137,7 +1137,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
             self.onBlur.bind(self),
             self.meta.collabEditorOptions.documentUrn,
             self.meta.collabEditorOptions.userUrn,
-            self.meta.collabEditorOptions.token,
+            self.meta.collabEditorOptions.token
           );
         }
 

@@ -373,7 +373,7 @@ class AgentLegacyApp {
     onBlur,
     documentUrn,
     userUrn,
-    joinToken,
+    joinToken
   ) {
     const editor = React.createRef();
     const collabOpt = {
