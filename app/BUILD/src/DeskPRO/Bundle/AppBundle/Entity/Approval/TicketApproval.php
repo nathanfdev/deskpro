@@ -70,8 +70,24 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
         }
 
         if ($selectedApprovers->hasOrganizationManagers()) {
-            $personRepo = $em->getRepository(Person::class);
-            foreach ($personRepo->getOrganizationManagersForPerson($ticketPerson) as $orgManager) {
+            if (!$ticketPerson->getOrganization()) {
+                throw new \DomainException(
+                    'Cannot submit request as this user does not belong to an organization.'
+                );
+            }
+
+            $orgManagers = $em
+                ->getRepository(Person::class)
+                ->getOrganizationManagersForPerson($ticketPerson)
+            ;
+
+            if (!count($orgManagers)) {
+                throw new \DomainException(
+                    'Cannot submit request as this user\'s organization has no defined manager.'
+                );
+            }
+
+            foreach ($orgManagers as $orgManager) {
                 $approvers[] = $orgManager;
             }
         }
