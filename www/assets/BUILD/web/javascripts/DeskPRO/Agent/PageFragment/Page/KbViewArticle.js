@@ -941,7 +941,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
         }
       }
 
-      this._initPostArea();
+      if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
+        this._initPostArea();
+      }
 		}).bind(this));
 
 		var attachList = $('ul.attachment-list:first', this.wrapper);
