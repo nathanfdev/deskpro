@@ -1,21 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { IntlProvider } from 'react-intl';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { getUrlParameter } from 'DeskPRO/Component/Util/Url';
 import { HcOmniSearch } from '../React/OmniSearch/HcOmniSearch';
+import { portalPhrases } from '../PortalPhrases';
 
 export class HcOmniSearchWidget extends PageWidget {
 
   renderWidget() {
     this.$rElement = $('<div class="dp-react-widget"></div>').appendTo(this.$element);
 
-    ReactDOM.render(React.createElement(HcOmniSearch, {
-      $input:            this.$element.find('input[type=search]'),
-      $inputSearchLogId: this.$element.find('input[type=hidden]'),
-      $close:            this.$element.find('.search-clear'),
-      $button:           this.$element.find('button')
-    }), this.$rElement.get(0));
+    this.locale = window.DESKPRO_LOCALE.replace(/_/, '-');
+
+    ReactDOM.render((
+      <IntlProvider
+        locale={this.locale}
+        messages={portalPhrases.getPhrases()}
+      >
+        <HcOmniSearch
+          $input={this.$element.find('input[type=search]')}
+          $inputSearchLogId={this.$element.find('input[type=hidden]')}
+          $close={this.$element.find('.search-clear')}
+          $button={this.$element.find('button')}
+        />
+      </IntlProvider>
+      ), this.$rElement.get(0));
 
     const $input = this.$element.find('input.omnisearch');
     const $button = this.$element.find('button.search-btn');

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
@@ -46,24 +47,21 @@ class SearchResultCollection {
 export class HcOmniSearchResultSection extends React.Component {
 
   static propTypes = {
-    name:          PropTypes.string,
     nameApi:       PropTypes.string,
-    nameIcon:      PropTypes.string,
     initialResult: PropTypes.object,
-    q:             PropTypes.string
+    q:             PropTypes.string,
+    activeTab:     PropTypes.string,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      name:                 props.name,
       nameApi:              props.nameApi,
-      nameIcon:             props.nameIcon,
       display_amount:       10,
       currently_displaying: 10,
       page:                 1,
-      total_results:        parseInt(props.initialResult.length ? props.initialResult.pageinfo.total_results : 0, 10),
+      total_results:        parseInt(props.initialResult.results && props.initialResult.results.length ? props.initialResult.pageinfo.total_results : 0, 10),
       q:                    props.q,
       doSpin:               false
     };
@@ -74,28 +72,15 @@ export class HcOmniSearchResultSection extends React.Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({
-      name:                 this.props.name,
       nameApi:              this.props.nameApi,
-      nameIcon:             this.props.nameIcon,
       display_amount:       10,
       currently_displaying: 10,
       page:                 1,
-      total_results:        parseInt(newProps.initialResult.length ? newProps.initialResult.pageinfo.total_results : 0, 10),
+      total_results:        parseInt(newProps.initialResult.results && newProps.initialResult.results.length ? newProps.initialResult.pageinfo.total_results : 0, 10),
       q:                    newProps.q,
       doSpin:               false,
       items:                this.createsItemsFromProps(newProps)
     });
-  }
-
-  getShowMoreNum() {
-    const diff = parseInt(this.state.total_results, 10) - parseInt(this.state.currently_displaying, 10);
-    if (diff > 10) {
-      return 10;
-    } else if (diff > 0) {
-      return diff;
-    }
-
-    return null;
   }
 
   grabFromApi() {
@@ -166,20 +151,20 @@ export class HcOmniSearchResultSection extends React.Component {
   renderItem(item) {
     let t;
 
-    if (this.state.nameApi === 'news') {
+    if (true || this.state.nameApi === 'news') {
       t = (
-        <span>
-          <span className="date-mark">
-            <i className="far fa-calendar-alt" />
+        <a href={item.url} className="dp-po-search-link">
+          {item.name}
+          <div className="dp-po-time">
+            <i className="dp-po-icon far fa-clock" />
             <TimeAgo
               className="dpdesignportal-event-time"
               formatter={timeAgoFormatter}
               minPeriod={60000}
               date={moment(item.date)}
             />
-          </span>
-          <span className="item-name">{item.name}</span>
-        </span>
+          </div>
+        </a>
       );
     } else if (this.state.nameApi === 'community') {
       const sign = item.rating < 0 ? '-' : '+';
@@ -204,31 +189,29 @@ export class HcOmniSearchResultSection extends React.Component {
     }
 
     return (
-      <li key={item.id}>
-        <a href={item.url}>{t}</a>
+      <li className="dp-po-search-item" key={item.id}>
+        {t}
       </li>
     );
   }
 
   render() {
-    const { nameIcon, name } = this.props;
+    const { nameApi, activeTab } = this.props;
+    const { total_results } = this.state;
 
-    if (this.state.items.isEmpty()) {
+    if (this.state.items.isEmpty() || nameApi !== activeTab) {
       return null;
     }
 
     return (
       <div className="search-result-collection">
-        <h1><i className={nameIcon} /> {name}</h1>
-        <ul>
+        <ul className="dp-po-search-list">
           {map(this.state.items.getNum(this.state.currently_displaying), item => this.renderItem(item))}
         </ul>
 
-        {this.getShowMoreNum() !== null && !this.state.doSpin &&
-          <a onClick={this.showMore} className="search-results-show-more">
-            {this.getShowMoreNum()} More <i className="fas fa-angle-double-down" />
-          </a>
-        }
+        <a onClick={this.showMore} className="dp-po-search-hint-viewall">
+          <FormattedMessage id="helpcenter.search.view-all-results" values={{ count: total_results }} />
+        </a>
 
         {this.state.doSpin && <div className="search-result-collection-loading inline-loading" />}
       </div>
@@ -237,62 +220,76 @@ export class HcOmniSearchResultSection extends React.Component {
 }
 
 export class HcOmniSearchResultTickets extends React.Component {
+
+  static propTypes = {
+    nameApi:       PropTypes.string,
+    initialResult: PropTypes.object,
+    q:             PropTypes.string
+  };
+
+  static renderItem(item) {
+    return (
+      <li className="dp-po-search-item" key={item.id}>
+        <a href={item.url} className="dp-po-search-link">
+          {item.name}
+          <div className="dp-po-time">
+            <i className="dp-po-icon far fa-clock" />
+            <TimeAgo
+              className="dpdesignportal-event-time"
+              formatter={timeAgoFormatter}
+              minPeriod={60000}
+              date={moment(item.date)}
+            />
+          </div>
+        </a>
+      </li>
+    );
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nameApi:              props.nameApi,
+      display_amount:       10,
+      currently_displaying: 10,
+      page:                 1,
+      totalResults:         parseInt(props.initialResult.results.length ? props.initialResult.pageinfo.total_results : 0, 10),
+      q:                    props.q,
+      doSpin:               false
+    };
+
+    this.state.items = this.createsItemsFromProps(props);
+    // this.showMore = this.showMore.bind(this);
+  }
+
+  createsItemsFromProps(props) { // eslint-disable-line
+    const theItems = new SearchResultCollection();
+    forEach(props.initialResult.results, (item) => {
+      theItems.addItem(item.object);
+    });
+
+    return theItems;
+  }
+
   render() {
+    const { totalResults } = this.state;
+
+    if (this.state.items.isEmpty()) {
+      return null;
+    }
+
     return (
       <div className="dp-po-search-hint-tickets">
         <div className="dp-po-search-hint-header">
-          <h3 className="dp-po-search-hint-header-title"><i className="dp-po-icon fad fa-envelope" /> Your tickets
-            <span>(123)</span>
+          <h3 className="dp-po-search-hint-header-title"><i className="dp-po-icon fad fa-envelope" /> <FormattedMessage id="helpcenter.search.your-tickets" />
+            <span>({totalResults})</span>
           </h3>
         </div>
         <ul className="dp-po-search-list">
-          <li className="dp-po-search-item">
-            <a href="" className="dp-po-search-link">
-              Read your personalized tickets higjlights
-              <div className="dp-po-time">
-                <i className="dp-po-icon far fa-clock" />
-                3 days
-              </div>
-            </a>
-          </li>
-          <li className="dp-po-search-item">
-            <a href="" className="dp-po-search-link">
-              Tickets threads
-              <div className="dp-po-time">
-                <i className="dp-po-icon far fa-clock" />
-                10 days
-              </div>
-            </a>
-          </li>
-          <li className="dp-po-search-item">
-            <a href="" className="dp-po-search-link">
-              View all your unread tickets
-              <div className="dp-po-time">
-                <i className="dp-po-icon far fa-clock" />
-                18 Jul 2019
-              </div>
-            </a>
-          </li>
-          <li className="dp-po-search-item">
-            <a href="" className="dp-po-search-link">
-              3 days ago read tickets
-              <div className="dp-po-time">
-                <i className="dp-po-icon far fa-clock" />
-                18 Jul 2019
-              </div>
-            </a>
-          </li>
-          <li className="dp-po-search-item">
-            <a href="" className="dp-po-search-link">
-              Read ticket channel highlights
-              <div className="dp-po-time">
-                <i className="dp-po-icon far fa-clock" />
-                18 Jul 2019
-              </div>
-            </a>
-          </li>
+          {map(this.state.items.getNum(this.state.currently_displaying), item => HcOmniSearchResultTickets.renderItem(item))}
         </ul>
-        <a href="" className="dp-po-search-hint-viewall">View all 123 results</a>
+        <a onClick={this.showMore} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view-all-results" values={{ count: totalResults }} /></a>
       </div>
     );
   }
