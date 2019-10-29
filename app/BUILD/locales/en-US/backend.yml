@@ -5857,6 +5857,7 @@ api.error_codes.unverified_number: 'Verify this number or upgrade your account.'
 api.error_codes.insufficient_balance: 'Insufficient balance.'
 api.error_codes.user_has_no_org: 'Cannot submit request as this user does not belong to an organization.'
 api.error_codes.org_has_no_managers: "Cannot submit request as this user's organization has no defined manager."
+api.error_codes.not_enough_approvers: "There aren't enough approvers defined to meet required approvals/rejections"
 api.oauth.authorize_accept: Access
 api.oauth.authorize_reject: Deny
 api.oauth.authorize_title: 'Grant access to {{name}}'
