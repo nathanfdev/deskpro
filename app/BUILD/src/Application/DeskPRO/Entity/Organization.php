@@ -15,6 +15,7 @@ use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -865,6 +866,17 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     public function getMembers()
     {
         return $this->members;
+    }
+
+    /**
+     * @return Person[]|ArrayCollection
+     */
+    public function getManagers()
+    {
+        $criteria = new Criteria();
+        $criteria->andWhere($criteria->expr()->eq('organization_manager', 1));
+
+        return $this->members->matching($criteria);
     }
 
     /**

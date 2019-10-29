@@ -4,14 +4,14 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class ApprovalType
+ * Class ApprovalType.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketApprovalRepository")
  * @ORM\Table(name="ticket_approvals")
@@ -20,12 +20,14 @@ use JMS\Serializer\Annotation as JMS;
  * @PortalLinkRoute("ticket_approvals_view", route_param_map={"id"="id"})
  * @JMS\ExclusionPolicy("all")
  *
+ * @AppAssert\Approval\TicketApprovalOrgManagers()
+ *
  * @category Entities
  */
 class TicketApproval extends AbstractBaseApproval implements TicketApprovalInterface
 {
     /**
-     * Filter name used in agent UI search templates
+     * Filter name used in agent UI search templates.
      */
     const FILTER_NAME = 'ticket_approval';
 
@@ -41,28 +43,30 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
     protected $ticket;
 
     /**
-     * @param Ticket $ticket
+     * @param Ticket                 $ticket
      * @param EntityManagerInterface $em
-     * @param ApprovalTemplate $template
-     * @return AbstractBaseApproval
+     * @param ApprovalTemplate       $template
+     *
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return AbstractBaseApproval
      */
     public static function createTicketApprovalFromTemplate(
         Ticket $ticket,
         EntityManagerInterface $em,
         ApprovalTemplate $template
     ) {
-        return self::createFromTemplate($em, $template, (new self)->setTicket($ticket));
+        return self::createFromTemplate($em, $template, (new self())->setTicket($ticket));
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getExtraApproversWhenCreatingFromTemplate(
         EntityManagerInterface $em,
         SelectedApprovers $selectedApprovers
     ) {
-        $approvers = [];
+        $approvers    = [];
         $ticketPerson = $this->getTicket()->getPerson();
 
         if ($selectedApprovers->hasTicketUser()) {
@@ -70,23 +74,7 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
         }
 
         if ($selectedApprovers->hasOrganizationManagers()) {
-            if (!$ticketPerson->getOrganization()) {
-                throw new \DomainException(
-                    'Cannot submit request as this user does not belong to an organization.'
-                );
-            }
-
-            $orgManagers = $em
-                ->getRepository(Person::class)
-                ->getOrganizationManagersForPerson($ticketPerson)
-            ;
-
-            if (!count($orgManagers)) {
-                throw new \DomainException(
-                    'Cannot submit request as this user\'s organization has no defined manager.'
-                );
-            }
-
+            $orgManagers = $em->getRepository(Person::class)->getOrganizationManagersForPerson($ticketPerson);
             foreach ($orgManagers as $orgManager) {
                 $approvers[] = $orgManager;
             }
@@ -96,7 +84,7 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function notifyAssociationChanges(EntityManagerInterface $em)
     {
@@ -113,6 +101,7 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
 
     /**
      * @param Ticket $ticket
+     *
      * @return self
      */
     public function setTicket(Ticket $ticket)
@@ -123,9 +112,10 @@ class TicketApproval extends AbstractBaseApproval implements TicketApprovalInter
     }
 
     /**
-     * Set ID for email template preview
+     * Set ID for email template preview.
      *
      * @param int $id
+     *
      * @return $this
      */
     public function setId($id)
