@@ -169,7 +169,7 @@ export class HcFilterFacets extends React.Component {
             ref={this.onGetRef}
           >
             <i className="dp-po-icon fad fa-align-center" />
-            {portalPhrases.get('helpcenter.community.filters')} ({this.props.filter.status_categories.length + this.props.filter.activities.length})
+            {portalPhrases.get('helpcenter.community.filters')} <span>({this.props.filter.status_categories.length + this.props.filter.activities.length})</span>
             <i className="dp-po-icon far fa-angle-down" />
           </a>
           {this.renderMenu()}
