@@ -89,6 +89,14 @@ class TicketChecker extends AbstractChecker
         }
 
         foreach ($ticket->getApprovals() as $approval) {
+            // If the current user is the ticket owner AND the approval contains the ticket owner as an approver
+            // then view access is always allowed irrespective of canApproversViewSubject
+            if ($this->person->isEqualTo($ticket->getPerson())) {
+                if ($approval->hasApprover($this->person)) {
+                    return true;
+                }
+            }
+
             if ($approval->getTemplate()->canApproversViewSubject()) {
                 if ($approval->hasApprover($this->person)) {
                     return true;
