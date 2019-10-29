@@ -75,8 +75,10 @@ class KbController extends AbstractController
         $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities(true);
 
-        //$state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
         $state = null;
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        }
 
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($article);
 

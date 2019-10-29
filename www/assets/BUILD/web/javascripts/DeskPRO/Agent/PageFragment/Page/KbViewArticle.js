@@ -939,7 +939,9 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				} else if (this.rte) {
 					this.rte.val(def);
         }
-			}
+      }
+
+      this._initPostArea();
 		}).bind(this));
 
 		var attachList = $('ul.attachment-list:first', this.wrapper);
@@ -967,19 +969,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
     var wrap = this.wrapper;
 
     if (window.DP_HAS_NEW_CONTENT_EDITOR && this.meta.content_input_type === 'dped_v1') {
-      this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-        stateId: 'editarticle.' + this.article_id,
-        callback: this.getSaveStateData.bind(this),
-        time: 5000
-      });
-      this.editStateSaver.stop();
+      this.editStateSaver = false;
     } else {
       this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
         stateId: 'editarticle.' + this.article_id,
         listenOn: $('.article-editor-wrap:first', wrap)
       });
+      this.ownObject(this.editStateSaver);
     }
-		this.ownObject(this.editStateSaver);
 
 		DeskPRO_Window.util.fileupload(this.getEl('content_ed').find('.article-editor'), {
 			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
@@ -1133,8 +1130,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
           self.rte = window.AgentLegacyBundle.renderContentEditorCollab(
             self.reactContentNode,
             contentInput,
-            self.editStateSaver.triggerChange.bind(self.editStateSaver),
-            self.onBlur.bind(self),
+            undefined,
+            undefined,
             self.meta.collabEditorOptions.documentUrn,
             self.meta.collabEditorOptions.userUrn,
             self.meta.collabEditorOptions.token
@@ -1191,16 +1188,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.getEl('cancel_btn').show();
 		this.updateUi();
 	},
-
-  onFocus: function() {
-    this.editStateSaver.setOptions({alwaysChanged: true});
-    this.editStateSaver.triggerChange();
-  },
-
-  onBlur: function() {
-    this.editStateSaver.setOptions({alwaysChanged: false});
-    this.editStateSaver.saveState();
-  },
 
   getSaveStateData: function () {
 	  if (this.rte) {
