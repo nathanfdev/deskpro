@@ -169,6 +169,14 @@ class ApprovalForm extends React.Component {
             case 500:
               errors.push('An error has occurred while processing request on server');
               break;
+            case 400:
+              if (error.data.errors.errors.length) {
+                errors.push(error.data.errors.errors[0].message);
+              } else {
+                errors.push('Bad request');
+              }
+
+              break;
             default:
               errors.push('An error has occurred. Please try again later or call for assistance');
               break;

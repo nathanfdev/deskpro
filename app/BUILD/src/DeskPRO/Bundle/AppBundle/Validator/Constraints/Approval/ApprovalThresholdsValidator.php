@@ -5,15 +5,12 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\AbstractBaseApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
-use DeskPRO\Bundle\AppBundle\Form\Type\Approval\BaseApprovalType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- * Class ApprovalThresholdsValidator
- *
- * @package DeskPRO\Bundle\AppBundle\Validator\Constraints\Approval
+ * Class ApprovalThresholdsValidator.
  */
 class ApprovalThresholdsValidator extends ConstraintValidator
 {
@@ -23,7 +20,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
     private $em;
 
     /**
-     * ApprovalThresholdsValidator constructor.
+     * Constructor.
      *
      * @param EntityManagerInterface $em
      */
@@ -33,8 +30,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
     }
 
     /**
-     * @param BaseApprovalType|ApprovalTemplate
-     * @param Constraint|ApprovalThresholds $constraint
+     * {@inheritdoc}
      */
     public function validate($value, Constraint $constraint)
     {
@@ -62,7 +58,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
                 $approvers = count($selectionCriteria->getSelectFromPeople());
 
                 if ($selectionCriteria->canSelectTicketUser()) {
-                    $approvers ++;
+                    ++$approvers;
                 }
 
                 $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
@@ -76,12 +72,12 @@ class ApprovalThresholdsValidator extends ConstraintValidator
                     ;
                 }
             } else {
-                $personRepo = $this->em->getRepository(Person::class);
+                $personRepo        = $this->em->getRepository(Person::class);
                 $selectedApprovers = $value->getSelectedApprovers();
-                $approvers = count($selectedApprovers->getPeople());
+                $approvers         = count($selectedApprovers->getPeople());
 
                 if ($selectedApprovers->hasTicketUser()) {
-                    $approvers ++;
+                    ++$approvers;
                 }
 
                 if ($selectedApprovers->hasOrganizationManagers()) {
