@@ -256,7 +256,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         };
 
         if ($useDynAssets) {
-            $loaderUrl = rtrim($helpdeskUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
+            $loaderUrl = rtrim($baseUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
         } else {
             $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
             $loaderUrl = $correctAssetUrl($loaderUrl);
