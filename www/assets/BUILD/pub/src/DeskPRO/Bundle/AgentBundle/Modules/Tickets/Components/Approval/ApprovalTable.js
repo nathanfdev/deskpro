@@ -24,7 +24,7 @@ class ApprovalTable extends React.Component {
     };
     const colsStyle = {
       fontSize: '11px',
-      padding:  '1px 4px'
+      padding:  '1px 8px'
     };
 
     let approvalsList = [];
