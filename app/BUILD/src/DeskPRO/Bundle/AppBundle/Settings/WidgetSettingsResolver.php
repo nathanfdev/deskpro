@@ -228,7 +228,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             } else {
-                $helpdeskUrl = rtrim($baseUrl, '/');
+                $helpdeskUrl = rtrim($baseUrl, '/').$request->attributes->get('_dp_brand_slug_path');
             }
 
         } else {
