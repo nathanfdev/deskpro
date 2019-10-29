@@ -53,7 +53,7 @@ class ApprovalTable extends React.Component {
     return (
       <table cellSpacing="0" cellPadding="0" style={{ tableLayout: 'fixed' }} className="field-holders-table th-la">
         <colgroup>
-          <col style={{ width: '40px' }} />
+          <col style={{ width: '20px' }} />
           <col style={{ width: '15%' }} />
           <col style={{ width: '45%' }} />
           <col style={{ width: '20%' }} />
