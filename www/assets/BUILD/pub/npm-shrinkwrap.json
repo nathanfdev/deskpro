@@ -338,9 +338,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/portal-components": {
-      "version": "0.2.21",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.21.tgz",
-      "integrity": "sha512-rOHuHp2aKpDF6FwzqsuGIUXPEjx//oDn0cCdJ2FE59tA15XRTDagOAFcXSQT8VCV1mgB78DQUEXM3D+pofJObQ==",
+      "version": "0.2.24",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.24.tgz",
+      "integrity": "sha512-vuv7oP+TQ6MwYW3tuP/b2okruhXAwkbE5OxhRSH1jHtPxgXqR3fNvgbrfIsMGjTVNtaGDLJbsqFO3JmkrelAdA==",
       "requires": {
         "@deskpro/js-utils": "^1.0.4",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -424,9 +424,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.2.21",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.21.tgz",
-      "integrity": "sha512-+ZB6xuLfgFo1NYTzv+1A8GJjKdDLx1VpXfNc9BaPfkz9lo4UIasCOQn00jJ7EWgvnCwZ1/zpKxU9X/oOmqiy0w==",
+      "version": "0.2.24",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.24.tgz",
+      "integrity": "sha512-R5eot5cQcY5f1nswnw/qkLNOAtPeYBKRV3mHchFynlXiChpX/J2Rs3dc++2AQ0TRQVlxld8LLxb3bdEq3R3qFg==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
