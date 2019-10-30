@@ -2,12 +2,14 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\RelatedContent;
 use Application\DeskPRO\Notifications\NewCommentNotification;
 use Application\DeskPRO\Notifications\NewCommunityTopicNotification;
 use Application\DeskPRO\People\PersonGuest;
@@ -574,6 +576,15 @@ class CommunityTopicsController extends AbstractPublishController
             'lockout'            => $check->isLockoutRecommended(),
             'lockout_time'       => $check->getLockoutTime(true),
         ];
+
+        // Lazy load related content
+        $viewVars['related_content_data'] = new LazyPropObject([
+            'related_content' => function () use ($topic) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $topic);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
 
         if (!$this->getUser() || $this->getUser()->getId()) {
             $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
