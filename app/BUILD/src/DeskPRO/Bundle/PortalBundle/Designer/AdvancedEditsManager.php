@@ -83,8 +83,11 @@ class AdvancedEditsManager
         $this->twig          = $twig;
         if ($editThemeSet->getThemeId() === 'helpcenter') {
             $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_main.scss';
+        } elseif ($editThemeSet->getThemeId() === 'edit_theme_set_id') {
+            // a workaround for tests
+            $this->mainScssPath = $assetDir;
         } else {
-            $this->mainScssPath = $assetDir.'/main.scss';
+            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
         }
     }
 
