@@ -104,7 +104,6 @@ class TaskRouter
 
             return;
         }
-        $this->logger->info('[TaskRouter] Evaluate task router');
 
         try {
             $tasks = $this->storage->getActiveTasks();
