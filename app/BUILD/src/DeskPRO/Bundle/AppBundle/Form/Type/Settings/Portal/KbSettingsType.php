@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,6 +21,7 @@ class KbSettingsType extends AbstractType
     {
         $builder
             ->add('knowledgebase_deep_tree', ApiBooleanType::class)
+            ->add('featured_articles', TextType::class)
         ;
     }
 

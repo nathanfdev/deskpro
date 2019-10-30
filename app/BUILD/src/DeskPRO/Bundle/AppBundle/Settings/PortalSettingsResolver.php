@@ -52,7 +52,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
 
     const ATTACHMENT_REQUIRE_AUTH_DOWNLOADS = 'user.attachment_require_auth_downloads';
 
-    const KB_WITH_TREE = 'user.kb_categories_with_tree';
+    const KB_WITH_TREE         = 'user.kb_categories_with_tree';
+    const KB_FEATURED_ARTICLES = 'user.kb.featured_articles';
 
     /**
      * {@inheritdoc}
@@ -174,6 +175,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setTabEnabled($this->getSetting(self::TAB_KB, $brand))
             ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_KB, $brand))
             ->setKnowledgebaseDeepTree($this->getSetting(self::KB_WITH_TREE, $brand))
+            ->setFeaturedArticles($this->getSetting(self::KB_FEATURED_ARTICLES, $brand))
             ->setBrand($brand)
         ;
 

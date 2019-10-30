@@ -114,6 +114,28 @@
 						</div>
 					</div>
 				</article>
+				<article ng-show="settings.enabled">
+					<div class="panel panel-innertable">
+						<div class="form-group">
+							<div class="col-lg-3">
+								<h3>{{ phrase('admin.portal.kb_featured_articles') }}</h3>
+							</div>
+							<div class="col-lg-9">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input
+											type="text"
+											class="form-control"
+											name="title"
+											ng-model="settings.featured_articles"
+											style="width: 50%;" autofocus required>
+									<span class="help-block">
+									{{ phrase('admin.portal.kb_featured_articles_explain') }}
+								</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</article>
 
 				<footer>
 					<div class="dp-content">
