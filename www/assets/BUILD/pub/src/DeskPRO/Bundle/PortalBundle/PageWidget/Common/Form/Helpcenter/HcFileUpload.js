@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { FileUploadInput } from '@deskpro/portal-components';
 
@@ -57,6 +58,11 @@ export default class HcFileUpload extends PageWidget {
       csrfToken,
       onChange: this.onChange,
       multiple: false,
+      i18n:     {
+        dragNDrop:   portalPhrases.get('helpcenter.forms.label-drag-and-drop'),
+        or:          portalPhrases.get('helpcenter.general.or'),
+        chooseAFile: portalPhrases.get('helpcenter.forms.label-choose-a-file'),
+      }
     });
 
     ReactDOM.render(component, this.$rElement.get(0));

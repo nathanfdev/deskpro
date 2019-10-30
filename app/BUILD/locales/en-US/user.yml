@@ -165,6 +165,8 @@ helpcenter.topics.search-title: Guides
 helpcenter.forms.label_full_name: 'Your Name'
 helpcenter.forms.label_save: Save
 helpcenter.forms.label_password: Password
+helpcenter.forms.label-drag-and-drop: 'Drag and drop'
+helpcenter.forms.label-choose-a-file: 'Choose a file'
 helpcenter.direct_messages.back_to_messages: 'Back to my messages'
 helpcenter.direct_messages.block_user: 'block user'
 helpcenter.direct_messages.create_thread: Create
@@ -208,6 +210,7 @@ helpcenter.general.nav-news: 'News'
 helpcenter.general.nav-support-center: 'Support Center'
 helpcenter.general.nav-tickets-desc: 'View all the tickets'
 helpcenter.general.nav-tickets: 'Tickets'
+helpcenter.general.or: 'or'
 helpcenter.general.prop_comments_asc: 'Least comments first'
 helpcenter.general.prop_comments_desc: 'Most comments first'
 helpcenter.general.prop_date_asc: 'Oldest first'
