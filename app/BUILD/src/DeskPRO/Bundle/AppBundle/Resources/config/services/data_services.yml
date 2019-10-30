@@ -50,7 +50,7 @@ services:
 
   data.community:
     class: DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager", "@security.authorization_checker"]
 
   data.rating:
     class: DeskPRO\Bundle\AppBundle\DataService\RatingsDataService

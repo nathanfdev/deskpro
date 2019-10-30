@@ -132,7 +132,11 @@ class InstallCommand extends ContainerAwareCommand
         }, $input->getOption('skip'));
 
         if ($input->getOption('flag')) {
-            foreach ($input->getOption('flag') as $f) {
+            $flags = $input->getOption('flag');
+            if (!is_array($flags)) {
+                $flags = [$flags];
+            }
+            foreach ($flags as $f) {
                 $f = explode(':', $f, 2);
                 if (!isset($f[1])) {
                     $f[1] = true;

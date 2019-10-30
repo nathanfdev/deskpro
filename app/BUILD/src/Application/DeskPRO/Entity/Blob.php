@@ -912,7 +912,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'filesize'             => $this->filesize,
             'content_type'         => $this->content_type,
             'blob_hash'            => $this->blob_hash,
-            'is_media_upload'      => $this->is_media_upload,
+            'is_media_upload'      => $this->is_media_upload ? 1 : 0,
             'title'                => $this->title,
             'dim_w'                => $this->dim_w,
             'dim_h'                => $this->dim_h,

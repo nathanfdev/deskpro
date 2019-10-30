@@ -1,0 +1,23 @@
+<div class="dp-po-community-title">
+    {% if current_forum %}
+        <a class="dp-po-community-title-link" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {% if current_forum.icon_property %}
+                <span class="dp-po-community-title-icon">
+                    {{ render_icon_from(current_forum, {as_download_url: true, is_rounded: true}) }}
+                </span>
+            {% endif %}
+            {{ current_forum.title }}
+            <i class="dp-po-icon dp-po-community-title-arrow far fa-angle-down"></i>
+        </a>
+    {% endif %}
+    <div class="dropdown-menu dropdown-menu-left">
+        {% for forum in forums if forum != current_forum %}
+            <a class="dropdown-item" href="{{ path('portal_community_browse', {filter_uri: "type-#{forum.id}"}) }}">
+                {% if forum.icon_property %}
+                    {{ render_icon_from(forum, {as_download_url: true, is_rounded: true}) }}
+                {% endif %}
+                {{ forum.title }}
+            </a>
+        {% endfor %}
+    </div>
+</div>

@@ -100,12 +100,12 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $filter->addShould($f);
         }
-        if ($context->getCommunityChannelIds() && ($limitTypes === null || in_array('community', $limitTypes))) {
+        if ($context->getCommunityForumIds() && ($limitTypes === null || in_array('community', $limitTypes))) {
             $search->addType('community');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'community']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
-            $f->addMust(new Query\Terms('channel_id', $context->getCommunityChannelIds()));
+            $f->addMust(new Query\Terms('forum_id', $context->getCommunityForumIds()));
             $filter->addShould($f);
             $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['community']);
             $customBool->addMust($customTerms);
@@ -258,12 +258,12 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $boolQuery->addShould($f);
         }
-        if ($context->getCommunityChannelIds() && ($limit_types === null || in_array('community', $limit_types))) {
+        if ($context->getCommunityForumIds() && ($limit_types === null || in_array('community', $limit_types))) {
             $search->addType('community');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'community']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
-            $f->addMust(new Query\Terms('channel_id', $context->getCommunityChannelIds()));
+            $f->addMust(new Query\Terms('forum_id', $context->getCommunityForumIds()));
             $boolQuery->addShould($f);
         }
         if ($context->getGuideIds() && ($limit_types === null || in_array('topic', $limit_types))) {

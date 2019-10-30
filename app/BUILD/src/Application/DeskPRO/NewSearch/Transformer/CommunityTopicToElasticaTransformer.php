@@ -25,8 +25,8 @@ class CommunityTopicToElasticaTransformer extends AbstractToElasticaTransformer
         $document->set('content', $object->getContentPlain());
         $document->set('status', $object->getStatus());
 
-        if ($object->getChannel()) {
-            $document->set('channel_id', $object->getChannel()->getId());
+        if ($object->getForum()) {
+            $document->set('forum_id', $object->getForum()->getId());
         }
 
         $sticky_words = App::$container->getDb()->fetchAllCol('

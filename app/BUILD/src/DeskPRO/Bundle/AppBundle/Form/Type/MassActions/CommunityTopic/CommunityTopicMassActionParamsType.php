@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\MassActions\CommunityTopic;
 
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\CustomDataCommunityTopic;
@@ -56,9 +56,9 @@ class CommunityTopicMassActionParamsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('set_channel', EntityType::class, [
-                'class'         => CommunityChannel::class,
-                'property_path' => 'channel',
+            ->add('set_forum', EntityType::class, [
+                'class'         => CommunityForum::class,
+                'property_path' => 'forum',
             ])
             ->add('set_status_category', EntityType::class, [
                 'class'         => CommunityTopicStatusCategory::class,

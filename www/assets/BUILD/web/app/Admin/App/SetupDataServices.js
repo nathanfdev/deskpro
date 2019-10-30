@@ -2,7 +2,7 @@ define([
   'Admin/Main/DataService/EntityManager',
 
   'Admin/CommunityStatuses/DataService/CommunityStatuses',
-  'Admin/CommunityChannels/DataService/CommunityChannels',
+  'Admin/CommunityForums/DataService/CommunityForums',
   'Admin/CommunityCategories/DataService/CommunityCategories',
   'Admin/ChannelSms/DataService/SmsAccounts',
   'Admin/Brand/DataService/Brands',
@@ -18,7 +18,7 @@ define([
 ], (
 	Admin_Main_DataService_EntityManager,
 	Admin_CommunityStatuses_DataService_CommunityStatuses,
-	Admin_CommunityChannels_DataService_CommunityChannels,
+	Admin_CommunityForums_DataService_CommunityForums,
 	Admin_CommunityCategories_DataService_CommunityCategories,
 	Admin_ChannelSms_DataService_SmsAccounts,
 	Admin_Brand_DataService_Brands,
@@ -36,10 +36,10 @@ define([
   Module.service('em', [() => new Admin_Main_DataService_EntityManager()
   ]);
 
-  Module.service('CommunityStatusesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityStatuses_DataService_CommunityStatuses(em, Api, $q)
+  Module.service('CommunityStatusesData', ['em', 'Api', 'Api2', '$q', (em, Api, Api2, $q) => new Admin_CommunityStatuses_DataService_CommunityStatuses(em, Api, Api2, $q)
   ]);
 
-  Module.service('CommunityChannelsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityChannels_DataService_CommunityChannels(em, Api, $q)
+  Module.service('CommunityForumsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityForums_DataService_CommunityForums(em, Api, $q)
   ]);
 
   Module.service('CommunityCategoriesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_CommunityCategories_DataService_CommunityCategories(em, Api, $q)

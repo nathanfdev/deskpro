@@ -103,10 +103,10 @@ class PermissionFilter
         if (in_array('community', $this->types)) {
             ++$x;
             $jn      = '_cs'.$x;
-            $dis_ids = $this->person_context->PermissionsManager->CommunityChannels->getDisallowedCategories();
+            $dis_ids = $this->person_context->PermissionsManager->CommunityForums->getDisallowedCategories();
             if ($dis_ids) {
                 $dis_ids = implode(',', $dis_ids);
-                $join[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'community' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'channel_id' AND $jn.content IN ($dis_ids))";
+                $join[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'community' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'forum_id' AND $jn.content IN ($dis_ids))";
                 $where[] = "$jn.object_id IS NULL";
             }
         }

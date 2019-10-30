@@ -91,9 +91,9 @@ class QueryListener
             case 'update_downloads_categories':
             case 'insert_downloads_categories':
             case 'delete_downloads_categories':
-            case 'update_community_channels':
-            case 'insert_community_channels':
-            case 'delete_community_channels':
+            case 'update_community_forums':
+            case 'insert_community_forums':
+            case 'delete_community_forums':
             case 'update_news_categories':
             case 'insert_news_categories':
             case 'delete_news_categories':

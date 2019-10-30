@@ -40,6 +40,7 @@ import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
 import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
 import ContentEditor from './Modules/Publish/Components/Content/ContentEditor';
+import IconPicker from './Modules/Publish/Components/Content/IconPicker';
 import { ApprovalContainer } from './Modules/Tickets/Components/Approval/ApprovalContainer';
 
 class AgentLegacyApp {
@@ -400,6 +401,23 @@ class AgentLegacyApp {
     );
   }
 
+  renderIconPicker(node, icon) {
+    ReactDOM.render(
+      <AppContainer>
+        <IntlProvider
+          locale={this.locale}
+          messages={agentPhrases.getPhrases()}
+        >
+          <Provider store={this.store}>
+            <IconPicker
+              icon={icon}
+            />
+          </Provider>
+        </IntlProvider>
+      </AppContainer>,
+      node.get(0)
+    );
+  }
 
   detectPhoneNumbersFromMessages(messages) { // eslint-disable-line
     const state = this.store.getState();

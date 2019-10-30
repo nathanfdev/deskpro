@@ -1,0 +1,15 @@
+{% block person_inline %}
+	<div class="dp-po-avatar dp-po-avatar-round">
+	{% if person %}
+		{{ hc_avatar(person, '', 30) }}
+		{% if include_email and not person.isAgent() %}
+			{{ phrase('helpcenter.general.you') }} ({{ person.primary_email_address }})
+		{% else %}
+			{{ person.display_name_user }}
+		{% endif %}
+	{% else %}
+		<img src="{{ avatar_default_url(person, 30) }}" />
+		{{ phrase('helpcenter.general.helpdesk-system') }}
+	{% endif %}
+	</div>
+{% endblock person_inline %}

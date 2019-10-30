@@ -1,0 +1,24 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-account-register">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-centered">
+                        <div class="dp-po-block">
+                            <div class="dp-po-register-success">
+                                <i class="dp-po-icon fal fa-user"></i>
+                                <h2 class="dp-po-register-success-title">{{ phrase('helpcenter.account.thank-you-for-registering') }}</h2>
+                                <p class="dp-po-register-success-msg">
+                                    {{ phrase('helpcenter.account.validation-email-sent', {email: email}) }}
+                                </p>
+                                <a href="{{ path('portal_user_profile_emails_resend_validation', { id: saved_form_id}) }}" class="dp-po-register-success-link">{{ phrase('helpcenter.account.resend-registration-email') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

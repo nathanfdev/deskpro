@@ -83,5 +83,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
     arguments:
       - "@brand_container_factory"
+      - "@brand_stack"
       - "@theme_resolver"
       - "@portal_mode_storage"

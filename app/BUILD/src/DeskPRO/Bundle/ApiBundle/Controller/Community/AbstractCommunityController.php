@@ -49,12 +49,12 @@ abstract class AbstractCommunityController extends CrudController
         $context = new RequestQueryContext($qb, $alias, $request);
         LabelHelper::applyLabelFilters($context, CommunityTopic::class);
 
-        $channel = $request->get('channel');
-        if (!empty($channel)) {
+        $forum = $request->get('forum');
+        if (!empty($forum)) {
             $qb
-                ->leftJoin("$alias.channel", 'channel')
-                ->andWhere('channel.title IN (:channel_title)')
-                ->setParameter('channel_title', $channel)
+                ->leftJoin("$alias.forum", 'forum')
+                ->andWhere('forum.title IN (:forum_title)')
+                ->setParameter('forum_title', $forum)
             ;
         }
 
@@ -67,13 +67,13 @@ abstract class AbstractCommunityController extends CrudController
             ;
         }
 
-        $customChannel = $request->get('category');
-        if (!empty($customChannel)) {
+        $customForum = $request->get('category');
+        if (!empty($customForum)) {
             $qb
-                ->join("$alias.custom_data", 'customChan')
-                ->join('customChan.field', 'def')
+                ->join("$alias.custom_data", 'customForum')
+                ->join('customForum.field', 'def')
                 ->andWhere('def.title IN (:category)')
-                ->setParameter('category', $customChannel)
+                ->setParameter('category', $customForum)
             ;
         }
 

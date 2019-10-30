@@ -8,7 +8,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -47,9 +47,9 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     protected $departmentIds;
 
     /**
-     * @var array allowed community channels
+     * @var array allowed community forums
      */
-    protected $communityChannels;
+    protected $communityForums;
 
     /**
      * @var array allowed news categories
@@ -84,7 +84,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      * @param Permission[] $permissions
      * @param array        $departmentTicketIds
      * @param array        $departmentChatIds
-     * @param array        $communityChannelIds
+     * @param array        $communityForumIds
      * @param array        $newsCategoryIds
      * @param array        $articleCategoryIds
      * @param array        $downloadCategoryIds
@@ -95,7 +95,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         array $permissions = [],
         array $departmentTicketIds = [],
         array $departmentChatIds = [],
-        array $communityChannelIds = [],
+        array $communityForumIds = [],
         array $newsCategoryIds = [],
         array $articleCategoryIds = [],
         array $downloadCategoryIds = [],
@@ -106,7 +106,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->setAllowedTicketDepartmentIds($departmentTicketIds);
         $this->setAllowedChatDepartmentIds($departmentChatIds);
         $this->setAllowedDepartmentsIds(array_replace_recursive($departmentChatIds, $departmentTicketIds));
-        $this->setAllowedCommunityChannelIds($communityChannelIds);
+        $this->setAllowedCommunityForumIds($communityForumIds);
         $this->setAllowedNewsCategories($newsCategoryIds);
         $this->setAllowedArticleCategories($articleCategoryIds);
         $this->setAllowedDownloadCategories($downloadCategoryIds);
@@ -157,14 +157,14 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
 
             // COMMUNITY
         } elseif ($contentOrCategory instanceof CommunityTopic) {
-            $channelId = $contentOrCategory->getChannelId();
-            if ($channelId) {
-                return in_array($channelId, $this->getAllowedCommunityChannelIds());
+            $forumId = $contentOrCategory->getForum()->getId();
+            if ($forumId) {
+                return in_array($forumId, $this->getAllowedCommunityForumIds());
             }
 
             return false;
-        } elseif ($contentOrCategory instanceof CommunityChannel) {
-            return in_array($contentOrCategory->getId(), $this->getAllowedCommunityChannelIds());
+        } elseif ($contentOrCategory instanceof CommunityForum) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedCommunityForumIds());
 
             // DOWNLOAD
         } elseif ($contentOrCategory instanceof Download) {
@@ -279,21 +279,21 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
-     * @return array allowed community channels ids
+     * @return array allowed community forum ids
      */
-    public function getAllowedCommunityChannelIds()
+    public function getAllowedCommunityForumIds()
     {
-        return $this->communityChannels;
+        return $this->communityForums;
     }
 
     /**
-     * @param array $communityChannels
+     * @param array $communityForums
      *
      * @return $this
      */
-    public function setAllowedCommunityChannelIds(array $communityChannels)
+    public function setAllowedCommunityForumIds(array $communityForums)
     {
-        $this->communityChannels = $communityChannels;
+        $this->communityForums = $communityForums;
 
         return $this;
     }
@@ -503,7 +503,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         return serialize(
             [
                 'permissions'       => $this->permissions,
-                'community'         => $this->communityChannels,
+                'community'         => $this->communityForums,
                 'news'              => $this->newsCategories,
                 'article'           => $this->articleCategories,
                 'download'          => $this->downloadCategories,
@@ -522,7 +522,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $unserialized = unserialize($serialized);
 
         $this->permissions         = $unserialized['permissions'];
-        $this->communityChannels   = $unserialized['community'];
+        $this->communityForums   = $unserialized['community'];
         $this->newsCategories      = $unserialized['news'];
         $this->articleCategories   = $unserialized['article'];
         $this->downloadCategories  = $unserialized['download'];

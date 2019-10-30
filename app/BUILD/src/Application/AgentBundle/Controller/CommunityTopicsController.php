@@ -16,7 +16,7 @@ use Application\DeskPRO\Community\CommunityTopicsMerge;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
@@ -26,7 +26,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\EntityRepository\CommunityChannel as CommunityChannelRepository;
+use Application\DeskPRO\EntityRepository\CommunityForum as CommunityForumRepository;
 use Application\DeskPRO\EntityRepository\CommunityTopic as CommunityTopicRepository;
 use Application\DeskPRO\EntityRepository\CommunityTopicComment as CommunityTopicCommentRepository;
 use Application\DeskPRO\EntityRepository\CommunityTopicStatusCategory as CommunityTopicStatusCategoryRepository;
@@ -74,11 +74,11 @@ class CommunityTopicsController extends AbstractController
         }
 
         /** @var CommunityTopicRepository $communityTopicRepository */
-        /* @var CommunityChannelRepository $CommunityChannelRepository */
+        /* @var CommunityForumRepository $CommunityForumRepository */
         /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         /* @var CommunityTopicCommentRepository $CommunityTopicCommentRepository */
         $communityTopicRepository               = $this->em->getRepository(CommunityTopic::class);
-        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityForumRepository             = $this->em->getRepository(CommunityForum::class);
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
         $CommunityTopicCommentRepository        = $this->em->getRepository(CommunityTopicComment::class);
 
@@ -93,12 +93,12 @@ class CommunityTopicsController extends AbstractController
             'hidden' => $communityTopicRepository->countHiddenGrouped($selectedBrandId),
         ];
 
-        $channelCounts = $communityTopicRepository->countAllChannelsGrouped();
+        $forumCounts = $communityTopicRepository->countAllForumsGrouped();
 
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
-        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($channel) use ($selectedBrandId) {
-            return $channel['brand_id'] === $selectedBrandId;
+        $communityForums      = array_filter($CommunityForumRepository->getFlatHierarchy(), function ($forum) use ($selectedBrandId) {
+            return $forum['brand_id'] === $selectedBrandId;
         });
 
         /** @var Brand[] $brands */
@@ -113,8 +113,8 @@ class CommunityTopicsController extends AbstractController
                 [
                     'counts'                    => $counts,
                     'status_counts'             => $statusCounts,
-                    'channel_counts'            => $channelCounts,
-                    'community_channels'        => $communityChannels,
+                    'channel_counts'            => $forumCounts,
+                    'community_forums'          => $communityForums,
                     'active_status_cats'        => $activeStatusCategories,
                     'closed_status_cats'        => $closedStatusCategories,
                     'community_topic_tag_index' => $communityTopicTagIndex,
@@ -197,14 +197,14 @@ class CommunityTopicsController extends AbstractController
         /** @var PublishChecker $publishChecker */
         /* @var SearchLogRepository $searchLogRepository */
         /* @var PersonPrefRepository $personPrefRepository */
-        /* @var CommunityChannelRepository $CommunityChannelRepository */
+        /* @var CommunityForumRepository $CommunityChannelRepository */
         /* @var SearchStickyResultRepository $searchStickyResultRepository */
         /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         $publishChecker                         = $this->person->getPermissionsManager()->get('PublishChecker');
         $fieldManager                           = $this->container->getSystemService('community_fields_manager');
         $searchLogRepository                    = $this->em->getRepository(SearchLog::class);
         $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
-        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityForum::class);
         $searchStickyResultRepository           = $this->em->getRepository(SearchStickyResult::class);
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
@@ -219,8 +219,8 @@ class CommunityTopicsController extends AbstractController
         }
 
         $state       = $personPrefRepository->getPrefForPersonId('agent.ui.state.editcommunity', $this->person->id);
-        $channel     = $communityTopic->getChannel();
-        $channelPath = $channel->getTreeParents();
+        $forum     = $communityTopic->getForum();
+        $forumPath = $forum->getTreeParents();
 
         $ratedSearches           = $searchLogRepository->getRatedSearchesFor('community', $communityTopic['id'], 'counted');
         $relatedFinder           = new RelatedContentFinder($this->person, $communityTopic);
@@ -229,8 +229,8 @@ class CommunityTopicsController extends AbstractController
         $stickySearchWords       = $searchStickyResultRepository->getWordsForObject($communityTopic);
         $activeStatusCategories  = $communityTopicStatusCategoryRepository->getActiveCategories($communityTopic->getBrand());
         $closedStatusCategories  = $communityTopicStatusCategoryRepository->getClosedCategories($communityTopic->getBrand());
-        $communityChannels       = array_filter($CommunityChannelRepository->getInHierarchy(), function ($channel) use ($communityTopic) {
-            return $communityTopic->getBrand() && $channel['brand_id'] === $communityTopic->getBrand()->getId();
+        $communityForums       = array_filter($CommunityChannelRepository->getInHierarchy(), function ($forum) use ($communityTopic) {
+            return $communityTopic->getBrand() && $forum['brand_id'] === $communityTopic->getBrand()->getId();
         });
 
         //@TODO: related entities fetching optimization
@@ -255,13 +255,13 @@ class CommunityTopicsController extends AbstractController
                 'topic_comments'                => $communityTopicComments,
                 'topic_revisions'               => $communityTopicRevisions,
                 'state'                         => $state,
-                'channel'                       => $channel,
-                'channel_path'                  => $channelPath,
+                'forum'                         => $forum,
+                'forum_path'                    => $forumPath,
                 'custom_fields'                 => $customFields,
                 'rated_searches'                => $ratedSearches,
                 'related_content'               => $relatedContent,
                 'sticky_search_words'           => $stickySearchWords,
-                'community_channels'            => $communityChannels,
+                'community_forums'              => $communityForums,
                 'active_status_cats'            => $activeStatusCategories,
                 'closed_status_cats'            => $closedStatusCategories,
                 'ticket_community_topics_links' => $ticketCommunityTopicsLinks,
@@ -301,20 +301,20 @@ class CommunityTopicsController extends AbstractController
         );
     }
 
-    public function ajaxGetChannelsByBrandAction($brand_id)
+    public function ajaxGetForumsByBrandAction($brand_id)
     {
-        $communityChannels = array_filter($this->em->getRepository(CommunityChannel::class)->getFlatHierarchy(), function ($channel) use ($brand_id) {
-            return $channel['brand_id'] === (int) $brand_id;
+        $communityForums = array_filter($this->em->getRepository(CommunityForum::class)->getFlatHierarchy(), function ($forum) use ($brand_id) {
+            return $forum['brand_id'] === (int) $brand_id;
         });
 
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
-            'name'             => 'newcommunitytopic[channel_id]',
+            'name'             => 'newcommunitytopic[forum_id]',
             'id'               => '_cat',
-            'add_classname'    => 'channel_id',
+            'add_classname'    => 'forum_id',
             'add_attr'         => '',
             'with_blank'       => 0,
             'blank_title'      => '',
-            'categories'       => $communityChannels,
+            'categories'       => $communityForums,
             'allow_parent_sel' => true,
         ]);
     }
@@ -386,20 +386,20 @@ class CommunityTopicsController extends AbstractController
 
     /**
      * @param $communityTopicId
-     * @param $channelId
+     * @param $forumId
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return Response
+     *@throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * @return Response
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function ajaxUpdateChannelAction($communityTopicId, $channelId)
+    public function ajaxUpdateForumAction($communityTopicId, $forumId)
     {
         $communityTopic = $this->getTopic($communityTopicId);
-        $channel        = $this->em->find(CommunityChannel::class, $channelId);
-        $communityTopic->setChannel($channel);
+        $forum        = $this->em->find(CommunityForum::class, $forumId);
+        $communityTopic->setForum($forum);
 
         $this->em->transactional(
             function ($em) use ($communityTopic) {
@@ -663,11 +663,11 @@ class CommunityTopicsController extends AbstractController
 
                 break;
 
-            case 'channel':
-                $channel = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('channel_id'));
-                if ($cat) {
-                    $communityTopic['channel'] = $channel;
-                    $data['channel_id']        = $channel['id'];
+            case 'forum':
+                $forum = $this->em->find('DeskPRO:CommunityForum', $this->in->getUInt('forum_id'));
+                if ($forum) {
+                    $communityTopic['forum'] = $forum;
+                    $data['forum_id']        = $forum['id'];
                 }
                 break;
         }
@@ -823,7 +823,7 @@ class CommunityTopicsController extends AbstractController
     //###########################################################################
 
     /**
-     * Any general search. For example, status, channel or label.
+     * Any general search. For example, status, forum or label.
      *
      * @return Response
      */
@@ -839,23 +839,23 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * A shortcut to run a filter on a channel.
+     * A shortcut to run a filter on a forum.
      *
-     * @param int $channelId
-     *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
-     * @throws \Doctrine\ORM\ORMException
+     * @param int $forumId
      *
      * @return Response
+     *@throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Doctrine\ORM\ORMException
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function channelsListAction($channelId)
+    public function forumsListAction($forumId)
     {
         $topResultHelper = CommunityTopicResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
-                    'channel' => ['type' => 'channel', 'op' => 'is', 'channel' => $channelId],
+                    'forum' => ['type' => 'forum', 'op' => 'is', 'forum' => $forumId],
                     'status'  => ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
                 ],
             ]
@@ -866,7 +866,7 @@ class CommunityTopicsController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
-                        'channel' => ['type' => 'channel', 'op' => 'is', 'channel' => $channelId],
+                        'forum' => ['type' => 'forum', 'op' => 'is', 'forum' => $forumId],
                         'status'  => ['type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')],
                     ],
                 ]
@@ -875,15 +875,15 @@ class CommunityTopicsController extends AbstractController
             $resultHelper = $topResultHelper;
         }
 
-        $channel = $this->em->find('DeskPRO:CommunityChannel', $channelId);
+        $forum = $this->em->find('DeskPRO:CommunityForum', $forumId);
 
         $grouping = new GroupingCounter();
         $grouping->setGrouping('status')->setIds($topResultHelper->getTopicIds());
         $grouped      = $grouping->getDisplayArray();
         $grouped_info = [];
 
-        if (!$channel->parent) {
-            $grouped_key = $channel->getId();
+        if (!$forum->parent) {
+            $grouped_key = $forum->getId();
 
             $t = 0;
             if (isset($grouped['items'][$grouped_key])) {
@@ -893,9 +893,9 @@ class CommunityTopicsController extends AbstractController
 
             $grouped_info[-1] = ['id' => -1, 'title' => 'TOTAL', 'total' => $t];
         } else {
-            $grouped_key = $channel->getId();
+            $grouped_key = $forum->getId();
             $t           = 0;
-            foreach ($channel->children as $c) {
+            foreach ($forum->children as $c) {
                 $k = $c['id'];
                 if (isset($grouped['items'][$k])) {
                     $grouped_info = Arrays::mergeAssoc($grouped_info, [$k => $grouped['items'][$k]]);
@@ -910,10 +910,10 @@ class CommunityTopicsController extends AbstractController
             $resultHelper,
             null,
             [
-                'list_type'    => 'channel',
-                'brand_id'     => $channel->getBrand() ? $channel->getBrand()->getId() : null,
-                'channel_id'   => $channelId,
-                'page_title'   => $channel->getFullTitle(),
+                'list_type'    => 'forum',
+                'brand_id'     => $forum->getBrand() ? $forum->getBrand()->getId() : null,
+                'forum_id'     => $forumId,
+                'page_title'   => $forum->getFullTitle(),
                 'grouped'      => $grouped,
                 'grouped_info' => $grouped_info,
                 'grouped_key'  => $grouped_key,
@@ -999,10 +999,10 @@ class CommunityTopicsController extends AbstractController
                     'specific_terms' => [
                         'brand'   => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
                         'status'  => ['type' => 'status', 'op' => 'is', 'status' => $status],
-                        'channel' => [
-                            'type'    => 'channel',
+                        'forum' => [
+                            'type'    => 'forum',
                             'op'      => 'is',
-                            'channel' => $this->in->getString('subgroup'),
+                            'forum'   => $this->in->getString('subgroup'),
                         ],
                     ],
                 ]
@@ -1012,7 +1012,7 @@ class CommunityTopicsController extends AbstractController
         }
 
         $grouping = new GroupingCounter();
-        $grouping->setGrouping('channel_id');
+        $grouping->setGrouping('forum_id');
         $grouping->setIds($topResultHelper->getTopicIds());
         $grouped = $grouping->getDisplayArray();
 
@@ -1054,22 +1054,22 @@ class CommunityTopicsController extends AbstractController
 
         $brandId = isset($templateVars['brand_id']) ? $templateVars['brand_id'] : null;
 
-        /** @var CommunityChannelRepository $CommunityChannelRepository */
+        /** @var CommunityForumRepository $CommunityChannelRepository */
         /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
-        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityForum::class);
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
         // Options for the filter form
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($brandId);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($brandId);
-        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($channel) use ($brandId) {
-            return $channel['brand_id'] === $brandId;
+        $communityForums      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($forum) use ($brandId) {
+            return $forum['brand_id'] === $brandId;
         });
 
         $displayFields = $this->person->getPref('agent.ui.community-filter-display-fields.0')
             ?: [
                 'date_created',
-                'channel',
+                'forum',
             ];
         $userCatField = $this->container->getSystemService('CommunityFieldsManager')->getUserCategoryField();
 
@@ -1095,7 +1095,7 @@ class CommunityTopicsController extends AbstractController
                     'criteria'           => $result_cache['criteria'],
                     'user_cat_field'     => $userCatField,
                     'cur_page'           => $page,
-                    'community_channels' => $communityChannels,
+                    'community_forums'   => $communityForums,
                     'active_status_cats' => $activeStatusCategories,
                     'closed_status_cats' => $closedStatusCategories,
                     'display_fields'     => $displayFields,
@@ -1229,10 +1229,10 @@ class CommunityTopicsController extends AbstractController
                     $communityTopic->setStatusCode($this->in->getString('status'));
                     break;
 
-                case 'set-channel':
-                    $channel = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUInt('channel_id'));
-                    if ($channel) {
-                        $communityTopic->setChannel($channel);
+                case 'set-forum':
+                    $forum = $this->em->find('DeskPRO:CommunityForum', $this->in->getUInt('forum_id'));
+                    if ($forum) {
+                        $communityTopic->setForum($forum);
                     }
                     break;
             }
@@ -1327,16 +1327,16 @@ class CommunityTopicsController extends AbstractController
         }
 
         /** @var PersonPrefRepository $personPrefRepository */
-        /* @var CommunityChannelRepository $CommunityChannelRepository */
+        /* @var CommunityForumRepository $CommunityChannelRepository */
         /* @var CommunityTopicStatusCategoryRepository $communityTopicStatusCategoryRepository */
         $personPrefRepository                   = $this->em->getRepository(PersonPref::class);
-        $CommunityChannelRepository             = $this->em->getRepository(CommunityChannel::class);
+        $CommunityChannelRepository             = $this->em->getRepository(CommunityForum::class);
         $communityTopicStatusCategoryRepository = $this->em->getRepository(CommunityTopicStatusCategory::class);
 
         $activeStatusCategories = $communityTopicStatusCategoryRepository->getActiveCategories($selectedBrandId);
         $closedStatusCategories = $communityTopicStatusCategoryRepository->getClosedCategories($selectedBrandId);
-        $communityChannels      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($channel) use ($selectedBrandId) {
-            return $channel['brand_id'] === $selectedBrandId;
+        $communityForums      = array_filter($CommunityChannelRepository->getFlatHierarchy(), function ($forum) use ($selectedBrandId) {
+            return $forum['brand_id'] === $selectedBrandId;
         });
 
         /** @var Brand[] $brands */
@@ -1350,7 +1350,7 @@ class CommunityTopicsController extends AbstractController
                 'message'            => $message,
                 'topic_person'       => $communityTopiPerson,
                 'attachments'        => $attachments,
-                'community_channels' => $communityChannels,
+                'community_forums'   => $communityForums,
                 'active_status_cats' => $activeStatusCategories,
                 'closed_status_cats' => $closedStatusCategories,
                 'state'              => $state,

@@ -119,16 +119,16 @@ class DeskproTemplate extends Template
 
     private function linkLi($class, $href, $text)
     {
-        $liClass = $class ? sprintf(' class="%s"', $class) : '';
+        $liClass = $class ? sprintf(' class="page-item %s"', $class) : ' class="page-item"';
 
         $href = $this->removeQueryParams($href, ['lang_url_code', 'brand_id', 'theme_set_id']);
 
-        return sprintf('<li%s><a href="%s">%s</a></li>', $liClass, $href, $text);
+        return sprintf('<li%s><a class="page-link" href="%s">%s</a></li>', $liClass, $href, $text);
     }
 
     private function spanLi($class, $text)
     {
-        $liClass = $class ? sprintf(' class="%s"', $class) : '';
+        $liClass = $class ? sprintf(' class="page-item %s"', $class) : ' class="page-item"';
 
         return sprintf('<li%s><span>%s</span></li>', $liClass, $text);
     }

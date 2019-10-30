@@ -14,7 +14,7 @@ class GroupingCounter
     /** @var string */
     protected $grouping1 = 'status';
     /** @var string */
-    protected $grouping2 = 'channel_id';
+    protected $grouping2 = 'forum_id';
     /** @var int|null */
     protected $this_person_id = null;
     /** @var array */
@@ -123,8 +123,8 @@ class GroupingCounter
         };
 
         switch ($this->grouping1) {
-            case 'channel_id':
-                $group1_structure = App::getEntityRepository('DeskPRO:CommunityChannel')->getFullNames();
+            case 'forum_id':
+                $group1_structure = App::getEntityRepository('DeskPRO:CommunityForum')->getFullNames();
                 break;
 
             case 'status':
@@ -140,8 +140,8 @@ class GroupingCounter
 
         if ($this->grouping2) {
             switch ($this->grouping2) {
-                case 'channel_id':
-                    $group1_structure = App::getEntityRepository('DeskPRO:CommunityChannel')->getFullNames();
+                case 'forum_id':
+                    $group1_structure = App::getEntityRepository('DeskPRO:CommunityForum')->getFullNames();
                     break;
 
                 case 'status':
@@ -330,8 +330,8 @@ class GroupingCounter
     {
         $titles = null;
         switch ($field) {
-            case 'channel_id':
-                $titles = App::getOrm()->getRepository('DeskPRO:CommunityChannel')->getFullNames();
+            case 'forum_id':
+                $titles = App::getOrm()->getRepository('DeskPRO:CommunityForum')->getFullNames();
                 Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
                 break;
 

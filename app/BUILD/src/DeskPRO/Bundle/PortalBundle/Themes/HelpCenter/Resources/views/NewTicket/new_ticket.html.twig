@@ -1,0 +1,40 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-ticket-create">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-centered">
+                        {% if no_login %}
+                            {{  macros.user_notice('auth', phrase('helpcenter.account.new-ticket-no-login')) }}
+                        {% else %}
+                            {{  macros.lockout_notice(phrase('helpcenter.account.tickets-lockout'), lockout, lockout_time) }}
+                        {% endif %}
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/contact-us.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.tickets.new-section-title') }}</h2>
+                        </div>
+                        <div class="dp-po-block">
+                            {% if rerendering %}
+                                <strong>{{ phrase('helpcenter.tickets.form-changed-notice') }}</strong>
+                            {% endif %}
+
+                            {% if rerendering_saved %}
+                                <strong>{{ phrase('helpcenter.general.rerender-form') }}</strong>
+                            {% endif %}
+                            {% include 'Theme:NewTicket:new_ticket_form.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}
+{% block doc_end %}
+    <!-- DESKPRO_TICKET_DISPLAY -->
+    <script type="text/javascript">
+        {{ ticket_display_js|raw }}
+    </script>
+{% endblock doc_end %}

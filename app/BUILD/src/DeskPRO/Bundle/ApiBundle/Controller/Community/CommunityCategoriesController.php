@@ -18,17 +18,17 @@ use FOS\RestBundle\View\View;
 class CommunityCategoriesController extends BaseController
 {
     /**
-     * Fetch custom community channels list.
+     * Fetch custom community forums list.
      * Proper output coming soon.
      *
      * @ApiDoc(
      *     section="Community",
-     *     resourceDescription="Operations about custom community channels",
-     *     description="get list of custom community channels",
+     *     resourceDescription="Operations about custom community forums",
+     *     description="get list of custom community forums",
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
-     *     output="Application\DeskPRO\Entity\CommunityChannel"
+     *     output="Application\DeskPRO\Entity\CommunityForum"
      * )
      *
      * @Rest\Get("")

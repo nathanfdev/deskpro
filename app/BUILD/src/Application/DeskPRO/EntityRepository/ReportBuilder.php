@@ -270,7 +270,7 @@ class ReportBuilder extends AbstractEntityRepository
                 'community_topics' => [
                     'type'              => ['type', 'ALIAS(%s.category, \'Type\')'],
                     'status'            => ['status', 'ALIAS(%s.status_category, \'Status\')'],
-                    'channel'           => ['channel', 'ALIAS(%s.custom_data[1], \'channel\')'],
+                    'forum'             => ['forum', 'ALIAS(%s.custom_data[1], \'Forum\')'],
                     'person'            => ['person', '%s.person'],
                     'hour_created'      => ['hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'],
                     'day_week_created'  => ['day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'],

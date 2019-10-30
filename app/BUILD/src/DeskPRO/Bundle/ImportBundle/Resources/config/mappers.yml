@@ -58,8 +58,8 @@ services:
     tags:
       - { name: dp.importer.writer.mapper }
 
-  dp.importer.writer.mapper.community_channel:
-    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\CommunityChannelMapper
+  dp.importer.writer.mapper.community_forum:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\CommunityForumMapper
     arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: dp.importer.writer.mapper }

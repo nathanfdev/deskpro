@@ -24,8 +24,8 @@ adm.general.x_community_closed_statuses:
   other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
   other: '{{count}} Community Statuses'
-adm.general.x_community_channels:
-  other: '{{count}} Community Channels'
+adm.general.x_community_forums:
+  other: '{{count}} Community Forums'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'
 adm.general.x_ticket_escalations:
@@ -355,7 +355,7 @@ agent.emails.view_your_tasks: 'Xem các tác vụ của bạn'
 agent.emails.view_your_teams_tasks: 'Xem tác vụ của nhóm bạn'
 agent.emails.view_your_tweets: 'Xem tweet của bạn'
 agent.emails.your_initial_password: 'Mật khẩu ban đầu của bạn'
-agent.community.any_channel: 'Bất kỳ loại'
+agent.community.any_forum: 'Bất kỳ loại'
 agent.community.any_status: 'Bất kỳ Trạng thái'
 agent.community.count_votes:
   other: '{{display_count}} votes'
@@ -370,7 +370,7 @@ agent.community.merge_community_topics_submit: 'Hợp nhất hai bản đệ tr�
 agent.community.merge_howto: 'Mở tab thông tin phản hồi bổ sung để hợp nhất'
 agent.community.new_community_topic: 'Phản hồi mới:'
 agent.community.newest_on_top: 'Mới nhất trên đầu trang'
-agent.community.no_community_channels_error: 'Không có loại nào được xác định. Trước khi bạn có thể thêm các loại vào phần phản hồi, bạn cần phải xác định một loại từ Giao diện quản trị.'
+agent.community.no_community_forums_error: 'Không có loại nào được xác định. Trước khi bạn có thể thêm các loại vào phần phản hồi, bạn cần phải xác định một loại từ Giao diện quản trị.'
 agent.community.no_labels_explain: 'Bạn chưa dán nhãn bất kỳ phản hồi nào. Xem phản hồi gửi để thêm nhãn cho nó.'
 agent.community.oldest_on_top: 'Cũ nhất trên đầu trang'
 agent.community.popularity_least_most: 'Phổ biến (Ít nhất-Hầu hết)'

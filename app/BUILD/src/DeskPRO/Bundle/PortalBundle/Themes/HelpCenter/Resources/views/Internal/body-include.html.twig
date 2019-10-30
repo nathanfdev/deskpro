@@ -1,0 +1,26 @@
+<script type="text/javascript">
+  (function() {
+    document.body.className = document.body.className + ' with-js';
+
+    // Features that determine if 'DPUI' can be enabled for this user
+    window.WITH_DPUI =
+      Modernizr && !Modernizr.ie8compat &&
+      Modernizr.json &&
+      Modernizr.blobconstructor
+    ;
+
+    if (window.WITH_DPUI) {
+      document.body.className += ' with-dpui';
+    } else {
+      document.body.className += ' without-dpui';
+    }
+
+    if ("ontouchstart" in document.documentElement) {
+      document.body.className += ' with-touch-device';
+    } else {
+      document.body.className += ' without-touch-device';
+    }
+  })();
+</script>
+
+{% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}{{ portal_widget_loader() }}{% endif %}

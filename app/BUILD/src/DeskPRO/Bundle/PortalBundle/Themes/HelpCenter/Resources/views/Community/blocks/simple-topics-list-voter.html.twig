@@ -1,0 +1,11 @@
+<ul class="dp-po-community-featured-list">
+    {% for topic in topics %}
+        <li class="dp-po-community-featured-item">
+            {% include "Theme:Community:CommunityTopicsList/like-button.html.twig" with {
+                topic: topic,
+                is_compact: true
+            } %}
+            <a class="dp-po-community-featured-link" href="{{ portal_path(topic) }}">{{ topic.title }}</a>
+        </li>
+    {% endfor %}
+</ul>

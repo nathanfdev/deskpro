@@ -4017,7 +4017,9 @@ class TicketController extends AbstractController
                 '
             )->setParameters([$ticket, $new_person])->setMaxResults(1)->getOneOrNullResult();
             if ($part) {
+                $ticket->removeParticipant($part);
                 $this->em->remove($part);
+                $this->em->flush();
             }
         }
 

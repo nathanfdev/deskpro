@@ -38,8 +38,8 @@ class CommunityTopicsController extends AbstractController
     public function searchAction()
     {
         $search_map = [
-            'channel_id'          => CommunitySearch::TERM_CHANNEL,
-            'channel_id_specific' => CommunitySearch::TERM_CHANNEL_SPECIFIC,
+            'forum_id'          => CommunitySearch::TERM_FORUM,
+            'forum_id_specific' => CommunitySearch::TERM_FORUM_SPECIFIC,
             'label'               => CommunitySearch::TERM_LABEL,
             'status'              => CommunitySearch::TERM_STATUS,
             'status_category_id'  => CommunitySearch::TERM_STATUS_CATEGORY,
@@ -137,7 +137,7 @@ class CommunityTopicsController extends AbstractController
             $communityTopic->setStatusCode($status);
         }
 
-        $cat = $this->em->find('DeskPRO:CommunityChannel', $this->in->getUint('category_id'));
+        $cat = $this->em->find('DeskPRO:CommunityForum', $this->in->getUint('category_id'));
         if ($cat) {
             $communityTopic->category = $cat;
         }
@@ -227,7 +227,7 @@ class CommunityTopicsController extends AbstractController
 
         $category_id = $this->in->getUint('category_id');
         if ($category_id) {
-            $cat = $this->em->find('DeskPRO:CommunityChannel', $category_id);
+            $cat = $this->em->find('DeskPRO:CommunityForum', $category_id);
             if ($cat) {
                 $communityTopic->category = $cat;
             }
@@ -676,11 +676,11 @@ class CommunityTopicsController extends AbstractController
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getChannelsAction()
+    public function getForumsAction()
     {
-        $channels = $this->em->getRepository('DeskPRO:CommunityChannel')->getFlatHierarchy();
+        $forums = $this->em->getRepository('DeskPRO:CommunityForum')->getFlatHierarchy();
 
-        return $this->createApiResponse(['categories' => $channels]);
+        return $this->createApiResponse(['categories' => $forums]);
     }
 
     /**
@@ -696,7 +696,7 @@ class CommunityTopicsController extends AbstractController
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function getCustomChannelsAction()
+    public function getCustomForumsAction()
     {
         $field    = $this->_getCommunityCategoryField();
         $children = $field->getAllChildren();

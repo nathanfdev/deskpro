@@ -13,7 +13,7 @@ use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\CodePlugin\CodePlugin;
 use DpSys\CodePlugin\DpPlugins;
 use DpSys\LowError\SystemErrorHandler;
-use Leafo\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Exception\ParserException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\RouterInterface;
 

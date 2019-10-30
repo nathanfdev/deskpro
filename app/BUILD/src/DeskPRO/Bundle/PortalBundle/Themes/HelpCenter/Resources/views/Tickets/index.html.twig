@@ -1,0 +1,450 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% if type == 'own' %}
+    {% set page_title = phrase('helpcenter.tickets.my-tickets') %}
+{% else %}
+    {% set page_title = phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) %}
+{% endif %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main dp-po-tickets-home" id="hc_ticket_list_page">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ page_title }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary mb-4">{{ phrase('helpcenter.tickets.submit-a-ticket') }}</a>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="dp-po-ticket-sidebar">
+
+                            <div class="dp-po-ticket-pages">
+                                <ul class="dp-po-ticket-pages-list">
+                                    <li class="dp-po-ticket-pages-item{% if type == 'own' %} active{% endif %}">
+                                        <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                        </a>
+                                    </li>
+{#                                    <li class="dp-po-ticket-pages-item{% if type == 'cc' %} active{% endif %}">#}
+{#                                        <a href="{{ path('portal_tickets', {type: 'cc'}) }}" class="dp-po-ticket-pages-link">#}
+{#                                            <i class="dp-po-icon fal fa-closed-captioning"></i> {{ phrase('helpcenter.tickets.tickets-i-m-cc-on') }}#}
+{#                                        </a>#}
+{#                                    </li>#}
+                                    {% if person.organization and person.organization_manager %}
+                                    <li class="dp-po-ticket-pages-item{% if type == 'organization' %} active{% endif %}">
+                                        <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="dp-po-ticket-pages-item">
+                                        <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
+                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my-chats') }}
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+{#                            <div class="dp-po-ticket-filter">#}
+{#                                <div class="row mb-4">#}
+{#                                    <div class="col-sm-6">#}
+{#                                        <h4 class="dp-po-ticket-filter-title">{{ phrase('helpcenter.tickets.filter-by') }}</h4>#}
+{#                                    </div>#}
+{#                                    <div class="col-sm-6 text-right">#}
+{#                                        <a href="" class="dp-po-ticket-filter-clearall">{{ phrase('helpcenter.general.clear-all') }}</a>#}
+{#                                    </div>#}
+{#                                </div>#}
+
+{#                                <ul class="dp-po-ticket-filter-list">#}
+
+{#                                    <li class="dp-po-ticket-filter-item">#}
+{#                                        <div class="form-group dp-po-form-check">#}
+{#                                            <input type="checkbox" class="form-check-input" id="departmentCheck" checked>#}
+{#                                            <label class="form-check-label" for="departmentCheck">Department</label>#}
+{#                                        </div>#}
+{#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample" role="button"#}
+{#                                           aria-expanded="false" aria-controls="collapseExample">#}
+{#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
+{#                                        </a>#}
+{#                                        <div class="collapse show" id="collapseExample">#}
+{#                                            <ul class="dp-po-ticket-filter-list">#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="supportCheck">#}
+{#                                                        <label class="form-check-label" for="supportCheck">Support</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="hrCheck">#}
+{#                                                        <label class="form-check-label" for="hrCheck">HR</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="rndCheck" checked>#}
+{#                                                        <label class="form-check-label" for="rndCheck">R&D</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="salesCheck">#}
+{#                                                        <label class="form-check-label" for="salesCheck">Sales</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="customerCheck">#}
+{#                                                        <label class="form-check-label" for="customerCheck">Customer Success</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                            </ul>#}
+{#                                        </div>#}
+
+{#                                    </li>#}
+
+{#                                    <li class="dp-po-ticket-filter-item">#}
+{#                                        <div class="form-group dp-po-form-check">#}
+{#                                            <input type="checkbox" class="form-check-input" id="userCheck">#}
+{#                                            <label class="form-check-label" for="userCheck">User</label>#}
+{#                                        </div>#}
+{#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample1"#}
+{#                                           role="button" aria-expanded="false" aria-controls="collapseExample1">#}
+{#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
+{#                                        </a>#}
+{#                                        <div class="collapse show" id="collapseExample1">#}
+{#                                            <ul class="dp-po-ticket-filter-list">#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="user1">#}
+{#                                                        <label class="form-check-label" for="user1"><img#}
+{#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Jonathan Jones</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="user2">#}
+{#                                                        <label class="form-check-label" for="user2"><img#}
+{#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Wendy Pride</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="user3" checked>#}
+{#                                                        <label class="form-check-label" for="user3"><img#}
+{#                                                                    src="{{ asset('img/docs/avatar.png', 'help_center') }}"> Elaine#}
+{#                                                            Fredericks</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                            </ul>#}
+{#                                        </div>#}
+{#                                    </li>#}
+
+{#                                    <li class="dp-po-ticket-filter-item">#}
+{#                                        <div class="form-group dp-po-form-check">#}
+{#                                            <input type="checkbox" class="form-check-input" id="activityCheck" checked>#}
+{#                                            <label class="form-check-label" for="activityCheck">{{ phrase('helpcenter.tickets.last-activity') }}</label>#}
+{#                                        </div>#}
+{#                                        <a class="dp-po-ticket-filter-collapse" data-toggle="collapse" href="#collapseExample2"#}
+{#                                           role="button" aria-expanded="false" aria-controls="collapseExample">#}
+{#                                            <i class="dp-po-icon far fa-angle-down"></i>#}
+{#                                        </a>#}
+{#                                        <div class="collapse show" id="collapseExample2">#}
+{#                                            <ul class="dp-po-ticket-filter-list">#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="lasthour" checked>#}
+{#                                                        <label class="form-check-label" for="lasthour">Last 24 hours</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="lastweek" checked>#}
+{#                                                        <label class="form-check-label" for="lastweek">Last week</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="lastmonth" checked>#}
+{#                                                        <label class="form-check-label" for="lastmonth">Last month</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="6months">#}
+{#                                                        <label class="form-check-label" for="6months">Last 6 month</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="lastyear">#}
+{#                                                        <label class="form-check-label" for="lastyear">Last year</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                                <li class="dp-po-ticket-filter-item">#}
+{#                                                    <div class="form-group dp-po-form-check">#}
+{#                                                        <input type="checkbox" class="form-check-input" id="moreyear">#}
+{#                                                        <label class="form-check-label" for="moreyear">More than 1 year</label>#}
+{#                                                    </div>#}
+{#                                                </li>#}
+{#                                            </ul>#}
+{#                                        </div>#}
+{#                                    </li>#}
+
+{#                                </ul>#}
+{#                            </div>#}
+                        </div>
+                    </div>
+                    <div class="col-sm-9">
+                        <div class="dp-po-section dp-po-block">
+                            {% set search_displayed = false %}
+                            {% for table in ticket_list_tables %}
+                                {% if table.pager|length > 0 %}
+                                    {% set displayed_at_least_one_table = true %}
+                                    {% if table.ticketCategory == 'awaiting_agent' %}
+                                        {% set table_type = 'neutral' %}
+                                    {% elseif table.ticketCategory == 'resolved'%}
+                                        {% set table_type = 'success' %}
+                                    {% else %}
+                                        {% set table_type = 'danger' %}
+                                    {% endif %}
+                                    {{ _self.tickets_table(table, loop.index0, table_type, not search_displayed, search_query) }}
+                                    {% set search_displayed = true %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{%- macro sort_link(ticket_table, label, sort_value) -%}
+    {% set sort = ticket_table.ticketFilter.sort %}
+    {% set sort_param = ticket_table.sortName %}
+    {% set sort_dir = ticket_table.ticketFilter.sortDirection %}
+    {% set sort_dir_param = ticket_table.sortDirectionName %}
+
+    {% set queryParams = app.request.query.all|merge({(sort_param):sort_value}) %}
+    {% set isActive = sort_value == sort %}
+    {% if isActive %}
+        {% set linkDir = sort_dir == 'desc' ? 'asc' : 'desc' %}
+    {% else %}
+        {% set linkDir = 'desc' %}
+    {% endif %}
+    {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir, type: ticket_table.getTicketType()}) %}
+    {% set url = path(app.request.attributes.get('_route'), queryParams) %}
+    {% set sort_icon = sort_dir == 'desc' ? '<i
+        class="dp-po-icon far fa-long-arrow-up"></i>' : '<i
+        class="dp-po-icon far fa-long-arrow-down"></i>' %}
+    {{ label }}<a href="{{ url }}">{% if isActive %}<span>{{ sort_icon|raw }}</span>{% else %}<i
+        class="dp-po-icon far fa-arrows-v"></i>{% endif %}</a>
+{%- endmacro -%}
+
+{%- macro col_header(ticket_table, col) -%}
+    {% if col.id == 'department_subject' %}
+        {{ _self.sort_link(
+        ticket_table,
+        phrase('helpcenter.tickets.list_department'),
+        'department'
+        ) }}
+        /
+        {{ _self.sort_link(
+        ticket_table,
+        phrase('helpcenter.tickets.list_subject'),
+        'subject'
+        ) }}
+    {% else %}
+        {% set make_link = true %}
+        {% if col.id == 'agent' %}
+            {% set label = phrase('helpcenter.tickets.list_agent' ) %}
+        {% elseif col.id == 'department' %}
+            {% set label = phrase('helpcenter.tickets.list_department') %}
+        {% elseif col.id == 'subject' %}
+            {% set label = phrase('helpcenter.tickets.list_subject') %}
+        {% elseif col.id == 'user' %}
+            {% set label = phrase('helpcenter.tickets.list_user') %}
+        {% elseif col.id == 'date_activity' %}
+            {% set label = phrase('helpcenter.tickets.list_last_action') %}
+        {% elseif col.id == 'date_created' %}
+            {% set label = phrase('helpcenter.tickets.list_date_created') %}
+        {% elseif col.id == 'date_user' %}
+            {% set label = phrase('helpcenter.tickets.list_date_last_user') %}
+        {% elseif col.id == 'date_agent' %}
+            {% set label = phrase('helpcenter.tickets.list_date_last_agent') %}
+        {% else  %}
+            {% set label = col.label %}
+            {% set make_link = false %}
+        {% endif %}
+        {% if make_link %}
+            {{ _self.sort_link(
+            ticket_table,
+            label,
+            col.id
+            ) }}
+        {% else %}
+            {{ label }}
+        {% endif %}
+    {% endif %}
+{%- endmacro -%}
+
+{%- macro col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) -%}
+    {% if col.id == 'department_subject' %}
+        <span class="focus">[{{ ticket.department_or_default.user_title }}]</span>
+        {{ ticket.subject }}
+    {% elseif col.id == 'agent' %}
+        {% if ticket.agent %}
+
+            <span class="person">{{ ticket.agent.display_name_user }}</span>
+        {% endif %}
+    {% elseif col.id == 'department' %}
+        {{ ticket.department_or_default.user_title }}
+    {% elseif col.id == 'subject' %}
+        {{ ticket.subject }}
+    {% elseif col.id == 'user' %}
+        {% if ticket.person %}
+            <span class="person">{{ ticket.person.display_name_user }}</span>
+        {% endif %}
+    {% elseif col.id == 'date_activity' %}
+        <span class="date">{{ date_ago(ticket.last_activity_date) }}</span>
+    {% elseif col.id == 'date_created' %}
+        <span class="date">{{ ticket.date_created|date }}</span>
+    {% elseif col.id == 'date_user' %}
+        {% if ticket.date_last_user_reply %}
+            {% if ticket.person %}
+                <img src="{{ avatar_url(ticket.person) }}" class="avatar">
+                <span class="person">{{ ticket.person.display_name_user }}</span>
+            {% endif %}
+            <span class="date">{{ ticket.date_last_user_reply|date }}</span>
+        {% endif %}
+    {% elseif col.id == 'date_agent' %}
+        {% if ticket.date_last_agent_reply %}
+            {% if ticket.agent %}
+                <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                <span class="person">{{ ticket.agent.display_name_user }}</span>
+            {% endif %}
+            <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
+        {% endif %}
+    {% else  %}
+        {% set property = ticket_view.getProperty(col.id) %}
+        {% if property and property.isVisible() %}
+            {% if property.value is iterable %}
+                {% for item in property.value %}
+                    <div>
+                        {% if col.widgetType == 'file' %}
+                            <a href="{{ item.downloadUrl }}{{ item.is_image ? '' : '?dl=1' }}" target="_blank">
+                                {{ content_icon(item) }}
+                                {{ item.filename }}
+                                ({{ item.readableFilesize }})
+                            </a>
+                        {% else %}
+                            {{ item }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                {{ property.value }}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{%- endmacro -%}
+
+{%- macro col_td_class(ticket, ticket_view, ticket_table, col) -%}
+    {%- if col.id in ['department_subject'] -%}
+    {%- elseif col.id in ['department'] -%}
+        info-block centered small
+    {%- elseif col.id in ['subject'] -%}
+        info-block left long
+    {%- else -%}
+        info-block
+    {%- endif -%}
+{%- endmacro -%}
+
+{% macro tickets_table(ticket_table, id, type, with_search, search_query) %}
+    {% if ticket_table.pager|length > 0 %}
+        {% if with_search %}
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+                        <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <form class="dp-po-ticket-search" method="get">
+                        <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}"></input>
+                        <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                    </form>
+                </div>
+                <div class="col-sm-1 text-right">
+                    <div class="dp-po-columnfilter">
+                        <a href="javascript:void(0)" class="dp-po-columnfilter-link">
+                            <i class="dp-po-icon far fa-ballot-check"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+                <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
+            </div>
+        {% endif %}
+
+        <div class="dp-po-table dp-po-table-col6 dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
+            <div class="dp-po-table-row dp-po-table-row-head">
+                <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
+                <span class="dp-po-table-cell">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</span>
+                {% for col in ticket_table.columns %}
+                    <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
+                        {{ _self.col_header(ticket_table, col) }}
+                    </span>
+                {% endfor %}
+            </div>
+            {% for ticket in ticket_table.pager %}
+                {% set ticket_view = ticket_view(ticket) %}
+                {% set ticket_exceprpt = ticket_exceprpts[ticket.id] is defined ? ticket_exceprpts[ticket.id] : null %}
+                <div class="dp-po-table-row">
+                    <span class="dp-po-table-cell dp-po-table-cell-indicator"><i class="dp-po-icon fas fa-circle"></i></span>
+                    <span class="dp-po-table-cell">
+                        <a href="{{ portal_path(ticket) }}" class="dp-po-table-cell-link">{{ ticket_public_id(ticket) }}</a>
+                    </span>
+                    {% for col in ticket_table.columns %}
+                        <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
+                            <a href="" class="dp-po-table-cell-link">{{ _self.col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) }}</a>
+                        </span>
+                    {% endfor %}
+{#                                <span class="dp-po-table-cell dp-po-table-cell-ratingwrap">#}
+{#                                    <div class="dp-po-table-cell-rating">#}
+{#                                        <img class="dp-po-table-cell-rating-img" src="/portal-components/portal-style/static/img/docs/avatar.png">#}
+{#                                        <!--<i class="dp-po-icon fal fa-smile"></i>-->#}
+{#                                        <i class="dp-po-icon fal fa-frown"></i>#}
+{#                                        <!--<i class="dp-po-icon fal fa-meh"></i>-->#}
+{#                                    </div>#}
+{#                                    <a href="" class="dp-po-table-cell-rating-link">Add</a>#}
+{#                                </span>#}
+                </div>
+            {% endfor %}
+        </div>
+        {% include 'Theme:Common:pager.html.twig' with {
+            pager: ticket_table.pager,
+            pager_options: { pageParameter: '['~ticket_table.pageName~']' }
+        } %}
+    {% endif %}
+{% endmacro %}
+
+{% endblock page_content %}
+{% block doc_end %}
+    <!-- DESKPRO_TICKET_DISPLAY -->
+    <script type="text/javascript">
+        {{ ticket_list_js|raw }}
+    </script>
+{% endblock doc_end %}

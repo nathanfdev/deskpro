@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
-		this._initChannelSection();
+		this._initForumSection();
     this._initUserSection();
 		this._initTitleSection();
 		this._initContentSection();
@@ -40,7 +40,7 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 		this.ownObject(this.stateSaver);
 
     $('#new_topic_brand_id').on('change', function() {
-      self.updateChannels();
+      self.updateForums();
       self.updateStatusCategories();
     });
 
@@ -130,33 +130,33 @@ DeskPRO.Agent.PageFragment.Page.NewCommunityTopic = new Orb.Class({
 	},
 
 	//#################################################################
-	//# Channels section
+	//# Forums section
 	//#################################################################
 
-	_initChannelSection: function() {
+	_initForumSection: function() {
 		var self = this;
 
 		this.getEl('chan').on('change', function() {
 			if (parseInt($(this).val())) {
-				self.getEl('chan_section').addClass('done');
+				self.getEl('forum_section').addClass('done');
 			} else {
-				self.getEl('chan_section').removeClass('done');
+				self.getEl('forum_section').removeClass('done');
 			}
 		});
 	},
 
-  updateChannels: function() {
+  updateForums: function() {
     var brand_select = $('#new_topic_brand_id');
     var brand_id = brand_select.val();
-    var channels_select = $(brand_select.parents('.cat-section')[0]).find('select.channel_id');
+    var forums_select = $(brand_select.parents('.cat-section')[0]).find('select.forum_id');
     $.ajax({
-      url: BASE_URL + 'agent/community/channels/brand/'+brand_id,
+      url: BASE_URL + 'agent/community/forums/brand/'+brand_id,
       type: 'GET',
       context: this,
       success: function(result) {
-        channels_select.children().remove();
-        channels_select.append($(result).find('option'));
-        channels_select.select2("val", '');
+        forums_select.children().remove();
+        forums_select.append($(result).find('option'));
+        forums_select.select2("val", '');
       }
     });
   },

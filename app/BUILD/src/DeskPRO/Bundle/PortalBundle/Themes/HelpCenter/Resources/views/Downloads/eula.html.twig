@@ -1,0 +1,34 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block page_content %}
+<div class="dp-po">
+    <main class="dp-po-main dp-po-download-eula">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-7 col-centered">
+                    <div class="dp-po-title">
+                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.general.eula') }}</h1>
+                    </div>
+                    <div class="dp-po-block">
+                        <div class="dp-po-download-terms">
+                            {% if eula_format == 'html' %}
+                                {{ eula_text|raw }}
+                            {% else %}
+                                <pre>{{ eula_text|escape }}</pre>
+                            {% endif %}
+                        </div>
+                        {% if for_download %}
+                        <div class="text-center">
+                            <form method="POST" action="{{ path('portal_downloads_eula', {'id': field.id, 'for_download': for_download}) }}">
+                                <button class="btn btn-primary" type="submit">{{ phrase('helpcenter.general.agree') }}</button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock page_content %}

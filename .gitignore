@@ -99,6 +99,7 @@ bin/deskpro-importer-tools
 /app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Base/Resources/templates_map_cache.php
 /app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Sidebar/Resources/templates_map_cache.php
 /app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/Standard/Resources/templates_map_cache.php
+/app/BUILD/src/DeskPRO/Bundle/PortalBundle/Themes/HelpCenter/Resources/templates_map_cache.php
 
 # tests
 /app/BUILD/tests/config/config.all.php
@@ -106,6 +107,7 @@ bin/deskpro-importer-tools
 
 # Dev
 /www/assets/BUILD/web/sassdoc/vars.json
+/www/assets/BUILD/web/sassdoc/helpcenter_vars.json
 /www/assets/BUILD/web/build
 /www/assets/BUILD/web/compiled
 /www/assets/BUILD/web/app/build/*/build.js
@@ -227,6 +229,7 @@ data/encryption-key.bin.*
 /data/importer.pid
 
 web/sassdoc/vars.json
+web/sassdoc/helpcenter_vars.json
 /web/build
 /web/app/build/*/build.js
 /web/stylesheets/agent

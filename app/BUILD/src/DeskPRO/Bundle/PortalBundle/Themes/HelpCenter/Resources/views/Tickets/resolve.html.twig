@@ -1,0 +1,20 @@
+{% extends 'Theme:Tickets:base_view.html.twig' %}
+
+{% block page_sidebar %}
+{% endblock %}
+
+{% block close_ticket %}
+{% endblock %}
+
+{% block page_specific_content %}
+    <div class="dp-po-block">
+        <article class="ticket-info">
+            <form method="post" novalidate>
+                <p>{{ phrase('helpcenter.tickets.resolve_ticket_explain') }}</p>
+                <br />
+                <button class="btn btn-primary">{{ phrase('helpcenter.tickets.resolve_my_ticket_btn') }}</button>
+                <a class="btn btn-outline-secondary" href="{{ portal_path(ticket) }}">{{ phrase('helpcenter.general.btn-cancel') }}</a>
+            </form>
+        </article>
+    </div>
+{% endblock %}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% include 'Theme:Internal:head-include.html.twig' %}
+    <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
+    <link href="{{ asset('DeskPRO_PortalBundle_helpcenter_vendors_style.css', 'app_assets') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('style.css', 'help_center') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ helpcenter_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+</head>
+<body class="dp-Template {% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' and portal_mode() != 'focus-window' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
+{% include 'Theme:Internal:custom-header.html.twig' %}
+{% include 'Theme:Internal:body-include.html.twig' %}
+
+<div>
+    {% block page_header %}
+        {% include 'Theme:Portal:Header/top-bar.html.twig' %}
+        {% include 'Theme:Portal:Header/search-hero.html.twig' %}
+        {% include 'Theme:Portal:Header/breadcrumbs.html.twig' %}
+    {% endblock %}
+
+    {% block page %}
+        {% include 'Theme:Common:alerts.html.twig' with { alerts: pageData.alerts } %}
+        {% include 'Theme:Common:flashes.html.twig' with { flashes: pageData.flashes } %}
+
+        {% block page_content %}
+        <div class="dp-po">
+            <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+                <div class="container">
+                    {% if block("page_top") is defined %}
+                        {{ block("page_top") }}
+                    {% endif %}
+                    <div class="row">
+                        {% if block("page_sidebar") is defined %}
+                            <div class="col-sm-9">
+                                {{ block("page_body") }}
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="dp-po-sidebar-spacer"></div>
+                                {{ block("page_sidebar") }}
+                            </div>
+                        {% else %}
+                            <div class="dp-po-col-9 dp-po-md-12">
+                                {{ block("page_body") }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
+        {% endblock %}
+    {% endblock %}
+
+    <div class="dp-po-overlay"></div>
+
+    {% include 'Theme:Internal:custom-footer.html.twig' %}
+    {% block doc_end %}{% endblock %}
+
+    <div class="dp-po">
+        <footer class="dp-po-footer">
+            <div class="container">
+                <div class="dp-po-footer-copyright">
+                    <span class="dp-po-footer-powered">{{ phrase('helpcenter.general.software_power_by') }}</span>
+                    <a href="https://deskpro.com" class="dp-po-footer-deskpro" target="_blank"><img
+                                src="{{ asset('img/dp-logo.svg', 'help_center') }}" />
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+{% include 'Theme:Internal:foot-include.html.twig' %}
+
+<script type="text/javascript">
+  $('.dropdown-toggle').dropdown();
+  {{ portal_custom_js()|raw }}
+</script>
+
+</body>
+</html>

@@ -4,6 +4,9 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessage;
+use DeskPRO\Bundle\AppBundle\Entity\DirectMessageParticipant;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class DirectMessageThreadRepository.
@@ -16,7 +19,7 @@ class DirectMessageThreadRepository extends AbstractEntityRepository
      *
      * @return DirectMessageThread[]
      */
-    public function getForUser(Person $user, $isUnread = false, $isReturnQb = false)
+    public function getForUser(Person $user, $isUnread = false, $isReturnQb = false, $includesLatestMessage = false)
     {
         $qb = $this->createQueryBuilder('dm_thread');
         $qb->innerJoin(
@@ -31,6 +34,24 @@ class DirectMessageThreadRepository extends AbstractEntityRepository
 
         if ($isUnread) {
             $qb->andWhere('dm_part.isUnread = true');
+        }
+
+        if ($includesLatestMessage) {
+            $latestMessageDql = $this->getEntityManager()->createQueryBuilder()
+                ->select('m.messageHtml')
+                ->from(DirectMessage::class, 'm')
+                ->innerJoin('m.author', 'p')
+                ->andWhere('p.thread = dm_thread')
+                ->orderBy('m.dateCreated', 'DESC')
+                ->setMaxResults(1)
+            ;
+
+            $qb
+                ->addSelect(sprintf(
+                    'FIRST(%s) AS latestMessage',
+                    $latestMessageDql->getDQL()
+                ))
+            ;
         }
 
         if ($isReturnQb) {

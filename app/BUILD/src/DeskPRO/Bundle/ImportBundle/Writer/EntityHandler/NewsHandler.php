@@ -56,7 +56,7 @@ class NewsHandler extends AbstractEntityHandler
             ));
         } else {
             // use default category
-            $entity->setCategory($this->mappers->getNewsCategoryMapper()->getDefaultChannel());
+            $entity->setCategory($this->mappers->getNewsCategoryMapper()->getDefaultForum());
         }
 
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelNews::class);

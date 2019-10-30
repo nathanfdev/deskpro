@@ -9,7 +9,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicAttachment;
 use Application\DeskPRO\Entity\CustomDefArticle;
@@ -243,13 +243,13 @@ class MapperRegistry
     }
 
     /**
-     * Returns community channel mapper.
+     * Returns community forum mapper.
      *
-     * @return CommunityChannelMapper
+     * @return CommunityForumMapper
      */
-    public function getCommunityChannelMapper()
+    public function getCommunityForumMapper()
     {
-        return $this->getMapper(CommunityChannel::class);
+        return $this->getMapper(CommunityForum::class);
     }
 
     /**

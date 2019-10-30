@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
@@ -387,17 +387,17 @@ class HierarchyGenerator
      *
      * @return Hierarchy
      */
-    public function generateForCommunityChannels(Person $person)
+    public function generateForCommunityForums(Person $person)
     {
         $communityDataService = $this->communityDataService;
 
         return $this->generateAndCache(
             [
-                'generateForCommunityChannels',
+                'generateForCommunityForums',
                 $person,
             ],
             function () use ($communityDataService, $person) {
-                $categories = $communityDataService->getCommunityChannelsForPerson($person);
+                $categories = $communityDataService->getCommunityForumsForPerson($person);
                 $rootNodes = [];
                 foreach ($categories as $category) {
                     if ($category->getParent()) {
@@ -410,7 +410,7 @@ class HierarchyGenerator
                 $hierarchy = new Hierarchy($rootNodes, new FlatListLanguageAwareFormatter($this->languageManager));
                 $hierarchy->markOnlyLeafSelections();
 
-                $recursive = function (CommunityChannel $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
+                $recursive = function (CommunityForum $cat, HierarchyNode $parent, $depth) use (&$recursive, $hierarchy) {
                     $hierarchy->addNode($parent);
                     foreach ($cat->getChildren() as $child) {
                         $parent->addChild($childNode = new HierarchyNode($child, $depth, HierarchyGenerator::reverseDisplayOrder($child->getDisplayOrder())));

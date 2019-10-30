@@ -14,7 +14,7 @@
       <tr class="linked-community-topics">
         <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_community_topic_view', {communityTopicId: tctl.topic.id}) }}">{{ tctl.topic.id }}</a></td>
         <td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_community_topic_view', {communityTopicId: tctl.topic.id}) }}">{{ tctl.topic.title }}</a></td>
-        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tctl.topic.channel ? tctl.topic.channel.title : '' }}</td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tctl.topic.forum ? tctl.topic.forum.title : '' }}</td>
         <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tctl.topic.status_category ? tctl.topic.status_category.title : '' }}</td>
         <td width="10" style="text-align: right;">
           <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-community-topic" data-id="{{ tctl.id }}" />

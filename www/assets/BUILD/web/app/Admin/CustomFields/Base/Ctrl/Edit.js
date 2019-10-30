@@ -56,6 +56,10 @@ define([
       throw new Error('Not implemented');
     }
 
+    getBaseRouteNameParams() {
+      return {};
+    }
+
     postSave() {
     }
 
@@ -73,7 +77,7 @@ define([
         this.skipDirtyState();
 
         if (is_new) {
-          return this.$state.go(`${this.getBaseRouteName()}.gocreate`);
+          return this.$state.go(`${this.getBaseRouteName()}.gocreate`, this.getBaseRouteNameParams());
         }
       };
 

@@ -16,8 +16,10 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\UploadAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Util\LazyPropObject;
 use DeskPRO\Component\Util\RandUtils;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Util\Util;
@@ -92,7 +94,7 @@ class PortalController extends AbstractController
      */
     public function homeAction()
     {
-        $allowedCommunityChannelIds = $this->getPermissionBagForCurrentUser()->getAllowedCommunityChannelIds();
+        $allowedCommunityForumIds = $this->getPermissionBagForCurrentUser()->getAllowedCommunityForumIds();
         if (!$this->getUser() && $this->canUseNothing()) {
             return $this->redirectToRoute('portal_login');
         }
@@ -101,10 +103,50 @@ class PortalController extends AbstractController
             return $redirectToApp;
         }
 
+        $kbData = new LazyPropObject([
+            'data' => function () {
+                $category = null;
+                /** @var BrandAwareSettingsResolver $brandSettingsResolver */
+                $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
+
+                $person = $this->getCurrentPerson();
+                $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+
+                $categoryPager = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, true);
+
+                $categoryChildrenPagers = [];
+                foreach ($categoryChildren as $key => &$childCat) {
+                    $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager(
+                        $childCat,
+                        1,
+                        5,
+                        $person,
+                        true,
+                        $person->isAgent() && $brandSettingsResolver->getSetting('user.non_published_articles_on_helpcenter')
+                    );
+                    if ($categoryChildrenPagers[$childCat->getId()]->getNbResults() === 0) {
+                        unset($categoryChildrenPagers[$childCat->getId()]);
+                        unset($categoryChildren[$key]);
+                    }
+                }
+
+                return [
+                    'category'                 => $category,
+                    'category_pager'           => $categoryPager,
+                    'category_children'        => $categoryChildren,
+                    'category_children_pagers' => $categoryChildrenPagers,
+                    'articles_count'           => 3,
+                    'with_tree'                => true,
+                ];
+            },
+        ]);
+
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
-                'page_title'        => $this->createPageTitle()->homepage(),
-                'communityChannels' => $allowedCommunityChannelIds,
+                'page_title'      => $this->createPageTitle()->homepage(),
+                'helpcenter'      => $this->get('helpcenter_data_helper'),
+                'kb_data'         => $kbData,
+                'communityForums' => $allowedCommunityForumIds,
             ]
         );
     }

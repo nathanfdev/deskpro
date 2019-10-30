@@ -16,8 +16,8 @@ class CommunitySearch extends SearcherAbstract
     const TERM_BRAND            = 'brand';
     const TERM_DELETED          = 'deleted';
     const TERM_HIDDEN_STATUS    = 'hidden_status';
-    const TERM_CHANNEL          = 'channel';
-    const TERM_CHANNEL_SPECIFIC = 'channel_specific';
+    const TERM_FORUM            = 'forum';
+    const TERM_FORUM_SPECIFIC   = 'forum_specific';
     const TERM_STATUS_CATEGORY  = 'status_category';
     const TERM_NUM_RATINGS      = 'num_ratings';
     const TERM_DATE_CREATED     = 'date_created';
@@ -82,14 +82,14 @@ class CommunitySearch extends SearcherAbstract
 
         $where = '(community_topics.status != \'hidden\')';
 
-        $dis_ids = $this->person->PermissionsManager->CommunityChannels->getDisallowedCategories();
+        $dis_ids = $this->person->PermissionsManager->CommunityForums->getDisallowedCategories();
         if (!$dis_ids) {
             return $where;
         }
 
         $dis_ids = implode(',', $dis_ids);
 
-        return '('.$where.' AND community_topics.channel_id NOT IN('.$dis_ids.'))';
+        return '('.$where.' AND community_topics.forum_id NOT IN('.$dis_ids.'))';
     }
 
     /**
@@ -387,25 +387,25 @@ class CommunitySearch extends SearcherAbstract
                     $wheres[] = implode(' OR ', $w);
                     break;
 
-                case self::TERM_CHANNEL:
-                case self::TERM_CHANNEL_SPECIFIC:
-                    $base_ids = (array) ((is_array($choice) && isset($choice['channel'])) ? $choice['channel'] : $choice);
+                case self::TERM_FORUM:
+                case self::TERM_FORUM_SPECIFIC:
+                    $base_ids = (array) ((is_array($choice) && isset($choice['forum'])) ? $choice['forum'] : $choice);
                     $ids      = [];
 
-                    if ($term == self::TERM_CHANNEL_SPECIFIC) {
+                    if ($term == self::TERM_FORUM_SPECIFIC) {
                         $ids = $base_ids;
                     } else {
                         foreach ($base_ids as $id) {
-                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:CommunityChannel')->getIdsInTree($id, true));
+                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:CommunityForum')->getIdsInTree($id, true));
                         }
                     }
 
                     $ids = array_unique($ids);
 
-                    $wheres[] = $this->_choiceMatch('community_topics.channel_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('community_topics.forum_id', $op, $ids);
 
-                    $this->summary[] = $this->_choiceSummary('Channel', $op, $choice, function ($choice) {
-                        $titles = App::getEntityRepository('DeskPRO:CommunityChannel')->getNames((array) $choice);
+                    $this->summary[] = $this->_choiceSummary('Forum', $op, $choice, function ($choice) {
+                        $titles = App::getEntityRepository('DeskPRO:CommunityForum')->getNames((array) $choice);
 
                         return $titles;
                     });

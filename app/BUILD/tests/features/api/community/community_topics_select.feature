@@ -14,13 +14,13 @@ Feature: /community_topics endpoint
       | ctsc2 | active      | Accepted  | 0             |
       | ctsc3 | closed      | Declined  | 0             |
       | ctsc4 | closed      | Spam      | 0             |
-    And only the following "CommunityChannel" records exist:
+    And only the following "CommunityForum" records exist:
       | #   | title    | slug     |
       | cc1 | Feature  | feature  |
       | cc2 | Question | question |
       | cc3 | Garbage  | garbage  |
     And only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status | date_created | num_ratings | total_rating |
+      | #   | status_category | forum   | person  | is_reviewed | slug   | title  | content | status | date_created | num_ratings | total_rating |
       | ct1 | {ctsc1}         | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active | 2015-01-01   | 0           | 0            |
       | ct2 | {ctsc2}         | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active | 2015-02-01   | 0           | 0            |
       | ct3 | {ctsc3}         | {cc3}   | {admin} | 0           | topic3 | Topic3 | Topic3  | closed | 2015-03-01   | 0           | 0            |
@@ -81,8 +81,8 @@ Feature: /community_topics endpoint
     And the JSON node "meta.pagination" should exist
     And the JSON node "meta.pagination.total" should be equal to 4
 
-  Scenario: I GET list of community topics from one channel
-    When I send a GET request to "/api/v2/community_topics?channel=Garbage"
+  Scenario: I GET list of community topics from one forum
+    When I send a GET request to "/api/v2/community_topics?forum=Garbage"
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should exist
@@ -93,7 +93,7 @@ Feature: /community_topics endpoint
   Scenario: I GET list of community topics tagged with one label
     Given only the following custom community fields exist:
       | #     | parent  | app_id | sys_name | js_class | has_form_template | has_display_template | title   | description | handler_class                                           | options | is_user_enabled | is_enabled | display_order | default_value | is_agent_field |
-      | cdct1 |         |        | cat      |          | 0                 | 0                    | Channel | Channel     | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
+      | cdct1 |         |        | cat      |          | 0                 | 0                    | Forum   | Forum       | Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice |         | 1               | 1          | 0             |               | 1              |
       | cdct2 | {cdct1} |        |          |          | 0                 | 0                    | Windows |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct3 | {cdct1} |        |          |          | 0                 | 0                    | Mac     |             |                                                         |         | 1               | 1          | 0             |               | 1              |
       | cdct4 | {cdct1} |        |          |          | 0                 | 0                    | Linux   |             |                                                         |         | 1               | 1          | 0             |               | 1              |
@@ -226,4 +226,4 @@ Feature: /community_topics endpoint
 
     Examples:
       | order_by     | min1                       | min2                       | max1                       | max2                       |
-      | channel      | "~cc1~"                    | "~cc1~"                    | "~cc3~"                    | "~cc3~"                    |
+      | forum        | "~cc1~"                    | "~cc1~"                    | "~cc3~"                    | "~cc3~"                    |

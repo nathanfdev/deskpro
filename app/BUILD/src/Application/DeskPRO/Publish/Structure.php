@@ -8,7 +8,7 @@ namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -220,13 +220,13 @@ class Structure implements PersonContextInterface
     //###################################################################################################################
 
     /**
-     * Get all categories in proper displaying order. You can also determine hierarchy by 'depth'.
+     * Get all forums in proper displaying order. You can also determine hierarchy by 'depth'.
      *
      * @return array
      */
-    public function getCommunityChannels()
+    public function getCommunityForums()
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['all'];
@@ -235,39 +235,39 @@ class Structure implements PersonContextInterface
     /**
      * @return mixed
      */
-    public function getRootCommunityChannels()
+    public function getRootCommunityForums()
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['hierarchy'];
     }
 
     /**
-     * Get an array of all category IDs.
+     * Get an array of all forum IDs.
      *
      * @return array
      */
-    public function getCommunityChannelsIds()
+    public function getCommunityForumsIds()
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['ids'];
     }
 
     /**
-     * @param $slug
+     * @param $id
      *
      * @return
      */
-    public function getCommunityChannel($id)
+    public function getCommunityForum($id)
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         if (!isset($this->context_category_data[$ent]['all'][$id])) {
-            throw new \InvalidArgumentException("Invalid category id `$id`");
+            throw new \InvalidArgumentException("Invalid forum id `$id`");
         }
 
         return $this->context_category_data[$ent]['all'][$id];
@@ -278,9 +278,9 @@ class Structure implements PersonContextInterface
      *
      * @return bool
      */
-    public function hasCommunityChannel($id)
+    public function hasCommunityForum($id)
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         return isset($this->context_category_data[$ent]['all'][$id]);
@@ -294,9 +294,9 @@ class Structure implements PersonContextInterface
      *
      * @return array
      */
-    public function getCommunityChannelNames($sep = ' > ', $include_tops = true)
+    public function getCommunityForumNames($sep = ' > ', $include_tops = true)
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         return $this->_getFullNames([], $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
@@ -305,9 +305,9 @@ class Structure implements PersonContextInterface
     /**
      * @return \Orb\Util\HierarchyStructure
      */
-    public function getCommunityChannelHelper()
+    public function getCommunityForumHelper()
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['helper'];
@@ -331,7 +331,7 @@ class Structure implements PersonContextInterface
             $counts = $this->db->fetchAllKeyValue('
                 SELECT status, COUNT(*)
                 FROM community_topics
-                WHERE channel_id IN (?) AND hidden_status IS NULL
+                WHERE forum_id IN (?) AND hidden_status IS NULL
                 GROUP BY status
             ', [$category->getTreeIds(true)], [Connection::PARAM_INT_ARRAY]);
         } else {
@@ -379,7 +379,7 @@ class Structure implements PersonContextInterface
      */
     public function getCommunityTopicsCategoryCounts(Person $person_context = null)
     {
-        $ent = 'DeskPRO:CommunityChannel';
+        $ent = 'DeskPRO:CommunityForum';
         $id  = 'categories.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         $this->loadCategories($ent);
 
@@ -388,24 +388,24 @@ class Structure implements PersonContextInterface
         }
 
         $counts = [0 => ['popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0]];
-        foreach ($this->getCommunityChannels() as $c) {
+        foreach ($this->getCommunityForums() as $c) {
             $cat_counts = [];
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_FORUM, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_FORUM, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
             $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_FORUM, 'is', $c['id']);
             $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 
@@ -698,8 +698,8 @@ class Structure implements PersonContextInterface
     {
         if ($obj instanceof ArticleCategory) {
             return $this->getArticleCategoryHelper();
-        } elseif ($obj instanceof CommunityChannel) {
-            return $this->getCommunityChannelHelper();
+        } elseif ($obj instanceof CommunityForum) {
+            return $this->getCommunityForumHelper();
         } elseif ($obj instanceof DownloadCategory) {
             return $this->getDownloadCategoryHelper();
         } elseif ($obj instanceof NewsCategory) {
@@ -879,7 +879,7 @@ class Structure implements PersonContextInterface
             case 'DeskPRO:ArticleCategory':  $perm_manager = $this->person_context->PermissionsManager->get('ArticleCategories'); break;
             case 'DeskPRO:DownloadCategory': $perm_manager = $this->person_context->PermissionsManager->get('DownloadCategories'); break;
             case 'DeskPRO:NewsCategory':     $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories'); break;
-            case 'DeskPRO:CommunityChannel': $perm_manager = $this->person_context->PermissionsManager->get('CommunityChannels'); break;
+            case 'DeskPRO:CommunityForum': $perm_manager = $this->person_context->PermissionsManager->get('CommunityForums'); break;
         }
 
         // They're allowed to see it all
