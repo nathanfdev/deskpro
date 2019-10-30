@@ -20,7 +20,7 @@ class SimpleCheckbox extends React.Component {
     const { active, label, data } = this.props;
 
     return (
-      <div className="form-group dp-po-form-check">
+      <div className="form-group dp-po-form-check-compact">
         <input onChange={this.onClick} type="checkbox" className="form-check-input" id={data} checked={active} />
         <label className="form-check-label" htmlFor={data}>{label}</label>
       </div>

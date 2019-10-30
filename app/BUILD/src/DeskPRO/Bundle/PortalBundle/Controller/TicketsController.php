@@ -65,16 +65,25 @@ class TicketsController extends AbstractController
         }
 
         // create ticket list tables
+        if ($this->isHelpCenterTheme()) {
+            $ticketCategories =
+                [
+                    TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('helpcenter.tickets.list_status_user'),
+                    TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('helpcenter.tickets.list_status_agent'),
+                    TicketFilter::CATEGORY_RESOLVED       => $this->phrase('helpcenter.tickets.list_status_resolved'),
+                ];
+        } else {
+            $ticketCategories = $resolved_only ?
+                [
+                    TicketFilter::CATEGORY_RESOLVED => $this->phrase('portal.tickets.list_status_resolved'),
+                ]
+                :
+                [
+                    TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('portal.tickets.list_status_user'),
+                    TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('portal.tickets.list_status_agent'),
+                ];
+        }
         /* @var TicketListTable[] $tables */
-        $ticketCategories = $resolved_only ?
-            [
-                TicketFilter::CATEGORY_RESOLVED => $this->phrase('portal.tickets.list_status_resolved'),
-            ]
-            :
-            [
-                TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('portal.tickets.list_status_user'),
-                TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('portal.tickets.list_status_agent'),
-            ];
         $tables = $this->makeTicketListTables($type,  $ticketCategories, $person, $request);
 
         $ticketListJs = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
