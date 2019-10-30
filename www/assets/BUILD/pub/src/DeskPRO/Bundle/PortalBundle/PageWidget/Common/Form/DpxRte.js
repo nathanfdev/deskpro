@@ -17,10 +17,15 @@ export default class DpxRte extends PageWidget {
 
   renderWidget() {
     const $el = this.$element;
-
     const $textarea          = $el.find('textarea');
+
+    let addClass = '';
+    if ($textarea.hasClass('form-control')) {
+      addClass = 'form-control';
+    }
+
     const $inlineAttachProto = $el.find('[id$=\'ticket_message_inline_attachments\']');
-    const $rElement          = $('<div class="dp-medium-rte-wrapper as-dpui"></div>').appendTo(this.$element);
+    const $rElement          = $(`<div class="dp-medium-rte-wrapper as-dpui${addClass ? ` ${addClass}` : ''}"></div>`).appendTo(this.$element);
 
     $textarea.hide();
     const widget = this.options.isWidget;
