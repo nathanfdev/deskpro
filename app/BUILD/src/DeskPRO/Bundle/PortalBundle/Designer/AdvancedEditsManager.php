@@ -84,7 +84,7 @@ class AdvancedEditsManager
         if ($editThemeSet->getThemeId() === 'helpcenter') {
             $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_main.scss';
         } else {
-            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
+            $this->mainScssPath = $assetDir.'/main.scss';
         }
     }
 

@@ -57,7 +57,7 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
             new ThemeSet(),
             $this->edit_theme_set,
             $twig,
-            __DIR__.'/scss/main.scss'
+            __DIR__.'/scss'
         );
     }
 
