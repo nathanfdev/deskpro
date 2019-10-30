@@ -3,7 +3,7 @@
 </div>
 <div class="dp-po-profile-activity-desc">
     <a href="{{ path('portal_kb_view', {slug: activity.slug}) }}" class="dp-po-profile-activity-link">
-        {{ phrase('portal.members.activity.commented_on') }}
+        {{ phrase('helpcenter.members.activity.commented_on') }}
         <img class="dp-po-profile-activity-image" src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">
         <span>{{ activity.description|truncate(truncateDescription) }}</span>
     </a>

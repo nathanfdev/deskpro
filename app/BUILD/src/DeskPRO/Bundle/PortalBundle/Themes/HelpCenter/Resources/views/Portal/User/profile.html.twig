@@ -14,7 +14,7 @@
         <input type="hidden" name="{{ form._children.vars.full_name }}[{{ idx }}][display_order]" value="10" />
         <input type="text" name="{{ form._children.vars.full_name }}[{{ idx }}][title]" style="width: 60%;" />&nbsp;
         <button type="submit" class="dp-btn dp-btn-default" style="width: 37%;">
-            Add
+            {{ phrase('helpcenter.account.add') }}
         </button>
         {% endif %}
     {% endspaceless %}
@@ -26,7 +26,7 @@
         <div class="container">
             <div class="dp-po-title">
                 <img src="{{ asset('img/page-icons/account.svg', 'help_center') }}" role="presentation" class="dp-po-title-svg">
-                <h2 class="dp-po-title-text">{{ phrase('portal.account.section-title-your-account') }}</h2>
+                <h2 class="dp-po-title-text">{{ phrase('helpcenter.account.section-title-your-account') }}</h2>
             </div>
             <div class="row">
                 <div class="col-sm-4">
@@ -48,7 +48,7 @@
                             {% endif %}
                             {% if profile_form.delete_picture is defined %}
                                 <img src="{{ person.picture_url }}" alt="{{ person }}"/>
-                                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('portal.account.profile-delete-picture'), label: false }) }}
+                                {{ form_row(profile_form.delete_picture, { checkbox_label: phrase('helpcenter.account.profile-delete-picture'), label: false }) }}
                             {% else %}
                                 {{ form_row(profile_form.upload_picture) }}
                             {% endif %}
@@ -57,7 +57,7 @@
                                 {{ form_row(profile_form.manager_auto_add) }}
                             {% endif %}
                             {{ form_rest(profile_form) }}
-                            <button type="submit" class="btn btn-primary">{{ phrase('portal.account.profile-btn-save') }}</button>
+                            <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.account.profile-btn-save') }}</button>
                             {{ form_end(profile_form) }}
                         </section>
                     </div>

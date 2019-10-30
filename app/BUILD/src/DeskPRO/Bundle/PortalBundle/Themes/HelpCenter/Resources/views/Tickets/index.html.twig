@@ -253,33 +253,33 @@
     {% if col.id == 'department_subject' %}
         {{ _self.sort_link(
         ticket_table,
-        phrase('portal.tickets.list_department'),
+        phrase('helpcenter.tickets.list_department'),
         'department'
         ) }}
         /
         {{ _self.sort_link(
         ticket_table,
-        phrase('portal.tickets.list_subject'),
+        phrase('helpcenter.tickets.list_subject'),
         'subject'
         ) }}
     {% else %}
         {% set make_link = true %}
         {% if col.id == 'agent' %}
-            {% set label = phrase('portal.tickets.list_agent' ) %}
+            {% set label = phrase('helpcenter.tickets.list_agent' ) %}
         {% elseif col.id == 'department' %}
-            {% set label = phrase('portal.tickets.list_department') %}
+            {% set label = phrase('helpcenter.tickets.list_department') %}
         {% elseif col.id == 'subject' %}
-            {% set label = phrase('portal.tickets.list_subject') %}
+            {% set label = phrase('helpcenter.tickets.list_subject') %}
         {% elseif col.id == 'user' %}
-            {% set label = phrase('portal.tickets.list_user') %}
+            {% set label = phrase('helpcenter.tickets.list_user') %}
         {% elseif col.id == 'date_activity' %}
-            {% set label = phrase('portal.tickets.list_last_action') %}
+            {% set label = phrase('helpcenter.tickets.list_last_action') %}
         {% elseif col.id == 'date_created' %}
-            {% set label = phrase('portal.tickets.list_date_created') %}
+            {% set label = phrase('helpcenter.tickets.list_date_created') %}
         {% elseif col.id == 'date_user' %}
-            {% set label = phrase('portal.tickets.list_date_last_user') %}
+            {% set label = phrase('helpcenter.tickets.list_date_last_user') %}
         {% elseif col.id == 'date_agent' %}
-            {% set label = phrase('portal.tickets.list_date_last_agent') %}
+            {% set label = phrase('helpcenter.tickets.list_date_last_agent') %}
         {% else  %}
             {% set label = col.label %}
             {% set make_link = false %}
@@ -402,7 +402,7 @@
         <div class="dp-po-table dp-po-table-col6 dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
             <div class="dp-po-table-row dp-po-table-row-head">
                 <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
-                <span class="dp-po-table-cell">{{ phrase('portal.tickets.list_ticket_ref') }}</span>
+                <span class="dp-po-table-cell">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</span>
                 {% for col in ticket_table.columns %}
                     <span class="dp-po-table-cell" data-col="{{ col.id }}"{% if not ticket_table.isActive(col)  %} style="display:none;"{% endif %}>
                         {{ _self.col_header(ticket_table, col) }}

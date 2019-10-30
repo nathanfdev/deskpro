@@ -20,7 +20,7 @@
                 </a>
               </div>
               <div class="dp-po-article-date">
-                <p>Published: <span>{{ article.date_published | date('day') }}</span></p>
+                <p>{{ phrase('helpcenter.articles.published') }}: <span>{{ article.date_published | date('day') }}</span></p>
               </div>
               {% if brand_setting('user.publish_comments') %}
               <div class="dp-po-article-comments">
@@ -45,5 +45,5 @@
         {% include 'Theme:Common:pager.html.twig' %}
     {% endif %}
 {% else %}
-  <strong>{{ phrase('portal.articles.none') }}</strong>
+  <strong>{{ phrase('helpcenter.articles.none') }}</strong>
 {% endif %}

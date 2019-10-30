@@ -7,7 +7,7 @@
                 {% if not ticket.resolved %}
                     {{ phrase('helpcenter.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
                 {% else %}
-                    {{ phrase('portal.tickets.view_reply') }}
+                    {{ phrase('helpcenter.tickets.view_reply') }}
                 {% endif %}
             </h2>
         </div>
@@ -25,7 +25,7 @@
                         <div class="column-full">
                             <div class="bucket">
                                 <div class="form-error-list" style="max-width: 620px;">
-                                    <h1>{{ phrase('portal.tickets.view_reply_errors') }}</h1>
+                                    <h1>{{ phrase('helpcenter.tickets.view_reply_errors') }}</h1>
                                     <ul>
                                         {% for error in form_errors %}
                                             {% set error_view = error.origin.createView() %}
@@ -57,13 +57,13 @@
     {% else %}
         {% if can_view_tickets_link() %}
             <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary">
-                {{ phrase('portal.tickets.new_ticket_button') }}
+                {{ phrase('helpcenter.tickets.new_ticket_button') }}
             </a>
         {% endif %}
 
         {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
             <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-outline-primary post-link">
-                {{ phrase('portal.tickets.mark-unresolved') }}
+                {{ phrase('helpcenter.tickets.mark-unresolved') }}
             </a>
         {% endif %}
     {% endif %}

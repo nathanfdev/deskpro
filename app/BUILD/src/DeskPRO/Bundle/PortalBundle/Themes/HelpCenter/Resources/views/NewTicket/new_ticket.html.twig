@@ -8,21 +8,21 @@
                 <div class="row">
                     <div class="col-sm-7 col-centered">
                         {% if no_login %}
-                            {{  macros.user_notice('auth', phrase('portal.account.new-ticket-no-login')) }}
+                            {{  macros.user_notice('auth', phrase('helpcenter.account.new-ticket-no-login')) }}
                         {% else %}
-                            {{  macros.lockout_notice(phrase('portal.account.tickets-lockout'), lockout, lockout_time) }}
+                            {{  macros.lockout_notice(phrase('helpcenter.account.tickets-lockout'), lockout, lockout_time) }}
                         {% endif %}
                         <div class="dp-po-title">
                             <img class="dp-po-title-svg" src="{{ asset('img/page-icons/contact-us.svg', 'help_center') }}">
-                            <h2 class="dp-po-title-text">{{ phrase('portal.tickets.new-section-title') }}</h2>
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.tickets.new-section-title') }}</h2>
                         </div>
                         <div class="dp-po-block">
                             {% if rerendering %}
-                                <strong>{{ phrase('portal.tickets.form-changed-notice') }}</strong>
+                                <strong>{{ phrase('helpcenter.tickets.form-changed-notice') }}</strong>
                             {% endif %}
 
                             {% if rerendering_saved %}
-                                <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+                                <strong>{{ phrase('helpcenter.general.rerender-form') }}</strong>
                             {% endif %}
                             {% include 'Theme:NewTicket:new_ticket_form.html.twig' %}
                         </div>

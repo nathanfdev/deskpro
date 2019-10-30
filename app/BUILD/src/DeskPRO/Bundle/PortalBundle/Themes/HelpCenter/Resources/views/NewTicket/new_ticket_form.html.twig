@@ -1,10 +1,10 @@
 <div class="dp-po-ticket-create" id="new_ticket_page">
     <div class="dp-po-ticket-create-form helpcenter-form dp_ticket_form">
-        <p>{{ phrase('portal.tickets.new-intro') }}</p>
+        <p>{{ phrase('helpcenter.tickets.new-intro') }}</p>
         <form method="POST" class="dp-po-form" novalidate data-save-draft="new_ticket{{ app.user ? '-' ~ app.user.id : '' }}" name="ticket" enctype="multipart/form-data" data-visibility="{{ form.vars.visibility }}">
             {% if form_errors|length > 0 %}
                 <div class="alert alert-danger" role="alert">
-                    <h4>{{ phrase('portal.tickets.view_reply_errors') }}</h4>
+                    <h4>{{ phrase('helpcenter.tickets.view_reply_errors') }}</h4>
                     <ul>
                         {% for error in form_errors %}
                             {% set error_view = error.origin.createView() %}
