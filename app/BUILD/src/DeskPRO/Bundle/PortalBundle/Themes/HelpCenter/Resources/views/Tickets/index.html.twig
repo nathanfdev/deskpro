@@ -26,33 +26,9 @@
                 <div class="row">
                     <div class="col-sm-3">
                         <div class="dp-po-ticket-sidebar">
-
-                            <div class="dp-po-ticket-pages">
-                                <ul class="dp-po-ticket-pages-list">
-                                    <li class="dp-po-ticket-pages-item{% if type == 'own' %} active{% endif %}">
-                                        <a href="{{ path('portal_tickets') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-envelope-open-text"></i> {{ phrase('helpcenter.tickets.my-tickets') }}
-                                        </a>
-                                    </li>
-{#                                    <li class="dp-po-ticket-pages-item{% if type == 'cc' %} active{% endif %}">#}
-{#                                        <a href="{{ path('portal_tickets', {type: 'cc'}) }}" class="dp-po-ticket-pages-link">#}
-{#                                            <i class="dp-po-icon fal fa-closed-captioning"></i> {{ phrase('helpcenter.tickets.tickets-i-m-cc-on') }}#}
-{#                                        </a>#}
-{#                                    </li>#}
-                                    {% if person.organization and person.organization_manager %}
-                                    <li class="dp-po-ticket-pages-item{% if type == 'organization' %} active{% endif %}">
-                                        <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-atom-alt"></i> {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
-                                        </a>
-                                    </li>
-                                    {% endif %}
-                                    <li class="dp-po-ticket-pages-item">
-                                        <a href="{{ path('portal_chats') }}" class="dp-po-ticket-pages-link">
-                                            <i class="dp-po-icon fal fa-comments-alt"></i> {{ phrase('helpcenter.chats.my-chats') }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            {% include 'Theme:Tickets:sidebar.html.twig' with {
+                                type: type,
+                            } %}
 
 {#                            <div class="dp-po-ticket-filter">#}
 {#                                <div class="row mb-4">#}
@@ -328,7 +304,7 @@
     {% elseif col.id == 'date_agent' %}
         {% if ticket.date_last_agent_reply %}
             {% if ticket.agent %}
-                <img src="{{ avatar_url(ticket.agent) }}" class="avatar">
+                <img src="{{ avatar_url(ticket.agent) }}" class="avatar" role="presentation" />
                 <span class="person">{{ ticket.agent.display_name_user }}</span>
             {% endif %}
             <span class="date">{{ ticket.date_last_agent_reply|date }}</span>
@@ -379,14 +355,14 @@
                 </div>
                 <div class="col-sm-7">
                     <form class="dp-po-ticket-search" method="get">
-                        <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}"></input>
+                        <input type="text" name="q" placeholder="{{ phrase('helpcenter.tickets.search-tickets') }}" value="{{ search_query }}" />
                         <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
                     </form>
                 </div>
                 <div class="col-sm-1 text-right">
                     <div class="dp-po-columnfilter">
                         <a href="javascript:void(0)" class="dp-po-columnfilter-link">
-                            <i class="dp-po-icon far fa-ballot-check"></i>
+                            <img class="dp-po-icon dp-po-icon-svg" src="{{ asset('img/page-icons/column-filter.svg', 'help_center') }}" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right dp-po-columnfilter-dropdown">
                         </div>

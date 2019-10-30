@@ -128,7 +128,7 @@ class ProfileController extends AbstractController
                     // this is a normal web request, and we need email validation
                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                     $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $savedForm);
-                    if ($this->get('brand_stack')->getActive()->getBrand()->getThemeSet()->getThemeId() === 'helpcenter') {
+                    if ($this->isHelpCenterTheme()) {
                         return $this->renderThemeView('Theme:Portal:User/register_must_verify.html.twig',
                             [
                                 'email'         => $person->getEmailAddress(),
