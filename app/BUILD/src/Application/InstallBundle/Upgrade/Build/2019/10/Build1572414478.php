@@ -1,9 +1,9 @@
 <?php
+
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1571402401 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1572414478 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
-
     public function addNewTables()
     {
         $this->execDbQuery('default', 'CREATE TABLE approval_templates (id BIGINT AUTO_INCREMENT NOT NULL, type_id BIGINT NOT NULL, name VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, approval_criteria LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', required_approvals INT NOT NULL, required_rejections INT NOT NULL, can_approvers_view_subject TINYINT(1) NOT NULL, actions_on_create LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions_on_partial_approval_response LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions_on_partial_rejection_response LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions_on_cancel LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions_on_approved LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions_on_rejected LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', created_at DATETIME NOT NULL, INDEX IDX_92D5AF50C54C8C93 (type_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
@@ -22,7 +22,6 @@ class Build1571402401 extends AbstractBuild implements OnlineBuildInterface, Ski
         $this->execDbQuery('default', 'ALTER TABLE approval_approvers ADD CONSTRAINT FK_99119303FE65F000 FOREIGN KEY (approval_id) REFERENCES approvals (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE approval_approvers ADD CONSTRAINT FK_99119303217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
     }
-
 
     public function runAlters()
     {

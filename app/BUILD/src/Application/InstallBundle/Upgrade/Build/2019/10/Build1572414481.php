@@ -1,12 +1,12 @@
 <?php
+
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1571402912 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1572414481 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
     }
-
 
     public function runAlters()
     {
