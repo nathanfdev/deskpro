@@ -378,6 +378,7 @@ helpcenter.tickets.view_ticket_id: 'Ticket ID'
 helpcenter.tickets.view_ticket_status_title: 'Ticket status'
 helpcenter.tickets.view_you_created: '<h3 class="dp-po-ticket-meta-title">Created</h3><p>{{ago}}</p>'
 helpcenter.tickets.you-need-to-respond: 'You need to respond'
+helpcenter.tickets.view_reply_or_close: 'Reply or <a href="{{close_url}}" class="close-ticket-trigger">close the ticket</a>'
 helpcenter.tickets.agent-reply: 'Agent reply'
 helpcenter.error.helpdesk: Helpdesk
 helpcenter.error.create-new-account: 'Create a new account'
