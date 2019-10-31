@@ -2,7 +2,7 @@
 {# Outgoing Account Details #}
 {##################################################################################################}
 
-<div class="form-group" ng-hide="form.incoming_type == 'gmail' || form.incoming_type == 'office365'">
+<div class="form-group" ng-hide="form.incoming_type == 'gmail' || form.incoming_type == 'office365' || form.incoming_type == 'office365_exchange'">
 	<div class="col-lg-3">
 		<h3>Outgoing Email *</h3>
 	</div>
@@ -22,7 +22,8 @@
 				<option value="php_mail">Send mail using PHP mail()</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
-				<option value="office365">Office365</option>
+        <option value="office365_exchange">Office365 (Exchange)</option>
+				<option value="office365">Office365 (POP3/SMTP)</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
@@ -43,7 +44,7 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
@@ -98,7 +99,7 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
@@ -172,7 +173,7 @@
 						<th>&nbsp;</th>
 						<td>
 							<button class="btn btn-info" type="button" ng-click="TicketAccountsEdit.testOutgoingModal()">
-								<i class="fa fa-bolt"></i> Test Account Settings
+								<i class="fas fa-bolt"></i> Test Account Settings
 							</button>
 						</td>
 					</tr>
@@ -180,9 +181,51 @@
 			</div>
 		</div>
 
-		{##############}
-		{# Office 365 #}
-		{##############}
+		{#######################}
+		{# Office365 Exchange  #}
+		{#######################}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'office365_exchange'">
+			<div class="inner-group">
+        <br/><br/>
+        <div class="alert alert-info">
+          <p>
+            This is the recommended option for connecting to Office365 accounts
+          </p>
+        </div>
+				<table width="100%" class="inner-form-table">
+          <tr>
+            <th width="75">Exchange Server</th>
+            <td>
+              https://<input type="text" class="form-control" name="host" ng-model="form.out_office365_exchange_account.host" style="display: inline-block; width: 50%;" />
+              <br/>
+              <span class="help-block">
+                  Please check <a href="https://docs.microsoft.com/en-us/office365/enterprise/urls-and-ip-address-ranges#exchange-online" target="_blank">how to find your exchange server</a>.
+									Make sure your firewall is not blocking connections.
+              </span>
+            </td>
+          </tr>
+					<tr>
+						<th>Username</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_office365_exchange_account.user" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_office365_exchange_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{#########################}
+		{# Office365 (POP3/SMTP) #}
+		{#########################}
 
 		<div class="ng-hide" ng-show="form.outgoing_type == 'office365'">
 			<div class="inner-group">
@@ -201,7 +244,7 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
@@ -237,7 +280,7 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>

@@ -15,9 +15,10 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\EmailBundle\Queue\QueueProc;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotAgentEmail;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @ApiModes("all")
  */
-class EmailAccountsController extends AbstractController implements ProtectedControllerInterface
+class EmailAccountsController extends AbstractController
 {
     /** @var array|null */
     protected $emailSettings = null;
@@ -37,7 +38,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }
@@ -52,7 +53,22 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         $manager = $this->container->getEmailAccountManager();
         foreach ($manager->getAllAccounts() as $acc) {
-            $data['email_accounts'][] = $acc->toApiData();
+            if ($this->person->canAdmin()) {
+                $data['email_accounts'][] = $acc->toApiData();
+            } else {
+                // list can be used to show search options for agents
+                $data['email_accounts'][] = [
+                    'id'              => $acc->getId(),
+                    'address'         => $acc->getAddress(),
+                    'other_addresses' => $acc->getAllAddresses(),
+                    'account_type'    => $acc->account_type,
+                    'is_enabled'      => $acc->is_enabled,
+                    'is_all_brands'   => $acc->is_all_brands,
+                    'brands'          => $acc->getBrands()->map(function ($b) {
+                        return $b->getId();
+                    }),
+                ];
+            }
         }
 
         return $this->createApiResponse($data);
@@ -136,7 +152,20 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             $data['out_office365_account'] = $data['in_office365_account'];
         }
 
+        if ($data['incoming_type'] == 'office365_exchange') {
+            $data['outgoing_type']                  = 'office365_exchange';
+            $data['out_office365_exchange_account'] = $data['in_office365_exchange_account'];
+        }
+
         $form->submit($data);
+
+        $emailErrors = $this->container->getValidator()->validate(
+            $edit_account->address,
+            new NotAgentEmail(['property' => 'address'])
+        );
+        if (count($emailErrors)) {
+            return $this->createApiValidationErrorResponse($emailErrors);
+        }
 
         if ($this->settings->get('internal.disable_email_editing.incoming_details')) {
             $edit_account->apply(false);

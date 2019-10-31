@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleRevision;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\SearchLog;
@@ -380,6 +381,7 @@ class KbController extends AbstractController
 
             case 'undelete':
                 $article->status_code = 'published';
+                $article->setSlug(null);
                 break;
 
             case 'categories':
@@ -516,10 +518,57 @@ class KbController extends AbstractController
 
                 $article->date_updated = new \DateTime();
 
+                $restartReviewDate = $this->in->getBool('restart-review-date');
+                if ($restartReviewDate) {
+                    $article->restartReviewDate();
+                }
+
                 $data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', [
                     'article' => $article,
                     'content' => $content,
+                    'baseId'  => $this->in->getString('base_id'),
                 ]);
+                if ($restartReviewDate) {
+                    $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                        'article' => $article,
+                    ]);
+                }
+                break;
+
+            case 'set-review-date':
+
+                $count = $this->in->getInt('interval_count');
+                $unit  = $this->in->getString('interval_unit');
+
+                if (!$count || !in_array($unit, ['days', 'months', 'years'])) {
+                    return $this->createJsonResponse([
+                        'success' => false,
+                    ]);
+                }
+
+                $article->setReviewInterval($count.' '.$unit);
+                $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                    'article' => $article,
+                ]);
+
+                break;
+
+            case 'restart-review-date':
+
+                $article->restartReviewDate();
+                $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                    'article' => $article,
+                ]);
+
+                break;
+
+            case 'remove-review-date':
+
+                $article->setReviewInterval(null);
+                $data['prop_html'] = $this->renderView('AgentBundle:Kb:view-prop-review-date.html.twig', [
+                    'article' => $article,
+                ]);
+
                 break;
 
             case 'trans':
@@ -535,17 +584,18 @@ class KbController extends AbstractController
                         continue;
                     }
 
-                    $title       = $this->in->getString("title.$langId");
-                    $content_val = (string) $this->in->getRaw("content.$langId");
+                    $title        = $this->in->getString("title.$langId");
+                    $contentVal   = (string) $this->in->getRaw("content.$langId");
+                    $contentInput = (string) $this->in->getRaw("input.$langId");
 
-                    if (!$title && !$content_val) {
+                    if (!$title && !$contentVal) {
                         continue;
                     }
 
                     $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'title', $title);
                     $this->em->persist($rec);
 
-                    $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $content_val);
+                    $rec = $this->container->getObjectLangRepository()->setRec($lang, $article, 'content', $contentVal, $contentInput);
                     $this->em->persist($rec);
                 }
 
@@ -570,6 +620,10 @@ class KbController extends AbstractController
             $data['revision_id'] = $rev['id'];
         } else {
             $data['revision_id'] = null;
+        }
+
+        if (in_array($action, ['undelete', 'delete'], true)) {
+            $data['slug'] = $article->getSlug();
         }
 
         return $this->createJsonResponse($data);
@@ -814,6 +868,31 @@ class KbController extends AbstractController
         ]);
     }
 
+    public function pendingReviewArticlesMassActionsAction($action)
+    {
+        $this->em->beginTransaction();
+
+        $articles = $this->em->getRepository(Article::class)->findById($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+
+        foreach ($articles as $article) {
+            switch ($action) {
+                case 'restart-review':
+                    if (!$this->person->PermissionsManager->PublishChecker->canEdit($article)) {
+                        continue;
+                    }
+                    $article->restartReviewDate();
+                    break;
+            }
+        }
+
+        $this->em->flush();
+        $this->em->commit();
+
+        return $this->createJsonResponse([
+            'success' => 1,
+        ]);
+    }
+
     //###########################################################################
     // Listings
     //###########################################################################
@@ -1027,7 +1106,13 @@ class KbController extends AbstractController
 
             $newArticle->setCustomFieldForm($request->request->all());
 
-            $newArticle->save();
+            $contentInputType = ContentAbstract::CONTENT_TYPE_RTE;
+
+            if ($this->container->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+                $contentInputType = ContentAbstract::CONTENT_TYPE_DESKPRO_EDITOR_V1;
+            }
+
+            $newArticle->save($contentInputType);
 
             $article = $newArticle->getArticle();
 

@@ -20,7 +20,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultSet;
 use Orb\Util\Strings;
 
 /**
- * The content searcher searches: articles, downloads, feedback, news.
+ * The content searcher searches: articles, downloads, community topics, news.
  */
 class ContentSearcher implements ContentSearcherInterface, PersonContextInterface
 {
@@ -55,8 +55,8 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             if (!$this->person->hasPerm('articles.use')) {
                 unset($limit_types['article']);
             }
-            if (!$this->person->hasPerm('feedback.use')) {
-                unset($limit_types['feedback']);
+            if (!$this->person->hasPerm('community.use')) {
+                unset($limit_types['community']);
             }
             if (!$this->person->hasPerm('news.use')) {
                 unset($limit_types['news']);
@@ -76,7 +76,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     {
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = ['article', 'download', 'feedback', 'news', 'topic'];
+            $limit_types = ['article', 'download', 'community', 'news', 'topic'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);
@@ -171,7 +171,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     {
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = ['article', 'download', 'feedback', 'news'];
+            $limit_types = ['article', 'download', 'community', 'news'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);
@@ -270,7 +270,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         // Otherwise fallback to like
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = ['article', 'download', 'feedback', 'news', 'topic'];
+            $limit_types = ['article', 'download', 'community', 'news', 'topic'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);

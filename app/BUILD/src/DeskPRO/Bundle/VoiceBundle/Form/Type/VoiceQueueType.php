@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Form\Type;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
@@ -41,9 +42,14 @@ class VoiceQueueType extends AbstractType
                     return $er->createQueryBuilder('u')->where('u.is_tickets_enabled = 1');
                 },
             ])
+            ->add('brand', EntityType::class, [
+                'class'    => Brand::class,
+                'required' => false,
+            ])
             ->add('agents', VoiceQueueAgentCollectionType::class, [
-                'queue'    => $builder->getData(),
-                'required' => true,
+                'queue'          => $builder->getData(),
+                'required'       => true,
+                'error_bubbling' => false,
             ])
             ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
@@ -78,20 +84,27 @@ class VoiceQueueType extends AbstractType
             ->add('voicemail_timeout', IntegerType::class, [
                 'required'      => false,
                 'property_path' => 'voicemailTimeout',
+                'empty_data'    => '30',
             ])
             ->add('routing_model', ChoiceType::class, [
                 'required'          => true,
                 'property_path'     => 'routingModel',
                 'choices_as_values' => true,
                 'choices'           => [
-                    VoiceQueue::ROUTING_MODEL_AUTOMATIC,
+                    VoiceQueue::ROUTING_MODEL_ROUND_ROBIN,
                     VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED,
                     VoiceQueue::ROUTING_MODEL_SIMULRING,
                 ],
             ])
+            ->add('answer_timeout', IntegerType::class, [
+                'required'      => true,
+                'property_path' => 'answerTimeout',
+                'empty_data'    => '15',
+            ])
             ->add('max_queue_size', IntegerType::class, [
                 'required'      => true,
                 'property_path' => 'maxQueueSize',
+                'empty_data'    => '1',
             ])
             ->add('recording_enabled', ApiBooleanType::class, [
                 'required'      => false,
@@ -99,7 +112,6 @@ class VoiceQueueType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -111,27 +123,6 @@ class VoiceQueueType extends AbstractType
         $resolver->setDefaults([
             'data_class' => VoiceQueue::class,
         ]);
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSubmit(FormEvent $event)
-    {
-        $data = $event->getData();
-
-        // set task queue max size
-        if (isset($data['routing_model'])) {
-            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_AUTOMATIC) {
-                $data['max_queue_size'] = 1;
-            } elseif ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_SIMULRING) {
-                $data['max_queue_size'] = 50;
-            }
-        }
-
-        $event->setData($data);
     }
 
     /**

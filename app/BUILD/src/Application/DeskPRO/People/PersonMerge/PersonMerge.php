@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\People\PersonMerge;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\ActivityLogger;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -47,9 +48,9 @@ class PersonMerge implements PersonContextInterface
     protected $em;
 
     /**
-     * @param \Application\DeskPRO\Entity\Person   $person_performer
-     * @param \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
-     * @param \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
+     * @param \Application\DeskPRO\Entity\Person         $person_performer
+     * @param \Application\DeskPRO\Entity\Person         $person           The base person, this is the one that will still exist at the end
+     * @param \Application\DeskPRO\Entity\CommunityTopic $other_person     The other person, the one that will be merged into $person and then deleted
      *
      * @throws \InvalidArgumentException
      */
@@ -76,7 +77,6 @@ class PersonMerge implements PersonContextInterface
     public function merge()
     {
         $this->em->beginTransaction();
-
         try {
             $this->_logMergeAndBackup();
 
@@ -112,7 +112,7 @@ class PersonMerge implements PersonContextInterface
             $this->_mergeArticles();
             $this->_mergeChats();
             $this->_mergeDownloads();
-            $this->_mergeFeedback();
+            $this->_mergeCommunityTopics();
             $this->_mergeNews();
             $this->_mergeTasks();
             $this->_mergePhoneCalls();
@@ -122,10 +122,18 @@ class PersonMerge implements PersonContextInterface
             $this->em->persist($this->person);
             $this->em->flush();
 
+            $primaryEmail = $this->other_person->getPrimaryEmailAddress();
+
             $this->em->refresh($this->other_person);
             $this->em->remove($this->other_person);
             $this->em->flush();
 
+            $this->em->refresh($this->person);
+            if (!$this->person->getPrimaryEmail() && $primaryEmail) {
+                $this->person->setEmail($primaryEmail);
+            }
+
+            $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
@@ -142,11 +150,44 @@ class PersonMerge implements PersonContextInterface
             'people_contact_data',
             'people_emails',
             'people_twitter_users',
-            'phone_numbers',
         ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
+        }
+
+        $newPersonNumbers = App::getDb()->fetchAllKeyValue('
+            SELECT id, number
+            FROM phone_numbers
+            WHERE person_id = ?
+        ', [$this->person['id']], [\PDO::PARAM_INT]);
+
+        $oldPersonNumber = App::getDb()->fetchAllKeyValue('
+            SELECT id, number
+            FROM phone_numbers
+            WHERE person_id = ?
+        ', [$this->other_person['id']], [\PDO::PARAM_INT]);
+
+        $toDelete = $toUpdate = [];
+        foreach ($oldPersonNumber as $id => $number) {
+            if (in_array($number, $newPersonNumbers)) {
+                $toDelete[] = $id;
+            } else {
+                $toUpdate[] = $id;
+            }
+        }
+
+        if ($toDelete) {
+            App::getDb()->executeQuery('DELETE FROM phone_numbers WHERE id IN (?)', [$toDelete],
+                [Connection::PARAM_INT_ARRAY]);
+        }
+
+        if ($toUpdate) {
+            App::getDb()->executeUpdate('
+            UPDATE IGNORE phone_numbers
+            SET person_id = ?
+            WHERE person_id = ? AND id IN (?)
+        ', [$this->person['id'], $this->other_person['id'], $toUpdate], [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
         }
     }
 
@@ -221,13 +262,13 @@ class PersonMerge implements PersonContextInterface
         }
     }
 
-    protected function _mergeFeedback()
+    protected function _mergeCommunityTopics()
     {
         $simple_tables = [
-            'feedback',
-            'feedback_attachments',
-            'feedback_comments',
-            'feedback_revisions',
+            'community_topics',
+            'community_topic_attachments',
+            'community_topic_comments',
+            'community_topic_revisions',
         ];
 
         foreach ($simple_tables as $table) {

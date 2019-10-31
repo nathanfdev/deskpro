@@ -33,8 +33,8 @@ class CodeBlock extends React.Component {
         <div dangerouslySetInnerHTML={{ __html: this.props.html }} />
         <a className={classNames('code-copy', { copied: this.state.copied })} onClick={this.onClick}>
           {this.state.copied ?
-            <span><i className="fa fa-check" /> copied</span> :
-            <span><i className="fa fa-clipboard" /> copy</span> }
+            <span><i className="fas fa-check" /> copied</span> :
+            <span><i className="fas fa-clipboard" /> copy</span> }
         </a>
       </span>
     );

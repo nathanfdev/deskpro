@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class PlivoVoiceAccount.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository")
  * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\PlivoAccountListener"})
  *
  * @VoiceAssert\PlivoVoiceAccount()
@@ -67,5 +67,13 @@ class PlivoVoiceAccount extends AbstractVoiceAccount
         $this->setModelField('agentApplicationId', $agentApplicationId);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouterPrefix()
+    {
+        return 'plivo';
     }
 }

@@ -14,7 +14,7 @@ export class TranscriptPopup extends React.Component {
     return (
       <div className="dpdesignportal-popover dpdesignportal-popover-request-transcript">
         <div className="dpdesignportal-popover-close" onClick={onClose}>
-          <i className="fa fa-times" />
+          <i className="fas fa-times" />
         </div>
 
         {children}

@@ -10,7 +10,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       const format = function (flag) {
         if (!flag || !flag.text) { return ''; }
-        return `<img src='${DP_ASSET_URL}/images/flags/${flag.id.toLowerCase()}' style='margin-right: 2px;' />${flag.text}`;
+        return `<img src='${DP_ASSET_URL}images/flags/${flag.id}' style='margin-right: 2px;' />${flag.text}`;
       };
 
       this.$scope.select2Flag = {

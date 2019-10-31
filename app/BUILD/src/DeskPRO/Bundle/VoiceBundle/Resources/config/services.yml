@@ -1,5 +1,17 @@
 services:
 
+  dp.voice.logger:
+    class: Psr\Log\LoggerInterface
+    factory: ['DeskPRO\Bundle\VoiceBundle\Monolog\VoiceLoggerFactory', createLogger]
+    arguments:
+      - "@service_container"
+
+  dp.voice.task_router.logger:
+    class: Psr\Log\LoggerInterface
+    factory: ['DeskPRO\Bundle\VoiceBundle\Monolog\VoiceTaskRouterLoggerFactory', createLogger]
+    arguments:
+      - "@service_container"
+
   voice_settings_resolver:
     class: DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver
     arguments:
@@ -10,22 +22,34 @@ services:
     arguments:
       - "@settings_resolver"
 
+  dp.voice.cloud_proxy:
+    class: DeskPRO\Bundle\VoiceBundle\Cloud\VoiceCloudProxy
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@settings_resolver"
+
   twilio_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"
+      - "@router"
+      - "@dp.voice.logger"
 
   plivo_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"
+      - "@router"
+      - "@dp.voice.logger"
 
   dp.voice.task_builder:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder
     arguments:
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.event_dispatcher"
+      - "@dp.voice.task_router.logger"
 
   dp.voice.task_router_lock:
     class: Symfony\Component\Lock\Lock
@@ -40,6 +64,7 @@ services:
       - "@dp.voice.task_router.storage"
       - "@dp.voice.event_dispatcher"
       - "@dp.voice.task_router_lock"
+      - "@dp.voice.task_router.logger"
 
   dp.voice.task_router.storage:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface
@@ -64,6 +89,11 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@chat_settings_resolver"
 
+  dp.voice.chat_queue_targets_loader:
+    class: DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsLoader
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+
   dp.voice.task_router.voice_workflow:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow
     arguments:
@@ -71,15 +101,43 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@voice_settings_resolver"
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_permissions_checker"
     tags:
       - { name: dp.voice.task_router_workflow }
 
   dp.voice.task_router.chat_workflow:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow
     arguments:
-      - "@doctrine.orm.entity_manager"
       - "@dp.voice.chat_task_helper"
       - "@chat_settings_resolver"
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.chat_queue_targets_loader"
+      - "@dp.voice.user_chat_permissions_checker"
+      - "@dp.voice.task_router.logger"
     tags:
       - { name: dp.voice.task_router_workflow }
+
+  dp.voice.voice_permissions_checker:
+    class: DeskPRO\Bundle\VoiceBundle\Permissions\VoicePermissionsChecker
+
+  dp.voice.user_chat_permissions_checker:
+    class: DeskPRO\Bundle\VoiceBundle\Permissions\UserChatPermissionsChecker
+
+  dp.voice.worker_activity:
+    class: DeskPRO\Bundle\VoiceBundle\Worker\WorkerActivity
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.worker_helper"
+
+  dp.voice.ticket_user_changer:
+    class: DeskPRO\Bundle\VoiceBundle\Voice\VoiceTicketUserChanger
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.event_helper"
+
+  dp.voice.ticket_recording_cleaner:
+    class: DeskPRO\Bundle\VoiceBundle\Voice\VoiceTicketRecordingCleaner
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@blob.storage"

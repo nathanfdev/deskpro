@@ -8,7 +8,7 @@
       value="{{ status.statusCode }}"
       {% if ticket.status_code == status.statusCode %}selected="selected"{% endif %}
     >
-      {{ parent_title }}&nbsp;>&nbsp;{{ status.title }}
+      {{ parent_title }}&nbsp;&gt;&nbsp;{{ status.title }}
     </option>
     {% endif %}
   {% endfor %}
@@ -53,9 +53,11 @@
   pageMeta.person_id = {{ ticket.person.id }};
   pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
   pageMeta.person_name = {{ ticket.person.display_name|json_encode|raw }};
+  pageMeta.person_phone_numbers = {{ ticket.person.phone_numbers|default([])|map(p => p.number)|json_encode|raw }};
 
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
+  pageMeta.currentAgent = {{ app.user.toApiData()|json_encode|raw }};
   pageMeta.ticket = pageMeta.api_data;
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
@@ -73,7 +75,11 @@
   pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
   {% endif %}
 
-  {% set baseId = el_uid() %}
+  {% if ticket.getProperty('voice_phone_number') %}
+  pageMeta.voicePhoneNumber = '{{ ticket.getProperty('voice_phone_number') }}';
+  {% endif %}
+
+          {% set baseId = el_uid() %}
   pageMeta.baseId = '{{ baseId }}';
 
   pageMeta.isDeleted = {% if ticket.isDeleted() %}true{% else %}false{% endif %};
@@ -139,7 +145,7 @@
             {#<input type="hidden" name="hidden_status" class="hidden_status" value="{{ ticket.hidden_status }}" />#}
         </form>
 
-        {% if ticket.status == 'hidden' %}
+        {% if ticket.ticketStatus.isDeleted() %}
             {% include 'AgentBundle:Ticket:view-hidden-bar.html.twig' %}
         {% endif %}
 
@@ -214,7 +220,7 @@
                 </table>
             </div>
             <div class="row author last">
-                <span class="ticket-person-holder">
+                <span class="ticket-person-holder" id="{{ baseId }}_ticket-person-holder">
                     {% include 'AgentBundle:Ticket:view-ticket-person-holder.html.twig' %}
                 </span>
 
@@ -301,7 +307,7 @@
                     'selected': ticket.department.id|default(0),
                     'id': baseId ~ '_department_id',
                     'add_attr': 'data-invisible-trigger="1" style="visibility: hidden" data-dropdown-css-class="ticket-header" data-style-type="icons" data-select-icon-size="22"',
-                    'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
+                    'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign', ticket.brand)
                     } %}
 
                     <span id="{{ baseId }}_department_icon" class="avatar"
@@ -381,11 +387,11 @@
                                       id="{{ baseId }}_linked_count"
                                       data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)
                                 </li>{% endif %}
-                            {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-                                <li data-tab-for="#{{ baseId }}_linked_feedback_wrap"><i
-                                      class="fas fa-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
-                                      id="{{ baseId }}_linked_feedback_count"
-                                      data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
+                            {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                                <li data-tab-for="#{{ baseId }}_linked_community_topic_wrap"><i
+                                      class="fas fa-link"></i> {{ phrase('agent.tickets.linked_community') }} (<span
+                                      id="{{ baseId }}_linked_community_topic_count"
+                                      data-count="{{ ticket_community_topics_links|length }}">{{ ticket_community_topics_links|length }}</span>)
                                 </li>
                             {% endif %}
                             {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
@@ -559,7 +565,7 @@
                                             {% for a in agent_parts %}
                                                 <li class="agent-{{ a.person.id }}" data-agent-id="{{ a.person.id }}">
                                                     <a class="dp-btn dp-btn-small agent-link" data-agent-id="{{ a.person.id }}">
-                                                        <span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span>
+                                                        <span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }}); background-size: contain;">{{ a.person.display_name }}</span>
                                                         {% if ticket_perms.modify_assign_agent %}
                                                         <span class="remove-row-trigger"> <i class="fas fa-times"></i></span>
                                                         {% endif %}
@@ -642,29 +648,29 @@
                             </table>
                         </div>
                     </article>
-                    <article id="{{ baseId }}_linked_wrap">
+                    <article id="{{ baseId }}_linked_wrap" style="display: none;" class="table-wrapper">
                         {% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
                     </article>
-                    {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-                      <article id="{{ baseId }}_linked_feedback_wrap">
-                          {% include 'AgentBundle:Ticket:linked-feedback.html.twig' %}
+                    {% if ticket_community_topics_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                      <article id="{{ baseId }}_linked_community_topic_wrap" style="display: none">
+                          {% include 'AgentBundle:Ticket:linked-community-topics.html.twig' %}
                       </article>
                     {% endif %}
                     {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
-                        <article id="{{ baseId }}_tasks_wrap">
+                        <article id="{{ baseId }}_tasks_wrap" style="display: none">
                             {% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
                         </article>
                     {% endif %}
                     {% if app.hasBeta('follow_up') %}
-                        <article id="{{ baseId }}_follow_ups_wrap"></article>
+                        <article id="{{ baseId }}_follow_ups_wrap" style="display: none"></article>
                     {% endif %}
                     {% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
-                        <article id="{{ baseId }}_sla_wrap">
+                        <article id="{{ baseId }}_sla_wrap" style="display: none">
                             {% include 'AgentBundle:Ticket:view-slas.html.twig' %}
                         </article>
                     {% endif %}
                     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-                        <article id="{{ baseId }}_billing_wrap" style="overflow-x: auto;">
+                        <article id="{{ baseId }}_billing_wrap" style="display: none; overflow-x: auto;">
                             {% include 'AgentBundle:Ticket:view-billing.html.twig' %}
                         </article>
                     {% endif %}
@@ -742,8 +748,8 @@
                 <li data-action="link_existing_ticket">{{ phrase('agent.tickets.link_existing_ticket') }}</li>
             {% endif %}
             {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-              <li data-action="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>
-              <li data-action="link_existing_feedback">{{ phrase('agent.tickets.link_existing_feedback') }}</li>
+              <li data-action="link_new_community_topic">{{ phrase('agent.tickets.create_linked_community_topic') }}</li>
+              <li data-action="link_existing_community_topic">{{ phrase('agent.tickets.link_existing_community_topic') }}</li>
             {% endif %}
             <li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
             <li><a target="_blank"
@@ -824,7 +830,7 @@
                         <strong>{% if app.user.getPref('agent.ticket_reverse_order') %}{{ phrase('agent.tickets.view_older_messages') }}{% else %}{{ phrase('agent.tickets.view_newer_messages') }}{% endif %}</strong>
                     </div>
                 </section>
-                <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0;">
+                <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0; display: none">
                     <div style="padding:25px;">
                         <i class="spinner-circle-32"></i>
                     </div>
@@ -1099,21 +1105,13 @@
                 <li data-option-id="window"
                     data-url="{{ path('agent_ticket_message_window', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.view_message_in_window') }}</li>
                 <li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
-                {% if app.hasBeta('new_fwd') %}
-                    <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
-                    <li class="forward-ticket-from-here" data-option-id="fwd-from-here">{{ phrase('agent.tickets.forward_ticket_from_here') }}</li>
-                {% else %}
-                    <li class="forward-message" data-option-id="fwd_legacy">{{ phrase('agent.tickets.forward_message') }}</li>
-                {% endif %}
-                {% if ticket_perms.modify_messages %}
-                    <li class="delete-link"
-                        data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>{% endif %}
-                {% if ticket_perms.delete %}
-                    <li class="delete-attachments-link"
-                        data-option-id="delete-attachments">{{ phrase('agent.tickets.delete_attach') }}</li>{% endif %}
-                {% if ticket_perms.modify_messages %}
-                    <li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
-                {% endif %}
+                <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
+                <li class="forward-ticket-from-here" data-option-id="fwd-from-here">{{ phrase('agent.tickets.forward_ticket_from_here') }}</li>
+                <li class="delete-link"
+                    data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>
+                <li class="delete-attachments-link"
+                    data-option-id="delete-attachments">{{ phrase('agent.tickets.delete_attach') }}</li>
+                <li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
                 {% if ticket_perms.reply %}
                 <li class="set-as-message"
                     data-option-id="setnote.message">{{ phrase('agent.tickets.set_as_normal_message') }}</li>
@@ -1123,10 +1121,9 @@
                 {% if app.user.hasPerm('agent_tickets.create') %}
                     <li data-option-id="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
                 {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
-                    <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>{% endif %}
-                {% if ticket_perms.modify_messages %}
-                    <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
-                {% endif %}
+                    <li data-option-id="link_new_community_topic">{{ phrase('agent.tickets.create_linked_community_topic') }}</li>{% endif %}
+                <li class="edit"
+                    data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
                 <li
                     class="email-download"
                     data-option-id="email_download"
@@ -1134,13 +1131,11 @@
                 >
                     {{ phrase('agent.tickets.email_download') }}
                 </li>
-                {% if ticket_perms.modify_messages %}
-                    <li
-                        class='email-delete'
-                        data-option-id="email_delete">
-                        {{ phrase('agent.tickets.email_delete') }}
-                    </li>
-                {% endif %}
+                <li
+                    class='email-delete'
+                    data-option-id="email_delete">
+                    {{ phrase('agent.tickets.email_delete') }}
+                </li>
                 {% if app.user.can_admin %}
                     <li data-option-id="debug"
                         data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}"
@@ -1169,7 +1164,7 @@
                                     </li>
                                 {% else %}
                                     <li class="coll">
-                                        <span class="macro-title"><i class="fa fa-caret-right"
+                                        <span class="macro-title"><i class="fas fa-caret-right"
                                                                      style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
                                         <div class="dp-menu replybox sub-menu" style="min-width: 225px;">
                                             <section>
@@ -1320,8 +1315,8 @@
                               style="width: 98%; height: 200px; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;"
                               name="message_text" class="message_text"></textarea>
                 </div>
-                <div class="overlay-footer" {% if ticket_perms.modify_messages %}style="height: 45px;"{% endif %}>
-                    {% if ticket_perms.modify_messages %}
+                <div class="overlay-footer" style="height: 45px;">
+                    {% if ticket_perms.modify_messages_no_logging %}
                     <label class="log_original_contents">
                         <input type="checkbox" value='1' name="log_original_contents" checked="checked"/>
                         <span>{{ phrase('agent.tickets.log_original_contents') }}</span>

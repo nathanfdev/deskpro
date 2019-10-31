@@ -35,7 +35,7 @@ export class GuideTreeContainer extends React.Component {
     tree:            PropTypes.object,
     openTopic:       PropTypes.func,
     dispatch:        PropTypes.func.isRequired,
-    displayStatuses: PropTypes.arrayOf(PropTypes.oneOf(['draft', 'unpublished', 'archived'])),
+    displayStatuses: PropTypes.arrayOf(PropTypes.oneOf(['draft', 'unpublished', 'archived', 'NONE'])),
     canDrag:         PropTypes.bool
   };
 

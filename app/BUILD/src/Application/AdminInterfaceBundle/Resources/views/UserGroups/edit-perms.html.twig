@@ -8,16 +8,15 @@
 	/>
 {% endmacro %}
 
-
 <div class="panel panel-innertable">
 	<nav class="dp-tabletabs">
 		<ul>
-			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
-			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
-			<li dp-tab-btn="main.perms.feedback"><a href="#"><i class="fa fa-inbox"></i> Feedback</a></li>
+			<li class="active" dp-tab-btn="main.perms.tickets"><a href="#"><i class="fas fa-envelope"></i> Tickets</a></li>
+			<li dp-tab-btn="main.perms.chat"><a href="#"><i class="fas fa-comment"></i> Chat</a></li>
+			<li dp-tab-btn="main.perms.community"><a href="#"><i class="fas fa-inbox"></i> Community</a></li>
 			<li dp-tab-btn="main.perms.articles"><a href="#"><i class="fas fa-file-alt"></i> Articles</a></li>
-			<li dp-tab-btn="main.perms.guides"><a href="#"><i class="fa fa-book"></i> Guides</a></li>
-			<li dp-tab-btn="main.perms.downloads"><a href="#"><i class="fa fa-download"></i> Downloads</a></li>
+			<li dp-tab-btn="main.perms.guides"><a href="#"><i class="fas fa-book"></i> Guides</a></li>
+			<li dp-tab-btn="main.perms.downloads"><a href="#"><i class="fas fa-download"></i> Downloads</a></li>
 			<li dp-tab-btn="main.perms.news"><a href="#"><i class="far fa-list-alt"></i> News</a></li>
 		</ul>
 	</nav>
@@ -36,8 +35,34 @@
 				<td width="100%">
 					Can re-open resolved tickets
 
-					<div style="padding: 10px 0 0 25px;" ng-show="!EditCtrl.perm_form.ticket.reopen_resolved && !EditCtrl.perm_form_reg.ticket.reopen_resolved">
-						How should the helpdesk handle an email reply to a resolved ticket?<br/>
+					<div style="padding: 10px 0 0 25px;" ng-show="EditCtrl.perm_form.ticket.reopen_resolved
+                                                        || EditCtrl.perm_form_reg.ticket.reopen_resolved
+                                                        || EditCtrl.perm_form_everyone.ticket.reopen_resolved">
+						<div>
+							<label>
+                {{ phrase('adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_1') }}
+                <select ng-model="EditCtrl.perm_form.ticket.reopen_resolved_timelimit" ui-select2 >
+                  <option value="1">{{ phrase('admin.general.time_x_day', {count: 1}) }}</option>
+                  <option value="3">{{ phrase('admin.general.time_x_day', {count: 3}) }}</option>
+                  <option value="7">{{ phrase('admin.general.time_x_day', {count: 7}) }}</option>
+                  <option value="14">{{ phrase('admin.general.time_x_day', {count: 14}) }}</option>
+                  <option value="30">{{ phrase('admin.general.time_x_day', {count: 30}) }}</option>
+                  <option value="90">{{ phrase('admin.general.time_x_month', {count: 3}) }}</option>
+                  <option value="180">{{ phrase('admin.general.time_x_month', {count: 6}) }}</option>
+                  <option value="360">{{ phrase('admin.general.time_x_year', {count: 1}) }}</option>
+                  <option value="1080">{{ phrase('admin.general.time_x_year', {count: 3}) }}</option>
+                  <option value="0">{{ phrase('admin.general.forever') }}</option>
+                </select>
+                {{ phrase('adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_2') }}
+							</label>
+						</div>
+					</div>
+
+					<div style="padding: 10px 0 0 25px;" ng-show="(!EditCtrl.perm_form.ticket.reopen_resolved && !EditCtrl.perm_form_reg.ticket.reopen_resolved) || EditCtrl.isReopenTimelimitSet()">
+
+            <span ng-show="!EditCtrl.isReopenTimelimitSet()">How should the helpdesk handle an email reply to a resolved ticket?</span>
+            <span ng-show="EditCtrl.isReopenTimelimitSet()">How should the helpdesk handle an email reply to a resolved ticket after the time limit?</span>
+            <br/>
 						<div ng-if="EditCtrl.perm_form_reg.ticket.reopen_resolved_createnew">
 							<label tooltip="This permission is being granted through the Everyone usergroup">
 								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" disabled="disabled" />
@@ -81,41 +106,41 @@
 
 	{# /CHAT PERMISSIONS #}
 
-	{# FEEDBACK PERMISSIONS #}
+	{# COMMUNITY PERMISSIONS #}
 
-	<table class="table table-hover" dp-tab-body="main.perms.feedback">
+	<table class="table table-hover" dp-tab-body="main.perms.community">
 		<tbody>
 			<tr>
-				<td width="100%">{{ phrase('admin.user_groups.can_use_feedback') }}</td>
+				<td width="100%">{{ phrase('admin.user_groups.can_use_community') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'use') }}
+					{{ _self.perm_toggle('community', 'use') }}
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_feedback') }}</td>
+				<td width="100%">{{ phrase('admin.user_groups.can_submit_new_community_topics') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'submit') }}
+					{{ _self.perm_toggle('community', 'submit') }}
 				</td>
 			</tr>
 			<tr>
-				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_feedback_no_review') }}</td>
+				<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_community_topics_no_review') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'no_submit_validate') }}
+					{{ _self.perm_toggle('community', 'no_submit_validate') }}
 				</td>
 			</tr>
 			<tr>
-				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_feedback') }}</td>
+				<td width="100%">{{ phrase('admin.user_groups.can_vote_on_community_topics') }}</td>
 				<td>
-					{{ _self.perm_toggle('feedback', 'rate') }}
+					{{ _self.perm_toggle('community', 'rate') }}
 				</td>
 			</tr>
 
 			{% if cross_brand_setting('user.publish_comments') %}
 
 				<tr>
-					<td width="100%">{{ phrase('admin.user_groups.submit_feedback_comments') }}</td>
+					<td width="100%">{{ phrase('admin.user_groups.submit_community_topics_comments') }}</td>
 					<td>
-						{{ _self.perm_toggle('feedback', 'comment') }}
+						{{ _self.perm_toggle('community', 'comment') }}
 					</td>
 				</tr>
 
@@ -126,7 +151,7 @@
 				<tr>
 					<td width="100%" style="padding-left: 16px;">{{ phrase('admin.user_groups.submit_comment_no_review') }}</td>
 					<td>
-						{{ _self.perm_toggle('feedback', 'no_comment_validate') }}
+						{{ _self.perm_toggle('community', 'no_comment_validate') }}
 					</td>
 				</tr>
 
@@ -135,7 +160,7 @@
 		</tbody>
 	</table>
 
-	{# /FEEDBACK PERMISSIONS #}
+	{# /community PERMISSIONS #}
 
 	{# ARTICLES PERMISSIONS #}
 

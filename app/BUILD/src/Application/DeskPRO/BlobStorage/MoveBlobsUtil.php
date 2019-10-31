@@ -121,6 +121,8 @@ class MoveBlobsUtil implements Loggable
             WHERE
                 storage_loc_pref IS NOT NULL
                 AND storage_loc_pref IN ({$this->aids_where})
+                AND storage_loc != ''
+                AND storage_loc IS NOT NULL
         ");
     }
 
@@ -151,6 +153,10 @@ class MoveBlobsUtil implements Loggable
             }
 
             $this->logger->logDebug("{$x}. Processing blob #{$blob['id']}");
+            if (empty($blob->storage_loc)) {
+                $this->logger->logInfo('Still inserting');
+                continue;
+            }
             if ($blob->storage_loc == $blob->storage_loc_pref) {
                 $this->logger->logInfo('Already using preferred storage');
                 $blob->storage_loc_pref = null;

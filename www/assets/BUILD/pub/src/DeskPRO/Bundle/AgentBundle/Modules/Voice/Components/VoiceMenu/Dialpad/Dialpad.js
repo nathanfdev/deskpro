@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field, PhoneInput, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, PhoneInput, Checkbox, NumberSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
@@ -10,18 +10,19 @@ import 'mark.js/dist/jquery.mark';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
-import NumberSelect from '../NumberSelect';
 import DialGrid from '../../Common/DialGrid';
 
 class Dialpad extends React.Component {
 
   static propTypes = {
-    numbers:        PropTypes.object,
-    lastCallFrom:   PropTypes.number,
-    ticketId:       PropTypes.number,
-    ticketTitle:    PropTypes.string,
-    onMakeCall:     PropTypes.func,
-    onSearchPerson: PropTypes.func
+    numbers:             PropTypes.object,
+    lastCallFrom:        PropTypes.number,
+    ticketId:            PropTypes.number,
+    ticketTitle:         PropTypes.string,
+    ticketPersonId:      PropTypes.number,
+    ticketPersonNumbers: PropTypes.array,
+    makeCall:            PropTypes.func,
+    searchPerson:        PropTypes.func
   };
 
   constructor(props) {
@@ -40,7 +41,8 @@ class Dialpad extends React.Component {
         value: {
           call_from: callFrom,
           call_to:   '',
-          ticket:    null
+          ticket:    null,
+          person:    null
         },
         errorList: {},
         onChange:  this.onChange
@@ -54,6 +56,15 @@ class Dialpad extends React.Component {
 
   componentDidMount() {
     this.lastQuery = '';
+    const { numbers } = this.props;
+    const { formData } = this.state;
+
+    const callFrom = numbers ? numbers.getIn([formData.value.call_from, 'number']) : '';
+    const callTo = formData.value.call_to;
+
+    if (!callTo && callFrom) {
+      this.phoneInput.setCountryCode(getPhoneCountryCode(callFrom));
+    }
   }
 
   componentWillReceiveProps(newProps) {
@@ -79,22 +90,24 @@ class Dialpad extends React.Component {
     this.setState({ formData });
 
     const $input = $(this.phoneInput.input);
-    const { onSearchPerson } = this.props;
+    const { searchPerson, numbers } = this.props;
     const searchPeople = debounce(() => {
       const callTo = this.state.formData.value.call_to;
       if (callTo && this.lastQuery !== callTo) {
-        const promise = onSearchPerson(callTo);
-        promise.success(({ data }) => {
-          if (callTo === this.state.formData.value.call_to) {
-            this.setState({
-              searchResults: Immutable.fromJS(data)
-            });
-          }
-        });
-      } else {
         this.setState({
           searchResults: Immutable.fromJS([])
         });
+
+        const promise = searchPerson(callTo);
+        if (promise) {
+          promise.success(({ data }) => {
+            if (this.lastQuery === callTo) {
+              this.setState({
+                searchResults: Immutable.fromJS(data)
+              });
+            }
+          });
+        }
       }
 
       this.lastQuery = callTo;
@@ -107,55 +120,7 @@ class Dialpad extends React.Component {
     // if just 'call to' field was changed then
     // try to set find appropriate 'call from' number
     if (changedFields.indexOf('call_to') !== -1 && changedFields.indexOf('call_from') === -1) {
-      // update 'call from' field based on current country code
-      const countryCode = this.phoneInput.getCountryData().iso2;
-      const { numbers = Immutable.fromJS({}) } = this.props;
-
-      let selectedNumber;
-
-      // try to get from country code
-      if (!selectedNumber) {
-        numbers.forEach((number) => {
-          if (number.get('outbound_calls_default')
-            && number.get('outbound_calls_default_type') === 'country'
-            && countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))
-          ) {
-            selectedNumber = number;
-          }
-        });
-      }
-
-      // try to get from specific countries
-      numbers.forEach((number) => {
-        if (number.get('outbound_calls_default')
-          && number.get('outbound_calls_default_type') === 'specific'
-          && number.get('outbound_calls_default_countries').contains(countryCode)
-        ) {
-          selectedNumber = number;
-        }
-      });
-
-      // try to get global outgoing number
-      if (!selectedNumber) {
-        numbers.forEach((number) => {
-          if (number.get('outbound_calls_default')
-            && number.get('outbound_calls_default_type') === 'all'
-          ) {
-            selectedNumber = number;
-          }
-        });
-      }
-
-      if (!selectedNumber) {
-        // try to get last selected number
-        if (storageAvailable('localStorage')) {
-          const storedNumberId = localStorage.getItem('dpAgent.voice.lastCallFrom');
-          if (storedNumberId) {
-            selectedNumber = numbers.get(parseInt(storedNumberId, 10));
-          }
-        }
-      }
-
+      const selectedNumber = this.getFromNumber();
       if (selectedNumber) {
         if (formData.value.call_from !== selectedNumber.get('id')) {
           setTimeout(() => {
@@ -176,13 +141,20 @@ class Dialpad extends React.Component {
       if (storageAvailable('localStorage')) {
         localStorage.setItem('dpAgent.voice.lastCallFrom', formData.value.call_from);
       }
+
+      const callFrom = numbers ? numbers.getIn([formData.value.call_from, 'number']) : '';
+      const callTo = formData.value.call_to;
+
+      if (!callTo && callFrom) {
+        this.phoneInput.setCountryCode(getPhoneCountryCode(callFrom));
+      }
     }
   };
 
   onSubmit = (event) => {
     event.preventDefault();
 
-    const { onMakeCall } = this.props;
+    const { makeCall, ticketPersonId, ticketPersonNumbers } = this.props;
     const { submit } = this.state;
     const { value } = this.state.formData;
 
@@ -190,7 +162,17 @@ class Dialpad extends React.Component {
       return;
     }
 
-    const promise = onMakeCall(value.call_from, value.call_to, value.ticket);
+    let personId = value.person;
+    if (value.ticket) {
+      // if ticket is set and ticket's person has this phone number
+      // then use this person as call owner
+      if (ticketPersonNumbers.filter(number => `${number}`.replace(/[^\d]/, '')
+          === `${value.call_to}`.replace(/[^\d]/, '')).length > 0) {
+        personId = ticketPersonId;
+      }
+    }
+
+    const promise = makeCall(value.call_from, value.call_to, value.ticket, personId);
     if (!promise) {
       return;
     }
@@ -232,17 +214,76 @@ class Dialpad extends React.Component {
     });
   };
 
-  onClearSearchResults = () => {
-    setTimeout(() => {
-      this.setState({
-        searchResults: Immutable.fromJS([])
-      });
-    }, 1);
-  };
+  getFromNumber() {
+    // update 'call from' field based on current country code
+    const countryCode = this.phoneInput ? this.phoneInput.getCountryData().iso2 : null;
+    const { numbers = Immutable.fromJS({}) } = this.props;
 
-  setOutgoingNumber = (number) => {
+    let selectedNumber;
+
+    // try to get from country code
+    // with 'outbound_calls_default' option
+    if (!selectedNumber) {
+      numbers.forEach((number) => {
+        if (number.get('outbound_calls_default')
+          && number.get('outbound_calls_default_type') === 'country'
+          && countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))
+        ) {
+          selectedNumber = number;
+        }
+      });
+    }
+
+    // try to get from specific countries
+    // with 'outbound_calls_default' option
+    numbers.forEach((number) => {
+      if (number.get('outbound_calls_default')
+        && number.get('outbound_calls_default_type') === 'specific'
+        && number.get('outbound_calls_default_countries').contains(countryCode)
+      ) {
+        selectedNumber = number;
+      }
+    });
+
+    // try to get global outgoing number
+    // with 'outbound_calls_default' option
+    if (!selectedNumber) {
+      numbers.forEach((number) => {
+        if (number.get('outbound_calls_default')
+          && number.get('outbound_calls_default_type') === 'all'
+        ) {
+          selectedNumber = number;
+        }
+      });
+    }
+
+    // try to get a number by just country code
+    if (!selectedNumber) {
+      numbers.forEach((number) => {
+        if (countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))) {
+          selectedNumber = number;
+        }
+      });
+    }
+
+    if (!selectedNumber) {
+      // try to get last selected number
+      if (storageAvailable('localStorage')) {
+        const storedNumberId = localStorage.getItem('dpAgent.voice.lastCallFrom');
+        if (storedNumberId) {
+          selectedNumber = numbers.get(parseInt(storedNumberId, 10));
+        }
+      }
+    }
+
+    return selectedNumber;
+  }
+
+  setOutgoingNumber = (number, personId = null) => {
     const $input = $(this.phoneInput.input);
     const { formData } = this.state;
+    formData.value.call_to = number;
+    formData.value.person = personId;
 
     setTimeout(() => {
       this.setState({
@@ -270,6 +311,41 @@ class Dialpad extends React.Component {
     });
   };
 
+  setPerson = (personId) => {
+    const { formData } = this.state;
+    formData.value.person = personId;
+
+    this.setState({ formData });
+  };
+
+  clearSearchResults = () => {
+    setTimeout(() => {
+      this.setState({
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
+  showProviderError = (number, errors) => {
+    const $input = $(this.phoneInput.input);
+    const { formData } = this.state;
+
+    this.phoneInput.setNumber(number);
+    $input.focus();
+
+    setTimeout(() => {
+      this.setState({
+        formData: createValue({
+          value:     formData.value,
+          errorList: errors,
+          onChange:  this.onChange
+        }),
+        submit:        false,
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
   render() {
     const { numbers = Immutable.fromJS({}) } = this.props;
     const { formData, searchResults, submit, ticketId, ticketTitle } = this.state;
@@ -283,7 +359,7 @@ class Dialpad extends React.Component {
             </Field>
 
             {searchResults.size > 0 &&
-            <ClickOut onClickOut={this.onClearSearchResults}>
+            <ClickOut onClickOut={this.clearSearchResults}>
               <SearchResults
                 query={formData.value.call_to}
                 results={searchResults}
@@ -352,7 +428,7 @@ class SearchResults extends React.Component {
           <div
             key={index}
             className="dialpad-search-result-item"
-            onClick={() => { onSelect(getNumber(item)); }}
+            onClick={() => { onSelect(getNumber(item), item.get('id')); }}
           >
             {item.get('name')} {getNumber(item)}
           </div>

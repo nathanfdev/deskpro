@@ -126,7 +126,7 @@ export const loadTemplates = createAction(
 );
 
 export const loadTranslations = createAction(
-  'EMAIL_TEMPLATE_LOAD_TRANSLATIONS',
+  'EMAIL_TEMPLATES_LOAD_TRANSLATIONS',
   phraseName => new Promise((resolve) => {
     repository('Languages').loadTranslations(phraseName).then((promise) => {
       resolve(promise.getData());
@@ -200,7 +200,7 @@ export const saveTemplate = createAction(
 );
 
 export const saveTranslations = createAction(
-  'EMAIL_TEMPLATE_SAVE_TRANSLATIONS',
+  'EMAIL_TEMPLATES_SAVE_TRANSLATIONS',
   (phraseName, translations) => new Promise((resolve) => {
     repository('Languages').saveTranslations(phraseName, translations).then((promise) => {
       resolve(promise.getData());
@@ -219,6 +219,17 @@ export const sendPreview = createAction(
   )
 );
 
+export const markAsConverted = createAction(
+  'EMAIL_TEMPLATE_MARK_AS_CONVERTED',
+  name => new Promise((resolve, reject) => {
+    repository('EmailTemplates').markAsConverted(name)
+      .success((result) => {
+        resolve(result);
+      })
+      .error(response => reject(response));
+  })
+);
+
 export const setCurrentLanguage = createAction(
   'EMAIL_TEMPLATES_SET_CURRENT_LANGUAGE',
   params => params
@@ -234,7 +245,7 @@ export const setCurrentTemplateGroup = createAction(
   params => params
 );
 
-export const setExtraTemplate = createAction('EMAIL_TEMPLATE_SET_EXTRA_TEMPLATE');
+export const setExtraTemplate = createAction('EMAIL_TEMPLATES_SET_EXTRA_TEMPLATE');
 
 export const setLegacyTemplate = createAction('EMAIL_TEMPLATES_SET_LEGACY_TEMPLATE');
 

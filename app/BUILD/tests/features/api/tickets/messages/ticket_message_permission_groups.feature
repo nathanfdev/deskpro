@@ -92,3 +92,55 @@ Feature: /tickets/{id}/messages endpoint
 
      When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{tm}"
      Then the response status code should be 200
+
+  Scenario: Test modify messages sub-permissions
+    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
+    And I set permission "agent_tickets.modify_messages_own" = 0 for "registered" usergroup
+    And the following "TicketMessage" records exist:
+      | #  | ticket   | person |
+      | tm | {ticket} | {me}   |
+
+    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{tm}"
+    Then the response status code should be 403
+    When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{tm}"
+    Then the response status code should be 403
+
+    Given I set permission "agent_tickets.modify_messages_edit_own" = 1 for "registered" usergroup
+    Given I set permission "agent_tickets.modify_messages_delete_own" = 1 for "registered" usergroup
+
+    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{tm}" with body:
+    """
+{
+  "message": "my message"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{tm}"
+    Then the response status code should be 200
+
+  Scenario: Test modify messages notes sub-permissions
+    Given I set permission "agent_tickets.use" = 1 for "registered" usergroup
+    And I set permission "agent_tickets.modify_messages_own" = 0 for "registered" usergroup
+    And the following "TicketMessage" records exist:
+      | #  | ticket   | person | is_agent_note |
+      | tm | {ticket} | {me}   | 1             |
+
+    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{tm}"
+    Then the response status code should be 403
+    When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{tm}"
+    Then the response status code should be 403
+
+    Given I set permission "agent_tickets.modify_messages_edit_timelimited_notes_own" = 1 for "registered" usergroup
+    Given I set permission "agent_tickets.modify_messages_delete_timelimited_notes_own" = 1 for "registered" usergroup
+
+    When I send a PUT request to "/api/v2/tickets/{ticket}/messages/{tm}" with body:
+    """
+{
+  "message": "my message"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a DELETE request to "/api/v2/tickets/{ticket}/messages/{tm}"
+    Then the response status code should be 200

@@ -398,7 +398,12 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		}
 		row.find('.select2').css('max-width', 150);
 		DP.select(row.find('.select2'));
-    row.find('[data-custom-field]').dpMultiLevelSelect();
+
+		try {
+      row.find('[data-custom-field]').dpMultiLevelSelect();
+    } catch (e) {
+      console.warn('Can\'t init multiselect on non selectable field', e);
+    }
 
 		if (row.data('form-base-name')) {
 			this.updateFormName($('.builder-op', row), row.data('form-base-name'));

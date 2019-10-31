@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType;
@@ -129,7 +130,7 @@ class LanguagesController extends CrudController
             'agent.general.email_domain',
             'agent.general.everyone',
             'agent.general.export',
-            'agent.general.feedback',
+            'agent.general.community',
             'admin.general.fail',
             'agent.general.field',
             'agent.general.filter',
@@ -342,9 +343,12 @@ class LanguagesController extends CrudController
             'agent.voice.call_participant_unhold',
             'agent.voice.call_agent_invited',
             'agent.voice.call_agent_transfer',
+            'agent.voice.call_queue_transfer',
+            'agent.voice.call_auto_attendant_transfer',
             'agent.voice.call_user_joined',
             'agent.voice.call_agent_joined',
             'agent.voice.call_agent_cancel_invite',
+            'agent.voice.call_agent_invite_timeout',
             'agent.voice.call_agent_ignore_invite',
             'agent.voice.call_agent_left',
             'agent.voice.call_user_left',
@@ -353,6 +357,7 @@ class LanguagesController extends CrudController
             'agent.voice.call_agent_hangup',
             'agent.voice.call_started',
             'agent.voice.call_ended',
+            'agent.voice.call_failed',
             'agent.voice.call_recording_deleted',
         ];
 
@@ -395,9 +400,12 @@ class LanguagesController extends CrudController
             'agent.voice.call_participant_unhold',
             'agent.voice.call_agent_invited',
             'agent.voice.call_agent_transfer',
+            'agent.voice.call_queue_transfer',
+            'agent.voice.call_auto_attendant_transfer',
             'agent.voice.call_user_joined',
             'agent.voice.call_agent_joined',
             'agent.voice.call_agent_cancel_invite',
+            'agent.voice.call_agent_invite_timeout',
             'agent.voice.call_agent_ignore_invite',
             'agent.voice.call_agent_left',
             'agent.voice.call_user_left',
@@ -406,6 +414,7 @@ class LanguagesController extends CrudController
             'agent.voice.call_agent_hangup',
             'agent.voice.call_started',
             'agent.voice.call_ended',
+            'agent.voice.call_failed',
             'agent.voice.call_recording_deleted',
         ];
 
@@ -423,7 +432,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Get("/email_phrases/{group}/{languageId}")
-     * @Feature("email_templates")
      *
      * @param $languageId
      *
@@ -462,8 +470,8 @@ class LanguagesController extends CrudController
                     'user.defaults.*',
                     'portal.downloads.*',
                     'user.downloads.*',
-                    'portal.feedback.*',
-                    'user.feedback.*',
+                    'portal.community.*',
+                    'user.community.*',
                     'portal.flashes.*',
                     'portal.forms.*',
                     'user.knowledgebase.*',
@@ -488,7 +496,7 @@ class LanguagesController extends CrudController
                     'agent.chat.*',
                     'agent.chrome.*',
                     'agent.downloads.*',
-                    'agent.feedback.*',
+                    'agent.community.*',
                     'agent.flashes.*',
                     'agent.forms.*',
                     'agent.news.*',
@@ -513,7 +521,6 @@ class LanguagesController extends CrudController
      *     output="array"
      * )
      * @Rest\Get("/translations/{phraseName}")
-     * @Feature("email_templates")
      *
      * @param $phraseName
      *
@@ -548,9 +555,12 @@ class LanguagesController extends CrudController
      * )
      * @Rest\Post("/translations/{phraseName}")
      * @Feature("email_templates")
+     * @ApiUserContext("admin")
      *
      * @param Request $request
      * @param $phraseName
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View
      */
@@ -663,6 +673,7 @@ class LanguagesController extends CrudController
      *     output="Application\DeskPRO\Entity\Phrase",
      * )
      * @Rest\Post("/custom_phrase")
+     * @ApiUserContext("admin")
      *
      * @param Request $request
      *

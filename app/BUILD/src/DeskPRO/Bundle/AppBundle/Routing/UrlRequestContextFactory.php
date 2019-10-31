@@ -25,6 +25,13 @@ class UrlRequestContextFactory
     private $absContextToBrand = [];
 
     /**
+     * A string scheme+host, or empty string if its a local path, or null if disabled.
+     *
+     * @var string|null
+     */
+    private $cfImgResizeZone = -1;
+
+    /**
      * UrlContextFactory constructor.
      *
      * @param ContainerInterface $container
@@ -114,5 +121,44 @@ class UrlRequestContextFactory
         $this->absContextToBrand[$brand->getId()] = $context;
 
         return $context;
+    }
+
+    public function hasCfImageResize()
+    {
+        if ($this->cfImgResizeZone === -1) {
+            $this->cfImgResizeZone = rtrim(
+                $this->container->get('settings_resolver')->getGlobalSettings()->get('images.cf_resize_zone', ''),
+                '/'
+            ) ?: null;
+        }
+
+        return $this->cfImgResizeZone !== null;
+    }
+
+    public function getCfResizeUrl($url, array $cfParams, RequestContext $context)
+    {
+        if (!$this->hasCfImageResize() || !$cfParams) {
+            return $url;
+        }
+
+        $cfPrefix    = $this->cfImgResizeZone;
+        $baseFullUrl = $context->getScheme().'://'.$context->getHost().'/';
+
+        // if $url is a url, then ours needs to be a full url too
+        if (!preg_match('/^https?:\/\//i', $cfPrefix) && preg_match('/^https?:\/\//i', $url)) {
+            $cfPrefix = $baseFullUrl.ltrim($cfPrefix, '/');
+        }
+
+        // source-url in cf needs to be a full url if the zone is a full url
+        if (preg_match('/^https?:\/\//i', $cfPrefix) && !preg_match('/^https?:\/\//i', $url)) {
+            $url = $baseFullUrl.ltrim($url, '/');
+        }
+
+        return $cfPrefix.'/cdn-cgi/image/'
+            .implode(',', array_map(function ($k, $v) {
+                return "$k=".urlencode($v);
+            }, array_keys($cfParams), $cfParams))
+            .'/'
+            .$url;
     }
 }

@@ -11,7 +11,7 @@
 				<tbody>
 					<tr>
 						<th class="col-head">{{ phrase('agent.general.user') }}</th>
-            {% if object_type != 'feedback' %}
+            {% if object_type != 'community' %}
               <th class="col-head">{{ phrase('agent.general.rating') }}</th>
             {% endif %}
 						<th class="col-head" width="60">{{ phrase('agent.general.when') }}</th>
@@ -20,7 +20,9 @@
             <tr class="line-2">
               <td>
                 {% if rating.person %}
-                  {{ rating.person.display_name }}
+					<a data-route="person:{{ path('agent_people_view', {'person_id': rating.person.id})|raw }}">
+						{{ rating.person.display_name }}
+					</a>
                   {% if rating.person.primary_email_address %}
                     &lt;{{ rating.person.primary_email_address }}&gt;
                   {% endif %}
@@ -36,7 +38,7 @@
                 {% endif %}
                 {% if rating.ip_address %}from {{ rating.ip_address }}{% endif %}
               </td>
-              {% if object_type != 'feedback' %}
+              {% if object_type != 'community' %}
                 <td>
                   {% if rating.rating >= 1 %}
                     {{ phrase('agent.publish.helpful') }}

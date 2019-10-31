@@ -10,14 +10,14 @@ define([
       template:   `\
 <span class="dp-order-ctrl dropdown">
   <div class="orig" style="display: none;" ng-transclude></div>
-  <a class="title dropdown-toggle" data-toggle="dropdown">Order by: {{title}} <i class="fas fa-sort-alpha-up" ng-show="sortDir == 'DESC'"></i><i class="fa fa-sort-alpha-asc" ng-show="sortDir == 'ASC'"></i></a>
+  <a class="title dropdown-toggle" data-toggle="dropdown">Order by: {{title}} <i class="fas fa-sort-alpha-up" ng-show="sortDir == 'DESC'"></i><i class="fas fa-sort-alpha-down" ng-show="sortDir == 'ASC'"></i></a>
   <ul class="dropdown-menu">
     <li class="dropdown-header">Sort Field</li>
-    <li ng-repeat="opt in options"><a ng-click="$event.preventDefault(); setSortField(opt.value);">{{opt.title}} <i class="fa fa-check" ng-show="sortField == opt.value"></i></a></li>
+    <li ng-repeat="opt in options"><a ng-click="$event.preventDefault(); setSortField(opt.value);">{{opt.title}} <i class="fas fa-check" ng-show="sortField == opt.value"></i></a></li>
     <li class="divider"></li>
     <li class="dropdown-header">Sort Direction</li>
-    <li><a ng-click="$event.preventDefault(); setSortDirection('ASC');">Ascending <i class="fa fa-check" ng-show="sortDir == 'ASC'"></i></a></li>
-    <li><a ng-click="$event.preventDefault(); setSortDirection('DESC');">Descending <i class="fa fa-check" ng-show="sortDir == 'DESC'"></i></a></li>
+    <li><a ng-click="$event.preventDefault(); setSortDirection('ASC');">Ascending <i class="fas fa-check" ng-show="sortDir == 'ASC'"></i></a></li>
+    <li><a ng-click="$event.preventDefault(); setSortDirection('DESC');">Descending <i class="fas fa-check" ng-show="sortDir == 'DESC'"></i></a></li>
   </ul>
 </span>\
 `,

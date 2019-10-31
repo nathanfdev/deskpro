@@ -1,0 +1,44 @@
+<div class="full-tab-content">
+	<div class="community-topic-content-wrap content-post-wrap">
+		{{ topic.content_html|raw }}
+		{% if topic.attachments|length %}
+			<ul class="attachment-list">
+				{% for attach in topic.attachments %}
+					<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+						{% if attach.blob.isImage() %}
+							<a href="{{ attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': attach.blob.auth_id, 'filename': attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+						{% endif %}
+						<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
+						<span class="size">({{ attach.blob.readable_filesize }})</span>
+					</li>
+				{% endfor %}
+			</ul>
+		{%endif%}
+	</div>
+	<div class="community-topic-editor-wrap article-editor-wrap" style="display: none">
+		<div class="community-editor">
+			{% if state.topic.content %}
+				<div class="revert-message-notice">
+					{{ phrase('agent.general.unsaved_changes_were_restored') }} <button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
+					<br />
+				</div>
+			{% endif %}
+			<textarea class="edit-content-field" name="topic[content]" rows="5" cols="50">{{ state.topic.content|default(topic.content) }}</textarea>
+			{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newcommunitytopic[attach][]'} %}
+			<h6>{{ phrase('agent.general.attachments') }}</h6>
+			<div class="file-input">
+				<input type="file" name="file-upload" multiple="multiple" />
+			</div>
+			<ul class="files file-list">
+				{% for attach in topic.attachments %}
+					<li>
+						<em class="remove-attach-trigger delete" data-blob-id="{{ attach.blob.id }}"></em>
+						<label><a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a> <span>{{ attach.blob.readable_filesize }}</span></label>
+					</li>
+				{% endfor %}
+			</ul>
+
+			<textarea class="edit-content-field-default" style="display: none;">{{topic.content}}</textarea>
+		</div>
+	</div>
+</div>

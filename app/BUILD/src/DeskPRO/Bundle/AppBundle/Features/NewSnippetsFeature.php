@@ -86,7 +86,7 @@ HTML;
     /**
      * {@inheritdoc}
      */
-    public function beforeEnable(ContainerInterface $container)
+    public function beforeEnable(ContainerInterface $container, $newInstall = false)
     {
         $em = $container->get('doctrine.orm.default_entity_manager');
         $this->copySnippets($em);

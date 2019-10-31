@@ -19,11 +19,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NewsController extends AbstractController
 {
     /**
-     * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
+     *     requirements={"_format":"html|rss|ics"})
      * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
@@ -41,12 +43,7 @@ class NewsController extends AbstractController
         // RSS
 
         if ('rss' === $_format) {
-            $pager = $this->getNewsDataService()->getNewsPager(
-                null,
-                $page,
-                $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
-                $person
-            );
+            $pager = $this->getNewsPager($request, $page, $person);
 
             return $this->render('PortalBundle:News:feed.rss.twig', [
                 'page_title' => $this->createPageTitle()->news(),
@@ -58,6 +55,23 @@ class NewsController extends AbstractController
             'portal_news',
             ['_format' => 'rss']
         );
+
+        // iCalendar
+
+        if ('ics' === $_format) {
+            $pager = $this->getNewsPager($request, $page, $person);
+
+            return $this->render('PortalBundle:News:feed.ics.twig', [
+                'page_title' => $this->createPageTitle()->news(),
+                'pager'      => $pager,
+                'category'   => null,
+            ], new Response(null, Response::HTTP_OK, ['Content-Type' => 'text/calendar']));
+        }
+        $icsLink = preg_replace('/https?/', 'webcal', $this->generateUrl(
+            'portal_news',
+            ['_format' => 'ics'],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        ));
 
         // BREADCRUMBS
 
@@ -81,6 +95,7 @@ class NewsController extends AbstractController
                 'page_title'    => $this->createPageTitle()->news(),
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,
+                'ics_link'      => $icsLink,
                 'is_subscribed' => $isSubscribed,
             ]
         );
@@ -443,5 +458,22 @@ class NewsController extends AbstractController
         );
 
         return $pdfRenderer->generateFile($contentHtml->getContent(), $post->getTitle().'.pdf');
+    }
+
+    /**
+     * @param Request                                                                    $request
+     * @param int                                                                        $page
+     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest $person
+     *
+     * @return \Pagerfanta\Pagerfanta
+     */
+    private function getNewsPager(Request $request, $page, $person)
+    {
+        return $this->getNewsDataService()->getNewsPager(
+            null,
+            $page,
+            $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
+            $person
+        );
     }
 }

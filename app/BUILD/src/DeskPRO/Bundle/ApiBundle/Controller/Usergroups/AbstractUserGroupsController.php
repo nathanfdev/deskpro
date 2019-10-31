@@ -22,7 +22,8 @@ abstract class AbstractUserGroupsController extends CrudController
     public static $sortOptions = [
         'title' => 'title',
     ];
-    public static $listOrder = 'asc';
+    public static $listOrder    = 'asc';
+    public static $listPaginate = false;
 
     /**
      * {@inheritdoc}

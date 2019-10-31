@@ -13,10 +13,10 @@ use Application\LegacyApiBundle\ApiUser;
 interface PermissionStrategyInterface
 {
     /**
-     * @param ApiUser $api_user
-     * @param mixed   $context_info
+     * @param ApiUser $apiUser
+     * @param mixed   $contextInfo
      *
      * @return bool
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null);
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null);
 }

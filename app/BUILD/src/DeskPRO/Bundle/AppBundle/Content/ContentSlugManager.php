@@ -4,11 +4,11 @@ namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleSlugHistory;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicSlugHistory;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadSlugHistory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackSlugHistory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsSlugHistory;
 use Application\DeskPRO\Entity\Topic;
@@ -67,7 +67,7 @@ class ContentSlugManager
         $expectedSlug = $this->slugifyTitle($content->getTitle());
 
         if ($expectedSlug === '') {
-            $expectedSlug = strtolower(TypeUtils::getBaseTypeName($content));
+            $expectedSlug = $this->combineSlug($content);
         }
 
         if ($existingSlug === $expectedSlug) {
@@ -85,12 +85,26 @@ class ContentSlugManager
         $i = 1;
         while (!$this->isValidSlug($newSlug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
-            $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()) ?: strtolower(TypeUtils::getBaseTypeName($content)), ++$i);
+            $newSlug = $this->slugifyTitle($content->getTitle());
+            if ($newSlug === '') {
+                $newSlug = $this->combineSlug($content);
+            }
+            $newSlug = sprintf('%s-%d', $newSlug, ++$i);
         }
 
-        $newHistory = $content->setSlug($newSlug);
+        return $content->setSlug($newSlug);
+    }
 
-        return $newHistory;
+    /**
+     * @param ContentAbstract $content
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function processSlugForDeletedEntity(ContentAbstract $content)
+    {
+        $this->getHistoryRepoForContent($content)->clearHistoryByEntity($content);
+
+        $content->setSlug($content::DELETED_SLUG_PREFIX.$content->getId());
     }
 
     /**
@@ -172,6 +186,43 @@ class ContentSlugManager
     }
 
     /**
+     * @param ContentAbstract $content
+     *
+     * @return int|null
+     */
+    protected function getLatestContentId($content)
+    {
+        $qb = $this->getRepoForContent($content)->createQueryBuilder('c');
+        $qb->select('c.id')->orderBy('c.id', 'DESC')->setMaxResults(1);
+        $rows = $qb->getQuery()->execute();
+        if ($rows) {
+            $row = array_pop($rows);
+
+            return ++$row['id'];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param ContentAbstract $content
+     *
+     * @return string
+     */
+    protected function combineSlug($content)
+    {
+        $slug = strtolower(TypeUtils::getBaseTypeName($content));
+        if ($content->getId()) {
+            $slug .= '-'.$content->getId();
+        } else {
+            $latestContentId = $this->getLatestContentId($content);
+            $slug .= $latestContentId ? '-'.$latestContentId : '';
+        }
+
+        return $slug;
+    }
+
+    /**
      * @param string          $newSlug
      * @param ContentAbstract $content
      *
@@ -195,8 +246,8 @@ class ContentSlugManager
                 return $this->getEm()->getRepository(Article::class);
             case News::CONTENT_TYPE:
                 return $this->getEm()->getRepository(News::class);
-            case Feedback::CONTENT_TYPE:
-                return $this->getEm()->getRepository(Feedback::class);
+            case CommunityTopic::CONTENT_TYPE:
+                return $this->getEm()->getRepository(CommunityTopic::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(Download::class);
             case Topic::CONTENT_TYPE:
@@ -218,8 +269,8 @@ class ContentSlugManager
                 return $this->getEm()->getRepository(ArticleSlugHistory::class);
             case News::CONTENT_TYPE:
                 return $this->getEm()->getRepository(NewsSlugHistory::class);
-            case Feedback::CONTENT_TYPE:
-                return $this->getEm()->getRepository(FeedbackSlugHistory::class);
+            case CommunityTopic::CONTENT_TYPE:
+                return $this->getEm()->getRepository(CommunityTopicSlugHistory::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(DownloadSlugHistory::class);
             case Topic::CONTENT_TYPE:

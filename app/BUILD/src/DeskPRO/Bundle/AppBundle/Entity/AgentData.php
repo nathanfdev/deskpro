@@ -15,13 +15,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class AgentData.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentDataRepository")
  * @ORM\Table(name="agent_data", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="unique_extension_numbers", columns={"extension_number"})
  * })
  * @ORM\EntityListeners({
  *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceWorkerListener",
- *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceSettingsListener"
+ *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceSettingsListener",
+ *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoicePermissionRemovalListener"
  * })
  *
  * @JMS\ExclusionPolicy("all")
@@ -67,7 +68,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @JMS\Expose()
      *
@@ -153,6 +154,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $forwardingNumber;
 
     /**
+     * @ORM\Column(name="forwarding_ring_timeout", type="integer", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $forwardingRingTimeout = 10;
+
+    /**
      * @ORM\Column(name="forwarding_number_type", type="string", length=50, nullable=true)
      *
      * @JMS\Expose()
@@ -161,6 +172,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $forwardingNumberType;
+
+    /**
+     * @ORM\Column(name="forwarding_logged_out", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $forwardingLoggedOut = true;
 
     /**
      * @return int
@@ -389,5 +410,45 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function getForwardingNumberType()
     {
         return $this->forwardingNumberType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getForwardingRingTimeout()
+    {
+        return $this->forwardingRingTimeout;
+    }
+
+    /**
+     * @param int $forwardingRingTimeout
+     *
+     * @return $this
+     */
+    public function setForwardingRingTimeout($forwardingRingTimeout)
+    {
+        $this->setModelField('forwardingRingTimeout', $forwardingRingTimeout);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForwardingLoggedOut()
+    {
+        return $this->forwardingLoggedOut;
+    }
+
+    /**
+     * @param bool $forwardingLoggedOut
+     *
+     * @return $this
+     */
+    public function setForwardingLoggedOut($forwardingLoggedOut)
+    {
+        $this->setModelField('forwardingLoggedOut', $forwardingLoggedOut);
+
+        return $this;
     }
 }

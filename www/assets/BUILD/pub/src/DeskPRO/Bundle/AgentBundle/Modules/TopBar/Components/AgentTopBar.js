@@ -457,12 +457,21 @@ export class AgentTopBar extends React.Component {
     leaveGroup:           PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    window.AgentTopBar = this;
+  }
+
   onChatVolumeUpdate = (newVal) => {
     this.props.updateVolume(newVal / 10);
   };
 
   openUserMenu = () => {
     setTimeout(() => this.userMenu.togglePopup(), 1);
+  };
+
+  closeUserMenu = () => {
+    setTimeout(() => this.userMenu.closePopup(), 1);
   };
 
   renderIM() {

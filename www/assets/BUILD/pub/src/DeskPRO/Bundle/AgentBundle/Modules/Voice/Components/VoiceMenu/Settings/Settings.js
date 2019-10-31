@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
-import QueuesToggleContainer from './QueuesToggleContainer';
+import QueuesContainer from './QueuesContainer';
 import VolumeContainer from './VolumeContainer';
 import Voicemail from './Voicemail';
 import OnlineAgentsContainer from './OnlineAgentsContainer';
@@ -22,17 +22,17 @@ class Settings extends React.Component {
 
     props.panels.push({
       title:   'Queues',
-      icon:    'fa fa-tasks',
-      content: <QueuesToggleContainer />
+      icon:    'fas fa-tasks',
+      content: <QueuesContainer />
     });
     props.panels.push({
       title:   'Ringing volume',
-      icon:    'fa fa-volume-up',
+      icon:    'fas fa-volume-up',
       content: <VolumeContainer />
     });
     props.panels.push({
       title:   'Voicemail',
-      icon:    'fa fa-play-circle',
+      icon:    'fas fa-play-circle',
       content: <Voicemail />
     });
 
@@ -46,7 +46,7 @@ class Settings extends React.Component {
 
     return (
       <div>
-        <Accordion {...props} />
+        <Accordion {...props} ref={(c) => { this.panels = c; }} />
         <OnlineAgentsContainer />
       </div>
     );

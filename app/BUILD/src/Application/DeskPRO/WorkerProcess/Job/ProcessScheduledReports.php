@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -52,8 +53,14 @@ class ProcessScheduledReports extends AbstractJob
 
             if ($report->getSendTo()) {
                 if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
-                    $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
-                    $this->sendProcessedReport($report, $savedReport);
+                    try {
+                        $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
+                        $this->sendProcessedReport($report, $savedReport);
+                    } catch (\Exception $e) {
+                        $exception = new \RuntimeException('Error processing scheduled report with id '.$report->getId());
+                        SystemErrorHandler::logException($exception);
+                        SystemErrorHandler::logException($e);
+                    }
                 }
             }
 

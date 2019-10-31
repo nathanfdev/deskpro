@@ -46,7 +46,7 @@ Feature: /voice_accounts endpoint
     Examples:
       | type   |
       | twilio |
-      | plivo  |
+#      | plivo  | not implemented (plivo is disabled)
 
   Scenario Outline: I update an account
     Given only the following <entity> records exist:
@@ -73,7 +73,7 @@ Feature: /voice_accounts endpoint
     Examples:
       | entity             | type   |
       | TwilioVoiceAccount | twilio |
-      | PlivoVoiceAccount  | plivo  |
+#      | PlivoVoiceAccount  | plivo  | not implemented (plivo is disabled)
 
   Scenario Outline: I delete twilio account
     Given no TwilioVoiceAccount records exist
@@ -134,15 +134,17 @@ Feature: /voice_accounts endpoint
     """
     Then the response status code should be 405
 
-  Scenario: I try to edit twilio account via another provider's controller
-    Given only the following TwilioVoiceAccount records exist:
-      | #  | AccountName | AccountId | AuthToken |
-      | a1 | Account 1   | Sid1      | Token1    |
-
-    When I send a PUT request to "/api/v2/voice_accounts/plivo/{a1}" with body:
-    """
-{
-  "account_name": "My account",
-}
-    """
-    Then the response status code should be 404
+#  not implemented (plivo is disabled), there is just one provider for now
+#
+#  Scenario: I try to edit twilio account via another provider's controller
+#    Given only the following TwilioVoiceAccount records exist:
+#      | #  | AccountName | AccountId | AuthToken |
+#      | a1 | Account 1   | Sid1      | Token1    |
+#
+#    When I send a PUT request to "/api/v2/voice_accounts/plivo/{a1}" with body:
+#    """
+#{
+#  "account_name": "My account",
+#}
+#    """
+#    Then the response status code should be 404

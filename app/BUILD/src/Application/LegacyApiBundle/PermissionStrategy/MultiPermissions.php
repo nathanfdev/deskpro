@@ -51,17 +51,19 @@ class MultiPermissions implements PermissionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
-        if (empty($this->perms)) {
-            return true;
+        $checkPerms = $this->perms;
+        if (empty($checkPerms['default'])) {
+            // no permissions are set, use the 'agent' one as fallback
+            $checkPerms['default'][] = new AgentPermission();
         }
 
         if ($this->fn) {
-            $type = $this->fn($context_info);
+            $type = $this->fn($contextInfo);
         } else {
-            if (!empty($context_info['type'])) {
-                $type = $context_info['type'];
+            if (!empty($contextInfo['type'])) {
+                $type = $contextInfo['type'];
             } else {
                 $type = 'default';
             }
@@ -70,14 +72,14 @@ class MultiPermissions implements PermissionStrategyInterface
         $check_perms = null;
 
         if ($type == 'default') {
-            if (isset($this->perms['default'])) {
-                $check_perms = $this->perms['default'];
+            if (isset($checkPerms['default'])) {
+                $check_perms = $checkPerms['default'];
             }
         } else {
-            if (isset($this->perms[$type])) {
-                $check_perms = $this->perms[$type];
-            } elseif (isset($this->perms['default'])) {
-                $check_perms = $this->perms['default'];
+            if (isset($checkPerms[$type])) {
+                $check_perms = $checkPerms[$type];
+            } elseif (isset($checkPerms['default'])) {
+                $check_perms = $checkPerms['default'];
             }
         }
 
@@ -86,7 +88,7 @@ class MultiPermissions implements PermissionStrategyInterface
         }
 
         foreach ($check_perms as $p) {
-            if (!$p->userHasPermission($api_user, $context_info)) {
+            if (!$p->userHasPermission($apiUser, $contextInfo)) {
                 return false;
             }
         }

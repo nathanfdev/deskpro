@@ -6,6 +6,7 @@ require_once __DIR__.'/BootTask/BootTaskInterface.php';
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 
 class Boot
@@ -143,7 +144,7 @@ class Boot
         if (substr($path, 0, 22) === '/admin/updater-status/') {
             self::bootServerInfoChecks($env, 'update_watcher', [
                 'auth'    => substr($path, 22),
-                'request' => $request,
+                'request' => $request, 9,
             ]);
 
             return;
@@ -166,6 +167,8 @@ class Boot
             $lowClass = 'DpSys\\LowScript\\GetMsgScript';
         } elseif (substr($path, 0, 30) === '/agent/ping-task-router-worker' && (!isset($path[30]) || $path[30] === '/')) {
             $lowClass = 'DpSys\\LowScript\\PingTaskRouterWorker';
+        } elseif (substr($path, 0, 54) === '/api/v2/plivo_callbacks/user_joins_conference_callback' && (!isset($path[54]) || $path[54] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\PlivoUserJoinsConferenceCallbackScript';
         }
 
         if ($lowClass) {
@@ -303,6 +306,25 @@ class Boot
             }
             $app->add($command);
         }
+
+        /* @var \SplFileInfo[] $customScripts */
+        try {
+            $customScripts = Finder::create()
+                ->in(implode(DIRECTORY_SEPARATOR, [$env->getDpRoot(), 'app', 'scripts', 'command']))
+                ->name('*Command.php')
+                ->files();
+
+            foreach ($customScripts as $f) {
+                $className = 'DpScripts\Command\\'.$f->getBasename('.php');
+                if (class_exists($className, true)) {
+                    $command = new $className();
+                    $app->add($command);
+                }
+            }
+        } catch (\Exception $e) {
+            // ignore
+        }
+
         $app->run($input);
     }
 

@@ -3,9 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
-use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -141,8 +141,7 @@ class SsoListener implements EventSubscriberInterface
             }
         }
 
-        $returnUrl = $request->get('return') ?: $request->getUri();
-        if (!$request->isXmlHttpRequest() && $returnUrl) {
+        if (!$request->isXmlHttpRequest() && $returnUrl = $request->get('return')) {
             $session->set('_security.portal.target_path', $returnUrl);
         }
 

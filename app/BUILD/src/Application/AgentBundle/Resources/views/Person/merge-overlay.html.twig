@@ -28,7 +28,11 @@
 					</a></li>
 				</script>
 				<div class="input-wrapper">
-					<input type="text" style="width: 98%" class="term" placeholder="{{ phrase('agent.people.find_person') }}" class="user-input" />
+					<input type="text"
+						   style="width: 98%"
+						   autocomplete="{{ "now" | date("U") }}"
+						   placeholder="{{ phrase('agent.people.find_person') }}"
+						   class="term user-input" />
 				</div>
 				<input type="hidden" name="person_id" class="person-id" value="" />
 				<div class="person-search-box" style="display: none">

@@ -13,14 +13,14 @@
 						<span ng-show="display_filter.type == 'global'">Global Filters</span>
 						<span ng-show="display_filter.type == 'agent'">Agent Filters</span>
 						<span ng-show="display_filter.type == 'team'">Team Filters</span>
-						<i class="fa fa-caret-down"></i>
+						<i class="fas fa-caret-down"></i>
 					</a>
 					<ul class="dropdown-menu" style="width: 200px">
 						<li class="dropdown-header">Show</li>
-						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Filters <i class="fa fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
-						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Filters <i class="fa fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
-						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Filters <i class="fa fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
-						<li ng-show="ListCtrl.teams"><a ng-click="$event.preventDefault(); display_filter.type = 'team';">Team Filters <i class="fa fa-check" ng-show="display_filter.type == 'team'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Filters <i class="fas fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Filters <i class="fas fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Filters <i class="fas fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
+						<li ng-show="ListCtrl.teams"><a ng-click="$event.preventDefault(); display_filter.type = 'team';">Team Filters <i class="fas fa-check" ng-show="display_filter.type == 'team'"></i></a></li>
 
 						<li class="divider" ng-show="display_filter.type == 'agent' || display_filter.type == 'team'"></li>
 						<li class="dropdown-header" ng-show="display_filter.type == 'agent' || display_filter.type == 'team'">Filter</li>
@@ -49,7 +49,7 @@
 					dp-state-mark="tickets.ticket_filters.edit.{{ ng_var('filter.id') }}"
 					data-id="{{ ng_var('filter.id') }}">
 					<a href="{{ ng_href('tickets.ticket_filters.edit', '{id: filter.id}') }}">
-						<i class="fa fa-bars drag-handle" ng-hide="display_filter.type != 'all'"></i>
+						<i class="fas fa-bars drag-handle" ng-hide="display_filter.type != 'all'"></i>
 
 						<div class="pull-right">
 							<em class="tag" style="margin-left: 6px;">
@@ -71,7 +71,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_filters.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('adm.ticket_filters.new_filter') }}</a>
+				<a class="btn btn-default" href="{{ ng_href('tickets.ticket_filters.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{ phrase('adm.ticket_filters.new_filter') }}</a>
 			</div>
 		</article>
 	</section>
@@ -113,8 +113,8 @@
 
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/240" target="_blank">Filtering and sorting tickets</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/461" target="_blank">Custom filters</a>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/240" target="_blank">Filtering and sorting tickets</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/461" target="_blank">Custom filters</a>
 				</li>
 			</ul>
 	</section>

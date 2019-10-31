@@ -9,21 +9,21 @@ class OutgoingCall extends React.Component {
     me:            PropTypes.object,
     people:        PropTypes.object,
     outgoingCall:  PropTypes.object,
-    onHangup:      PropTypes.func,
+    hangup:        PropTypes.func,
     ringingVolume: PropTypes.number
   };
 
   static defaultProps = {
-    onHangup: () => {}
+    hangup: () => {}
   };
 
   componentDidMount() {
     this.audio.playSound();
   }
 
-  onHangup = (event) => {
+  hangup = (event) => {
     event.preventDefault();
-    this.props.onHangup();
+    this.props.hangup();
   };
 
   render() {
@@ -50,12 +50,11 @@ class OutgoingCall extends React.Component {
           number={outgoingCall.get('callTo')}
           person={person}
         />
-
         <div className="buttons">
           <a
             className="ignore-button"
             href="#ignore"
-            onClick={this.onHangup}
+            onClick={this.hangup}
           >
             <i className="icon remove" />
             Cancel

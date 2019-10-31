@@ -202,7 +202,7 @@ class AppEnv implements AppEnvInterface
     }
 
     /**
-     * @return bool
+     * {@inheritdoc}
      */
     public function isQa()
     {

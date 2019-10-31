@@ -1,36 +1,42 @@
 <?php
 
 $SETTINGS = [];
-$SETTINGS['disable_portal_http_cache'] = true;
-$SETTINGS['disable_url_corrections']   = false;
-$SETTINGS['disable_outgoing_email']    = true;
 
-// Enable all experimental features
+######################################################
+# Disable Portal HTTP Cache
+######################################################
+
+$SETTINGS['disable_portal_http_cache'] = true;
+
+######################################################
+# Disable URL corrections
+######################################################
+
+$SETTINGS['disable_url_corrections'] = true;
+
+######################################################
+# Disable sending email
+######################################################
+
+$SETTINGS['disable_outgoing_email'] = true;
+
+######################################################
+# Enable all experimental features
+######################################################
+
 $SETTINGS['enable_experimental'] = ['all' => true];
 
 ######################################################
-# Basic settings for logging and dupe system         #
+# Deskpro Stack Services
 ######################################################
-# You can disable or enable loggin here and          #
-# where you want to write logs + which modes would   #
-# be logged or matched agains dupes                  #
+# The stack services are things we run in the cloud.
+# The local Deskpro instance calls these services
+# with an access token and auth token, usually
+# set up via a cloud site or license. During
+# dev you may hard-code these settings here for
+# easier setup.
 ######################################################
-$SETTINGS['api_log.enabled'] = false;
-$SETTINGS['api_log.modes'] = ['key'];
-$SETTINGS['api_log.writer.type'] = 'db';
-$SETTINGS['api_log.writer.file.serializer.type'] = 'human_readable';
-$SETTINGS['api_log.writer.file'] = [
-    'log_max_size'  => 5 * 1024 * 1024,
-    'log_max_files' => 5,
-    'log_name'      => 'api_log.log',
-];
 
-$SETTINGS['api_log.dupe.modes'] = ['key'];
-$SETTINGS['audit_log.storage'] = "db";
-
-$SETTINGS['bugsnag'] = [
-    'backend_api_key'  => null,
-    'frontend_api_key' => null,
-    'app_version'      => null, //if not set, or null it will be taken as DP_BUILD_NUM
-    'metadata'         => [],
-];
+$SETTINGS['dpss.access_token'] = '';
+$SETTINGS['dpss.auth_token'] = '';
+$SETTINGS['voice.private_accounts_enabled'] = true;

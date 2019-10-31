@@ -7,10 +7,12 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -27,6 +29,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class DownloadController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AgentPermission();
+    }
+
     /**
      * SWG\Api(
      * 	path="/downloads",
@@ -282,7 +292,7 @@ class DownloadController extends AbstractController
 
             $error = $accept->getError($file, 'agent');
             if (!$error) {
-                $blob = $accept->accept($file);
+                $blob = $accept->accept($file, false, ['tag' => DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT]);
             } else {
                 $message          = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
                 $errors['attach'] = [$error['error_code'].'.attach', $message];
@@ -453,7 +463,7 @@ class DownloadController extends AbstractController
         if ($file) {
             $accept = $this->container->getAttachmentAccepter();
             if (!$accept->getError($file, 'agent')) {
-                $blob = $accept->accept($file);
+                $blob = $accept->accept($file, false, ['tag' => DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT]);
             }
         } elseif ($this->in->getUint('attach_id')) {
             $blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('attach_id'));

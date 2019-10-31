@@ -259,7 +259,7 @@ class TitleWithVars extends React.Component {
         case 'user_custom_fields':
         case 'product_custom_fields':
         case 'article_custom_fields':
-        case 'feedback_custom_fields':
+        case 'community_custom_fields':
         case 'billing_custom_fields':
         case 'chat_custom_fields':
           return this.renderGroupSelectBox(entry);

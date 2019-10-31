@@ -84,7 +84,7 @@ class Container extends React.Component {
         return 'building outline';
       case 'download':
         return 'download';
-      case 'feedback':
+      case 'community':
         return 'thumbs outline up';
       case 'userchat':
         return 'comment outline';
@@ -244,6 +244,9 @@ class Container extends React.Component {
   handleChange = (text) => {
     this.setState({ message: text });
     this.props.onChange(text);
+    if (this.messageList) {
+      this.messageList.scroll();
+    }
   };
 
   handleSubmit = (event) => {
@@ -324,7 +327,7 @@ class Container extends React.Component {
       return (
         <Segment vertical className={classNames('group participants', { expanded: expandGroupHeader })}>
           <span className="control">
-            <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
+            <i className="fas fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
             { current.get('admin') === me.get('id') ? (<i
               className="write icon group-edit"
               onClick={
@@ -493,6 +496,7 @@ class Container extends React.Component {
           {this.searchHeader()}
           {this.groupHeader()}
           <MessageList
+            ref={(c) => { this.messageList = c; }}
             loadingMessages={loadingMessages}
             current={current}
             messages={messages}
@@ -517,12 +521,12 @@ class Container extends React.Component {
                 onManualControllerReady={this.initFroala}
               />
               <i
-                className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
+                className={classNames('fas fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
                 ref={(c) => { this.linkTrigger = c; }}
                 onClick={this.openLink}
               />
               <i
-                className="fa fa-paperclip reply-icon"
+                className="fas fa-paperclip reply-icon"
                 ref={(c) => { this.attachTrigger = c; }}
                 onClick={this.openAttach}
               />

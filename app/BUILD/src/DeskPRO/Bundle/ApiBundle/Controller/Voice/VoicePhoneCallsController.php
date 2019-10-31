@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -12,9 +12,10 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,51 +45,84 @@ class VoicePhoneCallsController extends CrudController
      *     noOutput=true
      * )
      *
-     * @Rest\Delete("/{phoneCallId}/record", name="voice_phone_call_delete_record")
+     * @Rest\Delete("/{phoneCall}/record", name="voice_phone_call_delete_record")
      *
-     * @param int $phoneCallId
+     * @param VoicePhoneCall $phoneCall
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function deletePhoneCallRecordAction($phoneCallId)
+    public function deletePhoneCallRecordAction(VoicePhoneCall $phoneCall)
     {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em = $this->getManager();
 
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($phoneCallId);
-        $recording = $phoneCall->getRecording();
-        if ($recording) {
-            $phoneCall->setRecording(null);
-            $em->persist($phoneCall);
+        $missedCall = $phoneCall->getAgentVoicemailRecord();
+        if ($missedCall) {
+            $missedCall->setIsDeleted(true);
+            $blob = $missedCall->getBlob();
 
-            $attribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy(['phoneCall' => $phoneCall]);
-            /** @var Ticket $ticket */
-            $ticket    = $attribute->getMessage()->getTicket();
-            $ticketLog = new TicketLog();
-            $ticketLog
-                ->setTicket($ticket)
-                ->setPerson($this->getUser())
-                ->setIdObject($phoneCall->getId())
-                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
-                ->setDetailItem('filesize', sprintf('%.2f', $recording->getFilesize() / 1024));
-            $em->persist($ticketLog);
-
-            $callLog = new VoicePhoneCallLog();
-            $callLog
-                ->setPhoneCall($phoneCall)
-                ->setPerson($this->getUser())
-                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
-            $em->persist($callLog);
-
-            $this->get('blob.storage')->deleteBlobRecord($recording);
+            $missedCall->setBlob(null);
             $em->flush();
+
+            if ($blob) {
+                $this->get('blob.storage')->deleteBlobRecord($blob);
+            }
+        }
+
+        $attribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if ($attribute) {
+            /** @var TicketMessage $message */
+            $message = $attribute->getMessage();
+            if (!$message) {
+                throw $this->createNotFoundException('Message not found');
+            }
+            $ticket = $message->getTicket();
+
+            $this->denyAccessUnlessGranted(TicketMessagesVoter::DELETE_RECORDING, new PermissionGroupContext($ticket, $message));
+
+            $recordings = $phoneCall->getRecordings();
+            if ($recordings->count() > 0) {
+                foreach ($recordings as $recording) {
+                    $recording->setBlob(null);
+                    $recording->setIsDeleted(true);
+
+                    $blob = $recording->getBlob();
+                    if ($blob) {
+                        $this->get('blob.storage')->deleteBlobRecord($blob);
+                    }
+
+                    $em->flush();
+
+                    $ticketLog = new TicketLog();
+                    $ticketLog
+                        ->setTicket($ticket)
+                        ->setPerson($this->getUser())
+                        ->setIdObject($phoneCall->getId())
+                        ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+
+                    if ($blob) {
+                        $ticketLog->setDetailItem('filesize', sprintf('%.2f', $blob->getFilesize() / 1024));
+                    }
+
+                    $em->persist($ticketLog);
+                }
+
+                $callLog = new VoicePhoneCallLog();
+                $callLog
+                    ->setPhoneCall($phoneCall)
+                    ->setPerson($this->getUser())
+                    ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+
+                $em->persist($callLog);
+            }
         }
 
         $serializedData = $this->get('serializer')->toArray(
             new ApiWrapper($phoneCall),
-            new SideloadSerializationContext()
+            new SideloadSerializationContext(['recording_enabled'])
         );
 
         $this->get('event_dispatcher')->dispatch(

@@ -11,6 +11,13 @@ $voice-green-border-color: #47BF61;
   }
 }
 
+.user_popup {
+  .ui.popup {
+    max-width: 360px;
+    width: 360px;
+  }
+}
+
 .voice-profile {
   width: 360px;
   font-family: 'Open Sans';
@@ -98,6 +105,25 @@ $voice-green-border-color: #47BF61;
             padding-left: 10px;
             color: $dp-greyscale-450;
           }
+
+          .voice-profile-status-checkbox-title-link {
+            margin-left: 5px;
+          }
+
+          .voice-profile-status-checkbox-sub-checkbox {
+            display: block;
+
+            .ui.checkbox {
+              float: none;
+              margin-top: 10px;
+              margin-left: 50px;
+
+              label {
+                padding-left: 25px;
+                font-size: 14px;
+              }
+            }
+          }
         }
       }
     }
@@ -137,15 +163,17 @@ $voice-green-border-color: #47BF61;
 }
 
 .voice-menu-popup {
+  position: relative;
+
+  .ui.popup {
+    width: 360px;
+    max-width: 360px;
+  }
 
   .status {
-    position: relative;
-    margin-right: 10px;
-
-    .spinner-flat {
-      position: absolute;
-      right: -20px;
-    }
+    width: 60px;
+    text-align: center;
+    right: -13px;
   }
 
   .voice-menu {
@@ -169,7 +197,7 @@ $voice-green-border-color: #47BF61;
         font-weight: 600;
         font-size: 12px;
         color: $dp-greyscale-850;
-        flex: 1;
+        flex: auto;
 
         i {
           margin-right: 5px;
@@ -188,6 +216,25 @@ $voice-green-border-color: #47BF61;
 
           &:last-child {
             border-right: 0;
+          }
+        }
+
+        .tab-item-title {
+          position: relative;
+
+          .tab-item-count {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            display: inline-block;
+            background: #ed4954;
+            width: 12px;
+            height: 12px;
+            line-height: 12px;
+            text-align: center;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 10px;
           }
         }
       }
@@ -229,7 +276,8 @@ $voice-green-border-color: #47BF61;
 
           .call-forward {
             .field {
-              margin: 20px;
+              margin-top: 10px;
+              margin-left: 10px;
 
               label {
                 font-weight: 400;
@@ -244,12 +292,31 @@ $voice-green-border-color: #47BF61;
                   position: absolute;
                   left: 3px;
                 }
+              }
 
-                input {
-                  padding-left: 50px;
-                  width: 100%;
+              input[type=text] {
+                padding-left: 50px;
+                max-width: 225px;
+              }
+
+              .ring-timeout {
+                display: flex;
+                font-size: 14px;
+
+                span {
+                  margin-right: 10px;
+                  line-height: 35px;
+                }
+
+                input[type=number] {
+                  width: 65px;
                 }
               }
+            }
+
+            .call-forward-save {
+              margin-left: 20px;
+              margin-top: -10px;
             }
           }
         }
@@ -352,10 +419,17 @@ $voice-green-border-color: #47BF61;
           width: 100%;
           border: 1px solid $dp-greyscale-250;
           box-shadow: 0 4px 8px 0 $dp-greyscale-250;
+          max-height: 200px;
+          overflow-x: hidden;
+          overflow-y: auto;
 
           .dialpad-search-result-item {
             padding: 5px;
             cursor: pointer;
+
+            &:hover {
+              text-decoration: underline $dp-sonic-primary;
+            }
           }
         }
       }
@@ -413,6 +487,7 @@ $voice-green-border-color: #47BF61;
             .call-from-details {
               display: inline-block;
               margin-left: 20px;
+              vertical-align: top;
             }
           }
 
@@ -545,8 +620,13 @@ $voice-green-border-color: #47BF61;
       }
 
       .voice-forward-help {
-        margin: 20px;
-        font-size: 14px;
+        margin: 10px;
+        font-size: 11px;
+
+        ul {
+          list-style: disc;
+          margin-left: 15px;
+        }
       }
 
       .voice-online-agents {
@@ -591,6 +671,10 @@ $voice-green-border-color: #47BF61;
       }
     }
 
+    .voice-menu-voicemail-list-settings {
+      padding: 10px 20px 5px;
+    }
+
     .voice-menu-voicemail-list {
       max-height: 400px;
 
@@ -602,45 +686,96 @@ $voice-green-border-color: #47BF61;
       .voice-menu-voicemail-record {
         margin: 20px;
 
-        .voicemail-record-play-icon {
-          font-size: 36px;
+        .voice-missed-call-icon {
           float: left;
-          cursor: pointer;
-          color: $dp-greyscale-450;
-
-          &.voicemail-new-record {
-            color: #4696dc;
-          }
-
-          &.disabled {
-            cursor: default;
+          svg {
+            width: 30px;
+            height: 30px;
           }
         }
 
         .voicemail-record-content {
-          margin-left: 45px;
+          margin-left: 35px;
 
           .voicemail-record-date-created, .voicemail-record-duration {
+            display: flex;
+            align-items: center;
             float: right;
             font-size: 12px;
             clear: right;
           }
 
+          .media-controls {
+            display: flex;
+            align-items: center;
+            padding-right: 10px;
+            button {
+              border: 0;
+              color: #4D96DB !important;
+              margin: -2px 0 0 0;
+              padding: 0 5px 0 0;
+            }
+            .media-timeline {
+              width: 100px;
+
+              input[type=range]::-ms-track {
+                height: 3px;
+                margin-top: -7px;
+              }
+              input[type=range]::-moz-range-track {
+                height: 3px;
+                margin-top: -7px;
+              }
+              input[type=range]::-webkit-slider-runnable-track {
+                height: 3px;
+                margin-top: -7px;
+              }
+
+              input[type=range]::-webkit-slider-thumb {
+                margin-top: -5px;
+                width: 15px;
+                height: 15px;
+              }
+
+              input[type=range]::-moz-range-thumb {
+                margin-top: -5px;
+                width: 15px;
+                height: 15px;
+              }
+            }
+          }
+
           .voicemail-person-name {
             font-size: 14px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-right: 5px;
+          }
+
+          .voicemail-person-email {
+            font-size: 12px;
+            display: block;
+            color: #767b7b;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding-right: 5px;
           }
 
           .voice-record-actions {
-            margin-top: 10px;
+            margin-top: 5px;
 
             .voice-record-action {
-              a {
-                font-size: 12px;
-                text-decoration: underline;
+              margin: 0 10px;
+
+              &:first-child {
+                margin-left: 0;
               }
 
-              &:not(:first-child):before {
-                content: " | ";
+              a {
+                font-size: 11px;
+                text-decoration: underline;
               }
             }
           }
@@ -675,7 +810,7 @@ $voice-green-border-color: #47BF61;
   position: fixed;
   z-index: 100;
 
-  i.fa {
+  i.fa, i.fas, i.far {
     font-size: 18px;
   }
 
@@ -880,6 +1015,14 @@ $voice-green-border-color: #47BF61;
         }
       }
 
+      .voice-avatar-container {
+        .online-status {
+          top: 0;
+          right: 5px;
+        }
+      }
+
+
       &.active {
         color: $dp-sonic-primary;
         background-color: $dp-morning-sky;
@@ -963,10 +1106,10 @@ $voice-green-border-color: #47BF61;
 .voice-ticket-transfer-list {
   .tab-menu {
     width: 100%;
+    display: flex;
 
     .item {
-      display: inline-block;
-      width: 33.3%;
+      flex-grow: 1;
       height: 50px;
       text-align: center;
       border-top: 1px solid $dp-greyscale-250;
@@ -1015,6 +1158,17 @@ $voice-green-border-color: #47BF61;
       }
     }
   }
+
+  .voice-auto-attendant-list {
+    .auto-attendant-item {
+      cursor: pointer;
+
+      &.active {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+      }
+    }
+  }
 }
 
 .voice-ticket-add-list, .voice-ticket-transfer-list {
@@ -1028,6 +1182,11 @@ $voice-green-border-color: #47BF61;
       margin-right: 10px;
     }
   }
+
+  .error-message {
+    color: #ff0000;
+    padding: 10px;
+  }
 }
 
 .voice-ticket-dialpad {
@@ -1040,8 +1199,25 @@ $voice-green-border-color: #47BF61;
   max-height: 250px;
 
   .queue-item {
-    padding: 20px;
+    padding: 10px 20px 5px 20px;
     border-bottom: 1px solid #E6E6E6;
+
+    label {
+      margin-top: -2px;
+    }
+
+    .more-button {
+      display: inline-block;
+      margin-left: 5px;
+      position: relative;
+
+      .voice-popup-avatars {
+        width: 200px;
+        padding: 5px 5px 3px;
+        border: 1px solid #3A8DDE;
+        background-color: #FFFFFF;
+      }
+    }
 
     &:last-child {
       border-bottom: 0;
@@ -1064,6 +1240,15 @@ $voice-green-border-color: #47BF61;
       font-size: 14px;
       color: $dp-greyscale-850;
       margin-bottom: 10px;
+      display: flex;
+    }
+
+    .queue-agents-count {
+      white-space: nowrap;
+    }
+
+    .more-text {
+      margin-left: 5px;
     }
 
     .avatar {
@@ -1078,7 +1263,7 @@ $voice-green-border-color: #47BF61;
       overflow: hidden;
       opacity: 0.2;
 
-      &.active {
+      &.online {
         opacity: 1;
       }
 
@@ -1100,6 +1285,22 @@ $voice-green-border-color: #47BF61;
   .empty-message {
     text-align: center;
     margin: 10px;
+  }
+}
+
+.voice-auto-attendant-list {
+  max-height: 250px;
+
+  .auto-attendant-item {
+    padding: 10px 20px 5px 20px;
+    border-bottom: 1px solid #E6E6E6;
+
+    .auto-attendant-name {
+      font-weight: 400;
+      font-size: 16px;
+      color:$dp-greyscale-850;
+      margin-bottom: 10px;
+    }
   }
 }
 
@@ -1262,6 +1463,8 @@ $voice-green-border-color: #47BF61;
       }
 
       button {
+        position: relative;
+        min-width: 19px;
         height: 30px;
         padding-top: 3px;
         padding-bottom: 3px;
@@ -1344,5 +1547,37 @@ $voice-green-border-color: #47BF61;
 
   input {
     padding-left: 50px !important;
+  }
+}
+
+.voice-avatar-container {
+  display: inline-block;
+  position: relative;
+
+  .online-status {
+    background-color: #CB2325;
+    border: 2px solid #ffffff;
+    border-radius: 5px;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    display: block;
+    right: -4px;
+    top: -4px;
+    z-index: 10;
+
+    &.online {
+      background-color: #4DBE5F;
+    }
+
+    &.forwarding {
+      background-color: #E9E32A;
+    }
+  }
+
+  .avatar {
+    &.with-online-status {
+      opacity: 1;
+    }
   }
 }

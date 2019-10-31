@@ -2,17 +2,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Timer from 'DeskPRO/Component/Timer';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
+import WarmTransferAudio from './WarmTransferAudio';
 import Avatar from '../Common/Avatar';
 
 class TransferStatus extends React.Component {
 
   static propTypes = {
-    connection:  PropTypes.object,
+    phoneCall:   PropTypes.object,
     title:       PropTypes.string,
     cancelLabel: PropTypes.string,
     type:        PropTypes.string,
     target:      PropTypes.object,
-    onCancel:    PropTypes.func
+    cancel:      PropTypes.func,
   };
 
   constructor(props) {
@@ -25,45 +26,28 @@ class TransferStatus extends React.Component {
   componentDidMount() {
     if (window.DeskPRO_Window) {
       const messageBroker = window.DeskPRO_Window.getMessageBroker();
-      messageBroker.addMessageListener('agent.voice.conference.participant-ignore', this.onIgnore);
+      messageBroker.addMessageListener('agent.voice.conference.participant-ignore', (event) => {
+        const { target, phoneCall } = this.props;
+        // call id does not match
+        if (parseInt(phoneCall.get('id'), 10) !== parseInt(event.call_id, 10)) {
+          return;
+        }
+
+        // requesting agent does not match
+        if (target.get('id') !== parseInt(event.agent_id, 10)) {
+          return;
+        }
+
+        this.setState({
+          rejected: true
+        });
+      });
     }
   }
 
-  componentWillUnmount() {
-    if (window.DeskPRO_Window) {
-      const messageBroker = window.DeskPRO_Window.getMessageBroker();
-      messageBroker.removeMessageListener('agent.voice.conference.participant-ignore', this.onExternalSetHold);
-    }
-  }
-
-  onIgnore = (event) => {
-    const { target, connection } = this.props;
-
-    // connection was lost
-    if (!connection) {
-      return;
-    }
-
-    // call id does not match
-    if (parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
-      return;
-    }
-
-    // requesting agent does not match
-    if (target.get('id') !== parseInt(event.agent_id, 10)) {
-      return;
-    }
-
-    this.setState({
-      rejected: true
-    });
-  };
-
-  onCancel = (event) => {
+  cancel = (event) => {
     event.preventDefault();
-
-    const { target, type, onCancel } = this.props;
-    onCancel(target, type);
+    this.props.cancel();
   };
 
   render() {
@@ -75,6 +59,7 @@ class TransferStatus extends React.Component {
         <div className="voice-transfer-status">
           <span className="voice-transfer-status-title">
             {type === 'warm' ? 'Calling ...' : title}
+            {type === 'warm' ? <WarmTransferAudio /> : null}
           </span>
           <span className="voice-transfer-status-timer">
             <Timer />
@@ -92,18 +77,10 @@ class TransferStatus extends React.Component {
             Agent rejected your request
           </div>
           : <div className="voice-transfer-status-buttons">
-            {type === 'warm' &&
-              <div>
-                <Button className="red" onClick={this.onCancel}>
-                  Cancel add
-                </Button>
-              </div>}
-            {type === 'cold' &&
-              <Button className="basic" onClick={this.onCancel}>
-                <i className="icon remove" />
-                {cancelLabel}
-              </Button>
-            }
+            <Button className="basic" onClick={this.cancel}>
+              <i className="icon remove" />
+              {cancelLabel}
+            </Button>
           </div>
         }
       </div>

@@ -116,7 +116,9 @@ class TicketLogsContext extends BaseContext
      */
     public function ticketLogActionHasDetail($ticketId, $actionType, $detailName, $expectedValue)
     {
-        $ticketLogs = $this->ticketLogsHaveAction($ticketId, $actionType);
+        $ticketLogs    = $this->ticketLogsHaveAction($ticketId, $actionType);
+        $expectedValue = DataContext::replace($expectedValue);
+
         foreach ($ticketLogs as $ticketLog) {
             if (isset($ticketLog->details[$detailName]) && $ticketLog->details[$detailName] == $expectedValue) {
                 return;

@@ -14,6 +14,8 @@
                 {% block field_rendered %}
                     {% if field_handler_name == 'Date' or field_handler_name == 'DateTime' %}
                         {{ data.value|date('full') }}
+                    {% elseif field_handler_name == 'Javascript' %}
+                        {{ data.value.value|raw }}
                     {% elseif field_handler_name == 'Toggle' %}
                         {% if data.value == 1 %}
                             {{ field_def.getOption('label_text')|default('Checked')|raw }}

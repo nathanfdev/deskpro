@@ -13,6 +13,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -22,6 +23,7 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class UserChatsController.
@@ -38,6 +40,7 @@ use Symfony\Component\HttpFoundation\Response;
  *          {"name"="person", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="agent", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="department", "dataType"="integer", "pattern"="\d+"},
+ *          {"name"="brand", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="label", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
  *          {
  *              "name"="chat_field.{id}",
@@ -64,6 +67,7 @@ use Symfony\Component\HttpFoundation\Response;
  *      }
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class UserChatsController extends CrudController
 {
@@ -83,6 +87,8 @@ class UserChatsController extends CrudController
      * })
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return \FOS\RestBundle\View\View
      */
@@ -119,6 +125,9 @@ class UserChatsController extends CrudController
      * @param Request $request
      * @param int     $id
      * @param int     $agentId
+     *
+     * @throws NotFoundHttpException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View
      */
@@ -163,6 +172,8 @@ class UserChatsController extends CrudController
      * @param Request $request
      * @param int     $id
      *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      * @return View
      */
     public function endAction(Request $request, $id)
@@ -189,6 +200,7 @@ class UserChatsController extends CrudController
         DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_period');
         ListHelper::applyInListFilter($context, 'department');
+        ListHelper::applyInListFilter($context, 'brand');
         CustomDataHelper::applyCustomDataFilters($context, 'chat', CustomDefChat::class);
         LabelHelper::applyLabelFilters($context, static::$entity);
 

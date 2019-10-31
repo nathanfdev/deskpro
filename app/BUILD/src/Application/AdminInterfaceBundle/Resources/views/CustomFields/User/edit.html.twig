@@ -46,4 +46,19 @@
 			</div>
 		</div>
 	</div>
+  {% if app.getSetting('portal.members_community') %}
+    <div class="form-group">
+      <div class="col-lg-3">
+        <h3>Show on public profile</h3>
+      </div>
+      <div class="col-lg-9">
+        <div class="inner-group">
+          <label style="font-weight: normal">
+            <input type="checkbox" ng-model="EditCtrl.form.is_public" />
+          </label>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
 {% endblock %}

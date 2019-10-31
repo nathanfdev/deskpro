@@ -1,11 +1,5 @@
 services:
 
-  redirect_protection_listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener
-    arguments: ["@brand_stack", "@url_host_checker", "@logger"]
-    tags:
-      - { name: kernel.event_subscriber }
-
   visitor_identification.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\VisitorIdentificationListener
     arguments: ["@visitor_identification_provider", "@logger"]
@@ -131,6 +125,12 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager", "@content_slug_manager"]
     tags:
       - { name: request.param_converter, priority: -1, converter: deskpro_slug }
+
+  param_converter.deskpro_download_slug_or_blob_auth:
+    class: DeskPRO\Bundle\PortalBundle\Request\DownloadSlugOrBlobAuthConverter
+    arguments: ["@doctrine.orm.default_entity_manager", "@content_slug_manager"]
+    tags:
+      - { name: request.param_converter, priority: -1, converter: deskpro_download_slug_or_blob_auth }
 
   param_converter.tag_request:
     class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter

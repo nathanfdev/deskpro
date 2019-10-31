@@ -8,7 +8,8 @@ class BaseAccountFormContainer extends React.Component {
     dispatch:    PropTypes.func,
     onClose:     PropTypes.func,
     children:    PropTypes.node,
-    accountType: PropTypes.string
+    accountType: PropTypes.string,
+    isManaged:   PropTypes.bool
   };
 
   constructor(props) {

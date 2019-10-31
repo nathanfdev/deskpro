@@ -7,9 +7,9 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -53,7 +53,7 @@ abstract class AbstractViewModelFactory
         $this->container    = $container;
     }
 
-    protected function convertParameter($entity)
+    public function convertParameter($entity)
     {
         if (is_array($entity) || $entity instanceof \Traversable) {
             $result = [];
@@ -85,11 +85,11 @@ abstract class AbstractViewModelFactory
             case Download::class:
                 $handler = $this->container->get('api_serializer.handler.download');
                 break;
-            case Feedback::class:
-                $handler = $this->container->get('api_serializer.handler.feedback');
+            case CommunityTopic::class:
+                $handler = $this->container->get('api_serializer.handler.community_topic');
                 break;
-            case FeedbackComment::class:
-                $handler = $this->container->get('api_serializer.handler.feedback_comment');
+            case CommunityTopicComment::class:
+                $handler = $this->container->get('api_serializer.handler.community_topic_comment');
                 break;
             case LayoutField::class:
                 $handler = $this->container->get('api_serializer.handler.layout_field');

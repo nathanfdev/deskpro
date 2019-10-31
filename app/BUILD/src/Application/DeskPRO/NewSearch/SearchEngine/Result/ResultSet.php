@@ -61,8 +61,8 @@ class ResultSet
                 $type = 'news';
             } elseif ($r instanceof Entity\Download) {
                 $type = 'download';
-            } elseif ($r instanceof Entity\Feedback) {
-                $type = 'feedback';
+            } elseif ($r instanceof Entity\CommunityTopic) {
+                $type = 'community';
             } elseif ($r instanceof Entity\Topic) {
                 $type = 'topic';
             } elseif ($r instanceof Entity\Ticket) {

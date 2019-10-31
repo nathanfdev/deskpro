@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class VoiceAccount.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository")
  * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener"})
  *
  * @VoiceAssert\TwilioVoiceAccount()
@@ -40,5 +40,13 @@ class TwilioVoiceAccount extends AbstractVoiceAccount
         $this->setModelField('twimlAppSid', $twimlAppSid);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouterPrefix()
+    {
+        return 'twilio';
     }
 }

@@ -41,22 +41,22 @@
                                 'kb',
                                 'news',
                                 'downloads',
-                                'feedback',
+                                'community',
                                 'labels',
                                 'snippets',
                                 'apps'
                             ] %}
                             <div class="inner-group" dp-error-class="form_props.{{ id }}">
                                 <label style="position: relative;">
-                                    <i class="fa fa-check text-success"
+                                    <i class="fas fa-check text-success"
                                        ng-if="'complete' == status.{{ id }}"
                                        style="position: absolute; left: -17px; top: 10px;"
                                             ></i>
-                                    <i class="fa fa-spinner fa-spin"
+                                    <i class="fas fa-spinner fa-spin"
                                        ng-if="'waiting' == status.{{ id }}"
                                        style="position: absolute; left: -17px; top: 10px;"
                                             ></i>
-                                    <i class="fa fa-times-circle text-danger"
+                                    <i class="fas fa-times-circle text-danger"
                                        ng-if="'error' == status.{{ id }}"
                                        style="position: absolute; left: -17px; top: 10px;"
                                             ></i>

@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'Ajouter une adresse email'
 portal.account.email-management: 'Gérer les adresses email'
 portal.account.email-management-from-form: 'Gérer vos adresses email'
 portal.account.email-primary-description: 'C''est votre adresse email principale. Elle sera utilisée par défaut, sauf si vous la modifiez.'
-portal.account.feedback-lockout: 'Vous avez soumis un trop grand nombre de commentaires donc vous avez été bloqué. Veuillez réessayer plus tard.'
+portal.account.community-lockout: 'Vous avez soumis un trop grand nombre de commentaires donc vous avez été bloqué. Veuillez réessayer plus tard.'
 portal.account.link-expired: 'Désolé, le lien sur lequel vous avez cliqué a expiré ou a déjà été utilisé auparavant.'
 portal.account.lockout_time: 'Vous pourrez essayer à nouveau dans {{time}} minutes.'
 portal.account.login-btn: Connexion
@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Connexion avec {{usersource}}'
 portal.account.login-captcha-failed: 'Le code CAPTCHA saisi est incorrect. Veuillez réessayer.'
 portal.account.login-disabled: 'Votre adresse email a été bannie.'
 portal.account.login-email: 'Votre email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Connexion avec un service externe'
 portal.account.login-form-disabled: 'Le formulaire de connexion est désactivé'
 portal.account.login-invalid: 'Identifiants incorrects. Veuillez réessayer.'
@@ -33,7 +32,7 @@ portal.account.login-remember: 'Rester connecté ?'
 portal.account.login-saved-add_email: 'Votre email d''ajout n''a pas encore été soumis. Merci de vous connecter pour continuer.'
 portal.account.login-saved-comment: 'Votre commentaire n''a pas encore été soumis. Merci de vous connecter pour continuer.'
 portal.account.login-saved-form: 'Votre formulaire n''a pas encore été soumis. Merci de vous connecter pour continuer.'
-portal.account.login-saved-new_feedback: 'Votre nouveau commentaire n''a pas encore été soumis. Merci de vous connecter pour continuer.'
+portal.account.login-saved-new_community_topic: 'Votre nouveau commentaire n''a pas encore été soumis. Merci de vous connecter pour continuer.'
 portal.account.login-saved-new_ticket: 'Votre nouveau billet n''a pas encore été soumis. Merci de vous connecter pour continuer.'
 portal.account.login-saved-register: 'Votre inscription n''a pas encore été soumise. Merci de vous connecter pour continuer.'
 portal.account.login-stay-logged-in: 'Rester connecté ?'
@@ -59,7 +58,6 @@ portal.account.reset-password-success: 'Votre mot de passe a été mis à jour.'
 portal.account.section-desc-login: 'Déjà inscrit ? Connectez-vous ci-dessous.'
 portal.account.section-desc-login-external: 'Utilisez les liens ci-dessous si votre compte est lié à un autre fournisseur.'
 portal.account.section-desc-register: 'Créez un compte pour simplifier le suivi de vos échanges.'
-portal.account.section-title-emails: Emails
 portal.account.section-title-login: Connexion
 portal.account.section-title-profile: Profil
 portal.account.section-title-register: 'S''inscrire'
@@ -83,7 +81,7 @@ portal.account.submit-saved-add_email: 'Votre courriel d’ajout n’a pas encor
 portal.account.submit-saved-comment: 'Votre commentaire n''a pas encore été soumis, mais nous l''avons enregistré pour vous.'
 portal.account.submit-saved-form: 'Vous n''avez pas encore soumis votre {{type}} mais nous l''avons enregistré pour vous.'
 portal.account.submit-saved-form-go: 'Cliquez ici pour soumettre le formulaire à nouveau.'
-portal.account.submit-saved-new_feedback: 'Votre nouveau commentaire n''a pas encore été soumis, mais nous l''avons enregistré pour vous.'
+portal.account.submit-saved-new_community_topic: 'Votre nouveau commentaire n''a pas encore été soumis, mais nous l''avons enregistré pour vous.'
 portal.account.submit-saved-new_ticket: 'Votre nouveau billet n''a pas encore été soumis, mais nous l''avons enregistré pour vous.'
 portal.account.submit-saved-register: 'Votre registre n''a pas encore été soumis, mais nous l''avons enregistré pour vous.'
 portal.account.tickets-lockout: 'Vous avez soumis un trop grand nombre de tickets donc vous avez été bloqué. Veuillez réessayer plus tard.'
@@ -102,9 +100,6 @@ portal.articles.view-as-agent: 'Vous pouvez voir cette page car vous êtes un ag
 portal.articles.view-x-articles:
   one: 'Voir 1 article'
   other: 'Voir {{count}} articles'
-portal.articles.x-articles:
-  one: '1 article'
-  other: '{{count}} articles'
 portal.chat.agent_blocked_user_on: 'Bloqué par {{name}} le {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} semble ne plus être connecté'
 portal.chat.agent_typing_message: '{{agentName}} écrit un message'
@@ -147,16 +142,12 @@ portal.chat.invalid_jwt_token: 'Votre jeton JWT n''est pas valide.'
 portal.chat.label-department: 'Sélectionnez un département'
 portal.chat.label-email: 'Votre email'
 portal.chat.label-name: 'Votre nom'
-portal.chat.list_agent: Agent
-portal.chat.list_chat: Chat
-portal.chat.list_date: Date
 portal.chat.list_switch_to_my_chats: 'Basculer sur Mes chats'
 portal.chat.list_switch_to_organization: 'Basculer vers Organisation'
 portal.chat.list_title:
   one: '1 chat'
   other: '{{count}} chats'
 portal.chat.list_user: Utilisateur
-portal.chat.log_agents: Agents
 portal.chat.log_chat_time: 'Durée totale du chat'
 portal.chat.log_department: Département
 portal.chat.log_linked_ticket: 'Lié au ticket'
@@ -203,7 +194,6 @@ portal.chat.see_full_image: 'Cliquer ici pour voir l''image complète'
 portal.chat.send_another_validation_email: 'Renvoyer un autre email'
 portal.chat.sent_validation_code: 'Nous venons de vous envoyer un email contenant un code de validation.'
 portal.chat.start: 'Démarrer un nouveau chat'
-portal.chat.start_conversation: 'Démarrer une conversation'
 portal.chat.support_powered_by: 'Support produit par {{DeskPRO}}'
 portal.chat.take_chat: 'Prendre le chat'
 portal.chat.taken_by: 'Chat pris par'
@@ -243,13 +233,13 @@ portal.email_subjects.email-too-big: 'Votre email "{{subject}}" n''a pu être en
 portal.email_subjects.email_new-confirm: 'Validez votre adresse email'
 portal.email_subjects.email_primary-confirm: 'Validez votre adresse email'
 portal.email_subjects.email_ticket-reminder: 'Action requise: votre billet n''a pas encore été soumis.'
-portal.email_subjects.feedback_new: 'Merci de nous avoir fait part de vos remarques'
-portal.email_subjects.feedback_new-approved: 'Votre remarque a été publiée'
-portal.email_subjects.feedback_new-comment: 'Il y a un nouveau commentaire sur "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Merci de nous avoir fait part de vos remarques (validation nécessaire)'
-portal.email_subjects.feedback_new-disapproved: 'Désolé, votre remarque a été rejetée'
-portal.email_subjects.feedback_sub_updated: 'Commentaires mis à jour'
-portal.email_subjects.feedback_updated: 'Votre remarque a été mise à jour: {{title}}'
+portal.email_subjects.community_new: 'Merci de nous avoir fait part de vos remarques'
+portal.email_subjects.community_new-approved: 'Votre remarque a été publiée'
+portal.email_subjects.community_new-comment: 'Il y a un nouveau commentaire sur "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Merci de nous avoir fait part de vos remarques (validation nécessaire)'
+portal.email_subjects.community_new-disapproved: 'Désolé, votre remarque a été rejetée'
+portal.email_subjects.community_sub_updated: 'Commentaires mis à jour'
+portal.email_subjects.community_updated: 'Votre remarque a été mise à jour: {{title}}'
 portal.email_subjects.kb_sub_new: 'Nouveaux articles'
 portal.email_subjects.kb_sub_new_and_updated: 'Articles nouveaux et mis à jour'
 portal.email_subjects.kb_sub_updated: 'Articles mis à jour'
@@ -275,7 +265,6 @@ portal.email_subjects.validate-email: 'Validez votre adresse email'
 portal.emails.auto-close: 'Faute d''avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.'
 portal.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 portal.emails.comment_approved: 'Votre commentaire a été publié.'
-portal.emails.comment_deleted: 'Votre commentaire a été utilisé pour améliorer la page.'
 portal.emails.comment_thank-you: 'Merci pour votre commentaire sur {{link}}.'
 portal.emails.comment_validate-email: 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:'
 portal.emails.do-not-reply: 'Merci de ne pas répondre à cet email. Ce message a été généré automatiquement par une machine et les réponses envoyées à cette adresse ne seront pas lues par notre équipe.'
@@ -288,21 +277,21 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: 'Vous recevez cet e-mail car vous vous êtes abonné aux mises à jour concernant les téléchargements disponibles à l''adresse <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Vous ne souhaitez plus recevoir ces e-mails? <a href="{{unsubscribe_url}}"> Cliquez ici pour vous désabonner de toutes les notifications de téléchargement. </a>'
 portal.emails.email-too-big: 'Votre email "{{subject}}" n''a pu être envoyé car il est trop lourd. La taille maximale des emails acceptée par ce helpdesk est de {{max_size}}. Supprimez des pièces jointes et essayez à nouveau.'
 portal.emails.end_greeting: 'Cordialement,<br /><br />{{site_name}}''s'
-portal.emails.feedback-explain: 'Vous recevez cet e-mail parce que vous vous êtes abonné à des mises à jour concernant les éléments de retour sur <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Vous ne souhaitez plus recevoir ces courriers? <a href="{{unsubscribe_url}}"> Cliquez ici pour vous désabonner de toutes les notifications.</a>'
-portal.emails.feedback-updated-items:
+portal.emails.community-topics-explain: 'Vous recevez cet e-mail parce que vous vous êtes abonné à des mises à jour concernant les éléments de retour sur <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Vous ne souhaitez plus recevoir ces courriers? <a href="{{unsubscribe_url}}"> Cliquez ici pour vous désabonner de toutes les notifications.</a>'
+portal.emails.community-topics-updated:
   one: '1 Commentaires mis à jour '
   other: ' {{count}} Articles mis à jour'
-portal.emails.feedback_agent-validation: 'Notez que vos commentaires n''apparaîtront pas publiquement sur notre portail d''assistance tant qu''un de nos agents ne les auront pas approuvés.'
-portal.emails.feedback_approved: 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.'
-portal.emails.feedback_closed: 'La remarque "{{title}}" que vous nous avez transmise a été clôturée: {{status}}'
-portal.emails.feedback_disapproved: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site.'
-portal.emails.feedback_disapproved-reason: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:'
-portal.emails.feedback_new-comment: '{{name}} a posté un nouveau commentaire'
-portal.emails.feedback_published: 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.'
-portal.emails.feedback_thank-you: 'Merci de nous avoir fait parvenir vos remarques "{{title}}"'
-portal.emails.feedback_updated: 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}'
-portal.emails.feedback_validate-email: 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:'
-portal.emails.feedback_votes:
+portal.emails.community-topic_agent-validation: 'Notez que vos commentaires n''apparaîtront pas publiquement sur notre portail d''assistance tant qu''un de nos agents ne les auront pas approuvés.'
+portal.emails.community_topic_approved: 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.'
+portal.emails.community_topic_closed: 'La remarque "{{title}}" que vous nous avez transmise a été clôturée: {{status}}'
+portal.emails.community-topic_disapproved: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site.'
+portal.emails.community-topic_disapproved-reason: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:'
+portal.emails.community-topic_new-comment: '{{name}} a posté un nouveau commentaire'
+portal.emails.community-topic_published: 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.'
+portal.emails.community-topic_thank-you: 'Merci de nous avoir fait parvenir vos remarques "{{title}}"'
+portal.emails.community-topic_updated: 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}'
+portal.emails.community-topic_validate-email: 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:'
+portal.emails.community-topic_votes:
   one: 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:'
   other: 'Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:'
 portal.emails.greeting: 'Chère/Cher {{to_name}},'
@@ -326,7 +315,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Un agent a généré un nouveau mot de passe pour votre compte. Vous pouvez vous connecter avec ces informations de connexion.'
 portal.emails.password_reset: 'Vous avez demandé à recevoir un nouveau mot de passe. Pour générer un nouveau mot de passe, cliquez sur le lien ci-dessous:'
 portal.emails.password_set: 'Pour définir un mot de passe, cliquez sur le lien ci-dessous :'
-portal.emails.profile_email-new-confirm: 'Pour finir d''ajouter cette deuxième adresse email à votre compte, cliquez sur le lien d''activation suivant:'
 portal.emails.profile_email-primary-confirm: 'Pour valider votre adresse email principale, veuillez cliquer sur le lien suivant'
 portal.emails.profile_email_link-validate: 'Cliquez simplement sur le lien suivant pour valider votre adresse email.'
 portal.emails.ratelimit_explain: 'Vous avez envoyé {{num_messagess}} messages en {{time_limit}}. Pour éviter les abus, nous avons banni votre adresse email temporairement pour une durée de {{time_lock}}. Après le {{date_lock_end}}, ce blocage temporaire sera levé et vous pourrez à nouveau envoyer des emails.'
@@ -375,42 +363,42 @@ portal.error.404-title: Introuvable
 portal.error.contact: 'S''il s''agit d''une erreur, veuillez nous contacter.'
 portal.error.general-desc: 'Désolé, une erreur s''est produite. Veuillez essayer à nouveau plus tard ou nous contacter.'
 portal.error.general-title: 'Une erreur s''est produite'
-portal.feedback.attachments: 'Pièce jointes'
-portal.feedback.btn-closed: Fermé
-portal.feedback.btn-vote: 'Je suis d''accord'
-portal.feedback.dir_asc: Croissant
-portal.feedback.dir_desc: Décroissant
-portal.feedback.error_hidden: 'Cet article de commentaires est caché'
-portal.feedback.error_login: 'Veuillez vous connecter'
-portal.feedback.filter_all_items: 'Tous les articles'
-portal.feedback.filter_closed_items: 'Articles fermés'
-portal.feedback.filter_open_items: 'Articles ouverts'
-portal.feedback.form_attach_files: 'Joindre des fichiers'
-portal.feedback.form_btn_submit: 'Ajouter vos commentaires'
-portal.feedback.form_email_not_shown: 'Votre email (ne sera pas affiché publiquement)'
-portal.feedback.form_i_have_a: 'J''ai une...'
-portal.feedback.form_logged_in_as: 'Connecté en tant que: <span>{{name}}</span>, à partir du courrier électronique <span>{{email}}</span>.'
-portal.feedback.form_logout: 'Pas toi?'
-portal.feedback.form_tell_us_more: 'Dis nous en plus'
-portal.feedback.form_title: Titre
-portal.feedback.module_forbidden: 'Vous n''avez pas accès à ce module'
-portal.feedback.no_matching: 'Aucun commentaire correspondant'
-portal.feedback.none: 'Pas encore de retour'
-portal.feedback.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
-portal.feedback.recent-feedback: 'Commentaires récents'
-portal.feedback.search-title: Remarques
-portal.feedback.section-desc: 'Ces suggestions ont été proposées par des utilisateurs comme vous. Nous vous conseillons de discuter ces suggestions, voter pour celles que vous approuvez et soumettre les vôtres si votre idée n''est pas encore representée ici.'
-portal.feedback.section-title: Remarques
-portal.feedback.sort_comments: Commentaires
-portal.feedback.sort_date: Date
-portal.feedback.sort_popularity: Popularité
-portal.feedback.sort_rating: Évaluation
-portal.feedback.sort_views: 'Des vues'
-portal.feedback.status_active: 'Articles ouverts'
-portal.feedback.status_all: 'Tous les articles'
-portal.feedback.status_closed: 'Articles fermés'
-portal.feedback.submit_feedback: 'Faire une remarque'
-portal.feedback.view-x-feedback:
+portal.community.attachments: 'Pièce jointes'
+portal.community.btn-closed: Fermé
+portal.community.btn-vote: 'Je suis d''accord'
+portal.community.dir_asc: Croissant
+portal.community.dir_desc: Décroissant
+portal.community.error_hidden: 'Cet article de commentaires est caché'
+portal.community.error_login: 'Veuillez vous connecter'
+portal.community.filter_all_items: 'Tous les articles'
+portal.community.filter_closed_items: 'Articles fermés'
+portal.community.filter_open_items: 'Articles ouverts'
+portal.community.form_attach_files: 'Joindre des fichiers'
+portal.community.form_btn_submit: 'Ajouter vos commentaires'
+portal.community.form_email_not_shown: 'Votre email (ne sera pas affiché publiquement)'
+portal.community.form_i_have_a: 'J''ai une...'
+portal.community.form_logged_in_as: 'Connecté en tant que: <span>{{name}}</span>, à partir du courrier électronique <span>{{email}}</span>.'
+portal.community.form_logout: 'Pas toi?'
+portal.community.form_tell_us_more: 'Dis nous en plus'
+portal.community.form_title: Titre
+portal.community.form_custom_cat: Catégorie
+portal.community.module_forbidden: 'Vous n''avez pas accès à ce module'
+portal.community.no_matching: 'Aucun commentaire correspondant'
+portal.community.none: 'Pas encore de retour'
+portal.community.rate_forbidden: 'Vous n''êtes pas autorisé à voter'
+portal.community.recent-community_topics: 'Commentaires récents'
+portal.community.search-title: Remarques
+portal.community.section-desc: 'Ces suggestions ont été proposées par des utilisateurs comme vous. Nous vous conseillons de discuter ces suggestions, voter pour celles que vous approuvez et soumettre les vôtres si votre idée n''est pas encore representée ici.'
+portal.community.section-title: Remarques
+portal.community.sort_comments: Commentaires
+portal.community.sort_popularity: Popularité
+portal.community.sort_rating: Évaluation
+portal.community.sort_views: 'Des vues'
+portal.community.status_active: 'Articles ouverts'
+portal.community.status_all: 'Tous les articles'
+portal.community.status_closed: 'Articles fermés'
+portal.community.submit_community_topic: 'Faire une remarque'
+portal.community.view-x-community-topics:
   one: 'Afficher 1 avis '
   other: ' Afficher {{count}} commentaires'
 portal.flashes.article_cat_subscribe: 'Vous avez souscrit avec succès à cette catégorie. Vous serez averti lorsque de nouveaux articles sont publiés.'
@@ -426,14 +414,14 @@ portal.flashes.download_subscribe: 'Vous avez souscrit avec succès à ce télé
 portal.flashes.download_unsubscribe: 'Vous vous êtes désabonné avec succès de ce téléchargement.'
 portal.flashes.download_unsubscribe_everything: 'Vous êtes désabonné de toutes les notifications de téléchargement'
 portal.flashes.email_sent: 'Votre e mail a été envoyé'
-portal.flashes.feedback_login: 'Vous devez vous connecter pour voter'
-portal.flashes.feedback_subscribe: 'Vous avez souscrit avec succès à cet élément de commentaires. Vous serez averti quand il est mis à jour ou quand il y a un nouveau commentaire.'
-portal.flashes.feedback_unsubscribe: 'Vous vous êtes désabonné avec succès de cet élément de commentaires.'
-portal.flashes.feedback_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de feedback'
+portal.flashes.community_login: 'Vous devez vous connecter pour voter'
+portal.flashes.community_subscribe: 'Vous avez souscrit avec succès à cet élément de commentaires. Vous serez averti quand il est mis à jour ou quand il y a un nouveau commentaire.'
+portal.flashes.community_unsubscribe: 'Vous vous êtes désabonné avec succès de cet élément de commentaires.'
+portal.flashes.community_unsubscribe_everything: 'Vous vous êtes désabonné de toutes les notifications de sujets'
 portal.flashes.guest_content_must_verify: 'Avant que nous puissions publier votre contenu, vous devez vérifier votre courrier électronique. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
 portal.flashes.guest_new_ticket_must_verify: 'Avant que nous puissions accepter votre billet, nous devons vérifier votre adresse e-mail. Veuillez vérifier votre boîte mail Nous vous avons envoyé un lien de vérification.'
-portal.flashes.new_feedback_awaiting_review: 'Merci pour votre avis. Il sera visible sur notre portail de support après la révision de l''agent.'
-portal.flashes.new_feedback_posted: 'Merci pour vos remarques'
+portal.flashes.new_community_topic_awaiting_review: 'Merci pour votre avis. Il sera visible sur notre portail de support après la révision de l''agent.'
+portal.flashes.new_community_topic_posted: 'Merci pour vos remarques'
 portal.flashes.news_cat_subscribe: 'Vous avez souscrit avec succès à cette catégorie. Vous serez informé des nouveaux messages.'
 portal.flashes.news_cat_unsubscribe: 'Vous vous êtes désabonné de cette catégorie.'
 portal.flashes.news_subscribe: 'Vous vous êtes abonné avec succès à cet article. Vous serez averti quand il y a de nouveaux commentaires.'
@@ -485,7 +473,6 @@ portal.forms.error_dupe_ticket_message: 'Message de duplicata.'
 portal.forms.error_email_required: 'Veuillez indiquer votre adresse email'
 portal.forms.error_extra_fields: 'Désolé, une erreur s''est produite. Veuillez réessayer.'
 portal.forms.error_invalid_data_type: 'Ce type de données n''était pas attendu.'
-portal.forms.error_invalid_email: 'Cette adresse email n''est pas valide'
 portal.forms.error_invalid_url: 'Cette valeur n''est pas une URL valide.'
 portal.forms.error_length_invalid: 'Cette valeur devrait comporter exactement {{limit}} caractères.'
 portal.forms.error_length_too_long: 'Cette valeur est trop longue. Elle ne peut comporter plus de {{limit}} caractères.'
@@ -537,11 +524,9 @@ portal.forms.error_upload_file: 'Le téléchargement a échoué'
 portal.forms.error_upload_general: 'Votre fichier n''a pas été envoyé. Veuillez réessayer.'
 portal.forms.error_upload_html_size: 'Ce fichier est trop lourd.'
 portal.forms.error_upload_ini_size: 'Ce fichier est trop lourd. Il ne peut pas dépasser {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Désolé, une erreur s''est produite. Veuillez réessayer.'
 portal.forms.label_add_attachment: 'Ajouter une autre pièce jointe'
 portal.forms.label_captcha: 'Pour prouver que vous êtes un être humain, veuillez recopier le texte que vous voyez dans l''image CAPTCHA'
 portal.forms.label_category: Catégorie
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Sélectionner un fichier'
 portal.forms.label_comment: 'Des commentaires?'
 portal.forms.label_content: Contenu
@@ -549,12 +534,10 @@ portal.forms.label_current_password: 'Mot de passe actuel'
 portal.forms.label_department: Département
 portal.forms.label_drag: 'Glissez un fichier ici ou'
 portal.forms.label_drag_overlay: 'Glissez votre fichier ici.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Prénom
 portal.forms.label_full_name: 'Votre nom'
 portal.forms.label_language: Langue
 portal.forms.label_last_name: Nom
-portal.forms.label_message: Message
 portal.forms.label_name: Nom
 portal.forms.label_password: 'Mot de passe'
 portal.forms.label_password_confirm: Confirmer
@@ -569,21 +552,19 @@ portal.forms.label_submit: Soumettre
 portal.forms.label_timezone: 'Fuseau horaire'
 portal.forms.label_title: Titre
 portal.forms.label_upload_picture: 'Charger une photo'
-portal.forms.label_workflow: Workflow
 portal.general.add-comment: 'Ajouter un commentaire'
 portal.general.admin: Administration
 portal.general.admin_home: 'Interface d''administration'
-portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Gérer votre plateforme'
 portal.general.agent_bar_admin_dl: Téléchargements
-portal.general.agent_bar_admin_feedback: Remarques
+portal.general.agent_bar_admin_community: Remarques
 portal.general.agent_bar_admin_kb: 'Base de connaissances'
 portal.general.agent_bar_admin_lang: Langue
 portal.general.agent_bar_admin_news: Actualités
 portal.general.agent_bar_admin_portal: 'Thème et modèles du portail'
 portal.general.agent_bar_agent_desc: 'Voir les tickets / Gérer le contenu'
 portal.general.agent_bar_agent_dl: Téléchargements
-portal.general.agent_bar_agent_feedback: Remarques
+portal.general.agent_bar_agent_community: Remarques
 portal.general.agent_bar_agent_home: 'Interface agent'
 portal.general.agent_bar_agent_kb: 'Base de connaissances'
 portal.general.agent_bar_agent_news: Actualités
@@ -591,7 +572,6 @@ portal.general.agents-available: 'Agents disponibles'
 portal.general.attachments: 'Pièce jointes'
 portal.general.btn-cancel: Annuler
 portal.general.btn-download-pdf: 'Télécharger le PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Valider
 portal.general.btn-print: Imprimer
 portal.general.btn-send-email: 'Envoyer un email'
@@ -623,9 +603,8 @@ portal.general.nav-chat: 'Historique de chat'
 portal.general.nav-chatlog: 'Historique de chat'
 portal.general.nav-downloads: Téléchargements
 portal.general.nav-downloads-desc: 'Consulter nos documents à télécharger'
-portal.general.nav-emails: Emails
-portal.general.nav-feedback: Remarques
-portal.general.nav-feedback-desc: 'Suggestions personnalisées'
+portal.general.nav-community: Remarques
+portal.general.nav-community-desc: 'Suggestions personnalisées'
 portal.general.nav-guides: 'Des guides'
 portal.general.nav-guides-desc: 'Documentation produit'
 portal.general.nav-kb: 'Base de connaissances'
@@ -641,7 +620,6 @@ portal.general.nav-quick-jump: 'Accès rapide'
 portal.general.nav-register: 'S''inscrire'
 portal.general.nav-reset-password: 'Générer un nouveau mot de passe'
 portal.general.nav-set-password: 'Définir un mot de passe'
-portal.general.nav-tickets: Tickets
 portal.general.nav-tickets-org: 'Tickets de l''organisation'
 portal.general.nav-your-account: 'Votre compte'
 portal.general.no-agents-available: 'Désolé, aucun agent n''est disponible'
@@ -668,7 +646,7 @@ portal.general.rated-negative: 'Vous avez signalé cette page comme étant inuti
 portal.general.rated-positive: 'Vous avez signalé cette page comme étant utile'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} sur {{vote_count}} personnes ont trouvé cette page utile'
 portal.general.related-downloads: 'Fichiers similaires'
-portal.general.related-feedback: 'Remarque associée'
+portal.general.related-community: 'Remarque associée'
 portal.general.related-news: 'Actualités similaires'
 portal.general.related-pages: 'Pages associées'
 portal.general.rerender-form: 'Veuillez examiner ce formulaire avant de le soumettre.'
@@ -685,8 +663,8 @@ portal.general.show_more: 'Montre plus'
 portal.general.show_x_more: 'Afficher {num} plus'
 portal.general.software_provided_by: 'Logiciel d''assistance fourni par'
 portal.general.start-chat: 'Démarrer le Chat'
-portal.general.submit-feedback: 'Soumettre une remarque'
-portal.general.submit-feedback-desc: 'Commentaires et suggestions soumis par des clients comme vous'
+portal.general.submit-community-topic: 'Soumettre une remarque'
+portal.general.submit-community-topic-desc: 'Commentaires et suggestions soumis par des clients comme vous'
 portal.general.tagged_with: 'marqué avec'
 portal.general.tags: 'Mots clés'
 portal.general.toggle_off: Inactif
@@ -768,8 +746,6 @@ portal.tickets.resolve_my_ticket_btn: 'Clôturer mon ticket'
 portal.tickets.resolve_ticket: 'Clôturer le ticket: {{subject}}'
 portal.tickets.resolve_ticket_explain: 'Êtes-vous sûr de vouloir clôturer ce ticket ? Une fois votre ticket clôturé nos agents ne vous répondront plus.'
 portal.tickets.search-last-activity: 'Dernière activité'
-portal.tickets.search-title: Tickets
-portal.tickets.section-title: Tickets
 portal.tickets.switched-department-rerender: 'La structure de cette forme peut avoir changé. S''il vous plaît examiner le formulaire et soumettre à nouveau.'
 portal.tickets.thank_you: 'Votre billet est en route'
 portal.tickets.thank_you_check_email: 'Veuillez vérifier votre adresse e-mail'
@@ -848,7 +824,6 @@ user.chat.form_feedback_transcript-email: 'Envoyer une transcription de ce Chat 
 user.chat.log-title: 'Vos Chats'
 user.chat.log_chat-id: 'ID du Chat'
 user.chat.log_created-date: 'Créé le {{date}}'
-user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Département
 user.chat.log_message_author-you: Vous
 user.chat.log_nav-view-chats:
@@ -893,7 +868,7 @@ user.defaults.article_example_content: 'Ceci est un exemple d''article de la bas
 user.defaults.article_example_title: 'Exemple d''article'
 user.defaults.department_sales: 'Service Commercial'
 user.defaults.department_support: 'Centre d''aide'
-user.defaults.downloads_category_general: Documents
+user.defaults.navigate: Naviguer
 user.defaults.news_category_general: Général
 user.defaults.news_example_content: 'Ceci est un exemple d''actualité. N''hésitez pas à le modifier ou le supprimer depuis l''interface Agent.'
 user.defaults.news_example_title: 'Exemple d''actualité'
@@ -907,14 +882,13 @@ user.email_subjects.download_sub_new_and_updated: 'Téléchargements nouveaux et
 user.email_subjects.download_sub_updated: 'Téléchargements mis à jour'
 user.email_subjects.email-too-big: 'Votre email "{{subject}}" n''a pu être envoyé'
 user.email_subjects.email_new-confirm: 'Veuillez valider votre adresse email'
-user.email_subjects.email_primary-confirm: 'Validez votre adresse email'
-user.email_subjects.feedback_created_for_user: 'Merci pour vos remarques'
-user.email_subjects.feedback_new: 'Merci de nous avoir fait part de vos remarques'
-user.email_subjects.feedback_new-approved: 'Votre remarque a été approuvée'
-user.email_subjects.feedback_new-comment: 'Il y a un nouveau commentaire sur "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Désolé, votre remarque a été rejetée'
-user.email_subjects.feedback_sub_updated: 'Commentaires mis à jour'
-user.email_subjects.feedback_updated: 'Votre remarque a été mise à jour: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'Merci pour vos remarques'
+user.email_subjects.community_topic_new: 'Merci de nous avoir fait part de vos remarques'
+user.email_subjects.community_topic_new-approved: 'Votre remarque a été approuvée'
+user.email_subjects.community_topic_new-comment: 'Il y a un nouveau commentaire sur "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Désolé, votre remarque a été rejetée'
+user.email_subjects.community_sub_updated: 'Commentaires mis à jour'
+user.email_subjects.community_topic_updated: 'Votre remarque a été mise à jour: {{title}}'
 user.email_subjects.kb_sub_new: 'Nouveaux articles'
 user.email_subjects.kb_sub_new_and_updated: 'Articles nouveaux et mis à jour'
 user.email_subjects.kb_sub_updated: 'Articles mis à jour'
@@ -931,9 +905,7 @@ user.email_subjects.register-welcome-byagent: 'Votre nouveau compte sur le helpd
 user.email_subjects.remind_unresolved_final_subject: 'RAPPEL : {{subject}}'
 user.email_subjects.remind_unresolved_subject: 'RAPPEL : {{subject}}'
 user.email_subjects.ticket-rate: 'Evaluez la qualité de l''aide reçue concernant votre ticket "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Une nouvelle personne a été ajoutée à votre ticket'
 user.email_subjects.tickets_re: 'RE:{{ticket.subject}}'
-user.email_subjects.too-many-emails: 'REMARQUE : Vous avez envoyé trop d''emails'
 user.emails.auto-close: 'Faute d''avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.'
 user.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 user.emails.chat_validate_email: 'Veuillez valider votre adresse e-mail en entrant ce code "{{validation_code}}" dans le formulaire du widget ou en cliquant sur ce lien:'
@@ -948,21 +920,21 @@ user.emails.download-updated-downloads:
   other: ' {{count}} Téléchargements mis à jour'
 user.emails.downloads-explain: 'Vous recevez cet e-mail car vous êtes abonné à nos téléchargements à l''adresse <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Vous ne souhaitez plus recevoir ces e-mails? <a href="{{unsubscribe_url}}"> Cliquez ici pour vous désabonner de toutes les notifications de téléchargement </a>.'
 user.emails.email-too-big: 'Votre email "{{subject}}" n''a pu être traité car il est trop lourd. La taille maximale des emails est de {{max_size}}. Supprimez des pièces jointes et essayez à nouveau.'
-user.emails.feedback-explain: 'Vous recevez cet e-mail car vous êtes abonné à notre actualité à l''adresse <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Vous ne souhaitez plus recevoir ces e-mails? <a href="{{unsubscribe_url}}"> Cliquez ici pour vous désabonner de toutes les notifications. </a>'
-user.emails.feedback-updated-items:
+user.emails.community-explain: 'Vous recevez cet e-mail car vous êtes abonné à notre actualité à l''adresse <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Vous ne souhaitez plus recevoir ces e-mails? <a href="{{unsubscribe_url}}"> Cliquez ici pour vous désabonner de toutes les notifications. </a>'
+user.emails.community-updated-items:
   one: '1 Commentaires mis à jour '
   other: ' {{count}} Articles mis à jour'
-user.emails.feedback_agent-validation: 'Merci de noter que votre remarque n''apparaîtra publiquement sur notre site qu''après avoir été lue par un de nos agents.'
-user.emails.feedback_approved: 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.'
-user.emails.feedback_closed: 'La remarque "{{title}}" que vous nous avez transmise a été clôturée: {{status}}'
-user.emails.feedback_created_for_user: 'Merci pour vos commentaires récents "{{title}}". {{agentName}} a créé un nouvel élément de commentaires afin que vous puissiez rester au courant de nos progrès:'
-user.emails.feedback_disapproved: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site.'
-user.emails.feedback_disapproved-reason: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:'
-user.emails.feedback_new-comment: '{{name}} a posté un nouveau commentaire'
-user.emails.feedback_published: 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.'
-user.emails.feedback_thank-you: 'Merci de nous avoir fait parvenir vos remarques "{{title}}"'
-user.emails.feedback_updated: 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}'
-user.emails.feedback_votes:
+user.emails.community-topic_agent-validation: 'Merci de noter que votre remarque n''apparaîtra publiquement sur notre site qu''après avoir été lue par un de nos agents.'
+user.emails.community-topic_approved: 'Nous vous écrivons pour vous informer que votre remarque a été approuvée par un de nos agents et est à présent visible par tous sur notre site.'
+user.emails.community-topic_closed: 'La remarque "{{title}}" que vous nous avez transmise a été clôturée: {{status}}'
+user.emails.community-topic_created_for_user: 'Merci pour vos commentaires récents "{{title}}". {{agentName}} a créé un nouvel élément de commentaires afin que vous puissiez rester au courant de nos progrès:'
+user.emails.community-topic_disapproved: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site.'
+user.emails.community-topic_disapproved-reason: 'Nous vous écrivons pour vous informer que votre remarque n''a malheureusement pas été approuvée. Elle n''apparaîtra donc pas sur notre site. {{name}} évoque la raison suivante:'
+user.emails.community-topic_new-comment: '{{name}} a posté un nouveau commentaire'
+user.emails.community-topic_published: 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.'
+user.emails.community-topic_thank-you: 'Merci de nous avoir fait parvenir vos remarques "{{title}}"'
+user.emails.community-topic_updated: 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}'
+user.emails.community-topic_votes:
   one: 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:'
   other: 'Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:'
 user.emails.greeting: 'Chère/Cher {{to_name}},'
@@ -1056,11 +1028,10 @@ user.error.permission-denied: 'Désolé, vous ne pouvez réaliser cette action.'
 user.error.permission-denied-login: 'Vous n''êtes pas connecté. <a href="{{login_url}}">connectez-vous</a> et réessayez.'
 user.error.permission-denied-title: 'Vous n''êtes pas autorisé à réaliser cette action'
 user.error.server-error: 'Désolé, la page choisie ne peut pas être chargée en raison d''une erreur du serveur. Veuillez réessayer.'
-user.feedback.submit_feedback: 'Faire une remarque'
+user.community.submit_community_topic: 'Faire une remarque'
 user.general.deskpro: DeskPro
 user.general.helpdesk_by: 'Logiciel d''assistance par <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Code de confirmation'
-user.general.page: Page
 user.general.request_token_expired: 'Votre jeton de demande a expiré. Veuillez réessayer.'
 user.knowledgebase.auto_action_on_date: 'Automatiquement {{action}} le {{date}}'
 user.knowledgebase.creating_pending_article: 'Création d''un article provisoire'
@@ -1078,7 +1049,8 @@ user.lang.lang_title_japanese: Japonais
 user.lang.lang_title_norwegian: Norvégien
 user.lang.lang_title_persian: Perse
 user.lang.lang_title_polish: Polonais
-user.lang.lang_title_portuguese: Portugais
+user.lang.lang_title_portuguese_br: Portugais (Brésil)
+user.lang.lang_title_portuguese_pt: Portugais (Portugal)
 user.lang.lang_title_romanian: Roumain
 user.lang.lang_title_russian: Russe
 user.lang.lang_title_spanish: Espagnol
@@ -1106,7 +1078,7 @@ user.profile.register_password_require_num_uppercase:
   one: 'Au moins {{count}} caractère en majuscule'
   other: 'Au moins {{count}} caractères en majuscule'
 user.profile.register_password_unused: 'Vous ne pouvez utiliser un mot de passe que vous avez déjà utilisé'
-user.tickets.feedback_message_leave_comment: 'Facultatif: Laissez un commentaire'
+user.tickets.community_message_leave_comment: 'Facultatif: Laissez un commentaire'
 user.tickets.fields_category: Catégorie
 user.tickets.fields_department: Service
 user.tickets.fields_priority: Priorité
@@ -1176,7 +1148,6 @@ user.time.time-ago_x_week: 'Il y a {0} semaines'
 user.time.time-ago_x_year: 'Il y a {0} ans'
 user.time.time_1_day: '1 jour'
 user.time.time_1_hour: '1 heure'
-user.time.time_1_minute: '1 minute'
 user.time.time_1_month: '1 mois'
 user.time.time_1_second: '1 seconde'
 user.time.time_1_week: '1 semaine'
@@ -1184,7 +1155,6 @@ user.time.time_1_year: '1 an'
 user.time.time_less_second: 'moins d''une seconde'
 user.time.time_x_day: '{0} jours'
 user.time.time_x_hour: '{0} heures'
-user.time.time_x_minute: '{0} minutes'
 user.time.time_x_month: '{0} mois'
 user.time.time_x_second: '{0} secondes'
 user.time.time_x_week: '{0} semaines'

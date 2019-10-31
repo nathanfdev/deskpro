@@ -29,6 +29,7 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     const ACTION_CALL_TARGET                          = 'call.target';
     const ACTION_REJECTED                             = 'call.rejected';
     const ACTION_ANSWERED                             = 'call.answered';
+    const ACTION_FAILED                               = 'call.failed';
     const ACTION_FORWARD_ANSWERED                     = 'call.forward_answered';
     const ACTION_MUTED                                = 'call.participant_muted';
     const ACTION_UNMUTED                              = 'call.participant_unmuted';
@@ -36,9 +37,12 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     const ACTION_UNHOLD                               = 'call.participant_unhold';
     const ACTION_AGENT_INVITED                        = 'call.agent_invited';
     const ACTION_AGENT_TRANSFER                       = 'call.agent_transfer';
+    const ACTION_QUEUE_TRANSFER                       = 'call.queue_transfer';
+    const ACTION_AUTO_ATTENDANT_TRANSFER              = 'call.auto_attendant_transfer';
     const ACTION_USER_JOINED                          = 'call.user_joined';
     const ACTION_AGENT_JOINED                         = 'call.agent_joined';
     const ACTION_AGENT_CANCEL_INVITE                  = 'call.agent_cancel_invite';
+    const ACTION_AGENT_INVITE_TIMEOUT                 = 'call.agent_invite_timeout';
     const ACTION_AGENT_IGNORE_INVITE                  = 'call.agent_ignore_invite';
     const ACTION_AGENT_LEFT                           = 'call.agent_left';
     const ACTION_USER_LEFT                            = 'call.user_left';
@@ -112,6 +116,39 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
      * @var \DateTime
      */
     private $dateCreated;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="target_agent_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
+     */
+    private $targetAgent;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
+     * @ORM\JoinColumn(name="target_queue_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceQueue>")
+     *
+     * @var VoiceQueue
+     */
+    private $targetQueue;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant")
+     * @ORM\JoinColumn(name="target_auto_attendant_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant>")
+     *
+     * @var VoiceAutoAttendant
+     */
+    private $targetAutoAttendant;
 
     /**
      * Constructor.
@@ -225,6 +262,66 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     public function setDateCreated(\DateTime $dateCreated = null)
     {
         $this->setModelField('dateCreated', $dateCreated);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getTargetAgent()
+    {
+        return $this->targetAgent;
+    }
+
+    /**
+     * @param Person $targetAgent
+     *
+     * @return $this
+     */
+    public function setTargetAgent(Person $targetAgent = null)
+    {
+        $this->setModelField('targetAgent', $targetAgent);
+
+        return $this;
+    }
+
+    /**
+     * @return VoiceQueue
+     */
+    public function getTargetQueue()
+    {
+        return $this->targetQueue;
+    }
+
+    /**
+     * @param VoiceQueue $targetQueue
+     *
+     * @return $this
+     */
+    public function setTargetQueue(VoiceQueue $targetQueue = null)
+    {
+        $this->setModelField('targetQueue', $targetQueue);
+
+        return $this;
+    }
+
+    /**
+     * @return VoiceAutoAttendant
+     */
+    public function getTargetAutoAttendant()
+    {
+        return $this->targetAutoAttendant;
+    }
+
+    /**
+     * @param VoiceAutoAttendant $targetAutoAttendant
+     *
+     * @return $this
+     */
+    public function setTargetAutoAttendant(VoiceAutoAttendant $targetAutoAttendant = null)
+    {
+        $this->setModelField('targetAutoAttendant', $targetAutoAttendant);
 
         return $this;
     }

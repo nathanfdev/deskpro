@@ -31,12 +31,13 @@ if (!isset($DP_LOG_MESSAGES)) {
  * --------------
  *
  * There is nothing very special about database-stored files. The blobs authcode is:
- * (id)(password)(0)(T)
+ * (id)(password)(0)(T|PD)
  *
  * That is the blob ID, a random string, and zero. The trailing zero tells this script
  * that it needs to fetch it from the database rather than the filesystem.
  *
  * T - is not required suffix indicates that this is a ticket attachment
+ * PD - is not required suffix indicates that this is a download attachment
  *
  * Filesystem Files
  * ----------------
@@ -45,7 +46,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * folder has 1000 files in it.
  *
  * The authcode is:
- * (folder)(password)(id)(namehash)(T)
+ * (folder)(password)(id)(namehash)(T|PD)
  *
  * The "namehash" is a specil hash of the file filename. Since we don't connect to the database,
  * there's no way to know what the "real" filename of a file is. We output URLs with the correct filename in it
@@ -55,6 +56,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * possible to spoof the name still, using two different hashing functions should make it relatively hard.
  *
  * T - is not required suffix indicates that this is a ticket attachment
+ * PD - is not required suffix indicates that this is a download attachment
  *
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
@@ -137,7 +139,7 @@ class ServeFileScript extends LowScriptAbstract
             // A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
             // That is: /(batch)(authcode)(id)(namehash)/name.zip
             //0XNSNTQHTNR43DD567
-            } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([a-fA-F0-9]{6})(T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([a-fA-F0-9]{6})((?:T|PD)?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleFilesystemBlobRequest: %s', implode(', ', $m));
                 $this->handleFilesystemBlobRequest(
                     $m[1],
@@ -151,10 +153,10 @@ class ServeFileScript extends LowScriptAbstract
             // A database-stored bloblike /123AHSDHJGSD0/filename.zip
             // That is (id)(authcode0)
             // The trailing 0 denotes it as a database storage authcode
-            } elseif (preg_match('#^/([0-9]+)([A-Z]+0T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/([0-9]+)([A-Z]+0(?:T|PD)?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleDbBlobRequest: %s', implode(', ', $m));
                 $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
-            } elseif (preg_match('#^/brand-[0-9]+/([0-9]+)([A-Z]+0T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/brand-[0-9]+/([0-9]+)([A-Z]+0(?:T|PD)?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleDbBlobRequest: %s (legacy brand route)', implode(', ', $m));
                 $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
             } elseif (preg_match('#^/gradient$#', $pathInfo)) {
@@ -553,13 +555,21 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $attachmentTagSuffix, $filename)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            $this->showBlob($blob_id, null, $authcode);
+
+            return;
+        }
+
         //------------------------------
         // If its a simple file request we
         // can serve it without a db connection
         //------------------------------
 
-        if ($attachmentTagSuffix === 'T') {
+        if ($attachmentTagSuffix === Blob::SUFFIX_TICKET_ATTACHMENT) {
             $this->checkTicketAttachmentAccessTokenOrRedirect($batch.$authcode.$blob_id.$namehash.$attachmentTagSuffix);
+        } elseif ($attachmentTagSuffix === Blob::SUFFIX_DOWNLOAD_ATTACHMENT) {
+            $this->checkDownloadAttachmentAccessTokenOrRedirect($batch.$authcode.$blob_id.$namehash.$attachmentTagSuffix);
         }
 
         $basePath = $this->dpEnv->getUserFilesDir();
@@ -652,6 +662,16 @@ class ServeFileScript extends LowScriptAbstract
         // Serve up
         //------------------------------
 
+        $etag = 'W/"'.md5_file($filepath).'"';
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+
+        if ($etagHeader === $etag) {
+            header('HTTP/1.0 304 Not Modified');
+
+            return;
+        }
+
         $mimetype = ContentTypes::getContentTypeFromFilename($filename);
         if (!$mimetype) {
             $mimetype = 'application/octet-stream';
@@ -666,9 +686,12 @@ class ServeFileScript extends LowScriptAbstract
         header('X-Content-Type-Options: nosniff');
         header('Content-Length: '.filesize($filepath));
         header('Content-Disposition: '.$contentDisposition.'; filename="'.addslashes($filename).'"');
-        header('Last-Modified: '.date('D, d M Y H:i:s', strtotime('2010-01-01')).' GMT');
-        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
-        header('Cache-Control: max-age=31556926,private');
+        if ($contentDisposition != 'inline' || $attachmentTagSuffix) {
+            header('Cache-Control: max-age=86400,private');
+        } else {
+            header('Cache-Control: max-age=604800,public');
+        }
+        header("ETag: $etag");
         header('X-Robots-Tag: noindex, nofollow');
 
         if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
@@ -689,8 +712,10 @@ class ServeFileScript extends LowScriptAbstract
     {
         $authcode = $blob_id.$authseg;
 
-        if (substr($authcode, -1) === 'T') {
+        if (substr($authcode, -1) === Blob::SUFFIX_TICKET_ATTACHMENT) {
             $this->checkTicketAttachmentAccessTokenOrRedirect($authcode);
+        } elseif (substr($authcode, -2) === Blob::SUFFIX_DOWNLOAD_ATTACHMENT) {
+            $this->checkDownloadAttachmentAccessTokenOrRedirect($authcode);
         }
 
         $size = null;
@@ -925,7 +950,12 @@ class ServeFileScript extends LowScriptAbstract
             }
 
             header('HTTP/1.1 301 Moved Permanently');
-            header("Location: {$blob['file_url']}");
+            if ($blob['storage_loc'] === 's3') {
+                $url = Blob::rewriteDynFileUrl($blob['file_url']);
+                header("Location: {$url}");
+            } else {
+                header("Location: {$blob['file_url']}");
+            }
             exit;
         }
 
@@ -961,7 +991,9 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         $safeInlineContent = $this->alwaysForceDownloadOfHtmlFiles;
+        $inline            = false;
         if (!isset($_GET['dl']) && ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
+            $inline                         = true;
             $headers['Content-Disposition'] = 'inline; filename="'.addslashes($blob['filename']).'"';
         } else {
             $headers['Content-Disposition'] = 'attachment; filename="'.addslashes($blob['filename']).'"';
@@ -971,11 +1003,15 @@ class ServeFileScript extends LowScriptAbstract
         if (!$d) {
             $d = new \DateTime();
         }
-        $headers['Last-Modified']          = $d->format('D, d M Y H:i:s').' GMT';
-        $headers['Expires']                = date('D, d M Y H:i:s', strtotime('+1 year')).' GMT';
-        $headers['Cache-Control']          = 'max-age=31556926,private';
+
+        if (!$inline || Blob::getSuffixFromAuthcode($blob['authcode'])) {
+            header('Cache-Control: max-age=86400,private');
+        } else {
+            header('Cache-Control: max-age=604800,public');
+        }
         $headers['X-Robots-Tag']           = 'noindex, nofollow';
         $headers['X-Content-Type-Options'] = 'nosniff';
+        $headers['ETag']                   = 'W/"'.$blob['blob_hash'].'"';
 
         return $headers;
     }
@@ -992,6 +1028,11 @@ class ServeFileScript extends LowScriptAbstract
     protected function sendFromFilesystem($blob)
     {
         $headers = $this->getHeaders($blob);
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+        if ($etagHeader === $headers['ETag']) {
+            return new Response('', 304);
+        }
 
         // folder we store blobs in
         $basePath = $this->dpEnv->getUserFilesDir();
@@ -1023,11 +1064,16 @@ class ServeFileScript extends LowScriptAbstract
      *
      * @param Blob $blob
      *
-     * @return StreamedResponse
+     * @return Response
      */
     public function sendFromDatabase($blob)
     {
         $headers = $this->getHeaders($blob);
+
+        $etagHeader = (isset($_SERVER['HTTP_IF_NONE_MATCH']) ? trim($_SERVER['HTTP_IF_NONE_MATCH']) : false);
+        if ($etagHeader === $headers['ETag']) {
+            return new Response('', 304);
+        }
 
         $sth = $this->getPdoRead()->prepare('SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC');
         $sth->execute(['blob_id' => $blob['id']]);
@@ -1443,6 +1489,36 @@ class ServeFileScript extends LowScriptAbstract
             return true;
         }
 
+        if (!$this->checkBlobAccessToken($blobAuth)) {
+            header('HTTP/1.1 302 Moved Temporarily');
+            header("Location: /ticket-attachment/$blobAuth");
+            exit;
+        }
+    }
+
+    /**
+     * @param string $blobAuth
+     */
+    private function checkDownloadAttachmentAccessTokenOrRedirect($blobAuth)
+    {
+        if (!$this->_getSetting('user.attachment_require_auth_downloads')) {
+            return true;
+        }
+
+        if (!$this->checkBlobAccessToken($blobAuth)) {
+            header('HTTP/1.1 302 Moved Temporarily');
+            header(sprintf('Location: /downloads/files/%s/download', $blobAuth));
+            exit;
+        }
+    }
+
+    /**
+     * @param string $blobAuth
+     *
+     * @return bool
+     */
+    private function checkBlobAccessToken($blobAuth)
+    {
         $isValid = false;
         if (!empty($_GET['access_token'])) {
             $secret = $this->_getSetting('core.app_secret', 'secret');
@@ -1452,11 +1528,7 @@ class ServeFileScript extends LowScriptAbstract
             $isValid = Util::checkStaticSecurityToken($_GET['access_token'], $secret);
         }
 
-        if (!$isValid) {
-            header('HTTP/1.1 302 Moved Temporarily');
-            header("Location: /ticket-attachment/$blobAuth");
-            exit;
-        }
+        return $isValid;
     }
 
     private function _getSetting($name, $default = null)

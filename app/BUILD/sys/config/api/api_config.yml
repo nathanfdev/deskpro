@@ -86,7 +86,8 @@ fos_rest:
         exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
     view:
         mime_types:
-            { zip: ['application/zip'] }
+            zip: ['application/zip']
+            eml: ['message/rfc822']
         view_response_listener: force
         formats:
             json: true
@@ -216,7 +217,7 @@ security:
             anonymous: ~
             methods: [GET]
         api_anonymous_voice:
-            pattern: ^/api/v2/(twilio_callbacks|plivo_callbacks)
+            pattern: ^/api/v2/(twilio_callbacks|plivo_callbacks|task_router/evaluate)
             stateless: true
             anonymous: ~
         api_anonymous:

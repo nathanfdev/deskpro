@@ -2,17 +2,17 @@
 Feature: JSON API fetch ids only
 
   Background:
-   Given I'm authenticated as "admin"
+    Given I'm authenticated as "admin"
 
   Scenario Outline: I search by ID
-    Given only the following "Feedback" records exist:
-      | #        | person  | is_reviewed | slug      | title     | content   | status |
-      | feedback | {admin} | 1           | feedback1 | Feedback1 | Feedback1 | active |
+    Given only the following "CommunityTopic" records exist:
+      | #     | person  | is_reviewed | slug   | title  | content | status |
+      | topic | {admin} | 1           | topic1 | Topic1 | Topic1  | active |
     And only the following "Article" records exist:
       | #       | slug     | title    | content  | status  |
       | article | article1 | Article1 | Article1 | visible |
     And only the following "Download" records exist:
-      | #        | slug      | title     |  status   |
+      | #        | slug      | title     | status    |
       | download | Download1 | Download1 | published |
     And only the following "News" records exist:
       | #    | slug  | title | status    |
@@ -34,7 +34,7 @@ Feature: JSON API fetch ids only
       | ref            | type         | order |
       | {article}      | article      | 0     |
       | {download}     | download     | 1     |
-      | {feedback}     | feedback     | 2     |
+      | {topic}        | community    | 2     |
       | {news}         | news         | 3     |
       | {ticket}       | ticket       | 4     |
       | {me}           | person       | 5     |

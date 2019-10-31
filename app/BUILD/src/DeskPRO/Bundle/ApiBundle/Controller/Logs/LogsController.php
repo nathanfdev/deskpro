@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Logs\ApiLogsOptionsType;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel;
@@ -20,6 +21,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class LogsCrudController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  */
 class LogsController extends BaseController
 {
@@ -216,7 +218,7 @@ class LogsController extends BaseController
         $options   = new OptionsModel();
         $logHelper = $this->container->get('api_log.helper');
         $options
-            ->setEnabled((bool) $logHelper->isLoggingEnabled())
+            ->setEnabled($logHelper->getEnabled())
             ->setRequestLength((int) $logHelper->getMaxRequestBodyLength())
             ->setResponseLength((int) $logHelper->getMaxResponseBodyLength())
             ->setModes($logHelper->getModes())

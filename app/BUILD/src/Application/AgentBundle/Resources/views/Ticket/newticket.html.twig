@@ -3,6 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = '{{ phrase('agent.general.new_ticket') }}';
 pageMeta.ticket_id = 0;
 pageMeta.linked_ticket = {{ ticket.id|default(0) }};
+pageMeta.currentAgent = {{ app.user.toApiData()|json_encode|raw }};
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
@@ -50,6 +51,8 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 	<div style="display:none;" class="error-message subject">&bull; {{ phrase('agent.tickets.please_enter_subject') }}</div>
 	<div style="display:none;" class="error-message person_id person_no_user">&bull; {{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
 	<div style="display:none;" class="error-message person_email_address">&bull; {{ phrase('agent.general.error_email_address') }}</div>
+	<div style="display:none;" class="error-message person_phone_number_exists">&bull; {{ phrase('agent.general.error_phone_number_exists') }}</div>
+	<div style="display:none;" class="error-message person_phone_number_invalid">&bull; {{ phrase('agent.general.error_invalid_phone_number') }}</div>
 	<div style="display:none;" class="error-message person_email_address_gateway">&bull; {{ phrase('agent.tickets.email_is_ticket_account') }}</div>
 	<div style="display:none;" class="error-message brand_id">&bull; {{ phrase('agent.general.select_a_brand') }}</div>
 	<div style="display:none;" class="error-message department_id">&bull; {{ phrase('agent.general.select_a_department') }}</div>
@@ -92,6 +95,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 			>
 				<input type="text" name="newticket[person_input_choice]" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_ticket') }}" />
 				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
+				<input type="hidden" class="person-email"  value="{{ person.primary_email.email }}" id="{{baseId}}_person_email" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
@@ -247,7 +251,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 									<li class="agent-{{ a.person.id }}" data-agent-id="{{ a.person.id }}"><a
 												class="dp-btn dp-btn-small agent-link"
 												data-agent-id="{{ a.person.id }}"><span class="text"
-																						style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span><span
+																						style="background-image: url({{ a.person.getPictureUrl(15) }}); background-size: contain;">{{ a.person.display_name }}</span><span
 													class="remove-row-trigger"> <i
 														class="fas fa-times"></i></span></a></li>
                                 {% endfor %}
@@ -554,6 +558,14 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
         </nav>
 	</header>
 	<section class="ticketreply">
+		<div class="ticket-select-user-overlay">
+			<strong class="ticket-select-user-message">
+				{{ phrase('agent.tickets.error_reply_select_user') }}
+			</strong>
+			<strong class="ticket-no-email-message">
+				{{ phrase('agent.tickets.error_reply_no_email') }}
+			</strong>
+		</div>
 		<article>
 			<section>
 				<div class="option-rows">
@@ -681,7 +693,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 						</li>
 					{% else %}
 						<li class="coll">
-							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<span class="macro-title"><i class="fas fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
 							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
 								<section>
 									<div class="dp-menu-area small">
@@ -709,15 +721,16 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 			<label class="hide-reply" style="display: none">{{ phrase('agent.tickets.save_note_and_set_status') }}</label>
 			<ul>
         {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
-          <li data-type="{{ status }}" 
+          <li data-type="{{ status }}"
               data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': phrase('agent.tickets.status_' ~ status)}) }}"
               data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_' ~ status)}) }}"
           >
               <div class="on-icon"><i class="fas fa-check"></i></div>
               {{ phrase('agent.tickets.kbd_' ~ status) }}
           </li>
+          {# dont list sub-statuses here, menu doesnt handle it well
           {% for substatus in ticket_statuses[status].getChildren() %}
-            <li data-type="{{ substatus.statusCode }}" 
+            <li data-type="{{ substatus.statusCode }}"
                 data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': substatus.title}) }}"
                 data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': substatus.title}) }}"
             >
@@ -725,6 +738,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
                 --&nbsp;{{ substatus.title }}
             </li>
           {% endfor %}
+          #}
         {% endfor %}
 			</ul>
 		</div>

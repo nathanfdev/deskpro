@@ -2,7 +2,8 @@
 Feature: Registration form custom fields
 
   Background: Fresh database
-    Given I disable anti-abuse rate limiting
+    Given I install the fresh data set
+    And I disable anti-abuse rate limiting
     And there are no Person records
     And the following languages are enabled:
       | default |

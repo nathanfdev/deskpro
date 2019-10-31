@@ -92,8 +92,8 @@ define([
       });
 
       options.push({
-        title: 'Linked feedback items',
-        value: 'FilterFeedbackLinks'
+        title: 'Linked Community Topics',
+        value: 'FilterCommunityTopicLinks'
       });
 
       options.push({
@@ -791,7 +791,7 @@ define([
 
     getFilterFeedbackLinks(options) {
       if (options == null) { options = {}; }
-      options.propName = 'feedback_links';
+      options.propName = 'topic_links';
       options.operators = ['isset', 'not_isset', 'is'];
       const def = this.getStandardInput(options);
       return def;

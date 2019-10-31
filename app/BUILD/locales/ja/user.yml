@@ -9,6 +9,10 @@ portal.account.section-title-register: 登録
 portal.account.section-title-reset-password: パスワードのリセット
 portal.articles.search-title: ナレッジベース
 portal.articles.section-title: ナレッジベース
+portal.articles.view-x-articles:
+  other: 'View {{count}} articles'
+portal.articles.x-articles:
+  other: '{{count}} articles'
 portal.chat.assigned_to: 'このチャットは{{name}}が担当します。'
 portal.chat.chat_transcript: チャットトランスクリプト
 portal.chat.end_chat: チャットを終了
@@ -17,6 +21,8 @@ portal.chat.ended_user: チャットはユーザにより終了しました。
 portal.chat.feedback_action: フィードバックを送信
 portal.chat.helpful: 参考になった
 portal.chat.label-name: あなたの名前
+portal.chat.list_title:
+  other: '{{count}} Chats'
 portal.chat.log_department: 部門
 portal.chat.message_assigned: 'このチャットは{{name}}が担当します。'
 portal.chat.message_ended: チャットは終了しました。
@@ -38,44 +44,58 @@ portal.chat.you: あなた
 portal.downloads.download: ダウンロード
 portal.downloads.search-title: ダウンロード
 portal.downloads.section-title: ダウンロード
+portal.downloads.view-x-files:
+  other: 'View {{count}} downloads'
 portal.email_subjects.chat_transcript: チャットトランスクリプト
 portal.email_subjects.comment-approved: コメントは承認されました。
 portal.email_subjects.comment-confirmation: コメントをいただきありがとうございます。
 portal.email_subjects.comment-deleted: あなたのコメントはエージェントにより確認されました。
 portal.email_subjects.email_new-confirm: メールアドレスを認証してください。
 portal.email_subjects.email_primary-confirm: メールアドレスを認証してください。
-portal.email_subjects.feedback_new: フィードバックを頂きありがとうございました。
-portal.email_subjects.feedback_new-approved: フィードバックは承認されました。
-portal.email_subjects.feedback_new-comment: '"{{title}}"に新着コメントがあります。'
-portal.email_subjects.feedback_new-confirm: フィードバックを送信頂きありがとうございました。(承認手続き中)
-portal.email_subjects.feedback_new-disapproved: フィードバックは承認されませんでした。
-portal.email_subjects.feedback_updated: 'フィードバックが更新されました：{{title}}'
+portal.email_subjects.community_new: フィードバックを頂きありがとうございました。
+portal.email_subjects.community_new-approved: フィードバックは承認されました。
+portal.email_subjects.community_new-comment: '"{{title}}"に新着コメントがあります。'
+portal.email_subjects.community_new-confirm: フィードバックを送信頂きありがとうございました。(承認手続き中)
+portal.email_subjects.community_new-disapproved: フィードバックは承認されませんでした。
+portal.email_subjects.community_updated: 'フィードバックが更新されました：{{title}}'
 portal.email_subjects.password_agent-reset: エージェントによりあなたのパスワードはリセットされました。
 portal.email_subjects.password_reset: パスワードのリセット
 portal.email_subjects.ticket_new-participant: リクエストに新たな参加者が追加されました。
 portal.email_subjects.validate-email: メールアドレスを認証してください。
 portal.emails.chat_transcript: チャットに参加いただきありがとうございました。以下、チャットの記録(トランスクリプト)です。
 portal.emails.comment_approved: コメントが公開されました。
-portal.emails.comment_deleted: あなたのコメントはページの改善のために参考にされました。
 portal.emails.comment_thank-you: '{{link}}についてのコメントを頂き、ありがとうございました。'
 portal.emails.comment_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
 portal.emails.do-not-reply: 本メールはシステムにより自動配信されたものです。メッセージへの返信はこちらのメールアドレスでは受け付けておりません。また返信されたメッセージの内容は確認できませんのでご注意ください。
-portal.emails.feedback_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
-portal.emails.feedback_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
-portal.emails.feedback_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
-portal.emails.feedback_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
-portal.emails.feedback_new-comment: '{{name}}からの新しいコメント:'
-portal.emails.feedback_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
-portal.emails.feedback_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
-portal.emails.feedback_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
-portal.emails.feedback_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
-portal.emails.feedback_votes:
+portal.emails.download-new-downloads:
+  other: '{{count}} New Downloads'
+portal.emails.download-updated-downloads:
+  other: '{{count}} Updated Downloads'
+portal.emails.community-topics-updated:
+  other: '{{count}} Updated Community Topics'
+portal.emails.community_topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
+portal.emails.community_topic_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
+portal.emails.community-topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
+portal.emails.community-topic_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
+portal.emails.community-topic_new-comment: '{{name}}からの新しいコメント:'
+portal.emails.community-topic_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
+portal.emails.community-topic_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
+portal.emails.community-topic_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+portal.emails.community-topic_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
+portal.emails.community-topic_votes:
   other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
 portal.emails.greeting: '{{to_name}}様'
+portal.emails.kb-new-articles:
+  other: '{{count}} New Knowledgebase Articles'
+portal.emails.kb-updated-articles:
+  other: '{{count}} Updated Knowledgebase Articles'
 portal.emails.label_view-online: オンラインで確認
+portal.emails.news-new-articles:
+  other: '{{count}} New News Posts'
+portal.emails.news-updated-articles:
+  other: '{{count}} Updated News Posts'
 portal.emails.password_agent-reset: アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。
 portal.emails.password_reset: 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:'
-portal.emails.profile_email-new-confirm: アカウントに予備のメールアドレスの追加を許可するには、次のリンクをクリックしてください。
 portal.emails.profile_email_link-validate: あなたのメールアドレスを有効にするには次のリンクをクリックしてください。
 portal.emails.register-confirm: 'アカウントをご登録いただきありがとうございます。<br /><br />'
 portal.emails.registration_closed: '{{name}}様<br /><br /><br /><br />新たなリクエストの受付はヘルプデスクのメンバー様からに限定されています。既にアカウントをお持ちのお客様は、登録済みのメールアドレスからもう一度Eメールを送り直してください。'
@@ -93,14 +113,26 @@ portal.emails.tickets_ommitted:
   other: メッセージが1つ削除されました
 portal.emails.view_full_history_online: リクエストの全文をオンラインにて表示
 portal.error.404-title: 見つかりません。
-portal.feedback.attachments: 添付
-portal.feedback.btn-closed: クローズ(対応済み)
-portal.feedback.btn-vote: 同意
-portal.feedback.search-title: フィードバック
-portal.feedback.section-desc: 他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。
-portal.feedback.section-title: フィードバック
-portal.feedback.submit_feedback: フィードバックを送信
-portal.forms.error_password_min_length: パスワードは5文字以上入力してください。
+portal.community.attachments: 添付
+portal.community.btn-closed: クローズ(対応済み)
+portal.community.btn-vote: 同意
+portal.community.search-title: フィードバック
+portal.community.section-desc: 他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。
+portal.community.section-title: フィードバック
+portal.community.submit_community_topic: フィードバックを送信
+portal.community.form_custom_cat: カテゴリー
+portal.community.view-x-community-topics:
+  other: 'View {{count}} community topic'
+portal.forms.error_password_min_length:
+  other: 'Minimum of {{count}} characters'
+portal.forms.error_password_require_num_lowercase:
+  other: 'At least {{count}} lowercase characters'
+portal.forms.error_password_require_num_number:
+  other: 'At least {{count}} numbers'
+portal.forms.error_password_require_num_symbol:
+  other: 'At least {{count}} symbols'
+portal.forms.error_password_require_num_uppercase:
+  other: 'At least {{count}} uppercase characters'
 portal.forms.label_category: カテゴリ
 portal.forms.label_department: 部門
 portal.forms.label_first_name: 名前
@@ -120,11 +152,15 @@ portal.general.attachments: 添付
 portal.general.btn-cancel: キャンセル
 portal.general.btn-download-pdf: PDFをダウンロード
 portal.general.btn-go: 進む
+portal.general.comments-count:
+  other: '{{count}} Comments'
+portal.general.comments-title:
+  other: 'Comments ({{count}})'
 portal.general.delete: 削除
 portal.general.everything: 全て
 portal.general.nav-downloads: ダウンロード
 portal.general.nav-downloads-desc: ダウンロードを検索
-portal.general.nav-feedback: フィードバック
+portal.general.nav-community: フィードバック
 portal.general.nav-kb: ナレッジベース
 portal.general.nav-kb-desc: ヘルプ記事を読む
 portal.general.nav-news: ニュース
@@ -138,14 +174,18 @@ portal.general.rated-negative: 参考にならない情報としてマーク済�
 portal.general.rated-positive: 参考ページとしてマーク済み
 portal.general.rating_x_of_y_found_helpful: '{{vote_count}} 中{{vote_up}} 人の方が参考になると投票しています。'
 portal.general.related-downloads: 関連ファイル
-portal.general.related-feedback: 関連フィードバック
+portal.general.related-community: 関連フィードバック
 portal.general.related-news: 関連ニュース
 portal.general.search-labels-section-title: 検索ラベル
 portal.general.search-section-title: 検索
 portal.general.search_btn: 検索
 portal.general.share-this: 共有する
-portal.general.submit-feedback: フィードバックを送る
+portal.general.submit-community-topic: フィードバックを送る
 portal.news.section-title: ニュース
+portal.news.view-x-news:
+  other: 'View {{count}} articles'
+portal.sidebar.agents_x_online:
+  other: '{{count}} online'
 portal.sidebar.news_title: ニュース
 portal.tickets.feedback_message_leave_comment: オプション：コメントを残す
 portal.tickets.guest-thanks-section-title: ありがとうございました。
@@ -153,6 +193,8 @@ portal.tickets.guest_thank_you_title: ありがとうございました。
 portal.tickets.list_agent: 担当エージェント
 portal.tickets.list_department: 部門
 portal.tickets.list_status_open: 対応中のリクエスト
+portal.tickets.list_status_open_count:
+  other: '{{count}} awaiting response'
 portal.tickets.list_status_resolved: 解決
 portal.tickets.list_subject: 件名
 portal.tickets.list_title: あなたのリクエスト
@@ -232,6 +274,7 @@ user.defaults.article_example_title: 記事の例
 user.defaults.department_sales: セールス
 user.defaults.department_support: サポート
 user.defaults.downloads_category_general: 書類
+user.defaults.navigate: ナビゲート
 user.defaults.news_category_general: 一般
 user.defaults.news_example_content: こちらはニュースポストの例文です。必要に応じてエージェントインターフェースから編集や削除をしてください。
 user.defaults.news_example_title: ニュースポストの例文
@@ -241,12 +284,11 @@ user.email_subjects.comment-approved: コメントは承認されました。
 user.email_subjects.comment-deleted: あなたのコメントはエージェントにより確認されました。
 user.email_subjects.email-too-big: 'あなたのメール "{{subject}}" は受理されませんでした。'
 user.email_subjects.email_new-confirm: メールアドレスを認証してください。
-user.email_subjects.email_primary-confirm: メールアドレスを認証してください。
-user.email_subjects.feedback_new: フィードバックを頂きありがとうございました。
-user.email_subjects.feedback_new-approved: フィードバックは承認されました。
-user.email_subjects.feedback_new-comment: '"{{title}}"に新着コメントがあります。'
-user.email_subjects.feedback_new-disapproved: フィードバックは承認されませんでした。
-user.email_subjects.feedback_updated: 'フィードバックが更新されました：{{title}}'
+user.email_subjects.community_topic_new: フィードバックを頂きありがとうございました。
+user.email_subjects.community_topic_new-approved: フィードバックは承認されました。
+user.email_subjects.community_topic_new-comment: '"{{title}}"に新着コメントがあります。'
+user.email_subjects.community_topic_new-disapproved: フィードバックは承認されませんでした。
+user.email_subjects.community_topic_updated: 'フィードバックが更新されました：{{title}}'
 user.email_subjects.kb_sub_new: 新しい記事
 user.email_subjects.kb_sub_new_and_updated: 新しい記事と更新情報
 user.email_subjects.kb_sub_updated: 更新された記事
@@ -257,27 +299,43 @@ user.email_subjects.register-welcome-byagent: 新しいヘルプデスクアカ�
 user.email_subjects.remind_unresolved_final_subject: 'リマインダ: {{subject}}'
 user.email_subjects.remind_unresolved_subject: 'リマインダ: {{subject}}'
 user.email_subjects.ticket-rate: 'リクエスト "{{ticket.subject}}"を評価する'
-user.email_subjects.ticket_new-participant: リクエストに新たな参加者が追加されました。
-user.email_subjects.too-many-emails: 通知：上限を超えた数のメールが届いています。
 user.emails.auto-close: '長期間返信がないため、リクエスト "{{ticket.subject}}" は対応済みとしてクローズされます。未解決事項がある場合は、エージェントあてに返信を送信してください。'
 user.emails.chat_transcript: チャットに参加いただきありがとうございました。以下、チャットの記録(トランスクリプト)です。
 user.emails.comment_approved: コメントが公開されました。
 user.emails.comment_deleted: あなたのコメントはページの改善のために参考にされました。
 user.emails.comment_thank-you: '{{link}}についてのコメントを頂き、ありがとうございました。'
+user.emails.download-new-downloads:
+  other: '{{count}} New Downloads'
+user.emails.download-updated-downloads:
+  other: '{{count}} Updated Downloads'
 user.emails.email-too-big: 'あなたのメール "{{subject}}" はサイズが大きすぎるため、受理されませんでした。 受付可能なメールのサイズは最大 {{max_size}} です。添付ファイルを削除して、再度送信してください。'
-user.emails.feedback_agent-validation: フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。
-user.emails.feedback_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
-user.emails.feedback_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
-user.emails.feedback_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
-user.emails.feedback_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
-user.emails.feedback_new-comment: '{{name}}からの新しいコメント:'
-user.emails.feedback_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
-user.emails.feedback_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
-user.emails.feedback_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
-user.emails.feedback_votes:
+user.emails.community-updated-items:
+  other: '{{count}} Updated Community Topics'
+user.emails.community-topic_agent-validation: フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。
+user.emails.community-topic_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
+user.emails.community-topic_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
+user.emails.community-topic_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
+user.emails.community-topic_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
+user.emails.community-topic_new-comment: '{{name}}からの新しいコメント:'
+user.emails.community-topic_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
+user.emails.community-topic_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
+user.emails.community-topic_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+user.emails.community-topic_votes:
   other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
 user.emails.greeting: '{{to_name}}様'
+user.emails.kb-new-articles:
+  other: '{{count}} New Articles'
+user.emails.kb-updated-articles:
+  other: '{{count}} Updated Articles'
 user.emails.label_view-online: オンラインで確認
+user.emails.news-new-articles:
+  other: '{{count}} New News Articles'
+user.emails.news-new-news:
+  other: '{{count}} New News Articles'
+user.emails.news-updated-articles:
+  other: '{{count}} Updated News Articles'
+user.emails.news-updated-news:
+  other: '{{count}} Updated News Articles'
 user.emails.password_agent-reset: アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。
 user.emails.password_reset: 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:'
 user.emails.profile_email-new-confirm: アカウントに予備のメールアドレスの追加を許可するには、次のリンクをクリックしてください。
@@ -328,7 +386,7 @@ user.error.permission-denied: 申し訳ございませんが、その動作は�
 user.error.permission-denied-login: 'ログアウトされています。 <a href="{{login_url}}">ログイン</a> してからもう一度やり直してください。'
 user.error.permission-denied-title: その動作は許可されていません。
 user.error.server-error: サーバエラーによりページは正しく表示されませんでした。もう一度やり直してください。
-user.feedback.submit_feedback: フィードバックを送信
+user.community.submit_community_topic: フィードバックを送信
 user.general.deskpro: SupportSTAR
 user.general.label_captcha: 確認コード
 user.general.page: ページ
@@ -337,8 +395,17 @@ user.news.title: ニュース
 user.profile.choose_email: 使用するメールアドレスを選択
 user.profile.or_connect_with: または次に接続
 user.profile.register: 登録
-user.profile.register_password_min_length: パスワードは5文字以上入力してください。
-user.tickets.feedback_message_leave_comment: オプション：コメントを残す
+user.profile.register_password_min_length:
+  other: 'Minimum of {{count}} characters'
+user.profile.register_password_require_num_lowercase:
+  other: 'At least {{count}} lowercase characters'
+user.profile.register_password_require_num_number:
+  other: 'At least {{count}} numbers'
+user.profile.register_password_require_num_symbol:
+  other: 'At least {{count}} symbols'
+user.profile.register_password_require_num_uppercase:
+  other: 'At least {{count}} uppercase characters'
+user.tickets.community_message_leave_comment: オプション：コメントを残す
 user.tickets.fields_category: カテゴリ
 user.tickets.fields_department: 部門
 user.tickets.fields_priority: 優先順位
@@ -415,3 +482,17 @@ user.time.time_x_month: '{0} ヶ月'
 user.time.time_x_second: '{0} 秒'
 user.time.time_x_week: '{0} 週'
 user.time.time_x_year: '{0} 年'
+user.time.x_day:
+  other: '{{count}} days'
+user.time.x_hour:
+  other: '{{count}} hours'
+user.time.x_minute:
+  other: '{{count}} minutes'
+user.time.x_month:
+  other: '{{count}} months'
+user.time.x_second:
+  other: '{{count}} seconds'
+user.time.x_week:
+  other: '{{count}} weeks'
+user.time.x_year:
+  other: '{{count}} years'

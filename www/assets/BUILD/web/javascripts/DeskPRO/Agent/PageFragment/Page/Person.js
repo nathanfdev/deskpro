@@ -158,20 +158,23 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				});
 			});
 
-			this.getEl('disable_autoresponses').on('change', function(){
-				var val = $(this).val();
-				$.ajax({
-					url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
-					type: 'POST',
-					dataType: 'json',
-					data: {
-						action: 'disable_autoresponses',
-						disable_autoresponses: val
-					}
-				});
-
-				self.getEl('disable_autoresponses_reason').remove();
-			});
+      this.getEl('disable_autoresponses').on('change', function () {
+        var val = $(this).val();
+        $.ajax({
+          url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            action: 'disable_autoresponses',
+            disable_autoresponses: val,
+          },
+          success: function (data) {
+            if (data.hasOwnProperty('disable_autoresponses_log')) {
+              self.getEl('disable_autoresponses_reason').text(data.disable_autoresponses_log);
+            }
+          },
+        });
+      });
 
       this.getEl('toggle_confirmed').on('change', function(){
         $.ajax({
@@ -435,7 +438,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				if (action == 'set-password') {
 					DeskPRO_Window.showPrompt(
-						'<div>Enter a new password. The user will be notified.</div>',
+            self.meta.person.email
+              ? '<div>Enter a new password. The user will be notified.</div>'
+              : '<div>Notice: This user does NOT have an email address on their account, so the system cannot notify them of their new password.</div>',
 						function(val, wrap) {
 							var postData = [];
 							postData.push({
@@ -463,7 +468,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					);
 				} else if (action == 'reset-password') {
 
-					DeskPRO_Window.showConfirm(
+					if (!self.meta.person.email) {
+						DeskPRO_Window.showAlert("Cannot reset the password for the person - they don't have an email address");
+					} else {
+						DeskPRO_Window.showConfirm(
 							self.getEl('reset_password_confirm'),
 							function() {
 								$.ajax({
@@ -477,8 +485,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							null,
 							null, null,
 							400, 260
-					);
-
+						);
+					}
 				} else if (action == 'delete') {
 					var el = self.getEl('delete_confirm');//.clone();
 					DeskPRO_Window.showConfirm(
@@ -670,10 +678,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							format: 'YYYY-MM-DD',
 							widgetParent: $(this).parent().css('position', 'relative'),
 							icons: {
-								up: 'fa fa-chevron-up',
-								down: 'fa fa-chevron-down',
-								previous: 'fa fa-chevron-left',
-								next: 'fa fa-chevron-right'
+								up: 'fas fa-chevron-up',
+								down: 'fas fa-chevron-down',
+								previous: 'fas fa-chevron-left',
+								next: 'fas fa-chevron-right'
 							}
 						});
 						$(this).on('dp.change', function(){
@@ -882,7 +890,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 	},
 
 	refreshPropBox: function() {
-
+    var self = this;
 		var contactBox = $('.profile-box-container.contact', this.wrapper);
 
 		var has = false;
@@ -909,7 +917,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				event.preventDefault();
 
 				var $el = $(this);
-				window.AgentLegacyBundle.openVoiceDialpad($el.data('phoneNumber'));
+				window.AgentLegacyBundle.openVoiceDialpad($el.data('phoneNumber'), null, null, self.meta.person_id);
 				return false;
 			}
 

@@ -6,6 +6,8 @@
 
 namespace Application\DeskPRO\NewSettings;
 
+use DeskPRO\Component\Util\UnserializeUtil;
+
 /**
  * The SettingsBag acts like an immutable array, and also offers an API with methods like has('key') and get('key', 'default').
  */
@@ -114,7 +116,11 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      */
     public function unserialize($serialized)
     {
-        return unserialize($serialized);
+        try {
+            $this->settings = UnserializeUtil::unserializeArray($serialized);
+        } catch (\Exception $e) {
+            $this->settings = [];
+        }
     }
 
     /**

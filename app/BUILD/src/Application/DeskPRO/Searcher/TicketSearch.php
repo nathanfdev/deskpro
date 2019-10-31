@@ -64,7 +64,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_SENT_TO_ADDRESS       = 'sent_to_address';
     const TERM_DAY_CREATED           = 'day_created';
     const TERM_FEEDBACK_RATING       = 'feedback_rating';
-    const TERM_FEEDBACK_LINKS        = 'feedback_links';
+    const TERM_COMMUNITY_TOPIC_LINKS = 'community_topic_links';
     const TERM_SLA                   = 'sla';
     const TERM_SLA_STATUS            = 'sla_status';
     const TERM_SLA_COMPLETED         = 'sla_completed';
@@ -1624,11 +1624,11 @@ class TicketSearch extends SearcherAbstract
                         }
 
                         break;
-                    case self::TERM_FEEDBACK_LINKS:
+                    case self::TERM_COMMUNITY_TOPIC_LINKS:
 
                         $joins[] = [
-                            'ticket_feedback_links',
-                            "LEFT JOIN ticket_feedback_links AS $join_name ON ($join_name.ticket_id = tickets.id)",
+                            'ticket_community_topics_links',
+                            "LEFT JOIN ticket_community_topics_links AS $join_name ON ($join_name.ticket_id = tickets.id)",
                         ];
 
                         switch ($op) {
@@ -1642,7 +1642,7 @@ class TicketSearch extends SearcherAbstract
                                 if (!is_array($choice)) {
                                     $choice = explode(',', $choice);
                                 }
-                                $wheres[] = $this->_choiceMatch("$join_name.feedback_id", $op, $choice, true);
+                                $wheres[] = $this->_choiceMatch("$join_name.topic_id", $op, $choice, true);
                                 break;
                         }
 
@@ -1951,12 +1951,12 @@ class TicketSearch extends SearcherAbstract
                             }
 
                             if ($w) {
-                                $w .= ($op == self::OP_IS ? ' OR ' : ' AND ');
+                                $w .= (in_array($op, [self::OP_IS, self::OP_CONTAINS]) ? ' OR ' : ' AND ');
                             }
 
                             $w .= sprintf('(%s %s %s)',
                                 $this->_choiceMatch("$tickets_table.status", $op, $item[0]),
-                                $op == self::OP_IS ? 'AND' : 'OR',
+                                in_array($op, [self::OP_IS, self::OP_CONTAINS]) ? 'AND' : 'OR',
                                 $this->_choiceMatch("$tickets_table.ticket_status_id", $op, $item[1])
                             );
                         }

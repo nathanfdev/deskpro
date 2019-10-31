@@ -10,8 +10,10 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -107,6 +109,15 @@ class TicketMessage extends DomainObject
      * @Assert\Valid()
      */
     protected $attachments;
+
+    /**
+     * Snippets used in this message.
+     *
+     * @var SnippetUseLog[]
+     *
+     * @Assert\Valid()
+     */
+    protected $snippet_use_logs;
 
     /**
      * Date when message was created.
@@ -249,6 +260,16 @@ class TicketMessage extends DomainObject
     protected $email_message_id;
 
     /**
+     * @var TicketFeedback[]|ArrayCollection
+     */
+    protected $ticketFeedback;
+
+    /**
+     * @var array|callable|null
+     */
+    protected $emailRecipients = null;
+
+    /**
      * TicketMessage constructor.
      *
      * @param null $email_id
@@ -256,8 +277,10 @@ class TicketMessage extends DomainObject
     public function __construct($email_id = null)
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->attributes  = new ArrayCollection();
-        $this->attachments = new ArrayCollection();
+        $this->attributes       = new ArrayCollection();
+        $this->attachments      = new ArrayCollection();
+        $this->snippet_use_logs = new ArrayCollection();
+        $this->ticketFeedback   = new ArrayCollection();
         if ($email_id) {
             $ref             = new TicketMessageEmailId();
             $ref['email_id'] = $email_id;
@@ -777,6 +800,18 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @param TicketAttachment[]|ArrayCollection $attachments
+     *
+     * @return $this
+     */
+    public function setAttachments($attachments)
+    {
+        $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
      * @param TicketAttachment $attach
      *
      * @return $this
@@ -861,6 +896,40 @@ class TicketMessage extends DomainObject
         return $this->attributes->filter(function (TicketMessageAttribute $attribute) {
             return $attribute instanceof TicketMessageVoicePhoneCall;
         });
+    }
+
+    /**
+     * @return TicketMessageVoicePhoneCall
+     */
+    public function getPhoneCallAttribute()
+    {
+        return $this->getPhoneCallAttributes()->first();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoiceMessage()
+    {
+        return count($this->getPhoneCallAttributes()) > 0;
+    }
+
+    /**
+     * @return VoicePhoneCall|null
+     */
+    public function getActiveCall()
+    {
+        $attribute = $this->getPhoneCallAttribute();
+        if (!$attribute) {
+            return;
+        }
+
+        $phoneCall = $attribute->getPhoneCall();
+        if (!$phoneCall || $phoneCall->isEnded() || $phoneCall->isVoicemail() || $phoneCall->isFailed()) {
+            return;
+        }
+
+        return $phoneCall;
     }
 
     /**
@@ -951,6 +1020,19 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @param SnippetUseLog $useLog
+     *
+     * @return $this
+     */
+    public function addSnippetUseLog(SnippetUseLog $useLog)
+    {
+        $this->snippet_use_logs->add($useLog);
+        $useLog->setTicketMessage($this);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getMessageHash()
@@ -1008,6 +1090,20 @@ class TicketMessage extends DomainObject
         if ($this->person) {
             $this->ticket->addAccessCodeForPerson($this->person);
         }
+    }
+
+    public function setEmailRecipients($recipients)
+    {
+        $this->emailRecipients = $recipients;
+    }
+
+    public function getEmailRecipients()
+    {
+        if (is_callable($this->emailRecipients)) {
+            $this->emailRecipients = call_user_func($this->emailRecipients);
+        }
+
+        return $this->emailRecipients;
     }
 
     public function incTicketCount()
@@ -1086,6 +1182,22 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @return EmailAccount[]|ArrayCollection
+     */
+    public function getEmailAccounts()
+    {
+        return $this->emailAccounts;
+    }
+
+    /**
+     * @param EmailAccount[]|ArrayCollection $emailAccounts
+     */
+    public function setEmailAccounts($emailAccounts)
+    {
+        $this->emailAccounts = $emailAccounts;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateCreated()
@@ -1123,6 +1235,14 @@ class TicketMessage extends DomainObject
     public function isAgentNote()
     {
         return $this->is_agent_note;
+    }
+
+    /**
+     * @return TicketFeedback[]|ArrayCollection
+     */
+    public function getTicketFeedback()
+    {
+        return $this->ticketFeedback;
     }
 
     /**
@@ -1340,6 +1460,26 @@ class TicketMessage extends DomainObject
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageEmailId',
                 'mappedBy'     => 'message',
                 'cascade'      => ['persist'],
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'snippet_use_logs',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\SnippetUseLog',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticketMessage',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'ticketFeedback',
+                'targetEntity'  => TicketFeedback::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket_message',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
             ]
         );
         $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');

@@ -40,6 +40,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSel       = this.getElById('agent_team_sel');
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
+		var fwdAsNewCheck = this.getElById('fwd_new_ticket_check');
 
 		var jiraActionSel = this.getElById('jira_app_action'),
 				jiraActionText = this.getElById('jira_app_action_text'),
@@ -223,11 +224,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					}, 60);
 				}
 			};
-			ed.on('paste', function(ev) {
+			ed.on('paste change', function() {
 				heightUp();
 			});
-			ed.on('keypress change', function() {
-				heightUp();
+			ed.on('keypress', function(e) {
+			  if(!(e.which === 13 && (e.ctrlKey || e.metaKey))) {
+          heightUp();
+        }
 			});
 
 			this._initAgentNotifier(textarea);
@@ -282,6 +285,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var replyMode = 'reply';
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
+			self.el.addClass('dp-reply-on');
+
 			switch(replyMode) {
 				case 'note':
 					// process elements
@@ -299,6 +304,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				  self.clearFwd();
           self.getElById('replybox_fwdtab_btn').removeClass('on');
           self.getElById('fwd_body').html('');
+					self.el.removeClass('dp-fwd-on');
           self.fwdMessages = [];
           if (textarea.data('redactor')) {
             storedFWDText = textarea.getCode();
@@ -314,6 +320,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).hide();
       $('.show-reply', self.el).show();
       $('.show-note', self.el).hide();
+			$('.fwd-as-new', self.el).show();
 
       // process special stuff
       if (closeReply) {
@@ -343,6 +350,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       switch(replyMode) {
         case 'reply':
           self.getElById('replybox_replytab_btn').removeClass('on');
+					self.el.removeClass('dp-reply-on');
           if (textarea.data('redactor')) {
             storedReplyText = textarea.getCode();
             textarea.setCode(storedNoteText || '');
@@ -352,6 +360,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           self.clearFwd();
           self.getElById('replybox_fwdtab_btn').removeClass('on');
           self.getElById('fwd_body').html('');
+					self.el.removeClass('dp-fwd-on');
           self.fwdMessages = [];
           if (textarea.data('redactor')) {
             storedFWDText = textarea.getCode();
@@ -368,6 +377,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).hide();
       $('.show-reply', self.el).hide();
       $('.show-note', self.el).show();
+			$('.fwd-as-new', self.el).show();
 			self.getElById('actions_row').hide();
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
@@ -390,6 +400,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       switch(replyMode) {
         case 'reply':
           self.getElById('replybox_replytab_btn').removeClass('on');
+					self.el.removeClass('dp-reply-on');
 
           if (textarea.data('redactor')) {
             storedReplyText = textarea.getCode();
@@ -416,6 +427,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       $('.show-fwd', self.el).show();
       $('.show-reply', self.el).hide();
       $('.show-note', self.el).hide();
+
+      if (self.el.data('fwd-as-new')) {
+				$('.fwd-as-new', self.el).show();
+				$('.fwd-as-new-hide', self.el).hide();
+			} else {
+      	$('.fwd-as-new', self.el).hide();
+				$('.fwd-as-new-hide', self.el).show();
+			}
       replyMode = 'fwd';
       self.getElById('actions_row').hide();
       self.el.addClass('dp-fwd-on');
@@ -426,6 +445,25 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 			self.dontDispatch = false;
     });
+
+		fwdAsNewCheck.on('click', function() {
+			if (fwdAsNewCheck.prop('checked')) {
+				$('.fwd-as-new', self.el).show();
+				$('.fwd-as-new-hide', self.el).hide();
+				var container = self.getElById('fwd_to_container');
+				var lines = container.find('.to-line');
+				for (var i = lines.length; i > 1; i--) {
+					var input = $(lines[i-1]).find('.email-address-input');
+					if (input.data('type') !== 'cc') {
+						lines[i-1].remove();
+					}
+				}
+				container.find('.fwd_removerow').hide();
+			} else {
+				$('.fwd-as-new', self.el).hide();
+				$('.fwd-as-new-hide', self.el).show();
+			}
+		});
 
 		//------------------------------
 		// Expanding cc row
@@ -945,6 +983,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (self.uploading) {
 				return;
 			}
+			if ($(this).attr('disabled')) {
+				return;
+			}
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -981,6 +1022,15 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         api.syncCode();
       }
 
+      var options = {
+				fwd_new_ticket:  self.getElById('fwd_new_ticket_check').prop('checked'),
+				do_assign_agent: self.getElById('agent_sel_check').prop('checked'),
+				agent_id:        self.getElById('agent_sel').val(),
+				do_assign_team:  self.getElById('agent_team_sel_check').prop('checked'),
+				agent_team_id:   self.getElById('agent_team_sel').val(),
+				close_tab:       self.getElById('close_tab_opt').prop('checked')
+			};
+
       var formData = {
       	custom_message: api.getCode(),
 				messages_ids:   self.fwdMessages,
@@ -989,7 +1039,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
 				subject: self.getElById('fwd_subject').val(),
-        attachments: self.fwdAttachments
+        attachments: self.fwdAttachments,
+				options: options
       };
 
       $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){
@@ -1027,6 +1078,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           // Reload message page to show `message forwarded` mark
           // need to call this manually because doTicketUpdate will not update page without new messages
           self.page.loadMessagePage(0, true);
+          if (data.close_tab) {
+						self.page.closeSelf();
+          	if (data.new_ticket_url) {
+							DeskPRO_Window.runPageRoute('page:' + data.new_ticket_url);
+						}
+					}
           DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
           self.getElById('replybox_replytab_btn').click();
         },
@@ -1109,6 +1166,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		statusMenuTrigger.on('click', function(ev) {
 			ev.preventDefault();
+			if ($(this).attr('disabled')) {
+				return;
+			}
+
       statusMenuMenu.open();
 		});
 
@@ -1482,6 +1543,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     }
     var vars         = this.page.meta.api_data;
 
+    var agent = this.page.meta.currentAgent;
+
     var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
       var agentText, defaultText, wantText, useText;
 
@@ -1526,7 +1589,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       'ticket',
       this.textarea,
       this.attachBlobs.bind(this),
-      this.recordSnippetUse.bind(this)
+      this.recordSnippetUse.bind(this),
+			agent
     );
     this.isSnippetOpen = false;
 	},

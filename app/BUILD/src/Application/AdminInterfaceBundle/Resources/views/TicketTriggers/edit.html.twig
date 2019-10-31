@@ -21,9 +21,9 @@
 							<div class="col-lg-2">
 								<nav class="dp-blocktabs responsive" ng-if="TicketTriggersEdit.enableCopyFromAnotherTrigger">
 									<menu dropdown>
-										<button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+										<button class="btn btn-default" type="button" dropdown-toggle><span><i class="fas fa-cog"></i></span> <i class="fas fa-caret-down"></i></button>
 										<ul class="dropdown-menu pull-right">
-											<li><a ng-click="TicketTriggersEdit.showCopySettings()"><i class="fa fa-copy"></i> {{ phrase('adm.ticket_triggers.copy_trigger') }}</a></li>
+											<li><a ng-click="TicketTriggersEdit.showCopySettings()"><i class="fas fa-copy"></i> {{ phrase('adm.ticket_triggers.copy_trigger') }}</a></li>
 										</ul>
 									</menu>
 								</nav>
@@ -50,7 +50,7 @@
 													<input type="checkbox" dp-tristate-check="form.typeForm.by_user_mode.portal, form.typeForm.by_user_mode.widget, form.typeForm.by_user_mode.form" />
 													via the web
 												</label>
-												<i class="fa fa-cog" ng-click="show_byuser_web = !show_byuser_web" style="cursor: pointer; color: #888"></i>
+												<i class="fas fa-cog" ng-click="show_byuser_web = !show_byuser_web" style="cursor: pointer; color: #888"></i>
 												<div style="margin-left: 11px; background: #efefef; border-radius: 2px; padding: 5px; padding-bottom: 0;" ng-show="show_byuser_web">
 													<label style="font-weight: normal;"><input type="checkbox" ng-model="form.typeForm.by_user_mode.portal" value="1" /> Portal</label><br/>
 													<label style="font-weight: normal;"><input type="checkbox" ng-model="form.typeForm.by_user_mode.widget" value="1" /> Website Widget</label><br/>
@@ -67,6 +67,12 @@
 												<label style="font-weight: normal;">
 													<input type="checkbox" ng-model="form.typeForm.by_user_mode.api" value="1" />
 													via the API
+												</label>
+											</div>
+											<div>
+												<label style="font-weight: normal;">
+													<input type="checkbox" ng-model="form.typeForm.by_user_mode.phone" value="1" />
+													via phone call
 												</label>
 											</div>
 										</div>
@@ -101,6 +107,12 @@
 													via the mobile app
 												</label>
 											</div>
+											<div>
+												<label style="font-weight: normal;">
+													<input type="checkbox" ng-model="form.typeForm.by_agent_mode.phone" value="1" />
+													via phone call
+												</label>
+											</div>
 										</div>
 									</div>
 									<div style="float: left; margin-left: 10px;" ng-if="TicketTriggersEdit.appTriggerEvents">
@@ -112,7 +124,7 @@
 											<div ng-repeat="te in TicketTriggersEdit.appTriggerEvents">
 												<label style="font-weight: normal;">
 													<input type="checkbox" ng-model="form.typeForm.by_app_mode[te.event.event_id]" value="1" style="vertical-align: baseline" />
-													<i class="fa fa-puzzle-piece" tooltip="App: {{ ng_var('te.app.title') }}" style="margin-left: 2px; color: #999; font-size: 14px;"></i>
+													<i class="fas fa-puzzle-piece" tooltip="App: {{ ng_var('te.app.title') }}" style="margin-left: 2px; color: #999; font-size: 14px;"></i>
 													{{ ng_var('te.event.label') }}
 												</label>
 											</div>
@@ -132,7 +144,7 @@
 								</label>
 								<span class="help-block">
 									When this option is enabled, this trigger will run if an agent has made updates at the same time as replying.
-									<i class="fa fa-question-circle qmark-icon" tooltip="Agents can reply and make changes at the same time. For example, from the Agent Interface there are controls to change status and assignment or apply macros." tooltip-placement="left"></i>
+									<i class="fas fa-question-circle qmark-icon" tooltip="Agents can reply and make changes at the same time. For example, from the Agent Interface there are controls to change status and assignment or apply macros." tooltip-placement="left"></i>
 								</span>
 							</div>
 						</div>
@@ -164,7 +176,7 @@
 										<div class="fade-overlay"></div>
 										<header>
 											<div class="remove-btn-wrap">
-												<span class="removerow_btn"><i class="fa fa-times-circle"></i></span>
+												<span class="removerow_btn"><i class="fas fa-times-circle"></i></span>
 											</div>
 											<em class="dp-ob-row-tag if" ng-if="setIndex == 1">when</em>
 											<em class="dp-ob-row-tag if" ng-if="setIndex != 1">or</em>

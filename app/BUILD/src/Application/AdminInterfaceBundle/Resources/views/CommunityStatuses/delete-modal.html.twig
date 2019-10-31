@@ -1,0 +1,25 @@
+<div>
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">{{ phrase('adm.community_statuses.delete_community_status') }}</h4>
+	</div>
+	<div class="modal-body">
+		<p>
+			{{ phrase('adm.community_statuses.delete_community_status_confirm') }}
+		</p>
+
+		<p>
+			{{ phrase('adm.community_statuses.delete_community_statuses_moved') }}
+		</p>
+
+		<p style="margin-bottom: 0;">
+			<select ui-select2 ng-model="selected.move_to_id" style="width: 240px">
+				<option value="{{ ng_var('status.id') }}" ng-repeat="status in move_community_statuses_list">{{ ng_var('status.title') }}</option>
+			</select>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-success" ng-click="dismiss()"><i class="fas fa-undo-alt"></i> {{ phrase('agent.general.cancel') }}</button>
+		<button class="btn btn-danger" ng-click="confirm()"><i class="far fa-trash-alt"></i> {{ phrase('agent.general.delete') }}</button>
+	</div>
+</div>

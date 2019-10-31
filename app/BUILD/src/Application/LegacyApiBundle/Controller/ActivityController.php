@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ActivityController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AgentPermission();
+    }
+
     /**
      * @param int $since
      *

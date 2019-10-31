@@ -66,6 +66,11 @@ class FieldDisplayArray implements \ArrayAccess
                 foreach ($default_value as $v) {
                     $value['children'][$v] = ['value' => 1];
                 }
+            } elseif ($field_def['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Javascript') {
+                $value = ['value' => @json_decode($default_value, true)];
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $value = ['value' => ['value' => '', 'data' => []]];
+                }
             } else {
                 $value = ['value' => $default_value];
             }

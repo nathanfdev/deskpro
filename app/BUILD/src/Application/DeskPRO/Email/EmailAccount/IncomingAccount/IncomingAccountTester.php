@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 use Application\DeskPRO\EmailGateway\Fetcher\ImapSocket;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use DpSys\LowError\SystemErrorHandler;
@@ -78,6 +79,7 @@ class IncomingAccountTester
                 break;
 
             case 'exchange':
+            case 'office365_exchange':
                 $this->_testExchange();
                 break;
 
@@ -198,7 +200,11 @@ class IncomingAccountTester
         /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $account_config */
         $account_config = $this->account_config;
 
-        $this->logger->logInfo('Testing ExchangeAccount');
+        if ($account_config instanceof IncomingAccount\Office365ExchangeConfig) {
+            $this->logger->logInfo('Testing Office365Account');
+        } else {
+            $this->logger->logInfo('Testing ExchangeAccount');
+        }
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange([

@@ -134,7 +134,8 @@ class TicketSearchController extends AbstractController
         $custom_fields                        = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $term_options['custom_ticket_fields'] = $custom_fields;
 
-        $brands = $this->em->getRepository(Brand::class)->findAll();
+        $brands         = $this->em->getRepository(Brand::class)->findAll();
+        $ticketStatuses = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         $data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', [
             'brands'                 => $brands,
@@ -160,7 +161,8 @@ class TicketSearchController extends AbstractController
             'sla_counts' => $sla_counts,
             'sla_filter' => $sla_filter,
 
-            'term_options' => $term_options,
+            'term_options'    => $term_options,
+            'ticket_statuses' => $ticketStatuses,
         ]);
 
         $data['filter_id_matches'] = $filter_id_matches;
@@ -716,7 +718,7 @@ class TicketSearchController extends AbstractController
 
             $set_terms_map = [
                 'department'   => ['op' => 'contains', 'options' => []],
-                'status'       => ['op' => 'contains', 'options' => []],
+                'status'       => ['op' => 'is', 'options' => []],
                 'agent'        => ['op' => 'contains', 'options' => []],
                 'agent_team'   => ['op' => 'contains', 'options' => []],
                 'participant'  => ['op' => 'contains', 'options' => []],
@@ -746,7 +748,7 @@ class TicketSearchController extends AbstractController
                 }
             }
 
-            $typesWithAllowedEmptyOptions = ['feedback_links'];
+            $typesWithAllowedEmptyOptions = ['community_topics_links'];
             foreach ($this->in->getCleanValueArray('terms_expanded', 'raw', 'raw') as $type => $info) {
                 if (
                     (!in_array($type, $typesWithAllowedEmptyOptions) && empty($info['options']))
@@ -816,11 +818,6 @@ class TicketSearchController extends AbstractController
 
             if ($search_person_id = $this->in->getUInt('search_person_id')) {
                 $terms[] = ['type' => 'person_id', 'op' => 'is', 'options' => ['person_id' => $search_person_id]];
-            }
-
-            // Search form: status
-            if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
-                $terms[] = ['type' => 'status', 'op' => 'contains', 'options' => ['status' => $search_term]];
             }
 
             // Search form: subject

@@ -2,18 +2,12 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Tickets\ExecutorContext;
-use Application\DeskPRO\Tickets\TicketManager;
-use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
-use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -22,43 +16,35 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class VoicemailListener implements EventSubscriberInterface
 {
     /**
-     * @var
-     */
-    private $em;
-
-    /**
      * @var VoiceTaskHelper
      */
     private $taskHelper;
 
     /**
-     * @var VoiceSettingsResolver
+     * @var StorageAdapterInterface
      */
-    private $settingsResolver;
+    private $voiceStorage;
 
     /**
-     * @var TicketManager
+     * @var ContainerInterface
      */
-    private $ticketManager;
+    private $container;
 
     /**
      * Constructor.
      *
-     * @param EntityManager         $em
-     * @param VoiceTaskHelper       $taskHelper
-     * @param VoiceSettingsResolver $settingsResolver
-     * @param TicketManager         $ticketManager
+     * @param VoiceTaskHelper         $taskHelper
+     * @param StorageAdapterInterface $voiceStorage
+     * @param ContainerInterface      $container
      */
     public function __construct(
-        EntityManager         $em,
-        VoiceTaskHelper       $taskHelper,
-        VoiceSettingsResolver $settingsResolver,
-        TicketManager         $ticketManager
+        VoiceTaskHelper         $taskHelper,
+        StorageAdapterInterface $voiceStorage,
+        ContainerInterface      $container
     ) {
-        $this->em               = $em;
-        $this->taskHelper       = $taskHelper;
-        $this->settingsResolver = $settingsResolver;
-        $this->ticketManager    = $ticketManager;
+        $this->taskHelper   = $taskHelper;
+        $this->voiceStorage = $voiceStorage;
+        $this->container    = $container;
     }
 
     /**
@@ -67,8 +53,37 @@ class VoicemailListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TaskRouterEvent::TIMEOUT => 'onTimeout',
+            TaskRouterEvent::REJECTED => 'onRejected',
+            TaskRouterEvent::TIMEOUT  => 'onTimeout',
         ];
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function onRejected(TaskRouterEvent $event)
+    {
+        $task = $event->getTask();
+        if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
+            return;
+        }
+
+        $phoneCall = $this->taskHelper->getPhoneCall($task);
+        if (!$phoneCall) {
+            return;
+        }
+
+        // if call target is an agent, redirect to voicemail immediately
+        if ($taskAgent = $this->taskHelper->getWorkerAgent($task)) {
+            // transfer call to voicemail
+            $this->container->get('dp.voice.transfer_helper')->transferToVoicemail($phoneCall);
+
+            // the task was redirected to voicemail
+            // mark as canceled
+            $task->setStatus(Task::STATUS_CANCELED);
+        }
     }
 
     /**
@@ -79,7 +94,7 @@ class VoicemailListener implements EventSubscriberInterface
     public function onTimeout(TaskRouterEvent $event)
     {
         $task = $event->getTask();
-        if (!$task) {
+        if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
             return;
         }
 
@@ -88,115 +103,9 @@ class VoicemailListener implements EventSubscriberInterface
             return;
         }
 
-        // mark the phone call as completed (redirected to voicemail)
-        $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
-        $this->em->persist($phoneCall);
-        $this->em->flush();
-
-        // return redirect response
-        $voicemailAsset = null;
-        if ($task->getAttribute('queue')) {
-            $this->voicemailForQueue($phoneCall, $task);
-        } elseif ($task->getAttribute('agent')) {
-            $this->voicemailForAgent($phoneCall, $task);
+        $userParticipant = $phoneCall->getUserParticipants()->first();
+        if ($userParticipant) {
+            $this->container->get('dp.voice.transfer_helper')->transferToVoicemail($phoneCall);
         }
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     * @param Task           $task
-     */
-    private function voicemailForQueue(VoicePhoneCall $phoneCall, Task $task)
-    {
-        $queue = $this->taskHelper->getVoiceQueue($task);
-        if (!$queue) {
-            return;
-        }
-
-        // create voicemail queue ticket
-        $ticketMessageCall = new TicketMessageVoicePhoneCall();
-        $ticketMessageCall->setPhoneCall($phoneCall);
-
-        $ticketMessage = new TicketMessage();
-        $ticketMessage->setPerson($phoneCall->getPerson());
-        $ticketMessage->addAttribute($ticketMessageCall);
-        $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
-        $ticketMessage->setAsAgentNote(true);
-
-        // try to get last ticket
-        $ticket = null;
-        if ($this->settingsResolver->isGroupMissedCallTickets()) {
-            /** @var Ticket $lastTicket */
-            $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
-            if ($lastTicket) {
-                $lastTicket->disableAutoTicketProcess();
-
-                $now    = new \DateTime();
-                $hours  = $this->settingsResolver->getGroupMissedCallTicketsTimeout();
-                $offset = clone $lastTicket->getDateCreated();
-                $offset->modify("+{$hours} hours");
-
-                if ($offset > $now) {
-                    $ticket = $lastTicket;
-                }
-            }
-        }
-
-        if (!$ticket) {
-            $ticket = new Ticket();
-            $ticket->disableAutoTicketProcess();
-            $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
-            $ticket->setPerson($phoneCall->getPerson());
-
-            // set asset properties
-            if ($queue->getVoicemailAgent()) {
-                $ticket->setAgent($queue->getVoicemailAgent());
-            }
-            if ($queue->getVoicemailAgentTeam()) {
-                $ticket->setAgentTeam($queue->getVoicemailAgentTeam());
-            }
-            if ($queue->getVoicemailDepartment()) {
-                $ticket->setDepartment($queue->getVoicemailDepartment());
-            }
-        }
-
-        $ticket->addMessage($ticketMessage);
-
-        $changes = $ticket->getStateChangeRecorder();
-        if ($changes->isNewTicket()) {
-            $event = ExecutorContext::EVENT_NEW;
-        } else {
-            $event = ExecutorContext::EVENT_UPDATE;
-        }
-
-        $person = $phoneCall->getPerson();
-        if ($person && $person->isAgent()) {
-            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_API);
-        } else {
-            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_API);
-        }
-
-        $this->ticketManager->saveTicket($ticket, $context);
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     * @param Task           $task
-     */
-    private function voicemailForAgent(VoicePhoneCall $phoneCall, Task $task)
-    {
-        $agent = $this->taskHelper->getWorkerAgent($task);
-        if (!$agent) {
-            return;
-        }
-
-        $voicemailRecord = new VoicemailRecord();
-        $voicemailRecord
-            ->setPhoneCall($phoneCall)
-            ->setAgent($agent)
-        ;
-
-        $this->em->persist($voicemailRecord);
-        $this->em->flush();
     }
 }

@@ -17,6 +17,11 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 abstract class AbstractImporterCommand extends ContainerAwareCommand
 {
+    const STEP_IMPORT = 'import';
+    const STEP_VERIFY = 'verify';
+    const STEP_APPLY  = 'apply';
+    const STEP_CLEAN  = 'clean';
+
     /**
      * {@inheritdoc}
      */
@@ -53,12 +58,16 @@ abstract class AbstractImporterCommand extends ContainerAwareCommand
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
 
-            $this->getContainer()->get('dp.importer_logger')->error($e->getMessage());
-            $this->getContainer()->get('dp.importer.logger.job_progress')->flushLog();
-            $this->getContainer()->get('dp.importer.logger.storage_handler')->flushLog();
+            $container = $this->getContainer();
+            $container->get('dp.importer_logger')->error($e->getMessage());
+            $container->get('dp.importer.logger.job_progress')->flushLog();
+            $container->get('dp.importer.logger.storage_handler')->flushLog();
+            $container->getDb()->delete('settings', ['name' => 'core.croncheck.importer']);
 
             return 1;
         }
+
+        return 0;
     }
 
     /**

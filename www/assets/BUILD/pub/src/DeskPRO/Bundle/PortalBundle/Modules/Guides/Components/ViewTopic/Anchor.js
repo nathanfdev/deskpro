@@ -33,7 +33,7 @@ class Anchor extends React.Component {
         <a href={`#${this.props.anchor}`} onClick={this.onClick}>
           {this.state.copied ?
             <span>copied</span> :
-            <i className="fa fa-anchor" /> }
+            <i className="fas fa-anchor" /> }
         </a>
       </span>
     );

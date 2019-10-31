@@ -107,6 +107,18 @@ class TicketAttachment extends DomainObject
     }
 
     /**
+     * @param int|null $id
+     *
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
      * Set person.
      *
      * @param Person $person
@@ -136,6 +148,8 @@ class TicketAttachment extends DomainObject
 
     /**
      * @param $message
+     *
+     * @return $this
      */
     public function setMessage($message)
     {
@@ -145,6 +159,8 @@ class TicketAttachment extends DomainObject
         if ($message && $message->is_agent_note) {
             $this->is_agent_note = true;
         }
+
+        return $this;
     }
 
     /**

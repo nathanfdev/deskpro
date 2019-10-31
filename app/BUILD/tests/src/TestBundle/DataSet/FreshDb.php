@@ -2,7 +2,7 @@
 
 namespace DpTestSrc\TestBundle\DataSet;
 
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DpTestSrc\TestBundle\UserDetailsRepo;
@@ -73,13 +73,13 @@ class FreshDb extends AbstractDbSet
             false
         );
 
-        $cat_field                = new CustomDefFeedback();
-        $cat_field->sys_name      = 'cat';
-        $cat_field->title         = 'Category';
-        $cat_field->description   = 'e.g., maybe Windows, Mac, Linux.';
-        $cat_field->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
+        $categoryField                = new CustomDefCommunityTopic();
+        $categoryField->sys_name      = 'cat';
+        $categoryField->title         = 'Category';
+        $categoryField->description   = 'e.g., maybe Windows, Mac, Linux.';
+        $categoryField->handler_class = 'Application\DeskPRO\CustomFields\Handler\Text';
 
-        $em->persist($cat_field);
+        $em->persist($categoryField);
 
         $this->getDb()->insert('permissions', ['person_id' => $admin->id, 'name' => 'admin.use', 'value' => 1]);
 

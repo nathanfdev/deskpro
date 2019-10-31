@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 export const loadQueues = createAction(
   'USER_CHAT_LOAD_QUEUES',
-  () => dispatch => dispatch(loadAll('UserChatQueue'))
+  (reload = true) => dispatch => dispatch(loadAll('UserChatQueue', reload))
 );
 
 export const createQueue = createAction(

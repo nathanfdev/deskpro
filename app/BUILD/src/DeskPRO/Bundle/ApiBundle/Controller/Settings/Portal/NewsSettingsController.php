@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\NewsSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\NewsSettings;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class NewsSettingsController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/brands/{brand}/portal/news")
  */
 class NewsSettingsController extends AbstractBrandAwareSettingsController
@@ -60,7 +62,7 @@ class NewsSettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\NewsSettingsType"
      *     },
      *     noOutput=true
-     *)
+     * )
      * @Rest\Post("")
      *
      * @param Request $request

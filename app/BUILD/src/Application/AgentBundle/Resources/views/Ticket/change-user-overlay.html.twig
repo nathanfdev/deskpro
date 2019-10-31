@@ -29,9 +29,11 @@
 						<ul class="results-list">
 
 						</ul>
-						<footer>
-							<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
-						</footer>
+						{% if app.user.hasPerm('agent_people.create') %}
+							<footer>
+								<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
+							</footer>
+						{% endif %}
 					</section>
 				</div>
 			</div>

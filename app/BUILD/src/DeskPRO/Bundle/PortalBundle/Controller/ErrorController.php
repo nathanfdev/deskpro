@@ -32,6 +32,15 @@ class ErrorController extends AbstractController
         $requestStack = $this->get('request_stack');
         $appEnv       = $this->get('deskpro.app_env');
 
+        if ($exception->getStatusCode() === 404 && preg_match("/\.(js|css|ico|svg|gif|png|jpg|jpeg|pdf)$/", $requestStack->getMasterRequest()->getPathInfo())) {
+            // If this is a 404 and it's for a resource type,
+            // then exit early here rather than go through theme rendering.
+            // This is a minor opt that should stay until page rendering performance improves.
+            // It's meant to reduce resource usage caused by common resources being mis-linked
+            // from templates (e.g. someone copy+pasted a custom header with invalid local path to a js file).
+            return new Response($exception->getMessage(), $exception->getStatusCode());
+        }
+
         $reflection = new \ReflectionClass(RequestStack::class);
         $property   = $reflection->getProperty('requests');
         $property->setAccessible(true);
@@ -144,13 +153,15 @@ class ErrorController extends AbstractController
 
     /**
      * @param string $path
+     *
+     * @throws NotFoundHttpException
      */
     public function notFoundAction($path)
     {
         // this is a portal catch all route. Anything that ends up here was not matched by the router.
         // we have this so that 404s hit a controller (meaning all request listeners were run)
         // and this ensures that FirewallListener populates our security token.
-        throw new NotFoundHttpException('could not find a route for: '.$path);
+        throw new NotFoundHttpException('could not find a route for: '.htmlspecialchars($path, \ENT_QUOTES, 'UTF-8'));
     }
 
     // to be removed when the minimum required version of Twig is >= 2.0

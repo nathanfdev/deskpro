@@ -4,9 +4,9 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Handler;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -361,10 +361,10 @@ class CommentFormHandler
             return 'downloads';
         } elseif ($content instanceof News) {
             return 'news';
-        } elseif ($content instanceof Feedback) {
-            return 'feedback';
+        } elseif ($content instanceof CommunityTopic) {
+            return 'community';
         } elseif ($content instanceof Topic) {
-            return 'topic';
+            return 'guides';
         }
 
         throw new InvalidArgumentException('content type not supported');

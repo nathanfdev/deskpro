@@ -18,7 +18,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/voice_auto_attendants")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant")
- * @ApiUserContext("admin")
+ * @ApiUserContext("admin", agent={"list", "get", "count"})
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

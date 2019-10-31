@@ -19,6 +19,13 @@ interface StorageAdapterInterface
     public function getActiveTasks($channel = null);
 
     /**
+     * @param int[] $ids
+     *
+     * @return Task[]
+     */
+    public function getTasks(array $ids);
+
+    /**
      * @param int $id
      *
      * @return Task
@@ -66,6 +73,11 @@ interface StorageAdapterInterface
      * @return Worker[]
      */
     public function getWorkers(array $ids);
+
+    /**
+     * @return Worker[]
+     */
+    public function getAllWorkers();
 
     /**
      * @param Worker $worker

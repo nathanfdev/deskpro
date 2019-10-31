@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'Add Email Address'
 portal.account.email-management: 'Manage Emails'
 portal.account.email-management-from-form: 'Manage Your Email Addresses'
 portal.account.email-primary-description: 'This is your primary email. It will be used by default unless you have specified otherwise.'
-portal.account.feedback-lockout: 'You have submitted feedback too many times so you have been locked out. Please try again later.'
+portal.account.community-lockout: 'You have submitted community topics too many times so you have been locked out. Please try again later.'
 portal.account.link-expired: 'Sorry, the link you clicked has expired or has already been used before.'
 portal.account.lockout_time: 'You can try again in {{time}} minutes.'
 portal.account.login-btn: Login
@@ -33,7 +33,7 @@ portal.account.login-remember: 'Stay Logged In?'
 portal.account.login-saved-add_email: 'Your add email has not been submitted yet. Please login to continue.'
 portal.account.login-saved-comment: 'Your comment has not been submitted yet. Please login to continue.'
 portal.account.login-saved-form: 'Your form has not been submitted yet. Please login to continue.'
-portal.account.login-saved-new_feedback: 'Your new feedback has not been submitted yet. Please login to continue.'
+portal.account.login-saved-new_community_topic: 'Your new community topic has not been submitted yet. Please login to continue.'
 portal.account.login-saved-new_ticket: 'Your new ticket has not been submitted yet. Please login to continue.'
 portal.account.login-saved-register: 'Your register has not been submitted yet. Please login to continue.'
 portal.account.login-stay-logged-in: 'Stay Logged In?'
@@ -83,7 +83,7 @@ portal.account.submit-saved-add_email: 'Your add email has not been submitted ye
 portal.account.submit-saved-comment: 'Your comment has not been submitted yet but we have saved it for you.'
 portal.account.submit-saved-form: 'Your form has not been submitted yet but we have saved it for you.'
 portal.account.submit-saved-form-go: 'Click here to automatically re-submit the form.'
-portal.account.submit-saved-new_feedback: 'Your new feedback has not been submitted yet but we have saved it for you.'
+portal.account.submit-saved-new_community_topic: 'Your new community topic has not been submitted yet but we have saved it for you.'
 portal.account.submit-saved-new_ticket: 'Your new ticket has not been submitted yet but we have saved it for you.'
 portal.account.submit-saved-register: 'Your register has not been submitted yet but we have saved it for you.'
 portal.account.tickets-lockout: 'You have submitted too many tickets so you have been locked out. Please try again later.'
@@ -238,17 +238,18 @@ portal.email_subjects.comment-deleted: 'Your comment was read by our agents'
 portal.email_subjects.download_sub_new: 'New Downloads'
 portal.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
 portal.email_subjects.download_sub_updated: 'Updated Downloads'
+portal.email_subjects.direct_message_new: 'New Message'
 portal.email_subjects.email-too-big: 'Your email "{{subject}}" was not accepted'
 portal.email_subjects.email_new-confirm: 'Validate your email address'
 portal.email_subjects.email_primary-confirm: 'Validate your email address'
 portal.email_subjects.email_ticket-reminder: 'Action Required: Your ticket has not yet been submitted'
-portal.email_subjects.feedback_new: 'Thank you for submitting your feedback'
-portal.email_subjects.feedback_new-approved: 'Your feedback has been published'
-portal.email_subjects.feedback_new-comment: 'There is a new comment on "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Thank you for submitting your feedback (validation required)'
-portal.email_subjects.feedback_new-disapproved: 'Sorry. Your feedback item has been declined'
-portal.email_subjects.feedback_sub_updated: 'Updated Feedback'
-portal.email_subjects.feedback_updated: 'Your feedback was updated: {{title}}'
+portal.email_subjects.community_new: 'Thank you for submitting your community topic'
+portal.email_subjects.community_new-approved: 'Your community topic has been published'
+portal.email_subjects.community_new-comment: 'There is a new comment on "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Thank you for submitting your community topic (validation required)'
+portal.email_subjects.community_new-disapproved: 'Sorry. Your community topic has been declined'
+portal.email_subjects.community_sub_updated: 'Updated Community Topic'
+portal.email_subjects.community_updated: 'Your community was updated: {{title}}'
 portal.email_subjects.kb_sub_new: 'New Articles'
 portal.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
 portal.email_subjects.kb_sub_updated: 'Updated Articles'
@@ -277,6 +278,7 @@ portal.emails.comment_approved: 'Your comment has been published.'
 portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Thank you for your comment on {{link}}.'
 portal.emails.comment_validate-email: 'Please validate your email address by clicking the following link:'
+portal.emails.direct_message_new: 'There is new message from {{person}} in the thread {{link}}'
 portal.emails.do-not-reply: 'Please do not reply to this email. This is an automatically-generated message and replies will not be read by our agents.'
 portal.emails.download-new-downloads:
   one: '1 New Download'
@@ -287,23 +289,23 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: 'You are receiving this email because you have subscribed to updates about downloads available at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
 portal.emails.email-too-big: 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size this helpdesk accepts is {{max_size}}. Remove large attachments and try again.'
 portal.emails.end_greeting: 'Regards,<br /><br />{{site_name}}''s'
-portal.emails.feedback-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
-portal.emails.feedback-updated-items:
-  one: '1 Updated Feedback Item'
-  other: '{{count}} Updated Feedback Items'
-portal.emails.feedback_agent-validation: 'Note that your feedback will not appear publicly on our support portal until one of our agents approves it.'
-portal.emails.feedback_approved: 'We wanted to let you know that your feedback has been approved and is now publicly visible on our support portal.'
-portal.emails.feedback_closed: 'Your submitted feedback "{{title}}" was closed: {{status}}'
-portal.emails.feedback_disapproved: 'We wanted to let you know that your feedback has been declined and will not appear publicly on our support portal.'
-portal.emails.feedback_disapproved-reason: 'We wanted to let you know that your feedback has been declined and will not appear publicly on our support portal. {{name}} gave the following reason:'
-portal.emails.feedback_new-comment: '{{name}} posted a new comment:'
-portal.emails.feedback_published: 'Your submitted feedback "{{title}}" has been validated and will now appear on our support portal.'
-portal.emails.feedback_thank-you: 'Thank you for submitting your feedback "{{title}}"'
-portal.emails.feedback_updated: 'Your submitted feedback "{{title}}" has been updated. Its new status is "{{status}}"'
-portal.emails.feedback_validate-email: 'Please validate your email address by clicking the following link:'
-portal.emails.feedback_votes:
-  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
-  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+portal.emails.community-topics-explain: 'You are receiving this email because you subscribed to updates about community topics at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
+portal.emails.community-topics-updated:
+  one: '1 Updated Community Topic'
+  other: '{{count}} Updated Community Topics'
+portal.emails.community-topic_agent-validation: 'Note that your community topic will not appear publicly on our support portal until one of our agents approves it.'
+portal.emails.community_topic_approved: 'We wanted to let you know that your community topic has been approved and is now publicly visible on our support portal.'
+portal.emails.community_topic_closed: 'Your submitted community topic "{{title}}" was closed: {{status}}'
+portal.emails.community-topic_disapproved: 'We wanted to let you know that your community topic has been declined and will not appear publicly on our support portal.'
+portal.emails.community-topic_disapproved-reason: 'We wanted to let you know that your community topic has been declined and will not appear publicly on our support portal. {{name}} gave the following reason:'
+portal.emails.community-topic_new-comment: '{{name}} posted a new comment:'
+portal.emails.community-topic_published: 'Your submitted community topic "{{title}}" has been validated and will now appear on our support portal.'
+portal.emails.community-topic_thank-you: 'Thank you for submitting your community topic "{{title}}"'
+portal.emails.community-topic_updated: 'Your submitted community topic "{{title}}" has been updated. Its new status is "{{status}}"'
+portal.emails.community-topic_validate-email: 'Please validate your email address by clicking the following link:'
+portal.emails.community-topic_votes:
+  one: 'Your community topic currently has <strong>1</strong> vote. View your community topic online at:'
+  other: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
 portal.emails.greeting: 'Dear {{to_name}},'
 portal.emails.kb-explain: 'You are receiving this email because you subscribed to updates about our knowledgebase articles at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
 portal.emails.kb-new-articles:
@@ -315,7 +317,7 @@ portal.emails.kb-updated-articles:
 portal.emails.label_view-online: 'View Online'
 portal.emails.message-clipped: '(Message has been clipped)'
 portal.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket online here:'
-portal.emails.news-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
+portal.emails.news-explain: 'You are receiving this email because you subscribed to updates about community topics at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
 portal.emails.news-new-articles:
   one: '1 New News Post'
   other: '{{count}} New News Posts'
@@ -374,44 +376,45 @@ portal.error.404-title: 'Not Found'
 portal.error.contact: 'If you feel that this is an error, please contact us.'
 portal.error.general-desc: 'Sorry, but an error occurred. Please try again later or contact us.'
 portal.error.general-title: 'An Error Occurred'
-portal.feedback.attachments: Attachments
-portal.feedback.btn-closed: Closed
-portal.feedback.btn-vote: 'I Agree'
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
-portal.feedback.error_hidden: 'This feedback item is hidden'
-portal.feedback.error_login: 'Please login'
-portal.feedback.filter_all_items: 'All items'
-portal.feedback.filter_closed_items: 'Closed items'
-portal.feedback.filter_open_items: 'Open items'
-portal.feedback.form_attach_files: 'Attach files'
-portal.feedback.form_btn_submit: 'Add your feedback'
-portal.feedback.form_email_not_shown: 'Your Email (will not be shown publicly)'
-portal.feedback.form_i_have_a: 'I have a'
-portal.feedback.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from email <span>{{email}}</span>.'
-portal.feedback.form_logout: 'Not you?'
-portal.feedback.form_tell_us_more: 'Tell us more'
-portal.feedback.form_title: Title
-portal.feedback.module_forbidden: 'You don''t have access to this module'
-portal.feedback.no_matching: 'No matching feedback'
-portal.feedback.none: 'No feedback yet'
-portal.feedback.rate_forbidden: 'You are not allowed to vote'
-portal.feedback.recent-feedback: 'Recent Feedback'
-portal.feedback.search-title: Feedback
-portal.feedback.section-desc: 'These feedback items have been submitted by customers like you; we encourage you to discuss and vote on those you agree with, and to submit your own feedback if the idea is not already listed.'
-portal.feedback.section-title: Feedback
-portal.feedback.sort_comments: Comments
-portal.feedback.sort_date: Date
-portal.feedback.sort_popularity: Popularity
-portal.feedback.sort_rating: Rating
-portal.feedback.sort_views: Views
-portal.feedback.status_active: 'Open items'
-portal.feedback.status_all: 'All items'
-portal.feedback.status_closed: 'Closed items'
-portal.feedback.submit_feedback: 'Submit feedback'
-portal.feedback.view-x-feedback:
-  one: 'View 1 feedback'
-  other: 'View {{count}} feedback'
+portal.community.attachments: Attachments
+portal.community.btn-closed: Closed
+portal.community.btn-vote: 'I Agree'
+portal.community.dir_asc: ASC
+portal.community.dir_desc: DESC
+portal.community.error_hidden: 'This community topic is hidden'
+portal.community.error_login: 'Please login'
+portal.community.filter_all_items: 'All items'
+portal.community.filter_closed_items: 'Closed items'
+portal.community.filter_open_items: 'Open items'
+portal.community.form_attach_files: 'Attach files'
+portal.community.form_btn_submit: 'Add your community topic'
+portal.community.form_email_not_shown: 'Your Email (will not be shown publicly)'
+portal.community.form_i_have_a: 'I have a'
+portal.community.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from email <span>{{email}}</span>.'
+portal.community.form_logout: 'Not you?'
+portal.community.form_tell_us_more: 'Tell us more'
+portal.community.form_title: Title
+portal.community.form_custom_cat: Category
+portal.community.module_forbidden: 'You don''t have access to this module'
+portal.community.no_matching: 'No matching community topics'
+portal.community.none: 'No community topics yet'
+portal.community.rate_forbidden: 'You are not allowed to vote'
+portal.community.recent-community_topics: 'Recent Community Topics'
+portal.community.search-title: Community
+portal.community.section-desc: 'These community topics have been submitted by customers like you; we encourage you to discuss and vote on those you agree with, and to submit your own community topic if the idea is not already listed.'
+portal.community.section-title: Community
+portal.community.sort_comments: Comments
+portal.community.sort_date: Date
+portal.community.sort_popularity: Popularity
+portal.community.sort_rating: Rating
+portal.community.sort_views: Views
+portal.community.status_active: 'Open items'
+portal.community.status_all: 'All items'
+portal.community.status_closed: 'Closed items'
+portal.community.submit_community_topic: 'Submit community topic'
+portal.community.view-x-community-topics:
+  one: 'View 1 community topic'
+  other: 'View {{count}} community topics'
 portal.flashes.article_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new articles are posted.'
 portal.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
 portal.flashes.article_subscribe: 'You have successfully subscribed to this article. You will be notified when it is updated or when there is a new comment.'
@@ -425,14 +428,14 @@ portal.flashes.download_subscribe: 'You have successfully subscribed to this dow
 portal.flashes.download_unsubscribe: 'You have successfully unsubscribed from this download.'
 portal.flashes.download_unsubscribe_everything: 'You have unsubscribed from all downloads notifications'
 portal.flashes.email_sent: 'Your email has been sent'
-portal.flashes.feedback_login: 'You should log in to vote'
-portal.flashes.feedback_subscribe: 'You have successfully subscribed to this feedback item. You will be notified when it is updated or when there is a new comment.'
-portal.flashes.feedback_unsubscribe: 'You have successfully unsubscribed from this feedback item.'
-portal.flashes.feedback_unsubscribe_everything: 'You have unsubscribed from all feedback notifications'
+portal.flashes.community_login: 'You should log in to vote'
+portal.flashes.community_subscribe: 'You have successfully subscribed to this community topic. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.community_unsubscribe: 'You have successfully unsubscribed from this community topic.'
+portal.flashes.community_unsubscribe_everything: 'You have unsubscribed from all community topics notifications'
 portal.flashes.guest_content_must_verify: 'Before we can post your content you must verify your email. Please check your email inbox. We have sent you a verification link.'
 portal.flashes.guest_new_ticket_must_verify: 'Before we can accept your ticket we must verify your email address. Please check your email inbox. We have sent you a verification link.'
-portal.flashes.new_feedback_awaiting_review: 'Thank you for your feedback. It will be visible on our support portal after agent review.'
-portal.flashes.new_feedback_posted: 'Thank you for your feedback.'
+portal.flashes.new_community_topic_awaiting_review: 'Thank you for your community topic. It will be visible on our support portal after agent review.'
+portal.flashes.new_community_topic_posted: 'Thank you for your community topic.'
 portal.flashes.news_cat_subscribe: 'You have successfully subscribed to this category. You will be notified of new posts.'
 portal.flashes.news_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
 portal.flashes.news_subscribe: 'You have successfully subscribed to this news article. You will be notified when there are new comments.'
@@ -517,6 +520,7 @@ portal.forms.error_password_require_num_uppercase:
   other: 'At least {{count}} uppercase characters'
 portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an agent.'
 portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
+portal.forms.error_dm_message_to_self: 'Please choose another person'
 portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
 portal.forms.error_regex: 'This value does not match the expected format'
 portal.forms.error_required: 'This value is required'
@@ -554,6 +558,7 @@ portal.forms.label_language: Language
 portal.forms.label_last_name: 'Last Name'
 portal.forms.label_message: Message
 portal.forms.label_name: Name
+portal.forms.label_display_name: Display Name
 portal.forms.label_password: Password
 portal.forms.label_password_confirm: Confirm
 portal.forms.label_priority: Priority
@@ -574,18 +579,19 @@ portal.general.admin_home: 'Admin Home'
 portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Manage your Helpdesk'
 portal.general.agent_bar_admin_dl: 'Downloads Settings'
-portal.general.agent_bar_admin_feedback: 'Feedback Settings'
+portal.general.agent_bar_admin_community: 'Community Settings'
 portal.general.agent_bar_admin_kb: 'Knowledgebase Settings'
 portal.general.agent_bar_admin_lang: 'Language Settings'
 portal.general.agent_bar_admin_news: 'News Settings'
 portal.general.agent_bar_admin_portal: 'Portal Design & Templates'
 portal.general.agent_bar_agent_desc: 'View Tickets / Manage Content'
 portal.general.agent_bar_agent_dl: 'Manage Downloads'
-portal.general.agent_bar_agent_feedback: 'Manage Feedback'
+portal.general.agent_bar_agent_community: 'Manage Community'
 portal.general.agent_bar_agent_home: 'Agent Home'
 portal.general.agent_bar_agent_kb: 'Manage Knowledgebase'
 portal.general.agent_bar_agent_news: 'Manage News'
 portal.general.agents-available: 'Agents Available'
+portal.general.agree: 'Agree'
 portal.general.attachments: Attachments
 portal.general.btn-cancel: Cancel
 portal.general.btn-download-pdf: 'Download PDF'
@@ -608,6 +614,7 @@ portal.general.comments-title:
   other: 'Comments ({{count}})'
 portal.general.delete: Delete
 portal.general.everything: Everything
+portal.general.eula: EULA
 portal.general.get-in-touch: 'Get in touch'
 portal.general.get-in-touch-desc: 'Send us an email'
 portal.general.impersonation_mode: 'Impersonation mode'
@@ -619,16 +626,18 @@ portal.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>'
 portal.general.nav-all: All
 portal.general.nav-chat: 'Chat Logs'
 portal.general.nav-chatlog: 'Chat Log'
+portal.general.nav-dm: Messages
 portal.general.nav-downloads: Downloads
 portal.general.nav-downloads-desc: 'Browse our downloads'
 portal.general.nav-emails: Emails
-portal.general.nav-feedback: Feedback
-portal.general.nav-feedback-desc: 'Custom suggestions'
+portal.general.nav-community: Community
+portal.general.nav-community-desc: 'Custom suggestions'
 portal.general.nav-guides: Guides
 portal.general.nav-guides-desc: 'Product documentation'
 portal.general.nav-kb: Knowledgebase
 portal.general.nav-kb-desc: 'Read help articles'
 portal.general.nav-login: Login
+portal.general.nav-members: Members
 portal.general.nav-news: News
 portal.general.nav-news-desc: 'News & updates'
 portal.general.nav-newticket: 'Contact Us'
@@ -666,11 +675,12 @@ portal.general.rated-negative: 'You marked this page as unhelpful'
 portal.general.rated-positive: 'You marked this page as helpful'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} of {{vote_count}} people found this page helpful'
 portal.general.related-downloads: 'Related Files'
-portal.general.related-feedback: 'Related Feedback'
+portal.general.related-community: 'Related Community Topics'
 portal.general.related-news: 'Related News'
 portal.general.related-pages: 'Related Pages'
 portal.general.rerender-form: 'Please review this form before you submit it.'
 portal.general.rss_subscribe: 'RSS Feed'
+portal.general.ics_subscribe: 'iCalendar'
 portal.general.search-labels-section-title: 'Search Labels'
 portal.general.search-section-title: Search
 portal.general.search_btn: Search
@@ -683,8 +693,8 @@ portal.general.show_more: 'Show more'
 portal.general.show_x_more: 'Show {num} more'
 portal.general.software_provided_by: 'Helpdesk software provided by'
 portal.general.start-chat: 'Start a chat session'
-portal.general.submit-feedback: 'Submit Feedback'
-portal.general.submit-feedback-desc: 'Feedback and suggestions submitted by customers like you'
+portal.general.submit-community-topic: 'Submit Community Topics'
+portal.general.submit-community-topic-desc: ' Community Topics and suggestions submitted by customers like you'
 portal.general.tagged_with: 'tagged with'
 portal.general.tags: Tags
 portal.general.toggle_off: 'off'
@@ -693,6 +703,7 @@ portal.general.top: Top
 portal.general.updated: Updated
 portal.general.x-search-results: '{{num}} search results for "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} search results'
+portal.general.sort: 'Sort'
 portal.guides.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
 portal.news.none: 'No news yet'
 portal.news.recent-title: 'Recent News'
@@ -702,6 +713,11 @@ portal.news.view-as-agent: 'You can see this page because you are an agent. Norm
 portal.news.view-x-news:
   one: 'View 1 article'
   other: 'View {{count}} articles'
+portal.direct_messages.title: Messages
+portal.direct_messages.none: No messages
+portal.direct_messages.create_thread: Create
+portal.members.title: Members
+portal.members.none: No members
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
 portal.sidebar.agents_x_online:
@@ -835,7 +851,7 @@ user.chat.form_chat_send-file: 'Upload a File'
 user.chat.form_create_button-submit: 'Start Chat'
 user.chat.form_create_department: 'Choose department'
 user.chat.form_create_title: 'Start a Chat with an Agent'
-user.chat.form_feedback_button-submit: 'Send Feedback & Close Window'
+user.chat.form_feedback_button-submit: 'Send feedback & Close Window'
 user.chat.form_feedback_comments: 'Comments?'
 user.chat.form_feedback_rate-satisfaction: 'Were you satisfied with this conversation?'
 user.chat.form_feedback_rate-satisfied: 'Yes'
@@ -892,6 +908,7 @@ user.defaults.article_example_title: 'Example Article'
 user.defaults.department_sales: Sales
 user.defaults.department_support: Support
 user.defaults.downloads_category_general: Documents
+user.defaults.navigate: Navigate
 user.defaults.news_category_general: General
 user.defaults.news_example_content: 'This is an example news post. Feel free to edit or delete it from the agent interface.'
 user.defaults.news_example_title: 'Example News Post'
@@ -905,13 +922,13 @@ user.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
 user.email_subjects.download_sub_updated: 'Updated Downloads'
 user.email_subjects.email-too-big: 'Your email "{{subject}}" was not accepted'
 user.email_subjects.email_new-confirm: 'Please validate your email address'
-user.email_subjects.feedback_created_for_user: 'Thank you for your feedback'
-user.email_subjects.feedback_new: 'Thank you for submitting your feedback'
-user.email_subjects.feedback_new-approved: 'Your feedback has been approved'
-user.email_subjects.feedback_new-comment: 'There is a new comment on "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Sorry but your feedback has been declined'
-user.email_subjects.feedback_sub_updated: 'Updated Feedback'
-user.email_subjects.feedback_updated: 'Your feedback was updated: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'Thank you for your community topic'
+user.email_subjects.community_topic_new: 'Thank you for submitting your community topic'
+user.email_subjects.community_topic_new-approved: 'Your community topic has been approved'
+user.email_subjects.community_topic_new-comment: 'There is a new comment on "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Sorry but your community topic has been declined'
+user.email_subjects.community_sub_updated: 'Updated Community Topic'
+user.email_subjects.community_topic_updated: 'Your community was updated: {{title}}'
 user.email_subjects.kb_sub_new: 'New Articles'
 user.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
 user.email_subjects.kb_sub_updated: 'Updated Articles'
@@ -943,23 +960,23 @@ user.emails.download-updated-downloads:
   other: '{{count}} Updated Downloads'
 user.emails.downloads-explain: 'You are receiving this email because you are subscribed to our downloads at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
 user.emails.email-too-big: 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size is {{max_size}}. Remove any attachments and try again.'
-user.emails.feedback-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
-user.emails.feedback-updated-items:
-  one: '1 Updated Feedback Item'
-  other: '{{count}} Updated Feedback Items'
-user.emails.feedback_agent-validation: 'Please note that your feedback will not appear publicly until one of our agents reviews it'
-user.emails.feedback_approved: 'We wanted to let you know that your feedback has been approved and is now publicly visible on our site.'
-user.emails.feedback_closed: 'Your submitted feedback "{{title}}" was closed: {{status}}'
-user.emails.feedback_created_for_user: 'Thank you for your recent feedback "{{title}}". {{agentName}} has created a new feedback item so you can stay up to date with our progress:'
-user.emails.feedback_disapproved: 'We wanted to let you know that unfortunately your feedback has been declined and will not appear publicly on our site.'
-user.emails.feedback_disapproved-reason: 'We wanted to let you know that unfortunately your feedback has been declined and will not appear publicly on our site. {{name}} gave the following reason:'
-user.emails.feedback_new-comment: '{{name}} posted a new comment:'
-user.emails.feedback_published: 'Your submitted feedback "{{title}}" has been validated and will now appear on our site.'
-user.emails.feedback_thank-you: 'Thank you for submitting your feedback "{{title}}"'
-user.emails.feedback_updated: 'Your submitted feedback "{{title}}" has been updated. Its status is now: new status "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
-  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+user.emails.community-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all community topics notifications.</a>'
+user.emails.community-updated-items:
+  one: '1 Updated Community Topic'
+  other: '{{count}} Updated Community Topics'
+user.emails.community-topic_agent-validation: 'Please note that your community topic will not appear publicly until one of our agents reviews it'
+user.emails.community-topic_approved: 'We wanted to let you know that your community topic has been approved and is now publicly visible on our site.'
+user.emails.community-topic_closed: 'Your submitted community topic "{{title}}" was closed: {{status}}'
+user.emails.community-topic_created_for_user: 'Thank you for your recent community topic "{{title}}". {{agentName}} has created a new community topic so you can stay up to date with our progress:'
+user.emails.community-topic_disapproved: 'We wanted to let you know that unfortunately your community topic has been declined and will not appear publicly on our site.'
+user.emails.community-topic_disapproved-reason: 'We wanted to let you know that unfortunately your community topic has been declined and will not appear publicly on our site. {{name}} gave the following reason:'
+user.emails.community-topic_new-comment: '{{name}} posted a new comment:'
+user.emails.community-topic_published: 'Your submitted community topic "{{title}}" has been validated and will now appear on our site.'
+user.emails.community-topic_thank-you: 'Thank you for submitting your community topic "{{title}}"'
+user.emails.community-topic_updated: 'Your submitted community topic "{{title}}" has been updated. Its status is now: new status "{{status}}"'
+user.emails.community-topic_votes:
+  one: 'Your community topic currently has <strong>1</strong> vote. View your community topic online at:'
+  other: 'Your community topic currently has <strong>{{count}}</strong> votes. View your community topic online at:'
 user.emails.greeting: 'Dear {{to_name}},'
 user.emails.kb-explain: 'You are receiving this email because you are subscribed to our knowledgebase at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
 user.emails.kb-new-articles:
@@ -1051,7 +1068,7 @@ user.error.permission-denied: 'Sorry, the action you are trying to perform is no
 user.error.permission-denied-login: 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.'
 user.error.permission-denied-title: 'You are not allowed to do that'
 user.error.server-error: 'Sorry but there was a server error that prevented the page from loading. Please try again.'
-user.feedback.submit_feedback: 'Submit feedback'
+user.community.submit_community_topic: 'Submit community topic'
 user.general.deskpro: Deskpro
 user.general.helpdesk_by: 'Helpdesk software by <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Confirmation code'
@@ -1075,7 +1092,8 @@ user.lang.lang_title_japanese: Japanese
 user.lang.lang_title_norwegian: Norwegian
 user.lang.lang_title_persian: Persian
 user.lang.lang_title_polish: Polish
-user.lang.lang_title_portuguese: Portuguese
+user.lang.lang_title_portuguese_br: Portuguese (Brazil)
+user.lang.lang_title_portuguese_pt: Portuguese (Portugal)
 user.lang.lang_title_romanian: Romanian
 user.lang.lang_title_russian: Russian
 user.lang.lang_title_spanish: Spanish
@@ -1103,7 +1121,7 @@ user.profile.register_password_require_num_uppercase:
   one: 'At least {{count}} uppercase character'
   other: 'At least {{count}} uppercase characters'
 user.profile.register_password_unused: 'You cannot use a password you have used before'
-user.tickets.feedback_message_leave_comment: 'Optionally leave a comment'
+user.tickets.community_message_leave_comment: 'Optionally leave a comment'
 user.tickets.fields_category: Category
 user.tickets.fields_department: Department
 user.tickets.fields_priority: Priority

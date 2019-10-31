@@ -9,6 +9,7 @@ namespace Cloud\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\LegacyApiBundle\Controller\EmailAccountsController as BaseEmailAccountsController;
 use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotAgentEmail;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
@@ -130,6 +131,15 @@ class EmailAccountsController extends BaseEmailAccountsController
             return false;
         }
 
-        return StringEmail::isValueValid($email) && !StringEmail::isExampleEmail($email);
+        if (!StringEmail::isValueValid($email) || StringEmail::isExampleEmail($email)) {
+            return false;
+        }
+
+        $emailErrors = $this->container->getValidator()->validate(
+            $email,
+            new NotAgentEmail(['property' => 'address'])
+        );
+
+        return count($emailErrors) === 0;
     }
 }

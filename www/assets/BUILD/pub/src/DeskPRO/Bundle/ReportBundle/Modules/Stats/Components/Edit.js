@@ -36,10 +36,11 @@ class EditContainer extends React.Component {
   static getStateFromReport(report) {
     const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
     const initialFormValue = {
-      title:       report.get('title'),
-      labels:      report.get('labels', Immutable.List()).toArray(),
-      description: report.get('description', ''),
-      query:       {
+      title:           report.get('title'),
+      labels:          report.get('labels', Immutable.List()).toArray(),
+      description:     report.get('description', ''),
+      additional_info: report.get('additional_info', ''),
+      query:           {
         raw:         report.get('query'),
         select:      queryParts.get('select', ''),
         from:        queryParts.get('from', ''),
@@ -201,9 +202,9 @@ class EditContainer extends React.Component {
             <div className="title">{this.props.report.get('title')}</div>
             <div className="ctrl">
               <Button type="secondary" size="medium" onClick={this.onRunClick}>
-                <i className="fa fa-undo" /> Cancel
+                <i className="fas fa-undo-alt" /> Cancel
               </Button>
-              <Button size="medium" onClick={this.onCloneClick}><i className="fa fa-clone" /> Clone</Button>
+              <Button size="medium" onClick={this.onCloneClick}><i className="fas fa-clone" /> Clone</Button>
             </div>
           </div>
           : <div className="title-bar"><div className="title">New Stat</div></div> }

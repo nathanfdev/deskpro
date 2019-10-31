@@ -1,0 +1,34 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+    <article class="community main-community" id="community_page">
+        {{  macros.lockout_notice(phrase('portal.account.community-lockout'), lockout, lockout_time) }}
+        <header class="large-title">
+            <div class="header-buttons">
+                {% show community_root_subscription_link %}
+            </div>
+            <h1>{{ phrase('portal.community.section-title') }}</h1>
+            <p>{{ phrase('portal.community.section-desc') }}</p>
+        </header>
+
+        {% if can_login() or app.user %}
+            <article class="community-topic-form-interactive">
+                {% if rerendering_saved %}
+                    <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+                {% endif %}
+                {% show community_topic_form %}
+            </article>
+        {% endif %}
+
+       <article class="community-filter-interactive as-no-dpui">
+           {% show community_filter_controls %}
+           <div class="paged-results">
+               {% show community_list_detail %}
+           </div>
+       </article>
+    </article>
+{% endblock inner_content %}

@@ -42,8 +42,7 @@ Feature: /agents endpoint
     Then the response should not contain "borntobekilled@deskpro.dev"
 
   Scenario: I soft-delete an agent and check agents list as agent
-    Given I'm authenticated as "agent"
-    And I add "agent" usergroup relation "agent_all_perms"
+    Given I'm authenticated as "admin"
     And "willbedeleted@deskpro.dev" agent exists
     When I send a DELETE request to "/api/v2/agents/{willbedeleted@deskpro.dev}"
     And I send a GET request to "/api/v2/agents"

@@ -2,11 +2,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
 /**
  * Class VoiceAccountRepository.
  */
-class VoiceAccountRepository extends EntityRepository
+class VoiceAccountRepository extends AbstractEntityRepository
 {
 }

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
+import { debounce } from 'lodash'
 import {
   clipboardHasImages,
   clipboardIEHasImages,
@@ -44,7 +45,8 @@ export default class RteEditor extends React.Component {
     } = this.props;
 
     const node = this.getNode();
-    const onChangeContent = () => {
+    let firstChange = true;
+    const onChangeContent = debounce(() => {
       // remove empty blocks
       $('p', node).each((i, p) => {
         const $p = $(p);
@@ -55,18 +57,29 @@ export default class RteEditor extends React.Component {
 
       // wrap content
       if (!$('p', node).length) {
-        node.innerHTML = `<p>${node.innerHTML}</p>`;
-        // refocus after the modification
-        this.focus();
+        if (firstChange) {
+          this.medium.saveSelection();
+          this.medium.setContent(`<p>${node.innerHTML}</p>`);
+
+          // refocus and reset caret position after the modification
+          this.focus();
+          this.medium.restoreSelection();
+          firstChange = false;
+        } else {
+          node.innerHTML = `<p>${node.innerHTML}</p>`;
+          // refocus after the modification
+          this.focus();
+        }
       }
       this.updated = true;
 
       onChange(node.innerHTML);
-    };
+    }, 100);
 
     // Override default paste listener to upload images
     node.addEventListener('paste', this.onPaste);
     const overrideOptions = {
+      // check below comments regarding `cleanPastedHTML` option
       paste: { cleanPastedHTML: false, forcePlainText: false, keyboardCommands: false }
     };
 
@@ -120,16 +133,18 @@ export default class RteEditor extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
+    this.medium.saveSelection();
+
     const { onPasteImage } = this.props;
     const clipboardData = event.clipboardData;
+
     if (clipboardData) {
       // Non-IE browsers
       if (!clipboardHasImages(clipboardData)) {
-        let pastedText = clipboardData.getData('text/plain');
+        const pastedText = clipboardData.getData('text/plain');
         if (pastedText) {
-          pastedText = pastedText.replace(/\n/g, '<br />');
-
-          this.medium.cleanPaste(pastedText);
+          // to make below line work - medium-editor option `cleanPastedHTML` should be set to false
+          this.medium.getExtensionByName('paste').doPaste(pastedText, pastedText, this.getNode());
         }
       }
 
@@ -144,19 +159,25 @@ export default class RteEditor extends React.Component {
     } else if (window.clipboardData) {
       // IE browser
       if (!clipboardIEHasImages(window.clipboardData)) {
-        let content = window.clipboardData.getData('Text');
+        const content = window.clipboardData.getData('Text');
         if (content) {
           try {
             getBlobFromUrl(content, onPasteImage);
           } catch (e) {
-            content = content.replace(/\n/g, '<br />');
-            this.medium.cleanPaste(content);
+            // to make below line work - medium-editor option `cleanPastedHTML` should be set to false
+            this.medium.getExtensionByName('paste').doPaste(content, content, this.getNode());
           }
         }
       } else {
         getBlobsFromIEItems(window.clipboardData.files, event, onPasteImage);
       }
     }
+
+    // Move selection state to the next position after paste
+    this.medium.selectionState = {
+      start: this.medium.selectionState.start + 1,
+      end: this.medium.selectionState.end + 1,
+    };
   };
 
   onShowToolbar = () => {

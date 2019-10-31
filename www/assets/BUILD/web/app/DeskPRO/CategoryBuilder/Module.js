@@ -34,9 +34,13 @@ define([
         scope:        {
           saveFlatArray: '=',
           fieldName:     '@fieldName',
-          fieldType:     '='
+          fieldType:     '=',
+          removeCallback: '&?'
         },
         link(scope, iElement, iAttrs, ngModel) {
+          scope.isRemoveCallbackDefined = function() {
+            return angular.isDefined(iAttrs.removeCallback);
+          }
           return scope.categoryBuilder.setModel(ngModel);
         }
       })

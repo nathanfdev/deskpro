@@ -92,7 +92,7 @@ class PortalController extends AbstractController
      */
     public function homeAction()
     {
-        $allowedFeedbackTypes = $this->getPermissionBagForCurrentUser()->getAllowedFeedbackCategoryIds();
+        $allowedCommunityChannelIds = $this->getPermissionBagForCurrentUser()->getAllowedCommunityChannelIds();
         if (!$this->getUser() && $this->canUseNothing()) {
             return $this->redirectToRoute('portal_login');
         }
@@ -103,8 +103,8 @@ class PortalController extends AbstractController
 
         return $this->renderThemeView('Theme:Portal:home.html.twig',
             [
-                'page_title'    => $this->createPageTitle()->homepage(),
-                'feedbackTypes' => $allowedFeedbackTypes,
+                'page_title'        => $this->createPageTitle()->homepage(),
+                'communityChannels' => $allowedCommunityChannelIds,
             ]
         );
     }
@@ -221,7 +221,7 @@ class PortalController extends AbstractController
         $personRepo = $this->getRepo(Person::class);
         $person     = $personRepo->findOneByEmail($tmpData->getData('email'));
 
-        if (!$person instanceof Person) {
+        if (!$person instanceof Person || !$person->isAgent()) {
             return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
                 'error_title' => 'portal.account.link-expired',
             ]);
@@ -444,11 +444,7 @@ class PortalController extends AbstractController
 
         $props = [];
         if ($request->query->get('tag', '')) {
-            switch (trim($request->query->get('tag', ''))) {
-                case 'ticket_attachment':
-                    $props['tag'] = 'ticket_attachment';
-                    break;
-            }
+            $props['tag'] = trim($request->query->get('tag', ''));
         }
 
         /** @var Blob $blob */

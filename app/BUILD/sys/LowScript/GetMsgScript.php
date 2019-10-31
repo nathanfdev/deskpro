@@ -3,14 +3,15 @@
 namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
-use DeskPRO\Bundle\AppBundle\Entity\AgentData;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class GetMsgScript extends LowScriptAbstract
 {
+    use VoiceTaskRouterTrait;
+
     protected $_person_id;
     protected $_session_id;
 
@@ -143,15 +144,20 @@ class GetMsgScript extends LowScriptAbstract
             }
             $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
 
-            // every other ping, or if we're opening a write conn anyway
-            $performDbUpdates = !empty($_REQUEST['recent_tabs']) || !empty($_REQUEST['dismiss_alerts']) || ($count && $count % 2 === 0) || $count == 1;
+            // if we're opening a write conn anyway, or every ~25s
+            $updateSessDate = !empty($_REQUEST['recent_tabs'])
+                || !empty($_REQUEST['dismiss_alerts'])
+                || ($count && $count % 5 === 0)
+                || $count == 1
+                || $data['cm_strategy'] !== 'db';
 
             // or if not using db for client msgs, then each poll is already reduced so every one should perform writes
             if ($data['cm_strategy'] != 'db') {
-                $performDbUpdates = true;
+                $updateSessDate = true;
             }
 
-            if ($performDbUpdates) {
+            $this->pingTaskRouterWorker($this->_person_id);
+            if ($updateSessDate) {
                 $q = $this->getPdo()->prepare('
                     UPDATE sessions
                     SET date_last = ?
@@ -159,8 +165,6 @@ class GetMsgScript extends LowScriptAbstract
                 ');
 
                 $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
-
-                $this->pingTaskRouterWorker();
             }
 
             if (!empty($_REQUEST['recent_tabs'])) {
@@ -309,7 +313,29 @@ class GetMsgScript extends LowScriptAbstract
             $data['action_alerts'] = array_values($data['action_alerts']);
             $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
 
+            if ($this->getSetting('beta_features.voice')) {
+                $q = $this->getPdoRead()->prepare('
+                    SELECT COUNT(*)
+                    FROM agent_data a
+                    JOIN people p ON p.agent_data_id = a.id
+                    WHERE p.id = ? AND is_voice_enabled = 1 AND available_status = ? AND agent_calls_enabled = 1
+                    LIMIT 1
+                ');
+                $q->execute([$agent_session['person_id'], Worker::ACTIVITY_IDLE]);
+
+                $hasVoice = $q->fetchColumn(0);
+                if ($hasVoice) {
+                    $data['task_router_workers'] = $this->getVoiceWorkersActivity();
+                }
+            }
+
             header('Content-Type: application/json');
+
+            if (!empty($this->pdo)) {
+                // to collect stats
+                header('X-DP-With-DBMaster: 1');
+            }
+
             echo json_encode($data);
         } catch (\Exception $exception) {
             if ($this->dpEnv->isDebug()) {
@@ -533,6 +559,10 @@ class GetMsgScript extends LowScriptAbstract
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
+        if ($configValue = $DP_ENV->getConfig("settings.$name")) {
+            return $configValue;
+        }
+
         if (!$this->_settings) {
             $this->_settings = [];
             $q               = $this->getPdoRead()->prepare('
@@ -545,9 +575,7 @@ class GetMsgScript extends LowScriptAbstract
             }
         }
 
-        if ($DP_ENV->getConfig("settings.$name")) {
-            return $DP_ENV->getConfig("settings.$name");
-        } elseif (isset($this->_settings[$name])) {
+        if (isset($this->_settings[$name])) {
             return $this->_settings[$name];
         }
 
@@ -561,17 +589,6 @@ class GetMsgScript extends LowScriptAbstract
         }
 
         return $default;
-    }
-
-    protected $_container;
-
-    protected function _getContainer()
-    {
-        if (!$this->_container) {
-            $this->_container = $this->bootFullSystem('DeskPRO\\Kernel\\AgentKernel');
-        }
-
-        return $this->_container;
     }
 
     protected $_person;
@@ -623,8 +640,6 @@ class GetMsgScript extends LowScriptAbstract
             $lastId = $this->getPdoRead()
                 ->query('SELECT id FROM notify_action_alerts ORDER BY id DESC LIMIT 1')
                 ->fetchColumn() ?: 1;
-            $e = new \Exception('Either wrong last ID was passed to GetMsgScript, or there are no action_alerts in Database');
-            SystemErrorHandler::logException($e);
 
             return [[
                 'id'           => $lastId,
@@ -690,28 +705,5 @@ SQL;
         }
 
         return $data;
-    }
-
-    protected function pingTaskRouterWorker()
-    {
-        // todo support other storages
-        $q = $this->getPdoRead()->prepare('
-            SELECT a.available_status
-            FROM agent_data a
-            JOIN people p ON p.agent_data_id = a.id
-            WHERE p.id = ?
-        ');
-
-        $q->execute([$this->_person_id]);
-
-        $status = $q->fetchColumn();
-        if ($status === AgentData::AVAILABLE_STATUS_IDLE) {
-            $q = $this->getVoicePdo()->prepare('
-            UPDATE voice_workers
-            SET date_last_active = ?
-            WHERE type = ? AND type_id = ?
-        ');
-            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $this->_person_id]);
-        }
     }
 }

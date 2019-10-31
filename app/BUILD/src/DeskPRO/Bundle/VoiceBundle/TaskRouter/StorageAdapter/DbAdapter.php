@@ -56,11 +56,29 @@ class DbAdapter implements StorageAdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function getTasks(array $ids)
+    {
+        $models   = [];
+        $entities = $this->em->getRepository(TaskEntity::class)->findBy([
+            'id' => $ids,
+        ]);
+        foreach ($entities as $entity) {
+            $models[] = $this->transformToTaskModel($entity);
+        }
+
+        return $models;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTask($id)
     {
-        $entity = $this->em->getRepository(TaskEntity::class)->find($id);
-        if ($entity) {
-            return $this->transformToTaskModel($entity);
+        if ($id) {
+            $entity = $this->em->getRepository(TaskEntity::class)->find($id);
+            if ($entity) {
+                return $this->transformToTaskModel($entity);
+            }
         }
 
         return;
@@ -85,11 +103,11 @@ class DbAdapter implements StorageAdapterInterface
             ->setPriority($task->getPriority())
             ->setWorkers($task->getWorkerIds())
             ->setAcceptedWorker($task->getAcceptedWorkerId())
-            ->setTimeout($task->getTimeout())
             ->setStatus($task->getStatus())
             ->setStatusReason($task->getStatusReason())
             ->setRejectedBy($task->getRejectedBy())
             ->setDateCreated($task->getDateCreated())
+            ->setDateExpire($task->getDateExpire())
             ->setDateExpireAssigned($task->getDateExpireAssigned())
             ->setAttributes($task->getAttributes())
         ;
@@ -192,6 +210,20 @@ class DbAdapter implements StorageAdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function getAllWorkers()
+    {
+        $entities = $this->em->getRepository(WorkerEntity::class)->findAll();
+        $workers  = [];
+        foreach ($entities as $entity) {
+            $workers[] = $this->transformToWorkerModel($entity);
+        }
+
+        return $workers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function saveWorker(Worker $worker)
     {
         $entity = null;
@@ -208,6 +240,7 @@ class DbAdapter implements StorageAdapterInterface
             ->setTypeId($worker->getTypeId())
             ->setActivity($worker->getActivity())
             ->setDateLastActive($worker->getDateLastActive())
+            ->setLastCallAt($worker->getLastCallAt())
             ->setAttributes($worker->getAttributes())
             ->setPendingTasks($worker->getPendingTaskIds())
             ->setActiveTasks($worker->getActiveTaskIds())
@@ -306,11 +339,11 @@ class DbAdapter implements StorageAdapterInterface
             ->setPriority($entity->getPriority())
             ->setWorkersIds($entity->getWorkers())
             ->setAcceptedWorkerId($entity->getAcceptedWorker())
-            ->setTimeout($entity->getTimeout())
             ->setStatus($entity->getStatus())
             ->setStatusReason($entity->getStatusReason())
             ->setRejectedBy($entity->getRejectedBy())
             ->setDateCreated($entity->getDateCreated())
+            ->setDateExpire($entity->getDateExpire())
             ->setDateExpireAssigned($entity->getDateExpireAssigned())
             ->setAttributes($entity->getAttributes())
         ;
@@ -332,6 +365,7 @@ class DbAdapter implements StorageAdapterInterface
             ->setTypeId($entity->getTypeId())
             ->setActivity($entity->getActivity())
             ->setDateLastActive($entity->getDateLastActive())
+            ->setLastCallAt($entity->getLastCallAt())
             ->setAttributes($entity->getAttributes())
             ->setPendingTaskIds($entity->getPendingTasks())
             ->setActiveTaskIds($entity->getActiveTasks())

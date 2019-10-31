@@ -4,10 +4,10 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CommunityChannel;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsLoader;
@@ -63,47 +63,47 @@ class PortalPermissionLoaderTest extends PortalTestCase
         $everyone   = $this->getUsergroup(Usergroup::EVERYONE);
         $registered = $this->getUsergroup(Usergroup::REGISTERED);
 
-        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category1 */
-        $category1 = new $entityClass();
-        $category1->setTitle('feedbackCategory 1');
-        $category1->addUsergroup($everyone);
-        if (property_exists($category1, 'brand')) {
-            $category1->setBrand($this->getBrand());
+        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $communityChannel1 */
+        $communityChannel1 = new $entityClass();
+        $communityChannel1->setTitle('communityChannel 1');
+        $communityChannel1->addUsergroup($everyone);
+        if (property_exists($communityChannel1, 'brand')) {
+            $communityChannel1->setBrand($this->getBrand());
         }
-        $em->persist($category1);
+        $em->persist($communityChannel1);
 
-        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category2 */
-        $category2 = new $entityClass();
-        $category2->setTitle('feedbackCategory 2');
-        $category2->addUsergroup($registered);
-        if (property_exists($category2, 'brand')) {
-            $category2->setBrand($this->getBrand());
+        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $communityChannel2 */
+        $communityChannel2 = new $entityClass();
+        $communityChannel2->setTitle('communityChannel 2');
+        $communityChannel2->addUsergroup($registered);
+        if (property_exists($communityChannel2, 'brand')) {
+            $communityChannel2->setBrand($this->getBrand());
         }
-        $em->persist($category2);
+        $em->persist($communityChannel2);
 
-        /** @var FeedbackCategory|NewsCategory|ArticleCategory|DownloadCategory $category3 */
-        $category3 = new $entityClass();
-        $category3->setTitle('feedbackCategory 3');
-        $category3->addUsergroup($everyone);
-        if (property_exists($category3, 'brand')) {
-            $category3->setBrand($this->getBrand());
+        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $communityChannel3 */
+        $communityChannel3 = new $entityClass();
+        $communityChannel3->setTitle('communityChannel 3');
+        $communityChannel3->addUsergroup($everyone);
+        if (property_exists($communityChannel3, 'brand')) {
+            $communityChannel3->setBrand($this->getBrand());
         }
-        $em->persist($category3);
+        $em->persist($communityChannel3);
         $em->flush();
 
         $this->assertEquals(
             [
-                $category1->getId(),
-                $category2->getId(),
-                $category3->getId(),
+                $communityChannel1->getId(),
+                $communityChannel2->getId(),
+                $communityChannel3->getId(),
             ],
             $this->permissionLoader->$method([$everyone->getId(), $registered->getId()])
         );
 
         $this->assertEquals(
             [
-                $category1->getId(),
-                $category3->getId(),
+                $communityChannel1->getId(),
+                $communityChannel3->getId(),
             ],
             $this->permissionLoader->$method([$everyone->getId()])
         );
@@ -111,9 +111,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         // everyone group should be added automatically to usergroup ids list
         $this->assertEquals(
             [
-                $category1->getId(),
-                $category2->getId(),
-                $category3->getId(),
+                $communityChannel2->getId(),
             ],
             $this->permissionLoader->$method([$registered->getId()])
         );
@@ -125,7 +123,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
     public function loadAllCategoriesProvider()
     {
         return [
-            [FeedbackCategory::class, 'getAllowedFeedbackCategories'],
+            [CommunityChannel::class, 'getAllowedCommunityChannels'],
             [NewsCategory::class, 'getAllowedNewsCategories'],
             [ArticleCategory::class, 'getAllowedArticleCategories'],
             [DownloadCategory::class, 'getAllowedDownloadCategories'],

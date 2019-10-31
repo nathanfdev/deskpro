@@ -7,10 +7,14 @@ import Avatar from '../Common/Avatar';
 class AgentList extends React.Component {
 
   static propTypes = {
-    target:       PropTypes.object,
-    agents:       PropTypes.object,
-    participants: PropTypes.array,
-    onClick:      PropTypes.func
+    target:             PropTypes.object,
+    agents:             PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    busyAgentIds:       PropTypes.array,
+    phoneCall:          PropTypes.object,
+    onClick:            PropTypes.func,
+    transferDisabled:   PropTypes.bool
   };
 
   static defaultProps = {
@@ -23,18 +27,26 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { agents, target, participants } = this.props;
+    const { agents, onlineAgentIds, forwardingAgentIds, busyAgentIds, target, phoneCall, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
-        {agents.toArray().map((agent, index) =>
-          <Agent
-            key={index}
-            agent={agent}
-            active={agent === target}
-            participant={participants.indexOf(agent.get('id')) !== -1}
-            onClick={this.onSelect}
-          />
+        {agents.filter(agent =>
+            onlineAgentIds.contains(agent.get('id')) || forwardingAgentIds.contains(agent.get('id'))
+          )
+          .toArray()
+          .map((agent, index) =>
+            <Agent
+              transferDisabled={transferDisabled}
+              key={index}
+              agent={agent}
+              busy={busyAgentIds.contains(agent.get('id'))}
+              active={target && agent === target.target}
+              participant={phoneCall.get('agent_participants').contains(agent.get('id'))}
+              onClick={this.onSelect}
+              online={onlineAgentIds.contains(agent.get('id'))}
+              forwarding={forwardingAgentIds.contains(agent.get('id'))}
+            />
         )}
       </ScrollArea>
     );
@@ -44,19 +56,23 @@ class AgentList extends React.Component {
 class Agent extends React.Component {
 
   static propTypes = {
-    agent:       PropTypes.object,
-    active:      PropTypes.bool,
-    participant: PropTypes.bool,
-    onClick:     PropTypes.func
+    transferDisabled: PropTypes.bool,
+    agent:            PropTypes.object,
+    active:           PropTypes.bool,
+    online:           PropTypes.bool,
+    forwarding:       PropTypes.bool,
+    busy:             PropTypes.bool,
+    participant:      PropTypes.bool,
+    onClick:          PropTypes.func
   };
 
   onClick = (event) => {
     event.preventDefault();
 
-    const { agent, participant, onClick } = this.props;
+    const { agent, participant, onClick, transferDisabled } = this.props;
 
     // already in conference, skipping
-    if (participant) {
+    if (participant || transferDisabled) {
       return;
     }
 
@@ -64,17 +80,24 @@ class Agent extends React.Component {
   };
 
   render() {
-    const { agent, active, participant } = this.props;
+    const { agent, active, online, busy, forwarding, participant } = this.props;
 
     return (
       <div
         className={classNames('voice-agent-list-item', { active, participant })}
         onClick={this.onClick}
       >
-        <Avatar person={agent} size={24} />
+        <Avatar
+          person={agent}
+          size={24}
+          online={online}
+          forwarding={forwarding}
+          withOnlineStatus
+        />
         <span className="agent-name">
           {agent.get('name')}
           {participant && <span className="agent-participant">(participant)</span>}
+          {!participant && busy && <span className="agent-participant">(busy)</span>}
         </span>
       </div>
     );

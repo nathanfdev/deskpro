@@ -100,14 +100,14 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $filter->addShould($f);
         }
-        if ($context->getFeedbackCategoryIds() && ($limitTypes === null || in_array('feedback', $limitTypes))) {
-            $search->addType('feedback');
+        if ($context->getCommunityChannelIds() && ($limitTypes === null || in_array('community', $limitTypes))) {
+            $search->addType('community');
             $f = new Query\BoolQuery();
-            $f->addMust(new Query\Term(['_type' => 'feedback']));
+            $f->addMust(new Query\Term(['_type' => 'community']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
-            $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $f->addMust(new Query\Terms('channel_id', $context->getCommunityChannelIds()));
             $filter->addShould($f);
-            $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['feedback']);
+            $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['community']);
             $customBool->addMust($customTerms);
         }
         if ($context->getGuideIds() && ($limitTypes === null || in_array('topic', $limitTypes))) {
@@ -162,7 +162,7 @@ class UserSearch implements UserSearchInterface
         $boolQuery = new Query\BoolQuery();
         $qs        = $this->getQueryString($query);
         $qs->setDefaultField('_all');
-        $qs->setFields(['_id', 'ref', 'title', 'labels', 'content', 'messages']);
+        $qs->setFields(['_id', 'ref', 'title', 'labels', 'content', 'messages', 'filename']);
         $qs->setDefaultOperator('AND');
         $boolQuery->addMust($qs);
 
@@ -258,12 +258,12 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $boolQuery->addShould($f);
         }
-        if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
-            $search->addType('feedback');
+        if ($context->getCommunityChannelIds() && ($limit_types === null || in_array('community', $limit_types))) {
+            $search->addType('community');
             $f = new Query\BoolQuery();
-            $f->addMust(new Query\Term(['_type' => 'feedback']));
+            $f->addMust(new Query\Term(['_type' => 'community']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
-            $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $f->addMust(new Query\Terms('channel_id', $context->getCommunityChannelIds()));
             $boolQuery->addShould($f);
         }
         if ($context->getGuideIds() && ($limit_types === null || in_array('topic', $limit_types))) {
@@ -334,7 +334,7 @@ class UserSearch implements UserSearchInterface
 
         // ES does not skip short words and returns empty results if they are in the query string
         // just remove them
-        $term = preg_replace('/\b.{1,2}\b/', ' ', $term);
+        $term = preg_replace('/\b(?<!\')[^\s\']{1,2}\b(?!\')/u', ' ', $term);
         if (!is_string($term)) {
             $term = '';
         }

@@ -212,7 +212,7 @@ DPQL
             <<<'SQL'
 SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE  EXISTS (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`, `tickets_person`.`id`
+WHERE  EXISTS (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`
 FROM `people`
 LEFT JOIN `tickets` AS `tickets_person` ON (`tickets`.`person_id` = `tickets_person`.`id`)
 WHERE (`people`.`id` = `tickets_person`.`id`)
@@ -238,7 +238,7 @@ DPQL
             <<<'SQL'
 SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE (NOT  EXISTS (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`, `tickets_person`.`id`
+WHERE (NOT  EXISTS (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`
 FROM `people`
 LEFT JOIN `tickets` AS `tickets_person` ON (`tickets`.`person_id` = `tickets_person`.`id`)
 WHERE (`people`.`id` = `tickets_person`.`id`)
@@ -331,8 +331,7 @@ SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE `tickets`.`ref` IN (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE (`tickets`.`ref` = 'AAAA-%')
-LIMIT 2500)
+WHERE (`tickets`.`ref` = 'AAAA-%'))
 LIMIT 2500
 SQL
         );
@@ -356,8 +355,7 @@ SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE `tickets`.`ref` NOT IN (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE (`tickets`.`ref` = 'AAAA-%')
-LIMIT 2500)
+WHERE (`tickets`.`ref` = 'AAAA-%'))
 LIMIT 2500
 SQL
         );
@@ -729,6 +727,30 @@ SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `snippets`.`id`
 FROM `snippets`
 WHERE (`snippets`.`date_created` > '2018-01-25')
 LIMIT 2500
+SQL
+            ,
+            DpqlContextStorage::MODE_EDIT
+        );
+    }
+
+    public function test_ignore_autolink_in_subqueries()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT AVG((SELECT MAX(tickets_logs.date_created)
+FROM tickets_logs
+WHERE tickets_logs.ticket_id = tickets.id AND tickets_logs.action_type = 'changed_custom_field' AND tickets_logs.details LIKE '%Hotdog Kind%') - (SELECT MAX(tickets_logs.date_created)
+FROM tickets_logs
+WHERE tickets_logs.ticket_id = tickets.id AND tickets_logs.action_type = 'changed_agent'))
+FROM tickets
+DPQL
+            ,
+            <<<'SQL'
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ AVG(((SELECT /*+ MAX_EXECUTION_TIME(30000) */ MAX(`tickets_logs`.`date_created`) 
+FROM `tickets_logs` 
+WHERE ((`tickets_logs`.`ticket_id` = `tickets`.`id`) AND ((`tickets_logs`.`action_type` = 'changed_custom_field') AND `tickets_logs`.`details` LIKE '%Hotdog Kind%')) LIMIT 2500) - (SELECT /*+ MAX_EXECUTION_TIME(30000) */ MAX(`tickets_logs`.`date_created`) 
+FROM `tickets_logs` WHERE ((`tickets_logs`.`ticket_id` = `tickets`.`id`) AND (`tickets_logs`.`action_type` = 'changed_agent')) LIMIT 2500))) 
+FROM `tickets` LIMIT 2500
 SQL
             ,
             DpqlContextStorage::MODE_EDIT

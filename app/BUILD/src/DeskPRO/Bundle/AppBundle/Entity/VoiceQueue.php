@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -11,7 +12,6 @@ use DeskPRO\Bundle\VoiceBundle\Validator\Constraints as VoiceAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,11 +19,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class VoiceQueue.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceQueueRepository")
+ * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceQueueListener"})
  * @ORM\Table(name="voice_queues", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="name", columns={"name"})
  * })
- *
- * @JMS\ExclusionPolicy("all")
  *
  * @UniqueEntity("name")
  *
@@ -33,7 +32,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const ROUTING_MODEL_AUTOMATIC      = 'automatic';
+    const ROUTING_MODEL_ROUND_ROBIN    = 'round_robin';
     const ROUTING_MODEL_LEAST_UTILIZED = 'least_utilized';
     const ROUTING_MODEL_SIMULRING      = 'simulring';
 
@@ -44,18 +43,12 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     private $id;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @Assert\NotBlank()
      *
@@ -64,11 +57,8 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\JoinColumn(name="department_id")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
      *
      * @Assert\NotNull()
      * @AppAssert\LeafDepartment()
@@ -78,12 +68,18 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $department;
 
     /**
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Brand")
+     *
+     * @var Brand
+     */
+    private $brand;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent>")
-     *
      * @Assert\Valid()
+     * @Assert\Count(min="1")
      *
      * @var VoiceQueueAgent[]|ArrayCollection
      */
@@ -92,9 +88,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="routing_model", type="string", length=255)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @Assert\NotBlank()
      *
      * @var string
@@ -102,9 +95,8 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $routingModel;
 
     /**
+     * @ORM\JoinColumn(name="greet_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
-     *
-     * @JMS\Expose()
      *
      * @Assert\Valid()
      *
@@ -113,9 +105,8 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $greetAsset;
 
     /**
+     * @ORM\JoinColumn(name="loop_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
-     *
-     * @JMS\Expose()
      *
      * @Assert\Valid()
      *
@@ -124,9 +115,8 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $loopAsset;
 
     /**
+     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
-     *
-     * @JMS\Expose()
      *
      * @Assert\Valid()
      *
@@ -138,9 +128,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="voicemail_department")
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
-     *
      * @AppAssert\LeafDepartment()
      *
      * @var Department
@@ -150,9 +137,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\JoinColumn(name="voicemail_agent")
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @AppAssert\Person\PersonType(type="agent")
      *
@@ -164,18 +148,21 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="voicemail_agent_team")
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\AgentTeam")
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
-     *
      * @var AgentTeam
      */
     private $voicemailAgentTeam;
 
     /**
-     * @ORM\Column(name="voicemail_timeout", type="integer")
+     * @ORM\Column(name="answer_timeout", type="integer")
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
+     * @Assert\GreaterThanOrEqual("10")
+     *
+     * @var int
+     */
+    private $answerTimeout = 15;
+
+    /**
+     * @ORM\Column(name="voicemail_timeout", type="integer")
      *
      * @Assert\NotBlank()
      * @Assert\GreaterThanOrEqual("10")
@@ -187,18 +174,14 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="max_queue_size", type="integer")
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
+     * @Assert\GreaterThanOrEqual("1")
      *
      * @var int
      */
-    private $maxQueueSize = 0;
+    private $maxQueueSize = 1;
 
     /**
      * @ORM\Column(name="recording_enabled", type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -256,6 +239,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setDepartment(Department $department = null)
     {
         $this->setModelField('department', $department);
+
+        return $this;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand(Brand $brand = null)
+    {
+        $this->setModelField('brand', $brand);
 
         return $this;
     }
@@ -485,6 +488,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setVoicemailAgentTeam(AgentTeam $voicemailAgentTeam = null)
     {
         $this->setModelField('voicemailAgentTeam', $voicemailAgentTeam);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAnswerTimeout()
+    {
+        return $this->answerTimeout;
+    }
+
+    /**
+     * @param int $answerTimeout
+     *
+     * @return $this
+     */
+    public function setAnswerTimeout($answerTimeout)
+    {
+        $this->setModelField('answerTimeout', $answerTimeout);
 
         return $this;
     }

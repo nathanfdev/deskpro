@@ -9,9 +9,9 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -351,26 +351,54 @@ class BreadcrumbBuilder
     }
 
     //####################################################################################################################
-    // Feedback
+    // Community
     //####################################################################################################################
 
-    public function addFeedback()
+    public function addCommunity()
     {
         $this->b->add(
-            $this->url_generator->generate('portal_feedback'),
-            Breadcrumbs::FEEDBACK,
-            ['phrase' => 'portal.general.nav-feedback']
+            $this->url_generator->generate('portal_community'),
+            Breadcrumbs::COMMUNITY,
+            ['phrase' => 'portal.general.nav-community']
         );
 
         return $this;
     }
 
-    public function addFeedbackView(Feedback $a)
+    public function addCommunityView(CommunityTopic $a)
     {
         $this->b->add(
             $this->object_router->getPortalPath($a),
-            Breadcrumbs::FEEDBACK_VIEW,
+            Breadcrumbs::COMMUNITY_VIEW,
             $a
+        );
+
+        return $this;
+    }
+
+    //####################################################################################################################
+    // Members
+    //####################################################################################################################
+    public function addMembersList()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_members'),
+            Breadcrumbs::MEMBERS,
+            ['phrase' => 'portal.general.nav-members']
+        );
+
+        return $this;
+    }
+
+    //####################################################################################################################
+    // Direct message
+    //####################################################################################################################
+    public function addDirectMessagesList()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_dm'),
+            Breadcrumbs::DIRECT_MESSAGES,
+            ['phrase' => 'portal.general.nav-dm']
         );
 
         return $this;

@@ -222,6 +222,7 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     private function createUserNameOptions(TicketWithLayoutsContext $context)
     {
+        $person  = $context->getPerson();
         $options = [
             'property_path' => 'person.name',
             'label'         => $context->isWidgetType()
@@ -232,6 +233,10 @@ class WebFieldResolver extends AbstractFieldResolver
                 new Assert\NotBlank(),
             ],
         ];
+
+        if ($person->getOrganization()) {
+            $options['attr']['data-organization-id'] = $person->getOrganization()->getId();
+        }
 
         if ($context->isFullLayout()) {
             $options['disabled'] = true;
@@ -288,6 +293,10 @@ class WebFieldResolver extends AbstractFieldResolver
 
             if ($context->isFullLayout()) {
                 $options['disabled'] = true;
+            }
+
+            if ($context->getTicket()->getPersonEmailAddress() !== $person->getPrimaryEmailAddress()) {
+                $options['property_path'] = 'ticket_person_email';
             }
 
             return [

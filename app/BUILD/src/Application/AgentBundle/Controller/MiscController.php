@@ -23,6 +23,8 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
+use DeskPRO\Component\Util\RegexUtils;
+use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -365,6 +367,41 @@ JS;
             return $this->createResponse('Bad url', 400);
         }
 
+        // Initialize white list
+        $whiteList = $this->container->get('settings_resolver')->getGlobalSettings()->get('agent.legacy_proxy_whitelist', []);
+        if ($whiteList && is_string($whiteList)) {
+            $whiteList = explode("\n", $whiteList);
+        }
+        if (!is_array($whiteList)) {
+            $whiteList = [];
+        }
+        $whiteList = Arrays::removeFalsey($whiteList);
+
+        // Validate Url against whitelist
+        // Logic copied from ProxyRequestValidator::validateWhitelistableRequest
+        $isValid = false;
+        foreach ($whiteList as $urlPattern) {
+            if (preg_match('#^/(.+)/$#', $urlPattern, $m)) {
+                $urlPattern = $m[1];
+                if (RegexUtils::safePregMatch("#$urlPattern#", $url)) {
+                    $isValid = true;
+                    break;
+                }
+            } elseif (preg_match('#(.+)\*$#', $urlPattern, $m)) {
+                if (StringUtils::startsWith($m[1], $url)) {
+                    $isValid = true;
+                    break;
+                }
+            } elseif ($urlPattern === $url) {
+                $isValid = true;
+                break;
+            }
+        }
+
+        if (!$isValid) {
+            throw $this->createAccessDeniedException();
+        }
+
         $originalMethod = $this->request->getMethod();
         $method         = $this->request->headers->get('X-DeskPRO-Proxy-Method');
         if (!$method) {
@@ -554,11 +591,7 @@ JS;
 
         $props = [];
         if ($this->in->getString('tag')) {
-            switch (trim($this->in->getString('tag'))) {
-                case 'ticket_attachment':
-                    $props['tag'] = 'ticket_attachment';
-                    break;
-            }
+            $props['tag'] = trim($this->in->getString('tag'));
         }
 
         if ($copy_blobauth) {
@@ -639,16 +672,16 @@ JS;
 
                     break;
 
-                case 'feedback':
-                    $feedback = $this->em->find('DeskPRO:Feedback', $this->in->getUint('object_id'));
+                case 'community_topic':
+                    $communityTopic = $this->em->find(Entity\CommunityTopic::class, $this->in->getUint('object_id'));
 
-                    $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                    $attach           = new \Application\DeskPRO\Entity\CommunityTopicAttachment();
                     $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
-                    $feedback->addAttachment($attach);
+                    $communityTopic->addAttachment($attach);
                     $this->em->persist($attach);
-                    $this->em->persist($feedback);
+                    $this->em->persist($communityTopic);
                     $this->em->flush();
 
                     break;
@@ -729,8 +762,8 @@ JS;
                 $set  = new \Application\DeskPRO\Attachments\RestrictionSet();
                 $exts = !$fileUpload
                     ? ['gif', 'png', 'jpg', 'jpeg']
-                    : ['gif', 'png', 'jpg', 'jpeg', // also allow images
-                        'pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt',
+                    : ['gif', 'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff', // also allow images
+                        'pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt', 'log',
                        'rar', 'zip', 'tar.gz', '7zip', 'gzip', 'bzip',
                        'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', 'flv', ];
                 $set->setAllowedExts($exts);

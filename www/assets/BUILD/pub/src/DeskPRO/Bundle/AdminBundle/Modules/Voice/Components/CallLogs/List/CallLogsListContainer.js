@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import CallLogsList from './CallLogsList';
-import { loadPhoneCalls, openDialpad, deleteRecord } from '../../../Actions/callActions';
+import { loadPhoneCalls, openDialpad, deleteRecording } from '../../../Actions/callActions';
 import { loadNumbers } from '../../../Actions/numberActions';
 import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 import { allTicketsSelector } from '../../../../Application/Selectors/tickets';
@@ -44,17 +44,15 @@ class CallLogsListContainer extends React.Component {
     this.mounted = false;
   }
 
-  onOpenCallLog = (id) => {
+  openCallLog = (id) => {
     replaceRoute(`/voice_channel/call_logs/${id}`);
   };
 
-  onPageChange = ({ selected }) => {
-    this.setState({
-      currentPage: selected + 1
-    }, this.loadPageData);
+  pageChange = ({ selected }) => {
+    this.setState({ currentPage: selected + 1 }, () => this.loadPageData());
   };
 
-  onToggleLiveUpdates = () => {
+  toggleLiveUpdates = () => {
     this.setState({
       liveUpdates: !this.state.liveUpdates
     }, () => {
@@ -74,8 +72,8 @@ class CallLogsListContainer extends React.Component {
     });
   };
 
-  deleteRecord = (callId) => {
-    this.props.dispatch(deleteRecord(callId)).then(() => this.loadPageData());
+  deleteRecording = (callId) => {
+    this.props.dispatch(deleteRecording(callId)).then(() => this.loadPageData());
   };
 
   loadPageData() {
@@ -108,11 +106,11 @@ class CallLogsListContainer extends React.Component {
       <CallLogsList
         {...this.props}
         {...this.state}
-        onDeleteRecordClick={this.deleteRecord}
-        onPageChange={this.onPageChange}
-        onOpenCallLog={this.onOpenCallLog}
+        deleteRecording={this.deleteRecording}
+        pageChange={this.pageChange}
+        openCallLog={this.openCallLog}
         openDialpad={this.openDialpad}
-        onToggleLiveUpdates={this.onToggleLiveUpdates}
+        toggleLiveUpdates={this.toggleLiveUpdates}
       />
     );
   }

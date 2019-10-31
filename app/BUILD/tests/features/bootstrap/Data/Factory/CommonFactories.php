@@ -4,16 +4,18 @@ namespace DpBehat\Data\Factory;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
+use Application\DeskPRO\Entity\CustomDefDownload;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
@@ -21,8 +23,10 @@ use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
+use Application\EmailBundle\Entity\SendmailSource;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Component\Util\RandUtils;
 use DpBehat\Data\DataContext;
 
 /**
@@ -133,7 +137,8 @@ class CommonFactories
             'organization' => CustomDefOrganization::class,
             'person'       => CustomDefPerson::class,
             'conversation' => CustomDefChat::class,
-            'feedback'     => CustomDefFeedback::class,
+            'community'    => CustomDefCommunityTopic::class,
+            'download'     => CustomDefDownload::class,
             'billing'      => CustomDefBilling::class,
         ];
 
@@ -153,6 +158,7 @@ class CommonFactories
             'data'           => CustomDefAbstract::HANDLER_CLASS_DATA,
             'data_list'      => CustomDefAbstract::HANDLER_CLASS_DATALIST,
             'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON,
+            'javascript'     => CustomDefAbstract::HANDLER_CLASS_JAVASCRIPT,
             'url'            => CustomDefAbstract::HANDLER_CLASS_URL,
             'currency'       => CustomDefAbstract::HANDLER_CLASS_CURRENCY,
             'file'           => CustomDefAbstract::HANDLER_CLASS_FILE,
@@ -276,17 +282,17 @@ class CommonFactories
     /**
      * @param array $data
      *
-     * @return Feedback
+     * @return CommunityTopic
      */
-    public static function feedback(array $data)
+    public static function community(array $data)
     {
-        $feedback = new Feedback();
+        $communityTopic = new CommunityTopic();
         if (isset($data['date_created'])) {
-            $feedback->date_created = new \DateTime($data['date_created']);
+            $communityTopic->setDateCreated(new \DateTime($data['date_created']));
             unset($data['date_created']);
         }
 
-        return SimpleFactory::provide($feedback, $data);
+        return SimpleFactory::provide($communityTopic, $data);
     }
 
     /**
@@ -337,6 +343,45 @@ class CommonFactories
         unset($data['statustype']);
 
         return SimpleFactory::provide($ticketStatus, $data);
+    }
+
+    public static function emailSource(array $data)
+    {
+        $defaults = [
+            'object_type'    => 'Ticket',
+            'object_id'      => 0,
+            'from_email'     => 'somerandom@mail.com',
+            'headers'        => 'random headers',
+            'header_to'      => '',
+            'header_cc'      => '',
+            'header_from'    => '',
+            'header_subject' => '',
+        ];
+
+        $data        = array_merge($defaults, $data);
+        $emailSource = new EmailSource();
+
+        return SimpleFactory::provide($emailSource, $data);
+    }
+
+    public static function sendmailSource(array $data)
+    {
+        $defaults = [
+            'ref'            => RandUtils::randomString(),
+            'context_type'   => 'Ticket',
+            'context_id'     => 0,
+            'from_email'     => 'somerandom@mail.com',
+            'headers'        => 'random headers',
+            'header_to'      => '',
+            'header_from'    => '',
+            'header_subject' => '',
+            'error_code'     => 'no_error',
+        ];
+
+        $data   = array_merge($defaults, $data);
+        $source = new SendmailSource();
+
+        return SimpleFactory::provide($source, $data);
     }
 
     public static function ticketFilterSetAssoc(array $data)

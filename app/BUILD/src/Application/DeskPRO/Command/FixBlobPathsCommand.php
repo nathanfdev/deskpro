@@ -49,10 +49,10 @@ class FixBlobPathsCommand extends ContainerAwareCommand
         $db = $this->getContainer()->getDb();
 
         $tables = [
-            'articles'  => ['articles', 'content'],
-            'news'      => ['news', 'content'],
-            'downloads' => ['downloads', 'content'],
-            'feedback'  => ['feedback', 'content'],
+            'articles'         => ['articles', 'content'],
+            'news'             => ['news', 'content'],
+            'downloads'        => ['downloads', 'content'],
+            'community_topics' => ['community_topics', 'content'],
         ];
 
         $output->write('Fetching content that needs updating...');

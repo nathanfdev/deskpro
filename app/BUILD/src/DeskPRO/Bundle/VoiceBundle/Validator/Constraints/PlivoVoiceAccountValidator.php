@@ -30,6 +30,8 @@ class PlivoVoiceAccountValidator extends ConstraintValidator
 
     /**
      * {@inheritdoc}
+     *
+     * @throws UnexpectedTypeException
      */
     public function validate($value, Constraint $constraint)
     {

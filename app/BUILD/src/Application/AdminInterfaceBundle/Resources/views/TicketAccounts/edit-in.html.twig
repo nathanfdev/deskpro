@@ -22,7 +22,8 @@
 				<option value="imap">IMAP</option>
 				<option value="pop3">POP3</option>
 				<option value="gmail">GMail or Google Apps</option>
-				<option value="office365">Office365</option>
+        <option value="office365_exchange">Office365 (Exchange)</option>
+				<option value="office365">Office365 (POP3/SMTP)</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
@@ -75,7 +76,7 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
@@ -167,7 +168,7 @@
 						<tr>
 							<th>&nbsp;</th>
 							<td>
-								<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+								<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 							</td>
 						</tr>
 					</table>
@@ -269,16 +270,72 @@
 					<tr ng-show="form.in_gmail_account.type === 'pop3' || form.in_gmail_account.token">
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
 
-		{#############}
-		{# Office365 #}
-		{#############}
+		{#######################}
+		{# Office365 Exchange  #}
+		{#######################}
+
+		<div class="ng-hide" ng-show="form.incoming_type == 'office365_exchange'">
+			{% if server_capable('soap') %}
+				<div class="inner-group">
+          <br/><br/>
+					<div class="alert alert-info">
+						<p>
+							This is the recommended option for connecting to Office365 accounts
+						</p>
+					</div>
+					<table width="100%" class="inner-form-table">
+						<tr>
+							<th width="100">Exchange Server</th>
+							<td>
+								https://<input type="text" class="form-control" name="host" ng-model="form.in_office365_exchange_account.host" style="display: inline-block; width: 50%;" />
+								<br/>
+								<span class="help-block">
+                  Please check <a href="https://docs.microsoft.com/en-us/office365/enterprise/urls-and-ip-address-ranges#exchange-online" target="_blank">how to find your exchange server</a>.
+									Make sure your firewall is not blocking connections.
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<th>Username</th>
+							<td><input type="text" class="form-control" name="username" ng-model="form.in_office365_exchange_account.user" style="width: 50%;" /></td>
+						</tr>
+						<tr>
+							<th>Password</th>
+							<td><input type="password" class="form-control" name="password" ng-model="form.in_office365_exchange_account.password" style="width: 50%;" /></td>
+						</tr>
+						<tr>
+							<th>&nbsp;</th>
+							<td>
+								<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							</td>
+						</tr>
+					</table>
+				</div>
+			{% else %}
+				<div class="inner-group">
+					<br/><br/>
+					<div class="alert alert-danger">
+						<p>
+							To set up Office365 Exchange accounts, your server must be configured with the PHP <a href="http://php.net/manual/en/book.soap.php">SOAP extension</a>.
+						</p>
+						<p>
+							Please install the SOAP extension then try again.
+						</p>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+
+		{#########################}
+		{# Office365 (POP3/SMTP) #}
+		{#########################}
 
 		<div class="ng-hide" ng-show="form.incoming_type == 'office365'">
 			<div class="inner-group">
@@ -297,7 +354,7 @@
 					<tr>
 						<th>&nbsp;</th>
 						<td>
-							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 						</td>
 					</tr>
 				</table>
@@ -370,7 +427,7 @@
 						<tr>
 							<th>&nbsp;</th>
 							<td>
-								<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+								<button class="btn btn-info" ng-click="TicketAccountsEdit.testAccountModal(); $event.preventDefault();"><i class="fas fa-bolt"></i> Test Account Settings</button>
 							</td>
 						</tr>
 					</table>

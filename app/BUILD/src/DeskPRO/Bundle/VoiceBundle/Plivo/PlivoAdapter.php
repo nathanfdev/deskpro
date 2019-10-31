@@ -3,10 +3,11 @@
 namespace DeskPRO\Bundle\VoiceBundle\Plivo;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoExistingNumber;
@@ -20,13 +21,15 @@ use Orb\Util\Strings;
 use Plivo\Exceptions\PlivoNotFoundException;
 use Plivo\Exceptions\PlivoResponseException;
 use Plivo\Exceptions\PlivoRestException;
+use Plivo\Resources\Application\ApplicationList;
 use Plivo\Resources\Call\Call;
 use Plivo\Resources\Call\CallCreateResponse;
-use Plivo\Resources\Conference\ConferenceMember;
 use Plivo\Resources\Endpoint\Endpoint;
 use Plivo\Resources\Number\Number;
 use Plivo\Resources\PhoneNumber\PhoneNumber;
 use Plivo\RestClient;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class PlivoAdapter.
@@ -41,18 +44,36 @@ class PlivoAdapter implements VoiceProviderInterface
     /**
      * @var VoiceSettingsResolver
      */
-    private $settingsResolver;
+    private $voiceSettingsResolver;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param VoiceSettingsResolver $settingsResolver
+     * @param VoiceSettingsResolver $voiceSettingsResolver
+     * @param UrlGeneratorInterface $router
+     * @param LoggerInterface       $logger
      */
-    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver)
-    {
-        $this->em               = $em;
-        $this->settingsResolver = $settingsResolver;
+    public function __construct(
+        EntityManager         $em,
+        VoiceSettingsResolver $voiceSettingsResolver,
+        UrlGeneratorInterface $router,
+        LoggerInterface       $logger
+    ) {
+        $this->em                    = $em;
+        $this->voiceSettingsResolver = $voiceSettingsResolver;
+        $this->router                = $router;
+        $this->logger                = $logger;
     }
 
     /**
@@ -73,12 +94,30 @@ class PlivoAdapter implements VoiceProviderInterface
             // check for existing app with the same name
             // to avoid duplicate app name errors
             $existApplication = null;
-            foreach ($client->applications->getList() as $application) {
-                if ($this->normalizeAppName($application->appName) === $this->normalizeAppName($appName)) {
-                    $existApplication = $application;
+
+            $limit  = 20;
+            $offset = 0;
+
+            do {
+                /** @var ApplicationList $result */
+                $result = $client->applications->getList([
+                    'limit'  => $limit,
+                    'offset' => $offset,
+                ]);
+
+                foreach ($result as $application) {
+                    if ($this->normalizeAppName($application->appName) === $this->normalizeAppName($appName)) {
+                        $existApplication = $application;
+                        break;
+                    }
+                }
+
+                if ($existApplication) {
                     break;
                 }
-            }
+
+                $offset += $limit;
+            } while (isset($result->meta()['next']));
 
             $options = [
                 'answer_url'    => $answerUrl,
@@ -98,6 +137,8 @@ class PlivoAdapter implements VoiceProviderInterface
                 return $result->appId;
             }
         } catch (PlivoRestException $e) {
+            SystemErrorHandler::logException($e);
+
             return;
         }
     }
@@ -238,36 +279,45 @@ class PlivoAdapter implements VoiceProviderInterface
     }
 
     /**
-     * @param VoiceNumber $fromNumber
-     * @param string      $toNumber
-     * @param string      $answerUrl
-     * @param string      $answerMethod
-     * @param mixed       $exception
+     * {@inheritdoc}
      *
      * @throws \Exception
-     *
-     * @return string|bool
      */
-    public function callNumber(VoiceNumber $fromNumber, $toNumber, $answerUrl, $answerMethod, &$exception = false)
+    public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false)
     {
-        $account = $fromNumber->getAccount();
+        $account = $phoneCall->getNumber()->getAccount();
         if (!$account instanceof PlivoVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $answerUrl    = '';
+        $answerMethod = 'POST';
+
+        if (isset($options['answer_url'])) {
+            $answerUrl = $options['answer_url'];
+            unset($options['answer_url']);
+        }
+        if (isset($options['answer_method'])) {
+            $answerMethod = $options['answer_method'];
+            unset($options['answer_method']);
         }
 
         try {
             /** @var CallCreateResponse $call */
             $call = $this->getClient($account)->calls->create(
-                $fromNumber->getNumber(),
+                $phoneCall->getNumber()->getNumber(),
                 [$toNumber],
                 $answerUrl,
-                $answerMethod
+                $answerMethod,
+                $options
             );
 
             return $call->getRequestUuid();
         } catch (PlivoRestException $e) {
             if (strpos($e->getErrorMessage(), '"Destination Phone numbers need to be verified.') === 0) {
                 $exception = new UnverifiedException();
+            } elseif (strpos($e->getErrorMessage(), '"insufficient balance"') === 0) {
+                $exception = new InsufficientBalanceException();
             } else {
                 $exception = $e;
             }
@@ -278,6 +328,55 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
+     */
+    public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent)
+    {
+        if (!$agent->getForwardingNumber()) {
+            return false;
+        }
+
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $forwardingUrl = $this->router->generate('plivo_answer_forwarding_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'CallId'      => $phoneCall->getId(),
+            'AgentId'     => $agent->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $options = [
+            'answer_url'   => $forwardingUrl,
+            'ring_timeout' => $agent->getAgentData()->getForwardingRingTimeout() ?: 10,
+        ];
+
+        if ($this->voiceSettingsResolver->getForwardingMachineDetection()) {
+            $options['machine_detection'] = 'hangup';
+        }
+
+        $forwardedPhoneCall = $phoneCall;
+
+        if ($this->voiceSettingsResolver->getForwardingNumberType() === VoiceSettingsResolver::SPECIFIC_FORWARDING_NUMBER
+            && $this->voiceSettingsResolver->getForwardingNumber()
+        ) {
+            $voiceNumber = $this->em->getRepository(VoiceNumber::class)->find($this->voiceSettingsResolver->getForwardingNumber());
+            if ($voiceNumber) {
+                $forwardedPhoneCall = new VoicePhoneCall();
+                $forwardedPhoneCall->setNumber($voiceNumber);
+            }
+        }
+
+        return $this->callNumber($forwardedPhoneCall, $agent->getForwardingNumber(), $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $person)
     {
@@ -293,9 +392,9 @@ class PlivoAdapter implements VoiceProviderInterface
 
         /** @var Call[] $forwardingCalls */
         $client = $this->getClient($account);
-        foreach ($phoneCall->getAgentForwardingRequestIds($person->getId()) as $forwardingRequestId) {
+        foreach ($phoneCall->getParticipantForwardedCallSids($person->getId()) as $requestId) {
             try {
-                $client->calls->cancel($forwardingRequestId);
+                $client->calls->cancel($requestId);
             } catch (\Exception $e) {
             }
         }
@@ -303,8 +402,10 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
-    public function cancelForwardingCalls(VoicePhoneCall $phoneCall)
+    public function endCall(VoicePhoneCall $phoneCall)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account instanceof PlivoVoiceAccount) {
@@ -312,154 +413,73 @@ class PlivoAdapter implements VoiceProviderInterface
         }
 
         $client = $this->getClient($account);
-        foreach ($phoneCall->getForwardingRequestIds() as $agentId => $forwardingRequestIds) {
-            foreach ($forwardingRequestIds as $forwardingRequestId) {
-                try {
-                    $client->calls->cancel($forwardingRequestId);
-                } catch (\Exception $e) {
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function tryEndConference(VoicePhoneCall $phoneCall)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference && count($conference->members) < 2) {
-            $conference->delete();
-
-            foreach ($phoneCall->getUserParticipants() as $participant) {
-                try {
-                    $this->getClient($account)->calls->delete($participant->getCallSid());
-                } catch (\Exception $e) {
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        foreach ($conference->members as $member) {
-            /** @var ConferenceMember $member */
-            if ($member['call_uuid'] === $callSid) {
-                if ($mute) {
-                    $conference->muteMember([$member['member_id']]);
-                } else {
-                    $conference->UnMuteMember([$member['member_id']]);
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $userParticipants = $phoneCall->getUserParticipants()->map(function (VoicePhoneCallParticipantUser $participant) {
-            return $participant->getCallSid();
-        })->toArray();
-
-        $memberIds  = [];
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference) {
-            foreach ($conference->members as $member) {
-                /** @var ConferenceMember $member */
-                if (in_array($member['call_uuid'], $userParticipants)) {
-                    $memberIds[] = $member['member_id'];
-                }
-            }
-
+        foreach ($phoneCall->getFlattenCallSids() as $requestId) {
             try {
-                if ($isHold) {
-                    $conference->createDeaf($memberIds);
-                    $conference->muteMember($memberIds);
-                    $conference->startPlaying($memberIds, 'http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3');
-                } else {
-                    $conference->deleteDeaf($memberIds);
-                    $conference->UnMuteMember($memberIds);
-                    $conference->stopPlaying($memberIds);
-                }
+                $client->calls->delete($requestId);
+            } catch (PlivoResponseException $e) {
+                $this->logger->info(sprintf(
+                    'Unable to cancel the call, request_id = %s, message = %s',
+                    $requestId, $e->getErrorMessage()
+                ));
             } catch (\Exception $e) {
+                $this->logger->info(sprintf(
+                    'Unable to cancel the call, request_id = %s, code = %s, message = %s',
+                    $requestId, $e->getCode(), $e->getMessage()
+                ));
             }
         }
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
-    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof PlivoVoiceAccount) {
+        $phoneCall = $participant->getPhoneCall();
+        $account   = $phoneCall->getNumber()->getAccount();
+
+        if (!$account instanceof PlivoVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
-
-        $agents = [];
 
         try {
-            $conference = $this->getConference($account, $phoneCall->getConferenceName());
-            if ($conference) {
-                foreach ($conference->members as $member) {
-                    $agent = $phoneCall->getPersonByCallSid($member['call_uuid']);
-                    if ($agent) {
-                        $agents[] = $agent;
-                    }
-                }
-            }
+            $this->getClient($account)->calls->delete($participant->getCallSid());
         } catch (\Exception $e) {
         }
-
-        return $agents;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
+    public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
+        $userParticipant = $phoneCall->getUserParticipants()->first();
+        $account         = $phoneCall->getNumber()->getAccount();
 
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference) {
-            foreach ($conference->members as $member) {
-                /** @var ConferenceMember $member */
-                if ($member['call_uuid'] === $phoneCall->getCallSid()) {
-                    return $member['deaf'];
-                }
-            }
-        }
+        $holdUrl = $this->router->generate('plivo_user_put_on_hold_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return false;
+        $joinUrl = $this->router->generate('plivo_user_joins_conference_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'callId'      => $phoneCall->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        if ($isHold) {
+            $this->transferParticipant($userParticipant, $holdUrl, 'POST');
+        } else {
+            $this->transferParticipant($userParticipant, $joinUrl, 'POST');
+        }
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function isCallActive(VoicePhoneCall $phoneCall)
     {
@@ -482,6 +502,7 @@ class PlivoAdapter implements VoiceProviderInterface
                 return true;
             }
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         }
 
         return false;
@@ -489,43 +510,52 @@ class PlivoAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
-    public function cancelCall(VoicePhoneCall $phoneCall)
+    public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod)
     {
-        $account = $phoneCall->getNumber()->getAccount();
+        $account = $participant->getPhoneCall()->getNumber()->getAccount();
         if (!$account || !$account instanceof PlivoVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        foreach ($phoneCall->getUserParticipants() as $participant) {
-            try {
-                $this->getClient($account)->calls->delete($participant->getCallSid());
-            } catch (\Exception $e) {
-            }
+        $start = microtime(true);
+
+        try {
+            return $this->getClient($account)->calls->transfer(
+                $participant->getCallSid(),
+                [
+                    'legs'            => 'aleg',
+                    'aleg_url'        => $callbackUrl,
+                    'aleg_method'     => $callbackMethod,
+                    'callback_url'    => $this->router->generate('plivo_async_callback', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                    'callback_method' => 'POST',
+                ]
+            );
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->logger->info(sprintf('[PlivoAdapter] Call transfer to %s took %.3fs', $callbackUrl, microtime(true) - $start));
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    public function prepareForColdTransfer(VoicePhoneCall $phoneCall)
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->kickParticipant($participant);
         }
+    }
 
-        try {
-            return $this->getClient($account)->calls->transfer(
-                $phoneCall->getCallSid(),
-                [
-                    'legs'        => 'aleg',
-                    'aleg_url'    => $callbackUrl,
-                    'aleg_method' => $callbackMethod,
-                ]
-            );
-        } catch (\Exception $e) {
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid)
+    {
+        // disabled for now
     }
 
     /**
@@ -649,9 +679,9 @@ class PlivoAdapter implements VoiceProviderInterface
         return new ProxyRestClient(
             $account->getAccountId(),
             $account->getAuthToken(),
-            $this->settingsResolver->getPlivoProxyHost(),
-            $this->settingsResolver->getPlivoProxyUsername(),
-            $this->settingsResolver->getPlivoProxyPassword()
+            $this->voiceSettingsResolver->getPlivoProxyHost(),
+            $this->voiceSettingsResolver->getPlivoProxyUsername(),
+            $this->voiceSettingsResolver->getPlivoProxyPassword()
         );
     }
 }

@@ -11,11 +11,11 @@ use DeskPRO\Bundle\ApiBundle\Traits\ApiKeyAwareTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
@@ -41,6 +41,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *      }
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class TicketsController extends AbstractTicketsController
 {
@@ -173,7 +174,8 @@ class TicketsController extends AbstractTicketsController
      *                  ?ticket_field.1=value to the query string",
      *              "dataType"="string",
      *              "pattern"="\d+|\w+"
-     *          }
+     *          },
+     *          {"name"="brand", "description"="brand filter", "dataType"="integer", "pattern"="\d+"},
      *      },
      *      statusCodes={
      *          200="Returned if everything is OK",
@@ -194,7 +196,7 @@ class TicketsController extends AbstractTicketsController
 
         $offset      = $request->query->getInt('offset');
         $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
-        $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+        $maxPerPage  = min($request->query->getInt('count', self::$listPerPage), self::$listMaxResults);
         $meta        = [];
 
         // if the "ids" param is provided, then just use it to select tickets
@@ -455,21 +457,5 @@ class TicketsController extends AbstractTicketsController
 
         $this->saveTicket($entity);
         $entity->deleteTicket($this->getUser(), '', false);
-    }
-
-    /**
-     * @param string $value
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
-     *
-     * @return array
-     */
-    private function parseDateField($value)
-    {
-        try {
-            return QueryUtil::parseDateFieldFromQuery($value);
-        } catch (\Exception $e) {
-            throw $this->createBadRequestException($e->getMessage());
-        }
     }
 }

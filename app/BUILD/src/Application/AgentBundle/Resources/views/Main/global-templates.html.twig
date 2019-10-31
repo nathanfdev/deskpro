@@ -136,7 +136,7 @@
 				{{ phrase('agent.general.refresh_required_self') }}
 			</p>
 			<br/>
-			<p>
+			<p class="refresh_timeout">
 				{{ phrase('agent.general.refresh_required_auto', {secs: '<span class="countdown"></span>'}, true) }}
 			</p>
 		</div>
@@ -168,7 +168,9 @@
 		</div>
 		<div class="overlay-content">
 			<p id="prompt_overlay_msg"></p>
-			<div class="input-wrap"><input type="text" id="prompt_overlay_input" /></div>
+			<div class="input-wrap">
+				<input type="text" id="prompt_overlay_input" autocomplete="{{ "now" | date("U") }}" />
+			</div>
 		</div>
 		<div class="overlay-footer">
 			<button class="okay-trigger clean-white">{{ phrase('agent.general.okay') }}</button>
@@ -186,7 +188,7 @@
 		<div class="explain-wrap"></div>
 		<div class="error-wrap">{{ phrase('agent.login.login_failed') }}</div>
 		<div class="input-wrap">
-			<input type="password" autocomplete="off" class="password-input" value="" />
+			<input type="password" autocomplete="new-password" class="password-input" value="" />
 		</div>
 	</article>
 	<footer>

@@ -25,7 +25,7 @@
 				</div>
 
 				<% if (ticket_display.agent) { %>
-					<span class="agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>'); width:16px; height: 16px;"></span>
+					<span class="agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>'); background-size: contain; width:16px; height: 16px;"></span>
 				<% } %>
 
 				<% if (ticket_display.flag) { %>
@@ -36,7 +36,7 @@
 		</div>
 		<div class="userinfo">
 			<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
-			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>');"><%- ticket.person.display_name %></span></a>
+			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>'); background-size: contain;"><%- ticket.person.display_name %></span></a>
 			<span class="email" ng-if="result.person.primary_email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
 			<div class="bound-fade"></div>
 		</div>
@@ -51,7 +51,7 @@
 <article class="row-item single-row" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
 	<div class="userinfo" style="height: auto; overflow: auto;">
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
-			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
+			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>'); background-size: contain;"><%- person.display_name %></span></a>
 		<span class="email" ng-if="result.primary_email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
 		<div class="bound-fade" style="width: auto;">
 			<% if (person.tickets_count > 0) { %>
@@ -127,7 +127,7 @@
             <div class="top-row-left" style="width: auto;">
                 <h3>
                     <a class="name click-through">
-                        <span class="with-icon" style="background-image: url('{{ ng_var('person.picture_url_16') }}');">
+                        <span class="with-icon" style="background-image: url('{{ ng_var('person.picture_url_16') }}'); background-size: contain;">
                             {{ ng_var('person.display_name') }}
                         </span>
                     </a>
@@ -176,7 +176,7 @@
 			<div class="bound-fade"></div>
 
 			<% if (chat.agent) { %>
-			<span class="agent-inline-icon" title="<%- chat.agent.display_name %>" style="background-image: url('<%- chat.agent.picture_url_16 %>'); width:16px; height: 16px;"></span>
+			<span class="agent-inline-icon" title="<%- chat.agent.display_name %>" style="background-image: url('<%- chat.agent.picture_url_16 %>'); background-size: contain; width:16px; height: 16px;"></span>
 			<% } %>
 
 			<br class="clear" />
@@ -185,7 +185,7 @@
 	<div class="userinfo">
 		<% if (chat.person) { %>
 			<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= chat.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
-				<span class="with-icon" style="background-image: url('<%- chat.person.picture_url_16 %>');"><%- chat.person.display_name %></span></a>
+				<span class="with-icon" style="background-image: url('<%- chat.person.picture_url_16 %>'); background-size: contain;"><%- chat.person.display_name %></span></a>
 			<span class="email">&lt;<%- chat.person.primary_email.email %>&gt;</span>
 		<% } else { %>
 			Anonymous
@@ -253,11 +253,11 @@
 <% } %>
 
 {######################################################################## #}
-{# Feedback #}
+{# Community #}
 {######################################################################## #}
 
-<% if (group.type == 'feedback') { var item = result; %>
-<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_feedback_view', {'feedback_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+<% if (group.type == 'community') { var item = result; %>
+<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_community_topic_view', {'communityTopicId': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
 	<div class="top-row">
 		<div class="top-row-left">
 			<h3>

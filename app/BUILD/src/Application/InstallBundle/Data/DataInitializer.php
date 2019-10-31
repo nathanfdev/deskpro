@@ -99,10 +99,10 @@ class DataInitializer
             return;
         }
         $types = [
-            ['article',   'articles',  'DeskPRO:Article'],
-            ['download',  'downloads', 'DeskPRO:Download'],
-            ['feedback',  'feedback',  'DeskPRO:Feedback'],
-            ['news',      'news',      'DeskPRO:News'],
+            ['article', 'articles', 'DeskPRO:Article'],
+            ['download', 'downloads', 'DeskPRO:Download'],
+            ['community', 'community_topics', 'DeskPRO:CommunityTopic'],
+            ['news', 'news', 'DeskPRO:News'],
         ];
 
         foreach ($types as $t) {
@@ -148,39 +148,39 @@ class DataInitializer
 //            ));
 //        }
 
-        $prefs                                = [];
-        $prefs['chat_message.email']          = 1;
-        $prefs['login_attempt_fail.email']    = 1;
-        $prefs['task_assign_self.email']      = 1;
-        $prefs['task_assign_self.alert']      = 1;
-        $prefs['task_assign_team.email']      = 1;
-        $prefs['task_assign_team.alert']      = 1;
-        $prefs['task_complete.email']         = 1;
-        $prefs['task_complete.alert']         = 1;
-        $prefs['task_due.email']              = 1;
-        $prefs['task_due.alert']              = 1;
-        $prefs['tweet_assign_self.email']     = 1;
-        $prefs['tweet_assign_self.alert']     = 1;
-        $prefs['tweet_assign_team.email']     = 1;
-        $prefs['tweet_assign_team.alert']     = 1;
-        $prefs['tweet_reply.email']           = 1;
-        $prefs['tweet_reply.alert']           = 1;
-        $prefs['tweet_new_dm.email']          = 1;
-        $prefs['tweet_new_dm.alert']          = 1;
-        $prefs['tweet_new_reply.email']       = 1;
-        $prefs['tweet_new_reply.alert']       = 1;
-        $prefs['tweet_new_mention.email']     = 1;
-        $prefs['tweet_new_mention.alert']     = 1;
-        $prefs['tweet_new_retweet.email']     = 1;
-        $prefs['tweet_new_retweet.alert']     = 1;
-        $prefs['new_feedback.email']          = 1;
-        $prefs['new_feedback.alert']          = 1;
-        $prefs['new_feedback_validate.email'] = 1;
-        $prefs['new_feedback_validate.alert'] = 1;
-        $prefs['new_comment.email']           = 1;
-        $prefs['new_comment.alert']           = 1;
-        $prefs['new_comment_validate.email']  = 1;
-        $prefs['new_comment_validate.alert']  = 1;
+        $prefs                                 = [];
+        $prefs['chat_message.email']           = 1;
+        $prefs['login_attempt_fail.email']     = 1;
+        $prefs['task_assign_self.email']       = 1;
+        $prefs['task_assign_self.alert']       = 1;
+        $prefs['task_assign_team.email']       = 1;
+        $prefs['task_assign_team.alert']       = 1;
+        $prefs['task_complete.email']          = 1;
+        $prefs['task_complete.alert']          = 1;
+        $prefs['task_due.email']               = 1;
+        $prefs['task_due.alert']               = 1;
+        $prefs['tweet_assign_self.email']      = 1;
+        $prefs['tweet_assign_self.alert']      = 1;
+        $prefs['tweet_assign_team.email']      = 1;
+        $prefs['tweet_assign_team.alert']      = 1;
+        $prefs['tweet_reply.email']            = 1;
+        $prefs['tweet_reply.alert']            = 1;
+        $prefs['tweet_new_dm.email']           = 1;
+        $prefs['tweet_new_dm.alert']           = 1;
+        $prefs['tweet_new_reply.email']        = 1;
+        $prefs['tweet_new_reply.alert']        = 1;
+        $prefs['tweet_new_mention.email']      = 1;
+        $prefs['tweet_new_mention.alert']      = 1;
+        $prefs['tweet_new_retweet.email']      = 1;
+        $prefs['tweet_new_retweet.alert']      = 1;
+        $prefs['new_community.email']          = 1;
+        $prefs['new_community.alert']          = 1;
+        $prefs['new_community_validate.email'] = 1;
+        $prefs['new_community_validate.alert'] = 1;
+        $prefs['new_comment.email']            = 1;
+        $prefs['new_comment.alert']            = 1;
+        $prefs['new_comment_validate.email']   = 1;
+        $prefs['new_comment_validate.alert']   = 1;
 
         foreach ($prefs as $p => $v) {
             $this->container->getDb()->insert('people_prefs', [

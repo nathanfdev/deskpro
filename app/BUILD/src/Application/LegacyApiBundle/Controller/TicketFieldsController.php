@@ -9,6 +9,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\CustomFields\Form;
 use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
@@ -17,9 +18,11 @@ use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -33,7 +36,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  */
-class TicketFieldsController extends AbstractController implements ProtectedControllerInterface
+class TicketFieldsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -42,7 +45,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }
@@ -53,16 +56,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
     /**
      * @return JsonResponse;
-     *
-     * SWG\Api(
-     * 	path="/ticket_fields",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get list of ticket fields, including custom fields",
-     * 		notes="",
-     *		type="array",
-     *  )
-     * )
      */
     public function listAction()
     {
@@ -94,26 +87,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return JsonResponse
-     *
-     *
-     * SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get custom ticket field by Id",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Custom field id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
      */
     public function getCustomFieldAction($id)
     {
@@ -159,36 +132,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Exception
      *
      * @return JsonResponse
-     *
-     *
-     * SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Save custom ticket field by ID",
-     * 		notes="All you will pass in this query will be saved",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Custom field id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-
-     * SWG\Api(
-     * 	path="/ticket_fields",
-     * 	SWG\Operation(
-     * 		method="PUT",
-     * 		summary="Create custom ticket field",
-     * 		notes="All you will pass in this query will be saved",
-     *		type="array",
-     *  )
-     * )
      */
     public function saveCustomFieldAction($id)
     {
@@ -621,6 +564,72 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         $this->settings->setSetting('core_tickets.field_validation_ticket_pri_agent_required', $this->in->getBoolInt('agent_required'));
 
         return $this->createSuccessResponse();
+    }
+
+    /**1
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function deleteFieldOptionAction(Request $request)
+    {
+        $type = $this->in->getString('type');
+        $step = (int) $this->in->getInt('step');
+
+        if (!$removeIds = $this->in->getArrayValue('ids')) {
+            throw new BadRequestHttpException();
+        }
+
+        if (!$removeIds = array_filter($removeIds, function ($id) {
+            return '!' !== substr($id, 0, 3);
+        })) {
+            throw new BadRequestHttpException();
+        }
+
+        $dataService = $this->get('data.ticket_built_in_fields');
+        switch ($step) {
+            case 1:
+                $hasData = $dataService->getTicketsCountWithFields($type, $removeIds);
+                if (!$hasData) {
+                    if (!$dataService->getOptionUsage($type, $removeIds)) {
+                        $dataService->deleteOptionsById($type, $removeIds);
+
+                        return $this->createSuccessResponse();
+                    }
+                }
+
+                $all     = $dataService->getAll($type);
+                $options = [];
+                foreach ($all as $option) {
+                    if (
+                        (!$option instanceof Hierarchical || !$option->getChildren()->count())
+                        && !in_array($option->getId(), $removeIds)
+                    ) {
+                        $options[$option->getId()] = $option->getTitle();
+                    }
+                }
+
+                return $this->createJsonResponse([
+                    'success' => true,
+                    'options' => $options ?: null,
+                    'default' => $options ? key($options) : null,
+                ]);
+
+            case 2:
+                if (!$to = $this->in->getInt('update_to')) {
+                    throw new BadRequestHttpException();
+                }
+                $dataService->deleteOptionsById($type, $removeIds, $to);
+
+                return $this->createSuccessResponse();
+
+            case 3:
+                $dataService->deleteOptionsById($type, $removeIds);
+
+                return $this->createSuccessResponse();
+        }
+
+        throw new BadRequestHttpException();
     }
 
     public function convertAction($type)

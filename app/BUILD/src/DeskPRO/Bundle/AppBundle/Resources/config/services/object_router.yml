@@ -9,8 +9,8 @@ services:
         - "@object_router.link_generator.content.news"
         - "@object_router.link_generator.content.downloads"
         - "@object_router.link_generator.content.guides"
-        - "@object_router.link_generator.feedback_category"
-        - "@object_router.link_generator.feedback"
+        - "@object_router.link_generator.community_channel"
+        - "@object_router.link_generator.community_topic"
         - "@object_router.link_generator.portal"
         - "@object_router.link_generator.agent"
         - "@object_router.link_generator.ticket"
@@ -102,15 +102,15 @@ services:
       - "@object_router.annotation_config"
 
 
-  object_router.link_generator.feedback_category:
+  object_router.link_generator.community_channel:
     public: false
-    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackCategoryLinkGenerator
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityChannelLinkGenerator
     arguments:
       - "@router"
 
-  object_router.link_generator.feedback:
+  object_router.link_generator.community_topic:
     public: false
-    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\CommunityTopicLinkGenerator
     arguments:
       - "@router"
 

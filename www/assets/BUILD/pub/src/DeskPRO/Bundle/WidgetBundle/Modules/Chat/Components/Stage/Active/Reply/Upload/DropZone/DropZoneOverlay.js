@@ -8,7 +8,7 @@ export class DropZoneOverlay extends React.Component {
       <div className="dpdesignportal-content-file-drop-active-container">
         <div className="dpdesignportal-content-file-drop-active">
           <span className="dpdesignportal-content-file-drop-mark">
-            <i className="fa fa-upload" />
+            <i className="fas fa-upload" />
           </span>
           <p>
             <span>{portalPhrases.get('portal.chat.dropzone1')}</span>

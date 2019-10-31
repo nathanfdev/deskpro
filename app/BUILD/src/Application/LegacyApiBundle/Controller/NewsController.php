@@ -11,6 +11,7 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -27,6 +28,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class NewsController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AgentPermission();
+    }
+
     /**
      * SWG\Api(
      * 	path="/news",

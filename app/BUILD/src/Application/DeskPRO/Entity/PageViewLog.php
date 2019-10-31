@@ -16,10 +16,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 {
-    const TYPE_ARTICLE  = 1;
-    const TYPE_DOWNLOAD = 2;
-    const TYPE_NEWS     = 3;
-    const TYPE_FEEDBACK = 4;
+    const TYPE_ARTICLE   = 1;
+    const TYPE_DOWNLOAD  = 2;
+    const TYPE_NEWS      = 3;
+    const TYPE_COMMUNITY = 4;
 
     const ACTION_VIEW     = 1;
     const ACTION_DOWNLOAD = 2;
@@ -48,6 +48,11 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
      * @var int
      */
     protected $person_id = null;
+
+    /**
+     * @var array
+     */
+    protected $meta;
 
     /**
      * @var \DateTime
@@ -79,6 +84,30 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @param array $meta
+     *
+     * @return self
+     */
+    public function setMeta(array $meta = null)
+    {
+        if (!$meta) {
+            $this->setModelField('meta', null);
+        } else {
+            $this->setModelField('meta', $meta);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->meta ? $this->meta : [];
+    }
+
     public function getObjectType()
     {
         return self::getObjectTypeFromTypeId($this->object_type);
@@ -102,8 +131,8 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
                 case 'news':
                     $type = self::TYPE_NEWS;
                     break;
-                case 'feedback':
-                    $type = self::TYPE_FEEDBACK;
+                case 'community':
+                    $type = self::TYPE_COMMUNITY;
                     break;
             }
         }
@@ -143,7 +172,7 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
             case self::TYPE_ARTICLE: return 'article';
             case self::TYPE_DOWNLOAD: return 'download';
             case self::TYPE_NEWS: return 'news';
-            case self::TYPE_FEEDBACK: return 'feedback';
+            case self::TYPE_COMMUNITY: return 'community';
         }
 
         throw new \InvalidArgumentException("Invalid type id. Got:`$type`");
@@ -210,6 +239,12 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
             'scale'      => 0,
             'nullable'   => true,
             'columnName' => 'person_id',
+        ]);
+        $metadata->mapField([
+            'columnName' => 'meta',
+            'fieldName'  => 'meta',
+            'type'       => 'json_array',
+            'nullable'   => true,
         ]);
         $metadata->mapField([
             'fieldName'  => 'date_created',

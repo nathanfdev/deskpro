@@ -557,15 +557,17 @@ define([
           ticket_works:      '/ticket_works',
           ticket_fields:     '/ticket_fields',
           ticket_labels:     '/labels/definitions/tickets',
-          user_fields:       '/user_fields',
-          org_fields:        '/org_fields',
           ticket_slas:       '/ticket_slas',
           ticket_accounts:   '/email_accounts',
+          ticket_settings:   '/ticket_settings',
+          user_fields:       '/user_fields',
+          user_labels:       '/labels/definitions/people',
+          org_fields:        '/org_fields',
+          org_labels:        '/labels/definitions/organizations',
           usergroups:        '/user_groups',
           langs:             '/langs',
           email_tpls:        '/email-templates-info',
           api_keys:          '/api_keys',
-          ticket_settings:   '/ticket_settings',
           contextual_fields: '/custom_fields',
           jira_settings:     '/apps/jira'
         });
@@ -584,23 +586,25 @@ define([
           options_data.ticket_cats       = data.ticket_cats.categories;
           options_data.ticket_pris       = data.ticket_pris.priorities;
           options_data.ticket_works      = data.ticket_works.workflows;
+          options_data.ticket_labels     = data.ticket_labels;
           options_data.ticket_prods      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
           options_data.ticket_fields     = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
-          options_data.org_fields        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
-          options_data.user_fields       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
           options_data.ticket_slas       = data.ticket_slas != null ? data.ticket_slas.slas : undefined;
+          options_data.ticket_settings   = data.ticket_settings != null ? data.ticket_settings.ticket_settings : undefined;
+          options_data.org_fields        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
+          options_data.org_labels        = data.org_labels;
+          options_data.user_fields       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
+          options_data.user_labels       = data.user_labels;
           options_data.email_accounts    = data.ticket_accounts.email_accounts;
           options_data.usergroups        = data.usergroups.groups;
           options_data.langs             = data.langs != null ? data.langs.languages : undefined;
           options_data.custom_email_tpls = data.email_tpls.list.custom.groups.custom.templates;
-          options_data.api_keys          = data.api_keys.api_keys;
-          options_data.ticket_settings   = data.ticket_settings != null ? data.ticket_settings.ticket_settings : undefined;
+          options_data.api_keys          = data.api_keys;
           options_data.contextual_fields = data.contextual_fields;
           options_data.jira_settings     = data.jira_settings;
-          options_data.ticket_labels     = data.ticket_labels;
 
           // ApiV2 results
-          options_data['ticket_statuses'] =result[1].data.data;
+          options_data['ticket_statuses'] = result[1].data.data;
 
           this.options_data = options_data;
 
@@ -1090,8 +1094,9 @@ define([
         { title: 'Created by a user via email', value: 'gateway.person' },
         { title: 'Created by an agent via the agent interface', value: 'web.agent.portal' },
         { title: 'Created by an agent via email', value: 'gateway.agent' },
-        { title: 'Create by the API in a user context', value: 'web.api.person' },
-        { title: 'Create by the API in an agent context', value: 'web.api.agent' },
+        { title: 'Created by the API in a user context', value: 'web.api.person' },
+        { title: 'Created by an agent via an outbound call', value: 'phone.outbound' },
+        { title: 'Created by the user via an inbound call', value: 'phone.inbound' },
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -1209,9 +1214,13 @@ define([
     getCheckUserLabel(options) {
       if (options == null) { options = {}; }
       options.propName = 'labels';
+      options.type_title = 'User Labels';
+      options.tags = true;
+      options.options = [];
+      this.options_data.user_labels.map(def => options.options.push({ title: def.label, value: def.label }));
       options.operators = ['contains', 'notcontains'];
-      const def = this.getStandardInput(options);
-      return def;
+
+      return this.getStandardSelect(options);
     }
 
     getCheckUserUsergroups(options) {
@@ -1371,9 +1380,13 @@ define([
     getCheckOrgLabel(options) {
       if (options == null) { options = {}; }
       options.propName = 'labels';
+      options.type_title = 'Organization Labels';
+      options.tags = true;
+      options.options = [];
+      this.options_data.org_labels.map(def => options.options.push({ title: def.label, value: def.label }));
       options.operators = ['contains', 'notcontains'];
-      const def = this.getStandardInput(options);
-      return def;
+
+      return this.getStandardSelect(options);
     }
 
     getCheckOrgEmailDomain(options) {
@@ -1679,7 +1692,7 @@ define([
       options.dataName = 'api_keys';
       options.operators = ['is', 'not'];
       options.single = true;
-      options.optionsFormatter = function (options) {
+      options.optionsFormatter = options => {
         const opts = [];
 
         for (const key of Array.from(options)) {

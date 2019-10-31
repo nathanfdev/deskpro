@@ -10,9 +10,15 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  security.agent_permission_listener:
+    class: DeskPRO\Bundle\AppBundle\Security\EventListener\RequireAgentPermissionsListener
+    arguments: ["@annotation_reader"]
+    tags:
+      - { name: kernel.event_subscriber }
+
   # Each kernel bundle will have their own specific security services dedicated to it
   # these are some general security services that should be able to be used app-wide.
-  # For specific security implmentation details, see security.yml in the kernel bundles.
+  # For specific security implementation details, see security.yml in the kernel bundles.
   # PortalBundle/ApiBundle/etc.
 
   ###
@@ -173,13 +179,13 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
-  security.voter.permission_groups.feedback:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackVoter
+  security.voter.permission_groups.community_topic:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\CommunityVoter
     tags:
       - { name: security.voter.permission_groups }
 
-  security.voter.permission_groups.feedback_comments:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\FeedbackCommentsVoter
+  security.voter.permission_groups.community_topic_comments:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\CommunityTopicCommentsVoter
     tags:
       - { name: security.voter.permission_groups }
 
@@ -223,10 +229,15 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.person_usersource_assoc:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PersonUsersourceAssocVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.snippet:
-      class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\SnippetVoter
-      tags:
-        - { name: security.voter.permission_groups }
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\SnippetVoter
+    tags:
+      - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.tasks:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter
@@ -239,9 +250,9 @@ services:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.ticket_follow_up:
-      class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketFollowUpVoter
-      tags:
-        - { name: security.voter.permission_groups }
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketFollowUpVoter
+    tags:
+      - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.ticket_messages:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter
@@ -255,5 +266,15 @@ services:
 
   security.voter.permission_groups.client_devices:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ClientDeviceVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.voice_missed_agent_call:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoiceMissedAgentCallVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.voice_asset:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\VoiceAssetVoter
     tags:
       - { name: security.voter.permission_groups }

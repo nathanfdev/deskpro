@@ -8,7 +8,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-class Product extends AbstractCategoryRepository
+class Product extends AbstractCategoryRepository implements TicketBuiltInFieldInterface
 {
     public function countAll()
     {

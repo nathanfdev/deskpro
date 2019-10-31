@@ -8,7 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -26,8 +26,8 @@ class BlobsController extends AbstractController
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'uploadAction');
-        $multi->addPermissionStrategy(new PassPermission(), 'getInfoAction');
+        $multi->addPermissionStrategy(new OpenPermission(), 'uploadAction');
+        $multi->addPermissionStrategy(new OpenPermission(), 'getInfoAction');
 
         return $multi;
     }
@@ -57,11 +57,7 @@ class BlobsController extends AbstractController
 
         $props = [];
         if ($this->in->getString('tag')) {
-            switch (trim($this->in->getString('tag'))) {
-                case 'ticket_attachment':
-                    $props['tag'] = 'ticket_attachment';
-                    break;
-            }
+            $props['tag'] = trim($this->in->getString('tag'));
         }
 
         $blob = $accept->accept($file, true, $props);

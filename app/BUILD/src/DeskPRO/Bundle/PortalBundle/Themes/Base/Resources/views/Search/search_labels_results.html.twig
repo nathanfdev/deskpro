@@ -23,8 +23,8 @@
                            <option value="downloads"{% if type == 'downloads' %} selected="selected"{% endif %}>
                                {{ phrase('portal.general.nav-downloads') }}
                            </option>
-                           <option value="feedback"{% if type == 'feedback' %} selected="selected"{% endif %}>
-                               {{ phrase('portal.general.nav-feedback') }}
+                           <option value="community"{% if type == 'community' %} selected="selected"{% endif %}>
+                               {{ phrase('portal.general.nav-community') }}
                            </option>
                        </select>
                        {{ phrase('portal.general.tagged_with') }}
@@ -58,7 +58,7 @@
                                     <div class="search-result-meta">
                                         {% set cats = get_secure_content_cats(result) %}
                                         {% if cats|length > 0 %}
-                                        <i class="fa fa-tags"></i>
+                                        <i class="fas fa-tags"></i>
                                         {% for cat in cats %}
                                             <a href="{{ portal_path(cat) }}">
                                                 {% if cat.title is defined %}
@@ -70,7 +70,7 @@
                                                 {% endif %}
                                             </a>
                                             {% if not loop.last %}
-                                                <i class="fa fa-angle-right"></i>
+                                                <i class="fas fa-angle-right"></i>
                                             {% endif %}
                                         {% endfor %}
                                         {% endif %}

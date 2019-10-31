@@ -6,77 +6,89 @@ import GeneralSettingsForm from './GeneralSettingsForm';
 class AccountList extends React.Component {
 
   static propTypes = {
-    accounts:      PropTypes.object,
-    settings:      PropTypes.object,
-    onNewAccount:  PropTypes.func,
-    onEditAccount: PropTypes.func,
-    saveSettings:  PropTypes.func,
+    accounts:            PropTypes.object,
+    numbers:             PropTypes.object,
+    settings:            PropTypes.object,
+    openNewAccountForm:  PropTypes.func,
+    openEditAccountForm: PropTypes.func,
+    saveSettings:        PropTypes.func,
   };
 
   renderEmpty() {
-    const { onNewAccount } = this.props;
+    const { openNewAccountForm, settings } = this.props;
 
-    if (window.DP_IS_CLOUD) {
-      return (
-        <div className="page">
-          <SectionHeader title="General Settings" dividing />
+    return (
+      <div className="page">
+        <SectionHeader title="General Settings" dividing />
 
-          Voice has not been enabled on your account yet.
-          <br /><br />
+        Voice has not been enabled yet.
+        <br /><br />
 
-          <button className="ui primary button" onClick={() => onNewAccount('cloud')}>
-            Enable Voice
+        <button className="ui primary button" onClick={() => openNewAccountForm('twilio', true)}>
+          Begin Setup &rarr;
+        </button>
+
+        {settings.get('private_accounts_enabled') &&
+          <button className="ui primary button" onClick={() => openNewAccountForm('twilio')}>
+            Add your own Twilio account
           </button>
-        </div>
-      );
-    } else {
-      return (
-        <div className="page">
-          <SectionHeader title="General Settings" dividing />
-
-          You currently have no accounts.
-          <br /><br />
-
-          <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
-            Add new account
-          </button>
-        </div>
-      );
-    }
+        }
+      </div>
+    );
   }
 
   renderTable() {
+    const { accounts = [], numbers, openEditAccountForm, settings, saveSettings } = this.props;
 
-    const { accounts = [], onEditAccount, settings, saveSettings } = this.props;
+    const privateAccounts = [];
+    const managedAccounts = [];
+
+    accounts.toArray().forEach((account) => {
+      if (account.get('account_id') === '__ACCOUNT_ID__') {
+        managedAccounts.push(account);
+      } else {
+        privateAccounts.push(account);
+      }
+    });
 
     return (
       <div className="page">
         {/* disabled for now because we can just support only one account at the moment
-        <button className="ui right floated basic button" onClick={onNewAccount} disabled="disabled">
+        <button className="ui right floated basic button" onClick={createNewAccount} disabled="disabled">
           <i className="icon plus" />
           Add new account
         </button>*/}
         <SectionHeader title="General Settings" />
 
-        {/* disable list on cloud -- we manage it */}
-        {!window.DP_IS_CLOUD && (
+        { (privateAccounts.length || settings.get('private_accounts_enabled')) && (
           <div className="admin-list-table">
             <div className="row header">
               <div className="column account-name">Name/Note</div>
               <div className="column sid">Account SID</div>
               <div className="column date">Date Added</div>
             </div>
-            {accounts.toArray().map((account, index) =>
-              <div className="row" key={index}>
+            {privateAccounts.map((account) =>
+              <div className="row" key={account.get('id')}>
                 <div className="info">
                   <div className="column account-name">{account.get('account_name')}</div>
                   <div className="column sid">{account.get('account_id')}</div>
                   <div className="column date">{account.get('date_created')}</div>
                   <div className="column options-button">
-                    <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>
+                    <a onClick={(event) => { event.preventDefault(); openEditAccountForm(account); }}>
                       <i className="fas fa-cog" />
                     </a>
                   </div>
+                  <div style={{ clear: 'both' }} />
+                </div>
+              </div>
+            )}
+            {managedAccounts.map((account) =>
+              <div className="row" key={account.get('id')}>
+                <div className="info">
+                  <div className="column account-name">Managed Account #{account.get('id')}</div>
+                  <div className="column sid">-</div>
+                  <div className="column date">{account.get('date_created')}</div>
+                  <div className="column options-button">-</div>
                   <div style={{ clear: 'both' }} />
                 </div>
               </div>
@@ -86,7 +98,7 @@ class AccountList extends React.Component {
 
         <div className="admin-list-options">
           <div className="voice-general-settings-form">
-            <GeneralSettingsForm settings={settings} onSubmit={saveSettings} />
+            <GeneralSettingsForm settings={settings} numbers={numbers} onSubmit={saveSettings} />
           </div>
         </div>
       </div>

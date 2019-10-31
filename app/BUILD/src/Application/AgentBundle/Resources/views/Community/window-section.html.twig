@@ -1,0 +1,208 @@
+{% extends 'AgentBundle::source-pane-layout.html.twig' %}
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
+{% block pane_main_tab %}
+	<li class="tab active" data-tab-id="pane-content-main"><i class="far icon-dp-community"></i> {{ phrase('agent.chrome.nav_community') }}</li>
+{% endblock %}
+{% block pane_content %}
+	<div class="pane-content pane-content-main">
+
+		{% if app.user.hasPerm('agent_publish.validate') %}
+			<section class="pane-section">
+				<header>
+					<h1>{{ phrase('agent.general.pending') }}</h1>
+				</header>
+				<article>
+					<ul class="nav-list">
+						<li class="is-nav-item">
+							<div class="item" data-route="listpane:{{ path('agent_community_validatingcontent') }}">
+								<h3>{{ phrase('agent.community.community_topics_to_review') }}</h3>
+								<em class="counter list-counter" id="community_validating_count">{{ counts.community_topics_awaiting_validation|default(0) }}</em>
+							</div>
+						</li>
+						<li class="is-nav-item">
+							<div class="item" data-route="listpane:{{ path('agent_community_validatingcomments') }}">
+								<h3>{{ phrase('agent.publish.comments_to_validate') }}</h3>
+								<em class="counter list-counter" id="community_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</em>
+							</div>
+						</li>
+					</ul>
+				</article>
+			</section>
+
+            {% if (brands|length) > 1 %}
+				<section>
+					<select class="dp-select-widget-simple brand_id" name="brand_id" id="community_brand_id" style="width: 100%">
+                        {% for brand in brands %}
+							<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
+                                {{ brand.name }}
+							</option>
+                        {% endfor %}
+					</select>
+				</section>
+            {% else %}
+				<input type="hidden" name="brand_id" id="community_brand_id" value="{{ brands[0].id }}" />
+            {% endif %}
+
+			<section class="pane-section with-tabs last">
+				<nav class="pane-section-tabs" id="community_outline_tabstrip">
+					<ul>
+						<li style="width:33%;" data-tab-for="#community_outline_status"><span>{{ phrase('agent.general.status') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_channel"><span>{{ phrase('agent.general.channel') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
+					</ul>
+				</nav>
+
+				<section id="community_outline_status" class="deskpro-tab-item">
+					<ul class="nav-list nav-list-small">
+						<li class="is-nav-item">
+							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'active', 'brand_id': selected_brand_id}) }}">
+								<h3>{{ phrase('agent.community.status_active') }}</h3>
+								<em class="counter list-counter" id="community_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>
+							</div>
+							<ul class="nav-list-small indented">
+								{% for cat in active_status_cats %}
+									<li class="is-nav-item">
+										<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
+											<h3>{{ cat.title }}</h3>
+											<em class="counter list-counter" id="community_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</em>
+										</div>
+									</li>
+								{% endfor %}
+							</ul>
+						</li>
+						<li class="is-nav-item">
+							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'closed', 'brand_id': selected_brand_id}) }}">
+								<h3>{{ phrase('agent.community.status_closed') }}</h3>
+								<em class="counter list-counter" id="community_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</em>
+							</div>
+							<ul class="nav-list-small indented">
+								{% for cat in closed_status_cats %}
+									<li class="is-nav-item">
+										<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
+											<h3>{{ cat.title }}</h3>
+											<em class="counter list-counter" id="community_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</em>
+										</div>
+									</li>
+								{% endfor %}
+							</ul>
+						</li>
+						<li class="is-nav-item">
+							<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden', 'brand_id': selected_brand_id}) }}">
+								<h3>{{ phrase('agent.general.hidden') }}</h3>
+								<em class="counter list-counter" id="community_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</em>
+							</div>
+							<ul class="nav-list-small indented">
+								<li class="is-nav-item">
+									<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden.deleted', 'brand_id': selected_brand_id}) }}">
+										<h3>{{ phrase('agent.general.deleted') }}</h3>
+										<em class="counter list-counter" id="community_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</em>
+									</div>
+								</li>
+								<li class="is-nav-item">
+									<div class="item" data-route="listpane:{{ path('agent_community_topic_status', {'status': 'hidden.spam', 'brand_id': selected_brand_id}) }}">
+										<h3>{{ phrase('agent.general.spam') }}</h3>
+										<em class="counter list-counter" id="community_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</em>
+									</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section id="community_outline_channel" class="deskpro-tab-item" data-tab-trigger="#community_outline_tabstrip li.categroies">
+					<ul class="nav-list nav-list-small">
+						{% for channel in community_channels %}
+							<li
+								class="is-nav-item"
+								data-usergroup-ids="{{ community_channels_usergroups[channel.id]|default([])|join(',') }}"
+							>
+								<div class="item" {% if channel.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':channel.id}) }}">
+									<h3>{{ channel.title }}</h3>
+									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ channel_counts[channel.id]|default(0) }}</em>
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</section>
+				<section id="community_outline_labels" class="deskpro-tab-item" data-tab-trigger="#community_outline_tabstrip li.labels">
+					<section class="labels-list" style="border-top:none;">
+						{% if community_tag_index|length %}
+							<table>
+								{% for letter,labels in community_tag_index %}
+									<tr>
+										<td class="letter">{{ letter }}</td>
+										<td class="labels">
+											<ul>
+												{% for label in labels %}
+													<li class="is-nav-item"><span data-route="listpane:{{ path('agent_community_label', {'label': label, 'brand_id': selected_brand_id}) }}">{{label}}</span></li>
+												{% endfor %}
+											</ul>
+										</td>
+									</tr>
+								{% endfor %}
+							</table>
+						{% else %}
+						<aside class="source-info-explain">{{ phrase('agent.community.no_labels_explain') }}</aside>
+						{% endif %}
+					</section>
+				</section>
+
+			</section>
+		{% endif %}
+	</div>
+
+	<div class="pane-content pane-content-search" style="display: none;">
+		{% include 'AgentBundle:Community:window-search.html.twig' %}
+	</div>
+
+<div id="deskpro_window_community_templates" style="display: none;">
+	<ul id="community_category_menu" data-menu-type="community-channel-menu" data-menu-flag="copy-menu">
+        {% for channel in app.getDataService('CommunityChannel').getRootNodes(selected_brand_id) %}
+            {% if last_with_child %}
+				<li class="sep">-</li>
+            {% endif %}
+            {% if channel.children|length %}
+				<li data-category-id="{{channel.id}}" class="section-title channel-{{channel.id}}">{{channel.title}}</li>
+                {% for subchannel in channel.children %}
+					<li data-category-id="{{subchannel.id}}" data-parent-id="{{channel.id}}" class="channel-{{channel.id}} channel-{{subchannel.id}}">{{subchannel.title}}</li>
+                {% endfor %}
+                {% set last_with_child = true %}
+            {% else %}
+				<li data-category-id="{{channel.id}}" class="channel-{{channel.id}}">{{channel.title}}</li>
+                {% set last_with_child = false %}
+            {% endif %}
+        {% endfor %}
+	</ul>
+
+	<ul id="community_status_menu" data-menu-type="community-status-menu" data-menu-flag="copy-menu">
+		<li
+				class="status-new"
+				data-status-type="new"
+				data-option-value="new"
+		>{{ phrase('agent.community.status_new') }}</li>
+		<li
+				class="section-title status-active"
+				data-status-type="active"
+				data-option-value="active"
+		>{{ phrase('agent.community.status_active') }}</li>
+        {% for cat in active_status_cats %}
+			<li
+					class="status-{{cat.id}}"
+					data-status-type="active"
+					data-option-value="active.{{cat.id}}"
+			>{{cat.title}}</li>
+        {% endfor %}
+		<li
+				class="section-title status-closed"
+				data-status-type="closed"
+				data-option-value="closed"
+		>{{ phrase('agent.community.status_closed') }}</li>
+        {% for cat in closed_status_cats %}
+			<li
+					class="status-{{cat.id}}"
+					data-status-type="closed"
+					data-option-value="closed.{{cat.id}}"
+			>{{cat.title}}</li>
+        {% endfor %}
+	</ul>
+</div>
+{% endblock %}

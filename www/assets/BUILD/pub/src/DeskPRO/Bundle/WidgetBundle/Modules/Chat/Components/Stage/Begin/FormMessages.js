@@ -8,7 +8,7 @@ export class BannedMessage extends React.Component {
     return (
       <div className="inline-form-alert">
         <div className="form-alert-icon">
-          <i className="fa fa-lock" />
+          <i className="fas fa-lock" />
         </div>
         <div className="content-wrapper">
           <h1>{portalPhrases.get('portal.chat.user_is_blocked')}</h1>
@@ -33,7 +33,7 @@ export class FormErrorMessage extends React.Component {
     return (
       <div className="inline-form-alert">
         <div className="form-alert-icon">
-          <i className="fa fa-lock" />
+          <i className="fas fa-lock" />
         </div>
         <div className="content-wrapper">
           <h1>{portalPhrases.get(`portal.chat.${errors[0].code}`)}</h1>

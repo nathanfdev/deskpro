@@ -7,6 +7,7 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\Content;
 
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\EventSubscriber;
@@ -43,6 +44,11 @@ class DoctrineContentSlugListener implements EventSubscriber
         $this->ensureValidSlug($content, $args->getObjectManager());
     }
 
+    /**
+     * @param LifecycleEventArgs $args
+     *
+     * @throws \InvalidArgumentException
+     */
     public function preUpdate(LifecycleEventArgs $args)
     {
         $content = $args->getObject();
@@ -51,7 +57,16 @@ class DoctrineContentSlugListener implements EventSubscriber
             return;
         }
 
-        $this->ensureValidSlug($content, $args->getObjectManager());
+        $scr                 = $content->getStateChangeRecorder();
+        $hiddenStatusChanges = $scr->getFirstChangeForField('hidden_status');
+
+        if ($hiddenStatusChanges instanceof ChangeInterface &&
+            $hiddenStatusChanges->getNew() === ContentAbstract::HIDDEN_STATUS_DELETED
+        ) {
+            $this->slug_manager->processSlugForDeletedEntity($content);
+        } else {
+            $this->ensureValidSlug($content, $args->getObjectManager());
+        }
 
         // updates require a signal to the UOW to recalculate its changeset
         $em  = $args->getObjectManager();

@@ -1,21 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import classNames from 'classnames';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { AddPhraseFormContainer } from '../Form/AddPhraseForm';
 
-@connect(state => ({
-  emailTemplates: state.EmailTemplates.templates
-}))
 export class PhrasesMenuContainer extends React.Component {
   static propTypes = {
-    emailTemplates: PropTypes.object.isRequired,
-    closeMenu:      PropTypes.func,
-    languages:      PropTypes.array,
-    insertPhrase:   PropTypes.func,
+    data:         PropTypes.object.isRequired,
+    closeMenu:    PropTypes.func,
+    languages:    PropTypes.array,
+    insertPhrase: PropTypes.func,
   };
   static defaultProps = {
     insertPhrase() {},
@@ -29,8 +25,8 @@ export class PhrasesMenuContainer extends React.Component {
 
   render() {
     let phrases = null;
-    if (this.props.emailTemplates) {
-      phrases = this.props.emailTemplates.get('phrases').filter((group) => {
+    if (this.props.data) {
+      phrases = this.props.data.get('phrases').filter((group) => {
         if (group.get('title') === 'all') {
           return false;
         }

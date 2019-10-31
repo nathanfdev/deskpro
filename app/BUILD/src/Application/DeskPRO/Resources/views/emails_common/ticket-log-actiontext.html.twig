@@ -96,8 +96,8 @@
 					{{ phrase('agent.tickets.log_on_download', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
 				{% elseif log.details.via_comment.comment_type == 'news' %}
 					{{ phrase('agent.tickets.log_on_news', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
-				{% elseif log.details.via_comment.comment_type == 'feedback' %}
-					{{ phrase('agent.tickets.log_on_feedback', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
+				{% elseif log.details.via_comment.comment_type == 'community' %}
+					{{ phrase('agent.tickets.log_on_community_topic', {title: details.via_comment.comment_content_title, id: log.details.via_comment.comment_content_id}) }}
 				{% endif %}
 			</div>
 		{% endif %}
@@ -465,11 +465,11 @@
 		</div>
 	{% elseif log.action_type == 'changed_participants' or log.action_type == 'changed_agent_participants' or log.action_type == 'changed_user_participants' %}
 		{% if log.action_type == 'changed_agent_participants' %}
-			Changed agent followers
-		{% elseif log.action_type == 'changed_participants' %}
-			Changed user CC's
+			{{ phrase('agent.tickets.log_changed_agent_followers') }}
+		{% elseif log.action_type == 'changed_user_participants' %}
+			{{ phrase('agent.tickets.log_changed_users_ccs') }}
 		{% else %}
-			Changed participants
+			{{ phrase('agent.tickets.log_changed_participants') }}
 		{% endif %}
 		<ul>
 			{% for part in log.details.added %}

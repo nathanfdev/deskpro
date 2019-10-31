@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\ImportBundle\Writer;
 
 use DeskPRO\Bundle\ImportBundle\Model\BatchConfig;
-use DeskPRO\Bundle\ImportBundle\Model\BatcnPointer;
+use DeskPRO\Bundle\ImportBundle\Model\BatchPointer;
 use DeskPRO\Bundle\ImportBundle\Model\PrimaryImportModelInterface;
 use DeskPRO\Bundle\ImportBundle\Storage\Storage;
 use DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
@@ -85,11 +85,11 @@ class Importer
     }
 
     /**
-     * @param BatcnPointer $pointer
+     * @param BatchPointer $pointer
      *
      * @return ArrayCollection|PrimaryImportModelInterface[]
      */
-    public function getImportData(BatcnPointer $pointer)
+    public function getImportData(BatchPointer $pointer)
     {
         $collection = new ArrayCollection($this->storage->readBatch(
             $pointer->getModelClass(),
@@ -119,12 +119,12 @@ class Importer
 
     /**
      * @param BatchConfig  $batchConfig
-     * @param BatcnPointer $pointer
+     * @param BatchPointer $pointer
      * @param bool         $persist
      *
      * @throws \Exception
      */
-    public function updateBatchConfig(BatchConfig $batchConfig, BatcnPointer $pointer, $persist = true)
+    public function updateBatchConfig(BatchConfig $batchConfig, BatchPointer $pointer, $persist = true)
     {
         $type    = $this->entityHandlerRegistry->getTypeByModelClass($pointer->getModelClass());
         $batchId = $pointer->getBatchId();
@@ -160,7 +160,7 @@ class Importer
     /**
      * @param BatchConfig $config
      *
-     * @return BatcnPointer
+     * @return BatchPointer
      */
     public function getBatchPointer(BatchConfig $config)
     {
@@ -173,7 +173,7 @@ class Importer
             }
 
             if ($this->storage->hasBatch($modelClass, $nextId)) {
-                return new BatcnPointer($modelClass, $nextId);
+                return new BatchPointer($modelClass, $nextId);
             }
         }
 

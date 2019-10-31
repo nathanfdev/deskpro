@@ -82,7 +82,7 @@ agent.chrome.chat_sign-in: 'Bejelentkezés beszélgetéshez'
 agent.chrome.chat_sign-out: 'Kijelentkezés beszélgetésből'
 agent.chrome.create_new-article: 'Új cikk'
 agent.chrome.create_new-download: 'Új letöltés'
-agent.chrome.create_new-feedback: 'Új visszajelzés'
+agent.chrome.create_new-community: 'Új visszajelzés'
 agent.chrome.create_new-news: 'Új hírek'
 agent.chrome.create_new-organization: 'Új szervezet'
 agent.chrome.create_new-person: 'Új személy'
@@ -107,7 +107,7 @@ agent.chrome.link_help: Segítség
 agent.chrome.link_logout: Kijelentkezés
 agent.chrome.link_preferences: Tulajdonságok
 agent.chrome.nav_admin_settings: 'Admin beállítások'
-agent.chrome.nav_feedback: Visszajelzés
+agent.chrome.nav_community: Visszajelzés
 agent.chrome.nav_reports: Jelentések
 agent.chrome.nav_search: Keresés
 agent.chrome.nav_tasks: Feladatok
@@ -123,7 +123,7 @@ agent.chrome.quicksearch_title: Gyorskereső
 agent.chrome.quicksearch_title-articles: Cikkek
 agent.chrome.quicksearch_title-chat: Beszélgetés
 agent.chrome.quicksearch_title-downloads: Letöltések
-agent.chrome.quicksearch_title-feedback: Visszajelzés
+agent.chrome.quicksearch_title-community: Visszajelzés
 agent.chrome.quicksearch_title-news: Hírek
 agent.chrome.quicksearch_title-orgs: Szervezetek
 agent.chrome.quicksearch_title-people: Személyek
@@ -246,37 +246,36 @@ agent.emails.view_your_tasks: 'Az Ön feladatainak megtekintése'
 agent.emails.view_your_teams_tasks: 'Az Ön csoportjának feladatainak megtekintése'
 agent.emails.view_your_tweets: 'Az Ön tweet-jeinek megtekintése'
 agent.emails.your_initial_password: 'Az Ön kezdeti jelszava'
-agent.feedback.any_category: 'Bármely kategória'
-agent.feedback.any_status: 'Bármely státusz'
-agent.feedback.count_votes: '{{display_count}} értékelés|{{display_count}} értékelés'
-agent.feedback.feedback_deleted: 'Ez a visszajelzés törölve lett'
-agent.feedback.least_voted_on_top: 'A legkevesebbet értékelt legfelül'
-agent.feedback.list_title:
+agent.community.any_channel: 'Bármely kategória'
+agent.community.any_status: 'Bármely státusz'
+agent.community.community_topic_deleted: 'Ez a visszajelzés törölve lett'
+agent.community.least_voted_on_top: 'A legkevesebbet értékelt legfelül'
+agent.community.list_title:
   one: '1 benyújtás'
   other: '{{count}} benyújtás'
-agent.feedback.merge_feedback: 'Visszajelzések összevonása'
-agent.feedback.merge_feedback_note: 'Az összevont visszajelzés leírása hozzászólásként lesz hozzáadva a megtartott visszajelzéshez.'
-agent.feedback.merge_feedback_submit: 'Vonja össze ezen két visszajelzés benyújtását'
-agent.feedback.merge_howto: 'Nyisson meg egy újabb visszajelzés fület az összevonáshoz'
-agent.feedback.new_feedback: 'Új visszajelzés'
-agent.feedback.newest_on_top: 'A legújabb legfelül'
-agent.feedback.no_feedback_cats_error: 'Nincs meghatározott típus. Mielőtt hozzáadhatna típusokat a visszajelzés szekcióhoz, meg kell határoznia egy típust az adminisztrátor felületen.'
-agent.feedback.no_labels_explain: 'Még nem címkézett fel egyetlen visszajelzést sem. Nézzen meg egy visszajelzés benyújtást, hogy felcímkézhesse.'
-agent.feedback.oldest_on_top: 'A legrégebbi legfelül'
-agent.feedback.popularity_least_most: 'Népszerűség (legkevésbé-leginkább)'
-agent.feedback.popularity_most_least: 'Népszerűség (leginkább-legkevésbé)'
-agent.feedback.showing_results: 'Eredmények mutatása'
-agent.feedback.status_active: Aktív
-agent.feedback.status_closed: Bezárva
-agent.feedback.status_deleted: Törölve
-agent.feedback.status_hidden: Rejtett
-agent.feedback.status_new: Új
-agent.feedback.top_voted_on_top: 'A legtöbbet értékelt legfelül'
-agent.feedback.update_filter: 'Szűrő frissítése'
-agent.feedback.user_submitted_new_feedback: '{{name}} benyújtott egy új visszajelzést'
-agent.feedback.vote_for_this_feedback: 'Értékelje ezt a visszajelzést'
-agent.feedback.votes_least_most: 'Értékelés (legkevésbé-leginkább)'
-agent.feedback.votes_most_least: 'Értékelés (leginkább-legkevésbé)'
+agent.community.merge_community_topics: 'Visszajelzések összevonása'
+agent.community.merge_community_topics_note: 'Az összevont visszajelzés leírása hozzászólásként lesz hozzáadva a megtartott visszajelzéshez.'
+agent.community.merge_community_topics_submit: 'Vonja össze ezen két visszajelzés benyújtását'
+agent.community.merge_howto: 'Nyisson meg egy újabb visszajelzés fület az összevonáshoz'
+agent.community.new_community_topic: 'Új visszajelzés'
+agent.community.newest_on_top: 'A legújabb legfelül'
+agent.community.no_community_channels_error: 'Nincs meghatározott típus. Mielőtt hozzáadhatna típusokat a visszajelzés szekcióhoz, meg kell határoznia egy típust az adminisztrátor felületen.'
+agent.community.no_labels_explain: 'Még nem címkézett fel egyetlen visszajelzést sem. Nézzen meg egy visszajelzés benyújtást, hogy felcímkézhesse.'
+agent.community.oldest_on_top: 'A legrégebbi legfelül'
+agent.community.popularity_least_most: 'Népszerűség (legkevésbé-leginkább)'
+agent.community.popularity_most_least: 'Népszerűség (leginkább-legkevésbé)'
+agent.community.showing_results: 'Eredmények mutatása'
+agent.community.status_active: Aktív
+agent.community.status_closed: Bezárva
+agent.community.status_deleted: Törölve
+agent.community.status_hidden: Rejtett
+agent.community.status_new: Új
+agent.community.top_voted_on_top: 'A legtöbbet értékelt legfelül'
+agent.community.update_filter: 'Szűrő frissítése'
+agent.community.user_submitted_new_community_topic: '{{name}} benyújtott egy új visszajelzést'
+agent.community.vote_for_this_community_topic: 'Értékelje ezt a visszajelzést'
+agent.community.votes_least_most: 'Értékelés (legkevésbé-leginkább)'
+agent.community.votes_most_least: 'Értékelés (leginkább-legkevésbé)'
 agent.general.actions: Műveletek
 agent.general.activity_stream: 'Cselekmények listája'
 agent.general.add: Hozzáadás
@@ -431,7 +430,7 @@ agent.general.create_article: 'Cikk létrehozása'
 agent.general.create_content: 'Tartalom létrehozása'
 agent.general.create_deal: 'Ajánlat létrehozása'
 agent.general.create_download: 'Letöltés létrehozása'
-agent.general.create_feedback: 'Visszajelzés létrehozása'
+agent.general.create_community_topic: 'Visszajelzés létrehozása'
 agent.general.create_news: 'Új bejegyzés létrehozása'
 agent.general.create_status: 'Státusz létrehozása'
 agent.general.create_ticket: 'Jegy létrehozása'
@@ -539,7 +538,7 @@ agent.general.existing_picture: 'Létező kép'
 agent.general.failed: 'Nem sikerült'
 agent.general.failure: Sikertelen
 agent.general.favorite: Kedvenc
-agent.general.feedback: Visszajelzés
+agent.general.community: Visszajelzés
 agent.general.field_name: '{{field}} mező'
 agent.general.field_name_title: 'Mező neve'
 agent.general.field_type_choice: 'Előre meghatározott válaszok'
@@ -699,7 +698,7 @@ agent.general.new: Új
 agent.general.new_article: 'Új cikk'
 agent.general.new_comment: 'Új hozzászólás'
 agent.general.new_download: 'Új letöltés'
-agent.general.new_feedback: 'Új visszajelzés'
+agent.general.new_community: 'Új visszajelzés'
 agent.general.new_filter: 'Új szűrő'
 agent.general.new_note: 'Új megjegyzés'
 agent.general.new_organization: 'Új szervezet'
@@ -773,7 +772,7 @@ agent.general.phone: Telefon
 agent.general.phone_number: Telefonszám
 agent.general.phrase: Kifejezés
 agent.general.please_wait: 'Kérem, várjon'
-agent.general.popular_feedback_only: 'Csak a népszerű visszajelzések'
+agent.general.popular_community_topics_only: 'Csak a népszerű visszajelzések'
 agent.general.popularity: Népszerűség
 agent.general.position: Pozíció
 agent.general.prev: Előző
@@ -812,7 +811,7 @@ agent.general.registered_views: 'Regisztrált megtekintések'
 agent.general.related_articles: 'Kapcsolódó cikkek'
 agent.general.related_content: 'Kapcsolódó tartalom'
 agent.general.related_downloads: 'Kapcsolódó letöltések'
-agent.general.related_feedback: 'Kapcsolódó visszajelzés'
+agent.general.related_community_topic: 'Kapcsolódó visszajelzés'
 agent.general.related_news: 'Kapcsolódó hírek'
 agent.general.relative_time: 'Relatív idő'
 agent.general.remove: Eltávolítás
@@ -1049,7 +1048,7 @@ agent.interface.keyboard_shortcuts: Billentyűparancsok
 agent.interface.major_items_appear_here: 'A jegyek, felhasználók, szervezetek, cikkek, hírek, letöltések és visszajelzések itt jelennek meg.'
 agent.interface.open_new_article_form: 'Új cikk űrlap megnyitása'
 agent.interface.open_new_download_form: 'Új letöltési űrlap megnyitása'
-agent.interface.open_new_feedback_form: 'Új visszajelzési űrlap megnyitása'
+agent.interface.open_new_community_topic_form: 'Új visszajelzési űrlap megnyitása'
 agent.interface.open_new_news_form: 'Új hírek űrlap megnyitása'
 agent.interface.open_new_organization_form: 'Új szervezeti űrlap megnyitása'
 agent.interface.open_new_person_form: 'Új személy űrlap megnyitása'
@@ -1308,7 +1307,7 @@ agent.publish.move_to: 'Mozgatás ide'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} személy találta ezt a letöltést hasznosnak, {{down_votes}} személy nem találta hasznosnak ezt a letöltést'
 agent.publish.new_comment_on: 'Új hozzászólás ehhez as személyhez {{name}}'
 agent.publish.new_comment_submitted_by: '{{name}} új hozzászólást nyújtott be'
-agent.publish.new_feedback_by: '{{name}} új visszajelzést küldött'
+agent.publish.new_community_topic_by: '{{name}} új visszajelzést küldött'
 agent.publish.new_post: 'Új bejegyzés'
 agent.publish.news_comments: 'Új hozzászólás'
 agent.publish.news_list_title:
@@ -1391,7 +1390,7 @@ agent.search.simple: Egyszerű
 agent.search.type_article: Cikk
 agent.search.type_chat_conversation: Beszélgetések
 agent.search.type_download: Letöltés
-agent.search.type_feedback: Visszajelzés
+agent.search.type_community: Visszajelzés
 agent.search.type_news: Hírek
 agent.search.type_organization: Szervezetek
 agent.search.type_person: Személyek
@@ -1449,8 +1448,8 @@ agent.settings.notif_my_events: 'Az én eseményeim'
 agent.settings.notif_my_own_actions: 'Saját műveleteim'
 agent.settings.notif_new_comment: 'Egy új hozzászólást nyújtottak be'
 agent.settings.notif_new_comment_validate: 'Egy új hozzászólást nyújtottak be, melyet hitelesíteni kell'
-agent.settings.notif_new_feedback: 'Egy új visszajelzést nyújtottak be'
-agent.settings.notif_new_feedback_validate: 'Egy új visszajelzést nyújtottak be, melyet hitelesíteni kell'
+agent.settings.notif_new_community_topic: 'Egy új visszajelzést nyújtottak be'
+agent.settings.notif_new_community_topic_validate: 'Egy új visszajelzést nyújtottak be, melyet hitelesíteni kell'
 agent.settings.notif_new_user: 'Egy új felhasználó regisztrált'
 agent.settings.notif_notes_with_mentions: 'Megjegyzések @említésével'
 agent.settings.notif_notes_with_mentions_always: 'Mindig az ügyintézői üzeneten keresztül küldjön emailt és üzenetet'
@@ -1596,7 +1595,6 @@ agent.tickets.create_linked_ticket: 'Kapcsolódó jegy létrehozása'
 agent.tickets.create_new_pending_article: 'Új folyamatban lévő cikk létrehozása'
 agent.tickets.creating_a_ticket_for: 'Jegy létrehozása az alábbi célból'
 agent.tickets.creation_system: 'Rendszer létrehozása'
-agent.tickets.creation_system_gateway: 'email gateway'
 agent.tickets.creation_system_gateway_agent: 'email gateway ügyintéző által'
 agent.tickets.creation_system_gateway_person: 'email gateway felhasználó által'
 agent.tickets.creation_system_via: 'Létrehozva az alábbin keresztül:'
@@ -1670,10 +1668,8 @@ agent.tickets.hidden_because: 'Ez a jegy jelenleg rejtett, az alábbi ok miatt:'
 agent.tickets.hidden_explain: 'Ez azt jelenti, hogy a legtöbb keresés során nem szerepel a találatok között és az ügyintézők nem kapnak róla értesítést.'
 agent.tickets.hidden_status: 'Rejtett státusz'
 agent.tickets.hidden_status_deleted: Törölve
-agent.tickets.hidden_status_spam: Spam
 agent.tickets.hidden_tickets: 'Rejtett jegyek'
 agent.tickets.hold_btn: 'Jegyek szüneteltetése'
-agent.tickets.html_body: 'HTML Body'
 agent.tickets.increase_urgency_action: 'Sürgősségi szint megnövelése az alábbi mértékkel {{amount}}'
 agent.tickets.insert_text_snippets: 'Szövegsablonok beszúrása'
 agent.tickets.into_this_from_ticket: 'a #{{id}} számú jegyből ide'
@@ -1717,7 +1713,7 @@ agent.tickets.log_new_web_user_widget: 'Új jegy felhasználó által a weboldal
 agent.tickets.log_note_deleted: 'Jegyzet törölve'
 agent.tickets.log_on_article: 'az alábbi cikken "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'az alábbi letöltésen "{{title}} (ID {{id}})'
-agent.tickets.log_on_feedback: 'az alábbi visszajelzésen "{{title}} (ID {{id}})'
+agent.tickets.log_on_community_topic: 'az alábbi visszajelzésen "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'az alábbi híreken "{{title}} (ID {{id}})'
 agent.tickets.log_selected_option: 'kiválasztva: '
 agent.tickets.log_sent_from: 'Elküldött űrlapok {{email}}'
@@ -1871,7 +1867,6 @@ agent.tickets.text_body: Szövegtörzs
 agent.tickets.ticket_changes: 'Jegy változásai'
 agent.tickets.ticket_feedback: 'Jegy visszajelzés'
 agent.tickets.ticket_field_name: 'Jegy mező: {{field}}'
-agent.tickets.ticket_is_delete7d: 'Törölt jegy'
 agent.tickets.ticket_is_deleted: 'Törölt jegy'
 agent.tickets.ticket_is_marked_as_spam: 'Ez a jegy spamként lett megjelölve.'
 agent.tickets.ticket_merged: 'Jegy összevonva'
@@ -2071,7 +2066,6 @@ agent.twitter.follow: Követés
 agent.twitter.followers: Követők
 agent.twitter.following: Követ
 agent.twitter.from_account: 'A fiókból'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'Ennek a személynek adott válaszban'
 agent.twitter.interactions: Interakciók
 agent.twitter.list_title:
@@ -2121,7 +2115,6 @@ agent.twitter.starred: Becsillagozva
 agent.twitter.starred_tweets: 'Becsillagozott tweetek'
 agent.twitter.team_assigned_by: '{{name}} kinevezte az Ön csoportját ehhez a tweethez'
 agent.twitter.timeline: Idővonal
-agent.twitter.tweet: Tweet
 agent.twitter.tweets: Tweetek
 agent.twitter.unassigned_tweets: 'Ki nem osztott tweetek'
 agent.twitter.unfollow: 'Követés megszüntetése'

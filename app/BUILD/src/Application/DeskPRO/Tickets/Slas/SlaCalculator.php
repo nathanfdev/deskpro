@@ -138,14 +138,6 @@ class SlaCalculator
     {
         $dates = [];
 
-        if ($ticket->status == 'resolved') {
-            if ($ticket->date_resolved) {
-                $dates[] = $ticket->date_resolved->getTimestamp();
-            } else {
-                $dates[] = time();
-            }
-        }
-
         if ($ticket->status == 'hidden' && ($ticket->hidden_status == 'spam' || $ticket->hidden_status == 'deleted')) {
             $dates[] = time();
         }
@@ -154,18 +146,24 @@ class SlaCalculator
             $dates[] = $ticket->date_archived->getTimestamp();
         }
 
-        if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-            if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
-                // don't auto resolve sla on ticket creation, even if created by an agent
-                if ($ticket->date_first_agent_reply) {
-                    $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+        if ($this->type == self::TYPE_FIRST_RESPONSE) {
+            if ($ticket->date_last_agent_reply) {
+                if ($this->isTicketHasNotInitialAgentReply($ticket)) {
+                    // don't auto resolve sla on ticket creation, even if created by an agent
+                    if ($ticket->date_first_agent_reply) {
+                        $dates[] = $ticket->date_first_agent_reply->getTimestamp();
+                    }
+                    $dates[] = $ticket->date_last_agent_reply->getTimestamp();
                 }
-                $dates[] = $ticket->date_last_agent_reply->getTimestamp();
             }
-        }
-
-        if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_status && $ticket->status != 'awaiting_agent') {
-            $dates[] = $ticket->date_status->getTimestamp();
+        } else {
+            if ($ticket->status == 'resolved') {
+                if ($ticket->date_resolved) {
+                    $dates[] = $ticket->date_resolved->getTimestamp();
+                } else {
+                    $dates[] = time();
+                }
+            }
         }
 
         if ($dates) {
@@ -213,7 +211,7 @@ class SlaCalculator
         $times = [time()];
 
         if ($this->type == self::TYPE_FIRST_RESPONSE && $ticket->date_last_agent_reply) {
-            if ($ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp()) {
+            if ($this->isTicketHasNotInitialAgentReply($ticket)) {
                 // don't auto resolve sla on ticket creation, even if created by an agent
                 if ($ticket->date_first_agent_reply) {
                     $times[] = $ticket->date_first_agent_reply->getTimestamp();
@@ -225,7 +223,12 @@ class SlaCalculator
             $times[] = $ticket->date_archived->getTimestamp();
         }
 
-        if (($ticket->status == 'resolved' || $ticket->status == 'archived') && $ticket->date_resolved) {
+        if (
+            // First reply SLA should not be completed when the ticket status is changed and no agent reply exists
+            $this->type !== self::TYPE_FIRST_RESPONSE
+            && ($ticket->status == 'resolved' || $ticket->status == 'archived')
+            && $ticket->date_resolved
+        ) {
             $times[] = $ticket->date_resolved->getTimestamp();
         }
 
@@ -264,5 +267,33 @@ class SlaCalculator
         }
 
         return false;
+    }
+
+    /**
+     * Check if ticket has real Agent reply and not initial Agent message that created ticket.
+     * It is necessary to prevent:
+     * > don't auto resolve sla on ticket creation, even if created by an agent.
+     *
+     * @param Ticket $ticket
+     */
+    protected function isTicketHasNotInitialAgentReply(Ticket $ticket)
+    {
+        // check if there is agent reply created after ticket
+        $hasReply = $ticket->date_last_agent_reply
+                    && $ticket->date_last_agent_reply->getTimestamp() > $ticket->date_created->getTimestamp();
+
+        // if agent reply added through the 'new ticket' trigger then it is possible that
+        // agent reply creation date = ticket creation date
+        // in this case check if there is user reply exists before agent reply
+        // for simplicity we just check that first message is user reply
+        if (!$hasReply && $ticket->date_last_agent_reply && $ticket->date_last_user_reply) {
+            // ->getFirstMessage() executes separate query with limit 1 - not a big overhead
+            $firstMessage = $ticket->getFirstMessage();
+            $hasReply     = $firstMessage
+                        && $firstMessage->getPerson()
+                        && !$firstMessage->getPerson()->isAgent();
+        }
+
+        return $hasReply;
     }
 }

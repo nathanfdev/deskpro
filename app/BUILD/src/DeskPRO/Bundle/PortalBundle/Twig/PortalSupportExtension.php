@@ -174,7 +174,7 @@ class PortalSupportExtension extends \Twig_Extension
      * Check if the current user can rate a certain content entity.
      *
      * @param string $name
-     * @param $object (Atricle/Download/Feedback/News)
+     * @param $object (Atricle/Download/community/News)
      *
      * @return bool
      */
@@ -212,7 +212,7 @@ class PortalSupportExtension extends \Twig_Extension
     }
 
     /**
-     * Check if there is any content to show for: articles, news, downloads, feedback.
+     * Check if there is any content to show for: articles, news, downloads, community.
      *
      * @param string $name
      *
@@ -238,8 +238,8 @@ class PortalSupportExtension extends \Twig_Extension
                     return true;
                 }
                 break;
-            case 'feedback':
-                if ($sec->isGranted('USE_FEEDBACK') && $this->container->get('data.feedback')->hasAny()) {
+            case 'community':
+                if ($sec->isGranted('USE_COMMUNITY') && $this->container->get('data.community')->hasAny()) {
                     return true;
                 }
                 break;
@@ -465,8 +465,8 @@ class PortalSupportExtension extends \Twig_Extension
                 return preg_match('#^portal_news#', $route);
             case 'downloads':
                 return preg_match('#^portal_downloads#', $route);
-            case 'feedback':
-                return preg_match('#^portal_feedback#', $route);
+            case 'community':
+                return preg_match('#^portal_community#', $route);
             case 'tickets':
                 return preg_match('#^portal_tickets#', $route) || $route === 'portal_new_ticket';
             case 'guides':

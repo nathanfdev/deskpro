@@ -38,7 +38,7 @@ class BetaFeatureFixture extends AbstractDpFixture implements OrderedFixtureInte
 
         foreach ($collection as $feature) {
             if ($feature->isEnabledOnInstall()) {
-                $toggleManager->enableFeature($feature->getId());
+                $toggleManager->enableFeature($feature->getId(), true);
             }
         }
     }

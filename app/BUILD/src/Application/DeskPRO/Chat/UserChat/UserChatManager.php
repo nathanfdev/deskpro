@@ -658,15 +658,7 @@ class UserChatManager
             }
         }
 
-        if ($author) {
-            App::$container->get('dp.voice.task_router')->completeTaskForWorker(
-                $convo->getTaskId(),
-                'agent',
-                $author->getId()
-            );
-        } else {
-            App::$container->get('dp.voice.task_router')->endTask($convo->getTaskId());
-        }
+        App::$container->get('dp.voice.task_router')->endTask($convo->getTaskId());
 
         $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
         $this->eventDispatcher->dispatch(

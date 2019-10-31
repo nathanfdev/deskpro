@@ -2,7 +2,7 @@
 // Mixins and Resources
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic);
+@import '../../../AgentBundle/Resources/fonts/Lato.css';
 
 // Button text color based on how dark the button color is
 @function set-button-text-color($color) {
@@ -129,7 +129,7 @@ strong {
 }
 
 // All the headers
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   color: lighten($text-color, 5%);
@@ -415,7 +415,7 @@ button, .button, input[type="submit"] {
   &.disabled {
     @include generate-background-and-border($btn-link-disabled-color);
   }
-  
+
   &.right {
     float: $float-right;
   }
@@ -5145,10 +5145,10 @@ h1.fancy-header {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Feedback
+// Community
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-.feedback-filter {
+.community-filter {
   .flat-tabs {
     select {
       width: 120px;
@@ -5404,7 +5404,7 @@ h1.fancy-header {
   }
 }
 
-.feedback-form {
+.community-topic-form {
   .main-input {
     @include clearfix;
     @include margin-left(15px);
@@ -5459,7 +5459,7 @@ h1.fancy-header {
   }
 }
 
-.feedback-form-expanded {
+.community-topic-form-expanded {
   position: relative;
   top: -30px;
   @include left(20px);
@@ -5507,14 +5507,14 @@ h1.fancy-header {
   }
 }
 
-.main-feedback {
+.main-community {
   margin-top: 10px;
   .table-meta {
     top: -10px;
   }
   // Silly gfix to align the table controls to the flat tabs
 
-  .feedback-item {
+  .community-topic {
     @include clearfix;
 
     td {
@@ -5530,8 +5530,8 @@ h1.fancy-header {
       border-bottom: 0;
     }
 
-    &.feedback-list-item {
-      .feedback-item-content {
+    &.community-topic-list-item {
+      .community-topic-content {
         @media screen and (max-width: 760px) {
           .comment {
             display: none;
@@ -5541,7 +5541,7 @@ h1.fancy-header {
             display: none;
           }
 
-          .feedback-item-meta {
+          .community-topic-meta {
             display: none;
           }
         }
@@ -5558,7 +5558,7 @@ h1.fancy-header {
     }
   }
 
-  .feedback-item-controls, .feedback-item-content {
+  .community-topic-controls, .community-topic-content {
     display: block;
     padding-top: 0;
     padding-bottom: 10px;
@@ -5574,7 +5574,7 @@ h1.fancy-header {
   }
 
 
-  .feedback-status, .feedback-item-type {// Tags for feedback items
+  .community-status, .community-topic-type {// Tags for feedback items
     display: inline-block;
     float: $float-right;
     padding: 1px 10px;
@@ -5594,7 +5594,7 @@ h1.fancy-header {
     }
   }
 
-  .feedback-item-type {
+  .community-topic-type {
     background: darken($page-bg, 5%);
     float: $float-left;
     @include margin-right(10px);
@@ -5602,10 +5602,10 @@ h1.fancy-header {
   }
 
   @media screen and (max-width: 760px) {
-    .feedback-status, .feedback-item-type { float: none; }
+    .community-status, .community-topic-type { float: none; }
   }
 
-  .feedback-item-controls {
+  .community-topic-controls {
     float: $float-left;
     width: 105px;
 
@@ -5774,7 +5774,7 @@ h1.fancy-header {
     // }
   }
 
-  .feedback-item-content {
+  .community-topic-content {
     overflow: hidden;
     @include padding-left(10px);
     @include border-left(1px solid $hr-border);
@@ -5825,7 +5825,7 @@ h1.fancy-header {
   }
 
   @media screen and (max-width: 760px) {
-    .feedback-item-controls, .feedback-item-content {
+    .community-topic-controls, .community-topic-content {
       float: none;
       width: 100%;
       overflow: initital;
@@ -5835,7 +5835,7 @@ h1.fancy-header {
       border: 0;
     }
 
-    .feedback-item-content {
+    .community-topic-content {
       h1 {
         font-size: 1.25em;
         margin-top: 10px;
@@ -5843,7 +5843,7 @@ h1.fancy-header {
     }
   }
 
-  .feedback-item-meta {
+  .community-topic-meta {
     margin-top: 15px;
     color: $text-color-lighter;
     font-size: $font-size-base;
@@ -5869,7 +5869,7 @@ h1.fancy-header {
 }
 
 // Small feedback list
-.front-page-feedback {
+.front-page-community {
   @include remove-link-styling;
 
   ul {
@@ -6572,14 +6572,107 @@ ul.categories-article-list {
         width: 100%;
       }
 
+      h1 {
+        font-size: 2em;
+      }
       h2 {
+        font-size: 1.5em;
+      }
+      h3 {
+        font-size: 1.3em;
+      }
+      h4 {
         font-size: 1.15em;
       }
+      h5 {
+        font-size: 1.1em;
+      }
+      h6 {
+        font-size: 1em;
+      }
     }
-    
+
     .ticket-view-sidebar {
       flex-shrink: 0;
       width: 330px;
+    }
+
+    table {
+      border: none;
+      border-collapse: collapse;
+      empty-cells: show;
+      max-width: 100%;
+
+      &.fr-dashed-borders td,
+      &.fr-dashed-borders th {
+        border-style: dashed;
+      }
+
+      &.fr-alternate-rows tbody tr:nth-child(2n) {
+        background: #f5f5f5;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+      }
+
+      td:empty,
+      th:empty {
+        height: 20px;
+      }
+
+      td.fr-highlighted,
+      th.fr-highlighted {
+        border: 1px double red;
+      }
+
+      td.fr-thick,
+      th.fr-thick {
+        border-width: 2px;
+      }
+
+      th {
+        background: #e6e6e6;
+      }
+
+      tr td:first-child {
+        color: inherit;
+        text-align: center;
+      }
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+    ol {
+      list-style-type: decimal;
+    }
+
+    ul, ol {
+      padding: 0 0 0 40px;
+      margin: 13px 0;
+      list-style-position: inside;
+    }
+
+    ul ul, ol ul {
+      list-style-type: circle;
+      list-style-position: inside;
+      margin-left: 15px;
+    }
+    ol ol, ul ol {
+      list-style-type: lower-latin;
+      list-style-position: inside;
+      margin-left: 15px;
+    }
+  }
+
+  .dp-editor-content {
+    ul {
+      list-style: disc outside;
+    }
+    ul[data-todo] {
+      list-style: none outside none;
     }
   }
 
@@ -9926,9 +10019,8 @@ form {
     position: relative;
 
     .form-label-link {
-      position: absolute;
-      @include right(0);
-      font-size: 0.85em;;
+      float: right;
+      font-size: 0.85em;
       i {
         @include margin-left(4px);
       }
@@ -9938,6 +10030,15 @@ form {
   .field_person {
     // width: 60%;
     max-width: 620px;
+
+    .column-full {
+      display: flex;
+    }
+
+    .column-half {
+      float: none;
+      align-self: flex-end;
+    }
   }
 
   #ticket_message .dp-medium-rte {
@@ -11697,7 +11798,7 @@ body.portal-mode-focus-window {
         font-size: $font-size-base;
       }
 
-      .feedback-count {
+      .community-count {
         color: $text-color-lighter;
         @include margin-right(5px);
         display: inline-block;

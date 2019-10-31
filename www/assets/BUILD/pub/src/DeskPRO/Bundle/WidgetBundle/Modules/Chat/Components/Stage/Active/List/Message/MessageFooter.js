@@ -21,7 +21,7 @@ export class MessageFooter extends React.Component {
       <div className="dpdesignportal-message-footer">
         {false &&
           <a href="#" className="dpdesignportal-message-footer-assets-link">
-            <i className="fa fa-copy" /> Chat Assets (4)
+            <i className="fas fa-copy" /> Chat Assets (4)
           </a>
         }
 

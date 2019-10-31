@@ -14,6 +14,9 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
+use Application\LegacyApiBundle\PermissionStrategy\OpenPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
@@ -27,6 +30,22 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class MiscController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AgentPermission());
+        $multi->addPermissionStrategy(new OpenPermission(), 'helpdeskInfoAction');
+        $multi->addPermissionStrategy(new OpenPermission(), 'tokenExchangeAction');
+        $multi->addPermissionStrategy(new OpenPermission(), 'uploadAction');
+        $multi->addPermissionStrategy(new OpenPermission(), 'getSessionPersonAction');
+        $multi->addPermissionStrategy(new OpenPermission(), 'getRateLimitAction');
+
+        return $multi;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -302,6 +321,10 @@ class MiscController extends AbstractController
     {
         $person = $this->person;
 
+        if (!$person || !$person->isAgent()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $token = $this->em->getRepository(ApiToken::class)->getTokenForPerson($person);
         if (!$token) {
             $token         = new \Application\DeskPRO\Entity\ApiToken();
@@ -341,11 +364,7 @@ class MiscController extends AbstractController
 
         $props = [];
         if ($this->in->getString('tag')) {
-            switch (trim($this->in->getString('tag'))) {
-                case 'ticket_attachment':
-                    $props['tag'] = 'ticket_attachment';
-                    break;
-            }
+            $props['tag'] = trim($this->in->getString('tag'));
         }
 
         $path = $this->in->getString('path');

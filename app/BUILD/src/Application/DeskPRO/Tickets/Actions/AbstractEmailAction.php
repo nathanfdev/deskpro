@@ -16,6 +16,7 @@ use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use Application\DeskPRO\Twig\Extension\TemplatingExtension;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketEmailType;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -285,15 +286,15 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     }
 
     /**
-     * @param $template
-     * @param $arguments
-     * @param $context
+     * @param string                   $template
+     * @param array                    $arguments
+     * @param ExecutorContextInterface $context
      *
      * @throws \Exception
      *
      * @return bool|EmailBaseType
      */
-    protected function createViewModelFromTemplate($template, $arguments, $context)
+    protected function createViewModelFromTemplate($template, $arguments, ExecutorContextInterface $context)
     {
         if (strpos($template, 'SendmailBundle:emails_custom:') === 0) {
             $factory   = $this->getContainer()->get('email.custom_viewmodel_factory');
@@ -329,6 +330,11 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             return false;
         }
 
-        return call_user_func_array([$factory, $action], $arguments);
+        $model = call_user_func_array([$factory, $action], $arguments);
+        if ($model instanceof TicketEmailType) {
+            $model->setActionPerformer($factory->convertParameter($context->getPersonContext()));
+        }
+
+        return $model;
     }
 }

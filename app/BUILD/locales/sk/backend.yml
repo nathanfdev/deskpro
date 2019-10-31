@@ -1,3 +1,323 @@
+adm.agents.import_results:
+  one: '{{count}} Agent have been invited to Deskpro'
+  few: '{{count}} Agents have been invited to Deskpro'
+  many: '{{count}} Agents have been invited to Deskpro'
+  other: '{{count}} Agents have been invited to Deskpro'
+adm.agents.import_results_failed:
+  one: '{{count}} Agent Invitation Failed'
+  few: '{{count}} Agent Invitations Failed'
+  many: '{{count}} Agent Invitations Failed'
+  other: '{{count}} Agent Invitations Failed'
+adm.custom_fields.count_specific_org_fields:
+  one: '{{count}} Per-Organization Custom Field'
+  few: '{{count}} Per-Organization Custom Fields'
+  many: '{{count}} Per-Organization Custom Fields'
+  other: '{{count}} Per-Organization Custom Fields'
+adm.custom_fields.count_specific_user_fields:
+  one: '{{count}} Per-User Custom Field'
+  few: '{{count}} Per-User Custom Fields'
+  many: '{{count}} Per-User Custom Fields'
+  other: '{{count}} Per-User Custom Fields'
+adm.general.count_custom_fields:
+  one: '{{count}} Custom Field'
+  few: '{{count}} Custom Fields'
+  many: '{{count}} Custom Fields'
+  other: '{{count}} Custom Fields'
+adm.general.count_labels:
+  one: '{{count}} Label'
+  few: '{{count}} Labels'
+  many: '{{count}} Labels'
+  other: '{{count}} Labels'
+adm.general.x_api_keys:
+  one: '{{count}} API Key'
+  few: '{{count}} API Keys'
+  many: '{{count}} API Keys'
+  other: '{{count}} API Keys'
+adm.general.x_departments:
+  one: '{{count}} Department'
+  few: '{{count}} Departments'
+  many: '{{count}} Departments'
+  other: '{{count}} Departments'
+adm.general.x_email_bans:
+  one: '{{count}} Email Ban'
+  few: '{{count}} Email Bans'
+  many: '{{count}} Email Bans'
+  other: '{{count}} Email Bans'
+adm.general.x_community_active_statuses:
+  one: '{{count}} Community Active Status'
+  few: '{{count}} Community Active Statuses'
+  many: '{{count}} Community Active Statuses'
+  other: '{{count}} Community Active Statuses'
+adm.general.x_community_categories:
+  one: '{{count}} Category'
+  few: '{{count}} Categories'
+  many: '{{count}} Categories'
+  other: '{{count}} Categories'
+adm.general.x_community_closed_statuses:
+  one: '{{count}} Community Closed Status'
+  few: '{{count}} Community Closed Statuses'
+  many: '{{count}} Community Closed Statuses'
+  other: '{{count}} Community Closed Statuses'
+adm.general.x_community_statuses:
+  one: '{{count}} Community Status'
+  few: '{{count}} Community Statuses'
+  many: '{{count}} Community Statuses'
+  other: '{{count}} Community Statuses'
+adm.general.x_community_channels:
+  one: '{{count}} Community Channel'
+  few: '{{count}} Community Channels'
+  many: '{{count}} Community Channels'
+  other: '{{count}} Community Channels'
+adm.general.x_ip_bans:
+  one: '{{count}} IP Ban'
+  few: '{{count}} IP Bans'
+  many: '{{count}} IP Bans'
+  other: '{{count}} IP Bans'
+adm.general.x_ticket_escalations:
+  one: '{{count}} Ticket Escalation'
+  few: '{{count}} Ticket Escalations'
+  many: '{{count}} Ticket Escalations'
+  other: '{{count}} Ticket Escalations'
+adm.general.x_ticket_filters:
+  one: '{{count}} Ticket Filter'
+  few: '{{count}} Ticket Filters'
+  many: '{{count}} Ticket Filters'
+  other: '{{count}} Ticket Filters'
+adm.general.x_twitter_accounts:
+  one: '{{count}} Twitter Account'
+  few: '{{count}} Twitter Accounts'
+  many: '{{count}} Twitter Accounts'
+  other: '{{count}} Twitter Accounts'
+adm.general.x_user_rules:
+  one: '{{count}} User Rule'
+  few: '{{count}} User Rules'
+  many: '{{count}} User Rules'
+  other: '{{count}} User Rules'
+adm.round_robins.count:
+  one: '{{count}} Round Robin'
+  few: '{{count}} Round Robins'
+  many: '{{count}} Round Robins'
+  other: '{{count}} Round Robins'
+adm.round_robins.delete_warn:
+  one: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} trigger and remove the round robin actions.'
+  few: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+  many: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+  other: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+adm.round_robins.disable_warn:
+  one: 'Disabling Round Robin will disable {{count}} trigger and remove the round robin actions. You should update or delete affected trigger'
+  few: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+  many: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+  other: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+adm.ticket_escalations.count_escalations:
+  one: '{{count}} Escalation'
+  few: '{{count}} Escalations'
+  many: '{{count}} Escalations'
+  other: '{{count}} Escalations'
+adm.ticket_filters.count_filters:
+  one: '{{count}} Filter'
+  few: '{{count}} Filters'
+  many: '{{count}} Filters'
+  other: '{{count}} Filters'
+adm.ticket_macros.count_macros:
+  one: '{{count}} Macro'
+  few: '{{count}} Macros'
+  many: '{{count}} Macros'
+  other: '{{count}} Macros'
+adm.ticket_slas.count_slas:
+  one: '{{count}} SLA'
+  few: '{{count}} SLAs'
+  many: '{{count}} SLAs'
+  other: '{{count}} SLAs'
+adm.ticket_triggers.count_dep_triggers:
+  one: '{{count}} Department Trigger'
+  few: '{{count}} Department Triggers'
+  many: '{{count}} Department Triggers'
+  other: '{{count}} Department Triggers'
+adm.ticket_triggers.count_email_triggers:
+  one: '{{count}} Email Account Trigger'
+  few: '{{count}} Email Account Triggers'
+  many: '{{count}} Email Account Triggers'
+  other: '{{count}} Email Account Triggers'
+adm.ticket_triggers.count_satisfaction_triggers:
+  one: '{{count}} Satisfaction Trigger'
+  few: '{{count}} Satisfaction Triggers'
+  many: '{{count}} Satisfaction Triggers'
+  other: '{{count}} Satisfaction Triggers'
+adm.ticket_triggers.count_triggers:
+  one: '{{count}} Trigger'
+  few: '{{count}} Triggers'
+  many: '{{count}} Triggers'
+  other: '{{count}} Triggers'
+adm.ticket_webhooks.count_webhooks:
+  one: '{{count}} Webhook'
+  few: '{{count}} Webhooks'
+  many: '{{count}} Webhooks'
+  other: '{{count}} Webhooks'
+adm.tickets.x_email_accounts:
+  one: '{{count}} Email Account'
+  few: '{{count}} Email Accounts'
+  many: '{{count}} Email Accounts'
+  other: '{{count}} Email Accounts'
+admin.agents.deleted_agents_exist:
+  one: 'There is 1 deleted agent'
+  few: 'There are {{count}} deleted agents'
+  many: 'There are {{count}} deleted agents'
+  other: 'There are {{count}} deleted agents'
+admin.brands.x_brands:
+  one: '{{count}} Brand'
+  few: '{{count}} Brands'
+  many: '{{count}} Brands'
+  other: '{{count}} Brands'
+admin.channels.facebook_x_pages:
+  one: '{{count}} Facebook Page'
+  few: '{{count}} Facebook Pages'
+  many: '{{count}} Facebook Pages'
+  other: '{{count}} Facebook Pages'
+admin.channels.sms_x_accounts:
+  one: '{{count}} SMS Account'
+  few: '{{count}} SMS Accounts'
+  many: '{{count}} SMS Accounts'
+  other: '{{count}} SMS Accounts'
+admin.departments.count_agents:
+  one: '{{count}} agent'
+  few: '{{count}} agents'
+  many: '{{count}} agents'
+  other: '{{count}} agents'
+admin.departments.count_chats:
+  one: '{0} 0 chats'
+  few: '{1} 1 chat'
+  many: '{1} 1 chat'
+  other: '{1} 1 chat'
+admin.departments.count_tickets:
+  one: '{0} are 0 tickets'
+  few: '{1} is 1 ticket'
+  many: '{1} is 1 ticket'
+  other: '{1} is 1 ticket'
+admin.community.count_active_statuses:
+  one: '{{count}} active status'
+  few: '{{count}} active statuses'
+  many: '{{count}} active statuses'
+  other: '{{count}} active statuses'
+admin.community.count_closed_statuses:
+  one: '{{count}} closed status'
+  few: '{{count}} closed statuses'
+  many: '{{count}} closed statuses'
+  other: '{{count}} closed statuses'
+admin.community.count_community_topics:
+  one: '{{count}} сommunity topic'
+  few: '{{count}} сommunity topics'
+  many: '{{count}} сommunity topics'
+  other: '{{count}} сommunity topics'
+admin.general.count_custom_fields:
+  one: '{{count}} Custom Field'
+  few: '{{count}} Custom Fields'
+  many: '{{count}} Custom Fields'
+  other: '{{count}} Custom Fields'
+admin.general.count_labels:
+  one: '{{count}} Label'
+  few: '{{count}} Labels'
+  many: '{{count}} Labels'
+  other: '{{count}} Labels'
+admin.general.time_x_day:
+  one: '1 day'
+  few: '{{count}} days'
+  many: '{{count}} days'
+  other: '{{count}} days'
+admin.general.time_x_hour:
+  one: '1 hour'
+  few: '{{count}} hours'
+  many: '{{count}} hours'
+  other: '{{count}} hours'
+admin.general.time_x_minute:
+  one: '1 minute'
+  few: '{{count}} minutes'
+  many: '{{count}} minutes'
+  other: '{{count}} minutes'
+admin.general.time_x_month:
+  one: '1 month'
+  few: '{{count}} months'
+  many: '{{count}} months'
+  other: '{{count}} months'
+admin.general.time_x_second:
+  one: '1 second'
+  few: '{{count}} seconds'
+  many: '{{count}} seconds'
+  other: '{{count}} seconds'
+admin.general.time_x_week:
+  one: '1 week'
+  few: '{{count}} weeks'
+  many: '{{count}} weeks'
+  other: '{{count}} weeks'
+admin.general.time_x_year:
+  one: '1 year'
+  few: '{{count}} years'
+  many: '{{count}} years'
+  other: '{{count}} years'
+admin.general.x_departments:
+  one: '{{count}} Department'
+  few: '{{count}} Departments'
+  many: '{{count}} Departments'
+  other: '{{count}} Departments'
+admin.general.you_are_outdated_by_x_buils:
+  one: 'Your helpdesk is outdated by {{count}} versions'
+  few: 'Your helpdesk is outdated by {{count}} versions'
+  many: 'Your helpdesk is outdated by {{count}} versions'
+  other: 'Your helpdesk is outdated by {{count}} versions'
+admin.logs.error_logs_count:
+  one: 'Error Logs ({{count}})'
+  few: 'Error Logs ({{count}})'
+  many: 'Error Logs ({{count}})'
+  other: 'Error Logs ({{count}})'
+admin.server.count_files_will_be_used:
+  one: '{0} {{count}} files with a total size of {{size}} will be moved. '
+  few: '{1} {{count}} file with a total size of {{size}} will be moved.'
+  many: '{1} {{count}} file with a total size of {{size}} will be moved.'
+  other: '{1} {{count}} file with a total size of {{size}} will be moved.'
+admin.templates.count_custom:
+  one: '<i>{{count}}</i> custom'
+  few: '<i>{{count}}</i> custom'
+  many: '<i>{{count}}</i> custom'
+  other: '<i>{{count}}</i> custom'
+admin.templates.count_outdated:
+  one: '<i>{{count}}</i> outdated'
+  few: '<i>{{count}}</i> outdated'
+  many: '<i>{{count}}</i> outdated'
+  other: '<i>{{count}}</i> outdated'
+admin.templates.count_template:
+  one: '<i>{{count}}</i> template'
+  few: '<i>{{count}}</i> templates'
+  many: '<i>{{count}}</i> templates'
+  other: '<i>{{count}}</i> templates'
+admin.tickets.have_count_categories:
+  one: 'You have 1 categories.'
+  few: 'You have {{count}} categories.'
+  many: 'You have {{count}} categories.'
+  other: 'You have {{count}} categories.'
+admin.tickets.have_count_departments:
+  one: 'You have 1 department.'
+  few: 'You have {{count}} departments.'
+  many: 'You have {{count}} departments.'
+  other: 'You have {{count}} departments.'
+admin.tickets.have_count_priorities:
+  one: 'You have 1 priorities.'
+  few: 'You have {{count}} priorities.'
+  many: 'You have {{count}} priorities.'
+  other: 'You have {{count}} priorities.'
+admin.tickets.have_count_products:
+  one: 'You have 1 products.'
+  few: 'You have {{count}} products.'
+  many: 'You have {{count}} products.'
+  other: 'You have {{count}} products.'
+admin.tickets.have_count_workflows:
+  one: 'You have 1 workflows.'
+  few: 'You have {{count}} workflows.'
+  many: 'You have {{count}} workflows.'
+  other: 'You have {{count}} workflows.'
+admin.tickets.x_email_accounts:
+  one: '{{count}} Email Account'
+  few: '{{count}} Email Accounts'
+  many: '{{count}} Email Accounts'
+  other: '{{count}} Email Accounts'
 agent.chat.added_as_participant: 'Pridaný ako účastník konania'
 agent.chat.agent_chats: 'Konverzácie Operátora'
 agent.chat.between_members: 'Konverzácia medzi:'
@@ -5,9 +325,15 @@ agent.chat.chat_history: 'História konverzácie'
 agent.chat.chat_started_by: 'Konverzácia začala'
 agent.chat.chat_transcript: 'Opis konverzácie'
 agent.chat.chat_with_x: 'Konverzácia s {{name}}'
+agent.chat.count_agents:
+  one: '1 online agent'
+  few: '{{count}} online agents'
+  many: '{{count}} online agents'
+  other: '{{count}} online agents'
 agent.chat.count_seconds:
   one: '{{count}} sekunda'
   few: '{{count}} sekúnd'
+  many: '{{count}} sekúnd'
   other: '{{count}} sekúnd'
 agent.chat.filter_title_assigned: 'Pripojené konverzácie'
 agent.chat.filter_title_mine: 'Moje konverzácie'
@@ -25,6 +351,7 @@ agent.chat.leave_unassign: 'Odhlásiť sa a odísť'
 agent.chat.list_title:
   one: '1 Konverzácia'
   few: '{{count}} Konverácie'
+  many: '{{count}} Konverácie'
   other: '{{count}} Konverácie'
 agent.chat.msg_agent_timeout: '{{agent_name}}, čas vypršal'
 agent.chat.msg_assigned_agent: 'Chat priradený pre: {{agent_name}}'
@@ -74,22 +401,25 @@ agent.chrome.chat_list_no-online-users: 'Nie sú žiadni online užívatelia'
 agent.chrome.chat_list_online-users:
   one: '<span class="count-online-users">1</span> online užívateľ'
   few: '<span class="count-online-users">{{count}}</span> online užívateľov'
+  many: '<span class="count-online-users">{{count}}</span> online užívateľov'
   other: '<span class="count-online-users">{{count}}</span> online užívateľov'
 agent.chrome.chat_logged-in: 'Prihlásený do konverzácie'
 agent.chrome.chat_logged-out: 'Odhlásený z konverzácie'
 agent.chrome.chat_online-agents:
   one: '<span class="userchat-online-agents-count">{{count}}</span> operátor'
   few: '<span class="userchat-online-agents-count">{{count}}</span> operátorov'
+  many: '<span class="userchat-online-agents-count">{{count}}</span> operátorov'
   other: '<span class="userchat-online-agents-count">{{count}}</span> operátorov'
 agent.chrome.chat_online-users:
   one: '<span class="userchat-online-users-count">{{count}}</span> užívateľ'
   few: '<span class="userchat-online-users-count">{{count}}</span> užívateľov'
+  many: '<span class="userchat-online-users-count">{{count}}</span> užívateľov'
   other: '<span class="userchat-online-users-count">{{count}}</span> užívateľov'
 agent.chrome.chat_sign-in: 'Prihlásiť sado konverzácie'
 agent.chrome.chat_sign-out: 'Odhlásiť sa z konverzácie'
 agent.chrome.create_new-article: 'Nový článok'
 agent.chrome.create_new-download: 'Nové stiahnutie'
-agent.chrome.create_new-feedback: 'Nová spätná väzba'
+agent.chrome.create_new-community: 'Nová spätná väzba'
 agent.chrome.create_new-news: 'Nová novinka'
 agent.chrome.create_new-organization: 'Nová organizácia'
 agent.chrome.create_new-person: 'Nová osoba'
@@ -115,7 +445,7 @@ agent.chrome.link_logout: 'Odhlásiť sa'
 agent.chrome.link_preferences: Preferencie
 agent.chrome.nav_admin_settings: 'Administrátorské nastavenia'
 agent.chrome.nav_agentchat: 'Operátorské IM'
-agent.chrome.nav_feedback: 'Spätná väzba'
+agent.chrome.nav_community: 'Spätná väzba'
 agent.chrome.nav_publish: Publikovať
 agent.chrome.nav_reports: Reporty
 agent.chrome.nav_search: Hľadať
@@ -132,7 +462,7 @@ agent.chrome.quicksearch_title: 'Bar rýchleho vyhľadávania'
 agent.chrome.quicksearch_title-articles: Články
 agent.chrome.quicksearch_title-chat: Konverzácia
 agent.chrome.quicksearch_title-downloads: Stiahnutia
-agent.chrome.quicksearch_title-feedback: 'Spätná väzba'
+agent.chrome.quicksearch_title-community: 'Spätná väzba'
 agent.chrome.quicksearch_title-news: Novinky
 agent.chrome.quicksearch_title-orgs: Organizácie
 agent.chrome.quicksearch_title-people: Ľudia
@@ -143,6 +473,7 @@ agent.chrome.recent_list-none: 'Neotvorili ste ešte žiadne tabuľky'
 agent.chrome.search-show-more:
   one: 'Zobraziť ešte {{count}}'
   few: 'Zobraziť ešte {{count}}'
+  many: 'Zobraziť ešte {{count}}'
   other: 'Zobraziť ešte {{count}}'
 agent.defaults.default_style: 'Východzí štýl'
 agent.defaults.team_lvl1_support: 'Pomoc prvého stupňa'
@@ -204,6 +535,11 @@ agent.emails.notice_login_attempt: 'Niekto sa snažil prihlásiť na Váš úče
 agent.emails.person_replied: '{{name}} odpovedal na "{{subject}}"'
 agent.emails.referring_page: 'Odkazovať sa na stránku'
 agent.emails.reply_above_line: 'ODPOVEĎ VYŠŠIE'
+agent.emails.reply_sent_to_ccs:
+  one: 'and {{count}} CC''d user:'
+  few: 'and {{count}} CC''d users:'
+  many: 'and {{count}} CC''d users:'
+  other: 'and {{count}} CC''d users:'
 agent.emails.subject_email_change_merge: 'Zmena overovacieho e-mailu a spájač účtov'
 agent.emails.subject_error_forwarded_email: 'Chyba s Vaším preposlaným e-mailom: {{subject}}'
 agent.emails.subject_error_with_message: 'Chyba s Vasou správou: {{subject}}'
@@ -246,39 +582,44 @@ agent.emails.view_your_tasks: 'Zobraziť Vaše úlohy'
 agent.emails.view_your_teams_tasks: 'Zobraziť úlohy Vášho teamu'
 agent.emails.view_your_tweets: 'Zobraziť Vaše tweety'
 agent.emails.your_initial_password: 'Vaše počiatočné heslo'
-agent.feedback.any_category: 'Hocijaká kategória'
-agent.feedback.any_status: 'Hocijaký status'
-agent.feedback.count_votes: '{{display_count}} hlas|{{display_count}} hlasov'
-agent.feedback.feedback_deleted: 'Táto spätná väzba bola odstránená'
-agent.feedback.feedback_to_review: 'Spätná väzba na preskúmanie'
-agent.feedback.least_voted_on_top: 'Najmenej hodnotené na vrchu'
-agent.feedback.list_title:
+agent.community.any_channel: 'Hocijaká kategória'
+agent.community.any_status: 'Hocijaký status'
+agent.community.count_votes:
+  one: '{{display_count}} vote'
+  few: '{{display_count}} votes'
+  many: '{{display_count}} votes'
+  other: '{{display_count}} votes'
+agent.community.community_topic_deleted: 'Táto spätná väzba bola odstránená'
+agent.community.community_topics_to_review: 'Spätná väzba na preskúmanie'
+agent.community.least_voted_on_top: 'Najmenej hodnotené na vrchu'
+agent.community.list_title:
   one: '1 podanie'
   few: '{{count}} podaní'
+  many: '{{count}} podaní'
   other: '{{count}} podaní'
-agent.feedback.merge_feedback: 'Spojiť spätnú väzbu'
-agent.feedback.merge_feedback_note: 'Opis zo spojenej spätnej väzby bude pridaný ako komentár do ponechanej spätnej väzby.'
-agent.feedback.merge_feedback_submit: 'Spojiť tieto podania dvoch spätných väzieb'
-agent.feedback.merge_howto: 'Otvoriť ďalšie okno spätnej väzby pre spojenie'
-agent.feedback.new_feedback: 'Nová spätná väzba:'
-agent.feedback.newest_on_top: 'Najnovšie na vrchu'
-agent.feedback.no_feedback_cats_error: 'Nie sú definované žiadne typy. Prv, než budete vedieť pridávať typy do sekcie spätných väzieb, musíte definovať typ v administrátorskom rozhraní.'
-agent.feedback.no_labels_explain: 'Zatiaľ ste neoštítkovali žiadnu spätnú väzbu.  Zobraziť podanie spätnej väzby pre jej oštítkovanie.'
-agent.feedback.oldest_on_top: 'Najstaršie na vrchu'
-agent.feedback.popularity_least_most: 'Popularita (Najmenej-Najviac)'
-agent.feedback.popularity_most_least: 'Popularita (Najviac-Najmenej)'
-agent.feedback.showing_results: 'Zobrazuje výsledky'
-agent.feedback.status_active: Aktívne
-agent.feedback.status_closed: Uzavreté
-agent.feedback.status_deleted: Zmazané
-agent.feedback.status_hidden: Skryté
-agent.feedback.status_new: Nové
-agent.feedback.top_voted_on_top: 'Najviac hodnotené na vrchu'
-agent.feedback.update_filter: 'Aktualizovať filter'
-agent.feedback.user_submitted_new_feedback: '{{name}} potvrdil novú spätnú väzbu'
-agent.feedback.vote_for_this_feedback: 'Hlasuj pre túto spätnú väzbu'
-agent.feedback.votes_least_most: 'Hlasy (Najmenej-Najviac)'
-agent.feedback.votes_most_least: 'Hlasy (Najviac-Najmenej)'
+agent.community.merge_community_topics: 'Spojiť spätnú väzbu'
+agent.community.merge_community_topics_note: 'Opis zo spojenej spätnej väzby bude pridaný ako komentár do ponechanej spätnej väzby.'
+agent.community.merge_community_topics_submit: 'Spojiť tieto podania dvoch spätných väzieb'
+agent.community.merge_howto: 'Otvoriť ďalšie okno spätnej väzby pre spojenie'
+agent.community.new_community_topic: 'Nová spätná väzba:'
+agent.community.newest_on_top: 'Najnovšie na vrchu'
+agent.community.no_community_channels_error: 'Nie sú definované žiadne typy. Prv, než budete vedieť pridávať typy do sekcie spätných väzieb, musíte definovať typ v administrátorskom rozhraní.'
+agent.community.no_labels_explain: 'Zatiaľ ste neoštítkovali žiadnu spätnú väzbu.  Zobraziť podanie spätnej väzby pre jej oštítkovanie.'
+agent.community.oldest_on_top: 'Najstaršie na vrchu'
+agent.community.popularity_least_most: 'Popularita (Najmenej-Najviac)'
+agent.community.popularity_most_least: 'Popularita (Najviac-Najmenej)'
+agent.community.showing_results: 'Zobrazuje výsledky'
+agent.community.status_active: Aktívne
+agent.community.status_closed: Uzavreté
+agent.community.status_deleted: Zmazané
+agent.community.status_hidden: Skryté
+agent.community.status_new: Nové
+agent.community.top_voted_on_top: 'Najviac hodnotené na vrchu'
+agent.community.update_filter: 'Aktualizovať filter'
+agent.community.user_submitted_new_community_topic: '{{name}} potvrdil novú spätnú väzbu'
+agent.community.vote_for_this_community_topic: 'Hlasuj pre túto spätnú väzbu'
+agent.community.votes_least_most: 'Hlasy (Najmenej-Najviac)'
+agent.community.votes_most_least: 'Hlasy (Najviac-Najmenej)'
 agent.general.actions: Akcie
 agent.general.activity_stream: 'Prúd aktivít'
 agent.general.add: Pridať
@@ -411,14 +752,17 @@ agent.general.count: Počet
 agent.general.count_chat:
   one: '1 konverzácia'
   few: '{{count}} konverzácií'
+  many: '{{count}} konverzácií'
   other: '{{count}} konverzácií'
 agent.general.count_tickets:
   one: '1 tiket'
   few: '{{count}} tiketov'
+  many: '{{count}} tiketov'
   other: '{{count}} tiketov'
 agent.general.count_votecount_votes:
   one: '1 hlas'
   few: '{{count}} hlasov'
+  many: '{{count}} hlasov'
   other: '{{count}} hlasov'
 agent.general.countries: Krajiny
 agent.general.create: Vytvoriť
@@ -428,7 +772,7 @@ agent.general.create_article: 'Vytvoriť nový clánok'
 agent.general.create_content: 'Vytvoriť obsah'
 agent.general.create_deal: 'Vytvoriť dohodu'
 agent.general.create_download: 'Vytvoriť stiahnutie'
-agent.general.create_feedback: 'Vytvoriť spätnú väzbu'
+agent.general.create_community_topic: 'Vytvoriť spätnú väzbu'
 agent.general.create_news: 'Vytvoriť nový príspevok'
 agent.general.create_status: 'Vytvoriť status'
 agent.general.create_ticket: 'Vytvoriť tiket'
@@ -534,7 +878,7 @@ agent.general.existing_picture: 'Existujúci obrázok'
 agent.general.failed: Zlyhalo
 agent.general.failure: Zlyhanie
 agent.general.favorite: Obľúbené
-agent.general.feedback: 'Spätná väzba'
+agent.general.community: 'Spätná väzba'
 agent.general.field_name: 'Pole: {{field}}'
 agent.general.field_name_title: 'Názov poľa'
 agent.general.field_type_choice: 'Pred-defnované možnosti'
@@ -692,7 +1036,7 @@ agent.general.new: Nové
 agent.general.new_article: 'Nový článok'
 agent.general.new_comment: 'Nový komentár'
 agent.general.new_download: 'Nové stiahnutie'
-agent.general.new_feedback: 'Nová spätná väzba'
+agent.general.new_community: 'Nová spätná väzba'
 agent.general.new_filter: 'Nový filter'
 agent.general.new_note: 'Nová poznámka'
 agent.general.new_organization: 'Nová organizácia'
@@ -766,7 +1110,7 @@ agent.general.person_id: 'Užívateľské ID'
 agent.general.phone: Telefón
 agent.general.phrase: Fráza
 agent.general.please_wait: 'Prosím čakajte'
-agent.general.popular_feedback_only: 'Iba populárna spätná väzba'
+agent.general.popular_community_topics_only: 'Iba populárna spätná väzba'
 agent.general.popularity: Popularita
 agent.general.position: Pozícia
 agent.general.prev: Predchádzajúce
@@ -805,7 +1149,7 @@ agent.general.registered_views: 'Registrované zobrazenia'
 agent.general.related_articles: 'Podobné články'
 agent.general.related_content: 'Podobný obsah'
 agent.general.related_downloads: 'Podobné stiahnutia'
-agent.general.related_feedback: 'Podobná spätná väzba'
+agent.general.related_community_topic: 'Podobná spätná väzba'
 agent.general.related_news: 'Podobné novinky'
 agent.general.relative_time: 'Relatívny čas'
 agent.general.remove: Odstrániť
@@ -957,10 +1301,12 @@ agent.general.view: Zobraziť
 agent.general.view_all_x_chats:
   one: 'Zobraziť 1 konverzáciu'
   few: 'Zobraziť  všetkých {{count}} koverzácií'
+  many: 'Zobraziť  všetkých {{count}} koverzácií'
   other: 'Zobraziť  všetkých {{count}} koverzácií'
 agent.general.view_all_x_tickets:
   one: 'Zobraziť 1 tiket'
   few: 'Zobraziť všetkých {{count}} tiketov'
+  many: 'Zobraziť všetkých {{count}} tiketov'
   other: 'Zobraziť všetkých {{count}} tiketov'
 agent.general.view_in_user_interface: 'Zobraziť v užívateľskom rozhraní'
 agent.general.view_more: 'Zobraziť viac'
@@ -983,6 +1329,7 @@ agent.general.x_before_y: '{{field}} pred {{value}}'
 agent.general.x_down_votes:
   one: '1 zlý hlas'
   few: '{{count}} zlých hlasov'
+  many: '{{count}} zlých hlasov'
   other: '{{count}} zlých hlasov'
 agent.general.x_include_y: '{{field}} zahŕňa {{value}}'
 agent.general.x_is_between_y_and_z: '{{field}} je medzi {{value1}} a {{value2}}'
@@ -995,6 +1342,7 @@ agent.general.x_selected: '{{num_placeholder}} vybraných'
 agent.general.x_up_votes:
   one: '1 kladný hlas'
   few: '{{count}} kladných hlasov'
+  many: '{{count}} kladných hlasov'
   other: '{{count}} kladných hlasov'
 agent.general.years: roky
 agent.general.your_email_address: 'Vaša e-mailová adresa'
@@ -1036,7 +1384,7 @@ agent.interface.keyboard_shortcuts: 'Klávesové skratky'
 agent.interface.major_items_appear_here: 'Tikety, užívatelia, organizácie, články, novinky. stiahnutia a spätné väzby sa otvárajú tu.'
 agent.interface.open_new_article_form: 'Otvoriť formulár nového článku'
 agent.interface.open_new_download_form: 'Otvoriť formulár nového stiahnutia'
-agent.interface.open_new_feedback_form: 'Otvoriť formulár novej spätnej väzby'
+agent.interface.open_new_community_topic_form: 'Otvoriť formulár novej spätnej väzby'
 agent.interface.open_new_news_form: 'Otvoriť formulár novej novinky'
 agent.interface.open_new_organization_form: 'Otvoriť formulár novej organiácie'
 agent.interface.open_new_person_form: 'Otvoriť formulár novej osoby'
@@ -1108,16 +1456,19 @@ agent.organizations.email_domain_assoc_explain: 'Užívatelia s e-mailami na tej
 agent.organizations.email_domain_assoc_move:
   one: 'Nastaviť ako spolupracovníka 1 užívateľa'
   few: 'Nastaviť ako spolupracovníkov {{count}} užívateľov'
+  many: 'Nastaviť ako spolupracovníkov {{count}} užívateľov'
   other: 'Nastaviť ako spolupracovníkov {{count}} užívateľov'
 agent.organizations.email_domain_assoc_move_all:
   one: 'Nastaviť ako spolupracovníka 1 užívateľa, ktorý už patrí do inej organizácie'
   few: 'Nastaviť ako spolupracovníkov {{count}} užívateľov, ktorí už patria do inej organizácie'
+  many: 'Nastaviť ako spolupracovníkov {{count}} užívateľov, ktorí už patria do inej organizácie'
   other: 'Nastaviť ako spolupracovníkov {{count}} užívateľov, ktorí už patria do inej organizácie'
 agent.organizations.email_domain_assoc_none: 'Nastaviť e-mailovú doménu pre automatické pridelenie do tejto organizácie.'
 agent.organizations.email_domain_assoc_remove: 'Odstrániť všetky domény'
 agent.organizations.email_domain_assoc_remove_users:
   one: 'Odstrániť e-mailovú doménu a odobrať 1 užívateľa z tejto organizácie'
   few: 'Odstrániť e-mailovú doménu a odobrať {{count}} užívateľov z tejto organizácie'
+  many: 'Odstrániť e-mailovú doménu a odobrať {{count}} užívateľov z tejto organizácie'
   other: 'Odstrániť e-mailovú doménu a odobrať {{count}} užívateľov z tejto organizácie'
 agent.organizations.email_domain_assoc_title: 'Združenia e-mailových domén pre {{name}}'
 agent.organizations.enter_position: 'Zadajte pozíciu'
@@ -1125,6 +1476,7 @@ agent.organizations.is_empty: 'Táto organizácia nemá žiadnych členov'
 agent.organizations.list_title:
   one: '1 organizácia'
   few: '{{count}} organizácií'
+  many: '{{count}} organizácií'
   other: '{{count}} organizácií'
 agent.organizations.no_slas: 'Žiadne SLA-čka niesú automaticky prideľované k tejto organizácii'
 agent.organizations.org_manager_click_to_remove: 'Manažér organizácie. Kliknite pre odstránenie.'
@@ -1151,6 +1503,7 @@ agent.people.contact_info_for_x: 'Kontaktné informácie pre {{name}}'
 agent.people.count_members:
   one: '{{count}} člen'
   few: '{{count}} členov'
+  many: '{{count}} členov'
   other: '{{count}} členov'
 agent.people.create_person: 'Vytvoriť osobu'
 agent.people.creation_by: Vytvorený
@@ -1169,6 +1522,7 @@ agent.people.is_agent: 'Je operátor'
 agent.people.list_title:
   one: '1 osoba'
   few: '{{count}}'
+  many: ' osôb'
   other: ' osôb'
 agent.people.login_as_user: 'Prihlásiť sa ako Užívateľ'
 agent.people.make_primary_email: 'nastavit ako prmárne'
@@ -1234,6 +1588,7 @@ agent.publish.comment_requires_validation: 'Tento komentár potrebuje overenie'
 agent.publish.comments_list_title:
   one: '1 komentár'
   few: '{{count}} komentárov'
+  many: '{{count}} komentárov'
   other: '{{count}} komentárov'
 agent.publish.comments_to_validate: 'Komentáre na prezretie'
 agent.publish.compare_selected: 'Porovnať zvolené'
@@ -1254,6 +1609,7 @@ agent.publish.downloads_highest_lowest: 'Počet stiahnutí (Najvyšší-Najniž�
 agent.publish.downloads_list_title:
   one: '1 stiahnutie'
   few: '{{count}} stiahnutí'
+  many: '{{count}} stiahnutí'
   other: '{{count}} stiahnutí'
 agent.publish.downloads_lowest_highest: 'Počet stiahnutí (Najnižší-Najvyšší)'
 agent.publish.draft_content: 'Moje návrhy'
@@ -1261,6 +1617,7 @@ agent.publish.draft_revision: Zmeniť
 agent.publish.drafts_list_title:
   one: '1 návrh'
   few: '{{count}} návrhov'
+  many: '{{count}} návrhov'
   other: '{{count}} návrhov'
 agent.publish.drop_file_to_add: 'Presuňte Váš súbor sem pre pridanie do príspevku'
 agent.publish.edit_category_btn: 'Upraviť kategóriu'
@@ -1269,25 +1626,34 @@ agent.publish.error_kb_cats_same: 'Kategórie sú rovnaké.'
 agent.publish.error_kb_missing:
   one: '{{count}} článok nenájdený.'
   few: '{{count}} článkov nenájdených.'
+  many: '{{count}} článkov nenájdených.'
   other: '{{count}} článkov nenájdených.'
 agent.publish.error_kb_not_in_db: 'Kategória nebola nájdená.'
 agent.publish.error_kb_perm_denied:
   one: '{{count}} problém povolenia.'
   few: '{{count}} problémov povolení.'
+  many: '{{count}} problémov povolení.'
   other: '{{count}} problémov povolení.'
 agent.publish.error_kb_unaffected: 'Niektoré články neboli ovplyvnené:'
 agent.publish.event_time_ago_at_when: '{{ago}} dňa {{date}}'
 agent.publish.event_time_ago_by_who_at_when: '{{ago}} užívateľom{{name}} dňa {{date}}'
 agent.publish.for_ticket: 'Pre tiket'
 agent.publish.glossary: Glosár
+agent.publish.guide_list_title:
+  one: '1 Guide'
+  few: '{{count}} Guides'
+  many: '{{count}} Guides'
+  other: '{{count}} Guides'
 agent.publish.helpful: Nápomocné
 agent.publish.kb_list_title:
   one: '1 článok'
   few: '{{count}} článkov'
+  many: '{{count}} článkov'
   other: '{{count}} článkov'
 agent.publish.kb_list_unique_title:
   one: '1 unikátny článok'
   few: '{{count}} unikátnych článkov'
+  many: '{{count}} unikátnych článkov'
   other: '{{count}} unikátnych článkov'
 agent.publish.label_new_file: 'Nový súbor'
 agent.publish.label_old_file: 'Starý Súbor'
@@ -1296,12 +1662,13 @@ agent.publish.move_to: 'Presunúť do'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} označili toto stiahnutie ako nápomocné, {{down_votes}} označili, že im to nepomohlo'
 agent.publish.new_comment_on: 'Nový koment na {{name}}'
 agent.publish.new_comment_submitted_by: 'Nový komentár bol potvrdený užívateľom {{name}}'
-agent.publish.new_feedback_by: 'Nová spätná väzba od {{name}}'
+agent.publish.new_community_topic_by: 'Nová spätná väzba od {{name}}'
 agent.publish.new_post: 'Nový Post'
 agent.publish.news_comments: 'Nový Komentár'
 agent.publish.news_list_title:
   one: '1 príspevok'
   few: '{{count}} príspevkov'
+  many: '{{count}} príspevkov'
   other: '{{count}} príspevkov'
 agent.publish.no_changes: 'Žiadne zmeny zistené medzi týmito dvoma revíziami'
 agent.publish.no_downlod_cats_error: 'Nie sú definované žiadne kategórie. Prv, než budete vedieť pridávať súbory do sekcie stiahnutí, musíte definovať kategóriu.'
@@ -1310,6 +1677,11 @@ agent.publish.no_news_cats_error: 'Nie sú definované žiadne kategórie. Prv, 
 agent.publish.no_related_explain: 'Žiadne ďalšie články, stiahnutia alebo príspevky noviniek neboli pripojené. Prehľadávajte zoznam a kliknite na "Pridať ako pripojené" pre pridanie do pripojeného obsahu.'
 agent.publish.no_uploads_yet: 'Neboli tam žiadne nahrania zatiaľ.'
 agent.publish.not_helpful: 'Nie je nápomocné'
+agent.publish.pending_approval_list_title:
+  one: '1 article pending approval'
+  few: '{{count}} articles pending approval'
+  many: '{{count}} articles pending approval'
+  other: '{{count}} articles pending approval'
 agent.publish.pending_articles: 'Trvajúce články'
 agent.publish.please_choose_file: 'Prosím vyberte súbor'
 agent.publish.please_enter_title: 'Prosím zadajte názov'
@@ -1340,6 +1712,7 @@ agent.publish.validating_comment_manage_tip: 'Komentár očakáva schválenie. K
 agent.publish.validating_list_title:
   one: '1 preskúmanie'
   few: '{{count}} preskúmaní'
+  many: '{{count}} preskúmaní'
   other: '{{count}} preskúmaní'
 agent.publish.view_count: 'Zobraziť počet'
 agent.publish.view_count_highest_lowest: 'Zobraziť počet (Najvyšší-Najnižší)'
@@ -1428,8 +1801,8 @@ agent.settings.notif_my_events: 'Moje udalosti'
 agent.settings.notif_my_own_actions: 'Moje vykonané akcie'
 agent.settings.notif_new_comment: 'Nový komentár bol postúpený'
 agent.settings.notif_new_comment_validate: 'Nový komentár bol odovzdaný, ktorý potrebuje overenie'
-agent.settings.notif_new_feedback: 'Novo podaná spätná väzba'
-agent.settings.notif_new_feedback_validate: 'Nová spätná väzba bola odovzdaná, ktorá potrebuje overenie'
+agent.settings.notif_new_community_topic: 'Novo podaná spätná väzba'
+agent.settings.notif_new_community_topic_validate: 'Nová spätná väzba bola odovzdaná, ktorá potrebuje overenie'
 agent.settings.notif_new_user: 'Nový užívateľ registrovaný'
 agent.settings.notif_notes_with_mentions: 'Poznámky so @zmienkou'
 agent.settings.notif_notes_with_mentions_always: 'Vždy e-mailovať a zasielať správu konverzácie'
@@ -1499,6 +1872,7 @@ agent.tasks.linked_ticket: 'Pripojený tiket'
 agent.tasks.list_title:
   one: '1 úloha'
   few: '{{count}} úloh'
+  many: '{{count}} úloh'
   other: '{{count}} úloh'
 agent.tasks.my_tasks: 'Moje úlohy'
 agent.tasks.my_teams: 'Môjho teamu'
@@ -1534,7 +1908,6 @@ agent.tickets.always_notify_people: 'Vždy notifikuj {{parts}}'
 agent.tickets.and_count_were_cced: '(a {{display_count}} bolo CC-nutý)|(a {{display_count}} bolo cc-nutých)'
 agent.tickets.announce_this_ticket_in_campfire: 'Oznámiť tento tiket pri vatre'
 agent.tickets.any_of_my_teams: 'Hociktorý z mojich teamov'
-agent.tickets.api: API
 agent.tickets.applied: aplikovaný
 agent.tickets.apply_a_macro: 'Aplikovať macro'
 agent.tickets.assign_current_action: 'Prideliť operátora momentálne prihlásenému operátorovi'
@@ -1556,7 +1929,6 @@ agent.tickets.billing_delete_confirm: 'Ste si istý, že chcete tento poplatok z
 agent.tickets.billing_time: Čas
 agent.tickets.billing_timelog: 'Časový log'
 agent.tickets.call_webhook_action: 'Zavolať webový hák {{hook}}'
-agent.tickets.cc: CC
 agent.tickets.change_status: 'Zmeniť status z {{old}} na {{new}}'
 agent.tickets.change_status_to: 'Upraviť status na'
 agent.tickets.change_user: 'Zmeniť Užívateľa'
@@ -1574,14 +1946,17 @@ agent.tickets.commented_on: 'Komentoval na'
 agent.tickets.count_agents:
   one: '1 operátor'
   few: '{{count}} operátorov'
+  many: '{{count}} operátorov'
   other: '{{count}} operátorov'
 agent.tickets.count_charges:
   one: '1 poplatok'
   few: '{{count}} poplatkov'
+  many: '{{count}} poplatkov'
   other: '{{count}} poplatkov'
 agent.tickets.count_users:
   one: '{{count}} užívateľ'
   few: '{{count}} užívateľov'
+  many: '{{count}} užívateľov'
   other: '{{count}} užívateľov'
 agent.tickets.create_linked_ticket: 'Vytvoriť pripojený tiket'
 agent.tickets.create_new_pending_article: 'VytvoriŤ nový trvajúci článok'
@@ -1650,7 +2025,6 @@ agent.tickets.from_email: '(potvrdené cez e-mail z {{address}})'
 agent.tickets.from_web: '(potvrdené cez webové rozhranie z IP adresy {{address}})'
 agent.tickets.full_email_source: 'Úplný zdroj Emailu'
 agent.tickets.full_log: 'Plný záznam'
-agent.tickets.gateway_source_id: 'Gateway Source ID'
 agent.tickets.group_by: 'Skupina od'
 agent.tickets.grouped_results_empty: 'Zoskupené výsledky sa zobrazia keď filter nájde zhodu tiketov'
 agent.tickets.helpful: nápomocné
@@ -1658,10 +2032,8 @@ agent.tickets.hidden_because: 'Tento Ticket je momentálne ukrytý lebo:'
 agent.tickets.hidden_explain: 'Toto znamená, že sa nezobrazí vo väčsine výsledkoch a nebude vytvárať operátorské upozornenia'
 agent.tickets.hidden_status: 'Skytý Status'
 agent.tickets.hidden_status_deleted: Zmazané
-agent.tickets.hidden_status_spam: Spam
 agent.tickets.hidden_tickets: 'Skyté Tickety'
 agent.tickets.hold_btn: 'Pridržať Ticket'
-agent.tickets.html_body: 'HTML Body'
 agent.tickets.increase_urgency_action: 'Navýšiť naliehavosť o {{amount}}'
 agent.tickets.insert_text_snippets: 'Vložte textové úryvky'
 agent.tickets.into_this_from_ticket: 'do tohto z tiketu #{{id}}'
@@ -1679,11 +2051,17 @@ agent.tickets.lc_new_reply: 'nová odpoveď'
 agent.tickets.lc_new_ticket: 'nový ticket'
 agent.tickets.lc_new_ticket_agent: 'nový ticket operátorom'
 agent.tickets.lc_update: aktualizácia
+agent.tickets.link_existing_community_topic_subscr_part:
+  one: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
+  few: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
+  many: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
+  other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.linked_tickets: 'Pripojené tikety'
 agent.tickets.linking_with_chat: 'Pripája sa s konverzáciou:'
 agent.tickets.list_title:
   one: '{{count}} tiket'
   few: '{{count}} tiketov'
+  many: '{{count}} tiketov'
   other: '{{count}} tiketov'
 agent.tickets.list_title_counter: '{{x}} tiketov'
 agent.tickets.load_more: 'Načítať Viac'
@@ -1702,7 +2080,7 @@ agent.tickets.log_new_web_user_widget: 'Nový tiket užívateľa cez widget str�
 agent.tickets.log_note_deleted: 'Poznámka zmazaná'
 agent.tickets.log_on_article: 'v článku "{{title}}" (ID {{id}})'
 agent.tickets.log_on_download: 'na stiahnutí "{{title}}" (ID {{id}})'
-agent.tickets.log_on_feedback: 'na spätnej väzbe "{{title}}" (ID {{id}})'
+agent.tickets.log_on_community_topic: 'na spätnej väzbe "{{title}}" (ID {{id}})'
 agent.tickets.log_on_news: 'na novinke "{{title}}" (ID {{id}})'
 agent.tickets.log_sent_from: 'Zaslané z e-mailu {{email}}'
 agent.tickets.log_sla_added: 'SLA priadaná'
@@ -1727,7 +2105,6 @@ agent.tickets.message_id: 'ID správy'
 agent.tickets.message_number: 'Správa #{{number}}'
 agent.tickets.messages: Správy
 agent.tickets.my_team: 'Môj team'
-agent.tickets.na: N/A
 agent.tickets.neutral: neutrálne
 agent.tickets.new_attachment: 'Nová príloha'
 agent.tickets.new_message: 'Nová správa'
@@ -1853,7 +2230,6 @@ agent.tickets.text_body: 'Text Tela'
 agent.tickets.ticket_changes: 'Zmeny Ticketu'
 agent.tickets.ticket_feedback: 'Spätná väzba Ticketu'
 agent.tickets.ticket_field_name: 'Pole tiketu: {{field}}'
-agent.tickets.ticket_is_delete7d: 'Ticket je zmazaný'
 agent.tickets.ticket_is_deleted: 'ticket je zmazaný'
 agent.tickets.ticket_is_marked_as_spam: 'Tento Ticket bol označený ako SPAM.'
 agent.tickets.ticket_merged: 'Tiket spojený'
@@ -1899,6 +2275,7 @@ agent.tickets.written_between: 'Napísané medzi'
 agent.tickets.x_messages_moved:
   one: '1 správa presunutá'
   few: '{{count}} správ presunutých'
+  many: '{{count}} správ presunutých'
   other: '{{count}} správ presunutých'
 agent.tickets.x_rated_this_message_as: '{{name}} hodnotil túto správu ako:'
 agent.tickets.you_have_auto_lock: 'Na tomto tikete máte automatický zámok. Ostatní operátori nebudú môcť tento tiket upravovať dokiaľ nebude odomknutý.'
@@ -2016,6 +2393,41 @@ agent.time.time_x_month: '{0} mesiacov'
 agent.time.time_x_second: '{0} sekúnd'
 agent.time.time_x_week: '{0} týždňov'
 agent.time.time_x_year: '{0} rokov'
+agent.time.x_day:
+  one: '1 day'
+  few: '{{count}} days'
+  many: '{{count}} days'
+  other: '{{count}} days'
+agent.time.x_hour:
+  one: '1 hour'
+  few: '{{count}} hours'
+  many: '{{count}} hours'
+  other: '{{count}} hours'
+agent.time.x_minute:
+  one: '1 minute'
+  few: '{{count}} minutes'
+  many: '{{count}} minutes'
+  other: '{{count}} minutes'
+agent.time.x_month:
+  one: '1 month'
+  few: '{{count}} months'
+  many: '{{count}} months'
+  other: '{{count}} months'
+agent.time.x_second:
+  one: '1 second'
+  few: '{{count}} seconds'
+  many: '{{count}} seconds'
+  other: '{{count}} seconds'
+agent.time.x_week:
+  one: '1 week'
+  few: '{{count}} weeks'
+  many: '{{count}} weeks'
+  other: '{{count}} weeks'
+agent.time.x_year:
+  one: '1 year'
+  few: '{{count}} years'
+  many: '{{count}} years'
+  other: '{{count}} years'
 agent.twitter.account_rec_new_dm_from: '{{account}} prijal správu priamo od {{name}}'
 agent.twitter.account_rec_tweet_from: '{{account}} prijal tweet od {{name}}'
 agent.twitter.account_retweeted_by: '{{account}} bol retweetnutý užívateľom {{name}}'
@@ -2031,11 +2443,11 @@ agent.twitter.corresponding_twitter_account: 'korešpondujúci Twittrový účet
 agent.twitter.count_selected:
   one: '{{count}} zvolených'
   few: '{{count}} zvolených'
+  many: '{{count}} zvolených'
   other: '{{count}} zvolených'
 agent.twitter.delete-search-confirm: 'Ste si istý, že chcete zmazať toto hľadanie?'
 agent.twitter.direct: Priamo
 agent.twitter.direct_messages: 'Priama spáva'
-agent.twitter.dm: DM
 agent.twitter.edit_long_tweet: 'Upraviť dlhý tweet'
 agent.twitter.example: '#príklad'
 agent.twitter.find_person: 'Nájdi @osobu...'
@@ -2043,12 +2455,12 @@ agent.twitter.follow: Odoberať
 agent.twitter.followers: Odberatelia
 agent.twitter.following: 'Odoberá sa'
 agent.twitter.from_account: 'Z účtu'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'V odpovedi pre'
 agent.twitter.interactions: Interakcie
 agent.twitter.list_title:
   one: '1 tweet'
   few: '{{count}} tweetov'
+  many: '{{count}} tweetov'
   other: '{{count}} tweetov'
 agent.twitter.location: Lokácia
 agent.twitter.long: Dlhé
@@ -2072,7 +2484,6 @@ agent.twitter.perform_action: 'Vykonat akciu'
 agent.twitter.previous_tweets: 'Predchádzajúce tweety'
 agent.twitter.protected: Chránené
 agent.twitter.replies: Odpvoede
-agent.twitter.retweet: Retweet
 agent.twitter.retweet_as_is: 'Retweet ako je'
 agent.twitter.retweet_of: 'Retweet z'
 agent.twitter.retweet_with_edit: 'Retweet s úpravou'
@@ -2094,7 +2505,6 @@ agent.twitter.starred: Hral
 agent.twitter.starred_tweets: 'Hrané tweety'
 agent.twitter.team_assigned_by: 'Váš team bol priradený ku tweetu užívateľom {{name}}'
 agent.twitter.timeline: 'Časová os'
-agent.twitter.tweet: Tweet
 agent.twitter.tweets: Tweety
 agent.twitter.unassigned_tweets: 'Nepriradené tweety'
 agent.twitter.unfollow: Neodoberať
@@ -2118,6 +2528,7 @@ agent.userchat.ident_unconfirmed: 'Identita nieje potvrdená, email nebol overen
 agent.userchat.list_title:
   one: '1 konverzácia'
   few: '{{count}} konverzácií'
+  many: '{{count}} konverzácií'
   other: '{{count}} konverzácií'
 agent.userchat.message_agent-timeout: '{{name}} neodpovedá. Prosím počkajte než sa nájde ďalší operátor.'
 agent.userchat.message_assigned: 'Konverzácia priradená: {{name}}'

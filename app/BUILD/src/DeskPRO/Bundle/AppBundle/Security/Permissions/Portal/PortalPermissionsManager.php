@@ -7,7 +7,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -214,13 +214,19 @@ class PortalPermissionsManager
                 $permissions,
                 $this->permissionsLoader->getAllowedTicketDepartments($userGroups),
                 $this->permissionsLoader->getAllowedChatDepartments($userGroups),
-                $this->permissionsLoader->getAllowedFeedbackCategories($userGroups),
+                $this->permissionsLoader->getAllowedCommunityChannels($userGroups),
                 $this->permissionsLoader->getAllowedNewsCategories($userGroups),
                 $this->permissionsLoader->getAllowedArticleCategories($userGroups),
                 $this->permissionsLoader->getAllowedDownloadCategories($userGroups),
                 $this->permissionsLoader->getAllowedGuides($userGroups),
                 $fieldsPermissions
             );
+
+            if ($this->permissionBagCache[$cacheKey]->has('tickets.reopen_resolved')) {
+                $this->permissionBagCache[$cacheKey]->setReopenResolvedTimelimit(
+                    $this->permissionsLoader->getReopenResolvedTimelimit($userGroups, $permissions)
+                );
+            }
         }
 
         return $this->permissionBagCache[$cacheKey];
@@ -254,7 +260,7 @@ class PortalPermissionsManager
             'chat'         => $this->fetchFields(CustomDefChat::class),
             'article'      => $this->fetchFields(CustomDefArticle::class),
             'ticket'       => $this->fetchFields(CustomDefTicket::class),
-            'feedback'     => $this->fetchFields(CustomDefFeedback::class),
+            'community'    => $this->fetchFields(CustomDefCommunityTopic::class),
             'person'       => $this->fetchFields(CustomDefPerson::class),
             'organization' => $this->fetchFields(CustomDefOrganization::class),
         ];

@@ -17,11 +17,13 @@ import { openTicket, openPerson, openTarget } from '../../../../../Services/hist
 class CallLogView extends React.Component {
 
   static propTypes = {
-    call:         PropTypes.object,
-    numbers:      PropTypes.object,
-    people:       PropTypes.object,
-    onReturnBack: PropTypes.func,
-    openDialpad:  PropTypes.func
+    call:           PropTypes.object,
+    numbers:        PropTypes.object,
+    people:         PropTypes.object,
+    queues:         PropTypes.object,
+    autoAttendants: PropTypes.object,
+    onReturnBack:   PropTypes.func,
+    openDialpad:    PropTypes.func
   };
 
   openDialpad = (event, number) => {
@@ -32,12 +34,15 @@ class CallLogView extends React.Component {
   };
 
   render() {
-    const { onReturnBack, call, numbers, people } = this.props;
-    const number = numbers.get(call.get('number')) || Immutable.fromJS({});
-    const fromNumber = call.getIn(['data', 'From']);
-    const toNumber = call.getIn(['data', 'To']);
+    const { onReturnBack, call, numbers, people, queues, autoAttendants } = this.props;
+    const number = numbers.get(call.get('number')) || Immutable.fromJS({ number: call.get('number_plain') });
+    const externalNumber = call.get('external_number');
     const isInbound = call.get('type') === 'inbound';
     const rawData = call.get('data').toJS();
+
+    const recordings = call.get('recordings');
+    const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+    const agentVoicemail = call.getIn(['agent_voicemail', 'blob']);
 
     return (
       <div className="page">
@@ -59,7 +64,7 @@ class CallLogView extends React.Component {
               <CallStatus call={call} showDateEnded />
             </tr>
             <tr>
-              <th>Caller</th>
+              <th>User</th>
               <td>
                 <a onClick={() => openPerson(call.get('person'))}>
                   <PersonName id={call.get('person')} />
@@ -79,21 +84,20 @@ class CallLogView extends React.Component {
             <tr>
               <th>From Number</th>
               <td>
-                {isInbound
-                  ? <button onClick={event => this.openDialpad(event, fromNumber)}>
-                    {fromNumber}
+                {isInbound && numbers.size > 0
+                  ? <button onClick={event => this.openDialpad(event, externalNumber)}>
+                    {externalNumber}
                   </button>
-                  : <span x-ms-format-detection="none">{number.get('number')}</span>
-                }
+                  : <span x-ms-format-detection="none">{number.get('number')}</span>}
               </td>
             </tr>
             <tr>
               <th>To Number</th>
               <td>
-                {isInbound
+                {isInbound || !numbers.size
                   ? <span x-ms-format-detection="none">{number.get('number')}</span>
-                  : <button onClick={event => this.openDialpad(event, toNumber)}>
-                    {toNumber}
+                  : <button onClick={event => this.openDialpad(event, externalNumber)}>
+                    {externalNumber}
                   </button>
                 }
               </td>
@@ -138,7 +142,7 @@ class CallLogView extends React.Component {
             <tr>
               <th>Ticket</th>
               <td>
-                <i className="fa fa-envelope" />
+                <i className="fas fa-envelope" />
                 &nbsp;
                 <a onClick={() => openTicket(call.get('ticket'))}>
                   {call.get('ticket')}
@@ -207,6 +211,8 @@ class CallLogView extends React.Component {
                                     {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
                                   </a>
                                 ),
+                                queue:            queues.getIn([log.getIn(['details', 'to_queue']), 'name']),
+                                auto_attendant:   autoAttendants.getIn([log.getIn(['details', 'to_auto_attendant']), 'name']),
                                 to_number:        number.get('nickname') || number.get('number'),
                                 key:              log.getIn(['details', 'Digits']) || '',
                                 target,
@@ -223,7 +229,11 @@ class CallLogView extends React.Component {
             </tr>
             <tr>
               <th>Recording</th>
-              <td>{call.get('recording') ? <MediaControls recording={call.get('recording')} /> : '-'}</td>
+              <td>
+                {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <MediaControls recording={recording.get('blob')} />)}
+                {agentVoicemail && <MediaControls recording={agentVoicemail} />}
+                {!recordingsEnabled.size && !agentVoicemail && '-'}
+              </td>
             </tr>
           </tbody>
         </table>

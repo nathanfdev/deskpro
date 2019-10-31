@@ -1,6 +1,7 @@
 <?php
 
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
+
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -40,12 +41,14 @@ class CustomPeopleFieldDefinitionAlias extends AbstractAlias
 
     /**
      * @param mixed $object
-     * @return boolean
+     *
+     * @return bool
      */
-    public function tryAndSetObject( $object )
+    public function tryAndSetObject($object)
     {
         try {
             $this->setObject($object);
+
             return true;
         } catch (\Exception $e) {
             return false;

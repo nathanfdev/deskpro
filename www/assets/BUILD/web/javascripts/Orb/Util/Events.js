@@ -20,7 +20,7 @@ Orb.Util.Events = {
 
 		type = this.normalizeEventName(type);
 		if (!context) {
-			context = undefined;
+			context = null;
 		}
 
 		if (!this.__events[type]) {
@@ -110,7 +110,7 @@ Orb.Util.Events = {
 		}
 
 		this.__events[type].forEach(function(fn_info){
-			if (fn_info[0] == fn && fn_info[1] == context) {
+			if (fn_info[0] === fn && fn_info[1] === context) {
 				hasChange = true;
 			} else {
 				newFns.push(fn_info);

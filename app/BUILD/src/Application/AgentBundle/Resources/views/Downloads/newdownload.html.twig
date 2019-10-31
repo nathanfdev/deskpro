@@ -103,6 +103,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content" style="padding-right: 10px;">
 		<h4>{{ phrase('agent.general.description') }}</h4>
 		<textarea type="text" name="newdownload[content]" id="{{baseId}}_content">{{ state.newdownload.content }}</textarea>
+		<div class="error-message content">{{ phrase('agent.general.enter_a_content') }}</div>
 	</div>
 </div>
 
@@ -114,6 +115,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
+          <li data-tab-for="> .tab-fields">{{ phrase('agent.general.fields') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -129,6 +131,13 @@ pageMeta.baseId = '{{ baseId }}';
 					</dl>
 				</div>
 				{# /Tab Properties #}
+
+				{# Tab Fields #}
+				<div class="tab-fields" style="display: none">
+					{% include 'AgentBundle:Downloads:view-customfields-edit-rows.html.twig' %}
+				</div>
+				{# / Tab Fields #}
+
 			</div>
 		</div>
 		{# /Tab Container #}

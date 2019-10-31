@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
+import Modal from 'DeskPRO/Component/Semantic/Modal';
+import { Button } from '@deskpro/react-components';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
@@ -19,14 +21,37 @@ class AutoAttendantForm extends BaseForm {
     onDelete:      PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      ...this.state,
+      confirmDeletion: false
+    };
+  }
+
   onCancel = (event) => {
     event.preventDefault();
     this.props.onReturnBack();
   };
 
-  onDelete = (event) => {
+  performDelete = () => {
     event.preventDefault();
     this.props.onDelete();
+    this.setState({
+      confirmDeletion: false
+    });
+  };
+
+  showDeleteConfirmation = () => {
+    this.setState({
+      confirmDeletion: true
+    });
+  };
+
+  rejectDelete = () => {
+    this.setState({
+      confirmDeletion: false
+    });
   };
 
   getDefaultState() {
@@ -44,10 +69,25 @@ class AutoAttendantForm extends BaseForm {
 
   render() {
     const { autoAttendant, onReturnBack } = this.props;
-    const { saving } = this.state;
+    const { saving, confirmDeletion } = this.state;
 
     return (
       <div className="page">
+        <Modal
+          isOpen={confirmDeletion}
+          title="Confirm deletion"
+          contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '150px', width: '30%' }}
+        >
+          <h2>Do you really want to delete this Auto Attendant? This cannot be undone.</h2>
+          <div>
+            <span style={{ float: 'left' }}>
+              <Button size="large" type="secondary" onClick={this.rejectDelete}>Decline</Button>
+            </span>
+            <span style={{ float: 'right' }}>
+              <Button size="large" type="cta" onClick={this.performDelete}>Confirm</Button>
+            </span>
+          </div>
+        </Modal>
         <BackButton onClick={onReturnBack} />
         <SectionHeader title={autoAttendant ? 'Update Auto Attendant' : 'Create new Auto Attendant'} dividing />
 
@@ -93,7 +133,7 @@ class AutoAttendantForm extends BaseForm {
               </button>
 
               {autoAttendant &&
-              <span className="voice-delete-button" onClick={this.onDelete}>
+              <span className="voice-delete-button" onClick={this.showDeleteConfirmation}>
                 Delete this Auto Attendant
               </span>}
             </Fieldset>

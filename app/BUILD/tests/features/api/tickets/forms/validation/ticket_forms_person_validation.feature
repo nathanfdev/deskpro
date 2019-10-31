@@ -13,9 +13,10 @@ Feature: /ticket_forms validation
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.person.errors" should have 1 element
+    And the JSON node "errors.fields.person.errors" should have 2 elements
     And the JSON node "errors.fields.person.errors[0].code" should be equal to "person_not_found"
     And the JSON node "errors.fields.person.errors[0].message" should contain "-1"
+    And the JSON node "errors.fields.person.errors[1].code" should be equal to "required"
 
   Scenario: I try to create a ticket with person with incorrect email (email key)
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

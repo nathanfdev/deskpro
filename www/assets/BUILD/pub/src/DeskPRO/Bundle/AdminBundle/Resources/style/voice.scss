@@ -17,6 +17,11 @@
       }
     }
   }
+
+  .voice-transcription-settings {
+    padding-left: 20px;
+    padding-bottom: 20px;
+  }
 }
 
 .admin-list-table {
@@ -115,9 +120,16 @@
         }
       }
 
-      &.targets {
-        width: 350px;
+      &.queue-agents {
+        width: auto;
+        max-width: 1000px;
 
+        .avatar {
+          margin-bottom: 10px;
+        }
+      }
+
+      &.targets {
         .more-button {
           cursor: pointer;
         }
@@ -250,6 +262,19 @@
           }
         }
 
+        &.disabled-number-buttons {
+          width: 400px;
+          float: right;
+          text-align: right;
+          padding: 10px 20px;
+
+          a {
+            cursor: pointer;
+            color: #999999;
+            margin-right: 20px;
+          }
+        }
+
         &.press-options {
           position: relative;
 
@@ -282,6 +307,10 @@
 
   .target {
     min-width: 50px;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space:nowrap;
     padding: 3px 5px;
     display: inline-block;
     font-size: 10px;
@@ -390,7 +419,7 @@
 }
 
 .twilio-number-form {
-  width: 425px;
+  width: 500px;
 
   .number-target {
     clear: both;
@@ -532,6 +561,22 @@
     }
   }
 
+  .answer-timeout {
+    padding-top: 10px;
+
+    .input {
+      display: inline-block;
+      width: 50px !important;
+      margin: 0 10px;
+      position: relative;
+
+      input {
+        position: absolute;
+        top: -25px;
+      }
+    }
+  }
+
   .multi-select {
     height: 200px;
 
@@ -615,6 +660,10 @@
       &.queue {
         .target {
           min-width: 50px;
+          max-width: 200px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space:nowrap;
           padding: 3px 5px;
           display: inline-block;
           font-size: 12px;

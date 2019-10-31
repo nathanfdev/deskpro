@@ -16,7 +16,11 @@
 						</div>
 						{% if email.comment|length or perms.manage_emails %}
 						<div class="label">
-							<input type="text" size="10" name="emails_comment[{{ email.id }}]" value="{{ email.comment }}" placeholder="{{ phrase('agent.general.add_a_label') }}" {% if not perms.manage_emails %}onkeydown="return false;"{% endif %} />
+							<input type="text" size="10"
+								   name="emails_comment[{{ email.id }}]"
+								   value="{{ email.comment }}"
+								   autocomplete="{{ "now" | date("U") }}"
+								   placeholder="{{ phrase('agent.general.add_a_label') }}" {% if not perms.manage_emails %}onkeydown="return false;"{% endif %} />
 						</div>
 						{% endif %}
 					<br class="clear" /></li>
@@ -35,10 +39,19 @@
 					<span class="remove">x</span>
 				</div>
 				<div class="input">
-					<input type="text" class="single-input" name="new_emails[]" value="" placeholder="{{ phrase('agent.general.email_address') }}" />
+					<input type="text"
+							class="single-input"
+							name="new_emails[]"
+							autocomplete="{{ "now" | date("U") }}"
+							value=""
+							placeholder="{{ phrase('agent.general.email_address') }}" />
 				</div>
 				<div class="label">
-					<input type="text" size="8" name="new_emails_comment[]" value="" placeholder="{{ phrase('agent.general.add_a_label') }}" />
+					<input type="text" size="8"
+							name="new_emails_comment[]"
+							autocomplete="{{ "now" | date("U") }}"
+							value=""
+							placeholder="{{ phrase('agent.general.add_a_label') }}" />
 				</div>
 			<br class="clear" /></li>
 		</script>

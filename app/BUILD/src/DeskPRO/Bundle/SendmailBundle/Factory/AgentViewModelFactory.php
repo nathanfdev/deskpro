@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CommentAbstract;
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
@@ -18,7 +18,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorUnknownFrom;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentLoginAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewChatMessage;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewComment;
-use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewFeedback;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewCommunityTopic;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
@@ -121,16 +121,16 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $communityTopic
      *
-     * @return AgentNewFeedback
+     * @return AgentNewCommunityTopic
      */
-    public function createAgentNewFeedbackModel(Feedback $feedback)
+    public function createAgentNewCommunityTopicModel(CommunityTopic $communityTopic)
     {
-        $person    = $feedback->getPerson();
+        $person    = $communityTopic->getPerson();
         $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(AgentNewFeedback::class, [$feedback, $person, $loginLink]);
+        return $this->convertParameters(AgentNewCommunityTopic::class, [$communityTopic, $person, $loginLink]);
     }
 
     /**

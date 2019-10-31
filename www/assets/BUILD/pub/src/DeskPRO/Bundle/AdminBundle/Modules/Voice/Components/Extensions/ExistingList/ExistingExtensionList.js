@@ -89,9 +89,11 @@ class ExistingExtensionRow extends React.Component {
   render() {
     const { agent, queues = Immutable.fromJS([]) } = this.props;
     const involvedQueues = [];
-    queues.filter(queue => queue.get('agents').contains(agent.get('id'))).forEach((queue) => {
-      involvedQueues.push({ name: queue.get('name') });
-    });
+    queues
+      .filter(queue => queue.get('agents').map(queueAgent => queueAgent.get('agent')).contains(agent.get('id')))
+      .forEach((queue) => {
+        involvedQueues.push({ name: queue.get('name') });
+      });
 
     return (
       <div className="row">
@@ -102,7 +104,7 @@ class ExistingExtensionRow extends React.Component {
           </div>
           <div className="column extension">{agent.getIn(['agent_data', 'extension_number'])}</div>
           <div className="column targets">
-            <NumberTargetList targets={involvedQueues} displayCount={2} />
+            <NumberTargetList targets={involvedQueues} displayCount={5} />
           </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>

@@ -34,11 +34,11 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     /**#@+
      * Standard ContentType constants
      */
-    const TYPE_ARTICLE  = 'article';
-    const TYPE_DOWNLOAD = 'download';
-    const TYPE_IDEA     = 'feedback';
-    const TYPE_NEWS     = 'news';
-    const TYPE_TOPIC    = 'topic';
+    const TYPE_ARTICLE   = 'article';
+    const TYPE_DOWNLOAD  = 'download';
+    const TYPE_COMMUNITY = 'community';
+    const TYPE_NEWS      = 'news';
+    const TYPE_TOPIC     = 'topic';
     /**#@-*/
 
     /**

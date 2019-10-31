@@ -8,28 +8,34 @@ import Avatar from '../../Common/Avatar';
 class Queues extends React.Component {
 
   static propTypes = {
-    target:  PropTypes.object,
-    agents:  PropTypes.object,
-    queues:  PropTypes.object,
-    onClick: PropTypes.func
+    target:             PropTypes.object,
+    me:                 PropTypes.object,
+    agents:             PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    queues:             PropTypes.object,
+    onClick:            PropTypes.func
   };
 
-  onSelect = (queue) => {
+  selectItem = (queue) => {
     this.props.onClick(queue);
   };
 
   render() {
-    const { queues, agents, target } = this.props;
+    const { me, queues, agents, onlineAgentIds, forwardingAgentIds, target } = this.props;
 
     return (
       <ScrollArea className="voice-queue-list">
-        {queues.map((queue, index) =>
+        {queues.toArray().map((queue, index) =>
           <QueueItem
             key={index}
+            me={me}
             agents={agents}
+            onlineAgentIds={onlineAgentIds}
+            forwardingAgentIds={forwardingAgentIds}
             queue={queue}
-            active={queue === target}
-            onClick={this.onSelect}
+            active={target && queue === target.target}
+            onClick={this.selectItem}
           />
         )}
       </ScrollArea>
@@ -40,10 +46,13 @@ class Queues extends React.Component {
 class QueueItem extends React.Component {
 
   static propTypes = {
-    agents:  PropTypes.object,
-    queue:   PropTypes.object,
-    active:  PropTypes.bool,
-    onClick: PropTypes.func
+    me:                 PropTypes.object,
+    agents:             PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    queue:              PropTypes.object,
+    active:             PropTypes.bool,
+    onClick:            PropTypes.func
   };
 
   onClick = () => {
@@ -52,8 +61,8 @@ class QueueItem extends React.Component {
   };
 
   render() {
-    const { agents, queue, active } = this.props;
-    const queueAgentIds = queue.get('agents') || Immutable.fromJS([]);
+    const { me, agents, onlineAgentIds, forwardingAgentIds, queue, active } = this.props;
+    const queueAgentIds = queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) || Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
 
     return (
@@ -66,11 +75,20 @@ class QueueItem extends React.Component {
         </div>
         <div className="queue-agents">
           {queueAgents.size} agents
-          {queueAgents.map((agent, index) => <Avatar key={index} person={agent} size={20} />)}
+          {queueAgents.toArray().map((agent, index) =>
+            <Avatar
+              key={index}
+              person={agent}
+              online={onlineAgentIds.contains(agent.get('id')) || agent === me}
+              forwarding={forwardingAgentIds.contains(agent.get('id'))}
+              size={20}
+              withOnlineStatus
+            />
+          )}
         </div>
-        <div className="queue-users">
-          3 users in queue (average wait 2m)
-        </div>
+        {/* <div className="queue-users">*/}
+        {/* 3 users in queue (average wait 2m)*/}
+        {/* </div>*/}
       </div>
     );
   }

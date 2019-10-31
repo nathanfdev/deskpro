@@ -29,14 +29,30 @@ class PersonRestore
      *
      * @return bool
      */
-    public function restore(Person $person, $data)
+    public function restore(Person $person, $data, $restoreId = false)
     {
         if (!$person->getId()) {
-            $this->em->persist($person);
-            $this->em->flush($person);
+            if (
+                $restoreId
+                && isset($data['simple_fields'])
+                && isset($data['simple_fields']['id'])
+                && !$this->em->find(Person::class, $data['simple_fields']['id'])
+            ) {
+                $metadata   = $this->em->getClassMetaData(get_class($person));
+                $person->id = $data['simple_fields']['id'];
+                $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
+                $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+                $this->em->persist($person);
+                $this->em->flush($person);
+                $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_IDENTITY);
+                $metadata->setIdGenerator(new \Doctrine\ORM\Id\IdentityGenerator());
+            } else {
+                $this->em->persist($person);
+                $this->em->flush($person);
+            }
         }
-
         $this->restoreSimpleFields($person, $data);
+        $this->restoreContactData($person, $data);
         $this->restoreCustomData($person, $data);
         $this->restoreGroups($person, $data);
         $this->restoreBrands($person, $data);
@@ -88,6 +104,55 @@ class PersonRestore
             ['person_id' => $person->getId()],
             ['person_id' => \PDO::PARAM_INT]
         );
+    }
+
+    protected function restoreContactData(Person $person, $data)
+    {
+        if (isset($data['contact_data']) && isset($data['contact_data']['phone_numbers']) && !empty($data['contact_data']['phone_numbers'])) {
+            $this->em->getConnection()->executeUpdate(
+                'DELETE FROM phone_numbers WHERE person_id = :person_id',
+                ['person_id' => $person->getId()],
+                ['person_id' => \PDO::PARAM_INT]
+            );
+
+            foreach ($data['contact_data']['phone_numbers'] as $phoneNumber) {
+                $this->tableInsert('phone_numbers', [
+                    'person_id'    => $person->getId(),
+                    'number'       => $phoneNumber['number'],
+                    'ext'          => $phoneNumber['ext'],
+                    'label'        => $phoneNumber['label'],
+                    'region'       => $phoneNumber['region'],
+                    'guessed_type' => $phoneNumber['guessed_type'],
+                    'type'         => $phoneNumber['type'],
+                ]);
+            }
+        }
+
+        if (isset($data['contact_data']) && isset($data['contact_data']['contacts']) && !empty($data['contact_data']['contacts'])) {
+            $this->em->getConnection()->executeUpdate(
+                'DELETE FROM people_contact_data WHERE person_id = :person_id',
+                ['person_id' => $person->getId()],
+                ['person_id' => \PDO::PARAM_INT]
+            );
+
+            foreach ($data['contact_data']['contacts'] as $contact) {
+                $this->tableInsert('people_contact_data', [
+                    'person_id'    => $contact['person_id'],
+                    'contact_type' => $contact['contact_type'],
+                    'comment'      => $contact['comment'],
+                    'field_1'      => $contact['field_1'],
+                    'field_2'      => $contact['field_2'],
+                    'field_3'      => $contact['field_3'],
+                    'field_4'      => $contact['field_4'],
+                    'field_5'      => $contact['field_5'],
+                    'field_6'      => $contact['field_6'],
+                    'field_7'      => $contact['field_7'],
+                    'field_8'      => $contact['field_8'],
+                    'field_9'      => $contact['field_9'],
+                    'field_10'     => $contact['field_10'],
+                ]);
+            }
+        }
     }
 
     /**

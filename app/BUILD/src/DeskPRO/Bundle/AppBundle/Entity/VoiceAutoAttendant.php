@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceAutoAttendant.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAutoAttendantRepository")
  * @ORM\Table(name="voice_auto_attendants")
  *
  * @JMS\ExclusionPolicy("all")
@@ -49,6 +49,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
+     * @ORM\JoinColumn(name="audio_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
      *
      * @JMS\Expose()

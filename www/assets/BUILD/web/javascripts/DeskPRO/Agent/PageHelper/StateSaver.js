@@ -22,7 +22,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 			time: 1000,
 
 			/**
-			 * Theres always a "change". Ie it always saves,
+			 * There's always a "change". Ie it always saves,
 			 * no need to triggerChange()
 			 */
 			alwaysChanged: false,
@@ -35,7 +35,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 
 			/**
 			 * Callback that fetches the data to be saved.
-			 * This will serialzie all form fields in listenOn by default.
+			 * This will serialize all form fields in listenOn by default.
 			 */
 			callback: null
 		};
@@ -70,7 +70,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 		this.doRestartTimer = false;
 		this.hasChanged = false;
 
-		if (this.alwaysChanged) {
+		if (this.options.alwaysChanged) {
 			this.restartTimer();
 		}
 	},
@@ -88,7 +88,6 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 	 * Restart the timer
 	 */
 	restartTimer: function() {
-
 		if (this.ajax) {
 			this.doRestartTimer = true;
 		}
@@ -138,7 +137,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 		} else {
 			data.push({
 				name: 'prefs[agent.ui.state.'+this.options.stateId+']',
-				value: text
+				value: setData
 			});
 		}
 
@@ -150,7 +149,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 			complete: function() {
 				this.ajax = null;
 
-				if (this.doRestartTimer || this.alwaysChanged) {
+				if (this.doRestartTimer || this.options.alwaysChanged) {
 					this.restartTimer();
 				}
 			}

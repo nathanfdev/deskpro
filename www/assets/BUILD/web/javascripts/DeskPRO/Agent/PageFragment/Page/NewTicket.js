@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
 		this.uploading = false;
+		this.jsfields = {};
 	},
 
 	_initLabels: function () {
@@ -29,6 +30,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.wrapper = el;
 		this.el = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
+		this.isNote = false;
+		this.newUser = false;
 		this.parent(el);
 
 		el.find('select').not('[data-no-select2]').addClass('with-select2');
@@ -48,6 +51,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initLabels();
 		this._initDraft();
     this._initDateCustomFields();
+    this._initJavascriptCustomFields();
 
     this.addEvent('destroy', function() {
       this.draft && this.draft.reset();
@@ -168,10 +172,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
       $(this).on('dp.change', function(){
@@ -391,8 +395,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			});
 
-			newFields.sort();
-
 			var changed = false;
 			if (!self.oldFields) {
 				changed = false; // means null aka first page laod
@@ -578,7 +580,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self.storedReplyText = self.textarea.getCode();
 				self.textarea.setCode(self.storedNoteText || '');
         $input.prop('checked', false).parent().hide();
-
       } else {
 				$('.hide-note').show();
 				$('.hide-reply').hide();
@@ -588,6 +589,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self.storedNoteText = self.textarea.getCode();
 				self.textarea.setCode(self.storedReplyText || '');
       }
+			self.updateUi();
     });
 
     if(!self.isNote && !self.signatureSet) {
@@ -607,6 +609,56 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.draft.init();
 		this.draft.save(true);
     this.draft.load();
+	},
+
+	_initJavascriptCustomFields: function () {
+		var self = this;
+		self.wrapper.find('.js-custom-field').each(function () {
+			var $el       = $(this);
+			var code      = $el.data('code');
+			var $field    = $el.find('input.js-custom-field-hidden-input');
+			var fieldData = JSON.parse($field.val() ? $field.val() : "{}") || {"value": null, "data": {}};
+			var fieldId   = $field.data('field-id');
+			var evCode = function(){};
+			var fullCode = "evCode = " + code;
+			eval(fullCode);
+			var ctx = {
+				jQuery:      $,
+				Handlebars:  Handlebars,
+				'interface': 'agent',
+				context:     'newticket',
+				ticket:      {},
+				person:      {},
+			};
+			evCode(ctx);
+
+			self.jsfields[fieldId] = {
+				ctx:          ctx,
+				element:      null,
+				field:        $field,
+				currentData:  fieldData.data || {},
+				currentValue: fieldData.value,
+			};
+
+			var field = self.jsfields[fieldId];
+
+			var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
+				var dataObject = { value: null, data: null };
+				if (
+					(value === null || typeof value === "undefined")
+					&& (data === null || typeof data === "undefined")
+				) {
+					dataObject.value = null;
+					dataObject.data  = null;
+				} else {
+					dataObject = Object.assign({}, { value: value }, { data: data || {} });
+				}
+				field.field.val(JSON.stringify(dataObject));
+				field.currentData = dataObject.data;
+				field.currentValue = dataObject.value;
+			}, field.currentValue, field.currentData);
+			field.field.after($renderedElement);
+		});
 	},
 
   addSignature: function() {
@@ -887,7 +939,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				self.wrapper.removeClass('loading');
+			  if (self.wrapper) {
+          self.wrapper.removeClass('loading');
+        }
+
 				self.getEl('send_btn').show();
 				self.getEl('send_loading').hide();
 			},
@@ -902,16 +957,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
               function() {
               }, 'View Existing Ticket', 'hidden');
           } else {
-						data.error_codes.forEach(function(code) {
-							this.showErrorCode(code);
-						}, this);
+            if (Array.isArray(data.error_codes)) {
+              data.error_codes.forEach(function(code) {
+                this.showErrorCode(code);
+              }, this);
+            }
 
 						if (data.error_messages) {
 							this.showErrorCode('free');
 							var free = $('<div/>');
 							data.error_messages.forEach(function(msg) {
 								var x = $('<div/>');
-								x.text('- ' + msg);
+								x.text('• ' + msg);
 								free.append(x);
 							});
 							this.getEl('freemessage').html(free.html());
@@ -933,7 +990,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 					}
 					this.closeSelf();
-					this.draft.reset();
+					if (this.draft) {
+            this.draft.reset();
+          }
 				}
 			},
 			error: function(xhr) {
@@ -948,6 +1007,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			case 'person_id':
 			case 'person_no_user':
 			case 'person_email_address':
+			case 'person_phone_number_exists':
+			case 'person_phone_number_invalid':
 				$('div.user-section.section', this.wrapper).addClass('error');
 				break;
 
@@ -1010,6 +1071,22 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				this.wrapper.find('div.layout-content').trigger('goscrollbottom_stick');
 				this.doScrollBottom = false;
 			}
+		}
+		if (!this.getEl('person_id').val() && !this.isNote && !this.newUserValid) {
+			this.getEl('newticket').addClass('select-user-error');
+			this.getEl('newticket').removeClass('no-user-email-error');
+			this.wrapper.find('.submit-trigger').attr('disabled', 'disabled');
+			this.wrapper.find('.status-menu-trigger').attr('disabled', 'disabled');
+		} else if (!this.getEl('person_email').val() && !this.isNote && !this.newUserValid) {
+			this.getEl('newticket').addClass('no-user-email-error');
+			this.getEl('newticket').removeClass('select-user-error');
+			this.wrapper.find('.submit-trigger').attr('disabled', 'disabled');
+			this.wrapper.find('.status-menu-trigger').attr('disabled', 'disabled');
+		} else {
+			this.getEl('newticket').removeClass('select-user-error');
+			this.getEl('newticket').removeClass('no-user-email-error');
+			this.wrapper.find('.submit-trigger').removeAttr('disabled');
+			this.wrapper.find('.status-menu-trigger').removeAttr('disabled');
 		}
 
 		this.fireEvent('updateUi');
@@ -1150,6 +1227,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			userfields.hide();
 			searchbox.show();
 			self.getEl('choose_user').show();
+			self.getEl('person_id').val('');
+			self.getEl('person_email').val('');
+			self.newUser = false;
 			rechooseBtn.hide();
 			self.loadSnippetsViewer();
 			self.updateUi();
@@ -1170,10 +1250,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					self.clearErrorCode('person_email_address');
 					self.clearErrorCode('person_no_user');
 
-					$('input.person-id', searchbox).val(personId);
+					self.getEl('person_id').val(personId);
+					self.getEl('person_email').val(email);
 					placeUserRow(html);
 					self.draft.save();
 					self.loadSnippetsViewer();
+					self.newUser = false;
 					self.updateUi();
 				}
 			});
@@ -1196,7 +1278,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						if (!oldPersonId) {
 							// new user
 							if (term.indexOf('@') !== -1) {
-								$('input.email', userfields).val(term);
+								$('input.email', userfields).val(term).trigger('change');
 							} else {
 								$('input.name', userfields).val(term);
 							}
@@ -1209,6 +1291,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							self.loadSnippetsViewer();
 						}
 
+						self.newUser = true;
 						self.draft.save();
 						self.updateUi();
 					}
@@ -1233,6 +1316,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'html',
 			success: function(html) {
 				self.placeUserRow(html);
+				self.newUser = false;
+				self.newUserValid = false;
 				self.updateUi();
 				if (!person_id) {
 					self.getEl('person_id').val('');
@@ -1298,11 +1383,19 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var e = $('input.email', userfields);
 		if (e && e[0]) {
+      self.newUserValid = false;
 			var fnCheck = function() {
-				if (e.val() && e.val().indexOf('@') !== -1) {
+				self.newUser = true;
+        var $email = $('input.email', userfields);
+				if ($email.val() && /(.+)@(.+)/.test($email.val())) {
+          self.newUserValid = true;
 					self.clearErrorCode('person_email_address');
 					self.clearErrorCode('person_no_user');
-				}
+				} else {
+          self.newUserValid = false;
+        }
+
+        self.updateUi();
 			};
 			fnCheck();
 			e.on('change', fnCheck);
@@ -1311,6 +1404,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		if (e[0]) {
 			var person_id = e.val();
 			this.getEl('user_searchbox').find('input.person-id').val(person_id);
+		}
+		e = $('input.set_person_email', userfields);
+		if (e[0]) {
+			var person_email = e.val();
+			this.getEl('user_searchbox').find('input.person-email').val(person_email);
 		}
 
 		this.getCustomFields();
@@ -1781,6 +1879,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     if (langId) {
       ticketLangId = langId;
     }
+		var agent = this.page.meta.currentAgent;
+
     window.LegacySnippetInserter.insertSnippet(
     	snippet,
 			blobs,
@@ -1820,7 +1920,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       'ticket',
       this.textarea,
 			this.attachBlobs.bind(this),
-			this.recordSnippetUse.bind(this)
+			this.recordSnippetUse.bind(this),
+			agent
 		);
     this.isSnippetOpen = false;
 	},
@@ -1942,6 +2043,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				selectDepartment.select2('val', val).change();
 			});
 		});
+
+    selectBrand.trigger('change');
 	},
 
 	focusOnReply: function() {
@@ -2060,7 +2163,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						map[el.name] = el.value;
 						(function(el){
 
-							if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
+							if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]', 'newticket[person][phone_number]'].indexOf(el.name) !== -1) {
 								return;
 							}
 
@@ -2091,7 +2194,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
 						self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
 							$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
-							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
+							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']).trigger('change');
+							$('input[name="newticket[person][phone_number]"]', $form).val(map['newticket[person][phone_number]']);
 						});
 					}
 
@@ -2299,7 +2403,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
       var option = followerSel.find('option[value="' + agentId + '"]');
 
-      var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="icon-remove"></i></span></a></li>');
+      var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="fas fa-times"></i></span></a></li>');
       li.find('span.text').css('background-image', 'url(' +option.data('icon-small') + ')').text(option.text());
 
       followersList.append(li);

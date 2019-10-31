@@ -29,7 +29,7 @@
                                         <label>
                                             <input type="checkbox" ng-model="model.agent_ids.notify_list" />
                                             Subscribed agents
-                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="All agents have notification subscription preferences. This option will send the email to any agent who is subscribed to whatever action initiated this event. For example, if this action was fired via a new ticket, then this option will send an email to any agent subscribed to 'new tickets'."></i>
+                                            <i style="color: #aaa;" class="fas fa-question-circle" tooltip="All agents have notification subscription preferences. This option will send the email to any agent who is subscribed to whatever action initiated this event. For example, if this action was fired via a new ticket, then this option will send an email to any agent subscribed to 'new tickets'."></i>
                                         </label>
                                     </li>
                                     <li ng-repeat="agent in agents">
@@ -66,21 +66,21 @@
                                         <label>
                                             <input type="checkbox" ng-model="model.agent_ids.person" />
                                             Agent Performer
-                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the agent that caused this trigger to run."></i>
+                                            <i style="color: #aaa;" class="fas fa-question-circle" tooltip="Send the email to the agent that caused this trigger to run."></i>
                                         </label>
                                     </li>
                                     <li ng-if="object_type != 'escalation'">
                                         <label>
                                             <input type="checkbox" ng-model="model.agent_ids.person_team" />
                                             Teams of Agent Performer
-                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the teams of the agent that caused this trigger to run."></i>
+                                            <i style="color: #aaa;" class="fas fa-question-circle" tooltip="Send the email to the teams of the agent that caused this trigger to run."></i>
                                         </label>
                                     </li>
                                     <li ng-if="object_type != 'escalation'">
                                         <label>
                                             <input type="checkbox" ng-model="model.agent_ids.all_agents" />
                                             All Agents
-                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to all agents."></i>
+                                            <i style="color: #aaa;" class="fas fa-question-circle" tooltip="Send the email to all agents."></i>
                                         </label>
                                     </li>
                                 </ul>

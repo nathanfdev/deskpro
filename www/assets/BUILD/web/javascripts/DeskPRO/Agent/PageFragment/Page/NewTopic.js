@@ -30,7 +30,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		this._initCategorySection();
 		this._initTitleSection();
 		this._initContentSection();
-		this._initOtherSection();
 
 		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
 			stateId: 'c',
@@ -108,9 +107,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 
 	submit: function() {
 		var formData = this.form.serializeArray();
-		if (this.labelsInput) {
-			formData.append(this.labelsInput.getFormData());
-		}
+		var self = this;
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
@@ -126,7 +123,9 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				self.wrapper.removeClass('loading');
+				if (self.wrapper) {
+					self.wrapper.removeClass('loading');
+				}
 			},
 			success: function(data) {
 				if (data.error) {
@@ -137,8 +136,8 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 					return;
 				}
 
-				if (data.news_id) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/guides/topic/' + data.news_id);
+				if (data.topic_id) {
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/guides/topic/' + data.topic_id);
 				}
 
 				this.closeSelf();
@@ -246,7 +245,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		var contentInputType = this.getEl('content_input_type');
     var $rElement = $('<div></div>').insertAfter(textArea);
     textArea.hide();
-    window.AgentLegacyBundle.renderContentEditor(
+    window.AgentLegacyBundle.renderMarkdownEditor(
       $rElement.get(0),
       textArea.val(),
       'markdown',
@@ -257,71 +256,5 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 				contentInputType.val(type);
 			}
     );
-	},
-
-	//#########################################################################
-	//# Other Section
-	//#########################################################################
-
-	_initOtherSection: function() {
-		var self = this;
-		this.otherTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li', this.getEl('other_props_tabs')),
-			context: this.getEl('other_props_tabs_content'),
-			autoSelectFirst: false,
-			onTabSwitch: function(eventData) {
-				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
-					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'news',
-						fieldName: 'newnews[labels]',
-						input: $(".tags-wrap input", eventData.tabContent),
-						onChange: function() {
-							if (self.stateSaver) {
-								self.stateSaver.triggerChange();
-							}
-						}
-					});
-					self.ownObject(self.labelsInput);
-				}
-			},
-			onTabClick: (function(ev) {
-				var contentWrap = this.getEl('other_props_tabs_content');
-				var navWrap = this.getEl('other_props_tabs_wrap');
-				var tab = ev.tabEl;
-
-				// Toggle content state if we're clicking for the first time,
-				// or re-clicking a tab
-				if (!$('.on', navWrap).length || tab.is('.on')) {
-					if (contentWrap.is(':visible')) {
-						contentWrap.hide();
-						navWrap.removeClass('on');
-					} else {
-						contentWrap.show();
-						navWrap.addClass('on');
-					}
-				}
-			}).bind(this)
-		});
-		this.ownObject(this.otherTabs);
-
-		this.getEl('slug').on('focus', function() {
-			$(this).addClass('had-focus');
-		});
-
-		// Attachments
-		var list = $('.file-list', this.wrapper);
-		$('input', list[0]).live('click', function() {
-			var el = $(this);
-			var li = el.parent();
-			if (el.is(':checked')) {
-				li.removeClass('unchecked');
-			} else {
-				li.addClass('unchecked');
-			}
-		});
-
-		DeskPRO_Window.util.fileupload(this.wrapper, {
-			page: this
-		});
 	}
 });

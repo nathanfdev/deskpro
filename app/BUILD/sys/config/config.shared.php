@@ -510,7 +510,7 @@ $container->setDefinition('deskpro.search.download_to_elastica_transformer', $de
 
 // deskpro.search.feedback_to_elastica_transformer
 $definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\FeedbackToElasticaTransformer');
+$definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\CommunityTopicToElasticaTransformer');
 $container->setDefinition('deskpro.search.feedback_to_elastica_transformer', $definition);
 
 // deskpro.search.topic_to_elastica_transformer
@@ -601,6 +601,10 @@ $container->loadFromExtension(
                                     '([^\\._\\s]+)',
                                 ],
                             ],
+                            'preserved_asciifolding' => [
+                                'type'              => 'asciifolding',
+                                'preserve_original' => true,
+                            ],
                         ],
                         'analyzer' => [
                             'title_content_analyzer' => [
@@ -609,18 +613,18 @@ $container->loadFromExtension(
                                 'filter'    => [
                                     'standard',
                                     'lowercase',
-                                    'asciifolding',
+                                    'preserved_asciifolding',
                                 ],
                             ],
                             'text_content_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => ['standard', 'lowercase', 'asciifolding'],
+                                'filter'    => ['standard', 'lowercase', 'preserved_asciifolding'],
                             ],
                             'name_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => ['lowercase', 'asciifolding', 'edge_ngram_filter_3'],
+                                'filter'    => ['lowercase', 'preserved_asciifolding', 'edge_ngram_filter_3'],
                             ],
                             'email_analyzer' => [
                                 'type'      => 'custom',
@@ -640,7 +644,7 @@ $container->loadFromExtension(
                             'filename_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => ['lowercase', 'asciifolding', 'filename_filter'],
+                                'filter'    => ['lowercase', 'preserved_asciifolding', 'filename_filter'],
                             ],
                         ],
                     ],
@@ -713,7 +717,7 @@ $container->loadFromExtension(
                             'repository'                    => \Application\DeskPRO\NewSearch\Repository\DownloadRepository::class,
                         ],
                     ],
-                    'feedback' => [
+                    'community' => [
                         'mappings' => [
                             'title'        => ['analyzer' => 'title_content_analyzer'],
                             'labels'       => ['analyzer' => 'title_content_analyzer'],
@@ -724,18 +728,18 @@ $container->loadFromExtension(
                             'sticky_words' => [],
                             'content'      => ['analyzer' => 'text_content_analyzer'],
                             'status'       => [],
-                            'category_id'  => ['type' => 'integer'],
+                            'channel_id'   => ['type' => 'integer'],
                             'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                             'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => \Application\DeskPRO\Entity\Feedback::class,
+                            'model'                         => \Application\DeskPRO\Entity\CommunityTopic::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.feedback_to_elastica_transformer'],
-                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\FeedbackRepository::class,
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\CommunityRepository::class,
                         ],
                     ],
                     'topic' => [

@@ -18,7 +18,10 @@ class NewDownload extends AbstractType
         //------------------------------
 
         $builder->add('title', 'text', ['required' => false]);
-        $builder->add('content', 'textarea', ['required' => false, 'filter_clean' => false]);
+        $builder->add('content', 'textarea', [
+            'filter_clean' => false,
+            'required'     => true,
+        ]);
         $builder->add('status', 'text');
 
         $builder->add('fileurl', 'text', ['required' => false]);

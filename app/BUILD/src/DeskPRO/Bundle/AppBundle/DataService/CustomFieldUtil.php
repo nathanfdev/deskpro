@@ -9,6 +9,7 @@ use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\CustomFields\Handler\Display;
 use Application\DeskPRO\CustomFields\Handler\File;
 use Application\DeskPRO\CustomFields\Handler\Hidden;
+use Application\DeskPRO\CustomFields\Handler\Javascript;
 use Application\DeskPRO\CustomFields\Handler\Text;
 use Application\DeskPRO\CustomFields\Handler\Textarea;
 use Application\DeskPRO\CustomFields\Handler\Toggle;
@@ -134,6 +135,15 @@ class CustomFieldUtil
                     $value = $this->em->getRepository(Blob::class)->find($data->getValue());
                 }
 
+                break;
+            case Javascript::class:
+                $value = null;
+                if ($datum = $data->getData()) {
+                    $value = json_decode($datum, true);
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $value = $value['value'];
+                    }
+                }
                 break;
             default:
                 $value = null;

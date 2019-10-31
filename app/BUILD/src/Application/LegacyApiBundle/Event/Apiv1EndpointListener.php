@@ -6,6 +6,7 @@ use Application\LegacyApiBundle\Controller\AbstractController;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -86,12 +87,16 @@ class Apiv1EndpointListener implements EventSubscriberInterface
             }
         }
         if ($exception instanceof NotFoundHttpException) {
-            $response = new JsonResponse();
-            $response->headers->set('X-Status-Code', Response::HTTP_NOT_FOUND);
-            $response->setContent([
-                'error_code'    => 'not_found',
-                'error_message' => $exception->getMessage(),
-            ]);
+            if ($request->isXmlHttpRequest()) {
+                $response = new JsonResponse();
+                $response->headers->set('X-Status-Code', Response::HTTP_NOT_FOUND);
+                $response->setContent([
+                    'error_code'    => 'not_found',
+                    'error_message' => $exception->getMessage(),
+                ]);
+            } else {
+                $response = new RedirectResponse('/404');
+            }
 
             $event->setResponse($response);
         }

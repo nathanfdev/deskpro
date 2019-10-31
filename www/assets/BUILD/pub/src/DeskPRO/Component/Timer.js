@@ -4,14 +4,16 @@ import React from 'react';
 class Timer extends React.Component {
 
   static propTypes = {
-    paused: PropTypes.bool,
-    format: PropTypes.string
+    startTime: PropTypes.number,
+    countDown: PropTypes.bool,
+    paused:    PropTypes.bool,
+    format:    PropTypes.string
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      time: 0
+      time: props.startTime || 0
     };
   }
 
@@ -41,9 +43,20 @@ class Timer extends React.Component {
 
   startTimer() {
     this.interval = setInterval(() => {
-      this.setState({
-        time: this.state.time + 1
-      });
+      const { countDown } = this.props;
+      const { time } = this.state;
+
+      if (countDown) {
+        if (time > 0) {
+          this.setState({
+            time: time - 1
+          });
+        }
+      } else {
+        this.setState({
+          time: time + 1
+        });
+      }
     }, 1000);
   }
 

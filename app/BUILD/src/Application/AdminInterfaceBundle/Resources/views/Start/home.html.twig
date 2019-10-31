@@ -122,7 +122,7 @@
 					<h3>Your License</h3>
 					<p>
 						You can get your license key from your <a href="https://www.deskpro.com/members/" target="_blank">Deskpro Members Area</a>.
-						Don't have a license? <button type="button" class="btn btn-info" style="height: auto; padding: 4px 8px 3px 11px;" ng-click="Card.showRequestDemo()">Get a demo license now <i class="fa fa-ticket"></i></button>
+						Don't have a license? <button type="button" class="btn btn-info" style="height: auto; padding: 4px 8px 3px 11px;" ng-click="Card.showRequestDemo()">Get a demo license now <i class="fas fa-ticket-alt"></i></button>
 					</p>
                     <textarea ng-model="opt.license_code" name="license" class="form-control" style="height: 100px;"
                               placeholder="Paste your license code here" required></textarea>
@@ -137,7 +137,7 @@
 	</article>
 	<footer>
 		<div ng-show="!is_loading">
-			<button class="btn btn-primary" ng-click="Card.saveAndContinue(!form.$invalid)" ng-disabled="has_submit && form.$invalid">Save and continue &nbsp; <i class="fa fa-caret-right"></i></button>
+			<button class="btn btn-primary" ng-click="Card.saveAndContinue(!form.$invalid)" ng-disabled="has_submit && form.$invalid">Save and continue &nbsp; <i class="fas fa-caret-right"></i></button>
 		</div>
 		<div ng-show="is_loading">
 			<i class="spinner-flat"></i>

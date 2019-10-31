@@ -21,7 +21,7 @@
     <div ng-show="EditCtrl.hasPermOverrides">
         <div class="alert alert-warning">
             <p>
-                <span class="fa fa-exclamation-triangle"></span>
+                <span class="fas fa-exclamation-triangle"></span>
                 There are permission overrides set on this agent. Manage permission overrides below.
                 <button class="btn btn-default btn-xs"
                         ng-click="$event.preventDefault(); showConfirm('Are you sure you want to unset all permission overrides?', EditCtrl.clearPermOverrides);"
@@ -34,7 +34,7 @@
     <div ng-show="EditCtrl.canCreateNewTicket() && !EditCtrl.hasAnyDepTicketsPerms()">
         <div class="alert alert-warning">
             <p>
-                <span class="fa fa-exclamation-triangle"></span>
+                <span class="fas fa-exclamation-triangle"></span>
                 Warning: This agent has permission to create new tickets, but they do not have permissions to use any
                 departments. This means that the agent can't actually create new tickets. To fix this, grant at least
                 "assign" permission in one or more departments.

@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
+use Application\DeskPRO\People\UserRuleProcessor;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Log\Logger;
@@ -109,8 +110,11 @@ class SyncerHelper
             if (!$person = $this->getPersonFromEmail($user_info['email'])) {
                 $this->log(Logger::DEBUG, 'could not find a person with the email "'.$user_info['email'].'"');
                 $this->log(Logger::INFO, 'creating a new person with email "'.$user_info['email'].'"', $user_info);
-                $person = Person::newContactPerson(['email' => $user_info['email']]);
+                $person = Person::newContactPerson(['email' => $user_info['email'], 'creation_system' => Person::CREATED_USERSOURCE_SYNC]);
                 $this->em->persist($person);
+
+                $userRuleProcessor = new UserRuleProcessor($this->em);
+                $userRuleProcessor->newContact($person);
             }
         }
 
@@ -135,6 +139,8 @@ class SyncerHelper
                 // email changed in usersource, make this new email as primary email
                 if ($newEmail) {
                     $person->setPrimaryEmail($newEmail);
+                    $userRuleProcessor = new UserRuleProcessor($this->em);
+                    $userRuleProcessor->newEmail($person, $newEmail);
                 }
             }
         }

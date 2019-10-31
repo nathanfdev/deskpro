@@ -14,8 +14,8 @@
         {% set article_results = results.article is defined ? results.article.results : null %}
         {% set news_info = results.news is defined ? results.news.pageinfo : null %}
         {% set news_results = results.news is defined ? results.news.results : null %}
-        {% set feedback_info = results.feedback is defined ? results.feedback.pageinfo : null %}
-        {% set feedback_results = results.feedback is defined ? results.feedback.results : null %}
+        {% set community_info = results.community is defined ? results.community.pageinfo : null %}
+        {% set community_results = results.community is defined ? results.community.results : null %}
         {% set download_info = results.download is defined ? results.download.pageinfo : null %}
         {% set download_results = results.download is defined ? results.download.results: null %}
         {% set guide_info = results.topic is defined ? results.topic.pageinfo : null %}
@@ -39,7 +39,7 @@
                         {% endfor %}
                       <li class="dpx-show-more">
                         <div class="button-wrapper">
-                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
                         </div>
                       </li>
                     </ul>
@@ -57,7 +57,7 @@
                         {% endfor %}
                       <li class="dpx-show-more">
                         <div class="button-wrapper">
-                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
                         </div>
                       </li>
                     </ul>
@@ -75,7 +75,7 @@
                         {% endfor %}
                       <li class="dpx-show-more">
                         <div class="button-wrapper">
-                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
                         </div>
                       </li>
                     </ul>
@@ -83,17 +83,17 @@
                 </div>
             {% endif %}
 
-            {% if can_use_feedback() and feedback_results %}
-                <div class="search-result-category-wrapper" id="feedback_results">
+            {% if can_use_community() and community_results %}
+                <div class="search-result-category-wrapper" id="community_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></div>
-                    <ul class="dpx-dynamic-search-results" data-type="feedback" data-next="{{ feedback_info.next ? 1 : 0 }}">
-                        {% for result_set in feedback_results %}
+                    <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.community.search-title') }} <span class="count">({{ community_info['total_results'] }})</span></span></div>
+                    <ul class="dpx-dynamic-search-results" data-type="community" data-next="{{ community_info.next ? 1 : 0 }}">
+                        {% for result_set in community_results %}
                             {{ search_macros.search_result(result_set) }}
                         {% endfor %}
                       <li class="dpx-show-more">
                         <div class="button-wrapper">
-                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
                         </div>
                       </li>
                     </ul>
@@ -104,14 +104,14 @@
             {% if can_use_downloads() and download_results %}
                 <div class="search-result-category-wrapper" id="download_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="fa fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }} <span class="count">({{ download_info['total_results'] }})</span></span></div>
+                    <div class="search-result-category"><hr><i class="fas fa-copy"></i><span class="title">{{ phrase('portal.downloads.search-title') }} <span class="count">({{ download_info['total_results'] }})</span></span></div>
                     <ul class="dpx-dynamic-search-results" data-type="download" data-next="{{ download_info.next ? 1 : 0 }}">
                         {% for result_set in download_results %}
                             {{ search_macros.search_result(result_set) }}
                         {% endfor %}
                       <li class="dpx-show-more">
                         <div class="button-wrapper">
-                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                          <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
                         </div>
                       </li>
                     </ul>
@@ -122,14 +122,14 @@
             {% if app.hasBeta('guides') and can_use_guides() and guide_results %}
                 <div class="search-result-category-wrapper" id="guide_results">
                     <div class="deskpro-search-results">
-                        <div class="search-result-category"><hr><i class="fa fa-book"></i><span class="title">{{ phrase('portal.topics.search-title') }} <span class="count">({{ guide_info['total_results'] }})</span></span></div>
+                        <div class="search-result-category"><hr><i class="fas fa-book"></i><span class="title">{{ phrase('portal.topics.search-title') }} <span class="count">({{ guide_info['total_results'] }})</span></span></div>
                         <ul class="dpx-dynamic-search-results" data-type="topic" data-next="{{ guide_info.next ? 1 : 0 }}">
                             {% for result_set in guide_results %}
                                 {{ search_macros.search_result(result_set) }}
                             {% endfor %}
                             <li class="dpx-show-more">
                                 <div class="button-wrapper">
-                                    <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fa fa-angle-double-down"></i></a>
+                                    <a href="#" class="show-more-content">{{ phrase('portal.general.show_more') }} <i class="fas fa-angle-double-down"></i></a>
                                 </div>
                             </li>
                         </ul>

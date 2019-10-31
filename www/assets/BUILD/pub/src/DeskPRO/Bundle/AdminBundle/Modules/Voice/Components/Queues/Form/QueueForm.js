@@ -18,6 +18,7 @@ class QueueForm extends BaseForm {
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
     ticketDepartments: PropTypes.object,
+    brands:            PropTypes.object,
     onSubmit:          PropTypes.func.isRequired,
     onDelete:          PropTypes.func,
     onCancel:          PropTypes.func
@@ -48,23 +49,45 @@ class QueueForm extends BaseForm {
     return {
       name:                 queue ? queue.get('name') : '',
       department:           queue ? queue.get('department') : null,
+      brand:                queue ? queue.get('brand') : null,
       agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
-      routing_model:        queue ? queue.get('routing_model') : 'automatic',
-      max_queue_size:       queue ? queue.get('max_queue_size') : 0,
+      routing_model:        queue ? queue.get('routing_model') : 'round_robin',
+      max_queue_size:       queue ? queue.get('max_queue_size') : 1,
       greet_asset:          greetAsset ? greetAsset.toJS() : null,
       loop_asset:           loopAsset ? loopAsset.toJS() : null,
       voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
       voicemail_department: queue ? queue.get('voicemail_department') : null,
       voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
       voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
-      voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 30,
+      voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 15,
+      answer_timeout:       queue ? queue.get('answer_timeout') : 15,
       recording_enabled:    queue ? queue.get('recording_enabled') : true,
     };
   }
 
+  transformSubmitData(data) { // eslint-disable-line
+    if (!data.voicemail_timeout) {
+      data.voicemail_timeout = 30;
+    }
+    if (!data.max_queue_size) {
+      data.max_queue_size = 1;
+    }
+
+    return data;
+  }
+
   render() {
-    const { queueId, agents, agentTeams, ticketDepartments, onCancel } = this.props;
+    const { queueId, agents, agentTeams, ticketDepartments, brands, onCancel } = this.props;
     const { formData, saving } = this.state;
+
+    let departmentBrands = Immutable.fromJS([]);
+    const currentDepartment = formData.value.department;
+    if (currentDepartment) {
+      const department = ticketDepartments.get(currentDepartment);
+      if (department.get('brands').size > 1) {
+        departmentBrands = brands;
+      }
+    }
 
     return (
       <div className="twilio-queue-form">
@@ -78,6 +101,12 @@ class QueueForm extends BaseForm {
                 <Select {...this.props} clearable={false} />
               </RecordsChoiceWrapper>
             </Field>
+            {departmentBrands.size > 1 &&
+            <Field select="brand" label="Brand">
+              <RecordsChoiceWrapper records={departmentBrands} labelProp="name">
+                <Select {...this.props} clearable={false} />
+              </RecordsChoiceWrapper>
+            </Field>}
             {agents && agents.size > 0 &&
               <Field select="agents" label="Agents">
                 <VoiceAgentChoiceList agents={agents} />
@@ -90,6 +119,10 @@ class QueueForm extends BaseForm {
             <Field select="max_queue_size" className="queue-size">
               <MaxQueueSize />
             </Field>}
+            {['round_robin', 'least_utilized'].indexOf(formData.value.routing_model) !== -1 &&
+            <Field select="answer_timeout">
+              <AnswerTimeout />
+            </Field>}
             <Field select="greet_asset" className="audio-asset" label="Greet">
               <AudioWidgetFormContainer />
             </Field>
@@ -100,7 +133,7 @@ class QueueForm extends BaseForm {
               <AudioWidgetFormContainer />
             </Field>
 
-            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Voicemail timeout *">
+            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Maximum Queue Wait Time (in Seconds)">
               <Input type="number" />
             </Field>
 
@@ -119,7 +152,13 @@ class QueueForm extends BaseForm {
               </Field>}
             </div>
 
-            <Field select="recording_enabled" label="Recording">
+            <Field
+              select="recording_enabled"
+              label="Recording"
+              help={formData.value.recording_enabled
+                ? 'You have enabled call recording. Ensure that customers are informed of this in accordance with your state\'s or country\'s recording laws. For example, it is common to give callers notice during the caller greeting message.'
+                : ''}
+            >
               <Checkbox label="Recording enabled" />
             </Field>
 
@@ -155,9 +194,9 @@ class RoutingModel extends React.Component {
   render() {
     const { value, onChange } = this.props;
     const choices = [
-      { value: 'automatic', label: 'Automatic', help: 'Call will be routed amongst all agents evenly. The system will automatically balance calls so that no single agent handles more or less than any other agent. For example, given three agents online, if AgentA and AgentB have both accepted a call, then they won\'t receive another call until AgentC has also accepted a call.' },
-      { value: 'least_utilized', label: 'Least Utilized', help: 'Calls will be routed towards agents who have handled the fewest calls.' },
-      { value: 'simulring', label: 'Simulring', help: 'Any incoming call will ring ALL agents at the same time. The first to answer wil handle the call.' }
+      { value: 'round_robin', label: 'Round Robin', help: 'Agents in the queue are assigned in order, one by one.' },
+      { value: 'least_utilized', label: 'Least Utilized', help: 'Work is distributed evenly amongst agents.' },
+      { value: 'simulring', label: 'Simulring', help: 'All agents get notified at the same time, and the first agent to accept will be assigned.' }
     ];
 
     const help = {};
@@ -176,6 +215,19 @@ class RoutingModel extends React.Component {
         <div className="help">
           {help[value]}
         </div>
+      </div>
+    );
+  }
+}
+
+class AnswerTimeout extends React.Component {
+
+  render() {
+    return (
+      <div className="answer-timeout">
+        <span>Agents have at most</span>
+        <Input {...this.props} type="number" />
+        <span>seconds before the call gets re-routed</span>
       </div>
     );
   }

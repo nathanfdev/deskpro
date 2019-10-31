@@ -8,16 +8,18 @@ import Avatar from '../../Common/Avatar';
 class Queues extends React.Component {
 
   static propTypes = {
-    agents:       PropTypes.object,
-    onlineAgents: PropTypes.object,
-    queues:       PropTypes.object,
-    me:           PropTypes.object,
-    onChange:     PropTypes.func,
-    saving:       PropTypes.bool
+    agents:             PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    queues:             PropTypes.object,
+    waitingUsers:       PropTypes.object,
+    me:                 PropTypes.object,
+    onChange:           PropTypes.func,
+    saving:             PropTypes.bool
   };
 
   render() {
-    const { agents, onlineAgents, me, queues = Immutable.fromJS({}), saving, onChange } = this.props;
+    const { agents, onlineAgentIds, forwardingAgentIds, me, queues = Immutable.fromJS({}), waitingUsers, saving, onChange } = this.props;
     const myQueues = queues.filter(queue =>
       queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first()
     );
@@ -41,8 +43,10 @@ class Queues extends React.Component {
             <QueueItem
               key={index}
               agents={agents}
-              onlineAgents={onlineAgents}
+              onlineAgentIds={onlineAgentIds}
+              forwardingAgentIds={forwardingAgentIds}
               queue={queue}
+              waitingUsers={waitingUsers ? waitingUsers[queue.get('id')] : null}
               active={voiceAgent ? voiceAgent.get('is_enabled') : false}
               onChange={onChange}
               saving={saving}
@@ -57,12 +61,14 @@ class Queues extends React.Component {
 class QueueItem extends React.Component {
 
   static propTypes = {
-    agents:       PropTypes.object,
-    onlineAgents: PropTypes.object,
-    active:       PropTypes.bool,
-    queue:        PropTypes.object,
-    onChange:     PropTypes.func,
-    saving:       PropTypes.bool
+    agents:             PropTypes.object,
+    waitingUsers:       PropTypes.object,
+    onlineAgentIds:     PropTypes.object,
+    forwardingAgentIds: PropTypes.object,
+    active:             PropTypes.bool,
+    queue:              PropTypes.object,
+    onChange:           PropTypes.func,
+    saving:             PropTypes.bool
   };
 
   onClick = () => {
@@ -71,9 +77,22 @@ class QueueItem extends React.Component {
   };
 
   render() {
-    const { agents, onlineAgents, queue, active, saving } = this.props;
+    const { agents, onlineAgentIds, forwardingAgentIds, queue, waitingUsers, active, saving } = this.props;
     const queueAgentIds = queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) || Immutable.fromJS([]);
-    const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
+    const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id'))).sort((a, b) => {
+      if (onlineAgentIds.contains(a.get('id'))) {
+        return -1;
+      } else if (onlineAgentIds.contains(b.get('id'))) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    const displayQueueAgents = queueAgents.slice(0, 15);
+    const hiddenQueueAgents = queueAgents.slice(15);
+    const waitingCount = waitingUsers ? waitingUsers.users_count : 0;
+    const averageTime = waitingUsers ? waitingUsers.average_time : 0;
 
     return (
       <div className="queue-item">
@@ -88,19 +107,31 @@ class QueueItem extends React.Component {
           {queue.get('name')}
         </div>
         <div className="queue-agents">
-          {queueAgents.size} agents
-          {queueAgents.toArray().map((agent, index) =>
-            <Avatar
-              key={index}
-              person={agent}
-              active={onlineAgents.contains(agent)}
-              size={20}
-            />
-          )}
+          <div className="queue-agents-count">
+            {queueAgents.size} agents
+          </div>
+          <div>
+            {displayQueueAgents.toArray().map((agent, index) =>
+              <Avatar
+                key={index}
+                person={agent}
+                online={onlineAgentIds.contains(agent.get('id'))}
+                forwarding={forwardingAgentIds.contains(agent.get('id'))}
+                size={20}
+                withOnlineStatus
+              />
+            )}
+            {hiddenQueueAgents.size > 0 &&
+            <span className="more-text">
+                + {hiddenQueueAgents.size} more
+              </span>
+            }
+          </div>
         </div>
-        {/* <div className="queue-users">
-          3 users in queue (average wait 2m)
-        </div> */}
+        {waitingCount > 0 &&
+        <div className="queue-users">
+          {waitingCount} users in queue (average wait {averageTime === 1 ? '< 1m' : `${averageTime}m`})
+        </div>}
       </div>
     );
   }

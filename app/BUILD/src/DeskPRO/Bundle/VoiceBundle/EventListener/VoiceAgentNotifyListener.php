@@ -3,11 +3,15 @@
 namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -37,23 +41,31 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     private $dispatcher;
 
     /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
      * @param VoiceTaskHelper          $taskHelper
      * @param StorageAdapterInterface  $storage
      * @param EventDispatcherInterface $dispatcher
+     * @param Serializer               $serializer
      */
     public function __construct(
         EntityManager            $em,
         VoiceTaskHelper          $taskHelper,
         StorageAdapterInterface  $storage,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        Serializer               $serializer
     ) {
         $this->em         = $em;
         $this->taskHelper = $taskHelper;
         $this->storage    = $storage;
         $this->dispatcher = $dispatcher;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -62,10 +74,16 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TaskRouterEvent::ASSIGNED => 'onAssigned',
-            TaskRouterEvent::ACCEPTED => 'onAccepted',
-            TaskRouterEvent::CANCELED => 'onCanceled',
-            TaskRouterEvent::REJECTED => 'onCanceled',
+            TaskRouterEvent::ASSIGNED                => [['onAssigned'], ['workerBusyHandler']],
+            TaskRouterEvent::ASSIGN_TIMEOUT          => 'onAssignTimeout',
+            TaskRouterEvent::ACCEPTED                => 'onAccepted',
+            TaskRouterEvent::TASK_CANCELED           => 'onCanceled',
+            TaskRouterEvent::REJECTED                => [['onCanceled'], ['workerIdleHandler']],
+            TaskRouterEvent::REJECTED_RESERVATION    => 'workerIdleHandler',
+            TaskRouterEvent::ANOTHER_WORKER_RESERVED => 'workerBusyHandler',
+            TaskRouterEvent::COMPLETE_WORKER         => 'workerIdleHandler',
+            TaskRouterEvent::RESET_WORKER            => 'workerIdleHandler',
+            TaskRouterEvent::JOINED_TASK             => 'workerBusyHandler',
         ];
     }
 
@@ -86,6 +104,14 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
             return;
         }
 
+        // phone call
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['recording_enabled']);
+        $context->setInlineSideloads(true);
+
+        $serializedPhoneCall = $this->serializer->toArray(new ApiWrapper($phoneCall), $context)['data'];
+        unset($serializedPhoneCall['ticket']);
+
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.incoming-call',
             [
@@ -97,7 +123,40 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'queue_id'           => $task->getAttribute('queue'),
                 'agent_id'           => $task->getAttribute('agent'),
                 'related_people_ids' => $task->getAttribute('related_people'),
+                'call_type'          => $task->getAttribute('transfer') ? 'transfer' : null,
+                'invite_type'        => $task->getAttribute('invite_type') ?: null,
+                'from_agent_id'      => $task->getAttribute('from_agent_id') ?: null,
+                'phone_call'         => $serializedPhoneCall,
+                'expire_timeout'     => $task->getExpireTimeout(),
                 'target'             => array_map(function (Worker $worker) {
+                    return $worker->getTypeId();
+                }, $this->storage->getWorkers($task->getWorkerIds())),
+            ]
+        ));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function onAssignTimeout(TaskRouterEvent $event)
+    {
+        $task = $event->getTask();
+        if (!$task) {
+            return;
+        }
+
+        $phoneCall = $this->taskHelper->getPhoneCall($task);
+        if (!$phoneCall) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.incoming-call-timeout',
+            [
+                'call_id' => $phoneCall->getId(),
+                'target'  => array_map(function (Worker $worker) {
                     return $worker->getTypeId();
                 }, $this->storage->getWorkers($task->getWorkerIds())),
             ]
@@ -157,6 +216,11 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
             return;
         }
 
+        $rejectedWorker = $event->getWorker();
+        if (!$rejectedWorker) {
+            return;
+        }
+
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.incoming-call-rejected',
             [
@@ -166,6 +230,57 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'conference_sid'     => $phoneCall->getConferenceSid(),
                 'task'               => $task->getId(),
                 'related_people_ids' => $task->getAttribute('related_people'),
+                'rejected_agent_id'  => $rejectedWorker->getTypeId(),
+            ]
+        ));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function workerBusyHandler(TaskRouterEvent $event)
+    {
+        $worker = $event->getWorker();
+        if (!$worker) {
+            return;
+        }
+
+        $task = $event->getTask();
+        if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.worker-busy',
+            [
+                'worker_type'    => $worker->getType(),
+                'worker_type_id' => $worker->getTypeId(),
+            ]
+        ));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function workerIdleHandler(TaskRouterEvent $event)
+    {
+        $worker = $event->getWorker();
+        if (!$worker) {
+            return;
+        }
+        if (VoiceWorkflow::workerIsBusy($worker)) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.worker-idle',
+            [
+                'worker_type'    => $worker->getType(),
+                'worker_type_id' => $worker->getTypeId(),
             ]
         ));
     }

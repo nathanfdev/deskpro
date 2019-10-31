@@ -10,6 +10,7 @@ import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selec
 import { isNumbersLoadedSelector } from '../../../../Selectors/numbers';
 import BaseSearchContainer from '../BaseSearchContainer';
 import { replaceRoute } from '../../../../../../Services/history';
+import { loadAvailableCountries } from '../../../../Actions/accountActions';
 
 @connect(state => ({
   accountsLoaded: isAccountsLoadedSelector(state),
@@ -28,16 +29,25 @@ class AvailableListContainer extends BaseSearchContainer {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
-      numbers: [],
-      filter:  {
+      loading:            false,
+      loadingCountries:   true,
+      numbers:            [],
+      availableCountries: [],
+      filter:             {
         account:      null,
         country_code: null,
         region:       null,
-        types:        ['local', 'tollfree', 'mobile', 'fixed', 'national'],
+        type:         'mobile',
         phrase:       ''
       }
     };
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    this.props.dispatch(loadAvailableCountries()).then((availableCountries) => {
+      this.setState({ availableCountries, loadingCountries: false });
+    });
   }
 
   onAddNumber = (number) => {
@@ -68,7 +78,7 @@ class AvailableListContainer extends BaseSearchContainer {
 
   onChangeFilter = (filter) => {
     const { dispatch, accounts } = this.props;
-    if (filter.account && filter.country_code && filter.types.length > 0) {
+    if (filter.account && filter.country_code && filter.type) {
       this.setState({
         loading: true,
         numbers: []
@@ -95,8 +105,9 @@ class AvailableListContainer extends BaseSearchContainer {
 
   render() {
     const { numbersLoaded, accountsLoaded, accounts } = this.props;
+    const { loadingCountries } = this.state;
 
-    if (!numbersLoaded || !accountsLoaded) {
+    if (!numbersLoaded || !accountsLoaded || loadingCountries) {
       return <LoadingPage />;
     }
 

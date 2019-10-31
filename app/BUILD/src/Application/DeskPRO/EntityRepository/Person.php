@@ -15,9 +15,11 @@ use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntit
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\PersonPhoneNumber as PhoneNumberEntity;
+use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\Query\Expr;
 use Orb\Util\Strings;
 
 class Person extends AbstractEntityRepository
@@ -740,27 +742,53 @@ class Person extends AbstractEntityRepository
     }
 
     /**
-     * @param string $phoneNumber
+     * @param string $number
+     * @param string $createdBy
      *
      * @return PersonEntity|null
      */
-    public function getOrCreateUserByPhoneNumber($phoneNumber)
+    public function getOrCreateUserByPhoneNumber($number, $createdBy = null)
     {
         $person = null;
-        if ($phoneNumber) {
-            // check for an existing person
-            $phoneNumberEntity = $this->_em->getRepository(PhoneNumberEntity::class)->findOneBy([
-                'number' => $phoneNumber,
-            ]);
-            if ($phoneNumberEntity) {
-                $person = $phoneNumberEntity->getPerson();
+        if ($number) {
+            // select person by ticket last activity
+            $qb = $this->_em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from(PersonEntity::class, 'p')
+                ->join('p.phone_numbers', 'n')
+                ->join(TicketEntity::class, 't', Expr\Join::WITH, 't.person = p.id')
+                ->where('n.number = :number')
+                ->orderBy('t.date_created', 'DESC')
+                ->setMaxResults(1)
+                ->setParameter('number', $number)
+            ;
+
+            $person = $qb->getQuery()->getOneOrNullResult();
+
+            // select first existing person by phone number
+            if (!$person) {
+                // check for an existing person
+                $phoneNumbers = $this->_em->getRepository(PhoneNumberEntity::class)->findBy([
+                    'number' => $number,
+                ]);
+
+                // exact match if phone number is found and just one person is associated
+                // otherwise you should select a person
+                if (count($phoneNumbers) === 1) {
+                    $person = $phoneNumbers[0]->getPerson();
+                }
             }
 
             // if person was not found then create a new one
             if (!$person) {
                 $person = new PersonEntity();
-                $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
+                $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($number));
                 $person->setPreference('voice.unknown_caller', 1);
+
+                if ($createdBy) {
+                    $person->setCreationSystem($createdBy);
+                }
 
                 $this->_em->persist($person);
                 $this->_em->flush();

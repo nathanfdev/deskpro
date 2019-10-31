@@ -2,18 +2,29 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 
-use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\DownloadsSubscription;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendantDialNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
@@ -200,118 +211,130 @@ class SelectPart
      * @var array
      */
     private static $tableEntityMap = [
-        'agent_teams'                 => 'DeskPRO:AgentTeam',
-        'articles'                    => 'DeskPRO:Article',
-        'article_categories'          => 'DeskPRO:ArticleCategory',
-        'article_attachments'         => 'DeskPRO:ArticleAttachment',
-        'article_comments'            => 'DeskPRO:ArticleComment',
-        'article_pending_create'      => 'DeskPRO:ArticlePendingCreate',
-        'ban_emails'                  => 'DeskPRO:BanEmail',
-        'ban_ips'                     => 'DeskPRO:BanIp',
-        'blobs'                       => 'DeskPRO:Blob',
-        'brands'                      => 'DeskPRO:Brand',
-        'chat_conversations'          => 'DeskPRO:ChatConversation',
-        'chat_messages'               => 'DeskPRO:ChatMessage',
-        'custom_data_article'         => 'DeskPRO:CustomDataArticle',
-        'custom_data_chat'            => 'DeskPRO:CustomDataChat',
-        'custom_data_feedback'        => 'DeskPRO:CustomDataFeedback',
-        'custom_data_organizations'   => 'DeskPRO:CustomDataOrganization',
-        'custom_data_person'          => 'DeskPRO:CustomDataPerson',
-        'custom_data_product'         => 'DeskPRO:CustomDataProduct',
-        'custom_data_ticket'          => 'DeskPRO:CustomDataTicket',
-        'custom_data_billing'         => 'DeskPRO:CustomDataBilling',
-        'custom_def_article'          => 'DeskPRO:CustomDefArticle',
-        'custom_def_chat'             => 'DeskPRO:CustomDefChat',
-        'custom_def_feedback'         => 'DeskPRO:CustomDefFeedback',
-        'custom_def_organizations'    => 'DeskPRO:CustomDefOrganization',
-        'custom_def_people'           => 'DeskPRO:CustomDefPerson',
-        'custom_def_products'         => 'DeskPRO:CustomDefProduct',
-        'custom_def_ticket'           => 'DeskPRO:CustomDefTicket',
-        'custom_def_billing'          => 'DeskPRO:CustomDefBilling',
-        'custom_field_definition'     => 'DeskPRO:CustomFieldDefinition',
-        'departments'                 => 'DeskPRO:Department',
-        'downloads'                   => 'DeskPRO:Download',
-        'download_categories'         => 'DeskPRO:DownloadCategory',
-        'download_comments'           => 'DeskPRO:DownloadComment',
-        'email_accounts'              => 'DeskPRO:EmailAccount',
-        'email_sources'               => 'DeskPRO:EmailSource',
-        'feedback'                    => 'DeskPRO:Feedback',
-        'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
-        'feedback_categories'         => 'DeskPRO:FeedbackCategory',
-        'feedback_comments'           => 'DeskPRO:FeedbackComment',
-        'glossary_words'              => 'DeskPRO:GlossaryWord',
-        'glossary_word_definitions'   => 'DeskPRO:GlossaryWordDefinition',
-        'labels_articles'             => 'DeskPRO:LabelArticle',
-        'labels_chat_conversations'   => 'DeskPRO:LabelChatConversation',
-        'labels_downloads'            => 'DeskPRO:LabelDownload',
-        'labels_feedback'             => 'DeskPRO:LabelFeedback',
-        'labels_news'                 => 'DeskPRO:LabelNews',
-        'labels_organizations'        => 'DeskPRO:LabelOrganization',
-        'labels_people'               => 'DeskPRO:LabelPerson',
-        'labels_tasks'                => 'DeskPRO:LabelTask',
-        'labels_tickets'              => 'DeskPRO:LabelTicket',
-        'languages'                   => 'DeskPRO:Language',
-        'news'                        => 'DeskPRO:News',
-        'news_categories'             => 'DeskPRO:NewsCategory',
-        'news_comments'               => 'DeskPRO:NewsComment',
-        'object_lang'                 => 'DeskPRO:ObjectLang',
-        'organizations'               => 'DeskPRO:Organization',
-        'organization_email_domains'  => 'DeskPRO:OrganizationEmailDomain',
-        'organization_files'          => 'DeskPRO:OrganizationFile',
-        'organization_notes'          => 'DeskPRO:OrganizationNote',
-        'organizations_contact_data'  => 'DeskPRO:OrganizationContactData',
-        'page_view_log'               => 'DeskPRO:PageViewLog',
-        'people'                      => 'DeskPRO:Person',
-        'people_contact_data'         => 'DeskPRO:PersonContactData',
-        'people_emails'               => 'DeskPRO:PersonEmail',
-        'people_files'                => 'DeskPRO:PersonFile',
-        'people_notes'                => 'DeskPRO:PersonNote',
-        'phone_numbers'               => 'DeskPRO:PhoneNumber',
-        'products'                    => 'DeskPRO:Product',
-        'related_content'             => 'DeskPRO:RelatedContent',
-        'searchlog'                   => 'DeskPRO:SearchLog',
-        'sms_accounts'                => 'DeskPRO:SmsAccount',
-        'tasks'                       => 'DeskPRO:Task',
-        'task_comments'               => 'DeskPRO:TaskComment',
-        'text_snippets'               => 'DeskPRO:TextSnippet',
-        'text_snippet_categories'     => 'DeskPRO:TextSnippetCategory',
-        'tickets'                     => 'DeskPRO:Ticket',
-        'ticket_categories'           => 'DeskPRO:TicketCategory',
-        'ticket_escalation_logs'      => 'DeskPRO:TicketEscalationLog',
-        'ticket_escalations'          => 'DeskPRO:TicketEscalation',
-        'ticket_filters'              => 'DeskPRO:LegacyTicketFilter',
-        'ticket_filter_subscriptions' => 'DeskPRO:TicketFilterSubscription',
-        'ticket_layouts'              => 'DeskPRO:TicketLayout',
-        'ticket_macros'               => 'DeskPRO:TicketMacro',
-        'ticket_object_use_logs'      => 'DeskPRO:TicketObjectUseLog',
-        'ticket_priorities'           => 'DeskPRO:TicketPriority',
-        'ticket_triggers'             => 'DeskPRO:TicketTrigger',
-        'ticket_workflows'            => 'DeskPRO:TicketWorkflow',
-        'tickets_attachments'         => 'DeskPRO:TicketAttachment',
-        'tickets_deleted'             => 'DeskPRO:TicketDeleted',
-        'tickets_flagged'             => 'DeskPRO:TicketFlagged',
-        'tickets_participants'        => 'DeskPRO:TicketParticipant',
-        'tickets_logs'                => 'DeskPRO:TicketLog',
-        'tickets_messages'            => 'DeskPRO:TicketMessage',
-        'ticket_attachments'          => 'DeskPRO:TicketAttachment',
-        'ticket_statuses'             => 'DeskPRO:TicketStatus',
-        'ticket_charges'              => 'DeskPRO:TicketCharge',
-        'ticket_feedback'             => 'DeskPRO:TicketFeedback',
-        'ticket_slas'                 => 'DeskPRO:TicketSla',
-        'user_rules'                  => 'DeskPRO:UserRule',
-        'usergroups'                  => 'DeskPRO:Usergroup',
-        'usersources'                 => 'DeskPRO:Usersource',
-        'snippets'                    => Snippet::class,
-        'snippet_use_log'             => SnippetUseLog::class,
-        'problems'                    => Problem::class,
-        'sessions'                    => Session::class,
-        'hit_record'                  => HitRecord::class,
-        'voice_numbers'               => VoiceNumber::class,
-        'voice_phone_calls'           => VoicePhoneCall::class,
-        'voice_phone_call_logs'       => VoicePhoneCallLog::class,
-        'voice_queues'                => VoiceQueue::class,
-        'voice_queue_agents'          => VoiceQueueAgent::class,
-        'voicemail_records'           => VoicemailRecord::class,
+        'agent_teams'                       => 'DeskPRO:AgentTeam',
+        'articles'                          => 'DeskPRO:Article',
+        'article_categories'                => 'DeskPRO:ArticleCategory',
+        'article_attachments'               => 'DeskPRO:ArticleAttachment',
+        'article_comments'                  => 'DeskPRO:ArticleComment',
+        'article_pending_create'            => 'DeskPRO:ArticlePendingCreate',
+        'ban_emails'                        => 'DeskPRO:BanEmail',
+        'ban_ips'                           => 'DeskPRO:BanIp',
+        'blobs'                             => 'DeskPRO:Blob',
+        'brands'                            => 'DeskPRO:Brand',
+        'chat_conversations'                => 'DeskPRO:ChatConversation',
+        'chat_messages'                     => 'DeskPRO:ChatMessage',
+        'custom_data_article'               => 'DeskPRO:CustomDataArticle',
+        'custom_data_chat'                  => 'DeskPRO:CustomDataChat',
+        'custom_data_community_topics'      => 'DeskPRO:CustomDataCommunityTopic',
+        'custom_data_organizations'         => 'DeskPRO:CustomDataOrganization',
+        'custom_data_person'                => 'DeskPRO:CustomDataPerson',
+        'custom_data_product'               => 'DeskPRO:CustomDataProduct',
+        'custom_data_ticket'                => 'DeskPRO:CustomDataTicket',
+        'custom_data_billing'               => 'DeskPRO:CustomDataBilling',
+        'custom_def_article'                => 'DeskPRO:CustomDefArticle',
+        'custom_def_chat'                   => 'DeskPRO:CustomDefChat',
+        'custom_def_community_topic'        => 'DeskPRO:CustomDefCommunityTopic',
+        'custom_def_organizations'          => 'DeskPRO:CustomDefOrganization',
+        'custom_def_people'                 => 'DeskPRO:CustomDefPerson',
+        'custom_def_products'               => 'DeskPRO:CustomDefProduct',
+        'custom_def_ticket'                 => 'DeskPRO:CustomDefTicket',
+        'custom_def_billing'                => 'DeskPRO:CustomDefBilling',
+        'custom_field_definition'           => 'DeskPRO:CustomFieldDefinition',
+        'departments'                       => 'DeskPRO:Department',
+        'downloads'                         => 'DeskPRO:Download',
+        'download_categories'               => 'DeskPRO:DownloadCategory',
+        'download_comments'                 => 'DeskPRO:DownloadComment',
+        'download_subscriptions'            => DownloadsSubscription::class,
+        'email_accounts'                    => 'DeskPRO:EmailAccount',
+        'email_sources'                     => 'DeskPRO:EmailSource',
+        'community_topics'                  => 'DeskPRO:CommunityTopic',
+        'community_topic_attachments'       => 'DeskPRO:CommunityTopicAttachment',
+        'community_channels'                => 'DeskPRO:CommunityChannel',
+        'community_topic_comments'          => 'DeskPRO:CommunityTopicComment',
+        'glossary_words'                    => 'DeskPRO:GlossaryWord',
+        'glossary_word_definitions'         => 'DeskPRO:GlossaryWordDefinition',
+        'labels_articles'                   => 'DeskPRO:LabelArticle',
+        'labels_chat_conversations'         => 'DeskPRO:LabelChatConversation',
+        'labels_downloads'                  => 'DeskPRO:LabelDownload',
+        'labels_community_topics'           => 'DeskPRO:LabelCommunityTopic',
+        'labels_news'                       => 'DeskPRO:LabelNews',
+        'labels_organizations'              => 'DeskPRO:LabelOrganization',
+        'labels_people'                     => 'DeskPRO:LabelPerson',
+        'labels_tasks'                      => 'DeskPRO:LabelTask',
+        'labels_tickets'                    => 'DeskPRO:LabelTicket',
+        'languages'                         => 'DeskPRO:Language',
+        'news'                              => 'DeskPRO:News',
+        'news_categories'                   => 'DeskPRO:NewsCategory',
+        'news_comments'                     => 'DeskPRO:NewsComment',
+        'object_lang'                       => 'DeskPRO:ObjectLang',
+        'organizations'                     => 'DeskPRO:Organization',
+        'organization_email_domains'        => 'DeskPRO:OrganizationEmailDomain',
+        'organization_files'                => 'DeskPRO:OrganizationFile',
+        'organization_notes'                => 'DeskPRO:OrganizationNote',
+        'organizations_contact_data'        => 'DeskPRO:OrganizationContactData',
+        'page_view_log'                     => 'DeskPRO:PageViewLog',
+        'people'                            => 'DeskPRO:Person',
+        'people_contact_data'               => 'DeskPRO:PersonContactData',
+        'people_emails'                     => 'DeskPRO:PersonEmail',
+        'people_files'                      => 'DeskPRO:PersonFile',
+        'people_notes'                      => 'DeskPRO:PersonNote',
+        'phone_numbers'                     => 'DeskPRO:PhoneNumber',
+        'products'                          => 'DeskPRO:Product',
+        'related_content'                   => 'DeskPRO:RelatedContent',
+        'searchlog'                         => 'DeskPRO:SearchLog',
+        'sms_accounts'                      => 'DeskPRO:SmsAccount',
+        'tasks'                             => 'DeskPRO:Task',
+        'task_comments'                     => 'DeskPRO:TaskComment',
+        'text_snippets'                     => 'DeskPRO:TextSnippet',
+        'text_snippet_categories'           => 'DeskPRO:TextSnippetCategory',
+        'tickets'                           => 'DeskPRO:Ticket',
+        'ticket_categories'                 => 'DeskPRO:TicketCategory',
+        'ticket_escalation_logs'            => 'DeskPRO:TicketEscalationLog',
+        'ticket_escalations'                => 'DeskPRO:TicketEscalation',
+        'ticket_filters'                    => 'DeskPRO:LegacyTicketFilter',
+        'ticket_filter_subscriptions'       => 'DeskPRO:TicketFilterSubscription',
+        'ticket_layouts'                    => 'DeskPRO:TicketLayout',
+        'ticket_macros'                     => 'DeskPRO:TicketMacro',
+        'ticket_object_use_logs'            => 'DeskPRO:TicketObjectUseLog',
+        'ticket_priorities'                 => 'DeskPRO:TicketPriority',
+        'ticket_triggers'                   => 'DeskPRO:TicketTrigger',
+        'ticket_workflows'                  => 'DeskPRO:TicketWorkflow',
+        'tickets_attachments'               => 'DeskPRO:TicketAttachment',
+        'tickets_deleted'                   => 'DeskPRO:TicketDeleted',
+        'tickets_flagged'                   => 'DeskPRO:TicketFlagged',
+        'tickets_participants'              => 'DeskPRO:TicketParticipant',
+        'tickets_logs'                      => 'DeskPRO:TicketLog',
+        'tickets_messages'                  => 'DeskPRO:TicketMessage',
+        'ticket_attachments'                => 'DeskPRO:TicketAttachment',
+        'ticket_statuses'                   => 'DeskPRO:TicketStatus',
+        'ticket_charges'                    => 'DeskPRO:TicketCharge',
+        'ticket_feedback'                   => 'DeskPRO:TicketFeedback',
+        'ticket_slas'                       => 'DeskPRO:TicketSla',
+        'user_rules'                        => 'DeskPRO:UserRule',
+        'usergroups'                        => 'DeskPRO:Usergroup',
+        'usersources'                       => 'DeskPRO:Usersource',
+        'snippets'                          => Snippet::class,
+        'snippet_use_log'                   => SnippetUseLog::class,
+        'problems'                          => Problem::class,
+        'sessions'                          => Session::class,
+        'hit_record'                        => HitRecord::class,
+        'voice_assets'                      => AbstractVoiceAsset::class,
+        'voice_targets'                     => AbstractVoiceTarget::class,
+        'voice_agent_targets'               => VoiceAgentTarget::class,
+        'voice_queue_targets'               => VoiceQueueTarget::class,
+        'voice_auto_attendant_targets'      => VoiceAutoAttendantTarget::class,
+        'voice_accounts'                    => AbstractVoiceAccount::class,
+        'voice_auto_attendants'             => VoiceAutoAttendant::class,
+        'voice_auto_attendant_dial_numbers' => VoiceAutoAttendantDialNumber::class,
+        'voice_missed_agent_calls'          => VoiceMissedAgentCall::class,
+        'voice_numbers'                     => VoiceNumber::class,
+        'voice_phone_calls'                 => VoicePhoneCall::class,
+        'voice_phone_call_logs'             => VoicePhoneCallLog::class,
+        'voice_phone_call_participants'     => AbstractVoicePhoneCallParticipant::class,
+        'voice_queues'                      => VoiceQueue::class,
+        'voice_queue_agents'                => VoiceQueueAgent::class,
+        'voice_recordings'                  => VoiceRecording::class,
+        'agent_data'                        => AgentData::class,
     ];
 
     /**
@@ -363,12 +386,14 @@ class SelectPart
     /**
      * Returns statement as SQL.
      *
+     * @param string $section
+     *
      * @return string
      */
-    public function toSql()
+    public function toSql($section = null)
     {
         if (!$this->prepared) {
-            $this->prepare();
+            $this->prepare($section);
         }
 
         return $this->sql->toSql();
@@ -466,10 +491,6 @@ class SelectPart
             return $results;
         }
 
-        if (!$results) {
-            return $results;
-        }
-
         $first = reset($results);
         $last  = end($results);
 
@@ -486,11 +507,12 @@ class SelectPart
 
             $firstValue    = $first[$order];
             $lastValue     = $last[$order];
-            $ascending     = ($lastValue > $firstValue);
+            $ascending     = !$lastValue || ($lastValue > $firstValue);
             $previousValue = null;
             $startRowValue = null;
             $startRow      = 0;
             $rowSets       = [];
+            $rowKey        = null;
 
             foreach ($results as $rowKey => $row) {
                 if ($previousValue !== null) {
@@ -546,48 +568,44 @@ class SelectPart
                     $max = $setFirst[$order];
                 }
 
-                if ($first[$order] == $last[$order]) {
-                    $newResults = array_merge($newResults, $rows);
-                } else {
-                    $fills = $closure($min, $max);
-                    if (!$ascending) {
-                        $fills = array_reverse($fills);
-                    }
+                $fills = $closure($min, $max);
+                if (!$ascending) {
+                    $fills = array_reverse($fills);
+                }
 
-                    if ($fills) {
-                        $fillRow = array_shift($fills);
+                if ($fills) {
+                    $fillRow = array_shift($fills);
 
-                        foreach ($rows as $row) {
-                            while ($fillRow && (
-                                ($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
-                            )) {
-                                $copyRow         = $base;
-                                $copyRow[$print] = $fillRow[0];
-                                $copyRow[$sql]   = $fillRow[1];
-                                $copyRow[$order] = $fillRow[2];
-                                $newResults[]    = $copyRow;
-
-                                $fillRow = array_shift($fills);
-                            }
-                            while ($fillRow && $fillRow[2] == $row[$print]) {
-                                $fillRow = array_shift($fills);
-                            }
-                            $newResults[] = $row;
-                        }
-
-                        if ($fillRow) {
-                            array_unshift($fills, $fillRow);
-                        }
-                        while ($fillRow = array_shift($fills)) {
+                    foreach ($rows as $row) {
+                        while ($fillRow && (
+                            ($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
+                        )) {
                             $copyRow         = $base;
                             $copyRow[$print] = $fillRow[0];
                             $copyRow[$sql]   = $fillRow[1];
                             $copyRow[$order] = $fillRow[2];
                             $newResults[]    = $copyRow;
+
+                            $fillRow = array_shift($fills);
                         }
-                    } else {
-                        $newResults = array_merge($newResults, $rows);
+                        while ($fillRow && $fillRow[2] == $row[$print]) {
+                            $fillRow = array_shift($fills);
+                        }
+                        $newResults[] = $row;
                     }
+
+                    if ($fillRow) {
+                        array_unshift($fills, $fillRow);
+                    }
+                    while ($fillRow = array_shift($fills)) {
+                        $copyRow         = $base;
+                        $copyRow[$print] = $fillRow[0];
+                        $copyRow[$sql]   = $fillRow[1];
+                        $copyRow[$order] = $fillRow[2];
+                        $newResults[]    = $copyRow;
+                    }
+                } else {
+                    $newResults = array_merge($newResults, $rows);
                 }
 
                 $seenRow = $set['end'];
@@ -678,10 +696,16 @@ class SelectPart
     }
 
     /**
+     * @param string $section
+     *
      * @return string
      */
-    public function toDpql()
+    public function toDpql($section = null)
     {
+        if (!$this->prepared) {
+            $this->prepare($section);
+        }
+
         $parts = [];
         foreach ($this->getDpqlParts() as $key => $value) {
             $parts[Strings::dashToCamelCase($key)] = $value;
@@ -693,9 +717,11 @@ class SelectPart
     /**
      * Prepares the statement for use.
      *
+     * @param string $section
+     *
      * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      */
-    public function prepare()
+    public function prepare($section = null)
     {
         if ($this->prepared) {
             return;
@@ -720,7 +746,9 @@ class SelectPart
         $this->prepareSplitBy();
         $this->prepareOrderBy();
 
-        $this->setSqlLimit();
+        if (!($section === 'where' && $this->isSubQuery)) {
+            $this->setSqlLimit();
+        }
     }
 
     /**

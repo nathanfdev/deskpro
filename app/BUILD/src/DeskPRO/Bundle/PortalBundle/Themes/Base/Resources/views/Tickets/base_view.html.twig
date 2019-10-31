@@ -105,7 +105,7 @@
                                                     {% block page_sidebar_add_participant_form %}
                                                     <li>
                                                         <a href="#" class="sidebar-person add-person clickaway-dropdown" data-clickaway-target="add-cc-user-popover">
-                                                            <span class="agent-avatar agent-avatar-mid"><i class="fa fa-plus"></i></span>
+                                                            <span class="agent-avatar agent-avatar-mid"><i class="fas fa-plus"></i></span>
                                                             <span class="avatar-meta">
                                                               <span class="primary single">
                                                                   {{ phrase('portal.tickets.view_btn_add_cc') }}
@@ -166,7 +166,7 @@
                                     {% if ticket_view.hasAnyVisibleProperties() %}
                                     <div class="ticket-sidebar-container ticket-sidebar-meta">
                                         {% if can_edit and ticket.isOpen() and not edit_page %}
-                                            <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">{{ phrase('portal.tickets.view_btn_edit') }} <i class="fa fa-edit"></i></a>
+                                            <a href="{{ portal_path(ticket, 'edit') }}" class="sidebar-edit">{{ phrase('portal.tickets.view_btn_edit') }} <i class="fas fa-edit"></i></a>
                                         {% endif %}
                                         <h1>{{ phrase('portal.tickets.view_more_info') }}</h1>
                                         <ul>
@@ -188,6 +188,8 @@
                                                                     </a>
                                                                 </div>
                                                             {% endfor %}
+                                                        {% elseif property.type == 'javascript' %}
+                                                            <p>{{ propValue }}</p>
                                                         {% elseif property.isLinkify %}
                                                             <p>{{ propValue|safe_link_urls }}</p>
                                                         {% else %}

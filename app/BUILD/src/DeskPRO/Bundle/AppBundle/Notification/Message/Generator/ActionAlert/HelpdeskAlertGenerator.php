@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketFollowUpUpdatedEven
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
 
 class HelpdeskAlertGenerator extends AbstractGenerator
 {
@@ -120,14 +121,11 @@ class HelpdeskAlertGenerator extends AbstractGenerator
         // signal to go to already connected clients still using db)
         $meta = ['targettedHandlers' => [DbDeliveryHandler::TYPE]];
 
-        $alerts = [];
-        $agents = $this->em->getRepository(Person::class)->getActiveAgents(true);
-        foreach ($agents as $agentId) {
-            $alerts[] = new ActionAlert($agentId, [
-                'ticket_id' => $ticket->getId(),
-                'action'    => $event->getAction(),
-            ], $event->getName(), $meta);
-        }
+        $alerts = [new ActionAlert(NotificationService::TARGET_BROADCAST, [
+            'ticket_id' => $ticket->getId(),
+            'action'    => $event->getAction(),
+            'broadcast' => true,
+        ], $event->getName(), $meta)];
 
         return $alerts;
     }

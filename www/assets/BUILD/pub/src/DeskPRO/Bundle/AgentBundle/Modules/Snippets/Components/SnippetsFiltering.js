@@ -265,7 +265,7 @@ class SnippetsFiltering extends React.Component {
         </div>
         <div className="labels block">
           <div className="title">
-            <i className="fa fa-tag" />&nbsp;
+            <i className="fas fa-tag" />&nbsp;
             <FormattedMessage id="agent.general.labels" />
           </div>
           { multiLabels.length || selectedLabel ?

@@ -185,7 +185,7 @@ class ReportBuilder extends AbstractEntityRepository
             'kb'        => 'Knowledgebase',
             'news'      => 'News',
             'downloads' => 'Downloads',
-            'feedback'  => 'Feedback',
+            'community' => 'Community',
             'tasks'     => 'Tasks',
             'twitter'   => 'Twitter',
         ];
@@ -267,10 +267,10 @@ class ReportBuilder extends AbstractEntityRepository
                     'date_created'      => ['date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'],
                     'none'              => ['nothing', 'NULL'],
                 ],
-                'feedback' => [
+                'community_topics' => [
                     'type'              => ['type', 'ALIAS(%s.category, \'Type\')'],
                     'status'            => ['status', 'ALIAS(%s.status_category, \'Status\')'],
-                    'category'          => ['category', 'ALIAS(%s.custom_data[1], \'category\')'],
+                    'channel'           => ['channel', 'ALIAS(%s.custom_data[1], \'channel\')'],
                     'person'            => ['person', '%s.person'],
                     'hour_created'      => ['hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'],
                     'day_week_created'  => ['day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'],
@@ -280,7 +280,7 @@ class ReportBuilder extends AbstractEntityRepository
                     'date_created'      => ['date created', 'ALIAS(DATE(%s.date_created), \'Date Created\')'],
                     'none'              => ['nothing', 'NULL'],
                 ],
-                'feedback_comments' => [
+                'community_topic_comments' => [
                     'hour_created'      => ['hour created', 'ALIAS(HOUR(%s.date_created), \'Hour Created\')'],
                     'day_week_created'  => ['day of week created', 'ALIAS(DAYNAME(%s.date_created), \'Day of Week Created\')'],
                     'day_month_created' => ['day of month created', 'ALIAS(DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],

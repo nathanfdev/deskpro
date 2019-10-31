@@ -8,27 +8,28 @@
 
 namespace Application\DeskPRO\Email\EmailAccount\Repository;
 
+use Application\DeskPRO\Entity\EmailAccount;
 use Doctrine\ORM\EntityManager;
 
 class EmailAccountRepository
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     private $em;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailAccount[]
+     * @var EmailAccount[]
      */
     private $accounts;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailAccount[]
+     * @var EmailAccount[]
      */
     private $enabled_accounts;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailAccount[]
+     * @var EmailAccount[]
      */
     private $disabled_accounts;
 
@@ -53,7 +54,7 @@ class EmailAccountRepository
         $this->disabled_accounts = [];
         $this->accounts          = [];
 
-        foreach ($this->em->getRepository('DeskPRO:EmailAccount')->findAll() as $acc) {
+        foreach ($this->em->getRepository(EmailAccount::class)->findAll() as $acc) {
             $this->accounts[$acc->id] = $acc;
 
             if ($acc->is_enabled) {
@@ -65,7 +66,7 @@ class EmailAccountRepository
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\EmailAccount[]
+     * @return EmailAccount[]
      */
     public function getAccounts()
     {
@@ -75,7 +76,7 @@ class EmailAccountRepository
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\EmailAccount[]
+     * @return EmailAccount[]
      */
     public function getEnabledAccounts()
     {
@@ -85,7 +86,7 @@ class EmailAccountRepository
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\EmailAccount[]
+     * @return EmailAccount[]
      */
     public function getDisabledAccounts()
     {
@@ -97,7 +98,7 @@ class EmailAccountRepository
     /**
      * @param int $id
      *
-     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     * @return EmailAccount|null
      */
     public function getAccount($id)
     {

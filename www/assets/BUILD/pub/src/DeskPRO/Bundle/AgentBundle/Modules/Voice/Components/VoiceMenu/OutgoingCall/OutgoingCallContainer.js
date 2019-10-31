@@ -18,7 +18,30 @@ class OutgoingCallContainer extends React.Component {
     dispatch:     PropTypes.func
   };
 
-  onHangup = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      init: false
+    };
+  }
+
+  componentDidMount() {
+    console.debug('Enabling fast poller interval: %d', window.DP_POLLER_INTERVAL_VOICE);
+    window.DeskPRO_Window.getMessageChanneler().poller.setInterval(window.DP_POLLER_INTERVAL_VOICE);
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.outgoing-call-init', () => {
+      this.setState({
+        init: true,
+      });
+    });
+  }
+
+  componentWillUnmount() { // eslint-disable-line
+    console.debug('Restoring poller interval: %d', window.DP_POLLER_INTERVAL);
+    window.DeskPRO_Window.getMessageChanneler().poller.setInterval(window.DP_POLLER_INTERVAL);
+  }
+
+  hangup = () => {
     const { connections, outgoingCall, dispatch } = this.props;
     const connection = connections
       .filter(c => c.callId === outgoingCall.getIn(['phoneCall', 'id']))
@@ -28,14 +51,15 @@ class OutgoingCallContainer extends React.Component {
       return;
     }
 
-    dispatch(hangup(connection));
+    dispatch(hangup(connection.callId));
   };
 
   render() {
     return (
       <OutgoingCall
         {...this.props}
-        onHangup={this.onHangup}
+        {...this.state}
+        hangup={this.hangup}
       />
     );
   }

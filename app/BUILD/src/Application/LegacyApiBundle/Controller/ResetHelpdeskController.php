@@ -7,7 +7,6 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
-use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -15,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 /**
  * @ApiModes("all")
  */
-class ResetHelpdeskController extends AbstractController implements ProtectedControllerInterface
+class ResetHelpdeskController extends AbstractController
 {
     public static $types = [
         'users',
@@ -32,7 +31,7 @@ class ResetHelpdeskController extends AbstractController implements ProtectedCon
         'kb',
         'news',
         'downloads',
-        'feedback',
+        'community',
         'labels',
         'snippets',
         'apps',
@@ -43,10 +42,7 @@ class ResetHelpdeskController extends AbstractController implements ProtectedCon
      */
     public function getPermissionStrategy()
     {
-        $multi = new MultiPermissions();
-        $multi->addPermissionStrategy(new AdminManagePermission());
-
-        return $multi;
+        return new AdminManagePermission();
     }
 
     public function runAction(Request $request)

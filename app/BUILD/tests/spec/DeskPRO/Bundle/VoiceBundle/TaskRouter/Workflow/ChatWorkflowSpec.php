@@ -9,6 +9,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
+use DeskPRO\Bundle\VoiceBundle\Permissions\UserChatPermissionsChecker;
 use DeskPRO\Bundle\VoiceBundle\Settings\ChatSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
@@ -16,9 +17,9 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\VoiceBundle\UserChat\UserChatQueueTargetsLoader;
 use PhpSpec\ObjectBehavior;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class ChatWorkflowSpec.
@@ -28,20 +29,20 @@ use PhpSpec\ObjectBehavior;
 class ChatWorkflowSpec extends ObjectBehavior
 {
     public function let(
-        EntityManager           $em,
-        PersonRepo              $personRepo,
-        AgentTeamRepo           $agentTeamRepo,
-        ChatTaskHelper          $taskHelper,
-        ChatSettingsResolver    $settingsResolver,
-        StorageAdapterInterface $storage
+        ChatTaskHelper             $taskHelper,
+        ChatSettingsResolver       $settingsResolver,
+        StorageAdapterInterface    $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker,
+        LoggerInterface            $logger
     ) {
-        $this->beConstructedWith($em, $taskHelper, $settingsResolver, $storage);
-        $em->getRepository(Person::class)->willReturn($personRepo);
-        $em->getRepository(AgentTeam::class)->willReturn($agentTeamRepo);
+        $this->beConstructedWith($taskHelper, $settingsResolver, $storage, $targetsLoader, $permissionsChecker, $logger);
     }
 
     public function it_returns_empty_list_of_workers(Task $task, PersonRepo $personRepo, StorageAdapterInterface $storage)
     {
+        $task->getId()->willReturn(1);
+
         $storage->getOnlineWorkersByType('agent')->willReturn([]);
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([]);
 
@@ -52,10 +53,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         Worker $worker1,
         Worker $worker2,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
+        $task->getId()->willReturn(1);
+        $task->getRejectedBy()->willReturn([]);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -73,7 +77,7 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker2]);
         $settingsResolver->getMaxChatsCount()->willReturn(5);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([10 => $worker1, 20 => $worker2]);
     }
@@ -82,10 +86,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         Worker $worker1,
         Worker $worker2,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
+        $task->getId()->willReturn(1);
+        $task->getRejectedBy()->willReturn([]);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -103,7 +110,7 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker2]);
         $settingsResolver->getMaxChatsCount()->willReturn(5);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([20 => $worker2]);
     }
@@ -112,10 +119,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         Worker $worker1,
         Worker $worker2,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -134,7 +143,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker2]);
         $settingsResolver->getMaxChatsCount()->willReturn(5);
         $task->getRejectedBy()->willReturn([10]);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([20 => $worker2]);
     }
@@ -142,9 +151,9 @@ class ChatWorkflowSpec extends ObjectBehavior
     public function it_ignores_worker_if_it_has_pending_voice_tasks(
         Worker $worker1,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -155,7 +164,7 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
         $settingsResolver->getMaxChatsCount()->willReturn(5);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([]);
     }
@@ -163,9 +172,9 @@ class ChatWorkflowSpec extends ObjectBehavior
     public function it_ignores_worker_if_it_has_active_voice_tasks(
         Worker $worker1,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -176,7 +185,7 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
         $settingsResolver->getMaxChatsCount()->willReturn(5);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([]);
     }
@@ -184,9 +193,9 @@ class ChatWorkflowSpec extends ObjectBehavior
     public function it_ignores_worker_if_it_has_pending_chat_tasks(
         Worker $worker1,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -197,7 +206,7 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
         $settingsResolver->getMaxChatsCount()->willReturn(5);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([]);
     }
@@ -205,9 +214,9 @@ class ChatWorkflowSpec extends ObjectBehavior
     public function it_ignores_worker_if_it_has_too_many_active_chat_tasks(
         Worker $worker1,
         Task $task,
-        PersonRepo $personRepo,
         ChatSettingsResolver $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -218,7 +227,7 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
         $settingsResolver->getMaxChatsCount()->willReturn(2);
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
+        $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
         $this->getAvailableWorkers($task)->shouldReturn([]);
     }
@@ -231,33 +240,36 @@ class ChatWorkflowSpec extends ObjectBehavior
     public function it_handles_all_agents(
         Worker $worker1,
         Worker $worker3,
-        Person $agent1,
-        Person $agent2,
+        UserChatQueueAgent $target1,
+        UserChatQueueAgent $target2,
         Task $task,
         UserChatQueue $queue,
         TaskQueue $taskQueue,
-        PersonRepo $personRepo,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
         $worker3->getTypeId()->willReturn(3);
 
-        $agent1->getId()->willReturn(1);
-        $agent1->offsetExists('id')->willReturn(true);
-        $agent1->offsetGet('id')->willReturn(1);
-        $agent2->getId()->willReturn(2);
-        $agent2->offsetExists('id')->willReturn(true);
-        $agent2->offsetGet('id')->willReturn(2);
+        $target1->toArray()->willReturn(['type' => 'agent', 'id' => 1]);
+        $target1->getSort()->willReturn(10);
+        $target2->toArray()->willReturn(['type' => 'agent', 'id' => 2]);
+        $target2->getSort()->willReturn(20);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->isAllAgents()->willReturn(true);
 
-        $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
-        $personRepo->findBy(['id' => [1, 2]])->willReturn([$agent1, $agent2]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
 
         $queue->getAnswerTimeout()->willReturn(null);
 
@@ -265,7 +277,6 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $taskQueue->getAttribute('round_robin_order')->willReturn([
             ['type' => 'agent', 'id' => 1],
-            ['type' => 'agent_team', 'id' => 2],
             ['type' => 'agent', 'id' => 4],
         ]);
         $taskQueue->setAttribute('round_robin_order', [
@@ -277,7 +288,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -288,14 +299,17 @@ class ChatWorkflowSpec extends ObjectBehavior
         Task $task,
         UserChatQueue $queue,
         TaskQueue $taskQueue,
-        ArrayCollection $targets,
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         PersonRepo $personRepo,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -308,12 +322,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 4]);
         $target3->getSort()->willReturn(30);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -335,7 +351,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -349,11 +365,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         PersonRepo $personRepo,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -366,12 +385,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 6]);
         $target3->getSort()->willReturn(30);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -393,7 +414,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -407,12 +428,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         PersonRepo $personRepo,
         AgentTeamRepo $agentTeamRepo,
         AgentTeam $agentTeam,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
@@ -426,12 +448,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 4]);
         $target3->getSort()->willReturn(30);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -466,14 +490,17 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         PersonRepo $personRepo,
         Person $agent1,
         Person $agent2,
         Person $agent3,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker3->getId()->willReturn(30);
@@ -481,12 +508,19 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $target1->getSort()->willReturn(10);
         $target1->getAgent()->willReturn($agent1);
+        $target1->toArray()->willReturn(['type' => 'agent', 'id' => 1]);
         $target2->getSort()->willReturn(20);
         $target2->getAgent()->willReturn($agent2);
+        $target2->toArray()->willReturn(['type' => 'agent', 'id' => 2]);
         $target3->getSort()->willReturn(30);
         $target3->getAgent()->willReturn($agent3);
+        $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $agent1->getId()->willReturn(1);
         $agent2->getId()->willReturn(2);
@@ -494,8 +528,6 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_SIMULRING);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -506,7 +538,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10, 30])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
     }
@@ -518,22 +550,32 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         PersonRepo $personRepo,
         Person $agent1,
         Person $agent2,
         Person $agent3,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $target1->getSort()->willReturn(10);
         $target1->getAgent()->willReturn($agent1);
+        $target1->toArray()->willReturn(['type' => 'agent', 'id' => 1]);
         $target2->getSort()->willReturn(20);
         $target2->getAgent()->willReturn($agent2);
+        $target2->toArray()->willReturn(['type' => 'agent', 'id' => 2]);
         $target3->getSort()->willReturn(30);
         $target3->getAgent()->willReturn($agent3);
+        $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $agent1->getId()->willReturn(1);
         $agent2->getId()->willReturn(2);
@@ -541,8 +583,6 @@ class ChatWorkflowSpec extends ObjectBehavior
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_SIMULRING);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -553,7 +593,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, []);
     }
@@ -568,10 +608,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -586,12 +629,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
         $target3->getSort()->willReturn(30);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getAnswerTimeout()->willReturn(null);
 
@@ -601,7 +646,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([10, 20])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $taskQueue->getAttribute('answered_chats_counts')->willReturn(null);
 
@@ -618,10 +663,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -636,12 +684,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
         $target3->getSort()->willReturn(30);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getAnswerTimeout()->willReturn(null);
 
@@ -651,7 +701,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([20, 10])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $taskQueue->getAttribute('answered_chats_counts')->willReturn([
             [
@@ -681,10 +731,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
-        ArrayCollection $targets,
         ChatTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        UserChatQueueTargetsLoader $targetsLoader,
+        UserChatPermissionsChecker $permissionsChecker
     ) {
+        $task->getId()->willReturn(1);
+
         $worker1->getId()->willReturn(10);
         $worker1->getTypeId()->willReturn(1);
         $worker2->getId()->willReturn(20);
@@ -699,12 +752,14 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
         $target3->getSort()->willReturn(30);
 
-        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+        $targetsLoader->getChatQueueTargets($queue)->willReturn([$target1, $target2, $target3]);
+
+        $permissionsChecker->canBeMemberOfChatQueue($target1)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target2)->willReturn(true);
+        $permissionsChecker->canBeMemberOfChatQueue($target3)->willReturn(true);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED);
-        $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn($targets);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getAnswerTimeout()->willReturn(null);
 
@@ -714,7 +769,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
         $task->setWorkersIds([20, 30])->shouldBeCalled();
-        $task->setDateExpireOffset(null)->shouldBeCalled();
+        $task->setDateExpireAssignedOffset(null)->shouldBeCalled();
 
         $taskQueue->getAttribute('answered_chats_counts')->willReturn([
             [

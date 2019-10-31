@@ -1,6 +1,8 @@
 Date: {{ "now"|date('r') }}
-From: {{ from_line }}
-To: {{ to_email }}
+From: {{ from_line | raw }}
+To: {{ to_email | raw }}
+{% if cc_email %}Cc: {{ cc_email | raw }}
+{% endif %}
 Message-ID: <{{ uid }}@test-message>
 Subject: {{ subject }}
 Content-Transfer-Encoding: 7bit
@@ -23,3 +25,4 @@ Content-Type: text/plain
   {% endif %}
   (#{{ access_code }})
 {% endif %}
+dev/bin

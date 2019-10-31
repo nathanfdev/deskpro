@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Orb\Util\Strings;
 
 class Guide extends AbstractEntityRepository
@@ -46,11 +47,13 @@ class Guide extends AbstractEntityRepository
         return 'guide_id';
     }
 
-    public function getGuidesForUsergroups(array $usergroupIds)
+    public function getGuidesForUsergroups(array $usergroupIds, $context = 'agent')
     {
         // For guides, everyone is always on, even if its disabled,
         // because everyone still means everyone from agent ui perspective
-        $usergroupIds[] = App::$container->getUserGroups()->getEveryoneGroup()->id;
+        if ($context === 'agent') {
+            $usergroupIds[] = App::$container->getUserGroups()->getEveryoneGroup()->id;
+        }
 
         if (!$usergroupIds) {
             return [];
@@ -65,7 +68,7 @@ class Guide extends AbstractEntityRepository
         $qb->andWhere($qb->expr()->in('t.usergroup_id', $usergroupIds));
         $qb->groupBy('t.guide_id');
 
-        /** @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack */
+        /** @var BrandStack $brandStack */
         $brandStack = App::get('brand_stack');
 
         $currentBrand = $brandStack->getActive()->getBrand();

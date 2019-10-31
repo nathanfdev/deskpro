@@ -20,15 +20,19 @@
 								<span class="remove">x</span>
 							</div>
 							<div class="input">
-								<select class="type" name="contact_data[{{ contact.id }}][type]">
-									{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax'} %}
+								<select class="type phone-number-type" name="contact_data[{{ contact.id }}][type]">
+									{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax', 'sip': 'Sip'} %}
 										<option value="{{ type }}" {% if contact.rec.field_3 == type %}selected="selected"{% endif %}>{{ label }}</option>
 									{% endfor %}
 								</select>
-								+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
-									<span class="fas fa-flag" style="display: none"></span>
-									<input type="text" size="4" class="country-code" name="contact_data[{{ contact.id }}][country_calling_code]" value="{{ contact.rec.field_1 }}" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
+								{% if contact.rec.field_3 != 'sip' %}
+								<span class="phone-country-code">
+									+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
+										<span class="fas fa-flag" style="display: none"></span>
+										<input type="text" size="4" class="country-code" name="contact_data[{{ contact.id }}][country_calling_code]" value="{{ contact.rec.field_1 }}" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
+									</span>
 								</span>
+								{% endif %}
 								<input type="text" size="4" class="phone-number" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
 							</div>
 							<div class="label">
@@ -48,14 +52,16 @@
 						<span class="remove">x</span>
 					</div>
 					<div class="input">
-						<select class="type" name="new_contact_data[phone][%id%][type]">
-							{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax'} %}
+						<select class="type phone-number-type" name="new_contact_data[phone][%id%][type]">
+							{% for type,label in {'phone': 'Phone', 'mobile': 'Mobile', 'fax': 'Fax', 'sip': 'Sip'} %}
 								<option value="{{ type }}" {% if contaxt.rec.field_3 == type %}selected="selected"{% endif %}>{{ label }}</option>
 							{% endfor %}
 						</select>
-						+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
-							<span class="fas fa-flag" style="display: none"></span>
-							<input type="text" size="4" class="country-code" name="new_contact_data[phone][%id%][country_calling_code]" value="" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
+						<span class="phone-country-code">
+							+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
+								<span class="fas fa-flag" style="display: none"></span>
+								<input type="text" size="4" class="country-code" name="new_contact_data[phone][%id%][country_calling_code]" value="" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
+							</span>
 						</span>
 						<input type="text" size="4" class="phone-number" name="new_contact_data[phone][%id%][number]" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
 					</div>

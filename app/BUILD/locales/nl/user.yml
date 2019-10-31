@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'E-mailadres toevoegen'
 portal.account.email-management: 'E-mailadressen beheren'
 portal.account.email-management-from-form: 'Uw e-mailadres beheren'
 portal.account.email-primary-description: 'Dit is uw primaire e-mailadres. Deze zal standaard worden gebruikt, tenzij u anders opgeeft.'
-portal.account.feedback-lockout: 'U heeft te vaak feedback verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
+portal.account.community-lockout: 'U heeft te vaak gemeenschapsonderwerp verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
 portal.account.link-expired: 'Sorry, de link waarop je hebt geklikt is verlopen of is al eerder gebruikt.'
 portal.account.lockout_time: 'U kunt het nogmaals proberen over {{time}} minuten.'
 portal.account.login-btn: Inloggen
@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Inloggen met {{usersource}}'
 portal.account.login-captcha-failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
 portal.account.login-disabled: 'Uw e-mailadres is verbannen.'
 portal.account.login-email: 'Uw e-mailadres'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Inloggen met een externe service'
 portal.account.login-form-disabled: 'Aanmeldingsformulier is uitgeschakeld'
 portal.account.login-invalid: Inloggen
@@ -33,7 +32,7 @@ portal.account.login-remember: 'Ingelogd blijven?'
 portal.account.login-saved-add_email: 'Uw e-mailadres voor toevoegen is nog niet verzonden. Meld u aan om verder te gaan.'
 portal.account.login-saved-comment: 'Uw commentaar is nog niet ingediend. Meld u aan om verder te gaan.'
 portal.account.login-saved-form: 'Uw {{type}} is nog niet verstuurd. Log in om door te gaan.'
-portal.account.login-saved-new_feedback: 'Je nieuwe feedback is nog niet verzonden. Meld u aan om verder te gaan.'
+portal.account.login-saved-new_community_topic: 'Je nieuwe gemeenschapsonderwerp is nog niet verzonden. Meld u aan om verder te gaan.'
 portal.account.login-saved-new_ticket: 'Je nieuwe ticket is nog niet ingeleverd. Meld u aan om verder te gaan.'
 portal.account.login-saved-register: 'Uw registratie is nog niet ingediend. Meld u aan om verder te gaan.'
 portal.account.login-stay-logged-in: 'Ingelogd blijven?'
@@ -83,7 +82,7 @@ portal.account.submit-saved-add_email: 'Uw e-mailadres voor toevoegen is nog nie
 portal.account.submit-saved-comment: 'Uw opmerking is nog niet verstuurd, maar we hebben het voor u opgeslagen.'
 portal.account.submit-saved-form: 'Uw {{type}} is nog niet verstuurd, maar we hebben het voor u opgeslagen.'
 portal.account.submit-saved-form-go: 'Klik hier om het formulier automatisch opnieuw te versturen.'
-portal.account.submit-saved-new_feedback: 'Je nieuwe feedback is nog niet verzonden, maar we hebben deze voor je bewaard.'
+portal.account.submit-saved-new_community_topic: 'Je nieuwe gemeenschapsonderwerp is nog niet verzonden, maar we hebben deze voor je bewaard.'
 portal.account.submit-saved-new_ticket: 'Uw nieuwe ticket is nog niet ingediend, maar we hebben het voor u bewaard.'
 portal.account.submit-saved-register: 'Uw registratie is nog niet ingediend, maar we hebben het voor u bewaard.'
 portal.account.tickets-lockout: 'U heeft te vaak tickets verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
@@ -92,7 +91,6 @@ portal.account.welcome-back: 'Welkom terug'
 portal.account.your-emails: 'Uw e-mailadres'
 portal.account.your-pending-email-addresses: 'Uw e-mailadressen in afwachting'
 portal.articles.by-line: 'Door {{name}} op {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Nog geen artikelen'
 portal.articles.search-title: Kennisbank
 portal.articles.section-desc: 'Onze kennisbank bevat artikelen die zijn geschreven door onze ondersteuningsmedewerkers om u te helpen.'
@@ -148,7 +146,6 @@ portal.chat.label-department: 'Selecteer afdeling'
 portal.chat.label-email: 'Uw e-mailadres'
 portal.chat.label-name: 'Uw naam'
 portal.chat.list_agent: Medewerker
-portal.chat.list_chat: Chat
 portal.chat.list_date: Datum
 portal.chat.list_switch_to_my_chats: 'Overschakelen naar Mijn chats'
 portal.chat.list_switch_to_organization: 'Overschakelen naar Organisatie'
@@ -203,7 +200,6 @@ portal.chat.see_full_image: 'Klik hier om de volledige afbeelding te zien'
 portal.chat.send_another_validation_email: 'Stuur me nog een e-mail'
 portal.chat.sent_validation_code: 'We hebben u een e-mail met een validatiecode gestuurd.'
 portal.chat.start: 'Start een nieuwe chat'
-portal.chat.start_conversation: 'Start een gesprek'
 portal.chat.support_powered_by: 'Ondersteuning mogelijk gemaakt door {{DeskPRO}}'
 portal.chat.take_chat: 'Chat aannemen'
 portal.chat.taken_by: 'Chat aangenomen door'
@@ -224,9 +220,7 @@ portal.chat.you_have_been_invited: 'U bent uitgenodigd om een chat bij te wonen'
 portal.downloads.download: Downloaden
 portal.downloads.none: 'Nog geen downloads'
 portal.downloads.recent-downloads: 'Recente downloads'
-portal.downloads.search-title: Downloads
 portal.downloads.section-desc: 'Blader door onze collectie van downloads.'
-portal.downloads.section-title: Downloads
 portal.downloads.uploaded-on: Geüpload
 portal.downloads.view-as-agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Gebruikers zullen deze pagina niet kunnen zien.'
 portal.downloads.view-x-files:
@@ -243,13 +237,13 @@ portal.email_subjects.email-too-big: 'Uw e-mail "{{subject}}" is niet geacceptee
 portal.email_subjects.email_new-confirm: 'Valideer uw e-mailadres'
 portal.email_subjects.email_primary-confirm: 'Valideer uw e-mailadres'
 portal.email_subjects.email_ticket-reminder: 'Actie vereist: uw ticket is nog niet verstuurd'
-portal.email_subjects.feedback_new: 'Bedankt voor het sturen van uw feedback'
-portal.email_subjects.feedback_new-approved: 'Uw feedback is gepubliceerd'
-portal.email_subjects.feedback_new-comment: 'Er is een nieuwe reactie op "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Bedankt voor het sturen van uw feedback(Validatie vereist)'
-portal.email_subjects.feedback_new-disapproved: 'Sorry. Uw feedbackitem is geweigerd'
-portal.email_subjects.feedback_sub_updated: 'Bijgewerkte feedback'
-portal.email_subjects.feedback_updated: 'Uw feedback is bijgewerkt: {{title}}'
+portal.email_subjects.community_new: 'Bedankt voor het sturen van uw gemeenschapsonderwerp'
+portal.email_subjects.community_new-approved: 'Uw gemeenschapsonderwerp is gepubliceerd'
+portal.email_subjects.community_new-comment: 'Er is een nieuwe reactie op "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Bedankt voor het sturen van uw gemeenschapsonderwerp(Validatie vereist)'
+portal.email_subjects.community_new-disapproved: 'Sorry. Uw gemeenschapsonderwerp is geweigerd'
+portal.email_subjects.community_sub_updated: 'Bijgewerkte gemeenschapsonderwerp'
+portal.email_subjects.community_updated: 'Uw community is bijgewerkt: {{title}}'
 portal.email_subjects.kb_sub_new: 'Nieuwe artikelen'
 portal.email_subjects.kb_sub_new_and_updated: 'Nieuwe en bijgewerkte artikelen'
 portal.email_subjects.kb_sub_updated: 'Bijgewerkte artikelen'
@@ -260,7 +254,6 @@ portal.email_subjects.news_sub_updated: 'Bijgewerkt nieuws'
 portal.email_subjects.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset'
 portal.email_subjects.password_reset: 'Reset uw wachtwoord'
 portal.email_subjects.password_set: 'Stel uw wachtwoord in'
-portal.email_subjects.re: 'RE: {{subject}}'
 portal.email_subjects.register-welcome: 'Bedankt voor het registreren'
 portal.email_subjects.register-welcome-byagent: 'Uw nieuwe helpdesk-account'
 portal.email_subjects.remind_unresolved_final_subject: 'HERINNERING: {{ticket.subject}}'
@@ -269,7 +262,6 @@ portal.email_subjects.share-article: '{{author_name}} wil dit artikel met u dele
 portal.email_subjects.ticket-rate: 'Beoordeel uw ondersteuningservaring voor uw ticket "{{ticket.subject}}"'
 portal.email_subjects.ticket_added_cc: 'U bent toegevoegd aan het ticket "{{ticket.subject}}"'
 portal.email_subjects.ticket_new-participant: 'Er is een nieuw persoon toegevoegd aan uw ticket'
-portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 portal.email_subjects.too-many-emails: 'OPMERKING: U heeft teveel e-mails verstuurd'
 portal.email_subjects.validate-email: 'Valideer uw e-mailadres'
 portal.emails.auto-close: 'We hebben niks meer van u vernomen over uw ticket: "{{ticket.subject}}". Laat het ons weten als u nog ondersteuning nodig heeft, anders zal uw ticket binnenkort als opgelost worden gesloten.'
@@ -288,23 +280,23 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over beschikbare downloads bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle downloadmeldingen.</a>'
 portal.emails.email-too-big: 'Uw e-mail "{{subject}}" is niet geaccepteerd, omdat deze te groot is. De maximale e-mailgrootte die deze helpdesk accepteert is {{max_size}}. Verwijder grote bijlagen en probeer het nogmaals.'
 portal.emails.end_greeting: 'Met vriendelijke groet,<br /><br />{{site_name}}'
-portal.emails.feedback-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over feedbackitems bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle feedbackmeldingen.</a>'
-portal.emails.feedback-updated-items:
-  one: '1 bijgewerkt feedbackitem'
-  other: '{{count}} bijgewerkte feedbackitems'
-portal.emails.feedback_agent-validation: 'Let er op dat uw feedback niet publiekelijk zichtbaar is op onze ondersteuningsportal totdat een van onze medewerkers deze heeft goedgekeurd.'
-portal.emails.feedback_approved: 'Uw feedback is goedgekeurd en nu voor iedereen zichtbaar op onze website.'
-portal.emails.feedback_closed: 'Uw feedback "{{title}}" is gesloten: {{status}}'
-portal.emails.feedback_disapproved: 'Uw feedback is niet goedgekeurd en wordt daarom niet op onze website getoond.'
-portal.emails.feedback_disapproved-reason: 'Uw feedback is niet goedgekeurd en wordt daarom niet op onze website getoond. {{name}} heeft de volgende reden opgegeven:'
-portal.emails.feedback_new-comment: '{{name}} heeft een nieuwe reactie geplaatst:'
-portal.emails.feedback_published: 'Uw feedback "{{title}}" is gevalideerd en zal nu verschijnen op onze website.'
-portal.emails.feedback_thank-you: 'Bedankt voor uw feedback "{{title}}"'
-portal.emails.feedback_updated: 'Uw feedback "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"'
-portal.emails.feedback_validate-email: 'Valideer uw e-mailadres door te klikken op de volgende link:'
-portal.emails.feedback_votes:
-  one: 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:'
-  other: 'Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:'
+portal.emails.community-topics-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over gemeenschapsonderwerpen bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle feedbackmeldingen.</a>'
+portal.emails.community-topics-updated:
+  one: '1 bijgewerkt gemeenschapsonderwerp'
+  other: '{{count}} bijgewerkte gemeenschapsonderwerpen'
+portal.emails.community-topic_agent-validation: 'Let er op dat uw gemeenschapsonderwerp niet publiekelijk zichtbaar is op onze ondersteuningsportal totdat een van onze medewerkers deze heeft goedgekeurd.'
+portal.emails.community_topic_approved: 'Uw gemeenschapsonderwerp is goedgekeurd en nu voor iedereen zichtbaar op onze website.'
+portal.emails.community_topic_closed: 'Uw community "{{title}}" is gesloten: {{status}}'
+portal.emails.community-topic_disapproved: 'Uw gemeenschapsonderwerp is niet goedgekeurd en wordt daarom niet op onze website getoond.'
+portal.emails.community-topic_disapproved-reason: 'Uw community is niet goedgekeurd en wordt daarom niet op onze website getoond. {{name}} heeft de volgende reden opgegeven:'
+portal.emails.community-topic_new-comment: '{{name}} heeft een nieuwe reactie geplaatst:'
+portal.emails.community-topic_published: 'Uw gemeenschapsonderwerp "{{title}}" is gevalideerd en zal nu verschijnen op onze website.'
+portal.emails.community-topic_thank-you: 'Bedankt voor uw gemeenschapsonderwerp "{{title}}"'
+portal.emails.community-topic_updated: 'Uw gemeenschapsonderwerp "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"'
+portal.emails.community-topic_validate-email: 'Valideer uw e-mailadres door te klikken op de volgende link:'
+portal.emails.community-topic_votes:
+  one: 'Uw community heeft op dit moment <strong>1</strong> stem. Bekijk uw gemeenschapsonderwerp online op:'
+  other: 'Uw community heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw gemeenschapsonderwerp online op:'
 portal.emails.greeting: 'Beste {{to_name}},'
 portal.emails.kb-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over onze kennisbankartikelen bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle kennisbankmeldingen.</a>'
 portal.emails.kb-new-articles:
@@ -316,7 +308,7 @@ portal.emails.kb-updated-articles:
 portal.emails.label_view-online: 'Bekijk online'
 portal.emails.message-clipped: '(Bericht is geknipt)'
 portal.emails.new-ticket-guest-link: 'Bedankt dat u contact met ons opneemt. U kunt de status van uw ticket hier online bekijken:'
-portal.emails.news-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over feedbackitems bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle nieuwsmeldingen.</a>'
+portal.emails.news-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over gemeenschapsonderwerpen bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle nieuwsmeldingen.</a>'
 portal.emails.news-new-articles:
   one: '1 nieuw nieuwsbericht'
   other: '{{count}} nieuwe nieuwsberichten'
@@ -326,7 +318,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens'
 portal.emails.password_reset: 'U heeft een aanvraag ingediend voor het resetten van uw wachtwoord. Klik op de onderstaande link om uw wachtwoord te resetten:'
 portal.emails.password_set: 'Om uw wachtwoord in te stellen, klik op de link hieronder:'
-portal.emails.profile_email-new-confirm: 'Om de toevoeging van het tweede e-mailadres te voltooien, klikt u simpelweg op de volgende validatie link'
 portal.emails.profile_email-primary-confirm: 'Om uw primaire e-mailadres te verifiëren, klik eenvoudig op de volgende link'
 portal.emails.profile_email_link-validate: 'Klik op de volgende link om uw e-mailadres te valideren'
 portal.emails.ratelimit_explain: 'U heeft {{num_messagess}} berichten verstuurd binnen {{time_limit}}. Om misbruik te voorkomen, hebben we uw e-mailadres tijdelijk geblokkeerd voor {{time_lock}}. Na {{date_lock_end}}, zal deze tijdelijke blokkade worden verwijderd en kunt u weer e-mails versturen.'
@@ -375,44 +366,41 @@ portal.error.404-title: 'Niet gevonden'
 portal.error.contact: 'Als u denkt dat dit een fout is, neem dan contact met ons op.'
 portal.error.general-desc: 'Sorry, maar een fout deed zich voor. Probeer het later nogmaals of neemt contact met ons op.'
 portal.error.general-title: 'Een fout deed zich voor'
-portal.feedback.attachments: Bijlagen
-portal.feedback.btn-closed: Gesloten
-portal.feedback.btn-vote: 'Ik ben het eens'
-portal.feedback.dir_asc: Oplopend
-portal.feedback.dir_desc: Aflopend
-portal.feedback.error_hidden: 'Dit feedbackitem is verborgen'
-portal.feedback.error_login: Inloggen
-portal.feedback.filter_all_items: 'Alle items'
-portal.feedback.filter_closed_items: 'Gesloten items'
-portal.feedback.filter_open_items: 'Open items'
-portal.feedback.form_attach_files: 'Bestanden bijvoegen'
-portal.feedback.form_btn_submit: 'Uw feedback toevoegen'
-portal.feedback.form_email_not_shown: 'Uw e-mailadres (zal niet publiekelijk worden getoond)'
-portal.feedback.form_i_have_a: 'Ik heb een'
-portal.feedback.form_logged_in_as: 'Ingelogd als: <span>{{name}}</span>, vanuit e-mailadres <span>{{email}}</span>.'
-portal.feedback.form_logout: 'Bent u dit niet?'
-portal.feedback.form_tell_us_more: 'Vertel ons meer'
-portal.feedback.form_title: Titel
-portal.feedback.module_forbidden: 'U heeft geen toegang tot deze module'
-portal.feedback.no_matching: 'Geen overeenkomstige feedback'
-portal.feedback.none: 'Nog geen feedback'
-portal.feedback.rate_forbidden: 'U mag niet stemmen'
-portal.feedback.recent-feedback: 'Recente feedback'
-portal.feedback.search-title: Feedback
-portal.feedback.section-desc: 'Deze suggesties zijn ingediend door klanten zoals u; Wij moedigen het aan om op reacties te discussiëren en te stemmen. indien het idee nog niet is vermeld, kunt u uw eigen reactie plaatsen.'
-portal.feedback.section-title: Feedback
-portal.feedback.sort_comments: Reacties
-portal.feedback.sort_date: Datum
-portal.feedback.sort_popularity: Populariteit
-portal.feedback.sort_rating: Beoordeling
-portal.feedback.sort_views: Weergaven
-portal.feedback.status_active: 'Open items'
-portal.feedback.status_all: 'Alle items'
-portal.feedback.status_closed: 'Gesloten items'
-portal.feedback.submit_feedback: 'Feedback verzenden'
-portal.feedback.view-x-feedback:
-  one: 'Bekijk 1 feedback'
-  other: 'Bekijk {{count}} feedbacks'
+portal.community.attachments: Bijlagen
+portal.community.btn-closed: Gesloten
+portal.community.btn-vote: 'Ik ben het eens'
+portal.community.dir_asc: Oplopend
+portal.community.dir_desc: Aflopend
+portal.community.error_hidden: 'Dit gemeenschapsonderwerp is verborgen'
+portal.community.error_login: Inloggen
+portal.community.filter_all_items: 'Alle items'
+portal.community.filter_closed_items: 'Gesloten items'
+portal.community.form_attach_files: 'Bestanden bijvoegen'
+portal.community.form_btn_submit: 'Uw gemeenschapsonderwerp toevoegen'
+portal.community.form_email_not_shown: 'Uw e-mailadres (zal niet publiekelijk worden getoond)'
+portal.community.form_i_have_a: 'Ik heb een'
+portal.community.form_logged_in_as: 'Ingelogd als: <span>{{name}}</span>, vanuit e-mailadres <span>{{email}}</span>.'
+portal.community.form_logout: 'Bent u dit niet?'
+portal.community.form_tell_us_more: 'Vertel ons meer'
+portal.community.form_title: Titel
+portal.community.form_custom_cat: Kategori
+portal.community.module_forbidden: 'U heeft geen toegang tot deze module'
+portal.community.no_matching: 'Geen overeenkomstige gemeenschapsonderwerpen'
+portal.community.none: 'Nog geen gemeenschapsonderwerpen'
+portal.community.rate_forbidden: 'U mag niet stemmen'
+portal.community.recent-community_topics: 'Recente gemeenschapsonderwerpen'
+portal.community.section-desc: 'Deze suggesties zijn ingediend door klanten zoals u; Wij moedigen het aan om op reacties te discussiëren en te stemmen. indien het idee nog niet is vermeld, kunt u uw eigen reactie plaatsen.'
+portal.community.sort_comments: Reacties
+portal.community.sort_date: Datum
+portal.community.sort_popularity: Populariteit
+portal.community.sort_rating: Beoordeling
+portal.community.sort_views: Weergaven
+portal.community.status_all: 'Alle items'
+portal.community.status_closed: 'Gesloten items'
+portal.community.submit_community_topic: 'Gemeenschapsonderwerp verzenden'
+portal.community.view-x-community-topics:
+  one: 'Bekijk 1 gemeenschapsonderwerp'
+  other: 'Bekijk {{count}} gemeenschapsonderwerpen'
 portal.flashes.article_cat_subscribe: 'U heeft zich succesvol geabonneerd op deze categorie. U krijgt een melding wanneer nieuwe artikelen zijn geplaatst.'
 portal.flashes.article_cat_unsubscribe: 'U heeft zich succesvol afgemeld voor deze categorie.'
 portal.flashes.article_subscribe: 'U heeft zich succesvol geabonneerd op dit artikel. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
@@ -426,14 +414,14 @@ portal.flashes.download_subscribe: 'U heeft zich succesvol geabonneerd op deze d
 portal.flashes.download_unsubscribe: 'U heeft zich succesvol afgemeld voor deze download.'
 portal.flashes.download_unsubscribe_everything: 'U heeft zich succesvol afgemeld voor alle downloadmeldingen'
 portal.flashes.email_sent: 'Uw e-mail is verstuurd'
-portal.flashes.feedback_login: 'U moet inloggen om te stemmen'
-portal.flashes.feedback_subscribe: 'U heeft zich succesvol geabonneerd op dit feedbackitem. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
-portal.flashes.feedback_unsubscribe: 'U heeft zich succesvol afgemeld voor dit feedbackitem.'
-portal.flashes.feedback_unsubscribe_everything: 'U heeft zich afgemeld voor alle feedbackmeldingen'
+portal.flashes.community_login: 'U moet inloggen om te stemmen'
+portal.flashes.community_subscribe: 'U heeft zich succesvol geabonneerd op dit gemeenschapsonderwerp. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
+portal.flashes.community_unsubscribe: 'U heeft zich succesvol afgemeld voor dit gemeenschapsonderwerp.'
+portal.flashes.community_unsubscribe_everything: 'U heeft zich afgemeld voor alle gemeenschapsonderwerpen'
 portal.flashes.guest_content_must_verify: 'Voordat we uw inhoud kunnen plaatsen, moet u uw e-mailadres verifiëren. Controleer uw inbox van uw e-mail. We hebben u een verificatielink gestuurd.'
 portal.flashes.guest_new_ticket_must_verify: 'Voordat we uw ticket kunnen accepteren, moet u uw e-mailadres verifiëren. Controleer uw inbox van uw e-mail. We hebben u een verificatielink gestuurd.'
-portal.flashes.new_feedback_awaiting_review: 'Bedankt voor uw feedback. Deze zal op onze ondersteuningsportal zichtbaar worden nadat deze is gecontroleerd door een medewerker.'
-portal.flashes.new_feedback_posted: 'Bedankt voor uw feedback.'
+portal.flashes.new_community_topic_awaiting_review: 'Bedankt voor uw gemeenschapsonderwerp. Deze zal op onze ondersteuningsportal zichtbaar worden nadat deze is gecontroleerd door een medewerker.'
+portal.flashes.new_community_topic_posted: 'Bedankt voor uw gemeenschapsonderwerp.'
 portal.flashes.news_cat_subscribe: 'U heeft zich succesvol geabonneerd voor deze categorie. U krijgt een melding van nieuwe berichten.'
 portal.flashes.news_cat_unsubscribe: 'U heeft zich succesvol afgemeld van deze categorie.'
 portal.flashes.news_subscribe: 'U heeft zich succesvol geabonneerd op dit nieuwsartikel. U krijgt een melding wanneer er een nieuwe reacties zijn geplaatst.'
@@ -485,7 +473,6 @@ portal.forms.error_dupe_ticket_message: 'Dubbel ticketbericht.'
 portal.forms.error_email_required: 'U moet een e-mailadres opgeven'
 portal.forms.error_extra_fields: 'Sorry, maar er is een fout opgetreden bij het verwerken van uw verzoek. Probeer het opnieuw.'
 portal.forms.error_invalid_data_type: 'Dit gegevenstype is niet verwacht.'
-portal.forms.error_invalid_email: 'Het e-mailadres is niet geldig'
 portal.forms.error_invalid_url: 'Deze waarde is geen geldige URL.'
 portal.forms.error_length_invalid: 'De waarde moet exact {{limit}} karakters bevatten.'
 portal.forms.error_length_too_long: 'De waarde is te lang. Deze moet {{limit}} karakters of minder bevatten'
@@ -537,7 +524,6 @@ portal.forms.error_upload_file: 'Kon bestand niet uploaden'
 portal.forms.error_upload_general: 'Er was een probleem bij het uploaden van dit bestand. Probeer het nogmaals.'
 portal.forms.error_upload_html_size: 'Het bestand is te groot.'
 portal.forms.error_upload_ini_size: 'Het bestand is te groot. Maximum toegestane grootte is {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Sorry, maar er was een fout bij het behandelen van uw aanvraag. Probeer het nogmaals.'
 portal.forms.label_add_attachment: 'Nog een bijlage toevoegen'
 portal.forms.label_captcha: 'Om te bewijzen dat u een mens bent, moet u vertellen welke tekst u ziet in de CAPTCHA-afbeelding'
 portal.forms.label_category: Categorie
@@ -559,7 +545,6 @@ portal.forms.label_name: Naam
 portal.forms.label_password: Wachtwoord
 portal.forms.label_password_confirm: Bevestigen
 portal.forms.label_priority: Prioriteit
-portal.forms.label_product: Product
 portal.forms.label_reset: Resetten
 portal.forms.label_save: Opslaan
 portal.forms.label_select: Selecteer...
@@ -569,21 +554,20 @@ portal.forms.label_submit: Versturen
 portal.forms.label_timezone: Tijdzone
 portal.forms.label_title: Titel
 portal.forms.label_upload_picture: 'Upload foto'
-portal.forms.label_workflow: Workflow
 portal.general.add-comment: 'Reactie toevoegen'
 portal.general.admin: Beheerder
 portal.general.admin_home: 'Home beheerder'
 portal.general.agent: Medewerker
 portal.general.agent_bar_admin_desc: 'Uw helpdesk beheren'
 portal.general.agent_bar_admin_dl: Downloads-instellingen
-portal.general.agent_bar_admin_feedback: Feedback-instellingen
+portal.general.agent_bar_admin_community: Feedback-instellingen
 portal.general.agent_bar_admin_kb: Kennisbank-instellingen
 portal.general.agent_bar_admin_lang: Taalinstellingen
 portal.general.agent_bar_admin_news: Nieuws-instellingen
 portal.general.agent_bar_admin_portal: 'Ontwerp portal & thema''s'
 portal.general.agent_bar_agent_desc: 'Tickets bekijken / inhoud beheren'
 portal.general.agent_bar_agent_dl: 'Downloads beheren'
-portal.general.agent_bar_agent_feedback: 'Feedback beheren'
+portal.general.agent_bar_agent_community: 'Gemeenschapsonderwerp beheren'
 portal.general.agent_bar_agent_home: 'Home medewerker'
 portal.general.agent_bar_agent_kb: 'Kennisbank beheren'
 portal.general.agent_bar_agent_news: 'Nieuws beheren'
@@ -613,7 +597,6 @@ portal.general.everything: Alles
 portal.general.get-in-touch: 'Kom in contact'
 portal.general.get-in-touch-desc: 'Stuur ons een e-mail'
 portal.general.impersonation_mode: 'Verpersoonlijking modus'
-portal.general.in: in
 portal.general.label-search-enter-label: 'Geef een label om naar te zoek op'
 portal.general.lang-change-to-current: 'Maak <span class="italics">{{lang}}</span> mijn standaardtaal'
 portal.general.lang-diff: 'Deze pagina is in het <span class="italics">{{active_lang}}</span>, maar uw account is in het <span class="italics">{{person_lang}}</span>.'
@@ -621,11 +604,9 @@ portal.general.lang-switch: 'Overschakelen naar het <span class="italics">{{lang
 portal.general.nav-all: Alles
 portal.general.nav-chat: Chatlogboeken
 portal.general.nav-chatlog: Chatlogboek
-portal.general.nav-downloads: Downloads
 portal.general.nav-downloads-desc: 'Bekijk onze downloads'
 portal.general.nav-emails: E-mails
-portal.general.nav-feedback: Feedback
-portal.general.nav-feedback-desc: 'Aangepaste suggesties'
+portal.general.nav-community-desc: 'Aangepaste suggesties'
 portal.general.nav-guides: Gidsen
 portal.general.nav-guides-desc: Productdocumentatie
 portal.general.nav-kb: Kennisbank
@@ -635,13 +616,11 @@ portal.general.nav-news: Nieuws
 portal.general.nav-news-desc: 'Nieuws & updates'
 portal.general.nav-newticket: 'Neem contact met ons op'
 portal.general.nav-newticket-desc: 'We zijn er om te helpen'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profiel
 portal.general.nav-quick-jump: 'Snel springen'
 portal.general.nav-register: Registreren
 portal.general.nav-reset-password: 'Reset uw wachtwoord'
 portal.general.nav-set-password: 'Wachtwoord instellen'
-portal.general.nav-tickets: Tickets
 portal.general.nav-tickets-org: Organisatietickets
 portal.general.nav-your-account: 'Uw account'
 portal.general.no-agents-available: 'Sorry, maar er zijn geen medewerkers beschikbaar'
@@ -668,7 +647,7 @@ portal.general.rated-negative: 'U heeft deze pagina als niet nuttig gemarkeerd'
 portal.general.rated-positive: 'Deze pagina is gemarkeerd als nuttig'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} van de {{vote_count}} mensen vonden deze pagina nuttig'
 portal.general.related-downloads: 'Gerelateerde bestanden'
-portal.general.related-feedback: 'Gerelateerde feedback'
+portal.general.related-community: 'Gerelateerde gemeenschapsonderwerp'
 portal.general.related-news: 'Gerelateerd nieuws'
 portal.general.related-pages: 'Gerelateerde pagina''s'
 portal.general.rerender-form: 'Controleer dit formulier voordat u het verstuurd.'
@@ -685,13 +664,11 @@ portal.general.show_more: 'Meer weergeven'
 portal.general.show_x_more: 'Toon {num} meer'
 portal.general.software_provided_by: 'Helpdesksoftware aangeboden door'
 portal.general.start-chat: 'Start een chatsessie'
-portal.general.submit-feedback: 'Feedback plaatsen'
-portal.general.submit-feedback-desc: 'Feedback en suggesties ingestuurd door klanten zoals u'
+portal.general.submit-community-topic: 'Gemeenschapsonderwerp plaatsen'
+portal.general.submit-community-topic-desc: 'Gemeenschapsonderwerp en suggesties ingestuurd door klanten zoals u'
 portal.general.tagged_with: 'getagd met'
-portal.general.tags: Tags
 portal.general.toggle_off: uit
 portal.general.toggle_on: aan
-portal.general.top: Top
 portal.general.updated: Bijgewerkt
 portal.general.x-search-results: '{{num}} zoekresultaten voor "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} zoekresultaten'
@@ -706,9 +683,6 @@ portal.news.view-x-news:
   other: 'Bekijk {{count}} artikelen'
 portal.sidebar.agents_available: 'Beschikbare medewerkers'
 portal.sidebar.agents_none: 'Geen van onze medewerkers is op dit moment online. U kunt nog steeds <a href="{{new_ticket_url}}">een ticket openen</a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Geplaatst door {{name}}'
 portal.sidebar.news_title: Nieuws
 portal.sidebar.satisfied_customers: 'tevreden klanten'
@@ -768,8 +742,6 @@ portal.tickets.resolve_my_ticket_btn: 'Markeer mijn ticket als opgelost'
 portal.tickets.resolve_ticket: 'Markeer ticket {{subject}} als opgelost'
 portal.tickets.resolve_ticket_explain: 'Weet u zeker dat u de ticket als opgelost wilt markeren? Wanneer uw ticket opgelost is, zullen onze medewerkers niet meer reageren.'
 portal.tickets.search-last-activity: 'Laatste activiteit'
-portal.tickets.search-title: Tickets
-portal.tickets.section-title: Tickets
 portal.tickets.switched-department-rerender: 'De structuur van dit formulier kan gewijzigd zijn. Controleer het formulier en verstuur het nogmaals.'
 portal.tickets.thank_you: 'Uw ticket is onderweg'
 portal.tickets.thank_you_check_email: 'Verifieer uw e-mailadres'
@@ -894,6 +866,7 @@ user.defaults.article_example_title: Voorbeeldartikel
 user.defaults.department_sales: Verkoop
 user.defaults.department_support: Ondersteuning
 user.defaults.downloads_category_general: Documenten
+user.defaults.navigate: Navigeren
 user.defaults.news_category_general: Algemeen
 user.defaults.news_example_content: 'Dit is een voorbeeld van een nieuwsbericht. U kunt dit onderdeel bewerken of verwijderen van de medewerkers-interface.'
 user.defaults.news_example_title: 'Voorbeeld nieuwsbericht'
@@ -907,14 +880,13 @@ user.email_subjects.download_sub_new_and_updated: 'Nieuwe en bijgewerkte downloa
 user.email_subjects.download_sub_updated: 'Bijgewerkte downloads'
 user.email_subjects.email-too-big: 'Uw email "{{subject}}"  werd niet aanvaard'
 user.email_subjects.email_new-confirm: 'Valideer uw e-mailadres'
-user.email_subjects.email_primary-confirm: 'Valideer uw e-mailadres'
-user.email_subjects.feedback_created_for_user: 'Bedankt voor je feedback'
-user.email_subjects.feedback_new: 'Bedankt voor het sturen van uw feedback'
-user.email_subjects.feedback_new-approved: 'Uw feedback is goedgekeurd'
-user.email_subjects.feedback_new-comment: 'Er is een nieuwe reactie op "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Sorry, maar uw feedback is geweigerd'
-user.email_subjects.feedback_sub_updated: 'Bijgewerkte feedback'
-user.email_subjects.feedback_updated: 'Uw feedback is bijgewerkt: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'Bedankt voor je gemeenschapsonderwerp'
+user.email_subjects.community_topic_new: 'Bedankt voor het sturen van uw gemeenschapsonderwerp'
+user.email_subjects.community_topic_new-approved: 'Uw gemeenschapsonderwerp is goedgekeurd'
+user.email_subjects.community_topic_new-comment: 'Er is een nieuwe reactie op "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Sorry, maar uw gemeenschapsonderwerp is geweigerd'
+user.email_subjects.community_sub_updated: 'Bijgewerkte gemeenschapsonderwerp'
+user.email_subjects.community_topic_updated: 'Uw gemeenschapsonderwerp is bijgewerkt: {{title}}'
 user.email_subjects.kb_sub_new: 'Nieuwe artikelen'
 user.email_subjects.kb_sub_new_and_updated: 'Nieuwe en bijgewerkte artikelen'
 user.email_subjects.kb_sub_updated: 'Bijgewerkte artikelen'
@@ -925,15 +897,11 @@ user.email_subjects.news_sub_updated: 'Bijgewerkt nieuws'
 user.email_subjects.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset'
 user.email_subjects.password_reset: 'Reset uw wachtwoord'
 user.email_subjects.password_set: 'Stel uw wachtwoord in'
-user.email_subjects.re: 'RE: {{subject}}'
 user.email_subjects.register-welcome: 'Bedankt voor het registreren'
 user.email_subjects.register-welcome-byagent: 'Uw nieuwe helpdesk-account'
 user.email_subjects.remind_unresolved_final_subject: 'HERINNERING: {{subject}}'
 user.email_subjects.remind_unresolved_subject: 'HERINNERING: {{subject}}'
 user.email_subjects.ticket-rate: 'Beoordeel uw support ervaring op uw ticket "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Er is een nieuw persoon toegevoegd aan uw ticket'
-user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'LET OP: U heeft te veel e-mails verzonden'
 user.emails.auto-close: 'Uw ticket "{{ticket.subject}}" wordt automatisch afgesloten omdat je het de laatste tijd niet hebt bijgewerkt. Als u niet wilt dat uw ticket wordt afgesloten, voeg een nieuw antwoord toe, zodat onze medewerkers u verder kunnen helpen.'
 user.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
 user.emails.chat_validate_email: 'Valideer uw e-mailadres door deze code "{{validation_code}}" in te vullen in het widgetformulier of door op deze link te klikken:'
@@ -948,23 +916,23 @@ user.emails.download-updated-downloads:
   other: '{{count}} bijgewerkte downloads'
 user.emails.downloads-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op onze downloads bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle downloadmeldingen.</a>'
 user.emails.email-too-big: 'Uw e-mail "{{subject}}" is niet geaccepteerd, omdat deze te groot is. De maximale e-mailgrootte is {{max_size}}. Verwijder elke bijlage en probeer het nogmaals.'
-user.emails.feedback-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op ons nieuws bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle nieuwsmeldingen.</a>'
-user.emails.feedback-updated-items:
-  one: '1 bijgewerkte feedbackitem'
-  other: '{{count}} bijgewerkte feedbackitems'
-user.emails.feedback_agent-validation: 'Let er op dat uw feedback niet publiekelijk zichtbaar is totdat een van onze medewerkers het heeft gecontroleerd'
-user.emails.feedback_approved: 'Wij sturen u een e-mail om u te laten weten dat uw feedback nu voor iedereen zichtbaar is op onze website.'
-user.emails.feedback_closed: 'Uw feedback "{{title}}" is gesloten: {{status}}'
-user.emails.feedback_created_for_user: 'Bedankt voor je recente feedback "{{title}}". {{agentName}} heeft een nieuw feedbackitem gemaakt, zodat u op de hoogte blijft van onze voortgang:'
-user.emails.feedback_disapproved: 'Wij sturen u een e-mail om u te laten weten dat uw feedback is geweigerd en niet zichtbaar zal zijn op onze website.'
-user.emails.feedback_disapproved-reason: 'Wij sturen u een e-mail om u te laten weten dat uw feedback is geweigerd en niet zichtbaar zal zijn op onze website. {{name}} heeft de volgende reden gegeven:'
-user.emails.feedback_new-comment: '{{name}} heeft een nieuwe reactie geplaatst:'
-user.emails.feedback_published: 'Uw feedback "{{title}}" is gevalideerd en zal nu verschijnen op onze website.'
-user.emails.feedback_thank-you: 'Bedankt voor uw feedback "{{title}}"'
-user.emails.feedback_updated: 'Uw feedback "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:'
-  other: 'Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:'
+user.emails.community-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op ons nieuws bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle nieuwsmeldingen.</a>'
+user.emails.community-updated-items:
+  one: '1 bijgewerkte gemeenschapsonderwerp'
+  other: '{{count}} bijgewerkte gemeenschapsonderwerpen'
+user.emails.community-topic_agent-validation: 'Let er op dat uw gemeenschapsonderwerp niet publiekelijk zichtbaar is totdat een van onze medewerkers het heeft gecontroleerd'
+user.emails.community-topic_approved: 'Wij sturen u een e-mail om u te laten weten dat uw gemeenschapsonderwerp nu voor iedereen zichtbaar is op onze website.'
+user.emails.community-topic_closed: 'Uw community "{{title}}" is gesloten: {{status}}'
+user.emails.community-topic_created_for_user: 'Bedankt voor je recente community "{{title}}". {{agentName}} heeft een nieuw gemeenschapsonderwerp gemaakt, zodat u op de hoogte blijft van onze voortgang:'
+user.emails.community-topic_disapproved: 'Wij sturen u een e-mail om u te laten weten dat uw gemeenschapsonderwerp is geweigerd en niet zichtbaar zal zijn op onze website.'
+user.emails.community-topic_disapproved-reason: 'Wij sturen u een e-mail om u te laten weten dat uw community is geweigerd en niet zichtbaar zal zijn op onze website. {{name}} heeft de volgende reden gegeven:'
+user.emails.community-topic_new-comment: '{{name}} heeft een nieuwe reactie geplaatst:'
+user.emails.community-topic_published: 'Uw gemeenschapsonderwerp "{{title}}" is gevalideerd en zal nu verschijnen op onze website.'
+user.emails.community-topic_thank-you: 'Bedankt voor uw gemeenschapsonderwerp "{{title}}"'
+user.emails.community-topic_updated: 'Uw gemeenschapsonderwerp "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"'
+user.emails.community-topic_votes:
+  one: 'Uw community heeft op dit moment <strong>1</strong> stem. Bekijk uw gemeenschapsonderwerp online op:'
+  other: 'Uw community heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw gemeenschapsonderwerp online op:'
 user.emails.greeting: 'Beste {{to_name}},'
 user.emails.kb-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op onze kennisbank bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle kennisbankmeldingen.</a>'
 user.emails.kb-new-articles:
@@ -1056,7 +1024,7 @@ user.error.permission-denied: 'Sorry, de actie die u probeert uit te voeren is n
 user.error.permission-denied-login: 'U bent momenteel uitgelogd. <a href="{{login_url}}">Log in </a> en probeer het opnieuw.'
 user.error.permission-denied-title: 'Dit is niet toegestaan'
 user.error.server-error: 'Excuses, er is een serverfout opgetreden die heeft voorkomen dat de pagina wordt geladen. Probeer het opnieuw.'
-user.feedback.submit_feedback: 'Feedback verzenden'
+user.community.submit_community_topic: 'Gemeenschapsonderwerp verzenden'
 user.general.deskpro: DeskPRO
 user.general.helpdesk_by: 'Helpdesk software door <strong>{{deskpro}}</strong>'
 user.general.label_captcha: Bevestigingscode
@@ -1078,7 +1046,8 @@ user.lang.lang_title_japanese: Japans
 user.lang.lang_title_norwegian: Noors
 user.lang.lang_title_persian: Perzisch
 user.lang.lang_title_polish: Pools
-user.lang.lang_title_portuguese: Portugees
+user.lang.lang_title_portuguese_br: Portugees (Brazilië)
+user.lang.lang_title_portuguese_pt: Portugees (Portugal)
 user.lang.lang_title_romanian: Roemeens
 user.lang.lang_title_russian: Russisch
 user.lang.lang_title_spanish: Spaans
@@ -1106,11 +1075,10 @@ user.profile.register_password_require_num_uppercase:
   one: 'Minstens {{count}} hoofdletter'
   other: 'Minstens {{count}} hoofdletters'
 user.profile.register_password_unused: 'Het nieuwe wachtwoord mag niet gelijk zijn aan een eerder gebruikt wachtwoord'
-user.tickets.feedback_message_leave_comment: 'Laat eventueel een reactie achter'
+user.tickets.community_message_leave_comment: 'Laat eventueel een reactie achter'
 user.tickets.fields_category: Categorie
 user.tickets.fields_department: Afdeling
 user.tickets.fields_priority: Prioriteit
-user.tickets.fields_product: Product
 user.tickets.form_error_captcha: 'Voer de code in'
 user.tickets.form_error_captcha_invalid: 'De code is incorrect ingevoerd'
 user.tickets.from_x_at_y: 'Van {{name}} op {{date}}'
@@ -1128,18 +1096,14 @@ user.time.long-day_sunday: Zondag
 user.time.long-day_thursday: Donderdag
 user.time.long-day_tuesday: Dinsdag
 user.time.long-day_wednesday: Woensdag
-user.time.long-month_april: April
 user.time.long-month_august: Augustus
-user.time.long-month_december: December
 user.time.long-month_february: Februari
 user.time.long-month_january: Januari
 user.time.long-month_july: Juli
 user.time.long-month_june: Juni
 user.time.long-month_march: Maart
 user.time.long-month_may: Mei
-user.time.long-month_november: November
 user.time.long-month_october: Oktober
-user.time.long-month_september: September
 user.time.short-day_friday: Vr
 user.time.short-day_monday: Ma
 user.time.short-day_saturday: Za
@@ -1147,18 +1111,9 @@ user.time.short-day_sunday: Zo
 user.time.short-day_thursday: Do
 user.time.short-day_tuesday: Di
 user.time.short-day_wednesday: Wo
-user.time.short-month_april: Apr
-user.time.short-month_august: Aug
-user.time.short-month_december: Dec
-user.time.short-month_february: Feb
-user.time.short-month_january: Jan
-user.time.short-month_july: Jul
-user.time.short-month_june: Jun
 user.time.short-month_march: Mrt
 user.time.short-month_may: Mei
-user.time.short-month_november: Nov
 user.time.short-month_october: Okt
-user.time.short-month_september: Sep
 user.time.time-ago_1_day: '1 dag geleden'
 user.time.time-ago_1_hour: '1 uur geleden'
 user.time.time-ago_1_minute: '1 minuut geleden'
@@ -1179,7 +1134,6 @@ user.time.time_1_hour: '1 uur'
 user.time.time_1_minute: '1 minuut'
 user.time.time_1_month: '1 maand'
 user.time.time_1_second: '1 seconde'
-user.time.time_1_week: '1 week'
 user.time.time_1_year: '1 jaar'
 user.time.time_less_second: 'minder dan een seconde'
 user.time.time_x_day: '{0} dagen'

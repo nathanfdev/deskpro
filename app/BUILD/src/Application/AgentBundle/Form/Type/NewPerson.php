@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Form\Type;
 
 use Application\AgentBundle\Form\Model\NewPerson as NewPersonModel;
+use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -38,6 +39,12 @@ class NewPerson extends AbstractType
         ]);
         $builder->add('brand_ids', 'collection', [
             'type'         => 'integer',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
+        ]);
+        $builder->add('phone_numbers', 'collection', [
+            'type'         => new PhoneNumberType(),
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,

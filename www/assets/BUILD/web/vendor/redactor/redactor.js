@@ -2826,34 +2826,46 @@ var RLANG = {
 				markerSpan.parentNode.removeChild(markerSpan);
 			}
 		},
-		getSelectedHtml: function()
-		{
-			var html = '';
-			if (this.window.getSelection)
-			{
-				var sel = this.window.getSelection();
-				if (sel.rangeCount)
-				{
-					var container = this.document.createElement("div");
-					for (var i = 0, len = sel.rangeCount; i < len; ++i)
-					{
-						container.appendChild(sel.getRangeAt(i).cloneContents());
-					}
+    getSelectedHtml: function () {
+      var html = '';
+      var wrappers = ['u', 'b', 'i', 'span', 'pre', 'blockquote', 'p'];
+      for (var i = 1; i < 5; i++) {
+        wrappers.push('h' + i);
+      }
 
-					html = container.innerHTML;
+      if (this.window.getSelection) {
+        var sel = this.window.getSelection();
+        var selString = sel.toString();
+        var selParent = $(":contains('" + selString + "')")
+          .filter(function () {
+            var $el = $(this);
+            return $el.parents().hasClass('redactor_editor') && $el.is(wrappers.join(', ')) && this.innerText === selString;
+          })
+          .first();
 
-				}
-			}
-			else if (this.document.selection)
-			{
-				if (this.document.selection.type === "Text")
-				{
-					html = this.document.selection.createRange().htmlText;
-				}
-			}
+        if (sel.rangeCount) {
+          if (selParent.length) {
+            sel.removeAllRanges();
+            var range = this.document.createRange();
+            range.selectNode(selParent[0]);
+            sel.addRange(range);
+          }
 
-			return html;
-		},
+          var container = this.document.createElement("div");
+          for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+            container.appendChild(sel.getRangeAt(i).cloneContents());
+          }
+
+          html = container.innerHTML;
+        }
+      } else if (this.document.selection) {
+        if (this.document.selection.type === "Text") {
+          html = this.document.selection.createRange().htmlText;
+        }
+      }
+
+      return html;
+    },
 
 		// RESIZE IMAGES
 		resizeImage: function(resize)

@@ -7,6 +7,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -34,21 +35,23 @@ class DoubleSubmitJavascriptListener implements EventSubscriberInterface
             return;
         }
 
-        $this->injectScript($response);
+        $this->injectScript($response, $request);
     }
 
-    private function injectScript(Response $response)
+    private function injectScript(Response $response, Request $request)
     {
         $content = $response->getContent();
         $pos     = strripos($content, '</body>');
 
-        // if you change this plase see PortalBundle:SavedForm:auto_submit.html.twig
+        $securedCookie = $request->isSecure() ? ';secure' : '';
+
+        // if you change this please see PortalBundle:SavedForm:auto_submit.html.twig
         if (false !== $pos) {
-            $script = <<<'JS'
+            $script = <<< END
 <script>
-!function(t){function n(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}var e="_dp_csrf_token",r=n(e),o=/.*\[_dp_csrf_token\]*./;r||(r=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=e+"="+r+"; path=/");for(var i=document.getElementsByTagName("input"),u=1;u<i.length;u++)"hidden"==i[u].getAttribute("type")&&i[u].getAttribute("name").match(o)&&(i[u].value=r);t.dp_get_csrf_token=function(){return r}}(window);
+!function(t){function n(t){for(var n=t+"=",e=document.cookie.split(";"),r=0;r<e.length;r++){for(var o=e[r];" "==o.charAt(0);)o=o.substring(1,o.length);if(0==o.indexOf(n))return o.substring(n.length,o.length)}return null}var e="_dp_csrf_token",r=n(e),o=/.*\[_dp_csrf_token\]*./;r||(r=(Math.random()+1).toString(36).substring(2,17)+(Math.random()+1).toString(36).substring(2,17),document.cookie=e+"="+r+"; path=/{$securedCookie}");for(var i=document.getElementsByTagName("input"),u=1;u<i.length;u++)"hidden"==i[u].getAttribute("type")&&i[u].getAttribute("name").match(o)&&(i[u].value=r);t.dp_get_csrf_token=function(){return r}}(window);
 </script>
-JS;
+END;
             $content = substr($content, 0, $pos).$script.substr($content, $pos);
             $response->setContent($content);
         }

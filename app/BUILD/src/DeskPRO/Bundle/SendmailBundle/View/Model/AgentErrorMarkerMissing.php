@@ -24,13 +24,14 @@ class AgentErrorMarkerMissing extends AgentTicketEmailType
        $ticketAgent,
        $ticketLink,
        $ticketMessages,
+       $ticketSatisfaction,
        $participants,
        $ticketLayout,
        $customFields,
        $customUserFields,
        $subject
    ) {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $participants, $ticketLayout, $customFields, $customUserFields);
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction, $participants, $ticketLayout, $customFields, $customUserFields);
 
         $this->subject = $subject;
     }

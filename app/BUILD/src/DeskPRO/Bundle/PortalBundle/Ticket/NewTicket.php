@@ -11,6 +11,7 @@ use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupe;
@@ -59,37 +60,45 @@ class NewTicket
     private $urlGenerator;
 
     /**
-     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
+     * @var BrandStack
      */
     private $brandStack;
 
     /**
-     * Constructor.
+     * @var TicketStatusDataService
+     */
+    private $ticketStatusService;
+
+    /**
+     * NewTicket constructor.
      *
-     * @param EntityManager                                $em
-     * @param TicketManager                                $ticket_manager
-     * @param LanguageManager                              $language_manager
-     * @param PersonFactory                                $person_factory
-     * @param AntiAbuse                                    $anti_abuse
-     * @param UrlGeneratorInterface                        $urlGenerator
-     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param EntityManager           $em
+     * @param TicketManager           $ticket_manager
+     * @param LanguageManager         $language_manager
+     * @param PersonFactory           $person_factory
+     * @param AntiAbuse               $anti_abuse
+     * @param UrlGeneratorInterface   $urlGenerator
+     * @param BrandStack              $brandStack
+     * @param TicketStatusDataService $ticketStatusService
      */
     public function __construct(
-        EntityManager         $em,
-        TicketManager         $ticket_manager,
-        LanguageManager       $language_manager,
-        PersonFactory         $person_factory,
-        AntiAbuse             $anti_abuse,
-        UrlGeneratorInterface $urlGenerator,
-        BrandStack            $brandStack
+        EntityManager           $em,
+        TicketManager           $ticket_manager,
+        LanguageManager         $language_manager,
+        PersonFactory           $person_factory,
+        AntiAbuse               $anti_abuse,
+        UrlGeneratorInterface   $urlGenerator,
+        BrandStack              $brandStack,
+        TicketStatusDataService $ticketStatusService
     ) {
-        $this->em               = $em;
-        $this->ticket_manager   = $ticket_manager;
-        $this->language_manager = $language_manager;
-        $this->person_factory   = $person_factory;
-        $this->anti_abuse       = $anti_abuse;
-        $this->urlGenerator     = $urlGenerator;
-        $this->brandStack       = $brandStack;
+        $this->em                  = $em;
+        $this->ticket_manager      = $ticket_manager;
+        $this->language_manager    = $language_manager;
+        $this->person_factory      = $person_factory;
+        $this->anti_abuse          = $anti_abuse;
+        $this->urlGenerator        = $urlGenerator;
+        $this->brandStack          = $brandStack;
+        $this->ticketStatusService = $ticketStatusService;
     }
 
     /**
@@ -215,6 +224,8 @@ class NewTicket
     private function saveNewTicket(Ticket $ticket, Person $person, $eventMethod)
     {
         $this->ticket_manager->markAsManaged($ticket);
+        $ticketStatus = $this->ticketStatusService->findStatusOrException($ticket->getStatus());
+        $ticket->setTicketStatus($ticketStatus);
 
         $this->em->beginTransaction();
 

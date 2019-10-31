@@ -11,18 +11,23 @@ import EditAccountContainer from '../Form/EditAccountContainer';
 import AccountForm from '../Form/AccountForm';
 import { settingsLoadedSelector, settingsSelector } from '../../../Selectors/settings';
 import { loadSettings, updateSettings } from '../../../Actions/settingActions';
+import { loadNumbers } from '../../../Actions/numberActions';
+import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 
 @connect(state => ({
   accounts:       allAccountsSelector(state),
   accountsLoaded: isAccountsLoadedSelector(state),
   settings:       settingsSelector(state),
-  settingsLoaded: settingsLoadedSelector(state)
+  settingsLoaded: settingsLoadedSelector(state),
+  numbers:        allNumbersSelector(state),
+  numbersLoaded:  isNumbersLoadedSelector(state),
 }))
 class AccountListContainer extends React.Component {
 
   static propTypes = {
     dispatch:       PropTypes.func,
     accountsLoaded: PropTypes.bool,
+    numbersLoaded:  PropTypes.bool,
     settingsLoaded: PropTypes.bool,
   };
 
@@ -31,7 +36,8 @@ class AccountListContainer extends React.Component {
     this.state = {
       formOpened:  false,
       editAccount: null,
-      accountType: null
+      accountType: null,
+      isManaged:   false
     };
   }
 
@@ -40,16 +46,18 @@ class AccountListContainer extends React.Component {
 
     dispatch(loadAccounts());
     dispatch(loadSettings());
+    dispatch(loadNumbers());
   }
 
-  onNewAccountClick = (accountType) => {
+  openNewAccountForm = (accountType, isManaged = false) => {
     this.setState({
       formOpened: true,
-      accountType
+      accountType,
+      isManaged
     });
   };
 
-  onEditAccountClick = (account) => {
+  openEditAccountForm = (account) => {
     this.setState({
       formOpened:  true,
       editAccount: account,
@@ -68,12 +76,12 @@ class AccountListContainer extends React.Component {
   saveSettings = data => this.props.dispatch(updateSettings(data));
 
   render() {
-    const { accountsLoaded, settingsLoaded } = this.props;
-    const { editAccount, accountType, formOpened } = this.state;
+    const { accountsLoaded, settingsLoaded, numbersLoaded } = this.props;
+    const { editAccount, accountType, isManaged, formOpened } = this.state;
     const FormContainer = editAccount ? EditAccountContainer : NewAccountContainer;
     const title = editAccount ? 'Edit account' : 'New account';
 
-    if (!accountsLoaded || !settingsLoaded) {
+    if (!accountsLoaded || !settingsLoaded || !numbersLoaded) {
       return <LoadingPage />;
     }
 
@@ -81,12 +89,12 @@ class AccountListContainer extends React.Component {
       <div>
         <AccountList
           {...this.props}
-          onNewAccount={this.onNewAccountClick}
-          onEditAccount={this.onEditAccountClick}
+          openNewAccountForm={this.openNewAccountForm}
+          openEditAccountForm={this.openEditAccountForm}
           saveSettings={this.saveSettings}
         />
         <Modal isOpen={formOpened} onClose={this.onClose} title={title} onCloseButtonClick={this.closeEditPopup}>
-          <FormContainer account={editAccount} accountType={accountType} onClose={this.closeEditPopup}>
+          <FormContainer account={editAccount} accountType={accountType} isManaged={isManaged} onClose={this.closeEditPopup}>
             <AccountForm />
           </FormContainer>
         </Modal>

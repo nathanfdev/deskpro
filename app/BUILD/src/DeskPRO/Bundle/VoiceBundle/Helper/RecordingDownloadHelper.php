@@ -3,12 +3,23 @@
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
 use Application\DeskPRO\Entity\Job;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\JobQueue\JobQueue;
-use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceDownloadRecordProcessor;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -39,52 +50,133 @@ class RecordingDownloadHelper
     private $jobQueue;
 
     /**
+     * @var TicketManager
+     */
+    private $ticketManager;
+
+    /**
+     * @var VoiceSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
+     * @var VoiceTaskHelper
+     */
+    private $storage;
+
+    /**
+     * @var VoiceTaskHelper
+     */
+    private $taskHelper;
+
+    /**
+     * @var VoiceTicketHelper
+     */
+    private $voiceTicketHelper;
+
+    /**
+     * @var PhoneCallLockHelper
+     */
+    private $callLockHelper;
+
+    /**
+     * @var VoiceProviderHelper
+     */
+    private $providerHelper;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
      * @param Serializer               $serializer
      * @param EventDispatcherInterface $dispatcher
      * @param JobQueue                 $jobQueue
+     * @param VoiceSettingsResolver    $settingsResolver
+     * @param TicketManager            $ticketManager
+     * @param StorageAdapterInterface  $storage
+     * @param VoiceTaskHelper          $taskHelper
+     * @param VoiceTicketHelper        $voiceTicketHelper
+     * @param PhoneCallLockHelper      $callLockHelper
+     * @param VoiceProviderHelper      $providerHelper
      */
-    public function __construct(EntityManager $em, Serializer $serializer, EventDispatcherInterface $dispatcher, JobQueue $jobQueue)
-    {
-        $this->em         = $em;
-        $this->serializer = $serializer;
-        $this->dispatcher = $dispatcher;
-        $this->jobQueue   = $jobQueue;
+    public function __construct(
+        EntityManager            $em,
+        Serializer               $serializer,
+        EventDispatcherInterface $dispatcher,
+        JobQueue                 $jobQueue,
+        VoiceSettingsResolver    $settingsResolver,
+        TicketManager            $ticketManager,
+        StorageAdapterInterface  $storage,
+        VoiceTaskHelper          $taskHelper,
+        VoiceTicketHelper        $voiceTicketHelper,
+        PhoneCallLockHelper      $callLockHelper,
+        VoiceProviderHelper      $providerHelper
+    ) {
+        $this->em                = $em;
+        $this->serializer        = $serializer;
+        $this->dispatcher        = $dispatcher;
+        $this->jobQueue          = $jobQueue;
+        $this->settingsResolver  = $settingsResolver;
+        $this->ticketManager     = $ticketManager;
+        $this->storage           = $storage;
+        $this->taskHelper        = $taskHelper;
+        $this->voiceTicketHelper = $voiceTicketHelper;
+        $this->callLockHelper    = $callLockHelper;
+        $this->providerHelper    = $providerHelper;
     }
 
     /**
      * @param VoicePhoneCall $phoneCall
+     * @param string         $recordingSid
      * @param string         $recordingUrl
      * @param string         $duration
+     *
+     * @throws \Exception
      */
-    public function enqueueRecordingDownload(VoicePhoneCall $phoneCall, $recordingUrl, $duration)
+    public function enqueueRecordingDownload(VoicePhoneCall $phoneCall, $recordingSid, $recordingUrl, $duration)
     {
         $recordingEnabled = true;
-        if ($phoneCall->getQueue()) {
-            $recordingEnabled = $phoneCall->getQueue()->isRecordingEnabled();
+
+        $task = $this->storage->getTask($phoneCall->getTaskSid());
+        if ($task && $queueId = $task->getAttribute('queue')) {
+            $voiceQueue = $this->em->getRepository(VoiceQueue::class)->find($queueId);
+            if ($voiceQueue) {
+                $recordingEnabled = $voiceQueue->isRecordingEnabled();
+            }
         }
-
-        $phoneCall->setDuration($duration);
-        $phoneCall->setData(array_merge($phoneCall->getData(), [
-            'RecordingUrl'     => $recordingUrl,
-            'RecordingEnabled' => $recordingEnabled,
-        ]));
-
-        $this->em->persist($phoneCall);
-        $this->em->flush();
 
         if ($recordingEnabled) {
+            $recording = new VoiceRecording();
+            $recording->setRecordingSid($recordingSid);
+            $recording->setDuration($duration);
+            $recording->setRecordingUrl($recordingUrl);
+
+            $phoneCall->addRecording($recording);
+
+            // add temp full recording
+            if (!$phoneCall->getFullRecording()) {
+                $fullRecording = new VoiceRecording();
+                $phoneCall->setFullRecording($fullRecording);
+            }
+
+            $this->em->persist($phoneCall);
+            $this->em->flush();
+
             $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
-                'call_id' => $phoneCall->getId(),
+                'recording_sid' => $recordingSid,
+                'recording_id'  => $recording->getId(),
             ]));
+        } else {
+            // recording is disabled so
+            // we won't fetch the recording and just delete it
+            $this->providerHelper->deleteRecording($phoneCall, $recordingSid);
         }
 
-        $serializedData = $this->serializer->toArray(
-            new ApiWrapper($phoneCall),
-            new SideloadSerializationContext()
-        );
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['recording_enabled']);
+        $context->setInlineSideloads(true);
+
+        $serializedData = $this->serializer->toArray(new ApiWrapper($phoneCall), $context);
 
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
@@ -93,5 +185,231 @@ class RecordingDownloadHelper
                 ['data' => $serializedData]
             )
         );
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param string         $recordingSid
+     * @param string         $recordingUrl
+     * @param string         $duration
+     *
+     * @throws \Exception
+     */
+    public function enqueueVoicemailRecordingDownload(VoicePhoneCall $phoneCall, $recordingSid, $recordingUrl, $duration)
+    {
+        $task = $this->storage->getTask($phoneCall->getTaskSid());
+        if (!$task) {
+            return;
+        }
+
+        // ignore short voicemails
+        if ($duration < 6) {
+            // we won't fetch the recording so just delete it
+            $this->providerHelper->deleteRecording($phoneCall, $recordingSid);
+
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+            $this->em->flush();
+
+            // we can call this method it in several voice callbacks
+            // so need to lock it to prevent ticket dupes
+            $phoneLock = $this->callLockHelper->createPhoneLock($phoneCall->getId());
+
+            try {
+                $phoneLock->acquire(true);
+                $this->voiceTicketHelper->createMissedTicketMessageIfNotExist($phoneCall);
+            } finally {
+                $phoneLock->release();
+            }
+
+            return;
+        }
+
+        // return redirect response
+        $voicemailAsset = null;
+        if ($task->getAttribute('queue')) {
+            $queue = $this->taskHelper->getVoiceQueue($task);
+            if ($queue) {
+                $this->voicemailForQueue($phoneCall, $queue, $recordingSid, $recordingUrl, $duration);
+            }
+        } elseif ($task->getAttribute('agent')) {
+            $agent = $this->taskHelper->getWorkerAgent($task);
+            if ($agent) {
+                $this->voicemailForAgent($phoneCall, $agent, $recordingSid, $recordingUrl, $duration);
+            }
+        }
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param Person         $agent
+     * @param string         $recordingSid
+     * @param string         $recordingUrl
+     * @param int            $duration
+     *
+     * @throws \Exception
+     */
+    private function voicemailForAgent(VoicePhoneCall $phoneCall, Person $agent, $recordingSid, $recordingUrl, $duration)
+    {
+        // this phone call can already have a ticket
+        // e.g. it's cold transfer redirected to voicemail (call was answered by Agent A and unsuccessful cold transfer to Agent B)
+        // check if ticket is already created for this phone call
+        $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+
+        if ($messageAttribute) {
+            // found active ticket
+            // then don't create a personal voicemail, just a attach as a new recording to existing message
+            $recording = new VoiceRecording();
+            $recording->setRecordingSid($recordingSid);
+            $recording->setDuration($duration);
+            $recording->setRecordingUrl($recordingUrl);
+
+            $phoneCall->addRecording($recording);
+
+            // add temp full recording
+            if (!$phoneCall->getFullRecording()) {
+                $fullRecording = new VoiceRecording();
+                $phoneCall->setFullRecording($fullRecording);
+            }
+
+            $this->em->flush();
+
+            $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+                'recording_sid' => $recordingSid,
+                'recording_id'  => $recording->getId(),
+            ]));
+        } else {
+            // there is no ticket
+            // create a personal voicemail
+            $recording = new VoiceMissedAgentCall();
+            $recording
+                ->setRecordingSid($recordingSid)
+                ->setPhoneCall($phoneCall)
+                ->setDuration($duration)
+                ->setRecordingUrl($recordingUrl)
+                ->setAgent($agent)
+            ;
+
+            $this->em->persist($recording);
+            $this->em->flush();
+
+            $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+                'recording_sid'          => $recordingSid,
+                'voicemail_recording_id' => $recording->getId(),
+            ]));
+        }
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param VoiceQueue     $queue
+     * @param string         $recordingSid
+     * @param string         $recordingUrl
+     * @param int            $duration
+     *
+     * @throws \Exception
+     */
+    private function voicemailForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, $recordingSid, $recordingUrl, $duration)
+    {
+        $recording = new VoiceRecording();
+        $recording->setRecordingSid($recordingSid);
+        $recording->setDuration($duration);
+        $recording->setRecordingUrl($recordingUrl);
+
+        $phoneCall->addRecording($recording);
+
+        // add temp full recording
+        if (!$phoneCall->getFullRecording()) {
+            $fullRecording = new VoiceRecording();
+            $phoneCall->setFullRecording($fullRecording);
+        }
+
+        $this->em->flush();
+
+        $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+            'recording_sid' => $recordingSid,
+            'recording_id'  => $recording->getId(),
+        ]));
+
+        // this phone call can already have a ticket
+        // e.g. it's cold transfer redirected to voicemail (call was answered by Agent A and unsuccessful cold transfer to Agent B)
+        // check if ticket is already created for this phone call
+        $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+
+        if ($messageAttribute) {
+            // found active ticket
+            // don't create a new message, just a attach as a new recording to existing message
+            return;
+        }
+
+        // create voicemail queue ticket
+        $ticketMessageCall = new TicketMessageVoicePhoneCall();
+        $ticketMessageCall->setPhoneCall($phoneCall);
+
+        $ticketMessage = new TicketMessage();
+        $ticketMessage->setPerson($phoneCall->getPerson());
+        $ticketMessage->addAttribute($ticketMessageCall);
+        $ticketMessage->setMessage('Voicemail from '.$phoneCall->getExternalNumber());
+        $ticketMessage->setAsAgentNote(true);
+
+        // try to get last ticket
+        $ticket = null;
+
+        // group missed call tickets is enabled
+        // try to get last ticket related to this number
+        if ($this->settingsResolver->isGroupMissedCallTickets()) {
+            $hours    = $this->settingsResolver->getGroupMissedCallTicketsTimeout();
+            $fromDate = new \DateTime("-{$hours} hours");
+
+            /** @var Ticket $lastTicket */
+            $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber(), $fromDate);
+            if ($lastTicket) {
+                $lastTicket->disableAutoTicketProcess();
+                $ticket = $lastTicket;
+            }
+        }
+
+        if (!$ticket) {
+            $ticket = new Ticket();
+            $ticket->disableAutoTicketProcess();
+            $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
+            $ticket->setPerson($phoneCall->getPerson());
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
+            $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
+            $ticket->setDepartment($queue->getDepartment());
+            $ticket->setBrand($queue->getBrand());
+
+            // set asset properties
+            if ($queue->getVoicemailAgent()) {
+                $ticket->setAgent($queue->getVoicemailAgent());
+            }
+            if ($queue->getVoicemailAgentTeam()) {
+                $ticket->setAgentTeam($queue->getVoicemailAgentTeam());
+            }
+            if ($queue->getVoicemailDepartment()) {
+                $ticket->setDepartment($queue->getVoicemailDepartment());
+            }
+        }
+
+        $ticket->addMessage($ticketMessage);
+
+        $changes = $ticket->getStateChangeRecorder();
+        if ($changes->isNewTicket()) {
+            $event = ExecutorContext::EVENT_NEW;
+        } else {
+            $event = ExecutorContext::EVENT_REPLY;
+        }
+
+        $person = $phoneCall->getPerson();
+        if ($person && $person->isAgent()) {
+            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
+        } else {
+            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
+        }
+
+        $this->ticketManager->saveTicket($ticket, $context);
     }
 }

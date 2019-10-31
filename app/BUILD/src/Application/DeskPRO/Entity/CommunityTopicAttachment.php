@@ -1,0 +1,196 @@
+<?php
+
+/**
+ * DeskPRO.
+ *
+ * @category Entities
+ */
+
+namespace Application\DeskPRO\Entity;
+
+use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * CommunityTopic attachments.
+ *
+ * @JMS\ExclusionPolicy("all")
+ */
+class CommunityTopicAttachment extends DomainObject
+{
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $id = null;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityTopic>")
+     *
+     * @var \Application\DeskPRO\Entity\CommunityTopic
+     */
+    protected $topic;
+
+    /**
+     * Who created the attachment.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $blob;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
+
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set person.
+     *
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * Set blob data.
+     *
+     * @param Blob $blob
+     *
+     * @return $this
+     */
+    public function setBlob(Blob $blob)
+    {
+        $this->setModelField('blob', $blob);
+
+        return $this;
+    }
+
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
+    /**
+     * @param CommunityTopic $topic
+     *
+     * @return $this
+     */
+    public function setTopic(CommunityTopic $topic)
+    {
+        $this->setModelField('topic', $topic);
+
+        return $this;
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CommunityTopicAttachment';
+        $metadata->setPrimaryTable(['name' => 'community_topic_attachments']);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_created',
+            'type'       => 'datetime',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'date_created',
+        ]);
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'topic',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\CommunityTopic',
+            'mappedBy'     => null,
+            'inversedBy'   => 'attachments',
+            'joinColumns'  => [
+                [
+                    'name'                 => 'topic_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'dpApi' => true,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'blob',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'dpApi' => true,
+        ]);
+    }
+}

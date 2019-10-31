@@ -57,7 +57,7 @@ class CommentsBlock extends React.Component {
       return null;
     }
 
-    const comments = this.props.comments.map(comment =>
+    const comments = this.props.comments.filter(comment => comment.status === 'visible').map(comment =>
       <Comment comment={comment} key={comment.id} />
     );
 

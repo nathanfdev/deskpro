@@ -82,8 +82,8 @@ services:
     tags:
       - { name: form.type, alias: comment }
 
-  form.new_feedback:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewFeedbackType
+  form.new_community_topic:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType
     arguments: ["@captcha_decider", "@language_manager", "@custom_field_manager", "@form_hierarchy_generator"]
     tags:
       - { name: form.type }
@@ -107,6 +107,12 @@ services:
   form.api.chat_transcription_info:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType
     arguments: ["@form.api.chat.set_person_listener"]
+    tags:
+      - { name: form.type }
+
+  form.direct_messages.new_thread:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DirectMessageNewThreadType
+    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
     tags:
       - { name: form.type }
 

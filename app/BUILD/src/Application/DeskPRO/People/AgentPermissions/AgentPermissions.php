@@ -19,6 +19,7 @@ use Application\DeskPRO\People\AgentPermissions\Value\SnippetsPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
 use Application\DeskPRO\People\PermissionsSetInterface;
+use Symfony\Component\DependencyInjection\Container;
 
 class AgentPermissions implements PermissionsSetInterface
 {
@@ -111,6 +112,35 @@ class AgentPermissions implements PermissionsSetInterface
             $this->problems,
             $this->snippet,
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getByName($name)
+    {
+        if (!$name) {
+            return false;
+        }
+
+        list($prop, $name) = explode('.', $name, 2);
+        if (!$prop || !$name) {
+            return false;
+        }
+
+        if (isset(self::$prefix_map[$prop])) {
+            $prop = self::$prefix_map[$prop];
+        } else {
+            if (!property_exists($this, $prop) || !$this->$prop instanceof PermissionValueInterface) {
+                return false;
+            }
+        }
+
+        $getter = 'get'.Container::camelize($name);
+
+        return method_exists($this->$prop, $getter)
+            ? $this->$prop->$getter()
+            : property_exists($this->$prop, $name) ? (bool) $this->$prop->$name : false;
     }
 
     /**

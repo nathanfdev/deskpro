@@ -4,8 +4,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -13,8 +13,13 @@ use Application\DeskPRO\Entity\ReportDashboardShareableLink;
 use Application\DeskPRO\Entity\ReportDashboardShareableShortUrl;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceRecording;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GoToController extends AbstractController
 {
@@ -45,15 +50,15 @@ class GoToController extends AbstractController
     public function ticketIdAction($id)
     {
         /** @var Ticket $ticket */
-        $ticket = $this->getDoctrine()->getRepository(Ticket::class)->find($id);
-        if (! $ticket instanceof Ticket) {
+        $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketId($id);
+        if (!$ticket instanceof Ticket) {
             $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($id);
-            if (! $ticket instanceof Ticket) {
+            if (!$ticket instanceof Ticket) {
                 throw $this->createNotFoundException();
             }
         }
 
-        return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$id);
+        return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$ticket->getId());
     }
 
     /**
@@ -65,8 +70,8 @@ class GoToController extends AbstractController
     {
         /** @var Ticket $ticket */
         $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($ref);
-        if (! $ticket instanceof Ticket) {
-            $this->createNotFoundException();
+        if (!$ticket instanceof Ticket) {
+            throw $this->createNotFoundException();
         }
 
         return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$ticket->getId());
@@ -92,7 +97,7 @@ class GoToController extends AbstractController
         /** @var Person $person */
         $person = $this->getDoctrine()->getRepository(Person::class)->findOneByEmail($emailAddress);
         if (!$person) {
-            $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
 
         return $this->redirect($this->getBasePath().'#app.people,people:*,p:'.$person->getId());
@@ -139,13 +144,13 @@ class GoToController extends AbstractController
     }
 
     /**
-     * @param Feedback $feedback
+     * @param CommunityTopic $topic
      *
      * @return RedirectResponse
      */
-    public function feedbackIdAction(Feedback $feedback)
+    public function communityTopicAction(CommunityTopic $topic)
     {
-        return $this->redirect($this->getBasePath().'#app.feedback,fb_content,i:'.$feedback->getId());
+        return $this->redirect($this->getBasePath().'#app.community,ct_content,i:'.$topic->getId());
     }
 
     /**
@@ -200,6 +205,63 @@ class GoToController extends AbstractController
         }
 
         return $this->redirect($this->getDashboardLinkUrl($shortUrl->getShareableLink()));
+    }
+
+    /**
+     * @param string         $authCode
+     * @param VoiceRecording $recording
+     *
+     * @return string
+     */
+    public function voiceRecordingAction($authCode, VoiceRecording $recording)
+    {
+        return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
+    }
+
+    /**
+     * @param string               $authCode
+     * @param VoiceMissedAgentCall $recording
+     *
+     * @return string
+     */
+    public function agentVoicemailRecordingAction($authCode, VoiceMissedAgentCall $recording)
+    {
+        return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
+    }
+
+    /**
+     * @param string                 $authCode
+     * @param AbstractVoiceRecording $recording
+     *
+     * @return RedirectResponse
+     */
+    private function redirectToVoiceRecordingBlobUrl($authCode, AbstractVoiceRecording $recording)
+    {
+        if (!$blob = $recording->getBlob()) {
+            throw $this->createNotFoundException();
+        }
+
+        // get phone call ticket
+        /** @var TicketMessageVoicePhoneCall $messageAttribute */
+        $messageAttribute = $this->getDoctrine()->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $recording->getPhoneCall(),
+        ]);
+
+        if (!$messageAttribute) {
+            throw $this->createNotFoundException();
+        }
+
+        $ticket = $messageAttribute->getMessage()->getTicket();
+        if ($ticket->getAuth() !== $authCode) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $blobUrl = $this->get('router')->generate('serve_blob', [
+            'blob_auth_id' => $blob->getAuthcode(),
+            'filename'     => $blob->getFilenameSafe(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->redirect($blobUrl);
     }
 
     /**

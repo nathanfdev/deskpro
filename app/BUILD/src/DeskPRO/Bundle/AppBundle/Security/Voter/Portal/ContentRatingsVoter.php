@@ -10,17 +10,17 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  */
 class ContentRatingsVoter extends AbstractVoter
 {
-    const RATE_ARTICLE  = 'RATE_ARTICLE';
-    const RATE_FEEDBACK = 'RATE_FEEDBACK';
-    const RATE_DOWNLOAD = 'RATE_DOWNLOAD';
-    const RATE_NEWS     = 'RATE_NEWS';
+    const RATE_ARTICLE   = 'RATE_ARTICLE';
+    const RATE_COMMUNITY = 'RATE_COMMUNITY';
+    const RATE_DOWNLOAD  = 'RATE_DOWNLOAD';
+    const RATE_NEWS      = 'RATE_NEWS';
 
     /**
      * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
-        $supported = [self::RATE_ARTICLE, self::RATE_FEEDBACK, self::RATE_DOWNLOAD, self::RATE_NEWS];
+        $supported = [self::RATE_ARTICLE, self::RATE_COMMUNITY, self::RATE_DOWNLOAD, self::RATE_NEWS];
 
         return in_array($attribute, $supported);
     }
@@ -43,8 +43,8 @@ class ContentRatingsVoter extends AbstractVoter
         switch ($attribute) {
             case static::RATE_ARTICLE:
                 return $permission_bag->get('articles.rate') && $permitted;
-            case static::RATE_FEEDBACK:
-                return $permission_bag->get('feedback.rate') && $permitted;
+            case static::RATE_COMMUNITY:
+                return $permission_bag->get('community.rate') && $permitted;
             case static::RATE_DOWNLOAD:
                 return $permission_bag->get('downloads.rate') && $permitted;
             case static::RATE_NEWS:

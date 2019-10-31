@@ -10,6 +10,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import * as EmailTemplates from '../../EmailTemplates/Components';
+import * as Portal from '../../Portal/Components';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import * as Apps from '../../Apps/Components/index';
@@ -71,7 +72,6 @@ class AppContainer extends React.Component {
                 <Route path="accounts" component={Voice.Accounts} />
                 <Route path="numbers" component={Voice.Numbers} />
                 <Route path="numbers/available" component={Voice.AvailableNumbers} />
-                <Route path="numbers/existing" component={Voice.ExistingNumbers} />
                 <Route path="numbers/new" component={Voice.NewNumber} />
                 <Route path="numbers/:numberId" component={Voice.EditNumber} />
                 <Route path="queues" component={Voice.Queues} />
@@ -108,6 +108,9 @@ class AppContainer extends React.Component {
             />
             <Route path="emails" key="email_routes">
               <Route path="templates_editor(/:name)" component={EmailTemplates.EmailTemplatesEditorContainer} {...props} />
+            </Route>
+            <Route path="portal/:brandId">
+              <Route path="templates_editor(/:name)" component={Portal.PortalEditorContainer} {...props} />
             </Route>
             <Route path="chat">
               <Route path="queues" component={UserChat.Queues} />

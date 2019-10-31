@@ -47,7 +47,7 @@
 					<button style="margin-bottom: 15px;" class="btn btn-primary"
 						type="button"
 						ng-click="ChannelSmsEdit.connect()" style="width: 25%">
-						<i class="fa fa-bolt"></i>
+						<i class="fas fa-bolt"></i>
 						{{  phrase('admin.general.connect') }}
 					</button>
 					<div dp-show-spinning="sms_connect_provider">
@@ -67,7 +67,7 @@
 				<small ng-show="form.account.is_tested">{{ ng_var('form.account.phone_number') }}</small>
 			</h2>
 			<button class="btn btn-default dropdown-toggle pull-right">
-				<span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i>
+				<span><i class="fas fa-cog"></i></span> <i class="fas fa-caret-down"></i>
 			</button>
 			<ul class="dropdown-menu pull-right">
 				<li>
@@ -78,7 +78,7 @@
 				</li>
 				<li>
 					<a ng-click="ChannelSmsEdit.clearCredentials()">
-						<i class="fa fa-key"></i>
+						<i class="fas fa-key"></i>
 						{{ phrase('admin.channels.configure_account') }}
 					</a>
 				</li>
@@ -118,7 +118,7 @@
 				<button style="margin-bottom: 15px;" class="btn btn-primary"
 					type="button"
 					ng-click="ChannelSmsEdit.setupAndTest()" style="width: 25%">
-					<i class="fa fa-bolt"></i>
+					<i class="fas fa-bolt"></i>
 					{{ phrase('admin.channels.configure_and_test_twilio_account') }}
 				</button>
 				<div dp-show-spinning="sms_test_provider">

@@ -45,11 +45,9 @@ agent.chat.online: Connecté
 agent.chat.open_chat: 'Chat ouvert'
 agent.chat.other_agents: 'Autres agents'
 agent.chat.show_offline: 'Montrer hors-ligne'
-agent.chat.snippets: Snippets
 agent.chat.take_chat: Chatter
 agent.chat.team_chats: 'Chats de l''équipe'
 agent.chat.title_active_chats: 'Tous les chats ouverts'
-agent.chat.title_chat_id: 'Chat {{chat_id}}'
 agent.chat.title_ended: 'Chats terminés'
 agent.chat.title_leave_chat_prompt: 'Quitter le chat?'
 agent.chat.title_new_chats: 'Nouveaux chats'
@@ -82,7 +80,7 @@ agent.chrome.chat_sign-in: 'Se connecter au Chat'
 agent.chrome.chat_sign-out: 'Se déconnecter du Chat'
 agent.chrome.create_new-article: 'Nouvel article'
 agent.chrome.create_new-download: 'Nouveau téléchargement'
-agent.chrome.create_new-feedback: 'Nouveau feedback'
+agent.chrome.create_new-community: 'Nouveau sujet'
 agent.chrome.create_new-news: 'Nouveau post'
 agent.chrome.create_new-organization: 'Nouvelle organisation'
 agent.chrome.create_new-person: 'Nouvelle personne'
@@ -222,7 +220,6 @@ agent.emails.ticket_action_assigned: ASSIGNÉ
 agent.emails.ticket_action_assigned_team: 'ÉQUIPE ASSIGNÉE'
 agent.emails.ticket_action_deleted: SUPPRIMÉ
 agent.emails.ticket_action_followed: SUIVI
-agent.emails.ticket_action_spam: SPAM
 agent.emails.ticket_action_status_agent: 'EN ATTENTE DE L''AGENT'
 agent.emails.ticket_action_status_resolved: RÉSOLU
 agent.emails.ticket_action_status_user: 'EN ATTENTE DE L''UTILISATEUR'
@@ -247,41 +244,38 @@ agent.emails.view_your_tasks: 'Voir vos tâches'
 agent.emails.view_your_teams_tasks: 'Voir les tâches de votre équipe'
 agent.emails.view_your_tweets: 'Voir vos tweets'
 agent.emails.your_initial_password: 'Votre mot de passe d''origine'
-agent.feedback.any_category: 'Toutes les catégories'
-agent.feedback.any_status: 'Tous les statuts'
-agent.feedback.count_votes: '{{display_count}} vote|{{display_count}} votes'
-agent.feedback.feedback_deleted: 'Ce feedback a été supprimé'
-agent.feedback.feedback_to_review: 'Feedback à évaluation'
-agent.feedback.least_voted_on_top: 'Les moins votés d''abord'
-agent.feedback.list_title:
+agent.community.any_channel: 'Toutes les catégories'
+agent.community.any_status: 'Tous les statuts'
+agent.community.community_topic_deleted: 'Ce sujet a été supprimé'
+agent.community.community_topics_to_review: 'Sujet à évaluation'
+agent.community.least_voted_on_top: 'Les moins votés d''abord'
+agent.community.list_title:
   one: '1 dépôt'
   other: '{{count}} dépôts'
-agent.feedback.merge_feedback: 'Fusionner le Feedback'
-agent.feedback.merge_feedback_note: 'La description du feedback fusionné sera ajoutée en commentaire au feedback maintenu.'
-agent.feedback.merge_feedback_submit: 'Fusionner ces deux feedbacks'
-agent.feedback.merge_howto: 'Ouvrir un autre onglet feedback pour fusionner'
-agent.feedback.new_feedback: 'Nouveau feedback:'
-agent.feedback.newest_on_top: 'Les plus récents d''abord'
-agent.feedback.no_feedback_cats_error: 'Aucun type défini. Avant de pouvoir ajouter des types à la section feedback, vous devez définir un type via l''interface administrateur.'
-agent.feedback.no_labels_explain: 'Vous n''avez pas encore mis de label sur les feedbacks. Voir un feedback pour y ajouter des labels.'
-agent.feedback.oldest_on_top: 'Les plus anciens d''abord'
-agent.feedback.popularity_least_most: 'Popularité (le moins-le plus)'
-agent.feedback.popularity_most_least: 'Popularité (le plus-le moins)'
-agent.feedback.showing_results: 'Montrer les résultats'
-agent.feedback.status_active: Actif
-agent.feedback.status_closed: Cloturé
-agent.feedback.status_deleted: Supprimé
-agent.feedback.status_hidden: Caché
-agent.feedback.status_new: Nouveau
-agent.feedback.status_spam: Spam
-agent.feedback.top_voted_on_top: 'Les mieux votés d''abord'
-agent.feedback.update_filter: 'Mettre à jour filtre'
-agent.feedback.user_submitted_new_feedback: '{{name}} a déposé un nouveau feedback'
-agent.feedback.vote_for_this_feedback: 'Voter pour ce feedback'
-agent.feedback.votes_least_most: 'Votes (moins-plus)'
-agent.feedback.votes_most_least: 'Votes (plus-moins)'
+agent.community.merge_community_topics: 'Fusionner le Sujet'
+agent.community.merge_community_topics_note: 'La description du sujet fusionné sera ajoutée en commentaire au feedback maintenu.'
+agent.community.merge_community_topics_submit: 'Fusionner ces deux sujets'
+agent.community.merge_howto: 'Ouvrir un autre onglet sujet pour fusionner'
+agent.community.new_community_topic: 'Nouveau community:'
+agent.community.newest_on_top: 'Les plus récents d''abord'
+agent.community.no_community_channels_error: 'Aucun type défini. Avant de pouvoir ajouter des types à la section sujet, vous devez définir un type via l''interface administrateur.'
+agent.community.no_labels_explain: 'Vous n''avez pas encore mis de label sur les sujets. Voir un feedback pour y ajouter des labels.'
+agent.community.oldest_on_top: 'Les plus anciens d''abord'
+agent.community.popularity_least_most: 'Popularité (le moins-le plus)'
+agent.community.popularity_most_least: 'Popularité (le plus-le moins)'
+agent.community.showing_results: 'Montrer les résultats'
+agent.community.status_active: Actif
+agent.community.status_closed: Cloturé
+agent.community.status_deleted: Supprimé
+agent.community.status_hidden: Caché
+agent.community.status_new: Nouveau
+agent.community.top_voted_on_top: 'Les mieux votés d''abord'
+agent.community.update_filter: 'Mettre à jour filtre'
+agent.community.user_submitted_new_community_topic: '{{name}} a déposé un nouveau sujet'
+agent.community.vote_for_this_community_topic: 'Voter pour ce sujet'
+agent.community.votes_least_most: 'Votes (moins-plus)'
+agent.community.votes_most_least: 'Votes (plus-moins)'
 agent.general.24x7: 24/7
-agent.general.actions: Actions
 agent.general.activity_stream: 'Fil d''activité'
 agent.general.add: Ajouter
 agent.general.add_a_label: 'Ajouter un label'
@@ -304,19 +298,15 @@ agent.general.address: Adresse
 agent.general.admin_interface: 'Interface administrateur'
 agent.general.advanced: Avancé
 agent.general.after: après
-agent.general.agent: Agent
 agent.general.agent_email_address: 'Adresse email de l''agent'
 agent.general.agent_interface: 'Interface de l''agent'
 agent.general.agent_is_not_me: 'Je ne suis pas l''agent'
 agent.general.agent_team: 'Equipe de l''agent'
 agent.general.agent_waiting_x: 'Agent en attente {{time}}'
-agent.general.agents: Agents
 agent.general.ago: 'il y a'
-agent.general.aim: AIM
 agent.general.alert: Alerte
 agent.general.all: Tous
 agent.general.all_words: 'Tous les mots'
-agent.general.altc: (alt+c)
 agent.general.always_notify_agents: 'Toujours notifier les agents'
 agent.general.always_set_this_urgency: 'Toujours définir ce niveau d''urgence'
 agent.general.and: et
@@ -333,8 +323,6 @@ agent.general.apply_sla: 'Appliquer le SLA'
 agent.general.apply_to_x_selections: 'Appliquer les actions aux sélections de {{placeholder}}'
 agent.general.approve: Approuver
 agent.general.archive: Archiver
-agent.general.article: Article
-agent.general.articles: Articles
 agent.general.ask_delete_selected: 'Êtes-vous sûr de vouloir supprimer les éléments sélectionnés?'
 agent.general.assign: Assigner
 agent.general.assign_agent: 'Assigner un agent'
@@ -396,9 +384,7 @@ agent.general.changed_to_include: 'Modifié pour inclure'
 agent.general.changed_to_lte: 'Modifié de <='
 agent.general.changed_to_remove: 'Modifié pour retirer'
 agent.general.changelog: 'Journal des modifications'
-agent.general.chat: Chat
 agent.general.chat_ended: 'Chat terminé'
-agent.general.chats: Chats
 agent.general.choose_a_person: 'Sélectionner une personne'
 agent.general.choose_a_type: 'Sélectionner un type'
 agent.general.choose_criteria: 'Sélectionner un critère...'
@@ -428,9 +414,6 @@ agent.general.count_chat:
 agent.general.count_tickets:
   one: '1 ticket'
   other: '{{count}} tickets'
-agent.general.count_votecount_votes:
-  one: '1 vote'
-  other: '{{count}} votes'
 agent.general.countries: Pays
 agent.general.create: Créer
 agent.general.create_a_new_organization: 'Créer une nouvelle organisation'
@@ -438,7 +421,7 @@ agent.general.create_a_new_person: 'Créer une nouvelle personne'
 agent.general.create_article: 'Créer un article'
 agent.general.create_content: 'Créer du contenu'
 agent.general.create_download: 'Créer un téléchargement'
-agent.general.create_feedback: 'Donner un feedback'
+agent.general.create_community_topic: 'Donner un sujet'
 agent.general.create_news: 'Créer une nouvelle actualité'
 agent.general.create_status: 'Créer un statut'
 agent.general.create_ticket: 'Créer un ticket'
@@ -446,12 +429,10 @@ agent.general.created: Créé
 agent.general.created_and_published: 'Créé et publié'
 agent.general.created_timeago_by_x_on_y: 'Créé {{timeago}} par {{name}} le {{date}}'
 agent.general.criteria: Critère
-agent.general.crm: CRM
 agent.general.current_agent: 'Agent actuel'
 agent.general.current_computer_tz: 'L''heure actuelle selon votre ordinateur'
 agent.general.current_page: 'Page actuelle'
 agent.general.current_profile_tz: 'L''heure actuelle selon votre profil'
-agent.general.date: Date
 agent.general.date_archived: 'Date d''archivage'
 agent.general.date_completed: 'Date de résolution'
 agent.general.date_created: 'Date de création'
@@ -481,7 +462,6 @@ agent.general.deleted_by: 'Supprimé par {{name}}'
 agent.general.deleted_reason: 'Raison de la suppression'
 agent.general.department: Département
 agent.general.departments: Départements
-agent.general.description: Description
 agent.general.deskpro: DeskPRO
 agent.general.detail: Détail
 agent.general.details: Détails
@@ -515,7 +495,6 @@ agent.general.edit_categories: 'Editer les catégories'
 agent.general.edit_comment: 'Editer le commentaire'
 agent.general.edit_properties: 'Editer les propriétés'
 agent.general.edit_search_terms: 'Editer les termes de recherche'
-agent.general.email: Email
 agent.general.email_account: 'Compte email'
 agent.general.email_address: 'Adresse email'
 agent.general.email_agent_new_agent_reply: 'Email: notification agent d''une nouvelle réponse par un agent'
@@ -547,11 +526,10 @@ agent.general.error_password_short: 'Veuillez taper un mot de passe d''au moins 
 agent.general.error_your_name: 'Veuillez taper votre nom complet'
 agent.general.everyone: Tous
 agent.general.existing_picture: 'Image existante'
-agent.general.facebook: Facebook
 agent.general.failed: échoué
 agent.general.failure: Echec
 agent.general.favorite: Favori
-agent.general.feedback: Remarque
+agent.general.community: Remarque
 agent.general.field_name: 'Champ : {{field}}'
 agent.general.field_name_title: 'Nom du champs'
 agent.general.field_type_choice: 'Choix prédéfinis'
@@ -583,7 +561,6 @@ agent.general.find_person_with_criteria: 'Trouver une personne en sélectionnant
 agent.general.flag: Drapeau
 agent.general.flag_blue: Bleu
 agent.general.flag_green: Vert
-agent.general.flag_orange: Orange
 agent.general.flag_pink: Rose
 agent.general.flag_purple: Violet
 agent.general.flag_red: Rouge
@@ -604,7 +581,6 @@ agent.general.generate_password: 'Définir un mot de passe'
 agent.general.greater_than: 'plus grand que'
 agent.general.group_by: 'Grouper par'
 agent.general.grouped_by: 'Groupé par'
-agent.general.gtalk: GTalk
 agent.general.height: Hauteur
 agent.general.help: Aide
 agent.general.hidden: Caché
@@ -619,8 +595,6 @@ agent.general.host: Hôte
 agent.general.hostname: 'Nom d''hôte'
 agent.general.hour: Heure
 agent.general.hours: heures
-agent.general.icq: ICQ
-agent.general.id: ID
 agent.general.inbox: 'Boîte de réception'
 agent.general.include: inclure
 agent.general.includes_label: 'inclut le label'
@@ -638,7 +612,6 @@ agent.general.inserts_file_link: 'Ceci va insérer un lien au fichier avec le la
 agent.general.inserts_full_image: 'Ceci va insérer l''image en taille réelle.'
 agent.general.inserts_plaintext_url: 'Ceci va insérer une URL en texte libre dans le fichier.'
 agent.general.inserts_thumbnail_with_link: 'Cela va insérer une vignette liée à l''image au format original.'
-agent.general.internet_explorer: 'Internet Explorer'
 agent.general.ip_address: 'Adresse IP'
 agent.general.ip_addresses: 'Adresses IP'
 agent.general.is: est
@@ -655,14 +628,11 @@ agent.general.is_published: 'Est publié'
 agent.general.is_set: 'Est défini'
 agent.general.is_x: 'est {{field}}'
 agent.general.just_me: Moi
-agent.general.kb: KB
 agent.general.knowledgebase: 'Base de connaissances'
-agent.general.label: Label
 agent.general.label_picture: Image
 agent.general.label_revisions: Révisions
 agent.general.labels: Étiquettes
 agent.general.labels_added: 'Labels ajoutés'
-agent.general.labels_cloud: Cloud
 agent.general.labels_list: Liste
 agent.general.labels_removed: 'Labels supprimés'
 agent.general.landing_page: 'Page de renvoi'
@@ -676,7 +646,6 @@ agent.general.license_interface: 'Interface de license'
 agent.general.link: Lien
 agent.general.linked_chat: 'Chat lié'
 agent.general.linked_thumbnail: 'Vignette liée'
-agent.general.linkedin: LinkedIn
 agent.general.linkedin_url: 'URL liée'
 agent.general.list_as_article_attachment: 'Lister comme pièce jointe à un article'
 agent.general.loading: 'En cours de chargement'
@@ -690,31 +659,23 @@ agent.general.lost: Perdu
 agent.general.lost_field: '{{field}} perdu'
 agent.general.lost_password: 'Mot de passe perdu'
 agent.general.lost_qm: 'perdu?'
-agent.general.macros: Macros
 agent.general.manage_macros: 'Gérer les macros'
 agent.general.mark_spam: 'Signaler comme spam'
 agent.general.matches: Concorde
 agent.general.matches_regex: 'concorde avec l''expression régulière'
 agent.general.me: Moi
 agent.general.members: Membres
-agent.general.mentions: Mentions
 agent.general.merge: Fusionner
 agent.general.merge_keep_this: 'Garder celui-ci'
 agent.general.merge_merge_this: 'Fusionner celui-ci'
 agent.general.merge_switch_btn: Changer
-agent.general.message: Message
 agent.general.message_history: 'Historique du message'
-agent.general.messages: Messages
-agent.general.minute: Minute
-agent.general.minutes: minutes
 agent.general.misc: Divers
-agent.general.mobile: Mobile
 agent.general.months: mois
 agent.general.more: Plus
 agent.general.move_to_tab: 'Aller à l''onglet'
 agent.general.msg_agent_timeout: 'Agent déconnecté'
 agent.general.msg_user_timeout: 'Utilisateur déconnecté'
-agent.general.msn: MSN
 agent.general.my_account: 'Mon compte'
 agent.general.my_team: 'Mon équipe'
 agent.general.na: ND
@@ -727,7 +688,7 @@ agent.general.new: Nouveau
 agent.general.new_article: 'Nouvel article'
 agent.general.new_comment: 'Nouveau commentaire'
 agent.general.new_download: 'Nouveau téléchargement'
-agent.general.new_feedback: 'Nouveau feedback'
+agent.general.new_community: 'Nouveau sujet'
 agent.general.new_filter: 'Nouveau filtre'
 agent.general.new_note: 'Nouvelle note'
 agent.general.new_organization: 'Nouvelle organisation'
@@ -753,10 +714,7 @@ agent.general.not_changed_to: 'Pas de modification vers'
 agent.general.not_changed_to_gte: 'Pas de modification vers >='
 agent.general.not_matches_regex: 'ne concorde pas à l''expression régulière'
 agent.general.not_new_user_summary: 'n''est pas un nouvel utilisateur'
-agent.general.note: Note
-agent.general.note_attn: Note
 agent.general.note_by: 'Note par {{name}}'
-agent.general.notes: Notes
 agent.general.notice_only_when_urgency_lower: 'Défini uniquement quand le niveau d''urgence est plus bas'
 agent.general.num_downloads: 'Nombre de téléchargements'
 agent.general.num_ratings: 'Nombre d''évaluations'
@@ -785,25 +743,21 @@ agent.general.originated_interface: 'En provenance de l''interface'
 agent.general.other: Autre
 agent.general.other_properties: 'Autres propriétés'
 agent.general.owner: Propriétaire
-agent.general.page: Page
 agent.general.page_x_of_y: 'Page {{page}} sur {{num_pages}}'
-agent.general.parent: Parent
 agent.general.parent_category: 'Catégorie parent'
 agent.general.password: 'mot de passe'
-agent.general.pause: Pause
 agent.general.pending: 'En attente'
 agent.general.people: Utilisateurs
 agent.general.percent_helpful_subphrase: '{{percent}}% utile ({{subphrase}})'
 agent.general.perform_actions: 'Lancer les actions'
 agent.general.performing_updates: 'Le système de suivi des demandes est en cours de mise à jour.'
-agent.general.permissions: Permissions
 agent.general.person: Utilisateur
 agent.general.person_id: 'ID utlisateur'
 agent.general.phone: Téléphone
 agent.general.phone_number: 'Numéro de téléphone'
 agent.general.phrase: expression
 agent.general.please_wait: 'Veuillez patienter'
-agent.general.popular_feedback_only: 'Feedback populaire seulement'
+agent.general.popular_community_topics_only: 'Sujets populaire seulement'
 agent.general.popularity: Popularité
 agent.general.position: Fonction
 agent.general.prev: Préc.
@@ -815,7 +769,6 @@ agent.general.product: Produit
 agent.general.products: Produits
 agent.general.profile: Profil
 agent.general.properties: Propriétés
-agent.general.public: Public
 agent.general.publish: Publier
 agent.general.quote: Citer
 agent.general.rating: Évaluation
@@ -844,7 +797,7 @@ agent.general.registered_views: 'Modes enregistrés'
 agent.general.related_articles: 'Articles liés'
 agent.general.related_content: 'Contenu lié'
 agent.general.related_downloads: 'Téléchargements liés'
-agent.general.related_feedback: 'Feedback lié'
+agent.general.related_community_topic: 'Sujets lié'
 agent.general.related_news: 'Actualités liées'
 agent.general.relative_time: 'Temps relatif'
 agent.general.remove: Retirer
@@ -901,12 +854,9 @@ agent.general.show: Montrer
 agent.general.showing: Montre
 agent.general.showing_results_x_of_y: 'Résultats {{display_count}} sur {{size}}'
 agent.general.since_time: 'depuis {{time}}'
-agent.general.skype: Skype
-agent.general.sla: SLA
 agent.general.sla_status: 'Statut du SLA'
 agent.general.slas: SLA
 agent.general.snippet_text_placeholder: 'Snippet de texte'
-agent.general.snippets: Snippets
 agent.general.snippets_description: 'Ouvrir les snippets'
 agent.general.sort_asc: croissant
 agent.general.sort_asc_highlow: 'Du plus bas au plus élevé'
@@ -914,7 +864,6 @@ agent.general.sort_by: 'Rangé par'
 agent.general.sort_desc: décroissant
 agent.general.sort_desc_highlow: 'Du plus élevé au plus bas'
 agent.general.source_code: 'Code source'
-agent.general.spam: Spam
 agent.general.start: Commencer
 agent.general.status: Statut
 agent.general.status_is: 'Le statut est {{status}}'
@@ -922,7 +871,6 @@ agent.general.statuses: Statuts
 agent.general.stop_processing_other_triggers: 'Arrêter les autres automatismes'
 agent.general.subject: Sujet
 agent.general.summary: Résumé
-agent.general.supportdeskprocom: support@deskpro.com
 agent.general.system_user: Système
 agent.general.tabs_close_all: 'Fermer tous les onglets'
 agent.general.tabs_close_current: 'Fermer cet onglet'
@@ -934,13 +882,11 @@ agent.general.teams: Equipes
 agent.general.template: Modèle
 agent.general.text: Texte
 agent.general.there_are_no_results: 'Il n''y a aucun résultat'
-agent.general.ticket: Ticket
 agent.general.ticket_escalations: 'Escalations du ticket'
 agent.general.ticket_id: 'ID du ticket'
 agent.general.ticket_ref: 'Réf ticket'
 agent.general.ticket_starter: Demandeur
 agent.general.ticket_triggers: 'Automatismes du ticket'
-agent.general.tickets: Tickets
 agent.general.time_created: 'Heure de création'
 agent.general.time_created_summary: 'Heure de création {{op}} {{hour}}:{{minute}}:00'
 agent.general.time_of_last_user_reply: 'Dernière réponse de l''utilisateur'
@@ -954,7 +900,6 @@ agent.general.timezone: 'Fuseau horaire'
 agent.general.title: Titre
 agent.general.to: A
 agent.general.to_address: 'A l''adresse'
-agent.general.total: Total
 agent.general.total_time_waiting: 'Tous les temps d''attente'
 agent.general.total_user_waiting_x: 'Temps d''attente total de l''utilisateur est de {{time}}'
 agent.general.translate_from_x_to_y: 'Traduire {{x}} par {{y}}'
@@ -966,10 +911,7 @@ agent.general.triggers_auto_close_resolve_agent_reply: 'Résoudre automatiquemen
 agent.general.triggers_auto_close_resolve_user_reply: 'Résoudre automatiquement les tickets en attente de l''Utilisateur'
 agent.general.triggers_auto_close_warn_user: 'Prévenir l''utilisateur que ses tickets vont être résolus automatiquement?'
 agent.general.triggers_urgency_base: 'Niveau d''urgence par défaut des nouveaux tickets'
-agent.general.twitter: Twitter
 agent.general.twitter_username: 'Identifiant Twitter'
-agent.general.type: Type
-agent.general.types: Types
 agent.general.tz_wrong_explain: 'Le fuseau horaire sauvegardé dans votre profil diffère de celui sauvegardé par votre ordinateur.'
 agent.general.ucfirst_edit: Editer
 agent.general.unassign: 'Ne plus assigner'
@@ -992,7 +934,6 @@ agent.general.upload_explain: 'Cliquer sur le bouton Télécharger ou glisser un
 agent.general.upload_vcard_for: 'Télécharger la vCard de {{name}}'
 agent.general.urgency: 'Niveau d''urgence'
 agent.general.urgency_enter_negative_number: '(Entrer un nombre négatif pour baisser le niveau d''urgence)'
-agent.general.url: URL
 agent.general.user: Utilisateur
 agent.general.user_agent: 'Agent de l''utilisateur'
 agent.general.user_agents: 'Agents de l''utilisateur'
@@ -1012,7 +953,6 @@ agent.general.validate: Valider
 agent.general.validate_comment: 'Valider le commentaire'
 agent.general.value: Valeur
 agent.general.verified: Vérifié
-agent.general.via: Via
 agent.general.view: Affichage
 agent.general.view_all_x_chats:
   one: 'Afficher 1 chat'
@@ -1024,18 +964,14 @@ agent.general.view_in_user_interface: 'Afficher dans l''interface utilisateur'
 agent.general.view_more: 'Afficher plus'
 agent.general.view_profile: 'afficher le profil'
 agent.general.visitor_id: 'ID du visiteur'
-agent.general.votes: Votes
 agent.general.warning: Avertissement
 agent.general.web_interface: 'Interface web'
 agent.general.website_embed: 'Intégration à un site web'
 agent.general.website_widget: 'Widget du site Web'
 agent.general.weeks: semaines
 agent.general.when: Quand
-agent.general.widget_add: +
 agent.general.width: Largeur
 agent.general.window_navigation: 'Navigation dans la fenêtre'
-agent.general.workflow: Workflow
-agent.general.workflows: Workflows
 agent.general.working_hours: 'Heures de travail'
 agent.general.x_after_y: '{{field}} après {{value}}'
 agent.general.x_before_y: '{{field}} avant {{value}}'
@@ -1054,11 +990,9 @@ agent.general.x_up_votes:
   one: '1 vote Pour'
   other: '{{count}} votes Pour'
 agent.general.years: années
-agent.general.yim: YIM
 agent.general.your_email_address: 'Votre adresse email'
 agent.general.your_teams: 'Vos équipes'
 agent.interface.app-billing: Facturation
-agent.interface.app-twitter: Twitter
 agent.interface.assign_to_self: 'Me l''assigner'
 agent.interface.chat-notification-vol: 'Volume de notification de Chat'
 agent.interface.click_icon_to_add_filter: 'Cliquer {{link}} pour créer un nouveau filtre'
@@ -1067,7 +1001,6 @@ agent.interface.close_current_tab: 'Fermer l''onglet actif'
 agent.interface.create_ticket_person: 'Créer un ticket pour l''utilisateur'
 agent.interface.creation: Création
 agent.interface.deskpro_agent_interface: 'Interface Agent de DeskPRO'
-agent.interface.deskpro_website_host: www.deskpro.com
 agent.interface.error_report_disclaimer: 'Nous ne répondons pas à tous les rapports d''erreur. Si vous avez une question ou si vous souhaitez obtenir une réponse au sujet de cette erreur, contactez-nous à {{email}}'
 agent.interface.error_report_submitting: 'Envoi du rapport d''erreur'
 agent.interface.error_report_thank_you: 'Nous vous remercions pour l''envoi de ce rapport d''erreur'
@@ -1079,27 +1012,14 @@ agent.interface.kbd_change_status_resolved: 'Mettre le statut : Résolu'
 agent.interface.kbd_change_status_user: 'Mettre le statut : En attente de l''Utilisateur'
 agent.interface.kbd_ctrl_left: ctrl+gauche
 agent.interface.kbd_ctrl_right: ctrl+droit
-agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
 agent.interface.kbd_ctrl_shift_left: ctrl+shift+gauche
 agent.interface.kbd_ctrl_shift_right: ctrl+shift+droite
 agent.interface.kbd_enter: entrer
-agent.interface.kbd_new_article: a
-agent.interface.kbd_new_download: d
-agent.interface.kbd_new_feedback: i
-agent.interface.kbd_new_news: 'n'
-agent.interface.kbd_new_organisation: o
-agent.interface.kbd_new_person: p
-agent.interface.kbd_new_task: k
-agent.interface.kbd_new_ticket: t
 agent.interface.kbd_open_org_profile: 'Ouvrir le profil de l''Organisation'
 agent.interface.kbd_open_send_options: 'Ouvrir les options d''action d''envoi'
 agent.interface.kbd_open_snippets: 'Ouvrir les snippets'
 agent.interface.kbd_open_user_profile: 'Ouvrir le profil utilisateur'
 agent.interface.kbd_send_reply: Répondre
-agent.interface.kbd_shift_a: shift+a
-agent.interface.kbd_shift_c: shift+c
-agent.interface.kbd_shift_r: shift+r
-agent.interface.kbd_shift_t: shift+t
 agent.interface.kbd_space: espace
 agent.interface.kbd_up_or_down: 'en haut ou en bas'
 agent.interface.key_close_tab: 'Fermer l''onglet'
@@ -1107,10 +1027,10 @@ agent.interface.key_left_tab: 'Sélectionner l''onglet de gauche'
 agent.interface.key_right_tab: 'Sélectionner l''onglet de droite'
 agent.interface.keyboard: Clavier
 agent.interface.keyboard_shortcuts: 'Raccourcis clavier'
-agent.interface.major_items_appear_here: 'Les tickets, utilisateurs, organisations, articles, actualités, téléchargements et feedback s''ouvrent ici.'
+agent.interface.major_items_appear_here: 'Les tickets, utilisateurs, organisations, articles, actualités, téléchargements et sujets s''ouvrent ici.'
 agent.interface.open_new_article_form: 'Ouvrir un formulaire pour un nouvel article'
 agent.interface.open_new_download_form: 'Ouvrir un formulaire pour un nouveau téléchargement'
-agent.interface.open_new_feedback_form: 'Ouvrir un formulaire pour un nouveau feedback'
+agent.interface.open_new_community_topic_form: 'Ouvrir un formulaire pour un nouveau sujet'
 agent.interface.open_new_news_form: 'Ouvrir un formulaire pour une nouvelle actualité'
 agent.interface.open_new_organization_form: 'Ouvrir un formulaire pour une nouvelle organisation'
 agent.interface.open_new_person_form: 'Ouvrir un nouveau formulaire utilisateur'
@@ -1132,14 +1052,12 @@ agent.interface.viewbtn-table: 'Affichage Tableau'
 agent.login.account_locked_message: 'Suite à nombre élevé d''échecs de connexion, votre compte a été verrouillé pour des raisons de sécurité. Vous ne pourrez pas vous connecter à nouveau avant {{timeago}}'
 agent.login.alert_fields_must_match: 'Les deux mots de passe ne concordent pas'
 agent.login.alert_too_short: 'Entrez un mot de passe d''au moins 4 caractères'
-agent.login.apple_safari: 'Apple Safari'
 agent.login.back_to_login: 'Retour au formulaire de connexion'
 agent.login.browser_requirements: 'Configuration minimale du navigateur'
 agent.login.email_instructions: 'Envoyer les instructions par email'
 agent.login.enter_new_password: 'Entrer un nouveau mot de passe'
 agent.login.enter_password: 'Entrer votre mot de passe'
 agent.login.forgot_password: 'Mot de passe oublié?'
-agent.login.google_chrome: 'Google Chrome'
 agent.login.has_logged_out: 'Vous avez été déconnecté avec succès'
 agent.login.ie_compat_mode_explain: 'Certaines versions de IE comportent une fonctionnalité appelée Mode compatibilité qui permet aux sites web anciens de fonctionner avec les technologies des navigateurs les plus récents. Il arrive que cette fonctionnalité soit activée par défaut. Si vous utilisez IE8 ou IE9 et que vous voyez la page de configuration minimale du navigateur, il se peut que le Mode compatibilité soit activé. Pour utiliser DeskPRO, vous devez désactiver cette fonctionnalité:'
 agent.login.ie_compat_mode_step1: 'Si le menu Outils ne s''affiche pas, cliquer sur la touche ALT de votre clavier pour faire apparaître le menu principal'
@@ -1149,9 +1067,7 @@ agent.login.ie_compat_mode_step4: 'Fermer cette fenêtre et actualiser la page'
 agent.login.ie_compat_mode_title: 'Vous utilisez IE8 ou une version plus récente? <a href="{{url}}">Assurez-vous que le Mode Compatibilité n''est pas activé</a>'
 agent.login.ie_use_chrome_frame: 'Sinon, vous pouvez installer <a href="http://www.google.com/chromeframe">Google Chrome Frame</a>'
 agent.login.login_failed: 'Login invalide. Essayer à nouveau.'
-agent.login.mozilla_firefox: 'Mozilla Firefox'
 agent.login.notice_outdated_browser: 'Les interface admin et agent nécessitent un navigateur récent. Nous avons remarqué que votre navigateur est trop vieux pour utiliser DeskPRO. Installer la dernière version de votre navigateur ou un autre navigateur.'
-agent.login.opera: Opera
 agent.login.password_was_reset: 'Votre mot de passe a été réinitialisé avec succès.'
 agent.login.remember_me: 'Se souvenir de moi'
 agent.login.reset-password-info: 'Entrer votre adresse mail pour recevoir les instructions de réinitialisation de votre mot de passe :'
@@ -1177,7 +1093,6 @@ agent.media.no_files_selected: 'Vous n''avez sélectionné aucun fichier à join
 agent.media.previously_uploaded: 'Téléchargé précédemment'
 agent.media.recent_uploads: 'Téléchargements récents'
 agent.media.scale: Echelle
-agent.media.ticket: ticket
 agent.media.upload_file: 'Télécharger un fichier'
 agent.organizations.add_person: 'Ajouter une personne à cette organisation'
 agent.organizations.browse_all_members: 'Faire défiler tous les membres'
@@ -1274,7 +1189,6 @@ agent.people.reg_website: 'Utilisateur enregistré comme utilisateur du site web
 agent.people.remove_picture: 'Retirer la photo'
 agent.people.since: Depuis
 agent.people.title_dr: Dr
-agent.people.title_hon: Hon.
 agent.people.title_miss: Mlle
 agent.people.title_mr: M.
 agent.people.title_mrs: Mme
@@ -1304,7 +1218,6 @@ agent.problems.close_problem: 'Fermer le problème'
 agent.problems.close_problem_prompt: 'Voulez-vous fermer le problème ?'
 agent.problems.closed_problems: 'Problèmes fermés'
 agent.problems.create_problem: 'Créer un problème'
-agent.problems.incidents: Incidents
 agent.problems.no_problems_boss: 'Il n''y a pas de problème ouvert'
 agent.problems.open_problems: 'Problèmes ouverts'
 agent.problems.problem: Problème
@@ -1387,7 +1300,7 @@ agent.publish.move_to: 'Aller à'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} ont trouvé ce téléchargement utile, {{down_votes}} ont trouvé ce téléchargement inutile'
 agent.publish.new_comment_on: 'Nouveau commentaire sur {{name}}'
 agent.publish.new_comment_submitted_by: 'Un nouveau commentaire a été soumis par {{name}}'
-agent.publish.new_feedback_by: 'Nouveau feedback par {{name}}'
+agent.publish.new_community_topic_by: 'Nouveau sujet par {{name}}'
 agent.publish.new_post: 'Nouveau post'
 agent.publish.news_comments: 'Commentaires d''une actualité'
 agent.publish.news_list_title:
@@ -1422,7 +1335,6 @@ agent.publish.slug_edit_prompt: 'Entrer le nouveau fragment d''URL (lettres, chi
 agent.publish.status_archived: Archivé
 agent.publish.status_hidden_deleted: Supprimé
 agent.publish.status_hidden_draft: Brouillon
-agent.publish.status_hidden_spam: Spam
 agent.publish.status_hidden_unpublished: 'Non publié'
 agent.publish.status_hidden_user_validating: 'Validation de l''utilisateur'
 agent.publish.status_hidden_validating: 'En cours de validation'
@@ -1449,8 +1361,6 @@ agent.publish.word_title: Mot
 agent.publish.words: Mots
 agent.report.agent_activity: 'Activité agent'
 agent.report.agent_hours: 'Heures agent'
-agent.report.clone: Clone
-agent.report.clone_bracket: '[Clone]'
 agent.report.current: Actuel
 agent.report.data_range: 'Série de données'
 agent.report.overview: Aperçu
@@ -1467,15 +1377,11 @@ agent.search.no_results_found: 'Pas de résultats trouvés'
 agent.search.number_of_tickets: 'Nombre de tickets'
 agent.search.person_id: 'ID personne'
 agent.search.select: Sélectionner
-agent.search.simple: Simple
-agent.search.type_article: Article
-agent.search.type_chat_conversation: Chats
 agent.search.type_download: Télécharger
-agent.search.type_feedback: Remarques
+agent.search.type_community: Remarques
 agent.search.type_news: Actualités
 agent.search.type_organization: Organisations
 agent.search.type_person: Utilisateurs
-agent.search.type_ticket: Tickets
 agent.search.view_all_results: 'Voir tous les résultats'
 agent.settings.add_additional_emails: 'Ajouter des emails supplémentaires'
 agent.settings.add_another_email: 'Ajouter un autre email'
@@ -1528,8 +1434,8 @@ agent.settings.notif_my_events: 'Mes évènements'
 agent.settings.notif_my_own_actions: 'Mes actions'
 agent.settings.notif_new_comment: 'Un nouveau commentaire a été soumis'
 agent.settings.notif_new_comment_validate: 'Un nouveau commentaire a été soumis et requiert une validation'
-agent.settings.notif_new_feedback: 'Nouveau feedback soumis'
-agent.settings.notif_new_feedback_validate: 'Nouveau feedback soumis à valider'
+agent.settings.notif_new_community_topic: 'Nouveau sujet soumis'
+agent.settings.notif_new_community_topic_validate: 'Nouveau sujet soumis à valider'
 agent.settings.notif_new_user: 'Un nouvel utilisateur enregistré'
 agent.settings.notif_notes_with_mentions: 'Notes avec @mentions'
 agent.settings.notif_notes_with_mentions_always: 'Toujours envoyer un email et un message via le chat Agent'
@@ -1555,7 +1461,6 @@ agent.settings.notif_type_user: 'Message d''un utilisateur'
 agent.settings.override_name: 'Nom d''usage'
 agent.settings.override_name_explain: 'Si renseigné, ce nom sera visible par les utilisateurs à la place de votre vrai nom.'
 agent.settings.reset_api_token: 'Réinitialiser le token de votre API. Vous devrez vous reconnecter à toutes les applications externes.'
-agent.settings.signature: Signature
 agent.settings.sla_filter_all: 'Montrer tous les tickets correspondants'
 agent.settings.sla_filter_assigned: 'Ne montrer que les tickets qui me sont assignés'
 agent.settings.sla_filter_results: 'Filtrer les résultats du SLA'
@@ -1566,7 +1471,6 @@ agent.settings.ticket_signature_desc: 'Cette signature sera automatiquement ajou
 agent.settings.ticket_signature_note: 'Note : si vous modifiez votre signature, tous vos brouillons de réponses seront effacés.'
 agent.settings.tickets_autoload_next: 'Charger automatiquement le prochain ticket dans la liste après avoir répondu (seulement si l''onglet du ticket est fermé)'
 agent.settings.tickets_reverse_order: 'Montrer d''abord les messages les plus récents avec la boîte de réponse en haut'
-agent.settings.title_other_notifs: Notifications
 agent.settings.title_ticket_notifs: 'Notifications de ticket'
 agent.settings.twitter_signature: 'Signature Twitter'
 agent.settings.twitter_signature_desc: 'Tous vos tweets seront signés avec cette signature. Soyez bref.'
@@ -1634,7 +1538,6 @@ agent.tickets.always_notify_people: 'Toujours notifier {{parts}}'
 agent.tickets.and_count_were_cced: '(et {{display_count}} était en copie)|(et {{display_count}} étaient en copie)'
 agent.tickets.announce_this_ticket_in_campfire: 'Annoncer ce ticket dans l''appli Campfire'
 agent.tickets.any_of_my_teams: 'Toutes mes équipes'
-agent.tickets.api: API
 agent.tickets.applied: appliqué
 agent.tickets.apply_a_macro: 'Appliquer une macro'
 agent.tickets.assign_current_action: 'Assigner un agent parmi ceux actuellement connectés'
@@ -1656,7 +1559,6 @@ agent.tickets.billing_delete_confirm: 'Etes-vous sûr de vouloir supprimer ce co
 agent.tickets.billing_time: Temps
 agent.tickets.billing_timelog: Historique
 agent.tickets.call_webhook_action: 'Appeler web hook {{hook}}'
-agent.tickets.cc: CC
 agent.tickets.change_status: 'Changer statut de {{old}} à {{new}}'
 agent.tickets.change_status_to: 'Changer statut à'
 agent.tickets.change_user: 'Changer l''utilisateur'
@@ -1671,9 +1573,6 @@ agent.tickets.close_tab_after_reply: 'Fermer cet onglet ticket après réponse'
 agent.tickets.close_tab_tip: 'Fermer cet onglet après la sauvegarde de votre message'
 agent.tickets.coment_after_ticket_created: 'Commentaire après la création du ticket'
 agent.tickets.commented_on: Commenté
-agent.tickets.count_agents:
-  one: '1 agent'
-  other: '{{count}} agents'
 agent.tickets.count_charges:
   one: '1 coût'
   other: '{{count}} coûts'
@@ -1749,7 +1648,6 @@ agent.tickets.from_email: '(soumis par email depuis {{address}})'
 agent.tickets.from_web: '(soumis via l''interface web depuis l''IP {{address}})'
 agent.tickets.full_email_source: 'Source complète email'
 agent.tickets.full_log: 'Log complet'
-agent.tickets.gateway_source_id: 'Gateway Source ID'
 agent.tickets.group_by: 'Grouper par'
 agent.tickets.grouped_results_empty: 'Les résultats groupés apparaitront quand il y aura des tickets correspondants à ce filtre'
 agent.tickets.helpful: utile
@@ -1757,10 +1655,8 @@ agent.tickets.hidden_because: 'Ce ticket est actuellement caché car:'
 agent.tickets.hidden_explain: 'Cela signifie que cela ne remontera pas dans la plupart des résultats de recherche, ni ne générera pas de notifications agent.'
 agent.tickets.hidden_status: 'Statut caché'
 agent.tickets.hidden_status_deleted: Supprimé
-agent.tickets.hidden_status_spam: Spam
 agent.tickets.hidden_tickets: 'Tickets cachés'
 agent.tickets.hold_btn: 'Suspendre le ticket'
-agent.tickets.html_body: 'HTML Body'
 agent.tickets.increase_urgency_action: 'Augmenter l''urgence de {{amount}}'
 agent.tickets.insert_text_snippets: 'Insérer des snippets de texte'
 agent.tickets.into_this_from_ticket: 'dans ceci depuis ticket #{{id}}'
@@ -1781,10 +1677,6 @@ agent.tickets.lc_update: 'mettre à jour'
 agent.tickets.linked_tickets: 'Tickets liés'
 agent.tickets.linking_with_chat: 'En cours de liaison avec chat:'
 agent.tickets.linking_with_ticket: 'Lié au ticket :'
-agent.tickets.list_title:
-  one: '{{count}} Ticket'
-  other: '{{count}} Tickets'
-agent.tickets.list_title_counter: '{{x}} Tickets'
 agent.tickets.load_more: 'Charger plus'
 agent.tickets.lock: Verrouiller
 agent.tickets.lock_auto_release: 'Le verrouillage sera automatiquement retiré à la fermeture de ce ticket.'
@@ -1801,7 +1693,7 @@ agent.tickets.log_new_web_user_widget: 'Nouveau ticket par utilisateur via widge
 agent.tickets.log_note_deleted: 'Note supprimée'
 agent.tickets.log_on_article: 'sur l''article "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'sur téléchargement "{{title}} (ID {{id}})'
-agent.tickets.log_on_feedback: 'sur le feedback "{{title}} (ID {{id}})'
+agent.tickets.log_on_community_topic: 'sur le community topic "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'sur l''actualité "{{title}} (ID {{id}})'
 agent.tickets.log_sent_from: 'Envoyé depuis {{email}}'
 agent.tickets.log_sla_added: 'SLA ajouté'
@@ -1823,10 +1715,7 @@ agent.tickets.merge_submit_btn: 'Fusionner ces deux tickets'
 agent.tickets.merge_ticket: 'Fusionner Ticket'
 agent.tickets.merged_into_this: 'fusionné dans'
 agent.tickets.message_id: 'ID Message'
-agent.tickets.message_number: 'Message #{{number}}'
-agent.tickets.messages: Messages
 agent.tickets.my_team: 'Mon équipe'
-agent.tickets.na: N/A
 agent.tickets.neutral: neutre
 agent.tickets.new_attachment: 'Nouvelle pièce jointe'
 agent.tickets.new_message: 'Nouveau message'
@@ -1838,8 +1727,6 @@ agent.tickets.no_criteria: 'Pas de critère'
 agent.tickets.no_grouping: '(pas de regroupement)'
 agent.tickets.no_recent_searches: 'Pas de recherche récente'
 agent.tickets.normal_message: 'Message normal'
-agent.tickets.notes: Notes
-agent.tickets.notifications: Notifications
 agent.tickets.notified_of: 'Notifié de'
 agent.tickets.notify_new_ticket_by_for: '{{name}} a créé un nouveau ticket pour {{user}}'
 agent.tickets.on: sur
@@ -1851,7 +1738,6 @@ agent.tickets.original_message: 'Message d''origine'
 agent.tickets.participant_added: 'Utilisateur en copie'
 agent.tickets.participant_already_exists: 'L''utilisateur mentionné est déjà sur ce ticket.'
 agent.tickets.participant_removed: 'Utilisateur retiré du CC'
-agent.tickets.participants: 'CC''s'
 agent.tickets.pending_article_desc: 'Entrer une note ou une description à propos de l''article à rédiger. Elle sera également liée à ce ticket.'
 agent.tickets.pending_article_info: 'Un article en cours est une note dans la section Publier à propos d''un article qui doit encore être rédigé.'
 agent.tickets.percent_of: '% de'
@@ -1928,27 +1814,22 @@ agent.tickets.split_messages_into_ticket: 'Scinder les messages dans un nouveau 
 agent.tickets.split_selected_messages_btn: 'Scinder les messages sélectionnés'
 agent.tickets.status_archived: Archivé
 agent.tickets.status_archived_deleted: Supprimé
-agent.tickets.status_archived_spam: Spam
 agent.tickets.status_archived_temp: Temporaire
 agent.tickets.status_archived_validating: 'En attente de validation'
 agent.tickets.status_awaiting_agent: 'En attente de l''Agent'
 agent.tickets.status_awaiting_agent_deleted: Supprimé
-agent.tickets.status_awaiting_agent_spam: Spam
 agent.tickets.status_awaiting_agent_temp: Temporaire
 agent.tickets.status_awaiting_agent_validating: 'En attente  validation'
 agent.tickets.status_awaiting_user: 'En attente de l''Utilisateur'
 agent.tickets.status_awaiting_user_deleted: Supprimé
-agent.tickets.status_awaiting_user_spam: Spam
 agent.tickets.status_awaiting_user_temp: Temporaire
 agent.tickets.status_awaiting_user_validating: 'En attente  validation'
 agent.tickets.status_hidden: Caché
 agent.tickets.status_hidden_deleted: Supprimé
-agent.tickets.status_hidden_spam: Spam
 agent.tickets.status_hidden_temp: Temporaire
 agent.tickets.status_hidden_validating: 'En attente de validation'
 agent.tickets.status_resolved: Résolu
 agent.tickets.status_resolved_deleted: Supprimé
-agent.tickets.status_resolved_spam: Spam
 agent.tickets.status_resolved_temp: Temporaire
 agent.tickets.status_resolved_validating: 'En attente de validation'
 agent.tickets.stop_later_triggers_action: 'Arrêter le traitement des triggers'
@@ -1960,7 +1841,6 @@ agent.tickets.text_body: 'Corps du texte'
 agent.tickets.ticket_changes: 'Modifications ticket'
 agent.tickets.ticket_feedback: 'Feedback du ticket'
 agent.tickets.ticket_field_name: 'Champ du ticket : {{field}}'
-agent.tickets.ticket_is_delete7d: 'Le ticket est supprimé'
 agent.tickets.ticket_is_deleted: 'Le ticket est supprimé'
 agent.tickets.ticket_is_marked_as_spam: 'Ce ticket a été signalé comme spam.'
 agent.tickets.ticket_merged: 'Ticket fusionné'
@@ -2035,7 +1915,6 @@ agent.time.group_5_to_6_months: '5 - 6 mois'
 agent.time.group_6_to_12_hours: '6 - 12 heures'
 agent.time.group_6_to_7_days: '6 - 7 jours'
 agent.time.group_gt_6_months: '> 6 mois'
-agent.time.group_lt_5_mins: '< 5 minutes'
 agent.time.long-day_friday: Vendredi
 agent.time.long-day_monday: Lundi
 agent.time.long-day_saturday: Samedi
@@ -2057,16 +1936,13 @@ agent.time.long-month_october: Octobre
 agent.time.long-month_september: Septembre
 agent.time.reltime_1_day: '1 jour'
 agent.time.reltime_1_hour: '1 heure'
-agent.time.reltime_1_minute: '1 minute'
 agent.time.reltime_1_month: '1 mois'
 agent.time.reltime_1_second: '1 seconde'
 agent.time.reltime_1_week: '1 semaine'
 agent.time.reltime_1_year: '1 an'
-agent.time.reltime_less_minute: '1 minute'
 agent.time.reltime_less_second: '1 seconde'
 agent.time.reltime_x_day: '{0} jours'
 agent.time.reltime_x_hour: '{0} heures'
-agent.time.reltime_x_minute: '{0} minutes'
 agent.time.reltime_x_month: '{0} mois'
 agent.time.reltime_x_second: '{0} secondes'
 agent.time.reltime_x_week: '{0} semaines'
@@ -2123,7 +1999,6 @@ agent.time.time-ago_x_week: 'il y a {0} semaines'
 agent.time.time-ago_x_year: 'il y a {0} années'
 agent.time.time_1_day: '1 jour'
 agent.time.time_1_hour: '1 heure'
-agent.time.time_1_minute: '1 minute'
 agent.time.time_1_month: '1 mois'
 agent.time.time_1_second: '1 seconde'
 agent.time.time_1_week: '1 semaine'
@@ -2131,7 +2006,6 @@ agent.time.time_1_year: '1 an'
 agent.time.time_less_second: 'moins d''une seconde'
 agent.time.time_x_day: '{0} jours'
 agent.time.time_x_hour: '{0} heures'
-agent.time.time_x_minute: '{0} minutes'
 agent.time.time_x_month: '{0} mois'
 agent.time.time_x_second: '{0} secondes'
 agent.time.time_x_week: '{0} semaines'
@@ -2152,9 +2026,7 @@ agent.twitter.count_selected:
   one: '{{count}} sélectionné'
   other: '{{count}} sélectionné'
 agent.twitter.delete-search-confirm: 'Êtes-vous sûr de vouloir supprimer cette recherche?'
-agent.twitter.direct: Direct
 agent.twitter.direct_messages: 'Messages directs'
-agent.twitter.dm: DM
 agent.twitter.edit_long_tweet: 'Editer un long tweet'
 agent.twitter.example: '#exemple'
 agent.twitter.find_person: 'Trouver @personne...'
@@ -2162,17 +2034,10 @@ agent.twitter.follow: Suivre
 agent.twitter.followers: Abonnés
 agent.twitter.following: Suivre
 agent.twitter.from_account: 'Depuis le compte'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'En réponse à'
-agent.twitter.interactions: Interactions
-agent.twitter.list_title:
-  one: '1 Tweet'
-  other: '{{count}} Tweets'
 agent.twitter.location: Emplacement
-agent.twitter.long: Long
 agent.twitter.long_private: 'Long Privé'
 agent.twitter.long_tweet_read: 'Long tweet lu'
-agent.twitter.mentions: Mentions
 agent.twitter.message_sent: 'Message envoyé'
 agent.twitter.my_teams_tweets: 'Tweets de mon équipe'
 agent.twitter.my_tweets: 'Mes tweets'
@@ -2196,7 +2061,6 @@ agent.twitter.retweet_of: 'Retweet de'
 agent.twitter.retweet_with_edit: 'Retweeter avec édition'
 agent.twitter.retweeted: Retweeté
 agent.twitter.retweeted_by: 'Retweeté par {{name}}'
-agent.twitter.retweets: ReTweets
 agent.twitter.searches: Recherches
 agent.twitter.select_group_var: 'Sélectionner un champs pour grouper les tweets'
 agent.twitter.selected: sélectionné
@@ -2212,8 +2076,6 @@ agent.twitter.starred: 'Ajouté aux favoris'
 agent.twitter.starred_tweets: 'Tweets favoris'
 agent.twitter.team_assigned_by: 'Votre équipe a été assignée à ce tweet par {{name}}'
 agent.twitter.timeline: 'Ligne du temps'
-agent.twitter.tweet: Tweet
-agent.twitter.tweets: Tweets
 agent.twitter.unassigned_tweets: 'Tweets non assignés'
 agent.twitter.unfollow: 'Se désabonner'
 agent.twitter.unknown: inconnu

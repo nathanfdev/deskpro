@@ -23,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\UnserializeUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Events;
@@ -112,11 +113,14 @@ class Person extends DomainObject implements
     LabelsOwner,
     GroupSequenceProviderInterface
 {
-    const CREATED_WEB_PERSON     = 'web.person';
-    const CREATED_WEB_AGENT      = 'web.agent';
-    const CREATED_WEB_USERSOURCE = 'web.usersource';
-    const CREATED_GATEWAT_PERSON = 'gateway.person';
-    const CREATED_WEB_API        = 'web.api';
+    const CREATED_WEB_PERSON      = 'web.person';
+    const CREATED_WEB_AGENT       = 'web.agent';
+    const CREATED_WEB_USERSOURCE  = 'web.usersource';
+    const CREATED_GATEWAT_PERSON  = 'gateway.person';
+    const CREATED_WEB_API         = 'web.api';
+    const CREATED_PHONE_INBOUND   = 'phone.inbound';
+    const CREATED_PHONE_OUTBOUND  = 'phone.outbound';
+    const CREATED_USERSOURCE_SYNC = 'usersource.sync';
 
     const EVENT_PRE_CREATE  = 'person.pre_create';
     const EVENT_POST_CREATE = 'person.post_create';
@@ -268,7 +272,7 @@ class Person extends DomainObject implements
      *
      * @var string
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups="CheckName")
      */
     protected $name = '';
 
@@ -375,7 +379,7 @@ class Person extends DomainObject implements
      * The primary email address used by this account.
      *
      * @var PersonEmail
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups="CheckEmail")
      */
     protected $primary_email;
 
@@ -383,7 +387,7 @@ class Person extends DomainObject implements
      * @var ArrayCollection|PersonEmail[]
      *
      * @Assert\Valid()
-     * @Assert\Count(min=1)
+     * @Assert\Count(min=1, groups="CheckEmail")
      */
     protected $emails;
 
@@ -708,6 +712,26 @@ class Person extends DomainObject implements
     /**
      * @return string
      */
+    public function getCommunityName()
+    {
+        return $this->override_display_name ?: $this->getName();
+    }
+
+    /**
+     * @param string $community_name
+     *
+     * @return $this
+     */
+    public function setCommunityName($community_name)
+    {
+        $this->setModelField('override_display_name', $community_name);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getFirstName()
     {
         return $this->first_name;
@@ -983,6 +1007,14 @@ class Person extends DomainObject implements
     public function isActiveAgent()
     {
         return $this->is_agent && !$this->is_deleted && !$this->is_disabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return !$this->is_deleted && !$this->is_disabled;
     }
 
     /**
@@ -2297,6 +2329,9 @@ class Person extends DomainObject implements
         return $region;
     }
 
+    /**
+     * @param PersonPhoneNumber|null $number
+     */
     public function setPrimaryPhoneNumber(PersonPhoneNumber $number = null)
     {
         // note that while this is a 1-many relationship, we ensure in this method that we only have 1
@@ -3522,16 +3557,15 @@ class Person extends DomainObject implements
     {
         $val = (bool) $val;
 
-        $this->setModelField('disable_autoresponses', $val);
-        if (!$val) {
-            $this->setModelField('disable_autoresponses_log', null);
-        } else {
-            if (!$reason) {
-                $reason = 'Unknown';
-            }
-            $reason .= ' ('.date('M j Y @ H:i').' UTC)';
-            $this->setModelField('disable_autoresponses_log', $reason);
+        if (!$reason) {
+            $reason = 'Unknown';
         }
+        $reason .= ' ('.date('M j Y @ H:i').' UTC)';
+
+        $log = $this->disable_autoresponses_log."\n{$reason}";
+
+        $this->setModelField('disable_autoresponses', $val);
+        $this->setModelField('disable_autoresponses_log', $log);
     }
 
     /**
@@ -4923,7 +4957,11 @@ class Person extends DomainObject implements
      */
     public function unserialize($serialized)
     {
-        $this->id = unserialize($serialized);
+        try {
+            $this->id = UnserializeUtil::unserializeInteger($serialized);
+        } catch (\Exception $e) {
+            $this->id = null;
+        }
     }
 
     /**
@@ -4956,6 +4994,11 @@ class Person extends DomainObject implements
             $groups[] = 'Agent';
         } else {
             $groups[] = 'User';
+        }
+
+        if (!$this->phone_numbers->count()) {
+            $groups[] = 'CheckEmail';
+            $groups[] = 'CheckName';
         }
 
         return $groups;

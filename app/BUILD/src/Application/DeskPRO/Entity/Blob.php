@@ -50,6 +50,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     const STORAGE_LOC_FILESYSTEM = 'fs';
     const STORAGE_LOC_S3         = 's3';
 
+    const SUFFIX_TICKET_ATTACHMENT   = 'T';
+    const SUFFIX_DOWNLOAD_ATTACHMENT = 'PD';
+
     /**
      * Timeout for valid access_token for ticket attachments.
      */
@@ -408,8 +411,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getDownloadUrl($absolute = false, $use_file_url = true)
     {
-        if ($use_file_url && $this->file_url) {
-            return $this->file_url;
+        if ($use_file_url && $this->getFileUrl()) {
+            return $this->getFileUrl();
         }
 
         if (!$this->getAuthId()) {
@@ -418,9 +421,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         $url = App::get('router')->generate('serve_blob', ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()], $absolute);
 
-        // We are specifically requestinga local url,
+        // We are specifically requesting a local url,
         // make sure serve_file doesn't redirect.
-        if ($this->file_url && !$use_file_url) {
+        if ($this->getFileUrl() && !$use_file_url) {
             $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
@@ -715,7 +718,58 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getFileUrl()
     {
-        return $this->file_url;
+        $url = $this->file_url;
+        if ($this->storage_loc === 's3') {
+            return self::rewriteDynFileUrl($url);
+        }
+
+        return $url;
+    }
+
+    /**
+     * This is meant to dynamically re-write S3 file URLs.
+     *
+     * E.g. on cloud its used like:
+     * $SETTINGS['core.filestorage_s3_file_dynurl'] = "https://" . $siteContext->getMasterDomain() . "/dps-fs/__SIGNSEG__/__PATH__";
+     * $SETTINGS['core.filestorage_s3_file_dynurl_domain_dyn_sign'] = '????????????????';
+     *
+     * The purpose is a quick-fix on Cloud to make each site use its own domain. In our case, it gets proxied through
+     * Cloudflare to the real S3 bucket. But having each file on it's own domain means no single site can
+     * cause the whole S3 domain to be targetted as unsafe by block lists.
+     *
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function rewriteDynFileUrl($url)
+    {
+        /* @var \Dprun\DpEnv $DP_ENV */
+        global $DP_ENV;
+        $urlPattern = $DP_ENV->getConfig('settings.filestorage_s3_file_dynurl');
+
+        if (!$urlPattern) {
+            return $url;
+        }
+
+        $existUrl      = parse_url($url);
+        $patternDomain = parse_url($urlPattern, PHP_URL_HOST);
+
+        $path = ltrim($existUrl['path'], '/').(!empty($existUrl['query']) ? "?{$existUrl['query']}" : '');
+
+        $signDomain = $DP_ENV->getConfig('settings.filestorage_s3_file_dynurl_domain_dyn_sign') ?: '';
+        $signKey    = sha1($signDomain.$patternDomain);
+
+        if (strpos($url, $signKey)) {
+            return $url;
+        }
+
+        $newUrl = str_replace(
+            ['__PATH__', '__SIGNSEG__'],
+            [$path, $signKey],
+            $urlPattern
+        );
+
+        return $newUrl;
     }
 
     /**
@@ -853,7 +907,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'storage_loc_pref'     => $this->storage_loc_pref,
             'storage_loc_specific' => $this->storage_loc_specific,
             'save_path'            => $this->save_path,
-            'file_url'             => $this->file_url,
+            'file_url'             => $this->getFileUrl(),
             'filename'             => $this->filename,
             'filesize'             => $this->filesize,
             'content_type'         => $this->content_type,
@@ -897,7 +951,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             ['table' => 'download_revisions', 'columns' => ['blob_id']],
             ['table' => 'email_accounts', 'columns' => ['key_blob_id', 'cert_blob_id']],
             ['table' => 'email_sources', 'columns' => ['blob_id', 'log_blob_id']],
-            ['table' => 'feedback_attachments', 'columns' => ['blob_id']],
+            ['table' => 'community_topic_attachments', 'columns' => ['blob_id']],
             ['table' => 'labels_blobs', 'columns' => ['blob_id']],
             ['table' => 'organizations', 'columns' => ['picture_blob_id']],
             ['table' => 'organization_files', 'columns' => ['blob_id']],
@@ -1120,7 +1174,38 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isTicketAttachment()
     {
-        return $this->getAuthcode() && substr($this->getAuthcode(), -1) === 'T';
+        return $this->getAuthcode() && substr($this->getAuthcode(), -1) === self::SUFFIX_TICKET_ATTACHMENT;
+    }
+
+    /**
+     * Check if blob is Download attachment.
+     *
+     * @return bool
+     */
+    public function isDownloadAttachment()
+    {
+        return $this->getAuthcode() && substr($this->getAuthcode(), -2) === self::SUFFIX_DOWNLOAD_ATTACHMENT;
+    }
+
+    /**
+     * @param string $a
+     *
+     * @return string|null
+     */
+    public static function getSuffixFromAuthcode($a)
+    {
+        if (!$a) {
+            return null;
+        }
+
+        if (substr($a, -1) === self::SUFFIX_TICKET_ATTACHMENT) {
+            return self::SUFFIX_TICKET_ATTACHMENT;
+        }
+        if (substr($a, -2) === self::SUFFIX_DOWNLOAD_ATTACHMENT) {
+            return self::SUFFIX_DOWNLOAD_ATTACHMENT;
+        }
+
+        return null;
     }
 
     /**
@@ -1130,14 +1215,19 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     protected function isRequireAuth()
     {
-        if (!$this->isTicketAttachment()) {
-            return false;
+        if ($this->isTicketAttachment()) {
+            return (bool) App::getContainer()
+                ->getSettingsResolver()
+                ->getGlobalSettings()
+                ->get('core_tickets.attachment_require_auth');
+        } elseif ($this->isDownloadAttachment()) {
+            return (bool) App::getContainer()
+                ->getSettingsResolver()
+                ->getGlobalSettings()
+                ->get('user.attachment_require_auth_downloads');
         }
 
-        return (bool) App::getContainer()
-            ->getSettingsResolver()
-            ->getGlobalSettings()
-            ->get('core_tickets.attachment_require_auth');
+        return false;
     }
 
     public function __getPropValue__($k)

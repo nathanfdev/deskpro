@@ -257,7 +257,7 @@ img.emojione, svg.emojione {
     }
 
     .im.wrapper > .ui.avatar.image.im {
-      margin: 3px 9px;
+      margin: 3px 9px 3px 7px;
     }
   }
 
@@ -1304,6 +1304,17 @@ img.emojione, svg.emojione {
   }
 }
 
+.emoji.box.arrow-bottom {
+  &:before {
+    top: 210px;
+    background-color: #FFF;
+
+    border: 1px solid $dp-greyscale-350;
+    border-left: none;
+    border-top: none;
+  }
+}
+
 .emoji.box {
   width: 278px;
   height: 222px;
@@ -1342,7 +1353,7 @@ img.emojione, svg.emojione {
 }
 
 .fr-toolbar, .fr-popup {
-  z-index: 99999 !important;
+  z-index: 99999;
 }
 .fr-tooltip {
   z-index: 100000 !important;

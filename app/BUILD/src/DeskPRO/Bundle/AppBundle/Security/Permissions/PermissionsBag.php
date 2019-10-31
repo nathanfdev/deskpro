@@ -8,10 +8,10 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -47,9 +47,9 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     protected $departmentIds;
 
     /**
-     * @var array allowed feedback categories
+     * @var array allowed community channels
      */
-    protected $feedbackCategories;
+    protected $communityChannels;
 
     /**
      * @var array allowed news categories
@@ -74,12 +74,17 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     protected $guides;
 
     /**
+     * @var int
+     */
+    protected $reopenResolvedTimelimit = null;
+
+    /**
      * Constructor.
      *
      * @param Permission[] $permissions
      * @param array        $departmentTicketIds
      * @param array        $departmentChatIds
-     * @param array        $feedbackCategoryIds
+     * @param array        $communityChannelIds
      * @param array        $newsCategoryIds
      * @param array        $articleCategoryIds
      * @param array        $downloadCategoryIds
@@ -90,7 +95,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         array $permissions = [],
         array $departmentTicketIds = [],
         array $departmentChatIds = [],
-        array $feedbackCategoryIds = [],
+        array $communityChannelIds = [],
         array $newsCategoryIds = [],
         array $articleCategoryIds = [],
         array $downloadCategoryIds = [],
@@ -101,7 +106,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->setAllowedTicketDepartmentIds($departmentTicketIds);
         $this->setAllowedChatDepartmentIds($departmentChatIds);
         $this->setAllowedDepartmentsIds(array_replace_recursive($departmentChatIds, $departmentTicketIds));
-        $this->setAllowedFeedbackCategoryIds($feedbackCategoryIds);
+        $this->setAllowedCommunityChannelIds($communityChannelIds);
         $this->setAllowedNewsCategories($newsCategoryIds);
         $this->setAllowedArticleCategories($articleCategoryIds);
         $this->setAllowedDownloadCategories($downloadCategoryIds);
@@ -150,16 +155,16 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         } elseif ($contentOrCategory instanceof ArticleCategory) {
             return in_array($contentOrCategory->getId(), $this->getAllowedArticleCategories());
 
-            // FEEDBACK
-        } elseif ($contentOrCategory instanceof Feedback) {
-            $categoryId = $contentOrCategory->getCategoryId();
-            if ($categoryId) {
-                return in_array($categoryId, $this->getAllowedFeedbackCategoryIds());
+            // COMMUNITY
+        } elseif ($contentOrCategory instanceof CommunityTopic) {
+            $channelId = $contentOrCategory->getChannelId();
+            if ($channelId) {
+                return in_array($channelId, $this->getAllowedCommunityChannelIds());
             }
 
             return false;
-        } elseif ($contentOrCategory instanceof FeedbackCategory) {
-            return in_array($contentOrCategory->getId(), $this->getAllowedFeedbackCategoryIds());
+        } elseif ($contentOrCategory instanceof CommunityChannel) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedCommunityChannelIds());
 
             // DOWNLOAD
         } elseif ($contentOrCategory instanceof Download) {
@@ -274,21 +279,21 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     }
 
     /**
-     * @return array allowed feedback category ids
+     * @return array allowed community channels ids
      */
-    public function getAllowedFeedbackCategoryIds()
+    public function getAllowedCommunityChannelIds()
     {
-        return $this->feedbackCategories;
+        return $this->communityChannels;
     }
 
     /**
-     * @param array $feedbackcategories
+     * @param array $communityChannels
      *
      * @return $this
      */
-    public function setAllowedFeedbackCategoryIds(array $feedbackcategories)
+    public function setAllowedCommunityChannelIds(array $communityChannels)
     {
-        $this->feedbackCategories = $feedbackcategories;
+        $this->communityChannels = $communityChannels;
 
         return $this;
     }
@@ -379,6 +384,26 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     public function getAllowedFields()
     {
         return $this->allowedFields;
+    }
+
+    /**
+     * @param int|null $timelimit
+     *
+     * @return $this
+     */
+    public function setReopenResolvedTimelimit($timelimit)
+    {
+        $this->reopenResolvedTimelimit = $timelimit;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReopenResolvedTimelimit()
+    {
+        return $this->reopenResolvedTimelimit;
     }
 
     /**
@@ -478,7 +503,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         return serialize(
             [
                 'permissions'       => $this->permissions,
-                'feedback'          => $this->feedbackCategories,
+                'community'         => $this->communityChannels,
                 'news'              => $this->newsCategories,
                 'article'           => $this->articleCategories,
                 'download'          => $this->downloadCategories,
@@ -497,7 +522,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $unserialized = unserialize($serialized);
 
         $this->permissions         = $unserialized['permissions'];
-        $this->feedbackCategories  = $unserialized['feedback'];
+        $this->communityChannels   = $unserialized['community'];
         $this->newsCategories      = $unserialized['news'];
         $this->articleCategories   = $unserialized['article'];
         $this->downloadCategories  = $unserialized['download'];

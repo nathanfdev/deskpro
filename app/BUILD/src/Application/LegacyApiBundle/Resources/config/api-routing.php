@@ -2854,235 +2854,235 @@ $collection->create(
 );
 
 $collection->create(
-    'api_feedback',
+    'api_community_topics_search',
     [
-        'path'       => '/feedback',
-        'controller' => 'LegacyApiBundle:Feedback:search',
+        'path'       => '/community',
+        'controller' => 'LegacyApiBundle:CommunityTopics:search',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_post',
+    'api_community_topics_post',
     [
-        'path'       => '/feedback',
-        'controller' => 'LegacyApiBundle:Feedback:newFeedback',
+        'path'       => '/community',
+        'controller' => 'LegacyApiBundle:CommunityTopics:newCommunityTopic',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback',
+    'api_community_topic_view',
     [
-        'path'         => '/feedback/{feedback_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedback',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopic',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_post',
+    'api_community_topic_post',
     [
-        'path'         => '/feedback/{feedback_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:postFeedback',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:postCommunityTopic',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_delete',
+    'api_community_topic_delete',
     [
-        'path'         => '/feedback/{feedback_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:deleteFeedback',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopic',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_votes',
+    'api_community_topic_votes',
     [
-        'path'         => '/feedback/{feedback_id}/votes',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackVotes',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/votes',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicVotes',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_comments',
+    'api_community_topic_comments_view',
     [
-        'path'         => '/feedback/{feedback_id}/comments',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackComments',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicComments',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_comments_new',
+    'api_community_topic_comments_new',
     [
-        'path'         => '/feedback/{feedback_id}/comments',
-        'controller'   => 'LegacyApiBundle:Feedback:newFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:newCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_comments_comment',
+    'api_community_topic_comments_get_comment',
     [
-        'path'         => '/feedback/{feedback_id}/comments/{comment_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+', 'comment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments/{commentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+', 'commentId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_comments_comment_post',
+    'api_community_topics_comments_post_comment',
     [
-        'path'         => '/feedback/{feedback_id}/comments/{comment_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:postFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+', 'comment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments/{commentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:postCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+', 'commentId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_comments_comment_delete',
+    'api_community_topics_comments_delete_comment',
     [
-        'path'         => '/feedback/{feedback_id}/comments/{comment_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:deleteFeedbackComment',
-        'requirements' => ['feedback_id' => '\\d+', 'comment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/comments/{commentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopicComment',
+        'requirements' => ['communityTopicId' => '\\d+', 'commentId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_merge',
+    'api_community_topics_merge',
     [
-        'path'         => '/feedback/{feedback_id}/merge/{other_feedback_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:mergeFeedback',
-        'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/merge/{otherCommunityTopicId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:mergeCommunityTopics',
+        'requirements' => ['communityTopicId' => '\\d+', 'otherCommunityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_attachments',
+    'api_community_topic_attachments',
     [
-        'path'         => '/feedback/{feedback_id}/attachments',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackAttachments',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicAttachments',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_attachments_post',
+    'api_community_topic_attachments_post',
     [
-        'path'         => '/feedback/{feedback_id}/attachments',
-        'controller'   => 'LegacyApiBundle:Feedback:newFeedbackAttachment',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:newComunityTopicAttachment',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_attachment',
+    'api_community_topic_attachment_get',
     [
-        'path'         => '/feedback/{feedback_id}/attachments/{attachment_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackAttachment',
-        'requirements' => ['feedback_id' => '\\d+', 'attachment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments/{attachmentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicAttachment',
+        'requirements' => ['communityTopicId' => '\\d+', 'attachmentId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_attachment_delete',
+    'api_community_topic_attachment_delete',
     [
-        'path'         => '/feedback/{feedback_id}/attachments/{attachment_id}',
-        'controller'   => 'LegacyApiBundle:Feedback:deleteFeedbackAttachment',
-        'requirements' => ['feedback_id' => '\\d+', 'attachment_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/attachments/{attachmentId}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopicAttachment',
+        'requirements' => ['communityTopicId' => '\\d+', 'attachmentId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_labels',
+    'api_community_topic_labels',
     [
-        'path'         => '/feedback/{feedback_id}/labels',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackLabels',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicLabels',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_labels_post',
+    'api_community_topic_labels_post',
     [
-        'path'         => '/feedback/{feedback_id}/labels',
-        'controller'   => 'LegacyApiBundle:Feedback:postFeedbackLabels',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:postCommunityTopicLabels',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_label',
+    'api_community_topic_label',
     [
-        'path'         => '/feedback/{feedback_id}/labels/{label}',
-        'controller'   => 'LegacyApiBundle:Feedback:getFeedbackLabel',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels/{label}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:getCommunityTopicLabel',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_feedback_label_delete',
+    'api_community_topic_label_delete',
     [
-        'path'         => '/feedback/{feedback_id}/labels/{label}',
-        'controller'   => 'LegacyApiBundle:Feedback:deleteFeedbackLabel',
-        'requirements' => ['feedback_id' => '\\d+'],
+        'path'         => '/community/{communityTopicId}/labels/{label}',
+        'controller'   => 'LegacyApiBundle:CommunityTopics:deleteCommunityTopicLabel',
+        'requirements' => ['communityTopicId' => '\\d+'],
         'methods'      => ['DELETE'],
     ]
 );
 
 $collection->create(
-    'api_feedback_validating_comments',
+    'api_community_topic_validating_comments',
     [
-        'path'       => '/feedback/validating-comments',
-        'controller' => 'LegacyApiBundle:Feedback:getValidatingComments',
+        'path'       => '/community/validating-comments',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getValidatingComments',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_categories',
+    'api_community_categories',
     [
-        'path'       => '/feedback/categories',
-        'controller' => 'LegacyApiBundle:Feedback:getCategories',
+        'path'       => '/community/channels',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getChannels',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_status_categories',
+    'api_community_status_categories',
     [
-        'path'       => '/feedback/status-categories',
-        'controller' => 'LegacyApiBundle:Feedback:getStatusCategories',
+        'path'       => '/community/status-categories',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getStatusCategories',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_user_categories',
+    'api_community_user_categories',
     [
-        'path'       => '/feedback/user-categories',
-        'controller' => 'LegacyApiBundle:Feedback:getUserCategories',
+        'path'       => '/community/custom_channels',
+        'controller' => 'LegacyApiBundle:CommunityTopics:getCustomChannels',
         'methods'    => ['GET'],
     ]
 );
@@ -3349,7 +3349,8 @@ $label_types = [
     ['route' => 'ticket', 'route_url' => 'ticket', 'controller' => 'TicketLabels'],
     ['route' => 'person', 'route_url' => 'person', 'controller' => 'PersonLabels'],
     ['route' => 'org', 'route_url' => 'org', 'controller' => 'OrgLabels'],
-    ['route' => 'feedback', 'route_url' => 'feedback', 'controller' => 'FeedbackLabels'],
+    // TODO this doesn't seem to work
+    ['route' => 'community', 'route_url' => 'community', 'controller' => 'CommunityLabels'],
     ['route' => 'chat', 'route_url' => 'chat', 'controller' => 'ChatLabels'],
     ['route' => 'kb', 'route_url' => 'kb', 'controller' => 'KbLabels'],
     ['route' => 'news', 'route_url' => 'news', 'controller' => 'NewsLabels'],
@@ -4329,6 +4330,19 @@ $collection->create(
 );
 
 //#######################################################################################################################
+// Ticket Field Options
+//#######################################################################################################################
+
+$collection->create(
+    'api_ticket_field_option_delete',
+    [
+        'path'       => '/ticket_fields/option',
+        'controller' => 'LegacyApiBundle:TicketFields:deleteFieldOption',
+        'methods'    => ['DELETE'],
+    ]
+);
+
+//#######################################################################################################################
 // Ticket Statuses
 //#######################################################################################################################
 
@@ -5280,178 +5294,178 @@ $collection->create(
 );
 
 //#######################################################################################################################
-// Feedback Statuses
+// Community Statuses
 //#######################################################################################################################
 
 $collection->create(
-    'api_feedback_statuses',
+    'api_community_statuses',
     [
-        'path'       => '/feedback_statuses',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:list',
+        'path'       => '/community_statuses',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:list',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_statuses_order',
+    'api_community_statuses_order',
     [
-        'path'       => '/feedback_statuses/display_order',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:saveDisplayOrder',
+        'path'       => '/community_statuses/display_order',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_statuses_get',
+    'api_community_statuses_get',
     [
-        'path'       => '/feedback_statuses/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:get',
+        'path'       => '/community_statuses/{id}',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:get',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_statuses_create',
+    'api_community_statuses_create',
     [
-        'path'       => '/feedback_statuses',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:save',
+        'path'       => '/community_statuses',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
 );
 
 $collection->create(
-    'api_feedback_statuses_save',
+    'api_community_statuses_save',
     [
-        'path'       => '/feedback_statuses/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:save',
+        'path'       => '/community_statuses/{id}',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:save',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_statuses_delete',
+    'api_community_statuses_delete',
     [
-        'path'       => '/feedback_statuses/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackStatuses:remove',
+        'path'       => '/community_statuses/{id}',
+        'controller' => 'LegacyApiBundle:CommunityStatuses:remove',
         'methods'    => ['DELETE'],
     ]
 );
 
 //#######################################################################################################################
-// Feedback Types
+// Community Channels
 //#######################################################################################################################
 
 $collection->create(
-    'api_feedback_types',
+    'api_community_channels',
     [
-        'path'       => '/feedback_types',
-        'controller' => 'LegacyApiBundle:FeedbackTypes:list',
+        'path'       => '/community_channels',
+        'controller' => 'LegacyApiBundle:CommunityChannels:list',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_types_order',
+    'api_community_channels_order',
     [
-        'path'       => '/feedback_types/display_order',
-        'controller' => 'LegacyApiBundle:FeedbackTypes:saveDisplayOrder',
+        'path'       => '/community_channels/display_order',
+        'controller' => 'LegacyApiBundle:CommunityChannels:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_types_get',
+    'api_community_channels_get',
     [
-        'path'       => '/feedback_types/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackTypes:get',
+        'path'       => '/community_channels/{id}',
+        'controller' => 'LegacyApiBundle:CommunityChannels:get',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_types_create',
+    'api_community_channels_create',
     [
-        'path'       => '/feedback_types',
-        'controller' => 'LegacyApiBundle:FeedbackTypes:save',
+        'path'       => '/community_channels',
+        'controller' => 'LegacyApiBundle:CommunityChannels:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
 );
 
 $collection->create(
-    'api_feedback_types_save',
+    'api_community_channels_save',
     [
-        'path'       => '/feedback_types/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackTypes:save',
+        'path'       => '/community_channels/{id}',
+        'controller' => 'LegacyApiBundle:CommunityChannels:save',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_types_delete',
+    'api_community_channels_delete',
     [
-        'path'       => '/feedback_types/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackTypes:remove',
+        'path'       => '/community_channels/{id}',
+        'controller' => 'LegacyApiBundle:CommunityChannels:remove',
         'methods'    => ['DELETE'],
     ]
 );
 
 //#######################################################################################################################
-// Feedback Categories
+// Custom Community channels
 //#######################################################################################################################
 
 $collection->create(
-    'api_feedback_categories',
+    'api_community_categories',
     [
-        'path'       => '/feedback_categories',
-        'controller' => 'LegacyApiBundle:FeedbackCategories:list',
+        'path'       => '/community_categories',
+        'controller' => 'LegacyApiBundle:CommunityCategories:list',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_categories_order',
+    'api_community_categories_order',
     [
-        'path'       => '/feedback_categories/display_order',
-        'controller' => 'LegacyApiBundle:FeedbackCategories:saveDisplayOrder',
+        'path'       => '/community_categories/display_order',
+        'controller' => 'LegacyApiBundle:CommunityCategories:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_categories_get',
+    'api_community_categories_get',
     [
-        'path'       => '/feedback_categories/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackCategories:get',
+        'path'       => '/community_categories/{id}',
+        'controller' => 'LegacyApiBundle:CommunityCategories:get',
         'methods'    => ['GET'],
     ]
 );
 
 $collection->create(
-    'api_feedback_categories_create',
+    'api_community_categories_create',
     [
-        'path'       => '/feedback_categories',
-        'controller' => 'LegacyApiBundle:FeedbackCategories:save',
+        'path'       => '/community_categories',
+        'controller' => 'LegacyApiBundle:CommunityCategories:save',
         'defaults'   => ['id' => '0'],
         'methods'    => ['PUT'],
     ]
 );
 
 $collection->create(
-    'api_feedback_categories_save',
+    'api_community_categories_save',
     [
-        'path'       => '/feedback_categories/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackCategories:save',
+        'path'       => '/community_categories/{id}',
+        'controller' => 'LegacyApiBundle:CommunityCategories:save',
         'methods'    => ['POST'],
     ]
 );
 
 $collection->create(
-    'api_feedback_categories_delete',
+    'api_community_categories_delete',
     [
-        'path'       => '/feedback_categories/{id}',
-        'controller' => 'LegacyApiBundle:FeedbackCategories:remove',
+        'path'       => '/community_categories/{id}',
+        'controller' => 'LegacyApiBundle:CommunityCategories:remove',
         'methods'    => ['DELETE'],
     ]
 );
@@ -5784,6 +5798,15 @@ $collection->create(
     ]
 );
 
+$collection->create(
+    'api_server_file_uploads_method',
+    [
+        'path'       => '/server_file_uploads_method',
+        'controller' => 'LegacyApiBundle:Server:getFileUploadsMethod',
+        'methods'    => ['GET'],
+    ]
+);
+
 //#######################################################################################################################
 // Server File Integrity
 //#######################################################################################################################
@@ -5984,6 +6007,86 @@ $collection->create(
     [
         'path'       => '/kb_fields/display-order',
         'controller' => 'LegacyApiBundle:ArticleFields:saveDisplayOrder',
+        'methods'    => ['POST'],
+    ]
+);
+
+//#######################################################################################################################
+// Download Fields
+//#######################################################################################################################
+
+$collection->create(
+    'api_download_fields_get',
+    [
+        'path'         => '/download_fields/{id}',
+        'controller'   => 'LegacyApiBundle:DownloadFields:getCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_create',
+    [
+        'path'       => '/download_fields',
+        'controller' => 'LegacyApiBundle:DownloadFields:saveCustomField',
+        'defaults'   => ['id' => '0'],
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_delete',
+    [
+        'path'         => '/download_fields/{id}',
+        'controller'   => 'LegacyApiBundle:DownloadFields:deleteCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['DELETE'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_save',
+    [
+        'path'         => '/download_fields/{id}',
+        'controller'   => 'LegacyApiBundle:DownloadFields:saveCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_save_batch',
+    [
+        'path'       => '/download_fields/batch',
+        'controller' => 'LegacyApiBundle:DownloadFields:saveBatchCustomField',
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields',
+    [
+        'path'       => '/download_fields',
+        'controller' => 'LegacyApiBundle:DownloadFields:list',
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_setenabled',
+    [
+        'path'       => '/download_fields/set-enabled/{field_id}/{is_enabled}',
+        'controller' => 'LegacyApiBundle:DownloadFields:toggleField',
+        'methods'    => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_update_order',
+    [
+        'path'       => '/download_fields/display-order',
+        'controller' => 'LegacyApiBundle:DownloadFields:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );

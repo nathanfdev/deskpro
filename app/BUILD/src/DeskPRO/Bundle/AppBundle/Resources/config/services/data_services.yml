@@ -8,6 +8,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\PersonDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
+  data.direct_message.thread:
+    class: DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
   data.tickets:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketsDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@brand_stack", "@logger"]
@@ -19,6 +23,10 @@ services:
   data.departments:
     class: DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
+
+  data.ticket_built_in_fields:
+    class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketBuiltInFieldsDataService
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_aware_settings_resolver"]
 
   data.articles:
     class: DeskPRO\Bundle\AppBundle\DataService\ArticlesDataService
@@ -36,8 +44,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\DownloadsDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
-  data.feedback:
-    class: DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
+  data.community:
+    class: DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
 
   data.rating:

@@ -3,11 +3,13 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
+import Isvg from 'react-inlinesvg';
 import VoiceMenu from './VoiceMenu';
 
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
+    me:           PropTypes.object,
     isSecure:     PropTypes.bool,
     micEnabled:   PropTypes.bool,
     incomingCall: PropTypes.object,
@@ -15,8 +17,16 @@ class VoiceMenuDropdown extends React.Component {
     onlineAgents: PropTypes.object,
     voiceEnabled: PropTypes.bool,
     callsEnabled: PropTypes.bool,
-    openUserMenu: PropTypes.func
+    openUserMenu: PropTypes.func,
+    recordsCount: PropTypes.number
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      defaultTab: null
+    };
+  }
 
   componentDidMount() {
     const { incomingCall } = this.props;
@@ -63,18 +73,53 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getIcon() {
-    const { onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
+    const { me, onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
+    const canUseForwarding = me.getIn(['agent_data', 'agent_can_use_forwarding']) && me.getIn(['agent_data', 'forwarding_number']);
 
     if (voiceEnabled && micEnabled) {
       if (callsEnabled) {
-        return <i className="ui call icon green voice-menu-icon" />;
+        if (canUseForwarding) {
+          return (
+            <Isvg
+              className="voice-menu-icon"
+              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call-forwarding.svg`}
+            />
+          );
+        }
+
+        return (
+          <Isvg
+            className="voice-menu-icon"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call.svg`}
+          />
+        );
       } else if (onlineAgents.size > 0) {
-        return <i className="ui call icon yellow voice-menu-icon" />;
+        return (
+          <Isvg
+            className="voice-menu-icon"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call-another-agent.svg`}
+          />
+        );
       }
     }
 
-    return <i className="ui call icon red voice-menu-icon" />;
+    return (
+      <Isvg
+        className="voice-menu-icon"
+        src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/call-offline.svg`}
+      />
+    );
   }
+
+  showProviderError = (outgoingNumber, errors) => {
+    this.popup.openPopup();
+    setTimeout(() => {
+      this.voiceMenu.changeTab('phone');
+      setTimeout(() => {
+        this.voiceMenu.dialpad.showProviderError(outgoingNumber, errors);
+      }, 1);
+    }, 1);
+  };
 
   openUserMenu = (event) => {
     event.preventDefault();
@@ -87,17 +132,49 @@ class VoiceMenuDropdown extends React.Component {
     this.popup.closePopup();
   };
 
-  openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null) => {
-    this.popup.openPopup();
-    setTimeout(() => {
-      this.voiceMenu.changeTab('phone');
+  openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null, personId = null) => {
+    this.setState({
+      defaultTab: 'phone'
+    }, () => {
+      this.popup.openPopup();
       setTimeout(() => {
-        this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
-        if (ticketId) {
-          this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
-        }
+        this.voiceMenu.changeTab('phone');
+        setTimeout(() => {
+          this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber, personId);
+          if (ticketId) {
+            this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
+          }
+        }, 1);
+
+        setTimeout(() => {
+          this.setState({
+            defaultTab: null
+          });
+        }, 1);
       }, 1);
-    }, 1);
+    });
+  };
+
+  openSettingsTab = () => {
+    this.setState({
+      defaultTab: 'settings'
+    }, () => {
+      this.popup.openPopup();
+      setTimeout(() => {
+        this.voiceMenu.settings.panels.setActiveKey(['0']);
+        this.setState({
+          defaultTab: null
+        });
+      }, 1);
+    });
+  };
+
+  renderCount = () => {
+    const { recordsCount } = this.props;
+    if (parseInt(recordsCount, 10) > 0) {
+      return <div className="ui knuckles label">{recordsCount}</div>;
+    }
+    return null;
   };
 
   render() {
@@ -113,6 +190,7 @@ class VoiceMenuDropdown extends React.Component {
           content={
             <VoiceMenu
               {...this.props}
+              {...this.state}
               ref={(c) => { this.voiceMenu = c; }}
               openUserMenu={this.openUserMenu}
             />
@@ -121,6 +199,7 @@ class VoiceMenuDropdown extends React.Component {
           allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >
           {this.getIcon()}
+          {this.renderCount()}
           {this.getStatus()}
         </PopUp>
       </div>

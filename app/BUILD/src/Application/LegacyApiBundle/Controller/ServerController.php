@@ -6,6 +6,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\BlobStorage\Blob;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Encryption\DpEnc;
 use Application\DeskPRO\Exception\ValidationException;
@@ -33,7 +35,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @ApiModes("all")
  */
-class ServerController extends AbstractController implements ProtectedControllerInterface
+class ServerController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -304,7 +306,27 @@ class ServerController extends AbstractController implements ProtectedController
     {
         /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
-        $serverFileUploads->switchStorage($this->in->getArrayValue('options'));
+
+        $options = $this->in->getArrayValue('options');
+        $method  = $options['method'];
+
+        $serverFileUploads->switchStorage($options);
+
+        if ($method === 's3') {
+            // Refresh settings before init BlobStorage
+            $this->container->getSettingsResolver()->getGlobalSettings(true);
+            /** @var DeskproBlobStorage $blobStorage */
+            $blobStorage = $this->container->getBlobStorage();
+
+            if ($blobStorage->hasAdapter($method)) {
+                $blob = new Blob('robots.txt', 'text/plain');
+                $blob->setPath('robots.txt');
+
+                $blobStorage
+                    ->getAdapter($method)
+                    ->writeBlobString($blob, "User-agent: *\r\nDisallow: /");
+            }
+        }
 
         return $this->createSuccessResponse();
     }
@@ -321,6 +343,18 @@ class ServerController extends AbstractController implements ProtectedController
         $serverFileUploads->switchStorageStatus();
 
         return $this->createApiResponse($serverFileUploads->switchStorageStatus());
+    }
+
+    public function getFileUploadsMethodAction()
+    {
+        /** @var ServerFileUploads $serverFileUploads */
+        $serverFileUploads = $this->container->getSystemService('server_file_uploads');
+
+        return $this->createApiResponse(
+            [
+                'filestorage_method' => $serverFileUploads->getStorageMethod(),
+            ]
+        );
     }
 
     //###################################################################################################################

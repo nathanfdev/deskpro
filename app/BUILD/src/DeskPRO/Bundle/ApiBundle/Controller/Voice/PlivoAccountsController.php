@@ -10,6 +10,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoEndpoint;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\PlivoAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAccountType;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceBuyNumberType;
@@ -22,6 +24,7 @@ use Orb\Data\Countries;
 use Plivo\Exceptions\PlivoResponseException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 /**
  * Class PlivoAccountsController.
@@ -47,6 +50,12 @@ class PlivoAccountsController extends AbstractVoiceCrudController
     public static $type         = PlivoAccountType::class;
     public static $listOrder    = 'asc';
     public static $listPaginate = false;
+
+    protected function checkExposed($actionMethodName)
+    {
+        // TODO plivo disabled
+        throw new MethodNotAllowedHttpException([]);
+    }
 
     /**
      * @ApiDoc(
@@ -178,11 +187,7 @@ class PlivoAccountsController extends AbstractVoiceCrudController
             $options['pattern'] = $query->get('phrase');
         }
 
-        $types = $query->get('types');
-        if (!$types || !is_array($types)) {
-            $types = [];
-        }
-
+        $types   = (array) $query->get('type');
         $numbers = [];
         foreach ($types as $type) {
             $numbers = array_merge($numbers, $adapter->getAvailablePhoneNumbers($account, $countryCode, $type, $options));
@@ -259,4 +264,50 @@ class PlivoAccountsController extends AbstractVoiceCrudController
             return $this->getFormErrorResponseFromExceptionMessage('plivo_exception', $e->getErrorMessage());
         }
     }
+
+    /* This was refactored for Twilio / forms setup, re-enabling Plivo would need similar change to admin setup
+    public function createCloudAccountAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
+
+        try {
+            $this->get('dp.voice.cloud_proxy')->initPlivoProxy($this->getUser());
+        } catch (InsufficientBalanceException $e) {
+            return new View([
+                'code'    => 'invalid_input',
+                'message' => 'Could not setup voice account',
+                'errors'  => [
+                    'errors' => [
+                        ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                    ],
+                    'fields' => [
+                        'dpms_client' => [
+                            'errors' => [
+                                ['code' => 'dpms_client.no_funds', 'message' => 'Your account has no funds.'],
+                            ],
+                        ],
+                    ],
+                ],
+            ], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
+            throw $this->createAccessDeniedException($e->getMessage());
+        }
+
+        $account = $this->getRepository(PlivoVoiceAccount::class)->findOneBy([
+            'accountId' => '_',
+            'authToken' => '_',
+        ]);
+
+        if (!$account) {
+            $account = new PlivoVoiceAccount();
+            $account->setAccountId('_');
+            $account->setAuthToken('_');
+            $account->setAccountName('Deskpro Cloud Voice Account');
+
+            $this->getManager()->persist($account);
+            $this->getManager()->flush();
+        }
+
+        return new View($this->wrap($account), Response::HTTP_CREATED);
+    }*/
 }

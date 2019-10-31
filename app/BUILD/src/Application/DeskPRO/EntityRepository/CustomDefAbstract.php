@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Tickets\Actions\AbstractAction;
 use DeskPRO\Component\Util\TypeUtils;
 
 class CustomDefAbstract extends AbstractEntityRepository
@@ -66,7 +67,7 @@ class CustomDefAbstract extends AbstractEntityRepository
      * So the idea is this is a bit defensive and that two small queries is better than 1 query with potentially
      * a very large result set.
      */
-    private function preloadHierarchy()
+    protected function preloadHierarchy()
     {
         if ($this->didLoadHierarchy) {
             return;
@@ -237,8 +238,12 @@ class CustomDefAbstract extends AbstractEntityRepository
         )->setParameter('ids', $ids)->execute();
     }
 
-    public function updateTo(array $fromIds, $toId)
+    public function updateTo(array $fromIds, $toId, $field = null)
     {
+        if ($field) {
+            $this->updateOptionsUsageToId($field, $fromIds, $toId);
+            $this->_em->flush();
+        }
         $entity = str_replace('\\CustomDef', '\\CustomData', $this->getEntityName());
         $table  = $this->_em->getRepository($entity)->getTableName();
         $con    = $this->_em->getConnection();
@@ -248,5 +253,79 @@ class CustomDefAbstract extends AbstractEntityRepository
             ['ids' => $fromIds, 'to' => $toId],
             ['ids' => Connection::PARAM_INT_ARRAY, 'to' => \PDO::PARAM_INT]
         );
+    }
+
+    protected function updateOptionsUsageToId($field, $fromIds, $toId)
+    {
+    }
+
+    /**
+     * @param AbstractAction $action
+     * @param string         $match
+     * @param $fieldId
+     * @param $ids
+     *
+     * @return bool
+     */
+    protected function filterAction($action, $match, $fieldId, $ids)
+    {
+        if (strstr(get_class($action), $match)) {
+            $options = $action->getActionOptions();
+            if ($options->get('field_id') == $fieldId) {
+                foreach ($options as $option) {
+                    if (in_array($option, $ids)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array  $term
+     * @param string $criteria
+     * @param array  $ids
+     *
+     * @return bool
+     */
+    protected function filterTerm($term, $criteria, $ids)
+    {
+        if ($term['type'] === $criteria && isset($term['options']['value'])) {
+            foreach ($term['options']['value'] as $optionId) {
+                if (in_array($optionId, $ids)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param array  $terms
+     * @param string $criteria
+     * @param array  $ids
+     *
+     * @return bool
+     */
+    protected function filterTerms($terms, $criteria, $ids)
+    {
+        foreach ($terms as $term) {
+            if (isset($term['set_terms'])) {
+                foreach ($term['set_terms'] as $setTerm) {
+                    if ($this->filterTerm($setTerm, $criteria, $ids)) {
+                        return true;
+                    }
+                }
+            } else {
+                if ($this->filterTerm($term, $criteria, $ids)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

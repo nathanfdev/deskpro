@@ -1,3 +1,323 @@
+adm.agents.import_results:
+  one: '{{count}} Agent have been invited to Deskpro'
+  few: '{{count}} Agents have been invited to Deskpro'
+  many: '{{count}} Agents have been invited to Deskpro'
+  other: '{{count}} Agents have been invited to Deskpro'
+adm.agents.import_results_failed:
+  one: '{{count}} Agent Invitation Failed'
+  few: '{{count}} Agent Invitations Failed'
+  many: '{{count}} Agent Invitations Failed'
+  other: '{{count}} Agent Invitations Failed'
+adm.custom_fields.count_specific_org_fields:
+  one: '{{count}} Per-Organization Custom Field'
+  few: '{{count}} Per-Organization Custom Fields'
+  many: '{{count}} Per-Organization Custom Fields'
+  other: '{{count}} Per-Organization Custom Fields'
+adm.custom_fields.count_specific_user_fields:
+  one: '{{count}} Per-User Custom Field'
+  few: '{{count}} Per-User Custom Fields'
+  many: '{{count}} Per-User Custom Fields'
+  other: '{{count}} Per-User Custom Fields'
+adm.general.count_custom_fields:
+  one: '{{count}} Custom Field'
+  few: '{{count}} Custom Fields'
+  many: '{{count}} Custom Fields'
+  other: '{{count}} Custom Fields'
+adm.general.count_labels:
+  one: '{{count}} Label'
+  few: '{{count}} Labels'
+  many: '{{count}} Labels'
+  other: '{{count}} Labels'
+adm.general.x_api_keys:
+  one: '{{count}} API Key'
+  few: '{{count}} API Keys'
+  many: '{{count}} API Keys'
+  other: '{{count}} API Keys'
+adm.general.x_departments:
+  one: '{{count}} Department'
+  few: '{{count}} Departments'
+  many: '{{count}} Departments'
+  other: '{{count}} Departments'
+adm.general.x_email_bans:
+  one: '{{count}} Email Ban'
+  few: '{{count}} Email Bans'
+  many: '{{count}} Email Bans'
+  other: '{{count}} Email Bans'
+adm.general.x_community_active_statuses:
+  one: '{{count}} Community Active Status'
+  few: '{{count}} Community Active Statuses'
+  many: '{{count}} Community Active Statuses'
+  other: '{{count}} Community Active Statuses'
+adm.general.x_community_categories:
+  one: '{{count}} Category'
+  few: '{{count}} Categories'
+  many: '{{count}} Categories'
+  other: '{{count}} Categories'
+adm.general.x_community_closed_statuses:
+  one: '{{count}} Community Closed Status'
+  few: '{{count}} Community Closed Statuses'
+  many: '{{count}} Community Closed Statuses'
+  other: '{{count}} Community Closed Statuses'
+adm.general.x_community_statuses:
+  one: '{{count}} Community Status'
+  few: '{{count}} Community Statuses'
+  many: '{{count}} Community Statuses'
+  other: '{{count}} Community Statuses'
+adm.general.x_community_channels:
+  one: '{{count}} Community Channel'
+  few: '{{count}} Community Channels'
+  many: '{{count}} Community Channels'
+  other: '{{count}} Community Channels'
+adm.general.x_ip_bans:
+  one: '{{count}} IP Ban'
+  few: '{{count}} IP Bans'
+  many: '{{count}} IP Bans'
+  other: '{{count}} IP Bans'
+adm.general.x_ticket_escalations:
+  one: '{{count}} Ticket Escalation'
+  few: '{{count}} Ticket Escalations'
+  many: '{{count}} Ticket Escalations'
+  other: '{{count}} Ticket Escalations'
+adm.general.x_ticket_filters:
+  one: '{{count}} Ticket Filter'
+  few: '{{count}} Ticket Filters'
+  many: '{{count}} Ticket Filters'
+  other: '{{count}} Ticket Filters'
+adm.general.x_twitter_accounts:
+  one: '{{count}} Twitter Account'
+  few: '{{count}} Twitter Accounts'
+  many: '{{count}} Twitter Accounts'
+  other: '{{count}} Twitter Accounts'
+adm.general.x_user_rules:
+  one: '{{count}} User Rule'
+  few: '{{count}} User Rules'
+  many: '{{count}} User Rules'
+  other: '{{count}} User Rules'
+adm.round_robins.count:
+  one: '{{count}} Round Robin'
+  few: '{{count}} Round Robins'
+  many: '{{count}} Round Robins'
+  other: '{{count}} Round Robins'
+adm.round_robins.delete_warn:
+  one: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} trigger and remove the round robin actions.'
+  few: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+  many: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+  other: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+adm.round_robins.disable_warn:
+  one: 'Disabling Round Robin will disable {{count}} trigger and remove the round robin actions. You should update or delete affected trigger'
+  few: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+  many: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+  other: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+adm.ticket_escalations.count_escalations:
+  one: '{{count}} Escalation'
+  few: '{{count}} Escalations'
+  many: '{{count}} Escalations'
+  other: '{{count}} Escalations'
+adm.ticket_filters.count_filters:
+  one: '{{count}} Filter'
+  few: '{{count}} Filters'
+  many: '{{count}} Filters'
+  other: '{{count}} Filters'
+adm.ticket_macros.count_macros:
+  one: '{{count}} Macro'
+  few: '{{count}} Macros'
+  many: '{{count}} Macros'
+  other: '{{count}} Macros'
+adm.ticket_slas.count_slas:
+  one: '{{count}} SLA'
+  few: '{{count}} SLAs'
+  many: '{{count}} SLAs'
+  other: '{{count}} SLAs'
+adm.ticket_triggers.count_dep_triggers:
+  one: '{{count}} Department Trigger'
+  few: '{{count}} Department Triggers'
+  many: '{{count}} Department Triggers'
+  other: '{{count}} Department Triggers'
+adm.ticket_triggers.count_email_triggers:
+  one: '{{count}} Email Account Trigger'
+  few: '{{count}} Email Account Triggers'
+  many: '{{count}} Email Account Triggers'
+  other: '{{count}} Email Account Triggers'
+adm.ticket_triggers.count_satisfaction_triggers:
+  one: '{{count}} Satisfaction Trigger'
+  few: '{{count}} Satisfaction Triggers'
+  many: '{{count}} Satisfaction Triggers'
+  other: '{{count}} Satisfaction Triggers'
+adm.ticket_triggers.count_triggers:
+  one: '{{count}} Trigger'
+  few: '{{count}} Triggers'
+  many: '{{count}} Triggers'
+  other: '{{count}} Triggers'
+adm.ticket_webhooks.count_webhooks:
+  one: '{{count}} Webhook'
+  few: '{{count}} Webhooks'
+  many: '{{count}} Webhooks'
+  other: '{{count}} Webhooks'
+adm.tickets.x_email_accounts:
+  one: '{{count}} Email Account'
+  few: '{{count}} Email Accounts'
+  many: '{{count}} Email Accounts'
+  other: '{{count}} Email Accounts'
+admin.agents.deleted_agents_exist:
+  one: 'There is 1 deleted agent'
+  few: 'There are {{count}} deleted agents'
+  many: 'There are {{count}} deleted agents'
+  other: 'There are {{count}} deleted agents'
+admin.brands.x_brands:
+  one: '{{count}} Brand'
+  few: '{{count}} Brands'
+  many: '{{count}} Brands'
+  other: '{{count}} Brands'
+admin.channels.facebook_x_pages:
+  one: '{{count}} Facebook Page'
+  few: '{{count}} Facebook Pages'
+  many: '{{count}} Facebook Pages'
+  other: '{{count}} Facebook Pages'
+admin.channels.sms_x_accounts:
+  one: '{{count}} SMS Account'
+  few: '{{count}} SMS Accounts'
+  many: '{{count}} SMS Accounts'
+  other: '{{count}} SMS Accounts'
+admin.departments.count_agents:
+  one: '{{count}} agent'
+  few: '{{count}} agents'
+  many: '{{count}} agents'
+  other: '{{count}} agents'
+admin.departments.count_chats:
+  one: '{0} 0 chats'
+  few: '{1} 1 chat'
+  many: '{1} 1 chat'
+  other: '{1} 1 chat'
+admin.departments.count_tickets:
+  one: '{0} are 0 tickets'
+  few: '{1} is 1 ticket'
+  many: '{1} is 1 ticket'
+  other: '{1} is 1 ticket'
+admin.community.count_active_statuses:
+  one: '{{count}} active status'
+  few: '{{count}} active statuses'
+  many: '{{count}} active statuses'
+  other: '{{count}} active statuses'
+admin.community.count_closed_statuses:
+  one: '{{count}} closed status'
+  few: '{{count}} closed statuses'
+  many: '{{count}} closed statuses'
+  other: '{{count}} closed statuses'
+admin.community.count_community_topics:
+  one: '{{count}} топик'
+  few: '{{count}} топиков'
+  many: '{{count}} топиков'
+  other: '{{count}} топиков'
+admin.general.count_custom_fields:
+  one: '{{count}} Custom Field'
+  few: '{{count}} Custom Fields'
+  many: '{{count}} Custom Fields'
+  other: '{{count}} Custom Fields'
+admin.general.count_labels:
+  one: '{{count}} Label'
+  few: '{{count}} Labels'
+  many: '{{count}} Labels'
+  other: '{{count}} Labels'
+admin.general.time_x_day:
+  one: '1 day'
+  few: '{{count}} days'
+  many: '{{count}} days'
+  other: '{{count}} days'
+admin.general.time_x_hour:
+  one: '1 hour'
+  few: '{{count}} hours'
+  many: '{{count}} hours'
+  other: '{{count}} hours'
+admin.general.time_x_minute:
+  one: '1 minute'
+  few: '{{count}} minutes'
+  many: '{{count}} minutes'
+  other: '{{count}} minutes'
+admin.general.time_x_month:
+  one: '1 month'
+  few: '{{count}} months'
+  many: '{{count}} months'
+  other: '{{count}} months'
+admin.general.time_x_second:
+  one: '1 second'
+  few: '{{count}} seconds'
+  many: '{{count}} seconds'
+  other: '{{count}} seconds'
+admin.general.time_x_week:
+  one: '1 week'
+  few: '{{count}} weeks'
+  many: '{{count}} weeks'
+  other: '{{count}} weeks'
+admin.general.time_x_year:
+  one: '1 year'
+  few: '{{count}} years'
+  many: '{{count}} years'
+  other: '{{count}} years'
+admin.general.x_departments:
+  one: '{{count}} Department'
+  few: '{{count}} Departments'
+  many: '{{count}} Departments'
+  other: '{{count}} Departments'
+admin.general.you_are_outdated_by_x_buils:
+  one: 'Your helpdesk is outdated by {{count}} versions'
+  few: 'Your helpdesk is outdated by {{count}} versions'
+  many: 'Your helpdesk is outdated by {{count}} versions'
+  other: 'Your helpdesk is outdated by {{count}} versions'
+admin.logs.error_logs_count:
+  one: 'Error Logs ({{count}})'
+  few: 'Error Logs ({{count}})'
+  many: 'Error Logs ({{count}})'
+  other: 'Error Logs ({{count}})'
+admin.server.count_files_will_be_used:
+  one: '{0} {{count}} files with a total size of {{size}} will be moved. '
+  few: '{1} {{count}} file with a total size of {{size}} will be moved.'
+  many: '{1} {{count}} file with a total size of {{size}} will be moved.'
+  other: '{1} {{count}} file with a total size of {{size}} will be moved.'
+admin.templates.count_custom:
+  one: '<i>{{count}}</i> custom'
+  few: '<i>{{count}}</i> custom'
+  many: '<i>{{count}}</i> custom'
+  other: '<i>{{count}}</i> custom'
+admin.templates.count_outdated:
+  one: '<i>{{count}}</i> outdated'
+  few: '<i>{{count}}</i> outdated'
+  many: '<i>{{count}}</i> outdated'
+  other: '<i>{{count}}</i> outdated'
+admin.templates.count_template:
+  one: '<i>{{count}}</i> template'
+  few: '<i>{{count}}</i> templates'
+  many: '<i>{{count}}</i> templates'
+  other: '<i>{{count}}</i> templates'
+admin.tickets.have_count_categories:
+  one: 'You have 1 categories.'
+  few: 'You have {{count}} categories.'
+  many: 'You have {{count}} categories.'
+  other: 'You have {{count}} categories.'
+admin.tickets.have_count_departments:
+  one: 'You have 1 department.'
+  few: 'You have {{count}} departments.'
+  many: 'You have {{count}} departments.'
+  other: 'You have {{count}} departments.'
+admin.tickets.have_count_priorities:
+  one: 'You have 1 priorities.'
+  few: 'You have {{count}} priorities.'
+  many: 'You have {{count}} priorities.'
+  other: 'You have {{count}} priorities.'
+admin.tickets.have_count_products:
+  one: 'You have 1 products.'
+  few: 'You have {{count}} products.'
+  many: 'You have {{count}} products.'
+  other: 'You have {{count}} products.'
+admin.tickets.have_count_workflows:
+  one: 'You have 1 workflows.'
+  few: 'You have {{count}} workflows.'
+  many: 'You have {{count}} workflows.'
+  other: 'You have {{count}} workflows.'
+admin.tickets.x_email_accounts:
+  one: '{{count}} Email Account'
+  few: '{{count}} Email Accounts'
+  many: '{{count}} Email Accounts'
+  other: '{{count}} Email Accounts'
 agent.chat.added_as_participant: 'Добавлен как участник'
 agent.chat.agent_chats: 'Чат агентов'
 agent.chat.between_members: 'Чат между:'
@@ -5,9 +325,15 @@ agent.chat.chat_history: 'История чата'
 agent.chat.chat_started_by: 'Чат начал(а)'
 agent.chat.chat_transcript: 'История сообщений в чате'
 agent.chat.chat_with_x: 'Чат с {{name}}'
+agent.chat.count_agents:
+  one: '1 online agent'
+  few: '{{count}} online agents'
+  many: '{{count}} online agents'
+  other: '{{count}} online agents'
 agent.chat.count_seconds:
   one: '{{count}}секунда'
   few: '{{count}}секунды'
+  many: '{{count}}секунды'
   other: '{{count}}секунды'
 agent.chat.filter_title_assigned: 'Назначенные чаты'
 agent.chat.filter_title_mine: 'Мои чаты'
@@ -25,6 +351,7 @@ agent.chat.leave_unassign: 'Переназначить с меня и покин
 agent.chat.list_title:
   one: '1 беседа'
   few: '{{count}} бесед'
+  many: '{{count}} бесед'
   other: '{{count}} бесед'
 agent.chat.msg_agent_timeout: 'Истекло время ожидания агента {{agent_name}}'
 agent.chat.msg_assigned_agent: 'Чат назначен на {{agent_name}}'
@@ -75,22 +402,25 @@ agent.chrome.chat_list_no-online-users: 'Нет пользователей в с
 agent.chrome.chat_list_online-users:
   one: '<span class="count-online-users">1</span>пользователь в сети'
   few: '<span class="count-online-users">{{count}}</span> пользователей в сети'
+  many: '<span class="count-online-users">{{count}}</span> пользователей в сети'
   other: '<span class="count-online-users">{{count}}</span> пользователей в сети'
 agent.chrome.chat_logged-in: 'Вошел в чат'
 agent.chrome.chat_logged-out: 'Вышел из чата'
 agent.chrome.chat_online-agents:
   one: '<span class="userchat-online-agents-count">{{count}}</span> Агент'
   few: '<span class="userchat-online-agents-count">{{count}}</span> Агенты'
+  many: '<span class="userchat-online-agents-count">{{count}}</span> Агенты'
   other: '<span class="userchat-online-agents-count">{{count}}</span> Агенты'
 agent.chrome.chat_online-users:
   one: '<span class="userchat-online-users-count">{{count}}</span> Пользователь'
   few: '<span class="userchat-online-users-count">{{count}}</span> Пользователи'
+  many: '<span class="userchat-online-users-count">{{count}}</span> Пользователи'
   other: '<span class="userchat-online-users-count">{{count}}</span> Пользователи'
 agent.chrome.chat_sign-in: 'Войти в чат'
 agent.chrome.chat_sign-out: 'Выйти из чата'
 agent.chrome.create_new-article: 'Новая статья'
 agent.chrome.create_new-download: 'Новая загрузка'
-agent.chrome.create_new-feedback: 'Новое предложение'
+agent.chrome.create_new-community: 'Новое предложение'
 agent.chrome.create_new-news: 'Новая новость'
 agent.chrome.create_new-organization: 'Новая организация'
 agent.chrome.create_new-person: 'Новый пользователь'
@@ -116,8 +446,7 @@ agent.chrome.link_logout: Выйти
 agent.chrome.link_preferences: Настройки
 agent.chrome.nav_admin_settings: Администрирование
 agent.chrome.nav_agentchat: 'IM агента'
-agent.chrome.nav_feedback: Предложения
-agent.chrome.nav_people: CRM
+agent.chrome.nav_community: Предложения
 agent.chrome.nav_publish: Опубликованное
 agent.chrome.nav_reports: Отчеты
 agent.chrome.nav_search: Поиск
@@ -134,9 +463,8 @@ agent.chrome.quicksearch_info: 'Панель быстрого поиска по�
 agent.chrome.quicksearch_title: 'Панель быстрого поиска'
 agent.chrome.quicksearch_title-articles: Статьи
 agent.chrome.quicksearch_title-chat: Чат
-agent.chrome.quicksearch_title-crm: CRM
 agent.chrome.quicksearch_title-downloads: Загрузки
-agent.chrome.quicksearch_title-feedback: 'Обратная связь'
+agent.chrome.quicksearch_title-community: 'Обратная связь'
 agent.chrome.quicksearch_title-news: Новости
 agent.chrome.quicksearch_title-orgs: Организации
 agent.chrome.quicksearch_title-people: Пользователи
@@ -147,6 +475,7 @@ agent.chrome.recent_list-none: 'У вас нет открытых вкладок
 agent.chrome.search-show-more:
   one: 'Показать {{count}} подробнее '
   few: ' Показать {{count}} подробнее'
+  many: ' Показать {{count}} подробнее'
   other: ' Показать {{count}} подробнее'
 agent.defaults.default_style: 'Стиль по умолчанию'
 agent.defaults.team_lvl1_support: '1-я линия поддержки'
@@ -221,6 +550,7 @@ agent.emails.reply_is_as_note: 'Ваш ответ будет добавлен в
 agent.emails.reply_sent_to_ccs:
   one: 'и {{count}} CC пользователь:'
   few: 'и {{count}} CC пользователи:'
+  many: 'и {{count}} CC пользователи:'
   other: 'и {{count}} CC пользователи:'
 agent.emails.reply_sent_to_user: 'Ваш ответ будет отправлен пользователю {{user}}'
 agent.emails.subject_email_change_merge: 'Подтвердите смену e-mail и объединение аккаунтов'
@@ -267,40 +597,45 @@ agent.emails.view_your_tasks: 'Показать ваши задачи'
 agent.emails.view_your_teams_tasks: 'Показать задачи вашей команды'
 agent.emails.view_your_tweets: 'Просмотреть ваши твиты'
 agent.emails.your_initial_password: 'Ваш изначальный пароль'
-agent.feedback.any_category: 'Любая категория'
-agent.feedback.any_status: 'Любой статус'
-agent.feedback.count_votes: '{{display_count}} голос|{{display_count}} голосов'
-agent.feedback.feedback_deleted: 'Предложение удалено'
-agent.feedback.feedback_to_review: 'Предложение для просмотра'
-agent.feedback.least_voted_on_top: 'Наименее проголосовавший сверху'
-agent.feedback.list_title:
+agent.community.any_channel: 'Любая категория'
+agent.community.any_status: 'Любой статус'
+agent.community.count_votes:
+  one: '{{display_count}} vote'
+  few: '{{display_count}} votes'
+  many: '{{display_count}} votes'
+  other: '{{display_count}} votes'
+agent.community.community_topic_deleted: 'Предложение удалено'
+agent.community.community_topics_to_review: 'Предложение для просмотра'
+agent.community.least_voted_on_top: 'Наименее проголосовавший сверху'
+agent.community.list_title:
   one: '1 зависимость'
   few: '{{count}} зависимостей'
+  many: '{{count}} зависимостей'
   other: '{{count}} зависимостей'
-agent.feedback.merge_feedback: 'Объединить предложения'
-agent.feedback.merge_feedback_note: 'Описание предложения при объединении будет добавлено к сохраненному предложению.'
-agent.feedback.merge_feedback_submit: 'Объединить эти зависимые предложения'
-agent.feedback.merge_howto: 'Откройте дополнительную вкладку обратной связи, чтобы объединить'
-agent.feedback.new_feedback: 'Новый отзыв:'
-agent.feedback.newest_on_top: 'Новые сверху'
-agent.feedback.no_feedback_cats_error: 'Определенных типов нет. Прежде чем добавлять типы в раздел отзывов, вам нужно определить тип из интерфейса администратора.'
-agent.feedback.no_labels_explain: 'Вы еще не пометили обратную связь. Просмотрите заявку на отзыв, чтобы добавить к ней ярлыки.'
-agent.feedback.oldest_on_top: 'Старые сверху'
-agent.feedback.popularity_least_most: 'Популярность (по возрастанию)'
-agent.feedback.popularity_most_least: 'Популярность (по убыванию)'
-agent.feedback.showing_results: 'Показаны результаты'
-agent.feedback.status_active: Активный
-agent.feedback.status_closed: Закрыт
-agent.feedback.status_deleted: Удален
-agent.feedback.status_hidden: Скрыт
-agent.feedback.status_new: Новый
-agent.feedback.status_spam: Спам
-agent.feedback.top_voted_on_top: 'Лучшие проголосовавшие вверху'
-agent.feedback.update_filter: 'Обновить фильтр'
-agent.feedback.user_submitted_new_feedback: '{{name}} добавил новый отзыв'
-agent.feedback.vote_for_this_feedback: 'Проголосуйте за этот отзыв'
-agent.feedback.votes_least_most: 'Голоса (по возрастанию)'
-agent.feedback.votes_most_least: 'Голоса (по убыванию)'
+agent.community.merge_community_topics: 'Объединить предложения'
+agent.community.merge_community_topics_note: 'Описание предложения при объединении будет добавлено к сохраненному предложению.'
+agent.community.merge_community_topics_submit: 'Объединить эти зависимые предложения'
+agent.community.merge_howto: 'Откройте дополнительную вкладку обратной связи, чтобы объединить'
+agent.community.new_community_topic: 'Новый отзыв:'
+agent.community.newest_on_top: 'Новые сверху'
+agent.community.no_community_channels_error: 'Определенных типов нет. Прежде чем добавлять типы в раздел отзывов, вам нужно определить тип из интерфейса администратора.'
+agent.community.no_labels_explain: 'Вы еще не пометили обратную связь. Просмотрите заявку на отзыв, чтобы добавить к ней ярлыки.'
+agent.community.oldest_on_top: 'Старые сверху'
+agent.community.popularity_least_most: 'Популярность (по возрастанию)'
+agent.community.popularity_most_least: 'Популярность (по убыванию)'
+agent.community.showing_results: 'Показаны результаты'
+agent.community.status_active: Активный
+agent.community.status_closed: Закрыт
+agent.community.status_deleted: Удален
+agent.community.status_hidden: Скрыт
+agent.community.status_new: Новый
+agent.community.status_spam: Спам
+agent.community.top_voted_on_top: 'Лучшие проголосовавшие вверху'
+agent.community.update_filter: 'Обновить фильтр'
+agent.community.user_submitted_new_community_topic: '{{name}} добавил новый отзыв'
+agent.community.vote_for_this_community_topic: 'Проголосуйте за этот отзыв'
+agent.community.votes_least_most: 'Голоса (по возрастанию)'
+agent.community.votes_most_least: 'Голоса (по убыванию)'
 agent.general.24x7: 24х7
 agent.general.actions: Действия
 agent.general.activity_stream: 'Лента активности'
@@ -333,11 +668,9 @@ agent.general.agent_team: 'Команда агентов'
 agent.general.agent_waiting_x: 'Агент ожидает {{time}}'
 agent.general.agents: Агенты
 agent.general.ago: 'тому назад'
-agent.general.aim: AIM
 agent.general.alert: Предупреждение
 agent.general.all: Все
 agent.general.all_words: 'Все слова'
-agent.general.altc: (alt+c)
 agent.general.always_notify_agents: 'Всегда уведомлять агента'
 agent.general.always_set_this_urgency: 'Всегда устанавливать такую срочность'
 agent.general.and: и
@@ -446,14 +779,17 @@ agent.general.count: Подсчет
 agent.general.count_chat:
   one: '1 чат'
   few: '{{count}} чатов'
+  many: '{{count}} чатов'
   other: '{{count}} чатов'
 agent.general.count_tickets:
   one: '1 тикет'
   few: '{{count}} тикетов'
+  many: '{{count}} тикетов'
   other: '{{count}} тикетов'
 agent.general.count_votecount_votes:
   one: '1 голос'
   few: '{{count}} голосов'
+  many: '{{count}} голосов'
   other: '{{count}} голосов'
 agent.general.countries: Страны
 agent.general.create: Создать
@@ -463,7 +799,7 @@ agent.general.create_article: 'Создать статью'
 agent.general.create_content: 'Создать содержимое'
 agent.general.create_deal: 'Создать сделку'
 agent.general.create_download: 'Создать загрузку'
-agent.general.create_feedback: 'Создать предложение'
+agent.general.create_community_topic: 'Создать предложение'
 agent.general.create_news: 'Создать новость'
 agent.general.create_status: 'Создать статус'
 agent.general.create_ticket: 'Создать тикет'
@@ -471,7 +807,6 @@ agent.general.created: Созданные
 agent.general.created_and_published: 'Созданные и опубликованные'
 agent.general.created_timeago_by_x_on_y: 'Создал(а) {{name}} {{timeago}} {{date}}'
 agent.general.criteria: Критерий
-agent.general.crm: CRM
 agent.general.current_agent: 'Текущий агент'
 agent.general.current_computer_tz: 'Текущее время, установленное на компьютере'
 agent.general.current_page: 'Текущая страница'
@@ -574,11 +909,10 @@ agent.general.error_your_name: 'Введите полное имя'
 agent.general.escalation: Эскалация
 agent.general.everyone: Все
 agent.general.existing_picture: 'Существующее изображение'
-agent.general.facebook: Facebook
 agent.general.failed: 'Не удалось'
 agent.general.failure: Отказ
 agent.general.favorite: Избранное
-agent.general.feedback: Предложения
+agent.general.community: Предложения
 agent.general.field_name: 'Поле: {{field}}'
 agent.general.field_name_title: 'Имя поля'
 agent.general.field_type_choice: 'Предустановленные варианты'
@@ -631,7 +965,6 @@ agent.general.generate_password: 'Установить пароль'
 agent.general.greater_than: 'больше, чем'
 agent.general.group_by: 'Группировка по'
 agent.general.grouped_by: 'Сгруппировано по'
-agent.general.gtalk: GTalk
 agent.general.height: Высота
 agent.general.help: Помощь
 agent.general.hidden: Скрытые
@@ -643,11 +976,8 @@ agent.general.hidden_validating: 'Скрытые: подтверждение'
 agent.general.hide: Скрыть
 agent.general.hierarchy: Иерархия
 agent.general.host: Хост
-agent.general.hostname: Hostname
 agent.general.hour: Час
 agent.general.hours: часов
-agent.general.icq: ICQ
-agent.general.id: ID
 agent.general.inbox: Входящие
 agent.general.include: включая
 agent.general.includes_label: 'включая метку (тэг)'
@@ -665,7 +995,6 @@ agent.general.inserts_file_link: 'Позволяет добавить ссылк
 agent.general.inserts_full_image: 'Позволяет вставить полноразмерное изображение.'
 agent.general.inserts_plaintext_url: 'Позволяет вставить текст URL в файл.'
 agent.general.inserts_thumbnail_with_link: 'Позволяет вставить миниатюру со ссылкой на полноразмерное изображение.'
-agent.general.internet_explorer: 'Internet Explorer'
 agent.general.ip_address: IP-адрес
 agent.general.ip_addresses: IP-адреса
 agent.general.is: это
@@ -703,8 +1032,6 @@ agent.general.license_interface: Лицензии
 agent.general.link: Ссылка
 agent.general.linked_chat: 'Связанный чат'
 agent.general.linked_thumbnail: 'Связанная миниатюра'
-agent.general.linkedin: LinkedIn
-agent.general.linkedin_url: 'LinkedIn URL'
 agent.general.list_as_article_attachment: 'Приложение к статье в виде списка'
 agent.general.loading: Загрузка
 agent.general.loading_dot: Загрузка...
@@ -741,10 +1068,8 @@ agent.general.more: Более
 agent.general.move_to_tab: 'Переместить во вкладку'
 agent.general.msg_agent_timeout: 'Истекло время ожидания агента'
 agent.general.msg_user_timeout: 'Истекло время ожидания пользователя'
-agent.general.msn: MSN
 agent.general.my_account: 'Моя учетная запись'
 agent.general.my_team: 'Моя команда'
-agent.general.na: N/A
 agent.general.name: Имя
 agent.general.name_az: 'Имя (A-Z)'
 agent.general.name_is_summary: 'Имя {{name}}'
@@ -754,7 +1079,7 @@ agent.general.new: Новый
 agent.general.new_article: 'Новая статья'
 agent.general.new_comment: 'Новый комментарий'
 agent.general.new_download: 'Новая загрузка'
-agent.general.new_feedback: 'Новое предложение'
+agent.general.new_community: 'Новое предложение'
 agent.general.new_filter: 'Новый фильтр'
 agent.general.new_note: 'Новое примечание'
 agent.general.new_organization: 'Новая организация'
@@ -831,7 +1156,7 @@ agent.general.phone: 'Номер телефона'
 agent.general.phone_number: 'Номер телефона'
 agent.general.phrase: Фраза
 agent.general.please_wait: 'Пожалуйста, подождите...'
-agent.general.popular_feedback_only: 'Только популярные предложения'
+agent.general.popular_community_topics_only: 'Только популярные предложения'
 agent.general.popularity: Популярность
 agent.general.position: Положение
 agent.general.prev: Предыдущее
@@ -872,7 +1197,7 @@ agent.general.registered_views: 'Зарегистрированные просм
 agent.general.related_articles: 'Статьи по теме'
 agent.general.related_content: 'Содержимое по теме'
 agent.general.related_downloads: 'Загрузки по теме'
-agent.general.related_feedback: 'Предложения по теме'
+agent.general.related_community_topic: 'Предложения по теме'
 agent.general.related_news: 'Новости по теме'
 agent.general.relative_time: 'Относительное время'
 agent.general.remove: Удалить
@@ -929,8 +1254,6 @@ agent.general.show: Показать
 agent.general.showing: Отображение
 agent.general.showing_results_x_of_y: 'Отображение {{display_count}} результатов из {{size}}'
 agent.general.since_time: 'с {{time}}'
-agent.general.skype: Skype
-agent.general.sla: SLA
 agent.general.sla_status: 'Статус SLA'
 agent.general.slas: SLA
 agent.general.snippet_text_placeholder: 'Фрагмент текста'
@@ -950,7 +1273,6 @@ agent.general.statuses: Статусы
 agent.general.stop_processing_other_triggers: 'Остановить работу других триггеров'
 agent.general.subject: Тема
 agent.general.summary: 'Краткое описание'
-agent.general.supportdeskprocom: support@deskpro.com
 agent.general.system_user: Система
 agent.general.tabs_close_all: 'Закрыть все вкладки'
 agent.general.tabs_close_current: 'Закрыть эту вкладку'
@@ -1022,7 +1344,6 @@ agent.general.upload_explain: 'Нажмите на кнопку загрузки
 agent.general.upload_vcard_for: 'Загрузить визитную карточку для {{name}}'
 agent.general.urgency: Срочность
 agent.general.urgency_enter_negative_number: '(Введите отрицательное число, чтобы снизить срочность)'
-agent.general.url: URL
 agent.general.user: Пользователь
 agent.general.user_agent: 'Агент пользователя'
 agent.general.user_agents: 'Агенты пользователя'
@@ -1037,7 +1358,6 @@ agent.general.usergroup_everyone: Все
 agent.general.usergroups: 'Группы пользователей'
 agent.general.username: 'Имя пользователя'
 agent.general.users: Пользователи
-agent.general.usersources: Usersources
 agent.general.validate: Подтверждение
 agent.general.validate_comment: 'Подтверждение комментария'
 agent.general.value: Значение
@@ -1047,10 +1367,12 @@ agent.general.view: Вид
 agent.general.view_all_x_chats:
   one: 'Посмотреть 1 чат'
   few: 'Посмотреть все {{count}} чатов'
+  many: 'Посмотреть все {{count}} чатов'
   other: 'Посмотреть все {{count}} чатов'
 agent.general.view_all_x_tickets:
   one: 'Посмотреть 1 тикет'
   few: 'Посмотреть все {{count}} тикетов'
+  many: 'Посмотреть все {{count}} тикетов'
   other: 'Посмотреть все {{count}} тикетов'
 agent.general.view_in_user_interface: 'Посмотреть в интерфейсе пользователя'
 agent.general.view_more: 'Показать польше'
@@ -1063,7 +1385,6 @@ agent.general.website_embed: 'Встроенный сайт'
 agent.general.website_widget: 'Виджеты сайта'
 agent.general.weeks: недель
 agent.general.when: Когда
-agent.general.widget_add: +
 agent.general.width: Ширина
 agent.general.window_navigation: 'Окно навигации'
 agent.general.workflow: Подстатус
@@ -1074,6 +1395,7 @@ agent.general.x_before_y: '{{field}} до {{value}}'
 agent.general.x_down_votes:
   one: 'На 1 голос меньше'
   few: 'На {{count}} голосов меньше'
+  many: 'На {{count}} голосов меньше'
   other: 'На {{count}} голосов меньше'
 agent.general.x_include_y: '{{field}} включая {{value}}'
 agent.general.x_is_between_y_and_z: '{{field}} между {{value1}} и {{value2}}'
@@ -1086,13 +1408,12 @@ agent.general.x_selected: '{{num_placeholder}} выбрано'
 agent.general.x_up_votes:
   one: 'На 1 голос больше'
   few: 'На {{count}} голосов больше'
+  many: 'На {{count}} голосов больше'
   other: 'На {{count}} голосов больше'
 agent.general.years: год(а)
-agent.general.yim: YIM
 agent.general.your_email_address: 'Ваш адрес e-mail'
 agent.general.your_teams: 'Ваши команды'
 agent.interface.app-billing: 'Управление финансами'
-agent.interface.app-twitter: Twitter
 agent.interface.assign_to_self: 'Назначить на меня'
 agent.interface.chat-notification-vol: 'Громкость уведомления чата'
 agent.interface.click_icon_to_add_filter: 'Нажмите {{link}}, чтобы создать новый фильтр'
@@ -1101,7 +1422,6 @@ agent.interface.close_current_tab: 'Закрыть текущую вкладку
 agent.interface.create_ticket_person: 'Создать тикет для пользователя'
 agent.interface.creation: Создание
 agent.interface.deskpro_agent_interface: 'Интерфейс агента DeskPRO'
-agent.interface.deskpro_website_host: www.deskpro.com
 agent.interface.error_report_disclaimer: 'Обратите внимание, что мы не отвечаем на все отчеты об ошибках. Если у вас есть вопрос, требующий ответа, свяжитесь с нами по электронной почте: {{email}}.'
 agent.interface.error_report_submitting: 'Отправка отчета об ошибке...'
 agent.interface.error_report_thank_you: 'Спасибо за отправленный отчет об ошибке!'
@@ -1113,27 +1433,14 @@ agent.interface.kbd_change_status_resolved: 'Сменить статус на "�
 agent.interface.kbd_change_status_user: 'Сменить статус на "Ожидание пользователя"'
 agent.interface.kbd_ctrl_left: ctrl+влево
 agent.interface.kbd_ctrl_right: ctrl+вправо
-agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
 agent.interface.kbd_ctrl_shift_left: ctrl+shift+влево
 agent.interface.kbd_ctrl_shift_right: ctrl+shift+вправо
 agent.interface.kbd_enter: Ввод
-agent.interface.kbd_new_article: a
-agent.interface.kbd_new_download: d
-agent.interface.kbd_new_feedback: i
-agent.interface.kbd_new_news: 'n'
-agent.interface.kbd_new_organisation: o
-agent.interface.kbd_new_person: p
-agent.interface.kbd_new_task: k
-agent.interface.kbd_new_ticket: t
 agent.interface.kbd_open_org_profile: 'Открыть профиль организации'
 agent.interface.kbd_open_send_options: 'Показать настройки отправки'
 agent.interface.kbd_open_snippets: 'Показать фрагменты'
 agent.interface.kbd_open_user_profile: 'Открыть профиль пользователя'
 agent.interface.kbd_send_reply: 'Отправить ответ'
-agent.interface.kbd_shift_a: shift+a
-agent.interface.kbd_shift_c: shift+c
-agent.interface.kbd_shift_r: shift+r
-agent.interface.kbd_shift_t: shift+t
 agent.interface.kbd_space: пробел
 agent.interface.kbd_up_or_down: 'вверх или вниз'
 agent.interface.key_close_tab: 'Закрыть вкладку'
@@ -1144,7 +1451,7 @@ agent.interface.keyboard_shortcuts: 'Сочетания клавиш'
 agent.interface.major_items_appear_here: 'Тикеты, пользователи, организации, новости, загрузки и предложения открыты здесь.'
 agent.interface.open_new_article_form: 'Открыть форму новой статьи'
 agent.interface.open_new_download_form: 'Открыть форму новой загрузки'
-agent.interface.open_new_feedback_form: 'Открыть форму нового предложения'
+agent.interface.open_new_community_topic_form: 'Открыть форму нового предложения'
 agent.interface.open_new_news_form: 'Открыть форму новой новости'
 agent.interface.open_new_organization_form: 'Открыть форму новой организации'
 agent.interface.open_new_person_form: 'Открыть форму нового пользователя'
@@ -1192,14 +1499,12 @@ agent.jira.unlink: 'Отменить связь с JIRA'
 agent.login.account_locked_message: 'Из-за нескольких неудачных попыток входа ваша учетная запись была заблокирована для безопасности. Вы не сможете войти в систему для {{timeago}}'
 agent.login.alert_fields_must_match: 'Пароли не совпадают'
 agent.login.alert_too_short: 'Пароль должен содержать как минимум 4 символа.'
-agent.login.apple_safari: 'Apple Safari'
 agent.login.back_to_login: 'Вернуться на страницу авторизации'
 agent.login.browser_requirements: 'Требования к браузеру'
 agent.login.email_instructions: 'Инструкции по электронной почте'
 agent.login.enter_new_password: 'Введите новый пароль'
 agent.login.enter_password: 'Введите ваш пароль'
 agent.login.forgot_password: 'Забыли пароль?'
-agent.login.google_chrome: 'Google Chrome'
 agent.login.has_logged_out: 'Вы успешно вышли из системы.'
 agent.login.ie_compat_mode_explain: 'Некоторые версии IE содержат такую функцию как "Режим совместимости", которая помогает обеспечить работу старых сайтов в современных браузерах. Иногда эта функция может срабатывать некорректно. Если вы используете IE8 или IE9, но  видите страницу с требованиями к браузеру, возможно, включен "Режим совместимости". Чтобы продолжить использование DeskPRO, необходимо отключить эту функцию.'
 agent.login.ie_compat_mode_step1: 'Если меню "Инструменты" не отображается, нажмите на клавиатуре кнопку Alt'
@@ -1209,9 +1514,7 @@ agent.login.ie_compat_mode_step4: 'Закройте это окно и обно�
 agent.login.ie_compat_mode_title: 'Вы используете IE8 или более позднюю версию? <a href="{{url}}"> Возможно, включен "Режим совместимости".</a>'
 agent.login.ie_use_chrome_frame: 'В качестве альтернативы вы можете устаносить <a href="http://www.google.com/chromeframe"> Google Chrome Frame</a>.'
 agent.login.login_failed: 'Неверный логин. Пожалуйста, повторите попытку.'
-agent.login.mozilla_firefox: 'Mozilla Firefox'
 agent.login.notice_outdated_browser: 'Для использования интерфейса агента или администратора требуется современный браузер. Ваш браузер устарел и не подходит для использования DeskPRO. Пожалуйста, обновите его до последней версии или попробуйте скачать и установить другой браузер.'
-agent.login.opera: Opera
 agent.login.password_was_reset: 'Ваш пароль успешно сброшен.'
 agent.login.remember_me: 'Запомнить меня'
 agent.login.reset-password-info: 'Введите e-mail для отправки инструкций по  сбросу пароля:'
@@ -1249,16 +1552,19 @@ agent.organizations.email_domain_assoc_explain: 'Пользователи с e-m
 agent.organizations.email_domain_assoc_move:
   one: 'Связать 1 пользователя'
   few: 'Связать {{count}} пользователей'
+  many: 'Связать {{count}} пользователей'
   other: 'Связать {{count}} пользователей'
 agent.organizations.email_domain_assoc_move_all:
   one: 'Связать 1 пользователя, принадлежащего другой организации'
   few: 'Связать {{count}} пользователей, принадлежащих другой организации'
+  many: 'Связать {{count}} пользователей, принадлежащих другой организации'
   other: 'Связать {{count}} пользователей, принадлежащих другой организации'
 agent.organizations.email_domain_assoc_none: 'Указать почтовый домен организации для автоматической привязки пользователей.'
 agent.organizations.email_domain_assoc_remove: 'Удалить домен'
 agent.organizations.email_domain_assoc_remove_users:
   one: 'Удалить домен и отписать 1 пользователя от этой организации'
   few: 'Удалить домен и отписать {{count}} пользователей от этой организации'
+  many: 'Удалить домен и отписать {{count}} пользователей от этой организации'
   other: 'Удалить домен и отписать {{count}} пользователей от этой организации'
 agent.organizations.email_domain_assoc_title: 'Домен связан с {{name}}'
 agent.organizations.enter_position: 'Указать должность'
@@ -1266,6 +1572,7 @@ agent.organizations.is_empty: 'В этой организации нет уча�
 agent.organizations.list_title:
   one: '1 организация'
   few: '{{count}} организаций'
+  many: '{{count}} организаций'
   other: '{{count}} организаций'
 agent.organizations.no_slas: 'Нет SLA, которые будут автоматически применены к этой организации.'
 agent.organizations.org_manager_click_to_remove: 'Менеджер организации. Нажмите, чтобы изменить.'
@@ -1293,6 +1600,7 @@ agent.people.contact_info_for_x: 'Контактная информация дл
 agent.people.count_members:
   one: '{{count}} пользователь'
   few: '{{count}} пользователя(ей)'
+  many: '{{count}} пользователя(ей)'
   other: '{{count}} пользователя(ей)'
 agent.people.create_person: 'Создать пользователя'
 agent.people.creation_by: 'Создание от'
@@ -1306,12 +1614,12 @@ agent.people.email_awaiting_validation: 'Email ожидает проверки'
 agent.people.enable_account: 'Включить аккаунт'
 agent.people.enter_name_here: 'Введите имя здесь'
 agent.people.find_person: 'Найти пользователя'
-agent.people.im: IM
 agent.people.im_account_placeholder: 'Имя пользователя аккаунта'
 agent.people.is_agent: Агент
 agent.people.list_title:
   one: '1 пользователь'
   few: ' {{count}} Пользователя(ей)'
+  many: ' {{count}} Пользователя(ей)'
   other: ' {{count}} Пользователя(ей)'
 agent.people.login_as_user: 'Вход как пользователь'
 agent.people.make_primary_email: 'сделать основным'
@@ -1368,13 +1676,12 @@ agent.people.website: Веб-сайт
 agent.people.website_url_placeholder: 'URL сайта'
 agent.prefs.apps_alert_title: Предупреждение
 agent.prefs.apps_chat_message: 'Агент отправляет мне сообщение, когда я не в сети'
-agent.prefs.apps_email_title: Email
 agent.prefs.apps_login_attempt: 'Всякий раз, когда моя учетная запись используется для входа в систему'
 agent.prefs.apps_login_attempt_fail: 'Всякий раз, когда моя учетная запись используется для входа в систему, а учетные данные неверны'
 agent.prefs.apps_new_comment: 'Новый комментарий добавлен'
 agent.prefs.apps_new_comment_validate: 'Будет добавлен новый комментарий, требующий проверки.'
-agent.prefs.apps_new_feedback: 'Новая обратная связь'
-agent.prefs.apps_new_feedback_validate: 'Получена новая обратная связь, требующая проверки'
+agent.prefs.apps_new_community_topic: 'Новая обратная связь'
+agent.prefs.apps_new_community_topic_validate: 'Получена новая обратная связь, требующая проверки'
 agent.prefs.apps_new_user: 'Новый зарегистрированный пользователь'
 agent.prefs.apps_task_assign_self: 'Задача назначена мне'
 agent.prefs.apps_task_assign_team: 'Задача назначена моей команде'
@@ -1479,7 +1786,6 @@ agent.prefs.inbox_unassigned_email_property_change: 'Напишите мне о 
 agent.prefs.inbox_unassigned_email_user_activity: 'Напишите мне, когда пользователь ответит на неназначенный тикет'
 agent.prefs.inbox_user_activity_title: 'Сообщение пользователя'
 agent.prefs.name_inbox_agent_alert_property_change: 'Оповещение {{name}} о любом изменении в тикете назначенном на {{name}}'
-agent.prefs.name_inbox_agent_alert_user_activity: 'Оповещение {{name}}, когда пользователь отвечает на тикет, назначенный {{имя}}'
 agent.prefs.name_inbox_agent_email_agent_activity: 'Письмо {{name}}, когда другой агент отвечает на тикет, назначенный {{name}}'
 agent.prefs.name_inbox_agent_email_agent_note: 'Письмо {{name}}, когда другой агент добавляет примечание к тикету, назначенному {{name}}'
 agent.prefs.name_inbox_agent_email_created: 'Оповестить {{name}}, когда новый тикет создан и назначен {{name}}'
@@ -1523,6 +1829,7 @@ agent.publish.comment_requires_validation: 'Этот комментарий тр
 agent.publish.comments_list_title:
   one: '1 Комментарий '
   few: ' {{count}} Комментария(ев)'
+  many: ' {{count}} Комментария(ев)'
   other: ' {{count}} Комментария(ев)'
 agent.publish.comments_to_validate: 'Комментарии к обзору'
 agent.publish.compare_selected: 'Сравнить выбранное'
@@ -1543,6 +1850,7 @@ agent.publish.downloads_highest_lowest: 'Количество Загрузок (
 agent.publish.downloads_list_title:
   one: '1 загрузка'
   few: 'Загрузок: {{count}}'
+  many: 'Загрузок: {{count}}'
   other: 'Загрузок: {{count}}'
 agent.publish.downloads_lowest_highest: 'Количество загрузок (по возрастанию)'
 agent.publish.draft_content: 'Мои черновики'
@@ -1550,6 +1858,7 @@ agent.publish.draft_revision: Изменить
 agent.publish.drafts_list_title:
   one: '1 Черновик '
   few: ' {{count}} Черновика(ов)'
+  many: ' {{count}} Черновика(ов)'
   other: ' {{count}} Черновика(ов)'
 agent.publish.drop_file_to_add: 'Оставьте свой файл здесь, чтобы добавить его в это сообщение'
 agent.publish.edit_category_btn: 'Изменить категорию'
@@ -1558,21 +1867,34 @@ agent.publish.error_kb_cats_same: 'Категории те же.'
 agent.publish.error_kb_missing:
   one: '{{count}} не найдена. '
   few: ' {{count}} статьи не найдены.'
+  many: ' {{count}} статьи не найдены.'
   other: ' {{count}} статьи не найдены.'
 agent.publish.error_kb_not_in_db: 'Категория не найдена.'
+agent.publish.error_kb_perm_denied:
+  one: '{{count}} permission error.'
+  few: '{{count}} permission errors.'
+  many: '{{count}} permission errors.'
+  other: '{{count}} permission errors.'
 agent.publish.error_kb_unaffected: 'Некоторые статьи не были затронуты:'
 agent.publish.event_time_ago_at_when: '{{ago}} в {{date}}'
 agent.publish.event_time_ago_by_who_at_when: '{{ago}} от {{name}} в {{date}}'
 agent.publish.for_ticket: 'Для тикета'
 agent.publish.glossary: Словарь
+agent.publish.guide_list_title:
+  one: '1 Guide'
+  few: '{{count}} Guides'
+  many: '{{count}} Guides'
+  other: '{{count}} Guides'
 agent.publish.helpful: Полезный
 agent.publish.kb_list_title:
   one: '1 Статья '
   few: ' {{count}} Статьи(ей)'
+  many: ' {{count}} Статьи(ей)'
   other: ' {{count}} Статьи(ей)'
 agent.publish.kb_list_unique_title:
   one: '1 уникальная статья '
   few: ' {{count}} уникальных(ые) статья(и)'
+  many: ' {{count}} уникальных(ые) статья(и)'
   other: ' {{count}} уникальных(ые) статья(и)'
 agent.publish.label_new_file: 'Новый файл'
 agent.publish.label_old_file: 'Старый файл'
@@ -1580,12 +1902,13 @@ agent.publish.missing_translation: 'Отсутствует перевод'
 agent.publish.move_to: 'Переместить в'
 agent.publish.new_comment_on: 'Новый комментарий к {{name}}'
 agent.publish.new_comment_submitted_by: 'Новый комментарий был добавлен {{name}}'
-agent.publish.new_feedback_by: 'Новая обратная связь от {{name}}'
+agent.publish.new_community_topic_by: 'Новая обратная связь от {{name}}'
 agent.publish.new_post: 'Новое сообщение'
 agent.publish.news_comments: 'Комментарии к Новостям'
 agent.publish.news_list_title:
   one: '1 Сообщение '
   few: ' {{count}} Сообщения(й)'
+  many: ' {{count}} Сообщения(й)'
   other: ' {{count}} Сообщения(й)'
 agent.publish.no_changes: 'Изменений между этими двумя версиями не обнаружено'
 agent.publish.no_downlod_cats_error: 'Определенных категорий нет. Прежде чем добавлять файлы в раздел загрузки, вам необходимо определить категорию.'
@@ -1594,6 +1917,11 @@ agent.publish.no_news_cats_error: 'Определенных категорий �
 agent.publish.no_related_explain: 'К этому элементу не были добавлены никакие связанные статьи, загрузки или сообщения новостей. Чтобы добавить связанные элементы, просмотрите их в панели списка и щелкните значок зеленой стрелки.'
 agent.publish.no_uploads_yet: 'Пока еще нет загрузок.,'
 agent.publish.not_helpful: 'Не полезно'
+agent.publish.pending_approval_list_title:
+  one: '1 article pending approval'
+  few: '{{count}} articles pending approval'
+  many: '{{count}} articles pending approval'
+  other: '{{count}} articles pending approval'
 agent.publish.pending_articles: 'Ожидаемые статьи'
 agent.publish.permalink_copy_prompt: 'Постоянная ссылка на эту загрузку на веб-сайте:'
 agent.publish.please_choose_file: 'Выберите файл'
@@ -1628,6 +1956,7 @@ agent.publish.validating_comment_manage_tip: 'Комментарий ожида�
 agent.publish.validating_list_title:
   one: '1 обзор'
   few: ' {{count}} обзора(ов)'
+  many: ' {{count}} обзора(ов)'
   other: ' {{count}} обзора(ов)'
 agent.publish.view_count: 'Количество просмотров'
 agent.publish.view_count_highest_lowest: 'Количество просмотров (по убыванию)'
@@ -1667,7 +1996,7 @@ agent.search.simple: Простой
 agent.search.type_article: Статья
 agent.search.type_chat_conversation: Чаты
 agent.search.type_download: Загрузки
-agent.search.type_feedback: 'Обратная связь'
+agent.search.type_community: 'Обратная связь'
 agent.search.type_news: Новости
 agent.search.type_organization: Организации
 agent.search.type_person: Пользователи
@@ -1725,8 +2054,8 @@ agent.settings.notif_my_events: 'Мои события'
 agent.settings.notif_my_own_actions: 'Мои собственные действия'
 agent.settings.notif_new_comment: 'Новый комментарий добавлен'
 agent.settings.notif_new_comment_validate: 'Будет добавлен новый комментарий, требующий проверки.'
-agent.settings.notif_new_feedback: 'Новый отзыв добавлен'
-agent.settings.notif_new_feedback_validate: 'Будет добавлен новый отзыв, требующий проверки.'
+agent.settings.notif_new_community_topic: 'Новый отзыв добавлен'
+agent.settings.notif_new_community_topic_validate: 'Будет добавлен новый отзыв, требующий проверки.'
 agent.settings.notif_new_user: 'Новый пользователь зарегистрирован'
 agent.settings.notif_notes_with_mentions: 'Заметки с @mentions'
 agent.settings.notif_notes_with_mentions_always: 'Всегда отправлять email и отправлять сообщения через IM-агент'
@@ -1779,7 +2108,6 @@ agent.snippets.insert_variable: 'Вставить переменную'
 agent.snippets.learn_more_about_vars: 'Подробнее о переменных'
 agent.snippets.must_create_cat: 'Прежде чем вы начнете создавать фрагменты, <br/>вам нужно создать свою первую категорию.'
 agent.snippets.shortcut_code: 'Код ярлыка'
-agent.snippets.shortcut_code_info: 'Введите этот код в поле ответа на тикет и фрагмент будет вставлен автоматически. Например, в коде ярлыка ''стандартный-ответ'' вы просто вводите ''%стандартный-ответ%'', чтобы вставить сниппет без открытия менеджера сниппетов.'
 agent.snippets.ticket_snippets: 'Фрагменты тикета'
 agent.tasks.add_another_task: 'Добавить другую задачу'
 agent.tasks.all_tasks: 'Все задачи'
@@ -1797,6 +2125,7 @@ agent.tasks.linked_ticket: 'Связанный тикет'
 agent.tasks.list_title:
   one: '1 задача'
   few: '{{count}} задач(и)'
+  many: '{{count}} задач(и)'
   other: '{{count}} задач(и)'
 agent.tasks.my_tasks: 'Мои задачи'
 agent.tasks.my_teams: 'Мои команды'
@@ -1832,7 +2161,6 @@ agent.tickets.always_notify_people: 'Всегда уведомлять {{parts}}
 agent.tickets.and_count_were_cced: '(и {{display_count}} добавлен в копию)|(и {{display_count}} добавлены в копию)'
 agent.tickets.announce_this_ticket_in_campfire: 'Объявить этот тикет в Campfire'
 agent.tickets.any_of_my_teams: 'Любой из  моих команд'
-agent.tickets.api: API
 agent.tickets.applied: применено
 agent.tickets.apply_a_macro: 'Применить макрос'
 agent.tickets.assign_current_action: 'Назначить на агента, который в сети'
@@ -1872,14 +2200,17 @@ agent.tickets.commented_on: Прокомментировал
 agent.tickets.count_agents:
   one: '1 агент'
   few: ' {{count}} агентов'
+  many: ' {{count}} агентов'
   other: ' {{count}} агентов'
 agent.tickets.count_charges:
   one: '1 поручение'
   few: '{{count}} поручений'
+  many: '{{count}} поручений'
   other: '{{count}} поручений'
 agent.tickets.count_users:
   one: '{{count}} пользователь'
   few: '{{count}} пользователей'
+  many: '{{count}} пользователей'
   other: '{{count}} пользователей'
 agent.tickets.create_linked_ticket: 'Создать связанный тикет'
 agent.tickets.create_new_pending_article: 'Создать новую статью для рассмотрения'
@@ -1980,6 +2311,11 @@ agent.tickets.lc_new_reply: 'новый ответ'
 agent.tickets.lc_new_ticket: 'новый тикет'
 agent.tickets.lc_new_ticket_agent: 'Новый тикет от агента'
 agent.tickets.lc_update: обновить
+agent.tickets.link_existing_community_topic_subscr_part:
+  one: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
+  few: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
+  many: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
+  other: 'Subscribed ({{count}}) Ticket Participants to Community Topic'
 agent.tickets.link_existing_ticket: 'Ссылка на существующий тикет'
 agent.tickets.link_existing_ticket_make_below: 'Сделайте выбранный тикет ниже родительского'
 agent.tickets.linked_tickets: 'Связанные тикеты'
@@ -1988,6 +2324,7 @@ agent.tickets.linking_with_ticket: 'Связь с тикетом:'
 agent.tickets.list_title:
   one: '{{count}} Тикет'
   few: '{{count}} Тикета(ов)'
+  many: '{{count}} Тикета(ов)'
   other: '{{count}} Тикета(ов)'
 agent.tickets.list_title_counter: '{{x}} Тикетов'
 agent.tickets.load_more: 'Загрузить еще'
@@ -2008,7 +2345,7 @@ agent.tickets.log_new_web_user_widget: 'Новый тикет от пользо�
 agent.tickets.log_note_deleted: 'Примечание удалено'
 agent.tickets.log_on_article: 'по статьям "{{title}} (ID {{id}})'
 agent.tickets.log_on_download: 'по загрузкам "{{title}} (ID {{id}})'
-agent.tickets.log_on_feedback: 'по обратной связи "{{title}} (ID {{id}})'
+agent.tickets.log_on_community_topic: 'по топику "{{title}} (ID {{id}})'
 agent.tickets.log_on_news: 'по новостям "{{title}} (ID {{id}})'
 agent.tickets.log_selected_option: 'выбрано:'
 agent.tickets.log_sent_from: 'Отправлять от {{email}}'
@@ -2035,7 +2372,6 @@ agent.tickets.message_id: 'ID сообщения'
 agent.tickets.message_number: 'Сообщение #{{number}}'
 agent.tickets.messages: Сообщения
 agent.tickets.my_team: 'Моя команда'
-agent.tickets.na: N/A
 agent.tickets.neutral: нейтральный
 agent.tickets.new_attachment: 'Новое вложение'
 agent.tickets.new_message: 'Новое сообщение'
@@ -2132,7 +2468,6 @@ agent.tickets.sla_fail_date: 'Дата отказа'
 agent.tickets.sla_remove_confirm: 'Вы действительно хотите удалить этот SLA?'
 agent.tickets.sla_severity: 'Серьезность SLA'
 agent.tickets.sla_warn_date: 'Дата предупреждения'
-agent.tickets.slas_title: SLAs
 agent.tickets.split_from_here: 'Разбить тикет здесь'
 agent.tickets.split_message_btn: 'Разделить сообщение'
 agent.tickets.split_messages_into_ticket: 'Разделить сообщения на новый тикет'
@@ -2171,7 +2506,6 @@ agent.tickets.text_body: Текст
 agent.tickets.ticket_changes: 'Изменения в тикетах'
 agent.tickets.ticket_feedback: 'Отзывы о тикетах'
 agent.tickets.ticket_field_name: 'Поле тикета {{field}}'
-agent.tickets.ticket_is_delete7d: 'Тикет удален'
 agent.tickets.ticket_is_deleted: 'Тикет удален'
 agent.tickets.ticket_is_marked_as_spam: 'Этот тикет отмечен как спам.'
 agent.tickets.ticket_merged: 'Тикет объединен'
@@ -2217,6 +2551,7 @@ agent.tickets.written_between: 'Написано между'
 agent.tickets.x_messages_moved:
   one: 'Перемещено 1 сообщение '
   few: 'Перемещено {{count}} сообщений'
+  many: 'Перемещено {{count}} сообщений'
   other: 'Перемещено {{count}} сообщений'
 agent.tickets.x_rated_this_message_as: '{{name}} оценил это сообщение как:'
 agent.tickets.you_have_auto_lock: 'Вы заблокировали этот тикет. Другие агенты не смогут редактировать тикет, пока он не будет разблокирован.'
@@ -2348,6 +2683,41 @@ agent.time.time_x_month: '{0} месяцев'
 agent.time.time_x_second: '{0}  секунд'
 agent.time.time_x_week: '{0} недель'
 agent.time.time_x_year: '{0} лет'
+agent.time.x_day:
+  one: '1 day'
+  few: '{{count}} days'
+  many: '{{count}} days'
+  other: '{{count}} days'
+agent.time.x_hour:
+  one: '1 hour'
+  few: '{{count}} hours'
+  many: '{{count}} hours'
+  other: '{{count}} hours'
+agent.time.x_minute:
+  one: '1 minute'
+  few: '{{count}} minutes'
+  many: '{{count}} minutes'
+  other: '{{count}} minutes'
+agent.time.x_month:
+  one: '1 month'
+  few: '{{count}} months'
+  many: '{{count}} months'
+  other: '{{count}} months'
+agent.time.x_second:
+  one: '1 second'
+  few: '{{count}} seconds'
+  many: '{{count}} seconds'
+  other: '{{count}} seconds'
+agent.time.x_week:
+  one: '1 week'
+  few: '{{count}} weeks'
+  many: '{{count}} weeks'
+  other: '{{count}} weeks'
+agent.time.x_year:
+  one: '1 year'
+  few: '{{count}} years'
+  many: '{{count}} years'
+  other: '{{count}} years'
 agent.twitter.account_rec_new_dm_from: '{{account}} получил новое сообщение от {{name}}'
 agent.twitter.account_rec_tweet_from: '{{account}} получил новый твит от {{name}}'
 agent.twitter.account_retweeted_by: '{{name}} поделился записью от {{account}}'
@@ -2363,24 +2733,23 @@ agent.twitter.corresponding_twitter_account: 'соответствуют акк�
 agent.twitter.count_selected:
   one: '{{count}} выбрано'
   few: '{{count}} выбрано'
+  many: '{{count}} выбрано'
   other: '{{count}} выбрано'
 agent.twitter.delete-search-confirm: 'Вы уверены, что хотите удалить этот фильтр поиска?'
 agent.twitter.direct: Прямые
 agent.twitter.direct_messages: 'Прямые сообщения'
-agent.twitter.dm: DM
 agent.twitter.edit_long_tweet: 'Редактировать длинный твит'
-agent.twitter.example: '#example'
 agent.twitter.find_person: 'Найти @person...'
 agent.twitter.follow: Подписаться
 agent.twitter.followers: Подписчики
 agent.twitter.following: Отслеживание
 agent.twitter.from_account: 'От аккаунта'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'В ответ на'
 agent.twitter.interactions: Взаимодействия
 agent.twitter.list_title:
   one: '1 твит'
   few: '{{count}} твитов'
+  many: '{{count}} твитов'
   other: '{{count}} твитов'
 agent.twitter.location: Расположение
 agent.twitter.long: Длинный
@@ -2450,6 +2819,7 @@ agent.userchat.ident_unconfirmed: 'Идентификация не заверш�
 agent.userchat.list_title:
   one: '1 чат'
   few: '{{count}} чат(ов)'
+  many: '{{count}} чат(ов)'
   other: '{{count}} чат(ов)'
 agent.userchat.message_agent-timeout: '{{name}} не отвечает. Подождите, пока будет подобран другой агент.'
 agent.userchat.message_assigned: 'Чаты назначены на {{name}}'

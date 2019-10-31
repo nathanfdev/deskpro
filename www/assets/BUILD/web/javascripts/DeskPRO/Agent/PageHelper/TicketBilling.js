@@ -16,6 +16,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		this.billingStart = false;
 		this.billingExtraTime = 0;
 		this.billingTimer = null;
+		this.billingPage = 1;
 
 		var self = this;
 
@@ -25,8 +26,11 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			return;
 		}
 
-    var initDateTimePicker = function(){
-      $('input.DateTime:not(.datetimepickerinit), .DateTime input:not(.datetimepickerinit)', wrap).each(function () {
+    var initDateTimePicker = function(inEl) {
+      if (!inEl) {
+        return;
+      }
+      $('input.DateTime, .DateTime input', inEl).not('.datetimepickerinit').each(function () {
         $(this).addClass('datetimepickerinit');
         $(this).datetimepicker({
           format: 'YYYY-MM-DD HH:mm',
@@ -45,7 +49,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				});
       });
 
-      $('.Date input:not(.datetimepickerinit)', wrap).each(function () {
+      $('.Date input', inEl).not('.datetimepickerinit').each(function () {
         $(this).addClass('datetimepickerinit');
         $(this).datetimepicker({
           format: 'YYYY-MM-DD',
@@ -139,7 +143,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				});
 			});
 
-      initDateTimePicker();
+      initDateTimePicker(form);
 		}).bind(this);
 
 		this.initForm();
@@ -175,6 +179,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
       var id = $(this).data('charge-id')
         , charge = wrap.find('tr#ticket-charge-row-' + id).hide().data('charge')
         ;
+      initDateTimePicker(wrap.find('.ticket-charge-edit-' + id));
       self.populateForm(wrap.find('.ticket-charge-edit-' + id).show(), charge);
 			return false;
 		});
@@ -207,7 +212,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
           self.fireEvent('onAfterBillingChange', ['success', 'update', {id: id}], formData);
 					wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
 					wrap.find('tr#ticket-charge-row-' + id).replaceWith(json.html);
-          initDateTimePicker();
+          initDateTimePicker(wrap.find('.ticket-charge-edit-' + id));
 				}else if(json.invalid_custom_fields) {
           self.fireEvent('onAfterBillingChange', ['failure', 'update', {id: id}], formData);
 					var $err = wrap.find('.ticket-charge-edit-errors-' + id).show().find('.form-errors');
@@ -223,6 +228,32 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			});
 
 			return false;
+		});
+
+		this.getEl('more_billing_rows').on('click', function() {
+			var button = $(this);
+			var spinner = button.find('.flat-spinner');
+			spinner.show();
+			var url = button.data('load-url');
+			var page = url.match(/\d+$/)[0];
+			var billingRows = self.getEl('billing_rows');
+			$.ajax({
+				url: button.data('load-url'),
+				type: 'GET',
+				dataType: 'json'
+			}).done(function (json) {
+				json.charges.forEach(function (html) {
+					var charge = $(html);
+					billingRows.append(charge);
+					charge.find('.timeago').timeago();
+				});
+				if (json.more) {
+					button.data('load-url', url.replace(/\d+$/, parseInt(page) + 1));
+				} else {
+					self.getEl('billing_more').hide();
+				}
+				spinner.hide();
+			});
 		});
 
 		if (this.options.auto_start_bill) {
@@ -267,7 +298,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		var add = $(html);
 		var billingRows = this.getEl('billing_rows');
 
-		billingRows.append(add);
+		billingRows.prepend(add);
 		add.find('.timeago').timeago();
 		billingRows.closest('table').show();
 	},

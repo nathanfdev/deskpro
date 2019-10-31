@@ -28,6 +28,6 @@ class EmailTaskProcessor extends AbstractCommandProcessor
             'task' => $task,
         ]);
 
-        return $cmd;
+        return 'timeout 300 '.$cmd;
     }
 }

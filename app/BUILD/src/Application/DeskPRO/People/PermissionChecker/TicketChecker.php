@@ -10,6 +10,7 @@ namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\Helpers\AgentPermissions;
 
 /**
@@ -330,72 +331,6 @@ class TicketChecker extends AbstractChecker
     }
 
     /**
-     * Check if the user can modify (or delete) a message.
-     *
-     * @param Ticket $ticket
-     *
-     * @return bool
-     */
-    public function canEditMessages(Ticket $ticket)
-    {
-        if (!$this->canView($ticket)) {
-            return false;
-        }
-
-        //------------------------------
-        // Can modify messages own
-        //------------------------------
-
-        if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
-            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
-                return true;
-            }
-
-            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
-                return true;
-            }
-        }
-
-        //------------------------------
-        // Can modify messages unassigned
-        //------------------------------
-
-        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
-            return true;
-        }
-
-        //------------------------------
-        // Can modify messages assigned
-        //------------------------------
-
-        if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
-            return true;
-        }
-
-        //------------------------------
-        // Can modify messages others
-        //------------------------------
-
-        if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
-            return true;
-        }
-
-        //------------------------------
-        // Can modify messages followed
-        //------------------------------
-
-        if ($ticket->hasParticipantPerson($this->person) && $this->person->hasPerm('agent_tickets.modify_messages_followed')) {
-            return true;
-        }
-
-        //------------------------------
-        // Cant delete
-        //------------------------------
-
-        return false;
-    }
-
-    /**
      * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
      *
      * @param Ticket $ticket1
@@ -431,6 +366,116 @@ class TicketChecker extends AbstractChecker
         }
 
         return true;
+    }
+
+    public function canEditMessage(TicketMessage $message)
+    {
+        if (!$this->canView($message->getTicket())) {
+            return false;
+        }
+
+        $permissionsToCheck = [];
+
+        if ($message->isAgentNote()) {
+            $permissionsToCheck = ['edit_notes'];
+            // Can Edit Notes (Time Limit, 1 hour)
+            if (time() - $message->getDateCreated()->getTimestamp() <= 3600) {
+                $permissionsToCheck[] = 'edit_timelimited_notes';
+            }
+        } else {
+            $permissionsToCheck = ['edit'];
+        }
+
+        return array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
+            return $carry || $this->canModifyMessages($message->getTicket(), $item);
+        });
+    }
+
+    public function canDeleteMessage(TicketMessage $message)
+    {
+        if (!$this->canView($message->getTicket())) {
+            return false;
+        }
+
+        $permissionsToCheck = [];
+
+        if ($message->isVoiceMessage()) {
+            $permissionsToCheck[] = 'delete_voice_messages';
+        } elseif ($message->isAgentNote()) {
+            $permissionsToCheck = ['delete_notes'];
+            // Can Edit Notes (Time Limit, 1 hour)
+            if (time() - $message->getDateCreated()->getTimestamp() <= 3600) {
+                $permissionsToCheck[] = 'delete_timelimited_notes';
+            }
+        } else {
+            $permissionsToCheck[] = 'delete';
+        }
+
+        return array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
+            return $carry || $this->canModifyMessages($message->getTicket(), $item);
+        });
+    }
+
+    /**
+     * Check if modify message permission is enabled
+     * There is a top level permission agent_tickets.modify_messages_{suffix}
+     * if this permission is true - all sub-permissions assumed as true.
+     *
+     * Check TicketPermissions properties with modify_messages_ prefix to get a list of possible $op
+     * $op examples: 'edit', 'edit_notes', 'delete_voice_messages' etc ...
+     *
+     * @param Ticket $ticket
+     * @param string $op
+     *
+     * @return bool
+     */
+    public function canModifyMessages(Ticket $ticket, $op)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
+
+        // own/unassigned/other
+        $setSuffix = $this->getPermissionsSetSuffix($ticket);
+
+        $permissionsToCheck = [
+            'agent_tickets.modify_messages_'.$setSuffix,
+            'agent_tickets.modify_messages_'.$op.'_'.$setSuffix,
+        ];
+
+        if ($ticket->hasParticipantPerson($this->person)) {
+            $permissionsToCheck[] = 'agent_tickets.modify_messages_followed';
+            $permissionsToCheck[] = 'agent_tickets.modify_messages_'.$op.'_followed';
+        }
+
+        return array_reduce($permissionsToCheck, [$this, 'permissionsReducer'], false);
+    }
+
+    /**
+     * Figure out which set of permissions
+     * the current ticket falls into.
+     *
+     * @param Ticket $ticket
+     */
+    protected function getPermissionsSetSuffix(Ticket $ticket)
+    {
+        $agent     = $ticket->getAgent();
+        $agentTeam = $ticket->getAgentTeam();
+
+        // Other
+        $suffix = 'others';
+        // Own tickets
+        if (
+            ($agent && $agent === $this->person)
+            || ($agentTeam && $this->agents->isAgentMemberOfTeam($this->person, $agentTeam))
+        ) {
+            $suffix = 'own';
+        // Unassigned tickets
+        } elseif (!$agent && !$agentTeam) {
+            $suffix = 'unassigned';
+        }
+
+        return $suffix;
     }
 
     /**

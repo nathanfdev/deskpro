@@ -14,6 +14,7 @@ use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\AbuseCaptchaFormException;
@@ -61,7 +62,7 @@ class ApiTokensController extends BaseController
     public function newSessionTokenAction(Request $request)
     {
         $person = $this->getUser();
-        if (!$person) {
+        if (!$person || !$person->isAgent()) {
             $this->throwUnauthorized();
         }
 
@@ -135,7 +136,7 @@ class ApiTokensController extends BaseController
         }
 
         $person = $this->getManager()->getRepository(Person::class)->find($personId);
-        if (!$person) {
+        if (!$person || !$person->isAgent()) {
             $this->throwUnauthorized();
         }
 
@@ -251,7 +252,10 @@ class ApiTokensController extends BaseController
 
             $result = $adapter->authenticate();
             if ($result->isRedirectRequired()) {
-                return $this->redirect($result->getRedirectUrl());
+                $redirectResponse = new RedirectResponse($result->getRedirectUrl());
+                $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
+
+                return $redirectResponse;
             } else {
                 throw $this->createBadRequestException('Unable to redirect');
             }
@@ -345,6 +349,14 @@ class ApiTokensController extends BaseController
         $email  = $form->get('email')->getData();
         $target = $form->get('target')->getData();
 
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $person = $this->getManager()->getRepository(Person::class);
+        $person     = $personRepo->findOneByEmail($email);
+
+        if (!$person || !$person->isAgent()) {
+            $this->throwUnauthorized();
+        }
+
         // generate tmp token
         $tmpData = new TmpData();
         $tmpData->setData('email', $email);
@@ -383,6 +395,10 @@ class ApiTokensController extends BaseController
      */
     private function createToken(Person $person)
     {
+        if (!$person || !$person->isAgent()) {
+            $this->throwUnauthorized();
+        }
+
         $token = new ApiToken();
         $token->setPerson($person);
         $token->setScope(ApiToken::SCOPE_CLIENT);

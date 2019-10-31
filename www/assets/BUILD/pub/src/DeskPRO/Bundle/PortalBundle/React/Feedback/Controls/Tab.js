@@ -51,7 +51,7 @@ export class Tab extends React.Component {
         <span className={this.props.active ? 'link active' : 'link'}>
           {this.props.label}
           {this.renderActiveCats()}
-          {canRenderDropdown ? <span><i className="fa fa-caret-down" /></span> : null}
+          {canRenderDropdown ? <span><i className="fas fa-caret-down" /></span> : null}
         </span>
         {canRenderDropdown ? this.renderDropdown(dropdownCats) : null}
       </div>
@@ -62,7 +62,7 @@ export class Tab extends React.Component {
     return (
       <div className={'quick-jump no-dropdown'} ref={(c) => { this.quickJump = c; }}>
         <a
-          href={`/feedback/browse/${this.props.id}/${this.props.types}`}
+          href={`/community/browse/${this.props.id}/${this.props.types}`}
           className={this.props.active ? 'active' : ''}
           onClick={this.clickTab}
           onTouchStart={this.clickTab}

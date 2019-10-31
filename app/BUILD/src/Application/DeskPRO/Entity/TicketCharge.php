@@ -25,6 +25,14 @@ class TicketCharge extends DomainObject
     protected $id = null;
 
     /**
+     * Doctrine clear id for removed entities but we need them sometimes
+     * Save here id in preRemove callback.
+     *
+     * @var int
+     */
+    protected $id_removed = null;
+
+    /**
      * @var int|null
      */
     protected $charge_time;
@@ -71,10 +79,19 @@ class TicketCharge extends DomainObject
     }
 
     /**
+     * Doctrine clear Id for removed entities ($em->remove($entity))
+     * $returnRemoved = true - means return Id that was before removal.
+     *
+     * @param bool $returnRemoved
+     *
      * @return int
      */
-    public function getId()
+    public function getId($returnRemoved = false)
     {
+        if (!$this->id && $this->id_removed && $returnRemoved) {
+            return $this->id_removed;
+        }
+
         return $this->id;
     }
 
@@ -210,6 +227,22 @@ class TicketCharge extends DomainObject
         }
 
         return;
+    }
+
+    /**
+     * Reset custom data.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            /* @var $data Entity\CustomDataBilling */
+            $this->getStateChangeRecorder()->record('custom_data.'.$data['root_field']['id'], $data, null, true);
+        }
+        $this->custom_data->clear();
+
+        return $this;
     }
 
     public function removeCustomDataForField($field)
@@ -415,6 +448,14 @@ class TicketCharge extends DomainObject
         return $data;
     }
 
+    /**
+     * Lifecycle Callback.
+     */
+    public function onPreRemove()
+    {
+        $this->id_removed = $this->id;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -555,5 +596,6 @@ class TicketCharge extends DomainObject
         );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->addLifecycleCallback('onPreRemove', 'preRemove');
     }
 }

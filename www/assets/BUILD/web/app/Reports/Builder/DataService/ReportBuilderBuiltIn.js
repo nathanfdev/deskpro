@@ -7,7 +7,7 @@ define([
 
     init() {
       return this.setSubLists(['Tickets', 'Chats', 'Ideas', 'People & Organizations', 'Knowledgebase', 'News', 'Downloads',
-        'Feedback', 'Tasks', 'Twitter']);
+        'CommunityTopic.js', 'Tasks', 'Twitter']);
     }
 
     getUrlPart() {

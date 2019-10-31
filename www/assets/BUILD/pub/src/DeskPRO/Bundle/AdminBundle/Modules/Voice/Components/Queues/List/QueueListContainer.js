@@ -36,7 +36,7 @@ class QueueListContainer extends React.Component {
 
     dispatch(loadAccounts());
     dispatch(loadAgents());
-    dispatch(loadQueues());
+    dispatch(loadQueues(true));
   }
 
   onGoToAccounts = () => {

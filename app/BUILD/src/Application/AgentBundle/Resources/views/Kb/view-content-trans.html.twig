@@ -26,10 +26,18 @@
 				</header>
 				<article class="article-form">
 					<div class="title-row">
-						<input type="text" name="title[{{ lang.id }}]" value="{{ trans_data.title[lang.id].value }}" placeholder="Title" />
+						<input type="text" name="title[{{ lang.id }}]" value="{{ trans_data.title[lang.id].value }}"
+							   placeholder="Title" autocomplete="{{ "now" | date("U") }}" />
 					</div>
 					<div class="editor-row">
-						<textarea name="content[{{ lang.id }}]">{{ trans_data.content[lang.id].value }}</textarea>
+						{% if app.hasBeta('content_editor') and article.content_input_type == 'dped_v1' %}
+							<script type="text/javascript">
+								var {{ baseId }}_lang_{{ lang.id }}_input = {{ trans_data.content[lang.id].input|json_encode|raw }};
+							</script>
+							<div class="trans_content" data-lang_id="{{ lang.id }}"></div>
+						{% else %}
+							<textarea name="content[{{ lang.id }}]">{{ trans_data.content[lang.id].value }}</textarea>
+						{% endif %}
 					</div>
 					<div class="save-row">
 						<div class="dp-not-loading">

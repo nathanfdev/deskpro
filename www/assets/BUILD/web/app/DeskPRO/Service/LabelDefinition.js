@@ -12,7 +12,7 @@ define(['angular'], function(angular) {
         organizations: {},
         news:          {},
         kb:            {},
-        feedback:      {},
+        community:     {},
         downloads:     {},
         chat:          {}
       };

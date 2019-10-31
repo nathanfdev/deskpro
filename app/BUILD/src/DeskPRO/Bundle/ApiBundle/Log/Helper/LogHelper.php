@@ -78,8 +78,15 @@ class LogHelper extends AbstractLogHelper
      */
     public function isLoggingEnabled()
     {
-        return $this->resolver->getGlobalSettings()->get('api_log.enabled')
-            && in_array($this->mode, $this->getModes());
+        return $this->getEnabled() && in_array($this->mode, $this->getModes());
+    }
+
+    /**
+     * @return bool
+     */
+    public function getEnabled()
+    {
+        return (bool) $this->resolver->getGlobalSettings()->get('api_log.enabled');
     }
 
     /**

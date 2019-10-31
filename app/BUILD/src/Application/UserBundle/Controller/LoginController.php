@@ -34,9 +34,9 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
+use DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Doctrine\DBAL\ConnectionException;
 use Doctrine\ORM\OptimisticLockException;
@@ -926,6 +926,14 @@ class LoginController extends AbstractController
 
             $this->_setupUsersourceSession($usersource, $person, $result);
 
+            if ($person->isAgent()) {
+                // Announce if its an agent
+                $this->setAgentIsAvailable($person);
+                $this->sendLoginAlert($person, $this->request);
+                $this->loginLog($this->request, $person);
+                $this->broadcastAgentIsOnline($person);
+            }
+
             if ($this->session->get('auth_return')) {
                 $return = $this->session->get('auth_return');
                 $this->session->remove('auth_return');
@@ -1181,7 +1189,8 @@ class LoginController extends AbstractController
             $this->container->get('mailer.utils')->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
         } else {
             $vars = [
-                'code' => $tmpdata->getCode(),
+                'code'   => $tmpdata->getCode(),
+                'person' => $person,
             ];
             $message = $this->container->getMailer()->createMessage();
             $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);

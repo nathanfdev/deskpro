@@ -36,6 +36,11 @@ export const connectionsSelector = createSelector(
   state => state.get('connections')
 );
 
+export const waitingConnectionSelector = createSelector(
+  stateSelector,
+  state => state.get('waitingConnection')
+);
+
 export const outboundNumberSelector = createSelector(
   stateSelector,
   state => state.get('outboundNumber')
@@ -62,7 +67,24 @@ export const ringingVolumeSelector = createSelector(
   state => state.get('ringingVolume')
 );
 
-export const connectionStatesSelector = createSelector(
+export const busyAgentsSelector = createSelector(
   stateSelector,
-  state => state.get('connectionStates')
+  state => state.get('onlineAgents')
+    .filter(onlineStatus => onlineStatus.get('busy_for_voice'))
+    .map(onlineStatus => onlineStatus.get('agent_id'))
+);
+
+export const onlineAgentsSelector = createSelector(
+  stateSelector,
+  state => state.get('onlineAgents')
+    .filter(onlineStatus => onlineStatus.get('online') && onlineStatus.get('voice_enabled'))
+    .map(onlineStatus => onlineStatus.get('agent_id'))
+);
+
+
+export const forwardingAgentsSelector = createSelector(
+  stateSelector,
+  state => state.get('onlineAgents')
+    .filter(onlineStatus => onlineStatus.get('forwarding_enabled'))
+    .map(onlineStatus => onlineStatus.get('agent_id'))
 );

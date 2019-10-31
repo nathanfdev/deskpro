@@ -48,6 +48,14 @@ class TwilioVoiceAccountHandler extends AbstractEntityHandler
         $model = new TwilioVoiceAccountModel($entity);
         $model->setClientCredentials(new CallbackDeferredProperty([$this, 'getClientCredentials'], [$entity, $context]));
 
+        $sideloads = $context->getSideloadStore();
+        $sideloads->addCustomSideload(
+            'available_voice_countries',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getAvailableVoiceCountries'], [$entity]),
+            $model
+        );
+
         return $model;
     }
 
@@ -63,5 +71,15 @@ class TwilioVoiceAccountHandler extends AbstractEntityHandler
         $credentialsModel->setPhoneToken($this->twilioAdapter->createPhoneToken($entity, $context->getUser()));
 
         return $credentialsModel;
+    }
+
+    /**
+     * @param TwilioVoiceAccount $entity
+     *
+     * @return array
+     */
+    public function getAvailableVoiceCountries(TwilioVoiceAccount $entity)
+    {
+        return $this->twilioAdapter->getAvailableCountries($entity);
     }
 }

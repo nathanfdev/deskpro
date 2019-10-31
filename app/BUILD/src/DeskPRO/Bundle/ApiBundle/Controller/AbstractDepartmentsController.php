@@ -61,11 +61,9 @@ abstract class AbstractDepartmentsController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb->andWhere(sprintf("$alias.%s = true", static::$property));
+        $qb->andWhere('e.id IN (:allowed_department_ids)');
+        $qb->setParameter('allowed_department_ids', $this->getAllowedDepartments());
 
-        if ($request->query->getBoolean('my', false)) {
-            $qb->andWhere('e.id IN (:allowed_department_ids)');
-            $qb->setParameter('allowed_department_ids', $this->getAllowedDepartments());
-        }
         if ($request->query->getBoolean('selectable')) {
             $subQb = $qb->getEntityManager()->createQueryBuilder();
             $subQb

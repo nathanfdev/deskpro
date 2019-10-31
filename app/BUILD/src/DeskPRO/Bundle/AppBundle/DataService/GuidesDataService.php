@@ -68,7 +68,15 @@ class GuidesDataService extends AbstractDataService
                 $person
             )->getAllowedGuides();
 
-            return $this->getGuideRepo()->findBy(['id' => $allowedIds], ['display_order' => 'ASC']);
+            $guides = $this->getGuideRepo()->findBy(['id' => $allowedIds], ['display_order' => 'ASC']);
+            /** @var Guide $guide */
+            foreach ($guides as $key => $guide) {
+                if (count($guide->getActiveTopics()) === 0) {
+                    unset($guides[$key]);
+                }
+            }
+
+            return $guides;
         });
     }
 

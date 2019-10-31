@@ -161,7 +161,7 @@ class CommentForm extends React.Component {
         <div className="single-comment reply">
           <div className="comment-info">
             <span className="avatar">
-              <span className="agent-avatar agent-avatar-tiny"><i className="fa fa-user" /></span>
+              <span className="agent-avatar agent-avatar-tiny"><i className="fas fa-user" /></span>
             </span>
             <span className="author"><FormattedMessage id="portal.general.add-comment" /></span>
           </div>
@@ -188,7 +188,7 @@ class CommentForm extends React.Component {
                 <div className="bucket form-widget">
                   <button type="submit" onClick={this.onSubmit} disabled={this.state.loading}>
                     <FormattedMessage id="portal.general.comment_btn_save" />&nbsp;
-                    {this.state.loading ? <i className="fa fa-spinner fa-pulse" /> : '' }
+                    {this.state.loading ? <i className="fas fa-spinner fa-pulse" /> : '' }
                   </button>
                 </div>
               </form>

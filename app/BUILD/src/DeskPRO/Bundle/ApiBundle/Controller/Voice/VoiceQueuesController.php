@@ -10,6 +10,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceQueueType;
+use DeskPRO\Bundle\VoiceBundle\Model\AverageWaitingTime;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @Rest\Route("/voice_queues")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
- * @ApiUserContext("admin", agent={"list", "get", "count", "toggleAgent"})
+ * @ApiUserContext("admin", agent={"list", "get", "count", "toggleAgent", "averageWaitingTime"})
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
@@ -77,5 +79,36 @@ class VoiceQueuesController extends AbstractVoiceCrudController
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Get average waiting time for each voice queue",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Get("/average_waiting_time")
+     *
+     * @return View
+     */
+    public function averageWaitingTimeAction()
+    {
+        $waitingUsers = [];
+
+        /** @var VoiceQueue[] $voiceQueues */
+        $voiceQueues = $this->getManager()->getRepository(VoiceQueue::class)->findAll();
+        foreach ($voiceQueues as $voiceQueue) {
+            $taskQueue = $this->get('dp.voice.task_router.storage')->getTaskQueue(VoiceWorkflow::getChannelName(), $voiceQueue->getId());
+            if ($taskQueue) {
+                $waitingUsers = $taskQueue->getAttribute('waiting_users');
+                if ($waitingUsers) {
+                    $waitingUsers[$voiceQueue->getId()] = new AverageWaitingTime($voiceQueue, $waitingUsers);
+                }
+            }
+        }
+
+        return new View($this->wrap($waitingUsers));
     }
 }

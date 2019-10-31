@@ -55,6 +55,11 @@ services:
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
+  event_listener.doctrine.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketMessageListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.doctrine.agent_message:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener
     arguments: ["@event_dispatcher"]
@@ -69,9 +74,10 @@ services:
 
   event_listener.doctrine.person:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener
-    arguments: ["@default_brand_finder"]
+    arguments: ["@service_container"]
     tags:
       - { name: doctrine.entity_listener }
+      - { name: doctrine.event_subscriber, connection: default }
 
   event_listener.doctrine.usersource:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\UsersourceListener
@@ -79,32 +85,38 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackListener
+  event_listener.doctrine.community_topic:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback_category:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackCategoryListener
+  event_listener.doctrine.community_channel:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityChannelListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.feedback_status_category:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackStatusCategoryListener
+  event_listener.doctrine.community_topic_status_category:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CommunityTopicStatusCategoryListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.custom_def_feedback:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefFeedbackListener
+  event_listener.doctrine.custom_def_community_topic:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefCommunityTopicListener
     arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 
   event_listener.doctrine.ticket_attachment_blob_checker:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketAttachmentBlobCheckerListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@deskpro.blob_storage", "@logger"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.download_attachment_blob_checker:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\DownloadAttachmentBlobCheckerListener
     arguments: ["@doctrine.orm.default_entity_manager", "@deskpro.blob_storage", "@logger"]
     tags:
       - { name: doctrine.entity_listener }
@@ -151,10 +163,8 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  dp.api.event_listeners.doctrine.ticket_voice_phone_call_listener:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\TicketVoicePhoneCallListener
-    arguments: ["@service_container"]
+  redirect_protection_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\RedirectProtectionListener
+    arguments: ["@brand_stack", "@url_host_checker", "@logger"]
     tags:
-    - { name: doctrine.event_listener, event: postPersist }
-    - { name: doctrine.event_listener, event: postUpdate }
-    - { name: doctrine.event_listener, event: preRemove }
+      - { name: kernel.event_subscriber }

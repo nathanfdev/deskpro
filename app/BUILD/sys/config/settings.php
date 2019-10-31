@@ -318,9 +318,9 @@ return [
     'core.apps_kb' => 1,
 
     /*
-     * Enable feedback?
+     * Enable community?
      */
-    'core.apps_feedback' => 1,
+    'core.apps_community' => 1,
 
     /*
      * Enable agent tasks?
@@ -407,8 +407,20 @@ return [
      */
     'core.hit_tracks_db_count' => 7500,
 
+    /*
+     * Array or string with "\n" as delimiter
+     * Used in MiscController::proxyAction
+     */
+    'agent.legacy_proxy_whitelist' => null,
+
     'core.agent_translate_debug'     => false,
     'core.agent_enable_kb_shortcuts' => true,
+
+    /*
+     * https://yourzone/ or just / to enable using image resizing on cloudflare instead of our own
+     * (This just changes the URLs we output, so you could still use resizing through file.php itself)
+     */
+    'images.cf_resize_zone' => null,
 
     //###################################################################################################################
     // core_tickets
@@ -488,6 +500,7 @@ return [
     'core_tickets.default_send_user_notify'     => true,
     'core_tickets.new_default_send_user_notify' => true,
     'core_tickets.newticket_enable_drafts'      => true,
+    'core_tickets.forward_as_new_linked_ticket' => false,
 
     /*
      * True to add agents CC's in emails as followers
@@ -590,6 +603,11 @@ return [
      * (EXPERIMENTAL - not to be used in production)
      */
     'portal.http_cache_last_modified' => false,
+
+    /*
+     * Member community
+     */
+    'portal.members_community' => false,
 
     /*
      * http s-maxage for a guest "page"
@@ -873,7 +891,7 @@ return [
     'user.portal_simpleheader'     => false,
     'user.portal_tab_news'         => 1,
     'user.portal_tab_articles'     => 1,
-    'user.portal_tab_feedback'     => 1,
+    'user.portal_tab_community'    => 1,
     'user.portal_tab_tickets'      => 1,
     'user.portal_tab_downloads'    => 1,
     'user.portal_tab_guides'       => 1,
@@ -886,6 +904,12 @@ return [
      */
     'user.password_reset_code_time_limit' => 18000,
 
+    /*
+     * When enabled, download attachments will only be visible by people who can view the download.
+     * Even if the user has the full coded URL to a file, the system will check permissions and ask the user to accept EULA if necessary
+     */
+    'user.attachment_require_auth_downloads' => false,
+
     'user.show_ratings'             => true,
     'user.show_ratings_min_votes'   => 1,
     'user.publish_comments'         => true,
@@ -893,7 +917,7 @@ return [
     'user.kb_subscriptions'         => true,
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
-    'user.feedback_subscriptions'   => true,
+    'user.community_subscriptions'  => true,
     'user.kb_categories_with_tree'  => true,
 
     //###################################################################################################################
@@ -1006,11 +1030,11 @@ return [
     'rate_limit.submit_comment.lockout_time' => 15 * 60, // 15 min
     'rate_limit.submit_comment.response'     => 'captcha',
 
-    'rate_limit.submit_feedback.enabled'      => true,
-    'rate_limit.submit_feedback.limit'        => 3,
-    'rate_limit.submit_feedback.time'         => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.response'     => 'captcha',
+    'rate_limit.submit_community_topic.enabled'      => true,
+    'rate_limit.submit_community_topic.limit'        => 3,
+    'rate_limit.submit_community_topic.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.response'     => 'captcha',
 
     'rate_limit.submit_ticket.enabled'      => true,
     'rate_limit.submit_ticket.limit'        => 3,
@@ -1036,28 +1060,17 @@ return [
     'rate_limit.submit_comment.guest.lockout_time' => 15 * 60, // 15 min
     'rate_limit.submit_comment.guest.response'     => 'captcha',
 
-    'rate_limit.submit_feedback.guest.enabled'      => true,
-    'rate_limit.submit_feedback.guest.limit'        => 3,
-    'rate_limit.submit_feedback.guest.time'         => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.guest.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.submit_feedback.guest.response'     => 'captcha',
+    'rate_limit.submit_community_topic.guest.enabled'      => true,
+    'rate_limit.submit_community_topic.guest.limit'        => 3,
+    'rate_limit.submit_community_topic.guest.time'         => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.guest.lockout_time' => 15 * 60, // 15 min
+    'rate_limit.submit_community_topic.guest.response'     => 'captcha',
 
     'rate_limit.submit_ticket.guest.enabled'      => true,
     'rate_limit.submit_ticket.guest.limit'        => 3,
     'rate_limit.submit_ticket.guest.time'         => 15 * 60, // 15 min
     'rate_limit.submit_ticket.guest.lockout_time' => 15 * 60, // 15 min
     'rate_limit.submit_ticket.guest.response'     => 'captcha',
-
-    //###################################################################################################################
-    // cloudemail configuration
-    //###################################################################################################################
-
-    /*
-     * The url to an sqs queue which replaces the redis queue
-     * If this setting is enabled it WILL take precedence over settings.sendmail_redis_queue
-     *
-     */
-    // 'settings.cloudemail_outgoing_sqs_queue' => "https://sqs.<region>.amazonaws.com/<aws_account_id>/outgoing.fifo",
 
     //###################################################################################################################
     // notification.settings
@@ -1142,7 +1155,6 @@ return [
     'api_limits.key.day'     => -1,
     'api_limits.key.default' => -1,
 
-
     //###################################################################################################################
     // api_auth
     //###################################################################################################################
@@ -1151,7 +1163,6 @@ return [
      * The master token that can be used to authenticate any request
      */
     'api_auth.master_key' => '',
-
 
     //###################################################################################################################
     // audit_log

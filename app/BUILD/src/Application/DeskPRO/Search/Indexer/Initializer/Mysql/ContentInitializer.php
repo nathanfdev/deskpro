@@ -13,7 +13,7 @@ class ContentInitializer extends BaseContentInitializer
 {
     public function preRun()
     {
-        App::getDb()->exec("DELETE FROM content_search WHERE object_type IN ('article','download','feedback','news','topic')");
-        App::getDb()->exec("DELETE FROM content_search_attribute WHERE object_type IN ('article','download','feedback','news','topic')");
+        App::getDb()->exec("DELETE FROM content_search WHERE object_type IN ('article','download','community','news','topic')");
+        App::getDb()->exec("DELETE FROM content_search_attribute WHERE object_type IN ('article','download','community','news','topic')");
     }
 }

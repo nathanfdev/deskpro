@@ -21,14 +21,14 @@
 						<h4>
 							<span class="title-id" title="ID">#{{ ng_var('acc.id') }}</span>
 							<span class="title-text">{{ ng_var('acc.address') }}</span>
-							<span class="title-copy" dp-clipboard data-clipboard-text="{{ ng_var('acc.address') }}" ngclipboard-success="Growl.success('The email address was copied to your clipboard');"><i class="fa fa-clipboard"></i></span>
+							<span class="title-copy" dp-clipboard data-clipboard-text="{{ ng_var('acc.address') }}" ngclipboard-success="Growl.success('The email address was copied to your clipboard');"><i class="fas fa-clipboard"></i></span>
 						</h4>
 					</a>
 				</li>
 			</ul>
 			{% if not app.getSetting('internal.disable_email_editing.new') %}
 				<div class="dp-add-control">
-					<a class="btn btn-default" href="{{ ng_href('emails.ticket_accounts.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> New Email Account</a>
+					<a class="btn btn-default" href="{{ ng_href('emails.ticket_accounts.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> New Email Account</a>
 				</div>
 			{% endif %}
 		</article>
@@ -36,21 +36,21 @@
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
             <h3>{{ phrase('adm.ticket_accounts.incoming_log') }}</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>{{ phrase('adm.ticket_accounts.outgoing_log') }}</h3>
 		</a>
 	</section>
 
     <section class="dp-paneblock dp-panelink">
         <a href="{{ ng_href('emails.ticket_accounts.advancedsettings') }}">
-            <em><i class="fa fa-chevron-down"></i></em>
+            <em><i class="fas fa-chevron-down"></i></em>
             <h3>{{ phrase('adm.ticket_accounts.advanced_settings') }}</h3>
         </a>
     </section>
@@ -95,7 +95,7 @@
 				<dt><em>Q:</em>I created a new Gmail/Google Apps account, and it's stopped sending out emails. What happened?</dt>
 				<dd><em>A:</em>
 					If you connect a very new Gmail/Google Apps mail account to Deskpro,
-					it may trigger Google's anti-spam measures. Log in 
+					it may trigger Google's anti-spam measures. Log in
 					to the account on the web (sign out, then back in if you're already logged in) then <a href="http://www.google.com/accounts/DisplayUnlockCaptcha ">verify you are a human.</a>
 				</dd>
 
@@ -107,11 +107,11 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/357" target="_blank">Adding email accounts (Cloud)</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/180" target="_blank">Adding email accounts (On-Premise)</a> </li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/209" target="_blank">Manually run email processing (On-Premise)</a> </li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/360#ticket-forwarding-inbound" target="_blank">Inbound ticket forwarding</a> </li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/236#email-action-codes" target="_blank">Email action codes</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/357" target="_blank">Adding email accounts (Cloud)</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/180" target="_blank">Adding email accounts (On-Premise)</a> </li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/209" target="_blank">Manually run email processing (On-Premise)</a> </li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/360#ticket-forwarding-inbound" target="_blank">Inbound ticket forwarding</a> </li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/236#email-action-codes" target="_blank">Email action codes</a></li>
 				{# need to write this article <li><i class="fas fa-file-alt"></i> Sending a different auto-response email outside working hours</li> #}
 
 			</ul>

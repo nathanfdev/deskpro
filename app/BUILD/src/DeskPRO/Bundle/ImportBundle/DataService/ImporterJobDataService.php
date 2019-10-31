@@ -41,6 +41,17 @@ class ImporterJobDataService
     /**
      * @return Job|null
      */
+    public function getErrorJob()
+    {
+        return $this->em->getRepository(Job::class)->findOneBy([
+            'type'   => self::JOB_TYPE,
+            'status' => Job::STATUS_ERROR,
+        ]);
+    }
+
+    /**
+     * @return Job|null
+     */
     public function getActiveJob()
     {
         $qb = $this->em->createQueryBuilder();

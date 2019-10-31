@@ -77,7 +77,9 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="text" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" style="width: 80%;" />
+		<input type="text" name="newarticle[title]" id="{{ baseId }}_title" value="{{ state.newarticle.title }}"
+			   autocomplete="{{ "now" | date("U") }}"
+			   style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
 	</div>
 </div>
@@ -86,7 +88,17 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.general.article') }}</h4>
 		<div style="width: 98%">
-			<textarea type="text" name="newarticle[content]" id="{{baseId}}_content">{{ state.newarticle.content }}</textarea>
+			{% if app.hasBeta('content_editor') %}
+				<script type="text/javascript">
+					var {{ baseId }}_content_input = {{ state.newarticle.content_input|json_encode|raw }};
+				</script>
+				<div id="{{baseId}}_content" class="edit-content-field"></div>
+			{%  else  %}
+				<textarea type="text" name="newarticle[content]" id="{{baseId}}_content" autocomplete="{{ "now" | date("U") }}">
+                    {{ state.newarticle.content }}
+                </textarea>
+			{% endif %}
+			<div class="error-message content">{{ phrase('agent.publish.please_enter_content') }}</div>
 		</div>
 		{% if app.languages.isMultiLang() %}
 			<div style="float: right; padding-right: 18px; padding-top: 4px;">
@@ -121,7 +133,9 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.newarticle.labels %}{{label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
+								<input type="text" autocomplete="{{ "now" | date("U") }}"
+									   value="{% for label in state.newarticle.labels %}{{label}},{% endfor %}"
+									   data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
 							</div>
 						</dd>
 					</dl>

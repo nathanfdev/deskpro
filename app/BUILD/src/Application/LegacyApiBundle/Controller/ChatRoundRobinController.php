@@ -10,21 +10,21 @@ use Application\DeskPRO\Entity\ChatRoundRobin;
 use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ApiModes("all")
  */
-class ChatRoundRobinController extends AbstractController implements ProtectedControllerInterface
+class ChatRoundRobinController extends AbstractController
 {
     /**
      * {@inheritdoc}
      */
     public function getPermissionStrategy()
     {
-        return new UserTypePermission(UserTypePermission::AGENT);
+        return new AgentPermission();
     }
 
     //###################################################################################################################

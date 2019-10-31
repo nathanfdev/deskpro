@@ -7,6 +7,9 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
@@ -16,6 +19,19 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
  */
 class BrandController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'showAction');
+
+        return $multi;
+    }
+
     public function listAction()
     {
         $brands = $this->getBrandRepo()->findAll();

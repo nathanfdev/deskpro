@@ -29,7 +29,8 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           agent_regex:              '',
           agent_regex_required:     false,
           agent_validation_resolve: false,
-          clickable_links:          false
+          clickable_links:          false,
+          code:                     this.getDefaultCode(),
         },
         toggle: {
           label_text:               '',
@@ -39,6 +40,13 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           agent_validation_resolve: false
         },
         choice: {
+          field_type:               'select',
+          options:                  [],
+          user_validation:          '0',
+          agent_validation:         '0',
+          agent_validation_resolve: false
+        },
+        eula: {
           field_type:               'select',
           options:                  [],
           user_validation:          '0',
@@ -125,7 +133,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         form.alias = fieldModel.alias;
         form.description = fieldModel.description;
 
-        if (fieldModel.type_name === 'textarea') {
+        if (fieldModel.type_name === 'textarea' || fieldModel.type_name === 'javascript') {
           formTypeOpts = form.text;
         } else {
           formTypeOpts = form[fieldModel.type_name];
@@ -141,7 +149,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         }
 
         switch (fieldModel.type_name) {
-          case 'text': case 'textarea':
+          case 'text':
+          case 'textarea':
+          case 'javascript':
             if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
               if (fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
@@ -180,6 +190,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             if (fieldModel.options.clickable_links) {
               formTypeOpts.clickable_links = !!fieldModel.options.clickable_links;
             }
+            if (fieldModel.options.code) {
+              formTypeOpts.code = fieldModel.options.code;
+            }
             break;
 
           case 'choice':
@@ -216,6 +229,14 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
 
             formTypeOpts.default_value = fieldModel.default_value;
+            break;
+
+          case 'eula':
+            formTypeOpts.field_type = 'select';
+
+            if (fieldModel.choices && fieldModel.choices.length) {
+              formTypeOpts.options = fieldModel.choices;
+            }
             break;
 
           case 'toggle':
@@ -256,6 +277,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
                 if (fieldModel.options.date_valid_date2 != null) { formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate(); }
               }
               if (fieldModel.options.date_valid_type === 'range') {
+                formTypeOpts.valid_dates_mode = 'range';
                 if (fieldModel.options.date_valid_range1 != null) { formTypeOpts.date_valid_range1 = fieldModel.options.date_valid_range1; }
                 if (fieldModel.options.date_valid_range2 != null) { formTypeOpts.date_valid_range2 = fieldModel.options.date_valid_range2; }
               }
@@ -369,18 +391,22 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         is_enabled:     formModel.is_enabled
       };
 
-      if (fieldType === 'textarea') {
+      if (fieldType === 'textarea' || fieldType === 'javascript') {
         formTypeOpts = formModel.text;
       } else {
         formTypeOpts = formModel[fieldType];
       }
 
       switch (fieldType) {
-        case 'text': case 'textarea':
+        case 'text':
+        case 'textarea':
+        case 'javascript':
           if (fieldType === 'text') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
-          } else {
+          } else if (fieldType === 'textarea') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+          } else {
+            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Javascript';
           }
 
           postData.default_value = formTypeOpts.default_value;
@@ -405,6 +431,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             postData.agent_regex = formTypeOpts.agent_regex;
             postData.agent_regex_required = formTypeOpts.agent_regex_required;
           }
+          if (fieldType === 'javascript') {
+            postData.code = formTypeOpts.code;
+          }
           break;
 
         case 'choice':
@@ -428,6 +457,13 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
               postData.none_choice_title = formTypeOpts.none_choice_title;
             }
           }
+          break;
+
+        case 'eula':
+          postData.sys_name = 'eula';
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+          postData.field_type = formTypeOpts.field_type;
+          postData.choices_structure = formTypeOpts.options;
           break;
 
         case 'toggle':
@@ -563,6 +599,174 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
       }
 
       return postData;
+    }
+
+    getDefaultCode() {
+      return '/**\n' +
+    ' * This function is called whenever your field is added to\n' +
+    ' * a form. Note that the function will not be called until the first\n' +
+    ' * time the field becomes visible.\n' +
+    ' *\n' +
+    ' * The function is passed a $ctx context object. This is how your field\n' +
+    ' * interacts with the form.\n' +
+    ' *\n' +
+    ' * Properties in $ctx include:\n' +
+    ' * $ctx.field      -- the current field info such as $ctx.field.id\n' +
+    ' * $ctx.interface  -- "agent" or "portal"\n' +
+    ' * $ctx.user       -- Current user info such as $ctx.user.id and $ctx.user.primary_email.email\n' +
+    ' * $ctx.ticket     -- Current ticket info such as $ctx.ticket.id (may be null if new ticket)\n' +
+    ' * $ctx.context    -- "newticket" or "viewticket"\n' +
+    ' * $ctx.jQuery     -- Reference to jQuery\n' +
+    ' * $ctx.Handlebars -- Reference to Handlebars templating engine\n' +
+    ' */\n' +
+    'function makeFieldDefinition($ctx) {\n' +
+    '\t// jQuery is available. You can assign a reference to make it easier to use.\n' +
+    '\tvar $ = $ctx.jQuery;\n' +
+    '\n' +
+    '\t// Handlebars is also available if you want a way to render templates easier\n'  +
+    '\t// See https://handlebarsjs.com/\n' +
+    '\tvar Handlebars = $ctx.Handlebars;\n' +
+    '\n' +
+    '\t// Example use of a template\n' +
+    ' \tvar linkTpl = Handlebars.compile(\n' +
+    ' \t\t"{{title}} <a href=\'http://example.com?product={{id}}\' target=\'_blank\'>Option</a>"\n' +
+    ' \t);\n' +
+    '\n' +
+    '\n' +
+    '\t/**\n' +
+    '\t * This is called to render the HTML that will be placed\n' +
+    '\t * into the form.\n' +
+    '\t *\n' +
+    '\t * This function is called only once the first time the\n'  +
+    '\t * field becomes visible. After that, the fields\n' +
+    '\t * are only shown/hidden based on the layout rules.\n' +
+    '\t *\n' +
+    '\t * If you want to keep references to fields here for later use, then\n' +
+    '\t * this is typically where you\'d set those.\n' +
+    '\t *\n' +
+    '\t * @param {Function} setValue  A function you should call to change the value\n' +
+    '\t *                             of the field. This is value that ultimately gets\n' +
+    '\t *                             saved to the database.\n' +
+    '\t *\n' +
+    '\t *                             This accepts one or two parameters:\n' +
+    '\t *                                 setValue(string[, object])\n' +
+    '\t *                             You must always specify a string value, and you can\n' +
+    '\t *                             optionally specify an arbitrary object that will be\n' +
+    '\t *                             saved alongside the value. You can use this value\n' +
+    '\t *                             later in the renderValue function.\n' +
+    '\t * @param {string} currentValue The currently set value. May be null.\n' +
+    '\t * @param {object} currentData  Arbitrary data saved with the current value.\n' +
+    '\t * @param {HTMLElement} fieldContainer The HTML element that wraps your field.\n' +
+    '\t * @return HTMLElement or jQuery collection or an HTML string. Note that this MUST\n' +
+    '\t *         be a single element. i.e. if you need multiple elements, then you should\n' +
+    '\t *         wrap it in a div or other container.\n' +
+    '\t */\n' +
+    '\t$ctx.renderField = function(setValue, currentValue, currentData) {\n' +
+    '\t\tvar $selectEl = $("<select></select>");\n' +
+    '\n' +
+    '        var data = [\n' +
+    '            {"id": 1, "title": "test1"},    \n' +
+    '            {"id": 2, "title": "test2"},\n' +
+    '        ];\n' +
+    '\n' +
+    '\t\tdata.forEach(function (p, index) {\n' +
+    '\t    \tvar $opt = $("<option />").val(p.id).text(p.title);\n' +
+    '\t    \tif (parseInt(currentData.id, 10) === p.id) {\n' +
+    '\t\t\t\t$opt.prop(\'selected\', true);\n' +
+    '\t\t\t} else if (!currentData.id && index === 0) {\n' +
+    '\t\t\t    $opt.prop(\'selected\', true);\n' +
+    '\t\t\t    setValue(p.title, { id: p.id });\n' +
+    '\t\t\t}\n' +
+    '\t\t\t$opt.appendTo($selectEl);\n' +
+    '\t\t});\n' +
+    '\n' +
+    '\t\t$selectEl.on(\'change\', function() {\n' +
+    '\t\t\tvar $selectedOpt = $(this).children("option:selected");\n' +
+    '\n' +
+    '\t\t\t// Save the option title as the value, and the option value in the extra data\n' +
+    '\t\t\tsetValue($selectedOpt.text(), { id: $selectedOpt.val() });\n' +
+    '\t\t});\n' +
+    '\n' +
+    '\t\treturn $selectEl;\n' +
+    '\t};\n' +
+    '\n' +
+    '\t/**\n' +
+    '\t * This function gets called when your form field\n' +
+    '\t * is rendered to the screen.\n' +
+    '\t * \n' +
+    '\t * This function is called whenever the field is rendered\n' +
+    '\t * to the screen. It may be called multiple times on this instance\n' +
+    '\t * if the field were to change.\n' +
+    '\t *\n' +
+    '\t * @param {string} value  The value saved\n' +
+    '\t * @param {object} data   The whole arbitrary data object saved.\n' +
+    '\t * @return HTMLElement or jQuery collection or an HTML string\n' +
+    '\t */\n' +
+    '\t$ctx.renderValue = function(value, data) {\n' +
+    '\t    // In the agent interface, render a link\n' +
+    '\t\tif ($ctx.interface == "agent") {\n' +
+    '\t\t\treturn linkTpl({\n' +
+    '\t\t\t\ttitle: value,\n' +
+    '\t\t\t\tid: data.id\n' +
+    '\t\t\t});\n' +
+    '\t\t// In the user interface, render just the value\n' +
+    '\t\t} else {\n' +
+    '\t\t\treturn value;\n' +
+    '\t\t}\n' +
+    '\t};\n' +
+    '\n' +
+    '\t/**\n' +
+    '\t * This is called when the form is submitted.\n' +
+    '\t * This is only called if the field is actually visible.\n' +
+    '\t *\n' +
+    '\t * The return value is significant:\n' +
+    '\t * - false -- the submit is aborted. i.e. here is where you might add validation.\n' +
+    '\t * - any non-false (true, null, undefined, etc) the submit goes through normally\n' +
+    '\t *\n' +
+    '\t * You may also return a Promise. The submit will wait until the promise resolves.\n' +
+    '\t * If the promise resolves to false, or if the promise rejects, then the submit is aborted.\n' +
+    '\t * Any other resolve value (true, null, undefined, etc) the submit continues as normal.\n' +
+    '\t */\n' +
+    '\t$ctx.onSubmit = function(currentValue, currentData, $field) {\n' +
+    '\t\tif (!currentValue) {\n' +
+    '\t  \t\talert("You need to enter a value");\n' +
+    '\t  \t\treturn false;\n' +
+    '\t  \t}\n' +
+    '\t};\n' +
+    '\n' +
+    '\t/**\n' +
+    '\t * This is called when the form field actually becomes\n' +
+    '\t * visible to the user.\n' +
+    '\t * @param {string} currentValue The currently set value. May be null.\n' +
+    '\t * @param {object} currentData  Arbitrary data saved with the current value.\n' +
+    '\t * @param {HTMLElement} your actual hidden input.\n' +
+    '\t * @param {HTMLElement} your actual rendered element returned from renderField method.\n' +
+    '\t * \n' +
+    '\t * This function may be called multiple times.\n' +
+    '\t */\n' +
+    '\t$ctx.onShow = function(currentValue, currentData, $field, $element) {\n' +
+    '\t    $this = this;\n' +
+    '\t\t$element.find(\'option\').each(function (index, o) {\n' +
+    '\t\t    var $o = $this.jQuery(o);\n' +
+    '\t    \tif (parseInt(currentData.id, 10) === parseInt($o.val(), 10)) {\n' +
+    '\t\t\t\t$o.prop(\'selected\', true);\n' +
+    '\t\t\t} else if (!currentData.id && index === 0) {\n' +
+    '\t\t\t    $o.prop(\'selected\', true);\n' +
+    '\t\t\t}\n' +
+    '    \t});\n' +
+    '\t};\n' +
+    '\n' +
+    '\t/**\n' +
+    '\t * This is called when the form field is hidden from view\n' +
+    '\t * (i.e. the layout changes to hide it).\n' +
+    '\t *\n' +
+    '\t * This function may be called multiple times.\n' +
+    '\t */\n' +
+    '\t$ctx.onHide = function(currentValue, currentData, $field, $element) {\n' +
+    '\t\t// you can do something here\n' +
+    '\t\t// e.g. use $field to get a reference to your field\n' +
+    '\t}\n' +
+    '}';
     }
 
     /*

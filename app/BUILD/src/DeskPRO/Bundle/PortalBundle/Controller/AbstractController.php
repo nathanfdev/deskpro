@@ -348,11 +348,11 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Community\CommunityDataService
      */
-    public function getFeedbackDataService()
+    public function getCommunityDataService()
     {
-        return $this->get('data.feedback');
+        return $this->get('data.community');
     }
 
     /**
@@ -385,6 +385,14 @@ class AbstractController extends BaseController
     protected function getChatDataService()
     {
         return $this->get('data.chat');
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService
+     */
+    protected function getDirectMessageThreadDataService()
+    {
+        return $this->get('data.direct_message.thread');
     }
 
     /**

@@ -68,6 +68,7 @@ define([
           data.field = result.data.field;
           data.field_type = result.data.field.type_name;
           data.form = this.getFormMapper().getFormFromModel(data.field);
+          data.form.is_public = data.field.is_public;
           return deferred.resolve(data);
         });
       } else {
@@ -76,6 +77,7 @@ define([
           field_type: '0',
           form:       this.getFormMapper().getFormFromModel(null)
         };
+        data.form.is_public = false;
         deferred.resolve(data);
       }
 
@@ -107,6 +109,7 @@ define([
       let promise;
       const mapper = this.getFormMapper();
       const postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
+      postData.is_public = formModel.is_public;
 
       if (fieldModel.id) {
         promise = this.Api.sendPostJson(`/user_fields/${fieldModel.id}`, postData);

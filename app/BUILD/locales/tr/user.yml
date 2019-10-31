@@ -49,12 +49,12 @@ portal.email_subjects.comment-deleted: 'Yorumunuz personelimiz tarafından okund
 portal.email_subjects.email-too-big: '{{subject}} başlıklı email konunuz kabul edilmiştir.'
 portal.email_subjects.email_new-confirm: 'Eposta adresinizi doğrulayın'
 portal.email_subjects.email_primary-confirm: 'Eposta adresinizi doğrulayın'
-portal.email_subjects.feedback_new: 'Geri bildirimde bulunduğunuz için teşekkürler'
-portal.email_subjects.feedback_new-approved: 'Geri bildiriminiz onaylandı'
-portal.email_subjects.feedback_new-comment: 'Yeni bir yorum mevcut "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'geri bildirimde bulunduğunuz için teşekkür ederiz (Onaylama gerekiyor)'
-portal.email_subjects.feedback_new-disapproved: 'Geri bildiriminiz rededildi'
-portal.email_subjects.feedback_updated: 'Geri bildiriminiz güncellendi: {{title}}'
+portal.email_subjects.community_new: 'Geri bildirimde bulunduğunuz için teşekkürler'
+portal.email_subjects.community_new-approved: 'Geri bildiriminiz onaylandı'
+portal.email_subjects.community_new-comment: 'Yeni bir yorum mevcut "{{title}}"'
+portal.email_subjects.community_new-confirm: 'geri bildirimde bulunduğunuz için teşekkür ederiz (Onaylama gerekiyor)'
+portal.email_subjects.community_new-disapproved: 'Geri bildiriminiz rededildi'
+portal.email_subjects.community_updated: 'Geri bildiriminiz güncellendi: {{title}}'
 portal.email_subjects.kb_sub_new: 'Yeni Makaleler'
 portal.email_subjects.kb_sub_new_and_updated: 'Yeni veya Güncel Makaleler'
 portal.email_subjects.kb_sub_updated: 'Makaleleri Güncelle'
@@ -68,21 +68,20 @@ portal.email_subjects.validate-email: 'Eposta adresinizi doğrulayın'
 portal.emails.auto-close: 'Uzun süredir cevap vermediğiniz için {{ticket.subject}} konulu kaydınız kapanacaktır. Kaydınızın kapanmamasını istiyorsanız lütfen tarafımıza geri dönüş yapınız.'
 portal.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
 portal.emails.comment_approved: 'Yorumunuz yayınlandı.'
-portal.emails.comment_deleted: 'Yorumunuz sayfanın düzenlenmesinde kullanıldı.'
 portal.emails.comment_thank-you: '{{link}} bağlantısındaki yorumunuz için teşekkürler.'
 portal.emails.comment_validate-email: 'Çevrim içi olarak eposta adresinizi doğrulamak için bağlantıya tıklayın:'
 portal.emails.do-not-reply: 'Bu maile lütfen geri dönmeyiniz. Sistem tarafından otomatik olarak gönderilmiştir. Geri döndünüz zaman temsilcilerimiz görmeyeceklerdir.'
 portal.emails.email-too-big: 'Mail adresinizin boyutu çok büyük olduğu için {{subject}} konusu kabul edilemedi. Kayıt açabilmeniz için gerekli maksimum boyut {{max_size}}. İlgili ekleri çıkarın veya boyutunu düşürerek tekrar deneyiniz.'
-portal.emails.feedback_approved: 'Geri bildiriminizin onaylandığını ve sitemizde yayınlandığını dikkatlerinize sunarız.'
-portal.emails.feedback_closed: '"{{title}}" başlıklı geri bildiriminiz kapatıldı: {{status}}'
-portal.emails.feedback_disapproved: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız.'
-portal.emails.feedback_disapproved-reason: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız. {{name}} yorumu ile:'
-portal.emails.feedback_new-comment: '{{name}}yeni bir yorum yayınlanmıştır:'
-portal.emails.feedback_published: '"{{title}}" başlıklı geri bildiriminiz onaylandı ve sitemizde yayınlanacak.'
-portal.emails.feedback_thank-you: 'Geri bildirimde bulunduğunuz için teşekkür ederiz "{{title}}"'
-portal.emails.feedback_updated: '"{{title}}" başlıklı geri bildiriminiz güncellendi. Durumu "{{status}}" olarak değiştirildi.'
-portal.emails.feedback_validate-email: 'Çevrim içi olarak eposta adresinizi doğrulamak için bağlantıya tıklayın:'
-portal.emails.feedback_votes:
+portal.emails.community_topic_approved: 'Geri bildiriminizin onaylandığını ve sitemizde yayınlandığını dikkatlerinize sunarız.'
+portal.emails.community_topic_closed: '"{{title}}" başlıklı geri bildiriminiz kapatıldı: {{status}}'
+portal.emails.community-topic_disapproved: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız.'
+portal.emails.community-topic_disapproved-reason: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız. {{name}} yorumu ile:'
+portal.emails.community-topic_new-comment: '{{name}}yeni bir yorum yayınlanmıştır:'
+portal.emails.community-topic_published: '"{{title}}" başlıklı geri bildiriminiz onaylandı ve sitemizde yayınlanacak.'
+portal.emails.community-topic_thank-you: 'Geri bildirimde bulunduğunuz için teşekkür ederiz "{{title}}"'
+portal.emails.community-topic_updated: '"{{title}}" başlıklı geri bildiriminiz güncellendi. Durumu "{{status}}" olarak değiştirildi.'
+portal.emails.community-topic_validate-email: 'Çevrim içi olarak eposta adresinizi doğrulamak için bağlantıya tıklayın:'
+portal.emails.community-topic_votes:
   one: 'Geri bildiriminiz <strong>1</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
   other: 'Geri bildiriminiz <strong>{{count}}</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
 portal.emails.greeting: 'Değerli {{to_name}},'
@@ -97,7 +96,6 @@ portal.emails.label_view-online: 'Çevrim içi Gör'
 portal.emails.message-clipped: '(Mesaj kısaltılmıştır)'
 portal.emails.password_agent-reset: 'Personelimiz hesabınızın parolasını sıfırladı. Bu bilgiler ile oturum açabilirsiniz'
 portal.emails.password_reset: 'Parola sıfırlama talebinde bulundunuz. Parolanızı sıfırlamak için aşağıdaki bağlantıya tıklayın:'
-portal.emails.profile_email-new-confirm: 'Hesabınıza ikinci eposta adresini eklemek için aşağıdaki bağlantıya tıklayın'
 portal.emails.profile_email_link-validate: 'Bağlantıya tıklayara eposta adresinizi doğrulayabilirsiniz'
 portal.emails.register-agent-validation: 'Dikkat: Hesabınız onay aşamasındadır. Hesabınız temsilciler tarafından onaylandıktan sonra direk kayıt açabilirsiniz. Hesabınız onaylanana kadar kayıtlarınız doğrulama aşamasından geçmektedir.'
 portal.emails.register-confirm: 'Kayıt olduğunuz için teşekküler<br /><br />'
@@ -122,14 +120,15 @@ portal.emails.tickets_ommitted:
   other: '{{count}} iletiniz okunmamış'
 portal.emails.view_full_history_online: 'Aktif kayıtlarınızı görüntüleyin'
 portal.error.404-title: Bulunamadı
-portal.feedback.attachments: Ekler
-portal.feedback.btn-closed: Kapalı
-portal.feedback.btn-vote: Katılıyorum
-portal.feedback.form_title: Başlık
-portal.feedback.search-title: 'Geri Bildirim'
-portal.feedback.section-desc: 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.'
-portal.feedback.section-title: 'Geri Bildirim'
-portal.feedback.submit_feedback: 'Geri bildirim gönder'
+portal.community.attachments: Ekler
+portal.community.btn-closed: Kapalı
+portal.community.btn-vote: Katılıyorum
+portal.community.form_title: Başlık
+portal.community.form_custom_cat: Kategori
+portal.community.search-title: 'Geri Bildirim'
+portal.community.section-desc: 'Bu tavsiyeler siz gibi müşterilerimiz tarafından gönderildi; üzerlerinde tartışmanız oylamanız ve eğer girileri değilse yeni tavsiyelerde bulunmanız bizim için çok değerli.'
+portal.community.section-title: 'Geri Bildirim'
+portal.community.submit_community_topic: 'Geri bildirim gönder'
 portal.forms.error_password_forbid_reuse: 'Daha önce kullanmış olduğunuz bir parola kullanamazsınız'
 portal.forms.error_password_min_length:
   one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
@@ -159,7 +158,7 @@ portal.general.delete: Sil
 portal.general.everything: 'Her şey'
 portal.general.nav-downloads: İndirmeler
 portal.general.nav-downloads-desc: 'İndirmelere gözat'
-portal.general.nav-feedback: 'Geri Bildirim'
+portal.general.nav-community: 'Geri Bildirim'
 portal.general.nav-kb: 'Bilgi Bankası'
 portal.general.nav-kb-desc: 'Yardım Belgelerini Oku'
 portal.general.nav-news: Haberler
@@ -174,14 +173,14 @@ portal.general.rated-negative: 'Bu sayfayı yararsız olarak işaretlediniz'
 portal.general.rated-positive: 'Bu sayfayı yararlı olarak işaretlediniz'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} / {{vote_count}} kişi bu sayfayı yararlı buldu'
 portal.general.related-downloads: 'İlişkili Dosyalar'
-portal.general.related-feedback: 'İlgili Geri Bildirimler'
+portal.general.related-community: 'İlgili Geri Bildirimler'
 portal.general.related-news: 'İlişkili Haberler'
 portal.general.search-labels-section-title: 'Etiketlerde Ara'
 portal.general.search-section-title: Ara
 portal.general.search_btn: Ara
 portal.general.share-this: 'bunu paylaş'
 portal.general.show: Gösteri
-portal.general.submit-feedback: 'Geri Bildirim Gönder'
+portal.general.submit-community-topic: 'Geri Bildirim Gönder'
 portal.news.section-title: Haberler
 portal.news.view-as-agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
 portal.sidebar.news_title: Haberler
@@ -198,7 +197,7 @@ portal.tickets.list_title: 'Çağrı Kayıtlarınız'
 portal.tickets.new-intro: 'Lütfen bu formu doldurun. Personelimiz mümkün olan en kısa sürede size eposta ile geri dönüş yapacaktır.'
 portal.tickets.new-section-title: İletişim
 portal.tickets.rate-negative: Kötü
-portal.tickets.rate-neutral: Bitmiştir
+portal.tickets.rate-neutral: Sorunsuzdu
 portal.tickets.rate-positive: Harika
 portal.tickets.rate-question: 'Almış olduğunuz destek hizmetini değerlendirebilir misiniz ?'
 portal.tickets.related_articles_title: 'İlişkili Makaleler'
@@ -276,6 +275,7 @@ user.defaults.article_example_title: 'Örnek Makale'
 user.defaults.department_sales: Satış
 user.defaults.department_support: Destek
 user.defaults.downloads_category_general: Belgeler
+user.defaults.navigate: Gezinin
 user.defaults.news_category_general: Genel
 user.defaults.news_example_content: 'Bu örnek bir haberi gönderisidir. Düzenleyebilir ya da silebilirsiniz.'
 user.defaults.news_example_title: 'Örnek Haber Gönderisi'
@@ -285,12 +285,11 @@ user.email_subjects.comment-approved: 'Yorumunuz onaylandı'
 user.email_subjects.comment-deleted: 'Yorumunuz personelimiz tarafından okundu'
 user.email_subjects.email-too-big: '{{subject}} başlıklı email konunuz kabul edilmiştir.'
 user.email_subjects.email_new-confirm: 'Eposta adresinizi doğrulayın'
-user.email_subjects.email_primary-confirm: 'Eposta adresinizi doğrulayın'
-user.email_subjects.feedback_new: 'Geri bildirimde bulunduğunuz için teşekkürler'
-user.email_subjects.feedback_new-approved: 'Geri bildiriminiz onaylandı'
-user.email_subjects.feedback_new-comment: 'Yeni bir yorum mevcut "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Geri bildiriminiz rededildi'
-user.email_subjects.feedback_updated: 'Geri bildiriminiz güncellendi: {{title}}'
+user.email_subjects.community_topic_new: 'Geri bildirimde bulunduğunuz için teşekkürler'
+user.email_subjects.community_topic_new-approved: 'Geri bildiriminiz onaylandı'
+user.email_subjects.community_topic_new-comment: 'Yeni bir yorum mevcut "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Geri bildiriminiz rededildi'
+user.email_subjects.community_topic_updated: 'Geri bildiriminiz güncellendi: {{title}}'
 user.email_subjects.kb_sub_new: 'Yeni Makaleler'
 user.email_subjects.kb_sub_new_and_updated: 'Yeni veya Güncel Makaleler'
 user.email_subjects.kb_sub_updated: 'Makaleleri Güncelle'
@@ -299,23 +298,22 @@ user.email_subjects.password_reset: 'Parola Sıfırla'
 user.email_subjects.re: 'YNT: {{subject}}'
 user.email_subjects.register-welcome: 'Kayıt olduğunuz için teşekkürler'
 user.email_subjects.ticket-rate: 'Kayıt ile ilgili sizlere vermiş olduğumuz hizmeti değerlendiriniz.{{ticket.subject}}'
-user.email_subjects.ticket_new-participant: 'Çağrı kaydınıza yeni bir kişi katıldı'
 user.emails.auto-close: 'Uzun süredir cevap vermediğiniz için {{ticket.subject}} konulu kaydınız kapanacaktır. Kaydınızın kapanmamasını istiyorsanız lütfen tarafımıza geri dönüş yapınız.'
 user.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
 user.emails.comment_approved: 'Yorumunuz yayınlandı.'
 user.emails.comment_deleted: 'Yorumunuz sayfanın düzenlenmesinde kullanıldı.'
 user.emails.comment_thank-you: '{{link}} bağlantısındaki yorumunuz için teşekkürler.'
 user.emails.email-too-big: 'Mail adresinizin boyutu çok büyük olduğu için {{subject}} konusu kabul edilemedi. Kayıt açabilmeniz için gerekli maksimum boyut {{max_size}}. İlgili ekleri çıkarın veya boyutunu düşürerek tekrar deneyiniz.'
-user.emails.feedback_agent-validation: 'Yorumunuz personelimiz tarafından okunup, onaylanıncaya kadar web sitemizde yayınlanmayacaktır.'
-user.emails.feedback_approved: 'Geri bildiriminizin onaylandığını ve sitemizde yayınlandığını dikkatlerinize sunarız.'
-user.emails.feedback_closed: '"{{title}}" başlıklı geri bildiriminiz kapatıldı: {{status}}'
-user.emails.feedback_disapproved: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız.'
-user.emails.feedback_disapproved-reason: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız. {{name}} yorumu ile:'
-user.emails.feedback_new-comment: '{{name}}yeni bir yorum yayınlanmıştır:'
-user.emails.feedback_published: '"{{title}}" başlıklı geri bildiriminiz onaylandı ve sitemizde yayınlanacak.'
-user.emails.feedback_thank-you: 'Geri bildirimde bulunduğunuz için teşekkür ederiz "{{title}}"'
-user.emails.feedback_updated: '"{{title}}" başlıklı geri bildiriminiz güncellendi. Durumu "{{status}}" olarak değiştirildi.'
-user.emails.feedback_votes:
+user.emails.community-topic_agent-validation: 'Yorumunuz personelimiz tarafından okunup, onaylanıncaya kadar web sitemizde yayınlanmayacaktır.'
+user.emails.community-topic_approved: 'Geri bildiriminizin onaylandığını ve sitemizde yayınlandığını dikkatlerinize sunarız.'
+user.emails.community-topic_closed: '"{{title}}" başlıklı geri bildiriminiz kapatıldı: {{status}}'
+user.emails.community-topic_disapproved: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız.'
+user.emails.community-topic_disapproved-reason: 'Geri bildiriminizin rededildiğini ve sitemizde yayınlanmayacağını dikkatlerinize sunarız. {{name}} yorumu ile:'
+user.emails.community-topic_new-comment: '{{name}}yeni bir yorum yayınlanmıştır:'
+user.emails.community-topic_published: '"{{title}}" başlıklı geri bildiriminiz onaylandı ve sitemizde yayınlanacak.'
+user.emails.community-topic_thank-you: 'Geri bildirimde bulunduğunuz için teşekkür ederiz "{{title}}"'
+user.emails.community-topic_updated: '"{{title}}" başlıklı geri bildiriminiz güncellendi. Durumu "{{status}}" olarak değiştirildi.'
+user.emails.community-topic_votes:
   one: 'Geri bildiriminiz <strong>1</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
   other: 'Geri bildiriminiz <strong>{{count}}</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
 user.emails.greeting: 'Değerli {{to_name}},'
@@ -343,7 +341,7 @@ user.emails.ticket_flood: 'Yardım masamıza eposta gönderdiniz.<br /><br />Oto
 user.emails.ticket_message_title: '{{date}} - {{time}}, {{author}} yazdı:'
 user.emails.ticket_no-autoresponse: 'Uyarı: Onaylama epostası kapatıldı'
 user.emails.ticket_rate-negative: Hayır
-user.emails.ticket_rate-neutral: Bitmiştir
+user.emails.ticket_rate-neutral: Sorunsuzdu
 user.emails.ticket_rate-positive: Evet
 user.emails.ticket_rate-question: 'Bu mesaj yardımcı oldu mu?'
 user.emails.ticket_received: 'Çağrı kaydınız alındı. Personelimiz kısa sürede cevap verecektir.'
@@ -385,7 +383,7 @@ user.error.permission-denied: 'Üzgünüz, işleminize izin verilmiyor.'
 user.error.permission-denied-login: 'Oturumunuz kapatılmış durumda. <a href="{{login_url}}">Oturum Aç</a>ın ve yeniden deneyin.'
 user.error.permission-denied-title: 'Bunu yapmaya izniniz yok'
 user.error.server-error: 'Bu sayfanın yüklenmesinde bir sunucu hatası oluştu. Lütfen yeniden deneyin.'
-user.feedback.submit_feedback: 'Geri bildirim gönder'
+user.community.submit_community_topic: 'Geri bildirim gönder'
 user.general.helpdesk_by: '<strong>{{deskpro}}</strong> yardım masası yazılımı'
 user.general.label_captcha: 'doğrulama kodu'
 user.general.page: Sayfa
@@ -403,7 +401,8 @@ user.lang.lang_title_japanese: Japonca
 user.lang.lang_title_norwegian: Norveççe
 user.lang.lang_title_persian: Farsça
 user.lang.lang_title_polish: Lehçe
-user.lang.lang_title_portuguese: Portekizce
+user.lang.lang_title_portuguese_br: Portekizce (Brezilya)
+user.lang.lang_title_portuguese_pt: Portekizce (Portekiz)
 user.lang.lang_title_romanian: Romen
 user.lang.lang_title_russian: Rusça
 user.lang.lang_title_spanish: İspanyolca
@@ -419,7 +418,7 @@ user.profile.register_password_min_length:
   one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
   other: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
 user.profile.register_password_unused: 'Daha önce kullanmış olduğunuz bir parola kullanamazsınız'
-user.tickets.feedback_message_leave_comment: 'İsterseniz yorum bırakabilirsiniz.'
+user.tickets.community_message_leave_comment: 'İsterseniz yorum bırakabilirsiniz.'
 user.tickets.fields_category: Kategori
 user.tickets.fields_department: Bölüm
 user.tickets.fields_priority: Öncelik

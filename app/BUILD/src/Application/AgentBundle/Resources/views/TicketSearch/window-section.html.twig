@@ -9,7 +9,7 @@
         {% block pane_header %}
 			<ul class="pane-tabs">
 				<li class="tab active" data-tab-id="pane-content-main"><i class="fa icon-dp-ticket"></i> {{ phrase('agent.chrome.nav_tickets') }}</li>
-                {% block pane_other_tabs %}<li class="tab" data-tab-id="pane-content-search"><i class="fa fa-search"></i> {{ phrase('agent.chrome.nav_search') }}</li>{% endblock %}
+                {% block pane_other_tabs %}<li class="tab" data-tab-id="pane-content-search"><i class="fas fa-search"></i> {{ phrase('agent.chrome.nav_search') }}</li>{% endblock %}
 			</ul>
         {% endblock %}
 	</div>
@@ -239,7 +239,7 @@
 
 					</div>
 					<div class="pane-content pane-content-search" style="display: none;">
-                        {% include 'AgentBundle:TicketSearch:window-search.html.twig' %}
+                        {% include 'AgentBundle:TicketSearch:window-search.html.twig' with {'ticket_statuses' : ticket_statuses}%}
 					</div>
 				</div>
 			</div>

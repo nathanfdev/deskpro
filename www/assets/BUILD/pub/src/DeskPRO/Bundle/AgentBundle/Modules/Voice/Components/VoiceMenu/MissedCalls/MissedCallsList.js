@@ -1,0 +1,271 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import moment from 'moment';
+import EventEmitter from 'eventemitter2';
+import ScrollArea from 'react-scrollbar';
+import Isvg from 'react-inlinesvg';
+import { WaitingFormat } from 'DeskPRO/Component/Timer';
+import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import MediaControls from 'DeskPRO/Component/MediaControls';
+
+const emitter = new EventEmitter();
+
+class MissedCallsList extends React.Component {
+
+  static propTypes = {
+    records: PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      onlyVoicemails: false
+    };
+  }
+
+  toggleOnlyVoicemails = () => {
+    this.setState({
+      onlyVoicemails: !this.state.onlyVoicemails
+    });
+  };
+
+  render() {
+    const { records } = this.props;
+    const { onlyVoicemails } = this.state;
+    const filteredRecords = records.filter(record => (onlyVoicemails && record.get('blob')) || !onlyVoicemails);
+
+    return (
+      <div>
+        <div className="voice-menu-voicemail-list-settings">
+          <Checkbox onChange={this.toggleOnlyVoicemails} value={onlyVoicemails} label="Show only voicemails" />
+        </div>
+        <hr className="full" />
+
+        {filteredRecords.size > 0
+          ? <ScrollArea className="voice-menu-voicemail-list">
+            {filteredRecords.toArray().map((record, index) =>
+              <MissedCall
+                {...this.props}
+                key={index}
+                record={record}
+              />
+            )}
+          </ScrollArea>
+          : <div className="voice-menu-voicemail-list">
+            <div className="voice-menu-voicemail-list-empty-message">
+              You have no missed calls or voicemail messages.
+            </div>
+          </div>
+        }
+
+      </div>
+    );
+  }
+}
+
+class MissedCall extends React.Component {
+
+  static propTypes = {
+    record:               PropTypes.object,
+    phoneCalls:           PropTypes.object,
+    people:               PropTypes.object,
+    createTicket:         PropTypes.func,
+    callBack:             PropTypes.func,
+    deleteRecording:      PropTypes.func,
+    markListened:         PropTypes.func,
+    openPerson:           PropTypes.func,
+    outboundCallsEnabled: PropTypes.bool
+  };
+
+  static defaultProps = {
+    createTicket:    () => {},
+    callBack:        () => {},
+    deleteRecording: () => {},
+    markListened:    () => {},
+    openPerson:      () => {}
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      playing: false
+    };
+  }
+
+  componentDidMount() {
+    this.audio.addEventListener('ended', this.stopPlaying);
+    emitter.on('stopPlaying', this.stopPlaying);
+  }
+
+  componentWillUnmount() {
+    this.stopPlaying();
+    this.audio.removeEventListener('ended', this.stopPlaying);
+    emitter.off('stopPlaying', this.stopPlaying);
+  }
+
+  createTicket = (event) => {
+    event.preventDefault();
+
+    const { record, createTicket } = this.props;
+    createTicket(record);
+  };
+
+  callBack = (event) => {
+    event.preventDefault();
+
+    const { record, phoneCalls, callBack, outboundCallsEnabled } = this.props;
+    const phoneCall = phoneCalls.get(record.get('phone_call'));
+
+    if (!outboundCallsEnabled) {
+      return;
+    }
+
+    callBack(phoneCall);
+  };
+
+  deleteRecording = (event) => {
+    event.preventDefault();
+
+    const { record, deleteRecording } = this.props;
+    deleteRecording(record);
+  };
+
+  playRecording = (event) => {
+    event.preventDefault();
+
+    const { record, markListened } = this.props;
+    const { playing } = this.state;
+
+    const recording = record.get('blob');
+    if (!recording) {
+      return;
+    }
+
+    emitter.emit('stopPlaying');
+
+    if (!playing) {
+      this.audio.src = recording.get('download_url');
+      this.audio.play();
+      this.setState({
+        playing: true
+      });
+
+      markListened(record);
+    } else {
+      this.stopPlaying();
+    }
+  };
+
+  openPerson = (event) => {
+    event.preventDefault();
+
+    const { record, phoneCalls, openPerson } = this.props;
+    const phoneCall = phoneCalls.get(record.get('phone_call'));
+    if (!phoneCall) {
+      return;
+    }
+
+    openPerson(phoneCall.get('person'));
+  };
+
+  stopPlaying = () => {
+    if (this.audio.readyState > 0) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
+
+    this.setState({
+      playing: false
+    });
+  };
+
+  renderContent() {
+    const { record, phoneCalls, people, outboundCallsEnabled } = this.props;
+    const phoneCall = phoneCalls.get(record.get('phone_call'));
+    const assetPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img`;
+
+    if (!phoneCall) {
+      return null;
+    }
+
+    const person = people.get(phoneCall.get('person'));
+    const recording = record.get('blob');
+
+    return (
+      <div className="voice-menu-voicemail-record">
+        {recording
+          ? <Isvg className="voice-missed-call-icon" src={`${assetPath}/topbar/voicemail.svg`} />
+          : <Isvg className="voice-missed-call-icon" src={`${assetPath}/topbar/missed-call.svg`} />}
+
+        <div className="voicemail-record-content">
+          <div className="voicemail-record-date-created">
+            {moment(record.get('date_created')).fromNow()}
+          </div>
+          <div className="voicemail-person-name">
+            {person && (person.get('name') || person.get('primary_email'))
+              ? <a onClick={this.openPerson}>
+                {person.get('name')}
+                <span className="voicemail-person-email" title={person.get('primary_email')}>
+                  {person.get('primary_email')}
+                </span>
+              </a>
+              : <span>Unknown user</span>
+            }
+          </div>
+          {recording &&
+          <div className="voicemail-record-duration">
+            <MediaControls
+              key={`recording_${recording.get('blob_id')}`} recording={recording}
+              withResetButton={false}
+              withDuration={false}
+              withDownload={false}
+            />
+            <WaitingFormat value={record.get('duration')} />
+          </div>}
+          <div>{phoneCall.get('external_number')}</div>
+
+          <div className="voice-record-actions">
+            <span className="voice-record-action">
+              <a onClick={this.createTicket}>
+                Create Ticket
+              </a>
+            </span>
+            {outboundCallsEnabled &&
+            <span className="voice-record-action">
+              <a onClick={this.callBack}>
+                Call Back
+              </a>
+            </span>}
+            <span className="voice-record-action">
+              <a onClick={this.deleteRecording}>
+                Delete
+              </a>
+            </span>
+            {recording &&
+            <span className="voice-record-action">
+              <a
+                className="media-size"
+                href={`${recording.get('download_url')}?dl=1`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Download
+              </a>
+            </span>}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        <audio ref={(c) => { this.audio = c; }} />
+        {this.renderContent()}
+      </div>
+    );
+  }
+}
+
+export default MissedCallsList;

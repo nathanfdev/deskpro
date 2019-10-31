@@ -226,6 +226,7 @@ class InstallCommand extends ContainerAwareCommand
         if (
             $session->getSource() === InstallSession::SOURCE_WIN_INSTALLER
             || $session->getSource() === InstallSession::SOURCE_AUTO_INSTALLER
+            || $session->getSource() === 'skel' // build server
             || $input->getOption('skip-wizard')
         ) {
             $skip_list[] = 'file_integrity';

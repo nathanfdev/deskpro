@@ -97,14 +97,14 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.feedback:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackHandler
+  api_serializer.handler.community_topic:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CommunityTopicHandler
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.feedback_comment:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackCommentHandler
+  api_serializer.handler.community_topic_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CommunityTopicCommentHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -158,8 +158,8 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.feedback_category:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\FeedbackCategoryHandler
+  api_serializer.handler.community_channel:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\CommunityChannelHandler
     arguments:
       - "@deskpro.core.translate"
       - "@doctrine.orm.default_entity_manager"

@@ -18,6 +18,7 @@ class TasksVoter implements PermissionGroupEntityVoterInterface
     {
         return Task::class;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -25,6 +26,7 @@ class TasksVoter implements PermissionGroupEntityVoterInterface
     {
         return $user->hasPerm('agent_tasks.use');
     }
+
     /**
      * {@inheritdoc}
      */

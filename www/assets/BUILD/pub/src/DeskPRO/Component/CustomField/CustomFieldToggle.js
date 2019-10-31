@@ -46,7 +46,7 @@ class Checkbox extends React.Component {
         onClick={this.onClick}
       >
         <span className={classNames('checkbox', { checked: value })}>
-          <i className="fa fa-check" />
+          <i className="fas fa-check" />
         </span>
       </div>
     );

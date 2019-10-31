@@ -27,7 +27,7 @@
                             <label>
                                 <h4>
                                     {{ phrase('admin.settings.portal_rate_limit_ip_whitelist') }}
-                                    <i class="fa fa-question-circle qmark-icon" tooltip="{{ phrase('admin.settings.portal_rate_limit_whitelist_text') }}" tooltip-placement="right"></i>
+                                    <i class="fas fa-question-circle qmark-icon" tooltip="{{ phrase('admin.settings.portal_rate_limit_whitelist_text') }}" tooltip-placement="right"></i>
                                 </h4>
                             </label>
                             <div>
@@ -262,31 +262,31 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form" ng-if="feedbackSettings.enabled">
+        <article class="form-horizontal dp-form" ng-if="communitySettings.enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_feedback.enabled" />
-                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
+                                <input type="checkbox" ng-model="settings.user_rate_limit.submit_community_topic.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_community_rate_limit') }}</h4>
                             </label>
-                            <div ng-show="settings.user_rate_limit.submit_feedback.enabled">
-                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
-                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
+                            <div ng-show="settings.user_rate_limit.submit_community_topic.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_community_attempted') }}
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_community_topic.limit" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_times_within') }}
-                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
+                                <input type="number" min="1" ng-model="settings.user_rate_limit.submit_community_topic.time" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_minutes') }}
-                                <select ng-model="settings.user_rate_limit.submit_feedback.response">
+                                <select ng-model="settings.user_rate_limit.submit_community_topic.response">
                                     <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
                                     <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
-                                <span ng-show="settings.user_rate_limit.submit_feedback.response === 'lockout'">
+                                <span ng-show="settings.user_rate_limit.submit_community_topic.response === 'lockout'">
                                     {{ phrase('admin.settings.portal_rate_limit_for') }}
                                     <input
                                             type="number"
                                             min="1"
-                                            ng-model="settings.user_rate_limit.submit_feedback.lockout_time"
+                                            ng-model="settings.user_rate_limit.submit_community_topic.lockout_time"
                                             class="form-control" style="width: 60px;" />
                                     {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 </span>
@@ -448,31 +448,31 @@
             </div>
         </article>
 
-        <article class="form-horizontal dp-form" ng-if="feedbackSettings.enabled">
+        <article class="form-horizontal dp-form" ng-if="communitySettings.enabled">
             <div class="panel panel-innertable">
                 <div class="form-group">
                     <div class="col-lg-12">
                         <div class="inner-group">
                             <label>
-                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_feedback.enabled" />
-                                <h4>{{ phrase('admin.settings.portal_rate_limit_feedback_rate_limit') }}</h4>
+                                <input type="checkbox" ng-model="settings.guest_rate_limit.submit_community_topic.enabled" />
+                                <h4>{{ phrase('admin.settings.portal_rate_limit_community_rate_limit') }}</h4>
                             </label>
-                            <div ng-show="settings.guest_rate_limit.submit_feedback.enabled">
-                                {{ phrase('admin.settings.portal_rate_limit_feedback_attempted') }}
-                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.limit" class="form-control" style="width: 60px;" />
+                            <div ng-show="settings.guest_rate_limit.submit_community_topic.enabled">
+                                {{ phrase('admin.settings.portal_rate_limit_community_attempted') }}
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_community_topic.limit" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_times_within') }}
-                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_feedback.time" class="form-control" style="width: 60px;" />
+                                <input type="number" min="1" ng-model="settings.guest_rate_limit.submit_community_topic.time" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_minutes') }}
-                                <select ng-model="settings.guest_rate_limit.submit_feedback.response">
+                                <select ng-model="settings.guest_rate_limit.submit_community_topic.response">
                                     <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
                                     <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
                                 </select>
-                                <span ng-show="settings.guest_rate_limit.submit_feedback.response === 'lockout'">
+                                <span ng-show="settings.guest_rate_limit.submit_community_topic.response === 'lockout'">
                                     {{ phrase('admin.settings.portal_rate_limit_for') }}
                                     <input
                                             type="number"
                                             min="1"
-                                            ng-model="settings.guest_rate_limit.submit_feedback.lockout_time"
+                                            ng-model="settings.guest_rate_limit.submit_community_topic.lockout_time"
                                             class="form-control" style="width: 60px;" />
                                     {{ phrase('admin.settings.portal_rate_limit_minutes') }}
                                 </span>

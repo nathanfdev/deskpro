@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import NumberForm from './NumberForm';
-import { loadNumbers, editNumber, deleteNumber } from '../../../Actions/numberActions';
+import { loadNumbers, editNumber, disableNumber, deleteNumber } from '../../../Actions/numberActions';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
 import { loadQueues } from '../../../Actions/queueActions';
 import { loadAutoAttendants } from '../../../Actions/autoAttendantActions';
@@ -41,27 +41,11 @@ class EditNumberContainer extends React.Component {
     dispatch(loadAutoAttendants());
   }
 
-  onReturnBack = () => {
-    replaceRoute('/voice_channel/numbers');
-  };
-
   onSubmit = (data) => {
     const { dispatch } = this.props;
     const number = this.getNumber();
 
     const promise = dispatch(editNumber(number.get('id'), data));
-    promise.success(() => {
-      replaceRoute('/voice_channel/numbers');
-    });
-
-    return promise;
-  };
-
-  onDelete = () => {
-    const { dispatch } = this.props;
-    const number = this.getNumber();
-    const promise = dispatch(deleteNumber(number.get('id')));
-
     promise.success(() => {
       replaceRoute('/voice_channel/numbers');
     });
@@ -76,6 +60,34 @@ class EditNumberContainer extends React.Component {
     return numbers && numbers.get(numberId);
   }
 
+  disableNumber = () => {
+    const { dispatch } = this.props;
+    const number = this.getNumber();
+    const promise = dispatch(disableNumber(number.get('id')));
+
+    promise.success(() => {
+      replaceRoute('/voice_channel/numbers');
+    });
+
+    return promise;
+  };
+
+  deleteNumber = () => {
+    const { dispatch } = this.props;
+    const number = this.getNumber();
+    const promise = dispatch(deleteNumber(number.get('id')));
+
+    promise.success(() => {
+      replaceRoute('/voice_channel/numbers');
+    });
+
+    return promise;
+  };
+
+  returnBack = () => {
+    replaceRoute('/voice_channel/numbers');
+  };
+
   render() {
     const { numbersLoaded, queuesLoaded, agentsLoaded, autoAttendantsLoaded } = this.props;
     const number = this.getNumber();
@@ -88,9 +100,10 @@ class EditNumberContainer extends React.Component {
       <NumberForm
         {...this.state}
         number={number}
-        onReturnBack={this.onReturnBack}
+        returnBack={this.returnBack}
         onSubmit={this.onSubmit}
-        onDelete={this.onDelete}
+        disableNumber={this.disableNumber}
+        deleteNumber={this.deleteNumber}
       />
     );
   }

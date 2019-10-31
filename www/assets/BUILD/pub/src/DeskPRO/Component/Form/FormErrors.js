@@ -54,7 +54,7 @@ export function getErrorsByPropertyPath(formErrors, propertyPath, subPath = fals
     if (childErrorPath.length > 0) {
       const errorField = childErrorPath.splice(0, 1)[0];
       if (childErrors && typeof childErrors === 'object' && {}.hasOwnProperty.call(childErrors, errorField)) {
-        return childErrorPath.length ? iterator(childErrors[errorField], childErrorPath) : childErrors[errorField];
+        return childErrorPath.length ? iterator(childErrors[errorField], childErrorPath) : [...childErrors[errorField]];
       }
     }
 
@@ -75,7 +75,7 @@ export function getErrorsByErrorPath(formErrors, errorPath) {
     if (childErrorPath.length > 0) {
       const errorField = childErrorPath.splice(0, 1)[0];
       if (childErrors && typeof childErrors === 'object' && {}.hasOwnProperty.call(childErrors, errorField)) {
-        return childErrorPath.length ? iterator(childErrors[errorField], childErrorPath) : childErrors[errorField];
+        return childErrorPath.length ? iterator(childErrors[errorField], childErrorPath) : [...childErrors[errorField]];
       }
     }
 

@@ -1,6 +1,6 @@
 import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-class EmailTemplatesRepository extends ApiRepository {
+class LanguagesRepository extends ApiRepository {
   loadEmailPhrases(group, languageId) {
     return this.api.sendGet(`DP_API/${this.url}/email_phrases/${group}/${languageId}`);
   }
@@ -17,4 +17,4 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendPost(`DP_API/${this.url}/translations/${phraseName}`, { translations });
   }
 }
-export default EmailTemplatesRepository;
+export default LanguagesRepository;

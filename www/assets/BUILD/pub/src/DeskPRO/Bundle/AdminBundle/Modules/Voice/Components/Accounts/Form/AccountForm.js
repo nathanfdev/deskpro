@@ -52,7 +52,10 @@ class AccountForm extends React.Component {
 
   onSubmit = (event) => {
     event.preventDefault();
-    this.props.onSubmit(this.state.formData.value);
+    this.props.onSubmit({
+      ...this.state.formData.value,
+      isManaged: this.props.isManaged
+    });
   };
 
   onTestCredentials = (event) => {
@@ -67,7 +70,7 @@ class AccountForm extends React.Component {
     onDeleteAccount(account);
   };
 
-  renderCloud() {
+  renderManagedForm() {
     const { saving, testing, deleting } = this.props;
     const { formData } = this.state;
 
@@ -76,10 +79,10 @@ class AccountForm extends React.Component {
 
     return fundError ? (
       <div>
-        Voice requires your account to be in credit with auto-topup enabled. This can be done from your billing area.
+        Voice requires Deskpro Service Credit. Load credit from your Billing area.
         <br /><br />
         <a href="#/license" className={classNames('ui button')}>
-          Enable Auto-Topup from the Billing Area &rarr;
+          Load credit from the Billing area &rarr;
         </a>
       </div>
     ) : (
@@ -87,8 +90,7 @@ class AccountForm extends React.Component {
         <Fieldset>
           <p>
             Deskpro Voice allows your agents to make and accept phone calls. Rent phone numbers in a wide range of countries,
-            set up queues and call trees, accept voicemail, and more.
-            <a href="https://www.deskpro.com/product/voice/" target="_blank" rel="noopener noreferrer">Click here to read more about voice</a>.
+            set up queues and call trees, accept voicemail, and more. <a href="https://www.deskpro.com/product/voice/" target="_blank" rel="noopener noreferrer">Click here to read more about voice</a>.
           </p>
 
           <br /><br />
@@ -102,8 +104,8 @@ class AccountForm extends React.Component {
   }
 
   render() {
-    if (window.DP_IS_CLOUD) {
-      return this.renderCloud();
+    if (this.props.isManaged) {
+      return this.renderManagedForm();
     }
 
     const { saving, testing, deleting, account } = this.props;

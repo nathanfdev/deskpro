@@ -7,6 +7,7 @@ import { DragDropContextProvider } from 'react-dnd';
 import { IntlProvider, addLocaleData } from 'react-intl';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Twig from 'twig';
+import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
@@ -16,7 +17,7 @@ import { AgentList } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Components/A
 import { AgentOnboardingContainer }  from 'DeskPRO/Bundle/AgentBundle/Modules/Onboarding/Components/AgentOnboarding';
 import { ArchiveFilesContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Archive/ArchiveFiles';
 import { GuideTreeContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/List/GuideTree';
-import { EditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/Editor/Editor';
+import { MarkdownEditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/MarkdownEditor/Editor';
 import VoiceControlsContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/TicketMessageContainer';
 import MessagePhoneNumber from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/MessagePhoneNumber';
@@ -24,7 +25,7 @@ import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Ap
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { ExternalEventsContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/ExternalEvents/Components/ExternalEventsContainer';
-import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
+import { isVoiceEnabledSelector, connectionsSelector, incomingCallSelector, outgoingCallSelector, waitingConnectionSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
 import { canOpenDialpadSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
 import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
@@ -37,6 +38,8 @@ import { StatusMenuContainer as TicketStatusMenuContainer } from './Modules/Tick
 import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
 import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
+import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
+import ContentEditor from './Modules/Publish/Components/Content/ContentEditor';
 
 class AgentLegacyApp {
 
@@ -126,7 +129,11 @@ class AgentLegacyApp {
 
       if (hasPusher) {
         setInterval(() => {
-          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`);
+          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`).success((data) => {
+            if (data.task_router_workers) {
+              this.store.dispatch(setVoiceOnlineAgents(Immutable.fromJS(data.task_router_workers)));
+            }
+          });
         }, 10000);
       }
     }
@@ -212,8 +219,18 @@ class AgentLegacyApp {
     return canOpenDialpadSelector(this.store.getState());
   }
 
-  openVoiceDialpad(number) {
-    this.store.dispatch(openDialpad(number));
+  openVoiceDialpad(number, ticketId = null, ticketTitle = null, personId = null) {
+    this.store.dispatch(openDialpad(number, ticketId, ticketTitle, personId));
+  }
+
+  hasActiveVoiceCall() {
+    const state = this.store.getState();
+    const connections = connectionsSelector(state);
+    const incomingCall = incomingCallSelector(state);
+    const outgoingCall = outgoingCallSelector(state);
+    const waitingConnection = waitingConnectionSelector(state);
+
+    return connections.size > 0 || incomingCall || outgoingCall || waitingConnection;
   }
 
   unmountEmbeddedReactNode(node) { // eslint-disable-line
@@ -227,7 +244,7 @@ class AgentLegacyApp {
     }
   }
 
-  renderVoiceMessage(node, data, dateCreatedFormatted, elid) {
+  renderVoiceMessage(node, data, dateCreatedFormatted, elid, messageNum) {
     let tabRef;
 
     ReactDOM.render(
@@ -241,6 +258,7 @@ class AgentLegacyApp {
               tabRef={(c) => { tabRef = c; }}
               data={data}
               elid={elid}
+              messageNum={messageNum}
               dateCreatedFormatted={dateCreatedFormatted}
             />
           </IntlProvider>
@@ -289,7 +307,7 @@ class AgentLegacyApp {
     );
   }
 
-  renderContentEditor(
+  renderMarkdownEditor(
     node,
     value,
     inputType,
@@ -303,7 +321,7 @@ class AgentLegacyApp {
             locale={this.locale}
             messages={agentPhrases.getPhrases()}
           >
-            <EditorContainer
+            <MarkdownEditorContainer
               value={value}
               inputType={inputType}
               save={save}
@@ -314,6 +332,36 @@ class AgentLegacyApp {
       </AppContainer>,
       node
     );
+  }
+
+  renderContentEditor(
+    node,
+    value,
+    onFocus,
+    onBlur
+  ) {
+    const editor = React.createRef();
+
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={this.store}>
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ContentEditor
+              ref={editor}
+              value={value}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+          </IntlProvider>
+        </Provider>
+      </AppContainer>,
+      node
+    );
+
+    return editor;
   }
 
   renderTopicsTree(node, guideId, height, openTopic, displayStatuses, canDrag) {

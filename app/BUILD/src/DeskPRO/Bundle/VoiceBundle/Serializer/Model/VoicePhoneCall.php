@@ -2,14 +2,16 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall as VoicePhoneCallEntity;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -53,6 +55,13 @@ class VoicePhoneCall
      * @var VoiceNumber
      */
     private $number;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $numberPlain;
 
     /**
      * @JMS\Type("string")
@@ -130,18 +139,25 @@ class VoicePhoneCall
     private $dateEnded;
 
     /**
-     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceRecording>")
      *
-     * @var Blob
+     * @var VoiceRecording[]
      */
-    private $recording;
+    private $recordings;
 
     /**
-     * @JMS\Type("integer")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceRecording")
      *
-     * @var int
+     * @var VoiceRecording
      */
-    private $duration;
+    private $fullRecording;
+
+    /**
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall")
+     *
+     * @var VoiceMissedAgentCall
+     */
+    private $agentVoicemail;
 
     /**
      * @JMS\Type("string")
@@ -165,6 +181,41 @@ class VoicePhoneCall
     private $ticket;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $recordingEnabled;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $duration;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $waitingTime;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $onHold;
+
+    /**
+     * @JMS\Type("array")
+     *
+     * @var int[]
+     */
+    private $agentParticipants;
+
+    /**
      * Constructor.
      *
      * @param VoicePhoneCallEntity $phoneCall
@@ -176,6 +227,7 @@ class VoicePhoneCall
         $this->callSid            = $phoneCall->getCallSid();
         $this->conferenceSid      = $phoneCall->getConferenceSid();
         $this->number             = $phoneCall->getNumber();
+        $this->numberPlain        = $phoneCall->getNumberPlain();
         $this->externalNumber     = $phoneCall->getExternalNumber();
         $this->externalNumberType = $phoneCall->getExternalNumberType();
         $this->person             = $phoneCall->getPerson();
@@ -187,10 +239,19 @@ class VoicePhoneCall
         $this->dateCreated        = $phoneCall->getDateCreated();
         $this->dateStarted        = $phoneCall->getDateStarted();
         $this->dateEnded          = $phoneCall->getDateEnded();
-        $this->recording          = $phoneCall->getRecording();
-        $this->duration           = $phoneCall->getDuration();
-        $this->cost               = number_format($phoneCall->getCost(), 3, '.', ',');
+        $this->recordings         = $phoneCall->getRecordings();
+        $this->fullRecording      = $phoneCall->getFullRecording();
+        $this->agentVoicemail     = $phoneCall->getAgentVoicemailRecord();
+        $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
+        $this->duration           = $phoneCall->getDateStarted() ? time() - $phoneCall->getDateStarted()->getTimestamp() : 0;
+        $this->waitingTime        = $phoneCall->getDateWaiting() ? time() - $phoneCall->getDateWaiting()->getTimestamp() : 0;
+        $this->onHold             = $phoneCall->getUserParticipants()->count()
+            ? $phoneCall->getUserParticipants()->first()->isOnHold()
+            : false;
+        $this->agentParticipants = $phoneCall->getActiveAgentParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant->getPerson()->getId();
+        })->getValues();
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
             unset($this->data['RecordingUrl']);
@@ -207,5 +268,13 @@ class VoicePhoneCall
         $this->ticket = $ticket;
 
         return $this;
+    }
+
+    /**
+     * @param InlineCustomSideload $recordingEnabled
+     */
+    public function setRecordingEnabled($recordingEnabled)
+    {
+        $this->recordingEnabled = $recordingEnabled;
     }
 }

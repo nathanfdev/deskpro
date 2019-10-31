@@ -7,17 +7,17 @@ import QueueForm from './QueueForm';
 class QueuePageForm extends React.Component {
 
   static propTypes = {
-    queue:        PropTypes.object,
+    queueId:      PropTypes.number,
     onReturnBack: PropTypes.func.isRequired
   };
 
   render() {
-    const { queue, onReturnBack } = this.props;
+    const { queueId, onReturnBack } = this.props;
 
     return (
       <div className="page">
         <BackButton onClick={onReturnBack} />
-        <SectionHeader title={queue ? 'Update queue' : 'Create new queue'} dividing />
+        <SectionHeader title={queueId ? 'Update queue' : 'Create new queue'} dividing />
 
         <QueueForm {...this.props} />
       </div>

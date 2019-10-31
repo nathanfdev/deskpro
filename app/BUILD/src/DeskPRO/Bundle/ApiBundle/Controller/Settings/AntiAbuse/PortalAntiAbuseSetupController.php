@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\AntiAbuse;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal\PortalAntiAbuseSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\AbstractRateLimitGroup;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
@@ -16,6 +17,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * Class PortalAntiAbuseSetupController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/anti_abuse/portal")
  * @ApiDoc(target="all", output="DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings")
  * @ApiDoc(
@@ -100,7 +102,7 @@ class PortalAntiAbuseSetupController extends AbstractAntiAbuseSetupController
 
         $this->updateRateLimitOptionGroup($userRateLimit->getLoginSettings(), 'rate_limit.login'.$userType);
         $this->updateRateLimitOptionGroup($userRateLimit->getSubmitTicket(), 'rate_limit.submit_ticket'.$userType);
-        $this->updateRateLimitOptionGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
+        $this->updateRateLimitOptionGroup($userRateLimit->getSubmitCommunityTopic(), 'rate_limit.submit_community_topic'.$userType);
         $this->updateRateLimitOptionGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);
         $this->updateRateLimitOptionGroup($userRateLimit->getUploadAttachment(), 'rate_limit.upload_attachment'.$userType);
         $this->updateRateLimitOptionGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);

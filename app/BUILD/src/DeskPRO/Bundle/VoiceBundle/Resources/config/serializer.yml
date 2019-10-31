@@ -18,10 +18,25 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\VoicePhoneCallHandler
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@dp.voice.task_router.storage"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.voice_phone_call_participant:
     class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\VoicePhoneCallParticipantHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.voice_queue:
+    class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\VoiceQueueHandler
+    arguments:
+      - "@dp.voice.voice_permissions_checker"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.user_chat_queue:
+    class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\UserChatQueueHandler
+    arguments:
+      - "@dp.voice.user_chat_permissions_checker"
     tags:
       - { name: "jms_serializer.subscribing_handler" }

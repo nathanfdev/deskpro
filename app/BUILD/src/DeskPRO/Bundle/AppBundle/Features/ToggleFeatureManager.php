@@ -66,15 +66,16 @@ class ToggleFeatureManager
 
     /**
      * @param string $id
+     * @param bool   $newInstall
      */
-    public function enableFeature($id)
+    public function enableFeature($id, $newInstall = false)
     {
         $feature = $this->getFeature($id);
         if ($feature->isEnabled()) {
             return;
         }
 
-        $feature->beforeEnable($this->container);
+        $feature->beforeEnable($this->container, $newInstall);
         $this->toggleFeature($feature, true);
     }
 

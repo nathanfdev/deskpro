@@ -12,6 +12,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
 use Application\DeskPRO\Usersource\Sync\SyncException;
+use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use League\Url\Url;
 use Orb\Auth\Adapter\CallbackInterface;
@@ -24,6 +26,17 @@ use Orb\Auth\Adapter\SsoLoginActionInterface;
  */
 class UsersourcesController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+
+        return $multi;
+    }
+
     public function personRefreshAction($usersource_id, $identity_or_email)
     {
         // find Usersource

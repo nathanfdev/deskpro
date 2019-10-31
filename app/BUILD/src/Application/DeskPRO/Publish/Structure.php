@@ -8,15 +8,15 @@ namespace Application\DeskPRO\Publish;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Doctrine\ORM\EntityManager;
 use Orb\Doctrine\Common\Cache\PreloadedMysqlCache;
@@ -216,7 +216,7 @@ class Structure implements PersonContextInterface
     }
 
     //###################################################################################################################
-    // Feedback Fetchers
+    // Community Fetchers
     //###################################################################################################################
 
     /**
@@ -224,9 +224,9 @@ class Structure implements PersonContextInterface
      *
      * @return array
      */
-    public function getFeedbackCategories()
+    public function getCommunityChannels()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['all'];
@@ -235,9 +235,9 @@ class Structure implements PersonContextInterface
     /**
      * @return mixed
      */
-    public function getFeedbackRootCategories()
+    public function getRootCommunityChannels()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['hierarchy'];
@@ -248,9 +248,9 @@ class Structure implements PersonContextInterface
      *
      * @return array
      */
-    public function getFeedbackCategoryIds()
+    public function getCommunityChannelsIds()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['ids'];
@@ -261,9 +261,9 @@ class Structure implements PersonContextInterface
      *
      * @return
      */
-    public function getFeedbackCategory($id)
+    public function getCommunityChannel($id)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         if (!isset($this->context_category_data[$ent]['all'][$id])) {
@@ -278,9 +278,9 @@ class Structure implements PersonContextInterface
      *
      * @return bool
      */
-    public function hasFeedbackCategory($id)
+    public function hasCommunityChannel($id)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return isset($this->context_category_data[$ent]['all'][$id]);
@@ -294,9 +294,9 @@ class Structure implements PersonContextInterface
      *
      * @return array
      */
-    public function getFeedbackCategoryNames($sep = ' > ', $include_tops = true)
+    public function getCommunityChannelNames($sep = ' > ', $include_tops = true)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->_getFullNames([], $this->context_category_data[$ent]['hierarchy'], $sep, $include_tops);
@@ -305,17 +305,17 @@ class Structure implements PersonContextInterface
     /**
      * @return \Orb\Util\HierarchyStructure
      */
-    public function getFeedbackCategoryHelper()
+    public function getCommunityChannelHelper()
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $this->loadCategories($ent);
 
         return $this->context_category_data[$ent]['helper'];
     }
 
-    public function getFeedbackStatusCounts($category = null, Person $person_context = null)
+    public function getCommunityStatusCounts($category = null, Person $person_context = null)
     {
-        $ent = 'DeskPRO:FeedbackStatusCategory';
+        $ent = 'DeskPRO:CommunityTopicStatusCategory';
 
         if ($category) {
             $id = 'status.counts.'.$ent.'.'.$category->id.'.'.$person_context->getUsergroupSetKey();
@@ -330,14 +330,14 @@ class Structure implements PersonContextInterface
         if ($category) {
             $counts = $this->db->fetchAllKeyValue('
                 SELECT status, COUNT(*)
-                FROM feedback
-                WHERE category_id IN (?) AND hidden_status IS NULL
+                FROM community_topics
+                WHERE channel_id IN (?) AND hidden_status IS NULL
                 GROUP BY status
             ', [$category->getTreeIds(true)], [Connection::PARAM_INT_ARRAY]);
         } else {
             $counts = $this->db->fetchAllKeyValue('
                 SELECT status, COUNT(*)
-                FROM feedback
+                FROM community_topics
                 WHERE hidden_status IS NULL
                 GROUP BY status
             ');
@@ -348,14 +348,14 @@ class Structure implements PersonContextInterface
         if ($category) {
             $counts_status_cats = $this->db->fetchAllKeyValue('
                 SELECT status_category_id, COUNT(*)
-                FROM feedback
+                FROM community_topics
                 WHERE status_category_id IS NOT NULL AND category_id IN (?)
                 GROUP BY status_category_id
             ', [$category->getTreeIds(true)], [Connection::PARAM_INT_ARRAY]);
         } else {
             $counts_status_cats = $this->db->fetchAllKeyValue('
                 SELECT status_category_id, COUNT(*)
-                FROM feedback
+                FROM community_topics
                 WHERE status_category_id IS NOT NULL
                 GROUP BY status_category_id
             ');
@@ -377,9 +377,9 @@ class Structure implements PersonContextInterface
      *
      * @return array
      */
-    public function getFeedbackCategoryCounts(Person $person_context = null)
+    public function getCommunityTopicsCategoryCounts(Person $person_context = null)
     {
-        $ent = 'DeskPRO:FeedbackCategory';
+        $ent = 'DeskPRO:CommunityChannel';
         $id  = 'categories.counts.'.$ent.'.'.$person_context->getUsergroupSetKey();
         $this->loadCategories($ent);
 
@@ -388,25 +388,25 @@ class Structure implements PersonContextInterface
         }
 
         $counts = [0 => ['popular' => 0, 'new' => 0, 'active' => 0, 'closed' => 0]];
-        foreach ($this->getFeedbackCategories() as $c) {
+        foreach ($this->getCommunityChannels() as $c) {
             $cat_counts = [];
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_NEW);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_NEW);
             $cat_counts['new'] = $searcher->getCount();
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_ACTIVE);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_ACTIVE);
             $cat_counts['active'] = $searcher->getCount();
 
-            $searcher = new FeedbackSearch();
+            $searcher = new CommunitySearch();
             $searcher->setPersonContext($person_context);
-            $searcher->addTerm(FeedbackSearch::TERM_CATEGORY, 'is', $c['id']);
-            $searcher->addTerm(FeedbackSearch::TERM_STATUS, 'is', Feedback::STATUS_CLOSED);
+            $searcher->addTerm(CommunitySearch::TERM_CHANNEL, 'is', $c['id']);
+            $searcher->addTerm(CommunitySearch::TERM_STATUS, 'is', CommunityTopic::STATUS_CLOSED);
             $cat_counts['closed'] = $searcher->getCount();
 
             $cat_counts['all'] = array_sum($cat_counts);
@@ -698,8 +698,8 @@ class Structure implements PersonContextInterface
     {
         if ($obj instanceof ArticleCategory) {
             return $this->getArticleCategoryHelper();
-        } elseif ($obj instanceof FeedbackCategory) {
-            return $this->getFeedbackCategoryHelper();
+        } elseif ($obj instanceof CommunityChannel) {
+            return $this->getCommunityChannelHelper();
         } elseif ($obj instanceof DownloadCategory) {
             return $this->getDownloadCategoryHelper();
         } elseif ($obj instanceof NewsCategory) {
@@ -879,7 +879,7 @@ class Structure implements PersonContextInterface
             case 'DeskPRO:ArticleCategory':  $perm_manager = $this->person_context->PermissionsManager->get('ArticleCategories'); break;
             case 'DeskPRO:DownloadCategory': $perm_manager = $this->person_context->PermissionsManager->get('DownloadCategories'); break;
             case 'DeskPRO:NewsCategory':     $perm_manager = $this->person_context->PermissionsManager->get('NewsCategories'); break;
-            case 'DeskPRO:FeedbackCategory': $perm_manager = $this->person_context->PermissionsManager->get('FeedbackCategories'); break;
+            case 'DeskPRO:CommunityChannel': $perm_manager = $this->person_context->PermissionsManager->get('CommunityChannels'); break;
         }
 
         // They're allowed to see it all

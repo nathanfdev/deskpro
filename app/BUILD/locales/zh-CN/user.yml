@@ -11,15 +11,12 @@ portal.account.email-btn-usersource-set: 添加电邮地址
 portal.account.email-management: 管理电子邮件
 portal.account.email-management-from-form: 管理您的电子邮件地址
 portal.account.email-primary-description: '这是您的主要电子邮件。 默认情况下将被使用，除非你另有规定。'
-portal.account.feedback-lockout: '您提交的反馈太多次，您已被锁定。 请稍后再试。'
+portal.account.community-lockout: '您提交的反馈太多次，您已被锁定。 请稍后再试。'
 portal.account.link-expired: 抱歉，您点击的链接已过期或之前已被使用过。
-portal.account.lockout_time: 您可以在（time）分钟后再试。
 portal.account.login-btn: 登录
-portal.account.login-btn-usersource: '使用{{user source}}登录'
 portal.account.login-captcha-failed: '您输入了一个无效的验证码。 请再试一遍。'
 portal.account.login-disabled: 您的电子邮件地址已被禁止。
 portal.account.login-email: 您的电子邮件
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 使用外部服务登录
 portal.account.login-form-disabled: 登录表单已禁用
 portal.account.login-invalid: '您输入了错误的电子邮件或密码。 请再试一次。'
@@ -33,7 +30,7 @@ portal.account.login-remember: 保持登录状态？
 portal.account.login-saved-add_email: 您的添加电子邮件尚未提交。请登录访问更多内容。
 portal.account.login-saved-comment: 您的评论尚未提交。请登录访问更多内容。
 portal.account.login-saved-form: 您的（文字）还没有提交，请登录然后继续
-portal.account.login-saved-new_feedback: 您的新反馈尚未提交。请登录访问更多内容。
+portal.account.login-saved-new_community_topic: 您的新反馈尚未提交。请登录访问更多内容。
 portal.account.login-saved-new_ticket: 您的新机票尚未提交。请登录访问更多内容。
 portal.account.login-saved-register: 您的注册尚未提交。请登录访问更多内容。
 portal.account.login-stay-logged-in: 保持登录状态？
@@ -83,7 +80,7 @@ portal.account.submit-saved-add_email: 您的添加电子邮件尚未提交，�
 portal.account.submit-saved-comment: 您的评论尚未提交，但我们已为您保存。
 portal.account.submit-saved-form: 您的（TYPE）还没有提交，但是我们已经替您保存了。
 portal.account.submit-saved-form-go: 请点击这里自动重新提交表格。
-portal.account.submit-saved-new_feedback: 您的新反馈尚未提交，但我们已为您保存。
+portal.account.submit-saved-new_community_topic: 您的新反馈尚未提交，但我们已为您保存。
 portal.account.submit-saved-new_ticket: 您的新机票尚未提交，但我们已为您保存。
 portal.account.submit-saved-register: 您的注册尚未提交，但我们已为您保存。
 portal.account.tickets-lockout: 您已经提交了很多评论，账户已被锁住。请稍后再试。
@@ -91,8 +88,6 @@ portal.account.usersource-set-email-desc: 在您登录之前我们需要您的�
 portal.account.welcome-back: 欢迎回来
 portal.account.your-emails: 您的邮箱地址
 portal.account.your-pending-email-addresses: 您的待定邮箱地址
-portal.articles.by-line: '通过{姓名} 在{日期}'
-portal.articles.link: '链接{{link}}'
 portal.articles.none: 还没有文章
 portal.articles.search-title: 知识库
 portal.articles.section-desc: 我们的知识库保存了我们的支持代理写的文章，以便帮助您。
@@ -134,7 +129,6 @@ portal.chat.expired_jwt_token: 您的JWT令牌已过期。
 portal.chat.feedback_action: 发送反馈
 portal.chat.feedback_enter_message: 在这里输入您的信息
 portal.chat.feedback_label: 评论
-portal.chat.feedback_not_helpful_title: '您已经评价了 {{代理的名字}}}'
 portal.chat.feedback_title: 谢谢您的反馈
 portal.chat.find_agent_now: 立即找到另一个代理
 portal.chat.find_another_agent: 如果他们不会及时回来，我们会为您找到另一个代理。
@@ -157,17 +151,14 @@ portal.chat.log_agents: 代理们
 portal.chat.log_chat_time: 聊天总时间
 portal.chat.log_department: 部门
 portal.chat.log_linked_ticket: 已经指定的来单
-portal.chat.log_title: '您与（person） 的聊天'
 portal.chat.log_view_linked_ticket: 查阅来单
 portal.chat.looking_for_another_agent: 我们正在寻找新的代理。
 portal.chat.lost_connection: 失去了连接。试图重新连接。
 portal.chat.message_agent-timeout: '{{name}}没有响应。 请稍候，我们正在尝试找到另一个代理。'
-portal.chat.message_assigned: '聊天发放到{{名字}}'
 portal.chat.message_ended: 聊天结束
 portal.chat.message_ended-by: '聊天被{{name}}终止了'
 portal.chat.message_ended-by-user: 聊天被用户终止了
 portal.chat.message_set-department: '{{name}}设置部门到{{department}}'
-portal.chat.message_set_department: '{{名字}}将部门设置为{{部门名称}}'
 portal.chat.message_started: 聊天开始
 portal.chat.message_type: '输入你的讯息到{{agentName}}'
 portal.chat.message_unassigned: 聊天已取消分配
@@ -200,16 +191,12 @@ portal.chat.see_full_image: 点击这里查看完整图片
 portal.chat.send_another_validation_email: 请给我发另一封电子邮件
 portal.chat.sent_validation_code: 我们向您发送了一封带有验证码的电子邮件。
 portal.chat.start: 开始新的聊天
-portal.chat.start_conversation: 开始对话
 portal.chat.support_powered_by: '支持由{{DeskPRO}}提供'
 portal.chat.take_chat: 开始聊天
 portal.chat.taken_by: '聊天被{{名字}}终止了'
 portal.chat.transcript_action: 请给我发一个副本
-portal.chat.transcript_already_sent: '副本已经发送至{{电子邮件}}'
 portal.chat.transcript_desc: 在下面输入您的姓名和电子邮件，我们会通过电子邮件发送给您
-portal.chat.transcript_sent: '副本发送至{{电子邮件l}}'
 portal.chat.transcript_title: 需要这段聊天的副本
-portal.chat.type_message_to: '请发送信息至{{名字}}'
 portal.chat.unassigned: 聊天已取消分配
 portal.chat.unblock: 锁定解除
 portal.chat.upload_file: 上传文件
@@ -235,17 +222,16 @@ portal.email_subjects.comment-deleted: 我们的代理已经阅读过您的建�
 portal.email_subjects.download_sub_new: 新的下载
 portal.email_subjects.download_sub_new_and_updated: 新的已更新的下载
 portal.email_subjects.download_sub_updated: 已更新到下载
-portal.email_subjects.email-too-big: '您的电子邮件{{主题}}没有被接受'
 portal.email_subjects.email_new-confirm: 验证您的邮箱
 portal.email_subjects.email_primary-confirm: 验证您的邮箱
 portal.email_subjects.email_ticket-reminder: 请采取必要的行动：您的任务还没有提交
-portal.email_subjects.feedback_new: 感谢您的反馈
-portal.email_subjects.feedback_new-approved: 您的反馈已发布
-portal.email_subjects.feedback_new-comment: '"{{title}}" 有新的评论'
-portal.email_subjects.feedback_new-confirm: '感谢您的反馈 （需要验证）'
-portal.email_subjects.feedback_new-disapproved: '抱歉， 您的反馈内容已被拒绝'
-portal.email_subjects.feedback_sub_updated: 已更新的反馈
-portal.email_subjects.feedback_updated: '您的反馈已被更新 ：{{title}}'
+portal.email_subjects.community_new: 感谢您的反馈
+portal.email_subjects.community_new-approved: 您的反馈已发布
+portal.email_subjects.community_new-comment: '"{{title}}" 有新的评论'
+portal.email_subjects.community_new-confirm: '感谢您的反馈 （需要验证）'
+portal.email_subjects.community_new-disapproved: '抱歉， 您的反馈内容已被拒绝'
+portal.email_subjects.community_sub_updated: 已更新的反馈
+portal.email_subjects.community_updated: '您的反馈已被更新 ：{{title}}'
 portal.email_subjects.kb_sub_new: 新的文章
 portal.email_subjects.kb_sub_new_and_updated: 新的和已更新的文章
 portal.email_subjects.kb_sub_updated: 已更新的文章
@@ -282,25 +268,27 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
 portal.emails.email-too-big: '您的邮件"{{subject}}" 因为内容过大被拒绝接受。帮助中心能接受的邮件最大内容为{{max_size}}。请删除大的附件并重试。'
 portal.emails.end_greeting: '致意，<br /><br />{{site_name}}'
-portal.emails.feedback-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
-portal.emails.feedback-updated-items:
+portal.emails.community-topics-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
+portal.emails.community-topics-updated:
   other: 1条更新的反馈项目
-portal.emails.feedback_agent-validation: 请注意，只有我们的代理核准您的反馈后，您的反馈才会公开显示在我们的支持门户上。
-portal.emails.feedback_approved: 我们想通知您，您的反馈已获得批准，现已在我们的支持门户网站上公开显示。
-portal.emails.feedback_closed: '您提交的反馈信息“{{title}}”已经关闭：{{status}}'
-portal.emails.feedback_disapproved: 我们想通知您，您的反馈已被拒绝，不会公开显示在我们的支持门户网站上。
-portal.emails.feedback_disapproved-reason: '您的反馈已被拒绝但是不会公开显示在我们的客户支持门户上{{姓名}}因为以下的原因。'
-portal.emails.feedback_new-comment: '{{name}}发布了新的评论：'
-portal.emails.feedback_published: '您提交的反馈{{题目}}已经通过审核，即将显示在我们的客户支持门户上。'
-portal.emails.feedback_thank-you: '感谢您的反馈“{{title}}”'
-portal.emails.feedback_updated: '您提交的反馈信息“{{title}}”已经更新。新的状态是“{{status}}”'
-portal.emails.feedback_validate-email: 请点击下面的链接验证您的邮箱
-portal.emails.feedback_votes:
+portal.emails.community-topic_agent-validation: 请注意，只有我们的代理核准您的反馈后，您的反馈才会公开显示在我们的支持门户上。
+portal.emails.community_topic_approved: 我们想通知您，您的反馈已获得批准，现已在我们的支持门户网站上公开显示。
+portal.emails.community_topic_closed: '您提交的反馈信息“{{title}}”已经关闭：{{status}}'
+portal.emails.community-topic_disapproved: 我们想通知您，您的反馈已被拒绝，不会公开显示在我们的支持门户网站上。
+portal.emails.community-topic_disapproved-reason: '您的反馈已被拒绝但是不会公开显示在我们的客户支持门户上{{姓名}}因为以下的原因。'
+portal.emails.community-topic_new-comment: '{{name}}发布了新的评论：'
+portal.emails.community-topic_published: '您提交的反馈{{题目}}已经通过审核，即将显示在我们的客户支持门户上。'
+portal.emails.community-topic_thank-you: '感谢您的反馈“{{title}}”'
+portal.emails.community-topic_updated: '您提交的反馈信息“{{title}}”已经更新。新的状态是“{{status}}”'
+portal.emails.community-topic_validate-email: 请点击下面的链接验证您的邮箱
+portal.emails.community-topic_votes:
   other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
 portal.emails.greeting: '亲爱的{{to_name}}，'
 portal.emails.kb-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了有关我们的知识库文章的更新。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有知识库通知</a>。'
-portal.emails.kb-new-articles: "新知识库文章\n"
-portal.emails.kb-updated-articles: 更新的知识库文章
+portal.emails.kb-new-articles:
+  other: '{{count}} New Knowledgebase Articles'
+portal.emails.kb-updated-articles:
+  other: '{{count}} Updated Knowledgebase Articles'
 portal.emails.label_view-online: 在线查看
 portal.emails.message-clipped: （邮件已剪辑）
 portal.emails.new-ticket-guest-link: 感谢您与我们联系。您可以在线查看您的帮助请求状态通过这里：
@@ -360,42 +348,42 @@ portal.error.404-title: 未找到
 portal.error.contact: 如果您认为这是一个错误，请与我们联系。
 portal.error.general-desc: '很抱歉，发生错误。 请稍后重试或与我们联系。'
 portal.error.general-title: 发生错误
-portal.feedback.attachments: 附件
-portal.feedback.btn-closed: 关闭
-portal.feedback.btn-vote: 我同意
-portal.feedback.dir_asc: 正序排列
-portal.feedback.dir_desc: 降序排列
-portal.feedback.error_hidden: 此反馈项已隐藏
-portal.feedback.error_login: 请登录
-portal.feedback.filter_all_items: 所有项目
-portal.feedback.filter_closed_items: 已关闭项目
-portal.feedback.filter_open_items: 打开项目
-portal.feedback.form_attach_files: 附加文件
-portal.feedback.form_btn_submit: 添加您的反馈
-portal.feedback.form_email_not_shown: 您的电子邮件（不会公开显示）
-portal.feedback.form_i_have_a: 我有一个
-portal.feedback.form_logged_in_as: '以电子邮件<span> {{email}} </ span>的身份登录：<span> {{name}} </ span>。'
-portal.feedback.form_logout: 不是你？
-portal.feedback.form_tell_us_more: 请告诉我们更多
-portal.feedback.form_title: 标题
-portal.feedback.module_forbidden: 您无权访问此模块
-portal.feedback.no_matching: 没有匹配的反馈
-portal.feedback.none: 没有回复
-portal.feedback.rate_forbidden: 您不能投票
-portal.feedback.recent-feedback: 最近反馈
-portal.feedback.search-title: 反馈
-portal.feedback.section-desc: '这些反馈项目是由像您这样的客户提交的; 我们鼓励您讨论并同意您的投票，如果想法尚未列出，请提交您自己的反馈。'
-portal.feedback.section-title: 反馈
-portal.feedback.sort_comments: 评论
-portal.feedback.sort_date: 日期
-portal.feedback.sort_popularity: 人气
-portal.feedback.sort_rating: 评分
-portal.feedback.sort_views: 看法
-portal.feedback.status_active: 打开项目
-portal.feedback.status_all: 所有项目
-portal.feedback.status_closed: 已关闭项目
-portal.feedback.submit_feedback: 提交反馈
-portal.feedback.view-x-feedback:
+portal.community.attachments: 附件
+portal.community.btn-closed: 关闭
+portal.community.btn-vote: 我同意
+portal.community.dir_asc: 正序排列
+portal.community.dir_desc: 降序排列
+portal.community.error_hidden: 此反馈项已隐藏
+portal.community.error_login: 请登录
+portal.community.filter_all_items: 所有项目
+portal.community.filter_closed_items: 已关闭项目
+portal.community.filter_open_items: 打开项目
+portal.community.form_attach_files: 附加文件
+portal.community.form_btn_submit: 添加您的反馈
+portal.community.form_email_not_shown: 您的电子邮件（不会公开显示）
+portal.community.form_i_have_a: 我有一个
+portal.community.form_logout: 不是你？
+portal.community.form_tell_us_more: 请告诉我们更多
+portal.community.form_title: 标题
+portal.community.form_custom_cat: 類別
+portal.community.module_forbidden: 您无权访问此模块
+portal.community.no_matching: 没有匹配的反馈
+portal.community.none: 没有回复
+portal.community.rate_forbidden: 您不能投票
+portal.community.recent-community_topics: 最近反馈
+portal.community.search-title: 反馈
+portal.community.section-desc: '这些反馈项目是由像您这样的客户提交的; 我们鼓励您讨论并同意您的投票，如果想法尚未列出，请提交您自己的反馈。'
+portal.community.section-title: 反馈
+portal.community.sort_comments: 评论
+portal.community.sort_date: 日期
+portal.community.sort_popularity: 人气
+portal.community.sort_rating: 评分
+portal.community.sort_views: 看法
+portal.community.status_active: 打开项目
+portal.community.status_all: 所有项目
+portal.community.status_closed: 已关闭项目
+portal.community.submit_community_topic: 提交反馈
+portal.community.view-x-community-topics:
   other: 查看1个反馈
 portal.flashes.article_cat_subscribe: '您已成功订阅此类文章。 当新文章发布时，您将收到通知。'
 portal.flashes.article_cat_unsubscribe: 您已成功取消订阅此类文章。
@@ -410,14 +398,14 @@ portal.flashes.download_subscribe: '您已成功订阅此下载。 当有更新�
 portal.flashes.download_unsubscribe: 您已成功取消订阅此下载。
 portal.flashes.download_unsubscribe_everything: 您已取消订阅所有下载通知
 portal.flashes.email_sent: 您的电子邮件已发送
-portal.flashes.feedback_login: 您应该登录投票
-portal.flashes.feedback_subscribe: '您已成功订阅此反馈项目。 当有更新或有新评论时，系统会通知您。'
-portal.flashes.feedback_unsubscribe: 您已成功取消订阅此反馈项目。
-portal.flashes.feedback_unsubscribe_everything: 您已取消订阅所有反馈通知
+portal.flashes.community_login: 您应该登录投票
+portal.flashes.community_subscribe: '您已成功订阅此反馈项目。 当有更新或有新评论时，系统会通知您。'
+portal.flashes.community_unsubscribe: 您已成功取消订阅此反馈项目。
+portal.flashes.community_unsubscribe_everything: 您已取消订阅所有反馈通知
 portal.flashes.guest_content_must_verify: '在我们发布您的内容之前，您必须验证您的电子邮件。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
 portal.flashes.guest_new_ticket_must_verify: '在我们接受您的帮助请求之前，我们必须验证您的电子邮件地址。 请检查您的电子邮件收件箱。 我们已向您发送验证链接。'
-portal.flashes.new_feedback_awaiting_review: '感谢您的反馈意见。 它将在代理审查后在我们的支持门户上可见。'
-portal.flashes.new_feedback_posted: 感谢您的反馈意见。
+portal.flashes.new_community_topic_awaiting_review: '感谢您的反馈意见。 它将在代理审查后在我们的支持门户上可见。'
+portal.flashes.new_community_topic_posted: 感谢您的反馈意见。
 portal.flashes.news_cat_subscribe: '您已成功订阅此类别。 您将收到新帖子的通知。'
 portal.flashes.news_cat_unsubscribe: 您已成功取消订阅此类别。
 portal.flashes.news_subscribe: '您已成功订阅此新闻文章。 当有新评论时，您会收到通知。'
@@ -469,7 +457,6 @@ portal.forms.error_dupe_ticket_message: 重复的故障单消息。
 portal.forms.error_email_required: 您必须提供您的电子邮件地址
 portal.forms.error_extra_fields: '很抱歉，处理您的要求时发生错误。 请再试一次。'
 portal.forms.error_invalid_data_type: 此数据类型不是预期的。
-portal.forms.error_invalid_email: 此电子邮件地址无效
 portal.forms.error_invalid_url: 该值不是有效的URL。
 portal.forms.error_length_invalid: '此值应该有{{limit}}个字符。'
 portal.forms.error_length_too_long: '此值太长。 它应该有{{limit}}个字符或更少'
@@ -516,7 +503,6 @@ portal.forms.error_upload_file: 无法上传文件
 portal.forms.error_upload_general: '上传此文件时出现问题。 请再试一次。'
 portal.forms.error_upload_html_size: 文件太大。
 portal.forms.error_upload_ini_size: '文件太大。 允许的大小上限为{{limit}} {{suffix}}。'
-portal.forms.extra_fields: '很抱歉，处理您的要求时发生错误。 请再试一次。'
 portal.forms.label_add_attachment: 添加其他附件
 portal.forms.label_captcha: 要证明您是机器人登录，请告诉我们您在人机识别系统图片中看到的文字
 portal.forms.label_category: 分类
@@ -555,14 +541,14 @@ portal.general.admin_home: 管理员主页
 portal.general.agent: 代理
 portal.general.agent_bar_admin_desc: 管理您的帮助台
 portal.general.agent_bar_admin_dl: 下载设置
-portal.general.agent_bar_admin_feedback: 反馈设置
+portal.general.agent_bar_admin_community: 反馈设置
 portal.general.agent_bar_admin_kb: 知识库设置
 portal.general.agent_bar_admin_lang: 语言设定
 portal.general.agent_bar_admin_news: 新闻设置
 portal.general.agent_bar_admin_portal: 门户设计和模板
 portal.general.agent_bar_agent_desc: 查看帮助请求/管理内容
 portal.general.agent_bar_agent_dl: 管理下载
-portal.general.agent_bar_agent_feedback: 管理反馈
+portal.general.agent_bar_agent_community: 管理反馈
 portal.general.agent_bar_agent_home: 代理主页
 portal.general.agent_bar_agent_kb: 管理知识库
 portal.general.agent_bar_agent_news: 管理新闻
@@ -592,17 +578,14 @@ portal.general.get-in-touch-desc: 给我们发电子邮件
 portal.general.impersonation_mode: 模拟模式
 portal.general.in: 在
 portal.general.label-search-enter-label: 请提供要搜索的标签
-portal.general.lang-change-to-current: '使<span class =“italics”> {{lang}} </ span>我的默认语言'
-portal.general.lang-diff: '此页位于<span class =“italics”> {{active_lang}} </ span>中，但您的帐户位于<span class =“italics”> {{person_lang}} </ span>中。'
-portal.general.lang-switch: '切换到<span class =“italics”> {{lang}} </ span>'
 portal.general.nav-all: 全部
 portal.general.nav-chat: 聊天日志
 portal.general.nav-chatlog: 聊天日志
 portal.general.nav-downloads: 下载
 portal.general.nav-downloads-desc: 浏览我们的下载
 portal.general.nav-emails: 电子邮件
-portal.general.nav-feedback: 反馈
-portal.general.nav-feedback-desc: 自定义建议
+portal.general.nav-community: 反馈
+portal.general.nav-community-desc: 自定义建议
 portal.general.nav-guides: 指南
 portal.general.nav-guides-desc: 产品文档
 portal.general.nav-kb: 知识库
@@ -645,7 +628,7 @@ portal.general.rated-negative: 您把此网页标记为无用
 portal.general.rated-positive: 您标记这个页面为有帮助的
 portal.general.rating_x_of_y_found_helpful: '{{vote_count}}人中有{{vote_up}}人觉得这个页面有帮助'
 portal.general.related-downloads: 相关的文件
-portal.general.related-feedback: 相关的反馈
+portal.general.related-community: 相关的反馈
 portal.general.related-news: 相关的消息
 portal.general.related-pages: 相关的页面
 portal.general.rerender-form: 请在提交前审查此表。
@@ -662,8 +645,8 @@ portal.general.show_more: 显示更多的内容
 portal.general.show_x_more: '显示更多{num}条'
 portal.general.software_provided_by: 帮助系统软件由（）提供
 portal.general.start-chat: 开始聊天会话
-portal.general.submit-feedback: 提交反馈
-portal.general.submit-feedback-desc: 反馈和建议由像你一样的客户提交
+portal.general.submit-community-topic: 提交反馈
+portal.general.submit-community-topic-desc: 反馈和建议由像你一样的客户提交
 portal.general.tagged_with: 与（）一起被标记
 portal.general.tags: 标签
 portal.general.toggle_off: 关闭
@@ -830,14 +813,12 @@ user.chat.log_nav-view-chats:
 user.chat.log_no_department: 没有部门
 user.chat.log_unassigned: "未分配任何代理\n"
 user.chat.message_agent-timeout: '我们很抱歉; {{name}}似乎连接失败。 请稍候，我们正在尝试找到另一个代理。'
-user.chat.message_assigned: '聊天指定 {{名字}}'
 user.chat.message_chatting-with: '您正在与  聊天'
 user.chat.message_ended: 聊天结束
 user.chat.message_ended-by: '聊天被{{name}}终止'
 user.chat.message_ended-by-user: 聊天被用户终止
 user.chat.message_finding-agent: 查找代理
 user.chat.message_long-wait: '我们仍在试图找到一个在线的代理来进行聊天; 这通常需要不到一分钟。 <br /><br />着急？ <a class="cancel-and-newticket-trigger">是否给我们留言？</a>'
-user.chat.message_set-department: '{{名字}}将部门设置为{{部门名称}}'
 user.chat.message_started: 聊天开始
 user.chat.message_unassigned: 未指派的聊天
 user.chat.message_uploading: 上传中·
@@ -850,7 +831,6 @@ user.chat.message_wait-timeout: '抱歉; 现在没有代理在线。'
 user.chat.name: 您的名子
 user.chat.submit-ticket-button: 发送电子邮件给我们
 user.chat.submit-ticket-title: 发送电子邮件给我们
-user.chat.transcript_sent: '记录发送至{{电子邮件l}}'
 user.chat.window_cancel: 取消
 user.chat.window_cancel-confirm: 您确定要结束聊天吗？
 user.chat.window_close: 不，谢谢，就把窗口关闭
@@ -867,6 +847,7 @@ user.defaults.article_example_title: 示例文章
 user.defaults.department_sales: 销售
 user.defaults.department_support: 支持
 user.defaults.downloads_category_general: 文件
+user.defaults.navigate: 导航
 user.defaults.news_category_general: 综合的
 user.defaults.news_example_content: 这是一条新发布消息的例子。欢迎随时在代理界面进行编辑或删除。
 user.defaults.news_example_title: 新发布消息示例
@@ -880,14 +861,13 @@ user.email_subjects.download_sub_new_and_updated: 新的和更新的下载
 user.email_subjects.download_sub_updated: 更新的下载
 user.email_subjects.email-too-big: '您的电子邮件“{{subject}}”未被接受'
 user.email_subjects.email_new-confirm: 请验证您的电子邮件地址
-user.email_subjects.email_primary-confirm: 验证您的电子邮件地址
-user.email_subjects.feedback_created_for_user: 谢谢您的反馈
-user.email_subjects.feedback_new: 感谢您提交反馈
-user.email_subjects.feedback_new-approved: 您的反馈已获得批准
-user.email_subjects.feedback_new-comment: '有关于“{{title}}”的新评论'
-user.email_subjects.feedback_new-disapproved: 抱歉，您的反馈已被拒绝
-user.email_subjects.feedback_sub_updated: 更新的反馈
-user.email_subjects.feedback_updated: '您的反馈已更新：{{title}}'
+user.email_subjects.community_topic_created_for_user: 谢谢您的反馈
+user.email_subjects.community_topic_new: 感谢您提交反馈
+user.email_subjects.community_topic_new-approved: 您的反馈已获得批准
+user.email_subjects.community_topic_new-comment: '有关于“{{title}}”的新评论'
+user.email_subjects.community_topic_new-disapproved: 抱歉，您的反馈已被拒绝
+user.email_subjects.community_sub_updated: 更新的反馈
+user.email_subjects.community_topic_updated: '您的反馈已更新：{{title}}'
 user.email_subjects.kb_sub_new: 新文章
 user.email_subjects.kb_sub_new_and_updated: 新的和更新的文章
 user.email_subjects.kb_sub_updated: 更新的文章
@@ -904,9 +884,7 @@ user.email_subjects.register-welcome-byagent: 您的新帮助台帐户
 user.email_subjects.remind_unresolved_final_subject: '提醒：{{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: '提醒：{{ticket.subject}}'
 user.email_subjects.ticket-rate: '在您的帮助请求窗口“{{ticket.subject}}”评分您的支持体验'
-user.email_subjects.ticket_new-participant: 已将一个新人添加到您的来单
 user.email_subjects.tickets_re: '回复：{{ticket.subject}}'
-user.email_subjects.too-many-emails: 注意：您发送的电子邮件过多
 user.emails.auto-close: '由于我们最近没有收到您的消息。您的帮助请求窗口“{{ticket.subject}}”将很快关闭， 如果您需要更多帮助，请直接回复，我们的代理会帮助您。'
 user.emails.chat_transcript: '感谢您与我们聊天。 这是您的聊天记录。'
 user.emails.chat_validate_email: '请通过在窗口小部件表单中输入此代码“{{validation_code}}”验证您的电子邮件地址，或点击此链接：'
@@ -919,20 +897,20 @@ user.emails.download-updated-downloads:
   other: 1条更新下载
 user.emails.downloads-explain: '您之所以收到此电子邮件，是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的下载。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处取消订阅所有下载通知。</a>'
 user.emails.email-too-big: '您的电子邮件“{{subject}}”未被接受，因为它太大。 最大电子邮件大小为{{max_size}}。 删除所有附件，然后重试。'
-user.emails.feedback-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的新闻。<br />不想再收到这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有反馈通知。</a>'
-user.emails.feedback-updated-items:
+user.emails.community-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的新闻。<br />不想再收到这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有反馈通知。</a>'
+user.emails.community-updated-items:
   other: 1条更新反馈项
-user.emails.feedback_agent-validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
-user.emails.feedback_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
-user.emails.feedback_closed: '您提交的反馈“{{title}}”已关闭：{{status}}'
-user.emails.feedback_created_for_user: '感谢您最近的反馈“{{title}}”。 {{agentName}}已创建新的反馈项，因此您可以及时了解我们的进度：'
-user.emails.feedback_disapproved: 谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。
-user.emails.feedback_disapproved-reason: '谨此通知您，很抱歉，由于以下原因{{name}}，您的反馈已被拒绝，不会公开显示在我们的网站上。 '
-user.emails.feedback_new-comment: '{{name}}发表了新评论：'
-user.emails.feedback_published: '您提交的反馈“{{title}}”已经过验证，现在将显示在我们的网站上。'
-user.emails.feedback_thank-you: '感谢您提交意见回馈「{{title}}」'
-user.emails.feedback_updated: '您提交的反馈“{{title}}”已更新。 它的状态现在是：“{{status}}”'
-user.emails.feedback_votes:
+user.emails.community-topic_agent-validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
+user.emails.community-topic_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
+user.emails.community-topic_closed: '您提交的反馈“{{title}}”已关闭：{{status}}'
+user.emails.community-topic_created_for_user: '感谢您最近的反馈“{{title}}”。 {{agentName}}已创建新的反馈项，因此您可以及时了解我们的进度：'
+user.emails.community-topic_disapproved: 谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。
+user.emails.community-topic_disapproved-reason: '谨此通知您，很抱歉，由于以下原因{{name}}，您的反馈已被拒绝，不会公开显示在我们的网站上。 '
+user.emails.community-topic_new-comment: '{{name}}发表了新评论：'
+user.emails.community-topic_published: '您提交的反馈“{{title}}”已经过验证，现在将显示在我们的网站上。'
+user.emails.community-topic_thank-you: '感谢您提交意见回馈「{{title}}」'
+user.emails.community-topic_updated: '您提交的反馈“{{title}}”已更新。 它的状态现在是：“{{status}}”'
+user.emails.community-topic_votes:
   other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
 user.emails.greeting: '亲爱的{{to_name}}，'
 user.emails.kb-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的知识库。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有知识库通知</a>。'
@@ -1015,7 +993,7 @@ user.error.permission-denied: 很抱歉，您尝试执行的操作是不允许�
 user.error.permission-denied-login: '您目前已登出。 <a href="{{login_url}}">登录</a>，然后重试。'
 user.error.permission-denied-title: 您不能这样做
 user.error.server-error: '很抱歉，服务器发生错误，无法载入网页。 请再试一次。'
-user.feedback.submit_feedback: 提交反馈
+user.community.submit_community_topic: 提交反馈
 user.general.deskpro: 桌面软件
 user.general.helpdesk_by: '<strong>{{deskpro}}</strong>服务系统软件'
 user.general.label_captcha: 确认码
@@ -1037,7 +1015,8 @@ user.lang.lang_title_japanese: 日语
 user.lang.lang_title_norwegian: 挪威语
 user.lang.lang_title_persian: 波斯语
 user.lang.lang_title_polish: 波兰语
-user.lang.lang_title_portuguese: 葡萄牙语
+user.lang.lang_title_portuguese_br: 葡萄牙语（巴西）
+user.lang.lang_title_portuguese_pt: 葡萄牙语（葡萄牙）
 user.lang.lang_title_romanian: 罗马语
 user.lang.lang_title_russian: 俄语
 user.lang.lang_title_spanish: 西班牙语
@@ -1060,7 +1039,7 @@ user.profile.register_password_require_num_symbol:
 user.profile.register_password_require_num_uppercase:
   other: '最少{{count}}个大写字母'
 user.profile.register_password_unused: 您不能使用之前您已经使用过的密码
-user.tickets.feedback_message_leave_comment: 可选择地留下评论
+user.tickets.community_message_leave_comment: 可选择地留下评论
 user.tickets.fields_category: 分类
 user.tickets.fields_department: 部门
 user.tickets.fields_priority: 优先

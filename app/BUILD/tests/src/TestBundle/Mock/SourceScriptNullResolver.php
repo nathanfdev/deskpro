@@ -42,7 +42,7 @@ class NullScript implements ImporterInterface
     /**
      * {@inheritdoc}
      */
-    public function runImport()
+    public function runImport($importedSteps = [], $offsets = [])
     {
     }
 

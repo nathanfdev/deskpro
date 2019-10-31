@@ -17,17 +17,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class PortalValidation
 {
-    const REGISTRATION = 'registration';
-    const ADD_EMAIL    = 'add-email';
-    const NEW_FEEDBACK = 'new-feedback';
-    const NEW_TICKET   = 'new-ticket';
-    const COMMENT      = 'comment';
+    const REGISTRATION        = 'registration';
+    const ADD_EMAIL           = 'add-email';
+    const NEW_COMMUNITY_TOPIC = 'new-community-topic';
+    const NEW_TICKET          = 'new-ticket';
+    const COMMENT             = 'comment';
 
     public static $types = [
         self::REGISTRATION,
         self::COMMENT,
         self::ADD_EMAIL,
-        self::NEW_FEEDBACK,
+        self::NEW_COMMUNITY_TOPIC,
         self::NEW_TICKET,
     ];
 
@@ -123,7 +123,7 @@ class PortalValidation
         switch ($type) {
             case self::REGISTRATION:
             case self::COMMENT:
-            case self::NEW_FEEDBACK:
+            case self::NEW_COMMUNITY_TOPIC:
                 $this->mailer->sendEmailValidation($emailTo, $verifyUrl);
                 break;
             case self::ADD_EMAIL:

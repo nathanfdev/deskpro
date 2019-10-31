@@ -36,7 +36,7 @@
 {% endmacro %}
 {% macro person_inline(person, include_email = false) %}
     {% if person %}
-        <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(person, 36) }});"></span>
+        <span class="agent-avatar agent-avatar-mid" style="background-image: url({{ avatar_url(person, 36) }}); background-size: contain;"></span>
         <span class="ticket-owner-name">{{ person.display_name_user }}</span>
         {% if include_email or not person.isAgent() %}
             <span class="ticket-owner-email">({{ person.primary_email_address }})</span>

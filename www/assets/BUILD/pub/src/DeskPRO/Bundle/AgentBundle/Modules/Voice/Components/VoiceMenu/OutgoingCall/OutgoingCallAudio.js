@@ -35,7 +35,7 @@ class OutgoingCallAudio extends React.Component {
   }
 
   stopSound() {
-    if (this.sound) {
+    if (this.sound && this.sound.readyState) {
       this.sound.removeEventListener('ended', this.onSoundEnded);
       this.sound.pause();
       this.sound.currentTime = 0;

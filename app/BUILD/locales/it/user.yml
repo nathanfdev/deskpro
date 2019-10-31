@@ -11,15 +11,13 @@ portal.account.email-btn-usersource-set: 'Aggiungi Indirizzo Email'
 portal.account.email-management: 'Gestisci le Email'
 portal.account.email-management-from-form: 'Gestisci i tuoi Indirizzi Email'
 portal.account.email-primary-description: 'Questa è la tua mail principale. Sarà usata come predefinita a meno che non sia specificato diversamente.'
-portal.account.feedback-lockout: 'Hai inviato un feedback troppe volte, quindi sei stato bloccato. Per favore riprova più tardi.'
+portal.account.community-lockout: 'Hai inviato un tema troppe volte, quindi sei stato bloccato. Per favore riprova più tardi.'
 portal.account.link-expired: 'Spiacenti, il link su cui hai fatto clic è scaduto o è già stato utilizzato in precedenza.'
-portal.account.lockout_time: 'Puoi riprovare tra {{tempo}} minuti.'
 portal.account.login-btn: Accedi
 portal.account.login-btn-usersource: 'Accedi con {{usersource}}'
 portal.account.login-captcha-failed: 'Hai inserito un codice CAPTCHA invalido. Per favore riprova di nuovo.'
 portal.account.login-disabled: 'Il tuo indirizzo email è stato bannato.'
 portal.account.login-email: 'La tua email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Esegui il Login tramite servizio esterno'
 portal.account.login-form-disabled: 'Il modulo di accesso è disabilitato'
 portal.account.login-invalid: 'Hai inserite Email o password scorretta. Per favore riprova di nuovo.'
@@ -33,7 +31,7 @@ portal.account.login-remember: 'Rimani connesso?'
 portal.account.login-saved-add_email: 'La tua email aggiuntiva non è stata ancora inviata. Per favore accedi per continuare.'
 portal.account.login-saved-comment: 'Il tuo commento non è stato ancora inviato. Per favore accedi per continuare.'
 portal.account.login-saved-form: 'Il tuo {{type}} non è ancora stato registrato. Esegui l''accesso per continuare'
-portal.account.login-saved-new_feedback: 'Il tuo nuovo feedback non è stato ancora inviato. Per favore accedi per continuare.'
+portal.account.login-saved-new_community_topic: 'Il tuo nuovo tema non è stato ancora inviato. Per favore accedi per continuare.'
 portal.account.login-saved-new_ticket: 'Il tuo nuovo biglietto non è stato ancora inviato. Per favore accedi per continuare.'
 portal.account.login-saved-register: 'Il tuo registro non è stato ancora inviato. Per favore accedi per continuare.'
 portal.account.login-stay-logged-in: 'Rimani connesso?'
@@ -83,7 +81,7 @@ portal.account.submit-saved-add_email: 'La tua email aggiuntiva non è stata anc
 portal.account.submit-saved-comment: 'Il tuo commento non è stato ancora inviato ma l''abbiamo salvato per te.'
 portal.account.submit-saved-form: 'Il tuo {{type}} non è stato ancora inviato, ma l''abbiamo salvato.'
 portal.account.submit-saved-form-go: 'Clicca qui per re- inviare automaticamente il modulo .'
-portal.account.submit-saved-new_feedback: 'Il tuo nuovo feedback non è ancora stato inviato ma l''abbiamo salvato per te.'
+portal.account.submit-saved-new_community_topic: 'Il tuo nuovo tema non è ancora stato inviato ma l''abbiamo salvato per te.'
 portal.account.submit-saved-new_ticket: 'Il tuo nuovo ticket non è ancora stato inviato ma lo abbiamo salvato per te.'
 portal.account.submit-saved-register: 'Il tuo registro non è stato ancora inviato ma l''abbiamo salvato per te.'
 portal.account.tickets-lockout: 'Hai inviato troppi ticket e sei stato bloccato. Per favore prova di nuovo più tardi.'
@@ -92,11 +90,8 @@ portal.account.welcome-back: Bentornato
 portal.account.your-emails: 'Gestisci i tuoi indirizzi email'
 portal.account.your-pending-email-addresses: 'I tuoi Indirizzi Email in attesa'
 portal.articles.by-line: 'Da {{name}} il {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Ancora nessun articolo'
-portal.articles.search-title: Knowledgebase
 portal.articles.section-desc: 'La nostra knowledgebase contiene articoli scritti dagli agenti di supporto per aiutarti'
-portal.articles.section-title: Knowledgebase
 portal.articles.share-by-email: 'Condividi questo articolo tramite email:'
 portal.articles.view-as-agent: 'Puoi visualizzare questa pagina perchè sei un agente. Gli utenti normali non sono in grado di vedere questa pagina.'
 portal.articles.view-x-articles:
@@ -148,7 +143,6 @@ portal.chat.label-department: 'Seleziona il dipartimento'
 portal.chat.label-email: 'La tua Email'
 portal.chat.label-name: 'Il tuo Nome'
 portal.chat.list_agent: Agente
-portal.chat.list_chat: Chat
 portal.chat.list_date: Data
 portal.chat.list_switch_to_my_chats: 'Passa alle Mie Chat'
 portal.chat.list_switch_to_organization: 'Passa a Organizazzione'
@@ -164,7 +158,6 @@ portal.chat.log_title: 'Stai chattando con {{person}}'
 portal.chat.log_view_linked_ticket: 'Visualizza il Ticket'
 portal.chat.looking_for_another_agent: 'Stiamo cercando un nuovo agente.'
 portal.chat.lost_connection: 'Connessione persa. Cercando di riconnettersi.'
-portal.chat.message_agent-timeout: '{{Name}} non risponde. Per favore attendi mentre cerchiamo di trovare un altro agente.'
 portal.chat.message_assigned: 'Chat assegnata a {{name}}'
 portal.chat.message_ended: 'Chat terminata'
 portal.chat.message_ended-by: 'Chat terminata da {{name}}'
@@ -203,7 +196,6 @@ portal.chat.see_full_image: 'Clicca qui per vedere l''immagine intera'
 portal.chat.send_another_validation_email: 'Mandami un''altra email'
 portal.chat.sent_validation_code: 'Ti abbiamo mandato una email con il codice di convalida.'
 portal.chat.start: 'Inizia una nuova Chat'
-portal.chat.start_conversation: 'Inizia una conversazione'
 portal.chat.support_powered_by: 'Supporto provvisto da {{DeskPRO}}'
 portal.chat.take_chat: 'Prendi la Chat'
 portal.chat.taken_by: 'Chat presa da'
@@ -221,7 +213,6 @@ portal.chat.validation_email_was_sent: 'Un''altra email è stata inviata con suc
 portal.chat.visitor_info: 'Informazioni per visitatori'
 portal.chat.you: Tu
 portal.chat.you_have_been_invited: 'Se stato invitato a partecipare ad una chat'
-portal.downloads.download: Download
 portal.downloads.none: 'Non c''è alcun download'
 portal.downloads.recent-downloads: 'Download recenti'
 portal.downloads.search-title: Download
@@ -243,13 +234,13 @@ portal.email_subjects.email-too-big: 'La tua email "{{subject}}" non è stata ac
 portal.email_subjects.email_new-confirm: 'Convalida il tuo indirizzo email'
 portal.email_subjects.email_primary-confirm: 'Convalida il tuo indirizzo email'
 portal.email_subjects.email_ticket-reminder: 'Azione richiesta: Il tuo ticket non è ancora stato inviato'
-portal.email_subjects.feedback_new: 'Grazie per aver inviato il tuo feedback'
-portal.email_subjects.feedback_new-approved: 'Il tuo feedback è stato pubblicato'
-portal.email_subjects.feedback_new-comment: 'C''è un nuovo commento su "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Grazie per averci inviato il tuo feedback (soggetto a convalida)'
-portal.email_subjects.feedback_new-disapproved: 'Scusate. Il Feedback è stato rifiutato'
-portal.email_subjects.feedback_sub_updated: 'Feedback aggiornato'
-portal.email_subjects.feedback_updated: 'Il tuo feedback è stato aggiornato: {{title}}'
+portal.email_subjects.community_new: 'Grazie per aver inviato il tuo tema'
+portal.email_subjects.community_new-approved: 'Il tuo tema è stato pubblicato'
+portal.email_subjects.community_new-comment: 'C''è un nuovo commento su "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Grazie per averci inviato il tuo tema (soggetto a convalida)'
+portal.email_subjects.community_new-disapproved: 'Scusate. Il Tema è stato rifiutato'
+portal.email_subjects.community_sub_updated: 'Tema aggiornato'
+portal.email_subjects.community_updated: 'Il tuo community è stato aggiornato: {{title}}'
 portal.email_subjects.kb_sub_new: 'Articoli nuovi'
 portal.email_subjects.kb_sub_new_and_updated: 'Articoli nuovi e aggiornati'
 portal.email_subjects.kb_sub_updated: 'Articoli aggiornati'
@@ -269,7 +260,6 @@ portal.email_subjects.share-article: '{{author_name}} vuole condividere questo a
 portal.email_subjects.ticket-rate: 'Per favore, valuta a tua esperienza di supporto per il ticket'
 portal.email_subjects.ticket_added_cc: 'Sei stato aggiunto al ticket "{{ticket.subject}}"'
 portal.email_subjects.ticket_new-participant: 'Una nuova persona è stata aggiunta al tuo ticket'
-portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 portal.email_subjects.too-many-emails: 'AVVISO: Hai inviato troppe email'
 portal.email_subjects.validate-email: 'Convalida il tuo indirizzo email'
 portal.emails.auto-close: 'Non abbiamo sentito niente per quanto riguarda il vostro ticket: "". Fateci sapere se avete bisogno di ulteriore assistenza, altrimenti il biglietto verrà risolto a breve.'
@@ -288,23 +278,23 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sui download disponibili in <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sui download disponibili.</a>'
 portal.emails.email-too-big: 'La tua email "{{subject}}" non è stata accettata perchè è troppo grande. Le dimensioni massime che questo helpdesk accetta sono di {{max_size}}. Rimuovi gli allegati di grosse dimensioni e riprova.'
 portal.emails.end_greeting: 'Cordiali saluti, <br /><br />{{site_name}}'
-portal.emails.feedback-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sui feedback in  <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sui feedback.</a>'
-portal.emails.feedback-updated-items:
-  one: '1 Feedback aggiornato'
-  other: '{{count}} Feedback aggiornati'
-portal.emails.feedback_agent-validation: 'Ricorda che il tuo feedback non apparirà pubblicamente sul nostro portale per il supporto finchè uno dei nostri agenti non lo approva.'
-portal.emails.feedback_approved: 'Ti informiamo che il tuo feedback è stato approvato ed è ora visibile pubblicamente sul nostro portale per il supporto.'
-portal.emails.feedback_closed: 'il tuo feedback "{{title}}" inviato, è stato chiuso: {{status}}'
-portal.emails.feedback_disapproved: 'Ti informiamo che il tuo feedback è stato rifiutato e non apparirà sul nostro portale per il supporto.'
-portal.emails.feedback_disapproved-reason: 'Ti informiamo che il tuo feedback è stato rifiutato e non apparirà pubblicamente sul nostro portale per il supporto. {{name}} ha dato la seguente motivazione:'
-portal.emails.feedback_new-comment: '{{name}} ha scritto un nuovo commento:'
-portal.emails.feedback_published: 'Il tuo feedback "{{title}}" è stato convalidato e apparirà sul nostro portale per il supporto.'
-portal.emails.feedback_thank-you: 'Grazie per averci inviato il tuo feedback "{{title}}"'
-portal.emails.feedback_updated: 'il tuo feedback "{{title}}" è stato aggiornato. Il suo nuovo status è {{status}}"'
-portal.emails.feedback_validate-email: 'Per favore convalida il tuo indirizzo email cliccando sul seguente link:'
-portal.emails.feedback_votes:
-  one: 'Il tuo feedback corrente è stato <strong>1</strong> votato. Guardalo online su:'
-  other: 'Il tuo feedback corrente ha <strong>{{count}}</strong> voti. Guardalo online su:'
+portal.emails.community-topics-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sui feedback in  <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sui feedback.</a>'
+portal.emails.community-topics-updated:
+  one: '1 tema della comunità'
+  other: '{{count}} temi della comunità'
+portal.emails.community-topic_agent-validation: 'Ricorda che il tuo tema non apparirà pubblicamente sul nostro portale per il supporto finchè uno dei nostri agenti non lo approva.'
+portal.emails.community_topic_approved: 'Ti informiamo che il tuo tema è stato approvato ed è ora visibile pubblicamente sul nostro portale per il supporto.'
+portal.emails.community_topic_closed: 'il tuo community "{{title}}" inviato, è stato chiuso: {{status}}'
+portal.emails.community-topic_disapproved: 'Ti informiamo che il tuo tema è stato rifiutato e non apparirà sul nostro portale per il supporto.'
+portal.emails.community-topic_disapproved-reason: 'Ti informiamo che il tuo community è stato rifiutato e non apparirà pubblicamente sul nostro portale per il supporto. {{name}} ha dato la seguente motivazione:'
+portal.emails.community-topic_new-comment: '{{name}} ha scritto un nuovo commento:'
+portal.emails.community-topic_published: 'Il tuo tema "{{title}}" è stato convalidato e apparirà sul nostro portale per il supporto.'
+portal.emails.community-topic_thank-you: 'Grazie per averci inviato il tuo tema "{{title}}"'
+portal.emails.community-topic_updated: 'il tuo tema "{{title}}" è stato aggiornato. Il suo nuovo status è {{status}}"'
+portal.emails.community-topic_validate-email: 'Per favore convalida il tuo indirizzo email cliccando sul seguente link:'
+portal.emails.community-topic_votes:
+  one: 'Il tuo community corrente è stato <strong>1</strong> votato. Guardalo online su:'
+  other: 'Il tuo community corrente ha <strong>{{count}}</strong> voti. Guardalo online su:'
 portal.emails.greeting: 'Gentile {{to_name}},'
 portal.emails.kb-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sugli articoli relatovi alla nostra knowledgebase su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sulla knowledgebase.</a>'
 portal.emails.kb-new-articles:
@@ -353,7 +343,6 @@ portal.emails.ticket_cc-new: 'Sei stato incluso in un ticket iniziato da {{name}
 portal.emails.ticket_flood: 'Hai di recente inviato un''email al nostro help desk.<br /><br />il nostro sistema ha riscontrato che hai inviato molti messaggi in rapida successione che, molto probabilmente, sono automatizzati <br /><br />. Per evitare un ciclo infinito di e-mail automatiche, il nostro help desk non vi invierà più alcuna e-mail di notifica automatica.'
 portal.emails.ticket_message_title: 'Il {{date}} alle {{time}}, {{author}} ha scritto:'
 portal.emails.ticket_no-autoresponse: 'Attenzione: Email di conferma disabilitate'
-portal.emails.ticket_rate-negative: 'No'
 portal.emails.ticket_rate-neutral: 'Era OK'
 portal.emails.ticket_rate-positive: Sì
 portal.emails.ticket_rate-question: 'Questo messaggio ti è stato utile?'
@@ -375,44 +364,41 @@ portal.error.404-title: 'Non trovato'
 portal.error.contact: 'Se credi che questo sia un errore, contattaci:'
 portal.error.general-desc: 'Ci dispiace, c''è stato un errore. Riprova più tardi o contattaci.'
 portal.error.general-title: 'C''è stato un errore'
-portal.feedback.attachments: Allegati
-portal.feedback.btn-closed: Chiuso
-portal.feedback.btn-vote: Concordo
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
-portal.feedback.error_hidden: 'Il feedback è nascosto'
-portal.feedback.error_login: 'Per favore effettua l''accesso'
-portal.feedback.filter_all_items: 'Tutti gli oggetti'
-portal.feedback.filter_closed_items: 'Oggetti Chiusi'
-portal.feedback.filter_open_items: 'Apri gli oggetti'
-portal.feedback.form_attach_files: 'Allega file'
-portal.feedback.form_btn_submit: 'Aggiungi il tuo feedback'
-portal.feedback.form_email_not_shown: 'La tua email (non sarà visualizzata pubblicamente)'
-portal.feedback.form_i_have_a: 'Ho un'
-portal.feedback.form_logged_in_as: 'Hai effettuato l''accesso come:<span>{{name}}</span>, dalla email <span>{{email}}</span>.'
-portal.feedback.form_logout: 'Non sei tu?'
-portal.feedback.form_tell_us_more: 'Dicci di più'
-portal.feedback.form_title: Titolo
-portal.feedback.module_forbidden: 'Non hai accesso a questo modulo'
-portal.feedback.no_matching: 'Non ci sono feedback corrispondenti'
-portal.feedback.none: 'Non c''è alcun feedback'
-portal.feedback.rate_forbidden: 'Non hai il permesso di votare'
-portal.feedback.recent-feedback: 'Feedback recente'
-portal.feedback.search-title: Feedback
-portal.feedback.section-desc: 'Questi suggerimenti sono stati inviati da clienti come voi; vi incoraggiamo a discutere e votare su quelli che preferite o ad inserire il vostro suggerimento se non è già presente.'
-portal.feedback.section-title: Feedback
-portal.feedback.sort_comments: Commenti
-portal.feedback.sort_date: Data
-portal.feedback.sort_popularity: Popolarità
-portal.feedback.sort_rating: Voto
-portal.feedback.sort_views: Visualizzazioni
-portal.feedback.status_active: 'Apri oggetti'
-portal.feedback.status_all: 'Tutti gli oggetti'
-portal.feedback.status_closed: 'Oggetti chiusi'
-portal.feedback.submit_feedback: 'Invia feedback'
-portal.feedback.view-x-feedback:
-  one: 'Visualizza 1 feedback'
-  other: ' Visualizza {{count}} feedback'
+portal.community.attachments: Allegati
+portal.community.btn-closed: Chiuso
+portal.community.btn-vote: Concordo
+portal.community.error_hidden: 'Il tema è nascosto'
+portal.community.error_login: 'Per favore effettua l''accesso'
+portal.community.filter_all_items: 'Tutti gli oggetti'
+portal.community.filter_closed_items: 'Oggetti Chiusi'
+portal.community.filter_open_items: 'Apri gli oggetti'
+portal.community.form_attach_files: 'Allega file'
+portal.community.form_btn_submit: 'Aggiungi il tuo tema'
+portal.community.form_email_not_shown: 'La tua email (non sarà visualizzata pubblicamente)'
+portal.community.form_i_have_a: 'Ho un'
+portal.community.form_logged_in_as: 'Hai effettuato l''accesso come:<span>{{name}}</span>, dalla email <span>{{email}}</span>.'
+portal.community.form_logout: 'Non sei tu?'
+portal.community.form_tell_us_more: 'Dicci di più'
+portal.community.form_title: Titolo
+portal.community.form_custom_cat: Categoria
+portal.community.module_forbidden: 'Non hai accesso a questo modulo'
+portal.community.no_matching: 'Non ci sono tema corrispondenti'
+portal.community.none: 'Non c''è alcun temi'
+portal.community.rate_forbidden: 'Non hai il permesso di votare'
+portal.community.recent-community_topics: 'Temi recenti'
+portal.community.section-desc: 'Questi suggerimenti sono stati inviati da clienti come voi; vi incoraggiamo a discutere e votare su quelli che preferite o ad inserire il vostro suggerimento se non è già presente.'
+portal.community.sort_comments: Commenti
+portal.community.sort_date: Data
+portal.community.sort_popularity: Popolarità
+portal.community.sort_rating: Voto
+portal.community.sort_views: Visualizzazioni
+portal.community.status_active: 'Apri oggetti'
+portal.community.status_all: 'Tutti gli oggetti'
+portal.community.status_closed: 'Oggetti chiusi'
+portal.community.submit_community_topic: 'Invia tema'
+portal.community.view-x-community-topics:
+  one: 'Visualizza 1 community topic'
+  other: ' Visualizza {{count}} community topics'
 portal.flashes.article_cat_subscribe: 'Ti sei iscritto a questa categoria con successo. Verrai notificato quando ci saranno nuovi articoli.'
 portal.flashes.article_cat_unsubscribe: 'Hai annullato l''iscrizione da questa categoria con successo.'
 portal.flashes.article_subscribe: 'TI sei iscritto a questo articolo con successo. Verrai notificato quando ci sarà un aggiornamento o quando ci sarà un nuovo commento.'
@@ -426,14 +412,14 @@ portal.flashes.download_subscribe: 'Ti sei iscritto con successo a questo downlo
 portal.flashes.download_unsubscribe: 'Hai annullato con successo l''iscrizione da questo download'
 portal.flashes.download_unsubscribe_everything: 'Hai annullato l''iscrizione da tutte le notifiche dei download'
 portal.flashes.email_sent: 'La tua email è stata inviata'
-portal.flashes.feedback_login: 'Devi accedere per poter votare'
-portal.flashes.feedback_subscribe: 'Ti sei iscritto con successo a questo oggetto feedback. Verrai notificato quando sarà disponibile un nuovo aggiornamento o quando ci sarà un nuovo commento.'
-portal.flashes.feedback_unsubscribe: 'Hai annullato con successo l''iscrizione da questo oggetto feedback.'
-portal.flashes.feedback_unsubscribe_everything: 'Hai annullato l''iscrizione da tutte le notifiche dei feedback'
+portal.flashes.community_login: 'Devi accedere per poter votare'
+portal.flashes.community_subscribe: 'Ti sei iscritto con successo a questo oggetto tema. Verrai notificato quando sarà disponibile un nuovo aggiornamento o quando ci sarà un nuovo commento.'
+portal.flashes.community_unsubscribe: 'Hai annullato con successo l''iscrizione da questo oggetto tema.'
+portal.flashes.community_unsubscribe_everything: 'Hai annullato l''iscrizione da tutte le notifiche dei temi'
 portal.flashes.guest_content_must_verify: 'Prima che noi possiamo pubblicare il tuo contenuto, devi verificare la tua posta in arrivo. TI abbiamo mandato un link di convalida.'
 portal.flashes.guest_new_ticket_must_verify: 'Prima di poter accettare il tuo ticket, dobbiamo verificare il tuo indirizzo email. Per favore controlla la tua casella di posta in arrivo. TI abbiamo mandato un link di convalida.'
-portal.flashes.new_feedback_awaiting_review: 'Grazie per il tuo feedback. Sarà visibile sul nostro portale per il supporto dopo la revisione da parte di un nostro agente.'
-portal.flashes.new_feedback_posted: 'Grazie per il tuo feedback.'
+portal.flashes.new_community_topic_awaiting_review: 'Grazie per il tuo tema. Sarà visibile sul nostro portale per il supporto dopo la revisione da parte di un nostro agente.'
+portal.flashes.new_community_topic_posted: 'Grazie per il tuo tema.'
 portal.flashes.news_cat_subscribe: 'Ti sei iscritto a questa categoria con successo. Riceverai una notifica quando ci saranno nuovi post.'
 portal.flashes.news_cat_unsubscribe: 'Hai annullato con successo l''iscrizione da questa categoria.'
 portal.flashes.news_subscribe: 'Ti sei iscritto con successo a questo articolo sulle novità. Verrai notificato quando ci saranno dei nuovi commenti.'
@@ -453,7 +439,6 @@ portal.flashes.ticket_re_opened: 'Hai riaperto questo ticket.'
 portal.flashes.ticket_replied: 'La tua risposta è stata inviata. Grazie!'
 portal.flashes.ticket_resolved: 'Il tuo ticket è ora segnato come risolto. Grazie.'
 portal.flashes.ticket_updated: 'Il tuo ticket è stato aggiornato. Grazie!'
-portal.flashes.user_add_email_verified: 'Your email address has been added to your account.'
 portal.flashes.user_add_email_verify: 'Dobbiamo verificare la tua email prima di poterla aggiungere al tuo account. Per favore controlla la tua casella di posta per il link di convalida.'
 portal.flashes.user_changed_password: 'La tua password è stata aggiornata.'
 portal.flashes.user_changed_primary_email: 'L''indirizzo della tua email primaria è stato cambiato.'
@@ -471,7 +456,6 @@ portal.forms.error_accept_no_file: 'Non puoi caricare un file vuoto.'
 portal.forms.error_accept_not_allowed_exts: 'Non puoi caricare un file con le seguenti estensioni: {{detail}}'
 portal.forms.error_accept_not_in_allowed_exts: 'Puoi solo caricare file con una qualsiasi delle seguenti estensioni: {{detail}}'
 portal.forms.error_accept_server_error: 'C''è stato un problema nel caricare questo file. Per favore riprova di nuovo.'
-portal.forms.error_accept_size: 'Ci dispiace ma il file è troppo grande. La misura massima consentita è di {{limit}} {{suffix}}.'
 portal.forms.error_bad_choice: 'Uno o più dei valori indicati non sono validi.'
 portal.forms.error_banned_email: 'L''email "{{email}}" è stata bannata.'
 portal.forms.error_captcha: 'Il valore CAPTCHA è scorretto'
@@ -485,7 +469,6 @@ portal.forms.error_dupe_ticket_message: 'Messaggio biglietto duplicato'
 portal.forms.error_email_required: 'Devi fornire il tuo indirizzo email'
 portal.forms.error_extra_fields: 'Siamo spiacenti ma si è verificato un errore durante l''elaborazione della richiesta. Per favore riprova.'
 portal.forms.error_invalid_data_type: 'Questo tipo di dati non era previsto.'
-portal.forms.error_invalid_email: 'Questo indirizzo email non è valido'
 portal.forms.error_invalid_url: 'Questo valore non è un URL valido.'
 portal.forms.error_length_invalid: 'Questo valore deve avere esattamente {{limit}} caratteri.'
 portal.forms.error_length_too_long: 'Il valore è troppo lungo. Deve avere come limite {{limit}} caratteri.'
@@ -537,11 +520,9 @@ portal.forms.error_upload_file: 'Non è stato possibile caricare il file'
 portal.forms.error_upload_general: 'C''è stato un problema nel caricare questo file. Per favore riprova nuovamente'
 portal.forms.error_upload_html_size: 'Il file è troppo grande.'
 portal.forms.error_upload_ini_size: 'Il file è troppo grande. La misura massima consentita è di {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Ci dispiace ma si è verificato un errore nel processare la tua richiesta. Per favore riprova nuovamente.'
 portal.forms.label_add_attachment: 'Aggiungi un altro allegato'
 portal.forms.label_captcha: 'Per assicurarci che sei un umano, scrivi il testo che vedi in quest''immagine CAPTCHA'
 portal.forms.label_category: Categoria
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Scegli un file'
 portal.forms.label_comment: 'Hai dei commenti?'
 portal.forms.label_content: Contenuto
@@ -549,14 +530,12 @@ portal.forms.label_current_password: 'Password attuale'
 portal.forms.label_department: Reparto
 portal.forms.label_drag: 'Sposta un file qui oppure'
 portal.forms.label_drag_overlay: 'Sposta il tuo file qui.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Nome
 portal.forms.label_full_name: 'Il tuo nome'
 portal.forms.label_language: Lingua
 portal.forms.label_last_name: Cognome
 portal.forms.label_message: Messaggio
 portal.forms.label_name: Nome
-portal.forms.label_password: Password
 portal.forms.label_password_confirm: Conferma
 portal.forms.label_priority: Priorità
 portal.forms.label_product: Prodotto
@@ -571,19 +550,17 @@ portal.forms.label_title: Titolo
 portal.forms.label_upload_picture: 'Carica l''immagine'
 portal.forms.label_workflow: 'Flusso di lavoro'
 portal.general.add-comment: 'Aggiungi un commento'
-portal.general.admin: Admin
-portal.general.admin_home: 'Admin Home'
 portal.general.agent: Agente
 portal.general.agent_bar_admin_desc: 'Gestisci il tuo Helpdesk'
 portal.general.agent_bar_admin_dl: 'Impostazioni dei Download'
-portal.general.agent_bar_admin_feedback: 'Impostazioni Feedback'
+portal.general.agent_bar_admin_community: 'Impostazioni Tema Della Comunità'
 portal.general.agent_bar_admin_kb: 'Impostazioni di Knowladgebase'
 portal.general.agent_bar_admin_lang: 'Impostazioni delle Lingue'
 portal.general.agent_bar_admin_news: 'Impostazioni sulle Novità'
 portal.general.agent_bar_admin_portal: 'Design del portale e modelli'
 portal.general.agent_bar_agent_desc: 'Visualizza i Ticket/ Gestisci Contenuto'
 portal.general.agent_bar_agent_dl: 'Gestisci i Download'
-portal.general.agent_bar_agent_feedback: 'Gestisci Feedback'
+portal.general.agent_bar_agent_community: 'Gestisci Tema Della Comunità'
 portal.general.agent_bar_agent_home: 'Agente Home'
 portal.general.agent_bar_agent_kb: 'Gestisci la Knowledgebase'
 portal.general.agent_bar_agent_news: 'Gestisci le Novità'
@@ -591,7 +568,6 @@ portal.general.agents-available: 'Agenti Disponibili'
 portal.general.attachments: Allegati
 portal.general.btn-cancel: Annulla
 portal.general.btn-download-pdf: 'Scarica PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Vai
 portal.general.btn-print: Stampa
 portal.general.btn-send-email: 'Manda e-mail'
@@ -613,7 +589,6 @@ portal.general.everything: Tutto
 portal.general.get-in-touch: 'Rimani in contatto'
 portal.general.get-in-touch-desc: 'Mandaci un''email'
 portal.general.impersonation_mode: 'Modalità di rappresentazione'
-portal.general.in: in
 portal.general.label-search-enter-label: 'Per favore fornisci un etichetta da ricercare'
 portal.general.lang-change-to-current: 'Imposta <span class="italics">{{lang}}</span> come lingua di base'
 portal.general.lang-diff: 'Questa pagina è in  <span class="italics">{{active_lang}}</span> ma il tuo account è in <span class="italics">{{person_lang}}</span>.'
@@ -624,11 +599,9 @@ portal.general.nav-chatlog: 'Registro della Chat'
 portal.general.nav-downloads: Download
 portal.general.nav-downloads-desc: 'Ricerca i nostri Download'
 portal.general.nav-emails: Email
-portal.general.nav-feedback: Feedback
-portal.general.nav-feedback-desc: 'Suggerimenti personalizzati'
+portal.general.nav-community-desc: 'Suggerimenti personalizzati'
 portal.general.nav-guides: 'il manuale'
 portal.general.nav-guides-desc: 'Documentazione del prodotto'
-portal.general.nav-kb: Knowledgebase
 portal.general.nav-kb-desc: 'Leggi gli articoli di aiuto'
 portal.general.nav-login: Accedi
 portal.general.nav-news: Novità
@@ -668,11 +641,10 @@ portal.general.rated-negative: 'Hai contrassegnato questa pagina come inutile'
 portal.general.rated-positive: 'Hai contrassegnato questa pagina come utile'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} persone su {{vote_count}} hanno trovato questa pagina utile'
 portal.general.related-downloads: 'Files Correlati'
-portal.general.related-feedback: 'Feedback Collegati'
+portal.general.related-community: 'Temi Collegati'
 portal.general.related-news: 'Novità Correlate'
 portal.general.related-pages: 'Pagine Correlate'
 portal.general.rerender-form: 'Per favore controlla questo modulo prima di inviarlo.'
-portal.general.rss_subscribe: 'RSS Feed'
 portal.general.search-labels-section-title: 'Cerca Etichette'
 portal.general.search-section-title: Cerca
 portal.general.search_btn: Cerca
@@ -685,13 +657,12 @@ portal.general.show_more: 'Mostra di più'
 portal.general.show_x_more: 'Mostra altri {num} '
 portal.general.software_provided_by: 'Il software Helpdesk è fornito da'
 portal.general.start-chat: 'Inizia una sessione chat'
-portal.general.submit-feedback: 'Invia un Feedback'
-portal.general.submit-feedback-desc: 'Feedback e suggerimenti inviati da clienti come te'
+portal.general.submit-community-topic: 'Invia un Tema'
+portal.general.submit-community-topic-desc: 'Tema e suggerimenti inviati da clienti come te'
 portal.general.tagged_with: 'taggato con'
 portal.general.tags: Tag
 portal.general.toggle_off: disattivo
 portal.general.toggle_on: attivo
-portal.general.top: Top
 portal.general.updated: Aggiornato
 portal.general.x-search-results: '{{num}} cerca risultati per "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} cerca risultati'
@@ -706,9 +677,6 @@ portal.news.view-x-news:
   other: ' Visualizza {{count}} articoli'
 portal.sidebar.agents_available: 'Agenti Disponibili'
 portal.sidebar.agents_none: 'Nessuno dei nostri agenti è al momento online. Puoi comunque <a href="{{new_ticket_url}}">aprire un ticket</a>. '
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Pubblicato da {{name}}'
 portal.sidebar.news_title: Novità
 portal.sidebar.satisfied_customers: 'Clienti Soddisfatti'
@@ -842,7 +810,6 @@ user.chat.form_feedback_comments: 'Commenti?'
 user.chat.form_feedback_rate-satisfaction: 'Sei soddisfatto della conversazione?'
 user.chat.form_feedback_rate-satisfied: Sì
 user.chat.form_feedback_rate-time: 'Il tempo di risposta ti ha soddisfatto?'
-user.chat.form_feedback_rate-unsatisfied: 'No'
 user.chat.form_feedback_title: 'Invia un feedback'
 user.chat.form_feedback_transcript-email: 'Invia la trascrizione della chat a'
 user.chat.log-title: 'Le tue chat'
@@ -894,6 +861,7 @@ user.defaults.article_example_title: 'Articolo Esempio'
 user.defaults.department_sales: Vendite
 user.defaults.department_support: Supporto
 user.defaults.downloads_category_general: Documenti
+user.defaults.navigate: Navigare
 user.defaults.news_category_general: Generale
 user.defaults.news_example_content: 'Questo è un esempio di post sulle novità. Sentiti libero di modificarlo o cancellarlo dall''interfaccia degli agenti.'
 user.defaults.news_example_title: 'Esempio di post sulle Notizie'
@@ -907,14 +875,13 @@ user.email_subjects.download_sub_new_and_updated: 'Download nuovi e aggiornati'
 user.email_subjects.download_sub_updated: 'Download aggiornati'
 user.email_subjects.email-too-big: 'La tua email "{{subject}}" non è stata accettata'
 user.email_subjects.email_new-confirm: 'Per favore convalida il tuo indirizzo email'
-user.email_subjects.email_primary-confirm: 'Convalida il tuo indirizzo email'
-user.email_subjects.feedback_created_for_user: 'Grazie per il tuo feedback'
-user.email_subjects.feedback_new: 'Grazie per averci inviato il tuo feedback'
-user.email_subjects.feedback_new-approved: 'Il tuo feedback è stato approvato'
-user.email_subjects.feedback_new-comment: 'C''è un nuovo commento su "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Scusate ma il feedback è stato rifiutato'
-user.email_subjects.feedback_sub_updated: 'Feedback aggiornato'
-user.email_subjects.feedback_updated: 'Il tuo feedback è stato aggiornato: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'Grazie per il tuo tema'
+user.email_subjects.community_topic_new: 'Grazie per averci inviato il tuo tema'
+user.email_subjects.community_topic_new-approved: 'Il tuo tema è stato approvato'
+user.email_subjects.community_topic_new-comment: 'C''è un nuovo commento su "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Scusate ma il tema è stato rifiutato'
+user.email_subjects.community_sub_updated: 'Tema aggiornato'
+user.email_subjects.community_topic_updated: 'Il tuo community è stato aggiornato: {{title}}'
 user.email_subjects.kb_sub_new: 'Articoli nuovi'
 user.email_subjects.kb_sub_new_and_updated: 'Artivoli nuovi e aggiornati'
 user.email_subjects.kb_sub_updated: 'Articoli aggiornati'
@@ -931,9 +898,6 @@ user.email_subjects.register-welcome-byagent: 'Il tuo nuovo account helpdesk'
 user.email_subjects.remind_unresolved_final_subject: 'PROMEMORIA: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PROMEMORIA: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Valuta il supporto che ti abbiamo dato per il ticket "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Una nuova persona è stata aggiunta al tuo ticket'
-user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'AVVISO: Hai inviato troppe email'
 user.emails.auto-close: 'Il tuo biglietto "" sarà chiuso a breve, dal momento che ultimamente non abbiamo ricevuto nessuna vostra notizia. Se avete bisogno di ulteriore assistenza semplicemente rispondete e uno dei nostri agenti vi aiuterà.'
 user.emails.chat_transcript: 'Grazie per avere chattato con noi. Ecco la trascrittura della chat.'
 user.emails.chat_validate_email: 'Per favore convalida il tuo indirizzo email online inserendo il codice "{{validation_code}}" nel widget o facendo click sul seguente link:'
@@ -948,23 +912,23 @@ user.emails.download-updated-downloads:
   other: '{{count}} Download aggiornati'
 user.emails.downloads-explain: 'Hai ricevuto questa email perchè sei registrato ai nostri download su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi più queste email?<a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione dalle notifiche di tutti i download.</a>'
 user.emails.email-too-big: 'La tua email "{{subject}}" non è stata accettata perchè è troppo grande. Le dimensioni massime che questo helpdesk accetta sono {{max_size}}. Rimuovi gli allegati e riprova.'
-user.emails.feedback-explain: 'Hai ricevuto questa email perchè sei registrato alle nostre novità su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Non vuoi più queste email? <a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione da tutte le notifiche dei feedback.</a>'
-user.emails.feedback-updated-items:
-  one: '1 Oggetto feedback aggiornato'
-  other: '{{count}} Oggetti feedback aggiornati'
-user.emails.feedback_agent-validation: 'Si prega di notare che il feedback non apparirà pubblicamente fino a quando uno dei nostri agenti non lo controllerà.'
-user.emails.feedback_approved: 'Ti volevamo informare che il tuo feedback è stato approvato e adesso è visibile pubblicamente sul nostro sito.'
-user.emails.feedback_closed: 'il tuo feedback "{{title}}" è stato chiuso: {{status}}'
-user.emails.feedback_created_for_user: 'Grazie per il tuo recente feedback "{{title}}". {{agentName}} ha creato un nuovo elemento di feedback in modo da poter rimanere aggiornato con i nostri progressi:'
-user.emails.feedback_disapproved: 'Ti volevamo informare che il tuo feedback è stato rifiutato e non apparirà pubblicamente sul nostro sito.'
-user.emails.feedback_disapproved-reason: 'Ti volevamo informare che il tuo feedback è stato rifiutato e non apparirà pubblicamente sul nostro sito. {{name}} ha dato la seguente motivazione:'
-user.emails.feedback_new-comment: '{{name}} ha scritto un nuovo commento:'
-user.emails.feedback_published: 'Il tuo feedback "{{title}}" è stato convalidato e adesso apparirà sul nostro sito.'
-user.emails.feedback_thank-you: 'Grazie per averci inviato il tuo feedback "{{title}}"'
-user.emails.feedback_updated: 'il tuo feedback "{{title}}" è stato aggiornato. Ora il suo status è: nuovo status "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Il tuo feedback ha <strong>1</strong> voto. Guardalo online su:'
-  other: 'Il tuo feedback ha <strong>{{count}}</strong> voti. Guardalo online su:'
+user.emails.community-explain: 'Hai ricevuto questa email perchè sei registrato alle nostre novità su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Non vuoi più queste email? <a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione da tutte le notifiche dei temi.</a>'
+user.emails.community-updated-items:
+  one: '1 Oggetto tema aggiornato'
+  other: '{{count}} Oggetti temi aggiornati'
+user.emails.community-topic_agent-validation: 'Si prega di notare che il tema non apparirà pubblicamente fino a quando uno dei nostri agenti non lo controllerà.'
+user.emails.community-topic_approved: 'Ti volevamo informare che il tuo tema è stato approvato e adesso è visibile pubblicamente sul nostro sito.'
+user.emails.community-topic_closed: 'il tuo community "{{title}}" è stato chiuso: {{status}}'
+user.emails.community-topic_created_for_user: 'Grazie per il tuo recente community "{{title}}". {{agentName}} ha creato un nuovo elemento di tema in modo da poter rimanere aggiornato con i nostri progressi:'
+user.emails.community-topic_disapproved: 'Ti volevamo informare che il tuo tema è stato rifiutato e non apparirà pubblicamente sul nostro sito.'
+user.emails.community-topic_disapproved-reason: 'Ti volevamo informare che il tuo community è stato rifiutato e non apparirà pubblicamente sul nostro sito. {{name}} ha dato la seguente motivazione:'
+user.emails.community-topic_new-comment: '{{name}} ha scritto un nuovo commento:'
+user.emails.community-topic_published: 'Il tuo tema "{{title}}" è stato convalidato e adesso apparirà sul nostro sito.'
+user.emails.community-topic_thank-you: 'Grazie per averci inviato il tuo tema "{{title}}"'
+user.emails.community-topic_updated: 'il tuo community "{{title}}" è stato aggiornato. Ora il suo status è: nuovo status "{{status}}"'
+user.emails.community-topic_votes:
+  one: 'Il tuo community ha <strong>1</strong> voto. Guardalo online su:'
+  other: 'Il tuo community ha <strong>{{count}}</strong> voti. Guardalo online su:'
 user.emails.greeting: 'Gentile {{to_name}},'
 user.emails.kb-explain: 'Stai ricevendo questa email perchè sei sottoscritto alla nostra knowladgebase su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Non vuoi più queste email? <a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione dalle notifiche della knowladgebase.</a>'
 user.emails.kb-new-articles:
@@ -1012,7 +976,6 @@ user.emails.ticket_cc-new: 'Sei stato incluso in un ticket iniziato da {{name}}.
 user.emails.ticket_flood: 'Hai recentemente inviato una e-mail al nostro helpdesk. Possiamo vedere che hai inviato molti messaggi in rapida successione che sono stati molto probabilmente automatizzati. <br /> <br /> Per evitare un loop continuo di auto-risposta, il nostro helpdesk non vi invierà più alcuna e-mail di notifica automatica.'
 user.emails.ticket_message_title: 'Il {{date}} alle {{time}}, {{author}} ha scritto:'
 user.emails.ticket_no-autoresponse: 'Attenzione: Email di conferma disabilitate'
-user.emails.ticket_rate-negative: 'No'
 user.emails.ticket_rate-neutral: 'Era OK'
 user.emails.ticket_rate-positive: Sì
 user.emails.ticket_rate-question: 'Questo messaggio ti è stato utile?'
@@ -1056,7 +1019,7 @@ user.error.permission-denied: 'L''azione che stai cercando di fare non è permes
 user.error.permission-denied-login: 'Sei uscito. <a href="{{login_url}}">Fai il login</a> e prova ancora.'
 user.error.permission-denied-title: 'Non puoi fare questo'
 user.error.server-error: 'C''è stato un errore del server che ha impedito il caricamento della pagina. Prova ancora.'
-user.feedback.submit_feedback: 'Invia feedback'
+user.community.submit_community_topic: 'Invia tema'
 user.general.deskpro: DeskPRO
 user.general.helpdesk_by: 'Helpdesk software di <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Codice di Conferma'
@@ -1073,12 +1036,12 @@ user.lang.lang_title_english_gb: 'Inglese (UK)'
 user.lang.lang_title_french: Francese
 user.lang.lang_title_german: Tedesco
 user.lang.lang_title_hungarian: Ungherese
-user.lang.lang_title_italian: Italian
 user.lang.lang_title_japanese: Giapponese
 user.lang.lang_title_norwegian: Norvegese
 user.lang.lang_title_persian: Persiano
 user.lang.lang_title_polish: Polacco
-user.lang.lang_title_portuguese: Portoghese
+user.lang.lang_title_portuguese_br: Portoghese (Brasile)
+user.lang.lang_title_portuguese_pt: Portoghese (Portogallo)
 user.lang.lang_title_romanian: Rumeno
 user.lang.lang_title_russian: Russo
 user.lang.lang_title_spanish: Spagnolo
@@ -1106,7 +1069,7 @@ user.profile.register_password_require_num_uppercase:
   one: 'Almeno 1 carattere in maiuscolo'
   other: ' Almeno {{count}} caratteri in maiuscolo'
 user.profile.register_password_unused: 'Non puoi utilizzare una password che hai usato in precedenza'
-user.tickets.feedback_message_leave_comment: 'In alternativa lascia un commento'
+user.tickets.community_message_leave_comment: 'In alternativa lascia un commento'
 user.tickets.fields_category: Categoria
 user.tickets.fields_department: Reparto
 user.tickets.fields_priority: Priorità
@@ -1147,16 +1110,12 @@ user.time.short-day_sunday: Dom
 user.time.short-day_thursday: Gio
 user.time.short-day_tuesday: Mar
 user.time.short-day_wednesday: Mer
-user.time.short-month_april: Apr
 user.time.short-month_august: Ago
 user.time.short-month_december: Dic
-user.time.short-month_february: Feb
 user.time.short-month_january: Gen
 user.time.short-month_july: Lug
 user.time.short-month_june: Giu
-user.time.short-month_march: Mar
 user.time.short-month_may: Mag
-user.time.short-month_november: Nov
 user.time.short-month_october: Ott
 user.time.short-month_september: Set
 user.time.time-ago_1_day: '1 giorno fa'

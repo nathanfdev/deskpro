@@ -25,7 +25,7 @@ class LabelSearch
     /**
      * @var array
      */
-    protected $search_types = ['article', 'download', 'feedback', 'news', 'organization', 'person', 'ticket'];
+    protected $search_types = ['article', 'download', 'community', 'news', 'organization', 'person', 'ticket'];
 
     /**
      * @var int
@@ -71,7 +71,7 @@ class LabelSearch
         $results = [
             'article'      => [],
             'download'     => [],
-            'feedback'     => [],
+            'community'    => [],
             'news'         => [],
             'ticket'       => [],
             'person'       => [],
@@ -135,18 +135,18 @@ class LabelSearch
             }
         }
 
-        if (in_array('feedback', $this->search_types)) {
+        if (in_array('community', $this->search_types)) {
             $ids = $this->db->fetchAllCol("
-                SELECT labels_feedback.feedback_id
-                FROM labels_feedback
-                LEFT JOIN feedback ON feedback.id = labels_feedback.feedback_id
-                WHERE labels_feedback.label = ? AND (feedback.hidden_status NOT IN('spam', 'deleted') OR feedback.hidden_status IS NULL)
-                ORDER BY labels_feedback.feedback_id DESC
+                SELECT labels_community_topics.topic_id
+                FROM labels_community_topics
+                LEFT JOIN community_topics ON community_topics.id = labels_community_topics.topic_id
+                WHERE labels_community_topics.label = ? AND (community_topics.hidden_status NOT IN('spam', 'deleted') OR community_topics.hidden_status IS NULL)
+                ORDER BY labels_community_topics.topic_id DESC
                 LIMIT ?
             ", [$label, $this->limit], [\PDO::PARAM_STR, \PDO::PARAM_INT]);
 
             if ($ids) {
-                $results['feedback'] = $this->em->getRepository('DeskPRO:Feedback')->getByIds($ids, true);
+                $results['community'] = $this->em->getRepository('DeskPRO:CommunityTopic')->getByIds($ids, true);
             }
         }
 

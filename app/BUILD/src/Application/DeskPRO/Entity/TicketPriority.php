@@ -21,7 +21,7 @@ use JMS\Serializer\Annotation as JMS;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class TicketPriority extends DomainObject implements HasPhraseName
+class TicketPriority extends DomainObject implements HasPhraseName, TicketBuiltInFieldInterface
 {
     /**
      * The unique ID.

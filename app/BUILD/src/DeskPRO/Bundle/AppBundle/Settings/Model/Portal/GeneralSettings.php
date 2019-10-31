@@ -64,13 +64,13 @@ class GeneralSettings extends AbstractBrandAwareSettings
     private $brandSlug;
 
     /**
-     * Application feedback enabled.
+     * Application community enabled.
      *
      * @var bool
      *
      * @JMS\Type("boolean")
      */
-    private $appsFeedback;
+    private $appsCommunity;
 
     /**
      * Application Knowledge base enabled.
@@ -261,7 +261,7 @@ class GeneralSettings extends AbstractBrandAwareSettings
      */
     public function getPortalMode()
     {
-        if ($this->appsDownloads || $this->appsFeedback || $this->appsKb || $this->appsNews || $this->appsGuides) {
+        if ($this->appsDownloads || $this->appsCommunity || $this->appsKb || $this->appsNews || $this->appsGuides) {
             return 'publish';
         }
 
@@ -294,19 +294,19 @@ class GeneralSettings extends AbstractBrandAwareSettings
     /**
      * @return bool
      */
-    public function isAppsFeedback()
+    public function isAppsCommunity()
     {
-        return $this->appsFeedback;
+        return $this->appsCommunity;
     }
 
     /**
-     * @param bool $appsFeedback
+     * @param bool $appsCommunity
      *
      * @return GeneralSettings
      */
-    public function setAppsFeedback($appsFeedback)
+    public function setAppsCommunity($appsCommunity)
     {
-        $this->appsFeedback = $appsFeedback;
+        $this->appsCommunity = $appsCommunity;
 
         return $this;
     }

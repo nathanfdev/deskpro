@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\CsvImport;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -108,6 +109,7 @@ class CsvImporter
     {
         $customDefs = [];
         $personData = [];
+        $brandName  = null;
 
         foreach ($fieldMaps as $columnId => $info) {
             if (empty($info['map']) || !isset($data[$columnId])) {
@@ -148,6 +150,20 @@ class CsvImporter
                     }
 
                     $personData[$mapField] = $columnValue;
+                    break;
+                case 'brand':
+                    $brandName = $columnValue;
+
+                    if (is_numeric($columnValue)) {
+                        /** @var Brand $brand */
+                        $brand = $this->em->find(Brand::class, $columnValue);
+
+                        if ($brand) {
+                            $brandName = $brand->getName();
+                        } else {
+                            $brandName = null;
+                        }
+                    }
                     break;
 
                 // contact data
@@ -251,40 +267,42 @@ class CsvImporter
 
         $collection  = new ArrayCollection();
         $personOid   = reset($personData['emails']);
-        $personModel = $this->parser->exportRawData($personOid, $personData, PersonModel::class);
+        $personModel = $this->parser->parseRawData($personOid, $personData, PersonModel::class);
         if ($personModel) {
             $collection->add($personModel);
         }
 
         foreach ($customDefs as $customDefData) {
             $defOid   = $customDefData['name'];
-            $defModel = $this->parser->exportRawData($defOid, $customDefData, PersonCustomDefModel::class);
+            $defModel = $this->parser->parseRawData($defOid, $customDefData, PersonCustomDefModel::class);
 
             if ($defModel) {
                 $collection->add($defModel);
             }
         }
 
-        $this->importer->writeData($collection);
+        $this->importer->writeData($collection, $brandName);
 
         // get person object
         $people = $personRepo->findByEmails($personData['emails']);
         $person = reset($people);
 
-        if ($personModel && $personModel->getPassword()) {
-            $person->setPassword($personModel->getPassword());
-        }
+        if ($person) {
+            if ($personModel && $personModel->getPassword()) {
+                $person->setPassword($personModel->getPassword());
+            }
 
-        if ($sendWelcomeEmail && $isNew && $person) {
-            if ($this->featureFlags->hasBeta('email_templates')) {
-                $viewModel = $this->viewModelFactory
-                    ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
-                $this->mailerUtils->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
-            } else {
-                $message = $this->mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
-                $this->mailerUtils->sendWithPersonContext($message, $person);
+            if ($sendWelcomeEmail && $isNew) {
+                if ($this->featureFlags->hasBeta('email_templates')) {
+                    $viewModel = $this->viewModelFactory
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                    $this->mailerUtils->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
+                } else {
+                    $message = $this->mailer->createMessage();
+                    $message->setToPerson($person);
+                    $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
+                    $this->mailerUtils->sendWithPersonContext($message, $person);
+                }
             }
         }
 

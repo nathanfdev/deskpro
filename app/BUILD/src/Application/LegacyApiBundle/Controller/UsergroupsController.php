@@ -14,8 +14,8 @@ use Application\DeskPRO\People\UserPermissions\UserPermissions;
 use Application\DeskPRO\Usergroups\Form\Type\UsergroupType;
 use Application\DeskPRO\Usergroups\UsergroupEdit;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
+use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
-use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Numbers;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @ApiModes("all")
  */
-class UsergroupsController extends AbstractController implements ProtectedControllerInterface
+class UsergroupsController extends AbstractController
 {
     /**
      * {@inheritdoc}
@@ -32,7 +32,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
     {
         $multi = new MultiPermissions();
         $multi->addPermissionStrategy(new AdminManagePermission());
-        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+        $multi->addPermissionStrategy(new AgentPermission(), 'listAction');
 
         return $multi;
     }

@@ -60,8 +60,6 @@ class ProcessNew extends ProcessAbstract
      */
     public function run()
     {
-        $this->person = $this->person;
-
         //------------------------------
         // Read email body/subject
         //------------------------------
@@ -284,6 +282,10 @@ class ProcessNew extends ProcessAbstract
 
         if ($this->reader->getProperty('email_source')) {
             $ticketMessage->email_source = $this->reader->getProperty('email_source');
+
+            $emailRecipients = new TicketMessageAttribute('email_recipients');
+            $emailRecipients->setValue(json_encode($ticketMessage->email_source->getRecipients()));
+            $ticketMessage->addAttribute($emailRecipients);
         }
 
         $ticket->addMessage($ticketMessage);
@@ -293,7 +295,7 @@ class ProcessNew extends ProcessAbstract
             $attach['blob']   = $blob;
             $attach['person'] = $this->person;
 
-            if (isset($this->inline_blobs[$blob->getId()])) {
+            if (isset($this->inlineBlobs[$blob->getId()])) {
                 $attach->is_inline = true;
             }
 

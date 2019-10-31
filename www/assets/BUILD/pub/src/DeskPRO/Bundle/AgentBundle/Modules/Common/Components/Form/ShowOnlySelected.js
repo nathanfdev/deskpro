@@ -17,7 +17,7 @@ export class ShowOnlySelected extends React.Component {
       <div className="dpw-popup-content-item-show-only-selected">
         <a href="#" className="checkbox-link" onClick={this.onClick}>
           {this.props.value &&
-          <span className="dpw--checkbox-boxy"><i className="fa fa-check" /></span>
+          <span className="dpw--checkbox-boxy"><i className="fas fa-check" /></span>
           }
           <span>Show only Selected</span>
         </a>

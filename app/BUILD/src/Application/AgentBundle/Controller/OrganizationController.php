@@ -8,6 +8,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewOrganization;
 use Application\AgentBundle\Form\Type\NewOrganization as NewOrganizationType;
+use Application\AgentBundle\Validator\NewOrganizationValidator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Blob;
@@ -923,6 +924,8 @@ class OrganizationController extends AbstractController
     /**
      * @param Request $request
      *
+     * @throws NotFoundHttpException
+     *
      * @return Response
      */
     public function newOrganizationSaveAction(Request $request)
@@ -945,6 +948,19 @@ class OrganizationController extends AbstractController
             }
 
             $newOrg->setCustomFieldForm($_POST);
+
+            $validator = new NewOrganizationValidator();
+            if (!$validator->isValid($newOrg)) {
+                $free = [];
+                foreach ($validator->getErrorsInfo() as $info) {
+                    $free[] = $info['message'];
+                }
+
+                return $this->createJsonResponse(
+                    ['error' => true, 'error_code' => 'free', 'error_messages' => $free]
+                );
+            }
+
             $newOrg->save();
 
             $org = $newOrg->getOrganization();
@@ -972,6 +988,7 @@ class OrganizationController extends AbstractController
     /**
      * @param int $organization_id
      *
+     * @throws NotFoundHttpException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException

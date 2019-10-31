@@ -2,13 +2,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
-use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
-use DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskCommentType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/webhooks/{parentId}/triggers")
+ * @ApiUserContext("admin")
  * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\TaskComment")
  *
  * @ApiDoc(
@@ -50,7 +50,7 @@ class WebhookTriggersController extends CrudSubController
     {
         $isModify = $model && $model->getId();
 
-        $options[TriggerFormType::OPTION_DEFAULT_TITLE] = 'Webhook trigger';
+        $options[TriggerFormType::OPTION_DEFAULT_TITLE]        = 'Webhook trigger';
         $options[TriggerFormType::OPTION_ENABLE_WEBHOOK_PROPS] = true;
 
         // save first the model, then update the relationship, no consistency though
@@ -79,7 +79,7 @@ class WebhookTriggersController extends CrudSubController
     protected function findEntity($id, Request $request)
     {
         $parentId = $request->get(static::$parentParameter);
-        $qb = $this->getManager()->createQueryBuilder();
+        $qb       = $this->getManager()->createQueryBuilder();
         $qb
             ->select('w, t')
             ->from(TicketWebhook::class, 'w')
@@ -98,6 +98,7 @@ class WebhookTriggersController extends CrudSubController
 
         $entity = $parent->getTriggers()->offsetGet(0);
         $request->attributes->set('parent', $parent);
+
         return $entity;
     }
 
@@ -106,18 +107,19 @@ class WebhookTriggersController extends CrudSubController
      */
     protected function findParentOr404()
     {
-        $request     = $this->container->get('request_stack')->getCurrentRequest();
-        $parentId    = $request->get(static::$parentParameter);
+        $request  = $this->container->get('request_stack')->getCurrentRequest();
+        $parentId = $request->get(static::$parentParameter);
+
         return $this->findOr404(TicketWebhook::class, $parentId);
     }
 
-    protected function deleteEntity( $entity )
+    protected function deleteEntity($entity)
     {
-        $request     = $this->container->get('request_stack')->getCurrentRequest();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
         /** @var TicketWebhook $parent */
         $parent = $request->attributes->get('parent');
 
-        if (! $parent) {
+        if (!$parent) {
             throw new \RuntimeException('excepted');
         }
 

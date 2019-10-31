@@ -9,6 +9,9 @@
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\CheckVoiceWorkers;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\MergeVoiceRecordings;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\RunTaskRouter;
 
 /**
  * Class WorkerJobsData.
@@ -195,12 +198,12 @@ class WorkerJobsData extends AbstractDefaultData
         ];
 
         $jobs[] = [
-            'id'           => 'feedback_subscriptions',
-            'worker_group' => 'feedback_subscriptions',
-            'title'        => 'Feedback Subscriptions',
-            'description'  => 'Sends notifications to users who are subscribed to feedback items',
-            'job_class'    => Job\FeedbackSubscriptions::class,
-            'run_interval' => Job\FeedbackSubscriptions::DEFAULT_INTERVAL,
+            'id'           => 'communnity_subscriptions',
+            'worker_group' => 'communnity_subscriptions',
+            'title'        => 'Community Subscriptions',
+            'description'  => 'Sends notifications to users who are subscribed to community topics',
+            'job_class'    => Job\CommunitySubscriptions::class,
+            'run_interval' => Job\CommunitySubscriptions::DEFAULT_INTERVAL,
         ];
 
         $jobs[] = [
@@ -345,6 +348,33 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Process scheduled reports, then save results and send email with permalink',
             'job_class'    => Job\ProcessScheduledReports::class,
             'run_interval' => Job\ProcessScheduledReports::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'check_voice_workers',
+            'worker_group' => 'voice',
+            'title'        => 'Check voice workers',
+            'description'  => 'Check if voice workers are stuck',
+            'job_class'    => CheckVoiceWorkers::class,
+            'run_interval' => CheckVoiceWorkers::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'run_task_router',
+            'worker_group' => 'voice',
+            'title'        => 'Run task router',
+            'description'  => 'Background job to evaluate task router',
+            'job_class'    => RunTaskRouter::class,
+            'run_interval' => RunTaskRouter::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'merge_voice_recordings',
+            'worker_group' => 'voice',
+            'title'        => 'Merge voice recordings',
+            'description'  => 'Check if all recordings are downloaded and merge them into one file',
+            'job_class'    => MergeVoiceRecordings::class,
+            'run_interval' => MergeVoiceRecordings::DEFAULT_INTERVAL,
         ];
 
         //------------------------------

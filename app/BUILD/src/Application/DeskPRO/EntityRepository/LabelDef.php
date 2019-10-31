@@ -18,7 +18,7 @@ class LabelDef extends AbstractEntityRepository
         'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
         'deals'         => ['table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'],
         'downloads'     => ['table' => 'labels_downloads',          'entity' => 'DeskPRO:LabelDownload'],
-        'feedback'      => ['table' => 'labels_feedback',           'entity' => 'DeskPRO:LabelFeedback'],
+        'community'     => ['table' => 'labels_community_topics',   'entity' => 'DeskPRO:LabelCommunityTopic'],
         'chat'          => ['table' => 'labels_chat_conversations', 'entity' => 'DeskPRO:LabelChatConversation'],
         'news'          => ['table' => 'labels_news',               'entity' => 'DeskPRO:LabelNews'],
         'organizations' => ['table' => 'labels_organizations',      'entity' => 'DeskPRO:LabelOrganization'],
@@ -45,8 +45,8 @@ class LabelDef extends AbstractEntityRepository
                 $label_type = 'people';
                 break;
 
-            case 'feedback':
-                $label_type = 'feedback';
+            case 'community':
+                $label_type = 'community';
                 break;
 
             case 'news':
@@ -103,8 +103,8 @@ class LabelDef extends AbstractEntityRepository
                 return 'DeskPRO:LabelTicket';
             case 'articles':
                 return 'DeskPRO:LabelArticle';
-            case 'feedback':
-                return 'DeskPRO:LabelFeedback';
+            case 'community':
+                return 'DeskPRO:LabelCommunityTopic';
             case 'downloads':
                 return 'DeskPRO:LabelDownload';
             case 'news':
@@ -132,8 +132,8 @@ class LabelDef extends AbstractEntityRepository
                 return 'labels_tickets';
             case 'articles':
                 return 'labels_articles';
-            case 'feedback':
-                return 'labels_feedback';
+            case 'community':
+                return 'labels_community_topics';
             case 'downloads':
                 return 'labels_downloads';
             case 'news':
@@ -248,7 +248,7 @@ class LabelDef extends AbstractEntityRepository
             'labels_people'             => 'DeskPRO:LabelPerson',
             'labels_tickets'            => 'DeskPRO:LabelTicket',
             'labels_articles'           => 'DeskPRO:LabelArticle',
-            'labels_feedback'           => 'DeskPRO:LabelFeedback',
+            'labels_community_topics'   => 'DeskPRO:LabelCommunityTopic',
             'labels_downloads'          => 'DeskPRO:LabelDownload',
             'labels_news'               => 'DeskPRO:LabelNews',
             'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
@@ -413,7 +413,7 @@ class LabelDef extends AbstractEntityRepository
         }
 
         // Non-admin defined
-        $types = ['articles', 'downloads', 'feedback', 'news', 'organizations', 'people', 'tickets', 'chat_conversations'];
+        $types = ['articles', 'downloads', 'community_topics', 'news', 'organizations', 'people', 'tickets', 'chat_conversations'];
         $parts = [];
         foreach ($types as $t) {
             $parts[] = "SELECT DISTINCT(label) AS label, '$t' AS label_type FROM labels_$t";

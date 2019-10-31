@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import NumberList from './NumberList';
 import { loadAccounts } from '../../../Actions/accountActions';
-import { loadNumbers } from '../../../Actions/numberActions';
+import { loadNumbers, loadExistingNumbers, releaseNumber } from '../../../Actions/numberActions';
 import { loadQueues } from '../../../Actions/queueActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../Selectors/account';
 import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
@@ -25,31 +27,106 @@ class NumberListContainer extends React.Component {
     dispatch:       PropTypes.func,
     accountsLoaded: PropTypes.bool,
     numbersLoaded:  PropTypes.bool,
-    queuesLoaded:   PropTypes.bool
+    queuesLoaded:   PropTypes.bool,
+    accounts:       PropTypes.bool,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      disabledLoading: false,
+      disabledNumbers: [],
+      disabledFilter:  null
+    };
+  }
+
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, accounts } = this.props;
+    const { disabledFilter } = this.state;
 
     dispatch(loadAccounts());
     dispatch(loadNumbers());
     dispatch(loadQueues());
+
+    this.preSelectAccount(disabledFilter, accounts);
+
+    if (disabledFilter && disabledFilter.account) {
+      this.changeDisabledFilter(disabledFilter);
+    }
   }
 
-  onGoToAccounts = () => {
+  componentWillReceiveProps(newProps) {
+    this.preSelectAccount(this.state.disabledFilter, newProps.accounts);
+  }
+
+  preSelectAccount(disabledFilter, accounts) {
+    if (accounts.size && (!disabledFilter || !disabledFilter.account)) {
+      setTimeout(() => this.changeDisabledFilter({ ...disabledFilter, account: accounts.first().get('id') }), 1);
+    }
+  }
+
+  goToAccounts = () => {
     replaceRoute('/voice_channel/accounts');
   };
 
-  onAddNumber = () => {
+  goToAvailableNumbers = () => {
     replaceRoute('/voice_channel/numbers/available');
   };
 
-  onAddExistingNumber = () => {
-    replaceRoute('/voice_channel/numbers/existing');
+  editNumber = (number) => {
+    replaceRoute(`/voice_channel/numbers/${number.get('id')}`);
   };
 
-  onEditNumber = (number) => {
-    replaceRoute(`/voice_channel/numbers/${number.get('id')}`);
+  enableNumber = (number) => {
+    const params = {
+      sid:     number.get('sid'),
+      account: number.get('account'),
+      number:  number.get('number')
+    };
+
+    replaceRoute(`/voice_channel/numbers/new?${compileParams(params)}`);
+  };
+
+  releaseNumber = (number) => {
+    const { accounts, dispatch } = this.props;
+    const { disabledNumbers, disabledFilter } = this.state;
+    if (disabledFilter && disabledFilter.account) {
+      const account = accounts.get(disabledFilter.account);
+      if (account) {
+        const promise = dispatch(releaseNumber(account, number));
+        promise.success(() => {
+          const index = disabledNumbers.indexOf(number);
+          if (index !== -1) {
+            this.setState({
+              disabledNumbers: disabledNumbers.delete(index)
+            });
+          }
+        });
+      }
+    }
+  };
+
+  changeDisabledFilter = (disabledFilter) => {
+    this.setState({
+      disabledLoading: true,
+      disabledNumbers: [],
+      disabledFilter
+    });
+
+    if (disabledFilter.account) {
+      const { accounts, dispatch } = this.props;
+      const account = accounts.get(disabledFilter.account);
+      if (account) {
+        dispatch(loadExistingNumbers(account)).success(this.loadDisabledNumbers);
+      }
+    }
+  };
+
+  loadDisabledNumbers = (result) => {
+    this.setState({
+      disabledLoading: false,
+      disabledNumbers: Immutable.fromJS(result.data)
+    });
   };
 
   render() {
@@ -62,10 +139,13 @@ class NumberListContainer extends React.Component {
     return (
       <NumberList
         {...this.props}
-        onGoToAccounts={this.onGoToAccounts}
-        onAddNumber={this.onAddNumber}
-        onAddExistingNumber={this.onAddExistingNumber}
-        onEditNumber={this.onEditNumber}
+        {...this.state}
+        goToAccounts={this.goToAccounts}
+        goToAvailableNumbers={this.goToAvailableNumbers}
+        enableNumber={this.enableNumber}
+        releaseNumber={this.releaseNumber}
+        editNumber={this.editNumber}
+        changeDisabledFilter={this.changeDisabledFilter}
       />
     );
   }

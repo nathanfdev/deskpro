@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\WorkerHelper;
+use DeskPRO\Bundle\VoiceBundle\Permissions\VoicePermissionsChecker;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
@@ -37,23 +38,31 @@ class VoiceWorkflow implements WorkflowInterface
     private $storage;
 
     /**
+     * @var VoicePermissionsChecker
+     */
+    private $permissionsChecker;
+
+    /**
      * Constructor.
      *
      * @param WorkerHelper            $workerHelper
      * @param VoiceTaskHelper         $taskHelper
      * @param VoiceSettingsResolver   $settingsResolver
      * @param StorageAdapterInterface $storage
+     * @param VoicePermissionsChecker $permissionsChecker
      */
     public function __construct(
         WorkerHelper            $workerHelper,
         VoiceTaskHelper         $taskHelper,
         VoiceSettingsResolver   $settingsResolver,
-        StorageAdapterInterface $storage
+        StorageAdapterInterface $storage,
+        VoicePermissionsChecker $permissionsChecker
     ) {
-        $this->workerHelper     = $workerHelper;
-        $this->taskHelper       = $taskHelper;
-        $this->settingsResolver = $settingsResolver;
-        $this->storage          = $storage;
+        $this->workerHelper       = $workerHelper;
+        $this->taskHelper         = $taskHelper;
+        $this->settingsResolver   = $settingsResolver;
+        $this->storage            = $storage;
+        $this->permissionsChecker = $permissionsChecker;
     }
 
     /**
@@ -67,25 +76,33 @@ class VoiceWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function isTaskTimedOut(Task $task)
+    public function getTimeout(Task $task)
     {
-        $now   = new \DateTime();
         $queue = $this->taskHelper->getVoiceQueue($task);
         if ($queue) {
-            $timeout = $queue->getVoicemailTimeout();
+            return $queue->getVoicemailTimeout();
         } else {
-            $timeout = $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout();
+            return $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout();
         }
+    }
 
-        $offset = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
-
-        return $offset > $timeout;
+    /**
+     * @param Worker $worker
+     *
+     * @return bool
+     */
+    public static function workerIsBusy(Worker $worker)
+    {
+        return $worker->hasPendingTasksForChannel(self::getChannelName())
+            || $worker->hasActiveTasksForChannel(self::getChannelName())
+            || $worker->hasPendingTasksForChannel(ChatWorkflow::getChannelName())
+            || $worker->hasActiveTasksForChannel(ChatWorkflow::getChannelName());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAvailableWorkers(Task $task)
+    public function getAvailableWorkers(Task $task, $ignoreRejected = false)
     {
         /** @var Worker[] $availableAgentWorkers */
         $availableAgentWorkers = [];
@@ -100,19 +117,14 @@ class VoiceWorkflow implements WorkflowInterface
 
         $availableAgentWorkers = array_filter(
             $availableAgentWorkers,
-            function (Worker $worker) use ($task, $voiceAgentIds) {
+            function (Worker $worker) use ($task, $voiceAgentIds, $ignoreRejected) {
                 // ignore if agent has already rejected task
-                if ($task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
+                if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
                     return false;
                 }
 
                 // ignore if agent is already on a call or has incoming call popup
-                if ($worker->hasPendingTasksForChannel(self::getChannelName())
-                    || $worker->hasActiveTasksForChannel(self::getChannelName())
-                    || $worker->hasPendingTasksForChannel(ChatWorkflow::getChannelName())
-                    || $worker->hasActiveTasksForChannel(ChatWorkflow::getChannelName())
-                    || !in_array($worker->getTypeId(), $voiceAgentIds)
-                ) {
+                if (self::workerIsBusy($worker) || !in_array($worker->getTypeId(), $voiceAgentIds)) {
                     return false;
                 }
 
@@ -143,8 +155,14 @@ class VoiceWorkflow implements WorkflowInterface
         $agent      = $this->taskHelper->getWorkerAgent($task);
 
         if ($voiceQueue) {
-            $queueAgentIds = $voiceQueue->getActiveAgentsPeopleIds();
-            $taskQueue     = $this->storage->getTaskQueue(self::getChannelName(), $voiceQueue->getId());
+            $queueAgentIds = [];
+            foreach ($voiceQueue->getActiveAgentsPeople() as $agent) {
+                if ($this->permissionsChecker->canBeMemberOfVoiceQueue($voiceQueue, $agent)) {
+                    $queueAgentIds[] = $agent->getId();
+                }
+            }
+
+            $taskQueue = $this->storage->getTaskQueue(self::getChannelName(), $voiceQueue->getId());
             if (!$taskQueue) {
                 $taskQueue = new TaskQueue();
                 $taskQueue->setType(self::getChannelName());
@@ -152,7 +170,7 @@ class VoiceWorkflow implements WorkflowInterface
             }
 
             switch ($voiceQueue->getRoutingModel()) {
-                case VoiceQueue::ROUTING_MODEL_AUTOMATIC:
+                case VoiceQueue::ROUTING_MODEL_ROUND_ROBIN:
                     // round robin order list is not yet, set default one
                     if (!is_array($taskQueue->getAttribute('round_robin_order'))) {
                         $taskQueue->setAttribute('round_robin_order', $queueAgentIds);
@@ -182,6 +200,7 @@ class VoiceWorkflow implements WorkflowInterface
                         foreach ($roundRobinList as $num => $agentId) {
                             if (in_array($agentId, $availableWorkerAgentIds) && isset($workerToAgentMap[$agentId])) {
                                 $task->setWorkersIds([$workerToAgentMap[$agentId]]);
+                                $task->setDateExpireAssignedOffset($voiceQueue->getAnswerTimeout());
 
                                 // worker was fetched push to the end of the list
                                 unset($roundRobinList[$num]);
@@ -197,43 +216,21 @@ class VoiceWorkflow implements WorkflowInterface
 
                     break;
                 case VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED:
-                    // get answered call stat, order by answered calls count
-                    // and get ids with max available count of workers option from queue settings
-                    if (!is_array($taskQueue->getAttribute('answered_calls_counts'))) {
-                        $taskQueue->setAttribute('answered_calls_counts', []);
-                    }
+                    $leastUtilizedWorkers = $workers;
+                    $leastUtilizedWorkers = array_filter($leastUtilizedWorkers, function (Worker $worker) use ($queueAgentIds) {
+                        return in_array($worker->getTypeId(), $queueAgentIds) && $worker->getType() === 'agent';
+                    });
+                    usort($leastUtilizedWorkers, function (Worker $a, Worker $b) {
+                        return $a->getLastCallAt() > $b->getLastCallAt();
+                    });
 
-                    $answeredCallsCounts = $taskQueue->getAttribute('answered_calls_counts');
-                    if (is_array($answeredCallsCounts)) {
-                        // check if 'answered_calls_counts' is up to date with voice queue agents list
-                        foreach ($answeredCallsCounts as $agentId => $callsCount) {
-                            if (!in_array($agentId, $queueAgentIds)) {
-                                unset($answeredCallsCounts[$agentId]);
-                            }
-                        }
-                        foreach ($queueAgentIds as $agentId) {
-                            if (!isset($answeredCallsCounts[$agentId])) {
-                                $answeredCallsCounts[$agentId] = 0;
-                            }
-                        }
+                    $leastUtilizedWorkers = array_splice($leastUtilizedWorkers, 0, $voiceQueue->getMaxQueueSize());
+                    $workerIds            = array_map(function (Worker $worker) {
+                        return $worker->getId();
+                    }, $leastUtilizedWorkers);
 
-                        // sort by least utilized
-                        // and return limited by max allowed workers number
-                        asort($answeredCallsCounts);
-
-                        $workerIds = [];
-                        foreach ($answeredCallsCounts as $agentId => $callsCount) {
-                            if (isset($workerToAgentMap[$agentId])) {
-                                $workerIds[] = $workerToAgentMap[$agentId];
-                            }
-
-                            if (count($workerIds) >= $voiceQueue->getMaxQueueSize()) {
-                                break;
-                            }
-                        }
-
-                        $task->setWorkersIds($workerIds);
-                    }
+                    $task->setWorkersIds($workerIds);
+                    $task->setDateExpireAssignedOffset($voiceQueue->getAnswerTimeout());
 
                     break;
                 case VoiceQueue::ROUTING_MODEL_SIMULRING:

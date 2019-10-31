@@ -5,11 +5,11 @@
 
             <nav class="dp-blocktabs">
                 <menu dropdown>
-                    <button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+                    <button class="btn btn-default" type="button" dropdown-toggle><span><i class="fas fa-cog"></i></span> <i class="fas fa-caret-down"></i></button>
                     <ul class="dropdown-menu pull-right">
                         <li>
                             <a ng-click="TicketPris.showConvert()">
-                                <i class="fa fa-copy"></i> Convert field to custom field
+                                <i class="fas fa-copy"></i> Convert field to custom field
                             </a>
                         </li>
                     </ul>
@@ -71,7 +71,11 @@
 								<h3>Priorities</h3>
 							</div>
 							<div class="col-lg-10">
-								<dp-category-builder max-depth="0" ng-model="TicketPris.pris"></dp-category-builder>
+								<dp-category-builder 
+                  max-depth="0"
+                  ng-model="TicketPris.pris"
+                  remove-callback="TicketPris.removeCallback(builderCtrl, ev, removeIds, doRemoveCallback)"
+                ></dp-category-builder>
 							</div>
 						</div>
 
@@ -134,5 +138,5 @@
 			</footer>
 		</section>
 	</form>
-	<div dp-register-message="saved_settings">Categories saved successfully.</div>
+	<div dp-register-message="saved_settings">{{ phrase('admin.ticket_fields.priorities_saved_successfully') }}</div>
 {% endblock %}

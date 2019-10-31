@@ -144,7 +144,7 @@ DeskPRO.TextExpander = new Orb.Class({
 
   updateShortcutList: function(ev) {
     var self = this;
-    if (!self.comboString || !self.comboString.length > 3) {
+    if (!self.comboString || self.comboString.length < 3) {
       if (self.shortcutListOpen) {
         self.shortcutListOpen = false;
         self.shortcutList.hide();

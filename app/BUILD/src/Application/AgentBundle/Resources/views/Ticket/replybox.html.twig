@@ -1,10 +1,11 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as tools %}
 {% set replyBaseId = el_uid() %}
 <form
-	class="ticket-reply-form {% if not ticket_perms.reply or (draft and draft.extras.is_note) %}dp-note-on{% endif %}"
+	class="ticket-reply-form {% if not ticket_perms.reply or (draft and draft.extras.is_note) %}dp-note-on{% else %}dp-reply-on{% endif %}"
 	id="{{replyBaseId}}_reply_form"
 	method="post"
 	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
+  data-action-prepare="{{ path('agent_ticket_ajaxsavereply_prepare', {'ticket_id': ticket.id}) }}"
 	data-upload-url="{{ path('agent_accept_upload') }}"
 	data-base-id="{{replyBaseId}}"
 	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"
@@ -12,6 +13,7 @@
     {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}
 	{% if app.user.getPref('agent.ticket_reverse_order') %}data-is-top-order="1"{% endif %}
 	{% if app.getSetting('core_tickets.resolve_auto_close_tab') %}data-resolve-auto-close="1"{% endif %}
+	{% if app.getSetting('core_tickets.forward_as_new_linked_ticket') %}data-fwd-as-new="1"{% endif %}
 	{% if draft and draft.extras.is_note %}data-draft-is-note="1"{% endif %}
 	data-dp-lang="{{ {
 		'attach_btn': phrase('agent.general.attach'),
@@ -42,7 +44,7 @@
 						</li>
 					{% else %}
 						<li class="coll">
-							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<span class="macro-title"><i class="fas fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
 							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
 								<section>
 									<div class="dp-menu-area small">
@@ -131,19 +133,26 @@
 			<ul id="{{ replyBaseId }}_message_toggle">
 				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.general.reply') }}</li>{% endif %}
 				{% if ticket_perms.modify_notes %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.general.note') }}</li>{% endif %}
-                {% if ticket_perms.reply and app.hasBeta('new_fwd') %}<li id="{{replyBaseId}}_replybox_fwdtab_btn" class="fwd-type">{{ phrase('agent.tickets.forward') }}</li>{% endif %}
+                {% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_fwdtab_btn" class="fwd-type">{{ phrase('agent.tickets.forward') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
 	<section class="ticketreply">
+		<div class="ticket-select-user-overlay">
+			<strong class="ticket-select-user-message">
+				{{ phrase('agent.tickets.error_reply_select_user') }}
+			</strong>
+			<strong class="ticket-no-email-message">
+				{{ phrase('agent.tickets.error_reply_no_email') }}
+			</strong>
+		</div>
 		<article>
 			<section>
                 {# Forward #}
-				{% if app.hasBeta('new_fwd') %}
 				<span type="text/x-deskpro-tmpl" id="{{ replyBaseId }}_template" style="display: none">
 							<div class="to-line">
 								<div class="label">
-									<i class="fa fa-times fwd_removerow" style="cursor: pointer"></i>
+									<i class="fas fa-times fwd_removerow" style="cursor: pointer"></i>
 									<span>{{ phrase('agent.general.to') }}: </span>
 								</div>
 								<div
@@ -183,10 +192,10 @@
 							<div class="label">
 								{{ phrase('agent.general.add') }}:
 							</div>
-							<span data-add="to" class="fwd-control-add" style="cursor: pointer">To</span> |
+							<span class="fwd-as-new-hide"><span data-add="to" class="fwd-control-add" style="cursor: pointer">To</span> |</span>
 							<span data-add="cc" class="fwd-control-add" style="cursor: pointer">CC</span> |
-							<span data-add="cc" data-set-email="{{ ticket.person.getEmailAddress() }}" class="fwd-control-add" title="{{ phrase('agent.tickets.forward_cc_ticket_owner') }}: {{ ticket.person.getDisplayContact() }}" style="cursor: pointer">CC {{ phrase('agent.general.sender') }}</span> |
-							<span data-add="bcc" class="fwd-control-add" style="cursor: pointer">BCC</span>
+							<span data-add="cc" data-set-email="{{ ticket.person.getEmailAddress() }}" class="fwd-control-add" title="{{ phrase('agent.tickets.forward_cc_ticket_owner') }}: {{ ticket.person.getDisplayContact() }}" style="cursor: pointer">CC {{ phrase('agent.general.sender') }}</span>
+							<span class="fwd-as-new-hide"> | <span data-add="bcc" class="fwd-control-add" style="cursor: pointer">BCC</span></span>
 						</div>
 					</div>
 					<div class="header-line">
@@ -214,7 +223,6 @@
 						</div>
 					</div>
 				</div>
-				{% endif %}
 				<div class="option-rows">
 					<ul id="{{replyBaseId}}_option_rows">
 						<li class="to-row show-reply">
@@ -334,11 +342,12 @@
 		</article>
 	</section>
 	<footer>
+		{% set showSelectUserMenu = ticket.person.emails|length == 0 and not ticket.person.primary_email and ticket.person.phone_numbers|length > 0 and ticket.person.getPref('voice.unknown_caller') %}
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
 				<div class="show-reply">
 					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 50;">
-						<a class="dp-btn dp-btn-primary submit-trigger">
+						<a class="dp-btn dp-btn-primary submit-trigger submit-reply-trigger" {% if showSelectUserMenu %}disabled="disabled"{% endif %}>
 							<i class="icon-share-alt"></i>&nbsp;
 
                             {% set defaultStatus = app.getSetting('core_tickets.reply_status') %}
@@ -366,7 +375,7 @@
                             {% endfor %}
 
 						</a>
-						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
+						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger status-reply-menu-trigger" {% if showSelectUserMenu %}disabled="disabled"{% endif %}><span class="dp-caret dp-caret-up"></span></a>
 					</div>
 				</div>
 				<div class="show-note" style="display: none">
@@ -383,7 +392,13 @@
 				</div>
 			</td>
 			<td valign="middle" style="vertical-align: middle;"  id="{{ "ticket#{ticket.id}-reply-controls" }}" >
-				<div class="cell">
+				<div class="show-fwd cell" style="display: none">
+					<div class="inner-cell" style="padding-left: 11px;">
+						<input type="checkbox" id="{{ replyBaseId }}_fwd_new_ticket_check" name="options[fwd_new_ticket]" {% if app.getSetting('core_tickets.forward_as_new_linked_ticket') %}checked="checked"{% endif %} />
+						<label for="{{replyBaseId}}_fwd_new_ticket_check">{{ phrase('agent.tickets.forward_as_new_linked_ticket') }}&nbsp;</label>
+					</div>
+				</div>
+				<div class="cell fwd-as-new">
 					{% if ticket.agent %}
 						{% set assign_opt = 'core_tickets.reply_assign_assigned' %}
 					{% else %}
@@ -396,7 +411,7 @@
 							<label for="{{replyBaseId}}_agent_sel_check">{{ phrase('agent.general.agent') }}:&nbsp;</label>
 						</div>
 						<div class="inner-cell" style="position: relative;">
-							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
+							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%; background-size: 15px 15px;"></span> <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
 							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-lazy-init="1">
 								{% if ticket_perms.modify_assign_self %}
 									<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me" selected>
@@ -420,7 +435,7 @@
 					{% endif %}
 				</div>
 				{% if agent_teams|length %}
-					<div class="cell">
+					<div class="cell fwd-as-new">
 						{% if ticket_perms.modify_assign_self or ticket_perms.modify_assign_team %}
 							<div class="inner-cell" style="padding-left: 11px;">
 								{% if ticket.agent_team %}

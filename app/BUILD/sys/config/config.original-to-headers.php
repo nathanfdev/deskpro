@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // This file should not be edited directly. If you want
     // to add custom headers, create a new file named
@@ -16,4 +15,5 @@ return [
     'Rcpt-Original',
     'X-Rcpt-Original',
     'Delivered-To',
+    'X-Delivered-To',
 ];

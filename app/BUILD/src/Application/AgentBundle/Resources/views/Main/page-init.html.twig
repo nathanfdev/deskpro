@@ -110,6 +110,7 @@
 
 		DP_POLLER_INTERVAL = {% if reduce_poll_rate %}75000{% else %}5000{% endif %};
 		DP_POLLER_INTERVAL_FAST = {% if reduce_poll_rate %}75000{% else %}2000{% endif %};
+		DP_POLLER_INTERVAL_VOICE = {% if reduce_poll_rate %}75000{% else %}1000{% endif %};
 		DP_SYS_FILTER_REFRESH_INTERVAL  = {{ sys_filter_refresh_interval * 1000 }};
 		DP_CUST_FILTER_REFRESH_INTERVAL = {{ cust_filter_refresh_interval * 1000 }};
 

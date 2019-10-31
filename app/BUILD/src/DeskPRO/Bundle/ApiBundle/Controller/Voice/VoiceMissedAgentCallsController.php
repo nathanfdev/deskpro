@@ -1,0 +1,215 @@
+<?php
+
+namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
+
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
+use Doctrine\ORM\QueryBuilder;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Class VoicemailRecordsController.
+ *
+ * @ApiModes("all")
+ * @Rest\Route("/voice_missed_agent_calls")
+ * @Feature("voice")
+ * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceMissedAgentCall")
+ */
+class VoiceMissedAgentCallsController extends CrudController
+{
+    use TicketSaveTrait;
+
+    public static $entity     = VoiceMissedAgentCall::class;
+    public static $exposeOnly = ['get', 'list', 'count', 'delete'];
+
+    /**
+     * @ApiDoc(
+     *     description="Mark voicemail record as listened to",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Put("/{record}/mark_listened")
+     *
+     * @param VoiceMissedAgentCall $record
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function markListenedToAction(VoiceMissedAgentCall $record)
+    {
+        if ($record->getAgent() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Unable to update voicemail record');
+        }
+
+        $record->setIsListened(true);
+
+        $em = $this->getManager();
+        $em->persist($record);
+        $em->flush();
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Create voicemail ticket",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Post("/{missedAgentCall}/create_ticket")
+     *
+     * @param VoiceMissedAgentCall $missedAgentCall
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function createTicketAction(VoiceMissedAgentCall $missedAgentCall)
+    {
+        if ($missedAgentCall->getAgent() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Unable to create voicemail ticket');
+        }
+
+        $phoneCall = $missedAgentCall->getPhoneCall();
+        if (!$phoneCall) {
+            throw $this->createBadRequestException('Voicemail phone call not found');
+        }
+
+        $em = $this->getManager();
+
+        // check if ticket is already created for this phone call
+        $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if ($messageAttribute) {
+            // ticket is already created, just return it
+            $ticket = $messageAttribute->getMessage()->getTicket();
+        } else {
+            // copy voicemail from missed call as phone call recording
+            $recording = new VoiceRecording();
+            $recording->setRecordingSid($missedAgentCall->getRecordingSid());
+            $recording->setRecordingUrl($missedAgentCall->getRecordingUrl());
+            $recording->setTranscription($missedAgentCall->getTranscription());
+            $recording->setBlob($missedAgentCall->getBlob());
+            $recording->setDuration($missedAgentCall->getDuration());
+
+            $phoneCall->addRecording($recording);
+
+            if (!$phoneCall->getFullRecording()) {
+                $phoneCall->setFullRecording($recording);
+            }
+
+            // create a new ticket based on the voicemail message
+            $ticketMessageCall = new TicketMessageVoicePhoneCall();
+            $ticketMessageCall->setPhoneCall($phoneCall);
+
+            $ticketMessage = new TicketMessage();
+            $ticketMessage->setPerson($phoneCall->getPerson());
+            $ticketMessage->addAttribute($ticketMessageCall);
+            $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
+            $ticketMessage->setAsAgentNote(true);
+
+            $ticket = new Ticket();
+            $ticket->disableAutoTicketProcess();
+
+            if ($missedAgentCall->getRecordingUrl()) {
+                $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
+            } else {
+                $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
+            }
+
+            $ticket->setPerson($phoneCall->getPerson());
+            $ticket->setAgent($this->getUser());
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
+            $ticket->addMessage($ticketMessage);
+
+            $this->saveTicket($ticket);
+        }
+
+        // mark the voicemail record as deleted because it's not needed anymore
+        $missedAgentCall->setIsDeleted(true);
+        $missedAgentCall->setBlob(null);
+
+        $em = $this->getManager();
+        $em->persist($missedAgentCall);
+        $em->flush();
+
+        return new View($this->wrap($ticket));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        $qb->andWhere("$alias.agent = :agent");
+        $qb->setParameter('agent', $this->getUser());
+
+        $noBlob = $request->get('no_blob', 0);
+        if ($noBlob != -1) {
+            if ($noBlob) {
+                $qb->andWhere("$alias.blob IS NULL");
+            } else {
+                $qb->andWhere("$alias.blob > 0 OR $alias.recordingUrl IS NULL");
+            }
+        }
+
+        $isDeleted = $request->get('is_deleted', 0);
+        if ($isDeleted != -1) {
+            $qb->andWhere("$alias.isDeleted = :is_deleted");
+            $qb->setParameter('is_deleted', (bool) $isDeleted);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param VoiceMissedAgentCall $entity
+     *
+     * @throws \Exception
+     */
+    protected function deleteEntity($entity)
+    {
+        $person = $this->getUser();
+        if ($entity->getAgent() !== $person) {
+            throw $this->createAccessDeniedException('Unable to delete voicemail record');
+        }
+
+        $canDeleteRecordings = $person->hasPerm('agent_tickets.modify_messages_delete_voice_recordings_own');
+        $canDeleteMessages   = $person->hasPerm('agent_tickets.modify_messages_delete_voice_messages_own');
+
+        $em = $this->getManager();
+
+        if ($canDeleteRecordings || $canDeleteMessages) {
+            $blob = $entity->getBlob();
+
+            $entity->setBlob(null);
+            $em->flush();
+
+            if ($blob) {
+                $this->get('blob.storage')->deleteBlobRecord($blob);
+            }
+        }
+
+        $entity->setIsDeleted(true);
+        $em->flush();
+    }
+}

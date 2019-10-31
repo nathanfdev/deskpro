@@ -351,13 +351,13 @@ define(['angular', 'moment'], function(angular, moment) {
 				<thead>
 					<tr>
 						<th class="prev" ng-class="!prev && 'disabled'" ng-click="go('prev')">
-							<span class="fa fa-chevron-left"></span>
+							<span class="fas fa-chevron-left"></span>
 						</th>
 						<th class="picker-switch" colspan="5" ng-click="switchMode(mode+1)" ng-class="headerDisabled && 'disabled'">
 							{{ header }}
 						</th>
 						<th class="next" ng-class="!next && 'disabled'" ng-click="go('next')">
-							<span class="fa fa-chevron-right"></span>
+							<span class="fas fa-chevron-right"></span>
 						</th>
 					</tr>
 					<tr ng-if="modes.day === mode">
@@ -418,13 +418,13 @@ define(['angular', 'moment'], function(angular, moment) {
 				<tr ng-if="modes.time === mode">
 					<td>
 						<a class="btn" ng-click="increment('h')">
-							<span class="fa fa-chevron-up"></span>
+							<span class="fas fa-chevron-up"></span>
 						</a>
 					</td>
 					<td class="separator"></td>
 					<td>
 						<a class="btn" ng-click="increment('m')">
-							<span class="fa fa-chevron-up"></span>
+							<span class="fas fa-chevron-up"></span>
 						</a>
 					</td>
 					<td class="separator" ng-if="!use24"></td>
@@ -450,13 +450,13 @@ define(['angular', 'moment'], function(angular, moment) {
 				<tr ng-if="modes.time === mode">
 					<td>
 						<a class="btn" ng-click="decrement('h')">
-							<span class="fa fa-chevron-down"></span>
+							<span class="fas fa-chevron-down"></span>
 						</a>
 					</td>
 					<td class="separator"></td>
 					<td>
 						<a class="btn" ng-click="decrement('m')">
-							<span class="fa fa-chevron-down"></span>
+							<span class="fas fa-chevron-down"></span>
 						</a>
 					</td>
 					<td class="separator" ng-if="!use24"></td>

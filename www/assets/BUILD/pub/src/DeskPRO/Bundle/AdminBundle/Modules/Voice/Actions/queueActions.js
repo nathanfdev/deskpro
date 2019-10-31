@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 export const loadQueues = createAction(
   'VOICE_LOAD_QUEUES',
-  () => dispatch => dispatch(loadAll('VoiceQueue'))
+  (reload = false) => dispatch => dispatch(loadAll('VoiceQueue', reload))
 );
 
 export const createQueue = createAction(
@@ -13,6 +13,7 @@ export const createQueue = createAction(
   data => dispatch => repository('VoiceQueue').create(data).success((response) => {
     dispatch(addToCollection('VoiceQueue', 'all', Immutable.List([Immutable.fromJS(response.data)])));
     dispatch(releaseCollection('VoiceAccount', 'all'));
+    dispatch(releaseCollection('Person', 'agents'));
   })
 );
 
@@ -21,6 +22,7 @@ export const updateQueue = createAction(
   (id, data) => dispatch => repository('VoiceQueue').update(data, id).success(() => {
     dispatch(updateCollection('VoiceQueue', Immutable.List([Immutable.fromJS({ ...data, id })]), 'merge'));
     dispatch(releaseCollection('VoiceAccount', 'all'));
+    dispatch(releaseCollection('Person', 'agents'));
   })
 );
 

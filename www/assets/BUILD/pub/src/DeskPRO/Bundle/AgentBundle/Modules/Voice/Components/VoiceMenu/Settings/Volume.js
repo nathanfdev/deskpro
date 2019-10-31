@@ -11,8 +11,15 @@ class Volume extends React.Component {
   };
 
   onBlur = () => {
-    this.audio.playSound();
-    setTimeout(() => this.audio.stopSound(), 1000);
+    if (this.audio) {
+      this.audio.playSound();
+    }
+
+    setTimeout(() => {
+      if (this.audio) {
+        this.audio.stopSound();
+      }
+    }, 1000);
   };
 
   render() {

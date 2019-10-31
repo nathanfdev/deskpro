@@ -15,16 +15,16 @@ class WidgetIframe extends React.PureComponent {
     this.iframeRef = React.createRef();
   }
 
+  componentDidMount() {
+    this.onWindowReady(this.iframeRef.current);
+  }
+
   onWindowReady(iframe) {
     if (iframe) {
       this.props.onWindowReady(iframe.contentWindow);
     } else {
       this.props.onWindowReady(null);
     }
-  };
-
-  componentDidMount() {
-    this.onWindowReady(this.iframeRef.current);
   }
 
   render()  {

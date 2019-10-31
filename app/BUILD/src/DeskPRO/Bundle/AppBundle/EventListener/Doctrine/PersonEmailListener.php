@@ -36,6 +36,8 @@ class PersonEmailListener
 
     /**
      * @param PersonEmail $email
+     *
+     * @throws \Exception
      */
     public function verifyEmailAddress(PersonEmail $email)
     {

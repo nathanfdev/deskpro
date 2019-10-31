@@ -76,7 +76,7 @@ class ConfigElasticCommand extends ContainerAwareCommand
             $output->writeln('Running initial indexing...');
 
             $proc = new Process(
-                sprintf('"%s" bin/console dp:elastica:populate --reset', $DP_ENV->getConfig('paths.php_path')),
+                $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand(['dp:elastica:populate', '--reset']),
                 $DP_ENV->getDpRoot()
             );
             $proc->setTimeout(3600);

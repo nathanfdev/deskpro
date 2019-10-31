@@ -43,7 +43,7 @@ class NewExtensionListContainer extends React.Component {
     replaceRoute('/voice_channel/extensions');
   };
 
-  onAddExtension = (agent, extension) => {
+  addExtension = (agent, extension) => {
     const { dispatch } = this.props;
     this.setState({
       loading: true,
@@ -67,7 +67,7 @@ class NewExtensionListContainer extends React.Component {
     });
   };
 
-  onAddAllSuggested = (data) => {
+  addAllSuggested = (data) => {
     const { dispatch } = this.props;
     this.setState({
       loading: true
@@ -110,8 +110,8 @@ class NewExtensionListContainer extends React.Component {
         {...this.props}
         {...this.state}
         onClickBack={this.onClickBack}
-        onAddExtension={this.onAddExtension}
-        onAddAllSuggested={this.onAddAllSuggested}
+        addExtension={this.addExtension}
+        addAllSuggested={this.addAllSuggested}
       />
     );
   }

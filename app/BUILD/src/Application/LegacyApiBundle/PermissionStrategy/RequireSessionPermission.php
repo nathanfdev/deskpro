@@ -18,8 +18,8 @@ class RequireSessionPermission implements PermissionStrategyInterface
     /**
      * {@inheritdoc}
      */
-    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    public function userHasPermission(ApiUser $apiUser, $contextInfo = null)
     {
-        return $api_user->session ? true : false;
+        return $apiUser->session ? true : false;
     }
 }

@@ -9,9 +9,12 @@ use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicAttachment;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefCommunityTopic;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -19,9 +22,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\EmailAccount;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackAttachment;
-use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -213,43 +213,43 @@ class MapperRegistry
     }
 
     /**
-     * Returns the feedback mapper.
+     * Returns community topic mapper.
      *
      * @return CommonMapper
      */
-    public function getFeedbackMapper()
+    public function getCommunityTopicMapper()
     {
-        return $this->getMapper(Feedback::class);
+        return $this->getMapper(CommunityTopic::class);
     }
 
     /**
-     * Returns the feedback custom def mapper.
+     * Returns community custom def mapper.
      *
      * @return CommonMapper
      */
-    public function getFeedbackAttachmentMapper()
+    public function getCommunityTopicAttachmentMapper()
     {
-        return $this->getMapper(FeedbackAttachment::class);
+        return $this->getMapper(CommunityTopicAttachment::class);
     }
 
     /**
-     * Returns the feedback custom def mapper.
+     * Returns communitycustom def mapper.
      *
-     * @return CustomDefFeedbackMapper
+     * @return CustomDefCommunityMapper
      */
-    public function getFeedbackCustomDefMapper()
+    public function getCommunityCustomDefMapper()
     {
-        return $this->getMapper(CustomDefFeedback::class);
+        return $this->getMapper(CustomDefCommunityTopic::class);
     }
 
     /**
-     * Returns the feedback category mapper.
+     * Returns community channel mapper.
      *
-     * @return FeedbackCategoryMapper
+     * @return CommunityChannelMapper
      */
-    public function getFeedbackCategoryMapper()
+    public function getCommunityChannelMapper()
     {
-        return $this->getMapper(FeedbackCategory::class);
+        return $this->getMapper(CommunityChannel::class);
     }
 
     /**

@@ -1,0 +1,13 @@
+<dp:subject>{{ phrase('user.email_subjects.community_topic_new-approved') }}</dp:subject>
+{{ phrase('user.emails.community-topic_thank-you', {'title':topic.title}) }}
+
+<br /><br />
+
+{{ phrase('user.emails.community-topic_approved') }}
+
+<br /><br />
+
+{{ phrase('user.emails.label_view-online') }}:
+<a href="{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}">
+	{{ url_full('user_community_topic_view', {'slug': topic.url_slug}) }}
+</a>

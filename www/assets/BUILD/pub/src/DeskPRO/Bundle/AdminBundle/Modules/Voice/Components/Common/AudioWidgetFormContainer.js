@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 import AudioWidgetForm from 'DeskPRO/Component/AudioWidget/AudioWidget';
 import AddAudioAsset from 'DeskPRO/Component/AudioWidget/AddAudioAsset';
 import EditAudioAsset from 'DeskPRO/Component/AudioWidget/EditAudioAsset';
-import { createVoiceAsset } from '../../Actions/assetActions';
+import { createVoiceAsset, deleteVoiceAsset } from '../../Actions/assetActions';
 
 @connect()
 class AudioWidgetFormContainer extends React.Component {
@@ -27,14 +27,14 @@ class AudioWidgetFormContainer extends React.Component {
     });
 
 
-    const assetPromise = dispatch(createVoiceAsset(data));
-    assetPromise.success((response) => {
+    const promise = dispatch(createVoiceAsset(data));
+    promise.success((response) => {
       onChange(response.data);
       this.setState({
         saving: false
-      }, () => this.widget.onClose());
+      }, () => this.widget.closeMenu());
     });
-    assetPromise.error((result) => {
+    promise.error((result) => {
       const resultErrors = result.errors;
       const errors = $.extend(true, resultErrors, {
         fields: {
@@ -53,6 +53,14 @@ class AudioWidgetFormContainer extends React.Component {
     });
   };
 
+  deleteAsset = () => {
+    const { value, onChange, dispatch } = this.props;
+    const promise = dispatch(deleteVoiceAsset(value.id));
+    promise.success(() => {
+      onChange(null);
+    });
+  };
+
   render() {
     const { value, hasAutoSpeech, autoSpeechLabel } = this.props;
 
@@ -64,6 +72,7 @@ class AudioWidgetFormContainer extends React.Component {
         addButtonComponent={AddAudioAsset}
         editButtonComponent={EditAudioAsset}
         onSubmit={this.onSubmit}
+        deleteAsset={this.deleteAsset}
         hasAutoSpeech={hasAutoSpeech}
         autoSpeechLabel={autoSpeechLabel}
       />

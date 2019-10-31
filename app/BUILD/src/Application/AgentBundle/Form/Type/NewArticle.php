@@ -18,9 +18,19 @@ class NewArticle extends AbstractType
         //------------------------------
 
         $builder->add('title', 'text');
-        $builder->add('content', 'textarea', ['filter_clean' => false]);
+        $builder->add('content', 'textarea', [
+            'filter_clean' => false,
+            'required'     => true,
+        ]);
+        $builder->add('content_input', 'textarea', [
+            'filter_clean' => false,
+        ]);
 
         $builder->add('category_id', 'text');
+        $builder->add('language_id', 'text');
+        $builder->add('brand', 'text', [
+            'mapped' => false,
+        ]);
         $builder->add('status', 'text');
         $builder->add('slug', 'text');
 

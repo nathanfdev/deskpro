@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 use Orb\Validator\AbstractValidator;
 
 class NewDownloadValidator extends AbstractValidator
@@ -29,6 +30,10 @@ class NewDownloadValidator extends AbstractValidator
 
         if (!$download->status) {
             $this->addError('status.invalid');
+        }
+
+        if (empty(trim(Strings::stripTags($download->content)))) {
+            $this->addError('content.missing');
         }
 
         if (!$download->attach && !$download->fileurl) {

@@ -177,23 +177,48 @@ class PermissionContext extends BaseContext
     }
 
     /**
-     * @Given I grant the :feedbackCategoryId feedback category permission for usergroup :usergroup
+     * @Given I grant the :communityChannelId community channel permission for usergroup :usergroup
+     *
+     * @param string $usergroup
+     * @param int    $communityChannelId
+     */
+    public function iGrantCommunityChannelPermissionForUsergroup($communityChannelId, $usergroup)
+    {
+        DataContext::scheduleCleanup();
+
+        $communityChannelId = DataContext::replace($communityChannelId);
+        $usergroup          = DataContext::getReference($usergroup.'_group');
+
+        $connection = $this->em()->getConnection();
+        $connection->executeUpdate(
+            'INSERT IGNORE INTO community_channel2usergroup SET community_channel_id = ?, usergroup_id = ?',
+            [$communityChannelId, $usergroup->getId()]
+        );
+    }
+
+    /**
+     * @Given I grant the :category KB category permission for usergroup :usergroup
      *
      * @param string $usergroup
      * @param string $departmentId
      * @param string $app
      */
-    public function iGrantFeedbackCategoryPermissionForUsergroup($feedbackCategoryId, $usergroup)
+    public function iGrantKbCategoryPermissionForUsergroup($category, $usergroup)
     {
         DataContext::scheduleCleanup();
 
-        $feedbackCategoryId = DataContext::replace($feedbackCategoryId);
-        $usergroup          = DataContext::getReference($usergroup.'_group');
+        if (is_numeric($category)) {
+            $categoryId = DataContext::replace($category);
+        } else {
+            $category   = DataContext::getReference($category);
+            $categoryId = $category->getId();
+        }
+        $usergroup = DataContext::getReference($usergroup.'_group');
 
         $connection = $this->em()->getConnection();
         $connection->executeUpdate(
-            'INSERT IGNORE INTO feedback_category2usergroup SET category_id = ?, usergroup_id = ?',
-            [$feedbackCategoryId, $usergroup->getId()]
+            'INSERT IGNORE INTO article_category2usergroup SET category_id = ?, usergroup_id = ?',
+            [$categoryId, $usergroup->getId()]
         );
     }
 

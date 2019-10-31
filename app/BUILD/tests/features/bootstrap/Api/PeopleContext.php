@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\PyStringNode;
 use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 
 /**
  * Class PeopleContext.
@@ -111,6 +112,8 @@ class PeopleContext extends BaseContext
         $emailAccount->address = $email;
 
         $this->persistAndFlush($emailAccount);
+
+        DataContext::setReference("email_account_$email", $emailAccount);
     }
 
     /**

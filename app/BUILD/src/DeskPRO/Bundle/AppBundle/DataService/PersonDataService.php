@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Pagerfanta;
 
 /**
  * Class PersonDataService.
@@ -106,6 +108,38 @@ class PersonDataService extends AbstractDataService
     {
         $this->em->remove($password_reset['tmpdata']);
         $this->em->flush();
+    }
+
+    /**
+     * @param type $page
+     * @param type $maxPerPage
+     *
+     * @return Pagerfanta
+     */
+    public function getPortalMembersPager($page, $maxPerPage)
+    {
+        $em = $this->em;
+        $qb = $em->createQueryBuilder();
+
+        $qb->select('p')
+            ->from(Person::class, 'p')
+            ->where('p.is_deleted = 0')
+            ->andWhere('p.is_agent = 0')
+            ->andWhere('p.is_user = 1');
+
+        $qbCount = clone $qb;
+        $qbCount->select('count(p.id)');
+        $cnt = $qbCount->getQuery()->getSingleScalarResult();
+
+        if ($cnt < 5000) {
+            $qb->orderBy('p.last_name', 'ASC');
+        }
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setMaxPerPage($maxPerPage);
+        $pager->setCurrentPage($page);
+
+        return $pager;
     }
 
     /**

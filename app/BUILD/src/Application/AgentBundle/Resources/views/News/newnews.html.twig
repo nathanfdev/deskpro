@@ -63,7 +63,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="text" name="newnews[title]" id="{{baseId}}_title" value="{{ state.newnews.title }}" style="width: 80%;" />
+		<input type="text" name="newnews[title]"
+			   id="{{baseId}}_title"
+			   autocomplete="{{ "now" | date("U") }}"
+			   value="{{ state.newnews.title }}" style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
 	</div>
 </div>
@@ -71,7 +74,11 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section">
 	<div class="content">
 		<h4>{{ phrase('agent.publish.post') }}</h4>
-		<textarea type="text" name="newnews[content]" id="{{baseId}}_content">{{ state.newnews.content }}</textarea>
+		<textarea type="text"
+				  name="newnews[content]"
+				  autocomplete="{{ "now" | date("U") }}"
+				  id="{{baseId}}_content">{{ state.newnews.content }}</textarea>
+		<div class="error-message content">{{ phrase('agent.publish.please_enter_content') }}</div>
 	</div>
 </div>
 
@@ -93,7 +100,10 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.newnews.labels %}{{label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
+								<input type="text"
+									   autocomplete="{{ "now" | date("U") }}"
+									   value="{% for label in state.newnews.labels %}{{label}},{% endfor %}"
+									   data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
 							</div>
 						</dd>
 					</dl>

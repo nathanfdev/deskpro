@@ -6,25 +6,24 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommentAbstract;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\ContentAbstract;
-use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\Guide;
-use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\EntityRepository\AbstractCategoryRepository;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
@@ -32,8 +31,8 @@ use Application\DeskPRO\People\PermissionUtil;
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
 use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
-use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
@@ -72,6 +71,10 @@ class PublishController extends AbstractController
 
     public function getSectionDataAction()
     {
+        if (!$this->person->hasPerm('agent_publish.use')) {
+            throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
+        }
+
         $data = [];
 
         //------------------------------
@@ -179,6 +182,7 @@ class PublishController extends AbstractController
         $counts['all_drafts']          = $this->publishHelper->getCountsByHiddenStatus(false);
         $counts['pending_approval']    = $this->publishHelper->getCountsByHiddenStatus(false, 'pending');
         $counts['pending']             = $this->db->fetchColumn('SELECT COUNT(*) FROM article_pending_create');
+        $counts['pending_review']      = $this->em->getRepository(Article::class)->getPendingReviewArticlesCount();
 
         /** @var UsergroupDataService $usergroupsService */
         $usergroupsService = $this->container->getDataService('Usergroup');
@@ -419,8 +423,11 @@ class PublishController extends AbstractController
             case 'news':
                 $objectUrl = $this->get('router')->generate('agent_news_view', ['news_id' => $comment->getObject()->getId()]);
                 break;
-            case 'feedback':
-                $objectUrl = $this->get('router')->generate('agent_feedback_view', ['feedback_id' => $comment->getObject()->getId()]);
+            case 'community':
+                $objectUrl = $this->get('router')->generate('agent_community_topic_view', ['communityTopicId' => $comment->getObject()->getId()]);
+                break;
+            case 'topics':
+                $objectUrl = $this->get('router')->generate('agent_topic_view', ['topic_id' => $comment->getObject()->getId()]);
                 break;
             default:
                 $objectUrl = null;
@@ -448,8 +455,10 @@ class PublishController extends AbstractController
                 return DownloadComment::class;
             case 'news':
                 return NewsComment::class;
-            case 'feedback':
-                return FeedbackComment::class;
+            case 'community':
+                return CommunityTopicComment::class;
+            case 'topics':
+                return TopicComment::class;
             default:
                 return '';
         }
@@ -580,9 +589,9 @@ class PublishController extends AbstractController
         ]);
     }
 
-    public function listValidatingFeedbackCommentsAction()
+    public function listValidatingCommunityTopicsCommentsAction()
     {
-        $this->publishHelper->setEnabledTypes(['feedback']);
+        $this->publishHelper->setEnabledTypes(['community']);
 
         return $this->listValidatingCommentsAction();
     }
@@ -656,6 +665,36 @@ class PublishController extends AbstractController
 
         return $this->render($tpl, [
             'drafts'   => $drafts,
+            'total'    => $total,
+            'pageinfo' => $pageinfo,
+        ]);
+    }
+
+    public function listPendingReviewAction()
+    {
+        $perPage = 25;
+
+        $currentPage = $this->in->getUInt('page');
+        if (!$currentPage) {
+            $currentPage = 1;
+        }
+
+        $pageinfo = null;
+        $total    = null;
+        if (!@$_REQUEST['_partial']) {
+            $total    = $this->em->getRepository(Article::class)->getPendingReviewArticlesCount();
+            $pageinfo = Numbers::getPaginationPages($total, $currentPage, $perPage);
+        }
+
+        $articles = $this->em->getRepository(Article::class)->getPendingReviewArticles($perPage);
+
+        $tpl = 'AgentBundle:Publish:kb-pending-review.html.twig';
+        if (@$_REQUEST['_partial']) {
+            $tpl = 'AgentBundle:Publish:kb-pending-review-page.html.twig';
+        }
+
+        return $this->render($tpl, [
+            'articles' => $articles,
             'total'    => $total,
             'pageinfo' => $pageinfo,
         ]);
@@ -741,8 +780,8 @@ class PublishController extends AbstractController
             case 'news':
                 $entity_name = 'DeskPRO:News';
                 break;
-            case 'feedback':
-                $entity_name = 'DeskPRO:Feedback';
+            case 'community':
+                $entity_name = CommunityTopic::class;
                 break;
             case 'topics':
                 $entity_name = 'DeskPRO:Topic';
@@ -1141,8 +1180,8 @@ class PublishController extends AbstractController
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
                 break;
-            case 'feedback':
-                $url = $this->generateUrl('agent_feedback_category', ['category_id' => $cat->getId()]);
+            case 'community':
+                $url = $this->generateUrl('agent_community_channels', ['$channelId' => $cat->getId()]);
                 break;
         }
 
@@ -1210,11 +1249,11 @@ class PublishController extends AbstractController
                 $cats   = $this->in->getCleanValueArray('downloads_categories', 'uint', 'discard');
                 break;
 
-            case 'feedback':
-                $searcher = new FeedbackSearch();
+            case 'community':
+                $searcher = new CommunitySearch();
                 $searcher->addTerm('deleted', 'not', 1);
-                $helper = 'FeedbackResults';
-                $cats   = $this->in->getCleanValueArray('feedback_categories', 'uint', 'discard');
+                $helper = 'CommunityTopicResults';
+                $cats   = $this->in->getCleanValueArray('community_channels', 'uint', 'discard');
                 break;
 
             default:
@@ -1298,24 +1337,85 @@ class PublishController extends AbstractController
     public function whoViewedAction($objectType, $objectId, $viewAction = 1)
     {
         $idToInfo = $this->db->fetchAllKeyed('
-            SELECT person_id, date_created, COUNT(*) AS count
-            FROM page_view_log
-            WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
-            GROUP BY person_id
-            ORDER BY id DESC
+            SELECT l.id, l.person_id, l.meta, lg.count, l.date_created
+            FROM page_view_log l
+            INNER JOIN (
+              SELECT MAX(date_created) as maxDateCreated, person_id, count(*) as count
+              FROM page_view_log
+              WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
+              GROUP BY person_id
+            ) lg ON l.date_created = lg.maxDateCreated AND l.person_id  = lg.person_id;
+
         ', [$objectType, $objectId, $viewAction], 'person_id');
 
         /** @var PersonRepository $personRepository */
         $personRepository = $this->em->getRepository(Person::class);
         $people           = $personRepository->getByIds(array_keys($idToInfo));
 
+        $showMeta = false;
+        foreach ($idToInfo as &$info) {
+            $info['meta'] = $this->getMetaDisplayValues($objectType, $viewAction, $info);
+            if ($info['meta']) {
+                $showMeta = true;
+            }
+        }
+        $metaColumns = $this->getMetaDisplayColumns($objectType, $viewAction);
+        if (!$metaColumns) {
+            $showMeta = false;
+        }
+
         return $this->render('AgentBundle:Publish:who-viewed.html.twig', [
-            'id_to_info'  => $idToInfo,
-            'people'      => $people,
-            'object_type' => $objectId,
-            'object_id'   => $objectId,
-            'view_action' => $viewAction,
+            'id_to_info'   => $idToInfo,
+            'people'       => $people,
+            'object_type'  => $objectId,
+            'object_id'    => $objectId,
+            'view_action'  => $viewAction,
+            'show_meta'    => $showMeta,
+            'meta_columns' => $metaColumns,
         ]);
+    }
+
+    /**
+     * @param int $objectType
+     * @param int $viewAction
+     *
+     * @return array
+     */
+    protected function getMetaDisplayColumns($objectType, $viewAction)
+    {
+        if ($objectType == PageViewLog::TYPE_DOWNLOAD && $viewAction == PageViewLog::ACTION_DOWNLOAD) {
+            return [
+                'eula' => $this->container->getTranslator()->phrase('agent.general.eula'),
+            ];
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @param int   $objectType
+     * @param int   $viewAction
+     * @param array $log
+     *
+     * @return type
+     */
+    protected function getMetaDisplayValues($objectType, $viewAction, $log)
+    {
+        if (!$log['meta']) {
+            return [];
+        }
+
+        if ($objectType == PageViewLog::TYPE_DOWNLOAD && $viewAction == PageViewLog::ACTION_DOWNLOAD) {
+            $values = ['eula' => ''];
+            $meta   = json_decode($log['meta'], true);
+            if (isset($meta['eula']) && isset($meta['eula']['title'])) {
+                $values['eula'] = $meta['eula']['title'];
+            }
+
+            return $values;
+        }
+
+        return [];
     }
 
     /**

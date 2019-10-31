@@ -14,6 +14,8 @@ use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
@@ -29,6 +31,7 @@ use DeskPRO\Component\Util\StringUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use DpSys\Features;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -71,20 +74,27 @@ class TicketMessageType extends AbstractType
      * @var TicketStatusDataService
      */
     private $ticketStatuses;
-    
+
     /**
      * @var AttachmentHelper
      */
     private $attachmentHelper;
 
     /**
+     * @var Features
+     */
+    private $featureFlags;
+
+    /**
      * Constructor.
      *
-     * @param LanguageManager  $languageManager
-     * @param TokenStorage     $tokenStorage
-     * @param EntityManager    $em
-     * @param AttachmentHelper $attachmentHelper
-     * @param ApiClientInfo    $apiClientInfo
+     * @param LanguageManager         $languageManager
+     * @param TokenStorage            $tokenStorage
+     * @param EntityManager           $em
+     * @param AttachmentHelper        $attachmentHelper
+     * @param TicketStatusDataService $ticketStatuses
+     * @param Features                $featureFlags
+     * @param ApiClientInfo           $apiClientInfo
      */
     public function __construct(
         LanguageManager $languageManager,
@@ -92,6 +102,7 @@ class TicketMessageType extends AbstractType
         EntityManager $em,
         AttachmentHelper $attachmentHelper,
         TicketStatusDataService $ticketStatuses,
+        Features $featureFlags,
         ApiClientInfo $apiClientInfo = null
     ) {
         $this->languageManager  = $languageManager;
@@ -99,6 +110,7 @@ class TicketMessageType extends AbstractType
         $this->em               = $em;
         $this->attachmentHelper = $attachmentHelper;
         $this->ticketStatuses   = $ticketStatuses;
+        $this->featureFlags     = $featureFlags;
         $this->apiClientInfo    = $apiClientInfo;
     }
 
@@ -192,6 +204,17 @@ class TicketMessageType extends AbstractType
             $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onApplyMacros'], 100);
         }
 
+        if ($options['allow_set_snippets'] && $this->featureFlags->hasBeta('new_snippets')) {
+            $builder->add('snippets', EntityType::class, [
+                'class'    => SnippetTranslation::class,
+                'multiple' => true,
+                'mapped'   => false,
+                'required' => false,
+            ]);
+
+            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetSnippets'], 200);
+        }
+
         if ($options['with_ticket_validation']) {
             $builder->add('ticket', TicketWithLayoutsApiType::class, [
                 'person'              => $options['person'],
@@ -245,20 +268,22 @@ class TicketMessageType extends AbstractType
                         'data-ctrl-enter-submit' => (int) $options['ctrl_enter_submit'],
                     ];
                 },
-                'error_bubbling'         => false,
-                'ticket'                 => null,
-                'person'                 => null,
-                'ticket_message'         => null,
-                'render_is_note'         => true,
-                'has_attachments'        => false,
-                'format'                 => '',
-                'with_ticket_validation' => false,
-                'ctrl_enter_submit'      => false,
-                'allow_set_person'       => $this->tokenStorage->getToken() instanceof ApiKeySecurityToken,
-                'allow_set_status'       => false,
-                'allow_apply_macros'     => false,
-                'message_constraints'    => [],
-                'error_mapping'          => [
+                'error_bubbling'          => false,
+                'ticket'                  => null,
+                'person'                  => null,
+                'ticket_message'          => null,
+                'render_is_note'          => true,
+                'has_attachments'         => false,
+                'format'                  => '',
+                'with_ticket_validation'  => false,
+                'ctrl_enter_submit'       => false,
+                'allow_set_person'        => $this->tokenStorage->getToken() instanceof ApiKeySecurityToken,
+                'allow_set_status'        => false,
+                'allow_set_snippets'      => false,
+                'allow_apply_macros'      => false,
+                'allow_reply_on_archived' => false,
+                'message_constraints'     => [],
+                'error_mapping'           => [
                     // we use custom setters to modify message,
                     // so we need to map entity property with the form field
                     'message' => 'message',
@@ -280,7 +305,9 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('ctrl_enter_submit', 'bool')
             ->setAllowedTypes('allow_set_person', 'bool')
             ->setAllowedTypes('allow_set_status', 'bool')
+            ->setAllowedTypes('allow_set_snippets', 'bool')
             ->setAllowedTypes('allow_apply_macros', 'bool')
+            ->setAllowedTypes('allow_reply_on_archived', 'bool')
             ->setAllowedTypes('admin_api_key_request', 'bool')
         ;
     }
@@ -536,5 +563,25 @@ class TicketMessageType extends AbstractType
         return array_map(function ($item) {
             return $item['value'];
         }, $this->ticketStatuses->getFormOptions());
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function onSetSnippets(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+        /** @var TicketMessage $message */
+        $message = $event->getData();
+        $person  = $config->getOption('person');
+
+        $snippetTranslations = $form->get('snippets')->getData() ?: new ArrayCollection();
+        foreach ($snippetTranslations as $translation) {
+            $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $person, $translation);
+            $snippet    = $snippetLog->getSnippet();
+            $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
+            $message->addSnippetUseLog($snippetLog);
+        }
     }
 }

@@ -9,9 +9,9 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -246,18 +246,18 @@ class BreadcrumbGenerator
     }
 
     //####################################################################################################################
-    // Feedback
+    // Community
     //####################################################################################################################
 
-    public function buildFeedback()
+    public function buildCommunity()
     {
-        return $this->createBuilder()->addFeedback()->done();
+        return $this->createBuilder()->addCommunity()->done();
     }
 
-    public function buildFeedbackView(Feedback $a)
+    public function buildCommunityView(CommunityTopic $a)
     {
-        return $this->createBuilder()->addFeedback()
-            ->addFeedbackView($a)
+        return $this->createBuilder()->addCommunity()
+            ->addCommunityView($a)
             ->done();
     }
 
@@ -304,6 +304,22 @@ class BreadcrumbGenerator
     public function buildTicketEdit(Ticket $t)
     {
         return $this->buildTicketView($t);
+    }
+
+    //####################################################################################################################
+    // Members
+    //####################################################################################################################
+    public function buildMembersList()
+    {
+        return $this->createBuilder()->addMembersList()->done();
+    }
+
+    //####################################################################################################################
+    // DirectMessages
+    //####################################################################################################################
+    public function buildDirectMessagesList()
+    {
+        return $this->createBuilder()->addDirectMessagesList()->done();
     }
 
     //####################################################################################################################

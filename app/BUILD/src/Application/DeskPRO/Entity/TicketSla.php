@@ -202,6 +202,18 @@ class TicketSla extends DomainObject
     }
 
     /**
+     * Unset is_completed_set.
+     *
+     * @return $this
+     */
+    public function unsetIsCompletedSet()
+    {
+        $this->setModelField('is_completed_set', false);
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime|null
      */
     public function getNextTriggerDate()

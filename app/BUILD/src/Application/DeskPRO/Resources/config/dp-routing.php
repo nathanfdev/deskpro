@@ -146,7 +146,7 @@ $collection->create('dp3_redirect_attachment_files_php', [
 
 $collection->create('dp3_redirect_ideas_php', [
     'path'       => '/ideas.php',
-    'controller' => 'PortalBundle:Deskpro3Redirect:feedback',
+    'controller' => 'PortalBundle:Deskpro3Redirect:community',
 ]);
 
 $collection->create('dp3_redirect_kb_article_php', [
@@ -232,6 +232,12 @@ $collection->create('dp3_redirect_ticketlist_participate_php', [
 $collection->create('dp3_redirect_view_php', [
     'path'       => '/view.php',
     'controller' => 'PortalBundle:Deskpro3Redirect:ticketView',
+]);
+
+$collection->create('feedback_redirect_to_community', [
+    'path'         => '/feedback/{url}',
+    'requirements' => ['url' => '.*'],
+    'controller'   => 'PortalBundle:CommunityTopics:redirectCommunity',
 ]);
 
 //#######################################################################################################################

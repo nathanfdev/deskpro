@@ -11,7 +11,7 @@ portal.account.email-btn-usersource-set: 'Lägg till e-postadress'
 portal.account.email-management: 'Hantera e-postadresser'
 portal.account.email-management-from-form: 'Hantera dina e-postadresser'
 portal.account.email-primary-description: 'Detta är din primära e-postadress. Den kommer att användas som standard om du inte anger något annat.'
-portal.account.feedback-lockout: 'Du har skickat in feedback för många gånger. Ditt konto har spärrats. Försök igen senare.'
+portal.account.community-lockout: 'Du har skickat in community topic för många gånger. Ditt konto har spärrats. Försök igen senare.'
 portal.account.link-expired: 'Tyvärr, länken du klickade har löpt ut eller har redan använts tidigare.'
 portal.account.lockout_time: 'Du kan försöka igen om {{time}} minuter.'
 portal.account.login-btn: 'Logga in'
@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Logga in med {{usersource}}'
 portal.account.login-captcha-failed: 'Du har skrivit en felaktig CAPTCHA kod. Var vänlig och försök igen.'
 portal.account.login-disabled: 'Din e-postadress har blivit bannad.'
 portal.account.login-email: 'Din e-postadress'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Logga in med en extern tjänst'
 portal.account.login-form-disabled: 'Inloggningsformuläret är inaktiverat'
 portal.account.login-invalid: 'Du har skrivit en felaktig e-postadress eller fel lösenord. Var vänlig och försök igen.'
@@ -33,7 +32,7 @@ portal.account.login-remember: 'Förbli inloggad?'
 portal.account.login-saved-add_email: 'Ditt tilläggs e-postmeddelande har inte skickats in ännu. Var vänlig logga in för att fortsätta.'
 portal.account.login-saved-comment: 'Din kommentar har inte skickats in ännu. Var vänlig logga in för att fortsätta.'
 portal.account.login-saved-form: 'Ditt {{type}} har inte registrerats. Var vänlig och logga in för att fortsätta.'
-portal.account.login-saved-new_feedback: 'Din nya feedback har inte skickats in ännu. Var vänlig logga in för att fortsätta.'
+portal.account.login-saved-new_community_topic: 'Din nya community topic har inte skickats in ännu. Var vänlig logga in för att fortsätta.'
 portal.account.login-saved-new_ticket: 'Din nya biljett har inte skickats in ännu. Var vänlig logga in för att fortsätta.'
 portal.account.login-saved-register: 'Ditt register har inte skickats in ännu. Var vänlig logga in för att fortsätta.'
 portal.account.login-stay-logged-in: 'Förbli inloggad?'
@@ -83,7 +82,7 @@ portal.account.submit-saved-add_email: 'Ditt tilläggs e-postmeddelande har inte
 portal.account.submit-saved-comment: 'Din kommentar har inte skickats in ännu, men vi har sparat det för dig.'
 portal.account.submit-saved-form: 'Ditt {{type}} har ännu inte registrerats men vi har sparat det åt dig.'
 portal.account.submit-saved-form-go: 'Klicka här för att skicka formuläret pånytt.'
-portal.account.submit-saved-new_feedback: 'Din nya feedback har inte skickats in ännu, men vi har sparat det för dig.'
+portal.account.submit-saved-new_community_topic: 'Din nya community topic har inte skickats in ännu, men vi har sparat det för dig.'
 portal.account.submit-saved-new_ticket: 'Din nya biljett har inte skickats in ännu, men vi har sparat det för dig.'
 portal.account.submit-saved-register: 'Ditt register har inte skickats in ännu, men vi har sparat det för dig.'
 portal.account.tickets-lockout: 'Du har registrerat för många ärenden. Ditt konto har spärrats. Var vänlig och försök igen senare.'
@@ -147,7 +146,6 @@ portal.chat.invalid_jwt_token: 'Din JWT-token är inte giltig.'
 portal.chat.label-department: 'Välj avdelning'
 portal.chat.label-email: 'Din e-postadress'
 portal.chat.label-name: 'Ditt namn'
-portal.chat.list_agent: Agent
 portal.chat.list_chat: Chatt
 portal.chat.list_date: Datum
 portal.chat.list_switch_to_my_chats: 'Växla till mina chattar'
@@ -203,8 +201,6 @@ portal.chat.see_full_image: 'Klicka här för att se hela bilden'
 portal.chat.send_another_validation_email: 'Skicka mig ett till mail'
 portal.chat.sent_validation_code: 'Vi har skickat dig ett mail med en valideringskod.'
 portal.chat.start: 'Starta en ny chatt'
-portal.chat.start_conversation: 'Starta en konversation'
-portal.chat.support_powered_by: 'Support powered by {{DeskPRO}}'
 portal.chat.take_chat: 'Ta chatt'
 portal.chat.taken_by: 'Chatt tagen av'
 portal.chat.transcript_action: 'Skicka mig ett transkript'
@@ -243,13 +239,13 @@ portal.email_subjects.email-too-big: 'Ditt mail "{{subject}}" accepterades inte'
 portal.email_subjects.email_new-confirm: 'Bekräfta din e-postadress'
 portal.email_subjects.email_primary-confirm: 'Bekräfta din e-postadress'
 portal.email_subjects.email_ticket-reminder: 'Åtgärd krävs: Ditt ärende har ännu inte registrerats'
-portal.email_subjects.feedback_new: 'Tack för att du skickade in din feedback'
-portal.email_subjects.feedback_new-approved: 'Din feedback har blivit publicerad'
-portal.email_subjects.feedback_new-comment: 'Det finns en ny kommentar på "{{title}}"'
-portal.email_subjects.feedback_new-confirm: 'Tack för att du skickade in din feedback (validering krävs)'
-portal.email_subjects.feedback_new-disapproved: 'Tyvärr. Din feedback har blivit nekad'
-portal.email_subjects.feedback_sub_updated: 'Uppdaterad feedback'
-portal.email_subjects.feedback_updated: 'Din feedback har blivit uppdaterad: {{title}}'
+portal.email_subjects.community_new: 'Tack för att du skickade in din feedback'
+portal.email_subjects.community_new-approved: 'Din community topic har blivit publicerad'
+portal.email_subjects.community_new-comment: 'Det finns en ny kommentar på "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Tack för att du skickade in din community topic (validering krävs)'
+portal.email_subjects.community_new-disapproved: 'Tyvärr. Din community topic har blivit nekad'
+portal.email_subjects.community_sub_updated: 'Uppdaterad community topic'
+portal.email_subjects.community_updated: 'Din community har blivit uppdaterad: {{title}}'
 portal.email_subjects.kb_sub_new: 'Nya artiklar'
 portal.email_subjects.kb_sub_new_and_updated: 'Nya och uppdaterade artiklar'
 portal.email_subjects.kb_sub_updated: 'Uppdaterade artiklar'
@@ -275,7 +271,6 @@ portal.email_subjects.validate-email: 'Bekräfta din e-postadress'
 portal.emails.auto-close: 'Vi har inte hört från dig angående ditt ärende: "{{ticket.subject}}". Vänligen återkom om du behöver mer assistans annars kommer ditt ärende att markeras som löst.'
 portal.emails.chat_transcript: 'Tack för att du chattade med oss. Här är en utskrift av chatten.'
 portal.emails.comment_approved: 'Din kommentar har blivit publicerad.'
-portal.emails.comment_deleted: 'Din kommentar användes för att förbättra sidan.'
 portal.emails.comment_thank-you: 'Tack för din kommentar på {{link}}.'
 portal.emails.comment_validate-email: 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:'
 portal.emails.do-not-reply: 'Svara inte på detta mail. Detta mail har genererats automatiskt av en dator och eventuella svar kommer inte att läsas av någon agent.'
@@ -288,23 +283,23 @@ portal.emails.download-updated-downloads:
 portal.emails.downloads-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring nedladdningar som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nedladdningsnotiser.</a>'
 portal.emails.email-too-big: 'Ditt mail "{{subject}}" blev inte accepterat för att det är för stort. Den max tillåtna filstorleken som den här helpdesken accepterar är {{max_size}}. Ta bort stora bifogade filer och försök igen.'
 portal.emails.end_greeting: 'Hälsningar,<br /><br />{{site_name}}'
-portal.emails.feedback-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring feedbacks som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla feedbacknotiser.</a>'
-portal.emails.feedback-updated-items:
-  one: '1 uppdaterad feedback'
-  other: '{{count}} uppdaterade feedbacks'
-portal.emails.feedback_agent-validation: 'Notera att din feedback inte kommer att visas publikt på vår portal innan en av våra agenter godkänner den.'
-portal.emails.feedback_approved: 'Vi mailar till dig för att meddela att din feedback har blivit godkänd och att den nu visas publikt på vår sida.'
-portal.emails.feedback_closed: 'Din inskickade feedback "{{title}}" stängdes: {{status}}'
-portal.emails.feedback_disapproved: 'Vi mailar till dig för att meddela att din feedback har blivit nekad och att den inte kommer att visas på vår sida.'
-portal.emails.feedback_disapproved-reason: 'Vi mailar till dig för att meddela att din feedback har blivit nekad och att den inte kommer att visas på vår sida. {{name}} angav följande anledning:'
-portal.emails.feedback_new-comment: '{{name}} postade en ny kommentar:'
-portal.emails.feedback_published: 'Din feedback "{{title}}" har blivit granskad och kommer nu att visas på vår sida.'
-portal.emails.feedback_thank-you: 'Tack för att du skickade in din feedback "{{title}}"'
-portal.emails.feedback_updated: 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"'
-portal.emails.feedback_validate-email: 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:'
-portal.emails.feedback_votes:
-  one: 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:'
-  other: 'Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:'
+portal.emails.community-topics-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring community topics som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla feedbacknotiser.</a>'
+portal.emails.community-topics-updated:
+  one: '1 uppdaterad community topic'
+  other: '{{count}} uppdaterade community topics'
+portal.emails.community-topic_agent-validation: 'Notera att din community topic inte kommer att visas publikt på vår portal innan en av våra agenter godkänner den.'
+portal.emails.community_topic_approved: 'Vi mailar till dig för att meddela att din community topic har blivit godkänd och att den nu visas publikt på vår sida.'
+portal.emails.community_topic_closed: 'Din inskickade community "{{title}}" stängdes: {{status}}'
+portal.emails.community-topic_disapproved: 'Vi mailar till dig för att meddela att din community topic har blivit nekad och att den inte kommer att visas på vår sida.'
+portal.emails.community-topic_disapproved-reason: 'Vi mailar till dig för att meddela att din community har blivit nekad och att den inte kommer att visas på vår sida. {{name}} angav följande anledning:'
+portal.emails.community-topic_new-comment: '{{name}} postade en ny kommentar:'
+portal.emails.community-topic_published: 'Din community topic "{{title}}" har blivit granskad och kommer nu att visas på vår sida.'
+portal.emails.community-topic_thank-you: 'Tack för att du skickade in din community topic "{{title}}"'
+portal.emails.community-topic_updated: 'Din inskickade community topic "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"'
+portal.emails.community-topic_validate-email: 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:'
+portal.emails.community-topic_votes:
+  one: 'Din community har <strong>1</strong> röst. Hantera din community topic online:'
+  other: 'Din community har <strong>{{count}}</strong> röster. Hantera din community topic online:'
 portal.emails.greeting: 'Hej {{to_name}},'
 portal.emails.kb-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring kunskapsbasartiklar som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla kunskapsbasnotiser.</a>'
 portal.emails.kb-new-articles:
@@ -326,7 +321,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:'
 portal.emails.password_reset: 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:'
 portal.emails.password_set: 'Klicka på länken nedan för att välja ett lösenord:'
-portal.emails.profile_email-new-confirm: 'För att slutföra registreringen av din sekundära e-postadress så klickar du på följande länk för att bekfräfta den:'
 portal.emails.profile_email-primary-confirm: 'Klicka på följande länk för att bekräfta din primära e-postadress'
 portal.emails.profile_email_link-validate: 'Klicka på följande länk för att bekräfta din e-postadress'
 portal.emails.ratelimit_explain: 'Du har skickat {{num_messagess}} meddelanden inom {{time_limit}}. För att förhindra missbruk så har vi tillfälligt spärrat din e-postadress i {{time_lock}}. Efter {{date_lock_end}} kommer denna spärr att tas bort och du kan då skicka mail igen.'
@@ -375,44 +369,43 @@ portal.error.404-title: 'Hittades Inte'
 portal.error.contact: 'Om du känner att detta är ett fel, vänligen kontakta oss.'
 portal.error.general-desc: 'Tyvärr, ett fel har inträffat. Försök igen senare eller kontakta oss.'
 portal.error.general-title: 'Ett fel inträffade'
-portal.feedback.attachments: 'Bifogade filer'
-portal.feedback.btn-closed: Stängd
-portal.feedback.btn-vote: 'Jag håller med'
-portal.feedback.dir_asc: STIG
-portal.feedback.dir_desc: FALL
-portal.feedback.error_hidden: 'Denna feedback är dold.'
-portal.feedback.error_login: 'Vänligen logga in.'
-portal.feedback.filter_all_items: 'Alla objekt'
-portal.feedback.filter_closed_items: 'Stängda objekt'
-portal.feedback.filter_open_items: 'Öppna objekt'
-portal.feedback.form_attach_files: 'Bifoga filer'
-portal.feedback.form_btn_submit: 'Lägg till din feedback'
-portal.feedback.form_email_not_shown: 'Din e-postadress (kommer inte att visas publikt)'
-portal.feedback.form_i_have_a: 'Jag har en'
-portal.feedback.form_logged_in_as: 'Inloggad som: <span>{{name}}</span>, från e-postadressen <span>{{email}}</span>.'
-portal.feedback.form_logout: 'Inte du?'
-portal.feedback.form_tell_us_more: 'Berätta mer'
-portal.feedback.form_title: Titel
-portal.feedback.module_forbidden: 'Du har inte behörighet att se denna modul'
-portal.feedback.no_matching: 'Ingen matchande feedback'
-portal.feedback.none: 'Ingen feedback ännu'
-portal.feedback.rate_forbidden: 'Du har inte behörighet att rösta'
-portal.feedback.recent-feedback: 'Senaste feedbacken'
-portal.feedback.search-title: Feedback
-portal.feedback.section-desc: 'Dessa förslag har postats av användare precis som du; vi ser gärna att du diskuterar och röstar på de förslag som listas. Om du har ett nytt förslag så är du välkommen att posta det.'
-portal.feedback.section-title: Feedback
-portal.feedback.sort_comments: Kommentarer
-portal.feedback.sort_date: Datum
-portal.feedback.sort_popularity: Populäritet
-portal.feedback.sort_rating: Betyg
-portal.feedback.sort_views: Visningar
-portal.feedback.status_active: 'Öppna objekt'
-portal.feedback.status_all: 'All objekt'
-portal.feedback.status_closed: 'Stängda objekt'
-portal.feedback.submit_feedback: 'Posta feedback'
-portal.feedback.view-x-feedback:
-  one: 'Visa 1 feedback'
-  other: 'View {{count}} feedbacks'
+portal.community.attachments: 'Bifogade filer'
+portal.community.btn-closed: Stängd
+portal.community.btn-vote: 'Jag håller med'
+portal.community.dir_asc: STIG
+portal.community.dir_desc: FALL
+portal.community.error_hidden: 'Denna community topic är dold.'
+portal.community.error_login: 'Vänligen logga in.'
+portal.community.filter_all_items: 'Alla objekt'
+portal.community.filter_closed_items: 'Stängda objekt'
+portal.community.filter_open_items: 'Öppna objekt'
+portal.community.form_attach_files: 'Bifoga filer'
+portal.community.form_btn_submit: 'Lägg till din community topic'
+portal.community.form_email_not_shown: 'Din e-postadress (kommer inte att visas publikt)'
+portal.community.form_i_have_a: 'Jag har en'
+portal.community.form_logged_in_as: 'Inloggad som: <span>{{name}}</span>, från e-postadressen <span>{{email}}</span>.'
+portal.community.form_logout: 'Inte du?'
+portal.community.form_tell_us_more: 'Berätta mer'
+portal.community.form_title: Titel
+portal.community.form_custom_cat: Kategori
+portal.community.module_forbidden: 'Du har inte behörighet att se denna modul'
+portal.community.no_matching: 'Ingen matchande community topic'
+portal.community.none: 'Ingen community topic ännu'
+portal.community.rate_forbidden: 'Du har inte behörighet att rösta'
+portal.community.recent-community_topics: 'Senaste community topicen'
+portal.community.section-desc: 'Dessa förslag har postats av användare precis som du; vi ser gärna att du diskuterar och röstar på de förslag som listas. Om du har ett nytt förslag så är du välkommen att posta det.'
+portal.community.sort_comments: Kommentarer
+portal.community.sort_date: Datum
+portal.community.sort_popularity: Populäritet
+portal.community.sort_rating: Betyg
+portal.community.sort_views: Visningar
+portal.community.status_active: 'Öppna objekt'
+portal.community.status_all: 'All objekt'
+portal.community.status_closed: 'Stängda objekt'
+portal.community.submit_community_topic: 'Posta community topic'
+portal.community.view-x-community-topics:
+  one: 'Visa 1 community topic'
+  other: 'View {{count}} community topics'
 portal.flashes.article_cat_subscribe: 'Du prenumererar nu på denna kategori. Du kommer att få en notis när nytt innehåll postas.'
 portal.flashes.article_cat_unsubscribe: 'Du har sagt upp prenumerationen på denna kategori.'
 portal.flashes.article_subscribe: 'Du prenumererar nu på denna artikel. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
@@ -426,14 +419,14 @@ portal.flashes.download_subscribe: 'Du prenumererar nu på denna nedladdning. Du
 portal.flashes.download_unsubscribe: 'Du har sagt upp prenumerationen på denna nedladdning.'
 portal.flashes.download_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla nedladdningsnotiser.'
 portal.flashes.email_sent: 'Ditt e-postmeddelande har skickats'
-portal.flashes.feedback_login: 'Du måste logga in för att rösta'
-portal.flashes.feedback_subscribe: 'Du prenumererar nu på denna feedback. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
-portal.flashes.feedback_unsubscribe: 'Du har sagt upp prenumerationen på denna feedback.'
-portal.flashes.feedback_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla feedbacknotiser.'
+portal.flashes.community_login: 'Du måste logga in för att rösta'
+portal.flashes.community_subscribe: 'Du prenumererar nu på denna community topic. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
+portal.flashes.community_unsubscribe: 'Du har sagt upp prenumerationen på denna community topic.'
+portal.flashes.community_unsubscribe_everything: 'Du har sagt upp prenumerationen på alla community topicnotiser.'
 portal.flashes.guest_content_must_verify: 'Innan ditt innehåll kan postas måste du verifiera din e-postadress. Var vänlig och kontrollera din inkorg. Vi har skickat dig en verifieringslänk.'
 portal.flashes.guest_new_ticket_must_verify: 'Innan ditt ärende kan registreras måste du verifiera din e-postadress. Var vänlig och kontrollera din inkorg. Vi har skickat dig en verifieringslänk.'
-portal.flashes.new_feedback_awaiting_review: 'Tack för din feedback! Den kommer att visas på vår supportportal efter att en agent har godkänt den.'
-portal.flashes.new_feedback_posted: 'Tack för din feedback.'
+portal.flashes.new_community_topic_awaiting_review: 'Tack för din community topic! Den kommer att visas på vår supportportal efter att en agent har godkänt den.'
+portal.flashes.new_community_topic_posted: 'Tack för din community topic.'
 portal.flashes.news_cat_subscribe: 'Du prenumererar nu på denna kategori. Du kommer att få en notis när nytt innehåll postas.'
 portal.flashes.news_cat_unsubscribe: 'Du har sagt upp prenumerationen på denna kategori.'
 portal.flashes.news_subscribe: 'Du prenumerar nu på denna nyhetsartikel. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
@@ -485,7 +478,6 @@ portal.forms.error_dupe_ticket_message: 'Duplikat biljettmeddelande.'
 portal.forms.error_email_required: 'Du måste ange din e-postadress'
 portal.forms.error_extra_fields: 'Tyvärr, ett fel har inträffat. Försök igen.'
 portal.forms.error_invalid_data_type: 'Denna datatyp förväntades inte.'
-portal.forms.error_invalid_email: 'Den här e-postadressen är inte giltig'
 portal.forms.error_invalid_url: 'Detta värde är inte en giltig URL.'
 portal.forms.error_length_invalid: 'Det här värdet måste ha exakt {{limit}} tecken.'
 portal.forms.error_length_too_long: 'Det här värdet är för långt. Det måste ha {{limit}} tecken eller färre'
@@ -501,7 +493,6 @@ portal.forms.error_not_unique_collection: 'Ett eller flera av de givna värdena 
 portal.forms.error_numeric: 'Ange ett nummer, utan några andra tecken.'
 portal.forms.error_password_current: 'Det här måste vara ditt nuvarande lösenord'
 portal.forms.error_password_forbid_reuse: 'Du kan inte använda ett lösenord som du har använt tidigare'
-portal.forms.error_password_min_length: 'Var vänlig och skriv ett lösenord på minst fem bokstäver.'
 portal.forms.error_password_require_num_lowercase:
   one: 'Minst {{count}} liten bokstav'
   other: 'Minst {{count}} små bokstäver'
@@ -534,12 +525,9 @@ portal.forms.error_upload_empty: 'Du kan inte ladda upp en tom fil.'
 portal.forms.error_upload_file: 'Kunde inte ladda upp filen'
 portal.forms.error_upload_general: 'Ett problem uppstod när filen skulle laddas upp. Försök igen.'
 portal.forms.error_upload_html_size: 'Den här filen är för stor.'
-portal.forms.error_upload_ini_size: 'Filen är för stor. Max tillåtna storlek är {{detail}}.'
-portal.forms.extra_fields: 'Tyvärr, ett fel har inträffat. Försök igen.'
 portal.forms.label_add_attachment: 'Lägg till en till bifogad fil'
 portal.forms.label_captcha: 'För att bevisa att du är en människa måste du ange texten som du ser i CAPTCHA bilden'
 portal.forms.label_category: Kategori
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Välj en fil'
 portal.forms.label_comment: 'Några kommentarer?'
 portal.forms.label_content: Innehåll
@@ -569,19 +557,17 @@ portal.forms.label_title: Titel
 portal.forms.label_upload_picture: 'Ladda upp bild'
 portal.forms.label_workflow: Arbetsflöde
 portal.general.add-comment: 'Posta en kommentar'
-portal.general.admin: Admin
 portal.general.admin_home: 'Admin hem'
-portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Hantera din Helpdesk'
 portal.general.agent_bar_admin_dl: Nedladdningsinställningar
-portal.general.agent_bar_admin_feedback: Feedbackinställningar
+portal.general.agent_bar_admin_community: Feedbackinställningar
 portal.general.agent_bar_admin_kb: Kunskapsbasinställningar
 portal.general.agent_bar_admin_lang: Språkinställningar
 portal.general.agent_bar_admin_news: Nyhetsinställningar
 portal.general.agent_bar_admin_portal: 'Portal Utseende & Teman'
 portal.general.agent_bar_agent_desc: 'Visa ärenden / Hantera innehåll'
 portal.general.agent_bar_agent_dl: 'Hantera nedladdningar'
-portal.general.agent_bar_agent_feedback: 'Hantera feedback'
+portal.general.agent_bar_agent_community: 'Hantera community topic'
 portal.general.agent_bar_agent_home: 'Agent hem'
 portal.general.agent_bar_agent_kb: 'Hantera kunskapsbas'
 portal.general.agent_bar_agent_news: 'Hantera nyheter'
@@ -622,8 +608,7 @@ portal.general.nav-chatlog: Chatlogg
 portal.general.nav-downloads: Nedladdningar
 portal.general.nav-downloads-desc: 'Bläddra bland våra nedladdningar'
 portal.general.nav-emails: E-post
-portal.general.nav-feedback: Feedback
-portal.general.nav-feedback-desc: 'Anpassade förslag'
+portal.general.nav-community-desc: 'Anpassade förslag'
 portal.general.nav-guides: Guider
 portal.general.nav-guides-desc: Produktdokumentation
 portal.general.nav-kb: Kunskapsbas
@@ -633,7 +618,6 @@ portal.general.nav-news: Nyheter
 portal.general.nav-news-desc: 'Nyheter & uppdateringar'
 portal.general.nav-newticket: 'Kontakta oss'
 portal.general.nav-newticket-desc: 'Vi finns här för att hjälpa'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profil
 portal.general.nav-quick-jump: Snabbhopp
 portal.general.nav-register: Registrera
@@ -666,7 +650,7 @@ portal.general.rated-negative: 'Du markerade denna sida som inte hjälpfull'
 portal.general.rated-positive: 'Du markerade denna sida som hjälpfull'
 portal.general.rating_x_of_y_found_helpful: '{{vote_up}} av {{vote_count}} personer tycker att denna sida är hjälpfull'
 portal.general.related-downloads: 'Relaterade filer'
-portal.general.related-feedback: 'Relaterad feedback'
+portal.general.related-community: 'Relaterad community topic'
 portal.general.related-news: 'Relaterade nyheter'
 portal.general.related-pages: 'Relaterade sidor'
 portal.general.rerender-form: 'Vänligen läs igenom det här formuläret innan du skickar det.'
@@ -683,8 +667,8 @@ portal.general.show_more: 'Visa mer'
 portal.general.show_x_more: 'Visa {num} fler'
 portal.general.software_provided_by: 'Helpdeskmjukvaran tillhandahålls av'
 portal.general.start-chat: 'Starta en chatsession'
-portal.general.submit-feedback: 'Posta feedback'
-portal.general.submit-feedback-desc: 'Feedback och förslag postat av kunder som du'
+portal.general.submit-community-topic: 'Posta community topic'
+portal.general.submit-community-topic-desc: 'Community topic och förslag postat av kunder som du'
 portal.general.tagged_with: 'taggade med'
 portal.general.tags: Taggar
 portal.general.toggle_off: av
@@ -704,9 +688,6 @@ portal.news.view-x-news:
   other: 'Visa {{count}} artiklar'
 portal.sidebar.agents_available: 'Tillgängliga agenter'
 portal.sidebar.agents_none: 'Inga av våra agenter är online just nu. Du kan ändå <a href="{{new_ticket_url}}">öppna ett ärende</a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Postad av {{name}}'
 portal.sidebar.news_title: Nyheter
 portal.sidebar.satisfied_customers: 'nöjda kunder'
@@ -835,7 +816,7 @@ user.chat.form_chat_send-file: 'Ladda upp en fil'
 user.chat.form_create_button-submit: 'Starta Chatten'
 user.chat.form_create_department: 'Välj avdelning'
 user.chat.form_create_title: 'Starta en chat med en agent'
-user.chat.form_feedback_button-submit: 'Skicka Feedback & Stäng Fönstret'
+user.chat.form_feedback_button-submit: 'Skicka Community topic & Stäng Fönstret'
 user.chat.form_feedback_comments: 'Kommentarer?'
 user.chat.form_feedback_rate-satisfaction: 'Är du nöjd med den här konversationen?'
 user.chat.form_feedback_rate-satisfied: Ja
@@ -846,7 +827,6 @@ user.chat.form_feedback_transcript-email: 'Skicka en utskrift av den här chatte
 user.chat.log-title: 'Dina chattar'
 user.chat.log_chat-id: 'Chatt ID'
 user.chat.log_created-date: 'Skapad {{date}}'
-user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Avdelning
 user.chat.log_message_author-you: Du
 user.chat.log_nav-view-chats:
@@ -890,8 +870,8 @@ user.defaults.article_category_general: Allmänt
 user.defaults.article_example_content: 'Detta är ett exempel på en kunskapsbasartikel. Känn dig fri att redigera eller radera den från agentgränsittet'
 user.defaults.article_example_title: Exempelartikel
 user.defaults.department_sales: Försäljning
-user.defaults.department_support: Support
 user.defaults.downloads_category_general: Dokument
+user.defaults.navigate: Navigera
 user.defaults.news_category_general: Allmänt
 user.defaults.news_example_content: 'Detta är ett exempel på en nyhet. Känn dig fri att redigera eller radera den från agentgränsittet.'
 user.defaults.news_example_title: Nyhetsexempel
@@ -905,14 +885,13 @@ user.email_subjects.download_sub_new_and_updated: 'Nya och uppdaterade nedladdni
 user.email_subjects.download_sub_updated: 'Uppdaterade nedladdningar'
 user.email_subjects.email-too-big: 'Ditt mail "{{subject}}" blev inte godkänt'
 user.email_subjects.email_new-confirm: 'Bekräfta din e-postadress'
-user.email_subjects.email_primary-confirm: 'Bekräfta din e-postadress'
-user.email_subjects.feedback_created_for_user: 'Tack för din feedback'
-user.email_subjects.feedback_new: 'Tack för att du skickade in din feedback'
-user.email_subjects.feedback_new-approved: 'Din feedback har blivit godkänd'
-user.email_subjects.feedback_new-comment: 'Det finns en ny kommentar på "{{title}}"'
-user.email_subjects.feedback_new-disapproved: 'Tyvärr, din feedback har blivit nekad'
-user.email_subjects.feedback_sub_updated: 'Uppdaterad feedback'
-user.email_subjects.feedback_updated: 'Din feedback har blivit uppdaterad: {{title}}'
+user.email_subjects.community_topic_created_for_user: 'Tack för din community topic'
+user.email_subjects.community_topic_new: 'Tack för att du skickade in din community topic'
+user.email_subjects.community_topic_new-approved: 'Din community topic har blivit godkänd'
+user.email_subjects.community_topic_new-comment: 'Det finns en ny kommentar på "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Tyvärr, din community topic har blivit nekad'
+user.email_subjects.community_sub_updated: 'Uppdaterad community topic'
+user.email_subjects.community_topic_updated: 'Din community har blivit uppdaterad: {{title}}'
 user.email_subjects.kb_sub_new: 'Nya artiklar'
 user.email_subjects.kb_sub_new_and_updated: 'Nya och uppdaterade artiklar'
 user.email_subjects.kb_sub_updated: 'Uppdaterade artiklar'
@@ -929,9 +908,7 @@ user.email_subjects.register-welcome-byagent: 'Ditt nya helpdesk konto'
 user.email_subjects.remind_unresolved_final_subject: 'PÅMINNELSE: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PÅMINNELSE: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Betygsätt gärna vår support på ditt ärende "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'En ny person har blivit tillagd till ditt ärende'
 user.email_subjects.tickets_re: 'SV: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'NOTIS: Du har skickat för många mail'
 user.emails.auto-close: 'Ditt ärende "{{ticket.subject}}" kommer snart att stängas eftersom att vi inte har hört ifrån dig på ett tag. Om du behöver mer assistans så kan du svara på detta mail så kommer en av våra agenter att hjälpa dig.'
 user.emails.chat_transcript: 'Tack för att du chattade med oss. Här är en utskrift av chatten.'
 user.emails.chat_validate_email: 'Vänligen bekräfta din e-postadress genom att ange den här koden "{{validation_code}}" i widget formuläret eller genom att klicka på den här länken:'
@@ -946,23 +923,23 @@ user.emails.download-updated-downloads:
   other: '{{count}} Uppdaterade nedladdningar'
 user.emails.downloads-explain: 'Du får det här mailet eftersom att du prenumererar på nedladdningar som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nedladdningsnotiser.</a>'
 user.emails.email-too-big: 'Ditt mail "{{subject}}" blev inte accepterat för att det är för stort. Den max tillåtna filstorleken är {{max_size}}. Ta bort dina bifogade filer och försök igen.'
-user.emails.feedback-explain: 'Du får det här mailet eftersom att du prenumererar på nyheter som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nyhetsnotiser.</a>'
-user.emails.feedback-updated-items:
-  one: '1 uppdaterad feedback'
-  other: '{{count}} uppdaterade feedbacks'
-user.emails.feedback_agent-validation: 'Notera att din feedback inte kommer att visas på sidan innan den har blivit granskad av en agent'
-user.emails.feedback_approved: 'Vi mailar till dig för att meddela att din feedback har blivit godkänd och att den nu visas publikt på vår sida.'
-user.emails.feedback_closed: 'Din inskickade feedback "{{title}}" stängdes: {{status}}'
-user.emails.feedback_created_for_user: 'Tack för din senaste feedback "{{title}}". {{agentName}} har skapat ett nytt feedbackobjekt så att du kan hålla dig uppdaterad med våra framsteg:'
-user.emails.feedback_disapproved: 'Vi mailar till dig för att meddela att din feedback har blivit nekad och att den inte kommer att visas på vår sida.'
-user.emails.feedback_disapproved-reason: 'Vi mailar till dig för att meddela att din feedback har blivit nekad och att den inte kommer att visas på vår sida. {{name}} angav följande anledning:'
-user.emails.feedback_new-comment: '{{name}} postade en ny kommentar:'
-user.emails.feedback_published: 'Din feedback "{{title}}" har blivit granskad och kommer nu att visas på vår sida.'
-user.emails.feedback_thank-you: 'Tack för att du skickade in din feedback "{{title}}"'
-user.emails.feedback_updated: 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:'
-  other: 'Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:'
+user.emails.community-explain: 'Du får det här mailet eftersom att du prenumererar på nyheter som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nyhetsnotiser.</a>'
+user.emails.community-updated-items:
+  one: '1 uppdaterad community topic'
+  other: '{{count}} uppdaterade community topics'
+user.emails.community-topic_agent-validation: 'Notera att din community topic inte kommer att visas på sidan innan den har blivit granskad av en agent'
+user.emails.community-topic_approved: 'Vi mailar till dig för att meddela att din community topic har blivit godkänd och att den nu visas publikt på vår sida.'
+user.emails.community-topic_closed: 'Din inskickade community "{{title}}" stängdes: {{status}}'
+user.emails.community-topic_created_for_user: 'Tack för din senaste community "{{title}}". {{agentName}} har skapat ett nytt community topic så att du kan hålla dig uppdaterad med våra framsteg:'
+user.emails.community-topic_disapproved: 'Vi mailar till dig för att meddela att din community topic har blivit nekad och att den inte kommer att visas på vår sida.'
+user.emails.community-topic_disapproved-reason: 'Vi mailar till dig för att meddela att din community har blivit nekad och att den inte kommer att visas på vår sida. {{name}} angav följande anledning:'
+user.emails.community-topic_new-comment: '{{name}} postade en ny kommentar:'
+user.emails.community-topic_published: 'Din community topic "{{title}}" har blivit granskad och kommer nu att visas på vår sida.'
+user.emails.community-topic_thank-you: 'Tack för att du skickade in din community topic "{{title}}"'
+user.emails.community-topic_updated: 'Din inskickade community topic "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"'
+user.emails.community-topic_votes:
+  one: 'Din community har <strong>1</strong> röst. Hantera din community topic online:'
+  other: 'Din community har <strong>{{count}}</strong> röster. Hantera din community topic online:'
 user.emails.greeting: 'Hej {{to_name}},'
 user.emails.kb-explain: 'Du får det här mailet eftersom att du prenumererar på vår kunskapsbas på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla kunskapsbasnotiser.</a>'
 user.emails.kb-new-articles:
@@ -1054,7 +1031,7 @@ user.error.permission-denied: 'Tyvärr, åtgärden du försöker utföra är int
 user.error.permission-denied-login: 'Du är för närvarande utloggad. <a href="{{login_url}}">Logga in</a> och försök igen.'
 user.error.permission-denied-title: 'Du är inte tillåten att göra detta'
 user.error.server-error: 'Ett serverfel förhindrade sidan att laddas. Var vänlig och försök igen.'
-user.feedback.submit_feedback: 'Posta feedback'
+user.community.submit_community_topic: 'Posta community topic'
 user.general.deskpro: DeskPRO
 user.general.helpdesk_by: 'Mjukvara av <strong>{{deskpro}}</strong>'
 user.general.label_captcha: Bekräftelsekod
@@ -1076,7 +1053,8 @@ user.lang.lang_title_japanese: Japanska
 user.lang.lang_title_norwegian: Norska
 user.lang.lang_title_persian: Persiska
 user.lang.lang_title_polish: Polska
-user.lang.lang_title_portuguese: Portugisiska
+user.lang.lang_title_portuguese_br: Portugisiska (Brasilien)
+user.lang.lang_title_portuguese_pt: Portugisiska (Portugal)
 user.lang.lang_title_romanian: Rumänska
 user.lang.lang_title_russian: Ryska
 user.lang.lang_title_spanish: Spanska
@@ -1104,7 +1082,7 @@ user.profile.register_password_require_num_uppercase:
   one: 'Minst {{count}} stor bokstav'
   other: 'Minst {{count}} stora bokstäver'
 user.profile.register_password_unused: 'Du kan inte använda ett lösenord som du har använt tidigare'
-user.tickets.feedback_message_leave_comment: 'Lämna en kommentar (frivilligt)'
+user.tickets.community_message_leave_comment: 'Lämna en kommentar (frivilligt)'
 user.tickets.fields_category: Kategori
 user.tickets.fields_department: Avdelning
 user.tickets.fields_priority: Prioritet
@@ -1126,18 +1104,14 @@ user.time.long-day_sunday: Söndag
 user.time.long-day_thursday: Torsdag
 user.time.long-day_tuesday: Tisdag
 user.time.long-day_wednesday: Onsdag
-user.time.long-month_april: April
 user.time.long-month_august: Augusti
-user.time.long-month_december: December
 user.time.long-month_february: Februari
 user.time.long-month_january: Januari
 user.time.long-month_july: Juli
 user.time.long-month_june: Juni
 user.time.long-month_march: Mars
 user.time.long-month_may: Maj
-user.time.long-month_november: November
 user.time.long-month_october: Oktober
-user.time.long-month_september: September
 user.time.short-day_friday: Fre
 user.time.short-day_monday: Mån
 user.time.short-day_saturday: Lör
@@ -1145,18 +1119,8 @@ user.time.short-day_sunday: Sön
 user.time.short-day_thursday: Tor
 user.time.short-day_tuesday: Tis
 user.time.short-day_wednesday: Ons
-user.time.short-month_april: Apr
-user.time.short-month_august: Aug
-user.time.short-month_december: Dec
-user.time.short-month_february: Feb
-user.time.short-month_january: Jan
-user.time.short-month_july: Jul
-user.time.short-month_june: Jun
-user.time.short-month_march: Mar
 user.time.short-month_may: Maj
-user.time.short-month_november: Nov
 user.time.short-month_october: Okt
-user.time.short-month_september: Sep
 user.time.time-ago_1_day: '1 dag sedan'
 user.time.time-ago_1_hour: '1 timme sedan'
 user.time.time-ago_1_minute: '1 minut sedan'

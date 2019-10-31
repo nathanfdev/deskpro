@@ -283,6 +283,10 @@ class SystemErrorHandler
         $errfile = self::stripPathPrefix($exception->getFile());
         $errline = $exception->getLine();
 
+        if (strlen($errstr) > 2000) {
+            $errstr = substr($errstr, 0, 2000);
+        }
+
         $backtrace   = $exception->getTrace();
         $trace       = self::formatBacktrace($backtrace);
         $contextData = '';
@@ -701,8 +705,8 @@ class SystemErrorHandler
 
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
-            $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
-            $str[] = sprintf("Exception: %s %s\n", $e->getCode(), $e->getMessage());
+            $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], substr($e->getMessage(), 0, 2000));
+            $str[] = sprintf("Exception: %s %s\n", $e->getCode(), substr($e->getMessage(), 0, 2000));
             $str[] = sprintf("\tType: %s\n", $errinfo['exception_type']);
             $str[] = sprintf("\tDate: %s (Running time to error: %s)\n", date('Y-m-d H:i:s'), $errinfo['time_to_error']);
             foreach ($extraData as $k => $v) {
@@ -1250,9 +1254,15 @@ class SystemErrorHandler
         if (is_resource($var)) {
             return '[resource]';
         }
-        $str = (string) $var;
-        if (strlen($str) > 1000) {
-            $str = substr($str, 0, 1000).'...(clipped)';
+        if (is_scalar($var)) {
+            $str = (string) $var;
+            if (strlen($str) > 1000) {
+                $str = substr($str, 0, 1000).'...(clipped)';
+            }
+        } elseif (is_callable($var)) {
+            return 'callable';
+        } else {
+            return '?';
         }
 
         return str_replace("\n", '', var_export(self::stripPathPrefix($str), true));

@@ -2,9 +2,9 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\TicketFeedback;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage;
 use JMS\Serializer\Annotation as JMS;
 
@@ -20,11 +20,11 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticket;
 
     /**
-     * The person who opened the ticket.
+     * The person for whom opened the ticket.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
-     * @var Person
+     * @var BasePerson
      */
     protected $ticketPerson;
 
@@ -33,7 +33,7 @@ abstract class TicketEmailType extends EmailBaseType
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
-     * @var Person
+     * @var BasePerson
      */
     protected $ticketAgent;
 
@@ -65,11 +65,20 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticketSatisfaction;
 
     /**
+     * The person who made the action with ticket.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     *
+     * @var Person
+     */
+    protected $actionPerformer;
+
+    /**
      * TicketEmailType constructor.
      *
      * @param Ticket           $ticket
-     * @param Person           $ticketPerson
-     * @param Person           $ticketAgent
+     * @param BasePerson       $ticketPerson
+     * @param BasePerson       $ticketAgent
      * @param string           $ticketLink
      * @param TicketMessage[]  $ticketMessages
      * @param TicketFeedback[] $ticketSatisfaction
@@ -87,5 +96,17 @@ abstract class TicketEmailType extends EmailBaseType
         $this->ticketMessages = $ticketMessages;
 
         $this->ticketSatisfaction = $ticketSatisfaction;
+    }
+
+    /**
+     * @param BasePerson $performer
+     *
+     * @return $this
+     */
+    public function setActionPerformer(BasePerson $performer)
+    {
+        $this->actionPerformer = $performer;
+
+        return $this;
     }
 }

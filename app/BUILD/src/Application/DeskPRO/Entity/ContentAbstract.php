@@ -33,8 +33,11 @@ abstract class ContentAbstract extends DomainObject
     const HIDDEN_STATUS_DRAFT       = 'draft';
     const HIDDEN_STATUS_PENDING     = 'pending';
 
-    const CONTENT_TYPE_RTE      = 'rte';
-    const CONTENT_TYPE_MARKDOWN = 'markdown';
+    const CONTENT_TYPE_RTE               = 'rte';
+    const CONTENT_TYPE_MARKDOWN          = 'markdown';
+    const CONTENT_TYPE_DESKPRO_EDITOR_V1 = 'dped_v1';
+
+    const DELETED_SLUG_PREFIX = '__DELETED__';
 
     /**
      * The unqique ID.
@@ -546,6 +549,7 @@ abstract class ContentAbstract extends DomainObject
         if ($contentInputType && !in_array($contentInputType, [
             self::CONTENT_TYPE_RTE,
             self::CONTENT_TYPE_MARKDOWN,
+            self::CONTENT_TYPE_DESKPRO_EDITOR_V1,
         ])) {
             throw new \Exception('Unknown content type '.$contentInputType);
         }
@@ -602,7 +606,11 @@ abstract class ContentAbstract extends DomainObject
     public function setSlug($newSlug)
     {
         $history = null;
-        if ($newSlug !== $this->slug && $this->slug) {
+        if ($newSlug !== $this->slug &&
+            $this->slug &&
+            !Strings::startsWith(static::DELETED_SLUG_PREFIX, $newSlug) &&
+            !Strings::startsWith(static::DELETED_SLUG_PREFIX, $this->slug)
+        ) {
             // if the slug exists in history already, we don't want to add it again
             $objectSlug = $this->slug;
             if (!$this->slug_history->exists(
@@ -639,7 +647,7 @@ abstract class ContentAbstract extends DomainObject
         }
 
         $ent   = $this->getEntityName().'Revision';
-        $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
+        $field = Strings::camelCaseToUnderscore((str_replace('DeskPRO:', '', $this->getEntityName())));
 
         $revs = App::getOrm()->createQuery(
             "
@@ -984,6 +992,11 @@ abstract class ContentAbstract extends DomainObject
         }
     }
 
+    protected function getParentAttributeName()
+    {
+        return Strings::camelCaseToUnderscore(Util::getBaseClassname(get_called_class()));
+    }
+
     public function getCalcNumComments()
     {
         static $numComments = null;
@@ -991,7 +1004,7 @@ abstract class ContentAbstract extends DomainObject
             return $numComments;
         }
         $ent    = $this->getEntityName();
-        $entity = strtolower(Util::getBaseClassname(get_called_class()));
+        $entity = $this->getParentAttributeName();
         $result = App::getOrm()->createQuery(
             "
             SELECT count(1) as num_comment

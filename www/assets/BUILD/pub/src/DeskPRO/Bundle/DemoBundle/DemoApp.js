@@ -17,8 +17,8 @@ import AppReducers from '../AppBundle/AppApp_Reducers';
 window.DP_LOCALE = 'en';
 window.DP_LANG = {
   'cloud.demo_expired.login_title': 'Your free trial has ended',
-  'feedback.nav.title':             'Feedback',
-  'feedback.nav.tabs.status':       'Status'
+  'community.nav.title':            'Community',
+  'community.nav.tabs.status':      'Status'
 };
 
 class DemoApp {

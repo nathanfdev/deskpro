@@ -334,6 +334,86 @@ class TicketLogGenerator
                 ];
                 break;
 
+            case 'charges':
+                $logSet = [];
+
+                foreach ($added as $ticketCharge) {
+                    $logData = [
+                        'action_type' => 'new_billing',
+                        'id_object'   => $ticketCharge->getId(),
+                        'new_amount'  => $ticketCharge->getAmount(),
+                        'new_time'    => $ticketCharge->getChargeTime(),
+                    ];
+
+                    $chargeChanges = $ticketCharge->getStateChangeRecorder()->getChanges();
+                    foreach ($chargeChanges as $chargeChange) {
+                        if (0 !== strpos($chargeChange->getField(), 'custom_data.')) {
+                            continue;
+                        }
+                        if (!array_key_exists('custom_data', $logData)) {
+                            $logData['custom_data'] = [];
+                        }
+                        $logData['custom_data'][$chargeChange->getField()] = $this->getLogDataForChange($chargeChange);
+                    }
+
+                    $logSet[] = $logData;
+                }
+
+                foreach ($removed as $ticketCharge) {
+                    $logData = [
+                        'action_type' => 'delete_billing',
+                        'id_object'   => $ticketCharge->getId(true),
+                        'charge_id'   => $ticketCharge->getId(true),
+                        'old_amount'  => $ticketCharge->getAmount(),
+                        'old_time'    => $ticketCharge->getChargeTime(),
+                        'old_created' => $ticketCharge->getDateCreated(),
+                    ];
+
+                    $chargeChanges = $ticketCharge->getStateChangeRecorder()->getChanges();
+                    foreach ($chargeChanges as $chargeChange) {
+                        if (0 !== strpos($chargeChange->getField(), 'custom_data.')) {
+                            continue;
+                        }
+                        if (!array_key_exists('custom_data', $logData)) {
+                            $logData['custom_data'] = [];
+                        }
+                        $logData['custom_data'][$chargeChange->getField()] = $this->getLogDataForChange($chargeChange);
+                    }
+
+                    $logSet[] = $logData;
+                }
+
+                return $logSet;
+                break;
+
+            case 'charge_changed':
+                $chargeLogData = [
+                    'action_type' => 'modify_billing',
+                    'id_object'   => $new->getId(),
+                    'charge_id'   => $new->getId(),
+                ];
+
+                $chargeChanges = $new->getStateChangeRecorder()->getChanges();
+                foreach ($chargeChanges as $chargeChange) {
+                    if ($chargeChange->getField() == 'amount' && !$chargeChange->isSame()) {
+                        $chargeLogData['old_amount'] = $chargeChange->getOld();
+                        $chargeLogData['new_amount'] = $chargeChange->getNew();
+                    } elseif ($chargeChange->getField() == 'charge_time' && !$chargeChange->isSame()) {
+                        $chargeLogData['old_time'] = $chargeChange->getOld();
+                        $chargeLogData['new_time'] = $chargeChange->getNew();
+                    } elseif ($chargeChange->getField() == 'date_created' && !$chargeChange->isSame()) {
+                        $chargeLogData['old_created'] = $chargeChange->getOld();
+                        $chargeLogData['new_created'] = $chargeChange->getNew();
+                    } elseif (0 === strpos($chargeChange->getField(), 'custom_data.')) {
+                        if (!array_key_exists('custom_data', $chargeLogData)) {
+                            $chargeLogData['custom_data'] = [];
+                        }
+                        $chargeLogData['custom_data'][$chargeChange->getField()] = $this->getLogDataForChange($chargeChange);
+                    }
+                }
+
+                return $chargeLogData;
+
             case 'language':
                 return [
                     'action_type' => 'changed_language',
@@ -385,13 +465,13 @@ class TicketLogGenerator
                 return $logSet;
                 break;
 
-            case 'feedback_link':
+            case 'topic_link':
                 $logSet = [];
 
                 if ($new) {
                     $m                      = $new;
                     $logData                = [];
-                    $logData['action_type'] = 'feedback_link_added';
+                    $logData['action_type'] = 'community_topic_link_added';
                     $logData['id_after']    = $m->getId();
                     $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
                     $logSet[]               = $logData;
@@ -400,7 +480,7 @@ class TicketLogGenerator
                 if ($old) {
                     $m                      = $old;
                     $logData                = [];
-                    $logData['action_type'] = 'feedback_link_removed';
+                    $logData['action_type'] = 'community_topic_link_removed';
                     $logData['id_before']   = $m->getId();
                     $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
                     $logSet[]               = $logData;
@@ -445,48 +525,48 @@ class TicketLogGenerator
                 break;
 
             case 'participants':
-                $added_users = array_filter($added, function ($part) {
+                $addedUsers = array_filter($added, function ($part) {
                     return !$part->person->is_agent;
                 });
-                $added_agents = array_filter($added, function ($part) {
+                $addedAgents = array_filter($added, function ($part) {
                     return $part->person->is_agent;
                 });
 
-                $removed_users = array_filter($removed, function ($part) {
+                $removedUsers = array_filter($removed, function ($part) {
                     return !$part->person->is_agent;
                 });
-                $removed_agents = array_filter($removed, function ($part) {
+                $removedAgents = array_filter($removed, function ($part) {
                     return $part->person->is_agent;
                 });
 
-                if ($added_users || $removed_users) {
+                if ($addedUsers || $removedUsers) {
                     return [
                         'action_type' => 'changed_user_participants',
                         'added'       => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $added_users),
+                        }, $addedUsers),
                         'removed' => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $removed_users),
+                        }, $removedUsers),
                     ];
                 }
-                if ($added_agents || $removed_agents) {
+                if ($addedAgents || $removedAgents) {
                     return [
                         'action_type' => 'changed_agent_participants',
                         'added'       => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $added_agents),
+                        }, $addedAgents),
                         'removed' => array_map(function ($part) {
                             $p = $part->person;
 
                             return ['id' => $p->id, 'name' => $p->display_name, 'email' => $p->email_address];
-                        }, $removed_agents),
+                        }, $removedAgents),
                     ];
                 }
                 break;

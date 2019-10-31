@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonPhoneNumber;
+use Application\DeskPRO\Entity\PersonPref;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
@@ -66,6 +67,11 @@ class PersonHandler extends AbstractEntityHandler
      * @var array
      */
     private $contactData;
+
+    /**
+     * @var array
+     */
+    private $prefs;
 
     /**
      * @var array
@@ -216,6 +222,7 @@ class PersonHandler extends AbstractEntityHandler
             ->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]))
             ->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]))
             ->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]))
+            ->setPrefs(new CallbackDeferredProperty([$this, 'getPrefs'], [$entity]))
             ->setPhoneNumbers(new CallbackDeferredProperty([$this, 'getPhoneNumbers'], [$entity]))
             ->setAgentTeams(new CallbackDeferredProperty([$this, 'getAgentTeams'], [$entity]))
             ->setPrimaryTeam(new CallbackDeferredProperty([$this, 'getPrimaryTeam'], [$entity]))
@@ -368,6 +375,31 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         return new ArrayCollection([]);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return array|ArrayObject
+     */
+    public function getPrefs(Person $entity)
+    {
+        if (null === $this->prefs) {
+            $result = $this->em->getRepository(PersonPref::class)->findBy([
+                'person' => array_keys($this->personIds),
+            ]);
+
+            $this->prefs = [];
+            foreach ($result as $value) {
+                $this->prefs[$value->getPerson()->getId()][$value->getName()] = $value->getValue();
+            }
+        }
+
+        if (isset($this->prefs[$entity->getId()])) {
+            return $this->prefs[$entity->getId()];
+        }
+
+        return new \ArrayObject([]);
     }
 
     /**

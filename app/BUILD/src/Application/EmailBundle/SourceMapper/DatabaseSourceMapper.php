@@ -12,6 +12,7 @@ use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Log\LogCollectorInterface;
 use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
+use DeskPRO\Component\Util\RandUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -209,6 +210,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $record = [
             'blob_id'          => $blob['id'],
             'ref'              => $ref,
+            'uuid'             => RandUtils::uuidV4(),
             'email_account_id' => $account_id,
             'headers'          => $message->getHeaders()->toString(),
             'header_to'        => $header_to,

@@ -320,10 +320,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				widgetParent: $(this).prev('div'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){
@@ -415,10 +415,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				widgetParent: $(this).prev('div'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){
@@ -493,10 +493,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				widgetParent: $(this).prev('div'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){
@@ -771,12 +771,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				h = $(window).height() - 90 - txt.offset().top;
 			}
 
-      window.LegacyRteTextarea.init(txt, {
+      this.rte = window.LegacyRteTextarea.init(txt, {
 				height: h,
         inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
-      txt.on('froalaEditor.keypress', function () {
+      this.rte.on('froalaEditor.keypress', function () {
         self.editStateSaver.triggerChange();
       });
 		}

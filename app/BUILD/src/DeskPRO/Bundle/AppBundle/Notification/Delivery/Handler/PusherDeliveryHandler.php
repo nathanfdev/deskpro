@@ -127,9 +127,16 @@ class PusherDeliveryHandler extends MultiplexDeliverHandler
             return;
         }
 
-        foreach ($this->messages as &$message) {
+        foreach ($this->messages as $index => &$message) {
+            if (!array_key_exists('data', $message) || empty($message['data'])) {
+                array_splice($this->messages, $index, 1);
+
+                continue;
+            }
+
             $message['data'] = json_encode($message['data']);
         }
+        unset($message);
 
         foreach (array_chunk($this->messages, 10) as $chunk) {
             $encodedDataLength = strlen(json_encode($chunk)); // we're interesting actual bytes, not chars

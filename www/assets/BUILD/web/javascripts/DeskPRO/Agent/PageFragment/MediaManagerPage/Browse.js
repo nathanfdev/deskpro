@@ -21,6 +21,9 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Browse = new Orb.Class({
 
 			var btn = $(this);
 
+			// Restoring cursor position before inserting to get to the right place.
+      MEDIA_MANAGER_WINDOW.boundEditor.selection.restore();
+
       if (MEDIA_MANAGER_WINDOW.boundEditor.html) {
         if (btn.data('is-image') == '1') {
           MEDIA_MANAGER_WINDOW.boundEditor.html.insert('<img src="' + btn.data('download-url') + '" />');
@@ -29,6 +32,7 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Browse = new Orb.Class({
         }
       } else {
 				if (btn.data('is-image') == '1') {
+          console.log("SET CONTENT");
 					MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<img src="' + btn.data('download-url') + '" />');
 				} else {
 					MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<a href="' + btn.data('download-url') + '">' + btn.data('file-name') + '</a>');

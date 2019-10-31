@@ -1,0 +1,30 @@
+<dp:subject>
+	{{ phrase('user.email_subjects.community_sub_updated') }}
+</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		<h1>{{ phrase('user.emails.community-updated-items', {count: updated_topics|length}) }}</h1>
+		<ul>
+			{% for topic in updated_topics %}
+				<li><a href="{{ url_full('portal_community_topic_view', {slug: topic.slug}) }}">{{ topic.title }}</a></li>
+			{% endfor %}
+		</ul>
+
+		<div class="dp-hr">&nbsp;</div>
+		{{ phrase('user.emails.community-explain', {deskpro_url: portal_home }) }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

@@ -38,7 +38,6 @@ foreach ([
     'DpTestingMocks' => DP_APP_DIR.'/testing/src',
     'Metadata' => DP_APP_DIR.'/vendor-src/metadata/src',
     'Leth' => DP_APP_DIR.'/vendor-src/php-ipaddress/classes',
-    'libphonenumber' => DP_APP_DIR.'/vendor-src/libphonenumber/src',
     'Bdt\\Clickatell' => DP_APP_DIR.'/vendor-src/guzzle-clickatell/src',
 
     'mPDF_' => DP_APP_DIR.'/vendor-src/mpdf/lib',
@@ -90,6 +89,7 @@ foreach ([
     'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
     'DpScripts\\Agent\\' => DP_DIR.'/app/scripts/agent',
     'DpScripts\\User\\' => DP_DIR.'/app/scripts/user',
+    'DpScripts\\Command\\' => DP_DIR.'/app/scripts/command',
     'DeskPRO\\Services\\' => DP_APP_DIR.'/bin/tools/services/src',
     'DeskPRO\\ImporterTools\\' => DP_APP_DIR.'/modules/importer-tools/inc',
 ] as $prefix => $path) {

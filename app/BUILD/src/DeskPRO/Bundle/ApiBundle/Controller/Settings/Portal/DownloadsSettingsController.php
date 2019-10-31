@@ -3,9 +3,11 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class DownloadsSettingsController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
  * @Rest\Route("/settings/brands/{brand}/portal/downloads")
  */
 class DownloadsSettingsController extends AbstractBrandAwareSettingsController
@@ -60,7 +63,7 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType"
      *     },
      *     noOutput=true
-     *)
+     * )
      * @Rest\Post("")
      *
      * @param Request $request
@@ -107,5 +110,9 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::TAB_DOWNLOADS, $model->isTabEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_DOWNLOADS, $model->isSubscriptions(), $brand)
         ;
+        $this->getRepository(Setting::class)->updateSetting(
+            PortalSettingsResolver::ATTACHMENT_REQUIRE_AUTH_DOWNLOADS,
+            $model->isAttachmentRequireAuth()
+        );
     }
 }

@@ -27,6 +27,7 @@ class HtmlPurifier implements CleanerPlugin
         return [
             'html',
             'extended_html',
+            'html_javascript',
             'simple_html',
             'html_core',
             'html_email',
@@ -39,6 +40,9 @@ class HtmlPurifier implements CleanerPlugin
 
     public function cleanValue($value, $type, array $options, Cleaner $cleaner)
     {
+        if ($type === 'html_javascript') {
+            return $value;
+        }
         // A lot of tags are not allowed in <pre> (eg <font>)
         // which means html purifier will strip them out.
         // So lets just replace pre tags
@@ -301,10 +305,10 @@ class HtmlPurifier implements CleanerPlugin
                     strong,b,em,i,strike,u,
                     p[align],ol[type|compact],ul,li,br,img[src|width|height|alt|title],
                     sub,sup,blockquote,
-                    table[border|cellspacing|cellpadding|align|summary],
+                    table[border|cellspacing|cellpadding|align|summary|style],
                     tr,tbody,thead,tfoot,
-                    td[colspan|rowspan|width|height|align|valign|scope],
-                    th[colspan|rowspan|width|height|align|valign|scope],
+                    td[colspan|rowspan|width|height|align|valign|scope|height|bgcolor|valign],
+                    th[colspan|rowspan|width|height|align|valign|scope|height|bgcolor|valign],
                     caption,div, span, code, pre,address, h1, h2, h3, h4, h5, h6, hr[size|noshade],
                     font[face|size|color],dd,dl,dt,cite,abbr,acronym,del[cite],ins[cite],
                     col[align|span|valign|width],colgroup[align|span|valign|width],
@@ -315,7 +319,26 @@ class HtmlPurifier implements CleanerPlugin
                 $config->set('Attr.AllowedClasses', 'MsoNormal');
                 $config->set('URI.DisableExternalResources', true);
                 $config->set('AutoFormat.RemoveEmpty', false);
-                $config->set('CSS.AllowedProperties', ['font', 'font-weight', 'font-style', 'font-size', 'color', 'background-color', 'background']);
+                $config->set('CSS.AllowTricky', true);
+                $config->set('CSS.AllowedProperties', [
+                    'font',
+                    'font-weight',
+                    'font-style',
+                    'font-size',
+                    'color',
+                    'background-color',
+//                    'background-size',
+                    'background-image',
+                    'background',
+                    'width',
+                    'height',
+                    'border',
+//                    'border-radius',
+//                    '-moz-border-radius',
+//                    '-webkit-border-radius',
+                    'display',
+                    'text-decoration',
+                ]);
                 $config->set('HTML.Doctype', 'XHTML 1.0 Transitional');
                 $config->set('HTML.TidyLevel', 'medium');
                 break;

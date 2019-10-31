@@ -2,7 +2,7 @@
 	<p>There is no feedback.</p>
 {% else %}
 	{% for f in feedback %}
-		<div class="feedback-table check-grid item-list">
+		<div class="community-table check-grid item-list">
 			<table cellspacing="0" cellpadding="0" width="100%">
 				<thead>
 					<tr>
@@ -26,7 +26,7 @@
 									<td width="70%" style="padding: 0">
 										<a
 											class="user-link"
-											style="background-image: url({{ f.ticket.person.getPictureUrl(24) }})"
+											style="background-image: url({{ f.ticket.person.getPictureUrl(24) }}); background-size: contain;"
 											href="{{ app.request.getBaseUrl() }}/agent/#app.people,p:{{f.ticket.person.id}}"
 										>{{ f.ticket.person.name }} &lt;{{ f.ticket.person.email_address }}&gt;</a>
 										<div class="user-message rating-{% if f.rating == 1 %}up{% elseif f.rating == -1 %}down{% else %}neutral{% endif %}">
@@ -46,7 +46,7 @@
 										<strong>Agent:</strong><br />
 										<a
 											class="user-link"
-											style="background-image: url({{ f.ticket_message.person.getPictureUrl(24) }})"
+											style="background-image: url({{ f.ticket_message.person.getPictureUrl(24) }}); background-size: contain;"
 											href="{{ app.request.getBaseUrl() }}/agent/#app.people,p:{{f.ticket_message.person.id}}"
 										>{{ f.ticket_message.person.name }}</a>
 									</td>

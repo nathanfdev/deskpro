@@ -26,7 +26,10 @@
 
 					<strong>{{ phrase('agent.general.link') }}</strong><br />
 					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
-					{{ phrase('agent.general.label') }}: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.general.inserts_file_link') }}</button><br />
+					{{ phrase('agent.general.label') }}: <input type="text"
+																class="link-label"
+																autocomplete="{{ "now" | date("U") }}"
+																value="{{ blob.display_title }}" /> <button class="dp-button">{{ phrase('agent.general.inserts_file_link') }}</button><br />
 					{{ phrase('agent.general.inserts_file_link') }}
 
 					{% if blob.isImage() %}
@@ -41,8 +44,14 @@
 
 						<strong>{{ phrase('agent.general.linked_thumbnail') }}</strong>
 						<input type="hidden" class="insert-thumb-code" value="![attach:{{ blob.id }} thumb:{{ '{{width}},{{height}}' }}]" />
-						{{ phrase('agent.general.width') }}: <input type="text" class="thumb-width" value="50" />
-						{{ phrase('agent.general.height') }}: <input type="text" class="thumb-height" value="50" />
+						{{ phrase('agent.general.width') }}: <input type="text"
+																	class="thumb-width"
+																	autocomplete="{{ "now" | date("U") }}"
+																	value="50" />
+						{{ phrase('agent.general.height') }}: <input type="text"
+																	 class="thumb-height"
+																	 autocomplete="{{ "now" | date("U") }}"
+																	 value="50" />
 						<button class="dp-button">{{ phrase('agent.general.insert_thumbnail') }}</button><br />
 						{{ phrase('agent.general.inserts_thumbnail_with_link') }}
 					{% endif %}

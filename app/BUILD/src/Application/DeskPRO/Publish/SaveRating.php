@@ -45,10 +45,10 @@ class SaveRating implements PersonContextInterface
 
         $perm_name = false;
         switch ($entity_name) {
-            case 'DeskPRO:Article':  $perm_name = 'articles.rate'; break;
-            case 'DeskPRO:Download': $perm_name = 'downloads.rate'; break;
-            case 'DeskPRO:News':     $perm_name = 'news.rate'; break;
-            case 'DeskPRO:Feedback': $perm_name = 'feedback.rate'; break;
+            case 'DeskPRO:Article':  $perm_name       = 'articles.rate'; break;
+            case 'DeskPRO:Download': $perm_name       = 'downloads.rate'; break;
+            case 'DeskPRO:News':     $perm_name       = 'news.rate'; break;
+            case 'DeskPRO:CommunityTopic': $perm_name = 'community.rate'; break;
         }
 
         if ($perm_name) {
@@ -57,7 +57,7 @@ class SaveRating implements PersonContextInterface
             }
         }
 
-        if ($content_object instanceof \Application\DeskPRO\Entity\Feedback) {
+        if ($content_object instanceof \Application\DeskPRO\Entity\CommunityTopic) {
             if ($content_object == 'closed') {
                 throw new \InvalidArgumentException();
             }

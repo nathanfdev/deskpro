@@ -34,7 +34,7 @@ export class CheckboxOption extends Component {
       <li>
         <div className={'dpw--popup-item-box'} onClick={this.handleClick}>
           <span className={'dpw--checkbox-boxy'}>
-            {this.state.isActive && <i className="fa fa-check" />}
+            {this.state.isActive && <i className="fas fa-check" />}
           </span>
           <span className="dpw-popup-item-collection-name">
             {label}

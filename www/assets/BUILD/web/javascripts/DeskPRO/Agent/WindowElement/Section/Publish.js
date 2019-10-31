@@ -240,6 +240,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	recountBadge: function() {
 		var count = 0;
 		count += parseInt($.trim($('#kb_pending_count').text())) || 0;
+    count += parseInt($.trim($('#kb_pending_review_count').text())) || 0;
 		count += parseInt($.trim($('#publish_validating_count').text())) || 0;
 		count += parseInt($.trim($('#publish_validating_comments_count').text())) || 0;
 		this.updateBadge(count);

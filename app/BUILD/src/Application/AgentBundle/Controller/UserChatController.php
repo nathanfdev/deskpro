@@ -96,6 +96,9 @@ class UserChatController extends AbstractController
         }
 
         $block = null;
+        if ($convo->getVisitorId()) {
+            $block = $this->em->getRepository(ChatBlock::class)->getBlockForVisitor($convo->getVisitorId());
+        }
 
         $fieldManager = $this->container->getSystemService('chat_fields_manager');
         $customFields = $fieldManager->getDisplayArrayForObject($convo);
@@ -696,7 +699,6 @@ class UserChatController extends AbstractController
             $searcher = new ChatConversationSearch();
             $searcher->setPersonContext($this->person);
             $searcher->setColumns('COUNT(*)');
-            $searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
             $this->updateSearcherFilter($searcher, $filterId);
 
             $filter       = [];

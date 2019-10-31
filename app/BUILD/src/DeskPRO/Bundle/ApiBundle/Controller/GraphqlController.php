@@ -24,7 +24,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Handles GraphQL schema requests and queries.
  *
- * @ApiModes("all")
+ * @ApiModes("key")
  */
 class GraphqlController extends BaseController
 {
@@ -43,7 +43,7 @@ class GraphqlController extends BaseController
         'email_templates_get_email_templates_info',
         'email_templates_get_email_templates_legacy_templates',
         'email_templates_get_email_templates_revert_legacy_template',
-        'feedback_get_feedback',
+        'community_get_community_topic',
         'helpdesk_get_helpdesk_agent_client_settings',
         'languages_get_languages_admin_phrases',
         'auth_get_me_device_setup_token',
@@ -64,7 +64,7 @@ class GraphqlController extends BaseController
      * Handles GraphQL schema requests and queries.
      *
      * @Route("/graphql", name="api_v2_graphql")
-     * @ApiUserContext("open")
+     * @ApiUserContext("admin")
      *
      * @param Request $request
      *
@@ -111,7 +111,7 @@ class GraphqlController extends BaseController
      * Handles GraphiQL requests.
      *
      * @Route("/graphiql", name="api_v2_graphiql")
-     * @ApiUserContext("open")
+     * @ApiUserContext("admin")
      *
      * @return Response
      */
@@ -126,7 +126,7 @@ class GraphqlController extends BaseController
      * Handles request for GraphQL operations docs.
      *
      * @Route("/graphql/doc")
-     * @ApiUserContext("open")
+     * @ApiUserContext("admin")
      *
      * @return Response
      */

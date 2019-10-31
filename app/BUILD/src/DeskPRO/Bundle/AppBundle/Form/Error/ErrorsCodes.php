@@ -66,6 +66,11 @@ final class ErrorsCodes
     const NO_UPLOADED_FILE            = 'no_uploaded_file';
     const NOT_AN_IMAGE                = 'not_an_image';
     const MISMATCH_VALUES             = 'mismatch_values';
+    const UNVERIFIED_NUMBER           = 'unverified_number';
+    const INSUFFICIENT_BALANCE        = 'insufficient_balance';
+    const VOICE_BLACKLIST             = 'voice_blacklist';
+    const VOICE_INVALID_NUMBER        = 'voice_invalid_number';
+    const VOICE_PERMISSIONS           = 'voice_permissions';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

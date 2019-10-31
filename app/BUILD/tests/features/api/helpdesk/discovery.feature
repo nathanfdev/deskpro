@@ -151,6 +151,6 @@ Feature: Discover settings
 
     And the JSON node "data.chat.enabled" should exist
     And the JSON node "data.crm.enabled" should exist
-    And the JSON node "data.feedback.enabled" should exist
+    And the JSON node "data.community.enabled" should exist
     And the JSON node "data.publish.enabled" should exist
     And the JSON node "data.tasks.enabled" should exist

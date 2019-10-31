@@ -7,9 +7,11 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -279,9 +281,15 @@ class NewTicket
 
         if (!$person) {
             if ($this->_person_context->hasPerm('agent_people.create')) {
-                $person                = new Person();
-                $email_obj             = $person->addEmailAddressString($this->person->email_address);
-                $person->primary_email = $email_obj;
+                $person = new Person();
+
+                if ($this->person->email_address) {
+                    $emailObj = $person->addEmailAddressString($this->person->email_address);
+                    $person->setPrimaryEmail($emailObj);
+                }
+                if ($this->person->phoneNumber) {
+                    $person->setPrimaryPhoneNumber(PersonPhoneNumber::createEntity($this->person->phoneNumber));
+                }
             } else {
                 throw new \Exception('You do not have permission to create a new user. If you think this is a mistake, please contact your administrator.');
             }
@@ -425,7 +433,7 @@ class NewTicket
                         $raw_file,
                         $blob->getFilename(),
                         $blob->getContentType(),
-                        ['tag' => 'ticket_attachment']
+                        ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
                     );
                 }
 

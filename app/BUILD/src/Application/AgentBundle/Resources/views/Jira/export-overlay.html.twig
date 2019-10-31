@@ -13,7 +13,9 @@
 			<label for="jira-issue-title">{{ phrase('agent.jira.labels.title')}} *</label>
 		</div>
 		<div style="display: inline-block; width: 77%; float: left; padding: 5px;">
-			<input style="width: 99%" type="text" name="title" id="jira-issue-title" value="[{{ticket.ref}}] {{ticket.subject}}"/>
+			<input style="width: 99%" type="text" name="title" id="jira-issue-title"
+				   autocomplete="{{ "now" | date("U") }}"
+				   value="[{{ticket.ref}}] {{ticket.subject}}"/>
 		</div>
 		<br/>
 		<br/>
@@ -64,7 +66,9 @@
 		</div>
 		<div class="row">
 			<label for="label">{{ phrase('agent.jira.labels.labels') }}</label>
-			<input type="text" style="width: 97%;" value="{{ app.getSetting('core.apps_jira.defaultTags') }}" id="labels" name="labels"/>
+			<input type="text" autocomplete="{{ "now" | date("U") }}"
+				   style="width: 97%;" value="{{ app.getSetting('core.apps_jira.defaultTags') }}"
+				   id="labels" name="labels"/>
 			<p class="instruction">{{ phrase('agent.jira.labels.labels.instrcution') }}</p>
 		</div>
 	</div>

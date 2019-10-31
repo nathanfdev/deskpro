@@ -67,6 +67,7 @@ class RawTransportFactory
                 $tr = $this->createPhpMailTransport($config);
                 break;
             case 'exchange':
+            case 'office365_exchange':
                 $tr = $this->createExchangeTransport($config);
                 break;
             default:
@@ -110,7 +111,11 @@ class RawTransportFactory
         }
         $tr->registerPlugin($tr_logger);
 
-        if ($heloDomain = $this->settings->get('smtp.helo_domain')) {
+        if ($heloDomain = $this->settings->get('smtp.helo_domain.'.$config->user)) {
+            $tr->setLocalDomain($heloDomain);
+        } elseif ($heloDomain = $this->settings->get('smtp.helo_domain')) {
+            $tr->setLocalDomain($heloDomain);
+        } elseif ($heloDomain = $this->settings->get('smtp.helo_domain_default')) {
             $tr->setLocalDomain($heloDomain);
         }
 
@@ -189,7 +194,7 @@ class RawTransportFactory
      *
      * @return RawExchangeTransport
      */
-    public function createExchangeTransport(OutgoingAccount\ExchangeConfig $config)
+    public function createExchangeTransport(AccountConfigInterface $config)
     {
         $decoder = new Rfc2822Decoder();
 
