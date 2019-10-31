@@ -34,6 +34,8 @@ use Symfony\Component\HttpFoundation\Response;
 class CommunityForumStatusesController extends BaseController
 {
     /**
+     * Get a list of community statuses.
+     *
      * @param CommunityForum $communityForum
      * @ApiDoc(
      *     section="Community Per Forum Custom Fields",
@@ -53,6 +55,8 @@ class CommunityForumStatusesController extends BaseController
     }
 
     /**
+     * Post new display orders for statuses.
+     *
      * @param CommunityForum $communityForum
      * @param Request        $request
      * @ApiDoc(
@@ -61,6 +65,8 @@ class CommunityForumStatusesController extends BaseController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
+     *     input="array",
+     *     output="null"
      * )
      *
      * @throws \Doctrine\ORM\OptimisticLockException

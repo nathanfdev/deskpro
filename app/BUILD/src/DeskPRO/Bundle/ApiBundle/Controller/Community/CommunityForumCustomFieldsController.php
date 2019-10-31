@@ -39,7 +39,10 @@ use Symfony\Component\HttpFoundation\Response;
 class CommunityForumCustomFieldsController extends BaseController
 {
     /**
+     * Get a list of community topic fields.
+     *
      * @param CommunityForum $communityForum
+     *
      * @ApiDoc(
      *     section="Community Per Forum Custom Fields",
      *     resourceDescription="Operations about community forum custom fields",
@@ -58,15 +61,19 @@ class CommunityForumCustomFieldsController extends BaseController
     }
 
     /**
+     * Post new display orders.
+     *
      * @param CommunityForum $communityForum
      * @param Request        $request
+     *
      * @ApiDoc(
      *     section="Community Per Forum Custom Fields",
      *     resourceDescription="Operations about community forum custom fields",
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="array<Application\DeskPRO\Entity\CommunityTopicCustomDef>"
+     *     output="null",
+     *     input="array"
      * )
      *
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -96,6 +103,8 @@ class CommunityForumCustomFieldsController extends BaseController
     }
 
     /**
+     * Get a custom field.
+     *
      * @param CommunityForum          $communityForum
      * @param CustomDefCommunityTopic $customDefCommunityTopic
      * @ApiDoc(
@@ -128,6 +137,8 @@ class CommunityForumCustomFieldsController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function postAction(CommunityForum $communityForum, Request $request)
@@ -136,6 +147,8 @@ class CommunityForumCustomFieldsController extends BaseController
     }
 
     /**
+     * Update a community custom field.
+     *
      * @param CommunityForum    $communityForum
      * @param CustomDefAbstract $customDefCommunityTopic
      *
@@ -159,6 +172,8 @@ class CommunityForumCustomFieldsController extends BaseController
 
      * @param Request $request
      * @SerializerView(serializeNull=true)
+     *
+     * @throws \Exception
      *
      * @return View
      */
