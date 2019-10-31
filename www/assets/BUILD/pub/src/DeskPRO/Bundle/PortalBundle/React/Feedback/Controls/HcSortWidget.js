@@ -48,7 +48,9 @@ export class HcSortWidget extends React.Component {
     this.toggle();
   };
 
-  toggle = () => {
+  toggle = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.setState({ is_shown: !this.state.is_shown });
   };
 
@@ -77,6 +79,7 @@ export class HcSortWidget extends React.Component {
       <div className="dp-po-community-header-sort">
         <ClickOut onClickOut={this.onClickOut} context={[document]}>
           <a
+            href="#toggleSort"
             className="dp-po-community-header-sort-link"
             aria-haspopup="true"
             aria-expanded={this.state.is_shown}
@@ -87,7 +90,7 @@ export class HcSortWidget extends React.Component {
           </a>
           <div className={`dropdown-menu dropdown-menu-right ${this.state.is_shown && 'show'}`} style={dropdownStyle}>
             {map(sorts, (sort, id) =>
-              <a key={id} onClick={() => this.onSort(id)} className="dropdown-item">{sort} <i className="dp-po-icon far fa-check" /></a>
+              <a href="#sort" key={id} onClick={(ev) => { ev.preventDefault(); ev.stopPropagation(); this.onSort(id); }} className="dropdown-item">{sort} <i className="dp-po-icon far fa-check" /></a>
             )}
           </div>
         </ClickOut>

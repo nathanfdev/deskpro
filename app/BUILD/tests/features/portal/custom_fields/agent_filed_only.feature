@@ -35,11 +35,11 @@ Feature: Agent field only
       Given I'm authenticated as user
       And the setting "portal.members_community" is set to 0
       When I go to "/profile"
-      Then the ".form-ticket" form should have 4 elements
+      # there was 4 fields, including upload_picture which was broken for a while
+      Then the ".form-ticket" form should have 3 elements
       And I should see ".form-ticket" form fields in following order:
         | name                                 |
         | person_profile[name]                 |
-        | person_profile[upload_picture]       |
         | person_profile[timezone]             |
         | person_profile[{user_field_2}][data] |
 
