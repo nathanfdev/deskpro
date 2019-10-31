@@ -9,7 +9,13 @@ export class Carousel extends PageWidget {
   renderWidget() {
     const $carouselWrapper = this.$element;
     const $slides = $(this.$element).find('.dpx-carousel-item');
-    const slides = $slides.map((index, $slide) => <div className={$($slide).removeClass('dpx-carousel-item').attr('class')} dangerouslySetInnerHTML={{ __html: $slide.innerHTML }} />).toArray();
+    const slides = $slides.map((index, $slide) =>
+      <div
+        key={`news_carousel_slide_${index}`}
+        className={$($slide).removeClass('dpx-carousel-item').attr('class')}
+        dangerouslySetInnerHTML={{ __html: $slide.innerHTML }}
+      />
+    ).toArray();
     const settings = {
       dots:           true,
       infinite:       true,

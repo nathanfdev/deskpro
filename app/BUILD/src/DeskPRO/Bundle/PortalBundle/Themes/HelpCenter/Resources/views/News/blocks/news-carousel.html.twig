@@ -1,13 +1,13 @@
-<div class="dp-po-news-carousel">
-    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left">
+<div class="dp-po-news-carousel dpx-carousel">
+    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left dpx-carousel-btn-back">
         <i class="dp-po-icon far fa-angle-left"></i>
     </button>
-    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right">
+    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right dpx-carousel-btn-next">
         <i class="dp-po-icon far fa-angle-right"></i>
     </button>
     <ul class="dp-po-news-carousel-list">
         {% for item in posts %}
-            <li class="dp-po-news-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
+            <li class="dp-po-news-carousel-item dpx-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
                 <a href="{{ portal_path(item) }}" class="dp-po-news-carousel-link">
                     <p class="dp-po-news-carousel-day">
                         <span class="dp-po-news-carousel-month">{{ item.date_published | date('M') }}</span>
@@ -42,7 +42,7 @@
             </li>
         {% endfor %}
         {% if showSectionLink %}
-            <li class="dp-po-news-carousel-item dp-po-news-carousel-item-seeall">
+            <li class="dp-po-news-carousel-item dp-po-news-carousel-item-seeall dpx-carousel-item">
                 <a href="{{ path('portal_news') }}" class="dp-po-news-carousel-link">
                     <div class="dp-po-news-carousel-wrap">
                         <img class="dp-po-news-carousel-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
