@@ -18,7 +18,8 @@ const config = {
     'hit_recorder.min':          path.join(__dirname, 'build/hit_recorder.min.js'),
     iframeResizer_contentWindow: './node_modules/iframe-resizer/js/iframeResizer.contentWindow.js',
 
-    DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
+    DeskPRO_PortalBundle:     './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
+    DeskPRO_HelpcenterBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_HelpcenterBundle',
 
     DeskPRO_PortalBundle_style:     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss',
     DeskPRO_PortalBundle_rtl_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss',
