@@ -4,6 +4,8 @@ namespace DpTest\DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
+use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpTest\PortalTestCase;
 
@@ -32,32 +34,34 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
      */
     protected function setUp()
     {
+        $this->getPortalKernel(true);
         $this->blobStorage = $this->getContainer()->get('blob.storage');
 
         $this->edit_theme_set = new ThemeSet();
         $this->edit_theme_set->setThemeId('edit_theme_set_id');
         $this->getEntityManager()->persist($this->edit_theme_set);
+
+        $brand = $this->getContainer()->get('brand_stack')->getActive()->getBrand();
+        $brand->setEditThemeSet($this->edit_theme_set);
+
         $this->getEntityManager()->flush();
 
         $this->service = $this->createService('dummy-empty.scss');
     }
 
     /**
-     * @param string $style       Style file path
-     * @param string $custom_scss
-     * @param string $mainScss
+     * @param string $style Style file path
      *
      * @return PortalStylesCompiler
      */
-    private function createService($style, $custom_scss = '', $mainScss = '')
+    private function createService($style)
     {
         return new PortalStylesCompiler(
             $this->getEntityManager(),
             $this->blobStorage,
+            $this->getContainer()->get('dp.portal.designer.advanced_edits_manager'),
             __DIR__."/scss/$style",
-            __DIR__."/scss-rtl/$style",
-            $mainScss,
-            $custom_scss
+            __DIR__."/scss-rtl/$style"
         );
     }
 
@@ -168,13 +172,29 @@ class PortalStylesCompilerIntegrationTest extends PortalTestCase
      */
     public function it_should_compile_custom_SCSS()
     {
-        $service = $this->createService('dummy-custom-style.scss', '
-            .dp-test-custom-scss {
-                .dp-test-custom-inner {
-                    color: purple;
+        $tag  = 'portal_css';
+        $blob = $this->getContainer()->get('blob.storage')->createBlobRecordFromString(
+'
+                .dp-test-custom-scss {
+                    .dp-test-custom-inner {
+                        color: purple;
+                    }
                 }
-            }
-        ');
+            ',
+    AdvancedEditsManager::CUSTOM_SCSS_ASSET_NAME, 'text/css', ['tag' => 'brand_asset.'.$tag]
+        );
+
+        $asset = new ThemeSetAsset();
+        $asset->setBlob($blob);
+        $asset->setName(AdvancedEditsManager::CUSTOM_SCSS_ASSET_NAME);
+        $asset->setTags([$tag]);
+
+        $this->edit_theme_set->addAsset($asset);
+
+        $this->getEntityManager()->persist($this->edit_theme_set);
+        $this->getEntityManager()->flush();
+
+        $service = $this->createService('dummy-custom-style.scss');
         $service->recompile([], $this->edit_theme_set);
 
         $this->assertEqualCss($this->getEditThemeCss('LTR'), '.dp-test-custom-scss .dp-test-custom-inner { color: purple; }');

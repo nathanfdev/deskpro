@@ -315,7 +315,7 @@ CODE;
             return $this->assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_main.scss';
         } elseif ($this->getEditThemeSet()->getThemeId() === 'edit_theme_set_id') {
             // a workaround for tests
-            $this->mainScssPath = $this->assetDir;
+            return $this->assetDir;
         } else {
             return $this->assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
         }
