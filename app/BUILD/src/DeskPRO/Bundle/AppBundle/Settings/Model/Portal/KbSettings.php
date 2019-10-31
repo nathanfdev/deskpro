@@ -17,13 +17,6 @@ class KbSettings extends AbstractAppSettings
     protected $knowledgebaseDeepTree;
 
     /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    protected $featuredArticles;
-
-    /**
      * @return bool
      */
     public function isKnowledgebaseDeepTree()
@@ -39,26 +32,6 @@ class KbSettings extends AbstractAppSettings
     public function setKnowledgebaseDeepTree($knowledgebaseDeepTree)
     {
         $this->knowledgebaseDeepTree = $knowledgebaseDeepTree;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeaturedArticles()
-    {
-        return $this->featuredArticles;
-    }
-
-    /**
-     * @param string $featuredArticles
-     *
-     * @return KbSettings
-     */
-    public function setFeaturedArticles($featuredArticles)
-    {
-        $this->featuredArticles = $featuredArticles;
 
         return $this;
     }

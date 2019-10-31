@@ -155,7 +155,6 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
             new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
             new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
-            new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash']),
             new \Twig_SimpleFunction('get_user', [$this, 'getPerson']),
             new \Twig_SimpleFunction('current_theme', [$this, 'getCurrentTheme']),
 

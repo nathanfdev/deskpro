@@ -48,15 +48,19 @@
                                 <h2 class="dp-po-title-text">{{ phrase('helpcenter.articles.section-title') }}</h2>
                             </a>
                         </div>
-                        {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
-                            category_children: kb_data.data.category_children,
-                            category: kb_data.data.category,
-                            category_pager: kb_data.data.category_pager,
-                            category_children: kb_data.data.category_children,
-                            category_children_pagers: kb_data.data.category_children_pagers,
-                            articles_count: kb_data.data.articles_count,
-                            with_tree: kb_data.data.with_tree,
-                        } %}
+                        {% if helpcenter_featured_articles()|length > 0 %}
+                            {% include 'Theme:Articles:featured_articles_home.html.twig' %}
+                        {% else %}
+                            {% include 'Theme:Articles:CategoryList/browse.html.twig' with {
+                                category_children: kb_data.data.category_children,
+                                category: kb_data.data.category,
+                                category_pager: kb_data.data.category_pager,
+                                category_children: kb_data.data.category_children,
+                                category_children_pagers: kb_data.data.category_children_pagers,
+                                articles_count: kb_data.data.articles_count,
+                                with_tree: kb_data.data.with_tree,
+                            } %}
+                        {% endif %}
                     </div>
                 {% endif %}
 

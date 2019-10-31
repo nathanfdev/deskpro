@@ -203,7 +203,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     editThemeOptions() {
-      console.log(this.$scope);
       const request = this.$http({
         method: 'PUT',
         url:    `${this.$scope.baseUrl}/portal/api/style/edit-theme-set/theme-options`,
