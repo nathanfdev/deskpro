@@ -49,7 +49,7 @@ echo ".. done"
 echo
 
 # Mattersplus codeplugin
-GIT_BRANCH=(cd $DIR_ROOT; git rev-parse --abbrev-ref HEAD)
+GIT_BRANCH=$(cd $DIR_ROOT; git rev-parse --abbrev-ref HEAD)
 echo "CodePlugin check for $GIT_BRANCH"
 if [[ $GIT_BRANCH == "mp-"* ]]; then
   echo "Installing MattersPlus"
