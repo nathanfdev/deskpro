@@ -146,15 +146,6 @@ class ChatWorkflow implements WorkflowInterface
                 $pendingChatTaskIds = $worker->getPendingTaskIdsForChannel(self::getChannelName());
                 $activeChatTaskIds = $worker->getActiveTaskIdsForChannel(self::getChannelName());
 
-                if (count($pendingChatTaskIds) > 0) {
-                    $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker is busy, reason = has_pending_chats, pending_chat_ids = [%s], active_chat_ids = [%s], worker_id = %s, task_id = %s',
-                        implode(', ', $pendingChatTaskIds), implode(', ', $activeChatTaskIds), $worker->getTypeId(), $task->getId()
-                    ));
-
-                    return false;
-                }
-
                 if (count($activeChatTaskIds) >= $maxChatsCount) {
                     $this->logger->info(sprintf(
                         '[ChatWorkflow] Worker is busy, reason = max_chats_counts, pending_chat_ids = [%s], active_chat_ids = [%s], worker_id = %s, task_id = %s',

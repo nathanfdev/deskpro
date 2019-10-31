@@ -208,7 +208,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $settingsResolver->getMaxChatsCount()->willReturn(5);
         $targetsLoader->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
 
-        $this->getAvailableWorkers($task)->shouldReturn([]);
+        $this->getAvailableWorkers($task)->shouldReturn([10 => $worker1]);
     }
 
     public function it_ignores_worker_if_it_has_too_many_active_chat_tasks(

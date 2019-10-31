@@ -782,6 +782,15 @@ class TaskRouter
                 return false;
             }
 
+            if (!$task->isAccepted()) {
+                $this->logger->info(sprintf(
+                    '[TaskRouter] Task is not active, unable to join, task_id = %s, task_status = %s, worker_type = %s, worker_id = %s',
+                    $taskId, $task->getStatus(), $workerType, $workerId
+                ));
+
+                return false;
+            }
+
             $task->addWorker($worker);
 
             $worker->removePendingTask($task);
