@@ -7,15 +7,27 @@ export class HcViewModes extends React.Component {
     onSetViewMode: PropTypes.func,
   };
 
+  onClickCompact = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.onSetViewMode('compact');
+  };
+
+  onClickExpanded = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.onSetViewMode('expanded');
+  };
+
   render() {
     const viewMode = this.props.filter.view_mode;
 
     return (
       <div className="dp-po-community-header-view">
-        <a onClick={() => this.props.onSetViewMode('compact')} className={`${viewMode === 'compact' && 'active'} dp-po-community-header-view-link dp-po-community-header-view-compact`}>
+        <a href="#setCompact" onClick={this.onClickCompact} className={`${viewMode === 'compact' && 'active'} dp-po-community-header-view-link dp-po-community-header-view-compact`}>
           <i className="dp-po-icon far fa-minus" />
         </a>
-        <a onClick={() => this.props.onSetViewMode('expanded')} className={`${viewMode === 'expanded' && 'active'} dp-po-community-header-view-link dp-po-community-header-view-expanded`}>
+        <a href="#setExpanded" onClick={this.onClickExpanded} className={`${viewMode === 'expanded' && 'active'} dp-po-community-header-view-link dp-po-community-header-view-expanded`}>
           <i className="dp-po-icon far fa-equals" />
         </a>
       </div>

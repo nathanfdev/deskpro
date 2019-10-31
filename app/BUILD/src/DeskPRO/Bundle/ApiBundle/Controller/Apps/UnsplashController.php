@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 class UnsplashController extends BaseController
 {
     /**
+     * Get a random unsplash image.
+     *
      * @ApiDoc(
      *     section="Apps",
      *     description="Get random images from unsplash",
@@ -29,7 +31,8 @@ class UnsplashController extends BaseController
      *      statusCodes={
      *          200="Returned if your request was successful",
      *          400="An error will occur if you provide wrong filters set",
-     *      }
+     *      },
+     *     output="string"
      * )
      *
      * @Rest\Get("/random")
@@ -47,9 +50,11 @@ class UnsplashController extends BaseController
     }
 
     /**
+     * Search for specific unsplash image.
+     *
      * @ApiDoc(
      *     section="Apps",
-     *     description="Get random images from unsplash",
+     *     description="Search for specific unsplash image",
      *     filters={
      *          {"name"="query", "pattern"="\s", "description"="Search query", "dataType"="string"},
      *          {"name"="page", "pattern"="\d", "description"="Page number", "dataType"="integer"},
@@ -57,7 +62,8 @@ class UnsplashController extends BaseController
      *      statusCodes={
      *          200="Returned if your request was successful",
      *          400="An error will occur if you provide wrong filters set",
-     *      }
+     *      },
+     *     output="array"
      * )
      *
      * @Rest\Get("/search")
