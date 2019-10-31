@@ -681,34 +681,6 @@ class UserChatManager
     }
 
     /**
-     * The user ended the chat.
-     *
-     *
-     * @param ChatConversation $convo
-     *
-     * @throws \Exception
-     */
-    public function endChatUser(ChatConversation $convo, $ended_by = null)
-    {
-        // Already ended
-        if ($convo->status == 'ended') {
-            return;
-        }
-
-        $convo->status = 'ended';
-
-        if ($ended_by) {
-            $convo->ended_by = $ended_by;
-        }
-
-        $this->addSystemMessage($convo, 'message_ended-by-user', [], ['chat_ended']);
-
-        $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
-
-        $this->autoSendChatTranscript($convo);
-    }
-
-    /**
      * Send a transcript of a chat to a user.
      *
      * @param ChatConversation $convo

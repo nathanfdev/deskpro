@@ -97,6 +97,8 @@ class ChatWorkflow implements WorkflowInterface
      */
     public function getAvailableWorkers(Task $task, $ignoreRejected = false)
     {
+        $this->logger->info(sprintf('[ChatWorkflow] Get available workers for the task, task_id = %s', $task->getId()));
+
         /** @var Worker[] $availableAgentWorkers */
         $availableAgentWorkers = [];
         foreach ($this->storage->getOnlineWorkersByType('agent') as $worker) {
@@ -123,15 +125,48 @@ class ChatWorkflow implements WorkflowInterface
                     return false;
                 }
 
-                // ignore if agent is already on a call or has incoming call popup
-                if ($worker->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())
-                    || $worker->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())
-                    || $worker->hasPendingTasksForChannel(self::getChannelName())
-                    || count($worker->getActiveTaskIdsForChannel(self::getChannelName())) >= $maxChatsCount
-                    || !in_array($worker->getTypeId(), $activeAgentIds)
-                ) {
+                if ($worker->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())) {
                     $this->logger->info(sprintf(
-                        '[ChatWorkflow] Worker is busy, worker_id = %s, task_id = %s',
+                        '[ChatWorkflow] Worker is busy, reason = has_pending_phone_call, worker_id = %s, task_id = %s',
+                        $worker->getTypeId(), $task->getId()
+                    ));
+
+                    return false;
+                }
+
+                if ($worker->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())) {
+                    $this->logger->info(sprintf(
+                        '[ChatWorkflow] Worker is busy, reason = has_active_phone_call, worker_id = %s, task_id = %s',
+                        $worker->getTypeId(), $task->getId()
+                    ));
+
+                    return false;
+                }
+
+                $pendingChatTaskIds = $worker->getPendingTaskIdsForChannel(self::getChannelName());
+                $activeChatTaskIds = $worker->getActiveTaskIdsForChannel(self::getChannelName());
+
+                if (count($pendingChatTaskIds) > 0) {
+                    $this->logger->info(sprintf(
+                        '[ChatWorkflow] Worker is busy, reason = has_pending_chats, pending_chat_ids = [%s], active_chat_ids = [%s], worker_id = %s, task_id = %s',
+                        implode(', ', $pendingChatTaskIds), implode(', ', $activeChatTaskIds), $worker->getTypeId(), $task->getId()
+                    ));
+
+                    return false;
+                }
+
+                if (count($activeChatTaskIds) >= $maxChatsCount) {
+                    $this->logger->info(sprintf(
+                        '[ChatWorkflow] Worker is busy, reason = max_chats_counts, pending_chat_ids = [%s], active_chat_ids = [%s], worker_id = %s, task_id = %s',
+                        implode(', ', $pendingChatTaskIds), implode(', ', $activeChatTaskIds), $worker->getTypeId(), $task->getId()
+                    ));
+
+                    return false;
+                }
+
+                if (!in_array($worker->getTypeId(), $activeAgentIds)) {
+                    $this->logger->info(sprintf(
+                        '[ChatWorkflow] Worker is not available for chat, worker_id = %s, task_id = %s',
                         $worker->getTypeId(), $task->getId()
                     ));
 
@@ -357,7 +392,6 @@ class ChatWorkflow implements WorkflowInterface
                 }
 
                 $task->setWorkersIds($workersIds);
-                $task->setDateExpireAssignedOffset($chatQueue->getAnswerTimeout());
 
                 break;
         }

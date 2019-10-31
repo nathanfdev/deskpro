@@ -147,6 +147,8 @@ class TaskRouter
                     $workers = $this->storage->getWorkers($task->getWorkerIds());
                     foreach ($workers as $worker) {
                         $worker->removePendingTask($task);
+                        $worker->removeActiveTask($task);
+
                         $this->storage->saveWorker($worker);
                     }
 
@@ -236,6 +238,18 @@ class TaskRouter
                             $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
                         } catch (\Exception $e) {
                             SystemErrorHandler::logException($e);
+                        }
+
+                        // reset pending task
+                        $workers = $this->storage->getWorkers($task->getWorkerIds());
+                        foreach ($workers as $worker) {
+                            $worker->removePendingTask($task);
+                            $worker->removeActiveTask($task);
+
+                            $this->storage->saveWorker($worker);
+
+                            $task->removeWorker($worker);
+                            $this->logger->info(sprintf('[TaskRouter] Remove pending worker by assign timeout, task_id = %s', $task->getId()));
                         }
 
                         $this->storage->saveTask($task);
