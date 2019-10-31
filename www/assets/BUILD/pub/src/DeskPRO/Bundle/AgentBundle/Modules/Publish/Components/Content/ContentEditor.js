@@ -10,6 +10,7 @@ class ContentEditor extends React.PureComponent {
   constructor(props) {
     super(props);
     this.editor = React.createRef();
+    this.wrapperRef = React.createRef();
 
     const { useCollab } = props;
     if (useCollab) {
@@ -23,6 +24,14 @@ class ContentEditor extends React.PureComponent {
       collabOnline:     false,
       showForceConnect: false
     };
+  }
+
+  componentDidMount() {
+    this.wrapperRef.current.addEventListener('keydown', this.onKeyDown);
+  }
+
+  componentWillUnmount() {
+    this.wrapperRef.current.removeEventListener('keydown', this.onKeyDown);
   }
 
   onFocus = () => {
@@ -64,6 +73,10 @@ class ContentEditor extends React.PureComponent {
     }
 
     useCollab.connectionManager.connect();
+  }
+
+  onKeyDown = (event) => {
+    event.stopPropagation();
   }
 
   getCollabUsersList = (users) => {
@@ -114,7 +127,7 @@ class ContentEditor extends React.PureComponent {
       // Need div position:relative to properly show overlay diff
       <div>
         { useCollab && showForceConnect && this.getForceConnectBlock() }
-        <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative' }} ref={this.wrapperRef}>
           {useCollab && !collabOnline && <div className="collab-offline-overlay" />}
           {useCollab && this.getCollabUsersList(collabUsers)}
           <ArticleEditor
