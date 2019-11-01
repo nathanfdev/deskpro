@@ -20,7 +20,6 @@ class ApprovalTableRow extends React.Component {
     this.state = {
       requestMessage: '',
       showResponses:  false,
-      showApprovers:  false,
       saving:         false,
     };
   }
@@ -75,12 +74,6 @@ class ApprovalTableRow extends React.Component {
   toggleVotes = () => {
     this.setState({
       showResponses: !this.state.showResponses
-    });
-  };
-
-  toggleApprovers = () => {
-    this.setState({
-      showApprovers: !this.state.showApprovers
     });
   };
 
@@ -212,11 +205,8 @@ class ApprovalTableRow extends React.Component {
             ? approval.approvers.map(approver => approver.name).join(', ')
             : <div>
               {approval.approvers.slice(0, 1).map(approver => approver.name)}&nbsp;
-              <a onClick={this.toggleApprovers}>+ {approval.approvers.length - 1} more</a>
+              <a onClick={this.toggleVotes}>+ {approval.approvers.length - 1} more</a>
             </div>}
-          {this.state.showApprovers &&
-            <div>{approval.approvers.slice(1).map(approver => approver.name).join(', ')}</div>
-          }
         </td>
         <td>{approval.required_approvals}</td>
         <td>{approval.required_rejections}</td>
