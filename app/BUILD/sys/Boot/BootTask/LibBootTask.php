@@ -72,6 +72,18 @@ class LibBootTask implements BootTaskInterface
         if ($env->getConfig('env.load_lib_fn')) {
             call_user_func($env->getConfig('env.load_lib_fn'), $env, $GLOBALS['DP_AUTOLOADER']);
         }
+
+        // Auto-load code plugins that have an auto-init file
+        if (is_dir($env->getBuildDirRoot().'/scripts/codeplugins')) {
+            $dir = new \DirectoryIterator($env->getBuildDirRoot().'/scripts/codeplugins');
+            foreach ($dir as $f) {
+                if ($f->isDir() && !$f->isDot() && file_exists($f->getPathname().'/config/setup.php')) {
+                    $DP_ENV = $env;
+                    $loader = $GLOBALS['DP_AUTOLOADER'];
+                    require_once($f->getPathname().'/config/setup.php');
+                }
+            }
+        }
     }
 
     /**
