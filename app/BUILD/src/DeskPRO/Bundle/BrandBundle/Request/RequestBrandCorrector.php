@@ -31,7 +31,7 @@ class RequestBrandCorrector
      */
     public function patchRequest(Request $request)
     {
-        if (!preg_match('#^/b/([\w-]+?)(/.*|$)$#', $request->getPathInfo(), $matches)) {
+        if (!preg_match('#^/b/([\w-]+)(/.*|$)$#', $request->getPathInfo(), $matches)) {
             return;
         }
 
