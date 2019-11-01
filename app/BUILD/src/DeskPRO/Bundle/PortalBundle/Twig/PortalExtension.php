@@ -140,6 +140,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('community_icon', [$this, 'makeCommunityIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('content_icon', [$this, 'makeContentIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('helpcenter_content_icon', [$this, 'makeHelpCenterContentIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('content_fa_icon', [$this, 'getFaIconClass']),
             new \Twig_SimpleFunction('ticket_view', [$this, 'getTicketView']),
             new \Twig_SimpleFunction('ticket_excerpts', [$this, 'getTicketExcerpts']),
             new \Twig_SimpleFunction('phrase_form_error', [$this, 'makeFormError'], ['is_safe' => ['html']]),
@@ -285,6 +286,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function makeHelpCenterContentIcon($content)
     {
         return $this->container->get('icon_factory')->makeContentIcon($content, true);
+    }
+
+    public function getFaIconClass($content)
+    {
+        return $this->container->get('icon_factory')->getFaClassForContent($content);
     }
 
     /**
