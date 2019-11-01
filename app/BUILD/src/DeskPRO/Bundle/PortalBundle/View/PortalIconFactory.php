@@ -196,6 +196,18 @@ class PortalIconFactory
     }
 
     /**
+     * @param Blob $blob
+     *
+     * @return string|null
+     */
+    public function getFaClassForContent($blob)
+    {
+        $extension = $blob->getExtension();
+
+        return $this->getFontAwesomeCssClassForFileExtension($extension);
+    }
+
+    /**
      * Will return HTML representing an icon for any article.
      *
      * @param Article $article
