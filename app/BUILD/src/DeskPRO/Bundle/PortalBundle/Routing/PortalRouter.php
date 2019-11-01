@@ -241,6 +241,9 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         if (false !== strpos($generated, 'index.php//')) {
             $generated = str_replace('index.php//', 'index.php/', $generated);
         }
+        if (false !== strpos($generated, 'file.php') && in_array($name, self::$nonBrandRoutes, true)) {
+            $generated = preg_replace('#/b/[\w-]+?/(?=file\.php)#', '/', $generated);
+        }
 
         if (in_array($name, self::$generatingIgnoredRoutes)) {
             return $generated;
