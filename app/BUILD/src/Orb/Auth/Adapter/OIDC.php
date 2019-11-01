@@ -14,6 +14,7 @@ use Orb\Auth\StateHandler\StateHandlerInterface;
 
 class OIDC extends AbstractCallbackAdatper
 {
+    // identity of the provider -- admin setting
     const OPTION_IDENTITY = 'identity';
     const OPTION_PROVIDER = 'provider';
     const OPTION_CLIENTID = 'clientid';
@@ -81,7 +82,18 @@ class OIDC extends AbstractCallbackAdatper
                 'timezone'   => property_exists($oidcUserinfo, 'zoneinfo') ? $oidcUserinfo->zoneinfo : null,
             ];
 
-            $identity = new \Orb\Auth\Identity($this->options->get(self::OPTION_IDENTITY), $userinfo);
+            $id = null;
+            if (!empty($oidcUserinfo->user_id)) {
+                $id = $oidcUserinfo->user_id;
+            } elseif (!empty($oidcUserinfo->email)) {
+                $id = $oidcUserinfo->email;
+            }
+
+            if (empty($id)) {
+                return new Result(Result::FAILURE, null, ['error_code' => 'invalid_validate', 'error_message' => 'Could not validate']);
+            }
+
+            $identity = new \Orb\Auth\Identity($id, $userinfo);
 
             $result = new Result(Result::SUCCESS, $identity);
         } catch (\Exception $e) {

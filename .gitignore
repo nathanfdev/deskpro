@@ -61,6 +61,9 @@ bin/deskpro-importer-tools
 
 /app/BUILD/tests/tools/node_modules
 
+# addons
+/app/scripts/codeplugins
+
 # cache dirs
 /var/cache/*
 !/var/cache/.gitkeep
