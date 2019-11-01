@@ -1,34 +1,28 @@
 import $ from 'jquery';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Slider from 'react-slick';
+import 'slick-carousel';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 
 export class Carousel extends PageWidget {
 
   renderWidget() {
-    const $carouselWrapper = this.$element;
-    const $slides = $(this.$element).find('.dpx-carousel-item');
-    const slides = $slides.map((index, $slide) =>
-      <div
-        key={`news_carousel_slide_${index}`}
-        className={$($slide).removeClass('dpx-carousel-item').attr('class')}
-        dangerouslySetInnerHTML={{ __html: $slide.innerHTML }}
-      />
-    ).toArray();
-    const settings = {
+    $(this.$element).slick({
       dots:           true,
-      infinite:       true,
-      speed:          500,
+      infinite:       false,
+      speed:          300,
       slidesToShow:   4,
-      slidesToScroll: 4
-    };
-    const CarouselWrapper = (
-      <Slider {...settings}>
-        {slides}
-      </Slider>
-    );
-
-    ReactDOM.render(CarouselWrapper, $carouselWrapper.get(0));
+      slidesToScroll: 4,
+      nextArrow:      '<button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right"><i class="dp-po-icon far fa-angle-right"></i></button>',
+      prevArrow:      '<button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left"><i class="dp-po-icon far fa-angle-left"></i></button>',
+      responsive:     [{
+        breakpoint: 768,
+        settings:   {
+          slidesToShow:   1,
+          slidesToScroll: 1,
+          infinite:       true,
+          dots:           true,
+          arrows:         false,
+        }
+      }]
+    });
   }
 }

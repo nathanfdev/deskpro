@@ -1,13 +1,7 @@
 <div class="dp-po-news-carousel dpx-carousel">
-    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left dpx-carousel-btn-back">
-        <i class="dp-po-icon far fa-angle-left"></i>
-    </button>
-    <button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right dpx-carousel-btn-next">
-        <i class="dp-po-icon far fa-angle-right"></i>
-    </button>
-    <ul class="dp-po-news-carousel-list">
+    <div class="dp-po-news-carousel-list">
         {% for item in posts %}
-            <li class="dp-po-news-carousel-item dpx-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
+            <div class="dp-po-news-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
                 <a href="{{ portal_path(item) }}" class="dp-po-news-carousel-link">
                     <p class="dp-po-news-carousel-day">
                         <span class="dp-po-news-carousel-month">{{ item.date_published | date('M') }}</span>
@@ -39,18 +33,18 @@
                 {#          <span class="comments"><i class="fas fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>#}
                 {#          <hr>#}
                 {#        {% endif %}#}
-            </li>
+            </div>
         {% endfor %}
         {% if showSectionLink %}
-            <li class="dp-po-news-carousel-item dp-po-news-carousel-item-seeall dpx-carousel-item">
+            <div class="dp-po-news-carousel-item dp-po-news-carousel-item-seeall">
                 <a href="{{ path('portal_news') }}" class="dp-po-news-carousel-link">
                     <div class="dp-po-news-carousel-wrap">
                         <img class="dp-po-news-carousel-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
                         <p class="dp-po-news-carousel-allink">{{ phrase('helpcenter.news.see-all-news') }} <i class="dp-po-icon far fa-angle-right"></i></p>
                     </div>
                 </a>
-            </li>
+            </div>
         {% endif %}
-    </ul>
+    </div>
 </div>
 
