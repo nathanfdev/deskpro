@@ -338,9 +338,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/portal-components": {
-      "version": "0.2.26",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.26.tgz",
-      "integrity": "sha512-kvXxqM8yNa+aKoUmQdx+6ixf4CGjzyeN8CumC+K02tecSu06jjf9/yZEMLih/CRAOJI1xS07+d6CbZkUGvGcJg==",
+      "version": "0.2.29",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.2.29.tgz",
+      "integrity": "sha512-9hPlsf6xZUU3Knzx47dezU3nll4g+b+rHov37QNqONSfc0vuy8wTUUGrKu0FvxLI3BgCYSP9CCh7J3W9qt4kMQ==",
       "requires": {
         "@deskpro/js-utils": "1.0.7",
         "@deskpro/react-datepicker-hijri": "^1.5.0",
@@ -407,9 +407,9 @@
           }
         },
         "react-textarea-autosize": {
-          "version": "7.1.0",
-          "resolved": "https://registry.npmjs.org/react-textarea-autosize/-/react-textarea-autosize-7.1.0.tgz",
-          "integrity": "sha512-c2FlR/fP0qbxmlrW96SdrbgP/v0XZMTupqB90zybvmDVDutytUgPl7beU35klwcTeMepUIQEpQUn3P3bdshGPg==",
+          "version": "7.1.2",
+          "resolved": "https://registry.npmjs.org/react-textarea-autosize/-/react-textarea-autosize-7.1.2.tgz",
+          "integrity": "sha512-uH3ORCsCa3C6LHxExExhF4jHoXYCQwE5oECmrRsunlspaDAbS4mGKNlWZqjLfInWtFQcf0o1n1jC/NGXFdUBCg==",
           "requires": {
             "@babel/runtime": "^7.1.2",
             "prop-types": "^15.6.0"
@@ -429,9 +429,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.2.26",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.26.tgz",
-      "integrity": "sha512-mB4QAP1gPDzxCz2CPYs1D6pcRNxAvcpeXJTqFWLeg0QfEV3xCDyWQH01HxhlIaegbxAxWnPXJDVFLMGEfLcIJQ==",
+      "version": "0.2.29",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.29.tgz",
+      "integrity": "sha512-KIWY2SQ8L4yYV89TqYCwlE9PzweVarBuK3sA2Az1MT9LIa8EfjHrZQQFalJtzLO6TBPPHJ/EbSJ18WXOND7lFA==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
@@ -31977,9 +31977,9 @@
       "integrity": "sha512-2qHaIQr2VLRFoxe2nASzsV6ef4yOOH+Fi9FBOVH6cqeSgUnoyySPZkxzLuzd+RYOQTRpROA0ztTMqxROKSb/nA=="
     },
     "popper.js": {
-      "version": "1.15.0",
-      "resolved": "https://registry.npmjs.org/popper.js/-/popper.js-1.15.0.tgz",
-      "integrity": "sha512-w010cY1oCUmI+9KwwlWki+r5jxKfTFDVoadl7MSrIujHU5MJ5OR6HTDj6Xo8aoR/QsA56x8jKjA59qGH4ELtrA=="
+      "version": "1.14.7",
+      "resolved": "https://registry.npmjs.org/popper.js/-/popper.js-1.14.7.tgz",
+      "integrity": "sha512-4q1hNvoUre/8srWsH7hnoSJ5xVmIL4qgz+s4qf2TnJIMyZFUFMGH+9vE7mXynAlHSZ/NdTmmow86muD0myUkVQ=="
     },
     "posix-character-classes": {
       "version": "0.1.1",
@@ -36216,6 +36216,11 @@
       "resolved": "https://registry.npmjs.org/slice-ansi/-/slice-ansi-0.0.4.tgz",
       "integrity": "sha1-7b+JA/ZvfOL46v1s7tZeJkyDGzU=",
       "dev": true
+    },
+    "slick-carousel": {
+      "version": "1.8.1",
+      "resolved": "https://registry.npmjs.org/slick-carousel/-/slick-carousel-1.8.1.tgz",
+      "integrity": "sha512-XB9Ftrf2EEKfzoQXt3Nitrt/IPbT+f1fgqBdoxO3W/+JYvtEOW6EgxnWfr9GH6nmULv7Y2tPmEX3koxThVmebA=="
     },
     "slide": {
       "version": "1.1.6",
