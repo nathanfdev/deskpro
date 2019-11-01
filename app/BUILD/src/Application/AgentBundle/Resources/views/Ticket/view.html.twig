@@ -418,7 +418,7 @@
 
                             {% if app.hasBeta('approvals') %}
                                 <li data-tab-for="#{{ baseId }}_approvals_wrap">
-                                    {{ phrase('agent.tickets.approvals.title') }}
+                                    {{ phrase('agent.tickets.approvals.title') }} (<span id="{{ baseId }}_approvals_count">0</span>)
                                 </li>
                             {% endif %}
 
