@@ -26,18 +26,16 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@blob.storage"
+      - "@dp.portal.designer.advanced_edits_manager"
       - "@=service('dp.portal.designer.theme_file_getter').getPortalStylePath()"
       - "@=service('dp.portal.designer.theme_file_getter').getPortalStylePath('rtl')"
-      - "@=service('dp.portal.designer.advanced_edits_manager').getMainScss()"
-      - "@=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()"
 
   dp.portal.designer.advanced_edits_manager:
     class: DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@blob.storage"
-      - "@=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()"
-      - "@=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()"
+      - "@brand_stack"
       - "@twig"
       - "@=service('deskpro.app_env').getAppWwwAssetDir()"
 

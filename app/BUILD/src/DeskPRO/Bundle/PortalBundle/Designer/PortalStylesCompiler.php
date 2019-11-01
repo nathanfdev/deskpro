@@ -30,6 +30,11 @@ class PortalStylesCompiler
     private $bs;
 
     /**
+     * @var AdvancedEditsManager
+     */
+    private $advancedEditsManager;
+
+    /**
      * @var string path to the portal SCSS file
      */
     private $stylesLrtFilePath;
@@ -40,36 +45,26 @@ class PortalStylesCompiler
     private $stylesRtlFilePath;
 
     /**
-     * @var string
-     */
-    private $mainScss;
-
-    /**
-     * @var string
-     */
-    private $customScss;
-
-    /**
      * Constructor.
      *
-     * @param EntityManager      $em
-     * @param DeskproBlobStorage $bs
-     * @param string             $stylesLrtFilePath
-     * @param string             $stylesRtlFilePath
-     * @param string             $customScss
+     * @param EntityManager        $em
+     * @param DeskproBlobStorage   $bs
+     * @param AdvancedEditsManager $advancedEditsManager
+     * @param string               $stylesLrtFilePath
+     * @param string               $stylesRtlFilePath
      *
      * @throws \Exception
      */
     public function __construct(
-        EntityManager      $em,
-        DeskproBlobStorage $bs,
+        EntityManager        $em,
+        DeskproBlobStorage   $bs,
+        AdvancedEditsManager $advancedEditsManager,
         $stylesLrtFilePath,
-        $stylesRtlFilePath,
-        $mainScss,
-        $customScss
+        $stylesRtlFilePath
     ) {
-        $this->em = $em;
-        $this->bs = $bs;
+        $this->em                   = $em;
+        $this->bs                   = $bs;
+        $this->advancedEditsManager = $advancedEditsManager;
 
         if (!$this->stylesLrtFilePath = realpath($stylesLrtFilePath)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->stylesLrtFilePath}");
@@ -77,9 +72,6 @@ class PortalStylesCompiler
         if (!$this->stylesRtlFilePath = realpath($stylesRtlFilePath)) {
             throw new \Exception("Can't resolve a file from the given path: {$this->stylesRtlFilePath}");
         }
-
-        $this->mainScss   = $mainScss;
-        $this->customScss = $customScss;
     }
 
     /**
@@ -185,8 +177,8 @@ class PortalStylesCompiler
         return $compiler->compile(
             $direction === 'RTL' ? $this->stylesRtlFilePath : $this->stylesLrtFilePath,
             $variables,
-            $this->mainScss,
-            $this->customScss
+            $this->advancedEditsManager->getMainScss(),
+            $this->advancedEditsManager->getEditThemeSetScss()
         );
     }
 
