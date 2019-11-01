@@ -103,19 +103,13 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
 
             if ($mode && $mode->isAdminPreview()) {
                 try {
-                    $brandId = $mode->getData();
+                    preg_match(
+                        PortalModeFactory::REGEX_ADMIN_PREVIEW,
+                        $mode->getOriginalPath(),
+                        $matches
+                    );
 
-                    if ($brandId === null) {
-                        preg_match(
-                            PortalModeFactory::REGEX_ADMIN_PREVIEW,
-                            $mode->getOriginalPath(),
-                            $matches
-                        );
-
-                        $brandId = $matches[1];
-                    }
-
-                    $brand = $this->brandRepository->find($brandId);
+                    $brand = $this->brandRepository->find($matches[1]);
                 } catch (\Exception $e) {
                 }
             } elseif ($request->attributes->has('_dp_brand_slug')) {
