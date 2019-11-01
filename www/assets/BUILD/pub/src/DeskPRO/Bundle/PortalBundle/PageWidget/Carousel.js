@@ -5,15 +5,15 @@ import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 export class Carousel extends PageWidget {
 
   renderWidget() {
-    $('.dp-po-news-carousel-list').slick({
+    $(this.$element).slick({
       dots:           true,
       infinite:       false,
       speed:          300,
       slidesToShow:   4,
       slidesToScroll: 4,
-      rows: 0,
-      nextArrow:      '<button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right"><i class="dp-po-icon far fa-angle-right"></i></button>',
-      prevArrow:      '<button class="dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left"><i class="dp-po-icon far fa-angle-left"></i></button>',
+      rows:           0,
+      nextArrow:      $(this.$element).data('nextButtonTemplate'),
+      prevArrow:      $(this.$element).data('prevButtonTemplate'),
       responsive:     [{
         breakpoint: 768,
         settings:   {

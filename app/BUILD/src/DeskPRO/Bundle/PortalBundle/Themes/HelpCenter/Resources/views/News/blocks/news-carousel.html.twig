@@ -1,5 +1,9 @@
-<div class="dp-po-news-carousel dpx-carousel">
-    <div class="dp-po-news-carousel-list">
+<div class="dp-po-news-carousel">
+    <div
+        class="dp-po-news-carousel-list dpx-carousel"
+        data-next-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-right'><i class='dp-po-icon far fa-angle-right'></i></button>"
+        data-prev-button-template="<button class='dp-po-news-carousel-arrow dp-po-news-carousel-arrow-left'><i class='dp-po-icon far fa-angle-left'></i></button>"
+    >
         {% for item in posts %}
             <div class="dp-po-news-carousel-item">{# Add dp-po-news-carousel-item-banner if banner #}
                 <a href="{{ portal_path(item) }}" class="dp-po-news-carousel-link">
