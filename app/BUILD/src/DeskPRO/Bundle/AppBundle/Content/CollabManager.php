@@ -33,6 +33,11 @@ class CollabManager
         $this->session          = $session;
     }
 
+    public function isCollabEnabled()
+    {
+        return (bool) $this->settingsResolver->getSetting('collab_enabled');
+    }
+
     /**
      * @return string
      */

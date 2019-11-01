@@ -1213,9 +1213,10 @@ return [
     // Collab Editing
     //###################################################################################################################
 
-    'collab_token_secret'      => 'AC1C44C8-3AE9-4181-97AB-1A68D1E6601B',
-    'collab_websocket_url'     => 'wss://7hsxmtd8ac.execute-api.eu-west-1.amazonaws.com/dev',
-    'collab_deskpro_client_id' => '117E7287-7155',
+    'collab_enabled'           => false,
+    'collab_token_secret'      => '',
+    'collab_websocket_url'     => '',
+    'collab_deskpro_client_id' => '',
 
     //###################################################################################################################
     // services

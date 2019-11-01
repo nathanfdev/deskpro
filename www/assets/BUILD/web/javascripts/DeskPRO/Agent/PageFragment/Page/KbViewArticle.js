@@ -1129,15 +1129,22 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
         function createEditor() {
           self.reactContentNode = txt[0];
-          self.rte = window.AgentLegacyBundle.renderContentEditorCollab(
-            self.reactContentNode,
-            contentInput,
-            undefined,
-            undefined,
-            self.meta.collabEditorOptions.documentUrn,
-            self.meta.collabEditorOptions.userUrn,
-            self.meta.collabEditorOptions.token
-          );
+          if (self.meta.isCollabEnabled) {
+            self.rte = window.AgentLegacyBundle.renderContentEditorCollab(
+              self.reactContentNode,
+              contentInput,
+              undefined,
+              undefined,
+              self.meta.collabEditorOptions.documentUrn,
+              self.meta.collabEditorOptions.userUrn,
+              self.meta.collabEditorOptions.token
+            );
+          } else {
+            self.rte = window.AgentLegacyBundle.renderContentEditor(
+              self.reactContentNode,
+              contentInput
+            );
+          }
         }
 
         showSaving.show();

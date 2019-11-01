@@ -383,8 +383,6 @@ class AgentLegacyApp {
       connectionManager: CollabManager.getConnectionManager()
     };
 
-    console.log('Collab option', collabOpt);
-
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>

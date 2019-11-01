@@ -180,18 +180,18 @@ class MainController extends AbstractController
             $is_billing_error = true;
         }
 
-        if ($this->get('deskpro.feature_flags')->hasBeta('content_editor')) {
-            $collabManager = $this->get('content.collab_manager');
+        $collabManager = $this->get('content.collab_manager');
+        if ($this->get('deskpro.feature_flags')->hasBeta('content_editor') && $collabManager->isCollabEnabled()) {
             $collabConnectionToken = $collabManager->getConnectionToken();
-            $collabWebsocketUrl  = $collabManager->getWebsocketUrl();
+            $collabWebsocketUrl    = $collabManager->getWebsocketUrl();
         } else {
             $collabConnectionToken = false;
-            $collabWebsocketUrl = false;
+            $collabWebsocketUrl    = false;
         }
-        
+
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $passwordValidator */
         $passwordValidator = $this->container->getSystemService('password_policy_validator');
-        
+
         return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'               => $has_raw_assets,
             'is_demo'                      => $this->in->checkIsset('show-demo-bar'),
@@ -215,8 +215,8 @@ class MainController extends AbstractController
 
             // Colab Editing
             // @TODO: pass this to js in some different way
-            'collab_connection_token'      => $collabConnectionToken,
-            'collab_websocket_url'         => $collabWebsocketUrl
+            'collab_connection_token' => $collabConnectionToken,
+            'collab_websocket_url'    => $collabWebsocketUrl,
         ]);
     }
 
