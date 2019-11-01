@@ -186,6 +186,7 @@ class BrandController extends AbstractApiController
 
         if (!$options) {
             $options['show_section_navigation'] = true;
+            $options['featured_articles']       = '';
         }
 
         return $this->wrap($options);
@@ -206,10 +207,12 @@ class BrandController extends AbstractApiController
         $data = json_decode($request->getContent(), true);
 
         $showSectionNavigation = @$data['show_section_navigation'] ?: false;
+        $featuredArticles      = @$data['featured_articles'] ?: '';
         $themeSet              = $this->getEditThemeSet();
 
         $themeSet->setOption('theme_options', [
             'show_section_navigation' => $showSectionNavigation,
+            'featured_articles'       => $featuredArticles,
         ]);
 
         $this->getManager()->persist($themeSet);
@@ -217,6 +220,7 @@ class BrandController extends AbstractApiController
 
         return $this->wrap([
             'show_section_navigation' => $showSectionNavigation,
+            'featured_articles'       => $featuredArticles,
         ]);
     }
 }

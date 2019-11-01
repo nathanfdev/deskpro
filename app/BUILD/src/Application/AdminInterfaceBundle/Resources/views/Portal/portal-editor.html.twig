@@ -143,6 +143,11 @@
                         <form>
                             <input type="checkbox" id="show_section_navigation" ng-model="theme_options.show_section_navigation" /> <label
                                     for="show_section_navigation">Show section navigation buttons on the home page</label>
+                            <div ng-show="Portal.selected_theme == 'helpcenter'">
+                                <br />
+                                <label>{{ phrase('admin.portal.kb_featured_articles') }}</label>
+                                <input type="text" ng-model="theme_options.featured_articles" />
+                            </div>
                             <div class="footer">
                                 <button ng-click="Portal.saveThemeOptions()">Set &amp; Preview</button>
                             </div>
