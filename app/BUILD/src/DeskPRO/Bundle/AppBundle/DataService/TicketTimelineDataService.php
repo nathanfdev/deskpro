@@ -6,13 +6,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFeedback;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\TicketFeedback as TicketFeedbackRepository;
 use Application\DeskPRO\EntityRepository\TicketLog as TicketLogRepository;
 use Application\DeskPRO\EntityRepository\TicketMessage as TicketMessageRepository;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
-use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\LineInterface;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline;
 use DeskPRO\Component\Util\MapUtils;
 
@@ -20,10 +22,13 @@ class TicketTimelineDataService extends AbstractDataService
 {
     /**
      * @param Ticket $ticket
+     * @param int    $page
+     * @param int    $per_page
+     * @param Person $person
      *
-     * @return LineInterface[]
+     * @return TicketTimeline
      */
-    public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50)
+    public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50, $person = null)
     {
         $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, [
             'order_dir' => 'ASC',
@@ -63,6 +68,16 @@ class TicketTimelineDataService extends AbstractDataService
                             $timeline->addLine(new Line\AgentMessageLine($m));
                         } else {
                             $timeline->addLine(new Line\UserMessageLine($m));
+                        }
+                        if ($person) {
+                            if ($person->isAgent() || $person->isOrganizationManager()) {
+                                $feedback = $this->getTicketFeedbackRepo()->getFeedbackForMessage($m);
+                            } else {
+                                $feedback = $this->getTicketFeedbackRepo()->getFeedback($m, $person, false);
+                            }
+                            if ($feedback) {
+                                $timeline->addLine(new Line\FeedbackRatingLine($feedback));
+                            }
                         }
                     }
                     break;
@@ -191,5 +206,13 @@ class TicketTimelineDataService extends AbstractDataService
     protected function getTicketLogRepo()
     {
         return $this->em->getRepository(TicketLog::class);
+    }
+
+    /**
+     * @return TicketFeedbackRepository
+     */
+    protected function getTicketFeedbackRepo()
+    {
+        return $this->em->getRepository(TicketFeedback::class);
     }
 }
