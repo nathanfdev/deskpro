@@ -18,6 +18,7 @@
       border-top: 1px solid #BBC8D4;
       padding-top: 6px;
       padding-bottom: 6px;
+      line-height: 16px;
 
       .dp-input {
         width: 100%;
@@ -42,7 +43,7 @@
   }
 
   .errors {
-    background-color: $dp-knuckles-secondary;
+    background-color: #f1b3b0;
     border: solid 1px $dp-knuckles-midnight;
     border-radius: 5px;
     margin: 10px;
