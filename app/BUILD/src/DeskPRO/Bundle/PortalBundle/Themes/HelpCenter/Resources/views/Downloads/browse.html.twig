@@ -15,8 +15,10 @@
                             {% endif %}
                         </div>
                         <div class="dp-po-block">
-                            {% include 'Theme:Downloads:CategoryList/simple.html.twig' with {
-                                category_children: helpcenter.getDownloadsCategories({ category: category})
+                            {% include 'Theme:Downloads:DownloadList/simple.html.twig' with {
+                                pager: pager,
+                                category: category,
+                                show_category_link: false
                             } %}
                         </div>
                     </div>
