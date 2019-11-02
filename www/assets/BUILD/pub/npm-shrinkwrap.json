@@ -429,9 +429,9 @@
       }
     },
     "@deskpro/portal-style": {
-      "version": "0.2.30",
-      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.30.tgz",
-      "integrity": "sha512-oCZa6Mvarxg+9nK/RZoJgMLVzbdYuHdB+vF/PafhU6BkfvlTvXhy4a4Qrsx5lvZA02Ncoufh9HdYr6rfjePyVg==",
+      "version": "0.2.34",
+      "resolved": "https://registry.npmjs.org/@deskpro/portal-style/-/portal-style-0.2.34.tgz",
+      "integrity": "sha512-CLwaWxytrjmNovlL/Jd0fy8Osk0QtGkD2NaE2j2QP6iXb2mf1v6k9NygsEcoTFAMlsXj1zHS1S7renk5l7MtCg==",
       "requires": {
         "bootstrap": "^4.3.1"
       }
