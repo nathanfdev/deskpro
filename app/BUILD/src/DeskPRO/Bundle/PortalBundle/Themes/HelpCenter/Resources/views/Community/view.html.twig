@@ -86,6 +86,8 @@
 
     {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
         is_subscribed: is_subscribed,
+        icon: 'fal fa-file-alt',
+        title: topic.title
     } %}
 
     {% if linked_tickets %}
