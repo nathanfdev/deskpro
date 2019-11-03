@@ -160,6 +160,7 @@ helpcenter.community.btn-closed: Closed
 helpcenter.community.attachments: Attachments
 helpcenter.community.form_custom_cat: Category
 helpcenter.community.search-title: Community
+helpcenter.community.forum-name: 'Forum name'
 helpcenter.topics.none: 'No topics yet'
 helpcenter.topics.search-title: Guides
 helpcenter.forms.label_full_name: 'Your Name'
