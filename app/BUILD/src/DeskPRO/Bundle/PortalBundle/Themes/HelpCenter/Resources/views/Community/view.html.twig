@@ -81,9 +81,10 @@
 {% block page_sidebar %}
     {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
         current_forum: topic.forum,
+        is_sidebar: true,
         button_label: phrase('helpcenter.community.create-topic-full'),
     } %}
-
+    
     {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
         is_subscribed: is_subscribed,
         icon: 'fal fa-file-alt',
