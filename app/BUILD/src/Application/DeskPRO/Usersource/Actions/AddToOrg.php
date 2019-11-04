@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Usersource\Actions;
 
+use Application\AgentBundle\Form\Type\NewOrganization;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Organization;
@@ -33,16 +34,12 @@ class AddToOrg extends AbstractAction
         $orgRep = $container->getEm()->getRepository('DeskPRO:Organization');
 
         if (!$org = $orgRep->findOneByName($value)) {
-            $neworg   = new \Application\AgentBundle\Form\Model\NewOrganization();
-            $formType = new \Application\AgentBundle\Form\Type\NewOrganization();
+            $neworg = new \Application\AgentBundle\Form\Model\NewOrganization();
             /** @var Form $form */
-            $form = $container->get('form.factory')->create(
-                $formType,
-                $neworg
-                // this was REALLY unexpected and hard to find!
-                // Updated: looks like we don't use this protection for NewOrganization anymore
-                // ['csrf_double_submit_protection' => false]
-            );
+            $form = $container->get('form.factory')->create(NewOrganization::class, $neworg, [
+                'csrf_protection'               => false,
+                'csrf_double_submit_protection' => false,
+            ]);
             $form->submit(['name' => $value], true);
             if ($form->isValid()) {
                 $org = $neworg->save();
