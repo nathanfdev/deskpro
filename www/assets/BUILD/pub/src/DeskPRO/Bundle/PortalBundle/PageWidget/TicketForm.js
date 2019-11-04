@@ -221,6 +221,11 @@ export default class TicketForm extends PageWidget {
     }
 
     const updateHitter = throttle(() => this.dynamicForm.update(), 250);
-    allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
+    allFormFields.on('change', () => {
+      setTimeout(() => updateHitter(), 0);
+    });
+    allFormFields.change(() => {
+      setTimeout(() => updateHitter(), 0);
+    });
   }
 }

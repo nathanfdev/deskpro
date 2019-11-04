@@ -1,14 +1,16 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    <div class="guides topic-view"  id="react_portal_bundle">
+    <div class="guides topic-view" id="react_portal_bundle">
         <div class="topic-list">
             <div class="current-guide">
                 <div class="guide">{{ guide.title }}</div>
+                {% if guide.guide_pdf %}
                 <a class="guide-pdf" href="{{ guide.guide_pdf }}" target="_blank" rel="noopener noreferrer">
                     <span>Download PDF</span>
                     <i class="far fa-file-pdf"></i>
                 </a>
+                {% endif %}
             </div>
             <hr>
             {% show topic_list with {guide: guide, topic: topic} %}

@@ -1,0 +1,7 @@
+show_tag_names:
+  - kb_pager
+  - download_pager
+  - community_pager
+  - news_pager
+  - members_pager
+  - chat_pager

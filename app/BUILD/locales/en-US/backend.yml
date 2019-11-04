@@ -480,9 +480,9 @@ adm.email_templates.user_rating: Rating
 adm.email_templates.user_tickets: 'Ticket Emails'
 adm.email_templates.user_validation: Validation
 adm.email_templates.user_warnings: 'Warnings, alerts & errors'
-adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community channel will be moved to:'
+adm.community_categories.delete_communuty_custom_channels_moved: 'Any community that is currently under this custom community forum will be moved to:'
 adm.community_categories.delete_cummunity_custom_channel: 'Delete Category'
-adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community channel?'
+adm.community_categories.delete_cummunity_custom_channel_confirm: 'Are you sure you want to delete this custom community forum?'
 adm.community_categories.new_channel: 'New Category'
 adm.community_categories.parent_explain: 'By setting a parent category, this category becomes a child. This is just an organizational feature that helps you create community structures that are easier to use.'
 adm.community_categories.title: Title
@@ -495,15 +495,15 @@ adm.community_statuses.no_delete_last: 'At least one community status must alway
 adm.community_statuses.title: Title
 adm.community_statuses.title_error: 'You must enter a valid title'
 adm.community_statuses.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
-adm.community_channels.delete_community_channel: 'Delete Community Channel'
-adm.community_channels.delete_community_channel_confirm: 'Are you sure you want to delete this community channel?'
-adm.community_channels.delete_community_channels_moved: 'Any community topic that is currently under this community channel will be moved to:'
-adm.community_channels.no_delete_last: 'At least one community channel must always exist. You cannot delete the last community channel.'
-adm.community_channels.title: Title
-adm.community_channels.title_error: 'You must enter a valid title'
-adm.community_channels.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
-adm.community_channels.usergroups: Usergroups
-adm.community_channels.usergroups_explain: 'These are usergroups to which this community channel belongs.'
+adm.community_forums.delete_community_forum: 'Delete Community Forum'
+adm.community_forums.delete_community_forum_confirm: 'Are you sure you want to delete this community forum?'
+adm.community_forums.delete_community_forums_moved: 'Any community topic that is currently under this community forum will be moved to:'
+adm.community_forums.no_delete_last: 'At least one community forum must always exist. You cannot delete the last community forum.'
+adm.community_forums.title: Title
+adm.community_forums.title_error: 'You must enter a valid title'
+adm.community_forums.title_explain: 'This is the title as it will appear throughout the agent and user interfaces.'
+adm.community_forums.usergroups: Usergroups
+adm.community_forums.usergroups_explain: 'These are usergroups to which this community forum belongs.'
 adm.general.action_cannot_be_undone: 'This action cannot be undone.'
 adm.general.agent_perms: 'Agent Permissions'
 adm.general.api_keys: 'API Keys'
@@ -571,9 +571,9 @@ adm.general.x_community_closed_statuses:
 adm.general.x_community_statuses:
   one: '{{count}} Community Status'
   other: '{{count}} Community Statuses'
-adm.general.x_community_channels:
-  one: '{{count}} Community Channel'
-  other: '{{count}} Community Channels'
+adm.general.x_community_forums:
+  one: '{{count}} Community Forum'
+  other: '{{count}} Community Forums'
 adm.general.x_ip_bans:
   one: '{{count}} IP Ban'
   other: '{{count}} IP Bans'
@@ -1359,6 +1359,7 @@ admin.emailtpl_desc.deskpro_emails_user_ticket-participant_html_twig_desc: 'This
 admin.emailtpl_desc.deskpro_emails_user_ticket-participant_html_twig_title: 'Ticket New Participant'
 admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_desc: 'This is the email sent to the user after their ticket has been resolved to ask them to rate their support and submit feedback.'
 admin.emailtpl_desc.deskpro_emails_user_ticket-rate_html_twig_title: 'Ticket Rating Request'
+admin.community.statuses: 'Statuses'
 admin.community.active_status: 'Active Status'
 admin.community.active_statuses: 'Active Statuses'
 admin.community.back_to_categories: '&larr; Back to categories'
@@ -1384,7 +1385,7 @@ admin.community.delete_status: 'Delete Status'
 admin.community.edit_status: 'Edit Status'
 admin.community.explain_active_status: 'An active status is a status assigned to community topic that have been reviewed, but have not been implemented or have not been decided on.'
 admin.community.explain_closed_status: 'A closed status is a status assigned to community topic that are finished. Users cannot vote or comment on closed community topic.'
-admin.community.community_channels: 'Community Channels'
+admin.community.community_forums: 'Community Forums'
 admin.community.community_statuses: 'Community Statuses'
 admin.community.community_topics_using_this_category: 'Community Topics using this category'
 admin.community.notice_has_children: 'This category has children. Delete the child categories first, and then you can delete this one.'
@@ -2967,7 +2968,7 @@ agent.emails.whitelist_ip_subject: 'Verify DeskPRO Login - New IP Address'
 agent.emails.whitelist_ip_validation_link: 'If this is a valid login attempt by you, click the following link to validate the new IP address:'
 agent.emails.your_initial_password: 'Your initial password'
 agent.community.category: 'Category'
-agent.community.any_channel: 'Any Channel'
+agent.community.any_forum: 'Any Forum'
 agent.community.any_status: 'Any Status'
 agent.community.count_votes:
   one: '{{display_count}} vote'
@@ -2984,7 +2985,7 @@ agent.community.merge_community_topics_submit: 'Merge these two community topics
 agent.community.merge_howto: 'Open an additional community topic tab to merge'
 agent.community.new_community_topic: 'New Community Topic:'
 agent.community.newest_on_top: 'Newest on top'
-agent.community.no_community_channels_error: 'There are no channels defined. Before you can add types to the community section, you need to define a channel from the Admin Interface.'
+agent.community.no_community_forums_error: 'There are no forums defined. Before you can add types to the community section, you need to define a forum from the Admin Interface.'
 agent.community.no_labels_explain: 'You have not labelled any community topics yet. View a community topic to add labels to it.'
 agent.community.oldest_on_top: 'Oldest on top'
 agent.community.popularity_least_most: 'Popularity (Least-Most)'
@@ -3036,7 +3037,7 @@ agent.general.add_child: 'Add Child'
 agent.general.add_comment: 'Add Comment'
 agent.general.add_criteria_term: 'Add criteria'
 agent.general.add_labels: 'Add Labels'
-agent.general.add_manual: 'Add Manual'
+agent.general.add_manual: 'Add Guide'
 agent.general.add_me: 'Add Me'
 agent.general.add_note: 'Add Note'
 agent.general.add_product: 'Add Product'
@@ -3171,6 +3172,7 @@ agent.general.click_learn_more: 'Click here to learn more'
 agent.general.click_to_upload_picture: 'Click to upload a new picture'
 agent.general.close_lc: close
 agent.general.close_tab: 'Close Tab'
+agent.general.color: Color
 agent.general.comment: Comment
 agent.general.comments: Comments
 agent.general.compare: Compare
@@ -3428,6 +3430,7 @@ agent.general.hostname: Hostname
 agent.general.hour: Hour
 agent.general.hours: hours
 agent.general.html_source: 'HTML source'
+agent.general.icon: Icon
 agent.general.icq: ICQ
 agent.general.id: ID
 agent.general.inbox: Inbox
@@ -3772,6 +3775,7 @@ agent.general.sort_desc: DESC
 agent.general.sort_desc_highlow: Highest-Lowest
 agent.general.source_code: 'Source Code'
 agent.general.spam: Spam
+agent.general.splash_image: Splash Image
 agent.general.start: Start
 agent.general.status: Status
 agent.general.status_is: 'Status is {{status}}'
@@ -3835,9 +3839,11 @@ agent.general.triggers_urgency_base: 'Default urgency for new tickets'
 agent.general.twitter: Twitter
 agent.general.twitter_username: 'Twitter username'
 agent.general.type: Type
-agent.general.channel: Channel
 agent.general.types: Types
+agent.general.forum: Forum
+agent.general.forums: Forums
 agent.general.channels: Channels
+agent.general.channel: Channel
 agent.general.tz_wrong_explain: 'The timezone region saved in your profile appears to differ from the region reported by your computer.'
 agent.general.ucfirst_edit: Edit
 agent.general.unassign: Unassign
@@ -4462,6 +4468,7 @@ agent.publish.article_comments: 'Article Comments'
 agent.publish.article_id: 'Article ID'
 agent.publish.ask_set_to_draft: 'Are you sure you would like to set the selected items as drafts?'
 agent.publish.awaiting_validation_info: 'Awaiting Validation: An agent with permission to validate content will need to approve this before it is displayed in the portal.'
+agent.publish.browse_free_image: 'Browse Free Images'
 agent.publish.change_category: 'Change Category'
 agent.publish.click_to_set_date: '(click to set date)'
 agent.publish.comment_by: 'Comment by {{name}}'
@@ -4517,6 +4524,7 @@ agent.publish.guide_list_title:
   one: '1 Guide'
   other: '{{count}} Guides'
 agent.publish.helpful: Helpful
+agent.publish.image_browser: 'Image Browser'
 agent.publish.kb_list_title:
   one: '1 Articles'
   other: '{{count}} Articles'
@@ -4553,6 +4561,7 @@ agent.publish.pending_approval_list_title:
 agent.publish.pending_articles: 'Pending Articles'
 agent.publish.pending_review_articles: 'Articles Awaiting Review'
 agent.publish.permalink_copy_prompt: 'The permalink to this download on the website is:'
+agent.publish.pick_icon: 'Pick Icon'
 agent.publish.please_choose_file: 'Please choose a file'
 agent.publish.please_enter_title: 'Please enter a title'
 agent.publish.please_enter_content: 'Please enter a content'
@@ -4560,6 +4569,7 @@ agent.publish.please_select_category: 'Please select a category'
 agent.publish.please_select_guide: 'Please select a guide'
 agent.publish.post: Post
 agent.publish.primary_lang_explain: 'The primary language for this article. After the article has been created you will be able to translate it into other languages.'
+agent.publish.remove_splash_image: 'Remove Splash Image'
 agent.publish.reorder_category_title: 'Reorder Category (Drag & Drop)'
 agent.publish.reorder_guide_title: 'Reorder Guide (Drag & Drop)'
 agent.publish.requires_validation: 'Requires Validation'
@@ -4585,6 +4595,7 @@ agent.publish.set_contents_from_article: 'Set contents from article'
 agent.publish.slug: 'URL Slug'
 agent.publish.slug_edit: 'Edit Slug'
 agent.publish.slug_edit_prompt: 'Enter new URL slug (only letters, numbers, dashes and underscores)'
+agent.publish.splash_image_explain: 'The splash image is a cover image displayed when rendering this content in the help center. It can be used as a backdrop to decorate the title to help give context and visual flare.'
 agent.publish.status_archived: Archived
 agent.publish.status_hidden_deleted: Deleted
 agent.publish.status_hidden_draft: Draft
@@ -5857,6 +5868,7 @@ api.error_codes.unverified_number: 'Verify this number or upgrade your account.'
 api.error_codes.insufficient_balance: 'Insufficient balance.'
 api.error_codes.user_has_no_org: 'Cannot submit request as this user does not belong to an organization.'
 api.error_codes.org_has_no_managers: "Cannot submit request as this user's organization has no defined manager."
+api.error_codes.not_enough_approvers: "There aren't enough approvers defined to meet required approvals/rejections"
 api.oauth.authorize_accept: Access
 api.oauth.authorize_reject: Deny
 api.oauth.authorize_title: 'Grant access to {{name}}'

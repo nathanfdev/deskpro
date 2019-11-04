@@ -123,7 +123,7 @@ class CommunityTopic extends AbstractEntityRepository
      *
      * @return array
      */
-    public function countAllChannelsGrouped()
+    public function countAllForumsGrouped()
     {
         /*
          * Note that the order by category_id ASC is important here.
@@ -134,15 +134,15 @@ class CommunityTopic extends AbstractEntityRepository
          */
 
         $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-            SELECT channel_id, COUNT(*)
+            SELECT forum_id, COUNT(*)
             FROM community_topics
             WHERE status != 'hidden'
-            GROUP BY channel_id
-            ORDER BY channel_id ASC
+            GROUP BY forum_id
+            ORDER BY forum_id ASC
         ");
 
         foreach ($counts as $cat_id => &$count) {
-            $cat_childs = App::getEntityRepository('DeskPRO:CommunityChannel')->getIdsInTree($cat_id, false);
+            $cat_childs = App::getEntityRepository('DeskPRO:CommunityForum')->getIdsInTree($cat_id, false);
             if ($cat_childs) {
                 foreach ($cat_childs as $child_cat_id) {
                     if (isset($counts[$child_cat_id])) {
@@ -167,7 +167,7 @@ class CommunityTopic extends AbstractEntityRepository
         return $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT COUNT(*)
             FROM community_topics
-            WHERE channel_id = ?
+            WHERE forum_id = ?
         ', [$category->id]);
     }
 

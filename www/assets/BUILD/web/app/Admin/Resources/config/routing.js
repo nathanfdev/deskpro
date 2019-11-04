@@ -2000,38 +2000,66 @@ define(function() {
   });
 
   // ###
-  // # Community::Channels
+  // # Community::Forums
   // ###
   routes.push({
-    id:           'portal.community_channels',
-    url:          '/community/channels',
-    templateName: 'CommunityChannels/list.html',
-    controller:   'Admin_CommunityChannels_Ctrl_List'
+    id:           'portal.community_forums',
+    url:          '/community/forums',
+    templateName: 'CommunityForums/list.html',
+    controller:   'Admin_CommunityForums_Ctrl_List'
   });
 
   routes.push({
-    id:         'portal.community_channels.gocreate',
+    id:         'portal.community_forums.gocreate',
     url:        '/go-create/',
     template:   '',
-    controller: ['$state', function ($state) { $state.go('portal.community_channels.create'); }]
+    controller: ['$state', function ($state) { $state.go('portal.community_forums.create'); }]
   });
 
   routes.push({
-    id:           'portal.community_channels.create',
+    id:           'portal.community_forums.create',
     url:          '/create/',
-    templateName: 'CommunityChannels/edit.html',
-    controller:   'Admin_CommunityChannels_Ctrl_Edit'
+    templateName: 'CommunityForums/edit.html',
+    controller:   'Admin_CommunityForums_Ctrl_Edit'
   });
 
   routes.push({
-    id:           'portal.community_channels.edit',
+    id:           'portal.community_forums.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'CommunityChannels/edit.html',
-    controller:   'Admin_CommunityChannels_Ctrl_Edit'
+    templateName: 'CommunityForums/edit.html',
+    controller:   'Admin_CommunityForums_Ctrl_Edit'
+  });
+
+  routes.push({
+    id:      'portal.community_forums.custom_fields',
+    url:     '/custom_fields',
+    abstract: true
+  });
+
+  routes.push({
+    id:         'portal.community_forums.custom_fields.gocreate',
+    url:        '/{forumId:[0-9]+}/go-create/',
+    template:   '',
+    controller: ['$state', function ($state) { $state.go('portal.community_forums.custom_fields.create', { forumId: $state.params.forumId }); }]
+  });
+
+  routes.push({
+    id:           'portal.community_forums.custom_fields.create',
+    url:          '/{forumId:[0-9]+}/new',
+    templateName: 'CustomFields/Community/edit.html',
+    controller:   'Admin_CustomFields_CommunityForums_Ctrl_Edit'
+  });
+
+  routes.push({
+    id:           'portal.community_forums.custom_fields.edit',
+    url:          '/{forumId:[0-9]+}/{id:[0-9]+}',
+    templateName: 'CustomFields/Community/edit.html',
+    controller:   'Admin_CustomFields_CommunityForums_Ctrl_Edit',
+    data:         { stateMarkId: "portal.community_forums.edit "}
   });
 
   // ###
-  // # Community::CustomChannels
+  // # Community::Categories
   // ###
   routes.push({
     id:           'portal.community_categories',

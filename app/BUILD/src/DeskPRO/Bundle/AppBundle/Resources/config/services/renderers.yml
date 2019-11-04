@@ -10,3 +10,10 @@ services:
 
   news.renderer:
     class: DeskPRO\Bundle\AppBundle\Renderer\NewsRenderer
+
+  portal_icon.renderer:
+    class: DeskPRO\Bundle\AppBundle\Renderer\PortalIconRenderer
+
+
+  splash_image.renderer:
+    class: DeskPRO\Bundle\AppBundle\Renderer\SplashImageRenderer

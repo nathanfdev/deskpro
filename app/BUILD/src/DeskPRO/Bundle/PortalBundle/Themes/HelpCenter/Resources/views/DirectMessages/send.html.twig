@@ -1,0 +1,44 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% form_theme form _self %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-7 col-centered">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.direct_messages.new_message') }}</h2>
+                        </div>
+                        <div class="dp-po-block">
+                            <div class="dp-po-messages-new">
+                                {{ form_start(form, { attr: { class: 'dpx-form' } }) }}
+                                    {{ form_row(form.person) }}
+                                    {{ form_row(form.message) }}
+                                    <div class="row align-items-center">
+                                        <div class="col-sm-3">
+                                            {{ form_widget(form.submit, {
+                                                label: 'helpcenter.direct_messages.reply.send_message',
+                                                attr: {class: 'btn btn-block btn-primary'},
+                                            }) }}
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <div class="form-group dp-po-form-check">
+                                                <a href="{{ path('portal_dm') }}" class="btn btn-block btn-outline-secondary">
+                                                    {{ phrase('helpcenter.direct_messages.reply.cancel') }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {{ form_end(form) }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

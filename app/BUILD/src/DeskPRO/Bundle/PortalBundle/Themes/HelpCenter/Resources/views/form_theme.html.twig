@@ -1,0 +1,783 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{# form start - turn off novalidate #}
+{%- block form_start -%}
+    {% set method = method|upper %}
+    {%- if method in ["GET", "POST"] -%}
+        {% set form_method = method %}
+    {%- else -%}
+        {% set form_method = "POST" %}
+    {%- endif -%}
+    <form name="{{ name }}" method="{{ form_method|lower }}" action="{{ action }}"{% for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}{% if multipart %} enctype="multipart/form-data"{% endif %} novalidate>
+    {%- if form_method != method -%}
+        <input type="hidden" name="_method" value="{{ method }}" />
+    {%- endif -%}
+{%- endblock form_start -%}
+
+
+{# Basic structure #}
+
+{%- block form_row -%}
+    {% if help %}
+        {{ block('form_row_help_text') }}
+    {% else %}
+        {{ block('form_row_nohelp') }}
+    {% endif %}
+{%- endblock form_row -%}
+
+{%- block repeated_row -%}
+    {% for child in form %}
+        {#
+        root_and_no_hidden means this form is a direct descendent of the parent (a "first-level" child) and it is
+        not meant to be completely hidden to the user (input type=hidden)
+        #}
+        {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+
+        {% if root_and_not_hidden %}
+            <div class="form-group">
+        {% endif %}
+
+        {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+
+        {{- form_label(child, null) -}}
+        {{- form_widget(child, {'attr': {'class': widgetClass}}) -}}
+        {{- form_errors(child) -}}
+
+        {% if root_and_not_hidden %}</div>{% endif %}
+    {% endfor %}
+{%- endblock repeated_row -%}
+
+
+{%- block form_row_nohelp -%}
+    {#
+    root_and_no_hidden means this form is a direct descendent of the parent (a "first-level" child) and it is
+    not meant to be completely hidden to the user (input type=hidden)
+    #}
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% if attr.attachments is defined and attr.attachments %}
+        {% set widgetClass = '' %}
+    {% else %}
+        {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+    {% endif %}
+    {# containers #}
+    {% if root_and_not_hidden %}<div class="form-group">{% endif %}
+
+    {{- form_label(form, null) -}}
+    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
+    {{- form_errors(form) -}}
+
+    {# /containers #}
+    {% if root_and_not_hidden %}</div>{% endif %}
+{%- endblock form_row_nohelp -%}
+
+{%- block form_row_help_text -%}
+    {#
+    root_and_no_hidden means this form is a direct descendent of the parent (a "first-level" child) and it is
+    not meant to be completely hidden to the user (input type=hidden)
+    #}
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+    {% if root_and_not_hidden %}<div class="form-group">{% endif %}
+    {{- form_label(form, null) -}}
+    {{- form_widget(form, applyClass ? {'attr': {'class': widgetClass}} : {}) -}}
+    {% if root_and_not_hidden %}
+        <small class="form-text">{{ help }}</small>
+    {% endif %}
+    {{- form_errors(form) -}}
+
+    {% if root_and_not_hidden %}</div>{% endif %}
+{%- endblock form_row_help_text -%}
+
+{%- block form_row_help_col -%}
+    {#
+    root_and_no_hidden means this form is a direct descendent of the parent (a "first-level" child) and it is
+    not meant to be completely hidden to the user (input type=hidden)
+    #}
+    {% set root_and_not_hidden = has_root_parent and not fully_hidden %}
+    {% set applyClass = (has_root_parent and form.children | length < 1) or (not has_root_parent and form.children | length < 1) %}
+    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+    {% if root_and_not_hidden %}
+        <div class="form-group">
+        <table class="dp-formtable-tablerow" width="100%"><tr><td class="dp-formtable-controls" valign="top">
+    {% endif %}
+
+    {{- form_label(form, null) -}}
+    {{- form_widget(form, 1 ? {'attr': {'class': widgetClass}} : {}) -}}
+    {{- form_errors(form) -}}
+
+    {% if root_and_not_hidden %}
+                </td>
+                <td class="dp-formtable-help" valign="top" width="33%">
+                    <div class="form-help">
+                        <p>{{ help }}</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        </div>
+    {% endif %}
+{%- endblock form_row_help_col -%}
+
+{% block button_widget %}
+    {% spaceless %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        {% if type == 'submit' %}
+            {% set attr = attr|merge({class: 'btn btn-lg btn-primary'}) %}
+        {% else %}
+            {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
+        {% endif %}
+        <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+    {% endspaceless %}
+{% endblock button_widget %}
+
+{% block reset_widget %}{% endblock reset_widget %}
+
+{%- block submit_widget -%}
+    {%- set type = type|default('submit') -%}
+    <div class="form-group dp-po-form-check">{{ block('button_widget') }}</div>
+{%- endblock submit_widget -%}
+
+{%- block combined_row -%}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+                {{ form_row(form.children|first) }}
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                {{ form_row(form.children|last) }}
+            </div>
+        </div>
+    </div>
+{%- endblock -%}
+
+{% block form_errors -%}
+    {% if errors|length > 0 -%}
+        {%- for error in errors -%}
+            <small class="form-text text-danger">{{ phrase_form_error(error) }}</small>
+        {%- endfor -%}
+    {%- endif %}
+{%- endblock form_errors %}
+
+{# Date and Time #}
+
+{%- block datetime_widget -%}
+    <div class="dpx-date-time with-dpx{% if widget != 'single_text' %} form-control{% endif %}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
+        {% if widget == 'single_text' %}
+            {{- block('form_widget_simple') -}}
+        {%- else -%}
+            <div class="fallback-input">
+                <div {{ block('widget_container_attributes') }}>
+                    {{- form_errors(form.date) -}}
+                    {{- form_errors(form.time) -}}
+                    {{- form_widget(form.date, {nodpx: true}) -}}
+                    {{- form_widget(form.time, {nodpx: true}) -}}
+                </div>
+            </div>
+        {%- endif -%}
+    </div>
+{%- endblock datetime_widget -%}
+
+{%- block date_widget -%}
+    {% if not (nodpx is defined and nodpx) %}
+        <div class="dpx-date with-dpx {{ form.vars.calendar }}{% if widget != 'single_text' %} form-control not-single-text{% endif %}" data-calendar="{{ form.vars.calendar }}" data-min-date="{{ form.vars.min_date }}" data-max-date="{{ form.vars.max_date }}" data-weekdays="{{ form.vars.weekdays }}">
+    {% endif %}
+        {%- if widget == 'single_text' -%}
+            {{ block('form_widget_simple') }}
+        {%- else -%}
+            <div class="fallback-input">
+                <div {{ block('widget_container_attributes') }}>
+                    {{- date_pattern|replace({
+                        '{{ year }}':  form_widget(form.year),
+                        '{{ month }}': form_widget(form.month),
+                        '{{ day }}':   form_widget(form.day),
+                    })|raw -}}
+                </div>
+            </div>
+        {%- endif -%}
+    {% if not (nodpx is defined and nodpx) %}
+        </div>
+    {% endif %}
+{%- endblock date_widget -%}
+
+{%- block time_widget -%}
+    {% if not (nodpx is defined and nodpx) %}
+        <div class="dpx-time with-dpx{% if widget != 'single_text' %} form-control not-single-text{% endif %}">
+    {% endif %}
+        {%- if widget == 'single_text' -%}
+            {{ block('form_widget_simple') }}
+        {%- else -%}
+            {%- set vars = widget == 'text' ? { 'attr': { 'size': 1 }} : {} -%}
+            <div {{ block('widget_container_attributes') }}>
+                {{ form_widget(form.hour, vars) }}{% if with_minutes %}:{{ form_widget(form.minute, vars) }}{% endif %}{% if with_seconds %}:{{ form_widget(form.second, vars) }}{% endif %}
+            </div>
+        {%- endif -%}
+    {% if not (nodpx is defined and nodpx) %}
+        </div>
+    {% endif %}
+{%- endblock time_widget -%}
+
+{# Currency #}
+
+{%- block money_widget -%}
+    <div class="dp-money-field {{ form.vars.currency_code }}">
+        {% if money_pattern matches '/^{{ widget }}/' %}
+            {{ block('form_widget_simple') }} <span>{{ money_pattern|replace({'{{ widget }}': ''}) }}</span>
+        {% elseif money_pattern matches '/{{ widget }}$/' %}
+            <span>{{ money_pattern|replace({'{{ widget }}': ''}) }}</span> {{ block('form_widget_simple') }}
+        {% else %}
+            {{ block('form_widget_simple') }}
+        {% endif %}
+    </div>
+{%- endblock money_widget -%}
+
+{# Labels #}
+
+{%- block form_label -%}
+    {% if label is not sameas(false) -%}
+        {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' title')|trim}) %}
+        {% if not compound -%}
+            {% set label_attr = label_attr|merge({'for': id}) %}
+        {%- endif %}
+        {% if required -%}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {%- endif %}
+        {% if label is empty -%}
+            {%- if label_format is not empty -%}
+                {% set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) %}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
+            <span class="form-label-link manage-emails-link">
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('helpcenter.account.email-management-from-form') }}<i class="fas fa-angle-double-right"></i></a>
+            </span>
+    {% endif %}</label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{%- block button_label -%}{%- endblock -%}
+
+{# Checkbox #}
+{% block checkbox_widget %}
+    {% spaceless %}
+        {% if checkbox_label is defined and checkbox_label %}
+            <label for="{{ id }}"><input
+                        type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />{{ checkbox_label|trans }}
+            </label>
+        {% else %}
+            <label class="title" for="{{ id }}"><input type="checkbox" id="{{ id }}" value="{{ value }}" {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
+        {% endif %}
+    {% endspaceless %}
+{% endblock checkbox_widget %}
+
+{% block radio_widget %}
+    {% spaceless %}
+        <label class="title" for="{{ id }}"><input type="radio" id="{{ id }}" value="{{ value }}" {{ block('widget_attributes') }}><i></i><span class="label">{{ label }}</span></label>
+    {% endspaceless %}
+{% endblock radio_widget %}
+
+{% block single_checkbox_widget %}
+    {# we use a special type if its a single checkbox (toggle type) #}
+    <div class="dpx-checkbox-group dp-checkbox-group-widget">
+        <input
+            type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+        <label for="{{ id }}">{{ checkbox_label|trans }}</label>
+    </div>
+{% endblock %}
+
+{# letting logged in users choose their email #}
+{% block deskpro_person_email_choice_widget %}
+        {% set count = choices|length %}
+        {% if count > 1 %}
+            <div {{ block('widget_container_attributes') }}>
+               <div class="with-dpx form-control">
+                   <select id="{{ id }}" name="{{ full_name }}">
+                       {% for choice in choices %}
+                           <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+                       {% endfor %}
+                   </select>
+               </div>
+            </div>
+        {% else %}
+            <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
+        {% endif %}
+{% endblock deskpro_person_email_choice_widget %}
+
+{# letting logged in users choose their email #}
+{% block deskpro_person_email_choice_label %}
+    {# we setup a view variable here so that our form_label block can include a particular link (its hardcoded there) #}
+    {% set dp_include_link = 'manage_email' %}
+    {{ block('form_label') }}
+{% endblock deskpro_person_email_choice_label %}
+
+
+{% block custom_per_field_widget %}
+    <div
+        class="form-custom-per-field"
+        data-id="{{ form.vars.custom_def.id }}"
+        data-allow-edit="{{ form.vars.custom_def.options['allow_edit'] ? "true" : "false" }}"
+        data-multiple="{{ form.vars.custom_def.options['multiple'] ? "true" : "false" }}"
+        data-expanded="{{ form.vars.custom_def.options['expanded'] ? "true" : "false" }}"
+        data-input-name="{{ form.vars.full_name }}"
+        >
+        {% set no_dp_title = true %}
+        {{ block('form_widget') }}
+    </div>
+{% endblock %}
+
+{% block custom_javascript_widget %}
+    <div class="with-dpx form-control">
+        <div
+                class="dpx-javascript"
+                data-code="{{ form.vars.custom_def.getOption('code') }}"
+        >
+            <input id="{{ id }}" name="{{ full_name }}" type="hidden" class="js-custom-field-hidden-input" value="{{ value }}" />
+        </div>
+    </div>
+{% endblock %}
+
+{%- block choice_widget_collapsed -%}
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <div class="with-dpx">
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {%- if placeholder is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? placeholder|trans({}, translation_domain) }}</option>
+            {%- endif -%}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('choice_widget_options') -}}
+                {%- if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif -%}
+            {%- endif -%}
+            {%- set options = choices -%}
+            {{- block('choice_widget_options') -}}
+        </select>
+    </div>
+{%- endblock choice_widget_collapsed -%}
+
+{% block _ticket_message_inline_attachments_row %}
+    {%- set attr = attr|merge({ 'attachments': true }) -%}
+    {{- block('form_row') -}}
+{% endblock _ticket_message_inline_attachments_row %}
+
+{# TICKET ATTACHMENTS #}
+{% block ticket_message_attachment_widget %}
+    {% if form.blob is defined %}
+        {{ form_widget(form.blob) }}
+        {{ form_errors(form.blob) }}
+    {% else %}
+        <li
+            class="dp-po-comments-attachments-item"
+            data-blob-id="{{ form.vars.data.blob.id }}"
+            data-blob-auth="{{ form.vars.data.blob.authcode }}"
+            data-blob-filename="{{ form.vars.data.blob.filename }}"
+            data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+            data-blob-filesize="{{ form.vars.data.blob.readableFilesize }}"
+            {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
+        >
+            <a href="{{ form.vars.data.blob.downloadUrl }}" class="dp-po-comments-attachments-link">
+                {% if form.vars.data.blob.is_image %}
+                    <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
+                {% else %}
+                    {{ content_icon(form.vars.data) }}
+                {% endif %}
+                {{ form.vars.data.blob.filename }}
+            </a>
+            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete-question') }} ]
+            {{ form_widget(form.blob_auth) }}
+        </li>
+    {% endif %}
+{% endblock ticket_message_attachment_widget %}
+
+{% block ticket_message_attachment_collection_widget %}
+
+{% if prototype is defined %}
+    {%- set attr = attr|merge({'data-prototype': form_row(prototype), attachments: true }) -%}
+{% endif %}
+<div class="form-group dp-po-form-upload with-dpx">
+    {{ form_label(form) }}
+    <div class="dp-po-tiket-attachments">
+        <ul class="dp-po-tiket-attachments-list">
+            {{- block('form_rows') -}}
+        </ul>
+    </div>
+
+    <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
+        {%- if form.parent is empty -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+        {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+        {{- form_rest(form) -}}
+    </div>
+</div>
+
+{% endblock ticket_message_attachment_collection_widget %}
+
+{# COMMUNITY TOPICS ATTACHMENTS #}
+{% block community_topic_attachment_widget %}
+    {% if form.blob is defined %}
+        {{ form_widget(form.blob) }}
+        {{ form_errors(form.blob) }}
+    {% else %}
+        <div
+                class="attach-row"
+                data-blob-id="{{ form.vars.data.blob.id }}"
+                data-blob-auth="{{ form.vars.data.blob.authcode }}"
+                data-blob-filename="{{ form.vars.data.blob.filename }}"
+                data-blob-download-url="{{ form.vars.data.blob.downloadUrl }}"
+                data-blob-filesize="{{ form.vars.data.blob.readableFilesize }}"
+                {% if form.vars.data.blob.is_image %}data-blob-thumb-url="{{ form.vars.data.blob.thumbnailUrl }}"{% endif %}
+        >
+            <div class="attach-row-icon" style="display: none;">
+                {{ file_icon(form.vars.data.blob) }}
+            </div>
+            <div class="attach-row-errors">
+                {{ form_errors(form) }}
+            </div>
+            <a href="{{ form.vars.data.blob.downloadUrl }}">
+                {% if form.vars.data.blob.is_image %}
+                    <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
+                {% else %}
+                    {{ content_icon(form.vars.data) }}
+                {% endif %}
+                {{ form.vars.data.blob.filename }}
+            </a>
+            [ {{ form_widget(form.delete) }} {{ phrase('helpcenter.form.delete-question') }} ]
+            {{ form_widget(form.blob_auth) }}
+        </div>
+    {% endif %}
+{% endblock community_topic_attachment_widget %}
+
+{% block community_topic_attachment_collection_widget %}
+    {% if prototype is defined %}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype), attachments: true }) -%}
+    {% endif %}
+    <div class="form-group dp-po-form-upload with-dpx">
+        {{ form_label(form) }}
+        <ul>
+            {{- block('form_rows') -}}
+        </ul>
+        <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="/dpblob">
+            {%- if form.parent is empty -%}
+                {{ form_errors(form) }}
+            {%- endif -%}
+            {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+            {{- form_rest(form) -}}
+        </div>
+    </div>
+{% endblock community_topic_attachment_collection_widget %}
+
+{# DISPLAY HTML #}
+{% block deskpro_display_html_widget %}
+{{ html|raw }}
+{% endblock deskpro_display_html_widget %}
+
+{# CAPTCHA #}
+{% block deskpro_captcha_widget %}
+    {% if form.captcha is defined %}
+    {{ form_row(form.captcha) }}
+    {% endif %}
+{% endblock deskpro_captcha_widget %}
+
+{% block deskpro_recaptcha_widget %}
+    {% spaceless %}
+        <script src="//www.google.com/recaptcha/api.js" async defer></script>
+        <div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
+    {% endspaceless %}
+{% endblock deskpro_recaptcha_widget %}
+
+{% block captcha_widget %}
+    {% spaceless %}
+        {% if reload %}
+            <script type="text/javascript">
+                function reload_{{ image_id }}() {
+                    var img = document.getElementById('{{ image_id }}');
+                    img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
+                }
+            </script>
+        {% endif %}
+        <div class="form-group dp-po-form-captcha">
+            <div class="row align-items-center no-gutters">
+                <div class="col-sm-5">
+                    <label>CAPTCHA</label>
+                    <div class="dp-po-form-captcha-text">
+                        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" height="36" />
+                    </div>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <label>&nbsp;</label>
+                    <a href="javascript:reload_{{ image_id }}();" class="dp-po-form-captcha-reload"><i class="dp-po-icon far fa-sync"></i></a>
+                </div>
+                <div class="col-sm-5">
+                    <label>&nbsp;</label>
+                    {% set widgetClass = (errors|length > 0) ? 'form-control form-error' : 'form-control' %}
+                    {{ form_widget(form, { attr: { class: widgetClass, placeholder: 'Insert text' } } ) }}
+                </div>
+            </div>
+        </div>
+    {% endspaceless %}
+{% endblock %}
+
+{###
+HIERARCHY
+###}
+{% block deskpro_hierarchical_entity_widget %}
+    {% if expanded %}
+        {{- block('deskpro_hierarchical_choice_widget_expanded') -}}
+    {% else %}
+        {{- block('deskpro_hierarchical_choice_widget_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
+{% block deskpro_hierarchical_choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {{- form_widget(child) -}}
+            {{- form_label(child) -}}
+        {% endfor -%}
+    </div>
+{% endblock deskpro_hierarchical_choice_widget_expanded %}
+
+{% block deskpro_hierarchical_choice_widget_collapsed -%}
+    <div class="with-dpx">
+        {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+            {% set required = false %}
+        {%- endif -%}
+        <select data-hierarchy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %} class="as-no-dpui">
+            {% if empty_value is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {%- endif %}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('deskpro_hierarchical_choice_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('deskpro_hierarchical_choice_widget_options') -}}
+        </select>
+    </div>
+{%- endblock deskpro_hierarchical_choice_widget_collapsed %}
+
+{% block deskpro_hierarchical_choice_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is not iterable -%}
+            {% set def = choice.data %}
+            <option
+                    {% if def.parent is defined and def.parent is not null %} data-parent="{{ def.parent.id }}"{% endif %}
+                    {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
+                    {% if def.children is defined and def.children|length > 0 %} disabled="disabled"{% endif %}
+                    {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    data-name="{{ choice.label|trans({}, translation_domain) }}"
+                    value="{{ choice.value }}"
+            >{% if def.parent is defined and def.parent is not null %}&mdash; {% endif %}{% if def.depth > 1 %}{% for i in range(2, def.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock deskpro_hierarchical_choice_widget_options %}
+
+{###
+END HIERARCHY
+###}
+
+
+
+{###
+CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
+###}
+
+{% block custom_field_choice_widget %}
+    {% if expanded %}
+        {{- block('deskpro_custom_field_choice_widget_expanded') -}}
+    {% else %}
+        {{- block('deskpro_custom_field_choice_widget_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
+{% block deskpro_custom_field_choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        <div class="{% if multiple %}dpx-checkbox-group checkboxes{% else %}radios{% endif %} dp-choice-widget-group with-dpx form-control">
+            {%- for child in form %}
+                {{- form_widget(child) -}}
+            {% endfor -%}
+        </div>
+    </div>
+{% endblock deskpro_custom_field_choice_widget_expanded %}
+
+{% block deskpro_custom_field_choice_widget_collapsed -%}
+    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <div class="with-dpx">
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {%- endif %}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('deskpro_hierarchical_choice_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('deskpro_custom_field_choice_widget_options') -}}
+        </select>
+    </div>
+{%- endblock deskpro_custom_field_choice_widget_collapsed %}
+
+{% block deskpro_custom_field_choice_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is not iterable -%}
+            {% set def = choice.data.data %}
+            <option
+                    {% if def.getOption('parent_id') is not null %} data-parent="{{ def.getOption('parent_id') }}"{% endif %}
+                    {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
+                    {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    data-name="{{ choice.label|trans({}, translation_domain) }}"
+                    value="{{ choice.value }}"
+                    >{% if choice.data.depth > 1 %}{% for i in range(2, choice.data.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{% if choice.data.depth %}&mdash; {% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock deskpro_custom_field_choice_widget_options %}
+
+{###
+END HIERARCHY
+###}
+
+{% block custom_field_file_collection_widget %}
+    <div class="form-group">
+        <div class="with-dpx">
+            <div
+                class="dpx-custom-field-attach"
+                data-multiple="{{ form.vars.multiple }}"
+                data-max-file-size="{{ form.vars.max_file_size | filesize_display }}"
+                data-extensions-limit-mode="{{ form.vars.extensions_limit_mode }}"
+                data-must-extensions="{{ form.vars.must_extensions|join(',') }}"
+                data-not-extensions="{{ form.vars.not_extensions|join(',') }}"
+                data-restriction-set="{{ form.vars.restriction_set }}"
+            >
+                {% if prototype is defined %}
+                    {%- set attr = attr|merge({'data-prototype': form_row(prototype), attachments: true }) -%}
+                {% endif %}
+                {{- block('form_widget') -}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block custom_field_file_widget %}
+    {% if form.vars.data %}
+    <div
+            class="attach-row"
+            data-blob-id="{{ form.vars.data.id }}"
+            data-blob-auth="{{ form.vars.data.authcode }}"
+            data-blob-filename="{{ form.vars.data.filename }}"
+            data-blob-download-url="{{ form.vars.data.downloadUrl }}"
+            data-blob-filesize="{{ form.vars.data.readableFilesize }}"
+            {% if form.vars.data.is_image %}data-blob-thumb-url="{{ form.vars.data.thumbnailUrl }}"{% endif %}
+    >
+        <div class="attach-row-icon" style="display: none;">
+            {{ file_icon(form.vars.data) }}
+        </div>
+        <div class="attach-row-errors">
+            {{ form_errors(form) }}
+        </div>
+        <a href="{{ form.vars.data.downloadUrl }}">
+            {% if form.vars.data.is_image %}
+                <img src="{{ form.vars.data.thumbnailUrl }}" alt=""/>
+            {% else %}
+                {{ content_icon(form.vars.data) }}
+            {% endif %}
+            {{ form.vars.data.filename }}
+        </a>
+        {{ form_widget(form) }}
+    </div>
+    {% else %}
+        {{ form_widget(form) }}
+    {% endif %}
+{% endblock %}
+
+
+{% block entity_hierarchy_widget %}
+    {% if expanded %}
+        {{- block('entity_hierarchy_expanded') -}}
+    {% else %}
+        {{- block('entity_hierarchy_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
+
+{% block entity_hierarchy_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {% if form.vars.choices[loop.index0].data|length == 0 %}
+                {{- form_widget(child) -}}
+                {{- form_label(child) -}}
+                <br>
+            {% endif %}
+        {% endfor -%}
+    </div>
+{% endblock entity_hierarchy_expanded %}
+
+{% block entity_hierarchy_collapsed -%}
+    <div class="with-dpx">
+        {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+            {% set required = false %}
+        {%- endif -%}
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if empty_value is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+            {%- endif %}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('entity_hierarchy_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('entity_hierarchy_widget_options') -}}
+        </select>
+    </div>
+{%- endblock entity_hierarchy_collapsed %}
+
+{% block entity_hierarchy_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is not iterable -%}
+            {% set def = choice.data %}
+            <option
+                    {% if def.parent is not null %} data-parent="{{ def.parent.data.id }}"{% endif %}
+                    {% if def.data.id is defined %} data-id="{{ def.data.id }}"{% endif %}
+                    {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    data-name="{{ choice.label|trans({}, translation_domain) }}"
+                    value="{{ choice.value }}"
+                    >{% if def.depth > 1 %}{% for i in range(2, def.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{% if def.depth %}&mdash; {% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock entity_hierarchy_widget_options %}
+
+{% block person_profile_image_widget %}
+    <div class="form-group">
+        {{- form_label(form, null) -}}
+        <div class="with-dpx">
+            <div class="dp-po-form-upload-wrap helpcenter-profile_picture" data-upload-url="dpblob?tag=person_avatar">
+                {{ form_widget(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

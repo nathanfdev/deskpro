@@ -11,15 +11,15 @@ Feature: /community_topic_comments/counts endpoint
       | #    | status_type | title     | display_order |
       | csc1 | active      | Collected | 0             |
       | csc2 | active      | Accepted  | 0             |
-    And only the following "CommunityChannel" records exist:
+    And only the following "CommunityForum" records exist:
       | #   | title      | slug       |
       | cc1 | Feature    | feature    |
       | cc2 | Suggestion | suggestion |
 
   Scenario: I GET community topic comments list awaiting review and side-loaded author info
     Given only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}    | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
       | topic | person  | content  | is_reviewed |
       | {ct1} | {admin} | comment1 | 0           |
@@ -37,8 +37,8 @@ Feature: /community_topic_comments/counts endpoint
 
   Scenario: I GET count of community topic comment awaiting review
     Given only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
       | topic | person  | content  | is_reviewed |
       | {ct1} | {admin} | comment1 | 0           |
@@ -54,9 +54,9 @@ Feature: /community_topic_comments/counts endpoint
 
   Scenario: I GET count of community topic comment counter
     Given only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
-      | ct2 | {csc2}          | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | ct2 | {csc2}          | {cc2} | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
     And only the following "CommunityTopicComment" records exist:
       | topic | person  | content  | is_reviewed |
       | {ct1} | {admin} | comment1 | 0           |
@@ -77,10 +77,10 @@ Feature: /community_topic_comments/counts endpoint
 
   Scenario: I GET count of community topic comment counter and filter them by topic_id
     Given only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
-      | ct2 | {csc2}          | {cc2}   | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
-      | ct3 | {csc2}          | {cc2}   | {admin} | 0           | topic3 | Topic3 | Topic3  | active |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | ct2 | {csc2}          | {cc2} | {admin} | 0           | topic2 | Topic2 | Topic2  | active |
+      | ct3 | {csc2}          | {cc2} | {admin} | 0           | topic3 | Topic3 | Topic3  | active |
     And only the following "CommunityTopicComment" records exist:
       | topic | person  | content  | is_reviewed |
       | {ct1} | {admin} | comment1 | 0           |
@@ -100,8 +100,8 @@ Feature: /community_topic_comments/counts endpoint
 
   Scenario: I DELETE community topic comment with id=1
     Given only the following "CommunityTopic" records exist:
-      | #   | status_category | channel | person  | is_reviewed | slug   | title  | content | status |
-      | ct1 | {csc1}          | {cc1}   | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
+      | #   | status_category | forum | person  | is_reviewed | slug   | title  | content | status |
+      | ct1 | {csc1}          | {cc1} | {admin} | 0           | topic1 | Topic1 | Topic1  | active |
     And only the following "CommunityTopicComment" records exist:
       | #        | topic | person  | content  | is_reviewed |
       | comment1 | {ct1} | {admin} | comment1 | 0           |

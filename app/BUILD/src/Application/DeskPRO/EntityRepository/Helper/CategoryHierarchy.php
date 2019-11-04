@@ -10,7 +10,7 @@ namespace Application\DeskPRO\EntityRepository\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
@@ -164,7 +164,7 @@ class CategoryHierarchy
             if ($this->table_name == 'departments') {
                 $select = 'id, parent_id, title, user_title';
             }
-            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'community_channels'])) {
+            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'community_forums'])) {
                 $select = 'id, parent_id, title, brand_id';
             }
 
@@ -429,10 +429,10 @@ class CategoryHierarchy
     public function getLeafIds()
     {
         return App::getDb()->fetchAllCol('
-            SELECT DISTINCT c.id
-            FROM community_channels c
-            LEFT JOIN community_channels AS c2 ON (c2.parent_id = c.id)
-            WHERE c2.id IS NULL
+            SELECT DISTINCT f.id
+            FROM community_forums f
+            LEFT JOIN community_forums AS f2 ON (f2.parent_id = f.id)
+            WHERE f2.id IS NULL
         ');
     }
 
@@ -490,7 +490,7 @@ class CategoryHierarchy
             ArticleCategory::class,
             DownloadCategory::class,
             NewsCategory::class,
-            CommunityChannel::class,
+            CommunityForum::class,
         ];
 
         if (in_array($this->class->name, $brandRelatedCategories)) {

@@ -1,0 +1,21 @@
+<div class="dp-po-pagination">
+    <nav aria-label="...">
+        {{ pagerfanta(pager, null, {
+            routeParams: {tag_options: null},
+            prev_message: '<i class="dp-po-icon far fa-angle-left"></i>',
+            css_prev_class: 'page-item-icon',
+            next_message: '<i class="dp-po-icon far fa-angle-right"></i>',
+            css_next_class: 'page-item-icon',
+            css_active_class: 'active'
+        }|merge(pager_options|default({}))) }}
+    </nav>
+    {% if pager.nbPages > 10  %}
+    <div class="dp-po-pagination-goto">
+        <form action="">
+            <span>{{ phrase('helpcenter.general.go-to-page') }}</span>
+            <input type="text" name="page" class="dp-po-pagination-goto-text">
+            <input type="submit" class="dp-po-pagination-goto-button" value="{{ phrase('helpcenter.general.go') }}">
+        </form>
+    </div>
+    {% endif %}
+</div>

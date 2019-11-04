@@ -13,8 +13,9 @@ import { Approval } from './Approval';
 }))
 export class ApprovalContainer extends React.Component {
   static propTypes = {
-    ticketId: PropTypes.number,
-    dispatch: PropTypes.func,
+    ticketId:    PropTypes.number,
+    dispatch:    PropTypes.func,
+    updateCount: PropTypes.func,
   };
 
   constructor(props) {
@@ -45,7 +46,9 @@ export class ApprovalContainer extends React.Component {
   };
 
   loadApprovalRequests() {
-    this.props.dispatch(actions.loadApprovalRequests(this.props.ticketId))
+    const { dispatch, updateCount } = this.props;
+
+    dispatch(actions.loadApprovalRequests(this.props.ticketId))
       .then((response) => {
         const approvals = response.data;
         const promises = [];
@@ -64,6 +67,8 @@ export class ApprovalContainer extends React.Component {
             approvals: Immutable.fromJS(approvals),
           });
         });
+
+        updateCount('', approvals.length);
       });
   }
 
@@ -75,6 +80,8 @@ export class ApprovalContainer extends React.Component {
       this.setState({
         approvals: this.state.approvals.push(Immutable.fromJS(data))
       });
+
+      this.props.updateCount('+', 1);
     });
 
   cancelApprovalRequest = requestId => this.props.dispatch(actions.cancelApprovalRequest(requestId))

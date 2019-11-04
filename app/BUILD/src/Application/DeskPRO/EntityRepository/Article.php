@@ -134,7 +134,8 @@ class Article extends AbstractEntityRepository
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                LEFT JOIN a.categories cat
+                LEFT JOIN a.categories artToCat
+                LEFT JOIN artToCat.category cat
                 WHERE a.id IN (?0) AND cat.id IN (?1) AND a.status = 'published'
                 ORDER BY a.id DESC
             ")->execute([$ids, $cat_ids]);
@@ -142,7 +143,8 @@ class Article extends AbstractEntityRepository
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                LEFT JOIN a.categories cat
+                LEFT JOIN a.categories artToCat
+                LEFT JOIN artToCat.category cat
                 WHERE a.id IN (?0) AND a.status = 'published'
                 ORDER BY a.id DESC
             ")->execute([$ids]);
@@ -216,7 +218,8 @@ class Article extends AbstractEntityRepository
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                LEFT JOIN a.categories cat
+                LEFT JOIN a.categories artToCat
+                LEFT JOIN artToCat.category cat
                 WHERE
                     cat.id IN (:cat_ids)
                     AND a.status = 'published'
@@ -241,7 +244,8 @@ class Article extends AbstractEntityRepository
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                LEFT JOIN a.categories cat
+                LEFT JOIN a.categories artToCat
+                LEFT JOIN artToCat.category cat
                 WHERE a.status = 'published' AND cat.id IN (?0)
                 ORDER BY a.id DESC
             ")->setMaxResults($num)->execute([$cat_ids]);
@@ -264,7 +268,8 @@ class Article extends AbstractEntityRepository
             $articles = $this->getEntityManager()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                LEFT JOIN a.categories cat
+                LEFT JOIN a.categories artToCat
+                LEFT JOIN artToCat.category cat
                 WHERE a.status = 'published' AND cat.id IN (?0)
                 ORDER BY a.total_rating DESC
             ")->setMaxResults($num)->execute([$cat_ids]);
@@ -285,7 +290,8 @@ class Article extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery('
             SELECT a
             FROM DeskPRO:Article a
-            LEFT JOIN a.categories c
+            LEFT JOIN a.categories artToCat
+            LEFT JOIN artToCat.category cat
             WHERE c = ?1
             ORDER BY a.id DESC
         ')->setParameter(1, $node)->execute();
@@ -341,7 +347,7 @@ class Article extends AbstractEntityRepository
 
     public function getDataForTagOptions(array $options)
     {
-        $options['category'] = is_object($options['category']) ? $options['category'] : $this->getEntityManager()->getRepository('DeskPRO:ArticleCAtegory')->find($options['category']);
+        $options['category'] = is_object($options['category']) ? $options['category'] : $this->getEntityManager()->getRepository('DeskPRO:ArticleCategory')->find($options['category']);
 
         // get the articles
 
@@ -377,13 +383,15 @@ class Article extends AbstractEntityRepository
 
     protected function filterArticles(QueryBuilder $qb, array $options)
     {
-        $qb->join('a.categories', 'cs');
+        $qb->join('a.categories', 'artToCat');
+        $qb->join('artToCat.category', 'cs');
+
         // TODO: allow sub categories
 //		just one cat or the cat + all sub cats
 //		if ($options['include_subcategories']) {
 //			$qb->andWhere('EXISTS (SELECT c FROM DeskPRO:ArticleCategory c WHERE c.root = :cat AND a MEMBER OF c.articles)');
 //		} else {
-            $qb->andWhere(':cat MEMBER OF a.categories');
+            $qb->andWhere('cs = :cat');
 //		}
         $qb->setParameter('cat', $options['category']);
 

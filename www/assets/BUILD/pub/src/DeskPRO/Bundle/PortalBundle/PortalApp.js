@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import $ from 'jquery';
+import '@fortawesome/fontawesome-pro/js/all.min';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import PortalPage from './PageWidget/PortalPage';
 import { portalPhrases } from './PortalPhrases';

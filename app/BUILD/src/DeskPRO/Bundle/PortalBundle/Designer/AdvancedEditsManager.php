@@ -66,7 +66,7 @@ class AdvancedEditsManager
      * @param ThemeSet           $themeSet
      * @param ThemeSet           $editThemeSet
      * @param \Twig_Environment  $twig
-     * @param string             $mainScssPath
+     * @param string             $assetDir
      */
     public function __construct(
         EntityManager $entityManager,
@@ -74,14 +74,18 @@ class AdvancedEditsManager
         ThemeSet $themeSet,
         ThemeSet $editThemeSet,
         \Twig_Environment $twig,
-        $mainScssPath
+        $assetDir
     ) {
         $this->entityManager = $entityManager;
         $this->blobStorage   = $blobStorage;
         $this->themeSet      = $themeSet;
         $this->editThemeSet  = $editThemeSet;
         $this->twig          = $twig;
-        $this->mainScssPath  = $mainScssPath;
+        if ($editThemeSet->getThemeId() === 'helpcenter') {
+            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_main.scss';
+        } else {
+            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
+        }
     }
 
     /**
@@ -144,18 +148,22 @@ class AdvancedEditsManager
      */
     public function getMainScss()
     {
-        $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->editThemeSet);
-        $failedStr = '';
+        if ($this->editThemeSet->getThemeId() === 'helpcenter') {
+            return file_get_contents($this->mainScssPath);
+        } else {
+            $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->editThemeSet);
+            $failedStr = '';
 
-        if ($blob) {
-            try {
-                return $this->blobStorage->copyBlobRecordToString($blob);
-            } catch (\Exception $e) {
-                $failedStr = sprintf('/* Failed to load custom CSS from blob %s */', $blob->getId())."\n\n";
+            if ($blob) {
+                try {
+                    return $this->blobStorage->copyBlobRecordToString($blob);
+                } catch (\Exception $e) {
+                    $failedStr = sprintf('/* Failed to load custom CSS from blob %s */', $blob->getId())."\n\n";
+                }
             }
-        }
 
-        return $failedStr.file_get_contents($this->mainScssPath);
+            return $failedStr.file_get_contents($this->mainScssPath);
+        }
     }
 
     /**

@@ -175,7 +175,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $person_permission_bag->get('articles.use')->willReturn(false);
         $person_permission_bag->getAllowedArticleCategories()->willReturn([]);
         $person_permission_bag->get('community.use')->willReturn(false);
-        $person_permission_bag->getAllowedCommunityChannelIds()->willReturn([]);
+        $person_permission_bag->getAllowedCommunityForumIds()->willReturn([]);
         $person_permission_bag->get('downloads.use')->willReturn(false);
         $person_permission_bag->getAllowedDownloadCategories()->willReturn([]);
         $person_permission_bag->get('news.use')->willReturn(false);
@@ -186,7 +186,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->get('articles.use')->willReturn(false);
         $guest_permission_bag->getAllowedArticleCategories()->willReturn([]);
         $guest_permission_bag->get('community.use')->willReturn(false);
-        $guest_permission_bag->getAllowedCommunityChannelIds()->willReturn([]);
+        $guest_permission_bag->getAllowedCommunityForumIds()->willReturn([]);
         $guest_permission_bag->get('downloads.use')->willReturn(false);
         $guest_permission_bag->getAllowedDownloadCategories()->willReturn([]);
         $guest_permission_bag->get('news.use')->willReturn(false);
@@ -261,7 +261,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $person_permission_bag->get('articles.use')->willReturn(false);
         $person_permission_bag->getAllowedArticleCategories()->willReturn([1, 2]);
         $person_permission_bag->get('community.use')->willReturn(false);
-        $person_permission_bag->getAllowedCommunityChannelIds()->willReturn([1, 2]);
+        $person_permission_bag->getAllowedCommunityForumIds()->willReturn([1, 2]);
         $person_permission_bag->get('downloads.use')->willReturn(false);
         $person_permission_bag->getAllowedDownloadCategories()->willReturn([1, 2]);
         $person_permission_bag->get('news.use')->willReturn(false);
@@ -272,7 +272,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->get('articles.use')->willReturn(false);
         $guest_permission_bag->getAllowedArticleCategories()->willReturn([1, 2]);
         $guest_permission_bag->get('community.use')->willReturn(false);
-        $guest_permission_bag->getAllowedCommunityChannelIds()->willReturn([1, 2]);
+        $guest_permission_bag->getAllowedCommunityForumIds()->willReturn([1, 2]);
         $guest_permission_bag->get('downloads.use')->willReturn(false);
         $guest_permission_bag->getAllowedDownloadCategories()->willReturn([1, 2]);
         $guest_permission_bag->get('news.use')->willReturn(false);

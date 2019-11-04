@@ -497,6 +497,7 @@ class LoginController extends AbstractController
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'note'         => $note,
             'date_created' => date('Y-m-d H:i:s'),
+            'via_cookie'   => 0,
         ]);
     }
 

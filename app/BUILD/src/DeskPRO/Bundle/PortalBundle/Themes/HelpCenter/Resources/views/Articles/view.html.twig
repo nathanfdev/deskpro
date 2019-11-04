@@ -1,0 +1,144 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_top %}
+    <div class="row align-items-end mb-4">
+        <div class="col-sm-9">
+            <div class="dp-po-title">
+                <img class="dp-po-title-svg"
+                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}" />
+                <h2 class="dp-po-title-text">{{ article.translated_title }}</h2>
+            </div>
+
+            <div class="row align-items-end">
+                <div class="col-sm-10">
+                    {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
+                        item: article
+                    } %}
+
+                    <div class="dp-po-post-info">
+                        <ul class="dp-po-post-info-list">
+                            <li class="dp-po-post-info-item">
+                                {{ phrase('helpcenter.general.last-updated', {date: article.date_updated | date('day'), person: article.person}) | raw }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-2">
+                    <div class="dp-po-post-extra">
+                        <ul class="dp-po-post-extra-list">
+                            <li class="dp-po-post-extra-item">
+                                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                            </li>
+                            <li class="dp-po-post-extra-item">
+                                <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            {# TODO active subscription state #}
+            {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+                subscriptionInfo: [
+                    { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: false },
+                    { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: false },
+                    { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: false },
+                ]
+            } %}
+        </div>
+    </div>
+{% endblock page_top %}
+
+{# ------------------------------------------ #}
+{# Main page body #}
+{# ------------------------------------------ #}
+{% block page_body %}
+    {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
+        <div class="alert alert-icon alert-danger" role="alert">
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.articles.view-as-agent') }}
+        </div>
+    {% endif %}
+
+    {% if article.end_action == 'unpublish' and app.user.is_agent %}
+        <div class="alert alert-icon alert-danger" role="alert">
+            <i class="dp-po-icon fal fa-calendar-alt"></i> {{ phrase('helpcenter.flashes.article-unpublish', {date: article.date_end | date('day')}) }}
+        </div>
+    {% endif %}
+
+    <div class="dp-po-post-content dp-po-block dpx-hc-kb-article-content">
+        {{ article.translated_content|raw }}
+
+        {# TODO attachments #}
+        {#{% show kb_attachments %} #}
+        {#
+        <div class="dp-po-kb-attachments">
+          <h4 class="dp-po-kb-attachments-title">Attachments</h4>
+          <ul class="dp-po-kb-attachments-list">
+            <li class="dp-po-kb-attachments-item">
+              <a href="" class="dp-po-kb-attachments-link">
+                <i class="dp-po-icon fal fa-file-pdf"></i> craft-sync-user-guide.pdf
+              </a>
+            </li>
+            <li class="dp-po-kb-attachments-item">
+              <a href="" class="dp-po-kb-attachments-link">
+                <i class="dp-po-icon fal fa-file-word"></i> craft-sync-photoshop-help.docx
+              </a>
+            </li>
+            <li class="dp-po-kb-attachments-item">
+              <a href="" class="dp-po-kb-attachments-link">
+                <i class="dp-po-icon fal fa-file-excel"></i> craft-sync-photoshop-help.xlsx
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      #}
+    </div>
+
+
+    {% if can_rate_article(article) %}
+        {% include 'Theme:PublishCommon:rating.html.twig' with {
+            item: article
+        } %}
+    {% endif %}
+
+    {% if brand_setting('user.publish_comments') %}
+        {% if articleData.comments | length %}
+            {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: articleData.comments } %}
+        {% endif %}
+
+        {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+    {% endif %}
+{% endblock %}
+
+{# ------------------------------------------ #}
+{# Page sidebar #}
+{# ------------------------------------------ #}
+{% block page_sidebar %}
+    {% if article.labels | length %}
+        {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
+            title: phrase('helpcenter.general.labels'),
+            labels: article.labels
+        } %}
+    {% endif %}
+
+    {% if articleData.related_content %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with {
+            related_content: articleData.related_content
+        } %}
+    {% endif %}
+
+    {% include 'Theme:PublishCommon:share.html.twig' with {
+        item: article
+    } %}
+
+    {% include'Theme:PublishCommon:meta.html.twig' with {
+        item: article
+    } %}
+{% endblock %}
+
+{% block doc_end %}
+    {{ insert_glossary_js(article) }}
+{% endblock %}

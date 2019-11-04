@@ -48,6 +48,7 @@ export default class DpxFormDraft extends PageWidget {
     this.addWidgetDef(DpxFormHiddenDraft, 'input[type="hidden"]');
     this.addWidgetDef(DpxFormRteBlobsDraft, 'textarea[data-rte-field="html"]');
     this.addWidgetDef(DpxFormAttachDraft, '.dpx-attach input[type="file"]');
+    this.addWidgetDef(DpxFormAttachDraft, '.helpcenter-file-upload input[type="file"]');
   }
 
   getFormName() {
@@ -79,7 +80,7 @@ export default class DpxFormDraft extends PageWidget {
 
     if (!this.options.isWidget) {
       this.$element.on('reset', this.onClearDraft);
-      $(`<button type="reset">${portalPhrases.get('portal.forms.label_reset')}</button>`)
+      $(`<button type="reset" class="btn btn-secondary">${portalPhrases.get('portal.forms.label_reset')}</button>`)
         .on('click', DpxFormDraft.resetForm)
         .insertAfter($formSubmit);
     }

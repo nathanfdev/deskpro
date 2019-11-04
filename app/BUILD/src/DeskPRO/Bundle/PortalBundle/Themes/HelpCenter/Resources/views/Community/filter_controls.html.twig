@@ -1,0 +1,34 @@
+<div class="dp-po-community-header">
+
+    <div class="dp-po-community-tabs">
+        <ul class="dp-po-community-tabs-list">
+            <li class="dp-po-community-tabs-item {{ 'list' == view ? 'active' }}">
+                <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/view-list" }) }}" class="dp-po-community-tabs-link">
+                    <i class="dp-po-icon far fa-list-ul"></i> {{ phrase('helpcenter.community.view-list') }}
+                </a>
+            </li>
+            <li class="dp-po-community-tabs-item {{ 'status-change' == view ? 'active' }}">
+                <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/view-status-change" }) }}" class="dp-po-community-tabs-link">
+                    <i class="dp-po-icon far fa-exchange"></i> {{ phrase('helpcenter.community.view-status-change') }}
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <form class="dp-po-community-header-search" action="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}" }) }}" method="get">
+        <input type="text" name="q" placeholder="Search suggestions" value="{{ app.request.get('q') }}" />
+        <button type="submit"><i class="dp-po-icon far fa-search"></i></button>
+    </form>
+
+    <div class="dp-po-community-header-right" style="padding-right: 1rem;">
+        <div class="dp-po-community-header-view">
+            <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/viewmode-compact" }) }}" class="dp-po-community-header-view-link dp-po-community-header-view-compact {{ view_mode == 'compact' ? 'active' }}">
+                <i class="dp-po-icon far fa-minus"></i>
+            </a>
+            <a href="{{ path('portal_community_browse', { filter_uri: "type-#{current_forum.id}/viewmode-expanded" }) }}" class="dp-po-community-header-view-link dp-po-community-header-view-expanded {{ view_mode == 'expanded' ? 'active' }}">
+                <i class="dp-po-icon far fa-equals"></i>
+            </a>
+        </div>
+    </div>
+
+</div>

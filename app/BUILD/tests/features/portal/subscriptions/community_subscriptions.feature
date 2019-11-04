@@ -1,5 +1,5 @@
 Feature: Community subscriptions
-  Users can subscribe to community topic and community channels
+  Users can subscribe to community topic and community forums
 
   Background: Fresh database
     Given I install the fresh data set
@@ -9,7 +9,7 @@ Feature: Community subscriptions
 
   Scenario: I subscribe to a community topic successfully as a user
     Given I login with user credentials
-    And the "community" channel "Suggestion" exists with content titled "Example Topic"
+    And the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I follow "Subscribe"
     And I press "Continue"
@@ -18,7 +18,7 @@ Feature: Community subscriptions
     And I should see a "success" flash message
 
   Scenario: I cannot subscribe to a community topic as a GUEST
-    Given the "community" channel "Suggestion" exists with content titled "Example Topic"
+    Given the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I follow "Subscribe"
     Then I should be on "/login"

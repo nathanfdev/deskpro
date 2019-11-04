@@ -12,6 +12,8 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\PhraseTranslatableInterface;
 use DeskPRO\Bundle\AppBundle\Entity\PhraseTranslatableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Basic hierarchical category entity.
  */
-class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchical, PhraseTranslatableInterface
+class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchical, PhraseTranslatableInterface, HasIconProperty
 {
     use PhraseTranslatableTrait;
 
@@ -91,6 +93,16 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
      * @var \Application\DeskPRO\Publish\Structure
      */
     public $structure_helper;
+
+    /**
+     * @var IconProperty
+     */
+    protected $icon_property;
+
+    /**
+     * @var string
+     */
+    protected $color;
 
     /**
      * {@inheritdoc}
@@ -184,6 +196,8 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
         $this->setModelField('title', $title);
 
         $this->updateSlug();
+
+        return $this;
     }
 
     /**
@@ -342,6 +356,45 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
         } else {
             return $this->title;
         }
+    }
+
+    public function getIcon()
+    {
+        return $this->icon_property;
+    }
+
+    public function setIcon($iconProperty)
+    {
+        $this->setModelField('icon_property', $iconProperty);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $withHash
+     *
+     * @return string
+     */
+    public function getColor($withHash = true)
+    {
+        if ($withHash && $this->color) {
+            return '#'.$this->color;
+        }
+
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     *
+     * @return $this
+     */
+    public function setColor($color)
+    {
+        $color = str_replace('#', '', $color);
+        $this->setModelField('color', $color);
+
+        return $this;
     }
 
     /**

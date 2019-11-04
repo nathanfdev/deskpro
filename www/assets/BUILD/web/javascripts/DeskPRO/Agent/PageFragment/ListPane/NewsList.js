@@ -102,6 +102,22 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 			});
 		});
 
+		var colorPicker = this.getEl('color_picker');
+		var pickerModal = colorPicker.find('.picker-modal');
+		var pickerLabel = colorPicker.find('label');
+		var pickerInput = colorPicker.find('input');
+    pickerInput.on('focus', function() {
+		  pickerModal.show();
+    }).on('blur', function () {
+      pickerLabel.css('background-color', pickerInput.val());
+      pickerModal.hide();
+    });
+		colorPicker.find('.picker-color').on('mouseenter', function(ev) {
+		  var newColor = $(ev.target).data('color');
+		  pickerLabel.css('background-color', newColor);
+      pickerInput.val(newColor);
+    });
+
 		allUg = catEl.find('.ug-check');
 		ugEveryone = allUg.filter('.ug-1');
 		ugOther    = allUg.not('.ug-1');

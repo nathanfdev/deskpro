@@ -12,7 +12,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommunityChannelType;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\CommunityForumType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -61,7 +61,7 @@ class CommunityTopicType extends AbstractType
                 'person'   => $options['person'],
                 'required' => false,
             ])
-            ->add('channel', CommunityChannelType::class, [
+            ->add('forum', CommunityForumType::class, [
                 'person'   => $options['person'],
                 'required' => true,
             ])

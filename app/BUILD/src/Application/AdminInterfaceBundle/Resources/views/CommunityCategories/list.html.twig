@@ -10,14 +10,14 @@
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.community_statuses') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
-			<h3>Community Statuses</h3>
+			<h3>{{ phrase('admin.community.community_statuses') }}</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('portal.community_channels') }}">
+		<a href="{{ ng_href('portal.community_forums') }}">
 			<em><i class="fas fa-chevron-down"></i></em>
-			<h3>Community Channels</h3>
+			<h3>Community Forums</h3>
 		</a>
 	</section>
 
@@ -67,8 +67,8 @@
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>Custom channels are an optional way to organize incoming community topics.</h1>
-		<p>If you enter community channels, users will be required to select one when submitting community topics.</p>
+		<h1>Custom forums are an optional way to organize incoming community topics.</h1>
+		<p>If you enter community forums, users will be required to select one when submitting community topics.</p>
 	</header>
 	<article>
 		<section>

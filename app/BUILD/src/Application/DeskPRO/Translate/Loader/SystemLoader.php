@@ -19,14 +19,15 @@ use Symfony\Component\Yaml\Yaml;
 class SystemLoader implements LoaderInterface
 {
     private static $groupFileMap = [
-        'adm'     => 'backend',
-        'admin'   => 'backend',
-        'reports' => 'backend',
-        'api'     => 'backend',
-        'agent'   => 'backend',
-        'general' => 'backend',
-        'portal'  => 'user',
-        'user'    => 'user',
+        'adm'        => 'backend',
+        'admin'      => 'backend',
+        'reports'    => 'backend',
+        'api'        => 'backend',
+        'agent'      => 'backend',
+        'general'    => 'backend',
+        'portal'     => 'user',
+        'user'       => 'user',
+        'helpcenter' => 'user',
     ];
 
     /**

@@ -8,10 +8,17 @@ namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
+use DeskPRO\Bundle\AppBundle\Entity\HasIconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use Exception;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -120,6 +127,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('brand_setting', [$this, 'getBrandSetting'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('brand', [$this, 'getBrand']),
             new \Twig_SimpleFunction('avatar_url', [$this, 'getAvatarUrl']),
+            new \Twig_SimpleFunction('avatar_default_url', [$this, 'getAvatarDefaultUrl']),
+            new \Twig_SimpleFunction('hc_avatar', [$this, 'getHelpcenterAvatar'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_message', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('render_news', [$this, 'getRenderedObject'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('get_secure_content_cats', [$this, 'getSecureCats']),
@@ -130,6 +139,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('news_icon', [$this, 'makeNewsIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('community_icon', [$this, 'makeCommunityIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('content_icon', [$this, 'makeContentIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('helpcenter_content_icon', [$this, 'makeHelpCenterContentIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('ticket_view', [$this, 'getTicketView']),
             new \Twig_SimpleFunction('ticket_excerpts', [$this, 'getTicketExcerpts']),
             new \Twig_SimpleFunction('phrase_form_error', [$this, 'makeFormError'], ['is_safe' => ['html']]),
@@ -139,6 +149,15 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
+            new \Twig_SimpleFunction('category_color_css', [$this, 'categoryColorCss']),
+            new \Twig_SimpleFunction('render_icon_from', [$this, 'renderIconFrom'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('render_icon', [$this, 'renderIcon'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
+            new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
+            new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash']),
+            new \Twig_SimpleFunction('get_user', [$this, 'getPerson']),
+            new \Twig_SimpleFunction('current_theme', [$this, 'getCurrentTheme']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -257,6 +276,16 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function makeContentIcon($content)
     {
         return $this->container->get('icon_factory')->makeContentIcon($content);
+    }
+
+    /**
+     * @param $content
+     *
+     * @return string
+     */
+    public function makeHelpCenterContentIcon($content)
+    {
+        return $this->container->get('icon_factory')->makeContentIcon($content, true);
     }
 
     /**
@@ -395,11 +424,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param Entity\ContentAbstract $content
+     * @param ContentAbstract $content
      *
      * @return array
      */
-    public function getSecureCats(Entity\ContentAbstract $content)
+    public function getSecureCats(ContentAbstract $content)
     {
         $permission_bag = $this->getPermissionBagForCurrentUser();
 
@@ -504,9 +533,56 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @return string the url
      */
-    public function getAvatarUrl($obj = null, $size = 80)
+    public function getAvatarUrl($obj = null, $size = 80, $fallbackOnDefault = true)
     {
-        return $this->getAvatarResolver()->getAvatar($obj, $size);
+        $returnedDefault = false;
+        $avatar          = $this->getAvatarResolver()->getAvatar($obj, $size, $returnedDefault);
+        if (!$fallbackOnDefault && $returnedDefault) {
+            return null;
+        }
+
+        return $avatar;
+    }
+
+    /**
+     * Get URL to a profile picture/avatar.
+     *
+     * @param mixed $obj
+     * @param int   $size
+     *
+     * @return string the url
+     */
+    public function getAvatarDefaultUrl($obj = null, $size = 80)
+    {
+        return $this->getAvatarResolver()->getDefaultPersonAvatar($size);
+    }
+
+    /**
+     * @param null   $obj
+     * @param int    $size
+     * @param string $className
+     *
+     * @return string
+     */
+    public function getHelpcenterAvatar($obj = null, $className = '', $size = 80)
+    {
+        $avatarUrl = $this->getAvatarUrl($obj, $size, false);
+        if ($avatarUrl) {
+            if ($className) {
+                $className = 'class="'.$className.'-image"';
+            }
+
+            return "<img $className src='$avatarUrl' />";
+        } elseif ($obj) {
+            if ($className) {
+                $className = 'class="'.$className.'-name"';
+            } else {
+                $className = 'class="dp-po-avatar-name"';
+            }
+            $initials = substr($obj->getFirstName(), 0, 1).substr($obj->getLastName(), 0, 1);
+
+            return "<span $className>$initials</span>";
+        }
     }
 
     /**
@@ -617,9 +693,95 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @param CategoryAbstract|CommunityTopicStatusCategory $category
+     */
+    public function categoryColorCss($category)
+    {
+        if (!($category instanceof CategoryAbstract) && !($category instanceof CommunityTopicStatusCategory)) {
+            throw new \InvalidArgumentException('the category_color_css twig function requires one of: CategoryAbstract or CommunityTopicStatusCategory but did not get one');
+        }
+        if ($category->getColor()) {
+            return 'background-color: #'.$category->getColor().';';
+        }
+    }
+
+    /**
+     * @param HasIconProperty $object
+     * @param array           $options
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function renderIconFrom(HasIconProperty $object, $options = [])
+    {
+        return $this->container->get('portal_icon.renderer')->getIconHtmlFrom($object, $options);
+    }
+
+    /**
+     * @param IconProperty $icon
+     * @param array        $options
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function renderIcon(IconProperty $icon, $options = [])
+    {
+        return $this->container->get('portal_icon.renderer')->getIconHtml($icon, $options);
+    }
+
+    /**
+     * @param ContentAbstract $object
+     *
+     * @return bool
+     */
+    public function hasSplashImage(ContentAbstract $object)
+    {
+        return (bool) $object->getSplashImage();
+    }
+
+    /**
+     * @param HasSplashImageProperty $object
+     * @param int                    $width
+     * @param string                 $orientation
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function getSplashUrl(HasSplashImageProperty $object, $width = 200, $orientation = 'landscape')
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            return $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $width, $orientation);
+        }
+
+        return '';
+    }
+
+    /**
+     * @param ContentAbstract $object
+     * @param string          $orientation
+     *
+     * @throws Exception
+     *
+     * @return string
+     */
+    public function getSplashBgcss(ContentAbstract $object, $orientation = 'landscape')
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            return $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $orientation);
+        }
+
+        return '';
+    }
+
+    /**
      * @return PersonGuest|Entity\Person
      */
-    protected function getPerson()
+    public function getPerson()
     {
         $person = null;
         $token  = $this->getTokenStorage()->getToken();
@@ -632,6 +794,11 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return $person;
+    }
+
+    public function getCurrentTheme()
+    {
+        return $this->container->get('brand_stack')->getActive()->getBrand()->getThemeSet()->getThemeId();
     }
 
     /**

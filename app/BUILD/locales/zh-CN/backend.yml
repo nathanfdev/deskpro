@@ -24,8 +24,8 @@ adm.general.x_community_closed_statuses:
   other: '{{count}} Community Closed Statuses'
 adm.general.x_community_statuses:
   other: '{{count}} Community Statuses'
-adm.general.x_community_channels:
-  other: '{{count}} Community Channels'
+adm.general.x_community_forums:
+  other: '{{count}} Community Forums'
 adm.general.x_ip_bans:
   other: '{{count}} IP Bans'
 adm.general.x_ticket_escalations:
@@ -366,7 +366,7 @@ agent.emails.view_your_tasks: 查看您的任务
 agent.emails.view_your_teams_tasks: 查看您团队的任务
 agent.emails.view_your_tweets: 查看您的推文
 agent.emails.your_initial_password: 您的初始密码
-agent.community.any_channel: 任何类别
+agent.community.any_forum: 任何类别
 agent.community.any_status: 任何状态
 agent.community.count_votes:
   other: '{{display_count}} votes'
@@ -381,7 +381,7 @@ agent.community.merge_community_topics_submit: 合并这两个反馈提交
 agent.community.merge_howto: "打开其他反馈标签以进行合并\n"
 agent.community.new_community_topic: 新反馈
 agent.community.newest_on_top: 最新的在上面
-agent.community.no_community_channels_error: "没有定义类型。在可以向反馈部分添加类型之前，需要从管理界面中定义类型。\n"
+agent.community.no_community_forums_error: "没有定义类型。在可以向反馈部分添加类型之前，需要从管理界面中定义类型。\n"
 agent.community.no_labels_explain: "您尚未标记任何反馈。查看提交的意见反馈，为其添加标签。\n"
 agent.community.oldest_on_top: 最久的在上面
 agent.community.popularity_least_most: '受欢迎层度（最少 最多）'

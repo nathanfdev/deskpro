@@ -728,7 +728,7 @@ $container->loadFromExtension(
                             'sticky_words' => [],
                             'content'      => ['analyzer' => 'text_content_analyzer'],
                             'status'       => [],
-                            'channel_id'   => ['type' => 'integer'],
+                            'forum_id'     => ['type' => 'integer'],
                             'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                             'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                         ],

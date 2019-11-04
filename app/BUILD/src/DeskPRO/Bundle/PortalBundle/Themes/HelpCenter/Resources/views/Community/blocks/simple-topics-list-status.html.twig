@@ -1,0 +1,14 @@
+<ul class="dp-po-community-status-list">
+    {% for topic in topics %}
+        <li class="dp-po-community-status-item">
+            <a href="{{ portal_path(topic) }}" class="dp-po-community-status-link">
+                {% if topic.status_category %}
+                    {% include 'Theme:Community:blocks/status-change-transition.html.twig' with {
+                        topic: topic,
+                    } %}
+                {% endif %}
+                {{ topic.title }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>

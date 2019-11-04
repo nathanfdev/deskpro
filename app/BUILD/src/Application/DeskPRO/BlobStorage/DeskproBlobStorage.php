@@ -26,6 +26,7 @@ class DeskproBlobStorage implements Loggable
 {
     const TAG_TICKET_ATTACHMENT   = 'ticket_attachment';
     const TAG_DOWNLOAD_ATTACHMENT = 'download_attachment';
+    const TAG_PERSON_AVATAR       = 'person_avatar';
 
     /**
      * @var string

@@ -48,7 +48,7 @@ class ThemeSetController extends AbstractApiController
         }
 
         $themeId = $data['theme_id'];
-        if ($themeId !== 'standard' && $themeId !== 'sidebar') {
+        if ($themeId !== 'standard' && $themeId !== 'sidebar' && $themeId !== 'helpcenter') {
             throw new BadRequestHttpException('Invalid theme_id option');
         }
 
@@ -81,6 +81,6 @@ class ThemeSetController extends AbstractApiController
     {
         $this->getStylesManager()->discardEditThemeSet();
 
-        return new JsonResponse();
+        return new JsonResponse(['id' => $this->getTheme()->getId()]);
     }
 }

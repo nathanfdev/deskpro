@@ -11,7 +11,7 @@ Feature: Community topic commenting
     And I disable anti-abuse rate limiting
 
   Scenario: I comment on a community topic as a guest
-    Given the "community" channel "Suggestion" exists with content titled "Example Topic"
+    Given the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I fill in "Any comments?" with "This is a guest comment on a community topic!"
     When I fill in "Your Name" with "Chris Name"
@@ -24,7 +24,7 @@ Feature: Community topic commenting
     And I should be on the set password page
 
   Scenario: I use a registered email to comment as a guest
-    Given the "community" channel "Suggestion" exists with content titled "Example Topic"
+    Given the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I fill in "Any comments?" with "This is a guest comment!"
     When I fill in "Your Name" with "Chris Name"
@@ -39,20 +39,20 @@ Feature: Community topic commenting
 
   Scenario: I submit an invalid community topic comment as a user
     Given I login with user credentials
-    And the "community" channel "Suggestion" exists with content titled "Example Topic"
+    And the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     And I press "Save Comment"
     Then I should see a form error with "This value is required"
 
   Scenario: I submit an invalid community topic comment as a guest
-    Given the "community" channel "Suggestion" exists with content titled "Example Topic"
+    Given the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     And I press "Save Comment"
     Then I should see a form error with "This value is required"
 
   Scenario: I comment on a community topic as a user
     Given I login with user credentials
-    And the "community" channel "Suggestion" exists with content titled "Example Topic"
+    And the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I fill in "Any comments?" with "This is my comment! I just posted it on a community topic!"
     And I press "Save Comment"

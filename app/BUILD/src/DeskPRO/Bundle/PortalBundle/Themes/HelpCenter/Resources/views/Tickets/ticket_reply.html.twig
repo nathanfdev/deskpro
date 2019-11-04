@@ -1,0 +1,64 @@
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
+
+<div class="dp-po-section dp-po-comments">
+    {% if not ticket.archived and not ticket.resolved %}
+        <div class="dp-po-title">
+            <h2 class="dp-po-title-text dp-po-title-small">
+                {% if not ticket.resolved %}
+                    {{ phrase('helpcenter.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
+                {% else %}
+                    {{ phrase('helpcenter.tickets.view_reply') }}
+                {% endif %}
+            </h2>
+        </div>
+        <div class="dp-po-block">
+            <div class="dp-po-comments-add">
+                {{ form_errors(form) }}
+                {{ form_start(form, { attr: { class: 'dp-po-form', id: 'ticket-reply-form'} }) }}
+                    {% if form_errors|length > 0 %}
+                        <div class="column-full">
+                            <div class="bucket">
+                                <div class="form-error-list" style="max-width: 620px;">
+                                    <h1>{{ phrase('helpcenter.tickets.view_reply_errors') }}</h1>
+                                    <ul>
+                                        {% for error in form_errors %}
+                                            {% set error_view = error.origin.createView() %}
+                                            <li>
+                                                <span>{{ phrase_form_error(error) }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        {{ form_widget(form.ticket_message) }}
+                    </div>
+                    {{ form_widget(form.attachments) }}
+                    <div class="as-no-dpui">{{ form_widget(form.more_attachments, { attr: { class: 'btn btn-primary' }}) }}</div>
+
+                    <div class="row align-items-center">
+                        <div class="col-sm-2">
+                            {{ form_widget(form.submit, { attr: { class: 'btn btn-primary' }}) }}
+                        </div>
+                    </div>
+                    {{ form_rest(form) }}
+                {{ form_end(form) }}
+            </div>
+        </div>
+    {% else %}
+        {% if can_view_tickets_link() %}
+            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary">
+                {{ phrase('helpcenter.tickets.new_ticket_button') }}
+            </a>
+        {% endif %}
+
+        {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
+            <a href="{{ portal_path(ticket, 'unresolve') }}" class="btn btn-outline-primary post-link">
+                {{ phrase('helpcenter.tickets.mark-unresolved') }}
+            </a>
+        {% endif %}
+    {% endif %}
+</div>

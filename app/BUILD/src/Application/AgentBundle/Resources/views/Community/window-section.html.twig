@@ -47,7 +47,7 @@
 				<nav class="pane-section-tabs" id="community_outline_tabstrip">
 					<ul>
 						<li style="width:33%;" data-tab-for="#community_outline_status"><span>{{ phrase('agent.general.status') }}</span></li>
-						<li style="width:33%;" data-tab-for="#community_outline_channel"><span>{{ phrase('agent.general.channel') }}</span></li>
+						<li style="width:33%;" data-tab-for="#community_outline_forum"><span>{{ phrase('agent.general.forum') }}</span></li>
 						<li style="width:33%;" data-tab-for="#community_outline_labels"><span>{{ phrase('agent.general.labels') }}</span></li>
 					</ul>
 				</nav>
@@ -108,16 +108,16 @@
 						</li>
 					</ul>
 				</section>
-				<section id="community_outline_channel" class="deskpro-tab-item" data-tab-trigger="#community_outline_tabstrip li.categroies">
+				<section id="community_outline_forum" class="deskpro-tab-item" data-tab-trigger="#community_outline_tabstrip li.categroies">
 					<ul class="nav-list nav-list-small">
-						{% for channel in community_channels %}
+						{% for forum in community_forums %}
 							<li
 								class="is-nav-item"
-								data-usergroup-ids="{{ community_channels_usergroups[channel.id]|default([])|join(',') }}"
+								data-usergroup-ids="{{ community_forums_usergroups[forum.id]|default([])|join(',') }}"
 							>
-								<div class="item" {% if channel.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_channels', {'channelId':channel.id}) }}">
-									<h3>{{ channel.title }}</h3>
-									<em class="counter list-counter" id="community_channel_{{channel.id}}_count">{{ channel_counts[channel.id]|default(0) }}</em>
+								<div class="item" {% if forum.depth %}style="padding-left: {{ (12 + (10 * cat.depth-1)) }}px"{% endif %} data-route="listpane:{{ path('agent_community_forums', {'forumId':forum.id}) }}">
+									<h3>{{ forum.title }}</h3>
+									<em class="counter list-counter" id="community_forum_{{forum.id}}_count">{{ forum_counts[forum.id]|default(0) }}</em>
 								</div>
 							</li>
 						{% endfor %}
@@ -155,19 +155,19 @@
 	</div>
 
 <div id="deskpro_window_community_templates" style="display: none;">
-	<ul id="community_category_menu" data-menu-type="community-channel-menu" data-menu-flag="copy-menu">
-        {% for channel in app.getDataService('CommunityChannel').getRootNodes(selected_brand_id) %}
+	<ul id="community_category_menu" data-menu-type="community-forum-menu" data-menu-flag="copy-menu">
+        {% for forum in app.getDataService('CommunityForum').getRootNodes(selected_brand_id) %}
             {% if last_with_child %}
 				<li class="sep">-</li>
             {% endif %}
-            {% if channel.children|length %}
-				<li data-category-id="{{channel.id}}" class="section-title channel-{{channel.id}}">{{channel.title}}</li>
-                {% for subchannel in channel.children %}
-					<li data-category-id="{{subchannel.id}}" data-parent-id="{{channel.id}}" class="channel-{{channel.id}} channel-{{subchannel.id}}">{{subchannel.title}}</li>
+            {% if forum.children|length %}
+				<li data-category-id="{{forum.id}}" class="section-title forum-{{forum.id}}">{{forum.title}}</li>
+                {% for subforum in forum.children %}
+					<li data-category-id="{{subforum.id}}" data-parent-id="{{forum.id}}" class="forum-{{forum.id}} forum-{{subforum.id}}">{{subforum.title}}</li>
                 {% endfor %}
                 {% set last_with_child = true %}
             {% else %}
-				<li data-category-id="{{channel.id}}" class="channel-{{channel.id}}">{{channel.title}}</li>
+				<li data-category-id="{{forum.id}}" class="forum-{{forum.id}}">{{forum.title}}</li>
                 {% set last_with_child = false %}
             {% endif %}
         {% endfor %}

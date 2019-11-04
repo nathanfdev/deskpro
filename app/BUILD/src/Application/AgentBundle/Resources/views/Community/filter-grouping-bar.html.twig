@@ -7,12 +7,12 @@
 					<span class="count">{{ grouped.items[-1].total }}</span>
 				</a>
 			</li>
-			{% for channel in grouped.items %}
-				{% if channel.id != '-1' %}
-					<li class="{% if subgroup == channel.id %}on{% endif %}">
-						<a data-route="listpane:{{ tplvars.subgroup_url|replace({'SUBGROUP_ID': channel.id}) }}">
-							{{ channel.title }}
-							<span class="count">{{ channel.total }}</span>
+			{% for forum in grouped.items %}
+				{% if forum.id != '-1' %}
+					<li class="{% if subgroup == forum.id %}on{% endif %}">
+						<a data-route="listpane:{{ tplvars.subgroup_url|replace({'SUBGROUP_ID': forum.id}) }}">
+							{{ forum.title }}
+							<span class="count">{{ forum.total }}</span>
 						</a>
 					</li>
 				{% endif %}

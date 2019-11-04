@@ -7,7 +7,7 @@ Feature: Community
       | default |
     And the default brand is using the standard theme
     And no "CommunityTopic" records exist
-    And the "community" channel "Suggestion" exists with content titled "Example Topic"
+    And the "community" forum "Suggestion" exists with content titled "Example Topic"
 
   Scenario: I visit the Community from the homepage
     And I am on "/"

@@ -32,7 +32,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
     /**
      * @var int[]
      */
-    private $channels = [];
+    private $forums = [];
 
     /**
      * @var int[]
@@ -107,7 +107,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
         $this->manager->flush();
 
         $this->people         = $this->fetchIds(self::TABLE_PEOPLE);
-        $this->channels       = $this->fetchIds(self::TABLE_COMMUNITY_CHANNELS);
+        $this->forums       = $this->fetchIds(self::TABLE_COMMUNITY_FORUMS);
         $this->languages      = $this->fetchIds(self::TABLE_LANGUAGES);
         $this->activeStatuses = $this->fetchIds(
             self::TABLE_COMMUNITY_TOPIC_STATUS_CATEGORIES,
@@ -202,7 +202,7 @@ class CommunityTopicsFixture extends AbstractDpFixture implements OrderedFixture
             $values      = [
                 'content'      => $this->faker->realText(300),
                 'person_id'    => $this->faker->randomElement($this->people),
-                'channel_id'   => $this->faker->randomElement($this->channels),
+                'forum_id'   => $this->faker->randomElement($this->forums),
                 'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
                 'brand_id'     => $brand->getId(),

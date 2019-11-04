@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
  *         {"name"="status", "pattern"="active|closed|hidden", "description"="filter by status", "dataType"="string"},
  *         {"name"="hidden_status", "dataType"="integer", "pattern"="unpublished|deleted|spam|draft", "description"="limit with hidden_status"},
  *         {"name"="status_category", "pattern"="\w|[\w]", "description"="filter by status category", "dataType"="string[]"},
- *         {"name"="channel", "pattern"="\w|[\w]", "description"="channel title, or titles array", "dataType"="string[]"},
+ *         {"name"="forum", "pattern"="\w|[\w]", "description"="forum title, or titles array", "dataType"="string[]"},
  *         {"name"="category", "pattern"="\w|[\w]", "description"="filter by category", "dataType"="string[]"},
  *         {"name"="labels_mode", "pattern"="any|all", "description"="how to load labels", "dataType"="string"},
  *         {"name"="label", "pattern"="\w,\w...\w", "description"="select community topics with given lables", "dataType"="string"},
@@ -46,14 +46,14 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiDoc(
  *     target="listAction",
  *     filters={
- *         {"name"="order_by", "pattern"="date_created|total_rating|num_ratings|id|title|status|channel|person", "description"="how to order result", "dataType"="string"},
+ *         {"name"="order_by", "pattern"="date_created|total_rating|num_ratings|id|title|status|forum|person", "description"="how to order result", "dataType"="string"},
  *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
  *     }
  * )
  * @ApiDoc(
  *     target="countAction",
  *     filters={
- *         {"name"="group_by", "pattern"="status_category|hidden_status|channel|category", "description"="how to group counts", "dataType"="boolean"}
+ *         {"name"="group_by", "pattern"="status_category|hidden_status|forum|category", "description"="how to group counts", "dataType"="boolean"}
  *     }
  * )
  * @ApiDoc(
@@ -77,7 +77,7 @@ class CommunityTopicsController extends AbstractCommunityController
         'num_ratings'  => 'num_ratings',
         'title'        => 'title',
         'status'       => 'status',
-        'channel'      => ['join' => 'channel', 'as' => 'c', 'sort' => 'c.id'],
+        'forum'        => ['join' => 'forum', 'as' => 'c', 'sort' => 'c.id'],
         'person'       => ['join' => 'person', 'as' => 'p', 'sort' => 'p.id'],
     ];
 
@@ -137,11 +137,11 @@ class CommunityTopicsController extends AbstractCommunityController
                     ->groupBy('group_name');
 
                 break;
-            case 'channel':
+            case 'forum':
                 $qb
-                    ->join("{$alias}.channel", 'channel')
-                    ->addSelect('channel.title as title')
-                    ->addSelect('channel.id as group_name')
+                    ->join("{$alias}.forum", 'forum')
+                    ->addSelect('forum.title as title')
+                    ->addSelect('forum.id as group_name')
                     ->groupBy('group_name');
 
                 break;

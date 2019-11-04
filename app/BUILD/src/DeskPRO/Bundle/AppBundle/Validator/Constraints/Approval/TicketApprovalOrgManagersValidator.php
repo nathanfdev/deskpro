@@ -40,6 +40,22 @@ class TicketApprovalOrgManagersValidator extends ConstraintValidator
             return;
         }
 
+        $template = $value->getTemplate();
+        if (!$template) {
+            return;
+        }
+
+        $hasOrgManagers = false;
+        if ($template->canChooseApprovers() && $template->getApproverSelectionCriteria()) {
+            $hasOrgManagers = $template->getApproverSelectionCriteria()->canSelectOrganizationManagers();
+        } elseif ($template->getSelectedApprovers()) {
+            $hasOrgManagers = $template->getSelectedApprovers()->hasOrganizationManagers();
+        }
+
+        if (!$hasOrgManagers) {
+            return;
+        }
+
         $organization = $person->getOrganization();
         if (!$organization) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */

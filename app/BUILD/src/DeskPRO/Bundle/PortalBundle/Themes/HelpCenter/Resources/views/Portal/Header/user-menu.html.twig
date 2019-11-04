@@ -1,0 +1,79 @@
+{% if brand_setting('core.iface_portal') %}
+    <div class="dp-po-user">
+        {% if is_guest() %}
+            <a href="javascript:void(0)" class="dp-po-user-login" data-toggle="dropdown" aria-haspopup="true"
+               aria-expanded="false" id="hc-top-login-btn">{{ phrase('helpcenter.account.login-btn') }}</a>
+            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown">
+                {% if helpcenter.getUserInfo().display_registration_link %}
+                <h4 class="dropdown-item-text dp-po-user-dropdown-title">{{ phrase('helpcenter.account.new-to-brand', {brand: brand_setting('core.deskpro_name')|e}) }} <a href="{{ path('portal_user_registration') }}">{{ phrase('helpcenter.account.login-register-header') }}</a></h4>
+                {% endif %}
+                {% if has_login_form() %}
+                <section class="dp-po-loginform">
+                    <form class="do-po-form" method="post" id="login-sidebar">
+                        <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}" />
+                        <div class="form-group">
+                            <input
+                                type="email"
+                                class="form-control"
+                                name="dropdown_username"
+                                id="login-form-username"
+                                tabIndex="21"
+                                aria-describedby="emailHelp"
+                                placeholder="{{ phrase('helpcenter.account.email-address') }}"
+                            >
+                        </div>
+                        <div class="form-group">
+                            <div id="login-form-failed-reason"></div>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="login-form-password"
+                                name="dropdown_password"
+                                placeholder="{{ phrase('helpcenter.account.password') }}"
+                                tabIndex="22"
+                            >
+                        </div>
+                        <div class="form-group dp-po-form-check">
+                            <input
+                                type="checkbox"
+                                name="remember_me"
+                                class="form-check-input"
+                                id="login-form-remember-me"
+                                tabIndex="23"
+                                onclick="var event = arguments[0] || window.event; event.stopPropagation();"
+                            >
+                            <label class="form-check-label" for="login-form-remember-me" onclick="var event = arguments[0] || window.event; event.stopPropagation();">
+                                {{ phrase('helpcenter.account.login-stay-logged-in') }}
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg" tabIndex="24">{{ phrase('helpcenter.account.login-btn') }}</button>
+                        {% if has_login_form() %}
+                            <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25" class="dp-po-form-btntext">{{ phrase('helpcenter.account.login-password-reminder') }}</a>
+                        {% endif %}
+                    </form>
+                </section>
+                {% endif %}
+                <section class="dp-po-social-login" id="login-form-usersources">
+                </section>
+            </div>
+        {% else %}
+            <a href="javascript:void(0)" class="dp-po-user-login dp-po-avatar" data-toggle="dropdown" aria-haspopup="true"
+               aria-expanded="false">
+                {{ hc_avatar(app.user) }}
+                <i class="dp-po-icon far fa-angle-down"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown dp-po-logged-in-user">
+                {{ hc_avatar(app.user, '', 50) }} {{ app.user }}
+                <hr />
+                <a href="{{ path('portal_user_profile') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/profile.svg', 'help_center') }}"> {{ phrase('helpcenter.general.view_profile') }}</a> <br />
+                {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
+                    <a href="{{ path('portal_tickets') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/tickets.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}</a> <br />
+                {% endif %}
+                {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
+                    <a href="{{ path('portal_chats') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/chats.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}</a> <br />
+                {% endif %}
+                <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout-btn') }}</a>
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

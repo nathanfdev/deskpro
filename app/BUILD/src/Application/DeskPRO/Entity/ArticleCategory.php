@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\EntityRepository\ArticleCategory as ArticleCategoryRepository;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -180,11 +181,13 @@ class ArticleCategory extends CategoryAbstract
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection|ArticleCategory[]
      */
     public function getArticles()
     {
-        return $this->articles;
+        return $this->articles->map(function (ArticleToCategory $pivot) {
+            return $pivot->getArticle();
+        });
     }
 
     /**
@@ -355,11 +358,11 @@ class ArticleCategory extends CategoryAbstract
                 'dpApi' => true,
             ]
         );
-        $metadata->mapManyToMany(
+        $metadata->mapOneToMany(
             [
                 'fieldName'    => 'articles',
-                'targetEntity' => Article::class,
-                'mappedBy'     => 'categories',
+                'targetEntity' => ArticleToCategory::class,
+                'mappedBy' => 'category',
             ]
         );
         $metadata->mapManyToOne(
@@ -373,6 +376,24 @@ class ArticleCategory extends CategoryAbstract
                         'name'                 => 'brand_id',
                         'referencedColumnName' => 'id',
                         'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'icon_property',
+                'targetEntity' => IconProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'icon_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
                     ],
                 ],
                 'dpApi' => true,

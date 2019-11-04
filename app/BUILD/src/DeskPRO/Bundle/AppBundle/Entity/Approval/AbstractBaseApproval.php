@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Approval;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractApproval;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,6 +26,8 @@ use JMS\Serializer\Annotation as JMS;
  * })
  *
  * @JMS\ExclusionPolicy("all")
+ *
+ * @AppAssert\Approval\EnoughApprovers()
  */
 abstract class AbstractBaseApproval extends AbstractApproval
 {
@@ -233,12 +236,6 @@ abstract class AbstractBaseApproval extends AbstractApproval
             // Add any specific people (agents or users)
             foreach ($selectedApprovers->getPeople() as $personId) {
                 $approval->addApprover($em->getReference(Person::class, $personId));
-            }
-
-            // Check that we have enough approvers
-            $approversCount = $approval->getApprovers()->count();
-            if ($approversCount < max($approval->getRequiredApprovals(), $approval->getRequiredRejections())) {
-                throw new \DomainException('There aren\'t enough approvers defined to meet required approvals/rejections');
             }
         }
 

@@ -30,7 +30,7 @@ class InstallerHandler extends AbstractInstallerHandler
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_whatsapp',    null);
     }
 
     /**
@@ -42,7 +42,7 @@ class InstallerHandler extends AbstractInstallerHandler
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter') ?: null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus') ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_whatsapp',    $context->getApp()->getSetting('show_share_whatsapp') ?: null);
     }
 
     /**
@@ -62,6 +62,6 @@ class InstallerHandler extends AbstractInstallerHandler
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_facebook', $context->getApp()->getSetting('show_share_facebook') ?: null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_twitter',  $context->getApp()->getSetting('show_share_twitter') ?: null);
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_linkedin', $context->getApp()->getSetting('show_share_linkedin') ?: null);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus') ?: null);
+        $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_whatsapp',    $context->getApp()->getSetting('show_share_whatsapp') ?: null);
     }
 }

@@ -6,11 +6,13 @@ import map from 'lodash/map';
 export class FilterOptions {
 
   constructor(available) {
+    this.views = available.views;
     this.status = available.status;
     this.status_categories = available.status_categories;
     this.types = available.types;
     this.sorts = available.sorts;
     this.sort_directions = available.sort_directions;
+    this.activities = available.activities;
   }
 
   getStatusCategoryById(statusId, statusCategoryId) {

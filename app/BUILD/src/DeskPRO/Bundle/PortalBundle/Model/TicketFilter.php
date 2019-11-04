@@ -52,13 +52,13 @@ class TicketFilter
      */
     private $search_query;
 
-    public function __construct($type = null, $category = null, $sort = null, $sort_direction = null, $search_query = null)
+    public function __construct($type = null, $category = null, $sort = null, $sortDirection = null, $searchQuery = null)
     {
         $this->setType($type);
         $this->setCategory($category);
         $this->setSort($sort);
-        $this->setSortDirection($sort_direction);
-        $this->setSearchQuery($search_query);
+        $this->setSortDirection($sortDirection);
+        $this->setSearchQuery($searchQuery);
     }
 
     /**

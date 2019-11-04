@@ -202,7 +202,8 @@ class KbSubscriptions extends AbstractJob
         $this->published = $this->getContainer()->getEm()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                INNER JOIN a.categories cat
+                INNER JOIN a.categories artToCat
+                INNER JOIN artToCat.category cat
                 WHERE a.status = 'published'
                   AND a.date_published > :date
                   AND cat.brand = :brand
@@ -212,7 +213,8 @@ class KbSubscriptions extends AbstractJob
         $this->updated = $this->getContainer()->getEm()->createQuery("
                 SELECT a
                 FROM DeskPRO:Article a INDEX BY a.id
-                INNER JOIN a.categories cat
+                INNER JOIN a.categories artToCat
+                INNER JOIN artToCat.category cat
                 WHERE a.status = 'published'
                   AND (a.date_updated > :date OR a.date_last_comment > :date)
                   AND cat.brand = :brand

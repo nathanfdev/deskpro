@@ -19,6 +19,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MembersController extends AbstractController
 {
     /**
+     * Number of member activities per page.
+     */
+    const MEMBER_ACTIVITIES_PER_PAGE = 10;
+
+    /**
      * @Route("/members", name="portal_members")
      * @Security("is_granted('ROLE_USER')")
      *
@@ -28,9 +33,11 @@ class MembersController extends AbstractController
     {
         $this->isCommunityEnabledOrNotFoundException();
 
-        $page  = $request->get('page', 1);
-        $count = $this->getBrandSetting('portal.per_page_content');
-        $pager = $this->getPersonDataService()->getPortalMembersPager($page, $count);
+        $page    = $request->get('page', 1);
+        $orderBy = $request->get('order', 'last_name');
+        $search  = $request->get('q', '');
+        $count   = $this->getBrandSetting('portal.per_page_content');
+        $pager   = $this->getPersonDataService()->getPortalMembersPager($page, $count, $orderBy, $search);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildMembersList();
 
@@ -38,9 +45,11 @@ class MembersController extends AbstractController
             'Theme:Members:index.html.twig',
             [
                 'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->createPageTitle()->members(),
                 'pager'       => $pager,
                 'count'       => $count,
                 'page'        => $page,
+                'q'           => $search,
             ]
         );
     }
@@ -94,13 +103,22 @@ class MembersController extends AbstractController
             ];
         }
 
+        $activities = $this->getPersonDataService()->getPortalMemberActivitiesPager(
+            $person,
+            $request->query->get('page', 1),
+            self::MEMBER_ACTIVITIES_PER_PAGE,
+            true
+        );
+
         return $this->renderThemeView(
             'Theme:Members:view.html.twig',
             [
                 'breadcrumbs' => $breadcrumbs,
                 'person'      => $person,
+                'page_title'  => $this->createPageTitle()->members($person),
                 'avatar'      => $avatar,
                 'custom_data' => $customData,
+                'activities'  => $activities,
             ]
         );
     }
@@ -110,8 +128,7 @@ class MembersController extends AbstractController
      */
     protected function isCommunityEnabledOrNotFoundException()
     {
-        $settings = $this->container->get('settings_resolver');
-        if (!$settings->getGlobalSettings()->get('portal.members_community')) {
+        if (!$this->isCommunityEnabled()) {
             throw $this->createNotFoundException();
         }
     }

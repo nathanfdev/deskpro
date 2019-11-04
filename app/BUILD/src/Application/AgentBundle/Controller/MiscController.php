@@ -19,6 +19,7 @@ use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
@@ -643,7 +644,7 @@ JS;
         if ($this->in->getString('attach_to_object')) {
             switch ($this->in->getString('attach_to_object')) {
                 case 'article':
-                    $article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
+                    $article = $this->em->find(Entity\Article::class, $this->in->getUint('object_id'));
 
                     $attach           = new \Application\DeskPRO\Entity\ArticleAttachment();
                     $attach['blob']   = $blob;
@@ -658,15 +659,24 @@ JS;
                     break;
 
                 case 'news':
-                    $news = $this->em->find('DeskPRO:News', $this->in->getUint('object_id'));
+                    $news = $this->em->find(Entity\News::class, $this->in->getUint('object_id'));
 
-                    $attach           = new \Application\DeskPRO\Entity\NewsAttachment();
-                    $attach['blob']   = $blob;
-                    $attach['person'] = $this->person;
+                    if ($this->in->getBool('splash_image')) {
+                        $splashImage = new SplashImageProperty();
+                        $splashImage->setBlob($blob);
+                        $splashImage->setUrn(SplashImageProperty::$blobNs.':'.$blob->getAuthId());
+                        $news->setSplashImage($splashImage);
 
-                    $news->addAttachment($attach);
+                        $this->em->persist($splashImage);
+                    } else {
+                        $attach           = new \Application\DeskPRO\Entity\NewsAttachment();
+                        $attach['blob']   = $blob;
+                        $attach['person'] = $this->person;
 
-                    $this->em->persist($attach);
+                        $news->addAttachment($attach);
+
+                        $this->em->persist($attach);
+                    }
                     $this->em->persist($news);
                     $this->em->flush();
 

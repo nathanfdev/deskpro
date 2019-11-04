@@ -106,7 +106,7 @@ class ApprovalTemplatesController extends CrudController
             $hasTicketUser    = $criteria->hasTicketUser();
             $hasOrgManagers   = $criteria->hasOrganizationManagers();
             $hasAllAgents     = $criteria->hasAllAgents();
-            $predefinedPeople = $criteria->hasOrganizationManagers();
+            $predefinedPeople = $criteria->getPeople();
         }
 
         $em = $this->getManager();

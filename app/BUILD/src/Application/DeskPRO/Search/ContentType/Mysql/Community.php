@@ -29,7 +29,7 @@ class Community extends AbstractContentType
         }
 
         if ($communityTopic->category) {
-            $data['channel_id'] = $communityTopic->category->id;
+            $data['forum_id'] = $communityTopic->category->id;
         }
 
         $doc = Document::newFromArray($data);

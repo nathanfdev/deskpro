@@ -236,7 +236,7 @@ DeskPRO.Agent.ElementHandler.CommunitySearchBox = new Orb.Class({
 					row.data('community-topic-id', topic.id);
 					row.attr('community-topic-id', topic.id);
 					row.addClass('community-' + topic.id);
-          row.find('.community-channel').text(topic.type);
+          row.find('.community-forum').text(topic.type);
 
 					if (self.exclude.indexOf(topic.id) > -1) {
 						row.addClass('disabled');

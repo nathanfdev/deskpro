@@ -24,14 +24,14 @@ class CommunityTopic extends ContentAbstract
     protected $statusCategory = null;
 
     /**
-     * Community channel the topic belongs to.
+     * Community forum the topic belongs to.
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityChannel>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CommunityForum>")
      *
-     * @var \Application\DeskPRO\Entity\CommunityChannel
+     * @var \Application\DeskPRO\Entity\CommunityForum
      */
-    protected $channel;
+    protected $forum;
 
     /**
      * String array of labels associated with this news.
@@ -99,7 +99,7 @@ class CommunityTopic extends ContentAbstract
         parent::__construct($entity);
 
         $this->statusCategory = $entity->getStatusCategory();
-        $this->channel        = $entity->getChannel();
+        $this->forum        = $entity->getForum();
         $this->labels         = $entity->getLabels();
         $this->fields         = $entity->getCustomData();
         $this->popularity     = $entity->getPopularity();

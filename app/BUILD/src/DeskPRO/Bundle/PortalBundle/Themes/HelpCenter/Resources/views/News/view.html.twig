@@ -1,0 +1,112 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block page_top %}
+  <div class="row align-items-end mb-4">
+    <div class="col-sm-9">
+      <div class="dp-po-post-day">
+        <span class="dp-po-post-day-month">{{ post.date_published | date('M') }}</span>
+        <span class="dp-po-post-day-date">{{ post.date_published | date('j') }}</span>
+        <span class="dp-po-post-day-year">{{ post.date_published | date('Y') }}</span>
+      </div>
+
+      <div class="dp-po-title">
+        <img class="dp-po-title-svg" src="{{ asset('img/page-icons/news.svg', 'help_center') }}">
+        <h2 class="dp-po-title-text">{{ post.realTitle }}</h2>
+      </div>
+
+      <div class="row align-items-end">
+        <div class="col-sm-10">
+          {% include 'Theme:PublishCommon:post-avatars.html.twig' with {
+            item: post
+          } %}
+
+          <div class="dp-po-post-info">
+            <ul class="dp-po-post-info-list">
+              <li class="dp-po-post-info-item">
+                {{ phrase('helpcenter.general.last-updated', {date: post.date_updated | date('day'), person: post.last_author}) | raw }}
+              </li>
+              <li class="dp-po-post-info-item">
+                <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ post.date_published | date('day') }}</b>
+              </li>
+              <li class="dp-po-post-info-item">
+                {{ phrase('helpcenter.news.news-type') }}: <b>{{ post.category }}</b>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="dp-po-post-extra">
+            <ul class="dp-po-post-extra-list">
+              <li class="dp-po-post-extra-item">
+                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+              </li>
+              <li class="dp-po-post-extra-item">
+                <a href="{{ path('portal_news_pdf', {slug: post.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-3">
+      {# TODO active subscription state #}
+      {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+        subscriptionInfo: [
+          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-alt', title: phrase('helpcenter.forms.label_kb_article'), active: false },
+          { toggleUrl: portal_path(category, 'toggle_subscription'), icon: 'fal fa-file-spreadsheet', title: phrase('helpcenter.forms.label_category'), active: false },
+          { toggleUrl: path('portal_kb_article_root_category_toggle_subscription'), icon: 'fal fa-file-chart-line', title: phrase('helpcenter.articles.section-title'), active: false },
+        ]
+      } %}
+    </div>
+  </div>
+{% endblock page_top %}
+
+{% block page_body %}
+  <div class="dp-po-section">
+    <div class="dp-po-post-content dp-po-block">
+      {{ post.realContent|raw }}
+    </div>
+  </div>
+
+  {% if can_rate_news(post) %}
+    {% include 'Theme:PublishCommon:rating.html.twig' with {
+      item: post
+    } %}
+  {% endif %}
+
+  {% if brand_setting('user.publish_comments') and (post.calc_num_comments or new_comment_form) %}
+    {% if postData.comments | length %}
+      {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: postData.comments } %}
+    {% endif %}
+
+    {% include 'Theme:PublishCommon:comments-form.html.twig' %}
+  {% endif %}
+{% endblock page_body %}
+
+{% block page_sidebar %}
+  {% if postData.related_content %}
+    {% include 'Theme:PublishCommon:related-content.html.twig' with {
+      related_content: postData.related_content
+    } %}
+  {% endif %}
+
+  {% include 'Theme:PublishCommon:share.html.twig' with {
+    item: post
+  } %}
+
+  {% if post.labels | length %}
+    {% include 'Theme:PublishCommon:Labels/sidebar-block.html.twig' with {
+      title: phrase('helpcenter.general.labels'),
+      labels: post.labels
+    } %}
+  {% endif %}
+
+  {% include 'Theme:PublishCommon:recent-items.html.twig' with {
+    title: phrase('helpcenter.news.recent-title'),
+    items: helpcenter.getRecentNews({category: category}),
+    viewAllPath: path('portal_news_browse', {slug: category.slug}),
+    viewAllTitle: phrase('helpcenter.general.nav-news-desc-short')
+  } %}
+
+{% endblock page_sidebar %}

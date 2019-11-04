@@ -145,8 +145,8 @@ class CommunitySubscriptions extends AbstractJob
 
         $catGroups = $this->getContainer()->getDb()->fetchAllGrouped('
             SELECT category_id, usergroup_id
-            FROM community_channel2usergroup
-        ', [], 'channel_id', null, 'usergroup_id');
+            FROM community_forum2usergroup
+        ', [], 'forum_id', null, 'usergroup_id');
 
         $allUserToCommunityTopics = $userToTopic;
         $userToTopic              = [];

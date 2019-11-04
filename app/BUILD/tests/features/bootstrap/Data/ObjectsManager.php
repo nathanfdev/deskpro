@@ -14,7 +14,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
@@ -322,7 +322,7 @@ class ObjectsManager
             'SendmailSource'                   => [Factory\CommonFactories::class, 'sendmailSource'],
             'CommunityTopic'                   => [Factory\CommonFactories::class, 'community'],
             'CommunityTopicSubscription'       => [Factory\SimpleFactory::class, 'create', CommunityTopicSubscription::class],
-            'CommunityChannel'                 => [Factory\SimpleFactory::class, 'create', CommunityChannel::class],
+            'CommunityForum'                   => [Factory\SimpleFactory::class, 'create', CommunityForum::class],
             'CommunityTopicStatusCategory'     => [Factory\SimpleFactory::class, 'create', CommunityTopicStatusCategory::class],
             'CommunityTopicComment'            => [Factory\SimpleFactory::class, 'create', CommunityTopicComment::class],
             'GlossaryWord'                     => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
@@ -508,7 +508,7 @@ class ObjectsManager
             'CommunityTopic'                   => [$this, 'find', CommunityTopic::class],
             'CommunityTopicSubscription'       => [$this, 'find', CommunityTopicSubscription::class],
             'CommunityTopicStatusCategory'     => [$this, 'find', CommunityTopicStatusCategory::class],
-            'CommunityChannel'                 => [$this, 'find', CommunityChannel::class],
+            'CommunityForum'                   => [$this, 'find', CommunityForum::class],
             'CommunityTopicComment'            => [$this, 'find', CommunityTopicComment::class],
             'LabelDef'                         => [$this, 'find', LabelDef::class],
             'LabelCommunityTopic'              => [$this, 'find', LabelCommunityTopic::class],

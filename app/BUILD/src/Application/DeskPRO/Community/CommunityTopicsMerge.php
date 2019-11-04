@@ -106,8 +106,8 @@ class CommunityTopicsMerge implements PersonContextInterface
 
     protected function mergeProps()
     {
-        if (!$this->communityTopic->getChannel() && $this->otherCommunityTopic->getChannel()) {
-            $this->communityTopic->setChannel($this->otherCommunityTopic->getChannel());
+        if (!$this->communityTopic->getForum() && $this->otherCommunityTopic->getForum()) {
+            $this->communityTopic->setForum($this->otherCommunityTopic->getForum());
         }
         $this->communityTopic->setViewCount($this->communityTopic->getViewCount() + $this->otherCommunityTopic->getViewCount());
     }

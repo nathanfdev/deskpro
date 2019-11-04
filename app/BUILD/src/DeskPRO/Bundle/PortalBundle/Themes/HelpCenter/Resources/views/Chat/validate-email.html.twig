@@ -1,0 +1,9 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_body %}
+    {% if is_valid %}
+        {{ phrase('helpcenter.chat.email-validated-sucessfully') }}
+    {% else %}
+        {{ phrase('helpcenter.chat.invalid-validation-code') }}
+    {% endif %}
+{% endblock page_body %}

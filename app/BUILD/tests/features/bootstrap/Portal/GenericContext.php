@@ -9,7 +9,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CategoryAbstract;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
 use Application\DeskPRO\Entity\ContentAbstract;
@@ -267,6 +267,7 @@ class GenericContext extends BasePortalContext
     /**
      * @Given the :type category :cat_name exists with content titled :content_name
      * @Given the :type channel :cat_name exists with content titled :content_name
+     * @Given the :type forum :cat_name exists with content titled :content_name
      */
     public function theCategoryExistsWithADownloadTitled($type, $cat_name, $content_name)
     {
@@ -304,7 +305,7 @@ class GenericContext extends BasePortalContext
                 $em->persist($blob);
                 break;
             case 'community':
-                $communityChannel = $em->getRepository(CommunityChannel::class)->findOneBy([
+                $communityForum = $em->getRepository(CommunityForum::class)->findOneBy([
                     'id' => 1,
                 ]);
 
@@ -314,7 +315,7 @@ class GenericContext extends BasePortalContext
 
                 $content = new CommunityTopic();
                 $content->setStatus(CommunityTopic::STATUS_ACTIVE);
-                $content->setChannel($communityChannel);
+                $content->setForum($communityForum);
                 $content->setStatusCategory($communityTopicStatusCategory);
                 $content->title = 'Example Topic';
 
@@ -447,7 +448,7 @@ class GenericContext extends BasePortalContext
             case 'news':
                 return NewsCategory::class;
             case 'community':
-                return CommunityChannel::class;
+                return CommunityForum::class;
         }
     }
 

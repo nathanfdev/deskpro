@@ -214,7 +214,7 @@ class PortalPermissionsManager
                 $permissions,
                 $this->permissionsLoader->getAllowedTicketDepartments($userGroups),
                 $this->permissionsLoader->getAllowedChatDepartments($userGroups),
-                $this->permissionsLoader->getAllowedCommunityChannels($userGroups),
+                $this->permissionsLoader->getAllowedCommunityForums($userGroups),
                 $this->permissionsLoader->getAllowedNewsCategories($userGroups),
                 $this->permissionsLoader->getAllowedArticleCategories($userGroups),
                 $this->permissionsLoader->getAllowedDownloadCategories($userGroups),
