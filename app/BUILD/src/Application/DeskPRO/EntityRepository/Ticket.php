@@ -779,12 +779,16 @@ class Ticket extends AbstractEntityRepository
     {
         $status = TicketStatus::STATUS_TYPE_AWAITING_USER;
 
-        $tickets = $this->getEntityManager()->createQuery('
+        $query = $this->getEntityManager()->createQuery('
             SELECT t
             FROM DeskPRO:Ticket t
             WHERE t.person = ?1 AND t.status IN(?2)
             ORDER BY t.date_last_agent_reply DESC
-        ')->setMaxResults($max)->execute([1 => $person, 2 => $status]);
+        ');
+        if ((int) $max > 0) {
+            $query->setMaxResults((int) $max);
+        }
+        $tickets = $query->execute([1 => $person, 2 => $status]);
 
         return $tickets;
     }
