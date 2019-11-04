@@ -80,7 +80,6 @@
                             <a href="{{ portal_path(attachment, 'serve') }}" class="dp-po-kb-attachments-link">
                                 <i class="dp-po-icon fal fa-{{ content_fa_icon(blob) }}"></i>
                                 {% if blob %}{{ blob.filename }} <span>({{ attachment.readableFileSize }})</span>{% endif %}
-                                <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
                             </a>
                         </li>
                     {% endfor %}
