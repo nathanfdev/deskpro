@@ -126,7 +126,9 @@
             {% set label = name|humanize %}
         {% endif %}
         {% if type == 'submit' %}
-            {% set attr = attr|merge({class: 'btn btn-lg btn-primary'}) %}
+            {% set attr = attr|merge({class: 'btn btn-primary'}) %}
+        {% elseif type == 'reset' %}
+            {% set attr = attr|merge({class: 'btn btn-outline-secondary btn-reset'}) %}
         {% else %}
             {% set attr = attr|merge({class: 'btn btn-secondary'}) %}
         {% endif %}
@@ -259,7 +261,7 @@
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
             <span class="form-label-link manage-emails-link">
-                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('helpcenter.account.email-management-from-form') }}<i class="fas fa-angle-double-right"></i></a>
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('helpcenter.account.email-management-from-form') }}</a>
             </span>
     {% endif %}</label>
     {%- endif -%}
@@ -299,15 +301,11 @@
 {% block deskpro_person_email_choice_widget %}
         {% set count = choices|length %}
         {% if count > 1 %}
-            <div {{ block('widget_container_attributes') }}>
-               <div class="with-dpx form-control">
-                   <select id="{{ id }}" name="{{ full_name }}">
-                       {% for choice in choices %}
-                           <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
-                       {% endfor %}
-                   </select>
-               </div>
-            </div>
+           <select id="{{ id }}" name="{{ full_name }}" class="form-control">
+               {% for choice in choices %}
+                   <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
+               {% endfor %}
+           </select>
         {% else %}
             <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
@@ -415,7 +413,7 @@
         </ul>
     </div>
 
-    <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
+    <div class="dp-po-form-upload-wrap helpcenter-file-upload" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="/dpblob?tag=ticket_attachment">
         {%- if form.parent is empty -%}
             {{ form_errors(form) }}
         {%- endif -%}
@@ -774,7 +772,7 @@ END HIERARCHY
     <div class="form-group">
         {{- form_label(form, null) -}}
         <div class="with-dpx">
-            <div class="dp-po-form-upload-wrap helpcenter-profile_picture" data-upload-url="dpblob?tag=person_avatar">
+            <div class="dp-po-form-upload-wrap helpcenter-profile_picture" data-upload-url="/dpblob?tag=person_avatar">
                 {{ form_widget(form) }}
             </div>
         </div>

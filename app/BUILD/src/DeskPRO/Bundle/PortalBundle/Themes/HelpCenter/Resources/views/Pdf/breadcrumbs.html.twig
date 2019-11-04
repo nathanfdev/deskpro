@@ -1,0 +1,34 @@
+<div class="dp-po">
+	<nav class="breadcrumb-outer" aria-label="breadcrumb">
+		<div class="container d-flex align-items-center">
+			{% if portal_custom_logo() %}
+				<div class="breadcrumb-image">
+					<a href="{{ path('portal_home') }}">
+						<img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
+					</a>
+				</div>
+			{% endif %}
+			<a href="{{ path('portal_home') }}" class="{% if breadcrumbs is not defined or breadcrumbs | length < 1 %} active{% endif %}">{{ phrase('helpcenter.general.nav-support-center') }}</a>
+			{% if breadcrumbs is defined %}
+				{% for item in breadcrumbs %}
+					{% if loop.first %} > {% endif %}
+					<a href="{{ item.url }}" class="dp-po-Breadcrumb-link">
+						{%- if item.phrase -%}
+							{{ phrase(item.phrase) }}
+						{%- elseif item.var['translated_title'] is defined -%}
+							{{ item.var.translated_title }}
+						{%- elseif item.var.title is defined -%}
+							{{ item.var.title }}
+						{%- elseif item.var.name is defined -%}
+							{{ item.var.name }}
+						{%- else -%}
+							{{ item.url }}
+						{%- endif -%}
+					</a>
+					{% if not loop.last %} > {% endif %}
+					
+				{% endfor %}
+			{% endif %}
+	</div>
+	</nav>
+</div>

@@ -1,12 +1,14 @@
 <div class="dp-po-subscribe dp-po-subscribe-large dp-po-subscribe-activebtn">
-    {% if brand_setting('user.community_subscriptions') %}
-        <a href="{{ path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}) }}"
-           class="dp-po-subscribe-btn"
-           rel="noindex, nofollow"
-        >
-            <i class="dp-po-icon fad fa-envelope"></i>
-            {{ phrase(is_subscribed ? 'helpcenter.general.btn-unsubscribe' : 'helpcenter.general.btn-subscribe') }}
-            <i class="dp-po-icon far fa-check"></i>
-        </a>
-    {% endif %}
+	{% if brand_setting('user.community_subscriptions') %}
+    {% include 'Theme:PublishCommon:subscribe-button.html.twig' with {
+      subscriptionInfo: [
+        {
+          toggleUrl: path('portal_community_root_toggle_subscription', {target: path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params'))}),
+          icon: icon is defined and icon ? icon : 'fal fa-file-chart-line',
+          title: title is defined and title ? title | truncate(20) : phrase(is_subscribed ? 'helpcenter.general.btn-unsubscribe' : 'helpcenter.general.btn-subscribe'),
+          active: is_subscribed
+        },
+      ]
+    } %}
+	{% endif %}
 </div>

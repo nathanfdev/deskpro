@@ -70,31 +70,22 @@
     <div class="dp-po-post-content dp-po-block dpx-hc-kb-article-content">
         {{ article.translated_content|raw }}
 
-        {# TODO attachments #}
-        {#{% show kb_attachments %} #}
-        {#
-        <div class="dp-po-kb-attachments">
-          <h4 class="dp-po-kb-attachments-title">Attachments</h4>
-          <ul class="dp-po-kb-attachments-list">
-            <li class="dp-po-kb-attachments-item">
-              <a href="" class="dp-po-kb-attachments-link">
-                <i class="dp-po-icon fal fa-file-pdf"></i> craft-sync-user-guide.pdf
-              </a>
-            </li>
-            <li class="dp-po-kb-attachments-item">
-              <a href="" class="dp-po-kb-attachments-link">
-                <i class="dp-po-icon fal fa-file-word"></i> craft-sync-photoshop-help.docx
-              </a>
-            </li>
-            <li class="dp-po-kb-attachments-item">
-              <a href="" class="dp-po-kb-attachments-link">
-                <i class="dp-po-icon fal fa-file-excel"></i> craft-sync-photoshop-help.xlsx
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-      #}
+        {% if article.attachments|length > 0 %}
+            <div class="dp-po-kb-attachments">
+                <h4 class="dp-po-kb-attachments-title">{{ phrase('helpcenter.general.attachments') }}</h4>
+                <ul class="dp-po-kb-attachments-list">
+                    {% for attachment in article.attachments %}
+                        {% set blob = attachment.blob %}
+                        <li class="dp-po-kb-attachments-item">
+                            <a href="{{ portal_path(attachment, 'serve') }}" class="dp-po-kb-attachments-link">
+                                <i class="dp-po-icon fal fa-{{ content_fa_icon(blob) }}"></i>
+                                {% if blob %}{{ blob.filename }} <span>({{ attachment.readableFileSize }})</span>{% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
 
 

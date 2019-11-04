@@ -4,9 +4,9 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -32,14 +32,9 @@ class AdvancedEditsManager
     private $blobStorage;
 
     /**
-     * @var ThemeSet
+     * @var BrandStack
      */
-    private $themeSet;
-
-    /**
-     * @var ThemeSet
-     */
-    private $editThemeSet;
+    private $brandStack;
 
     /**
      * @var \Twig_Environment
@@ -49,7 +44,7 @@ class AdvancedEditsManager
     /**
      * @var string
      */
-    private $mainScssPath;
+    private $assetDir;
 
     /**
      * Array of name => true for assets that were updated.
@@ -63,29 +58,22 @@ class AdvancedEditsManager
      *
      * @param EntityManager      $entityManager
      * @param DeskproBlobStorage $blobStorage
-     * @param ThemeSet           $themeSet
-     * @param ThemeSet           $editThemeSet
+     * @param BrandStack         $brandStack
      * @param \Twig_Environment  $twig
      * @param string             $assetDir
      */
     public function __construct(
-        EntityManager $entityManager,
+        EntityManager      $entityManager,
         DeskproBlobStorage $blobStorage,
-        ThemeSet $themeSet,
-        ThemeSet $editThemeSet,
-        \Twig_Environment $twig,
+        BrandStack         $brandStack,
+        \Twig_Environment  $twig,
         $assetDir
     ) {
         $this->entityManager = $entityManager;
         $this->blobStorage   = $blobStorage;
-        $this->themeSet      = $themeSet;
-        $this->editThemeSet  = $editThemeSet;
+        $this->brandStack    = $brandStack;
         $this->twig          = $twig;
-        if ($editThemeSet->getThemeId() === 'helpcenter') {
-            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_main.scss';
-        } else {
-            $this->mainScssPath = $assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
-        }
+        $this->assetDir      = $assetDir;
     }
 
     /**
@@ -113,7 +101,7 @@ class AdvancedEditsManager
             $this->saveThemeSetAsset(self::CUSTOM_SCSS_ASSET_NAME, self::CUSTOM_SCSS_ASSET_TAG, 'text/css', $this->getCustomScssCode());
         }
         if (array_key_exists('main_scss', $data)) {
-            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', file_get_contents($this->mainScssPath));
+            $this->saveThemeSetAsset(self::MAIN_SCSS_ASSET_NAME, self::MAIN_SCSS_ASSET_TAG, 'text/css', file_get_contents($this->getMainScssPath()));
         }
         if (array_key_exists('javascript', $data)) {
             $this->saveThemeSetAsset(self::CUSTOM_JS_ASSET_NAME, self::CUSTOM_JS_ASSET_TAG, 'text/javascript', '');
@@ -148,10 +136,10 @@ class AdvancedEditsManager
      */
     public function getMainScss()
     {
-        if ($this->editThemeSet->getThemeId() === 'helpcenter') {
-            return file_get_contents($this->mainScssPath);
+        if ($this->getEditThemeSet()->getThemeId() === 'helpcenter') {
+            return file_get_contents($this->getMainScssPath());
         } else {
-            $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->editThemeSet);
+            $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->getEditThemeSet());
             $failedStr = '';
 
             if ($blob) {
@@ -162,7 +150,7 @@ class AdvancedEditsManager
                 }
             }
 
-            return $failedStr.file_get_contents($this->mainScssPath);
+            return $failedStr.file_get_contents($this->getMainScssPath());
         }
     }
 
@@ -171,7 +159,7 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetScss()
     {
-        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->editThemeSet);
+        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->getEditThemeSet());
 
         if ($blob) {
             try {
@@ -206,7 +194,7 @@ CODE;
      */
     public function getEditThemeSetJs()
     {
-        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->editThemeSet);
+        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->getEditThemeSet());
 
         try {
             return $blob ? $this->blobStorage->copyBlobRecordToString($blob) : '';
@@ -220,7 +208,7 @@ CODE;
      */
     public function getJs()
     {
-        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->themeSet);
+        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->getThemeSet());
 
         try {
             return $blob ? $this->blobStorage->copyBlobRecordToString($blob) : '';
@@ -239,7 +227,7 @@ CODE;
      */
     private function saveThemeSetAsset($name, $tag, $mimeType, $code)
     {
-        $themeSet = $this->editThemeSet;
+        $themeSet = $this->getEditThemeSet();
 
         $oldBlob = null;
 
@@ -300,5 +288,36 @@ CODE;
         ]);
 
         return $asset ? $asset->getBlob() : null;
+    }
+
+    /**
+     * @return ThemeSet
+     */
+    private function getThemeSet()
+    {
+        return $this->brandStack->getActive()->getBrand()->getThemeSet();
+    }
+
+    /**
+     * @return ThemeSet
+     */
+    private function getEditThemeSet()
+    {
+        return $this->brandStack->getActive()->getBrand()->getEditThemeSet();
+    }
+
+    /**
+     * @return string
+     */
+    private function getMainScssPath()
+    {
+        if ($this->getEditThemeSet()->getThemeId() === 'helpcenter') {
+            return $this->assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_main.scss';
+        } elseif ($this->getEditThemeSet()->getThemeId() === 'edit_theme_set_id') {
+            // a workaround for tests
+            return $this->assetDir;
+        } else {
+            return $this->assetDir.'/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss';
+        }
     }
 }

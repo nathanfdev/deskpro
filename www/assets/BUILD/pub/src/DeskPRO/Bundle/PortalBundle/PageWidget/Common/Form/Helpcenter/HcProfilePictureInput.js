@@ -257,12 +257,12 @@ export class HcProfilePictureInput extends React.Component {
                 onBlur={this.handleBlur}
               >
                 <FileIcon />
-                Choose {multiple ? 'files' : 'a file'}
+                {portalPhrases.get('helpcenter.forms.label-choose-a-file')}
               </div>
-              <div className="or">or</div>
+              <div className="or">{portalPhrases.get('helpcenter.general.or')}</div>
               <div className="dnd">
                 <DndIcon />
-                Drag and drop
+                {portalPhrases.get('helpcenter.forms.label-drag-and-drop')}
               </div>
             </div>
           )}

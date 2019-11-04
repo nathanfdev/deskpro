@@ -20,7 +20,7 @@ export class HcTabRow extends React.Component {
         <ul className="dp-po-community-tabs-list">
           {map(this.props.available.views, (view, viewId) =>
             <li key={viewId} className={`dp-po-community-tabs-item ${this.props.filter.getView() === viewId && 'active'}`} style={{ marginLeft: 0 }}>
-              <a className="dp-po-community-tabs-link" onClick={() => this.props.setView(viewId)}>
+              <a href="#setView" className="dp-po-community-tabs-link" onClick={(ev) => { ev.preventDefault(); ev.stopPropagation(); this.props.setView(viewId); }}>
                 <i className={`dp-po-icon far ${HcTabRow.iconMap[viewId]}`} />
                 {view}
               </a>

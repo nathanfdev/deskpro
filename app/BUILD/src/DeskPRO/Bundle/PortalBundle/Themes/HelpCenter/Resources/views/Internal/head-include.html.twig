@@ -80,6 +80,7 @@
     so we need to make bundle load before that gets called.
 #}
 <script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}"></script>
+<script type="text/javascript" src="{{ asset('DeskPRO_HelpcenterBundle.js', 'app_assets') }}"></script>
 
 {% if portal_mode() == 'focus-window' or portal_mode() == 'fame-embed' %}
     <script type="text/javascript" src="{{ asset('iframeResizer_contentWindow.js', 'app_assets') }}" async="async"></script>

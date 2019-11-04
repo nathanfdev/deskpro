@@ -1268,7 +1268,10 @@ class TicketMessage extends DomainObject
         $context->setInlineSideloads(true);
 
         foreach ($this->attributes as $attribute) {
-            $serialized             = App::$container->get('serializer')->toArray(new ApiWrapper($attribute), $context);
+            // we need either clone or new context - otherwise serializer will complain about already initialized
+            // context
+            $cloneContext           = clone $context;
+            $serialized             = App::$container->get('serializer')->toArray(new ApiWrapper($attribute), $cloneContext);
             $values['attributes'][] = $serialized['data'];
         }
 

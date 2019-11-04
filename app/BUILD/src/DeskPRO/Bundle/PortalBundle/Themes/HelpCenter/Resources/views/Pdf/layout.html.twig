@@ -36,6 +36,33 @@
         </a>
     </div>
     <br />
-    {% block page_body %}{% endblock page_body %}
+
+    {% block page_content %}
+        <div class="dp-po">
+            <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+                <div class="container">
+                    {% if block("page_top") is defined %}
+                        {{ block("page_top") }}
+                    {% endif %}
+                    <div class="row">
+                        {% if block("page_sidebar") is defined %}
+                            <div class="col-sm-9">
+                                {{ block("page_body") }}
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="dp-po-sidebar-spacer"></div>
+                                {{ block("page_sidebar") }}
+                            </div>
+                        {% else %}
+                            <div class="dp-po-col-9 dp-po-md-12">
+                                {{ block("page_body") }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
+    {% endblock %}
+    
 </body>
 </html>

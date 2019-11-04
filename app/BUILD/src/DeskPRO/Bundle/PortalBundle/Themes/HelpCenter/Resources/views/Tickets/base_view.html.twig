@@ -29,9 +29,10 @@
                             {% if can_edit and ticket.isOpen() %}
                                 <div class="dp-po-ticket-close">
                                     <a href="#" class="dp-po-ticket-close-btn" data-toggle="modal" data-target="#closeConfirm">
-                                        <span class="dp-po-icon fa-stack fa-sm">
-                                          <i class="fas fa-envelope  fa-stack-2x"></i>
-                                          <i class="fas fa-times-circle fa-stack-1x fa-inverse"></i>
+                                        <span class="fa-layers">
+                                          <i class="dp-po-icon fad fa-envelope"></i>
+                                          <i class="dp-po-icon fa-inverse fas fa-circle" data-fa-transform="shrink-8"></i>
+                                          <i class="dp-po-icon fas fa-times" data-fa-transform="shrink-10"></i>
                                         </span>
                                         {{ phrase('helpcenter.tickets.close-ticket') }}
                                     </a>
@@ -56,10 +57,11 @@
                             {% elseif not ticket.isOpen() %}
                                 <div class="dp-po-ticket-close closed">
                                     <a class="dp-po-ticket-close-btn">
-                                                <span class="dp-po-icon fa-stack fa-sm">
-                                                  <i class="fas fa-envelope  fa-stack-2x"></i>
-                                                  <i class="fas fa-times-circle fa-stack-1x fa-inverse"></i>
-                                                </span>
+                                        <span class="fa-layers">
+                                          <i class="dp-po-icon fad fa-envelope"></i>
+                                          <i class="dp-po-icon fa-inverse fas fa-circle" data-fa-transform="shrink-8"></i>
+                                          <i class="dp-po-icon fas fa-times" data-fa-transform="shrink-10"></i>
+                                        </span>
                                         {{ phrase('helpcenter.tickets.ticket-closed') }}
                                     </a>
                                 </div>
