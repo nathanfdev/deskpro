@@ -31,7 +31,7 @@ manifest.entrypoints.main.js.forEach(fname => {
 });
 
 fs.readdir(messengerStaticDir, (err, files) => {
-  const filteredFiles = files.filter(file => path.extname(file) !== '.map')
+  const filteredFiles = files.filter(file => path.extname(file) !== '.map');
   console.log('Moving messenger js assets, ' + filteredFiles.length + ' files');
   filteredFiles.forEach(file => {
     const srcPath = path.join(messengerStaticDir, file);
@@ -50,7 +50,7 @@ fs.readdir(messengerStaticDir, (err, files) => {
   });
 });
 
-const messengerVendorAssetsDir = path.join(messengerVendorDir, 'assets')
+const messengerVendorAssetsDir = path.join(messengerVendorDir, 'assets');
 
 console.log('Moving messenger styles');
 fs.copyFile(path.join(messengerVendorAssetsDir, 'styles.css'), path.join(messengerBuildDir, 'styles.css'), err => {
