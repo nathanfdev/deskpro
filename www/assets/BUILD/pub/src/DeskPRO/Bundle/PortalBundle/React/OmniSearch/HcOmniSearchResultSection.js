@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import filter from 'lodash/filter';
@@ -275,21 +276,21 @@ export class HcOmniSearchResultTickets extends React.Component {
   render() {
     const { totalResults } = this.state;
 
-    if (this.state.items.isEmpty()) {
-      return null;
-    }
-
     return (
-      <div className="dp-po-search-hint-tickets">
+      <div className={classNames('dp-po-search-hint-tickets', { 'no-results': this.state.items.isEmpty() })}>
         <div className="dp-po-search-hint-header">
-          <h3 className="dp-po-search-hint-header-title"><i className="dp-po-icon fad fa-envelope" /> <FormattedMessage id="helpcenter.search.your-tickets" />
-            <span>({totalResults})</span>
+          <h3 className="dp-po-search-hint-header-title"><i className="dp-po-icon fad fa-envelope" /> <FormattedMessage id="helpcenter.search.your-tickets" tagName="div" />
+            <span>{totalResults}</span>
           </h3>
         </div>
-        <ul className="dp-po-search-list">
-          {map(this.state.items.getNum(this.state.currently_displaying), item => HcOmniSearchResultTickets.renderItem(item))}
-        </ul>
-        <a onClick={this.showMore} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view-all-results" values={{ count: totalResults }} /></a>
+        {this.state.items.isEmpty() ? null :
+        <div>
+          <ul className="dp-po-search-list">
+            {map(this.state.items.getNum(this.state.currently_displaying), item => HcOmniSearchResultTickets.renderItem(item))}
+          </ul>
+          <a onClick={this.showMore} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view-all-results" values={{ count: totalResults }} /></a>
+        </div>
+        }
       </div>
     );
   }

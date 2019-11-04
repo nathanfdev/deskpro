@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
+import Isvg from 'react-inlinesvg';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { HcOmniSearchResultSection, HcOmniSearchResultTickets } from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/HcOmniSearchResultSection';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -40,15 +41,15 @@ class ResultTab extends React.PureComponent {
 
   render() {
     const { tab, title, icon, data, activeTab } = this.props;
-    if (!data[tab] || data[tab].results.length === 0) {
+    if (!data[tab]) {
       return null;
     }
     return (
       <li className="dp-po-search-tabs-item">
-        <a className={classNames('dp-po-search-tabs-link', { active: activeTab === tab })} onClick={this.onClick} href="#">
-          <img className="dp-po-search-tabs-image" src={icon} role="presentation" />
-          <FormattedMessage id={title} />
-          <span>({data[tab].pageinfo.total_results})</span>
+        <a className={classNames('dp-po-search-tabs-link', { active: activeTab === tab, 'no-results': data[tab].results.length === 0 })} onClick={this.onClick} href="#">
+          <Isvg src={icon} className="dp-po-search-tabs-image" wrapper={React.createFactory('div')} />
+          <FormattedMessage id={title} tagName="div" />
+          <span>{data[tab].pageinfo.total_results}</span>
         </a>
       </li>
     );
@@ -212,7 +213,7 @@ export class HcOmniSearch extends React.Component {
     if (this.doResultsExist()) {
       return (
         <div>
-          { data.ticket && data.ticket.results.length > 0 ?
+          { data.ticket ?
             <HcOmniSearchResultTickets
               nameApi="ticket"
               nameIcon="far fa-life-ring"
@@ -221,100 +222,95 @@ export class HcOmniSearch extends React.Component {
             />
           : null
           }
-          { (data.article && data.article.results.length > 0)
-            || (data.download && data.download.results.length > 0)
-            || (data.news && data.news.results.length > 0)
-            || (data.community && data.community.results.length > 0)
-            || (data.topic && data.topic.results.length > 0)
-            || (data.chat_conversation && data.chat_conversation.results.length > 0) ?
-              <div className="dp-po-search-tabs">
-                <ul className="dp-po-search-tabs-list">
-                  <ResultTab
-                    tab="article"
-                    title="helpcenter.general.nav-kb"
-                    icon={KnowledgebaseSvg}
-                    data={data}
-                    activeTab={activeTab}
-                    onClick={this.setTab}
-                  />
-                  <ResultTab
-                    tab="topic"
-                    title="helpcenter.general.nav-guides"
-                    icon={GuidesSvg}
-                    data={data}
-                    activeTab={activeTab}
-                    onClick={this.setTab}
-                  />
-                  <ResultTab
-                    tab="community"
-                    title="helpcenter.general.nav-community"
-                    icon={CommunitySvg}
-                    data={data}
-                    activeTab={activeTab}
-                    onClick={this.setTab}
-                  />
-                  <ResultTab
-                    tab="news"
-                    title="helpcenter.general.nav-news"
-                    icon={NewsSvg}
-                    data={data}
-                    activeTab={activeTab}
-                    onClick={this.setTab}
-                  />
-                  <ResultTab
-                    tab="download"
-                    title="helpcenter.general.nav-downloads"
-                    icon={DownloadSvg}
-                    data={data}
-                    activeTab={activeTab}
-                    onClick={this.setTab}
-                  />
-                  <ResultTab
-                    tab="chat_conversation"
-                    title="helpcenter.general.nav-chats"
-                    icon={ChatsSvg}
-                    data={data}
-                    activeTab={activeTab}
-                    onClick={this.setTab}
-                  />
-                </ul>
-                <HcOmniSearchResultSection
-                  nameApi="article"
-                  initialResult={'article' in data ? data.article : {}}
-                  q={this.state.searchQuery}
+          { data.article || data.download || data.news || data.community || data.topic || data.chat_conversation ?
+            <div className="dp-po-search-tabs">
+              <ul className="dp-po-search-tabs-list">
+                <ResultTab
+                  tab="article"
+                  title="helpcenter.general.nav-kb"
+                  icon={KnowledgebaseSvg}
+                  data={data}
                   activeTab={activeTab}
+                  onClick={this.setTab}
                 />
-                <HcOmniSearchResultSection
-                  nameApi="topic"
-                  initialResult={'topic' in data ? data.topic : {}}
-                  q={this.state.searchQuery}
+                <ResultTab
+                  tab="topic"
+                  title="helpcenter.general.nav-guides"
+                  icon={GuidesSvg}
+                  data={data}
                   activeTab={activeTab}
+                  onClick={this.setTab}
                 />
-                <HcOmniSearchResultSection
-                  nameApi="community"
-                  initialResult={'community' in data ? data.community : {}}
-                  q={this.state.searchQuery}
+                <ResultTab
+                  tab="community"
+                  title="helpcenter.general.nav-community"
+                  icon={CommunitySvg}
+                  data={data}
                   activeTab={activeTab}
+                  onClick={this.setTab}
                 />
-                <HcOmniSearchResultSection
-                  nameApi="news"
-                  initialResult={'news' in data ? data.news : {}}
-                  q={this.state.searchQuery}
+                <ResultTab
+                  tab="news"
+                  title="helpcenter.general.nav-news"
+                  icon={NewsSvg}
+                  data={data}
                   activeTab={activeTab}
+                  onClick={this.setTab}
                 />
-                <HcOmniSearchResultSection
-                  nameApi="download"
-                  initialResult={'download' in data ? data.download : {}}
-                  q={this.state.searchQuery}
+                <ResultTab
+                  tab="download"
+                  title="helpcenter.general.nav-downloads"
+                  icon={DownloadSvg}
+                  data={data}
                   activeTab={activeTab}
+                  onClick={this.setTab}
                 />
-                <HcOmniSearchResultSection
-                  nameApi="chat_conversation"
-                  initialResult={'chat_conversation' in data ? data.chat_conversation : {}}
-                  q={this.state.searchQuery}
+                <ResultTab
+                  tab="chat_conversation"
+                  title="helpcenter.general.nav-chats"
+                  icon={ChatsSvg}
+                  data={data}
                   activeTab={activeTab}
+                  onClick={this.setTab}
                 />
-              </div>
+              </ul>
+              <HcOmniSearchResultSection
+                nameApi="article"
+                initialResult={'article' in data ? data.article : {}}
+                q={this.state.searchQuery}
+                activeTab={activeTab}
+              />
+              <HcOmniSearchResultSection
+                nameApi="topic"
+                initialResult={'topic' in data ? data.topic : {}}
+                q={this.state.searchQuery}
+                activeTab={activeTab}
+              />
+              <HcOmniSearchResultSection
+                nameApi="community"
+                initialResult={'community' in data ? data.community : {}}
+                q={this.state.searchQuery}
+                activeTab={activeTab}
+              />
+              <HcOmniSearchResultSection
+                nameApi="news"
+                initialResult={'news' in data ? data.news : {}}
+                q={this.state.searchQuery}
+                activeTab={activeTab}
+              />
+              <HcOmniSearchResultSection
+                nameApi="download"
+                initialResult={'download' in data ? data.download : {}}
+                q={this.state.searchQuery}
+                activeTab={activeTab}
+              />
+              <HcOmniSearchResultSection
+                nameApi="chat_conversation"
+                initialResult={'chat_conversation' in data ? data.chat_conversation : {}}
+                q={this.state.searchQuery}
+                activeTab={activeTab}
+              />
+            </div>
             : null
           }
         </div>
@@ -334,9 +330,13 @@ export class HcOmniSearch extends React.Component {
 
     const isNumericQuery = !isNaN(parseInt(searchQuery, 10)) && !isNaN(searchQuery - 0);
 
+    $input.removeClass('opened');
+
     if (searchQuery.length < 3  && !isNumericQuery) {
       return null;
     }
+
+    $input.addClass('opened');
 
     return (
       <ClickOut onClickOut={this.onClickOut} additionalNodes={[$input, $button, '.search-results-show-more']}>
