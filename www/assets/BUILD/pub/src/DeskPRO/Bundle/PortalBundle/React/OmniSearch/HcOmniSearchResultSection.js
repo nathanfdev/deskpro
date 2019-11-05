@@ -9,6 +9,7 @@ import map from 'lodash/map';
 import TimeAgo from 'react-timeago';
 import moment from 'moment';
 import { timeAgoFormatter } from '../../../WidgetBundle/Services/timeago';
+import { portalUrlGenerator } from '../../Http/PortalUrlGenerator';
 
 class SearchResultCollection {
 
@@ -197,7 +198,7 @@ export class HcOmniSearchResultSection extends React.Component {
   }
 
   render() {
-    const { nameApi, activeTab } = this.props;
+    const { nameApi, activeTab, q } = this.props;
     const { total_results } = this.state;
 
     if (this.state.items.isEmpty() || nameApi !== activeTab) {
@@ -210,7 +211,7 @@ export class HcOmniSearchResultSection extends React.Component {
           {map(this.state.items.getNum(this.state.currently_displaying), item => this.renderItem(item))}
         </ul>
 
-        <a onClick={this.showMore} className="dp-po-search-hint-viewall">
+        <a href={portalUrlGenerator.path(`/search/${nameApi}?q=${q}`)} className="dp-po-search-hint-viewall">
           <FormattedMessage id="helpcenter.search.view-all-results" values={{ count: total_results }} />
         </a>
 
@@ -275,6 +276,7 @@ export class HcOmniSearchResultTickets extends React.Component {
 
   render() {
     const { totalResults } = this.state;
+    const { q } = this.props;
 
     return (
       <div className={classNames('dp-po-search-hint-tickets', { 'no-results': this.state.items.isEmpty() })}>
@@ -288,7 +290,7 @@ export class HcOmniSearchResultTickets extends React.Component {
           <ul className="dp-po-search-list">
             {map(this.state.items.getNum(this.state.currently_displaying), item => HcOmniSearchResultTickets.renderItem(item))}
           </ul>
-          <a onClick={this.showMore} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view-all-results" values={{ count: totalResults }} /></a>
+          <a href={portalUrlGenerator.path(`/search/ticket?q=${q}`)} className="dp-po-search-hint-viewall"><FormattedMessage id="helpcenter.search.view-all-results" values={{ count: totalResults }} /></a>
         </div>
         }
       </div>

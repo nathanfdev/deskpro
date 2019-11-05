@@ -118,6 +118,79 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @Route("/search/{type}", name="portal_type_search", defaults={"type": "content"}, requirements={"type":"(?!omni).*"})
+     *
+     * @param $type
+     * @param Request $request
+     */
+    public function searchTypeAction($type, Request $request)
+    {
+        $q = $request->get('q');
+
+        if (!$q) {
+            return $this->redirectToRoute('portal_search');
+        }
+
+        $person  = $this->getUser() ?: new PersonGuest();
+        $total   = 0;
+        $curPage = $request->get('page', 1);
+        $perPage = 10;
+        $types   = $type === 'ticket' ? ['ticket'] : null;
+
+        $isSearch    = true;
+        $results     = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage);
+        $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
+        // we don't need meta here
+        unset($results['meta']);
+
+        $combinedCounts = ['total_results' => 0];
+        foreach ($results as $result) {
+            $pageinfo = $result['pageinfo'];
+            $combinedCounts['total_results'] += $pageinfo['total_results'];
+        }
+
+//        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+//        $pagination->setMaxPerPage((int) $pageinfo['per_page']);
+//        $pagination->setCurrentPage((int) $pageinfo['curpage']);
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
+
+        // pass searchLogId to `search_and_contact_bar` tag
+        if ($searchLogId) {
+            $request->attributes->set(self::SEARCH_LOG_ID_VAR, $searchLogId);
+        }
+
+        if ($type === 'ticket') {
+            return $this->renderThemeView(
+                'Theme:Search:search_results_tickets.html.twig',
+                [
+                    'is_search'   => $isSearch,
+                    'results'     => $results,
+                    'query'       => $q,
+                    'num_results' => $total,
+                    'breadcrumbs' => $breadcrumbs,
+                    'page_title'  => $this->createPageTitle()->search(),
+                    'combined'    => $combinedCounts,
+                ]
+            );
+        }
+
+        return $this->renderThemeView(
+            'Theme:Search:search_results_detail.html.twig',
+            [
+                'is_search'   => $isSearch,
+                'active'      => $type,
+                'results'     => $results,
+                'query'       => $q,
+                'num_results' => $total,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->createPageTitle()->search(),
+                'combined'    => $combinedCounts,
+            ]
+        );
+    }
+
+    /**
      * @Route("/search/omni", name="portal_omnisearch")
      *
      * @param Request $request
