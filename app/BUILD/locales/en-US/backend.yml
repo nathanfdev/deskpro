@@ -1833,6 +1833,8 @@ admin.portal.edit_logo: 'Edit Logo'
 admin.portal.edit_title: 'Edit Title'
 admin.portal.global_settings: 'Global Settings'
 admin.portal.integrations: Integrations
+admin.portal.kb_featured_articles: 'Featured articles'
+admin.portal.kb_featured_articles_explain: 'A comma separated list of article ids to feature on the homepage'
 admin.portal.loading_editor: 'Loading Editor'
 admin.portal.manage_articles: 'Manage Articles'
 admin.portal.manage_downloads: 'Manage Downloads'

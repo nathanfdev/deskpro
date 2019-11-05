@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -35,13 +36,25 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var array
+     *
      * @ORM\Column(name="options", type="json_array")
      * @Assert\NotNull()
      */
     protected $options;
 
+    /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset", mappedBy="theme_set", cascade={"persist", "remove"}, orphanRemoval=true)
+     *
+     * @var ArrayCollection|ThemeSetAsset[]
+     */
+    protected $assets;
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
+        $this->assets = new ArrayCollection();
         $this->setOptions([]);
     }
 
@@ -112,6 +125,42 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('options', $options);
+
+        return $this;
+    }
+
+    /**
+     * @return ThemeSetAsset[]|ArrayCollection
+     */
+    public function getAssets()
+    {
+        return $this->assets;
+    }
+
+    /**
+     * @param ThemeSetAsset $asset
+     *
+     * @return $this
+     */
+    public function addAsset(ThemeSetAsset $asset)
+    {
+        $asset->setThemeSet($this);
+        $this->assets->add($asset);
+
+        return $this;
+    }
+
+    /**
+     * @param ThemeSetAsset $asset
+     *
+     * @return $this
+     */
+    public function removeAsset(ThemeSetAsset $asset)
+    {
+        if ($this->assets->contains($asset)) {
+            $asset->setThemeSet(null);
+            $this->assets->removeElement($asset);
+        }
 
         return $this;
     }

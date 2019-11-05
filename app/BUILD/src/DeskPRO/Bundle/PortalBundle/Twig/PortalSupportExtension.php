@@ -2,10 +2,12 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Person;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
@@ -96,7 +98,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('generate_color', [$this, 'generateColor'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('icon_color', [$this, 'getIconColor'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash'], ['is_safe' => ['html']]),
-
+            new \Twig_SimpleFunction('helpcenter_featured_articles', [$this, 'getHelpcenterFeaturedArticles']),
         ];
 
         return $funcs;
@@ -785,6 +787,32 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return '';
+    }
+
+    public function getHelpcenterFeaturedArticles()
+    {
+        static $articles;
+        if ($articles) {
+            return $articles;
+        }
+        $themeSet = $this->getActiveThemeSet();
+
+        $themeOptions         = $themeSet->getOption('theme_options', []);
+        $setting              = $themeOptions ? $themeOptions['featured_articles'] : '';
+        $authorizationChecker = $this->container->get('security.authorization_checker');
+        $articleIds           = explode(',', $setting);
+        $articles             = [];
+        $articleRepo          = $this->container->getEm()->getRepository(Article::class);
+        foreach ($articleIds as $id) {
+            $article = $articleRepo->find((int) $id);
+            if ($article) {
+                if ($authorizationChecker->isGranted(ContentAccessVoter::VIEW_ARTICLE, $article)) {
+                    $articles[] = $article;
+                }
+            }
+        }
+
+        return $articles;
     }
 
     /**

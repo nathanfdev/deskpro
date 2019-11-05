@@ -4,6 +4,7 @@ Feature: Quick Search
 
   Background:
     Given I'm authenticated as "admin"
+    And "testuser@deskpro.dev" user exists
     And the setting "elastica.enabled" is set to 0
     And only the following "CommunityTopic" records exist:
       | #     | person  | is_reviewed | slug   | title                | content         | status |
@@ -52,15 +53,15 @@ Feature: Quick Search
     And the JSON node "data[0].<param>" should be equal to "<value>"
 
     Examples:
-      | type              | param         | value                | query          |
-      | article           | title         | Test Article1        | {article}      |
-      | download          | title         | Test Download1       | {download}     |
-      | community         | title         | Test CommunityTopic1 | {topic}        |
-      | news              | title         | Test News1           | {news}         |
-      | ticket            | subject       | Test Ticket1         | {ticket}       |
-      | person            | primary_email | admin@deskpro.dev    | {admin}        |
-      | organization      | name          | Admin Vector ltd     | {organization} |
-      | chat_conversation | subject       | Test Chat1           | {chat}         |
+      | type              | param         | value                | query                  |
+      | article           | title         | Test Article1        | {article}              |
+      | download          | title         | Test Download1       | {download}             |
+      | community         | title         | Test CommunityTopic1 | {topic}                |
+      | news              | title         | Test News1           | {news}                 |
+      | ticket            | subject       | Test Ticket1         | {ticket}               |
+      | person            | primary_email | testuser@deskpro.dev | {testuser@deskpro.dev} |
+      | organization      | name          | Admin Vector ltd     | {organization}         |
+      | chat_conversation | subject       | Test Chat1           | {chat}                 |
 
   Scenario: I try to search by unsupported type
     When I send a GET request to "/api/v2/search/unknown?q=1"

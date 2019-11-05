@@ -192,7 +192,7 @@ class TicketsController extends AbstractController
         // create timeline with pagination
         $page     = $request->get('page', 1);
         $per_page = 50;
-        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page);
+        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page, $this->getUser());
         $pager    = new Pagerfanta(new TicketTimelinePagerfantaAdapter($timeline));
         $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page);
@@ -583,6 +583,7 @@ class TicketsController extends AbstractController
             'message'     => $message,
             'feedback'    => $feedback,
             'setrating'   => $setRatingViaGet,
+            'rating'      => $rating,
         ]);
     }
 

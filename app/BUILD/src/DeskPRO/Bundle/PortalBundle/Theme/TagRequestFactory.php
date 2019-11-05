@@ -81,13 +81,7 @@ class TagRequestFactory
         // set base url from main request
         $property = new \ReflectionProperty(Request::class, 'baseUrl');
         $property->setAccessible(true);
-
-        if ($currentRequest->attributes->has('original_request')) {
-            $property->setValue($tagRequest, $currentRequest->attributes->get('original_request')->getBaseUrl());
-        } else {
-            $property->setValue($tagRequest, $currentRequest->getBaseUrl());
-        }
-
+        $property->setValue($tagRequest, $currentRequest->getBaseUrl());
         $property->setAccessible(false);
 
         return $tagRequest;
