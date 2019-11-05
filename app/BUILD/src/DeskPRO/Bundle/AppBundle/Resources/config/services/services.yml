@@ -194,6 +194,12 @@ services:
       - "@ticketfilters.env_loader"
       - "@ticketfilters.matcher_factory"
 
+  content.collab_manager:
+    class: DeskPRO\Bundle\AppBundle\Content\CollabManager
+    arguments:
+      - "@brand_aware_settings_resolver"
+      - "@session"
+
   job.scheduler:
     class: Application\DeskPRO\JobQueue\JobScheduler
     arguments:

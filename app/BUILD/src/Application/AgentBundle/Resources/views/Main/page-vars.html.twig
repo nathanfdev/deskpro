@@ -28,6 +28,10 @@
 	window.DP_HAS_NEW_REPORTS        = {% if app.hasBeta('new_reports') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_FILTERS        = {% if app.hasBeta('new_filters') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_CONTENT_EDITOR = {% if app.hasBeta('content_editor') %}true{% else %}false{% endif %};
+  {% if app.hasBeta('content_editor') %}
+    window.DP_COLLAB_WEBSOCKET_URL = '{{ collab_websocket_url }}';
+    window.DP_COLLAB_CONNECTION_TOKEN = '{{ collab_connection_token }}';
+  {% endif %}
 	window.DP_HAS_FOLLOW_UP          = {% if app.hasBeta('follow_up') %}true{% else %}false{% endif %};
     window.DP_BUILD_ID               = '{{ app.getBuildId() }}';
 

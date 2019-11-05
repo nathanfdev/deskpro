@@ -1465,6 +1465,49 @@ i.icon.fitted {
   margin: 6px 0 40px 0;
 }
 
+.article-editor {
+
+  .collab-users {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items:center;
+
+    span {
+      margin-left: 4px;
+      margin-right: 4px;
+      font-size: smaller;
+    }
+  }
+
+  .collab-force-connect {
+    z-index: 250;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 10px;
+
+    span {
+      margin-left: 4px;
+      margin-right: 4px;
+      font-size: smaller;
+    }
+  }
+
+  .collab-offline-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+      top: 0;
+    left: 0;
+    z-index: 200;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 3px 3px;
+    overflow: hidden;
+    background: top/40px 40px no-repeat url("../img/spinners/loading-big-circle.gif"), rgba(100, 100, 100, 0.2)
+  }
+}
+
+
 .ui.popup {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 
