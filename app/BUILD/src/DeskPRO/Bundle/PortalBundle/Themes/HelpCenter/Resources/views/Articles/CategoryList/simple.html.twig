@@ -1,20 +1,18 @@
-{# TODO: style not implemented yet #}
-{#{% if pager|length > 0 %}#}
-  {#<ul class="kb-simple-articles">#}
-    {#{% for article in pager %}#}
-      {#<li>#}
-        {#<a href="{{ portal_path(article) }}">#}
-          {#<h1>{{ article.translated_title }}</h1>#}
-
-          {#<div class="article-meta">#}
-            {#<span class="updated"><i class="far fa-calendar"></i> {{ article.date_created|date('day') }}</span>#}
-            {#<span class="comments"><i class="fas fa-comments"></i> {{ phrase('portal.general.comments-count', {count: article.num_comments}) }}</span>#}
-          {#</div>#}
-        {#</a>#}
-      {#</li>#}
-    {#{% endfor %}#}
-  {#</ul>#}
-  {#{% endif %}#}
-{#{% else %}#}
-  {#<strong>{{ phrase('portal.articles.none') }}</strong>#}
-{#{% endif %}#}
+{% if category_children|length > 0 %}
+    <div class="dp-po-kb-featured mb-0">
+        <h2 class="dp-po-kb-featured-title">{{ phrase('helpcenter.knowledgebase.categories') }}</h2>
+        <div class="row">
+            {% for category in category_children %}
+                {% if loop.index0 > 0 and loop.index0 % 2 == 0 %}</div><div class="row">{% endif %}
+                <div class="col-sm-6">
+                    <div class="dp-po-category-title">
+                        <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
+                            {{ render_icon_from(category) }}
+                            <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span>({{ category_children_pagers[category.id]|length }})</span></h2>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

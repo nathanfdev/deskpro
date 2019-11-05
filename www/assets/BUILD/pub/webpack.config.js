@@ -23,6 +23,8 @@ const config = {
 
     DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
 
+    DeskPRO_HelpcenterBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_HelpcenterBundle',
+
     DeskPRO_PortalBundle_style:     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss',
     DeskPRO_PortalBundle_rtl_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss',
 
@@ -199,6 +201,8 @@ const config = {
     new webpack.ProvidePlugin({
       $:      'jquery',
       jQuery: 'jquery',
+      'window.jQuery': 'jquery',
+      'window.$': 'jquery',
     }),
     new webpack.LoaderOptionsPlugin({
       debug: true

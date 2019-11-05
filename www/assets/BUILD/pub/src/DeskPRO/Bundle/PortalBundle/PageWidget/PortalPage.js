@@ -32,8 +32,10 @@ import { Attachment } from './Common/Attachment';
 import { SocialShare } from './SocialShare';
 import { TouchFocusWidget } from './TouchFocusWidget';
 import { CloseTicketWidget } from './CloseTicketWidget';
+import { CloseFlashWidget } from './CloseFlashWidget';
 import { WidgetButton } from './WidgetButton';
 import { DpxTabs } from './Common/DpxTabs';
+import { Carousel } from './Carousel';
 
 class PortalPage extends PageWidget {
 
@@ -76,6 +78,8 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(DpxTabs, '.dpx-tabs');
     this.addWidgetDef(SocialShare, '#social-share');
     this.addWidgetDef(CloseTicketWidget, '#closeTicketBtn');
+    this.addWidgetDef(CloseFlashWidget, '.dp-po-message-bar-close');
+    this.addWidgetDef(Carousel, '.dpx-carousel');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

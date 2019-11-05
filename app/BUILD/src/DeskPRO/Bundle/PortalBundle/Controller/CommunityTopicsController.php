@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
@@ -149,9 +150,9 @@ class CommunityTopicsController extends AbstractPublishController
 
         // FILTER FORUMS
 
-        $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
+        $communityForums    = $this->get('data.community')->getCommunityForumsForPerson($person);
         $topicCountPerForum = $this->get('data.community')->getCommunityForumTopicCountsForPerson($person);
-        $latestComments = $this->get('data.community')->getLatestCommentsPerForum($person);
+        $latestComments     = $this->get('data.community')->getLatestCommentsPerForum($person);
 
         // JS INITIAL DATA
 
@@ -200,12 +201,13 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @param CommunityTopic $newCommunityTopic
-     * @param Person $person
-     * @param Request $request
+     * @param Person         $person
+     * @param Request        $request
+     * @param bool           $redirectToBrowseTopic
      *
-     * @param bool $redirectToBrowseTopic
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function acceptNewCommunityTopic(
         CommunityTopic $newCommunityTopic,
@@ -381,7 +383,7 @@ class CommunityTopicsController extends AbstractPublishController
                 return $filter->getView();
             },
             'is_compact' => function () use ($filter) {
-                return ($filter->getViewMode() === CommunityFilter::VIEW_MODE_COMPACT);
+                return $filter->getViewMode() === CommunityFilter::VIEW_MODE_COMPACT;
             },
             'topics_data' => function () use ($page, $filter) {
                 return $this->getCommunityDataService()->getFilteredTopicList([
@@ -439,7 +441,7 @@ class CommunityTopicsController extends AbstractPublishController
      * @Security("is_granted('USE_COMMUNITY')")
      *
      * @param CommunityForum $forum
-     * @param Request $request
+     * @param Request        $request
      */
     public function createTopicAction(CommunityForum $forum, Request $request)
     {
@@ -575,6 +577,15 @@ class CommunityTopicsController extends AbstractPublishController
             'lockout_time'       => $check->getLockoutTime(true),
         ];
 
+        // Lazy load related content
+        $viewVars['related_content_data'] = new LazyPropObject([
+            'related_content' => function () use ($topic) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $topic);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         if (!$this->getUser() || $this->getUser()->getId()) {
             $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
         }
@@ -583,6 +594,47 @@ class CommunityTopicsController extends AbstractPublishController
             'Theme:Community:view.html.twig',
             $viewVars
         );
+    }
+
+    /**
+     * @Route("/community/pdf/{slug}", name="portal_community_topic_pdf")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('VIEW_COMMUNITY', topic)")
+     *
+     * @param CommunityTopic $topic
+     * @param int            $visitor_id
+     *
+     * @return Response
+     */
+    public function pdfAction(CommunityTopic $topic, $visitor_id)
+    {
+        /** @var PdfRendererInterface $pdfRenderer */
+        $pdfRenderer = $this->get('pdf_renderer');
+
+        // BREADCRUMBS
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunityView($topic);
+
+        // RATING
+
+        $rating = $this->findContentRating($topic, $visitor_id);
+
+        // NUM RATINGS
+
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic);
+
+        $contentHtml = $this->renderThemeView(
+            'Theme:Community:pdf.html.twig',
+            [
+                'topic'              => $topic,
+                'rating'             => $rating,
+                'breadcrumbs'        => $breadcrumbs,
+                'page_title'         => $this->get('portal_view.page_title_generator')->community($topic),
+                'show_rating_counts' => $showRatingCounts,
+            ]
+        );
+
+        return $pdfRenderer->generateFile($contentHtml->getContent(), $topic->getTranslatedTitle().'.pdf');
     }
 
     /**
@@ -679,7 +731,9 @@ class CommunityTopicsController extends AbstractPublishController
      * @Route("/community/root/toggle-subscription", name="portal_community_root_toggle_subscription")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
      * @AutoPostOnGetRequest()
+     *
      * @param Request $request
+     *
      * @return RedirectResponse
      */
     public function communityRootForumSubscriptionAction(Request $request)
@@ -734,10 +788,10 @@ class CommunityTopicsController extends AbstractPublishController
 
     /**
      * @param CommunityFilter $filter
-     * @param array $communityForums
-     *
+     * @param array           $communityForums
      * @param $page
      * @param bool $isEncoded
+     *
      * @return string|array
      */
     public function generateFilterJs(CommunityFilter $filter, array $communityForums, $page, $isEncoded = true)
@@ -817,14 +871,16 @@ class CommunityTopicsController extends AbstractPublishController
     }
 
     /**
-     * @param FormInterface $form
-     * @param Request $request
+     * @param FormInterface  $form
+     * @param Request        $request
      * @param CommunityTopic $newCommunityTopic
-     * @param bool $rerenderingSaved
-     * @param bool $redirectToBrowseTopic
-     * @param Person|null $person
-     * @return RedirectResponse
+     * @param bool           $rerenderingSaved
+     * @param bool           $redirectToBrowseTopic
+     * @param Person|null    $person
+     *
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return RedirectResponse
      */
     private function saveNewTopic(
         FormInterface $form,

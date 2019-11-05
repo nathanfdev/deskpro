@@ -20,6 +20,9 @@
         <div class="col-sm-3">
             {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
                 is_subscribed: is_subscribed,
+                title: current_forum.title,
+                icon: 'fal fa-file-spreadsheet'
+                
             } %}
         </div>
     </div>

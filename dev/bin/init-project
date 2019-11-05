@@ -47,3 +47,19 @@ npm run test:visual:build
 rm -rf node_modules
 echo ".. done"
 echo
+
+# Mattersplus codeplugin
+GIT_BRANCH=$(cd $DIR_ROOT; git rev-parse --abbrev-ref HEAD)
+echo "CodePlugin check for $GIT_BRANCH"
+if [[ $GIT_BRANCH == "mp-"* ]]; then
+  echo "Installing MattersPlus"
+  cd $DIR_ROOT
+  mkdir $DIR_ROOT/app/scripts/codeplugins
+  cd $DIR_ROOT/app/scripts/codeplugins
+  git clone git@github.com:mattersplus/mattersplus
+  cd mattersplus
+  git checkout master
+  echo "Init MattersPlus"
+  ./dev/bin/init-project
+  echo ".. done MattersPlus"
+fi

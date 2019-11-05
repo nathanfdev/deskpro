@@ -1,0 +1,35 @@
+{% set half_length = (helpcenter_featured_articles()|length / 2)|round(0, 'ceil')  %}
+<div class="dp-po-block">
+    <div class="dp-po-kb-featured">
+        <h2 class="dp-po-kb-featured-title">{{ phrase('helpcenter.knowledgebase.featured-articles') }}</h2>
+        <div class="row">
+            <div class="col-sm-6">
+                <ul class="dp-po-kb-featured-list">
+                    {% for article in helpcenter_featured_articles()[0:half_length] %}
+                        <li class="dp-po-kb-featured-item">
+                            <a href="{{ portal_path(article) }}" class="dp-po-kb-featured-link">
+                                <span class="dp-po-kb-featured-number">{{ loop.index }}</span>{{ article.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <ul class="dp-po-kb-featured-list">
+                    {% for article in helpcenter_featured_articles()[half_length:] %}
+                        <li class="dp-po-kb-featured-item">
+                            <a href="{{ portal_path(article) }}" class="dp-po-kb-featured-link">
+                                <span class="dp-po-kb-featured-number">{{ loop.index + half_length }}</span>{{ article.title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% include 'Theme:Articles:CategoryList/simple.html.twig' with {
+        category_children: kb_data.data.category_children,
+        category_children: kb_data.data.category_children,
+        category_children_pagers: kb_data.data.category_children_pagers,
+    } %}
+</div>

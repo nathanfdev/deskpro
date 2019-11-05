@@ -27,7 +27,7 @@ class SystemLoader implements LoaderInterface
         'general'    => 'backend',
         'portal'     => 'user',
         'user'       => 'user',
-        'helpcenter' => 'user',
+        'helpcenter' => 'helpcenter',
     ];
 
     /**

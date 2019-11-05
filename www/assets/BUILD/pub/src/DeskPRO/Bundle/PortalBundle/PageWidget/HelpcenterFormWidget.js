@@ -6,6 +6,7 @@ import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
 import DpxJavascript from './Common/Form/DpxJavascript';
 import HcFileUpload from './Common/Form/Helpcenter/HcFileUpload';
 import HcProfilePicture from './Common/Form/Helpcenter/HcProfilePicture';
+import DpxRte from './Common/Form/DpxRte';
 
 export default class HelpcenterFormWidget extends PageWidget {
 
@@ -18,6 +19,7 @@ export default class HelpcenterFormWidget extends PageWidget {
     this.addWidgetDef(HcProfilePicture, '.helpcenter-profile_picture');
     this.addWidgetDef(HcDateWidget, '.dpx-date');
     this.addWidgetDef(HcDateWidget, '.dpx-date-time');
+    this.addWidgetDef(DpxRte, '[data-rte]');
 
     if (this.$element.is('form')) {
       HelpcenterFormWidget.initForms(this.$element);

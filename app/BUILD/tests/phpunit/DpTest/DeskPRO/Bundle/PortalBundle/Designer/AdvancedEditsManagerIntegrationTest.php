@@ -51,11 +51,12 @@ class AdvancedEditsManagerIntegrationTest extends PortalTestCase
         $this->em->persist($this->edit_theme_set);
         $this->em->flush();
 
+        $this->getContainer()->get('brand_stack')->getActive()->getBrand()->setEditThemeSet($this->edit_theme_set);
+
         $this->service = new AdvancedEditsManager(
             $this->em,
             $this->getContainer()->get('blob.storage'),
-            new ThemeSet(),
-            $this->edit_theme_set,
+            $this->getContainer()->get('brand_stack'),
             $twig,
             __DIR__.'/scss/main.scss'
         );

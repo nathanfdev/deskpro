@@ -233,7 +233,7 @@ class AbstractController extends BaseController
         if (!$person instanceof PersonGuest) {
             /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
             $ticketRepo           = $this->getRepo(Ticket::class);
-            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 3);
+            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 0);
         }
 
         $shouldDisplay = count($savedForms) || $langDiff || count($ticketsAwaitingReply);

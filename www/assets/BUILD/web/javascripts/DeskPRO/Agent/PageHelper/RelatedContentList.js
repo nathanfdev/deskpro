@@ -22,7 +22,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 		this.contentListEl = $(this.options.contentListEl);
 
 		DeskPRO_Window.getTabWatcher().addTabTypeWatcher('*', this);
-		var types = ['article', 'download', 'news', 'community'];
+		var types = ['article', 'download', 'news', 'community', 'community_topic'];
 
 		this.addEvent('watchedTabActivated', function(tab) {
 			// Instant feedback: Enable all buttons again, but disable ourselves

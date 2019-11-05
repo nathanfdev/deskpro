@@ -3,18 +3,23 @@
         {% for type, flashMessages in flashes %}
             {% for flash in flashMessages %}
                 <div class="dp-po-message-bar dp-po-message-bar-{{ type }}">
-                    <p class="dp-po-message-bar-icon">
-                        {% if type == 'warning' %}
-                            <i class="dp-po-icon fal fa-exclamation-triangle"></i>
-                        {% elseif type == 'error' %}
-                            <i class="dp-po-icon far fa-times-circle"></i>
-                        {% else %}
-                            <i class="dp-po-icon far fa-check-circle"></i>
-                        {% endif %}
-                    </p>
-                    <p class="dp-po-message-bar-text">
-                        {{ flash }}
-                    </p>
+                    <div class="container">
+                        <div class="dp-po-message-bar-wrap">
+                            <p class="dp-po-message-bar-icon">
+                                {% if type == 'warning' %}
+                                    <i class="dp-po-icon fal fa-exclamation-triangle"></i>
+                                {% elseif type == 'error' %}
+                                    <i class="dp-po-icon far fa-times-circle"></i>
+                                {% else %}
+                                    <i class="dp-po-icon far fa-check-circle"></i>
+                                {% endif %}
+                            </p>
+                            <p class="dp-po-message-bar-text">
+                                {{ flash }}
+                            </p>
+                            <a href="#" class="dp-po-message-bar-close"><i class="dp-po-icon fal fa-times"></i></a>
+                        </div>
+                    </div>
                 </div>
             {% endfor %}
         {% endfor %}

@@ -13,7 +13,14 @@
                 } %}
             </div>
             <div class="dp-po-title">
-                <h2 class="dp-po-title-text">{{ topic.realTitle }}</h2>
+                <h2 class="dp-po-title-text">
+                    {{ topic.realTitle }}
+                    {% if topic.statusCategory %}
+                        <span class="badge" style="background-color: {{ topic.statusCategory.color }};">
+                            {{ topic.statusCategory.title }}
+                        </span>
+                    {% endif %}
+                </h2>
             </div>
             <div class="row align-items-end">
                 <div class="col-sm-10">
@@ -27,12 +34,31 @@
                     </div>
                 </div>
                 <div class="col-sm-2">
-
+                    <div class="dp-po-post-extra">
+                        <ul class="dp-po-post-extra-list">
+                            <li class="dp-po-post-extra-item">
+                                <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                            </li>
+                            <li class="dp-po-post-extra-item">
+                                <a href="{{ path('portal_community_topic_pdf', {slug: topic.slug}) }}" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
-
+            {% include 'Theme:Community:CommunityTopicsList/create-topic-button.html.twig' with {
+                current_forum: topic.forum,
+                is_sidebar: true,
+                button_label: phrase('helpcenter.community.create-topic-full'),
+            } %}
+    
+            {% include 'Theme:Community:CommunityTopicsList/subscribe-button.html.twig' with {
+                is_subscribed: is_subscribed,
+                icon: 'fal fa-file-alt',
+                title: topic.title
+            } %}
         </div>
     </div>
 {% endblock page_top %}
@@ -77,6 +103,16 @@
             </ul>
         </div>
     {% endif %}
+
+    {% if related_content_data.related_content|length %}
+        {% include 'Theme:PublishCommon:related-content.html.twig' with {
+            related_content: related_content_data.related_content,
+        } %}
+    {% endif %}
+
+    {% include 'Theme:PublishCommon:share.html.twig' with {
+        item: topic,
+    } %}
 
     {% if file is defined %}
         {% include 'Theme:PublishCommon:share.html.twig' with {

@@ -34,7 +34,7 @@
 
         <div class="dynamic-fields-container">
             {% for widget in form.children if not widget.rendered and widget.vars.name not in ['_token', '_dp_csrf_token'] %}
-                {% set hidden = widget.vars.name == 'department' and app.request.get('hide_department') %}
+                {% set hidden = widget.vars.name == 'department' and app.request.get('hide_department_field') %}
                 <div class="column-full deskpro-form-widget field_{{ widget.vars.name }}"
                      data-field="{{ widget.vars.name }}"
                      style="{% if hidden %}display: none;{% endif %}">

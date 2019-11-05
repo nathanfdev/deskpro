@@ -62,16 +62,31 @@
                 {{ hc_avatar(app.user) }}
                 <i class="dp-po-icon far fa-angle-down"></i>
             </a>
-            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown dp-po-logged-in-user">
-                {{ hc_avatar(app.user, '', 50) }} {{ app.user }}
-                <hr />
-                <a href="{{ path('portal_user_profile') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/profile.svg', 'help_center') }}"> {{ phrase('helpcenter.general.view_profile') }}</a> <br />
-                {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
-                    <a href="{{ path('portal_tickets') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/tickets.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}</a> <br />
-                {% endif %}
-                {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
-                    <a href="{{ path('portal_chats') }}"><img class="dp-profile-svg" src="{{ asset('img/profile-icons/chats.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}</a> <br />
-                {% endif %}
+            <div class="dropdown-menu dropdown-menu-right dp-po-user-dropdown dp-po-user-menu">
+                <div class="dp-po-avatar">
+                    {{ hc_avatar(app.user, '', 50) }} {{ app.user }}
+                </div>
+                <ul class="dp-po-user-menu-list">
+                    <li class="dp-po-user-menu-item">
+                        <a class="dp-po-user-menu-link" href="{{ path('portal_user_profile') }}">
+                            <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/profile.svg', 'help_center') }}"> {{ phrase('helpcenter.general.view_profile') }}
+                        </a>
+                    </li>
+                    {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
+                        <li class="dp-po-user-menu-item">
+                            <a class="dp-po-user-menu-link" href="{{ path('portal_tickets') }}">
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/tickets-light.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
+                        <li class="dp-po-user-menu-item">
+                            <a class="dp-po-user-menu-link" href="{{ path('portal_chats') }}">
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
                 <a href="{{ logout_path('portal') }}" id="top-logout-btn" class="btn btn-primary">{{ phrase('helpcenter.account.logout-btn') }}</a>
             </div>
         {% endif %}

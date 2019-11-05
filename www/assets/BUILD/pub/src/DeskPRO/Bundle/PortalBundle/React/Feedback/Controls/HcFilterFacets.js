@@ -58,7 +58,9 @@ export class HcFilterFacets extends React.Component {
     this.setState({ is_shown: !this.state.is_shown });
   };
 
-  resetFilters = () => {
+  resetFilters = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
     this.props.onResetActivities();
     this.props.onSetStatus('active');
     this.toggle();
@@ -78,7 +80,7 @@ export class HcFilterFacets extends React.Component {
           <div key={activityId} className="form-group dp-po-form-check">
             <input
               type="checkbox"
-              className="form-check-input"
+              className="form-check-input cursor-pointer"
               id={`activity-${activityId}`}
               checked={includes(this.props.filter.activities, activityId)}
               onChange={() => this.props.onSetActivity(activityId)}
@@ -135,12 +137,12 @@ export class HcFilterFacets extends React.Component {
                         onChange={() => this.props.onSetStatusCategory(category.id)}
                       />
                       <label className="form-check-label" htmlFor={`status_category_${category.id}`}>
-                            <span
-                              className="badge badge-secondary"
-                              style={{ backgroundColor: category.color }}
-                            >
-                              {category.title}
-                            </span>
+                        <span
+                          className="badge badge-secondary"
+                          style={{ backgroundColor: category.color }}
+                        >
+                          {category.title}
+                        </span>
                       </label>
                     </div>
                   </li>)}
@@ -148,7 +150,7 @@ export class HcFilterFacets extends React.Component {
             </li>)}
         </ul>
         <hr />
-        <a onClick={this.resetFilters} className="dp-po-community-header-filter-dropdown-clear">
+        <a onClick={this.resetFilters} href="#resetFilters" className="dp-po-community-header-filter-dropdown-clear">
           <i className="dp-po-icon fal fa-times" /> {phrases.resetAllFilters}
         </a>
       </div>
@@ -167,7 +169,7 @@ export class HcFilterFacets extends React.Component {
             ref={this.onGetRef}
           >
             <i className="dp-po-icon fad fa-align-center" />
-            {portalPhrases.get('helpcenter.community.filters')} ({this.props.filter.status_categories.length + this.props.filter.activities.length})
+            {portalPhrases.get('helpcenter.community.filters')} <span>({this.props.filter.status_categories.length + this.props.filter.activities.length})</span>
             <i className="dp-po-icon far fa-angle-down" />
           </a>
           {this.renderMenu()}

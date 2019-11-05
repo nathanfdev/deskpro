@@ -31,9 +31,12 @@ class CommunityForumsController extends CrudController
     public static $listOrder  = 'asc';
 
     /**
+     * Post a new splash image.
+     *
+     * You have to post json_encoded object, please refer to the JS code to find out the shape.
+     *
      * @ApiDoc(
      *     section="Community",
-     *     tags={"CRUD"="#ffa500"},
      *     description="set Splash Image",
      *     requirements={
      *          {
@@ -43,6 +46,8 @@ class CommunityForumsController extends CrudController
      *              "dataType"="integer"
      *          }
      *      },
+     *     input="object",
+     *     output="object",
      *     statusCodes={
      *         200="Returned if everything is OK",
      *     }
