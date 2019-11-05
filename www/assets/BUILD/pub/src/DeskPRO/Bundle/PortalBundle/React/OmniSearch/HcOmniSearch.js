@@ -36,7 +36,10 @@ class ResultTab extends React.PureComponent {
   onClick(e) {
     e.stopPropagation();
     e.preventDefault();
-    this.props.onClick(this.props.tab);
+    const { data, tab } = this.props;
+    if (data[tab].results.length > 0) {
+      this.props.onClick(this.props.tab);
+    }
   }
 
   render() {
