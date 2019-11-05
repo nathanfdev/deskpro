@@ -65,6 +65,19 @@ export class HcOmniSearch extends React.Component {
     $button:           PropTypes.object
   };
 
+  static getActiveTab(data) {
+    const tabOrder = ['article', 'topic', 'community', 'news', 'download', 'chat_conversation'];
+    for (const index in tabOrder) {
+      if (tabOrder[index]) {
+        const tab = tabOrder[index];
+        if (data[tab] && data[tab].pageinfo.total_results > 0) {
+          return tab;
+        }
+      }
+    }
+    return 'article';
+  }
+
   constructor(props) {
     super(props);
 
@@ -186,11 +199,14 @@ export class HcOmniSearch extends React.Component {
           delete response.data.data.meta;
         }
 
+        const activeTab = HcOmniSearch.getActiveTab(response.data.data);
+
         this.props.$inputSearchLogId.val(logId);
         this.setState({
           data:            response.data.data,
           doSpin:          false,
-          lastSearchLogId: logId
+          lastSearchLogId: logId,
+          activeTab,
         });
       });
     });
