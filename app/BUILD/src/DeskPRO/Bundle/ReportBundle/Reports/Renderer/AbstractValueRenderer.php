@@ -71,12 +71,12 @@ abstract class AbstractValueRenderer
         $format = strtolower($format);
 
         switch ($format) {
+            case 'id':
             case 'year':
                 return $this->escapeValue($value);
 
             case 'number':
             case 'numberraw':
-            case 'id':
                 if (preg_match('/^(\d*)\.(\d+)$/', $value, $match)) {
                     // float
                     $decimals = min(1, strlen($match[2]));

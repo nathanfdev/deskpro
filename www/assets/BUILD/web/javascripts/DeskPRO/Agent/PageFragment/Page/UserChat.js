@@ -1411,7 +1411,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	_initLabels: function() {
 		if (this.getEl('labels_input')[0]) {
 			this.labelsInput = new DeskPRO.UI.LabelsInput({
-				type: 'chat_conversations',
+				type: 'chat',
 				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});
