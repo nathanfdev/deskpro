@@ -147,6 +147,8 @@ class TaskRouter
                     $workers = $this->storage->getWorkers($task->getWorkerIds());
                     foreach ($workers as $worker) {
                         $worker->removePendingTask($task);
+                        $worker->removeActiveTask($task);
+
                         $this->storage->saveWorker($worker);
                     }
 
@@ -236,6 +238,18 @@ class TaskRouter
                             $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
                         } catch (\Exception $e) {
                             SystemErrorHandler::logException($e);
+                        }
+
+                        // reset pending task
+                        $workers = $this->storage->getWorkers($task->getWorkerIds());
+                        foreach ($workers as $worker) {
+                            $worker->removePendingTask($task);
+                            $worker->removeActiveTask($task);
+
+                            $this->storage->saveWorker($worker);
+
+                            $task->removeWorker($worker);
+                            $this->logger->info(sprintf('[TaskRouter] Remove pending worker by assign timeout, task_id = %s', $task->getId()));
                         }
 
                         $this->storage->saveTask($task);
@@ -763,6 +777,15 @@ class TaskRouter
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
                     $taskId, $workerType, $workerId
+                ));
+
+                return false;
+            }
+
+            if (!$task->isAccepted()) {
+                $this->logger->info(sprintf(
+                    '[TaskRouter] Task is not active, unable to join, task_id = %s, task_status = %s, worker_type = %s, worker_id = %s',
+                    $taskId, $task->getStatus(), $workerType, $workerId
                 ));
 
                 return false;

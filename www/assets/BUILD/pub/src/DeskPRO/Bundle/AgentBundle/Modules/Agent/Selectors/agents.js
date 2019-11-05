@@ -16,5 +16,6 @@ export const onlineUserChatAgentsSelector = createSelector(
 export const userChatEnabledSelector = createSelector(
   onlineUserChatAgentsSelector,
   meSelector,
-  (userChatAgents, me) => userChatAgents.filter(id => id === me.get('id')).size > 0
+  (userChatAgents, me) => me.getIn(['agent_data', 'available_status']) === 'idle'
+    && userChatAgents.filter(id => id === me.get('id')).size > 0
 );
