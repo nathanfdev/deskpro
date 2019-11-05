@@ -46,6 +46,11 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     private $serializer;
 
     /**
+     * @var VoiceWorkflow
+     */
+    private $voiceWorkflow;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
@@ -53,19 +58,22 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
      * @param StorageAdapterInterface  $storage
      * @param EventDispatcherInterface $dispatcher
      * @param Serializer               $serializer
+     * @param VoiceWorkflow            $voiceWorkflow
      */
     public function __construct(
         EntityManager            $em,
         VoiceTaskHelper          $taskHelper,
         StorageAdapterInterface  $storage,
         EventDispatcherInterface $dispatcher,
-        Serializer               $serializer
+        Serializer               $serializer,
+        VoiceWorkflow            $voiceWorkflow
     ) {
-        $this->em         = $em;
-        $this->taskHelper = $taskHelper;
-        $this->storage    = $storage;
-        $this->dispatcher = $dispatcher;
-        $this->serializer = $serializer;
+        $this->em            = $em;
+        $this->taskHelper    = $taskHelper;
+        $this->storage       = $storage;
+        $this->dispatcher    = $dispatcher;
+        $this->serializer    = $serializer;
+        $this->voiceWorkflow = $voiceWorkflow;
     }
 
     /**
@@ -272,7 +280,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
         if (!$worker) {
             return;
         }
-        if (VoiceWorkflow::workerIsBusy($worker)) {
+        if ($this->voiceWorkflow->workerIsBusy($worker)) {
             return;
         }
 

@@ -102,6 +102,7 @@ services:
       - "@voice_settings_resolver"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_permissions_checker"
+      - "@dp.voice.task_router.logger"
     tags:
       - { name: dp.voice.task_router_workflow }
 
@@ -129,6 +130,7 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.worker_helper"
+      - "@dp.voice.task_router.voice_workflow"
 
   dp.voice.ticket_user_changer:
     class: DeskPRO\Bundle\VoiceBundle\Voice\VoiceTicketUserChanger
