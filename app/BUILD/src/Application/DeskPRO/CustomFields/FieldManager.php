@@ -229,9 +229,7 @@ class FieldManager
      */
     public function getDefinedFields()
     {
-        $this->getFields();
-
-        return $this->real_fields;
+        return array_values($this->em->getRepository($this->options->get('entity_name'))->getTopFields());
     }
 
     /**

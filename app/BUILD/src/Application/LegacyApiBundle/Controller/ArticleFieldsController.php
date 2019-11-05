@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\CustomFields\Form;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -37,7 +38,7 @@ class ArticleFieldsController extends AbstractController
     {
         $data = [];
 
-        /** @var \Application\DeskPRO\CustomFields\KbFieldManager $fieldManager */
+        /** @var FieldManager $fieldManager */
         $fieldManager = $this->container->getSystemService('article_fields_manager');
 
         $custom_fields         = $fieldManager->getDefinedFields();
