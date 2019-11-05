@@ -9,7 +9,7 @@ Feature: /ticket_approvals endpoint
     And no TicketApproval records exist
     And no ApprovalResponse records exist
     And no ApprovalType records exist
-    And agent and user exist
+    And agent and user exist in organization
     And only the following Ticket records exist:
       | #  | Subject  | Person |
       | t1 | Ticket 1 | {user} |
@@ -22,7 +22,7 @@ Feature: /ticket_approvals endpoint
 
     And the following ApproverSelectionCriteria objects exist:
       | #      | canSelectTicketUser | canSelectOrganizationManagers | canSelectFromAllAgents | selectFromPeople | minNumberOfApprovers |
-      | ac1    | 1                   | 1                             | 1                      | [1,2]            | 2                    |
+      | ac1    | 1                   | 1                             | 1                      | [2,3]            | 2                    |
       | ac2    | 1                   | 1                             | 1                      | []               | 1                    |
 
     And the following SelectedApprovers objects exist:
@@ -32,7 +32,7 @@ Feature: /ticket_approvals endpoint
 
     And only the following ApprovalTemplate records exist:
       | #   | name    | description      | type     | requiredApprovals | requiredRejections | approverSelectionCriteria | selectedApprovers |canApproversViewSubject | canChooseApprovers |
-      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 3                 | 1                  | {ac1}                     |                   | 1                      | 1                  |
+      | at1 | Templ 1 | Approval Templ 1 | {atype1} | 2                 | 1                  | {ac1}                     |                   | 1                      | 1                  |
       | at2 | Templ 2 | Approval Templ 2 | {atype2} | 1                 | 1                  | {ac2}                     |                   | 0                      | 1                  |
       | at3 | Templ 3 | Approval Templ 3 | {atype2} | 2                 | 0                  |                           | {sa1}             | 0                      | 0                  |
       | at4 | Templ 3 | Approval Templ 3 | {atype2} | 1                 | 0                  |                           | {sa2}             | 0                      | 0                  |
@@ -72,7 +72,7 @@ Feature: /ticket_approvals endpoint
             """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
+    And the JSON node "errors.errors[1].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 
   Scenario: I POST a valid ticket approval as admin
     Given I'm authenticated as "agent"
@@ -81,7 +81,7 @@ Feature: /ticket_approvals endpoint
 {
   "description": "Approval description 01",
   "template": ~at1~,
-  "approvers": [1,2,3]
+  "approvers": [2,3]
 }
             """
     Then the response status code should be 201
@@ -91,11 +91,11 @@ Feature: /ticket_approvals endpoint
     And the JSON node "data.name" should be equal to "Templ 1"
     And the JSON node "data.description" should be equal to "Approval description 01"
     And the JSON node "data.type" should be equal to "{atype1}"
-    And the JSON node "data.required_approvals" should be equal to "3"
+    And the JSON node "data.required_approvals" should be equal to "2"
     And the JSON node "data.required_rejections" should be equal to "1"
     And the JSON node "data.can_approvers_view_subject" should be equal to true
     And the JSON node "data.status" should be equal to "pending"
-    And the JSON node "data.approvers" should have "3" element
+    And the JSON node "data.approvers" should have "2" element
     And the JSON node "data.last_approved_response_at" should be null
     And the JSON node "data.last_rejected_response_at" should be null
     And the JSON node "data.completed_at" should be null
@@ -191,8 +191,8 @@ Feature: /ticket_approvals endpoint
   "message": "Testing message 01"
 }
             """
-    Then the response status code should be 400
-    And the JSON node "message" should be equal to "Zelda Agent is not listed as an approver for this approval"
+    Then the response status code should be 403
+    And the JSON node "message" should be equal to "Access denied."
 
   Scenario: I POST an rejection response for a ticket approval without authentication
     When I send a POST request to "/api/v2/ticket_approvals/{ta2}/reject"
@@ -239,5 +239,5 @@ Feature: /ticket_approvals endpoint
   "message": "Testing message 01"
 }
             """
-    Then the response status code should be 400
-    And the JSON node "message" should be equal to "Zelda Agent is not listed as an approver for this approval"
+    Then the response status code should be 403
+    And the JSON node "message" should be equal to "Access denied."
