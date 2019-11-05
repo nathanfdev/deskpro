@@ -3712,6 +3712,7 @@ agent.general.requirements_complete: 'Requirements Complete'
 agent.general.requires_validation: 'Requires validation'
 agent.general.reset: Reset
 agent.general.reset_password: 'Reset Password'
+agent.general.retry: Retry
 agent.general.revision: Revision
 agent.general.run_macro: 'Run {{macro}}'
 agent.general.save: Save
@@ -4473,6 +4474,8 @@ agent.publish.awaiting_validation_info: 'Awaiting Validation: An agent with perm
 agent.publish.browse_free_image: 'Browse Free Images'
 agent.publish.change_category: 'Change Category'
 agent.publish.click_to_set_date: '(click to set date)'
+agent.publish.collab_users_editing: '{{count}} more people editing'
+agent.publish.collab_disconnected: 'You have been disconnected'
 agent.publish.comment_by: 'Comment by {{name}}'
 agent.publish.comment_requires_validation: 'This comment requires validation'
 agent.publish.comments_list_title:

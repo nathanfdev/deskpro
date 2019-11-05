@@ -12,11 +12,11 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
-     * Labels on chats.
-     */
-    class LabelChatConversation extends LabelAssocAbstract
-    {
-        const LABEL_TYPENAME = 'chat_conversations';
+ * Labels on chats.
+ */
+class LabelChatConversation extends LabelAssocAbstract
+{
+    const LABEL_TYPENAME = 'chat';
 
         /**
          * @var \Application\DeskPRO\Entity\ChatConversation
@@ -91,4 +91,4 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
                 ]
             );
         }
-    }
+}

@@ -34,11 +34,12 @@ class LabelLister
     {
         $index = [];
 
-        $statement = App::getDb()->executeQuery("
+        $statement = App::getDb()->executeQuery('
             SELECT DISTINCT(label)
-            FROM labels_{$this->label_type}
+            FROM label_defs
+            WHERE label_type = ?
             ORDER BY label ASC
-        ");
+        ', [$this->label_type]);
 
         while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $label = $row['label'];

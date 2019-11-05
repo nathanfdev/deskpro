@@ -36,7 +36,7 @@
 	</div>
 	<div class="article-editor-wrap" style="display: none">
 		<div class="article-editor">
-			{% if state.article.real_content %}
+			{% if not app.hasBeta('content_editor') and state.article.real_content %}
 				<div class="revert-message-notice">
 					{{ phrase('agent.general.unsaved_changes_were_restored') }}
 					<button class="revert-default">{{ phrase('agent.publish.discard_unsaved_changes') }}</button>
@@ -51,7 +51,7 @@
       </div>
 			{% if app.hasBeta('content_editor') and article.content_input_type == 'dped_v1' %}
 				<script type="text/javascript">
-					var {{ baseId }}_content_input = {{ state.article.content_input|default(article.content_input)|json_encode|raw }};
+					var {{ baseId }}_content_input = {{ article.content_input|json_encode|raw }};
 				</script>
 				<div class="edit-content-field"></div>
 			{% else %}

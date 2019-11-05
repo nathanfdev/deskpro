@@ -75,7 +75,10 @@ class KbController extends AbstractController
         $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities(true);
 
-        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        $state = null;
+        if (!$this->container->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        }
 
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($article);
 
@@ -146,10 +149,16 @@ class KbController extends AbstractController
             'article_products'    => $article_products,
             'glossary_words'      => $glossary_words,
             'perms'               => $perms,
+            'is_collab_enabled'   => $this->get('content.collab_manager')->isCollabEnabled(),
             'user_view_count'     => $user_view_count,
 
             'word_defs' => $word_defs,
         ];
+
+        if ($vars['is_collab_enabled'] && $perms['can_edit'] && $this->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $vars['collab_editor_options'] = $this->get('content.collab_manager')
+                ->getEditorCollabOptions('article', $article->getId());
+        }
 
         if ($isPdf) {
             $contentHtml = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);

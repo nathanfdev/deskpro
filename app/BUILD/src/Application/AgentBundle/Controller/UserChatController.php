@@ -719,10 +719,10 @@ class UserChatController extends AbstractController
             $groupers[]       = $grouper;
         }
 
-        $labelLister = new \Application\DeskPRO\Labels\LabelLister('chat_conversations');
+        $labelLister = new \Application\DeskPRO\Labels\LabelLister('chat');
         $index       = $labelLister->getIndexList();
 
-        $labelCounts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('chat_conversations', 25);
+        $labelCounts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('chat', 25);
         $cloudGen    = new \Application\DeskPRO\UI\TagCloud($labelCounts);
         $cloud       = $cloudGen->getCloud();
 
