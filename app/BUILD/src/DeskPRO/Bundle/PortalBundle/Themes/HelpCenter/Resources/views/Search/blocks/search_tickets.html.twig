@@ -9,7 +9,9 @@
                     {{ search_macros.search_result(result_set) }}
                 {% endfor %}
             </ul>
-            <a href="{{ path('portal_type_search', {type: 'ticket', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: ticket_info.total_results}) }}</a>
+            {% if viewall is defined %}
+                <a href="{{ path('portal_type_search', {type: 'ticket', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: ticket_info.total_results}) }}</a>
+            {% endif %}
         {% endif %}
     </div>
 </div>

@@ -54,7 +54,7 @@
                             </div>
                         {% else %}
                             {% if can_use_tickets() %}
-                                {% include('Theme:Search:blocks/search_tickets.html.twig') %}
+                                {% include('Theme:Search:blocks/search_tickets.html.twig') with { viewall: true } %}
                             {% endif %}
                             {% if can_use_articles() or can_use_downloads() or can_use_news() or can_use_community() or (app.hasBeta('guides') and can_use_guides()) %}
                             <div class="dp-po-search-tabs">

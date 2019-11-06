@@ -138,20 +138,25 @@ class SearchController extends AbstractController
         $types   = $type === 'ticket' ? ['ticket'] : null;
 
         $isSearch    = true;
-        $results     = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage);
+        $results     = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage, $type);
         $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
         // we don't need meta here
         unset($results['meta']);
 
         $combinedCounts = ['total_results' => 0];
-        foreach ($results as $result) {
+        foreach ($results as $resultType => $result) {
             $pageinfo = $result['pageinfo'];
             $combinedCounts['total_results'] += $pageinfo['total_results'];
+            $results[$resultType]['pager'] = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+            $results[$resultType]['pager']->setMaxPerPage((int) $pageinfo['per_page']);
+            if ($resultType === $type) {
+                $results[$resultType]['pager']->setCurrentPage((int) $pageinfo['curpage']);
+            } else {
+                $results[$resultType]['pager']->setCurrentPage(1);
+            }
+            $results[$resultType]['pager_options']['routeName']   = 'portal_type_search';
+            $results[$resultType]['pager_options']['routeParams'] = ['type' => $resultType, 'q' => $q];
         }
-
-//        $pagination = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
-//        $pagination->setMaxPerPage((int) $pageinfo['per_page']);
-//        $pagination->setCurrentPage((int) $pageinfo['curpage']);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
 
@@ -485,10 +490,13 @@ class SearchController extends AbstractController
      * @param         $q
      * @param         $curPage
      * @param         $perPage
+     * @param bool    $details
+     *
+     * @throws \Exception
      *
      * @return array
      */
-    private function fetchSearchResults(Request $request, $types, $person, $q, $curPage, $perPage)
+    private function fetchSearchResults(Request $request, $types, $person, $q, $curPage, $perPage, $detailledType = false)
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
@@ -533,7 +541,7 @@ class SearchController extends AbstractController
                 $type,
                 $q,
                 $person,
-                $curPage,
+                !$detailledType || $detailledType === $type ? $curPage : 1,
                 $perPage,
                 $context
             );

@@ -12,7 +12,15 @@ export class SearchTabs extends PageWidget {
       if (tab) {
         Array.prototype.forEach.call(document.getElementsByClassName('dp-po-search-details'), (t) => { t.style.display = 'none'; });
         Array.prototype.forEach.call(document.getElementsByClassName('dp-po-search-tab'), (t) => { t.style.display = 'none'; });
-        document.getElementById(`${tab}_tab`).style.display = 'block';
+        Array.prototype.forEach.call(document.getElementsByClassName('dp-po-search-pager'), (t) => { t.style.display = 'none'; });
+        const newTab = document.getElementById(`${tab}_tab`);
+        if (newTab) {
+          newTab.style.display = 'block';
+        }
+        const newPager = document.getElementById(`${tab}_pager`);
+        if (newPager) {
+          newPager.style.display = 'block';
+        }
       }
     });
   }

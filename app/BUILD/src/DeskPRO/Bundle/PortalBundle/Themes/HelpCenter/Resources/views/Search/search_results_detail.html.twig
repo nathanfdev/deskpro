@@ -127,6 +127,14 @@
                                     </ul>
                                 </div>
                             </div>
+                            {% for type, result_set in results %}
+                                <div id="{{ type }}_pager" class="dp-po-search-pager" {% if active != type %}style="display: none" {% endif %}>
+                                    {% include 'Theme:Common:pager.html.twig' with {
+                                        pager: result_set.pager,
+                                        pager_options: result_set.pager_options,
+                                    } %}
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
