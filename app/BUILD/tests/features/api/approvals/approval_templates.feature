@@ -1,4 +1,4 @@
-@New
+@new
 Feature: /approval_templates endpoint
   To CRUD DeskPRO approval templates
   As an API user
@@ -60,7 +60,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an approval template as admin with invalid agents in criteria
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -73,7 +73,7 @@ Feature: /approval_templates endpoint
     "people": [99999]
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.fields.selected_approvers.fields.people.errors[0].message" should be equal to "One or more of the given values is invalid."
@@ -81,7 +81,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an approval template as admin with invalid approval and rejection thresholds
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -94,7 +94,7 @@ Feature: /approval_templates endpoint
     "people": [1]
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.fields.required_approvals.errors" should have "1" element
@@ -103,7 +103,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -116,7 +116,7 @@ Feature: /approval_templates endpoint
     "people": [1]
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
@@ -124,7 +124,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an approval template as admin with selected approvers that have deferred selection critiera (ticket user, org managers or all agents)
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -140,14 +140,14 @@ Feature: /approval_templates endpoint
     "people": [1]
   }
 }
-            """
+    """
     Then the response status code should be 201
     Then the response should be in JSON
 
   Scenario: I POST an approval template as admin with selected approvers that have deferred selection critiera (ticket user, org managers or all agents) and I haven't selected enough approvers
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -163,7 +163,7 @@ Feature: /approval_templates endpoint
     "people": [1]
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
@@ -171,7 +171,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers but is valid as agent can approve approvers later
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -185,15 +185,15 @@ Feature: /approval_templates endpoint
     "min_number_of_approvers": 1
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
-    And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
+    And the JSON node "errors.errors[0].message" should be equal to "Minimum number of approvers value must not be greater than To approve or To Reject values"
 
   Scenario: Admin should not be able to create a 'Let agent choose' template without specifying minimum number of approvers
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -206,7 +206,7 @@ Feature: /approval_templates endpoint
     "select_from_people": [1]
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.fields.approver_selection_criteria.fields.min_number_of_approvers.errors[0].message" should be equal to "This value should not be blank."
@@ -214,7 +214,7 @@ Feature: /approval_templates endpoint
   Scenario: Admin should not be able to create a 'Let agent choose' template without specifying minimum number of approvers (max is validated)
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -228,7 +228,7 @@ Feature: /approval_templates endpoint
     "min_number_of_approvers": 9999
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.fields.approver_selection_criteria.fields.min_number_of_approvers.errors[0].code" should be equal to "too_high"
@@ -236,7 +236,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an approval template as admin with threshold that does not meet minimum number of approvers but is valid as agent can approve approvers later
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -251,7 +251,7 @@ Feature: /approval_templates endpoint
     "min_number_of_approvers": 3
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "There aren't enough approvers to meet the specified minimum number of required approvers"
@@ -259,7 +259,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST a valid approval template as admin
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -273,14 +273,14 @@ Feature: /approval_templates endpoint
     "min_number_of_approvers": 1
   }
 }
-            """
+    """
     Then the response status code should be 201
     Then the response should be in JSON
 
   Scenario: I POST a valid approval template as admin with trigger actions
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -365,7 +365,7 @@ Feature: /approval_templates endpoint
     }
   }]
 }
-            """
+    """
     Then the response status code should be 201
     Then the response should be in JSON
     And the JSON node "data" should exist
@@ -398,7 +398,7 @@ Feature: /approval_templates endpoint
   Scenario: I POST an invalid approval template as admin where there aren't enough approvers
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -411,7 +411,7 @@ Feature: /approval_templates endpoint
     "people": [1,2]
   }
 }
-            """
+    """
     Then the response status code should be 400
     Then the response should be in JSON
     And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
@@ -516,7 +516,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.can_approvers_view_subject" should be true
     And the JSON node "data.selected_approvers.people" should have "1" element
     When I send a PUT request to "/api/v2/approval_templates/{at1}" with body:
-            """
+    """
 {
   "name": "Approval Template Delta",
   "description": "Approval template delta description",
@@ -529,7 +529,7 @@ Feature: /approval_templates endpoint
     "people": [1,2]
   }
 }
-            """
+    """
     Then the response status code should be 204
     And I send a GET request to "/api/v2/approval_templates/{at1}"
     Then the response status code should be 200
@@ -551,7 +551,7 @@ Feature: /approval_templates endpoint
     And the JSON node "data.can_approvers_view_subject" should be true
     And the JSON node "data.selected_approvers.people" should have "1" element
     When I send a PUT request to "/api/v2/approval_templates/{at1}" with body:
-            """
+    """
 {
   "name": "Approval Template Delta",
   "description": "Approval template delta description",
@@ -564,7 +564,7 @@ Feature: /approval_templates endpoint
     "people": []
   }
 }
-            """
+    """
     Then the response status code should be 400
     And the JSON node "errors.errors[0].message" should be equal to "You must provide a number of required approvals or rejections, that does not exceed the number of approvers"
 

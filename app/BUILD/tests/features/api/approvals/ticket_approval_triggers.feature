@@ -21,7 +21,7 @@ Feature: Ticket approval triggers
   Scenario: I set up a valid ticket approval with a set ticket subject action
     Given I'm authenticated as "admin"
     When I send a POST request to "/api/v2/approval_templates" with body:
-            """
+    """
 {
   "name": "Approval Template 1",
   "description": "Approval template 1 description",
@@ -42,29 +42,30 @@ Feature: Ticket approval triggers
 			}
 	}]
 }
-            """
+    """
+    And print last JSON response
     Then the response status code should be 201
     Then the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
     When I send a POST request to "/api/v2/tickets/{t1}/ticket_approvals" with body:
-            """
+    """
 {
   "description": "Approval description 01",
   "template": ~lastCreatedId~,
   "approvers": [~admin~]
 }
-            """
+    """
     Then the response status code should be 201
     Then the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
     When I send a POST request to "/api/v2/ticket_approvals/{lastCreatedId}/approve" with body:
-            """
+    """
 {
   "message": "Testing message 01"
 }
-            """
+    """
     Then the response status code should be 201
     And the JSON node "data.id" should be equal to "{lastCreatedId}"
     And the JSON node "data.vote_type" should be equal to "approve"

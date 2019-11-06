@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Class ApprovalThresholdsValidator.
@@ -31,9 +32,16 @@ class ApprovalThresholdsValidator extends ConstraintValidator
 
     /**
      * {@inheritdoc}
+     *
+     * @throws UnexpectedTypeException
      */
     public function validate($value, Constraint $constraint)
     {
+        if (!$constraint instanceof ApprovalThresholds) {
+            throw new UnexpectedTypeException($constraint, ApprovalThresholds::class);
+        }
+
+        $approvers            = null;
         $minNumberOfApprovers = null;
 
         if ($value instanceof AbstractBaseApproval) {
@@ -45,31 +53,40 @@ class ApprovalThresholdsValidator extends ConstraintValidator
             }
         } elseif ($value instanceof ApprovalTemplate) {
             if ($value->canChooseApprovers()) {
-                $selectionCriteria = $value->getApproverSelectionCriteria();
-
-                // Don't need to validate until the actual approval is created if approvers are inferred
-                if (
-                    $selectionCriteria->canSelectOrganizationManagers() ||
-                    $selectionCriteria->canSelectFromAllAgents()
-                ) {
-                    return;
-                }
-
-                $approvers = count($selectionCriteria->getSelectFromPeople());
-
-                if ($selectionCriteria->canSelectTicketUser()) {
-                    ++$approvers;
-                }
-
+                $selectionCriteria    = $value->getApproverSelectionCriteria();
                 $minNumberOfApprovers = $selectionCriteria->getMinNumberOfApprovers();
 
-                // Make sure we have enough approvers to meet the minimum threshold
-                if ($approvers < $minNumberOfApprovers) {
-                    $this
-                        ->context
-                        ->buildViolation(sprintf($constraint->minNumberOfApproversMessage, $approvers))
+                if (
+                    !$selectionCriteria->canSelectOrganizationManagers() &&
+                    !$selectionCriteria->canSelectFromAllAgents()
+                ) {
+                    // Don't need to validate until the actual approval is created if approvers are inferred
+                    $approvers = count($selectionCriteria->getSelectFromPeople());
+
+                    if ($selectionCriteria->canSelectTicketUser()) {
+                        ++$approvers;
+                    }
+
+                    // Make sure we have enough approvers to meet the minimum threshold
+                    if ($approvers < $minNumberOfApprovers) {
+                        $this
+                            ->context
+                            ->buildViolation(sprintf($constraint->minNumberOfApproversMessage, $approvers))
+                            ->addViolation()
+                        ;
+                    }
+                }
+
+                if ($minNumberOfApprovers < $value->getRequiredApprovals() || $minNumberOfApprovers < $value->getRequiredRejections()) {
+                    /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+                    $context = $this->context;
+                    $context
+                        ->buildViolation($constraint->minNumberOfApproversGreaterThanToApproveOrReject)
+                        ->setCode(ApprovalThresholds::MIN_NUMBER_OF_APPROVERS_GREATER_THAN_TO_APPROVE_OR_REJECT)
                         ->addViolation()
                     ;
+
+                    return;
                 }
             } else {
                 $personRepo        = $this->em->getRepository(Person::class);
@@ -111,7 +128,7 @@ class ApprovalThresholdsValidator extends ConstraintValidator
             return;
         }
 
-        if ($approvers < max($thresholds)) {
+        if ($approvers !== null && $approvers < max($thresholds)) {
             $this
                 ->context
                 ->buildViolation($constraint->message)
