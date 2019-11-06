@@ -31,17 +31,28 @@ class WorkerActivity
     private $workerHelper;
 
     /**
+     * @var VoiceWorkflow
+     */
+    private $voiceWorkflow;
+
+    /**
      * Constructor.
      *
      * @param EntityManager           $em
      * @param StorageAdapterInterface $voiceStorage
      * @param WorkerHelper            $workerHelper
+     * @param VoiceWorkflow           $voiceWorkflow
      */
-    public function __construct(EntityManager $em, StorageAdapterInterface $voiceStorage, WorkerHelper $workerHelper)
-    {
-        $this->em           = $em;
-        $this->voiceStorage = $voiceStorage;
-        $this->workerHelper = $workerHelper;
+    public function __construct(
+        EntityManager           $em,
+        StorageAdapterInterface $voiceStorage,
+        WorkerHelper            $workerHelper,
+        VoiceWorkflow           $voiceWorkflow
+    ) {
+        $this->em            = $em;
+        $this->voiceStorage  = $voiceStorage;
+        $this->workerHelper  = $workerHelper;
+        $this->voiceWorkflow = $voiceWorkflow;
     }
 
     /**
@@ -97,7 +108,7 @@ class WorkerActivity
                     ->setAgentId($worker->getTypeId())
                     ->setOnline($isOnline)
                     ->setVoiceEnabled($agentData->isVoiceEnabled() && $agentData->isAgentCallsEnabled())
-                    ->setBusyForVoice(VoiceWorkflow::workerIsBusy($worker))
+                    ->setBusyForVoice($this->voiceWorkflow->workerIsBusy($worker))
                     ->setForwardingEnabled($agentData->canUseForwarding()
                         && $agentData->agentCanUseForwarding()
                         && ($isOnline && !$agentData->isForwardingLoggedOut()) || !$isOnline

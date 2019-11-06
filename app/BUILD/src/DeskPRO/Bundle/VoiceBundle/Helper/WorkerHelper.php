@@ -24,6 +24,11 @@ class WorkerHelper
     private $em;
 
     /**
+     * @var int[]
+     */
+    private $voiceAgentIds;
+
+    /**
      * Constructor.
      *
      * @param StorageAdapterInterface $storage
@@ -111,21 +116,23 @@ class WorkerHelper
      */
     public function getVoiceAgentIds()
     {
-        $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('a')
-            ->from(AgentData::class, 'a')
-            ->where(
-                'a.isVoiceEnabled = 1',
-                'a.agentCallsEnabled = 1'
-            )
-        ;
+        if (null === $this->voiceAgentIds) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('a')
+                ->from(AgentData::class, 'a')
+                ->where(
+                    'a.isVoiceEnabled = 1',
+                    'a.agentCallsEnabled = 1'
+                )
+            ;
 
-        $agentData = $qb->getQuery()->getResult();
-        $agentIds  = array_map(function (AgentData $agentData) {
-            return $agentData->getPerson()->getId();
-        }, $agentData);
+            $agentData           = $qb->getQuery()->getResult();
+            $this->voiceAgentIds = array_map(function (AgentData $agentData) {
+                return $agentData->getPerson()->getId();
+            }, $agentData);
+        }
 
-        return $agentIds;
+        return $this->voiceAgentIds;
     }
 }
