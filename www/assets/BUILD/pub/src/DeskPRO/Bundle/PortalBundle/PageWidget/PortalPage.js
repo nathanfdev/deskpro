@@ -16,6 +16,7 @@ import { AlertsWidget } from './AlertsWidget';
 import { LoginPage } from './LoginPage';
 import { HtmlLinkToPostWidget } from './HtmlLinkToPostWidget';
 import { OmniSearchWidget } from './OmniSearchWidget';
+import { HcOmniSearchWidget } from './HcOmniSearchWidget';
 import { LanguageChangerWidget } from './LanguageChangerWidget';
 import { HelpcenterLanguageChangerWidget } from './HelpcenterLanguageChangerWidget';
 import AgentBarWidget from './AgentBarWidget';
@@ -36,6 +37,7 @@ import { CloseFlashWidget } from './CloseFlashWidget';
 import { WidgetButton } from './WidgetButton';
 import { DpxTabs } from './Common/DpxTabs';
 import { Carousel } from './Carousel';
+import { SearchTabs } from './SearchTabs';
 
 class PortalPage extends PageWidget {
 
@@ -43,6 +45,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(PortalFormWidget, '.dpx-form');
     this.addWidgetDef(HelpcenterFormWidget, '.helpcenter-form');
     this.addWidgetDef(OmniSearchWidget, '#omnisearch');
+    this.addWidgetDef(HcOmniSearchWidget, '#helpcenter-omnisearch');
     this.addWidgetDef(LoginDropdownWidget, '#top-login-btn');
     this.addWidgetDef(HelpcenterLoginDropdownWidget, '#hc-top-login-btn');
     this.addWidgetDef(LogoutButtonWidget, '#top-logout-btn');
@@ -80,6 +83,8 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(CloseTicketWidget, '#closeTicketBtn');
     this.addWidgetDef(CloseFlashWidget, '.dp-po-message-bar-close');
     this.addWidgetDef(Carousel, '.dpx-carousel');
+    this.addWidgetDef(SearchTabs, '.dp-po-search-sidebar-link');
+    this.addWidgetDef(SearchTabs, '.dp-po-search-tabs-link');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

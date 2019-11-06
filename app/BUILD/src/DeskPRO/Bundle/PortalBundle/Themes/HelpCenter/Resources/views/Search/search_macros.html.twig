@@ -1,51 +1,47 @@
-{% macro search_result(result) %}
+{% macro search_result(result, root = "dp-po-search") %}
     {% if result['type'] == 'news' %}
-        {{ _self.news_search_result(result['object']) }}
+        {{ _self.article_search_result(result['object'], root) }}
     {% elseif result['type'] == 'ticket' %}
-        {{ _self.ticket_search_result(result['object']) }}
+        {{ _self.ticket_search_result(result['object'], root) }}
     {% elseif result['type'] == 'article' %}
-        {{ _self.article_search_result(result['object']) }}
+        {{ _self.article_search_result(result['object'], root) }}
     {% elseif result['type'] == 'community' %}
-        {{ _self.community_search_result(result['object']) }}
+        {{ _self.article_search_result(result['object'], root) }}
     {% elseif result['type'] == 'download' %}
-        {{ _self.dl_search_result(result['object']) }}
+        {{ _self.article_search_result(result['object'], root) }}
     {% elseif result['type'] == 'topic' %}
-        {{ _self.topic_search_result(result['object']) }}
+        {{ _self.article_search_result(result['object'], root) }}
     {% endif %}
 {% endmacro %}
 
-{% macro article_search_result(article) %}
-    <li>
-    {{ content_icon(article) }}
-        <a href="{{ portal_path(article) }}">
-          <span class="item-title">{{ article.title }}</span>
-          <p>{{ article.realContent|html_content_preview(350) }}</p>
+{% macro article_search_result(article, root = "dp-po-search") %}
+    <li class="{{root}}-item">
+        <a href="{{ portal_path(article) }}" class="{{root}}-link">
+          {{ article.title }}
+            <div class="dp-po-time">
+                <i class="dp-po-icon far fa-clock"></i>
+                {{ date_ago(article.date_updated) }}
+            </div>
         </a>
-        <div class="article-meta">
-          {{ phrase('helpcenter.general.by_2') }} <span style="background: url({{ avatar_url(article.person, 36) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ article.person.display_name_user }} {{ phrase('helpcenter.general.on') }} {{ article.date_published|date('day') }}<hr>
-          <span class="comments"><i class="fas fa-comments"></i> <a href="{{ portal_path(article) }}#comments">{{ phrase('helpcenter.general.comments-count', { count: article.calc_num_comments }) }}</a></span>
-          <hr>
-          {{ phrase('helpcenter.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ article.primary_category }}</a>
-        </div>
   </li>
 {% endmacro %}
 
-{% macro ticket_search_result(ticket) %}
-    <li>
-        {{ content_icon(ticket) }}
-        <a href="{{ portal_path(ticket) }}">
-          <span class="item-title">{{ ticket.subject }}</span>
+{% macro ticket_search_result(ticket, root = "dp-po-search") %}
+    <li class="{{root}}-item">
+        <a href="{{ portal_path(ticket) }}" class="{{root}}-link">
+            {{ ticket.subject }}
+            <div class="dp-po-time">
+                <i class="dp-po-icon far fa-clock"></i>
+                {{ date_ago(ticket.getLastActivityDate()) }}
+            </div>
         </a>
-        <div class="article-meta">
-            {{ phrase('helpcenter.tickets.search-last-activity') }} {{ ticket.getLastActivityDate()|date('full') }}
-        </div>
   </li>
 {% endmacro %}
 
-{% macro dl_search_result(dl) %}
-  <li>
+{% macro dl_search_result(dl, root = "dp-po-search") %}
+  <li class="{{root}}-item">
     {{ content_icon(dl) }}
-    <a href="{{ portal_path(dl) }}">
+    <a href="{{ portal_path(dl) }}" class="{{root}}-link">
       <span class="item-title">
         {{ dl.title }}
       </span>
@@ -53,9 +49,9 @@
   </li>
 {% endmacro %}
 
-{% macro community_search_result(topic) %}
-  <li>
-    <a href="{{ portal_path(topic) }}">
+{% macro community_search_result(topic, root = "dp-po-search") %}
+  <li class="{{root}}-item">
+    <a href="{{ portal_path(topic) }}" class="{{root}}-link">
       <span class="item-title">
           <span class="community-count"><i class="fas fa-thumbs-up"></i>{{ topic.total_rating >= 0 ? (topic.total_rating > 0 ? '+' : '') : '-' }}{{ topic.total_rating }}</span>
           {{ topic.title }}
@@ -66,9 +62,9 @@
 {% endmacro %}
 
 
-{% macro news_search_result(news) %}
-    <li>
-        <a href="{{ portal_path(news) }}">
+{% macro news_search_result(news, root = "dp-po-search") %}
+    <li class="{{root}}-item">
+        <a href="{{ portal_path(news) }}" class="{{root}}-link">
           <span class="item-title"><span class="date-posted"><i class="far fa-calendar"></i> {{ date_ago(news.date_published) }}</span>{{ news.title }}</span>
           <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
@@ -76,10 +72,10 @@
 {% endmacro %}
 
 
-{% macro topic_search_result(topic) %}
-    <li>
+{% macro topic_search_result(topic, root = "dp-po-search") %}
+    <li class="{{root}}-item">
         {{ content_icon(topic) }}
-        <a href="{{ portal_path(topic) }}">
+        <a href="{{ portal_path(topic) }}" class="{{root}}-link">
           <span class="item-title">
             {{ topic.title }}
           </span>

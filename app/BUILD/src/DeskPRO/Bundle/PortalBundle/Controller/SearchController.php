@@ -118,6 +118,84 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @Route("/search/{type}", name="portal_type_search", defaults={"type": "content"}, requirements={"type":"(?!omni).*"})
+     *
+     * @param $type
+     * @param Request $request
+     */
+    public function searchTypeAction($type, Request $request)
+    {
+        $q = $request->get('q');
+
+        if (!$q) {
+            return $this->redirectToRoute('portal_search');
+        }
+
+        $person  = $this->getUser() ?: new PersonGuest();
+        $total   = 0;
+        $curPage = $request->get('page', 1);
+        $perPage = 10;
+        $types   = $type === 'ticket' ? ['ticket'] : null;
+
+        $isSearch    = true;
+        $results     = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage, $type);
+        $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
+        // we don't need meta here
+        unset($results['meta']);
+
+        $combinedCounts = ['total_results' => 0];
+        foreach ($results as $resultType => $result) {
+            $pageinfo = $result['pageinfo'];
+            $combinedCounts['total_results'] += $pageinfo['total_results'];
+            $results[$resultType]['pager'] = new Pagerfanta(new DeskproSearchAdapter($pageinfo));
+            $results[$resultType]['pager']->setMaxPerPage((int) $pageinfo['per_page']);
+            if ($resultType === $type) {
+                $results[$resultType]['pager']->setCurrentPage((int) $pageinfo['curpage']);
+            } else {
+                $results[$resultType]['pager']->setCurrentPage(1);
+            }
+            $results[$resultType]['pager_options']['routeName']   = 'portal_type_search';
+            $results[$resultType]['pager_options']['routeParams'] = ['type' => $resultType, 'q' => $q];
+        }
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
+
+        // pass searchLogId to `search_and_contact_bar` tag
+        if ($searchLogId) {
+            $request->attributes->set(self::SEARCH_LOG_ID_VAR, $searchLogId);
+        }
+
+        if ($type === 'ticket') {
+            return $this->renderThemeView(
+                'Theme:Search:search_results_tickets.html.twig',
+                [
+                    'is_search'   => $isSearch,
+                    'results'     => $results,
+                    'query'       => $q,
+                    'num_results' => $total,
+                    'breadcrumbs' => $breadcrumbs,
+                    'page_title'  => $this->createPageTitle()->search(),
+                    'combined'    => $combinedCounts,
+                ]
+            );
+        }
+
+        return $this->renderThemeView(
+            'Theme:Search:search_results_detail.html.twig',
+            [
+                'is_search'   => $isSearch,
+                'active'      => $type,
+                'results'     => $results,
+                'query'       => $q,
+                'num_results' => $total,
+                'breadcrumbs' => $breadcrumbs,
+                'page_title'  => $this->createPageTitle()->search(),
+                'combined'    => $combinedCounts,
+            ]
+        );
+    }
+
+    /**
      * @Route("/search/omni", name="portal_omnisearch")
      *
      * @param Request $request
@@ -412,10 +490,13 @@ class SearchController extends AbstractController
      * @param         $q
      * @param         $curPage
      * @param         $perPage
+     * @param bool    $details
+     *
+     * @throws \Exception
      *
      * @return array
      */
-    private function fetchSearchResults(Request $request, $types, $person, $q, $curPage, $perPage)
+    private function fetchSearchResults(Request $request, $types, $person, $q, $curPage, $perPage, $detailledType = false)
     {
         ////////////////////////////////////////////////////////////////////////
         // search types
@@ -460,7 +541,7 @@ class SearchController extends AbstractController
                 $type,
                 $q,
                 $person,
-                $curPage,
+                !$detailledType || $detailledType === $type ? $curPage : 1,
                 $perPage,
                 $context
             );

@@ -1,0 +1,17 @@
+<div class="dp-po-search-hint-tickets {% if not ticket_results %}no-results{% endif %}">
+    <div class="dp-po-search-hint-header">
+        <h3 class="dp-po-search-hint-header-title"><i class="dp-po-icon fad fa-envelope"></i> {{ phrase('helpcenter.search.your-tickets') }}
+            <span>{{ ticket_info.total_results | default(0) }}</span>
+        </h3>
+        {% if ticket_results %}
+            <ul class="dp-po-search-list">
+                {% for result_set in ticket_results %}
+                    {{ search_macros.search_result(result_set) }}
+                {% endfor %}
+            </ul>
+            {% if viewall is defined %}
+                <a href="{{ path('portal_type_search', {type: 'ticket', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: ticket_info.total_results}) }}</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
