@@ -87,13 +87,17 @@ export class ApprovalContainer extends React.Component {
   cancelApprovalRequest = requestId => this.props.dispatch(actions.cancelApprovalRequest(requestId))
     .then(() => {
       const { approvals } = this.state;
-      const index = approvals.toArray().findIndex(obj => obj.get('id') === requestId);
+      const newApprovals = approvals.map((approval) => {
+        if (approval.get('id') === requestId) {
+          return approval.set('status', 'cancelled');
+        }
 
-      if (index > -1) {
-        this.setState({
-          approvals: approvals.delete(index)
-        });
-      }
+        return approval;
+      });
+
+      this.setState({
+        approvals: newApprovals
+      });
     });
 
   acceptApprovalRequest = (requestId, data = {}) => this.props.dispatch(actions.acceptApprovalRequest(requestId, data))
