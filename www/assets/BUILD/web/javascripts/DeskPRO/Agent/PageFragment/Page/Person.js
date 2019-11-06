@@ -609,7 +609,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		$('.profile-box-container.tabbed', this.wrapper).each(function() {
 			var simpleTabs = new DeskPRO.UI.SimpleTabs({
 				triggerElements: '> header li',
-				context: this
+				context: self
 			});
 
 			self.ownObject(simpleTabs);
