@@ -125,7 +125,9 @@ bin/deskpro-importer-tools
 !/config/advanced/.gitkeep
 !/config/importer/.gitkeep
 
-
+# new admin backend installed in init-project
+/app/BUILD/admin-api
+/www/assets/BUILD/admin-frontend
 
 ###################### Legacy
 

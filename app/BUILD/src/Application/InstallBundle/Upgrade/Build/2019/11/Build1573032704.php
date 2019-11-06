@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1572414482 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1573032704 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -11,7 +11,8 @@ class Build1572414482 extends AbstractBuild implements OnlineBuildInterface, Ski
     public function runAlters()
     {
         $this->execDbQuery('default', 'ALTER TABLE approvals DROP FOREIGN KEY FK_B7A4D6DEDE12AB56');
-        $this->execDbQuery('default', 'ALTER TABLE approvals ADD CONSTRAINT FK_B7A4D6DEDE12AB56 FOREIGN KEY (created_by) REFERENCES people (id) ON DELETE SET NULL');
+        $this->execDbQuery('default', 'DROP INDEX IDX_B7A4D6DEDE12AB56 ON approvals');
+        $this->execDbQuery('default', 'ALTER TABLE approvals DROP created_by');
     }
 
     public function run()
