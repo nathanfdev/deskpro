@@ -1,0 +1,53 @@
+{% if true %}
+
+    <section class="pane-section sla-section" id="problems-section">
+
+        <header>
+            <h1>
+                <span class="problems-filter-type">
+                    {{ phrase('agent.tickets.ticket_approvals') }}
+                </span>
+            </h1>
+        </header>
+
+        <article>
+            <script type="text/html">
+                <li class="is-nav-item filter">
+                    <div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': '0000'}) }}">
+                        <h3></h3>
+
+                        <div class="float-side">
+                            <em class="counter list-counter">0</em>
+                        </div>
+                    </div>
+                </li>
+            </script>
+
+            <ul class="nav-list tickets_outline_problems">
+                {% for filter in ticket_approval_filters %}
+                    {% set filterId = filter.id|default(0) %}
+                    <li class="is-nav-item filter filter-{{ filterId }} nav-filter-{{ filterId }}"
+                        data-filter-id="{{ filterId }}"
+                    >
+                        <div
+                                class="item"
+                                data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filterId}) }}"
+                        >
+                            <h3>{{ filter.title }}</h3>
+
+                            <div class="float-side">
+                                <em class="counter list-counter" id="ticket_filter_{{ filterId }}_count" data-count="{{ ticket_approval_filter_counts[filterId]|default(0) }}">{{ ticket_approval_filter_counts[filterId]|default(0) }}</em>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="no-data">
+                        {% set phrase_link %}<span class="fas fa-cog"></span>{% endset %}
+                        {{ phrase('agent.interface.click_icon_to_add_filter', {'link':phrase_link}, true) }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+        </article>
+    </section>
+{% endif %}

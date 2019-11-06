@@ -42,6 +42,7 @@ import { actionAlertsSelector } from './Modules/Application/Selectors/notificati
 import { setVoiceOnlineAgents } from './Modules/Voice/Actions/clientActions';
 import ContentEditor from './Modules/Publish/Components/Content/ContentEditor';
 import IconPicker from './Modules/Publish/Components/Content/IconPicker';
+import { ApprovalContainer } from './Modules/Tickets/Components/Approval/ApprovalContainer';
 
 class AgentLegacyApp {
 
@@ -300,6 +301,24 @@ class AgentLegacyApp {
             messages={agentPhrases.getPhrases()}
           >
             <FollowUpContainer
+              {...data}
+            />
+          </IntlProvider>
+        </Provider>
+      </AppContainer>,
+      node
+    );
+  }
+
+  renderApprovalTab(node, data) {
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={this.store}>
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ApprovalContainer
               {...data}
             />
           </IntlProvider>

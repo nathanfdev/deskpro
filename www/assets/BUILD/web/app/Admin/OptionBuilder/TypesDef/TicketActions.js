@@ -207,8 +207,34 @@ define([
         value: 'AddBrandToPerson'
       });
 
+      options.push({
+        title: 'Add Approval',
+        value: 'AddApproval'
+      });
+
+      options.push({
+        title: 'Cancel Approval',
+        value: 'CancelApproval'
+      });
+
       set_options.push({
         title:      'Ticket Actions',
+        subOptions: options
+      });
+
+      //------------------------------
+      // Ticket Approval Actions
+      //------------------------------
+
+      options = [];
+
+      options.push({
+        title: 'Send Ticket Approval Email',
+        value: 'SendTicketApprovalEmail'
+      });
+
+      set_options.push({
+        title:      'Ticket Approval Actions',
         subOptions: options
       });
 
@@ -599,34 +625,36 @@ define([
     loadDataOptions() {
       if (!this.loadDataPromise) {
         const apiV1 = this.Api.sendDataGet({
-          agents:            '/agents',
-          agent_teams:       '/agent_teams',
-          ticket_brands:     '/ticket_brands',
-          ticket_deps:       '/ticket_deps',
-          ticket_cats:       '/ticket_cats',
-          ticket_prods:      '/ticket_prods',
-          ticket_pris:       '/ticket_pris',
-          ticket_works:      '/ticket_works',
-          ticket_fields:     '/ticket_fields',
-          ticket_labels:     '/labels/definitions/tickets',
-          user_fields:       '/user_fields',
-          org_fields:        '/org_fields',
-          ticket_slas:       '/ticket_slas',
-          email_accounts:    '/email_accounts',
-          usergroups:        '/user_groups',
-          langs:             '/langs',
-          email_tpls:        '/email-templates-info',
-          round_robin:       '/round_robin/settings',
-          round_robins:      '/round_robin',
-          tasks:             '/tasks/settings',
-          contextual_fields: '/custom_fields',
-          jira_settings:     '/apps/jira'
+          agents:             '/agents',
+          agent_teams:        '/agent_teams',
+          ticket_brands:      '/ticket_brands',
+          ticket_deps:        '/ticket_deps',
+          ticket_cats:        '/ticket_cats',
+          ticket_prods:       '/ticket_prods',
+          ticket_pris:        '/ticket_pris',
+          ticket_works:       '/ticket_works',
+          ticket_fields:      '/ticket_fields',
+          ticket_labels:      '/labels/definitions/tickets',
+          user_fields:        '/user_fields',
+          org_fields:         '/org_fields',
+          ticket_slas:        '/ticket_slas',
+          email_accounts:     '/email_accounts',
+          usergroups:         '/user_groups',
+          langs:              '/langs',
+          email_tpls:         '/email-templates-info',
+          round_robin:        '/round_robin/settings',
+          round_robins:       '/round_robin',
+          tasks:              '/tasks/settings',
+          contextual_fields:  '/custom_fields',
+          jira_settings:      '/apps/jira'
         });
 
         this.loadDataPromise = this.$q.defer();
 
         const promises = [apiV1];
+
         promises.push(this.Api2.sendGet('/ticket_statuses'));
+        promises.push(this.Api2.sendGet('/approval_templates'));
 
         if (window.DP_HAS_NEW_EMAILS) {
           promises.push(this.Api2.sendGet('/email_templates/info'));
@@ -636,28 +664,28 @@ define([
           let f;
           const { data } = result[0];
           const options_data = {};
-          options_data.agents            = data.agents.agents;
-          options_data.agent_teams       = data.agent_teams.agent_teams;
-          options_data.ticket_brands     = data.ticket_brands.brands;
-          options_data.ticket_deps       = data.ticket_deps.departments;
-          options_data.ticket_cats       = data.ticket_cats.categories;
-          options_data.ticket_pris       = data.ticket_pris.priorities;
-          options_data.ticket_works      = data.ticket_works.workflows;
-          options_data.ticket_prods      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
-          options_data.ticket_fields     = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
-          options_data.org_fields        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
-          options_data.user_fields       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
-          options_data.ticket_slas       = data.ticket_slas != null ? data.ticket_slas.slas : undefined;
-          options_data.email_accounts    = data.email_accounts.email_accounts;
-          options_data.usergroups        = data.usergroups.groups;
-          options_data.langs             = data.langs != null ? data.langs.languages : undefined;
-          options_data.custom_email_tpls = data.email_tpls.list.custom.groups.custom.templates;
-          options_data.round_robin       = data.round_robin;
-          options_data.round_robins      = data.round_robins;
-          options_data.tasks             = data.tasks;
-          options_data.contextual_fields = data.contextual_fields;
-          options_data.jira_settings     = data.jira_settings;
-          options_data.ticket_labels     = data.ticket_labels;
+          options_data.agents             = data.agents.agents;
+          options_data.agent_teams        = data.agent_teams.agent_teams;
+          options_data.ticket_brands      = data.ticket_brands.brands;
+          options_data.ticket_deps        = data.ticket_deps.departments;
+          options_data.ticket_cats        = data.ticket_cats.categories;
+          options_data.ticket_pris        = data.ticket_pris.priorities;
+          options_data.ticket_works       = data.ticket_works.workflows;
+          options_data.ticket_prods       = data.ticket_prods != null ? data.ticket_prods.products : undefined;
+          options_data.ticket_fields      = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
+          options_data.org_fields         = data.org_fields != null ? data.org_fields.custom_fields : undefined;
+          options_data.user_fields        = data.user_fields != null ? data.user_fields.custom_fields : undefined;
+          options_data.ticket_slas        = data.ticket_slas != null ? data.ticket_slas.slas : undefined;
+          options_data.email_accounts     = data.email_accounts.email_accounts;
+          options_data.usergroups         = data.usergroups.groups;
+          options_data.langs              = data.langs != null ? data.langs.languages : undefined;
+          options_data.custom_email_tpls  = data.email_tpls.list.custom.groups.custom.templates;
+          options_data.round_robin        = data.round_robin;
+          options_data.round_robins       = data.round_robins;
+          options_data.tasks              = data.tasks;
+          options_data.contextual_fields  = data.contextual_fields;
+          options_data.jira_settings      = data.jira_settings;
+          options_data.ticket_labels      = data.ticket_labels;
 
           options_data.ticket_dep_options = this.standardOptionsFormatter(options_data.ticket_deps);
           options_data.flags = [
@@ -674,8 +702,18 @@ define([
           // ApiV2 results
           options_data['ticket_statuses'] = result[1].data.data
 
+          options_data.approval_templates = result[2].data.data.map(template => {
+            return {
+              id: template.id,
+              name: template.name,
+              can_choose_approvers: template.can_choose_approvers,
+              description: template.description,
+              has_description: !! template.description.trim()
+            };
+          });
+
           if (window.DP_HAS_NEW_EMAILS) {
-            const v2data = result[2].data.data;
+            const v2data = result[3].data.data;
 
             options_data.new_custom_email_tpls = v2data.list.custom.groups.custom.subGroups.primary.templates;
           }
@@ -877,6 +915,106 @@ define([
               value.options = {};
               value.options.subject = model.subject || '';
               value.options.with_formatter = !!model.with_formatter;
+              return value;
+            }
+          };
+        }
+      };
+    }
+
+    getAddApproval(options) {
+      if (options == null) { options = {}; }
+      const approval_template_options = this.options_data.approval_templates
+        .filter(t => !t.can_choose_approvers)
+      ;
+      const getApprovalTemplateById = id => {
+        return approval_template_options.filter(t => id == t.id)[0] || null;
+      };
+      let previous_approval_template_id = null;
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-actions-add-approval.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              data.is_first_load = true;
+
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+
+              const approval_template_id = options.approval_template_id || 0;
+              const approval_template = getApprovalTemplateById(approval_template_id);
+
+              let has_description = false;
+              if ((approval_template) && approval_template.has_description) {
+                has_description = true;
+              }
+
+              let description = options.description || '';
+              if (has_description) {
+                description = approval_template.description;
+              }
+
+              return {
+                approval_template_id,
+                description,
+                has_description,
+                approval_template_options
+              };
+            },
+            getValue(model, data) {
+              const approval_template_id = model.approval_template_id || 0;
+              const approval_template = getApprovalTemplateById(approval_template_id);
+
+              model.has_description = false;
+              if ((approval_template) && approval_template.has_description) {
+                model.description = approval_template.description;
+                model.has_description = true;
+              } else if (approval_template_id !== previous_approval_template_id && !data.is_first_load) {
+                model.description = '';
+              }
+
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'AddApproval';
+              value.options = {};
+              value.options.approval_template_id = approval_template_id;
+              value.options.description = model.description || '';
+
+              previous_approval_template_id = approval_template_id;
+              data.is_first_load = false;
+
+              return value;
+            }
+          };
+        }
+      };
+    }
+
+    getCancelApproval(options) {
+      if (options == null) { options = {}; }
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-actions-cancel-approval.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+              return {
+                approval_template_id: options.approval_template_id || 0,
+                all_approvals: options.all_approvals || false
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'CancelApproval';
+              value.options = {};
+              value.options.approval_template_id = model.approval_template_id || 0;
+              value.options.all_approvals = model.all_approvals || false;
               return value;
             }
           };
@@ -1217,6 +1355,39 @@ define([
       options.placeholder = 'Enter text here to add to the ticket log';
       const def = this.getStandardInput(options);
       return def;
+    }
+
+    getSendTicketApprovalEmail(options) {
+      if (options == null) { options = {}; }
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-actions-sent-ticket-approval-email.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+              return {
+                send_to_owner: !!options.send_to_owner,
+                send_to_approvers: !!options.send_to_approvers
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'SendTicketApprovalEmail';
+              value.options = {};
+              value.options.send_to_owner = !!model.send_to_owner;
+              value.options.send_to_approvers = !!model.send_to_approvers;
+              value.options.from_name = 'helpdesk_name';
+              value.options.from_account = 0;
+              value.options.headers = [];
+              return value;
+            }
+          };
+        }
+      };
     }
 
     getSendUserNewEmail(options) {

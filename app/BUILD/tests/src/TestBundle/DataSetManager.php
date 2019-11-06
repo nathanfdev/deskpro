@@ -15,7 +15,7 @@ class DataSetManager
     /**
      * @var DataSet\DataSetInterface[]
      */
-    private $dataSets;
+    private $dataSets = [];
 
     public function __construct(array $dataSets)
     {

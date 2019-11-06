@@ -168,6 +168,11 @@ class MapUtils
         foreach ($array as $v) {
             if (isset($v->$key)) {
                 $new[$v->$key] = $v;
+            } elseif (is_object($v)) {
+                $accessor = 'get'.ucfirst($key);
+                if (method_exists($v, $accessor)) {
+                    $new[$v->{$accessor}()] = $v;
+                }
             }
         }
 

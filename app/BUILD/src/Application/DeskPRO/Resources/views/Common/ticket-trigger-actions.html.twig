@@ -241,6 +241,34 @@
 	</div>
 </div>
 
+<div class="builder-type" title="{{ phrase('agent.tickets.add_approval') }}" data-rule-type="add_approval" data-rule-group="Ticket">
+	{% set addApprovalTemplateId = "#{id}_add_approval_template" %}
+	{% set addApprovalDescriptionId = "#{id}_add_approval_description" %}
+	<div class="builder-options">
+		<div>
+			<label for="approval_template_id">{{ phrase('agent.tickets.approval_template') }}</label><br />
+			<select name="approval_template_id" id="{{ addApprovalTemplateId }}" onchange="handleAddApprovalDesc($(this))">
+				{% for approvalTemplate in app.getApprovalTemplatesWhereAgentCannotSelect() %}
+					<option value="{{ approvalTemplate.id }}" data-description="{{ approvalTemplate.description|e }}">{{ approvalTemplate.name }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div style="padding-top: 6px;">
+			<label for="description">{{ phrase('agent.tickets.approval_description') }}</label>
+			<textarea id="{{ addApprovalDescriptionId }}" name="description" cols="80" rows="4" style="width: 90%;"></textarea>
+		</div>
+	</div>
+	<script>
+		var handleAddApprovalDesc = function ($templateSelect) {
+			var desc = $templateSelect.find(':selected').data('description');
+			$('#{{ addApprovalDescriptionId }}').prop('readonly', !!desc).css('background-color', !!desc ? '#EEE' : '#FFF').val(desc);
+		};
+		(function () {
+			handleAddApprovalDesc($('#{{ addApprovalTemplateId }}'));
+		})();
+	</script>
+</div>
+
 <div class="builder-type" title="{{ phrase('agent.general.add_ticket_reply') }}" data-rule-type="reply" data-rule-group="Ticket">
 	<div class="builder-options">
 		<textarea name="reply_text" cols="80" rows="4" style="width: 90%;"></textarea>

@@ -8,7 +8,7 @@
 	<div class="source-pane-header">
         {% block pane_header %}
 			<ul class="pane-tabs">
-				<li class="tab active" data-tab-id="pane-content-main"><i class="fa icon-dp-ticket"></i> {{ phrase('agent.chrome.nav_tickets') }}</li>
+				<li class="tab active" data-tab-id="pane-content-main"><i class="fa icon-dp-ticket"></i>{{ phrase('agent.chrome.nav_tickets') }}</li>
                 {% block pane_other_tabs %}<li class="tab" data-tab-id="pane-content-search"><i class="fas fa-search"></i> {{ phrase('agent.chrome.nav_search') }}</li>{% endblock %}
 			</ul>
         {% endblock %}
@@ -177,6 +177,10 @@
 								</ul>
 							</article>
 						</section>
+
+						{% if ticket_approval_filters|length and app.hasBeta('approvals') %}
+							{% include 'AgentBundle:TicketSearch:ticket-approvals-section.html.twig' %}
+						{% endif %}
 
                         {% include 'AgentBundle:TicketSearch:problems-section.html.twig' %}
 

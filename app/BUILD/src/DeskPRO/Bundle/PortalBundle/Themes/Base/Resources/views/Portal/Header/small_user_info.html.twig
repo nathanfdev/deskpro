@@ -95,6 +95,13 @@
     </li>
     {% endif %}
 
+    {% if ticket_approval_count > 0 and app.hasBeta('approvals') %}
+      <li class="welcome item-approvals hideable">
+        <span class="disc"></span>
+        <a class="approvals-link dpx-approvals-count" href="{{ path('ticket_approvals') }}">{{ phrase('portal.general.nav-approvals') }} ({{ ticket_approval_count }})</a>
+      </li>
+    {% endif %}
+
     {% if chat_count > 0 and can_use_chat() %}
     <li class="welcome item-chat hideable">
       <span class="disc"></span>

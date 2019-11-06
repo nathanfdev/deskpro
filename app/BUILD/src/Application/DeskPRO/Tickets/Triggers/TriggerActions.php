@@ -67,6 +67,22 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     }
 
     /**
+     * @param ActionInterface $action
+     */
+    public function addUniqueAction(ActionInterface $action)
+    {
+        $existing = array_filter($this->actions->getAll(), function (ActionInterface $existing) use ($action) {
+            return get_class($existing) === get_class($action);
+        });
+
+        if (count($existing)) {
+            return;
+        }
+
+        $this->addAction($action);
+    }
+
+    /**
      * @param array $action_info
      *
      * @throws \InvalidArgumentException

@@ -6592,7 +6592,7 @@ ul.categories-article-list {
       }
     }
 
-    .ticket-view-sidebar {
+    .ticket-view-sidebar, .approval-view-sidebar {
       flex-shrink: 0;
       width: 330px;
     }
@@ -7645,14 +7645,23 @@ ul.categories-article-list {
   }
 }
 
-.user-ticket-list-expanded {
+.user-ticket-list-expanded, .user-approval-list-expanded {
   margin-bottom: 60px;
   padding: 10px 20px;
   border: 1px solid $hr-border;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 
-  .user-ticket-list {
+  .user-ticket-list, .user-approval-list {
     margin-bottom: 0;
+  }
+}
+
+.user-approval-list {
+  .table-header {
+    color: #7d7d7d;
+  }
+  .approval-ref {
+    padding-left: 10px !important;
   }
 }
 
@@ -7660,7 +7669,7 @@ ul.categories-article-list {
   margin-bottom: 60px;
 }
 
-.user-ticket-list {
+.user-ticket-list, .user-approval-list {
   margin-bottom: 5px;
   width: 100%;
   font-size: $font-size-base;
@@ -7705,6 +7714,10 @@ ul.categories-article-list {
       // Align the first sorting link to the content
       width: 50px;
       min-width: 0;
+    }
+
+    &.text-left {
+      text-align: left;
     }
 
     a {
@@ -10188,7 +10201,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   position: relative;
 
-  .ticket-view-sidebar-wrapper {
+  .ticket-view-sidebar-wrapper, .approval-view-sidebar-wrapper {
     width: 330px;
     float: $float-right;
   }
@@ -10203,7 +10216,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       }
     }
 
-    .ticket-view-sidebar-wrapper {
+    .ticket-view-sidebar-wrapper, .approval-view-sidebar-wrapper {
       width: auto;
       position: relative;
     }
@@ -10226,11 +10239,38 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   margin: 8px 0;
 }
 
-.ticket-reply {
+.approval-response {
+  .approval-response-actions {
+    padding-top: 16px;
+    .column-full, .bucket {
+      display: inline;
+      float: none;
+      margin-right: 0;
+    }
+  }
+  .btn-approval-response-approve {
+    background-color: $btn-success-bg;
+    color: $btn-success-color;
+  }
+  .btn-approval-response-reject {
+    background-color: $btn-danger-bg;
+    color: $btn-danger-color;
+  }
+  .approval-response-message-bucket {
+    padding-top: 16px;
+  }
+  .approval-response-message {
+    border: 1px solid #999 !important;
+    height: 130px;
+    width: 80%;
+  }
+}
+
+.ticket-reply, .approval-response {
   border-top: 1px solid $hr-border;
   margin-top: 20px;
 
-  .ticket-reply-header {
+  .ticket-reply-header, .approval-response-header {
     padding: 12px 10px;
     font-size: 1em;
     font-weight: bold;
@@ -10468,7 +10508,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 }
 
-.ticket-view-sidebar {
+.ticket-view-sidebar, .approval-view-sidebar {
   font-size: $font-size-base;
   border: 1px solid $hr-border;
   border-radius: 2px;
@@ -10712,6 +10752,33 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 }
 
+.approval-view-sidebar {
+  .item-to-approve {
+    margin-bottom: 21px;
+  }
+  .item-to-reject {
+    margin-bottom: 20px;
+  }
+}
+
+.approval-completed-wrapper {
+  border-bottom: 1px solid #e6e6e6;
+  padding: 8px 0 23px;
+  .approval-completed {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 2px;
+    &.approval-completed-approved {
+      background-color: $btn-success-bg;
+      color: $btn-success-color;
+    }
+    &.approval-completed-rejected {
+      background-color: $btn-danger-bg;
+      color: $btn-danger-color;
+    }
+  }
+}
+
 .ticket-view-note-for-user {
   border: 1px solid $hr-border;
   border-radius: 2px;
@@ -10773,6 +10840,70 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     font-size: $font-size-base;
     font-weight: normal;
     line-height: 1.2em;
+  }
+
+  input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    margin-bottom: 10px;
+  }
+
+  [type="submit"] {
+    display: block;
+    width: 100%;
+  }
+}
+
+.approval-responses {
+  text-align: center;
+  .btn-approval-response {
+    display: inline-block;
+    margin: 5px;
+    line-height: 1.2em;
+    border-radius: 2px;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    &.btn-approval-response-approve {
+      background: $btn-success-bg;
+      color: $btn-success-color;
+    }
+    &.btn-approval-response-reject {
+      background: $btn-danger-bg;
+      color: $btn-danger-color;
+    }
+  }
+}
+
+.approval-response-popover {
+  width: 400px;
+  position: absolute;
+  top: 0;
+  @include left(0);
+  @include margin-left(-410px);
+  z-index: 2002;
+  background: $page-bg;
+  padding: 10px;
+  border: 1px solid $hr-border;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  &:before, &:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    z-index: 1002;
+    border: 5px solid rgba(0, 0, 0, 0.0);
+    @include border-left(5px solid $hr-border);
+    position: absolute;
+    top: 9px;
+    @include right(-10px);
+  }
+
+  &:after {
+    border: 5px solid rgba(0, 0, 0, 0.0);
+    @include border-left(5px solid $page-bg);
+    z-index: 1003;
+    @include right(-8px);
   }
 
   input[type="text"], input[type="email"], input[type="password"], textarea, select {

@@ -13,11 +13,6 @@ use Symfony\Component\DomCrawler\Crawler;
 class TicketContext extends BasePortalContext
 {
     /**
-     * @var array Map [ref => ticket]
-     */
-    public static $tickets = [];
-
-    /**
      * @Given I remove all tickets
      */
     public function noTickets()
@@ -186,15 +181,5 @@ class TicketContext extends BasePortalContext
     protected function getTicket($id)
     {
         return $this->repository(Ticket::class)->find($id);
-    }
-
-    /**
-     * @param $who
-     *
-     * @return Person
-     */
-    protected function getWho($who)
-    {
-        return $this->get('user_details')->getWho($who);
     }
 }

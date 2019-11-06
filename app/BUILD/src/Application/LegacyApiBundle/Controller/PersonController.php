@@ -68,7 +68,11 @@ class PersonController extends AbstractController
             }
         }
 
-        if ($this->in->checkIsset('is_agent')) {
+        if ($this->in->checkIsset('is_any_person')) {
+            if ($this->in->getBool('is_any_person')) {
+                $terms[] = ['type' => PersonSearch::TERM_ANY_MODE, 'op' => 'is', 'options' => 1];
+            }
+        } elseif ($this->in->checkIsset('is_agent')) {
             if ($this->in->getBool('is_agent')) {
                 $terms[] = ['type' => PersonSearch::TERM_AGENT_MODE, 'op' => 'is', 'options' => 1];
             } else {

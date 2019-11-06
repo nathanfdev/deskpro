@@ -288,7 +288,7 @@ class ContainerMock
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @return m\MockInterface|\Application\DeskPRO\DependencyInjection\DeskproContainer
      */
     public function get()
     {

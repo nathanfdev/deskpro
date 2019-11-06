@@ -4,14 +4,14 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 
 /**
- * Class ContentTemplateAttachment
+ * Class ContentTemplateAttachment.
  *
  * @ORM\Entity()
  * @ORM\Table(name="content_template_attachments")
@@ -127,6 +127,7 @@ class ContentTemplateAttachment implements EntityInterface, NotifyPropertyChange
 
     /**
      * @param Person $person
+     *
      * @return $this
      */
     public function setPerson(Person $person)

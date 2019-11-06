@@ -47,7 +47,8 @@ class ImapSocket extends AbstractFetcher
     protected $storage;
 
     /**
-     * Protocol
+     * Protocol.
+     *
      * @var \Zend\Mail\Protocol\Imap
      */
     protected $protocol;
@@ -119,13 +120,13 @@ class ImapSocket extends AbstractFetcher
 
         // set archive mailbox
         $this->archiveMailbox =
-            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+            (isset($options['archive_mailbox']) && !is_null($options['archive_mailbox']))
                 ? $options['archive_mailbox']
                 : 'DP_Archive';
 
         // set read mailbox
         $this->readMailbox =
-            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+            (isset($options['read_mailbox']) && !is_null($options['read_mailbox']))
                 ? $options['read_mailbox']
                 : null;
 
@@ -193,7 +194,7 @@ class ImapSocket extends AbstractFetcher
         }
 
         // select or create mailbox folder
-        if (! is_null($this->readMailbox)) {
+        if (!is_null($this->readMailbox)) {
             try {
                 $this->storage->selectFolder($this->readMailbox);
             } catch (Storage\Exception\RuntimeException $e) {
@@ -219,14 +220,14 @@ class ImapSocket extends AbstractFetcher
     }
 
     /**
-     * Init options
+     * Init options.
      *
      * @param GmailConfig $config
      * @param SettingsBag $settings
      *
-     * @return array
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return array
      */
     public static function initOptions(GmailConfig $config, SettingsBag $settings)
     {
@@ -268,9 +269,10 @@ class ImapSocket extends AbstractFetcher
     /**
      * {@inheritdoc}
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      * @throws Protocol\Exception\RuntimeException
      * @throws Storage\Exception\RuntimeException
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
     {
@@ -321,6 +323,7 @@ class ImapSocket extends AbstractFetcher
      * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param RawMessage $rawMessage
+     *
      * @throws Storage\Exception\RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -350,13 +353,15 @@ class ImapSocket extends AbstractFetcher
     }
 
     /**
-     * Authenticate
+     * Authenticate.
      *
-     * @param string $email
-     * @param string $accessToken
+     * @param string        $email
+     * @param string        $accessToken
      * @param Protocol\Imap $protocol
-     * @return bool
+     *
      * @throws Protocol\Exception\RuntimeException
+     *
+     * @return bool
      */
     public static function oauth2Authenticate($email, $accessToken, Protocol\Imap $protocol)
     {

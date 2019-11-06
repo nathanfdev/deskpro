@@ -302,6 +302,11 @@ class PeopleController extends AbstractPeopleController
                 $qb->andWhere('usergroup_department_permissions.department IS NULL');
             }
         }
+
+        if (null !== $request->get('organization_manager')) {
+            $qb->andWhere("$alias.organization_manager = :org_manager");
+            $qb->setParameter('org_manager', $request->get('organization_manager'));
+        }
     }
 
     /**

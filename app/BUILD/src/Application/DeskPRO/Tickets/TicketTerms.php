@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -1008,6 +1009,26 @@ class TicketTerms
                 $choice = isset($choice['subject']) ? $choice['subject'] : '';
 
                 if (!$this->_testStringMatch($ticket['subject'], $op, $choice)) {
+                    return false;
+                }
+                break;
+            case TicketSearch::TERM_TICKET_APPROVAL:
+                $match = $ticket->isApprovalsMatchingTicketFilter(
+                    App::getCurrentPerson(),
+                    isset($choice['approval_template_id'])
+                        ? $choice['approval_template_id']
+                        : null
+                    ,
+                    isset($choice['approval_status'])
+                        ? $choice['approval_status']
+                        : null
+                    ,
+                    isset($choice['approver_includes_me'])
+                        ? $choice['approver_includes_me']
+                        : null
+                );
+
+                if (!$match) {
                     return false;
                 }
                 break;

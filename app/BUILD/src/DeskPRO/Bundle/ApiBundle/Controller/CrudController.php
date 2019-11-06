@@ -497,7 +497,7 @@ abstract class CrudController extends BaseController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $isModify = $model && $model->getId();
+        $isModify = (!is_null($model)) && $model->getId();
         $status   = $isModify ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
         // the trigger for POST/PATCH requests

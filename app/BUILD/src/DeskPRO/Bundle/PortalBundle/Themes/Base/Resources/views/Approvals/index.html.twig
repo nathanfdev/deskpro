@@ -1,0 +1,142 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+    <header class="large-title">
+        <h1>{{ phrase('portal.tickets.approvals.list_title') }}</h1>
+        <p>{{ phrase('portal.tickets.approvals.list_desc') }}</p>
+    </header>
+    <div id="ticket_list_page">
+        <div class="column-full">
+            <div>
+                <nav class="tabs secondary-tabs">
+                    <ul>
+                        <li class="{{ 'pending' == status ? 'tab-active' }}">
+                            <a href="{{ path('ticket_approvals_by_status', { status: 'pending' }) }}" id="tab_pending">
+                                <div>
+                                    <div class="title">
+                                        {{ phrase('portal.tickets.approvals.list_status_pending') }}
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="{{ 'approved' == status ? 'tab-active' }}" id="tab_approved">
+                            <a href="{{ path('ticket_approvals_by_status', { status: 'approved' }) }}">
+                                <div>
+                                    <div class="title">
+                                        {{ phrase('portal.tickets.approvals.list_status_approved') }}
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="{{ 'rejected' == status ? 'tab-active' }}" id="tab_rejected">
+                            <a href="{{ path('ticket_approvals_by_status', { status: 'rejected' }) }}">
+                                <div>
+                                    <div class="title">
+                                        {{ phrase('portal.tickets.approvals.list_status_rejected') }}
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="tab-solo">
+                            <form class="form-filter" method="GET"  id="ticket_approvals_list_search_form" action="{{ path('ticket_approvals_by_status', { status: status }) }}" novalidate>
+                                <div class="bucket">
+                                    <span>{{ phrase('portal.tickets.approvals.list_search') }}</span>
+                                    <input title="{{ phrase('portal.tickets.approvals.list_search')|striptags|e }}" name="q" value="{{ search_query }}" type="text" id="search_ticket_approvals_q" />
+                                    {% if search_query %}
+                                        <a href="{{ path('ticket_approvals_by_status', { status: status }) }}" class="clear-input">
+                                            <i class="fas fa-times"></i>
+                                        </a>
+                                    {% endif %}
+                                    <button style="display: none;" id="search_ticket_approvals">{{ phrase('portal.tickets.approvals.list_search') }}</button>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="column-full">
+
+            {% if pager|length %}
+                <table class="user-approval-list">
+                    <thead>
+                        <tr>
+                            <td class="table-header text-left ticket-ref" data-col="id">
+                                {{ phrase('portal.tickets.approvals.list_column_id') }}
+                            </td>
+                            <td class="table-header text-left" data-col="name">
+                                {{ phrase('portal.tickets.approvals.list_column_name') }}
+                            </td>
+                            <td class="table-header text-left" data-col="description">
+                                {{ phrase('portal.tickets.approvals.list_column_description') }}
+                            </td>
+                            <td class="table-header text-left" data-col="requesting_agent">
+                                {{ phrase('portal.tickets.approvals.list_column_requesting_agent') }}
+                            </td>
+                            <td class="table-header text-left" data-col="user">
+                                {{ phrase('portal.tickets.approvals.list_column_user') }}
+                            </td>
+                            <td class="table-header text-left" data-col="your_response">
+                                {{ phrase('portal.tickets.approvals.list_column_your_response') }}
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in pager %}
+                            {% set approval = row.approval %}
+                            {% set myVote = row.my_vote %}
+                            {% set ticket = approval.ticket %}
+                            {% set viewUrl = path('ticket_approvals_view', {id: approval.id}) %}
+                            <tr class="item-row">
+                                <td class="first-in-line approval-ref" data-col="id">
+                                    <span>{{ approval.id }}</span>
+                                </td>
+                                <td class="info-block left" data-col="name">
+                                    <a href="{{ viewUrl }}">
+                                        {{ approval.name }}
+                                    </a>
+                                </td>
+                                <td class="info-block left long" data-col="description">
+                                    <a href="{{ viewUrl }}">
+                                        {{ approval.description }}
+                                    </a>
+                                </td>
+                                <td class="info-block left" data-col="requesting_agent">
+                                    <a href="{{ viewUrl }}">
+                                        {{ approval.createdBy ?: phrase('portal.tickets.approvals.system') }}
+                                    </a>
+                                </td>
+                                <td class="info-block left" data-col="user">
+                                    <a href="{{ viewUrl }}">
+                                        {{ ticket.person }}
+                                    </a>
+                                </td>
+                                <td class="info-block centered" data-col="your_response">
+                                    <a href="{{ viewUrl }}">
+                                        {% if 1 == myVote %}
+                                            {{ phrase('portal.tickets.approvals.list_your_response_approved') }}
+                                        {% elseif -1 == myVote %}
+                                            {{ phrase('portal.tickets.approvals.list_your_response_rejected') }}
+                                        {% else %}
+                                            {{ phrase('portal.tickets.approvals.list_your_response_awaiting') }}
+                                        {% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                {{ phrase('portal.tickets.approvals.list_no_approvals') }}
+            {% endif %}
+
+            {% if pager.haveToPaginate() %}
+                {{ pagerfanta(pager, null, { pageParameter: '[page]' }) }}
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock inner_content %}

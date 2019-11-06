@@ -53,8 +53,9 @@ class ContentTemplatesController extends CrudController
      *
      * @param Request $request
      *
-     * @return View
      * @throws \Exception
+     *
+     * @return View
      */
     public function postAction(Request $request)
     {
@@ -87,12 +88,13 @@ class ContentTemplatesController extends CrudController
      * )
      * @Rest\Put("/{id}", requirements={"id"="\d+"})
      *
-     * @param int $id
+     * @param int     $id
      * @param Request $request
      * @SerializerView(serializeNull=true)
      *
-     * @return View
      * @throws \Exception
+     *
+     * @return View
      */
     public function putAction($id, Request $request)
     {
@@ -124,9 +126,8 @@ class ContentTemplatesController extends CrudController
 
     /**
      * @param ContentTemplate $contentTemplate
-     * @param Request $request
+     * @param Request         $request
      *
-     * @return void
      * @throws \Exception
      */
     protected function handleAttachments(ContentTemplate $contentTemplate, Request $request)
@@ -142,10 +143,10 @@ class ContentTemplatesController extends CrudController
                     $contentTemplate->getAttachments()->remove($k);
                     $em->remove($attachment);
                 } else {
-                   $key = array_search($blobId, $blobIds, false);
-                   if ($key !== false) {
-                       unset($blobIds[$key]);
-                   }
+                    $key = array_search($blobId, $blobIds, false);
+                    if ($key !== false) {
+                        unset($blobIds[$key]);
+                    }
                 }
             }
         }

@@ -19,5 +19,34 @@ class TicketRepository extends ApiRepository {
   deleteFollowUp(ticketId, followUpId) {
     return this.api.sendDelete(`DP_API/${this.url}/${ticketId}/follow-ups/${followUpId}`);
   }
+
+  loadApprovals(ticketId, status = null) {
+    let endpoint = `DP_API/${this.url}/${ticketId}/ticket_approvals?include=person&count=100`;
+    if (status !== null) {
+      endpoint += `/${status}`;
+    }
+
+    return this.api.sendGet(endpoint);
+  }
+
+  loadApproval(ticketId, requestId) {
+    return this.api.sendGet(`DP_API/${this.url}/${ticketId}/ticket_approvals/${requestId}?include=person`);
+  }
+
+  createApprovalRequest(ticketId, record) {
+    return this.api.sendPost(`DP_API/${this.url}/${ticketId}/ticket_approvals?include=person`, record);
+  }
+
+  cancelApprovalRequest(ticketId, approvalRequestId) {
+    return this.api.sendPut(`DP_API/${this.url}/${ticketId}/ticket_approvals/${approvalRequestId}/cancel`);
+  }
+
+  acceptApprovalRequest(ticketId, approvalRequestId, data) {
+    return this.api.sendPost(`DP_API/${this.url}/${ticketId}/ticket_approvals/${approvalRequestId}/approve`, data);
+  }
+
+  rejectApprovalRequest(ticketId, approvalRequestId, data) {
+    return this.api.sendPost(`DP_API/${this.url}/${ticketId}/ticket_approvals/${approvalRequestId}/reject`, data);
+  }
 }
 export default TicketRepository;

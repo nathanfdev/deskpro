@@ -183,6 +183,7 @@ class Imap extends Server
 
     /**
      * @param int|string $uid
+     *
      * @throws \Exception
      */
     public function markAsSeen($uid)

@@ -461,3 +461,24 @@ services:
       - "@widget_jwt_decoder"
     tags:
       - { name: form.type }
+
+  form.api.base_approval_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Approval\BaseApprovalType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.api.ticket_approval_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Approval\TicketApprovalType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.api.entity_id_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\EntityIdType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }

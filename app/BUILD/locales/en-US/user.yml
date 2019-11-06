@@ -655,6 +655,7 @@ portal.general.nav-register: Register
 portal.general.nav-reset-password: 'Reset Password'
 portal.general.nav-set-password: 'Set Password'
 portal.general.nav-tickets: Tickets
+portal.general.nav-approvals: Approvals
 portal.general.nav-tickets-org: 'Organization Tickets'
 portal.general.nav-your-account: 'Your Account'
 portal.general.no-agents-available: 'Sorry but there are no agents available'
@@ -795,6 +796,36 @@ portal.tickets.list_ticket_ref: Reference
 portal.tickets.list_title: 'Your Tickets'
 portal.tickets.list_title_org: 'Organization Tickets'
 portal.tickets.list_user: User
+portal.tickets.approvals.list_title: 'Your Approvals'
+portal.tickets.approvals.list_desc: 'This is a description of a list of your approvals'
+portal.tickets.approvals.list_status_pending: Pending
+portal.tickets.approvals.list_status_approved: Approved
+portal.tickets.approvals.list_status_rejected: Rejected
+portal.tickets.approvals.list_search: 'Search in Approvals'
+portal.tickets.approvals.list_no_approvals: 'There are no approvals to display in this tab.'
+portal.tickets.approvals.list_column_id: 'ID'
+portal.tickets.approvals.list_column_name: 'Name'
+portal.tickets.approvals.list_column_description: 'Description'
+portal.tickets.approvals.list_column_requesting_agent: 'Requesting Agent'
+portal.tickets.approvals.list_column_user: 'User'
+portal.tickets.approvals.list_column_your_response: 'Your Response'
+portal.tickets.approvals.list_agent_not_assigned: 'Agent not assigned'
+portal.tickets.approvals.list_your_response_awaiting: 'Awaiting Response'
+portal.tickets.approvals.list_your_response_approved: 'Approved'
+portal.tickets.approvals.list_your_response_rejected: 'Rejected'
+portal.tickets.approvals.agent_not_assigned: 'Agent Not Assigned'
+portal.tickets.approvals.system: System
+portal.tickets.approvals.view_approved: 'Approved'
+portal.tickets.approvals.view_rejected: 'Rejected'
+portal.tickets.approvals.view_approval_info: 'Approval info'
+portal.tickets.approvals.view_requesting_agent: 'Requesting agent'
+portal.tickets.approvals.view_user: 'User'
+portal.tickets.approvals.view_to_approve: 'To approve'
+portal.tickets.approvals.view_to_reject: 'To reject'
+portal.tickets.approvals.view_approvers: 'Approvers'
+portal.tickets.approvals.view_approve: 'Approve'
+portal.tickets.approvals.view_reject: 'Reject'
+portal.tickets.approvals.view_no_message_error: 'Please provide a message'
 portal.tickets.mark-unresolved: 'Re-open Ticket'
 portal.tickets.need-login_desc: 'Please go to <a href="{{login_url}}" target="_blank">the login page</a> to send us a message'
 portal.tickets.need-login_title: 'You need to log in to open a ticket'
@@ -833,6 +864,7 @@ portal.tickets.timeline_marked_resolved: Resolved
 portal.tickets.timeline_opened: 'opened this ticket'
 portal.tickets.timeline_re_opened: 'reopened this ticket'
 portal.tickets.timeline_wrote: 'wrote:'
+portal.tickets.timeline_created_new_ticket_approval: 'created a new ticket approval'
 portal.tickets.view_assigned_agent: 'Assigned agent:'
 portal.tickets.view_awaiting_user: 'An agent is waiting for you to reply to a message.'
 portal.tickets.view_btn_add_cc: 'Add a CC''ed user'

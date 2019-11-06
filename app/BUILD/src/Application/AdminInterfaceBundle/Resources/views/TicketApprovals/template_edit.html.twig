@@ -1,0 +1,100 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <form role="form" name="form_props" ng-submit="form_props.$valid && TicketApprovalsTemplateEdit.saveForm()">
+        <section class="dp-paneblock dp-editpane">
+
+            <nav class="dp-blocktabs">
+                <ul>
+                    <li class="active" dp-tab-btn="main.props">
+                        <a href="#">
+                            <i class="fas fa-pencil-alt"></i> {{ phrase('adm.ticket_approvals.tabs.properties') }}
+                        </a>
+                    </li>
+                    <li class="pipe">|</li>
+                    <li dp-tab-btn="main.triggers">
+                        <a href="#">
+                            <i class="fas fa-columns"></i> {{ phrase('adm.ticket_approvals.tabs.triggers') }}
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <article class="form-horizontal dp-form">
+                <div dp-tab-body="main.props">
+                    {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:properties.html.twig' %}
+                </div>
+                <div dp-tab-body="main.triggers">
+                    {% include 'AdminInterfaceBundle:TicketApprovals/TemplateEdit:triggers.html.twig' %}
+                </div>
+            </article>
+
+            <footer>
+                <div class="dp-content">
+                    <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                        <p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+                        <ul>
+                            <li ng-show="form_props.name.$error.required">
+                                {{ phrase('adm.ticket_approvals.template.error.name') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.type.$error.required">
+                                {{ phrase('adm.ticket_approvals.template.error.type') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.min_number_of_approvers.$error.required || form_props.min_number_of_approvers.$error.min">
+                                {{ phrase('adm.ticket_approvals.template.error.required_min_number_of_approvers') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.required_approvals.$error.required || form_props.required_approvals.$error.min">
+                                {{ phrase('adm.ticket_approvals.template.error.required_approvals') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.required_rejections.$error.required || form_props.required_rejections.$error.min">
+                                {{ phrase('adm.ticket_approvals.template.error.required_rejections') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.custom_error">
+                                {{ ng_var('form_props.custom_error ') }}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="dp-delete-control" ng-if="templateId"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+
+                        <div dp-hide-spinning="deleting">
+                            <button class="btn btn-danger"
+                                    ng-click="$event.preventDefault(); TicketApprovalsTemplateEdit.deleteTemplate(templateId);">
+                                {{ phrase('agent.general.delete') }}
+                            </button>
+                        </div>
+                        <div dp-show-spinning="deleting">
+                            <i class="spinner-flat"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>
+                                {{ phrase('agent.general.save') }}
+                            </button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </form>
+    <div dp-register-message="approval_template_save_success">{{ phrase('adm.ticket_approvals.template_save_success') }}</div>
+    <div dp-register-message="approval_template_save_failure">{{ phrase('adm.ticket_approvals.template_save_failure') }}</div>
+    <div dp-register-message="approval_template_delete_success">{{ phrase('adm.ticket_approvals.template_delete_success') }}</div>
+    <div dp-register-message="approval_template_delete_failure">{{ phrase('adm.ticket_approvals.template_delete_failure') }}</div>
+{% endblock %}

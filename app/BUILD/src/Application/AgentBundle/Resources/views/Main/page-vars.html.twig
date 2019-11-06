@@ -33,6 +33,7 @@
     window.DP_COLLAB_CONNECTION_TOKEN = '{{ collab_connection_token }}';
   {% endif %}
 	window.DP_HAS_FOLLOW_UP          = {% if app.hasBeta('follow_up') %}true{% else %}false{% endif %};
+	window.DP_HAS_APPROVALS          = {% if app.hasBeta('approvals') %}true{% else %}false{% endif %};
     window.DP_BUILD_ID               = '{{ app.getBuildId() }}';
 
     {% if app.getSetting('DESKPRO_APP_ASSETS_URL') %}

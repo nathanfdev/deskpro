@@ -42,6 +42,8 @@ class TicketChecker extends AbstractChecker
         'billing',
         'associate_problem',
         'disassociate_problem',
+        'add_approval',
+        'cancel_approval',
     ];
 
     /**
@@ -84,6 +86,20 @@ class TicketChecker extends AbstractChecker
 
         if ($ticket->hasParticipantPerson($this->person)) {
             return true;
+        }
+
+        foreach ($ticket->getApprovals() as $approval) {
+            // If the current user is the ticket owner AND the approval contains the ticket owner as an approver
+            // then view access is always allowed irrespective of canApproversViewSubject
+            if ($this->person->isEqualTo($ticket->getPerson()) && $approval->hasApprover($this->person)) {
+                return true;
+            }
+
+            if ($approval->canApproversViewSubject()) {
+                if ($approval->hasApprover($this->person)) {
+                    return true;
+                }
+            }
         }
 
         if (!$this->person->hasPerm('agent_tickets.use')) {
@@ -509,6 +525,26 @@ class TicketChecker extends AbstractChecker
     public function canDisassociateProblem(Ticket $ticket)
     {
         return $this->canModify($ticket, 'disassociate_problem') ?: $this->doCheck($ticket, 'disassociate_problem');
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public function canAddApproval(Ticket $ticket)
+    {
+        return $this->canModify($ticket, 'add_approval') ?: $this->doCheck($ticket, 'add_approval');
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    public function canCancelApproval(Ticket $ticket)
+    {
+        return $this->canModify($ticket, 'cancel_approval') ?: $this->doCheck($ticket, 'cancel_approval');
     }
 
     /**

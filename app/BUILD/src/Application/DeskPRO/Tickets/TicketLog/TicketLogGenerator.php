@@ -936,6 +936,10 @@ class TicketLogGenerator
 
                 return [];
                 break;
+            case 'ticket_approval':
+                return array_merge($new, [
+                    'action_type' => 'ticket_approval_details',
+                ]);
 
             default:
                 return [];

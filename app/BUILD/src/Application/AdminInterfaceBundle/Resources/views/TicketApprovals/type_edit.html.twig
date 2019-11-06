@@ -1,0 +1,88 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+    <form role="form" name="form_props" ng-submit="form_props.$valid && TicketApprovalsTypeEdit.saveForm()">
+        <section class="dp-paneblock dp-editpane">
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-fill indent">
+                    <div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.type.name') }} *</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.name">
+                                    <input type="text"
+                                           class="form-control"
+                                           name="name"
+                                           ng-model="TicketApprovalsTypeEdit.form.name"
+                                           required autofocus
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-lg-2">
+                                <h3>{{ phrase('adm.ticket_approvals.type.description') }}</h3>
+                            </div>
+                            <div class="col-lg-10">
+                                <div class="inner-group" dp-error-class="form_props.description">
+                                    <textarea class="form-control"
+                                              name="description"
+                                              ng-model="TicketApprovalsTypeEdit.form.description"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <footer>
+                <div class="dp-content">
+                    <div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+                        <p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+                        <ul>
+                            <li ng-show="form_props.name.$error.required">
+                                {{ phrase('adm.ticket_approvals.type.error.name') }}
+                            </li>
+                        </ul>
+                        <ul>
+                            <li ng-show="form_props.custom_error">
+                                {{ ng_var('form_props.custom_error ') }}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="dp-delete-control" ng-if="TicketApprovalsTypeEdit.typeId"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+
+                        <div dp-hide-spinning="deleting">
+                            <button class="btn btn-danger"
+                                    ng-click="$event.preventDefault(); TicketApprovalsTypeEdit.deleteType(TicketApprovalsTypeEdit.typeId);">
+                                {{ phrase('agent.general.delete') }}
+                            </button>
+                        </div>
+                        <div dp-show-spinning="deleting">
+                            <i class="spinner-flat"></i>
+                        </div>
+
+                    </div>
+
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-primary" dp-submit-form>
+                                {{ phrase('agent.general.save') }}
+                            </button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </form>
+    <div dp-register-message="approval_type_save_success">{{ phrase('adm.ticket_approvals.type_save_success') }}</div>
+    <div dp-register-message="approval_type_save_failure">{{ phrase('adm.ticket_approvals.type_save_failure') }}</div>
+    <div dp-register-message="approval_type_delete_success">{{ phrase('adm.ticket_approvals.type_delete_success') }}</div>
+    <div dp-register-message="approval_type_delete_failure">{{ phrase('adm.ticket_approvals.type_delete_failure') }}</div>
+{% endblock %}

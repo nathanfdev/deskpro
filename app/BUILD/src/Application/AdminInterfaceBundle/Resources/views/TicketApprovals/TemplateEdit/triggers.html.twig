@@ -1,0 +1,107 @@
+<div class="panel panel-fill indent">
+    <div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+
+        <div class="approval-actions">
+            <h4>{{ phrase('adm.ticket_approvals.actions.request_is_created') }}</h4>
+            <div class="dp-ob-set">
+                <div class="dp-ob-setrow">
+                    <header>
+                        <em class="dp-ob-row-tag then">{{ phrase('adm.ticket_approvals.actions.then') }}</em>
+                        {{ phrase('adm.ticket_approvals.actions.the_following_actions_will_run') }}:
+                    </header>
+                    <article>
+                        <dp-option-builder types-def="TicketApprovalsTemplateEdit.actionsTypeDef" save-target="form.actions_on_create" option-types="actionOptionTypes">
+                            <add-btn-label>{{ phrase('adm.ticket_approvals.actions.action') }}</add-btn-label>
+                        </dp-option-builder>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div class="approval-actions">
+            <h4>{{ phrase('adm.ticket_approvals.actions.partial_approval_response') }}</h4>
+            <div class="dp-ob-set">
+                <div class="dp-ob-setrow">
+                    <header>
+                        <em class="dp-ob-row-tag then">{{ phrase('adm.ticket_approvals.actions.then') }}</em>
+                        {{ phrase('adm.ticket_approvals.actions.the_following_actions_will_run') }}:
+                    </header>
+                    <article>
+                        <dp-option-builder types-def="TicketApprovalsTemplateEdit.actionsTypeDef" save-target="form.actions_on_partial_approval_response" option-types="actionOptionTypes">
+                            <add-btn-label>{{ phrase('adm.ticket_approvals.actions.action') }}</add-btn-label>
+                        </dp-option-builder>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div class="approval-actions">
+            <h4>{{ phrase('adm.ticket_approvals.actions.partial_rejection_response') }}</h4>
+            <div class="dp-ob-set">
+                <div class="dp-ob-setrow">
+                    <header>
+                        <em class="dp-ob-row-tag then">{{ phrase('adm.ticket_approvals.actions.then') }}</em>
+                        {{ phrase('adm.ticket_approvals.actions.the_following_actions_will_run') }}:
+                    </header>
+                    <article>
+                        <dp-option-builder types-def="TicketApprovalsTemplateEdit.actionsTypeDef" save-target="form.actions_on_partial_rejection_response" option-types="actionOptionTypes">
+                            <add-btn-label>{{ phrase('adm.ticket_approvals.actions.action') }}</add-btn-label>
+                        </dp-option-builder>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div class="approval-actions">
+            <h4>{{ phrase('adm.ticket_approvals.actions.request_approved') }}</h4>
+            <div class="dp-ob-set">
+                <div class="dp-ob-setrow">
+                    <header>
+                        <em class="dp-ob-row-tag then">{{ phrase('adm.ticket_approvals.actions.then') }}</em>
+                        {{ phrase('adm.ticket_approvals.actions.the_following_actions_will_run') }}:
+                    </header>
+                    <article>
+                        <dp-option-builder types-def="TicketApprovalsTemplateEdit.actionsTypeDef" save-target="form.actions_on_approved" option-types="actionOptionTypes">
+                            <add-btn-label>{{ phrase('adm.ticket_approvals.actions.action') }}</add-btn-label>
+                        </dp-option-builder>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div class="approval-actions">
+            <h4>{{ phrase('adm.ticket_approvals.actions.request_rejected') }}</h4>
+            <div class="dp-ob-set">
+                <div class="dp-ob-setrow">
+                    <header>
+                        <em class="dp-ob-row-tag then">{{ phrase('adm.ticket_approvals.actions.then') }}</em>
+                        {{ phrase('adm.ticket_approvals.actions.the_following_actions_will_run') }}:
+                    </header>
+                    <article>
+                        <dp-option-builder types-def="TicketApprovalsTemplateEdit.actionsTypeDef" save-target="form.actions_on_rejected" option-types="actionOptionTypes">
+                            <add-btn-label>{{ phrase('adm.ticket_approvals.actions.action') }}</add-btn-label>
+                        </dp-option-builder>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+        <div class="approval-actions">
+            <h4>{{ phrase('adm.ticket_approvals.actions.request_cancelled') }}</h4>
+            <div class="dp-ob-set">
+                <div class="dp-ob-setrow">
+                    <header>
+                        <em class="dp-ob-row-tag then">{{ phrase('adm.ticket_approvals.actions.then') }}</em>
+                        {{ phrase('adm.ticket_approvals.actions.the_following_actions_will_run') }}:
+                    </header>
+                    <article>
+                        <dp-option-builder types-def="TicketApprovalsTemplateEdit.actionsTypeDef" save-target="form.actions_on_cancel" option-types="actionOptionTypes">
+                            <add-btn-label>{{ phrase('adm.ticket_approvals.actions.action') }}</add-btn-label>
+                        </dp-option-builder>
+                    </article>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

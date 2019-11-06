@@ -67,9 +67,7 @@ class Imap extends AbstractFetcher
     private $readMailbox;
 
     /**
-     * Init connection
-     *
-     * @return Storage\Imap|\Zend\Mail\Storage\AbstractStorage
+     * Init connection.
      *
      * @throws \CannotPerformOperationException
      * @throws \InvalidArgumentException
@@ -77,12 +75,14 @@ class Imap extends AbstractFetcher
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \Exception
+     *
+     * @return Storage\Imap|\Zend\Mail\Storage\AbstractStorage
      */
     protected function _initConnection()
     {
         // stubs
         $properties = ['user', 'password'];
-        $options = [];
+        $options    = [];
 
         // decrypt account config
         $incomingAccount = $this->decryptIncomingAccount();
@@ -164,13 +164,13 @@ class Imap extends AbstractFetcher
 
         // set archive mailbox
         $this->archiveMailbox =
-            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+            (isset($options['archive_mailbox']) && !is_null($options['archive_mailbox']))
                 ? $options['archive_mailbox']
                 : 'DP_Archive';
 
         // set read mailbox
         $this->readMailbox =
-            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+            (isset($options['read_mailbox']) && !is_null($options['read_mailbox']))
                 ? $options['read_mailbox']
                 : null;
 
@@ -222,7 +222,7 @@ class Imap extends AbstractFetcher
         }
 
         // ensure read mailbox exists if provided
-        if (! is_null($this->readMailbox)) {
+        if (!is_null($this->readMailbox)) {
             $this->storage->ensureMailboxExists($this->readMailbox);
             $this->storage->setMailBox($this->readMailbox);
         }
@@ -268,8 +268,9 @@ class Imap extends AbstractFetcher
     /**
      * {@inheritdoc}
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
     {
@@ -325,6 +326,7 @@ class Imap extends AbstractFetcher
      * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param RawMessage $rawMessage
+     *
      * @throws \InvalidArgumentException
      */
     public function _doneRead(RawMessage $rawMessage)

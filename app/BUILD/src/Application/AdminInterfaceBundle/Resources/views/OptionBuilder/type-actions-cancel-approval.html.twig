@@ -1,0 +1,33 @@
+{% import 'AdminInterfaceBundle:OptionBuilder:type-filter-status.html.twig' as _macro %}
+
+<dp-optionbuilder-row>
+    <div class="dp-ob-standard-row">
+        <table class="display-table">
+            <tr>
+                <td width="60" class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+                <td>
+                    <table class="display-table spaced" width="100%">
+                        <tr>
+                            <td>{{ phrase('admin.tickets.approval_template') }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select ui-select2 ng-model="model.approval_template_id" style="min-width: 140px">
+                                    {% for approvalTemplate in app.getApprovalTemplates() %}
+                                        <option value="{{ approvalTemplate.id }}">{{ approvalTemplate.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" ng-model="model.all_approvals" /> {{ phrase('admin.tickets.cancel_all_ticket_approvals') }}
+                                <i style="color: #aaa;" class="fas fa-question-circle" tooltip="{{ phrase('admin.tickets.cancel_all_ticket_approvals_against_this_ticket')|e }}"></i>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</dp-optionbuilder-row>

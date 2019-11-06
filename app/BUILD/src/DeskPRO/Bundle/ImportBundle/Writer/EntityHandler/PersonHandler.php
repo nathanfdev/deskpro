@@ -32,7 +32,7 @@ class PersonHandler extends AbstractEntityHandler
             $this->logger->alert(sprintf('Importing agent `%s`', $model->getFirstEmail()));
         }
 
-        $entity = $this->findOrCreatePerson($model);
+        $entity      = $this->findOrCreatePerson($model);
         $brandHelper = $this->helpers->getBrandHelper();
         $entity
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))

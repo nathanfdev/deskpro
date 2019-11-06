@@ -103,6 +103,15 @@ class Person extends AbstractEntityRepository
         return $agents;
     }
 
+    public function countAgents()
+    {
+        return (int) $this->getEntityManager()->createQuery('
+            SELECT COUNT(p)
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.is_agent = true AND p.is_deleted = false
+        ')->getSingleScalarResult();
+    }
+
     public function getAgent($id)
     {
         $agents = $this->getAgents();
@@ -120,6 +129,43 @@ class Person extends AbstractEntityRepository
         ')->execute();
 
         return $deleted_agents;
+    }
+
+    public function getOrganizationManagers()
+    {
+        $organization_managers = $this->getEntityManager()->createQuery('
+            SELECT p
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.organization_manager = true AND p.is_deleted = false
+            ORDER BY p.first_name ASC, p.last_name ASC
+        ')->execute();
+
+        return $organization_managers;
+    }
+
+    public function getOrganizationManagersForPerson(\Application\DeskPRO\Entity\Person $person)
+    {
+        $organization_managers = $this->getEntityManager()->createQuery('
+            SELECT p
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.organization_manager = true AND p.is_deleted = false
+            AND IDENTITY(p.organization) = :organizationId
+            ORDER BY p.first_name ASC, p.last_name ASC
+        ')
+            ->setParameter('organizationId', $person->getOrganizationId())
+            ->execute()
+        ;
+
+        return $organization_managers;
+    }
+
+    public function countOrganizationManagers()
+    {
+        return (int) $this->getEntityManager()->createQuery('
+            SELECT COUNT(p)
+            FROM DeskPRO:Person p INDEX BY p.id
+            WHERE p.organization_manager = true AND p.is_deleted = false
+        ')->getSingleScalarResult();
     }
 
     /**

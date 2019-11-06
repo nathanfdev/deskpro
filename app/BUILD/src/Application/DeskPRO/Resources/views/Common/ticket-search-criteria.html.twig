@@ -286,7 +286,7 @@
 		</div>
 	</div>
 	{% endif  %}
-  
+
 	{% if 'community_topics_links' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
 	<div class="builder-type" title="{{ phrase('agent.general.linked_community_topics') }}" data-rule-type="community_links" data-rule-handler="DeskPRO.Agent.RuleBuilder.TicketCommunityTopicLinksTerm">
 		<div class="builder-op">
@@ -340,6 +340,31 @@
 			<input type="hidden" name="is_hold" value="1" />
 		</div>
 	</div>
+	{% endif %}
+
+	{% if 'ticket_approval' not in no_show_fields and app.hasBeta('approvals') %}
+		<div class="builder-type" title="{{ phrase('agent.tickets.ticket_approval') }}" data-rule-type="ticket_approval" data-term-type="GenericMenuTerm" data-term-triggers="ticket_approval">
+			<div class="builder-op">
+				<select name="op" class="op">
+					<option value="is">{{ phrase('agent.general.is') }}</option>
+				</select>
+			</div>
+			<div class="builder-options">
+				<select name="approval_template_id">
+					<option value="">{{ phrase('agent.general.any') }}</option>
+					{% for template in app.getApprovalTemplates() %}
+						<option value="{{ template.id }}">{{ template.name }}</option>
+					{% endfor %}
+				</select>
+				<select name="approval_status">
+					{% for status,name in app.getApprovalStatuses() %}
+						<option value="{{ status }}">{{ name }}</option>
+					{% endfor %}
+				</select>
+				{{ phrase('agent.general.and') }}
+				<input type="checkbox" value="1" name="approver_includes_me"/> {{ phrase('agent.general.i_am_an_approver') }}
+			</div>
+		</div>
 	{% endif %}
 
 	{% if 'organization' not in no_show_fields and app.getDataService('Organization').hasOrganizations() %}

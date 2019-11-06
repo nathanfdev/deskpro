@@ -64,6 +64,7 @@ use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketCommunityTopicLinkRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -5994,6 +5995,10 @@ body {
 }
 
 .type-action_starter {
+	background: #eee;
+}
+
+.type-ticket_approval {
 	background: #eee;
 }
 

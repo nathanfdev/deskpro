@@ -3,6 +3,7 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Usergroup;
@@ -185,12 +186,12 @@ class PeopleContext extends BaseContext
      * @Given an agent with :email email exists
      *
      * @param string $email
-     *
-     * @throws \Exception
+     * @param bool   $inOrganization
      *
      * @return Person
+     * @throws \Exception
      */
-    public function agentExists($email)
+    public function agentExists($email, $inOrganization = false)
     {
         $person = $this->findPersonByEmail($email);
         if ($person) {
@@ -217,6 +218,13 @@ class PeopleContext extends BaseContext
         $person->addUsergroup($this->registeredGroupExists());
         $person->addUsergroup($this->agentAllSafePermGroupExists());
 
+        if ($inOrganization) {
+            $organization = $this->getExistingOrganizationOrNew();
+
+            $person->setOrganization($organization);
+            $person['organization_manager'] = true;
+        }
+
         $this->persistAndFlush($person);
 
         DataContext::setReference($email, $person);
@@ -237,7 +245,7 @@ class PeopleContext extends BaseContext
      *
      * @return Person
      */
-    public function userExists($email)
+    public function userExists($email, $inOrganization = false)
     {
         $person = $this->findPersonByEmail($email);
         if ($person) {
@@ -263,6 +271,10 @@ class PeopleContext extends BaseContext
         $person->addUsergroup($this->everyoneGroupExists());
         $person->addUsergroup($this->registeredGroupExists());
 
+        if ($inOrganization) {
+            $person->setOrganization($this->getExistingOrganizationOrNew());
+        }
+
         $this->persistAndFlush($person);
 
         DataContext::setReference($email, $person);
@@ -280,6 +292,15 @@ class PeopleContext extends BaseContext
     {
         $this->userExists('user@deskpro.dev');
         $this->agentExists('agent@deskpro.dev');
+    }
+
+    /**
+     * @Given agent and user exist in organization
+     */
+    public function agentAndUserExistInOrganization()
+    {
+        $this->userExists('user@deskpro.dev', true);
+        $this->agentExists('agent@deskpro.dev', true);
     }
 
     /**
@@ -355,5 +376,30 @@ class PeopleContext extends BaseContext
         $email = $this->repository(PersonEmail::class)->findOneBy(['email' => $email]);
 
         return $email ? $email->getPerson() : null;
+    }
+
+    /**
+     * @param int|null $id
+     * @return Organization|null
+     */
+    private function getExistingOrganizationOrNew($id = null)
+    {
+        $orgRepo = $this->repository(Organization::class);
+
+        if ($id && $organization = $orgRepo->find($id)) {
+            return $organization;
+        }
+
+        if ($organization = $orgRepo->findOneBy([])) {
+            return $organization;
+        }
+
+        $organization = (new Organization())
+            ->setName('Test Organization')
+        ;
+
+        $this->em()->persist($organization);
+
+        return $organization;
     }
 }

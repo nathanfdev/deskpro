@@ -29,28 +29,47 @@ class TriggerActionsFormType extends AbstractType implements ContainerAwareInter
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit'], -1);
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) use ($options) {
+            $this->onSubmit($event, $options);
+        }, -1);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(['allow_extra_fields' => true]);
+        $resolver->setDefaults([
+            'allow_extra_fields' => true,
+            'data_key' => 'actions',
+        ]);
+
+        $resolver->setAllowedTypes([
+            'data_key' => ['string', 'null'],
+        ]);
     }
 
-    public function onSubmit(FormEvent $event)
+    public function onSubmit(FormEvent $event, array $options)
     {
+        $dataKey = $options['data_key'];
+
         $form = $event->getForm();
-        $data = $form->getData();
 
         $extraData = $form->getExtraData();
         $actions = new TriggerActions();
 
-        if (! array_key_exists('actions', $extraData)) {
+        if (!empty($dataKey) && !array_key_exists($dataKey, $extraData)) {
             $event->setData($actions);
             return;
         }
 
-        $actionList = $extraData['actions'];
+        if (empty($dataKey) && !is_array($extraData)) {
+            $event->setData($actions);
+            return;
+        }
+
+        $actionList = $dataKey
+            ? $extraData[$dataKey]
+            : $extraData
+        ;
+
         foreach ($actionList as $act) {
             if ($act) {
                 $type = $act['type'];
