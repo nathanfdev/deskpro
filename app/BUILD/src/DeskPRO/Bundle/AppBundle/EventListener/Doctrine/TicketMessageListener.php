@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TicketMessage;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
@@ -97,38 +98,24 @@ class TicketMessageListener implements EventSubscriber
         $result = [];
         /** @var Person $participant */
         foreach ($participants as $participant) {
-            if (in_array($participant->getEmailAddress(), $recipients)) {
-                $result['cc'][] = $participant;
-            } else {
-                if ($participant->getEmailAddress() !== $ticketMessage->getPerson()->getEmailAddress()) {
-                    $result['absent'][] = $participant;
-                }
+            if (!array_intersect($participant->getEmailAddresses(false, false), $recipients)
+                    && !array_intersect($participant->getEmailAddresses(false, false), $ticketMessage->getPerson()->getEmailAddresses(false, false))
+            ) {
+                $result['absent'][] = $participant;
             }
         }
 
         foreach ($recipients as $recipient) {
-            $present = false;
-            if (!empty($result['cc'])) {
-                foreach ($result['cc'] as $cc) {
-                    if ($cc instanceof Person && $cc->getEmailAddress() === $recipient) {
-                        $present = true;
-                        break 1;
-                    } elseif ($cc === $recipient) {
-                        $present = true;
-                        break 1;
-                    }
+            /** @var PersonEmail $personEmail */
+            $personEmail = $em->getRepository(PersonEmail::class)->findOneBy(['email' => $recipient]);
+            if ($personEmail) {
+                if ($personEmail->getPerson()->isAgent()) {
+                    continue;
                 }
-            }
-            if (!$present) {
-                /** @var Person $person */
-                $person = $em->getRepository(Person::class)->findOneByEmail($recipient);
-                if ($person) {
-                    if (!$person->isAgent()) {
-                        $result['cc'][] = $person;
-                    }
-                } else {
-                    $result['cc'][] = $recipient;
-                }
+
+                $result['cc'][] = $personEmail;
+            } else {
+                $result['cc'][] = $recipient;
             }
         }
 
