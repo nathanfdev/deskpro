@@ -1645,14 +1645,6 @@ class Person extends DomainObject implements
             $this->setModelField('date_password_set', new \DateTime());
         }
 
-        if ($this->id) {
-            $token = App::getEntityRepository('DeskPRO:ApiToken')->getTokenForPerson($this);
-            if ($token) {
-                $token->regenerateToken();
-                App::getOrm()->persist($token);
-            }
-        }
-
         return $this->password;
     }
 
