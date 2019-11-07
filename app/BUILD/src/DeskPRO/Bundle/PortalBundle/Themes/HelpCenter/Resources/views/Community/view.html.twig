@@ -16,7 +16,7 @@
                 <h2 class="dp-po-title-text">
                     {{ topic.realTitle }}
                     {% if topic.statusCategory %}
-                        <a href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}/#{topic.statusCategory.status_type}-#{topic.statusCategory.id}"}) }}">
+                        <a class="dp-po-post-user-category-link" href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}/#{topic.statusCategory.status_type}-#{topic.statusCategory.id}"}) }}">
                             <span class="badge" style="background-color: {{ topic.statusCategory.color }};">
                                 {{ topic.statusCategory.title }}
                             </span>
@@ -30,7 +30,7 @@
                         <ul class="dp-po-post-user-list">
                             {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
                             <li class="dp-po-post-user-item">
-                                <a href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}"}) }}">
+                                <a class="dp-po-post-user-list-forum-link" href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}"}) }}">
                                     {{ topic.forum.title }}
                                 </a>
                             </li>
