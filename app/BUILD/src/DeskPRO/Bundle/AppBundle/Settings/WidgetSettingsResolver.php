@@ -231,8 +231,14 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
                 $helpdeskUrl = rtrim($baseUrl, '/').$request->attributes->get('_dp_brand_slug_path');
             }
         } else {
-            $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
-            $helpdeskUrl = $baseUrl;
+            $helpdeskUrl = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            if ($brand->getUrl()) {
+                $baseUrl = $helpdeskUrl;
+            } else {
+                // brand has just a slug, use default brand
+                $baseUrl = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
         }
 
         if ($request) {
