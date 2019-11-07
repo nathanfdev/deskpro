@@ -371,6 +371,9 @@
     {{- block('form_row') -}}
 {% endblock _ticket_message_inline_attachments_row %}
 
+{% block _ticket_reply_ticket_message_inline_attachments_row %}
+{% endblock _ticket_reply_ticket_message_inline_attachments_row %}
+
 {# TICKET ATTACHMENTS #}
 {% block ticket_message_attachment_widget %}
     {% if form.blob is defined %}
