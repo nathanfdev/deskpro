@@ -1985,7 +1985,7 @@ class TicketSearch extends SearcherAbstract
 
                         if (isset($choice['approver_includes_me']) && $choice['approver_includes_me'] && $this->person) {
                             $join_name2 = $join_name.'_aa';
-                            $joins[] = [
+                            $joins[]    = [
                                 'approval_approvers',
                                 "INNER JOIN approval_approvers AS $join_name2 ON ($join_name.id = $join_name2.approval_id)",
                             ];
@@ -2498,7 +2498,11 @@ class TicketSearch extends SearcherAbstract
                         }
 
                         if ($choice) {
-                            $wheres[] = $this->_dateMatch('tickets.date_user_waiting', $op, $choice);
+                            if ($choice === 'not_waiting' && $op === self::OP_IS) {
+                                $wheres[] = 'tickets.date_user_waiting IS NULL';
+                            } else {
+                                $wheres[] = $this->_dateMatch('tickets.date_user_waiting', $op, $choice);
+                            }
                         }
                         break;
 
