@@ -25,16 +25,18 @@ class ApprovalTableRow extends React.Component {
   }
 
   cancelApprovalRequest = (id) => {
-    this.setState({
-      saving: true
-    });
-
-    this.props.cancelApprovalRequest(id)
-      .then(() => {
-        this.setState({
-          saving: false
-        });
+    window.DeskPRO_Window.showConfirm('Please confirm you want to cancel the entire Approval?', () => {
+      this.setState({
+        saving: true
       });
+
+      this.props.cancelApprovalRequest(id)
+        .then(() => {
+          this.setState({
+            saving: false
+          });
+        });
+    });
   };
 
   acceptApprovalRequest = (id) => {
