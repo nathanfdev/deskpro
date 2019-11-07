@@ -198,7 +198,7 @@
 
         {% for property in ticket_view.properties %}
             {% set propValue = property.value is iterable ? property.value : property.value|smart_wrap(35) %}
-            {% if property.isVisible %}
+            {% if property.isVisible and propValue %}
                 <h3 class="dp-po-ticket-meta-title">{{ property.label }}</h3>
                 {% if property.type == 'url' %}
                     <p><a href="{{ propValue }}" target="_blank">{{ propValue }}</a></p>
