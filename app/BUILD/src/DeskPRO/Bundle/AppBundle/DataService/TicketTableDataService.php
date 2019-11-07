@@ -79,7 +79,7 @@ class TicketTableDataService extends AbstractDataService
         return $table;
     }
 
-    public function makeColumnControl(Person $person)
+    public function makeColumnControl(Person $person = null)
     {
         $columns = new TicketColumns();
 
@@ -166,7 +166,7 @@ class TicketTableDataService extends AbstractDataService
      * @param TicketColumns $columns
      * @param Person        $person
      */
-    public function addDynamicColumns(TicketColumns $columns, Person $person)
+    public function addDynamicColumns(TicketColumns $columns, Person $person = null)
     {
         $deps = $this->department_data_service->getTicketDepartmentsForPerson($person);
 

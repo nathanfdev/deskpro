@@ -75,7 +75,7 @@ class EmailDataService extends AbstractDataService
      *
      * @return []
      */
-    public function getValidatingEmails(Person $person)
+    public function getValidatingEmails(Person $person = null)
     {
         return [];
         //$that = $this;

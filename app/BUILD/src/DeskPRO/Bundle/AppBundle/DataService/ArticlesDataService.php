@@ -123,7 +123,7 @@ class ArticlesDataService extends AbstractDataService
         );
     }
 
-    public function getTopArticlesPager($page, $maxPerPage, Person $person)
+    public function getTopArticlesPager($page, $maxPerPage, Person $person = null)
     {
         $em                 = $this->em;
         $permissionsManager = $this->permissionsManager;
@@ -180,7 +180,7 @@ class ArticlesDataService extends AbstractDataService
      *
      * @return \Application\DeskPRO\Entity\ArticleCategory[]
      */
-    public function getCategoryChildren($category, Person $person)
+    public function getCategoryChildren($category, Person $person = null)
     {
         $that = $this;
 
