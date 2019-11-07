@@ -51,7 +51,7 @@ class ViewTopic extends React.Component {
       this.ticking = true;
     });
     window.addEventListener('resize', this.defineSizes);
-    this.offsetTop = this.topicList.offsetTop;
+    this.offsetTop = this.topicList.getBoundingClientRect().top;
     this.defineSizes();
   }
 
@@ -441,12 +441,12 @@ class ViewTopic extends React.Component {
     if (window.currentTheme === 'helpcenter') {
       return (
         <div className="row">
-          <div className={classNames('topic-list col-sm-3', { fixed })} ref={(c) => { this.topicList = c; }} >
+          <div className={classNames('topic-list col-sm-2', { fixed })} ref={(c) => { this.topicList = c; }} >
             <GuideSelector guideSlug={this.state.guideSlug} selectGuide={this.selectGuide} />
             <hr />
             <TopicList topics={topics} guideSlug={guideSlug} />
           </div>
-          <div className="topic col-sm-9" ref={(c) => { this.topic = c; }}>
+          <div className="topic col-sm-8" ref={(c) => { this.topic = c; }}>
             <div className="dp-po-title">
               <img
                 className="dp-po-title-svg"
@@ -483,7 +483,7 @@ class ViewTopic extends React.Component {
             <div className={classNames('loading', { active: this.state.doSpin || !topic.slug })} />
           </div>
           <div className="content-summary">
-            <TopicSummary content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
+            <TopicSummary className="col-sm-2" content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
           </div>
         </div>
       );
