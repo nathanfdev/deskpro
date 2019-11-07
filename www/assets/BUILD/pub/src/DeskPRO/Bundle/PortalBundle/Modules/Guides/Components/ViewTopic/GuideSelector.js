@@ -71,7 +71,7 @@ class GuideSelector extends React.Component {
           onChange={this.onClickGuide}
         />
         { activeGuide.guide_pdf ?
-          <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
+          <a className="guide-pdf btn btn-light" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
             <span><FormattedMessage id="portal.general.btn-download-pdf" /></span>
             <i className="far fa-file-pdf" />
           </a> :
