@@ -15,38 +15,22 @@ console.log('Cleaning messenger dir');
 fs.emptyDirSync(messengerBuildDir);
 console.log('Moving messenger files');
 
-let manifest = fs.readFileSync(path.join(messengerVendorDir, '/asset-manifest.json'));
-manifest = JSON.parse(manifest);
-let runtimeName;
-let mainName;
-let lastChunkName;
-manifest.entrypoints.main.js.forEach(fname => {
-  if (path.basename(fname).indexOf('runtime') === 0) {
-    runtimeName = path.basename(fname);
-  } else if (path.basename(fname).indexOf('main') === 0) {
-    mainName = path.basename(fname);
-  } else {
-    lastChunkName = path.basename(fname);
-  }
-});
+console.log('Moving manifest');
+const manifest = JSON.parse(fs.readFileSync(path.join(messengerVendorDir, '/asset-manifest.json')));
+
+
+manifest.entrypoints.main.js = manifest.entrypoints.main.js.map(fname => fname.replace('/static/js', ''));
+
+fs.writeFileSync(path.join(messengerBuildDir, '/asset-manifest.json'), JSON.stringify(manifest));
 
 fs.readdir(messengerStaticDir, (err, files) => {
   const filteredFiles = files.filter(file => path.extname(file) !== '.map');
   console.log('Moving messenger js assets, ' + filteredFiles.length + ' files');
   filteredFiles.forEach(file => {
     const srcPath = path.join(messengerStaticDir, file);
-    let destFileName = file;
-    if(file === runtimeName) {
-      destFileName = 'runtime.js'
-    } else if (file === mainName) {
-      destFileName = 'main.js'
-    } else if (file === lastChunkName) {
-      destFileName = 'lastChunk.js'
-    }
-    fs.copyFile(srcPath, path.join(messengerBuildDir, destFileName), err => {
+    fs.copyFile(srcPath, path.join(messengerBuildDir, file), err => {
       if (err) throw err;
     });
-
   });
 });
 
@@ -63,13 +47,9 @@ const messengerAudioDir = path.join(messengerBuildDir, 'audio');
 console.log('Moving messenger audio assets');
 fs.copy(messengerVendorAudioDir, messengerAudioDir);
 
-
 const messengerVendorImgDir = path.join(messengerVendorAssetsDir, 'img');
 const messengerImgDir = path.join(messengerBuildDir, 'img');
 fs.copy(messengerVendorImgDir, messengerImgDir);
-
-
-console.log('Finished moving messenger files');
 
 const loaderFilePath    = `/messenger-loader.js`;
 const minLoaderFilePath = `/loader.min.js`;

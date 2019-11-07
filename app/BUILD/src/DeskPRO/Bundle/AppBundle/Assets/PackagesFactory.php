@@ -118,6 +118,20 @@ class PackagesFactory
             ;
         }
 
+        if (empty($this->asset_paths['messenger_assets_root'])) {
+            $this->asset_paths['messenger_assets_root'] = PathMapInfo::create()
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/messenger')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
+        }
+
+        if (empty($this->asset_paths['messenger_loader_assets'])) {
+            $this->asset_paths['messenger_loader_assets'] = PathMapInfo::create()
+                ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/pub/build/messenger')
+                ->setVersion(PathMapInfo::BUILD_VERSION)
+            ;
+        }
+
         if (empty($this->asset_paths['assets_root'])) {
             $this->asset_paths['assets_root'] = PathMapInfo::create()
                 ->setDeskproPath('/assets/%DP_ACTIVE_BUILD%')

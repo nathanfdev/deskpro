@@ -52,9 +52,9 @@ class ServiceController extends AbstractMessengerController
         $data     = $this->get('serializer')->toArray($settings,  new SideloadSerializationContext());
 
         $data['bundleUrl'] = [
-            'runtime'   => $this->container->get('templating.helper.assets')->getUrl('runtime.js', 'messenger_assets'),
-            'lastChunk' => $this->container->get('templating.helper.assets')->getUrl('lastChunk.js', 'messenger_assets'),
-            'main'      => $this->container->get('templating.helper.assets')->getUrl('main.js', 'messenger_assets'),
+            'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),
+            'path'     => $this->container->get('templating.helper.assets')->getUrl('', 'messenger_assets'),
+            'isDev'    => $this->get('settings_resolver')->getGlobalSettings()->get('messenger.is_dev', false),
         ];
 
         return View::create($data, Response::HTTP_OK);
