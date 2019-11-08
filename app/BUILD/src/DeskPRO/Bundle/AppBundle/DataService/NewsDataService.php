@@ -54,9 +54,9 @@ class NewsDataService extends AbstractDataService
      * @param NewsCategory $category
      * @param              $page
      * @param              $max_per_page
-     * @param Person $person
+     * @param Person       $person
+     * @param array        $filters      An array of filters, e.g. ['date' => '2019-08']
      *
-     * @param array $filters An array of filters, e.g. ['date' => '2019-08']
      * @return Pagerfanta
      */
     public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person = null, array $filters = [])
@@ -132,7 +132,7 @@ class NewsDataService extends AbstractDataService
      *
      * @return \Application\DeskPRO\Entity\NewsCategory[]
      */
-    public function getCategoryChildren($category, Person $person)
+    public function getCategoryChildren($category, Person $person = null)
     {
         $that = $this;
 
@@ -182,6 +182,10 @@ class NewsDataService extends AbstractDataService
 
     /**
      * Get a full list of categories, ordered.
+     *
+     * @param Person|null $person
+     *
+     * @return mixed|null
      */
     public function getCategoryList(Person $person = null)
     {
@@ -402,6 +406,7 @@ class NewsDataService extends AbstractDataService
 
     /**
      * @param string $date
+     *
      * @return false|int
      */
     private function isValidFilterDate($date)

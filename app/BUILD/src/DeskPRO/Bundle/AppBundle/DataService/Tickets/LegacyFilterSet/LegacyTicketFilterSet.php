@@ -180,7 +180,7 @@ class LegacyTicketFilterSet
      *
      * @return $this
      */
-    public function addSharedAgent(Person $person)
+    public function addSharedAgent(Person $person = null)
     {
         $this->shared_agents[] = $person;
 

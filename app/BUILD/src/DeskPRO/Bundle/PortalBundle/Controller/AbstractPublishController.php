@@ -13,12 +13,12 @@ abstract class AbstractPublishController extends AbstractController
     protected function getAuthComponents(Request $request)
     {
         $lastUsername = $request->hasPreviousSession() ? $this->getSession()->get('last_username') : null;
-        $capthcaForm  = null;
+        $captchaForm  = null;
         $abuseCheck   = new LoginAbuseCheck($lastUsername, $request->getClientIp());
         $abuseCheck->markAsCheckOnly();
         $this->getAntiAbuseService()->check($abuseCheck);
         if ($abuseCheck->isCaptchaRecommended()) {
-            $capthcaForm = $this->createForm(DpCaptchaType::class);
+            $captchaForm = $this->createForm(DpCaptchaType::class);
         }
 
         $person = $this->getPersonFactory()->createNewPerson();
@@ -51,7 +51,7 @@ abstract class AbstractPublishController extends AbstractController
         return [
             'auth_manager'  => $this->get('dp_authentication_manager.user'),
             'last_username' => $lastUsername,
-            'captcha_form'  => $capthcaForm,
+            'captcha_form'  => $captchaForm ? $captchaForm->createView() : null,
             'register_form' => $formView,
         ];
     }

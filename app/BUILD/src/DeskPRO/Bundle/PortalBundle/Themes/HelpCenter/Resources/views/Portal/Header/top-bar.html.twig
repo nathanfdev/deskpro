@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-sm-6">
                     <div class="dp-po-brand-left">
-                        <a href="{{ path('portal_home') }}" class="dp-po-homelink">
+                        <a href="{{ brand_setting('core.site_url') | default(path('portal_home')) }}" class="dp-po-homelink">
                             {% if portal_custom_logo() %}
                                 <span class="dp-po-logo">
                                     <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" />

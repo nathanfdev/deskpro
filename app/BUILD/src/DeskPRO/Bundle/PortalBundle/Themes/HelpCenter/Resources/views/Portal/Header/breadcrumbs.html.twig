@@ -3,7 +3,7 @@
         <div class="container d-flex align-items-center">
             {% if portal_custom_logo() %}
                 <div class="breadcrumb-image">
-                    <a href="{{ path('portal_home') }}">
+                    <a href="{{ brand_setting('core.site_url') | default(path('portal_home')) }}">
                         <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
                     </a>
                 </div>

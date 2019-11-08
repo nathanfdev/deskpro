@@ -83,7 +83,7 @@
                                         {% for info in helpcenter.getCommunityForumsWithCounts() %}
                                             <li class="dp-po-community-channel-tags-item">
                                                 <a href="{{ portal_path(info.forum) }}" class="dp-po-community-channel-tags-link">
-                                                    #{{info.forum.title}}
+                                                    {{info.forum.title}}
                                                     <span class="dp-po-community-channel-tags-count">({{ info.count }})</span>
                                                 </a>
                                             </li>

@@ -783,7 +783,7 @@ class PortalSupportExtension extends \Twig_Extension
             }
         }
         if ($url) {
-            return 'background: no-repeat url('.$url.'); background-position: 0 0; background-size: cover;';
+            return 'background: no-repeat url('.$url.'); background-position: center center; background-size: cover;';
         }
 
         return '';

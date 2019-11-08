@@ -12,9 +12,7 @@ use Pagerfanta\Pagerfanta;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class TicketApprovalsDataService
- *
- * @package DeskPRO\Bundle\AppBundle\DataService
+ * Class TicketApprovalsDataService.
  */
 class TicketApprovalsDataService extends AbstractDataService
 {
@@ -26,7 +24,7 @@ class TicketApprovalsDataService extends AbstractDataService
     /**
      * TicketApprovalsDataService constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager   $em
      * @param LoggerInterface $logger
      */
     public function __construct(EntityManager $em, LoggerInterface $logger)
@@ -37,16 +35,17 @@ class TicketApprovalsDataService extends AbstractDataService
 
     /**
      * @param Person $person
+     *
      * @return int
      */
-    public function getApprovalCountWhereUserIsApprover(Person $person)
+    public function getApprovalCountWhereUserIsApprover(Person $person = null)
     {
         return $this->generateAndCache([__FUNCTION__, $person], function () use ($person) {
-                $qb = $this->em->createQueryBuilder();
-                $time = microtime(true);
-                $this->logger->debug('[TicketApprovalsDataService] Count started');
+            $qb = $this->em->createQueryBuilder();
+            $time = microtime(true);
+            $this->logger->debug('[TicketApprovalsDataService] Count started');
 
-                $qb
+            $qb
                     ->select('COUNT(DISTINCT ta.id)')
                     ->from(TicketApproval::class, 'ta')
                     ->innerJoin('ta.approvers', 'a')
@@ -60,24 +59,25 @@ class TicketApprovalsDataService extends AbstractDataService
                     ], Connection::PARAM_STR_ARRAY)
                 ;
 
-                $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
+            $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
 
-                $this->logger->debug(
+            $this->logger->debug(
                     '[TicketApprovalsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time)
                 );
-                $this->logger->debug("[TicketApprovalsDataService] Count: $singleScalarResult");
+            $this->logger->debug("[TicketApprovalsDataService] Count: $singleScalarResult");
 
-                return $singleScalarResult;
-            }
+            return $singleScalarResult;
+        }
         );
     }
 
     /**
-     * @param Person $person
-     * @param string $status
+     * @param Person      $person
+     * @param string      $status
      * @param string|null $query
-     * @param int $page
-     * @param int $maxPerPage
+     * @param int         $page
+     * @param int         $maxPerPage
+     *
      * @return Pagerfanta
      */
     public function getPager(Person $person, $status, $query, $page, $maxPerPage)

@@ -60,7 +60,7 @@ class DownloadsDataService extends AbstractDataService
      *
      * @return Pagerfanta
      */
-    public function getDownloadsPager(DownloadCategory $category = null, $page, $max_per_page, Person $person)
+    public function getDownloadsPager(DownloadCategory $category = null, $page = 1, $max_per_page = 10, Person $person = null)
     {
         $em                  = $this->em;
         $permissions_manager = $this->permissions_manager;
@@ -129,7 +129,7 @@ class DownloadsDataService extends AbstractDataService
      *
      * @return DownloadCategory[]
      */
-    public function getCategoryChildren($category, Person $person)
+    public function getCategoryChildren($category, Person $person = null)
     {
         $that = $this;
 

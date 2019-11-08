@@ -40,7 +40,7 @@ class PersonDataService extends AbstractDataService
      *
      * @return bool
      */
-    public function isPasswordResetReSendExpired(Person $person)
+    public function isPasswordResetReSendExpired(Person $person = null)
     {
         $tmpData = $this->em->getRepository(TmpData::class)->findOneBy([
             'name' => 'reset-password-'.$person->getId(),
@@ -113,30 +113,31 @@ class PersonDataService extends AbstractDataService
 
     /**
      * @param Person $member
-     * @param int $page
-     * @param int $maxPerPage
-     * @param bool $groupChronologically Group results by today, this week, this month, etc.
+     * @param int    $page
+     * @param int    $maxPerPage
+     * @param bool   $groupChronologically Group results by today, this week, this month, etc
+     *
      * @return Pagerfanta
      */
     public function getPortalMemberActivitiesPager(Person $member, $page, $maxPerPage, $groupChronologically = false)
     {
         $params = [
-            'subLimit' => 250,
+            'subLimit'            => 250,
             'truncateDescription' => 200,
-            'personId' => (int) $member->getId(),
+            'personId'            => (int) $member->getId(),
         ];
 
         $types = [
-            'subLimit' => 'integer',
+            'subLimit'            => 'integer',
             'truncateDescription' => 'integer',
-            'personId' => 'integer',
+            'personId'            => 'integer',
         ];
 
         $sqlTemplate = file_get_contents(__DIR__.'/sql/member_profile_activities.sql');
 
         $group = function ($activities) {
             $groups = [];
-            $today = (new \DateTimeImmutable())
+            $today  = (new \DateTimeImmutable())
                 ->setTime(0, 0, 0)
             ;
 
@@ -271,12 +272,13 @@ class PersonDataService extends AbstractDataService
     }
 
     /**
-     * Parse the SQL template that builds the unified list of member activities
+     * Parse the SQL template that builds the unified list of member activities.
      *
      * @param string $template
      * @param string $columns
      * @param string $order
      * @param string $limit
+     *
      * @return string
      */
     private function parseMemberActivitiesSql($template, $columns, $order = '', $limit = '')

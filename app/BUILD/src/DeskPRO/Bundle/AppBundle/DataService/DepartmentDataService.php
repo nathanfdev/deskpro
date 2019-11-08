@@ -50,7 +50,7 @@ class DepartmentDataService extends AbstractDataService
      *
      * @return Department[]
      */
-    public function getTicketDepartmentsForPerson(Person $person, Brand $brand = null)
+    public function getTicketDepartmentsForPerson(Person $person = null, Brand $brand = null)
     {
         return $this->generateAndCache(
             [
@@ -76,7 +76,7 @@ class DepartmentDataService extends AbstractDataService
      *
      * @return Department[]
      */
-    public function getChatDepartmentsForPerson(Person $person, Brand $brand = null)
+    public function getChatDepartmentsForPerson(Person $person = null, Brand $brand = null)
     {
         return $this->generateAndCache(
             [
@@ -101,7 +101,7 @@ class DepartmentDataService extends AbstractDataService
      *
      * @return Department[]
      */
-    public function getDepartmentsForPerson(Person $person)
+    public function getDepartmentsForPerson(Person $person = null)
     {
         return $this->generateAndCache(
             [
@@ -120,7 +120,7 @@ class DepartmentDataService extends AbstractDataService
      *
      * @return array
      */
-    public function fetchDepartments(Person $person, Brand $brand = null, $type = '')
+    public function fetchDepartments(Person $person = null, Brand $brand = null, $type = '')
     {
         // department data service is used both for the portal and api
         // so we can't rely on portal permission bag and use legacy permission manager
