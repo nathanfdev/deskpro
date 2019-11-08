@@ -569,15 +569,17 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @return string
      */
-    public function getHelpcenterAvatar($obj = null, $className = '', $size = 80)
+    public function getHelpcenterAvatar($obj = null, $className = 'dp-po-avatar', $size = 80)
     {
         $avatarUrl = $this->getAvatarUrl($obj, $size, false);
         if ($avatarUrl) {
             if ($className) {
                 $className = 'class="'.$className.'-image"';
+            } else {
+                $className = 'class="dp-po-avatar-image"';
             }
 
-            return "<img $className src='$avatarUrl' />";
+            return "<span $className style='background-image: url(\"$avatarUrl\");'></span>";
         } elseif ($obj) {
             if ($className) {
                 $className = 'class="'.$className.'-name"';

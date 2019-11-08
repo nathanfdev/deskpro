@@ -22,7 +22,9 @@
                     <p class="dp-po-news-carousel-desc">{{ item.getExcerptHtml(30)|raw }}
                     </p>
                     {% if item.person %}
-                        <img src="{{ avatar_url(item.person) }}" class="dp-po-news-carousel-avatar" />
+                        <div class="dp-po-news-carousel-avatar dp-po-avatar">
+                            {{ hc_avatar(item.person) }}
+                        </div>
                     {% endif %}
                     <i class="dp-po-news-carousel-caret dp-po-icon far fa-angle-right"></i>
                 </a>
