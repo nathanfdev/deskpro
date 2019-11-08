@@ -16,7 +16,7 @@
 			{{ data.value.value|raw }}
         {% elseif field_handler_name == 'File' %}
 			{% for file in data.value %}
-				{{ file.filename }}
+				{{ file.getDownloadUrl(true) }}
 			{% endfor %}
 		{% else %}
 			{{ data.value }}

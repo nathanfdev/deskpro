@@ -1791,7 +1791,7 @@ class TicketSearchController extends AbstractController
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
                             if (isset($customTextData[$fieldId])) {
-                                $row[] = $customTextData[$fieldId]['rendered'];
+                                $row[] = Strings::collapseWhitespace($customTextData[$fieldId]['rendered']);
                             } else {
                                 $row[] = '';
                             }
