@@ -69,21 +69,17 @@ class TicketController extends AbstractMessengerController
         $person = null;
 
         if (isset($requestData['person_id'])) {
-            $person = $this->get('doctrine.orm.default_entity_manager')->find(Person::class, $request['person_id']);
+            $person = $this->get('doctrine.orm.default_entity_manager')->find(Person::class, $requestData['person_id']);
             unset($requestData['person_id']);
-            if (isset($requestData['email'])) {
-                unset($requestData['email']);
-            }
         }
 
         if (!$person && isset($requestData['email'])) {
             $person = $personRepository->findOneByEmail($requestData['email']);
-            unset($requestData['email']);
         }
 
         // determine username for person
-        if (isset($request['name'])) {
-            $username = $request['name'];
+        if (isset($requestData['name'])) {
+            $username = $requestData['name'];
             unset($requestData['name']);
         } else {
             $username = 'anonymous user';
@@ -92,12 +88,16 @@ class TicketController extends AbstractMessengerController
         // if email was sent but person wasn't found - create person
         if (!$person) {
             $person = new Person();
-            $person->setEmail($request['email']);
+            $person->setEmail($requestData['email']);
             $person->setName($username);
         }
 
+        if (isset($requestData['email'])) {
+            unset($requestData['email']);
+        }
+
         $errors = [];
-        if (!$person && !isset($request['email'])) {
+        if (!$person && !isset($requestData['email'])) {
             $errors['email']     = 'Either email or person_id parameter is required';
             $errors['person_id'] = 'Either email or person_id parameter is required';
         }
@@ -105,6 +105,10 @@ class TicketController extends AbstractMessengerController
         if ($errors) {
             throw new MessengerApiException($errors);
         }
+
+        $formOptions['person'] = $person;
+
+        $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
 
         $form = $this->container->get('form.factory')->create(
             TicketWithLayoutsApiFullType::class,

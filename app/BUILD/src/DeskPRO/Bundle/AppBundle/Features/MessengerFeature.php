@@ -65,7 +65,7 @@ HTML;
      */
     public function isEnabledOnInstall()
     {
-        return true;
+        return false;
     }
 
     /**

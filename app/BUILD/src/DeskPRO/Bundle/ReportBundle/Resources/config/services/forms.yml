@@ -28,3 +28,10 @@ services:
     - "@reports.report_saver"
     tags:
     - { name: form.type }
+
+  form.currency_field:
+    class: Application\DeskPRO\CustomFields\Form\Type\CurrencyFieldType
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    tags:
+    - { name: form.type }
