@@ -1,17 +1,19 @@
 {% extends 'Theme:Tickets:base_view.html.twig' %}
 
 {% block page_specific_content %}
-    {% if rerendering %}
-        <strong>{{ phrase('helpcenter.tickets.switched-department-rerender') }}</strong>
-    {% endif %}
+    <div class="dp-po-block">
+        {% if rerendering %}
+            <strong>{{ phrase('helpcenter.tickets.switched-department-rerender') }}</strong>
+        {% endif %}
 
-    <div id="edit_ticket_page">
-        {% show ticket_form %}
-    </div>
+        <div id="edit_ticket_page">
+            {% show ticket_form %}
+        </div>
 
-    <div class="column-full">
-        <div class="bucket">
-            <a href="{{ portal_path(ticket) }}">{{ phrase('helpcenter.tickets.cancel-ticket-edit') }}</a>
+        <div class="row">
+            <div class="col-sm-12">
+                <a href="{{ portal_path(ticket) }}">{{ phrase('helpcenter.tickets.cancel-ticket-edit') }}</a>
+            </div>
         </div>
     </div>
 {% endblock page_specific_content %}
