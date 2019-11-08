@@ -77,6 +77,11 @@ class TicketSettings
     /** @var bool */
     public $attachment_require_auth = false;
 
+    /**
+     * @var bool
+     */
+    public $ticket_approvals = false;
+
     public $agent_defaults = [
         'newticket_status'        => 'awaiting_user',
         'newticket_agent'         => 'assign',
@@ -118,6 +123,8 @@ class TicketSettings
         $this->email_require_validation = (bool) $this->settings->get('core_tickets.email_require_validation');
 
         $this->attachment_require_auth = (bool) $this->settings->get('core_tickets.attachment_require_auth');
+
+        $this->ticket_approvals = (bool) $this->settings->get('core_tickets.ticket_approvals');
 
         $this->kbsuggest_web_enabled = (bool) $this->settings->get('core.show_ticket_suggestions');
 
@@ -214,6 +221,7 @@ class TicketSettings
             'web_require_validation',
             'email_require_validation',
             'attachment_require_auth',
+            'ticket_approvals',
             'kbsuggest_web_enabled',
             'timelog_enabled',
             'timelog_autostart',
@@ -276,6 +284,8 @@ class TicketSettings
         $this->settings->setSetting('core_tickets.email_require_validation', (int) $this->email_require_validation);
 
         $this->settings->setSetting('core_tickets.attachment_require_auth', (int) $this->attachment_require_auth);
+
+        $this->settings->setSetting('core_tickets.ticket_approvals', (int) $this->ticket_approvals);
 
         $this->settings->setSetting('core_tickets.enable_timelog',       (int) $this->timelog_enabled);
 

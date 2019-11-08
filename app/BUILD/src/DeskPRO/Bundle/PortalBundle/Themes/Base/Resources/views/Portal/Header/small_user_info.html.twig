@@ -95,7 +95,7 @@
     </li>
     {% endif %}
 
-    {% if ticket_approval_count > 0 and app.hasBeta('approvals') %}
+    {% if ticket_approval_count > 0 and app.getSetting('core_tickets.ticket_approvals') %}
       <li class="welcome item-approvals hideable">
         <span class="disc"></span>
         <a class="approvals-link dpx-approvals-count" href="{{ path('ticket_approvals') }}">{{ phrase('portal.general.nav-approvals') }} ({{ ticket_approval_count }})</a>

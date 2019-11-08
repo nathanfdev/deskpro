@@ -120,7 +120,7 @@
                         {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.channel_facebook', 'fa-users') }}
                     {% endif %}
 
-                    {% if app.hasBeta('approvals') %}
+                    {% if app.getSetting('core_tickets.ticket_approvals') %}
                         {{ nav.list_subitem('Approvals', ng_href('tickets.approvals'), 'tickets.approvals', 'fa-thumbs-up') }}
                     {% endif %}
 
