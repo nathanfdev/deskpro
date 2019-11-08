@@ -281,6 +281,7 @@ portal.news.section-title: Notícias
 portal.news.view-as-agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
 portal.sidebar.news_title: Notícias
 portal.tickets.feedback_message_leave_comment: 'Opcionalmente deixe um comentário'
+portal.tickets.feedback.submit: 'Enviar comentário'
 portal.tickets.guest-thanks-section-title: Obrigado
 portal.tickets.guest_thank_you_title: Obrigado
 portal.tickets.list_agent: 'Agente designado'

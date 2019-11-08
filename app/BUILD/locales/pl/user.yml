@@ -752,6 +752,7 @@ portal.sidebar.top_articles_title: 'Najlepsze artykuły'
 portal.tickets.add-reply: Odpowiedz
 portal.tickets.cancel-ticket-edit: 'Anuluj edytowanie i pokaż mi zgłoszenie ponownie'
 portal.tickets.feedback_message_leave_comment: 'Jeśli chcesz, zostaw komentarz'
+portal.tickets.feedback.submit: 'Wyślij opinię'
 portal.tickets.form-changed-notice: 'Nowe pola zostały dodane do formularza. Zwróć uwagę na te pola i wyślij formularz ponownie.'
 portal.tickets.guest-thanks-section-title: Dziękujemy
 portal.tickets.guest_thank_you_desc: 'Dziękujemy za kontakt z nami. Wysłaliśmy ci wiadomość email z informacjami jak zarządzać swoimi zgłoszeniami.'

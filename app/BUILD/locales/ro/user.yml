@@ -245,6 +245,7 @@ portal.sidebar.agents_x_online:
   other: '{{count}} online'
 portal.sidebar.news_title: Stiri
 portal.tickets.feedback_message_leave_comment: 'Optional, puteti lasa un comentariu'
+portal.tickets.feedback.submit: 'Trimite feedback'
 portal.tickets.guest-thanks-section-title: 'Va multumim'
 portal.tickets.guest_thank_you_title: 'Va multumim'
 portal.tickets.list_agent: 'Agentul asignat'
