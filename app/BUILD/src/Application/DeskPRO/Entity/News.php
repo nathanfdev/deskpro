@@ -11,6 +11,8 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
+use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -101,7 +103,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         return $content;
     }
 
-    public function getExcerptHtml()
+    public function getExcerptHtml($wordsLimit = 50)
     {
         $content = Strings::html2Text($this->getContent());
         if ($pos = strpos($content, '![more]')) {
@@ -112,9 +114,9 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
             $excerpt = $content;
         }
 
-        if (str_word_count($excerpt) > 50) {
+        if (str_word_count($excerpt) > $wordsLimit) {
             $words   = str_word_count($excerpt, 2);
-            $pos     = Arrays::getNthKey($words, 50);
+            $pos     = Arrays::getNthKey($words, $wordsLimit);
             $excerpt = substr($excerpt, 0, $pos);
             $excerpt = RegexUtils::safePregReplace('#[^a-zA-Z0-9]$#', '', $excerpt);
             $excerpt .= '...';
@@ -126,9 +128,9 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     public function getCountWordsAfterExcerpt()
     {
         $content = strip_tags($this->getContentHtml());
-        $exceprt = strip_tags($this->getExcerptHtml());
+        $excerpt = strip_tags($this->getExcerptHtml());
 
-        $diff = str_word_count($content) - str_word_count($exceprt);
+        $diff = str_word_count($content) - str_word_count($excerpt);
 
         return $diff;
     }
@@ -608,6 +610,42 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'news',
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'icon_property',
+                'targetEntity' => IconProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'icon_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'splash_image_property',
+                'targetEntity' => SplashImageProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'splash_image_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
 

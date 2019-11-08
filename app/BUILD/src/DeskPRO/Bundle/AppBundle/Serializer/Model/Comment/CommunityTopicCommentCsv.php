@@ -50,11 +50,11 @@ class CommunityTopicCommentCsv extends CommunityTopicComment
     private $hiddenStatus;
 
     /**
-     * Channel of community topic this comment belongs to.
+     * Forum of community topic this comment belongs to.
      *
      * @JMS\Type("string")
      */
-    private $channel;
+    private $forum;
 
     /**
      * Constructor.
@@ -72,6 +72,6 @@ class CommunityTopicCommentCsv extends CommunityTopicComment
         $this->communityTopicStatus = $this->topic->getStatusCategory() ? $this->topic->getStatusCategory()
             ->getTitle() : '';
         $this->hiddenStatus = $this->topic->getHiddenStatus() ?: '';
-        $this->channel      = $this->topic->getCategory() ? $this->topic->getCategory()->getTitle() : '';
+        $this->forum      = $this->topic->getCategory() ? $this->topic->getCategory()->getTitle() : '';
     }
 }

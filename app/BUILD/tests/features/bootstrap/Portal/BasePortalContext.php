@@ -6,6 +6,7 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\Person;
 use DpBehat\BaseContext;
 use SensioLabs\Behat\PageObjectExtension\Context\PageObjectAware;
 use SensioLabs\Behat\PageObjectExtension\PageObject\Element;
@@ -14,6 +15,11 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 abstract class BasePortalContext extends BaseContext implements PageObjectAware
 {
+    /**
+     * @var array Map [ref => ticket]
+     */
+    public static $tickets = [];
+
     /**
      * @var PageObjectFactory
      */
@@ -79,5 +85,15 @@ abstract class BasePortalContext extends BaseContext implements PageObjectAware
     protected function phrase($phrase)
     {
         return $this->get('language_manager')->phrase($phrase);
+    }
+
+    /**
+     * @param $who
+     *
+     * @return Person
+     */
+    protected function getWho($who)
+    {
+        return $this->get('user_details')->getWho($who);
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ac093254252238fae7ed9ed8e3810ab",
+    "content-hash": "4a58d9843e2d76cf7cd52edf6a2af9e7",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2058,6 +2058,69 @@
                 "shamsi"
             ],
             "time": "2015-12-11T22:50:01+00:00"
+        },
+        {
+            "name": "fortawesome/font-awesome",
+            "version": "5.11.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FortAwesome/Font-Awesome.git",
+                "reference": "1c1b102b2ba19518d77e60e97cf1b4ebf133bba0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/1c1b102b2ba19518d77e60e97cf1b4ebf133bba0",
+                "reference": "1c1b102b2ba19518d77e60e97cf1b4ebf133bba0",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "CC-BY-4.0",
+                "OFL-1.1",
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Travis Chase",
+                    "homepage": "http://twitter.com/supercodepoet"
+                },
+                {
+                    "name": "Dave Gandy",
+                    "homepage": "http://twitter.com/davegandy"
+                },
+                {
+                    "name": "Rob Madole",
+                    "homepage": "http://twitter.com/robmadole"
+                },
+                {
+                    "name": "Jory Raphael",
+                    "homepage": "http://twitter.com/sensibleworld"
+                },
+                {
+                    "name": "Geremia Taglialatela",
+                    "homepage": "http://twitter.com/gtagliala"
+                },
+                {
+                    "name": "Brian Talbot",
+                    "homepage": "http://twitter.com/talbs"
+                },
+                {
+                    "name": "Mike Wilkerson",
+                    "homepage": "http://twitter.com/mw77"
+                }
+            ],
+            "description": "The iconic font, CSS, and SVG framework",
+            "homepage": "https://fontawesome.com",
+            "keywords": [
+                "FontAwesome",
+                "awesome",
+                "bootstrap",
+                "font",
+                "icon",
+                "svg"
+            ],
+            "time": "2019-09-23T18:57:22+00:00"
         },
         {
             "name": "friendsofsymfony/elastica-bundle",
@@ -4179,59 +4242,6 @@
             "time": "2015-06-25T17:26:56+00:00"
         },
         {
-            "name": "leafo/scssphp",
-            "version": "v0.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/leafo/scssphp.git",
-                "reference": "a27edad3d16635a222d7204706572e24c338aa17"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/a27edad3d16635a222d7204706572e24c338aa17",
-                "reference": "a27edad3d16635a222d7204706572e24c338aa17",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "kherge/box": "~2.5",
-                "phpunit/phpunit": "~3.7",
-                "squizlabs/php_codesniffer": "~2.5"
-            },
-            "bin": [
-                "bin/pscss"
-            ],
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Leafo\\ScssPhp\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Leaf Corcoran",
-                    "email": "leafot@gmail.com",
-                    "homepage": "http://leafo.net"
-                }
-            ],
-            "description": "scssphp is a compiler for SCSS written in PHP.",
-            "homepage": "http://leafo.github.io/scssphp/",
-            "keywords": [
-                "css",
-                "less",
-                "sass",
-                "scss",
-                "stylesheet"
-            ],
-            "time": "2016-01-15T02:50:06+00:00"
-        },
-        {
             "name": "league/oauth1-client",
             "version": "dev-master",
             "source": {
@@ -4855,16 +4865,16 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "7.0.0.2a",
+            "version": "7.0.0.3a",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ImmRanneft/mpdf.git",
-                "reference": "611690f581d405c1b47019e8d257a626c55fea53"
+                "reference": "a964070cbc34f80646ca88c2e06397158f53bebd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ImmRanneft/mpdf/zipball/611690f581d405c1b47019e8d257a626c55fea53",
-                "reference": "611690f581d405c1b47019e8d257a626c55fea53",
+                "url": "https://api.github.com/repos/ImmRanneft/mpdf/zipball/a964070cbc34f80646ca88c2e06397158f53bebd",
+                "reference": "a964070cbc34f80646ca88c2e06397158f53bebd",
                 "shasum": ""
             },
             "require": {
@@ -4895,10 +4905,7 @@
             "autoload": {
                 "psr-4": {
                     "Mpdf\\": "src/"
-                },
-                "files": [
-                    "src/functions.php"
-                ]
+                }
             },
             "autoload-dev": {
                 "psr-4": {
@@ -4938,7 +4945,7 @@
                 "source": "https://github.com/mpdf/mpdf",
                 "docs": "http://mpdf.github.io"
             },
-            "time": "2017-10-03T13:15:39+00:00"
+            "time": "2019-09-25T11:34:29+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -6351,58 +6358,6 @@
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
-            "name": "plivo/php-sdk",
-            "version": "v4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/plivo/plivo-php.git",
-                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/plivo/plivo-php/zipball/0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
-                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0"
-            },
-            "require-dev": {
-                "justinrainbow/json-schema": "^5.2",
-                "phpunit/phpunit": "^4.8"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "src/",
-                    "tests/"
-                ],
-                "exclude-from-classmap": []
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Plivo SDKs Team",
-                    "email": "sdks@plivo.com",
-                    "homepage": "https://developers.plivo.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A PHP SDK to make voice calls & send SMS using Plivo and to generate Plivo XML",
-            "homepage": "http://github.com/plivo/plivo-php",
-            "keywords": [
-                "api",
-                "plivo",
-                "plivo xml",
-                "sms",
-                "voice calls"
-            ],
-            "time": "2018-07-05T12:35:52+00:00"
-        },
-        {
             "name": "predis/predis",
             "version": "v1.0.3",
             "source": {
@@ -6977,6 +6932,67 @@
                 "search"
             ],
             "time": "2016-09-23T10:24:25+00:00"
+        },
+        {
+            "name": "scssphp/scssphp",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scssphp/scssphp.git",
+                "reference": "98e10149058102817b493c5a147fa582cb62d46e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scssphp/scssphp/zipball/98e10149058102817b493c5a147fa582cb62d46e",
+                "reference": "98e10149058102817b493c5a147fa582cb62d46e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-json": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7 || ^6.5 || ^7.5 || ^8.3",
+                "squizlabs/php_codesniffer": "~2.5",
+                "twbs/bootstrap": "~4.3",
+                "zurb/foundation": "~6.5"
+            },
+            "bin": [
+                "bin/pscss"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ScssPhp\\ScssPhp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "homepage": "https://github.com/robocoder"
+                },
+                {
+                    "name": "Cédric Morin",
+                    "email": "cedric@yterium.com",
+                    "homepage": "https://github.com/Cerdic"
+                }
+            ],
+            "description": "scssphp is a compiler for SCSS written in PHP.",
+            "homepage": "http://scssphp.github.io/scssphp/",
+            "keywords": [
+                "css",
+                "less",
+                "sass",
+                "scss",
+                "stylesheet"
+            ],
+            "time": "2019-10-03T17:09:15+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -8873,53 +8889,6 @@
                 "validate"
             ],
             "time": "2016-11-23T20:04:58+00:00"
-        },
-        {
-            "name": "webonyx/graphql-php",
-            "version": "v0.11.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webonyx/graphql-php.git",
-                "reference": "b97cad0f4a50131c85d9224e8e36ebbcf1c6b425"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webonyx/graphql-php/zipball/b97cad0f4a50131c85d9224e8e36ebbcf1c6b425",
-                "reference": "b97cad0f4a50131c85d9224e8e36ebbcf1c6b425",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mbstring": "*",
-                "php": ">=5.5,<8.0-DEV"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^4.8",
-                "psr/http-message": "^1.0"
-            },
-            "suggest": {
-                "psr/http-message": "To use standard GraphQL server",
-                "react/promise": "To leverage async resolving on React PHP platform"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/deprecated.php"
-                ],
-                "psr-4": {
-                    "GraphQL\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD"
-            ],
-            "description": "A PHP port of GraphQL reference implementation",
-            "homepage": "https://github.com/webonyx/graphql-php",
-            "keywords": [
-                "api",
-                "graphql"
-            ],
-            "time": "2017-12-12T09:03:21+00:00"
         },
         {
             "name": "white-october/pagerfanta-bundle",
@@ -12863,6 +12832,7 @@
                 "MIT"
             ],
             "description": "Integrates CodeCoverage with PhpSpec",
+            "abandoned": true,
             "time": "2014-12-11T11:43:15+00:00"
         },
         {
@@ -13305,6 +13275,58 @@
             "description": "CLI frontend for PHP_CodeCoverage",
             "homepage": "https://github.com/sebastianbergmann/phpcov",
             "time": "2015-10-05T09:24:23+00:00"
+        },
+        {
+            "name": "plivo/php-sdk",
+            "version": "v4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/plivo/plivo-php.git",
+                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/plivo/plivo-php/zipball/0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
+                "reference": "0c5b92c6d5943d1fd7a23adec8a6422330a9bb0d",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0"
+            },
+            "require-dev": {
+                "justinrainbow/json-schema": "^5.2",
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/",
+                    "tests/"
+                ],
+                "exclude-from-classmap": []
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Plivo SDKs Team",
+                    "email": "sdks@plivo.com",
+                    "homepage": "https://developers.plivo.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP SDK to make voice calls & send SMS using Plivo and to generate Plivo XML",
+            "homepage": "http://github.com/plivo/plivo-php",
+            "keywords": [
+                "api",
+                "plivo",
+                "plivo xml",
+                "sms",
+                "voice calls"
+            ],
+            "time": "2018-07-05T12:35:52+00:00"
         },
         {
             "name": "satooshi/php-coveralls",

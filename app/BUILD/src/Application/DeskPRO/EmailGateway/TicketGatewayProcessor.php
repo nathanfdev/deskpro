@@ -73,12 +73,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         // Run detectors to see if its a reply
         //-------------------------
 
-        $ticket     = null;
-        $person     = null;
-        $tacPerson  = null;
-        $isBounce   = false;
-        $isDp3Reply = false;
-        $isPtac     = false;
+        $ticket             = null;
+        $person             = null;
+        $tacPerson          = null;
+        $isBounce           = false;
+        $isDp3Reply         = false;
+        $isPtac             = false;
+        $isMatchedBySubject = false;
 
         $canAddNewPerson = false;
 
@@ -113,8 +114,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
                 $canAddNewPerson = $ticketDetect->canAddUnknownPerson($ticket, $this->reader);
 
-                if ($ticketDetect->getMatchedDetector($this->reader) instanceof Dp3Detector) {
+                $matchedDetector = $ticketDetect->getMatchedDetector($this->reader);
+                if ($matchedDetector instanceof Dp3Detector) {
                     $isDp3Reply = true;
+                } elseif ($matchedDetector instanceof SubjectMatchDetector) {
+                    $isMatchedBySubject = true;
                 }
             }
         }
@@ -477,9 +481,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticketEmail->isPublicTac     = $isPtac;
 
         if ($removed && $ticket) {
-            if (in_array($this->reader->getFromAddress()->getEmail(), $removed)) {
-                $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
-                $ticket = null;
+            $emailAddress = $this->reader->getFromAddress()->getEmail();
+            if (in_array($emailAddress, $removed)) {
+                // Prevent false positive in removed person.
+                if (!$ticket->hasParticipantEmailAddress($emailAddress)) {
+                    $this->logMessage(sprintf('Person removed from ticket #%d, creating a new ticket', $ticket->getId()));
+                    $ticket = null;
+                }
             }
         }
 
@@ -488,7 +496,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             return $this->runReply($ticketEmail);
         } else {
-            return $this->runNew($ticketEmail, $replyAsNew);
+            return $this->runNew($ticketEmail, $replyAsNew && !$isMatchedBySubject);
         }
     }
 

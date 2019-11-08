@@ -311,7 +311,7 @@ SQL
                 (1, 8)
             ;
 
-            INSERT INTO `community_channel2usergroup`
+            INSERT INTO `community_forum2usergroup`
                 (`category_id`, `usergroup_id`)
             VALUES
                 (1, 1),

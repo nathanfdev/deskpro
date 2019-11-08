@@ -13,7 +13,7 @@ use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use DpSys\CodePlugin\CodePlugin;
 use DpSys\CodePlugin\DpPlugins;
 use DpSys\LowError\SystemErrorHandler;
-use Leafo\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Exception\ParserException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -160,31 +160,33 @@ class PostBuild extends AbstractBuild
         $brands = $em->getRepository(Brand::class)->findAll();
 
         foreach ($brands as $brand) {
-            $themes = [$brand->getThemeSet(), $brand->getEditThemeSet()];
-            foreach ($themes as $t) {
-                if (!$t) {
-                    continue;
-                }
-
-                // Just a check to see if we need to do a compile at all
-                $asset = $em->getRepository(ThemeSetAsset::class)->findOneBy([
-                    'name'      => 'portal.css',
-                    'theme_set' => $t,
-                ]);
-
-                if ($asset) {
-                    $this->out(sprintf('Recompile CSS for brand %s, theme %s', $brand->getName(), $t->getId()));
-                    $vars = array_merge($defaultVariables, $t->getOption(PortalStylesCompiler::$customVarsThemeSetOption, []));
-
-                    try {
-                        $styleCompiler->recompile($vars, $t);
-                    } catch (ParserException $e) {
-                        SystemErrorHandler::logException($e);
+            $this->container->get('brand_stack')->pushTemporary($brand, function () use ($em, $brand, $styleCompiler, $defaultVariables) {
+                $themes = [$brand->getThemeSet(), $brand->getEditThemeSet()];
+                foreach ($themes as $t) {
+                    if (!$t) {
+                        continue;
                     }
 
-                    $this->out('.. done');
+                    // Just a check to see if we need to do a compile at all
+                    $asset = $em->getRepository(ThemeSetAsset::class)->findOneBy([
+                        'name'      => 'portal.css',
+                        'theme_set' => $t,
+                    ]);
+
+                    if ($asset) {
+                        $this->out(sprintf('Recompile CSS for brand %s, theme %s', $brand->getName(), $t->getId()));
+                        $vars = array_merge($defaultVariables, $t->getOption(PortalStylesCompiler::$customVarsThemeSetOption, []));
+
+                        try {
+                            $styleCompiler->recompile($vars, $t);
+                        } catch (ParserException $e) {
+                            SystemErrorHandler::logException($e);
+                        }
+
+                        $this->out('.. done');
+                    }
                 }
-            }
+            });
         }
 
         $this->out('.. done recompiling CSS');

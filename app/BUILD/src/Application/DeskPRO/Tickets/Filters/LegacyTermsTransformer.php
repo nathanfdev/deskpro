@@ -466,6 +466,13 @@ class LegacyTermsTransformer
                     'options' => $options->all(),
                 ];
 
+            case 'TicketApproval':
+                return [
+                    'type'    => 'ticket_approval',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
             case 'FilterTicketField':
                 return $this->filterFieldToLegacyOptions($term, 'ticket');
 
@@ -899,6 +906,9 @@ class LegacyTermsTransformer
                 }
 
                 return new Terms\FilterBrand($op, ['brand_ids' => $ids]);
+
+            case 'ticket_approval':
+                return new Terms\TicketApproval($op, $options);
         }
 
         return;

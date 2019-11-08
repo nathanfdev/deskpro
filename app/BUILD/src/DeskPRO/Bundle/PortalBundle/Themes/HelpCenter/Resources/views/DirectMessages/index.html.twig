@@ -1,0 +1,77 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+    <div class="dp-po">
+        <main class="dp-po-main {% if main_class is defined %}{{ main_class }}{% endif %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="dp-po-title">
+                            <img class="dp-po-title-svg" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}">
+                            <h2 class="dp-po-title-text">{{ phrase('helpcenter.direct_messages.title') }}</h2>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <a href="{{ path('portal_dm_send') }}" class="btn btn-primary" id="send_message_action">
+                            {{ phrase('helpcenter.direct_messages.reply.send_message') }}
+                        </a>
+                    </div>
+                </div>
+                <div class="dp-po-block">
+                    <div class="dp-po-messages">
+                        <div class="dp-po-messages-list">
+                            {% for row in pager %}
+                                {% set thread = row[0] %}
+                                {% set me = null %}
+                                {% set is_blocked = is_blocked_by_thread_id[thread.id] %}
+                                {% for p in participants[thread.id] %}{% set me = p.person.id == app.user.id ? p : me %}{% endfor%}
+                                <div class="dp-po-messages-item {{ me and me.isUnread ? 'dp-po-messages-item-new'}} {{ is_blocked ? 'dp-po-messages-item-blocked' }}">
+                                    <figure class="dp-po-messages-figure">
+                                        {% for p in participants[thread.id] %}
+                                            {% if p.person.id != app.user.id %}
+                                                <img src="{{ avatar_url(p.person, 50) }}" class="dp-po-messages-avatar">
+                                            {% endif %}
+                                        {% endfor%}
+                                    </figure>
+                                    <a href="{{ path('portal_dm_view', {'id': thread.id}) }}" class="dp-po-messages-link">
+                                        <h3 class="dp-po-messages-name">
+                                            {% for p in participants[thread.id] %}{% if p.person.id != app.user.id %}{{ p.person.display_name }}{% endif %}{% endfor%}
+                                        </h3>
+                                        <p class="dp-po-messages-msg">
+                                            {{ row.latestMessage|truncate(120) }}
+                                        </p>
+                                    </a>
+                                    <div class="dp-po-messages-block">
+                                        {% if is_blocked is not null %}
+                                            {% if is_blocked %}
+                                                <a href="{{ path('portal_dm_unblock', {id: thread.id}) }}" class="dp-po-messages-block-btn">
+                                                    <i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.unblock_user') }}
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ path('portal_dm_block', {id: thread.id}) }}" class="dp-po-messages-block-btn">
+                                                    <i class="dp-po-icon far fa-ban"></i> {{ phrase('helpcenter.direct_messages.block_user') }}
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                    <div class="dp-po-time">
+                                        {{ thread.dateLastMessage|date('j M Y') }}
+                                    </div>
+                                    <div class="dp-po-messages-status"><i class="dp-po-icon fas fa-circle"></i></div>
+                                </div>
+                            {% else %}
+                                <p>{{ phrase('helpcenter.direct_messages.none') }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    {% include 'Theme:Common:pager.html.twig' with {
+                        pager: pager,
+                        pager_options: { pageParameter: '[page]' }
+                    } %}
+                </div>
+            </div>
+        </main>
+    </div>
+{% endblock page_content %}

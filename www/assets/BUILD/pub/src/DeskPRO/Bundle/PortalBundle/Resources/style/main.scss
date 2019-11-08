@@ -1070,7 +1070,7 @@ button, .button, input[type="submit"] {
     font-weight: normal;
 
     li {
-      i[class*=" fa-file-"] {
+      i[class*=" fa-file-"], svg[class*=" fa-file-"] {
         @include margin-right(5px);
       }
     }
@@ -2170,7 +2170,7 @@ $search-btn-height: $search-height - 24;
               color: inherit;
             }
 
-            i.fa-map-marker {
+            i.fa-map-marker, svg.fa-map-marker {
               color: $text-color-lighter;
               @include margin-right(8px);
               font-size: 1.3em;
@@ -4235,7 +4235,7 @@ ul.kb-checkbox-extra {
     @include margin-right(4px);
   }
 
-  i.fa-caret-down, i.fa-caret-up {
+  i.fa-caret-down, i.fa-caret-up, svg.fa-caret-down, svg.fa-caret-up {
     position: absolute;
     top: 10px;
     @include right(10px);
@@ -6592,7 +6592,7 @@ ul.categories-article-list {
       }
     }
 
-    .ticket-view-sidebar {
+    .ticket-view-sidebar, .approval-view-sidebar {
       flex-shrink: 0;
       width: 330px;
     }
@@ -7645,14 +7645,23 @@ ul.categories-article-list {
   }
 }
 
-.user-ticket-list-expanded {
+.user-ticket-list-expanded, .user-approval-list-expanded {
   margin-bottom: 60px;
   padding: 10px 20px;
   border: 1px solid $hr-border;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 
-  .user-ticket-list {
+  .user-ticket-list, .user-approval-list {
     margin-bottom: 0;
+  }
+}
+
+.user-approval-list {
+  .table-header {
+    color: #7d7d7d;
+  }
+  .approval-ref {
+    padding-left: 10px !important;
   }
 }
 
@@ -7660,7 +7669,7 @@ ul.categories-article-list {
   margin-bottom: 60px;
 }
 
-.user-ticket-list {
+.user-ticket-list, .user-approval-list {
   margin-bottom: 5px;
   width: 100%;
   font-size: $font-size-base;
@@ -7705,6 +7714,10 @@ ul.categories-article-list {
       // Align the first sorting link to the content
       width: 50px;
       min-width: 0;
+    }
+
+    &.text-left {
+      text-align: left;
     }
 
     a {
@@ -8096,12 +8109,12 @@ ul.big-button-collection {
     text-decoration: none;
     background: #fdfeff;
 
-    .title, .subtitle, i {
+    .title, .subtitle, i, svg.svg-inline--fa {
       color: inherit;
     }
   }
 
-  .fa, .far, .fas {
+  .fa, .far, .fas, svg.svg-inline--fa {
     font-size: 3em;
     color: $gray-light;
   }
@@ -8151,7 +8164,7 @@ ul.big-button-collection {
       width: auto;
       height: auto;
 
-      .fa, .far, .fas {
+      .fa, .far, .fas, .svg-inline--fa {
         font-size: 1.20em;
         @include margin-right(5px);
         display: inline-block;
@@ -8205,7 +8218,7 @@ ul.big-button-collection {
         font-weight: normal;
       }
 
-      .fa, .far, .fas {
+      .fa, .far, .fas, svg.svg-inline--fa {
         @include margin-right(2px);
         font-size: 1.5em;
       }
@@ -9088,15 +9101,6 @@ body.with-agent-bar {
   display: none;
 }
 
-.with-dpui .medium-editor-toolbar {
-  display: none;
-}
-
-.medium-editor-toolbar-actions {
-  float: $float-left;
-}
-
-
 .attach-file-active {
   @extend .attach-file;
   border: 1px solid black;
@@ -9322,14 +9326,14 @@ table .form-help {
       border: 1px solid $btn-primary-bg;
     }
 
-    i[class^='fa-caret'], i[class*=' fa-caret'] {
+    i[class^='fa-caret'], i[class*=' fa-caret'], .svg-inline--fa[class*=' fa-caret'] {
       position: absolute;
       top: 9px;
       color: $text-color-lighter;
       @include right(12px);
     }
 
-    i[class^='fa-times'], i[class*=' fa-times'] {
+    i[class^='fa-times'], i[class*=' fa-times'], .svg-inline--fa[class*=' fa-times'] {
       padding: 10px;
       height: 100%;
       position: absolute;
@@ -9344,7 +9348,7 @@ table .form-help {
 
   &.small .default {
     padding: 4px;
-    i[class^='fa-caret'], i[class*=' fa-caret'] {
+    i[class^='fa-caret'], i[class*=' fa-caret'], .svg-inline--fa[class*=' fa-caret'] {
       top: 6px;
       @include right(7px);
     }
@@ -9638,222 +9642,6 @@ input[type="text"], input[type="email"], input[type="password"], textarea, .dp-m
 
   &.email-present {
     border: 1px dashed $input-border;
-  }
-}
-
-.deskpro-standard-message-formatting {
-
-  color: $text-color;
-  line-height: 18px;
-
-  //-------------------------
-  // Paragraph
-  //-------------------------
-
-  p, .dp-p {
-    color: $text-color;
-    line-height: 18px;
-    margin: 0 0 8px;
-  }
-
-  //-------------------------
-  // Bold
-  //-------------------------
-
-  strong, b, .dp-bold {
-    font-weight: bold;
-  }
-
-  //-------------------------
-  // Underline
-  //-------------------------
-
-  u, .dp-underline {
-    text-decoration: underline;
-  }
-
-  //-------------------------
-  // Italic
-  //-------------------------
-
-  em, i, .dp-italic {
-    font-style: italic;
-  }
-
-  //-------------------------
-  // Blockquote
-  //-------------------------
-
-  blockquote, .dp-bq {
-    display: block;
-    margin: 15px 0 15px 0;
-    @include padding-left(5px);
-    @include border-left(2px solid $hr-border);
-    color: lighten($text-color, 5%)
-  }
-
-  //-------------------------
-  // Code (inline)
-  //-------------------------
-
-  code, .dp-code {
-    font-family: $font-family-monospace;
-    color: $code-color;
-    background: $code-bg;
-  }
-
-  //-------------------------
-  // Code (pre block)
-  //-------------------------
-
-  pre, .dp-pre {
-    background: $pre-bg;
-    border: 1px solid $pre-border-color;
-    color: $pre-color;
-    border-radius: 3px;
-    padding: 6px;
-    white-space: pre-wrap;
-    overflow: auto;
-    max-height: $pre-scrollable-max-height;
-    margin: 15px 0 15px 0;
-    font-family: $font-family-monospace;
-    line-height: 110%;
-    display: block;
-
-    p { margin: 0; padding: 0; font-family: $font-family-monospace; }
-  }
-
-  //-------------------------
-  // Headings
-  //-------------------------
-
-  h1, h2, h3, h4,
-  .dp-h1, .dp-h2, .dp-h3, .dp-h4 {
-    font-family: $headings-font-family;
-    margin: 7px 0;
-    display: block;
-    line-height: 128%;
-    padding: 0;
-    font-weight: normal;
-  }
-
-  h1, .dp-h1 { font-size: 200%; }
-  h2, .dp-h2 { font-size: 170%; }
-  h3, .dp-h3 { font-size: 150%; }
-  h4, .dp-h4 { font-size: 125%; }
-
-  //-------------------------
-  // Lists
-  //-------------------------
-
-  ul, ol, .dp-list, .dp-ul-list, .dp-ol-list {
-    margin: 8px 0;
-    padding: 0;
-    display: block;
-
-    > li {
-      display: list-item;
-      margin: 8px 0 8px 20px;
-    }
-  }
-
-  ul, .dp-ul-list {
-    > li {
-      list-style: disc;
-    }
-  }
-
-  ol, .dp-ol-list {
-    > li {
-      list-style: decimal;
-    }
-  }
-}
-
-.dp-medium-rte-wrapper {
-  position: relative;
-
-  .dp-medium-rte {
-    min-height: 125px;
-    &.with-toolbar {
-      padding-top: 38px; // padding to make room for the fixed toolbar
-    }
-
-    &.medium-editor-placeholder:after {
-      padding: 0.75em 1em;
-    }
-
-    @extend .deskpro-standard-message-formatting;
-  }
-
-  .medium-editor-toolbar {
-    visibility: visible;
-    background: $page-bg;
-    border: none;
-    border-bottom: 1px solid $hr-border;
-    border-radius: 0;
-    box-shadow: none;
-
-    top: 1px;
-    @include right(1px);
-    @include left(1px);
-
-    &.medium-editor-toolbar-active {
-      button {
-        color: $text-color-lighter;
-      }
-    }
-
-    button {
-      background: transparent;
-      border-radius: 0;
-      border: none;
-      box-shadow: none;
-      color: $text-color-lighter;
-      padding: 8px;
-      height: 30px;
-      min-width: 30px;
-      line-height: 15px;
-      text-shadow: none;
-
-      &:hover, &.medium-editor-button-active {
-        color: $text-color;
-        background: transparent;
-      }
-    }
-  }
-
-  .medium-editor-toolbar-form {
-    background: $page-bg;
-    border: none;
-    border-bottom: 1px solid $hr-border;
-    border-radius: 0;
-    box-shadow: none;
-
-    .medium-editor-toolbar-input {
-      background: transparent;
-      height: 30px;
-      color: $text-color;
-    }
-
-    a {
-      color: $text-color;
-    }
-  }
-
-  .dp-medium-rte-wrapper-overlay {
-    background-color: rgba(175, 192, 213, 0.7);
-    position: absolute;
-    top: 0;
-    @include left(0);
-    @include right(0);
-    bottom: 0;
-    z-index: 3000;
-    text-align: center;
-
-    h1 {
-      margin-top: 55px;
-    }
   }
 }
 
@@ -10413,7 +10201,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
 
   position: relative;
 
-  .ticket-view-sidebar-wrapper {
+  .ticket-view-sidebar-wrapper, .approval-view-sidebar-wrapper {
     width: 330px;
     float: $float-right;
   }
@@ -10428,7 +10216,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       }
     }
 
-    .ticket-view-sidebar-wrapper {
+    .ticket-view-sidebar-wrapper, .approval-view-sidebar-wrapper {
       width: auto;
       position: relative;
     }
@@ -10451,11 +10239,38 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   margin: 8px 0;
 }
 
-.ticket-reply {
+.approval-response {
+  .approval-response-actions {
+    padding-top: 16px;
+    .column-full, .bucket {
+      display: inline;
+      float: none;
+      margin-right: 0;
+    }
+  }
+  .btn-approval-response-approve {
+    background-color: $btn-success-bg;
+    color: $btn-success-color;
+  }
+  .btn-approval-response-reject {
+    background-color: $btn-danger-bg;
+    color: $btn-danger-color;
+  }
+  .approval-response-message-bucket {
+    padding-top: 16px;
+  }
+  .approval-response-message {
+    border: 1px solid #999 !important;
+    height: 130px;
+    width: 80%;
+  }
+}
+
+.ticket-reply, .approval-response {
   border-top: 1px solid $hr-border;
   margin-top: 20px;
 
-  .ticket-reply-header {
+  .ticket-reply-header, .approval-response-header {
     padding: 12px 10px;
     font-size: 1em;
     font-weight: bold;
@@ -10693,7 +10508,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 }
 
-.ticket-view-sidebar {
+.ticket-view-sidebar, .approval-view-sidebar {
   font-size: $font-size-base;
   border: 1px solid $hr-border;
   border-radius: 2px;
@@ -10937,6 +10752,33 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   }
 }
 
+.approval-view-sidebar {
+  .item-to-approve {
+    margin-bottom: 21px;
+  }
+  .item-to-reject {
+    margin-bottom: 20px;
+  }
+}
+
+.approval-completed-wrapper {
+  border-bottom: 1px solid #e6e6e6;
+  padding: 8px 0 23px;
+  .approval-completed {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 2px;
+    &.approval-completed-approved {
+      background-color: $btn-success-bg;
+      color: $btn-success-color;
+    }
+    &.approval-completed-rejected {
+      background-color: $btn-danger-bg;
+      color: $btn-danger-color;
+    }
+  }
+}
+
 .ticket-view-note-for-user {
   border: 1px solid $hr-border;
   border-radius: 2px;
@@ -10998,6 +10840,70 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     font-size: $font-size-base;
     font-weight: normal;
     line-height: 1.2em;
+  }
+
+  input[type="text"], input[type="email"], input[type="password"], textarea, select {
+    margin-bottom: 10px;
+  }
+
+  [type="submit"] {
+    display: block;
+    width: 100%;
+  }
+}
+
+.approval-responses {
+  text-align: center;
+  .btn-approval-response {
+    display: inline-block;
+    margin: 5px;
+    line-height: 1.2em;
+    border-radius: 2px;
+    padding: 12px 24px;
+    text-align: center;
+    text-decoration: none;
+    &.btn-approval-response-approve {
+      background: $btn-success-bg;
+      color: $btn-success-color;
+    }
+    &.btn-approval-response-reject {
+      background: $btn-danger-bg;
+      color: $btn-danger-color;
+    }
+  }
+}
+
+.approval-response-popover {
+  width: 400px;
+  position: absolute;
+  top: 0;
+  @include left(0);
+  @include margin-left(-410px);
+  z-index: 2002;
+  background: $page-bg;
+  padding: 10px;
+  border: 1px solid $hr-border;
+  border-radius: 2px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  &:before, &:after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    z-index: 1002;
+    border: 5px solid rgba(0, 0, 0, 0.0);
+    @include border-left(5px solid $hr-border);
+    position: absolute;
+    top: 9px;
+    @include right(-10px);
+  }
+
+  &:after {
+    border: 5px solid rgba(0, 0, 0, 0.0);
+    @include border-left(5px solid $page-bg);
+    z-index: 1003;
+    @include right(-8px);
   }
 
   input[type="text"], input[type="email"], input[type="password"], textarea, select {

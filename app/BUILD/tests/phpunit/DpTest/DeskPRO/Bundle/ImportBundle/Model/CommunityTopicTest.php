@@ -48,7 +48,7 @@ class CommunityTopicTest extends AbstractModelTest
             'status'         => 'active',
             'date_created'   => '2016-07-15T12:55:01+0300',
             'date_published' => '2016-07-15T12:55:01+0300',
-            'channel'        => 'community channel',
+            'forum'          => 'community forum',
             'person'         => '1',
             'labels'         => ['label 1', 'label 2'],
             'view_count'     => 20,

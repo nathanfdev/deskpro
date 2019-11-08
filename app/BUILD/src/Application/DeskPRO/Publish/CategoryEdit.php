@@ -358,7 +358,7 @@ class CategoryEdit
                 $counts = App::getDb()->fetchColumn("
                     SELECT COUNT(*)
                     FROM community_topics
-                    WHERE channel_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+                    WHERE forum_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
                     LIMIT 1
                 ", [$categoryId]);
                 break;

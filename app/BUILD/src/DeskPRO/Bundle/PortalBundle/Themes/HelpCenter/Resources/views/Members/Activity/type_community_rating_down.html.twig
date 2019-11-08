@@ -1,0 +1,10 @@
+<div class="dp-po-profile-activity-icon">
+    <i class="dp-po-icon far fa-chevron-circle-down"></i>
+</div>
+<div class="dp-po-profile-activity-desc">
+    <a href="{{ path('portal_community_topic_view', {slug: activity.slug}) }}" class="dp-po-profile-activity-link">
+        {{ phrase('helpcenter.members.activity.down_voted_comment_on') }}
+        <img class="dp-po-profile-activity-image" src="{{ asset('img/page-icons/community.svg', 'help_center') }}">
+        <span>{{ activity.description|truncate(truncateDescription) }}</span>
+    </a>
+</div>

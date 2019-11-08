@@ -97,8 +97,13 @@ class TaskRouter
 
     public function evaluate()
     {
-        $this->lock->acquire(true);
-        $this->logger->info('[TaskRouter] Evaluate task router');
+        try {
+            $this->lock->acquire(true);
+        } catch (\Exception $e) {
+            $this->logger->info('[TaskRouter] Failed to aquire lock: '.$e->getMessage());
+
+            return;
+        }
 
         try {
             $tasks = $this->storage->getActiveTasks();
@@ -126,21 +131,23 @@ class TaskRouter
                     $this->logger->info(sprintf('[TaskRouter] No workflow was found for the task, mark as failed, task_id = %s', $task->getId()));
                 }
 
-                /** @var WorkflowInterface $workflow */
-                $workflow   = $this->container->get($this->workflows[$task->getChannel()]);
-                $dateExpire = $this->getDateExpire($task);
-
-                $task->setDateExpire($dateExpire);
-                $this->storage->saveTask($task);
+                // if date expire is not set for the task
+                // then set default date expire
+                if (!$task->getDateExpire()) {
+                    $task->setDateExpire($this->getDateExpire($task));
+                    $this->storage->saveTask($task);
+                }
 
                 // check if task is expired
-                if ($dateExpire <= new \DateTime()) {
+                if ($task->getDateExpire() <= new \DateTime()) {
                     $task->setStatus(Task::STATUS_TIMEOUT);
 
                     // task is timed out, reset workers
                     $workers = $this->storage->getWorkers($task->getWorkerIds());
                     foreach ($workers as $worker) {
                         $worker->removePendingTask($task);
+                        $worker->removeActiveTask($task);
+
                         $this->storage->saveWorker($worker);
                     }
 
@@ -189,11 +196,19 @@ class TaskRouter
 
                     // if task wasn't assigned yet then try to find a worker for it
                     $this->logger->info(sprintf('[TaskRouter] Fetch available workers for the task, task_id = %s', $task->getId()));
+
+                    /** @var WorkflowInterface $workflow */
+                    $workflow = $this->container->get($this->workflows[$task->getChannel()]);
                     $workflow->assignTask($task, $workflow->getAvailableWorkers($task));
 
                     // we've found workers for the task
                     // update task
                     if ($task->getWorkerIds()) {
+                        // modify date expire of the task to allow last worker to handle it
+                        if ($task->getDateExpireAssigned() > $task->getDateExpire()) {
+                            $task->setDateExpire(clone $task->getDateExpireAssigned());
+                        }
+
                         // reserve workers for the task
                         $workers = $this->storage->getWorkers($task->getWorkerIds());
                         foreach ($workers as $worker) {
@@ -222,6 +237,18 @@ class TaskRouter
                             $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
                         } catch (\Exception $e) {
                             SystemErrorHandler::logException($e);
+                        }
+
+                        // reset pending task
+                        $workers = $this->storage->getWorkers($task->getWorkerIds());
+                        foreach ($workers as $worker) {
+                            $worker->removePendingTask($task);
+                            $worker->removeActiveTask($task);
+
+                            $this->storage->saveWorker($worker);
+
+                            $task->removeWorker($worker);
+                            $this->logger->info(sprintf('[TaskRouter] Remove pending worker by assign timeout, task_id = %s', $task->getId()));
                         }
 
                         $this->storage->saveTask($task);
@@ -429,7 +456,7 @@ class TaskRouter
                 }
             }
 
-            $this->logger->info(sprintf('[TaskRouter] The task, is ended task_id = %s', $taskId));
+            $this->logger->info(sprintf('[TaskRouter] The task is ended, task_id = %s', $taskId));
 
             return true;
         } catch (\Exception $e) {
@@ -749,6 +776,15 @@ class TaskRouter
                 $this->logger->info(sprintf(
                     '[TaskRouter] No worker or task found, skipping, task_id = %s, worker_type = %s, worker_id = %s',
                     $taskId, $workerType, $workerId
+                ));
+
+                return false;
+            }
+
+            if (!$task->isAccepted()) {
+                $this->logger->info(sprintf(
+                    '[TaskRouter] Task is not active, unable to join, task_id = %s, task_status = %s, worker_type = %s, worker_id = %s',
+                    $taskId, $task->getStatus(), $workerType, $workerId
                 ));
 
                 return false;

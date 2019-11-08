@@ -1,0 +1,32 @@
+{
+	"package_name": "deskpro_gmail_oauth",
+	"is_native": true,
+	"title": "Gmail OAuth",
+	"description": "Setup Gmail OAuth credentials.",
+	"tags": ["gmail", "oauth"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "Deskpro",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "gmail_oauth_client_id",
+			"type": "text",
+			"label": "Client ID",
+			"description": "This is the \"Client ID\" for your Google API account. You can find or create it here: https://console.developers.google.com/apis/credentials",
+			"native_only": true
+		},
+		{
+			"name": "gmail_oauth_secret",
+			"type": "text",
+			"label": "Secret Key",
+			"description": "This is the \"Client Secret\" for your Google API account. You can find or create it here: https://console.developers.google.com/apis/credentials",
+			"native_only": true
+		}
+	]
+}

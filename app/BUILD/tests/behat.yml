@@ -150,6 +150,7 @@ portal:
                 - DpBehat\PermissionContext
                 - DpBehat\BrandSettingContext
                 - DpBehat\Data\BlobContext
+                - DpBehat\Portal\ApprovalContext
     extensions:
         Behatch\Extension: ~
         Behat\MinkExtension:

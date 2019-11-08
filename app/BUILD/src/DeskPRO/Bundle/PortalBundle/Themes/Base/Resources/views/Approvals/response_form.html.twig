@@ -1,0 +1,13 @@
+<div class="approval-response dpx-form" id="approval-response-form">
+    {{ form_errors(form) }}
+    {{ form_start(form) }}
+        <div class="bucket approval-response-message-bucket">
+            {{ form_errors(form.message) }}
+            {{ form_widget(form.message, {attr: {class: 'approval-response-message'}}) }}
+        </div>
+        <div class="bucket approval-response-actions dp-bg--danger">
+            {{ form_widget(form.approve, {label: phrase('portal.tickets.approvals.view_approve'), attr: {class: 'btn-approval-response-approve'}}) }}
+            {{ form_widget(form.reject, {label: phrase('portal.tickets.approvals.view_reject'), attr: {class: 'btn-approval-response-reject'}}) }}
+        </div>
+    {{ form_end(form) }}
+</div>

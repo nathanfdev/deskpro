@@ -169,7 +169,6 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	 * Opens the page in the popout
 	 */
 	open: function(callback) {
-
 		var self = this;
 		var withNextParams = false;
 

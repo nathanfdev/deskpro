@@ -9,14 +9,14 @@ Feature: /tickets/{id}/community_topic_links endpoint
     And only the following Ticket records exist:
       | #  | Subject  | Status         | Person  |
       | t1 | Ticket 1 | awaiting_agent | {admin} |
-    And only the following "CommunityChannel" records exist:
+    And only the following "CommunityForum" records exist:
       | #   | title   | slug    |
       | cc1 | Feature | feature |
     And only the following CommunityTopic records exist:
-      | #   | Title   | channel |
-      | ct1 | Topic 1 | {cc1}   |
+      | #   | Title   | forum |
+      | ct1 | Topic 1 | {cc1} |
     And I reset ticket logs
-    And I grant the "{cc1}" community channel permission for usergroup everyone
+    And I grant the "{cc1}" community forum permission for usergroup everyone
 
   Scenario: I retrieve an empty ticket community topic links
     When I send a GET request to "/api/v2/tickets/{t1}/community_topic_links"

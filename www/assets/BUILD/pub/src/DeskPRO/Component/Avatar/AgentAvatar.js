@@ -20,15 +20,47 @@ const messages = defineMessages({
 }))
 export default class AgentAvatar extends React.PureComponent {
   static propTypes = {
-    intl:   intlShape.isRequired,
-    me:     PropTypes.object.isRequired,
-    agents: PropTypes.object.isRequired,
-    agent:  PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
-    size:   PropTypes.number
+    intl:      intlShape.isRequired,
+    me:        PropTypes.object.isRequired,
+    agents:    PropTypes.object.isRequired,
+    agent:     PropTypes.oneOfType([PropTypes.number, PropTypes.object]),
+    size:      PropTypes.number,
+    border:    PropTypes.string,
+    // Avatar component has predefined sizes.
+    // forceSize prop pass size as width/height in style
+    forceSize: PropTypes.bool
   };
   static defaultProps = {
     size: 18
   };
+
+  getStyle() {
+    const { border, forceSize, size } = this.props;
+    const style = {};
+
+    if (border) {
+      style.border = border;
+    }
+
+    if (forceSize) {
+      style.width = `${size}px`;
+      style.height = `${size}px`;
+    }
+
+    return style;
+  }
+
+  getSizeText = (size) => {
+    if (size <= 12) {
+      return 'small';
+    } else if (size <= 22) {
+      return 'medium';
+    } else if (size <= 26) {
+      return 'large';
+    }
+
+    return 'xlarge';
+  }
 
   render() {
     const { me, agents, size } = this.props;
@@ -58,6 +90,13 @@ export default class AgentAvatar extends React.PureComponent {
     if (agent.get('id') === me.get('id')) {
       name = formatMessage(messages.me);
     }
-    return <Avatar src={url.replace(/{{IMG_SIZE}}/, size)} title={name} />;
+    return (
+      <Avatar
+        src={url.replace(/{{IMG_SIZE}}/, size)}
+        title={name}
+        size={this.getSizeText(size)}
+        style={this.getStyle()}
+      />
+    );
   }
 }

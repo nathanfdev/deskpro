@@ -11,6 +11,20 @@
 	{% endif %}
 {% elseif log.action_type == 'app_message' %}
 	{{ phrase('agent.general.app') }} #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
+{% elseif log.action_type == 'ticket_approval' %}
+	{% if log.details.event_performer == 'agent' %}
+		{% if log.details.event == 'create' %}
+			{{ phrase('agent.tickets.log_approval_created_by_agent') }}
+		{% else %}
+			{{ phrase('agent.tickets.log_approval_updated_by_agent') }}
+		{% endif %}
+	{% elseif log.details.event_performer == 'user' %}
+		{% if log.details.event == 'create' %}
+			{{ phrase('agent.tickets.log_approval_created_by_user') }}
+		{% else %}
+			{{ phrase('agent.tickets.log_approval_updated_by_user') }}
+		{% endif %}
+	{% endif %}
 {% elseif log.action_type == 'action_starter' %}
 	{% if log.details.event == 'new.email.user' %}
 		{{ phrase('agent.tickets.log_new_email_user') }}
@@ -786,6 +800,26 @@
 	<span class="type">
 		{{ phrase('agent.voice.record_deleted', {'phoneCallId': log.id_object}) }} {% if log.details.filesize %}({{ log.details.filesize }} Kb){% endif %}
 	</span>
+{% elseif log.action_type == 'ticket_approval_details' %}
+    <span class="new-val expand" data-set=".set-detail">
+      {{ phrase('agent.tickets.log_approval_created_approval') }}
+    </span>
+    <span class="type">
+      {{ log.details.name|truncate }}
+	</span>
+	&nbsp;{{ phrase('agent.tickets.log_approval_status') }}: {{ log.details.status_name }}
+	<div class="expand-set set-detail" style="display: none">
+		{% if log.details.event != 'cancel' %}
+			<ul>
+				<li>{{ phrase('agent.tickets.log_approval_description') }}: {{ log.details.description }}</li>
+				{% if log.details.response_vote_type is defined  %}
+					<li>{{ phrase('agent.tickets.log_approval_vote_type') }}: {{ log.details.response_vote_type }}</li>
+				{% endif %}
+				<li>{{ phrase('agent.tickets.log_approval_approvals') }}: {{ log.details.number_of_approvals }}/{{ log.details.number_of_required_approvals }}</li>
+				<li>{{ phrase('agent.tickets.log_approval_rejections') }}: {{ log.details.number_of_rejections }}/{{ log.details.number_of_required_rejections }}</li>
+			</ul>
+		{% endif %}
+	</div>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

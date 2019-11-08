@@ -1,0 +1,117 @@
+/*
+ * This vars file is based off of Bootstrap. Not all vars are used.
+ *
+ * The most obviously unused ones (e.g., modal windows, etc) were removed.
+ * There are some vars that remain that are not actually used but
+ * perhaps should be. E.g. using dropdown colours.
+ */
+
+//######################################################################################################################
+//# DeskPRO Variables exposed to admin interfader
+//# Note that these must be hard-coded values (not computed) so they display properly in the admin interface.
+//######################################################################################################################
+
+// These aren't used in the real stylesheet, this is just so we can expose the proper values to the admin interface.
+// Ideally we could use the real computed values but sassdoc doesn't resolve values, so we need to manually specify
+// them for use in the admin interface.
+
+// Important: Do NOT indent here. sassdoc is really buggy, it wont read stuff right.
+
+@if false {
+/// @group colors
+/// @type color
+$brand-primary: #3A8DDE;
+
+/// @group colors
+/// @type color
+$brand-success:         #54B162;
+
+/// @group colors
+/// @type color
+$brand-info:            #5bc0de;
+
+/// @group colors
+/// @type color
+$brand-neutral:         #F8AF3C;
+
+/// @group colors
+/// @type color
+$brand-warning:         #EC6C4E;
+
+/// @group colors
+/// @type color
+$brand-danger:          #E84954;
+
+/// @group colors
+/// @type color
+$text-color: #4C4F50;
+
+/// @group colors
+/// @type color
+$text-color-lighter: #8B9293;
+
+/// @group page
+/// @type color
+$page-bg: #F7F7F7;
+
+/// @group fonts
+/// @type font
+$font-family-sans-serif: Lato, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+/// @group fonts
+/// @type font
+$font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+}
+
+$body-bg: #fff !default;
+$page-bg: #fff !default;
+
+$text-color: #4C4F50;
+$text-color-lighter: #8B9293;
+
+$font-family-sans-serif: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif !default;
+$font-family-serif: Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace: Menlo, Monaco, Consolas, "Courier New", monospace !default;
+$font-family-base: $font-family-sans-serif !default;
+$font-size-base: 13px !default;
+$font-size-large: ceil(($font-size-base * 1.25)) !default;
+$font-size-small: ceil(($font-size-base * 0.85)) !default;
+
+$headings-font-family: inherit !default;
+$headings-font-weight: 500 !default;
+$headings-line-height: 1.1 !default;
+$headings-color: inherit !default;
+
+$gray-base: #000 !default;
+$gray-darker: lighten($gray-base, 13.5%) !default;
+$gray-dark: lighten($gray-base, 19%) !default;
+$gray: lighten($gray-base, 33.5%) !default;
+$gray-light: lighten($gray-base, 48%) !default;
+$gray-lighter: lighten($gray-base, 90%) !default;
+
+$brand-primary: darken(#428bca, 6.5%) !default;
+$brand-success: #5cb85c !default;
+$brand-info: #5bc0de !default;
+$brand-warning: #f0ad4e !default;
+$brand-danger: #d9534f !default;
+
+$hr-border: $gray-lighter !default;
+
+$code-color: #c7254e !default;
+$code-bg: #f9f2f4 !default;
+
+$kbd-color: #fff !default;
+$kbd-bg: #333 !default;
+
+$pre-bg: #f5f5f5 !default;
+$pre-color: $gray-dark !default;
+$pre-border-color: #ccc !default;
+$pre-scrollable-max-height: 340px !default;
+
+$default-layout-direction: "LTR" !default;
+$layout-direction: "LTR" !default;
+$text-left: left !default;
+$text-right: right !default;
+$float-left: left !default;
+$float-right: right !default;

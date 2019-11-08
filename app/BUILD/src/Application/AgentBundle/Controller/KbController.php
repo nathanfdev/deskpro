@@ -22,6 +22,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -74,7 +75,10 @@ class KbController extends AbstractController
         $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities(true);
 
-        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        $state = null;
+        if (!$this->container->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
+        }
 
         $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($article);
 
@@ -145,10 +149,16 @@ class KbController extends AbstractController
             'article_products'    => $article_products,
             'glossary_words'      => $glossary_words,
             'perms'               => $perms,
+            'is_collab_enabled'   => $this->get('content.collab_manager')->isCollabEnabled(),
             'user_view_count'     => $user_view_count,
 
             'word_defs' => $word_defs,
         ];
+
+        if ($vars['is_collab_enabled'] && $perms['can_edit'] && $this->get('deskpro.feature_flags')->hasBeta('content_editor')) {
+            $vars['collab_editor_options'] = $this->get('content.collab_manager')
+                ->getEditorCollabOptions('article', $article->getId());
+        }
 
         if ($isPdf) {
             $contentHtml = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
@@ -1141,6 +1151,41 @@ class KbController extends AbstractController
                 'success' => false,
             ]);
         }
+    }
+
+    /**
+     * @param ContentTemplate $contentTemplate
+     *
+     * @return Response
+     */
+    public function editContentTemplateAction(ContentTemplate $contentTemplate)
+    {
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $articleCategories = $this->getFilteredCategory($brandId);
+
+        if (count($articleCategories) === 0) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            $brand  = array_shift($brands);
+            while (count($articleCategories) === 0 && $brand->getId()) {
+                $brandId           = $brand->getId();
+                $articleCategories = $this->getFilteredCategory($brandId);
+                $brand             = array_shift($brands);
+            }
+        }
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        /** @var FieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
+        $customfields = $fieldManager->getDisplayArrayForObject(new Article());
+
+        return $this->render('AgentBundle:Kb:edit-content-template.html.twig', [
+            'content_template'   => $contentTemplate,
+            'article_categories' => $articleCategories,
+            'brands'             => $brands,
+            'selected_brand_id'  => $brandId,
+            'custom_fields'      => $customfields,
+        ]);
     }
 
     /**

@@ -182,16 +182,16 @@ class PlainMailDir extends AbstractFetcher
     /**
      * Deletes the message from the server.
      *
-     * @param  $id
+     * @param RawMessage $rawMessage
      */
-    protected function _doneRead($id)
+    protected function _doneRead(RawMessage $rawMessage)
     {
-        $this->logger->log("Marking message as deleted: $id", 'debug');
+        $this->logger->log("Marking message as deleted: {$rawMessage->id}", 'debug');
 
-        if (is_file($this->maildir.'/'.$id) && !@unlink($this->maildir.'/'.$id)) {
+        if (is_file($this->maildir.'/'.$rawMessage->id) && !@unlink($this->maildir.'/'.$rawMessage->id)) {
             sleep(1);
-            if (is_file($this->maildir.'/'.$id) && !unlink($this->maildir.'/'.$id)) {
-                $this->logger->log('Failed to delete source file: '.$this->maildir.'/'.$id, 'error');
+            if (is_file($this->maildir.'/'.$rawMessage->id) && !unlink($this->maildir.'/'.$rawMessage->id)) {
+                $this->logger->log('Failed to delete source file: '.$this->maildir.'/'.$rawMessage->id, 'error');
             }
         }
     }

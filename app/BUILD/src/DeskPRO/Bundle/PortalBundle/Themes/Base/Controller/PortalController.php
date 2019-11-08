@@ -154,6 +154,7 @@ class PortalController extends AbstractController
             'chat_count'                    => $user ? $this->getChatDataService()->countUserChats($user, 'own') : 0,
             'ticket_count'                  => $user ? $this->getTicketsDataService()->getTicketCount($user, 'all') : 0,
             'ticket_count_org'              => $user ? $this->getTicketsDataService()->getOrganizationTicketCount($user, 'all') : 0,
+            'ticket_approval_count'         => $user ? $this->getTicketApprovalsDataService()->getApprovalCountWhereUserIsApprover($user) : 0,
             'user'                          => $user,
             'login_text_button_usersources' => $auth_manager->getLoginTextButtonUsersources(),
             'login_icon_usersources'        => $auth_manager->getLoginIconUsersources(),

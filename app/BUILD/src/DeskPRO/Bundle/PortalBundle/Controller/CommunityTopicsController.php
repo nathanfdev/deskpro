@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
@@ -14,9 +16,11 @@ use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommunityTopicAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Entity\TicketCommunityTopicLink;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentRatingsVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\NewCommunityTopicType;
 use DeskPRO\Bundle\PortalBundle\Helper\CommunityFilterUriHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -24,10 +28,12 @@ use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,8 +43,13 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Class CommunityTopicsController.
  */
-class CommunityTopicsController extends AbstractController
+class CommunityTopicsController extends AbstractPublishController
 {
+    /**
+     * @var array Used to cache response filter parameters
+     */
+    private static $filterParameters = [];
+
     /**
      * @Route("/community.{_format}", name="portal_community", defaults={"_format":"html"},
      *     requirements={"_format":"html|rss"})
@@ -110,64 +121,14 @@ class CommunityTopicsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            if (
-                !$rerenderingSaved // if we are rerendering dont pass this condition
-                &&
-                (
-                    !$form->getClickedButton() // if user clicked more_attachments dont pass condition
-                    ||
-                    (
-                        $form->getClickedButton()
-                        && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments'
-                    )
-                )
-            ) {
-                // deal with guests via negotiating with PersonFactory
-                if ($person instanceof PersonGuest) {
-                    try {
-                        $this->getPersonFactory()->checkGuestForValidation($person, $request->attributes->get('saved-form'));
-
-                        // the below block only executes during a saved form request (they clicked validation link)
-                        $email  = $person->getPrimaryEmail();
-                        $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
-
-                        // since the guest is set on the form, we need to update all of the associations
-                        $newCommunityTopic->setPerson($person);
-                        foreach ($newCommunityTopic->getAttachments() as $attachment) {
-                            $attachment->setPerson($person);
-                        }
-
-                        return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request);
-                    } catch (LoginRequiredException $e) {
-                        $person = $e->getPerson();
-                        $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
-
-                        if ($person instanceof PersonGuest) {
-                            $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmail(), $person->getDisplayName());
-
-                            return new RedirectResponse(
-                                $this->container->get('router')->generate('portal_login', [
-                                    'saved_form' => $savedForm->getExternalCode(),
-                                ])
-                            );
-                        } else {
-                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $person, $form, $request);
-                        }
-                    } catch (EmailValidationRequiredException $e) {
-                        $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
-
-                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
-                        $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
-                        $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
-
-                        return $this->redirectToRoute('portal_community');
-                    }
-                }
-
-                $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
-
-                return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request);
-            }
+            return $this->saveNewTopic(
+                $form,
+                $request,
+                $newCommunityTopic,
+                $rerenderingSaved,
+                false,
+                $person
+            );
         }
 
         $formWasSubmitted = false;
@@ -187,19 +148,21 @@ class CommunityTopicsController extends AbstractController
             $isSubscribed = $this->getSubscriptionsHelper()->isSubscribedRootCategory('community', $this->getUser());
         }
 
-        // FILTER CATEGORIES
+        // FILTER FORUMS
 
-        $communityChannels = $this->get('data.community')->getCommunityChannelsForPerson($person);
+        $communityForums    = $this->get('data.community')->getCommunityForumsForPerson($person);
+        $topicCountPerForum = $this->get('data.community')->getCommunityForumTopicCountsForPerson($person);
+        $latestComments     = $this->get('data.community')->getLatestCommentsPerForum($person);
 
         // JS INITIAL DATA
 
         $filter             = new CommunityFilter(); // get the defaults$allowed_types_parsed = array();
         $allowedTypesParsed = [];
-        foreach ($communityChannels as $cat) {
+        foreach ($communityForums as $cat) {
             $allowedTypesParsed[] = $cat->getId();
         }
         $filter->setTypes($allowedTypesParsed);
-        $filterJs = $this->generateFilterJs($filter, $communityChannels, $page);
+        $filterJs = $this->generateFilterJs($filter, $communityForums, $page);
 
         $check = $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp(), false);
 
@@ -208,26 +171,30 @@ class CommunityTopicsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Community:index.html.twig',
             [
-                'page'               => $page,
-                'community_channels' => $communityChannels,
-                'count'              => $this->getBrandSetting('portal.per_page_content'),
-                'show_pagination'    => true,
-                'status'             => $filter->getStatus(),
-                'status_categories'  => $filter->getStatusCategories(),
-                'types'              => $filter->getTypes(),
-                'sort'               => $filter->getSort(),
-                'sort_direction'     => $filter->getSortDirection(),
-                'form'               => $form->createView(),
-                'form_was_submitted' => $formWasSubmitted,
-                'user'               => $this->getUser(),
-                'rerendering_saved'  => $rerenderingSaved,
-                'breadcrumbs'        => $breadcrumbs,
-                'page_title'         => $this->createPageTitle()->community(),
-                'rss_link'           => $rssLink,
-                'filter_js'          => $filterJs,
-                'is_subscribed'      => $isSubscribed,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
+                'mode'                      => 'home',
+                'page'                      => $page,
+                'community_forums'          => $communityForums,
+                'count'                     => $this->getBrandSetting('portal.per_page_content'),
+                'show_pagination'           => true,
+                'status'                    => $filter->getStatus(),
+                'status_categories'         => $filter->getStatusCategories(),
+                'types'                     => $filter->getTypes(),
+                'sort'                      => $filter->getSort(),
+                'sort_direction'            => $filter->getSortDirection(),
+                'form'                      => $form->createView(),
+                'form_was_submitted'        => $formWasSubmitted,
+                'user'                      => $this->getUser(),
+                'rerendering_saved'         => $rerenderingSaved,
+                'breadcrumbs'               => $breadcrumbs,
+                'page_title'                => $this->createPageTitle()->community(),
+                'rss_link'                  => $rssLink,
+                'filter_js'                 => $filterJs,
+                'is_subscribed'             => $isSubscribed,
+                'lockout'                   => $check->isLockoutRecommended(),
+                'lockout_time'              => $check->getLockoutTime(true),
+                'topic_count_per_forum'     => $topicCountPerForum,
+                'latest_comments_per_forum' => $latestComments,
+                'is_community_enabled'      => $this->isCommunityEnabled(),
             ]
         );
     }
@@ -236,13 +203,18 @@ class CommunityTopicsController extends AbstractController
      * @param CommunityTopic $newCommunityTopic
      * @param Person         $person
      * @param Request        $request
+     * @param bool           $redirectToBrowseTopic
      *
-     *@throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function acceptNewCommunityTopic(CommunityTopic $newCommunityTopic, Person $person, Request $request)
-    {
+    protected function acceptNewCommunityTopic(
+        CommunityTopic $newCommunityTopic,
+        Person $person,
+        Request $request,
+        $redirectToBrowseTopic = false
+    ) {
         $this->getEm()->persist($newCommunityTopic);
         $this->getEm()->flush();
 
@@ -262,6 +234,12 @@ class CommunityTopicsController extends AbstractController
         $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
         if ($redirect) {
             return $redirect;
+        }
+
+        if ($redirectToBrowseTopic) {
+            $destination = $this->generateUrl('portal_community_browse', [
+                'filter_uri' => sprintf('type-%d', $newCommunityTopic->getForum()->getId()),
+            ]);
         }
 
         return $this->redirect($destination);
@@ -307,14 +285,15 @@ class CommunityTopicsController extends AbstractController
         try {
             $uriHelper = new CommunityFilterUriHelper();
             $filter    = $uriHelper->extractCommunityFilter($filter_uri);
+            $filter->setQ($request->query->get('q', ''));
         } catch (\InvalidArgumentException $e) {
             throw $this->createNotFoundException('filter_uri could not be parsed');
         }
 
         // SECURITY
-        // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityChannel)
+        // a permissions check, if the user can't see one of these filtered "types" (i.e. CommunityForum)
         $permissionsBag       = $this->getPermissionBag($person);
-        $allowed_category_ids = $permissionsBag->getAllowedCommunityChannelIds();
+        $allowed_category_ids = $permissionsBag->getAllowedCommunityForumIds();
         foreach ($filter->getTypes() as $type) {
             if (!in_array($type, $allowed_category_ids)) {
                 throw new AccessDeniedException(
@@ -334,10 +313,20 @@ class CommunityTopicsController extends AbstractController
                 );
             }
 
-            return $this->redirectToRoute('portal_community_browse', [
+            $context = [
                 'filter_uri' => $generatedUri,
                 'page'       => $page,
-            ], Response::HTTP_MOVED_PERMANENTLY);
+            ];
+
+            if ($filter->getQ()) {
+                $context['q'] = $filter->getQ();
+            }
+
+            return $this->redirectToRoute(
+                'portal_community_browse',
+                $context,
+                Response::HTTP_MOVED_PERMANENTLY
+            );
         }
 
         // BREADCRUMBS
@@ -354,27 +343,64 @@ class CommunityTopicsController extends AbstractController
 
         // FILTER CATEGORIES
 
-        $communityChannels = $this->get('data.community')->getCommunityChannelsForPerson($person);
-        $filterJs          = $this->generateFilterJs($filter, $communityChannels, $page);
+        $communityForums = $this->get('data.community')->getCommunityForumsForPerson($person);
+        $filterJs        = $this->generateFilterJs($filter, $communityForums, $page, true);
 
         $pageOptions = [
-            'page'               => $page,
-            'community_channels' => $communityChannels,
-            'count'              => $this->getBrandSetting('portal.per_page_content'),
-            'show_pagination'    => true,
-            'status'             => $filter->getStatus(),
-            'status_categories'  => $filter->getStatusCategories(),
-            'types'              => $filter->getTypes(),
-            'sort'               => $filter->getSort(),
-            'sort_direction'     => $filter->getSortDirection(),
-            'breadcrumbs'        => $breadcrumbs,
-            'page_title'         => $this->createPageTitle()->community(),
-            'filter_js'          => $filterJs,
-            'rerendering_saved'  => false, // wont happen here because we always rerender on index
-            'is_subscribed'      => $isSubscribed,
-            'lockout'            => $request->get('lockout', false),
-            'lockout_time'       => 0,
+            'mode'                 => 'browse',
+            'page'                 => $page,
+            'community_forums'     => $communityForums,
+            'count'                => $this->getBrandSetting('portal.per_page_content'),
+            'show_pagination'      => true,
+            'status'               => $filter->getStatus(),
+            'status_categories'    => $filter->getStatusCategories(),
+            'types'                => $filter->getTypes(),
+            'sort'                 => $filter->getSort(),
+            'sort_direction'       => $filter->getSortDirection(),
+            'view'                 => $filter->getView(),
+            'view_mode'            => $filter->getViewMode(),
+            'activities'           => $filter->getActivities(),
+            'breadcrumbs'          => $breadcrumbs,
+            'page_title'           => $this->createPageTitle()->community(),
+            'filter_js'            => $filterJs,
+            'rerendering_saved'    => false, // wont happen here because we always rerender on index
+            'is_subscribed'        => $isSubscribed,
+            'lockout'              => $request->get('lockout', false),
+            'lockout_time'         => 0,
+            'filter_params'        => $this->generateFilterJs($filter, $communityForums, $page, false),
+            'is_community_enabled' => $this->isCommunityEnabled(),
         ];
+
+        // If there is a single, current type selected
+        $currentForum = $filter->getCurrentType()
+            ? $this->getRepo(CommunityForum::class)->find($filter->getCurrentType())
+            : null
+        ;
+
+        // Lazy load topics list
+        $pageOptions['topics_list'] = new LazyPropObject([
+            'view' => function () use ($filter) {
+                return $filter->getView();
+            },
+            'is_compact' => function () use ($filter) {
+                return $filter->getViewMode() === CommunityFilter::VIEW_MODE_COMPACT;
+            },
+            'topics_data' => function () use ($page, $filter) {
+                return $this->getCommunityDataService()->getFilteredTopicList([
+                    'page'              => $page,
+                    'count'             => $this->getBrandSetting('portal.per_page_content'),
+                    'status'            => $filter->getStatus(),
+                    'status_categories' => $filter->getStatusCategories(),
+                    'types'             => $filter->getTypes(),
+                    'sort'              => $filter->getSort(),
+                    'sort_direction'    => $filter->getSortDirection(),
+                    'view'              => $filter->getView(),
+                    'q'                 => $filter->getQ(),
+                    'activities'        => $filter->getActivities(),
+                    'view_mode'         => $filter->getViewMode(),
+                ], $this->getUser());
+            },
+        ]);
 
         if ($request->isXmlHttpRequest()) {
             return $this->renderThemeView(
@@ -398,6 +424,7 @@ class CommunityTopicsController extends AbstractController
             'user'               => $this->getUser(),
             'lockout'            => false,
             'lockout_time'       => false,
+            'current_forum'      => $currentForum,
         ]);
 
         // RENDER THEME
@@ -406,6 +433,49 @@ class CommunityTopicsController extends AbstractController
             'Theme:Community:index.html.twig',
             $pageOptions
         );
+    }
+
+    /**
+     * @Route("/community/{id}/create-topic", name="portal_community_topic_create")
+     * @Method({"GET","POST"})
+     * @Security("is_granted('USE_COMMUNITY')")
+     *
+     * @param CommunityForum $forum
+     * @param Request        $request
+     */
+    public function createTopicAction(CommunityForum $forum, Request $request)
+    {
+        $person            = $this->getUser() ?: new PersonGuest();
+        $newCommunityTopic = new CommunityTopic();
+
+        $newCommunityTopic->setPerson($person);
+        $newCommunityTopic->setForum($forum);
+
+        $form = $this->createForm(NewCommunityTopicType::class, $newCommunityTopic, [
+            'person'              => $person,
+            'has_forum_selection' => false,
+            'action'              => $this->generateUrl('portal_community_topic_create', [
+                'id' => $forum->getId(),
+            ]),
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->saveNewTopic(
+                $form,
+                $request,
+                $newCommunityTopic,
+                false,
+                true,
+                $person
+            );
+        }
+
+        return $this->renderThemeView('Theme:Community:create-topic.html.twig', [
+            'form'        => $form->createView(),
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildCommunityCreate($forum),
+        ]);
     }
 
     /**
@@ -430,7 +500,7 @@ class CommunityTopicsController extends AbstractController
         // COMMENT FORM
 
         $newCommentForm = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $topic)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_COMMUNITY, $topic) && !$topic->isClosed()) {
             $formHandler = $this->get('form_handler.comment');
             $comment     = new CommunityTopicComment();
             $comment->setVisitorId($visitor_id);
@@ -481,23 +551,90 @@ class CommunityTopicsController extends AbstractController
 
         // RENDER THEME
 
+        $communityTopicLinksRepo    = $this->get('doctrine.orm.default_entity_manager')->getRepository(TicketCommunityTopicLink::class);
+        $ticketCommunityTopicsLinks = $communityTopicLinksRepo->findByTopic($topic);
+
+        $self = $this;
+
+        $ticketCommunityTopicsLinks = array_filter($ticketCommunityTopicsLinks, function ($linkedTicket) use ($self) {
+            /* @var TicketCommunityTopicLink $linkedTicket */
+            return $self->isGranted(TicketsVoter::TICKET_VIEW, $linkedTicket->getTicket());
+        });
+
+        $viewVars = [
+            'topic'              => $topic,
+            'linked_tickets'     => $ticketCommunityTopicsLinks,
+            'is_subscribed'      => $isSubscribed,
+            'content_id'         => $topic->getId(),
+            'content_type'       => CommunityTopic::CONTENT_TYPE,
+            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+            'page_title'         => $this->createPageTitle()->community($topic),
+            'breadcrumbs'        => $breadcrumbs,
+            'rating'             => $rating,
+            'show_rating_counts' => $showRatingCounts,
+            'rating_counts'      => $ratingCounts,
+            'lockout'            => $check->isLockoutRecommended(),
+            'lockout_time'       => $check->getLockoutTime(true),
+        ];
+
+        // Lazy load related content
+        $viewVars['related_content_data'] = new LazyPropObject([
+            'related_content' => function () use ($topic) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $topic);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
+
         return $this->renderThemeView(
             'Theme:Community:view.html.twig',
+            $viewVars
+        );
+    }
+
+    /**
+     * @Route("/community/pdf/{slug}", name="portal_community_topic_pdf")
+     * @ParamConverter(name="topic", converter="deskpro_slug")
+     * @Security("is_granted('USE_COMMUNITY') and is_granted('VIEW_COMMUNITY', topic)")
+     *
+     * @param CommunityTopic $topic
+     * @param int            $visitor_id
+     *
+     * @return Response
+     */
+    public function pdfAction(CommunityTopic $topic, $visitor_id)
+    {
+        /** @var PdfRendererInterface $pdfRenderer */
+        $pdfRenderer = $this->get('pdf_renderer');
+
+        // BREADCRUMBS
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildCommunityView($topic);
+
+        // RATING
+
+        $rating = $this->findContentRating($topic, $visitor_id);
+
+        // NUM RATINGS
+
+        list($showRatingCounts, $ratingCounts) = $this->determineRatingCounts($topic);
+
+        $contentHtml = $this->renderThemeView(
+            'Theme:Community:pdf.html.twig',
             [
                 'topic'              => $topic,
-                'is_subscribed'      => $isSubscribed,
-                'content_id'         => $topic->getId(),
-                'content_type'       => CommunityTopic::CONTENT_TYPE,
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'page_title'         => $this->createPageTitle()->community($topic),
-                'breadcrumbs'        => $breadcrumbs,
                 'rating'             => $rating,
+                'breadcrumbs'        => $breadcrumbs,
+                'page_title'         => $this->get('portal_view.page_title_generator')->community($topic),
                 'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
             ]
         );
+
+        return $pdfRenderer->generateFile($contentHtml->getContent(), $topic->getTranslatedTitle().'.pdf');
     }
 
     /**
@@ -594,8 +731,12 @@ class CommunityTopicsController extends AbstractController
      * @Route("/community/root/toggle-subscription", name="portal_community_root_toggle_subscription")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_COMMUNITY')")
      * @AutoPostOnGetRequest()
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse
      */
-    public function communityRootChannelSubscriptionAction()
+    public function communityRootForumSubscriptionAction(Request $request)
     {
         $person              = $this->getUser();
         $subscriptionsHelper = $this->getSubscriptionsHelper();
@@ -606,6 +747,10 @@ class CommunityTopicsController extends AbstractController
         } else {
             $subscriptionsHelper->subscribeToRootCategory('community', $person);
             $this->addFlash('success', $this->phrase('portal.flashes.article_cat_subscribe'));
+        }
+
+        if ($request->query->get('target')) {
+            return $this->redirect($request->query->get('target'));
         }
 
         return $this->redirectToRoute('portal_community');
@@ -642,22 +787,30 @@ class CommunityTopicsController extends AbstractController
     }
 
     /**
-     * @param $filter
-     * @param $communityChannels
+     * @param CommunityFilter $filter
+     * @param array           $communityForums
+     * @param $page
+     * @param bool $isEncoded
      *
-     * @return string
+     * @return string|array
      */
-    public function generateFilterJs(CommunityFilter $filter, array $communityChannels, $page)
+    public function generateFilterJs(CommunityFilter $filter, array $communityForums, $page, $isEncoded = true)
     {
+        if (isset(self::$filterParameters[(int) $isEncoded])) {
+            return self::$filterParameters[(int) $isEncoded];
+        }
+
         $allowedTypesParsed = [];
-        foreach ($communityChannels as $cat) {
+        foreach ($communityForums as $cat) {
             $allowedTypesParsed[$cat->getId()] = $this->objectPhrase($cat);
         }
 
         $statusCategories       = [];
-        $statusCategoriesEntity = $this->getRepo('DeskPRO:CommunityTopicStatusCategory')->findBy(
+        $statusCategoriesEntity = $this->getRepo(CommunityTopicStatusCategory::class)->findBy(
             ['status_type' => CommunityFilter::$statuses]
         );
+
+        /** @var CommunityTopicStatusCategory $statusCategory */
         foreach ($statusCategoriesEntity as $statusCategory) {
             $statusType = $statusCategory->getStatusType();
             if (!array_key_exists($statusType, $statusCategories)) {
@@ -667,26 +820,33 @@ class CommunityTopicsController extends AbstractController
             $statusCategories[$statusType][] = [
                 'id'    => $statusCategory->getId(),
                 'title' => $this->objectPhrase($statusCategory),
+                'color' => $statusCategory->getColor(),
             ];
         }
 
         $theArray = [
             'filter'    => array_merge($filter->toArray(), ['page' => $page]),
             'available' => [
+                'views'             => $this->transArray(CommunityFilter::$views_translated),
                 'status'            => $this->transArray(CommunityFilter::$statuses_translated),
                 'status_categories' => $statusCategories,
                 'types'             => $allowedTypesParsed,
                 'sorts'             => $this->transArray(CommunityFilter::$sorts_translated),
                 'sort_directions'   => $this->transArray(CommunityFilter::$sort_directions_translated),
+                'activities'        => $this->transArray(CommunityFilter::$activities_translated),
             ],
         ];
+
+        if (!$isEncoded) {
+            return self::$filterParameters[(int) $isEncoded] = $theArray;
+        }
 
         $filterJs = json_encode(
             $theArray,
             JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_NUMERIC_CHECK
         );
 
-        return $filterJs;
+        return self::$filterParameters[(int) $isEncoded] = $filterJs;
     }
 
     /**
@@ -708,5 +868,85 @@ class CommunityTopicsController extends AbstractController
     public function redirectCommunityAction($url)
     {
         return $this->redirect('/community/'.$url, RedirectResponse::HTTP_MOVED_PERMANENTLY);
+    }
+
+    /**
+     * @param FormInterface  $form
+     * @param Request        $request
+     * @param CommunityTopic $newCommunityTopic
+     * @param bool           $rerenderingSaved
+     * @param bool           $redirectToBrowseTopic
+     * @param Person|null    $person
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return RedirectResponse
+     */
+    private function saveNewTopic(
+        FormInterface $form,
+        Request $request,
+        CommunityTopic $newCommunityTopic,
+        $rerenderingSaved,
+        $redirectToBrowseTopic,
+        Person $person = null
+    ) {
+        if (
+            !$rerenderingSaved // if we are rerendering dont pass this condition
+            &&
+            (
+                !$form->getClickedButton() // if user clicked more_attachments dont pass condition
+                ||
+                (
+                    $form->getClickedButton()
+                    && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments'
+                )
+            )
+        ) {
+            // deal with guests via negotiating with PersonFactory
+            if ($person instanceof PersonGuest) {
+                try {
+                    $this->getPersonFactory()->checkGuestForValidation($person, $request->attributes->get('saved-form'));
+
+                    // the below block only executes during a saved form request (they clicked validation link)
+                    $email  = $person->getPrimaryEmail();
+                    $person = $this->getPersonDataService()->getPersonForEmail($email->getEmail());
+
+                    // since the guest is set on the form, we need to update all of the associations
+                    $newCommunityTopic->setPerson($person);
+                    foreach ($newCommunityTopic->getAttachments() as $attachment) {
+                        $attachment->setPerson($person);
+                    }
+
+                    return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request, $redirectToBrowseTopic);
+                } catch (LoginRequiredException $e) {
+                    $person = $e->getPerson();
+                    $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
+
+                    if ($person instanceof PersonGuest) {
+                        $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmail(), $person->getDisplayName());
+
+                        return new RedirectResponse(
+                            $this->container->get('router')->generate('portal_login', [
+                                'saved_form' => $savedForm->getExternalCode(),
+                            ])
+                        );
+                    } else {
+                        return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $person, $form, $request);
+                    }
+                } catch (EmailValidationRequiredException $e) {
+                    $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
+
+                    $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_COMMUNITY_TOPIC, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::NEW_COMMUNITY_TOPIC, $savedForm);
+                    $this->addFlash('success', $this->phrase('portal.flashes.guest_content_must_verify'));
+
+                    return $this->redirectToRoute('portal_community');
+                }
+            }
+
+            $this->submitNewCommunityTopicAbuseCheck($person, $request->getClientIp());
+
+            return $this->acceptNewCommunityTopic($newCommunityTopic, $person, $request, $redirectToBrowseTopic);
+        }
     }
 }

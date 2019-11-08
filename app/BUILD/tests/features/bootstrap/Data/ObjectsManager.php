@@ -14,7 +14,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\CommunityTopicStatusCategory;
@@ -95,10 +95,17 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApproverSelectionCriteria;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\SelectedApprovers;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
+use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
@@ -291,6 +298,7 @@ class ObjectsManager
             'Article'                          => [Factory\SimpleFactory::class, 'create', Article::class],
             'ArticleCategory'                  => [Factory\SimpleFactory::class, 'create', ArticleCategory::class],
             'PendingArticle'                   => [Factory\SimpleFactory::class, 'create', ArticlePendingCreate::class],
+            'ContentTemplate'                  => [Factory\SimpleFactory::class, 'create', ContentTemplate::class],
             'Chat'                             => [Factory\CommonFactories::class, 'chat'],
             'ChatMessage'                      => [Factory\SimpleFactory::class, 'create', ChatMessage::class],
             'AgentChat'                        => [Factory\SimpleFactory::class, 'create', AgentChat::class],
@@ -314,7 +322,7 @@ class ObjectsManager
             'SendmailSource'                   => [Factory\CommonFactories::class, 'sendmailSource'],
             'CommunityTopic'                   => [Factory\CommonFactories::class, 'community'],
             'CommunityTopicSubscription'       => [Factory\SimpleFactory::class, 'create', CommunityTopicSubscription::class],
-            'CommunityChannel'                 => [Factory\SimpleFactory::class, 'create', CommunityChannel::class],
+            'CommunityForum'                   => [Factory\SimpleFactory::class, 'create', CommunityForum::class],
             'CommunityTopicStatusCategory'     => [Factory\SimpleFactory::class, 'create', CommunityTopicStatusCategory::class],
             'CommunityTopicComment'            => [Factory\SimpleFactory::class, 'create', CommunityTopicComment::class],
             'GlossaryWord'                     => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
@@ -411,6 +419,12 @@ class ObjectsManager
             'UserChatQueue'                    => [Factory\SimpleFactory::class, 'create', UserChatQueue::class],
             'UserChatQueueAgent'               => [Factory\SimpleFactory::class, 'create', UserChatQueueAgent::class],
             'ChatConversation'                 => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
+            'ApprovalType'                     => [Factory\SimpleFactory::class, 'create', ApprovalType::class],
+            'ApprovalTemplate'                 => [Factory\SimpleFactory::class, 'create', ApprovalTemplate::class],
+            'ApprovalResponse'                 => [Factory\SimpleFactory::class, 'create', ApprovalResponse::class],
+            'TicketApproval'                   => [Factory\SimpleFactory::class, 'create', TicketApproval::class],
+            'ApproverSelectionCriteria'        => [Factory\SimpleFactory::class, 'create', ApproverSelectionCriteria::class],
+            'SelectedApprovers'                => [Factory\SimpleFactory::class, 'create', SelectedApprovers::class],
         ];
     }
 
@@ -474,6 +488,7 @@ class ObjectsManager
             'CustomPerUserDef'                 => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
             'CustomPerOrgDef'                  => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Organization::class]],
             'Article'                          => [$this, 'find', Article::class],
+            'ContentTemplate'                  => [$this, 'find', ContentTemplate::class],
             'PendingArticle'                   => [$this, 'find', ArticlePendingCreate::class],
             'News'                             => [$this, 'find', News::class],
             'NewsCategory'                     => [$this, 'find', NewsCategory::class],
@@ -493,7 +508,7 @@ class ObjectsManager
             'CommunityTopic'                   => [$this, 'find', CommunityTopic::class],
             'CommunityTopicSubscription'       => [$this, 'find', CommunityTopicSubscription::class],
             'CommunityTopicStatusCategory'     => [$this, 'find', CommunityTopicStatusCategory::class],
-            'CommunityChannel'                 => [$this, 'find', CommunityChannel::class],
+            'CommunityForum'                   => [$this, 'find', CommunityForum::class],
             'CommunityTopicComment'            => [$this, 'find', CommunityTopicComment::class],
             'LabelDef'                         => [$this, 'find', LabelDef::class],
             'LabelCommunityTopic'              => [$this, 'find', LabelCommunityTopic::class],
@@ -554,6 +569,10 @@ class ObjectsManager
             'UserChatQueue'                    => [$this, 'find', UserChatQueue::class],
             'UserChatQueueAgent'               => [$this, 'find', UserChatQueueAgent::class],
             'ChatConversation'                 => [$this, 'find', ChatConversation::class],
+            'ApprovalType'                     => [$this, 'find', ApprovalType::class],
+            'ApprovalTemplate'                 => [$this, 'find', ApprovalTemplate::class],
+            'ApprovalResponse'                 => [$this, 'find', ApprovalResponse::class],
+            'TicketApproval'                   => [$this, 'find', TicketApproval::class],
         ];
     }
 }

@@ -33,6 +33,7 @@ class Breadcrumbs implements \IteratorAggregate, \Countable
     const COMMUNITY_VIEW   = 'community.view';
     const TICKETS          = 'tickets';
     const TICKETS_VIEW     = 'tickets.view';
+    const APPROVALS_VIEW   = 'approvals.view';
     const TICKETS_NEW      = 'tickets.new';
     const MEMBERS          = 'members';
     const DIRECT_MESSAGES  = 'dm';

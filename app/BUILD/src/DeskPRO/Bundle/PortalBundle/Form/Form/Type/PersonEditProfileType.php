@@ -3,17 +3,18 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonProfileImageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimezoneType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -108,8 +109,8 @@ class PersonEditProfileType extends AbstractType
      */
     public function onSubmit(FormEvent $event)
     {
-        $blob_storage = $this->blobStorage;
-        $em           = $this->em;
+        $blobStorage = $this->blobStorage;
+        $em          = $this->em;
 
         /** @var \Application\DeskPRO\Entity\Person $person */
         $person = $event->getData();
@@ -118,17 +119,30 @@ class PersonEditProfileType extends AbstractType
         if ($form->has('upload_picture')) {
             $file = $form->get('upload_picture')->getData();
             if ($file instanceof File && $file->getRealPath()) {
-                $blob = $blob_storage->createBlobRecordFromFile(
+                $blob = $blobStorage->createBlobRecordFromFile(
                     $file->getRealPath(),
                     $file->getClientOriginalName(),
                     $file->getClientMimeType()
                 );
 
                 if ($person->getPictureBlob()) {
-                    $blob_storage->deleteBlobRecord($person->getPictureBlob());
+                    $blobStorage->deleteBlobRecord($person->getPictureBlob());
                 }
                 $person->setPictureBlob($blob);
                 $em->persist($blob);
+
+                $form->remove('upload_picture');
+                $form->add('delete_picture', CheckboxType::class, [
+                    'required' => false,
+                    'mapped'   => false,
+                ]);
+            } elseif ($file instanceof Blob) {
+                if ($person->getPictureBlob()) {
+                    $blobStorage->deleteBlobRecord($person->getPictureBlob());
+                }
+                $person->setPictureBlob($file);
+                $file->setIsTemp(false);
+                $em->persist($file);
 
                 $form->remove('upload_picture');
                 $form->add('delete_picture', CheckboxType::class, [
@@ -140,7 +154,7 @@ class PersonEditProfileType extends AbstractType
 
         if ($form->has('delete_picture')) {
             if ($form->get('delete_picture')->getData()) {
-                $blob_storage->deleteBlobRecord($person->getPictureBlob());
+                $blobStorage->deleteBlobRecord($person->getPictureBlob());
                 $person->setPictureBlob(null);
             }
         }
@@ -198,7 +212,7 @@ class PersonEditProfileType extends AbstractType
                 'mapped'   => false,
             ]);
         } else {
-            $form->add('upload_picture', FileType::class, [
+            $form->add('upload_picture', PersonProfileImageType::class, [
                 'required' => false,
                 'mapped'   => false,
                 'label'    => $this->phrase('portal.forms.label_upload_picture'),

@@ -1,0 +1,50 @@
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
+  {% for line in timeline_pager %}
+      {% if line.type == 'ticket_reopened' %}
+        <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
+          <div class="dp-po-avatar dp-po-avatar-round">
+            {% include "Theme:Common:person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+          </div>
+          <div class="dp-po-ticket-block-status">
+            {{ phrase('helpcenter.tickets.timeline_re_opened') }}
+            <span class="badge"><i class="dp-po-icon far fa-envelope-open"></i>{{ phrase('helpcenter.tickets.timeline_re_opened') }}</span>
+          </div>
+          <div class="dp-po-time">
+            <i class="dp-po-icon far fa-clock"></i>
+            {{ date_ago(line.datetime) }}
+          </div>
+        </div>
+      {% elseif line.type == 'ticket_closed' %}
+        <div class="dp-po-ticket-block dp-po-ticket-block-timeline">
+          <div class="dp-po-avatar dp-po-avatar-round">
+            {% include "Theme:Common:person_inline.html.twig" with {person: line.person, include_email: line.type == 'user_message'} %}
+          </div>
+          <div class="dp-po-ticket-block-status">
+            {{ phrase('helpcenter.tickets.timeline_marked') }}
+            <span class="badge"><i class="dp-po-icon far fa-check"></i>{{ phrase('helpcenter.tickets.timeline_marked_resolved') }}</span>
+          </div>
+          <div class="dp-po-time">
+            <i class="dp-po-icon far fa-clock"></i>
+            {{ date_ago(line.datetime) }}
+          </div>
+        </div>
+      {% elseif line.type == 'agent_message' %}
+        {% set msg = line.message %}
+        {% include 'Theme:Tickets:timeline/agent_message.html.twig' %}
+      {% elseif line.type == 'user_message' %}
+        {% set msg = line.message %}
+        {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
+      {% elseif line.type == 'ticket_feedback' %}
+        {% set feedback = line.feedback %}
+        {% include 'Theme:Tickets:timeline/ticket_feedback.html.twig' %}
+      {% endif %}
+  {% endfor %}
+
+{#  {% if timeline_pager.haveToPaginate %}#}
+{#    <div class="deskpro-pager">#}
+{#      {{ pagerfanta(timeline_pager) }}#}
+{#    </div>#}
+{#  {% endif %}#}
+
+
+

@@ -29,10 +29,10 @@
 							{% if other_topic %}<td width="50%">{{ other_topic.title }}</td>{% endif %}
 						</tr>
 						<tr>
-							<th><div>{{ phrase('agent.general.category') }}</div></th>
-							<td width="50%">{{ topic.channel ? topic.channel.title : '' }}</td>
+							<th><div>{{ phrase('agent.general.forum') }}</div></th>
+							<td width="50%">{{ topic.forum ? topic.forum.title : '' }}</td>
 							{% if other_topic %}
-								<td width="50%">{{ other_topic.channel ? other_topic.channel.title : '' }}</td>
+								<td width="50%">{{ other_topic.forum ? other_topic.forum.title : '' }}</td>
 							{% endif %}
 						</tr>
 						<tr class="always-keep">

@@ -69,7 +69,7 @@ class Column extends AbstractPart
         'agent_teams'                       => ['id', 'name'],
         'article_categories'                => ['id', 'title'],
         'download_categories'               => ['id', 'title'],
-        'community_channels'                => ['id', 'title'],
+        'community_forums'                  => ['id', 'title'],
         'news_categories'                   => ['id', 'title'],
         'brands'                            => ['id', 'name'],
         'custom_field_definition'           => ['id', 'title'],
@@ -267,9 +267,9 @@ END)
                             if (preg_match('/custom_data_(.*)$/', $sqlTable, $matches)) {
                                 $extraConditionValue = $matches[1];
 
-                                $field = $this->customDataHelper->getCustomField($repository->getTableName(), $extraConditionValue);
-                                if ($field && $field->isCurrencyType()) {
-                                    $currencyId = $field->getOption('currency_id');
+                                $customField = $this->customDataHelper->getCustomField($repository->getTableName(), $extraConditionValue);
+                                if ($customField && $customField->isCurrencyType()) {
+                                    $currencyId = $customField->getOption('currency_id');
                                     $currency   = null;
                                     $delimiter  = 1;
                                     if ($currencyId) {
@@ -280,12 +280,12 @@ END)
                                     }
 
                                     $sql      = "($sql / $delimiter)";
-                                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($field, $currency) {
+                                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($customField, $currency) {
                                         if ($currency) {
                                             $value = $currency->getSymbol().number_format(floatval($value), $currency->getDecimalPlaces(), '.', ',');
                                         }
 
-                                        return $valueRenderer->renderValue($value, $field->getType(), $metadata);
+                                        return $valueRenderer->renderValue($value, $customField->getType(), $metadata);
                                     };
                                 }
                             }

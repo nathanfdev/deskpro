@@ -31,10 +31,10 @@
         </li>
     </ul>
 
-    {% if community_channels is defined and community_channels|length > 0 %}
+    {% if community_forums is defined and community_forums|length > 0 %}
     <div>
         <ul class="slider-list">
-            {% for type in community_channels %}
+            {% for type in community_forums %}
             <li>
                 <div class="slider-panel">
                     {% if type.id in types or types is empty %}

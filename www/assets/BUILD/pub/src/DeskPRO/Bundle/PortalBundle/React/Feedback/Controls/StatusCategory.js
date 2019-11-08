@@ -9,8 +9,9 @@ export class StatusCategory extends React.Component {
     isActive:          PropTypes.bool
   };
 
-  onClick = event => {
+  onClick = (event) => {
     event.preventDefault();
+    event.stopPropagation();
     const { setStatusCategory, cat } = this.props;
 
     setStatusCategory(cat.id);
@@ -22,7 +23,7 @@ export class StatusCategory extends React.Component {
     return (
       <div className="cat-checkbox-title">
         <input type="checkbox" checked={isActive} onChange={this.onClick} onTouchStart={this.onClick} />
-        <a style={isActive ? {} : {}} onClick={this.onClick} onTouchStart={this.onClick}>
+        <a href="#status" style={isActive ? {} : {}} onClick={this.onClick} onTouchStart={this.onClick}>
           {cat.title}
         </a>
       </div>

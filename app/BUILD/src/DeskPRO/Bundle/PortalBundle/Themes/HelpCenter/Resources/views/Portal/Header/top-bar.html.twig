@@ -1,0 +1,35 @@
+<div class="dp-po">
+    <header class="dp-po-header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="dp-po-brand-left">
+                        <a href="{{ brand_setting('core.site_url') | default(path('portal_home')) }}" class="dp-po-homelink">
+                            {% if portal_custom_logo() %}
+                                <span class="dp-po-logo">
+                                    <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" />
+                                </span>
+                            {% endif %}
+                            <span class="dp-po-brand-name">{{ brand_setting('core.deskpro_name')|e }}</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="dp-po-header-right">
+                        <div class="dp-po-language" id="hc-language-changer">
+                            <a class="dp-po-language-link" href="">
+                                <img src="{{ asset('images/flags/locale_en-US.png', 'legacy_web') }}" alt=""> English
+                                <i class="dp-po-icon far fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div class="dp-po-header-button">
+                            <a href="{{ path('portal_new_ticket') }}" class="btn btn-primary" title="{{ phrase('helpcenter.general.nav-newticket') }}">{{ phrase('helpcenter.general.nav-newticket') }}</a>
+                        </div>
+                        {% include 'Theme:Portal:Header/user-menu.html.twig' %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+</div>

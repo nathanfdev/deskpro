@@ -6,28 +6,58 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFeedback;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\TicketFeedback as TicketFeedbackRepository;
 use Application\DeskPRO\EntityRepository\TicketLog as TicketLogRepository;
 use Application\DeskPRO\EntityRepository\TicketMessage as TicketMessageRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line;
-use DeskPRO\Bundle\AppBundle\Ticket\Timeline\Line\LineInterface;
 use DeskPRO\Bundle\AppBundle\Ticket\Timeline\TicketTimeline;
 use DeskPRO\Component\Util\MapUtils;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class TicketTimelineDataService extends AbstractDataService
 {
     /**
-     * @param Ticket $ticket
-     *
-     * @return LineInterface[]
+     * Set to TRUE to include ticket approval logs in timeline
      */
-    public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50)
+    const ADD_TICKET_APPROVALS_TO_TIMELINE = false;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $tokenStorage;
+
+    /**
+     * TicketTimelineDataService constructor.
+     *
+     * @param EntityManager $em
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage)
+    {
+        parent::__construct($em);
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param int    $page
+     * @param int    $per_page
+     * @param Person $person
+     *
+     * @return TicketTimeline
+     */
+    public function getUserTimeline(Ticket $ticket, $page = 1, $per_page = 50, $person = null)
     {
         $raw_logs = $this->getTicketLogRepo()->getLogsForTicket($ticket, [
             'order_dir' => 'ASC',
-            'types'     => ['ticket_created', 'message_created', 'changed_status'],
+            'types'     => ['ticket_created', 'message_created', 'changed_status', 'ticket_approval'],
         ]);
 
         $messages = $this->getTicketMessageRepo()->getTicketMessages($ticket, [
@@ -36,6 +66,15 @@ class TicketTimelineDataService extends AbstractDataService
         ]);
 
         $messages = MapUtils::rekeyByProperty($messages, 'id');
+
+        $approvals = [];
+        if ($currentUser = $this->getCurrentUser() && self::ADD_TICKET_APPROVALS_TO_TIMELINE) {
+            $approvals = $this->getTicketApprovalRepo()->getTicketApprovalsByTicketAndApprover(
+                $ticket,
+                $currentUser
+            );
+            $approvals = MapUtils::rekeyByProperty($approvals, 'id');
+        }
 
         $logs_source = $this->procLogLines($ticket, $raw_logs, $messages);
 
@@ -46,6 +85,7 @@ class TicketTimelineDataService extends AbstractDataService
 
         $have_messages = [];
 
+        /** @var TicketLog $l */
         foreach ($logs as $l) {
             switch ($l->action_type) {
                 case 'ticket_created':
@@ -64,6 +104,16 @@ class TicketTimelineDataService extends AbstractDataService
                         } else {
                             $timeline->addLine(new Line\UserMessageLine($m));
                         }
+                        if ($person) {
+                            if ($person->isAgent() || $person->isOrganizationManager()) {
+                                $feedback = $this->getTicketFeedbackRepo()->getFeedbackForMessage($m);
+                            } else {
+                                $feedback = $this->getTicketFeedbackRepo()->getFeedback($m, $person, false);
+                            }
+                            if ($feedback) {
+                                $timeline->addLine(new Line\FeedbackRatingLine($feedback));
+                            }
+                        }
                     }
                     break;
 
@@ -79,6 +129,11 @@ class TicketTimelineDataService extends AbstractDataService
                         } else {
                             $timeline->addLine(new Line\TicketClosedLine($l->date_created, $l->person));
                         }
+                    }
+                    break;
+                case 'ticket_approval':
+                    if (isset($approvals[$l->getIdObject()]) && self::ADD_TICKET_APPROVALS_TO_TIMELINE) {
+                        $timeline->addLine(new Line\TicketApprovalLine($approvals[$l->getIdObject()], $l->person));
                     }
                     break;
             }
@@ -119,6 +174,7 @@ class TicketTimelineDataService extends AbstractDataService
                     $use_logs[] = $l;
                     break;
                 case 'changed_status':
+                case 'ticket_approval':
                     $use_logs[] = $l;
                     break;
             }
@@ -191,5 +247,35 @@ class TicketTimelineDataService extends AbstractDataService
     protected function getTicketLogRepo()
     {
         return $this->em->getRepository(TicketLog::class);
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\Repository\TicketApprovalRepository
+     */
+    protected function getTicketApprovalRepo()
+    {
+        return $this->em->getRepository(TicketApproval::class);
+    }
+
+    /**
+     * @return Person|null
+     */
+    protected function getCurrentUser()
+    {
+        if ($token = $this->tokenStorage->getToken()) {
+            if ($user = $token->getUser()) {
+                return $user;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return TicketFeedbackRepository
+     */
+    protected function getTicketFeedbackRepo()
+    {
+        return $this->em->getRepository(TicketFeedback::class);
     }
 }

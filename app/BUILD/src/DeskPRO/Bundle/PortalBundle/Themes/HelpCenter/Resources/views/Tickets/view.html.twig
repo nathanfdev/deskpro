@@ -1,0 +1,9 @@
+{% set cls = "column-half-plus wide" %}
+{% extends 'Theme:Tickets:base_view.html.twig' %}
+{% block sidebar %}
+{% endblock sidebar %}
+
+{% block page_specific_content %}
+    {% include "Theme:Tickets:timeline/timeline.html.twig" %}
+    {% include "Theme:Tickets:ticket_reply.html.twig" %}
+{% endblock page_specific_content %}

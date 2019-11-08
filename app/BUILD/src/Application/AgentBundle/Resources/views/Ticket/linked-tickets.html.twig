@@ -34,7 +34,7 @@
 				</td>
 				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
 					<div class="status-pill status {% if t.status == 'awaiting_agent' %}urgency-{{ t.urgency }}{% endif %} {{ t.status }}" style="float: none; top: 0; text-shadow: none !important;">
-						{{ display_ticket_status(ticket) }}
+						{{ display_ticket_status(t) }}
 						{% if t.status == 'awaiting_agent' %}<i class="ticket-urgency">{{ t.urgency }}</i>{% endif %}
 					</div>
 				</td>
@@ -121,7 +121,7 @@
 					</td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">
 						<div class="status-pill status {% if t.status == 'awaiting_agent' %}urgency-{{ t.urgency }}{% endif %} {{ t.status }}" style="float: none; top: 0; text-shadow: none !important;">
-							{{ display_ticket_status(ticket) }}
+							{{ display_ticket_status(t) }}
 							{% if t.status == 'awaiting_agent' %}<i class="ticket-urgency">{{ t.urgency }}</i>{% endif %}
 						</div>
 					</td>

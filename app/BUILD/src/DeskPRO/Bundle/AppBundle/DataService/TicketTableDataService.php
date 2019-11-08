@@ -69,17 +69,17 @@ class TicketTableDataService extends AbstractDataService
         $this->brand_aware_settings    = $brand_aware_settings;
     }
 
-    public function makeTicketTable(Person $person, Request $request, $ticket_type, $category, $category_title)
+    public function makeTicketTable(Person $person, Request $request, $ticketType, $category, $categoryTitle)
     {
-        $columns  = $this->makeColumnControl($person);
-        $per_page = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
-        $table    = new TicketListTable($category, $ticket_type, $category_title, $columns, $request, $per_page);
+        $columns = $this->makeColumnControl($person);
+        $perPage = $this->brand_aware_settings->getSetting('portal.per_page_tickets', null, 50);
+        $table   = new TicketListTable($category, $ticketType, $categoryTitle, $columns, $request, $perPage);
         $table->makePagerUsingDataService($this->ticket_data_service, $person);
 
         return $table;
     }
 
-    public function makeColumnControl(Person $person)
+    public function makeColumnControl(Person $person = null)
     {
         $columns = new TicketColumns();
 
@@ -166,7 +166,7 @@ class TicketTableDataService extends AbstractDataService
      * @param TicketColumns $columns
      * @param Person        $person
      */
-    public function addDynamicColumns(TicketColumns $columns, Person $person)
+    public function addDynamicColumns(TicketColumns $columns, Person $person = null)
     {
         $deps = $this->department_data_service->getTicketDepartmentsForPerson($person);
 

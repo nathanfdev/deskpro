@@ -66,6 +66,17 @@ class TicketFeedback extends AbstractEntityRepository
         return $res;
     }
 
+    public function getFeedbackForMessage(TicketMessageEntity $message)
+    {
+        return $this->getEntityManager()->createQuery('
+                SELECT f
+                FROM DeskPRO:TicketFeedback f
+                WHERE f.ticket_message = ?0
+            ')->setParameter(0, $message)
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
+    }
+
     /**
      * @param int $page
      *

@@ -1794,6 +1794,11 @@ $collection->create('agent_kb_newarticle', [
     'controller' => 'AgentBundle:Kb:newArticle',
 ]);
 
+$collection->create('agent_kb_edit_content_template', [
+    'path'       => '/kb/article/edit_content_template/{contentTemplate}',
+    'controller' => 'AgentBundle:Kb:editContentTemplate',
+]);
+
 $collection->create('agent_kb_article', [
     'path'         => '/kb/article/{article_id}',
     'controller'   => 'AgentBundle:Kb:viewArticle',
@@ -2051,9 +2056,9 @@ $collection->create('agent_downloads_ajax_get_categories', [
     'requirements' => ['brand_id' => '\\d+'],
 ]);
 
-$collection->create('agent_community_ajax_get_channels', [
-    'path'         => '/community/channels/brand/{brand_id}',
-    'controller'   => 'AgentBundle:CommunityTopics:ajaxGetChannelsByBrand',
+$collection->create('agent_community_ajax_get_forums', [
+    'path'         => '/community/forums/brand/{brand_id}',
+    'controller'   => 'AgentBundle:CommunityTopics:ajaxGetForumsByBrand',
     'requirements' => ['brand_id' => '\\d+'],
 ]);
 
@@ -2063,10 +2068,10 @@ $collection->create('agent_community_ajax_get_statuses', [
     'requirements' => ['brand_id' => '\\d+'],
 ]);
 
-$collection->create('agent_community_channels', [
-    'path'       => '/community/channels/{channelId}',
-    'controller' => 'AgentBundle:CommunityTopics:channelsList',
-    'options'    => ['fragment_name' => 'channel', 'fragment_type' => 'list'],
+$collection->create('agent_community_forums', [
+    'path'       => '/community/forums/{forumId}',
+    'controller' => 'AgentBundle:CommunityTopics:forumsList',
+    'options'    => ['fragment_name' => 'forum', 'fragment_type' => 'list'],
 ]);
 
 $collection->create('agent_community_topic_status', [
@@ -2178,9 +2183,9 @@ $collection->create('agent_community_topic_ajaxsaveeditables', [
     'controller' => 'AgentBundle:CommunityTopics:ajaxSaveEditables',
 ]);
 
-$collection->create('agent_community_topic_ajaxupdatechannel', [
-    'path'       => '/community/topic/view/{communityTopicId}/ajax-update-channel/{channelId}',
-    'controller' => 'AgentBundle:CommunityTopics:ajaxUpdateChannel',
+$collection->create('agent_community_topic_ajaxupdateforum', [
+    'path'       => '/community/topic/view/{communityTopicId}/ajax-update-forum/{forumId}',
+    'controller' => 'AgentBundle:CommunityTopics:ajaxUpdateForum',
 ]);
 
 $collection->create('agent_community_topic_ajaxupdatestatus', [

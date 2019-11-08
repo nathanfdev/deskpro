@@ -31,7 +31,7 @@ class TicketReOpenedLine implements LineInterface
     }
 
     /**
-     * @return \DateTime
+     * @return Person
      */
     public function getPerson()
     {

@@ -62,12 +62,14 @@
     {{ macro.perm_row('ticket', 'modify_set_resolved_own',       {toggleName: 'ticket.modify_own'}) }}
     {{ macro.perm_row('ticket', 'modify_set_unresolved_own',     {toggleName: 'ticket.modify_own'}) }}
     {% if app.getSetting('core.problems.enabled') %}
-        {{ macro.perm_row('ticket', 'associate_problem_own',        {toggleName: 'ticket.modify_own'}) }}
-        {{ macro.perm_row('ticket', 'disassociate_problem_own',     {toggleName: 'ticket.modify_own'}) }}
+        {{ macro.perm_row('ticket', 'associate_problem_own',     {toggleName: 'ticket.modify_own'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_own',  {toggleName: 'ticket.modify_own'}) }}
     {% endif %}
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-        {{ macro.perm_row('ticket', 'modify_billing_own', {toggleName: 'ticket.modify_own'}) }}
+        {{ macro.perm_row('ticket', 'modify_billing_own',        {toggleName: 'ticket.modify_own'}) }}
     {% endif %}
+    {{ macro.perm_row('ticket', 'modify_add_approval_own',      {toggleName: 'ticket.modify_own'}) }}
+    {{ macro.perm_row('ticket', 'modify_cancel_approval_own',   {toggleName: 'ticket.modify_own'}) }}
     </tbody>
     <tbody>
     {{ macro.perm_row('ticket', 'modify_messages_own',                            {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
@@ -107,12 +109,14 @@
     {{ macro.perm_row('ticket', 'modify_set_resolved_followed',       {toggleName: 'ticket.modify_followed'}) }}
     {{ macro.perm_row('ticket', 'modify_set_unresolved_followed',     {toggleName: 'ticket.modify_followed'}) }}
     {% if app.getSetting('core.problems.enabled') %}
-        {{ macro.perm_row('ticket', 'associate_problem_followed',        {toggleName: 'ticket.modify_followed'}) }}
-        {{ macro.perm_row('ticket', 'disassociate_problem_followed',     {toggleName: 'ticket.modify_followed'}) }}
+        {{ macro.perm_row('ticket', 'associate_problem_followed',     {toggleName: 'ticket.modify_followed'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_followed',  {toggleName: 'ticket.modify_followed'}) }}
     {% endif %}
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-        {{ macro.perm_row('ticket', 'modify_billing_followed', {toggleName: 'ticket.modify_followed'}) }}
+        {{ macro.perm_row('ticket', 'modify_billing_followed',        {toggleName: 'ticket.modify_followed'}) }}
     {% endif %}
+    {{ macro.perm_row('ticket', 'modify_add_approval_followed',       {toggleName: 'ticket.modify_followed'}) }}
+    {{ macro.perm_row('ticket', 'modify_cancel_approval_followed',    {toggleName: 'ticket.modify_followed'}) }}
     </tbody>
     <tbody>
     {{ macro.perm_row('ticket', 'modify_messages_followed',                           {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
@@ -153,12 +157,14 @@
     {{ macro.perm_row('ticket', 'modify_set_resolved_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
     {{ macro.perm_row('ticket', 'modify_set_unresolved_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
     {% if app.getSetting('core.problems.enabled') %}
-        {{ macro.perm_row('ticket', 'associate_problem_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
-        {{ macro.perm_row('ticket', 'disassociate_problem_unassigned',     {toggleName: 'ticket.modify_unassigned'}) }}
+        {{ macro.perm_row('ticket', 'associate_problem_unassigned',      {toggleName: 'ticket.modify_unassigned'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_unassigned',   {toggleName: 'ticket.modify_unassigned'}) }}
     {% endif %}
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-        {{ macro.perm_row('ticket', 'modify_billing_unassigned', {toggleName: 'ticket.modify_unassigned'}) }}
+        {{ macro.perm_row('ticket', 'modify_billing_unassigned',         {toggleName: 'ticket.modify_unassigned'}) }}
     {% endif %}
+    {{ macro.perm_row('ticket', 'modify_add_approval_unassigned',        {toggleName: 'ticket.modify_unassigned'}) }}
+    {{ macro.perm_row('ticket', 'modify_cancel_approval_unassigned',     {toggleName: 'ticket.modify_unassigned'}) }}
     <tbody>
     {{ macro.perm_row('ticket', 'modify_messages_unassigned',                           {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_unassigned',                      {toggleName: 'ticket.modify_messages_unassigned'}) }}
@@ -198,12 +204,14 @@
     {{ macro.perm_row('ticket', 'modify_set_resolved_others',       {toggleName: 'ticket.modify_others'}) }}
     {{ macro.perm_row('ticket', 'modify_set_unresolved_others',     {toggleName: 'ticket.modify_others'}) }}
     {% if app.getSetting('core.problems.enabled') %}
-        {{ macro.perm_row('ticket', 'associate_problem_others',        {toggleName: 'ticket.modify_others'}) }}
-        {{ macro.perm_row('ticket', 'disassociate_problem_others',     {toggleName: 'ticket.modify_others'}) }}
+        {{ macro.perm_row('ticket', 'associate_problem_others',     {toggleName: 'ticket.modify_others'}) }}
+        {{ macro.perm_row('ticket', 'disassociate_problem_others',  {toggleName: 'ticket.modify_others'}) }}
     {% endif %}
     {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-        {{ macro.perm_row('ticket', 'modify_billing_others', {toggleName: 'ticket.modify_others'}) }}
+        {{ macro.perm_row('ticket', 'modify_billing_others',        {toggleName: 'ticket.modify_others'}) }}
     {% endif %}
+    {{ macro.perm_row('ticket', 'modify_add_approval_others',       {toggleName: 'ticket.modify_others'}) }}
+    {{ macro.perm_row('ticket', 'modify_cancel_approval_others',    {toggleName: 'ticket.modify_others'}) }}
     </tbody>
     <tbody>
     {{ macro.perm_row('ticket', 'modify_messages_others',                           {showToggler: true, permPrefix: 'modify_messages', destructive: true}) }}

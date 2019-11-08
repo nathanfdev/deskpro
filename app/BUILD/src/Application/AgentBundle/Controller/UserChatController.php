@@ -150,7 +150,14 @@ class UserChatController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $this->get('dp.voice.task_router')->acceptTask($convo->getTaskId(), 'agent', $this->person->getId());
+        $taskRouter = $this->get('dp.voice.task_router');
+
+        if (!$convo->getAgent()) {
+            $taskRouter->acceptTask($convo->getTaskId(), 'agent', $this->person->getId());
+        } else {
+            $taskRouter->joinTask($convo->getTaskId(), 'agent', $this->person->getId());
+        }
+
         $assigned = $this->joinConvo($convo);
 
         return $this->createJsonCmResponse([
@@ -719,10 +726,10 @@ class UserChatController extends AbstractController
             $groupers[]       = $grouper;
         }
 
-        $labelLister = new \Application\DeskPRO\Labels\LabelLister('chat_conversations');
+        $labelLister = new \Application\DeskPRO\Labels\LabelLister('chat');
         $index       = $labelLister->getIndexList();
 
-        $labelCounts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('chat_conversations', 25);
+        $labelCounts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('chat', 25);
         $cloudGen    = new \Application\DeskPRO\UI\TagCloud($labelCounts);
         $cloud       = $cloudGen->getCloud();
 

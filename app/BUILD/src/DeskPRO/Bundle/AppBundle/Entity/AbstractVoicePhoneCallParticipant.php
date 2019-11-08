@@ -106,6 +106,13 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     private $costCurrency;
 
     /**
+     * @ORM\Column(name="data", type="json_array")
+     *
+     * @var array
+     */
+    private $data = [];
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -333,6 +340,26 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     public function setCostCurrency($costCurrency)
     {
         $this->costCurrency = $costCurrency;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setData(array $data = null)
+    {
+        $this->setModelField('data', $data);
 
         return $this;
     }

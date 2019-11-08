@@ -6,8 +6,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config;
@@ -69,9 +67,7 @@ class Imap extends AbstractFetcher
     private $readMailbox;
 
     /**
-     * Init connection
-     *
-     * @return Storage\Imap|\Zend\Mail\Storage\AbstractStorage
+     * Init connection.
      *
      * @throws \CannotPerformOperationException
      * @throws \InvalidArgumentException
@@ -79,12 +75,14 @@ class Imap extends AbstractFetcher
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \Exception
+     *
+     * @return Storage\Imap|\Zend\Mail\Storage\AbstractStorage
      */
     protected function _initConnection()
     {
         // stubs
         $properties = ['user', 'password'];
-        $options = [];
+        $options    = [];
 
         // decrypt account config
         $incomingAccount = $this->decryptIncomingAccount();
@@ -166,13 +164,13 @@ class Imap extends AbstractFetcher
 
         // set archive mailbox
         $this->archiveMailbox =
-            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+            (isset($options['archive_mailbox']) && !is_null($options['archive_mailbox']))
                 ? $options['archive_mailbox']
                 : 'DP_Archive';
 
         // set read mailbox
         $this->readMailbox =
-            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+            (isset($options['read_mailbox']) && !is_null($options['read_mailbox']))
                 ? $options['read_mailbox']
                 : null;
 
@@ -224,7 +222,7 @@ class Imap extends AbstractFetcher
         }
 
         // ensure read mailbox exists if provided
-        if (! is_null($this->readMailbox)) {
+        if (!is_null($this->readMailbox)) {
             $this->storage->ensureMailboxExists($this->readMailbox);
             $this->storage->setMailBox($this->readMailbox);
         }
@@ -270,8 +268,9 @@ class Imap extends AbstractFetcher
     /**
      * {@inheritdoc}
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
     {
@@ -297,6 +296,7 @@ class Imap extends AbstractFetcher
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
             $rawMessage->content = $this->storage->getRawHeaders($messageUid)."\n\n";
+            $rawMessage->too_big = true;
             $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
@@ -325,26 +325,30 @@ class Imap extends AbstractFetcher
      * Processes the message after reading it.
      * Moves it to the DP_Mailbox folder marking it "read".
      *
-     * @param int $id ID of the message
+     * @param RawMessage $rawMessage
+     *
      * @throws \InvalidArgumentException
      */
-    public function _doneRead($id)
+    public function _doneRead(RawMessage $rawMessage)
     {
         switch ($this->mode) {
             case self::MODE_READ:
-                // No need to mark message as read, its marked as read automatically by fetching the body
-                //$message->setFlag('seen', 1);
-                $this->logger->log("Marked $id as seen", 'debug');
+                // Mark message as read when we cant fetch body on reason of big size.
+                // Otherwise its marked as read automatically by fetching the body
+                if ($rawMessage->too_big) {
+                    $this->storage->markAsSeen($rawMessage->id);
+                }
+                $this->logger->log("Marked {$rawMessage->id} as seen", 'debug');
                 break;
 
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessageMailbox($id, $this->archiveMailbox);
-                $this->logger->log("Moved $id to {$this->archiveMailbox}", 'debug');
+                $this->storage->moveMessageMailbox($rawMessage->id, $this->archiveMailbox);
+                $this->logger->log("Moved {$rawMessage->id} to {$this->archiveMailbox}", 'debug');
                 break;
 
             case self::MODE_DELETE:
-                $this->storage->deleteMessage($id);
-                $this->logger->log("Deleted $id", 'debug');
+                $this->storage->deleteMessage($rawMessage->id);
+                $this->logger->log("Deleted {$rawMessage->id}", 'debug');
                 break;
 
             default:

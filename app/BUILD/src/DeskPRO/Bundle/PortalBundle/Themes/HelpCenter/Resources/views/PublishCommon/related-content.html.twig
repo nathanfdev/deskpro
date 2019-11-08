@@ -1,0 +1,43 @@
+<div class="dp-po-sidebar dp-po-related-content">
+    <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.general.related-content') }}</h3>
+    <ul class="dp-po-related-content-list">
+        {% for type,related in related_content %}
+            {% if 'news' == type and related|length %}
+                {% for content in related %}
+                    <li class="dp-po-related-content-item">
+                        <a href="{{ path('portal_news_view', { slug: content.slug }) }}" class="dp-po-related-content-link">
+                            <i class="dp-po-icon fal fa-newspaper"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+            {% if 'articles' == type and related|length %}
+                {% for content in related %}
+                    <li class="dp-po-related-content-item">
+                        <a href="{{ path('portal_kb_view', { slug: content.slug }) }}" class="dp-po-related-content-link">
+                            <i class="dp-po-icon fal fa-file-signature"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+            {% if 'downloads' == type and related|length %}
+                {% for content in related %}
+                    <li class="dp-po-related-content-item">
+                        <a href="{{ path('portal_downloads_view', { slug: content.slug }) }}" class="dp-po-related-content-link">
+                            <i class="dp-po-icon fal fa-file-signature"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+            {% if 'community' == type and related|length %}
+                {% for content in related %}
+                    <li class="dp-po-related-content-item">
+                        <a href="{{ path('portal_community_topic_view', { slug: content.slug }) }}" class="dp-po-related-content-link">
+                            <i class="dp-po-icon fal fa-file-signature"></i> {{ content.realTitle }}
+                        </a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+</div>

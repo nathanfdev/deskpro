@@ -304,13 +304,13 @@ return [
     'core.agent_intercept_external_link' => false,
 
     /*
-     * Show the share widget (twitter/facebook/linkedin/gplus)
+     * Show the share widget (twitter/facebook/linkedin/whatsapp)
      */
     'core.show_share_widget'   => false,
     'core.show_share_facebook' => false,
     'core.show_share_twitter'  => false,
     'core.show_share_linkedin' => false,
-    'core.show_share_gplus'    => false,
+    'core.show_share_whatsapp' => false,
 
     /*
      * Enable the KB?
@@ -1210,8 +1210,19 @@ return [
     'dpoauth2proxy.host' => 'auth.deskpro.com',
 
     //###################################################################################################################
+    // Collab Editing
+    //###################################################################################################################
+
+    'collab_enabled'           => false,
+    'collab_token_secret'      => '',
+    'collab_websocket_url'     => '',
+    'collab_deskpro_client_id' => '',
+
+    //###################################################################################################################
     // services
     //###################################################################################################################
 
     'services.language_sync_api' => 'https://lang-sync-services.deskpro.com/',
+
+    'services.unsplash_access_key' => '3d9c27e1cb7a6e77f038d7c8beb0759d37f7a825be8a0c79d03f0f1554407bc1',
 ];

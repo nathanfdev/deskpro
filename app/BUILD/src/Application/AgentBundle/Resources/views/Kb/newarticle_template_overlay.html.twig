@@ -1,0 +1,26 @@
+<div class="newarticle-template-overlay" data-overlay-apply-class="newarticle-template-overlay">
+    <div class="overlay-title">
+        <h4>{{ phrase('agent.general.save_as_new_template') }}</h4>
+    </div>
+    <div class="overlay-content">
+        <div class="content_template_explanation">
+            {{ phrase('agent.general.article_template_explanation' )}}
+        </div>
+        <div class="success" style="display: none; color: green;">
+            Saved
+        </div>
+        <div class="input-wrapper">
+            <label for="article_template">{{ phrase('agent.general.enter_a_title') }}</label>
+            <input type="text" name="title" id="article_template" />
+        </div>
+    </div>
+    <div class="overlay-footer">
+        <div class="is-not-loading">
+            <button class="clean-white submit-template-trigger">{{ phrase('agent.general.save') }}</button>
+        </div>
+        <div class="is-loading">
+            <div class="loading-icon"></div>
+        </div>
+    </div>
+</div>
+

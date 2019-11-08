@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import PortalSimpleSelectBox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
+import { FormattedMessage } from 'react-intl';
 
 class GuideSelector extends React.Component {
   static propTypes = {
@@ -30,18 +31,34 @@ class GuideSelector extends React.Component {
     const activeGuide = this.state.guides.filter(g => g.slug === this.props.guideSlug)[0];
 
     if (this.state.guides.length === 1) {
+      if (window.currentTheme === 'helpcenter') {
+        return (
+          <div className="current-guide">
+            {this.state.guides[0].title}
+            { activeGuide.guide_pdf ?
+              <div>
+                <br />
+                <a className="guide-pdf btn btn-secondary" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
+                  <FormattedMessage id="portal.general.btn-download-pdf" />&nbsp;<i className="far fa-file-pdf" />
+                </a>
+              </div> :
+              ''
+            }
+          </div>
+        );
+      }
       return (
         <div className="current-guide">
           {this.state.guides[0].title}
           { activeGuide.guide_pdf ?
             <div>
               <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
-                <span>Download PDF</span>
+                <span><FormattedMessage id="portal.general.btn-download-pdf" /></span>
                 <i className="far fa-file-pdf" />
               </a>
             </div> :
-            ''
-          }
+              ''
+            }
         </div>
       );
     }
@@ -54,8 +71,8 @@ class GuideSelector extends React.Component {
           onChange={this.onClickGuide}
         />
         { activeGuide.guide_pdf ?
-          <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
-            <span>Download PDF</span>
+          <a className="guide-pdf btn btn-light" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
+            <span><FormattedMessage id="portal.general.btn-download-pdf" /></span>
             <i className="far fa-file-pdf" />
           </a> :
           ''

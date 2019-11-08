@@ -137,6 +137,21 @@
 								</ul>
 							</td>
 						</tr>
+						{% if app.hasBeta('helpcenter') %}
+							<tr>
+								<th>{{ phrase('agent.general.icon') }}</th>
+								<td>
+									<div id="{{ tplvars.baseId }}_pick_cat_icon" class="category-icon">
+										<input type="hidden" name="icon_urn" value={{ category.icon.urn }} />,
+										<input type="hidden" name="icon_style" value={{ category.icon.options.style }} />,
+										<input type="hidden" name="icon_color" value={{ category.icon.options.color }} />,
+										<button class="dp-btn btn-default" type="button">
+											{{ phrase('agent.publish.pick_icon') }}
+										</button>
+									</div>
+								</td>
+							</tr>
+						{% endif %}
 					</tbody>
 				</table>
 			</div>

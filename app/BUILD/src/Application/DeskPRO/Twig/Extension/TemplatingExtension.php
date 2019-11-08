@@ -13,6 +13,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
@@ -164,6 +165,9 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('isChatAvailable', [$this->container->get('brand_aware_settings_resolver'), 'isChatAvailable']),
             new \Twig_SimpleFunction('calcGroupedHierarchyCount', [$this, 'calcGroupedHierarchyCount']),
             new \Twig_SimpleFunction('display_ticket_status', [$this, 'displayTicketStatus'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('has_splash', [$this, 'hasSplashImage']),
+            new \Twig_SimpleFunction('get_splash_url', [$this, 'getSplashUrl']),
+            new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
 
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
@@ -2013,6 +2017,54 @@ class TemplatingExtension extends \Twig_Extension
                 )
                 : $ticketStatus->getTitle();
         }
+    }
+
+    /**
+     * @param ContentAbstract $object
+     *
+     * @return bool
+     */
+    public function hasSplashImage(ContentAbstract $object)
+    {
+        return (bool) $object->getSplashImage() && $object->getSplashImage();
+    }
+
+    /**
+     * @param ContentAbstract $object
+     * @param int             $width
+     * @param string          $orientation
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    public function getSplashUrl(ContentAbstract $object, $width = 200, $orientation = 'landscape')
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            return $this->container->get('splash_image.renderer')->getSplashUrl($splashImage, $width, $orientation);
+        }
+
+        return '';
+    }
+
+    /**
+     * @param ContentAbstract $object
+     * @param int             $width
+     * @param string          $orientation
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    public function getSplashBgcss(ContentAbstract $object, $width = 200, $orientation = 'landscape')
+    {
+        $splashImage = $object->getSplashImage();
+        if ($splashImage) {
+            return $this->container->get('splash_image.renderer')->getSplashBgcss($splashImage, $width, $orientation);
+        }
+
+        return '';
     }
 
     /**

@@ -15,6 +15,7 @@ import EditAutoAttendant from './AutoAttendants/Form/EditAutoAttendantContainer'
 import AgentsVoiceToggle from './Agents/AgentsVoiceToggleContainer';
 import CallLogsList from './CallLogs/List/CallLogsListContainer';
 import CallLogView from './CallLogs/View/CallLogViewContainer';
+import BillingSummary from './BillingSummary/BillingSummaryContainer';
 
 export {
   Accounts,
@@ -33,5 +34,6 @@ export {
   EditAutoAttendant,
   AgentsVoiceToggle,
   CallLogsList,
-  CallLogView
+  CallLogView,
+  BillingSummary
 };

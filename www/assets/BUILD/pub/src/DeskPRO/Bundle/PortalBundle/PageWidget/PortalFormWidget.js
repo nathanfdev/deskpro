@@ -25,7 +25,6 @@ export default class PortalFormWidget extends PageWidget {
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
     this.addWidgetDef(DpxCustomFieldAttach, '.dpx-custom-field-attach');
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
-    this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
     this.addWidgetDef(DpxJavascript, '.dpx-javascript');
 
     if (this.$element.is('form')) {

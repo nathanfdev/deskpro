@@ -158,8 +158,8 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.community_channel:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\CommunityChannelHandler
+  api_serializer.handler.community_forum:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\CommunityForumHandler
     arguments:
       - "@deskpro.core.translate"
       - "@doctrine.orm.default_entity_manager"
@@ -231,6 +231,16 @@ services:
       - "@form.factory"
       - "@form_error.form_errors_generator.api"
       - "@data.ticket_excerpt"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.ticket_approval:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketApprovalHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.approval_response:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\ApprovalResponseHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

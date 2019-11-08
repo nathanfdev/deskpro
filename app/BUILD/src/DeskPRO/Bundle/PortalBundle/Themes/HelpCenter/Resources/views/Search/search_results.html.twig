@@ -1,0 +1,152 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Search:search_macros.html.twig' as search_macros %}
+
+{% block page_content %}
+{% set ticket_info = results.ticket is defined ? results.ticket.pageinfo : null %}
+{% set ticket_results = results.ticket is defined ? results.ticket.results : null %}
+{% set article_info = results.article is defined ? results.article.pageinfo : null %}
+{% set article_results = results.article is defined ? results.article.results : null %}
+{% set news_info = results.news is defined ? results.news.pageinfo : null %}
+{% set news_results = results.news is defined ? results.news.results : null %}
+{% set community_info = results.community is defined ? results.community.pageinfo : null %}
+{% set community_results = results.community is defined ? results.community.results : null %}
+{% set download_info = results.download is defined ? results.download.pageinfo : null %}
+{% set download_results = results.download is defined ? results.download.results: null %}
+{% set guide_info = results.topic is defined ? results.topic.pageinfo : null %}
+{% set guide_results = results.topic is defined ? results.topic.results : null %}
+{% set active = 'article' %}
+{% if article_results %}
+    {% set active = 'article' %}
+{% elseif guide_results %}
+    {% set active = 'guide' %}
+{% elseif community_results %}
+    {% set active = 'community' %}
+{% elseif news_results %}
+    {% set active = 'news' %}
+{% elseif download_results %}
+    {% set active = 'guide' %}
+{% elseif guide_results %}
+    {% set active = 'download' %}
+{% endif %}
+
+<div class="dp-po">
+    <main class="dp-po-main dp-po-search-results">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9 col-centered">
+                    <div class="dp-po-title">
+                        <img class="dp-po-title-svg" src="{{ asset('img/page-icons/search.svg', 'help_center') }}" />
+                        <h1 class="dp-po-title-text">{{ phrase('helpcenter.search.search-results') }}</h1>
+                    </div>
+                    <div class="dp-po-block dp-po-section">
+                        {% if not is_search %}
+                            <p class="dp-po-search-no-results">
+                                {{ phrase('helpcenter.general.no-search-query') }}
+                            </p>
+                        {% elseif combined['total_results'] < 1 %}
+                            <div class="dp-po-search-no-results">
+                                <p>
+                                    {{ phrase('helpcenter.general.no-search-results') }}
+                                </p>
+                                <p>
+                                    {{ phrase('helpcenter.general.no-search-results-explain', {kb_url: path('portal_kb')}) }}
+                                </p>
+                            </div>
+                        {% else %}
+                            {% if can_use_tickets() %}
+                                {% include('Theme:Search:blocks/search_tickets.html.twig') with { viewall: true } %}
+                            {% endif %}
+                            {% if can_use_articles() or can_use_downloads() or can_use_news() or can_use_community() or (app.hasBeta('guides') and can_use_guides()) %}
+                            <div class="dp-po-search-tabs">
+                                <ul class="dp-po-search-tabs-list">
+                                    {% if (can_use_articles()) %}
+                                        <li class="dp-po-search-tabs-item">
+                                            <a class="dp-po-search-tabs-link {% if not article_results %}no-results{% endif %} {% if active == 'article' %}active{% endif %}" href="" data-type="article">
+                                                <img class="dp-po-search-tabs-image icon-svg"
+                                                     src="{{ asset('img/page-icons/knowledgebase.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-kb') }}
+                                                <span>{{ article_info.total_results | default(0) }}</span></a>
+                                        </li>
+                                    {% endif %}
+                                    {% if app.hasBeta('guides') and can_use_guides() %}
+                                        <li class="dp-po-search-tabs-item">
+                                            <a class="dp-po-search-tabs-link {% if not guide_results %}no-results{% endif %} {% if active == 'guide' %}active{% endif %}" href="" data-type="guide">
+                                                <img class="dp-po-search-tabs-image icon-svg"
+                                                     src="{{ asset('img/page-icons/guides.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-guides') }}
+                                                <span>{{ guide_info.total_results | default(0) }}</span></a>
+                                        </li>
+                                    {% endif %}
+                                    {% if can_use_community() %}
+                                        <li class="dp-po-search-tabs-item">
+                                            <a class="dp-po-search-tabs-link {% if not community_results %}no-results{% endif %} {% if active == 'community' %}active{% endif %}" href="" data-type="community">
+                                                <img class="dp-po-search-tabs-image icon-svg"
+                                                     src="{{ asset('img/page-icons/community.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-community') }}
+                                                <span>{{ community_info.total_results | default(0) }}</span></a>
+                                        </li>
+                                    {% endif %}
+                                    {% if can_use_news() %}
+                                        <li class="dp-po-search-tabs-item">
+                                            <a class="dp-po-search-tabs-link {% if not news_results %}no-results{% endif %} {% if active == 'news' %}active{% endif %}" href="" data-type="news">
+                                                <img class="dp-po-search-tabs-image icon-svg"
+                                                     src="{{ asset('img/page-icons/news.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-news') }}
+                                                <span>{{ news_info.total_results | default(0) }}</span></a>
+                                        </li>
+                                    {% endif %}
+                                    {% if can_use_downloads() %}
+                                        <li class="dp-po-search-tabs-item">
+                                            <a class="dp-po-search-tabs-link {% if not download_results %}no-results{% endif %} {% if active == 'download' %}active{% endif %}" href="" data-type="download">
+                                                <img class="dp-po-search-tabs-image icon-svg"
+                                                     src="{{ asset('img/page-icons/download.svg', 'help_center') }}">{{ phrase('helpcenter.general.nav-downloads') }}
+                                                <span>{{ download_info.total_results | default(0) }}</span></a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                                <div id="article_tab" class="dp-po-search-tab" {% if active != 'article' %}style="display: none" {% endif %}>
+                                    <ul class="dp-po-search-list">
+                                        {% for result_set in article_results %}
+                                            {{ search_macros.search_result(result_set) }}
+                                        {% endfor %}
+                                    </ul>
+                                    <a href="{{ path('portal_type_search', {type: 'article', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: article_info.total_results | default(0) }) }}</a>
+                                </div>
+                                <div id="guide_tab" class="dp-po-search-tab" {% if active != 'guide' %}style="display: none" {% endif %}>
+                                    <ul class="dp-po-search-list">
+                                        {% for result_set in guide_results %}
+                                            {{ search_macros.search_result(result_set) }}
+                                        {% endfor %}
+                                    </ul>
+                                    <a href="{{ path('portal_type_search', {type: 'guide', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: guide_info.total_results | default(0) }) }}</a>
+                                </div>
+                                <div id="community_tab" class="dp-po-search-tab" {% if active != 'community' %}style="display: none" {% endif %}>
+                                    <ul class="dp-po-search-list">
+                                        {% for result_set in community_results %}
+                                            {{ search_macros.search_result(result_set) }}
+                                        {% endfor %}
+                                    </ul>
+                                    <a href="{{ path('portal_type_search', {type: 'community', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: community_info.total_results | default(0) }) }}</a>
+                                </div>
+                                <div id="news_tab" class="dp-po-search-tab" {% if active != 'news' %}style="display: none" {% endif %}>
+                                    <ul class="dp-po-search-list">
+                                        {% for result_set in news_results %}
+                                            {{ search_macros.search_result(result_set) }}
+                                        {% endfor %}
+                                    </ul>
+                                    <a href="{{ path('portal_type_search', {type: 'news', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: news_info.total_results | default(0) }) }}</a>
+                                </div>
+                                <div id="download_tab" class="dp-po-search-tab" {% if active != 'download' %}style="display: none" {% endif %}>
+                                    <ul class="dp-po-search-list">
+                                        {% for result_set in download_results %}
+                                            {{ search_macros.search_result(result_set) }}
+                                        {% endfor %}
+                                    </ul>
+                                    <a href="{{ path('portal_type_search', {type: 'download', q: query}) }}" class="dp-po-search-hint-viewall">{{ phrase('helpcenter.search.view-all-results', {count: download_info.total_results | default(0) }) }}</a>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock page_content %}

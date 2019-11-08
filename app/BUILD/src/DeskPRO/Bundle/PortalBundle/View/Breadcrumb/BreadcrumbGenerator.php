@@ -9,6 +9,7 @@ namespace DeskPRO\Bundle\PortalBundle\View\Breadcrumb;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -17,9 +18,11 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -50,13 +53,19 @@ class BreadcrumbGenerator
      */
     private $language_manager;
 
-    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage, ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager)
+    /**
+     * @var PortalBrandThemeLoader
+     */
+    private $brandThemeLoader;
+
+    public function __construct(PortalPermissionsManager $permissions_manager, TokenStorage $token_storage, ObjectRouter $object_router, UrlGeneratorInterface $url_generator, LanguageManager $language_manager, PortalBrandThemeLoader $brandThemeLoader)
     {
         $this->permissions_manager = $permissions_manager;
         $this->token_storage       = $token_storage;
         $this->object_router       = $object_router;
         $this->url_generator       = $url_generator;
         $this->language_manager    = $language_manager;
+        $this->brandThemeLoader    = $brandThemeLoader;
     }
 
     /**
@@ -64,7 +73,7 @@ class BreadcrumbGenerator
      */
     public function createBuilder()
     {
-        return new BreadcrumbBuilder($this->object_router, $this->url_generator, $this->language_manager);
+        return new BreadcrumbBuilder($this->object_router, $this->url_generator, $this->language_manager, $this->brandThemeLoader);
     }
 
     //####################################################################################################################
@@ -261,6 +270,13 @@ class BreadcrumbGenerator
             ->done();
     }
 
+    public function buildCommunityCreate(CommunityForum $a)
+    {
+        return $this->createBuilder()->addCommunity()
+            ->addCommunityCreate($a)
+            ->done();
+    }
+
     //####################################################################################################################
     // Search
     //####################################################################################################################
@@ -292,6 +308,19 @@ class BreadcrumbGenerator
     public function buildTicketList()
     {
         return $this->createBuilder()->addTicketList()->done();
+    }
+
+    public function buildTicketApprovalList()
+    {
+        return $this->createBuilder()->addTicketApprovalList()->done();
+    }
+
+    public function buildTicketApprovalView(TicketApproval $a)
+    {
+        return $this->createBuilder()->addTicketApprovalList()
+            ->addApprovalView($a)
+            ->done()
+        ;
     }
 
     public function buildTicketView(Ticket $t)

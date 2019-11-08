@@ -11,7 +11,7 @@ class CommunityTopicValueReader {
   }
 
   getCategoryId() {
-    return this.parseIntSelect(this.$formEl.find('#new_community_topic_channel'));
+    return this.parseIntSelect(this.$formEl.find('#new_community_topic_forum'));
   }
 }
 
@@ -19,7 +19,7 @@ export class CommunityTopicForm extends PageWidget {
 
   renderWidget() {
     const $expandedForm = this.$element.find('.community-topic-form-expanded');
-    const $catSelect = this.$element.find('#new_community_topic_channel');
+    const $catSelect = this.$element.find('#new_community_topic_forum');
     const $communityTopicAttachments = this.$element.find('#new_community_topic_more_attachments');
     const communityTopicReader = new CommunityTopicValueReader(this.$element);
 

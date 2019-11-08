@@ -94,6 +94,11 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
         return $this->date_created;
     }
 
+    public function getTicketMessage()
+    {
+        return $this->ticket_message;
+    }
+
     /**
      * Is this is a new record? (ie not persisted, or persisted this request).
      *

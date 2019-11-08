@@ -353,10 +353,14 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      * @param TwilioVoiceAccount $account
      * @param string             $sid
      * @param Request            $request
+     *
+     * @return View
      */
     public function releaseAction(TwilioVoiceAccount $account, $sid, Request $request)
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupContext($request));
         $this->get('twilio_adapter')->releaseNumber($account, $sid);
+
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 }

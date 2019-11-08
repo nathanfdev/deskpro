@@ -139,6 +139,8 @@
     display: flex;
     flex-flow: column wrap;
     clear: both;
+    position: relative;
+    min-height: 300px;
   }
 }
 .snippets__filtering {

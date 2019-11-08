@@ -177,22 +177,22 @@ class PermissionContext extends BaseContext
     }
 
     /**
-     * @Given I grant the :communityChannelId community channel permission for usergroup :usergroup
+     * @Given I grant the :communityForumId community forum permission for usergroup :usergroup
      *
      * @param string $usergroup
-     * @param int    $communityChannelId
+     * @param int    $communityForumId
      */
-    public function iGrantCommunityChannelPermissionForUsergroup($communityChannelId, $usergroup)
+    public function iGrantCommunityForumPermissionForUsergroup($communityForumId, $usergroup)
     {
         DataContext::scheduleCleanup();
 
-        $communityChannelId = DataContext::replace($communityChannelId);
+        $communityForumId = DataContext::replace($communityForumId);
         $usergroup          = DataContext::getReference($usergroup.'_group');
 
         $connection = $this->em()->getConnection();
         $connection->executeUpdate(
-            'INSERT IGNORE INTO community_channel2usergroup SET community_channel_id = ?, usergroup_id = ?',
-            [$communityChannelId, $usergroup->getId()]
+            'INSERT IGNORE INTO community_forum2usergroup SET community_forum_id = ?, usergroup_id = ?',
+            [$communityForumId, $usergroup->getId()]
         );
     }
 

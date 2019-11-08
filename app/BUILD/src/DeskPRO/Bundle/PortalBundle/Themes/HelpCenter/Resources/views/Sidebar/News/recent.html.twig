@@ -1,0 +1,9 @@
+{% if can_use_news() and show_tab_news() %}
+    <article class="panel-tiny front-page-news-tiny">
+      <div class="sidebar-content">
+        <h1>{{ phrase('helpcenter.sidebar.news_title') }}</h1>
+        {% show section news_list_simple %}
+      </div>
+    </article>
+    <hr>
+{% endif %}

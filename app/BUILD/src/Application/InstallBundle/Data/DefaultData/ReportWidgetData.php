@@ -1232,6 +1232,351 @@ LIMIT 100
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
+        'voice-active-calls' => [
+            'title'         => 'Active Calls',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 316,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'stat_value\', \'Active Calls\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.status IN (\'warm_add\', \'warm_transfer\', \'cold_transfer\', \'active\')
+            ',
+            'variables' => '[]',
+        ],
+        'voice-callers-waiting' => [
+            'title'         => 'Callers Waiting',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 317,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'stat_value\', \'Waiting Callers\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.status = \'pending\'
+            ',
+            'variables' => '[]',
+        ],
+        'voice-online-agents' => [
+            'title'         => 'Online Voice Agents',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 318,
+            'query'         => '
+                SELECT DPQL_COUNT_DISTINCT(sessions.person.id) AS \'stat_value\', IF(DPQL_COUNT_DISTINCT(sessions.person.id) = 1, \'Voice Agent Online\', \'Voice agents online\') AS \'stat_description\'
+                FROM sessions
+                WHERE sessions.date_last > DPQL_NOW() - INTERVAL 1 MINUTE 
+                AND sessions.person.is_agent = 1
+                AND sessions.person.is_disabled = 0
+                AND sessions.person.is_deleted = 0
+                AND sessions.person.agent_data.agent_calls_enabled = 1
+            ',
+            'variables' => '[]',
+        ],
+        'voice-forwarding-agents' => [
+            'title'         => 'Forwarding Voice Agents',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 319,
+            'query'         => '
+                SELECT DPQL_COUNT_DISTINCT(agent_data.person.id) AS \'stat_value\', \'Forwarding Agents\' AS \'stat_description\'
+                FROM agent_data
+                WHERE agent_data.agent_can_use_forwarding = 1 
+                AND agent_data.person.is_agent = 1
+                AND agent_data.person.is_disabled = 0
+                AND agent_data.person.is_deleted = 0
+                AND agent_data.person.id NOT IN (
+                    SELECT sessions.person_id
+                    FROM sessions
+                    WHERE sessions.date_last > DPQL_NOW() - INTERVAL 1 MINUTE
+                )
+            ',
+            'variables' => '[]',
+        ],
+        'voice-online-and-forwarding-agents-per-queue' => [
+            'title'         => 'Online & Forwarding Agents per Queue',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 320,
+            'query'         => '
+                SELECT DPQL_COUNT(voice_queue_agents.is_enabled = 1) AS \'Voice agents online\'
+                FROM voice_queue_agents
+                WHERE  voice_queue_agents.agent.agent_data.agent_calls_enabled = 1 
+                AND agent_data.person.is_agent = 1
+                AND agent_data.person.is_disabled = 0
+                AND agent_data.person.is_deleted = 0
+                AND voice_queue_agents.agent.id IN (
+                    SELECT sessions.person.id
+                    FROM sessions
+                    WHERE sessions.date_last > DPQL_NOW() - INTERVAL 1 MINUTE
+                )
+                GROUP BY voice_queue_agents.queue
+                LAYER WITH
+                SELECT DPQL_COUNT(voice_queue_agents.is_enabled = 1) AS \'Forwarding Agents\'
+                FROM voice_queue_agents
+                WHERE voice_queue_agents.agent.agent_data.agent_can_use_forwarding = 1 
+                AND agent_data.person.is_agent = 1
+                AND agent_data.person.is_disabled = 0
+                AND agent_data.person.is_deleted = 0
+                AND voice_queue_agents.agent.id NOT IN (
+                    SELECT sessions.person_id
+                    FROM sessions
+                    WHERE sessions.date_last > DPQL_NOW() - INTERVAL 1 MINUTE
+                )
+                GROUP BY voice_queue_agents.queue
+            ',
+            'variables' => '[]',
+        ],
+        'voice-inbound-and-outbound-calls-today' => [
+            'title'         => 'Inbound & Outbound Calls made %today%',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 321,
+            'query'         => '
+                SELECT DPQL_COUNT(voice_phone_calls.date_ended = %TODAY%) AS \'Inbound\', \'Calls\' AS \'value_axis_title\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.type = \'Inbound\' AND voice_phone_calls.date_waiting = NULL
+                GROUP BY DPQL_HOUR(voice_phone_calls.date_ended, 0, 23) AS \'HOUR\'
+                LAYER WITH
+                SELECT DPQL_COUNT(voice_phone_calls.date_ended = %TODAY%) AS \'Outbound\', \'Calls\' AS \'value_axis_title\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.type = \'Outbound\'
+                GROUP BY DPQL_HOUR(voice_phone_calls.date_ended, 0, 23) AS \'HOUR\'
+            ',
+            'variables' => '[]',
+        ],
+        'voice-answered-calls' => [
+            'title'         => 'Answered Calls ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 322,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'stat_value\', \'Answered Calls\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.date_ended = ${date} 
+                AND voice_phone_calls.date_started <> NULL 
+                AND voice_phone_calls.type = \'Inbound\'
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-missed-calls' => [
+            'title'         => 'Missed Calls ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 323,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'stat_value\', \'Missed Calls\' AS \'stat_description\'
+                FROM voice_phone_calls 
+                WHERE voice_phone_calls.date_ended = ${date} 
+                AND voice_phone_calls.date_started = NULL
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-voicemail-calls' => [
+            'title'         => 'Voicemail Calls ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 324,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'stat_value\', \'Voicemail Calls\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.date_ended = ${date} 
+                AND voice_phone_calls.status = \'voicemail\'
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-outbound-calls' => [
+            'title'         => 'Outbound Calls ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 325,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'stat_value\', \'Outbound Calls\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.date_ended = ${date} 
+                AND voice_phone_calls.date_started <> NULL 
+                AND voice_phone_calls.type = \'outbound\'
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-average-inbound-wait-time' => [
+            'title'         => 'Average Inbound Wait Time ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 326,
+            'query'         => '
+                SELECT IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_started) - UNIX_TIMESTAMP(voice_phone_calls.date_created)) / 60, \'0\') AS \'stat_value\', \'Avg Inbound Wait Time (min)\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.type = \'inbound\' 
+                AND voice_phone_calls.date_started <> NULL 
+                AND voice_phone_calls.date_ended = ${date}
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-average-inbound-duration' => [
+            'title'         => 'Average Inbound Duration ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 327,
+            'query'         => '
+                SELECT IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'stat_value\', \'Avg Inbound Duration (min)\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.type = \'inbound\' 
+                AND voice_phone_calls.date_started <> NULL 
+                AND voice_phone_calls.date_ended = ${date}
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-average-outbound-duration' => [
+            'title'         => 'Average Outbound Duration ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_stat',
+            'display_order' => 328,
+            'query'         => '
+                SELECT IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'stat_value\', \'Avg Outbound Duration (min)\' AS \'stat_description\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.type = \'outbound\' 
+                AND voice_phone_calls.date_started <> NULL 
+                AND voice_phone_calls.date_ended = ${date}
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-queue-calls-per-department' => [
+            'title'         => 'Queue Calls per Department ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 329,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'Calls\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.phone_call_logs.target_queue.department <> NULL
+                AND voice_phone_calls.date_created = ${date}
+                GROUP BY voice_phone_calls.phone_call_logs.target_queue.department
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-agent-data' => [
+            'title'         => 'Voice Agent Data',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 330,
+            'query'         => '
+                SELECT 
+                    DPQL_COUNT(voice_phone_call_participants.person_id) AS \'Calls Handled\', 
+                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_call_participants.date_left) - UNIX_TIMESTAMP(voice_phone_call_participants.date_created)) / 60, \'0\') AS \'Average Call Length (min)\', 
+                    IFNULL(SUM(UNIX_TIMESTAMP(voice_phone_call_participants.date_left) - UNIX_TIMESTAMP(voice_phone_call_participants.date_created)) / 60, \'0\') AS \'Total Call Time(min)\'
+                FROM voice_phone_call_participants
+                WHERE voice_phone_call_participants.person_id IN (
+                    SELECT people.id
+                    FROM people
+                    WHERE people.is_agent = 1
+                ) 
+                AND voice_phone_call_participants.date_left = ${date}
+                GROUP BY voice_phone_call_participants.person
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-queue-data' => [
+            'title'         => 'Queue Data ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 331,
+            'query'         => '
+                SELECT 
+                    DPQL_COUNT(voice_phone_calls.id) AS \'Total Calls\', 
+                    DPQL_COUNT(voice_phone_calls.date_started <> NULL AND voice_phone_calls.status = \'ended\') AS \'Answered Calls\', 
+                    DPQL_COUNT(voice_phone_calls.date_started = NULL AND voice_phone_calls.status = \'ended\') AS \'Missed Calls\', 
+                    DPQL_COUNT(voice_phone_calls.status = \'voicemail\') AS \'Voicemail Calls\', 
+                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_started) - UNIX_TIMESTAMP(voice_phone_calls.date_created)) / 60, \'0\') AS \'Average Wait Time (min)\', 
+                    IFNULL(AVG(UNIX_TIMESTAMP(voice_phone_calls.date_ended) - UNIX_TIMESTAMP(voice_phone_calls.date_started)) / 60, \'0\') AS \'Average Call Length (min)\', 
+                    DPQL_FORMAT(SUM(voice_phone_calls.cost), 3) AS \'Cost (USD)\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.phone_call_logs.target_queue <> NULL
+                AND voice_phone_calls.date_ended = ${date} 
+                AND voice_phone_calls.phone_call_logs.action_type = \'call.ended\'
+                GROUP BY voice_phone_calls.phone_call_logs.target_queue
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'voice-frequent-callers' => [
+            'title'         => 'Frequent Callers ${date}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 332,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'Calls\'
+                FROM voice_phone_calls
+                WHERE voice_phone_calls.date_created = ${date} AND voice_phone_calls.type = \'inbound\'
+                GROUP BY voice_phone_calls.person
+                ORDER BY @\'Callers\' DESC
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'count-ticket-approvals-by-status' => [
+            'title'         => 'Count of approvals that are ${status} grouped by ${grouping}',
+            'labels'        => 'tickets,approvals',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 316,
+            'query'         => '
+                SELECT DPQL_COUNT() AS \'Ticket Approvals\'
+                FROM ticket_approvals
+                WHERE ${status}
+                GROUP BY ${grouping}
+            ',
+            'variables' => '[{"type":"statuses","name":"status","table":"","default":"pending","field_type":"ticket_approvals"},{"type":"fields","name":"grouping","default":"type","field_type":"ticket_approvals"}]',
+        ],
+        'average-resolution-time-ticket-approvals' => [
+            'title'         => 'Average resolution time for approvals created ${date} grouped by ${grouping}',
+            'labels'        => 'tickets,approvals',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 317,
+            'query'         => '
+                SELECT COALESCE(AVG(UNIX_TIMESTAMP(IF(ticket_approvals.status = \'cancelled\', ticket_approvals.cancelled_at, ticket_approvals.completed_at)) - UNIX_TIMESTAMP(ticket_approvals.created_at)), 0) / (60 * 60) AS \'Average Time (Hours)\'
+                FROM ticket_approvals
+                WHERE ticket_approvals.created_at = ${date}
+                GROUP BY ${grouping}
+            ',
+            'variables' => '[{"type":"dates","name":"date","default":"today"},{"name":"grouping","type":"fields","default":"type","field_type":"ticket_approvals"}]',
+        ],
+        'ticket-approval-responses-by-ballot' => [
+            'title'         => 'Approval responses by ballot grouped by ${grouping} created ${date}',
+            'labels'        => 'tickets,approvals',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 318,
+            'query'         => '
+                SELECT DPQL_COUNT(IF(approval_responses.vote = 1, 1, NULL)) AS \'Approvals\', \'Responses\' AS \'value_axis_title\'
+                FROM approval_responses
+                WHERE approval_responses.approval.created_at = ${date} 
+                GROUP BY ${grouping}
+                
+                LAYER WITH
+                
+                SELECT DPQL_COUNT(IF(approval_responses.vote = -1, 1, NULL)) AS \'Rejections\'
+                FROM approval_responses
+                WHERE approval_responses.approval.created_at = ${date} 
+                GROUP BY ${grouping}
+            ',
+            'variables' => '[{"type":"fields","name":"grouping","default":"approval_template","value":"","field_type":"ticket_approvals","field_value":"","table":"approval_responses.approval"},{"type":"dates","name":"date","default":"today"}]',
+        ],
     ];
 
     /**

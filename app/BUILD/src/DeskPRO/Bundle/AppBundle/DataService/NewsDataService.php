@@ -11,8 +11,10 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\RelatedContent;
+use Application\DeskPRO\Hierarchy\PreloadedHierarchy;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Component\Util\ListUtils;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -53,10 +55,11 @@ class NewsDataService extends AbstractDataService
      * @param              $page
      * @param              $max_per_page
      * @param Person       $person
+     * @param array        $filters      An array of filters, e.g. ['date' => '2019-08']
      *
      * @return Pagerfanta
      */
-    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person)
+    public function getNewsPager(NewsCategory $category = null, $page, $max_per_page, Person $person = null, array $filters = [])
     {
         $em                 = $this->em;
         $permissionsManager = $this->permissionsManager;
@@ -68,14 +71,22 @@ class NewsDataService extends AbstractDataService
                 (int) $page,
                 (int) $max_per_page,
                 $person,
+                $filters,
             ],
-            function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person) {
+            function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person, $filters) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('n')
                     ->from(News::class, 'n')
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
                     ->orderBy('n.date_published', 'DESC');
+
+                if (isset($filters['date']) && $this->isValidFilterDate($filters['date'])) {
+                    $qb
+                        ->andWhere('n.date_published LIKE :date')
+                        ->setParameter(':date', "{$filters['date']}%")
+                    ;
+                }
 
                 $allowed_ids = $permissionsManager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
                 if ($category) {
@@ -121,7 +132,7 @@ class NewsDataService extends AbstractDataService
      *
      * @return \Application\DeskPRO\Entity\NewsCategory[]
      */
-    public function getCategoryChildren($category, Person $person)
+    public function getCategoryChildren($category, Person $person = null)
     {
         $that = $this;
 
@@ -165,6 +176,120 @@ class NewsDataService extends AbstractDataService
                 });
 
                 return $result;
+            }
+        );
+    }
+
+    /**
+     * Get a full list of categories, ordered.
+     *
+     * @param Person|null $person
+     *
+     * @return mixed|null
+     */
+    public function getCategoryList(Person $person = null)
+    {
+        return $this->generateAndCache(
+            [
+                'getCategoryList',
+                $person,
+            ],
+            function () use ($person) {
+                $allowedIds = $this->permissionsManager->getPortalPermissionsBag(
+                    $person
+                )->getAllowedNewsCategories();
+
+                $cats = $this->getNewsCategoriesRepo()->getByIds($allowedIds);
+
+                if (!$cats) {
+                    return [];
+                }
+
+                $struct = new PreloadedHierarchy($cats);
+
+                return ListUtils::map($struct->getFlatArray(), function (array $itm) {
+                    return $itm['object'];
+                });
+            }
+        );
+    }
+
+    public function getMonthsWithPosts(NewsCategory $category = null, Person $person = null)
+    {
+        return $this->generateAndCache(
+            [
+                'getFirstLastPost',
+                $person,
+                $category,
+            ],
+            function () use ($person, $category) {
+                $db = $this->em->getConnection();
+
+                $allowed_ids = $this->permissionsManager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
+                if ($category) {
+                    // find allowed ids
+                    $cat_ids = $category->getTreeIds(true);
+                    $using_ids = [];
+                    foreach ($cat_ids as $cat_id) {
+                        if (in_array($cat_id, $allowed_ids)) {
+                            $using_ids[] = $cat_id;
+                        }
+                    }
+                } else {
+                    $using_ids = $allowed_ids;
+                }
+
+                if (empty($using_ids)) {
+                    return [];
+                }
+
+                $res = $db->fetchAll('
+                    SELECT YEAR(p.date_published) AS year, MONTH(p.date_published) AS month, COUNT(*) AS count
+                    FROM news p
+                    WHERE p.category_id IN (?) AND p.status = ? AND p.date_published IS NOT NULL
+                    GROUP BY year, month
+                    ORDER BY year DESC, month ASC
+                ', [$using_ids, News::STATUS_PUBLISHED], [Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR]);
+
+                $minYear = 999999;
+                $maxYear = 0;
+
+                $table = [];
+                foreach ($res as $r) {
+                    $r['year'] = (int) $r['year'];
+                    $r['month'] = (int) $r['month'];
+                    $r['count'] = (int) $r['count'];
+
+                    if (!isset($table[$r['year']])) {
+                        $table[$r['year']] = ['year' => $r['year'], 'count' => 0, 'months' => []];
+                    }
+
+                    $table[$r['year']]['count'] += $r['count'];
+                    $table[$r['year']]['months'][$r['month']] = $r;
+
+                    $minYear = min($minYear, $r['year']);
+                    $maxYear = max($maxYear, $r['year']);
+                }
+
+                // fill in missing years
+                foreach (range($minYear, $maxYear) as $y) {
+                    if (!isset($table[$y])) {
+                        $table[$y] = ['year' => (int) $y, 'count' => 0, 'months' => []];
+                    }
+                }
+
+                // fill in missing months for each year
+                foreach ($table as $y => &$dat) {
+                    for ($i = 1; $i <= 12; ++$i) {
+                        if (!isset($dat['months'][$i])) {
+                            $dat['months'][$i] = ['year' => $y, 'count' => 0, 'month' => $i];
+                        }
+                    }
+                    ksort($dat['months'], SORT_NUMERIC);
+                }
+                unset($dat);
+
+                return $table;
             }
         );
     }
@@ -277,5 +402,15 @@ class NewsDataService extends AbstractDataService
     public function getRelatedContentRepo()
     {
         return $this->em->getRepository(RelatedContent::class);
+    }
+
+    /**
+     * @param string $date
+     *
+     * @return false|int
+     */
+    private function isValidFilterDate($date)
+    {
+        return preg_match('/^([0-9]{4}|[0-9]{4}\-[0-9]{2}|[0-9]{4}\-[0-9]{2}\-[0-9]{2})$/', $date);
     }
 }

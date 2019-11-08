@@ -11,7 +11,7 @@ Feature: submitting new community topic
   Scenario: A logged in user submits valid community topic
     Given I login with user credentials
     And I am on "/community"
-    When I select "Suggestion" from "new_community_topic_channel"
+    When I select "Suggestion" from "new_community_topic_forum"
     And I fill in "new_community_topic_title" with "My New Community Topic Title"
     And I fill in "new_community_topic_content" with "I need to report the following bug. It happens when..."
     And I press "Add your community topic"
@@ -23,21 +23,21 @@ Feature: submitting new community topic
   Scenario: A logged in user submits invalid community topic
     Given I login with user credentials
     And I am on "/community"
-    When I select "Suggestion" from "new_community_topic_channel"
+    When I select "Suggestion" from "new_community_topic_forum"
     And I press "Add your community topic"
     Then I should be on "/community"
     Then I should see a form error with "This value is required"
 
   Scenario: A guest submits invalid community topic
     Given I am on "/community"
-    When I select "Suggestion" from "new_community_topic_channel"
+    When I select "Suggestion" from "new_community_topic_forum"
     And I press "Add your community topic"
     Then I should be on "/community"
     Then I should see a form error with "This value is required"
 
   Scenario: A guest submits valid community topic and needs email verification
     Given I am on "/community"
-    When I select "Suggestion" from "new_community_topic_channel"
+    When I select "Suggestion" from "new_community_topic_forum"
     And I fill in "new_community_topic_title" with "A Guest Community Topic Title"
     And I fill in "new_community_topic_content" with "I need to report the following bug. It happens when..."
     And I fill in "new_community_topic_name" with "Mr Guest"

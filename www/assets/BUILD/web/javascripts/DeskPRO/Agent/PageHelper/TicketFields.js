@@ -43,6 +43,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         var catId = self.display.find('select.prop-input-workflow_id').first().val();
         return parseInt(catId) || 0;
       },
+      getLanguageId:       function () {
+        var langId = self.display.find('select.prop-input-language_id').first().val();
+        return parseInt(langId) || 0;
+      },
       getFieldValue:       function (name) {
         var $holders = self.page.getEl('field_holders');
 
@@ -87,6 +91,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             return this.getPriorityId();
           case 'product':
             return this.getProductId();
+          case 'language':
+            return this.getLanguageId()
         }
         fieldId = ((fieldId || '') + '').replace('ticket_field_', '');
         return this.getFieldValue('custom_fields[field_' + fieldId + ']');
@@ -122,12 +128,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     });
 
     this.page.changeManager.addEvent('updateResult', function (data) {
-      if (data.holders) {
-        if (self.mode == 'view') {
-          self.replaceHolders(data.holders);
-          self.initFileCustomFields();
-          self.initJavascriptCustomFields();
-        }
+      if (data.holders && self.mode == 'view') {
+        self.replaceHolders(data.holders);
+        self.initFileCustomFields();
+        self.initJavascriptCustomFields();
       }
     });
   },
@@ -165,6 +169,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
           return $(this).parents('.with-select2').length === 0;
         }).val(value);
         $el.find('.with-select2').val(Array.isArray(value) ? value : (value + '').split(',')).change();
+        $el.find('.dp-two-select').val(Array.isArray(value) ? value : (value + '').split(',')).change();
         $el.find('input[type=radio]').each(function (i, field) {
           var $field = $(field);
 
@@ -210,7 +215,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
       if (!$scope.editables[field]) return;
       if ($scope.isEditMode(field)) return;
-      if ($event.target.tagName === 'A') return;
+      if ($event.target && $event.target.tagName === 'A') return;
 
       var getSelected = function () {
         if (window.getSelection) {
@@ -251,6 +256,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
       setTimeout(function () {
         if ($simpleField.length) {
+          $simpleField.find('.dp-two-select').val(Array.isArray(value) ? value : (value + '').split(',')).change();
           $simpleField.focus();
         }
       }, 0);
@@ -560,14 +566,37 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             });
           }
         );
+
+        self.$scope.edit_fields   = [];
+        self.edit_fields_map = {};
+        self.$scope.editables     = {
+          language: 1,
+          problem:  1
+        };
       }, function () {
         self.$scope.is_saving = false;
       });
   },
 
   replaceHolders: function (html) {
+    var self = this;
     var labels = this.display.find('tbody.labels-row');
     var last   = this.display.find('tbody.controls-row');
+    var oldScope = this.$scope;
+    var fieldsOnEdit = {};
+    var fieldName, i;
+
+    for (i = 0; i < this.$scope.edit_fields.length; i++) {
+      fieldName = this.$scope.edit_fields[i];
+       if (fieldName.indexOf('user_field_') === 0) {
+        fieldsOnEdit[fieldName] = this.ticketReader.getUserFieldValue(fieldName);
+      } else if (fieldName.indexOf('org_field_') === 0) {
+        fieldsOnEdit[fieldName] = this.ticketReader.getOrgFieldValue(fieldName);
+      } else {
+        fieldsOnEdit[fieldName] = this.ticketReader.getTicketFieldValue(fieldName);
+      }
+    }
+
     $('select', this.display).select2('close');
     this.$scope.$destroy();
 
@@ -587,7 +616,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     this.lastDepId = null;
     this.updateDisplayNow();
-    this.$scope.$apply();
+    this.$scope.$apply(function() {
+      for (i = 0; i < oldScope.edit_fields.length; i++) {
+        fieldName = oldScope.edit_fields[i];
+        self.$scope.editField(new Event('click'), fieldName);
+        self.$scope.setFieldValue(fieldName, fieldsOnEdit[fieldName]);
+      }
+    });
   },
 
   initDateCustomFields: function () {

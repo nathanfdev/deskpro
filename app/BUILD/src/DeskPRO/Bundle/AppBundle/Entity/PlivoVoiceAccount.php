@@ -76,4 +76,12 @@ class PlivoVoiceAccount extends AbstractVoiceAccount
     {
         return 'plivo';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isManagedAccount()
+    {
+        return false;
+    }
 }

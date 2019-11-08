@@ -156,6 +156,11 @@ define([
         value: 'FilterSlaStatus'
       });
 
+      options.push({
+        title: 'Ticket Approval',
+        value: 'TicketApproval'
+      });
+
       set_options.push({
         title:      'Ticket Criteria',
         subOptions: options
@@ -509,6 +514,43 @@ define([
       const def = this.getStandardSelect(options);
       return def;
     }
+
+    getTicketApproval(options) {
+      if (options == null) { options = {}; }
+      const me = this;
+      return {
+        getTemplate() { return me.dpTemplateManager.get('OptionBuilder/type-filter-ticket-approval.html'); },
+        getData() { return {}; },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              options = (value != null ? value.options : undefined) || {};
+              return {
+                approval_template_id: options.approval_template_id || null,
+                approval_status: options.approval_status || 'pending',
+                approver_includes_me: !!options.approver_includes_me || false
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              value.type = 'TicketApproval';
+              value.options = {};
+              value.options.approval_template_id = model.approval_template_id || null;
+              value.options.approval_status = model.approval_status || 'pending';
+              value.options.approver_includes_me = !!model.approver_includes_me || false;
+              return value;
+            }
+          };
+        }
+      };
+    }
+
+
+
+
+
 
     getFilterHoldStatus(options) {
       if (options == null) { options = {}; }

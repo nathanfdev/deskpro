@@ -875,14 +875,19 @@ class OrganizationController extends AbstractController
 
         $org = $this->getOrgOr404($organization_id);
 
-        $organizationDeleted = new OrganizationDeleted();
+        $organizationDeleted = $this->em->getRepository(OrganizationDeleted::class)->findOneBy([
+            'organization_id' => $organization_id,
+        ]);
+        if (!$organizationDeleted) {
+            $organizationDeleted = new OrganizationDeleted();
 
-        $organizationDeleted['organization_id'] = $organization_id;
-        $organizationDeleted['by_person']       = $this->getPerson();
-        $organizationDeleted['reason']          = $this->in->getString('reason');
+            $organizationDeleted['organization_id'] = $organization_id;
+            $organizationDeleted['by_person']       = $this->getPerson();
+            $organizationDeleted['reason']          = $this->in->getString('reason');
 
-        $this->em->persist($organizationDeleted);
-        $this->em->flush();
+            $this->em->persist($organizationDeleted);
+            $this->em->flush();
+        }
 
         $editManager = $this->container->getSystemService('org_edit_manager');
         $editManager->deleteOrganization($org);

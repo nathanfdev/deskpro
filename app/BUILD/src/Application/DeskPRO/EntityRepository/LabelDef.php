@@ -54,7 +54,7 @@ class LabelDef extends AbstractEntityRepository
                 break;
 
             case 'organizations':
-            case 'chat_conversations':
+            case 'chat':
             case 'articles':
             case 'downloads':
                 $label_type = $type;

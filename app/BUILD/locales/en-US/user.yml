@@ -408,6 +408,7 @@ portal.community.sort_date: Date
 portal.community.sort_popularity: Popularity
 portal.community.sort_rating: Rating
 portal.community.sort_views: Views
+portal.community.sort_status_change: Last Status Change
 portal.community.status_active: 'Open items'
 portal.community.status_all: 'All items'
 portal.community.status_closed: 'Closed items'
@@ -543,6 +544,7 @@ portal.forms.error_upload_ini_size: 'The file is too large. Maximum allowed size
 portal.forms.label_add_attachment: 'Add Another Attachment'
 portal.forms.label_captcha: 'To prove you are a human, please tell us the text you see in the CAPTCHA image'
 portal.forms.label_category: Category
+portal.forms.label_kb_article: Article
 portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Choose a file'
 portal.forms.label_comment: 'Any comments?'
@@ -602,9 +604,13 @@ portal.general.btn-send-email: 'Send e-mail'
 portal.general.btn-share: Share
 portal.general.btn-subscribe: Subscribe
 portal.general.btn-unsubscribe: Unsubscribe
+portal.general.btn-manage_subscriptions: Manage your subscriptions
 portal.general.by: by
 portal.general.by_2: By
 portal.general.comment_btn_save: 'Save Comment'
+portal.general.comment_login_first: 'You need to log in before you can submit a comment.'
+portal.general.your_comment_label: 'Your comment'
+portal.general.enter_comment_placeholder: 'Enter your comment here...'
 portal.general.comments-count:
   one: '1 Comment'
   other: '{{count}} Comments'
@@ -649,6 +655,7 @@ portal.general.nav-register: Register
 portal.general.nav-reset-password: 'Reset Password'
 portal.general.nav-set-password: 'Set Password'
 portal.general.nav-tickets: Tickets
+portal.general.nav-approvals: Approvals
 portal.general.nav-tickets-org: 'Organization Tickets'
 portal.general.nav-your-account: 'Your Account'
 portal.general.no-agents-available: 'Sorry but there are no agents available'
@@ -657,6 +664,7 @@ portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"
 portal.general.no-search-results-general: 'We couldn''t find any results'
 portal.general.on: 'on'
 portal.general.or: or
+portal.general.search: Search
 portal.general.prop_comments_asc: 'Least comments first'
 portal.general.prop_comments_desc: 'Most comments first'
 portal.general.prop_date_asc: 'Oldest first'
@@ -684,6 +692,7 @@ portal.general.ics_subscribe: 'iCalendar'
 portal.general.search-labels-section-title: 'Search Labels'
 portal.general.search-section-title: Search
 portal.general.search_btn: Search
+portal.general.labels: Labels
 portal.general.select_placeholder: Select...
 portal.general.select_search_placeholder: 'Search for option...'
 portal.general.share-this: 'Share this'
@@ -713,11 +722,38 @@ portal.news.view-as-agent: 'You can see this page because you are an agent. Norm
 portal.news.view-x-news:
   one: 'View 1 article'
   other: 'View {{count}} articles'
-portal.direct_messages.title: Messages
-portal.direct_messages.none: No messages
+portal.direct_messages.title: 'My Messages'
+portal.direct_messages.new_message: 'New Message'
+portal.direct_messages.none: 'No messages'
 portal.direct_messages.create_thread: Create
+portal.direct_messages.block_user: 'block user'
+portal.direct_messages.reply.message: Message
+portal.direct_messages.reply.cancel: Cancel
+portal.direct_messages.reply.send_message: 'Send Message'
+portal.direct_messages.back_to_messages: 'Back to my messages'
 portal.members.title: Members
-portal.members.none: No members
+portal.members.not_set: 'Not set'
+portal.members.email: 'Email'
+portal.members.language: 'Language'
+portal.members.timezone: 'Timezone'
+portal.members.joined_portal: 'Joined Portal'
+portal.members.send_message: 'Send Message'
+portal.members.recent_activity: 'Recent Activity'
+portal.members.no_activities: 'No Activities'
+portal.members.activity_group.today: 'Today'
+portal.members.activity_group.this_week: 'This Week'
+portal.members.activity_group.last_week: 'Last Week'
+portal.members.activity_group.this_month: 'The Month'
+portal.members.activity_group.last_month: 'Last Month'
+portal.members.activity_group.this_year: 'This Year'
+portal.members.activity_group.last_year: 'Last Year'
+portal.members.activity_group.everything_else: 'Everything Else'
+portal.members.activity.commented_on: 'Commented on'
+portal.members.activity.down_voted_comment_on: 'Down voted comment on'
+portal.members.activity.up_voted_comment_on: 'Up voted comment on'
+portal.members.activity.created_topic: 'Created topic'
+portal.members.activity.down_voted: 'Down voted'
+portal.members.activity.up_voted: 'Up voted'
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
 portal.sidebar.agents_x_online:
@@ -760,6 +796,36 @@ portal.tickets.list_ticket_ref: Reference
 portal.tickets.list_title: 'Your Tickets'
 portal.tickets.list_title_org: 'Organization Tickets'
 portal.tickets.list_user: User
+portal.tickets.approvals.list_title: 'Your Approvals'
+portal.tickets.approvals.list_desc: 'This is a description of a list of your approvals'
+portal.tickets.approvals.list_status_pending: Pending
+portal.tickets.approvals.list_status_approved: Approved
+portal.tickets.approvals.list_status_rejected: Rejected
+portal.tickets.approvals.list_search: 'Search in Approvals'
+portal.tickets.approvals.list_no_approvals: 'There are no approvals to display in this tab.'
+portal.tickets.approvals.list_column_id: 'ID'
+portal.tickets.approvals.list_column_name: 'Name'
+portal.tickets.approvals.list_column_description: 'Description'
+portal.tickets.approvals.list_column_requesting_agent: 'Requesting Agent'
+portal.tickets.approvals.list_column_user: 'User'
+portal.tickets.approvals.list_column_your_response: 'Your Response'
+portal.tickets.approvals.list_agent_not_assigned: 'Agent not assigned'
+portal.tickets.approvals.list_your_response_awaiting: 'Awaiting Response'
+portal.tickets.approvals.list_your_response_approved: 'Approved'
+portal.tickets.approvals.list_your_response_rejected: 'Rejected'
+portal.tickets.approvals.agent_not_assigned: 'Agent Not Assigned'
+portal.tickets.approvals.system: System
+portal.tickets.approvals.view_approved: 'Approved'
+portal.tickets.approvals.view_rejected: 'Rejected'
+portal.tickets.approvals.view_approval_info: 'Approval info'
+portal.tickets.approvals.view_requesting_agent: 'Requesting agent'
+portal.tickets.approvals.view_user: 'User'
+portal.tickets.approvals.view_to_approve: 'To approve'
+portal.tickets.approvals.view_to_reject: 'To reject'
+portal.tickets.approvals.view_approvers: 'Approvers'
+portal.tickets.approvals.view_approve: 'Approve'
+portal.tickets.approvals.view_reject: 'Reject'
+portal.tickets.approvals.view_no_message_error: 'Please provide a message'
 portal.tickets.mark-unresolved: 'Re-open Ticket'
 portal.tickets.need-login_desc: 'Please go to <a href="{{login_url}}" target="_blank">the login page</a> to send us a message'
 portal.tickets.need-login_title: 'You need to log in to open a ticket'
@@ -798,6 +864,7 @@ portal.tickets.timeline_marked_resolved: Resolved
 portal.tickets.timeline_opened: 'opened this ticket'
 portal.tickets.timeline_re_opened: 'reopened this ticket'
 portal.tickets.timeline_wrote: 'wrote:'
+portal.tickets.timeline_created_new_ticket_approval: 'created a new ticket approval'
 portal.tickets.view_assigned_agent: 'Assigned agent:'
 portal.tickets.view_awaiting_user: 'An agent is waiting for you to reply to a message.'
 portal.tickets.view_btn_add_cc: 'Add a CC''ed user'
@@ -1066,7 +1133,7 @@ user.error.not-found: 'The page you are looking for was not found.'
 user.error.not-found-title: 'Not Found'
 user.error.permission-denied: 'Sorry, the action you are trying to perform is not allowed.'
 user.error.permission-denied-login: 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.'
-user.error.permission-denied-title: 'You are not allowed to do that'
+user.error.permission-denied-title: 'You are not allowed to perform this action'
 user.error.server-error: 'Sorry but there was a server error that prevented the page from loading. Please try again.'
 user.community.submit_community_topic: 'Submit community topic'
 user.general.deskpro: Deskpro

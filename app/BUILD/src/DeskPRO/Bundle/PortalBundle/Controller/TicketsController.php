@@ -48,6 +48,12 @@ class TicketsController extends AbstractController
      * @Route("/tickets", name="user_tickets")
      * @Route("/tickets/organization", name="user_tickets_organization", defaults={"type":"organization"})
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
+     *
+     * @param Request $request
+     * @param $type
+     * @param bool $resolved_only
+     *
+     * @return RedirectResponse|Response
      */
     public function indexAction(Request $request, $type, $resolved_only = false)
     {
@@ -59,19 +65,28 @@ class TicketsController extends AbstractController
         }
 
         // create ticket list tables
+        if ($this->isHelpCenterTheme()) {
+            $ticketCategories =
+                [
+                    TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('helpcenter.tickets.list_status_user'),
+                    TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('helpcenter.tickets.list_status_agent'),
+                    TicketFilter::CATEGORY_RESOLVED       => $this->phrase('helpcenter.tickets.list_status_resolved'),
+                ];
+        } else {
+            $ticketCategories = $resolved_only ?
+                [
+                    TicketFilter::CATEGORY_RESOLVED => $this->phrase('portal.tickets.list_status_resolved'),
+                ]
+                :
+                [
+                    TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('portal.tickets.list_status_user'),
+                    TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('portal.tickets.list_status_agent'),
+                ];
+        }
         /* @var TicketListTable[] $tables */
-        $ticket_categories = $resolved_only ?
-            [
-                TicketFilter::CATEGORY_RESOLVED => $this->phrase('portal.tickets.list_status_resolved'),
-            ]
-            :
-            [
-                TicketFilter::CATEGORY_AWAITING_USER  => $this->phrase('portal.tickets.list_status_user'),
-                TicketFilter::CATEGORY_AWAITING_AGENT => $this->phrase('portal.tickets.list_status_agent'),
-            ];
-        $tables = $this->makeTicketListTables($type,  $ticket_categories, $person, $request);
+        $tables = $this->makeTicketListTables($type,  $ticketCategories, $person, $request);
 
-        $ticket_list_js = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
+        $ticketListJs = 'window.DESKPRO_TICKET_LIST_TABLES = '.$tables->compileJsObj().';';
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
@@ -83,7 +98,7 @@ class TicketsController extends AbstractController
                 'person'                  => $person,
                 'breadcrumbs'             => $this->getBreadcrumbGenerator()->buildTicketList(),
                 'page_title'              => $this->createPageTitle()->tickets(),
-                'ticket_list_js'          => $ticket_list_js,
+                'ticket_list_js'          => $ticketListJs,
                 'search_query'            => $request->query->get('q', ''),
             ]
         );
@@ -177,7 +192,7 @@ class TicketsController extends AbstractController
         // create timeline with pagination
         $page     = $request->get('page', 1);
         $per_page = 50;
-        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page);
+        $timeline = $this->get('data.ticket_timeline')->getUserTimeline($ticket, $page, $per_page, $this->getUser());
         $pager    = new Pagerfanta(new TicketTimelinePagerfantaAdapter($timeline));
         $pager->setMaxPerPage($per_page);
         $pager->setCurrentPage($page);
@@ -318,7 +333,7 @@ class TicketsController extends AbstractController
 
         return $this->renderThemeView('Theme:Tickets:resolve.html.twig', [
             'ticket'      => $ticket,
-            'breadrcumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
+            'breadcrumbs' => $this->getBreadcrumbGenerator()->buildTicketEdit($ticket),
             'page_title'  => $this->createPageTitle()->tickets($ticket),
         ]);
     }
@@ -562,12 +577,13 @@ class TicketsController extends AbstractController
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildTicketView($ticket);
 
         return $this->renderThemeView('Theme:Tickets:feedback.html.twig', [
-            'page_title'  => $this->get('portal_view.page_title_generator')->community(),
+            'page_title'  => $this->get('portal_view.page_title_generator')->tickets($ticket),
             'breadcrumbs' => $breadcrumbs,
             'ticket'      => $ticket,
             'message'     => $message,
             'feedback'    => $feedback,
             'setrating'   => $setRatingViaGet,
+            'rating'      => $rating,
         ]);
     }
 

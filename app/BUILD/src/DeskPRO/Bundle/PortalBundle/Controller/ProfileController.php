@@ -128,7 +128,15 @@ class ProfileController extends AbstractController
                     // this is a normal web request, and we need email validation
                     $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
                     $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $savedForm);
-                    $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+                    if ($this->isHelpCenterTheme()) {
+                        return $this->renderThemeView('Theme:Portal:User/register_must_verify.html.twig',
+                            [
+                                'email'         => $person->getEmailAddress(),
+                                'saved_form_id' => $savedForm->getId(),
+                            ]);
+                    } else {
+                        $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+                    }
                 }
 
                 return $this->redirectToRoute('portal_home');
@@ -264,6 +272,59 @@ class ProfileController extends AbstractController
     }
 
     /**
+     * @Route("/profile/password", name="portal_user_profile_password")
+     * @Security("is_granted('EDIT_PROFILE', user)")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     */
+    public function editPasswordAction(Request $request)
+    {
+        $person = $this->getUser();
+
+        // PASSWORD
+
+        $passwordForm = $this->createForm(PersonChangePasswordType::class, $person, [
+            'settings' => $this->getBrandContainer()->getSettings(),
+        ]);
+
+        if ('POST' === $request->getMethod()) {
+            $history = null;
+            if ($person->password && $person->password_scheme == 'bcrypt') {
+                $history                  = new PasswordHistory();
+                $history->person          = $person;
+                $history->password_scheme = $person->password_scheme;
+                $history->password        = $person->password;
+            }
+
+            $passwordForm->handleRequest($request);
+            if ($passwordForm->isValid()) {
+                if ($history) {
+                    $this->getEm()->persist($history);
+                }
+                $this->getEm()->flush();
+                $this->addFlash('success', $this->phrase('portal.flashes.user_changed_password'));
+
+                return $this->redirectToRoute('portal_user_profile_password');
+            }
+        }
+
+        // BREADCRUMBS
+
+        $breadcrumbs = $this->getBreadcrumbGenerator()->buildProfile();
+
+        return $this->renderThemeView(
+            'Theme:Portal:User/profile-password.html.twig', [
+                'person'        => $person,
+                'password_form' => $passwordForm->createView(),
+                'breadcrumbs'   => $breadcrumbs,
+                'page_title'    => $this->createPageTitle()->profile(),
+            ]
+        );
+    }
+
+    /**
      * @Route("/profile/emails", name="portal_user_profile_emails")
      *
      * @Security("is_granted('EDIT_PROFILE', user)")
@@ -323,9 +384,10 @@ class ProfileController extends AbstractController
             // NEW EMAIL
             //////////////////////////////////////////////////////////////////////////////////////////////
             $newEmail     = new PersonEmail();
+            $language     = $this->container->get('language_stack')->getActiveOrDefault();
             $addEmailForm = $this->createForm(PersonEmailType::class, $newEmail, [
                 'action'      => $this->generateUrl('portal_user_profile_emails'),
-                'email_label' => 'Email',
+                'email_label' => $this->get('deskpro.core.translate')->phrase('helpcenter.members.email', [], $language),
             ]);
             $addEmailForm->handleRequest($request);
             if ($addEmailForm->isValid()) {

@@ -2,8 +2,10 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Monolog;
 
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Monolog\Processor\UidProcessor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -20,10 +22,14 @@ class VoiceTaskRouterLoggerFactory
     public static function createLogger(ContainerInterface $container)
     {
         $logger = new Logger('task_router');
-        $env    = $container->get('deskpro.app_env');
+        $logger->pushProcessor(new UidProcessor());
 
+        $env = $container->get('deskpro.app_env');
         if ($env->isQa() || $env->getConfig('logs.enable_voice_log')) {
-            $logger->pushHandler(new StreamHandler($env->getUserLogsDir().'/task_router.log'));
+            $handler = new StreamHandler($env->getUserLogsDir().'/task_router.log');
+            $handler->setFormatter(new LineFormatter(null, 'Y-m-d H:i:s.u'));
+
+            $logger->pushHandler($handler);
         }
 
         return $logger;

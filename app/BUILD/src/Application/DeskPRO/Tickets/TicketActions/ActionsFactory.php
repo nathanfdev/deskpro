@@ -91,6 +91,10 @@ class ActionsFactory
             case 'subject':
                 $options['subject'] = $value['subject'];
                 break;
+            case 'add_approval':
+                $options['approval_template_id'] = $value['approval_template_id'];
+                $options['description'] = $value['description'];
+                break;
             case 'urgency_set':
                 $options['num']         = $value['num'];
                 $options['allow_lower'] = isset($value['allow_lower']) && $value['allow_lower'] ? true : false;

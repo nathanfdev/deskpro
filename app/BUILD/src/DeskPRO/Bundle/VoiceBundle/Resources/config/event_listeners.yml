@@ -11,6 +11,7 @@ services:
       - "@dp.voice.task_router.storage"
       - "@event_dispatcher"
       - "@serializer"
+      - "@dp.voice.task_router.voice_workflow"
     tags:
       - { name: dp.voice.event_subscriber }
 

@@ -11,6 +11,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -389,5 +390,23 @@ class Product extends CategoryAbstract implements HasPhraseName, TicketBuiltInFi
             'orphanRemoval' => true,
             'dpApi'         => false,
         ]);
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'icon_property',
+                'targetEntity' => IconProperty::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'icon_property_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
     }
 }

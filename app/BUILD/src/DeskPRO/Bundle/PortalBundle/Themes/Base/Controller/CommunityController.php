@@ -29,6 +29,7 @@ class CommunityController extends AbstractController
      *          "style": "detail",
      *          "count": 10,
      *          "page": 1,
+     *          "q": "",
      *          "status": "all",
      *          "status_categories": {},
      *          "types": {},
@@ -49,38 +50,14 @@ class CommunityController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        $person = $this->getUser() ?: new PersonGuest();
-
-        $filter = new CommunityFilter([
-            'status'            => $options['status'],
-            'status_categories' => $options['status_categories'],
-            'types'             => $options['types'],
-            'sort'              => $options['sort'],
-            'sort_direction'    => $options['sort_direction'],
+        $context = array_merge($this->getCommunityDataService()->getFilteredTopicList($options, $this->getUser()), [
+            'show_category_link' => $options['show_category_link'],
+            'show_pager'         => $options['show_pager'],
         ]);
-
-        $pager = $this->getCommunityDataService()->getItemsPager(
-            (int) $options['page'],
-            (int) $options['count'],
-            $filter,
-            $person
-        );
-
-        foreach ($pager as $topic) {
-            $topic->can_rate = $this->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic);
-        }
-
-        $types   = $filter->getTypes();
-        $allowed = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedCommunityChannelIds();
 
         return $this->renderThemeView(
             sprintf('Theme:Community:CommunityTopicsList/%s.html.twig', $options['style']),
-            [
-                'pager'              => $pager,
-                'show_category_link' => $options['show_category_link'],
-                'show_pager'         => $options['show_pager'],
-                'filtered'           => count($allowed) - count(($types)) > 0,
-            ]
+            $context
         );
     }
 

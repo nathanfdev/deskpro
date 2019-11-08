@@ -6,7 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\CommunityTopic;
 use Application\DeskPRO\Entity\CommunityTopicComment;
 use Application\DeskPRO\Entity\Download;
@@ -841,7 +841,7 @@ class AgentHelper implements PersonContextInterface
                 return NewsCategory::class;
                 break;
             case self::COMMUNITY:
-                return CommunityChannel::class;
+                return CommunityForum::class;
                 break;
             case self::TOPICS:
                 return Guide::class;

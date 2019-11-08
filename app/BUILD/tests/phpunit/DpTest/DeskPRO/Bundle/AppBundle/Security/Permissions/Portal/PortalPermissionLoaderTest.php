@@ -4,7 +4,7 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Security\Permissions;
 
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\CommunityChannel;
+use Application\DeskPRO\Entity\CommunityForum;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
@@ -63,47 +63,47 @@ class PortalPermissionLoaderTest extends PortalTestCase
         $everyone   = $this->getUsergroup(Usergroup::EVERYONE);
         $registered = $this->getUsergroup(Usergroup::REGISTERED);
 
-        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $communityChannel1 */
-        $communityChannel1 = new $entityClass();
-        $communityChannel1->setTitle('communityChannel 1');
-        $communityChannel1->addUsergroup($everyone);
-        if (property_exists($communityChannel1, 'brand')) {
-            $communityChannel1->setBrand($this->getBrand());
+        /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum1 */
+        $communityForum1 = new $entityClass();
+        $communityForum1->setTitle('communityForum 1');
+        $communityForum1->addUsergroup($everyone);
+        if (property_exists($communityForum1, 'brand')) {
+            $communityForum1->setBrand($this->getBrand());
         }
-        $em->persist($communityChannel1);
+        $em->persist($communityForum1);
 
-        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $communityChannel2 */
-        $communityChannel2 = new $entityClass();
-        $communityChannel2->setTitle('communityChannel 2');
-        $communityChannel2->addUsergroup($registered);
-        if (property_exists($communityChannel2, 'brand')) {
-            $communityChannel2->setBrand($this->getBrand());
+        /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum2 */
+        $communityForum2 = new $entityClass();
+        $communityForum2->setTitle('communityForum 2');
+        $communityForum2->addUsergroup($registered);
+        if (property_exists($communityForum2, 'brand')) {
+            $communityForum2->setBrand($this->getBrand());
         }
-        $em->persist($communityChannel2);
+        $em->persist($communityForum2);
 
-        /** @var CommunityChannel|NewsCategory|ArticleCategory|DownloadCategory $communityChannel3 */
-        $communityChannel3 = new $entityClass();
-        $communityChannel3->setTitle('communityChannel 3');
-        $communityChannel3->addUsergroup($everyone);
-        if (property_exists($communityChannel3, 'brand')) {
-            $communityChannel3->setBrand($this->getBrand());
+        /** @var CommunityForum|NewsCategory|ArticleCategory|DownloadCategory $communityForum3 */
+        $communityForum3 = new $entityClass();
+        $communityForum3->setTitle('communityForum 3');
+        $communityForum3->addUsergroup($everyone);
+        if (property_exists($communityForum3, 'brand')) {
+            $communityForum3->setBrand($this->getBrand());
         }
-        $em->persist($communityChannel3);
+        $em->persist($communityForum3);
         $em->flush();
 
         $this->assertEquals(
             [
-                $communityChannel1->getId(),
-                $communityChannel2->getId(),
-                $communityChannel3->getId(),
+                $communityForum1->getId(),
+                $communityForum2->getId(),
+                $communityForum3->getId(),
             ],
             $this->permissionLoader->$method([$everyone->getId(), $registered->getId()])
         );
 
         $this->assertEquals(
             [
-                $communityChannel1->getId(),
-                $communityChannel3->getId(),
+                $communityForum1->getId(),
+                $communityForum3->getId(),
             ],
             $this->permissionLoader->$method([$everyone->getId()])
         );
@@ -111,7 +111,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         // everyone group should be added automatically to usergroup ids list
         $this->assertEquals(
             [
-                $communityChannel2->getId(),
+                $communityForum2->getId(),
             ],
             $this->permissionLoader->$method([$registered->getId()])
         );
@@ -123,7 +123,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
     public function loadAllCategoriesProvider()
     {
         return [
-            [CommunityChannel::class, 'getAllowedCommunityChannels'],
+            [CommunityForum::class, 'getAllowedCommunityForums'],
             [NewsCategory::class, 'getAllowedNewsCategories'],
             [ArticleCategory::class, 'getAllowedArticleCategories'],
             [DownloadCategory::class, 'getAllowedDownloadCategories'],

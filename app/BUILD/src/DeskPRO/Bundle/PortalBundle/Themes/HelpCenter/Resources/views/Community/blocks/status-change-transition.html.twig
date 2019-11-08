@@ -1,0 +1,25 @@
+{% if topic.latestTransition and topic.latestTransition.old_status_category %}
+    <div class="dp-po-status-ribbon" title="{{ topic.latestTransition.old_status_category.title }} > {{ topic.latestTransition.new_status_category.title }}">
+        <span class="dp-po-status-ribbon-from">
+            <span>{{ topic.latestTransition.old_status_category.title }}</span>
+        </span>
+        {% if topic.timeIntervalForLatestTransition and with_time|default(false) %}
+            <span class="dp-po-status-ribbon-time">
+                {{ topic.timeIntervalForLatestTransition }}
+                <span class="dp-po-status-ribbon-time-arrow"></span>
+            </span>
+        {% endif %}
+        <span class="dp-po-status-ribbon-to" style="background-color: {{ topic.latestTransition.new_status_category.color }};">
+            <span>{{ topic.latestTransition.new_status_category.title }}</span>
+        </span>
+    </div>
+{% elseif topic.status_category %}
+    <div class="dp-po-status-ribbon" title="&hellip; > {{ topic.status_category.title }}">
+        <span class="dp-po-status-ribbon-from">
+            <span>&hellip;</span>
+        </span>
+        <span class="dp-po-status-ribbon-to" style="background-color: {{ topic.status_category.color }};">
+            <span>{{ topic.status_category.title }}</span>
+        </span>
+    </div>
+{% endif %}

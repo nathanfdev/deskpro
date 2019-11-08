@@ -37,10 +37,10 @@
 				<div class="extra-fields">
 					<ul>
 						{% for field in display_fields %}
-							{% if field == 'channel' %}
+							{% if field == 'forum' %}
 								<li>
-									<span class="prop-title">{{ phrase('agent.general.channel') }}:</span>
-									<span class="prop-val">{{ topic.channel.full_title }}</span>
+									<span class="prop-title">{{ phrase('agent.general.forum') }}:</span>
+									<span class="prop-val">{{ topic.forum.full_title }}</span>
 								</li>
 							{% elseif field == 'user_cat' and result.user_category %}
 								<li>

@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -14,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\Form\Handler\CommentFormHandler;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
+use DeskPRO\Component\Util\LazyPropObject;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -21,7 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class NewsController extends AbstractController
+class NewsController extends AbstractPublishController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"},
@@ -35,16 +37,16 @@ class NewsController extends AbstractController
      *
      * @return Response
      */
-    public function indexAction(Request $request, $_format)
+    public function indexAction(Request $request, $_format, NewsCategory $category = null)
     {
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
+        $pager = $this->getNewsPager($request, $page, $person, $category);
+
         // RSS
 
         if ('rss' === $_format) {
-            $pager = $this->getNewsPager($request, $page, $person);
-
             return $this->render('PortalBundle:News:feed.rss.twig', [
                 'page_title' => $this->createPageTitle()->news(),
                 'pager'      => $pager,
@@ -59,8 +61,6 @@ class NewsController extends AbstractController
         // iCalendar
 
         if ('ics' === $_format) {
-            $pager = $this->getNewsPager($request, $page, $person);
-
             return $this->render('PortalBundle:News:feed.ics.twig', [
                 'page_title' => $this->createPageTitle()->news(),
                 'pager'      => $pager,
@@ -87,16 +87,37 @@ class NewsController extends AbstractController
 
         // RENDER THEME
 
+        $newsData = new LazyPropObject([
+            'categories' => function () {
+                return $this->getNewsDataService()->getCategoryList($this->getUser());
+            },
+
+            'ymCounts' => function () use ($category) {
+                return $this->getNewsDataService()->getMonthsWithPosts($category, $this->getUser());
+            },
+        ]);
+
+        $filterDate = $request->query->get('date');
+        $filterYear = $filterDate
+            ? preg_replace('/\-[0-9]{2}$/', '', $filterDate)
+            : (new \DateTime())->format('Y')
+        ;
+
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             [
                 'page'          => $page,
                 'count'         => $this->getBrandSetting('portal.per_page_content'),
+                'viewCategory'  => $category,
+                'newsData'      => $newsData,
+                'pager'         => $pager,
                 'page_title'    => $this->createPageTitle()->news(),
                 'breadcrumbs'   => $breadcrumbs,
                 'rss_link'      => $rssLink,
                 'ics_link'      => $icsLink,
                 'is_subscribed' => $isSubscribed,
+                'filter_date'   => $filterDate,
+                'filter_year'   => $filterYear,
             ]
         );
     }
@@ -116,6 +137,10 @@ class NewsController extends AbstractController
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
+        if ($this->isHelpCenterTheme()) {
+            return $this->indexAction($request, $_format, $category);
+        }
+
         $page   = $request->query->getInt('page', 1);
         $person = $this->getCurrentPerson();
 
@@ -248,25 +273,46 @@ class NewsController extends AbstractController
             $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_NEWS, $post->getId());
         }
 
+        // OTHER ARTICLE DATA
+        $postData = new LazyPropObject([
+            'comments' => function () use ($post) {
+                return $this->getNewsDataService()->getPostComments($post, $this->getUser());
+            },
+            'related_content' => function () use ($post) {
+                $relatedFinder = new RelatedContentFinder($this->getCurrentPerson(), $post);
+
+                return $relatedFinder->getRelatedEntities(true);
+            },
+        ]);
+
         // RENDER THEME
+
+        $viewVars = [
+            'post'               => $post,
+            'postData'           => $postData,
+            'is_subscribed'      => $isSubscribed,
+            'rating'             => $rating,
+            'category'           => $post->getCategory(),
+            'content_id'         => $post->getId(),
+            'content_type'       => News::CONTENT_TYPE,
+            'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
+            'page_title'         => $this->createPageTitle()->news($post),
+            'breadcrumbs'        => $breadcrumbs,
+            'show_rating_counts' => $showRatingCounts,
+            'rating_counts'      => $ratingCounts,
+            'lockout'            => $check->isLockoutRecommended(),
+            'lockout_time'       => $check->getLockoutTime(true),
+            'main_class'         => 'dp-po-news-post',
+            'helpcenter'         => $this->get('helpcenter_data_helper'),
+        ];
+
+        if (!$this->getUser() || $this->getUser()->getId()) {
+            $viewVars = array_merge($viewVars, $this->getAuthComponents($request));
+        }
 
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
-            [
-                'post'               => $post,
-                'is_subscribed'      => $isSubscribed,
-                'rating'             => $rating,
-                'category'           => $post->getCategory(),
-                'content_id'         => $post->getId(),
-                'content_type'       => News::CONTENT_TYPE,
-                'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
-                'page_title'         => $this->createPageTitle()->news($post),
-                'breadcrumbs'        => $breadcrumbs,
-                'show_rating_counts' => $showRatingCounts,
-                'rating_counts'      => $ratingCounts,
-                'lockout'            => $check->isLockoutRecommended(),
-                'lockout_time'       => $check->getLockoutTime(true),
-            ]
+            $viewVars
         );
     }
 
@@ -464,16 +510,18 @@ class NewsController extends AbstractController
      * @param Request                                                                    $request
      * @param int                                                                        $page
      * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest $person
+     * @param NewsCategory                                                               $cat
      *
      * @return \Pagerfanta\Pagerfanta
      */
-    private function getNewsPager(Request $request, $page, $person)
+    private function getNewsPager(Request $request, $page, $person, $cat = null)
     {
         return $this->getNewsDataService()->getNewsPager(
-            null,
+            $cat,
             $page,
             $request->query->getInt('per_page', $this->getBrandSetting('portal.per_page_rss')),
-            $person
+            $person,
+            ['date' => $request->query->get('date')]
         );
     }
 }

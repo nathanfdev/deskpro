@@ -486,17 +486,17 @@ class PhraseData
      *
      * @return array
      */
-    public function getCommunityChannelsPhrases(Language $language = null)
+    public function getCommunityForumsPhrases(Language $language = null)
     {
         //TODO: need a community service
         $em = App::getOrm();
 
-        $phrase_group = 'obj_communitychannel';
+        $phrase_group = 'obj_communityforum';
 
         $all_types = $em->createQuery('
-            SELECT s
-            FROM DeskPRO:CommunityChannel s
-            ORDER BY s.display_order ASC
+            SELECT f
+            FROM DeskPRO:CommunityForum f
+            ORDER BY f.display_order ASC
         ')->getResult();
 
         if ($language) {

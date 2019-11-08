@@ -9,7 +9,7 @@ Feature: Community topic ratings
 
   Scenario: I rate a community topic positively as a user via I AGREE
     Given I login with user credentials
-    And the "community" channel "Suggestion" exists with content titled "Example Topic"
+    And the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I follow "I Agree"
     And I press "Continue"
@@ -18,7 +18,7 @@ Feature: Community topic ratings
     And I should see "Thank you for your feedback!"
 
   Scenario: I rate a community topic positively as a GUEST via I AGREE
-    Given the "community" channel "Suggestion" exists with content titled "Example Topic"
+    Given the "community" forum "Suggestion" exists with content titled "Example Topic"
     And I am on "/community/view/example-topic"
     When I follow "I Agree"
     And I press "Continue"

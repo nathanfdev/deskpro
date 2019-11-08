@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Leafo\ScssPhp\Exception\ParserException;
+use ScssPhp\ScssPhp\Exception\ParserException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

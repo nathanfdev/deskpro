@@ -2,12 +2,17 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 
+use Application\DeskPRO\Entity\CommunityForumToStatus;
 use Application\DeskPRO\Entity\DownloadsSubscription;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalResponse;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalTemplate;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\ApprovalType;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -249,8 +254,9 @@ class SelectPart
         'email_sources'                     => 'DeskPRO:EmailSource',
         'community_topics'                  => 'DeskPRO:CommunityTopic',
         'community_topic_attachments'       => 'DeskPRO:CommunityTopicAttachment',
-        'community_channels'                => 'DeskPRO:CommunityChannel',
+        'community_forums'                  => 'DeskPRO:CommunityForum',
         'community_topic_comments'          => 'DeskPRO:CommunityTopicComment',
+        'community_forum_to_status'         => CommunityForumToStatus::class,
         'glossary_words'                    => 'DeskPRO:GlossaryWord',
         'glossary_word_definitions'         => 'DeskPRO:GlossaryWordDefinition',
         'labels_articles'                   => 'DeskPRO:LabelArticle',
@@ -335,6 +341,10 @@ class SelectPart
         'voice_queue_agents'                => VoiceQueueAgent::class,
         'voice_recordings'                  => VoiceRecording::class,
         'agent_data'                        => AgentData::class,
+        'approval_types'                     => ApprovalType::class,
+        'approval_templates'                 => ApprovalTemplate::class,
+        'approval_responses'                 => ApprovalResponse::class,
+        'ticket_approvals'                   => TicketApproval::class,
     ];
 
     /**

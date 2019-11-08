@@ -431,6 +431,7 @@ TXT
      * @param string          $dbId
      * @param array           $check
      * @param OutputInterface $output
+     * @param LoggerInterface $logger
      *
      * @return \Generator
      */
@@ -447,6 +448,10 @@ TXT
                 ->setMaxResults($batchSize)
                 ->setFirstResult($batchId * $batchSize)
             ;
+
+            foreach ($check['primaryColumns'] as $column) {
+                $qb->orderBy($column, 'ASC');
+            }
 
             $rows = $this->executeQuery($dbId, $qb->getSQL(), $output, $logger)->fetchAll();
             ++$batchId;

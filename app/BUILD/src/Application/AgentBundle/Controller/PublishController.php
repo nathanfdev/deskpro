@@ -34,6 +34,7 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\CommunitySearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use Orb\Util\Arrays;
@@ -885,6 +886,25 @@ class PublishController extends AbstractController
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
         ];
 
+        if ($this->in->getString('icon.urn')) {
+            $icon = new IconProperty();
+            $icon->setUrn($this->in->getString('icon.urn'));
+            $options = [];
+            if ($this->in->getString('icon.style')) {
+                $options['style'] = $this->in->getString('icon.style');
+            }
+            if ($this->in->getString('icon.color')) {
+                $options['color'] = $this->in->getString('icon.color');
+            }
+            if ($options) {
+                $icon->setOptions($options);
+            }
+        }
+
+        if ($type === 'topics') {
+            $saveCategory['description'] = $this->in->getString('category.description') ?: '';
+        }
+
         $saveStructure = $this->in->getRaw('category_structure');
         if ($saveStructure) {
             $saveStructure = @json_decode($saveStructure, true);
@@ -912,12 +932,27 @@ class PublishController extends AbstractController
             }
 
             if ($type === 'topics') {
-                $brandId = $this->in->getUInt('category.brand_id');
+                $brandId                = $this->in->getUInt('category.brand_id');
+                $changes['description'] = $saveCategory['description'];
                 if ($brandId && $cat->getBrand()->getId() !== $brandId) {
-                    $this->db->update($table, [
-                        'brand_id' => $brandId,
-                    ], ['id' => $cat->getId()]);
+                    $changes['brand_id'] = $brandId;
                 }
+                $this->db->update($table, $changes, ['id' => $cat->getId()]);
+            }
+
+            if ($type === 'news') {
+                $cat->setColor($this->in->getString('category.color'));
+                $this->db->update($table, [
+                    'color' => $cat->getColor(false),
+                ], ['id' => $cat->id]);
+            }
+
+            if (isset($icon)) {
+                $this->em->persist($icon);
+                $this->em->flush();
+                $this->db->update($table, [
+                    'icon_property_id' => $icon->getId(),
+                ], ['id' => $cat->id]);
             }
 
             $this->db->delete($permTable, [$categoryField => $cat->id]);
@@ -1112,6 +1147,9 @@ class PublishController extends AbstractController
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
             'brand_id'   => $this->in->getUInt('category.brand_id'),
         ];
+        if ($type === 'guide') {
+            $saveCategory['description'] = $this->in->getString('category.description') ?: '';
+        }
 
         $parentCat = null;
         if ($saveCategory['parent_id']) {
@@ -1130,6 +1168,9 @@ class PublishController extends AbstractController
         }
         if ($parentCat) {
             $cat->parent = $parentCat;
+        }
+        if ($type === 'guide') {
+            $cat->setDescription($saveCategory['description']);
         }
         $this->em->persist($cat);
         $this->em->flush();
@@ -1181,7 +1222,7 @@ class PublishController extends AbstractController
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);
                 break;
             case 'community':
-                $url = $this->generateUrl('agent_community_channels', ['$channelId' => $cat->getId()]);
+                $url = $this->generateUrl('agent_community_forums', ['forumId' => $cat->getId()]);
                 break;
         }
 
@@ -1253,7 +1294,7 @@ class PublishController extends AbstractController
                 $searcher = new CommunitySearch();
                 $searcher->addTerm('deleted', 'not', 1);
                 $helper = 'CommunityTopicResults';
-                $cats   = $this->in->getCleanValueArray('community_channels', 'uint', 'discard');
+                $cats   = $this->in->getCleanValueArray('community_forums', 'uint', 'discard');
                 break;
 
             default:

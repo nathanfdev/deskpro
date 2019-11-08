@@ -912,7 +912,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'filesize'             => $this->filesize,
             'content_type'         => $this->content_type,
             'blob_hash'            => $this->blob_hash,
-            'is_media_upload'      => $this->is_media_upload,
+            'is_media_upload'      => $this->is_media_upload ? 1 : 0,
             'title'                => $this->title,
             'dim_w'                => $this->dim_w,
             'dim_h'                => $this->dim_h,
@@ -979,10 +979,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable([
             'name'    => 'blobs',
             'indexes' => [
-                'authcode_idx'     => ['columns' => ['authcode']],
-                'storage_loc_idx'  => ['columns' => ['storage_loc', 'storage_loc_pref']],
-                'sys_name_idx'     => ['columns' => ['sys_name']],
-                'date_created_idx' => ['columns' => ['date_created', 'is_temp']],
+                'authcode_idx'         => ['columns' => ['authcode']],
+                'storage_loc_idx'      => ['columns' => ['storage_loc', 'storage_loc_pref']],
+                'storage_loc_pref_idx' => ['columns' => ['storage_loc_pref']],
+                'sys_name_idx'         => ['columns' => ['sys_name']],
+                'date_created_idx'     => ['columns' => ['date_created', 'is_temp']],
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

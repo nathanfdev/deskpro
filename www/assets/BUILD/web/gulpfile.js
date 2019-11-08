@@ -400,6 +400,10 @@ gulp.task('sassdoc', function (done) {
     fs.writeFileSync('./sassdoc/vars.json', JSON.stringify(transform(items), null, '\t'));
   });
 
+  sassdoc.parse('../pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/helpcenter_vars.scss').then(function(items) {
+    fs.writeFileSync('./sassdoc/helpcenter_vars.json', JSON.stringify(transform(items), null, '\t'));
+  });
+
   done();
 });
 

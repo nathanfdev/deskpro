@@ -13,6 +13,12 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVote
 class TicketsVoter extends AbstractTicketsVoter
 {
     /**
+     * Approval attributes
+     */
+    const ADD_APPROVAL = 'add_approval';
+    const CANCEL_APPROVAL = 'cancel_approval';
+
+    /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
@@ -41,6 +47,10 @@ class TicketsVoter extends AbstractTicketsVoter
                 return $this->canModify($user, $ticket);
             case PermissionGroupVoter::DELETE:
                 return $this->getTicketChecker($user)->canDelete($ticket);
+            case self::ADD_APPROVAL:
+                return $this->getTicketChecker($user)->canAddApproval($ticket);
+            case self::CANCEL_APPROVAL:
+                return $this->getTicketChecker($user)->canCancelApproval($ticket);
         }
 
         return true;

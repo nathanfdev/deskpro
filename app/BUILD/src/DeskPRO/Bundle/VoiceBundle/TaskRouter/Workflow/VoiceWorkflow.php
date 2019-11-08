@@ -11,6 +11,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class VoiceWorkflow.
@@ -30,7 +31,7 @@ class VoiceWorkflow implements WorkflowInterface
     /**
      * @var VoiceSettingsResolver
      */
-    private $settingsResolver;
+    private $voiceSettingsResolver;
 
     /**
      * @var StorageAdapterInterface
@@ -43,26 +44,34 @@ class VoiceWorkflow implements WorkflowInterface
     private $permissionsChecker;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param WorkerHelper            $workerHelper
      * @param VoiceTaskHelper         $taskHelper
-     * @param VoiceSettingsResolver   $settingsResolver
+     * @param VoiceSettingsResolver   $voiceSettingsResolver
      * @param StorageAdapterInterface $storage
      * @param VoicePermissionsChecker $permissionsChecker
+     * @param LoggerInterface         $logger
      */
     public function __construct(
         WorkerHelper            $workerHelper,
         VoiceTaskHelper         $taskHelper,
-        VoiceSettingsResolver   $settingsResolver,
+        VoiceSettingsResolver   $voiceSettingsResolver,
         StorageAdapterInterface $storage,
-        VoicePermissionsChecker $permissionsChecker
+        VoicePermissionsChecker $permissionsChecker,
+        LoggerInterface         $logger
     ) {
-        $this->workerHelper       = $workerHelper;
-        $this->taskHelper         = $taskHelper;
-        $this->settingsResolver   = $settingsResolver;
-        $this->storage            = $storage;
-        $this->permissionsChecker = $permissionsChecker;
+        $this->workerHelper          = $workerHelper;
+        $this->taskHelper            = $taskHelper;
+        $this->voiceSettingsResolver = $voiceSettingsResolver;
+        $this->storage               = $storage;
+        $this->permissionsChecker    = $permissionsChecker;
+        $this->logger                = $logger;
     }
 
     /**
@@ -82,21 +91,67 @@ class VoiceWorkflow implements WorkflowInterface
         if ($queue) {
             return $queue->getVoicemailTimeout();
         } else {
-            return $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout();
+            return $this->voiceSettingsResolver->getVoiceSettings()->getAgentVoicemailTimeout();
         }
     }
 
     /**
      * @param Worker $worker
+     * @param bool   $withLog
      *
      * @return bool
      */
-    public static function workerIsBusy(Worker $worker)
+    public function workerIsBusy(Worker $worker, $withLog = false)
     {
-        return $worker->hasPendingTasksForChannel(self::getChannelName())
-            || $worker->hasActiveTasksForChannel(self::getChannelName())
-            || $worker->hasPendingTasksForChannel(ChatWorkflow::getChannelName())
-            || $worker->hasActiveTasksForChannel(ChatWorkflow::getChannelName());
+        if ($withLog) {
+            $this->logger->info(sprintf(
+                '[VoiceWorkflow] Check if worker is busy, worker_id = %s',
+                $worker->getTypeId()
+            ));
+        }
+
+        if ($worker->hasPendingTasksForChannel(self::getChannelName())) {
+            if ($withLog) {
+                $this->logger->info(sprintf(
+                    '[VoiceWorkflow] Worker is busy, reason = has_pending_phone_call, worker_id = %s',
+                    $worker->getTypeId()
+                ));
+            }
+
+            return true;
+        }
+
+        if ($worker->hasActiveTasksForChannel(self::getChannelName())) {
+            if ($withLog) {
+                $this->logger->info(sprintf(
+                    '[VoiceWorkflow] Worker is busy, reason = has_active_phone_call, worker_id = %s',
+                    $worker->getTypeId()
+                ));
+            }
+
+            return true;
+        }
+
+        $voiceAgentIds = $this->workerHelper->getVoiceAgentIds();
+        if (!in_array($worker->getTypeId(), $voiceAgentIds)) {
+            if ($withLog) {
+                $this->logger->info(sprintf(
+                    '[VoiceWorkflow] Worker is not available for chat, worker_id = %s',
+                    $worker->getTypeId()
+                ));
+            }
+
+            return true;
+        }
+
+        if ($withLog) {
+            $this->logger->info(sprintf(
+                '[VoiceWorkflow] Worker is not busy, worker_id = %s',
+                $worker->getTypeId()
+            ));
+        }
+
+        return false;
     }
 
     /**
@@ -113,18 +168,27 @@ class VoiceWorkflow implements WorkflowInterface
             $availableAgentWorkers[$worker->getId()] = $worker;
         }
 
-        $voiceAgentIds = $this->workerHelper->getVoiceAgentIds();
-
         $availableAgentWorkers = array_filter(
             $availableAgentWorkers,
-            function (Worker $worker) use ($task, $voiceAgentIds, $ignoreRejected) {
+            function (Worker $worker) use ($task, $ignoreRejected) {
                 // ignore if agent has already rejected task
                 if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
+                    $this->logger->info(sprintf(
+                        '[VoiceWorkflow] Worker rejected the task, worker_id = %s, task_id = %s',
+                        $worker->getTypeId(), $task->getId()
+                    ));
+
                     return false;
                 }
 
                 // ignore if agent is already on a call or has incoming call popup
-                if (self::workerIsBusy($worker) || !in_array($worker->getTypeId(), $voiceAgentIds)) {
+                // or has active chats
+                if ($this->workerIsBusy($worker, true)) {
+                    $this->logger->info(sprintf(
+                        '[VoiceWorkflow] Worker is busy, worker_id = %s, task_id = %s',
+                        $worker->getTypeId(), $task->getId()
+                    ));
+
                     return false;
                 }
 
@@ -155,10 +219,25 @@ class VoiceWorkflow implements WorkflowInterface
         $agent      = $this->taskHelper->getWorkerAgent($task);
 
         if ($voiceQueue) {
+            $this->logger->info(sprintf(
+                '[VoiceWorkflow] Voice queue, queue_id = %s, task_id = %s',
+                $voiceQueue->getId(), $task->getId()
+            ));
+
             $queueAgentIds = [];
             foreach ($voiceQueue->getActiveAgentsPeople() as $agent) {
                 if ($this->permissionsChecker->canBeMemberOfVoiceQueue($voiceQueue, $agent)) {
                     $queueAgentIds[] = $agent->getId();
+
+                    $this->logger->info(sprintf(
+                        '[VoiceWorkflow] Agent can be a member of this voice queue, queue_id = %s, agent_id = %s task_id = %s',
+                        $voiceQueue->getId(), $agent->getId(), $task->getId()
+                    ));
+                } else {
+                    $this->logger->info(sprintf(
+                        '[VoiceWorkflow] Agent can not be a member of this voice queue, queue_id = %s, agent_id = %s task_id = %s',
+                        $voiceQueue->getId(), $agent->getId(), $task->getId()
+                    ));
                 }
             }
 

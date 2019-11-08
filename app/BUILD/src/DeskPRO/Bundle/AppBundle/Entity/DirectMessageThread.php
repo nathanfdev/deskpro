@@ -86,6 +86,17 @@ class DirectMessageThread implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * Returns TRUE if thread contains participant by ID
+     *
+     * @param int $id
+     * @return bool
+     */
+    public function hasParticipantId($id)
+    {
+        return in_array($id, $this->getParticipantIds());
+    }
+
+    /**
      * @param int $id
      *
      * @return $this

@@ -222,13 +222,13 @@ class VoiceCallbacksHelper
             ->setExternalNumber($fromNumber)
             ->setPerson($person)
             ->setType(VoicePhoneCall::DIRECTION_INBOUND)
-            ->setData($details)
         ;
 
         // create user participant
         $participant = new VoicePhoneCallParticipantUser();
         $participant->setCallSid($callSid);
         $participant->setPerson($person);
+        $participant->setData($details);
 
         $phoneCall->addParticipant($participant);
 
@@ -289,6 +289,7 @@ class VoiceCallbacksHelper
             $participant->setCallSid($agentCallSid);
             $participant->setPerson($agent);
             $participant->setDateJoined(new \DateTime());
+            $participant->setData($details);
 
             $phoneCall->addParticipant($participant);
 
@@ -453,13 +454,13 @@ class VoiceCallbacksHelper
 
         // get the caller person
         $agent = $this->getAgent($agentId);
-        $phoneCall->setData(array_merge($phoneCall->getData(), $details));
         $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_OUTGOING, $callSid);
 
         // create agent participant
         $participant = new VoicePhoneCallParticipantAgent();
         $participant->setCallSid($callSid);
         $participant->setPerson($agent);
+        $participant->setData($details);
 
         $phoneCall->addParticipant($participant);
 
@@ -478,11 +479,12 @@ class VoiceCallbacksHelper
     /**
      * @param string $callId
      * @param string $callSid
+     * @param array  $details
      *
      * @throws OutOfServiceException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function setOutgoingUserParticipant($callId, $callSid)
+    public function setOutgoingUserParticipant($callId, $callSid, array $details)
     {
         $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($callId);
         if (!$phoneCall) {
@@ -497,6 +499,7 @@ class VoiceCallbacksHelper
             $participant = new VoicePhoneCallParticipantUser();
             $participant->setCallSid($callSid);
             $participant->setPerson($phoneCall->getPerson());
+            $participant->setData($details);
 
             $phoneCall->addParticipant($participant);
         }

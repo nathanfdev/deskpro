@@ -874,7 +874,7 @@ header.page-header .meta-line .set-hold { display: none; }
 /*****************************************************************************/
 
 section.description-area {
-	padding: 10px 15px;
+	padding: 10px 0 0;
 }
 
 section.description-area .info-list {
@@ -3378,6 +3378,10 @@ article.content-message .content .body-text .fade-bar {
 	&.type-action_starter {
 		background-color: #e4e4e4;
 	}
+
+  &.type-ticket_approval {
+    background-color: #e4e4e4;
+  }
 }
 
 .log-row .type {
@@ -4754,7 +4758,6 @@ body.popup section.body textarea.fill {
 	margin: 3px 3px 0 0;
 }
 
-
 .email-assoc-overlay {
 	width: 400px;
 	height: 300px;
@@ -4786,9 +4789,19 @@ body.popup section.body textarea.fill {
 	cursor: pointer;
 }
 
+.newarticle-template-overlay {
+  width: 350px;
+  height: 270px;
+  padding: 0;
 
+  .overlay-content {
+    padding: 15px;
 
-
+    .input-wrapper {
+      margin-top: 20px
+    }
+  }
+}
 
 #settingswin {
 	z-index: 32001;
@@ -6560,10 +6573,16 @@ header.page-header input[type="text"] {
 .content-tab-item {
 	background-color: #fff;
 
-	&.comments-tab, &.revisions-tab, &.related-content-tab, &.search-tab {
+	&.comments-tab, &.revisions-tab, &.related-content-tab, &.search-tab, &.splash-image-tab {
 		padding: 15px;
 	}
 
+  &.splash-image-tab .splash-image-image {
+    margin-top: 20px;
+    max-width: 300px;
+    max-height: 200px;
+    overflow: auto;
+  }
 	.article-editor-wrap {
 		padding: 15px;
 	}

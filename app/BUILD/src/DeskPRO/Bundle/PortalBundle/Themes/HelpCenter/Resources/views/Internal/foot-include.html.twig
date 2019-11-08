@@ -1,0 +1,14 @@
+<script type="text/javascript">
+  document.querySelectorAll('img[class$=svg]').forEach(function(img){
+    replaceSvgImages(img);
+  });
+    (function(){
+        document.body.className = document.body.className + ' with-pageload-done';
+        if (window.WITH_DPUI) {
+            window.setTimeout(function () {
+                // fallback to make sure elements are displayed in case of a script error
+                document.body.className = document.body.className + ' with-pageload-dpx-done';
+            }, 4000);
+        }
+    })();
+</script>

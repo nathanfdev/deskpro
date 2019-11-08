@@ -68,6 +68,49 @@ class PortalIconFactory
         'wma'     => 'file-audio',
     ];
 
+    protected static $hc_icons = [
+        '7z'      => 'ZIP-2.svg',
+        'ace'     => 'ZIP-2.svg',
+        'avi'     => 'AVI.svg',
+        'bz2'     => 'ZIP-2.svg',
+        'css'     => 'CSS.svg',
+        'csv'     => 'CSV.svg',
+        'doc'     => 'DOC.svg',
+        'docx'    => 'DOC.svg',
+        'dot'     => 'DOC.svg',
+        'dotx'    => 'DOC.svg',
+        'exe'     => 'EXE.svg',
+        'gz'      => 'ZIP-2.svg',
+        'html'    => 'HTML.svg',
+        'jpeg'    => 'JPG.svg',
+        'jpg'     => 'JPG.svg',
+        'js'      => 'JS.svg',
+        'json'    => 'JSON.svg',
+        'keynote' => 'PPT.svg',
+        'mp3'     => 'MP3.svg',
+        'mp4'     => 'MP4.svg',
+        'numbers' => 'XLS.svg',
+        'pages'   => 'DOC.svg',
+        'pdf'     => 'PDF.svg',
+        'png'     => 'PNG.svg',
+        'ppt'     => 'PPT.svg',
+        'pptx'    => 'PPT.svg',
+        'rtf'     => 'RTF.svg',
+        's7z'     => 'ZIP-2.svg',
+        'svg'     => 'SVG.svg',
+        'tar'     => 'ZIP-2.svg',
+        'txt'     => 'TXT.svg',
+        'xlm'     => 'XLS.svg',
+        'xls'     => 'XLS.svg',
+        'xlsm'    => 'XLS.svg',
+        'xlsx'    => 'XLS.svg',
+        'xlt'     => 'XLS.svg',
+        'xltm'    => 'XLS.svg',
+        'xltx'    => 'XLS.svg',
+        'xml'     => 'XML.svg',
+        'zip'     => 'ZIP-1.svg',
+    ];
+
     /**
      * @var BrandStack
      */
@@ -82,13 +125,14 @@ class PortalIconFactory
      * Will return HTML representing an icon for any content type (dl, blob, article, news, community).
      *
      * @param $content
+     * @param bool $helpcenter
      *
      * @return string
      */
-    public function makeContentIcon($content)
+    public function makeContentIcon($content, $helpcenter = false)
     {
         if ($content instanceof Download) {
-            return $this->makeFileIcon($content);
+            return $this->makeFileIcon($content, $helpcenter);
         } elseif ($content instanceof Blob) {
             return $this->makeFileIcon($content);
         } elseif ($content instanceof TicketAttachment) {
@@ -118,10 +162,11 @@ class PortalIconFactory
      * Will return HTML representing an icon for any download entity or blob entity.
      *
      * @param $blob
+     * @param bool $helpcenter
      *
      * @return string
      */
-    public function makeFileIcon($blob)
+    public function makeFileIcon($blob, $helpcenter = false)
     {
         // allow download entities to be passed directly
         if ($blob instanceof Download) {
@@ -134,16 +179,32 @@ class PortalIconFactory
             $extension = $blob->getExtension();
         }
 
-        if ($fa = $this->getFontAwesomeCssClassForFileExtension($extension)) {
-            $style_bit = '';
-            if ($color = $this->getColor($fa)) {
-                $style_bit = ' style="color: '.$color.'"';
+        if ($helpcenter) {
+            return $this->getHelpCenterIconForFileExtension($extension);
+        } else {
+            if ($fa = $this->getFontAwesomeCssClassForFileExtension($extension)) {
+                $style_bit = '';
+                if ($color = $this->getColor($fa)) {
+                    $style_bit = ' style="color: '.$color.'"';
+                }
+
+                return '<i class="far fa-'.$fa.'"'.$style_bit.'></i>';
             }
 
-            return '<i class="far fa-'.$fa.'"'.$style_bit.'></i>';
+            return '<i class="far fa-file"></i>';
         }
+    }
 
-        return '<i class="far fa-file"></i>';
+    /**
+     * @param Blob $blob
+     *
+     * @return string|null
+     */
+    public function getFaClassForContent($blob)
+    {
+        $extension = $blob->getExtension();
+
+        return $this->getFontAwesomeCssClassForFileExtension($extension);
     }
 
     /**
@@ -209,17 +270,26 @@ class PortalIconFactory
     /**
      * what font awesome icon (if any) should we use for this file ext.
      *
-     * @param $file_extension
+     * @param $fileExtension
      *
      * @return string|null
      */
-    public function getFontAwesomeCssClassForFileExtension($file_extension)
+    public function getFontAwesomeCssClassForFileExtension($fileExtension)
     {
-        if (array_key_exists($file_extension, self::$fa_icons)) {
-            return self::$fa_icons[$file_extension];
+        if (array_key_exists($fileExtension, self::$fa_icons)) {
+            return self::$fa_icons[$fileExtension];
         }
 
         return;
+    }
+
+    public function getHelpCenterIconForFileExtension($fileExtension)
+    {
+        if (array_key_exists($fileExtension, self::$hc_icons)) {
+            return self::$hc_icons[$fileExtension];
+        }
+
+        return 'FILE.svg';
     }
 
     /**

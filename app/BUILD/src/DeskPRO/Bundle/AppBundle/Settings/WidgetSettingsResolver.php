@@ -221,10 +221,24 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
                 $baseUrl = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
             }
 
-            $helpdeskUrl = rtrim($baseUrl, '/');
+            if (empty($this->getSetting('core.deskpro_url', $brand))) {
+                $helpdeskUrl = $this->router->generate(
+                    'portal_home',
+                    ['brand' => $brand],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $helpdeskUrl = rtrim($baseUrl, '/').$request->attributes->get('_dp_brand_slug_path');
+            }
         } else {
-            $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
-            $helpdeskUrl = $baseUrl;
+            $helpdeskUrl = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            if ($brand->getUrl()) {
+                $baseUrl = $helpdeskUrl;
+            } else {
+                // brand has just a slug, use default brand
+                $baseUrl = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
         }
 
         if ($request) {
@@ -247,7 +261,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         };
 
         if ($useDynAssets) {
-            $loaderUrl = rtrim($helpdeskUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
+            $loaderUrl = rtrim($baseUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
         } else {
             $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
             $loaderUrl = $correctAssetUrl($loaderUrl);
@@ -302,7 +316,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $chat->setEnabled($this->isChatEnabled($brand));
 
         $company = $model->getCompany();
-        $company->setName($this->getSetting('core.site_name'));
+        $company->setName($this->getSetting('core.site_name', $brand));
 
         return $model;
     }

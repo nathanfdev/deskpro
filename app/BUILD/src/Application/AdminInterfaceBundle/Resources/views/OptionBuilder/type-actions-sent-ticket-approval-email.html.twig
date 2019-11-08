@@ -1,0 +1,29 @@
+<dp-optionbuilder-row>
+    <div class="dp-ob-standard-row">
+        <table class="display-table">
+            <tr>
+                <td class="nowrap" width="165"><label class="row-label">{{ phrase('adm.ticket_approvals.actions.send_ticket_approval_email') }}</label></td>
+                <td>
+                    <table class="display-table spaced" width="100%">
+                        <tr>
+                            <td>
+                                <label>
+                                    <input type="checkbox" ng-model="model.send_to_owner" />
+                                    {{ phrase('adm.ticket_approvals.actions.send_to_owner') }}
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label>
+                                    <input type="checkbox" ng-model="model.send_to_approvers" />
+                                    {{ phrase('adm.ticket_approvals.actions.send_to_approvers') }}
+                                </label>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</dp-optionbuilder-row>

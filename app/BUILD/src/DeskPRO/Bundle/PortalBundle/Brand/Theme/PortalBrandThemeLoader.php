@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\PortalBundle\Brand\Theme;
 
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
@@ -13,9 +14,14 @@ use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 class PortalBrandThemeLoader
 {
     /**
-     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory
+     * @var BrandContainerFactory
      */
     private $brandContainerFactory;
+
+    /**
+     * @var BrandStack
+     */
+    private $brandStack;
 
     /**
      * @var ThemeResolver
@@ -36,13 +42,15 @@ class PortalBrandThemeLoader
      * Constructor.
      *
      * @param BrandContainerFactory $brandContainerFactory
+     * @param BrandStack            $brandStack
      * @param ThemeResolver         $themeResolver
      * @param PortalModeStorage     $portalModeStorage
      */
-    public function __construct(BrandContainerFactory $brandContainerFactory, ThemeResolver $themeResolver, PortalModeStorage $portalModeStorage)
+    public function __construct(BrandContainerFactory $brandContainerFactory, BrandStack $brandStack, ThemeResolver $themeResolver, PortalModeStorage $portalModeStorage)
     {
         $this->brandContainerFactory = $brandContainerFactory;
         $this->themeResolver         = $themeResolver;
+        $this->brandStack            = $brandStack;
         $this->portalModeStorage     = $portalModeStorage;
     }
 
@@ -51,8 +59,11 @@ class PortalBrandThemeLoader
      *
      * @return PortalBrandTheme
      */
-    public function getPortalBrandTheme(Brand $brand)
+    public function getPortalBrandTheme(Brand $brand = null)
     {
+        if (!$brand) {
+            $brand = $this->brandStack->getActive()->getBrand();
+        }
         $id = $brand->getId();
 
         if (!isset($this->instances[$id])) {

@@ -1,0 +1,18 @@
+{% import 'Theme:Tickets:macros.html.twig' as macros %}
+<div class="ticket-message user-message">
+    <div class="ticket-owner">
+        <div class="ticket-action-date">{{ date_ago(response.createdAt) }}</div>
+        {{ macros.person_inline(response.approver, true) }}
+        <span>
+            {% if response.isApproved %}
+                {{ phrase('portal.tickets.approvals.view_approved') }}
+            {% elseif response.isRejected %}
+                {{ phrase('portal.tickets.approvals.view_rejected') }}
+            {% endif %}
+            {{ response.message ? ':' }}
+        </span>
+    </div>
+    <div class="ticket-message-content">
+        {{ response.message }}
+    </div>
+</div>

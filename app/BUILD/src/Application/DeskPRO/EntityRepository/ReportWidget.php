@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\EntityRepository\CustomDefOrganization as CustomDefOrganizationRepository;
 use Application\DeskPRO\EntityRepository\CustomDefPerson as CustomDefPersonRepository;
 use Application\DeskPRO\EntityRepository\CustomDefTicket as CustomDefTicketRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 class ReportWidget extends AbstractEntityRepository
@@ -221,7 +222,7 @@ class ReportWidget extends AbstractEntityRepository
                 'community_topics' => [
                     'type'                                           => ['type', 'DPQL_ALIAS(%s.category, \'Type\')'],
                     'status'                                         => ['status', 'DPQL_ALIAS(%s.status_category, \'Status\')'],
-                    'channel'                                        => ['channel', 'DPQL_ALIAS(%s.custom_data[1], \'category\')'],
+                    'forum'                                          => ['forum', 'DPQL_ALIAS(%s.custom_data[1], \'Forum\')'],
                     'person'                                         => ['person', '%s.person'],
                     'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
                     'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
@@ -252,6 +253,11 @@ class ReportWidget extends AbstractEntityRepository
                     'status'                                         => ['status', 'DPQL_ALIAS(%s.status, \'Status\')'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
+                'ticket_approvals' => [
+                    'type'                                           => ['type', 'DPQL_ALIAS(%s.type.name, \'Approval Type\')'],
+                    'approval_template'                              => ['template', 'DPQL_ALIAS(%s.template.name, \'Approval Template\')'],
+                    'status'                                         => ['status', 'DPQL_ALIAS(%s.status, \'Status\')'],
+                ],
             ],
             'dates' => [
                 'today'                                          => ['today', '%TODAY%'],
@@ -279,6 +285,12 @@ class ReportWidget extends AbstractEntityRepository
                     'hidden'                                         => ['hidden', '%s.status = \'hidden\''],
                     'any'                                            => ['with any status', '1'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
+                ],
+                'ticket_approvals' => [
+                    TicketApproval::STATUS_PENDING                   => ['pending', '%s.status = \''.TicketApproval::STATUS_PENDING.'\''],
+                    TicketApproval::STATUS_APPROVED                  => ['approved', '%s.status = \''.TicketApproval::STATUS_APPROVED.'\''],
+                    TicketApproval::STATUS_REJECTED                  => ['rejected', '%s.status = \''.TicketApproval::STATUS_REJECTED.'\''],
+                    TicketApproval::STATUS_CANCELLED                 => ['cancelled', '%s.status = \''.TicketApproval::STATUS_CANCELLED.'\''],
                 ],
             ],
             'orders' => [

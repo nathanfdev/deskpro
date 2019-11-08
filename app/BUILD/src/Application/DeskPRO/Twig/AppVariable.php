@@ -357,6 +357,18 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     }
 
     /**
+     * @return bool
+     */
+    public function voiceUseLocalPolling()
+    {
+        if ($this->getSetting('voice.disable_local_polling')) {
+            return false;
+        }
+
+        return $this->getSetting('voice.use_local_polling') || $this->container->get('deskpro.app_env')->isQa();
+    }
+
+    /**
      * @param string $id
      *
      * @return bool

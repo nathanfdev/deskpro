@@ -138,6 +138,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         term;
       this.resetTime = (new Date()).getTime();
       if (!this.hasLoaded) { return; }
+      if (this.reArrange) { return; }
       this.rowsCount = 0;
 
       for (const id in this.rows) {
@@ -358,6 +359,10 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
         rowScope.rowFn = {};
         rowScope.rowFn.removeRow = () => this.removeRow(element);
+        rowScope.rowFn.moveUp = () => this.moveUp(element);
+        rowScope.rowFn.moveDown = () => this.moveDown(element);
+        rowScope.rowFn.canMoveUp = () => this.canMoveUp(element);
+        rowScope.rowFn.canMoveDown = () => this.canMoveDown(element);
 
         if (rowScope.rowOpts.withCheckId) {
           element.find('.row-label').attr('for', rowScope.rowOpts.withCheckId);
@@ -439,6 +444,39 @@ define(['DeskPRO/Util/Util'], function(Util) {
       }
 
       return true;
+    }
+
+    canMoveUp(row) {
+      return this.attrs.allowReArrange && !!$(row).prevUntil('.dp-ob-loading-options').find('.remove-row-trigger').length;
+    }
+
+    canMoveDown(row) {
+      return this.attrs.allowReArrange && !!$(row).next().length;
+    }
+
+    reArrangeRows(row) {
+      const newValue  = {};
+      $(row).parent().find('.dp-ob-row:not(.dp-ob-loading-options)').each((i, el) => {
+        const reorderedRow = Object.values(this.rows).filter(r => r.element[0] === el)[0];
+        if (reorderedRow) {
+          const scopeId = $(reorderedRow.element).data('scopeId');
+          newValue[scopeId] = reorderedRow.scope.value;
+        }
+      });
+
+      this.reArrange = true;
+      this.$scope.saveTarget = newValue;
+      setTimeout(() => { this.reArrange = false; }, 1);
+    }
+
+    moveUp(row) {
+      $(row).insertBefore($(row).prev());
+      this.reArrangeRows(row);
+    }
+
+    moveDown(row) {
+      $(row).insertAfter($(row).next());
+      this.reArrangeRows(row);
     }
   }
   DeskPRO_OptionBuilder_Controller.initClass();

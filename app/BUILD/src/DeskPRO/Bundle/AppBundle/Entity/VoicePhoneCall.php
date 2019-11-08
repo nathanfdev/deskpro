@@ -102,6 +102,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $callSids = [];
 
     /**
+     * @ORM\ManyToOne(targetEntity="AbstractVoiceAccount")
+     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @var AbstractVoiceAccount
+     */
+    private $account;
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
      * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="SET NULL")
      *
@@ -284,6 +292,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return AbstractVoiceAccount
+     */
+    public function getAccount()
+    {
+        return $this->account;
+    }
+
+    /**
+     * @param AbstractVoiceAccount $account
+     *
+     * @return $this
+     */
+    public function setAccount(AbstractVoiceAccount $account = null)
+    {
+        $this->setModelField('account', $account);
+
+        return $this;
+    }
+
+    /**
      * @return VoiceNumber
      */
     public function getNumber()
@@ -301,6 +329,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('number', $number);
         if ($number) {
             $this->setNumberPlain($number->getNumber());
+            $this->setAccount($number->getAccount());
         }
 
         return $this;

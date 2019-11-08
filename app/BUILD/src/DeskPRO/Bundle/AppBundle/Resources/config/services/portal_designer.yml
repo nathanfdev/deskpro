@@ -13,25 +13,31 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@deskpro.blob_storage"
 
+  dp.portal.designer.theme_file_getter:
+    class: DeskPRO\Bundle\PortalBundle\Designer\PortalThemeFileGetter
+    arguments:
+      - "@=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()"
+      - "@=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()"
+      - "@=service('deskpro.app_env').getAppWwwAssetDir()"
+
+
   dp.portal.designer.portal_styles_compiler:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@blob.storage"
-      - "@=service('deskpro.app_env').getAppWwwAssetDir() ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss'"
-      - "@=service('deskpro.app_env').getAppWwwAssetDir() ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'"
-      - "@=service('dp.portal.designer.advanced_edits_manager').getMainScss()"
-      - "@=service('dp.portal.designer.advanced_edits_manager').getEditThemeSetScss()"
+      - "@dp.portal.designer.advanced_edits_manager"
+      - "@=service('dp.portal.designer.theme_file_getter').getPortalStylePath()"
+      - "@=service('dp.portal.designer.theme_file_getter').getPortalStylePath('rtl')"
 
   dp.portal.designer.advanced_edits_manager:
     class: DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@blob.storage"
-      - "@=service('dp.portal.designer.brand_theme_manager').getCurrentThemeSet()"
-      - "@=service('dp.portal.designer.brand_theme_manager').getCurrentEditThemeSet()"
+      - "@brand_stack"
       - "@twig"
-      - "@=service('deskpro.app_env').getAppWwwAssetDir() ~ '/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/main.scss'"
+      - "@=service('deskpro.app_env').getAppWwwAssetDir()"
 
   dp.portal.designer.styles_manager:
     class: DeskPRO\Bundle\PortalBundle\Designer\StylesManager
@@ -53,4 +59,4 @@ services:
   dp.portal.designer.sass_doc_parser:
     class: DeskPRO\Bundle\PortalBundle\Designer\SassDocParser
     arguments:
-      - "@=service('deskpro.app_env').getAppWwwAssetDir() ~ '/web/sassdoc/vars.json'"
+      - "@=service('dp.portal.designer.theme_file_getter').getVarsJson()"

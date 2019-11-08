@@ -197,8 +197,8 @@ class CommunityFilterUriHelperTest extends DeskProTestCase
     {
         return [
             ['active', ''],
-            ['all', 'all'],
-            ['closed', 'closed'],
+            ['all', 'all/view-list/viewmode-compact'],
+            ['closed', 'closed/view-list/viewmode-compact'],
         ];
     }
 
@@ -223,13 +223,13 @@ class CommunityFilterUriHelperTest extends DeskProTestCase
     public function generateUriSegmentSort()
     {
         return [
-            ['date', 'asc', 'date-asc'],
+            ['date', 'asc', 'date-asc/view-list/viewmode-compact'],
             ['date', 'desc', ''],
-            ['most-popular', 'asc', 'most-popular-asc'],
-            ['most-popular', 'desc', 'most-popular'],
-            ['most-discussed', 'desc', 'most-discussed'],
-            ['highest-rating', 'desc', 'highest-rating'],
-            ['most-views', 'desc', 'most-views'],
+            ['most-popular', 'asc', 'most-popular-asc/view-list/viewmode-compact'],
+            ['most-popular', 'desc', 'most-popular/view-list/viewmode-compact'],
+            ['most-discussed', 'desc', 'most-discussed/view-list/viewmode-compact'],
+            ['highest-rating', 'desc', 'highest-rating/view-list/viewmode-compact'],
+            ['most-views', 'desc', 'most-views/view-list/viewmode-compact'],
         ];
     }
 
@@ -256,14 +256,14 @@ class CommunityFilterUriHelperTest extends DeskProTestCase
     public function generateUriSegmentStatusSort()
     {
         return [
-            ['all', 'date', 'asc', 'all/date-asc'],
+            ['all', 'date', 'asc', 'all/date-asc/view-list/viewmode-compact'],
             ['active', 'date', 'desc', ''],
-            ['active', 'date', 'asc', 'date-asc'],
-            ['all', 'most-popular', 'asc', 'all/most-popular-asc'],
-            ['closed', 'most-popular', 'desc', 'closed/most-popular'],
-            ['all', 'most-discussed', 'desc', 'all/most-discussed'],
-            ['active', 'highest-rating', 'asc', 'highest-rating-asc'],
-            ['closed', 'most-views', 'desc', 'closed/most-views'],
+            ['active', 'date', 'asc', 'date-asc/view-list/viewmode-compact'],
+            ['all', 'most-popular', 'asc', 'all/most-popular-asc/view-list/viewmode-compact'],
+            ['closed', 'most-popular', 'desc', 'closed/most-popular/view-list/viewmode-compact'],
+            ['all', 'most-discussed', 'desc', 'all/most-discussed/view-list/viewmode-compact'],
+            ['active', 'highest-rating', 'asc', 'highest-rating-asc/view-list/viewmode-compact'],
+            ['closed', 'most-views', 'desc', 'closed/most-views/view-list/viewmode-compact'],
         ];
     }
 
@@ -277,20 +277,20 @@ class CommunityFilterUriHelperTest extends DeskProTestCase
     public function testGenerateUriSegmentStatusCategories($status, array $categories, $expected)
     {
         $filter = new CommunityFilter();
-        $filter->setStatus('active');
-        $filter->setStatusCategories([5, 6]);
+        $filter->setStatus($status);
+        $filter->setStatusCategories($categories);
 
         $helper = new CommunityFilterUriHelper();
 
-        $this->assertEquals('5,6', $helper->generateUriSegment($filter));
+        $this->assertEquals($expected, $helper->generateUriSegment($filter));
     }
 
     public function generateUriSegmentStatusCategories()
     {
         return [
-            ['active', [5, 6], '5,6'],
-            ['all', [6], 'all-6'],
-            ['closed', [], 'closed'],
+            ['active', [5, 6], '5,6/view-list/viewmode-compact'],
+            ['all', [6], 'all-6/view-list/viewmode-compact'],
+            ['closed', [], 'closed/view-list/viewmode-compact'],
         ];
     }
 
@@ -305,7 +305,7 @@ class CommunityFilterUriHelperTest extends DeskProTestCase
 
         $helper = new CommunityFilterUriHelper();
 
-        $this->assertEquals('5,6/type-15/most-views-asc', $helper->generateUriSegment($filter));
+        $this->assertEquals('5,6/type-15/most-views-asc/view-list/viewmode-compact', $helper->generateUriSegment($filter));
     }
 
     public function testGenerateUriSegmentFew()
@@ -318,6 +318,6 @@ class CommunityFilterUriHelperTest extends DeskProTestCase
 
         $helper = new CommunityFilterUriHelper();
 
-        $this->assertEquals('closed-1001/date-asc', $helper->generateUriSegment($filter));
+        $this->assertEquals('closed-1001/date-asc/view-list/viewmode-compact', $helper->generateUriSegment($filter));
     }
 }

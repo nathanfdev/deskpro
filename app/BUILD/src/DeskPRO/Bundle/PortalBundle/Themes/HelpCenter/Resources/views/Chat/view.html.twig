@@ -1,0 +1,196 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block chat_attachment %}
+  <div class="dpx-attachment">
+    <a href="{{ attachment.download_url }}?dl=1"
+       class="dp-po-chat-attachments-link {% if attachment.is_image %} dpx-attachment-full-image{% else %}dpx-attachment-file-icon{% endif %}"
+       {% if not attachment.is_image %}data-content-type="{{ attachment.content_type }}"{% endif %}
+    >
+
+      {% if attachment.is_image %}
+        <img class="thumbnail" src="{{ attachment.download_url }}" />
+      {% endif %}
+      {{ attachment.filename }} <span>({{ attachment.filesize_readable }})</span>
+    </a>
+  </div>
+{% endblock %}
+
+{% block chat_message %}
+
+  <div class="dp-po-chat-log-item">
+    <div class="dp-po-avatar dp-po-avatar-round">
+      {{ hc_avatar(message.author, '', 30) }}
+      {% if message.origin == 'agent' %}
+        {{ message.author ? message.author.display_name_user : '' }}
+      {% else %}
+        {{ phrase('helpcenter.chat.you') }} ({{ message.author.primary_email }})
+      {% endif %}
+      {% if message.origin == 'agent'  %}<span class="badge badge-primary badge-small">{{ phrase('helpcenter.chat.agent') }}</span>{% endif %}
+    </div>
+    <div class="dp-po-time">
+      <i class="dp-po-icon far fa-clock"></i>
+      {{ date(message.date_created, 'time') }}
+    </div>
+    <div class="dp-po-chat-log-item-comment">
+      {% if message.metadata.blob is defined %}
+        {% set attachment = message.metadata.blob %}
+        <div class="file-list">
+          {{ block('chat_attachment') }}
+        </div>
+      {% elseif message.is_html %}
+        {{message.content|raw}}
+      {% else %}
+        {{message.content}}
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block page_content %}
+  <div class="dp-po">
+    <main class="dp-po-main dp-po-chat-view-log">
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col-sm-9">
+            <div class="dp-po-title">
+              <img class="dp-po-title-svg" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}">
+              <h2 class="dp-po-title-text">{{ phrase('helpcenter.chat.log_title', { person: chat.agent.display_name_user }) }}</h2>
+            </div>
+            <div class="row align-items-center">
+              <div class="col-sm-10">
+
+                <div class="dp-po-post-info">
+                  <ul class="dp-po-post-info-list">
+                    {% set lastMessage = chat_messages|filter(m => m.author)|last %}
+                    {% set lastPerson = lastMessage.author %}
+                    <li class="dp-po-post-info-item">
+                      {{ phrase('helpcenter.chat.last_updated_by', { date: date(lastMessage.date_created, 'day'), person: lastPerson }) }}
+                    </li>
+                    <li class="dp-po-post-info-item">
+                      <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ date(chat.date_created, 'day') }}</b>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                {#
+                <div class="dp-po-post-extra">
+                  <ul class="dp-po-post-extra-list">
+                    <li class="dp-po-post-extra-item">
+                      <a href="javascript:window.print();" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-print"></i></a>
+                    </li>
+                    <li class="dp-po-post-extra-item">
+                      <a href="" class="dp-po-post-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>
+                    </li>
+                  </ul>
+                </div>
+                #}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="dp-po-block">
+              {% for message in chat_messages %}
+                {% if message.is_sys %}
+                  <div class="dp-po-chat-log-notification dp-po-chat-log-notification-success">
+                    <div class="dp-po-chat-log-notification-icon">
+                      <i class="dp-po-icon fas fa-user"></i>
+                    </div>
+                    <h3 class="dp-po-chat-log-notification-title">
+                      <span>
+                      {% if message.metadata.phrase_id %}
+                        {% if message.is_html %}
+                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata, true) }}
+                        {% else %}
+                          {{ phrase('portal.chat.'~ message.metadata.phrase_id, message.metadata) }}
+                        {% endif %}
+                      {% elseif message.is_html %}
+                        {{message.content|raw}}
+                      {% else %}
+                        {{message.content}}
+                      {% endif %}
+                      </span>
+                    </h3>
+                    <div class="dp-po-time">
+                      <i class="dp-po-icon far fa-clock"></i>
+                      {{ date(message.date_created, 'time') }}
+                    </div>
+                  </div>
+                {% else %}
+                  {{ block('chat_message') }}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="dp-po-post-meta">
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.assigned_agent' )}}</h3>
+              <p>
+                <div class="dp-po-avatar dp-po-avatar-round">
+                  {{ hc_avatar(chat.agent, '', 30) }}
+                  <span>{{chat.agent.display_name_user}}</span>
+                </div>
+              </p>
+              {% set allAgentsExceptAssigned = chat.agent_participants|filter(a => a != chat.agent) %}
+              {% if allAgentsExceptAssigned|length > 0 %}
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_agents') }}</h3>
+              <p>
+                <div class="dp-po-avatar dp-po-avatar-round">
+                  {% for agent in allAgentsExceptAssigned %}
+                    {{ hc_avatar(agent, '', 30) }}
+                    <span>{{ agent.display_name_user }}</span>
+                  {% endfor %}
+                </div>
+              </p>
+              {% endif %}
+            </div>
+            <div class="dp-po-post-meta">
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_department') }}</h3>
+              <p>{{ chat.department ? chat.department.user_title : '-' }}</p>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.log_chat_time') }}</h3>
+              <p>{{ date_diff(chat.date_created, chat.date_ended) }}</p>
+              <h3 class="dp-po-post-meta-title">{{ phrase('helpcenter.chat.last_activity') }}</h3>
+              <p>{{date(lastMessage.date_created, 'l')}}, {{date(lastMessage.date_created, 'time')}}</p>
+              {% for custom in custom_data %}
+                {% if custom['value'] %}
+                  <h3 class="dp-po-post-meta-title">{{ custom['label'] }}</h3>
+                  <p>{{ custom['value'] }}</p>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+            {% if chat_attachments|length  > 0 %}
+            <div class="dp-po-sidebar dp-po-chat-attachments">
+              <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.files-on-this-chat') }}</h3>
+              <ul class="dp-po-chat-attachments-list">
+                {% for attachment in chat_attachments %}
+                  <li class="dp-po-chat-attachments-item">
+                    {{ block('chat_attachment') }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            {% endif %}
+            {% if linked_ticket %}
+              <div class="dp-po-sidebar dp-po-chat-links">
+                <h3 class="dp-po-sidebar-title">{{ phrase('helpcenter.chat.log_linked_ticket') }}</h3>
+                <ul class="dp-po-chat-links-list">
+                  <li class="dp-po-chat-links-item">
+                    <a href="{{ portal_path(linked_ticket) }}" class="dp-po-chat-links-link">
+                      {{ phrase('helpcenter.chat.log_view_linked_ticket') }}: {{ linked_ticket.subject }}
+                      <i class="dp-po-icon fal fa-link"></i>
+                      {{ portal_path(linked_ticket) }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+{% endblock page_content %}

@@ -10,10 +10,12 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
+use DeskPRO\Component\Util\LazyPropObject;
 use Doctrine\DBAL\Connection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -146,7 +148,7 @@ class AbstractController extends BaseController
 
     public function renderThemeView($template_name, array $options = [])
     {
-        $page_vars = [
+        $pageVars = [
             'page' => $this->createThemeView($options),
         ];
 
@@ -157,13 +159,92 @@ class AbstractController extends BaseController
             $pg = $options['page'];
         }
 
-        $page_vars = array_merge($options, $page_vars);
+        $pageData = new LazyPropObject([
+            'flashes' => [$this, 'loadFlashes'],
+            'alerts'  => [$this, 'loadAlerts'],
+        ]);
+
+        $pageVars['pageData']   = $pageData;
+        $pageVars['helpcenter'] = $this->get('helpcenter_data_helper');
+
+        $pageVars = array_merge($options, $pageVars);
 
         if ($pg) {
-            $page_vars['pg'] = $pg;
+            $pageVars['pg'] = $pg;
         }
 
-        return $this->render($template_name, $page_vars);
+        return $this->render($template_name, $pageVars);
+    }
+
+    public function loadFlashes()
+    {
+        $request = $this->get('request');
+        $flashes = [];
+        $session = $request->getSession();
+        if (null !== $session && $session->isStarted()) {
+            $flashes = $session->getFlashBag()->all();
+        }
+
+        return $flashes;
+    }
+
+    public function loadAlerts()
+    {
+        $user = $this->getUser();
+
+        $person   = $this->getCurrentPerson();
+        $langDiff = false;
+        if (!$person instanceof PersonGuest) {
+            // user can click "dismiss" and we store a session var
+            if (!$this->getSession()->get('ignore_language_warning', false)) {
+                $activeLang = $this->get('language_stack')->getActiveOrDefault();
+                $personLang = $person->getLanguage();
+
+                if ($personLang) {
+                    if ($personLang->getId() != $activeLang->getId()) {
+                        $langDiff = [
+                            'active_lang' => $activeLang,
+                            'person_lang' => $personLang,
+                        ];
+                    }
+                }
+            }
+        }
+
+        // SAVED FORMS
+
+        $savedForms = [];
+        if ($user && $allSaved = $this->getFormSaver()->getSavedForms($user)) {
+            foreach ($allSaved as $saved) {
+                // We don't want people to validate their email address without going through their mailbox
+                if ($saved->getIntentionType() == SavedForm::INTENTION_VERIFY_EMAIL) {
+                    continue;
+                }
+                $savedForms[] = [
+                    'message' => $this->getFormSaver()->getMessage($saved),
+                    'link'    => $this->generateUrl('saved_form_auto_submit', ['auth_code' => $saved->getExternalCode()]),
+                ];
+            }
+        }
+
+        // TICKETS AWAITING REPLY
+
+        $ticketsAwaitingReply = [];
+        if (!$person instanceof PersonGuest) {
+            /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
+            $ticketRepo           = $this->getRepo(Ticket::class);
+            $ticketsAwaitingReply = $ticketRepo->getWaitingForReplyForPerson($person, 0);
+        }
+
+        $shouldDisplay = count($savedForms) || $langDiff || count($ticketsAwaitingReply);
+
+        return [
+            'user'                   => $user,
+            'saved_forms'            => $savedForms,
+            'display_alerts'         => $shouldDisplay,
+            'lang_diff'              => $langDiff,
+            'tickets_awaiting_reply' => $ticketsAwaitingReply,
+        ];
     }
 
     /**
@@ -388,6 +469,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\DataService\TicketApprovalsDataService
+     */
+    protected function getTicketApprovalsDataService()
+    {
+        return $this->get('data.ticket_approvals');
+    }
+
+    /**
      * @return \DeskPRO\Bundle\AppBundle\DataService\DirectMessageThreadDataService
      */
     protected function getDirectMessageThreadDataService()
@@ -545,5 +634,23 @@ class AbstractController extends BaseController
         }
 
         return [$show_rating_counts, $rating_counts];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHelpCenterTheme()
+    {
+        return $this->getPortalBrandTheme()->getActiveThemeSet()->getThemeId() === 'helpcenter';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isCommunityEnabled()
+    {
+        $settings = $this->container->get('settings_resolver');
+
+        return $settings->getGlobalSettings()->get('portal.members_community');
     }
 }

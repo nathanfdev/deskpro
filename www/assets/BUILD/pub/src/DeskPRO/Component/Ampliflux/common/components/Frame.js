@@ -79,19 +79,21 @@ export class Frame extends React.Component {
     const { frameStyles = {} } = this.props;
     const { dimensions } = this.state;
 
-    const doc = this.getContentDocument();
+    setTimeout(() => {
+      const doc = this.getContentDocument();
 
-    const $container = $(doc.body.firstChild);
-    const width = frameStyles.width || $container.outerWidth();
-    const height = frameStyles.height || $container.outerHeight();
+      const $container = $(doc.body.firstChild);
+      const width = frameStyles.width || $container.outerWidth();
+      const height = frameStyles.height || $container.outerHeight();
 
-    if (dimensions.width === width && dimensions.height === height) {
-      return;
-    }
+      if (dimensions.width === width && dimensions.height === height) {
+        return;
+      }
 
-    this.setState({
-      dimensions: { width, height }
-    });
+      this.setState({
+        dimensions: { width, height }
+      });
+    }, 100);
   }
 
   renderFrameContents() {

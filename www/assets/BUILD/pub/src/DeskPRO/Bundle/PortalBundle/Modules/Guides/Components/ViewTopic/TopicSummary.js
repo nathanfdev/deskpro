@@ -12,8 +12,9 @@ const getH1 = (html) => {
 
 class TopicSummary extends React.Component {
   static propTypes = {
-    content: PropTypes.string,
-    fixed:   PropTypes.bool
+    content:   PropTypes.string,
+    fixed:     PropTypes.bool,
+    className: PropTypes.string,
   };
 
   constructor(props) {
@@ -39,11 +40,11 @@ class TopicSummary extends React.Component {
   };
 
   render() {
-    const { fixed } = this.props;
+    const { fixed, className } = this.props;
     const agentBar = window.document.getElementById('agent-bar');
     const offset = agentBar ? -50 : 0;
     return (
-      <div className={classNames('topic-summary', { fixed })}>
+      <div className={classNames('topic-summary', className, { fixed })}>
         {this.state.h1s.length > 1 ?
           (<div>
             <h2><i className="fas fa-list" /> Contents</h2>

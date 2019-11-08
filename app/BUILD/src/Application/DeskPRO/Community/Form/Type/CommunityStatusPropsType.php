@@ -22,6 +22,7 @@ class CommunityStatusPropsType extends AbstractType
             'choices'  => ['active' => 'active', 'closed' => 'closed'],
             'required' => true,
         ]);
+        $builder->add('color', 'text');
         $builder->add('brand', EntityType::class, [
             'class' => Brand::class,
         ]);

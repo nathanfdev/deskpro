@@ -29,6 +29,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
+use DeskPRO\Bundle\AppBundle\Entity\Approval\TicketApproval;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -68,6 +69,17 @@ class TicketSearchController extends AbstractController
         $filter_id_matches = App::getApi('tickets.filters')->getAllIdsForFiltersCollection(array_merge($sys_filters, $sys_filters_hold), $this->person);
         $filter_id_matches = Arrays::castToTypeDeep($filter_id_matches, 'int', 'int');
 
+        $ticket_approval_filters = [];
+        foreach ($all_filters as $i => $filter) {
+            $isTicketFilter = (bool) count(array_filter($filter->getTerms(), function ($term) {
+                return ((isset($term['type'])) && TicketApproval::FILTER_NAME == $term['type']);
+            }));
+            if ($isTicketFilter) {
+                $ticket_approval_filters[$filter->getId()] = $filter;
+                unset($custom_filters[$filter->getId()]);
+            }
+        }
+
         $problem_filters = [];
         foreach ($all_filters as $filter) {
             if (Entity\Problem::FILTER_PREFIX === substr($filter->sys_name, 0, 8)) {
@@ -75,9 +87,18 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
+        $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
+            $archive_filters,
+            $this->person
+        );
+
         $problem_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
             $problem_filters,
+            $this->person
+        );
+
+        $ticket_approval_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
+            $ticket_approval_filters,
             $this->person
         );
 
@@ -138,21 +159,23 @@ class TicketSearchController extends AbstractController
         $ticketStatuses = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         $data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', [
-            'brands'                 => $brands,
-            'sys_filters'            => $sys_filters,
-            'sys_filters_hold'       => $sys_filters_hold,
-            'archive_filters'        => $archive_filters,
-            'problem_filters'        => $problem_filters,
-            'archive_filter_counts'  => $archive_filter_counts,
-            'problem_filter_counts'  => $problem_filter_counts,
-            'filter_id_matches'      => $filter_id_matches,
-            'custom_filters'         => $custom_filters,
-            'flags'                  => $flags,
-            'flag_counts'            => $flag_counts,
-            'filter_show_options'    => $filter_show_options,
-            'labels_index'           => $index,
-            'labels_cloud'           => $cloud,
-            'initial_inbox_grouping' => $initial_inbox_grouping,
+            'brands'                         => $brands,
+            'sys_filters'                    => $sys_filters,
+            'sys_filters_hold'               => $sys_filters_hold,
+            'archive_filters'                => $archive_filters,
+            'ticket_approval_filters'        => $ticket_approval_filters,
+            'ticket_approval_filter_counts'  => $ticket_approval_filter_counts,
+            'problem_filters'                => $problem_filters,
+            'archive_filter_counts'          => $archive_filter_counts,
+            'problem_filter_counts'          => $problem_filter_counts,
+            'filter_id_matches'              => $filter_id_matches,
+            'custom_filters'                 => $custom_filters,
+            'flags'                          => $flags,
+            'flag_counts'                    => $flag_counts,
+            'filter_show_options'            => $filter_show_options,
+            'labels_index'                   => $index,
+            'labels_cloud'                   => $cloud,
+            'initial_inbox_grouping'         => $initial_inbox_grouping,
 
             'open_problems'   => $open_problems,
             'closed_problems' => $closed_problems,

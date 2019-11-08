@@ -16,7 +16,7 @@ class CommunityTopicCsv extends CommunityTopic
     protected $person;
 
     /**
-     * Community channel the topic belongs to.
+     * Community forum the topic belongs to.
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -24,12 +24,12 @@ class CommunityTopicCsv extends CommunityTopic
     protected $statusCategory = null;
 
     /**
-     * Channel the topic belongs to.
+     * Forum the topic belongs to.
      *
      * @JMS\Expose()
      * @JMS\Type("string")
      */
-    protected $channel;
+    protected $forum;
 
     /**
      * The main content for the item.
@@ -51,7 +51,7 @@ class CommunityTopicCsv extends CommunityTopic
 
         $this->person         = $communityTopic->getByLine();
         $this->statusCategory = $communityTopic->getStatusCategory() ? $communityTopic->getStatusCategory()->getTitle() : '';
-        $this->channel        = $communityTopic->getCategory() ? $communityTopic->getCategory()->getTitle() : '';
+        $this->forum        = $communityTopic->getCategory() ? $communityTopic->getCategory()->getTitle() : '';
         $this->content        = mb_substr($communityTopic->getContentPlain(), 0, 120);
     }
 }

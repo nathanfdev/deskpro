@@ -845,6 +845,24 @@ class GroupingCounter
     {
         switch ($groupvar) {
             case TicketSearch::TERM_USER_WAITING:
+                $times = array_keys(self::getTimeTitles());
+                $key   = array_search($groupchoice, $times);
+
+                if ($key == 0) {
+                    return ['type' => $groupvar, 'op' => 'is', 'options' => ['not_waiting']];
+                } elseif ($key == (count($times) - 1)) {
+                    $date = new \DateTime('@'.(time() - 14515201));
+
+                    return ['type' => $groupvar, 'op' => 'lte', 'options' => ['date1' => $date]];
+                } else {
+                    $date1 = new \DateTime('-'.$times[$key].' seconds');
+                    $date2 = new \DateTime('-'.$times[$key - 1].' seconds');
+
+                    return ['type' => $groupvar, 'op' => 'between', 'options' => ['date1' => $date1, 'date2' => $date2]];
+                }
+
+                break;
+
             case TicketSearch::TERM_DATE_CREATED:
 
                 $times = array_keys(self::getTimeTitles());

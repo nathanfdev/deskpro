@@ -1,0 +1,18 @@
+{% if category_children|length > 0 %}
+    <div class="dp-po-kb-featured mb-0">
+        <h2 class="dp-po-kb-featured-title">{{ phrase('helpcenter.knowledgebase.categories') }}</h2>
+        <div class="row">
+            {% for category in category_children %}
+                {% if loop.index0 > 0 and loop.index0 % 2 == 0 %}</div><div class="row">{% endif %}
+                <div class="col-sm-6">
+                    <div class="dp-po-category-title">
+                        <a href="{{ portal_path(category) }}" class="dp-po-category-title-link">
+                            {{ render_icon_from(category) }}
+                            <h2 class="dp-po-category-title-text">{{ object_phrase(category) }} <span>({{ category_children_pagers[category.id]|length }})</span></h2>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

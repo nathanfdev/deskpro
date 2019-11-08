@@ -31,6 +31,8 @@
   {% elseif line.type == 'user_message' %}
     {% set msg = line.message %}
     {% include 'Theme:Tickets:timeline/user_message.html.twig' %}
+  {% elseif line.type == 'ticket_approval' %}
+    {% include 'Theme:Tickets:timeline/ticket_approval.html.twig' %}
   {% endif %}
 
   {% if timeline.isMultipleUserActions(line) %}

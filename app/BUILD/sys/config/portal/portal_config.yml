@@ -38,6 +38,7 @@ framework:
         assets_base_urls: "http://bogus/SET_IN_ASSET_PACKAGE_PASS"
         packages:
           app_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
+          help_center: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
           appsrc_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
           vendor_assets: { base_url: "http://bogus/SET_IN_ASSET_PACKAGE_PASS" }
     default_locale:  "%locale%"
@@ -48,6 +49,14 @@ framework:
         cookie_httponly: true
     fragments:       ~
     http_method_override: true
+
+doctrine:
+    orm:
+        entity_managers:
+            default:
+                dql:
+                    string_functions:
+                        FIRST: DeskPRO\Bundle\AppBundle\DBAL\Functions\FirstFunction
 
 monolog:
     channels: # you MUST also update api_config.yml if you change these

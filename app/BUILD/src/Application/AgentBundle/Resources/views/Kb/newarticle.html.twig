@@ -163,11 +163,14 @@ pageMeta.baseId = '{{ baseId }}';
 		{# /Tab Container #}
 	</div>
 </div>
-
+<div class="newarticle-template-overlay-wrapper" style="display: none">
+	{% include 'AgentBundle:Kb:newarticle_template_overlay.html.twig' %}
+</div>
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
 		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_article') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
+		<button class="submit-template-trigger clean-white">{{ phrase('agent.general.save_as_new_template') }}</button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />
