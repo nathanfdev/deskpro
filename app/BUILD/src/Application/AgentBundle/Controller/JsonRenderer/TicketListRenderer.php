@@ -312,9 +312,10 @@ class TicketListRenderer
         if ($custom_data) {
             $field_manager = $this->container->getSystemService('ticket_fields_manager');
 
-            $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
+            $rendered_data = $field_manager->getRendered($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data["field{$fid}"] = $v['rendered'];
+                $data["field{$fid}"]      = $v['renderedText'];
+                $data["field{$fid}_html"] = $v['renderedHtml'];
             }
         }
 
@@ -436,9 +437,10 @@ class TicketListRenderer
         if ($custom_data) {
             $field_manager = $this->container->getSystemService('person_fields_manager');
 
-            $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
+            $rendered_data = $field_manager->getRendered($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data["field{$fid}"] = $v['rendered'];
+                $data["field{$fid}"]      = $v['renderedText'];
+                $data["field{$fid}_html"] = $v['renderedHtml'];
             }
         }
 
