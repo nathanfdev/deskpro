@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\CloudEmails;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Email\CloudEmails;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AmazonS3Storage;
 use Application\DeskPRO\Email\EmailSource\PropertyMapper;

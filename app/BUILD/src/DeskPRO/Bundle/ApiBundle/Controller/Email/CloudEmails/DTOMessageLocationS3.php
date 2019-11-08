@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\CloudEmails;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Email\CloudEmails;
 
 use JMS\Serializer\Annotation as JMS;
 

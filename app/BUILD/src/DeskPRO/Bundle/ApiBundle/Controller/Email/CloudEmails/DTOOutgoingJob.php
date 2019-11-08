@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\CloudEmails;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Email\CloudEmails;
 
 use Application\EmailBundle\Queue\QueueRunMetrics;
 use JMS\Serializer\Annotation as JMS;
