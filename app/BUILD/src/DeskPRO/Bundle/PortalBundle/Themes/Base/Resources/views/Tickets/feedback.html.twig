@@ -33,7 +33,7 @@
                     </div>
                     <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
                     <br />
-                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>
+                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.tickets.feedback.submit') }}</button>
                 </form>
             {% else %}
                 {# this is shown when clicking an email link, #}
@@ -44,7 +44,7 @@
                     <textarea name="message" style="width: 520px; height: 60px;" placeholder="{{ phrase('portal.tickets.feedback_message_leave_comment') }}">{{ feedback.message }}</textarea>
 
                     <br />
-                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.feedback.submit_feedback') }}</button>
+                    <button class="dp-btn dp-btn-primary" type="submit" style="margin-top: 10px;">{{ phrase('portal.tickets.feedback.submit') }}</button>
                 </form>
             {% endif %}
         </article>

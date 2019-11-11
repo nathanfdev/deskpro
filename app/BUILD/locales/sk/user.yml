@@ -285,6 +285,7 @@ portal.sidebar.agents_x_online:
   other: '{{count}} online'
 portal.sidebar.news_title: Novinky
 portal.tickets.feedback_message_leave_comment: 'Ak chcete zanechajte komentár'
+portal.tickets.feedback.submit: 'Zaslať spätnú väzbu'
 portal.tickets.guest-thanks-section-title: Ďakujeme
 portal.tickets.guest_thank_you_title: Ďakujeme
 portal.tickets.list_agent: 'Pridelený agent'

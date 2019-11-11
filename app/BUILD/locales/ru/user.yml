@@ -756,6 +756,7 @@ portal.sidebar.top_articles_title: 'Лучшие статьи'
 portal.tickets.add-reply: Ответить
 portal.tickets.cancel-ticket-edit: 'Отменить правки и показать мой вопрос'
 portal.tickets.feedback_message_leave_comment: 'Вы можете оставить комментарий'
+portal.tickets.feedback.submit: 'Отправить отзыв'
 portal.tickets.form-changed-notice: 'Новые пункты были добавлены в анкету. Пожалуйста, проверьте данные пункты и подтвердите заполнение анкеты.'
 portal.tickets.guest-thanks-section-title: Спасибо
 portal.tickets.guest_thank_you_desc: 'Спасибо за то, что связались с нами! Мы отправили Вам письмо с инструкцией о том, как получать информацию по Вашему обращению.'

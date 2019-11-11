@@ -215,6 +215,7 @@ portal.sidebar.agents_x_online:
   other: '{{count}} online'
 portal.sidebar.news_title: 뉴스
 portal.tickets.feedback_message_leave_comment: '댓글 남기기'
+portal.tickets.feedback.submit: '피드백 보내기'
 portal.tickets.guest-thanks-section-title: 감사합니다.
 portal.tickets.guest_thank_you_title: 감사합니다.
 portal.tickets.list_agent: '배정된 에이전트'

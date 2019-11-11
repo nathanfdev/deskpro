@@ -491,6 +491,7 @@ portal.sidebar.top_articles_title: 'مقاله های برتر'
 portal.tickets.add-reply: پاسخ
 portal.tickets.cancel-ticket-edit: 'لغو ویرایش و دوباره پیام من را نشان دهید'
 portal.tickets.feedback_message_leave_comment: 'به صورت اختیاری میتوانید نظر دهید'
+portal.tickets.feedback.submit: 'ارسال نظرات'
 portal.tickets.guest-thanks-section-title: 'با تشکر از شما'
 portal.tickets.guest_thank_you_title: 'با تشکر از شما'
 portal.tickets.list_date_last_agent: 'اخرین پیام کارشناس'

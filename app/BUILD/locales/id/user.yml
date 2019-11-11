@@ -683,6 +683,7 @@ portal.sidebar.top_articles_title: 'Artikel Teratas'
 portal.tickets.add-reply: Balasan
 portal.tickets.cancel-ticket-edit: 'Batalkan edit dan tunjukkan tiket lagi'
 portal.tickets.feedback_message_leave_comment: 'Berikan komentar'
+portal.tickets.feedback.submit: 'Kirim Umpan Balik'
 portal.tickets.form-changed-notice: 'Kolom baru telah ditambahkan. Silakan lihat kembali kolom tersebut, kemudian ajukan formulir.'
 portal.tickets.guest-thanks-section-title: 'Terima Kasih'
 portal.tickets.guest_thank_you_desc: 'Terima kasih sudah menghubungi kami. Kami telah mengirimi Anda email berisi petunjuk tentang cara mengelola tiket Anda bersama kami.'

@@ -169,6 +169,7 @@ portal.news.section-title: Hírek
 portal.news.view-as-agent: 'Ezt az oldalt csak a munkatársak láthatják, az ügyfelek elől rejtve marad.'
 portal.sidebar.news_title: Hírek
 portal.tickets.feedback_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
+portal.tickets.feedback.submit: 'Visszajelzés küldése'
 portal.tickets.guest-thanks-section-title: Köszönjük
 portal.tickets.guest_thank_you_title: Köszönjük
 portal.tickets.list_agent: 'Hozzárendelt munkatárs'

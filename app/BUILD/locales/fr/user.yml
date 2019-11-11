@@ -694,6 +694,7 @@ portal.sidebar.top_articles_title: 'Top articles'
 portal.tickets.add-reply: Réponse
 portal.tickets.cancel-ticket-edit: 'Annuler la modification et afficher à nouveau le billet'
 portal.tickets.feedback_message_leave_comment: 'Facultatif: Laissez un commentaire'
+portal.tickets.feedback.submit: 'Envoyer ma remarque'
 portal.tickets.form-changed-notice: 'De nouveaux champs ont été ajoutés au formulaire. Veuillez examiner ces champs, puis soumettre à nouveau le formulaire.'
 portal.tickets.guest-thanks-section-title: Merci
 portal.tickets.guest_thank_you_desc: 'Merci de nous contacter. Nous vous avons envoyé un courrier électronique avec des instructions sur la gestion de votre billet avec nous.'
