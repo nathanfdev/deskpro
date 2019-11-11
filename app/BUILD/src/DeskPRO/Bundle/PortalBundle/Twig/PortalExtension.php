@@ -735,7 +735,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         /** @var MessengerSettings $messengerSettings */
         $messengerSettings = $settingsResolver->getMessengerSettings($brand);
 
-        return $messengerSettings->getEmbed() &&
+        return $messengerSettings->getEmbed() && $messengerSettings->getEmbed()->isShowOnPortal() &&
             $this->container->get('deskpro.feature_flags')->hasBeta('messenger');
     }
 
