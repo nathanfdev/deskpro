@@ -62,24 +62,24 @@
 
     <div class="dp-po-sidebar dp-po-news-filter dp-po-news-filter-type">
         <h3 class="dp-po-news-filter-title">{{ phrase('helpcenter.news.filter-cat') }}</h3>
-        <a class="dp-po-news-filter-collapse" href="#">
+        <a class="dp-po-news-filter-collapse" data-toggle="collapse" href="#news_categories" role="button" aria-expanded="true" aria-controls="news_categories">
             <i class="dp-po-icon far fa-angle-down"></i>
         </a>
-        <div class="collapse show">
+        <div class="collapse show" id="news_categories">
             <ul class="dp-po-news-filter-type-list">
                 <li class="dp-po-news-filter-type-item">
+                    {% if not viewCategory %}<i class="fa fa-long-arrow-alt-right"></i>{% endif %}
                     <div class="form-group dp-po-form-check">
                         <a href="{{ path('user_news_home') }}">
-                            {% if not viewCategory %}<i class="fa fa-angle-right"></i>{% endif %}
                             {{ phrase('helpcenter.news.all-news') }}
                         </a>
                     </div>
                 </li>
                 {% for cat in newsData.categories %}
                     <li class="dp-po-news-filter-type-item">
+                        {% if viewCategory and viewCategory.id == cat.id %}<i class="fa fa-long-arrow-alt-right"></i>{% endif %}
                         <div class="form-group dp-po-form-check">
                             <a href="{{ portal_path(cat) }}">
-                                {% if viewCategory and viewCategory.id == cat.id %}<i class="fa fa-angle-right"></i>{% endif %}
                                 {{ object_phrase(cat) }}
                             </a>
                         </div>
