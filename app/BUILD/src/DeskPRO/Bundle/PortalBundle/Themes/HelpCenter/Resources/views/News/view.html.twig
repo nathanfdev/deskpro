@@ -24,10 +24,7 @@
           <div class="dp-po-post-info">
             <ul class="dp-po-post-info-list">
               <li class="dp-po-post-info-item">
-                {{ phrase('helpcenter.general.last-updated', {date: post.date_updated | date('day'), person: post.last_author}) | raw }}
-              </li>
-              <li class="dp-po-post-info-item">
-                <i class="dp-po-icon far fa-calendar-alt"></i> <b>{{ post.date_published | date('day') }}</b>
+                {{ phrase('helpcenter.general.published_by', {person: post.last_author}) | raw }}
               </li>
               <li class="dp-po-post-info-item">
                 {{ phrase('helpcenter.news.news-type') }}: <b>{{ post.category }}</b>
@@ -66,7 +63,7 @@
   <div class="dp-po-section">
     <div class="dp-po-post-content dp-po-block">
       {{ post.realContent|raw }}
-  
+
       {% if post.attachments|length > 0 %}
         <div class="dp-po-kb-attachments">
           <h4 class="dp-po-kb-attachments-title">{{ phrase('helpcenter.general.attachments') }}</h4>
