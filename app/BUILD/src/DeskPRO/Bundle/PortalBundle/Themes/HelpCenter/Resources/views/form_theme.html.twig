@@ -301,11 +301,12 @@
 {% block deskpro_person_email_choice_widget %}
         {% set count = choices|length %}
         {% if count > 1 %}
-           <select id="{{ id }}" name="{{ full_name }}" class="form-control">
+            <select id="{{ id }}" name="{{ full_name }}" class="form-control">
                {% for choice in choices %}
                    <option data-id="{{ choice.value }}" data-name="{{ choice.label }}" value="{{ choice.value }}"{% if choice.value == value %} selected="selected"{% endif %}>{{ choice.label }}</option>
                {% endfor %}
-           </select>
+            </select>
+            <i class="far fa-angle-down fa-lg"></i>
         {% else %}
             <input class="email-present form-control" type="text" disabled="disabled" value="{{ person.primary_email_address }}" />
         {% endif %}
@@ -363,6 +364,9 @@
             {%- set options = choices -%}
             {{- block('choice_widget_options') -}}
         </select>
+        {% if not multiple %}
+            <i class="far fa-angle-down fa-lg"></i>
+        {% endif %}
     </div>
 {%- endblock choice_widget_collapsed -%}
 
@@ -571,6 +575,7 @@ HIERARCHY
             {% set options = choices -%}
             {{- block('deskpro_hierarchical_choice_widget_options') -}}
         </select>
+        <i class="far fa-angle-down fa-lg"></i>
     </div>
 {%- endblock deskpro_hierarchical_choice_widget_collapsed %}
 
@@ -637,6 +642,9 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
             {% set options = choices -%}
             {{- block('deskpro_custom_field_choice_widget_options') -}}
         </select>
+        {% if not multiple %}
+            <i class="far fa-angle-down fa-lg"></i>
+        {% endif %}
     </div>
 {%- endblock deskpro_custom_field_choice_widget_collapsed %}
 
@@ -753,6 +761,7 @@ END HIERARCHY
             {% set options = choices -%}
             {{- block('entity_hierarchy_widget_options') -}}
         </select>
+        <i class="far fa-angle-down fa-lg"></i>
     </div>
 {%- endblock entity_hierarchy_collapsed %}
 
