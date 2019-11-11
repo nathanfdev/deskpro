@@ -184,10 +184,10 @@
 				{% if recipients.absent | length > 0 %}<span>/</span> <span class="absent with-stickytip" data-stickytip-target="#{{ elid }}_recipient_absent">{{ phrase('agent.tickets.absent') }} ({{ recipients.absent | length }})</span>{% endif %}
 				&nbsp;
 				{% for recipient in recipients.cc %}
-					{% if recipient.email_address %}
-					<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient.display_name|default(recipient.email_address), user: message.person }) }}">
-						{{ recipient.display_name }}
-						<span class="email" title="{{ recipient.email_address }}">{{ recipient.email_address }}</span>
+					{% if recipient.email %}
+					<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient.person.display_name|default(recipient.email), user: message.person }) }}">
+						{{ recipient.person.display_name }}
+						<span class="email" title="{{ recipient.email }}">{{ recipient.email }}</span>
 					</span>
 					{% else %}
 						<span class="recipient" title="{{ phrase('agent.tickets.recipient_cc', {person: recipient, user: message.person}) }}">
