@@ -1225,4 +1225,25 @@ return [
     'services.language_sync_api' => 'https://lang-sync-services.deskpro.com/',
 
     'services.unsplash_access_key' => '3d9c27e1cb7a6e77f038d7c8beb0759d37f7a825be8a0c79d03f0f1554407bc1',
+
+    // Placeholders for auditing purposes
+    'beta_features.guides' => null,
+    'beta_features.messenger' => null,
+    'core.apps_chat' => null,
+    'core.apps_guides' => null,
+    'core.deskpro_build' => null,
+    'core.disable_csp_headers' => null,
+    'core.filestorage_dir_mode' => null,
+    'core.filestorage_disable_physical_delete' => null,
+    'core.filestorage_file_mode' => null,
+    'core.filestorage_s3_bucket' => null,
+    'core.filestorage_s3_key' => null,
+    'core.install_build' => null,
+    'core.install_key' => null,
+    'core.license' => null,
+    'core.setup_initial' => null,
+    'core.use_encryption' => null,
+    'portal.widget.enabled' => null,
+    'segment' => null,
+    'user.non_published_articles_on_helpcenter' => null,
 ];

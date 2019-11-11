@@ -9,6 +9,7 @@ namespace Application\DeskPRO\NewSettings;
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Log\UndefinedSettingsLogger;
 
 /**
  * Class SettingsResolver.
@@ -42,18 +43,29 @@ class SettingsResolver
     private $brand_settings_loader;
 
     /**
+     * @var UndefinedSettingsLogger|null
+     */
+    private $undefined_settings_logger;
+
+    /**
      * Constructor.
      *
-     * @param array                   $loaders
-     * @param CacheAdapterInterface   $cache
-     * @param SettingsLoaderInterface $brand_settings_loader
+     * @param array                        $loaders
+     * @param CacheAdapterInterface        $cache
+     * @param SettingsLoaderInterface      $brand_settings_loader
+     * @param UndefinedSettingsLogger|null $undefined_settings_logger
      */
-    public function __construct(array $loaders, CacheAdapterInterface $cache, SettingsLoaderInterface $brand_settings_loader)
-    {
-        $this->loaders               = $loaders;
-        $this->cache                 = new ConvenientCache($cache);
-        $this->virtual_settings      = [];
-        $this->brand_settings_loader = $brand_settings_loader;
+    public function __construct(
+        array $loaders,
+        CacheAdapterInterface $cache,
+        SettingsLoaderInterface $brand_settings_loader,
+        UndefinedSettingsLogger $undefined_settings_logger = null
+    ) {
+        $this->loaders                   = $loaders;
+        $this->cache                     = new ConvenientCache($cache);
+        $this->virtual_settings          = [];
+        $this->brand_settings_loader     = $brand_settings_loader;
+        $this->undefined_settings_logger = $undefined_settings_logger;
     }
 
     /**
@@ -86,7 +98,7 @@ class SettingsResolver
                     $settings[$key] = call_user_func($callable, $settings);
                 }
 
-                return new SettingsBag($settings);
+                return new SettingsBag($settings, $this->logOnGetSetting());
             }
         );
     }
@@ -126,7 +138,7 @@ class SettingsResolver
                 $brand_settings = $brand_id ? $brand_settings_resolver->load($force, $brand_id) : [];
                 $brand_settings_array = array_merge($global_settings_array, $brand_settings);
 
-                return new SettingsBag($brand_settings_array);
+                return new SettingsBag($brand_settings_array, $this->logOnGetSetting());
             }
         );
     }
@@ -160,7 +172,7 @@ class SettingsResolver
                     $default_settings[$key] = call_user_func($callable, $default_settings);
                 }
 
-                return new SettingsBag($default_settings);
+                return new SettingsBag($default_settings, $this->logOnGetSetting());
             }
         );
     }
@@ -176,5 +188,21 @@ class SettingsResolver
         }
 
         $this->virtual_settings[$setting] = $callable;
+    }
+
+    /**
+     * Log when a setting is gotten
+     *
+     * @return callable|null
+     */
+    private function logOnGetSetting()
+    {
+        if (!$this->undefined_settings_logger) {
+            return null;
+        }
+
+        return function ($key) {
+            $this->undefined_settings_logger->logIfNotInSettings($key);
+        };
     }
 }

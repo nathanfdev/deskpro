@@ -18,9 +18,15 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
      */
     protected $settings;
 
-    public function __construct(array $settings = [])
+    /**
+     * @var callable|null
+     */
+    protected $onGet;
+
+    public function __construct(array $settings = [], callable $onGet = null)
     {
         $this->setArray($settings);
+        $this->onGet = $onGet;
     }
 
     public function toArray()
@@ -40,11 +46,15 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
 
     public function get($key, $default = null)
     {
+        $this->invokeOnGetCallable($key);
+
         return $this->has($key) ? $this->settings[$key] : $default;
     }
 
     public function getBool($key, $default = false)
     {
+        $this->invokeOnGetCallable($key);
+
         return $this->has($key) ? (bool) $this->settings[$key] : (bool) $default;
     }
 
@@ -164,5 +174,15 @@ class SettingsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \Seri
         }
 
         return $ret;
+    }
+
+    /**
+     * @param string $key
+     */
+    protected function invokeOnGetCallable($key)
+    {
+        if ($this->onGet) {
+            call_user_func($this->onGet, $key);
+        }
     }
 }
