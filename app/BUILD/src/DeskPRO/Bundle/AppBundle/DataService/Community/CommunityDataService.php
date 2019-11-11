@@ -144,13 +144,9 @@ class CommunityDataService extends AbstractDataService
             ],
             function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
-
                 $qb
                     ->select('ct')
                     ->from(CommunityTopic::class, 'ct')
-                ;
-
-                $qb
                     ->addSelect('stn, stnso, stnsn')
                     ->leftJoin('ct.status_transitions', 'stn')
                     ->leftJoin('stn.old_status_category', 'stnso')
@@ -159,15 +155,16 @@ class CommunityDataService extends AbstractDataService
 
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
-                $permissions_bag = $permissions_manager->getPortalPermissionsBag($person);
-                $allowed_types = $permissions_bag->getAllowedCommunityForumIds();
-                $requested_types = $filter->getTypes();
+                $permissionsBag = $permissions_manager->getPortalPermissionsBag($person);
+                $allowedTypes = $permissionsBag->getAllowedCommunityForumIds();
+                $requestedTypes = $filter->getTypes();
+
                 $types = [];
-                if (null === $requested_types) {
-                    $types = $allowed_types;
-                } elseif (count($requested_types)) {
-                    foreach ($requested_types as $req_type) {
-                        if (in_array($req_type, $allowed_types)) {
+                if (null === $requestedTypes) {
+                    $types = $allowedTypes;
+                } elseif (count($requestedTypes)) {
+                    foreach ($requestedTypes as $req_type) {
+                        if (in_array($req_type, $allowedTypes)) {
                             $types[] = $req_type;
                         }
                     }
@@ -192,6 +189,7 @@ class CommunityDataService extends AbstractDataService
                     default:
                         $valid_status = [];
                 }
+
                 $qb->where('ct.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
 
                 // status_categories (community_topic->status_category)
