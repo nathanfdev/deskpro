@@ -37,7 +37,7 @@ fs.readdir(messengerStaticDir, (err, files) => {
 const messengerVendorAssetsDir = path.join(messengerVendorDir, 'assets');
 
 console.log('Moving messenger styles');
-fs.copyFile(path.join(messengerVendorAssetsDir, 'styles.css'), path.join(messengerBuildDir, 'styles.css'), err => {
+fs.copyFile(path.join(messengerVendorAssetsDir, 'styles.css'), path.join(messengerBuildDir, 'assets', 'styles.css'), err => {
   if (err) throw err;
   console.log('Successfully moved styles');
 });
