@@ -209,7 +209,7 @@ class UserSearch implements UserSearchInterface
             });
         }
 
-        return new ResultSet($objects);
+        return new ResultSet($objects, $res->getTotalHits());
     }
 
     /**
