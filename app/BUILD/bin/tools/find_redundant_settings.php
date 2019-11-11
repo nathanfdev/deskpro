@@ -2,6 +2,9 @@
 
 echo "Searching... (may take several minutes)".PHP_EOL;
 
+// Settings file
+$settingsFile = __DIR__.'/../../sys/config/settings.php';
+
 // Directories to search within
 $searchInDirs = [
     // System
@@ -22,10 +25,10 @@ $searchInDirs = [
     __DIR__.'/../../../../www/assets/BUILD/pub/src',
 ];
 
-// Avoid PHP execution for settings to stop kernel/auto-loading
+// Avoid PHP execution for settings to prevent kernel/auto-loading, etc.
 preg_match_all(
     '/(\\\'|\")(.*)(\\\'|\").*=>/',
-    file_get_contents(__DIR__.'/../../sys/config/settings.php'),
+    file_get_contents($settingsFile),
     $matches
 );
 

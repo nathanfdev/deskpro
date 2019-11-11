@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Log\UndefinedSettingsLogger;
 use Application\DeskPRO\NewSettings\Loader\BrandSettingsLoader;
 use Application\DeskPRO\NewSettings\Loader\DbGlobalSettingsTableLoader;
 use Application\DeskPRO\NewSettings\Loader\GlobalsArrayLoader;
@@ -21,6 +22,7 @@ class SettingsResolverService
     {
         // we use a different class in the "test" env so that we can easily manipulate the settings on the fly for test purposes
         $env = $container->getParameter('kernel.environment');
+        $deskproEnv = $container->get('deskpro.app_env');
 
         /** @var \Application\DeskPRO\Cache\Adapter\SimpleArrayCache $simple_array_cache */
         $simple_array_cache = $container->get('cache.simple_array');
@@ -29,14 +31,23 @@ class SettingsResolverService
         $loaders = [
             $container->getSystemService('default_settings_loader'),
             new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
-            new GlobalsArrayLoader($container->get('deskpro.app_env'), $simple_array_cache),
+            new GlobalsArrayLoader($deskproEnv, $simple_array_cache),
         ];
+
+        $undefinedSettingsLogger = null;
+        if ($deskproEnv->getConfig('logs.enable_undefined_settings_log')) {
+            $undefinedSettingsLogger = new UndefinedSettingsLogger();
+            $undefinedSettingsLogger->addWriter(
+                new \Orb\Log\Writer\Stream($container->getLogDir().'/undefined_settings.log')
+            );
+        }
 
         // brand settings loader is a special loader, injected directly
         $resolver = new SettingsResolver(
             $loaders,
             $simple_array_cache,
-            new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
+            new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache),
+            $undefinedSettingsLogger
         );
 
         $container->get('deskpro.feature_flags')->_setSettingsResolver($resolver);
