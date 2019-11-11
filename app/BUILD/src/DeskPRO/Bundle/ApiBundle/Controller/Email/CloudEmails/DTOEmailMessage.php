@@ -21,7 +21,7 @@ class DTOEmailMessage
     private $receivedAt;
 
     /**
-     * @JMS\Type("DeskPRO\Bundle\ApiBundle\Controller\CloudEmails\DTOMessageLocationS3")
+     * @JMS\Type("DeskPRO\Bundle\ApiBundle\Controller\Email\CloudEmails\DTOMessageLocationS3")
      *
      * @var string
      */
