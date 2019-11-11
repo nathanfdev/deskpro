@@ -20,6 +20,11 @@ class UndefinedSettingsLogger extends \Orb\Log\Logger
     private static $keys = null;
 
     /**
+     * @var bool[]
+     */
+    private static $processed = [];
+
+    /**
      * Log if setting was not found in settings.php
      *
      * @param string $key
@@ -27,9 +32,15 @@ class UndefinedSettingsLogger extends \Orb\Log\Logger
      */
     public function logIfNotInSettings($key, $level = 'logWarn')
     {
+        if (isset(self::$processed[$key])) {
+            return;
+        }
+
         if (!in_array($key, self::getSettingsKeys())) {
             $this->{$level}(sprintf('"%s" is not defined in %s', $key, basename(self::SETTINGS_PATH)));
         }
+
+        self::$processed[$key] = true;
     }
 
     /**
