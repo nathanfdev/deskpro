@@ -476,7 +476,7 @@ class UserChatManager
         $convo->setAgent(null);
         $this->em->persist($convo);
 
-        $message = $this->addSystemMessage($convo, 'message_unassigned', [], [
+        $message = $this->addSystemMessage($convo, 'message_unassigned', ['name' => $old_agent_name], [
             'chat_unassigned'   => true,
             'old_assigned_to'   => $old_agent_id,
             'old_assigned_name' => $old_agent_name,
@@ -488,7 +488,7 @@ class UserChatManager
             new ChatEvent(
                 $convo->getId(),
                 ChatEvent::CHAT_AGENT_UNASSIGNED_EVENT_TYPE,
-                ['message' => $message]
+                ['message' => $message, 'agent' => $old_agent_id]
             )
         );
 
