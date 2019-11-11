@@ -5,6 +5,7 @@ const uglify = require('uglify-js');
 const pubDir             = path.join(__dirname, '..');
 const messengerBuildDir  = path.join(pubDir, 'build', 'messenger');
 const messengerVendorDir = path.join(pubDir, 'node_modules', '@deskpro', 'messenger', 'build');
+const messengerAssetsDir = path.join(pubDir, 'node_modules', '@deskpro', 'messenger', 'build', 'assets');
 const messengerStaticDir = path.join(pubDir, 'node_modules', '@deskpro', 'messenger', 'build', 'static', 'js');
 
 if (!fs.existsSync(messengerBuildDir)) {
@@ -13,6 +14,9 @@ if (!fs.existsSync(messengerBuildDir)) {
 
 console.log('Cleaning messenger dir');
 fs.emptyDirSync(messengerBuildDir);
+if (!fs.existsSync(messengerAssetsDir)) {
+  fs.mkdirSync(messengerAssetsDir);
+}
 console.log('Moving messenger files');
 
 console.log('Moving manifest');
@@ -37,7 +41,7 @@ fs.readdir(messengerStaticDir, (err, files) => {
 const messengerVendorAssetsDir = path.join(messengerVendorDir, 'assets');
 
 console.log('Moving messenger styles');
-fs.copyFile(path.join(messengerVendorAssetsDir, 'styles.css'), path.join(messengerBuildDir, 'assets', 'styles.css'), err => {
+fs.copyFile(path.join(messengerVendorAssetsDir, 'styles.css'), path.join(messengerAssetsDir, 'styles.css'), err => {
   if (err) throw err;
   console.log('Successfully moved styles');
 });

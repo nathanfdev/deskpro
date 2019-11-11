@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import toastr from 'toastr';
 import MessengerSetup from '@deskpro/messenger-setup';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
@@ -53,11 +54,30 @@ class MessengerSetupContainer extends React.Component {
   };
 
   handleSubmit = () => {
-    this.props.dispatch(saveSettings(this.props.params.brandId, this.state.settings));
+    const { settings, saving } = this.state;
+    const { dispatch, params: { brandId } } = this.props;
+
+    if (saving) {
+      return;
+    }
+
+    this.setState({
+      saving: true
+    });
+
+    const promise = dispatch(saveSettings(brandId, settings));
+
+    promise.success(() => {
+      this.setState({
+        saving: false
+      }, () => {
+        toastr.success('Settings saved!');
+      });
+    });
   };
 
   render() {
-    const { settings } = this.state;
+    const { settings, saving } = this.state;
     const {
       chatDepartments,
       ticketDepartments,
@@ -70,7 +90,7 @@ class MessengerSetupContainer extends React.Component {
           chatDepartments={chatDepartments}
           ticketDepartments={ticketDepartments}
         />
-        <Button onClick={this.handleSubmit} type="cta" size="large">Save</Button>
+        <Button loading={saving} onClick={this.handleSubmit} type="cta" size="large">Save</Button>
       </div>
     );
   }
