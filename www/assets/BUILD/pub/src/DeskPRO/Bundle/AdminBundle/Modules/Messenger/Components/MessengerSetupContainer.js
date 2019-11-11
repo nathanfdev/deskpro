@@ -67,13 +67,22 @@ class MessengerSetupContainer extends React.Component {
 
     const promise = dispatch(saveSettings(brandId, settings));
 
-    promise.success(() => {
-      this.setState({
-        saving: false
-      }, () => {
-        toastr.success('Settings saved!');
-      });
-    });
+    promise
+      .success(() => {
+        this.setState({
+          saving: false
+        }, () => {
+          toastr.success('Settings saved!');
+        });
+      })
+      .error(() => {
+        this.setState({
+          saving: false
+        }, () => {
+          toastr.error('Error when saving settings!');
+        });
+      })
+    ;
   };
 
   render() {
