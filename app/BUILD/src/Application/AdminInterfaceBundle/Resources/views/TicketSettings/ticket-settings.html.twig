@@ -669,6 +669,28 @@
 				</div>
 			</article>
 
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="panel-heading">
+                        <h3>
+                            <span>{{ phrase('adm.ticket_settings.approvals_title') }}</span>
+                        </h3>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <div class="inner-group">
+                                <label>
+                                    <input type="checkbox" ng-model="settings.ticket_approvals" />
+                                    <h4>{{ phrase('adm.ticket_settings.enable_approvals_description') }}</h4>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
 			<footer>
 				<div class="dp-content">
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

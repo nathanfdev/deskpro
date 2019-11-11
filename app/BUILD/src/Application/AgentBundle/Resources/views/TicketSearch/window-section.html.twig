@@ -178,7 +178,7 @@
 							</article>
 						</section>
 
-						{% if ticket_approval_filters|length and app.hasBeta('approvals') %}
+						{% if ticket_approval_filters|length and app.getSetting('core_tickets.ticket_approvals') %}
 							{% include 'AgentBundle:TicketSearch:ticket-approvals-section.html.twig' %}
 						{% endif %}
 
