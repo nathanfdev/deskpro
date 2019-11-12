@@ -4,11 +4,11 @@
 		<a href="#" class="dp-po-post-user-link" role="button" id="userDropdownMenuLink-{{ user.getId() }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 			{% include "Theme:Common:person_inline.html.twig" with {person: user, include_email: false } %}
 		</a>
-		{% if pdf is not defined or not pdf %}
-		<div class="dropdown-menu dropdown-menu-left" aria-labelledby="userDropdownMenuLink-{{ user.getId() }}">
-			<a class="dropdown-item" href="#">{{ phrase('helpcenter.general.user-profile') }}</a>
-			<a class="dropdown-item" href="#">{{ phrase('helpcenter.general.send-user-direct-message') }}</a>
-		</div>
+		{% if app.getSetting('portal.members_community') %}
+			<div class="dropdown-menu dropdown-menu-left" aria-labelledby="userDropdownMenuLink-{{ user.getId() }}">
+				<a class="dropdown-item" href="{{ path('portal_members_view', { id: user.id }) }}">{{ phrase('helpcenter.general.user-profile') }}</a>
+				<a class="dropdown-item" href="{{ path('portal_dm_send_to', {to:  user.id } ) }}">{{ phrase('helpcenter.general.send-user-direct-message') }}</a>
+			</div>
 		{% endif %}
 	</div>
 </li>
