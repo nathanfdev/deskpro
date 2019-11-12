@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
+use Application\DeskPRO\Chat\UserChat\UserChatManager;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Department;
@@ -11,8 +12,8 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
-use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -24,12 +25,13 @@ use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ChatHandler
 {
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
-    const CHAT_ENDED               = 'chat.ended';
+    const CHAT_END                 = 'chat.end';
     const CHAT_SAVE_TICKET         = 'chat.ticket.save';
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
     const CHAT_TRANSCRIPT          = 'chat.transcript';
@@ -44,7 +46,7 @@ class ChatHandler
      */
     private $availableCommands = [
         self::MESSAGE_TYPE_NEW_MESSAGE,
-        self::CHAT_ENDED,
+        self::CHAT_END,
         self::CHAT_USER_TIMEOUT,
         self::CHAT_TRANSCRIPT,
         self::CHAT_RATING,
@@ -91,6 +93,11 @@ class ChatHandler
     private $attachmentHelper;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * ChatHandler constructor.
      *
      * @param ChatMapper                $mapper
@@ -100,6 +107,7 @@ class ChatHandler
      * @param MessengerSettingsResolver $settingsResolver
      * @param AttachmentHelper          $attachmentHelper
      * @param TicketStatusDataService   $ticketStatuses
+     * @param ContainerInterface        $container
      */
     public function __construct(
         ChatMapper $mapper,
@@ -108,7 +116,8 @@ class ChatHandler
         BrandStack $brandStack,
         MessengerSettingsResolver $settingsResolver,
         AttachmentHelper $attachmentHelper,
-        TicketStatusDataService $ticketStatuses
+        TicketStatusDataService $ticketStatuses,
+        ContainerInterface $container
     ) {
         $this->chatMapper       = $mapper;
         $this->em               = $em;
@@ -117,6 +126,7 @@ class ChatHandler
         $this->settingsResolver = $settingsResolver;
         $this->attachmentHelper = $attachmentHelper;
         $this->ticketStatuses   = $ticketStatuses;
+        $this->container        = $container;
     }
 
     /**
@@ -452,5 +462,18 @@ class ChatHandler
         }
 
         return new ApiWrapper($ticket);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Exception
+     */
+    private function handleChatEndCommand(ChatConversation $chat, array $request = [])
+    {
+        /** @var UserChatManager $chatManager */
+        $chatManager = $this->container->getSystemObject('user_chat_manager');
+        $chatManager->userAbandoned($chat);
     }
 }

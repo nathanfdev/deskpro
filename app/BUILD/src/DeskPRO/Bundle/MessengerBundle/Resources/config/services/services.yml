@@ -18,6 +18,7 @@ services:
       - "@messenger.service.settings_resolver"
       - "@attachment_helper"
       - "@tickets.statuses"
+      - "@service_container"
 
   messenger.service.action_alerts:
     class: DeskPRO\Bundle\MessengerBundle\Service\ActionAlertsService
