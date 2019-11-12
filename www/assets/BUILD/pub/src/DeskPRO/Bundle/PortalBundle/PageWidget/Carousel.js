@@ -5,6 +5,7 @@ export class Carousel extends PageWidget {
 
   renderWidget() {
     import('slick-carousel').then(() => {
+      this.$element.removeClass('unloaded');
       $(this.$element).slick({
         dots:           true,
         infinite:       false,
