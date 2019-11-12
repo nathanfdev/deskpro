@@ -563,6 +563,7 @@ class CommunityTopicsController extends AbstractPublishController
 
         $viewVars = [
             'topic'              => $topic,
+            'content'            => $topic,
             'linked_tickets'     => $ticketCommunityTopicsLinks,
             'is_subscribed'      => $isSubscribed,
             'content_id'         => $topic->getId(),

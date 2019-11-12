@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\PortalBundle\SavedForm\SavedFormView;
 use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use DeskPRO\Component\Util\LazyPropObject;
@@ -21,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -166,6 +168,36 @@ class AbstractController extends BaseController
 
         $pageVars['pageData']   = $pageData;
         $pageVars['helpcenter'] = $this->get('helpcenter_data_helper');
+
+        // AGENT IMPERSONATION
+
+        $agent           = null;
+        $impersonationOn = false;
+
+        $token = $this->get('security.token_storage')->getToken();
+        if ($token) {
+            if ($token instanceof AgentImpersonateToken) {
+                $agentId         = $token->getAttribute(AgentImpersonateToken::ATTR_AGENT_IMPERSONATE);
+                $agent           = $this->getPersonDataService()->getPerson($agentId);
+                $impersonationOn = true;
+            } else {
+                $agent = $this->getCurrentPerson();
+            }
+        }
+
+        // no bar for a non-agent
+        if ($agent && $agent->isAgent()) {
+            // no-agent-bar for focus window or preview
+            $portalMode = $this->get('portal_mode_storage')->getMode();
+            if ($portalMode && ($portalMode->isFocusWindow() || $portalMode->isAdminPreview())) {
+                $agent           = null;
+                $impersonationOn = false;
+            }
+        }
+
+        $pageVars['impersonator']     = $agent;
+        $pageVars['impersonation_on'] = $impersonationOn;
+        $pageVars['active_brand_id']  = $this->getBrandContainer()->getBrand()->getId();
 
         $pageVars = array_merge($options, $pageVars);
 

@@ -200,18 +200,19 @@ helpcenter.forms.label_kb_article: Article
 helpcenter.forms.label_password: Password
 helpcenter.forms.label_save: Save
 helpcenter.general.add-comment: 'Add a comment'
+helpcenter.general.admin: 'Admin'
 helpcenter.general.admin_home: 'Admin Home'
 helpcenter.general.agent: Agent
 helpcenter.general.agent_bar_admin_community: 'Community Settings'
-helpcenter.general.agent_bar_admin_desc: 'Manage your Helpdesk'
 helpcenter.general.agent_bar_admin_dl: 'Downloads Settings'
+helpcenter.general.agent_bar_admin_guides: 'Guides Settings'
 helpcenter.general.agent_bar_admin_kb: 'Knowledgebase Settings'
 helpcenter.general.agent_bar_admin_lang: 'Language Settings'
 helpcenter.general.agent_bar_admin_news: 'News Settings'
-helpcenter.general.agent_bar_admin_portal: 'Portal Design & Templates'
+helpcenter.general.agent_bar_admin_portal: 'Helpcenter Design & Templates'
 helpcenter.general.agent_bar_agent_community: 'Manage Community'
-helpcenter.general.agent_bar_agent_desc: 'View Tickets / Manage Content'
 helpcenter.general.agent_bar_agent_dl: 'Manage Downloads'
+helpcenter.general.agent_bar_agent_guides: 'Manage Guides'
 helpcenter.general.agent_bar_agent_home: 'Agent Home'
 helpcenter.general.agent_bar_agent_kb: 'Manage Knowledgebase'
 helpcenter.general.agent_bar_agent_news: 'Manage News'
@@ -237,6 +238,7 @@ helpcenter.general.comments-title:
 helpcenter.general.click-here-to-view: 'Click here to view'
 helpcenter.general.comments-pending-validation: 'This comment is being reviewed. It will be displayed shortly'
 helpcenter.general.created_by: 'Created by'
+helpcenter.general.edit-this-page: 'Edit this page'
 helpcenter.general.enter_comment_placeholder: 'Enter your comment here...'
 helpcenter.general.eula: EULA
 helpcenter.general.everything: Everything

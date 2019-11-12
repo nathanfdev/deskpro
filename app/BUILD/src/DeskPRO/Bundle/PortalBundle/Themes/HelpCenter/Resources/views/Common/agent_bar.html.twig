@@ -12,6 +12,90 @@ if impersonation is OFF "user" is the agent
 if impersonation is OFF "impersonator" is the agent
 #}
 {% if is_agent or is_admin %}
+<div class="dp-po-admin-wrapper">
+    <div class="dp-po-admin-menu">
+        <a class="dp-po-admin-menu-link" href="{{ path('agent') }}" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+            <i class="dp-po-icon dp-po-icon-round fal fa-user-headset"></i>
+            {{ phrase('helpcenter.general.agent') }}
+            <i class="dp-po-icon far fa-angle-down"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-left">
+            <a class="dropdown-item" href="{{ path('agent') }}">
+                <i class="dp-po-icon dp-po-icon-round fal fa-user-headset"></i>
+                {{ phrase('helpcenter.general.agent_bar_agent_home') }}
+            </a>
+            {% if content is defined and agent_can_edit(content) %}
+                <div class="dp-po-admin-edit">
+                    <a href="{{ agent_edit_link(content) }}" class="btn btn-icon btn-outline-secondary dp-po-admin-edit-btn" target="_blank"> <i
+                                class="dp-po-icon fal fa-pencil"></i>
+                        {{ phrase('helpcenter.general.edit-this-page') }}</a>
+                </div>
+            {% endif %}
+            {% if app.user.hasPerm('agent_publish.use') %}
+                <hr />
+                <a class="dropdown-item" href="{{ path('agent') }}#app.community,ct_content">
+                    {{ phrase('helpcenter.general.agent_bar_agent_community') }}
+                </a>
+                <a class="dropdown-item" href="{{ path('agent') }}#app.publish">
+                    {{ phrase('helpcenter.general.agent_bar_agent_kb') }}
+                </a>
+                <a class="dropdown-item" href="{{ path('agent') }}#app.publish">
+                    {{ phrase('helpcenter.general.agent_bar_agent_news') }}
+                </a>
+                {% if app.hasBeta('guides') %}
+                    <a class="dropdown-item" href="{{ path('agent') }}#app.publish">
+                        {{ phrase('helpcenter.general.agent_bar_agent_guides') }}
+                    </a>
+                {% endif %}
+                <a class="dropdown-item" href="{{ path('agent') }}#app.publish">
+                    {{ phrase('helpcenter.general.agent_bar_agent_dl') }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+    {% if is_admin %}
+    <div class="dp-po-admin-menu">
+        <a class="dp-po-admin-menu-link" href="{{ path('agent') }}#admin:/" data-toggle="dropdown" aria-haspopup="true"
+           aria-expanded="false">
+            <i class="dp-po-icon dp-po-icon-round fal fa-user-crown"></i>
+            Admin
+            <i class="dp-po-icon far fa-angle-down"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-left">
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/"><i class="dp-po-icon-round dp-po-icon fal fa-user-crown"></i>
+                {{ phrase('helpcenter.general.admin_home') }}
+            </a>
+            <hr />
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/portal_editor">
+                {{ phrase('helpcenter.general.agent_bar_admin_portal') }}
+            </a>
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/setup/languages/default">
+                {{ phrase('helpcenter.general.agent_bar_admin_lang') }}
+            </a>
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/community/settings">
+                {{ phrase('helpcenter.general.agent_bar_admin_community') }}
+            </a>
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/kb/settings">
+                {{ phrase('helpcenter.general.agent_bar_admin_kb') }}
+            </a>
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/news/settings">
+                {{ phrase('helpcenter.general.agent_bar_admin_news') }}
+            </a>
+            {% if app.hasBeta('guides') %}
+                <a class="dropdown-item" href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/guides/settings">
+                    {{ phrase('helpcenter.general.agent_bar_admin_guides') }}
+                </a>
+            {% endif %}
+            <a class="dropdown-item" href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/downloads/settings">
+                {{ phrase('helpcenter.general.agent_bar_admin_dl') }}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
 <div class="deskpro-agent-top-bar-wrapper" id="agent-bar">
 
     <div class="deskpro-agent-top-bar">
@@ -25,125 +109,10 @@ if impersonation is OFF "impersonator" is the agent
         {% if impersonation_on %}
         <div class="datb-user-impersonator on">
             <i class="fas fa-user-secret"></i>
-            <span>{{ phrase('helpcenter.general.impersonation_mode') }}: <span class="datb-impersonated-user-email">{{ user.primary_email_address }}</span></span>
+            <span>{{ phrase('helpcenter.general.impersonation_mode') }}: <span class="datb-impersonated-user-email">{{ app.user.primary_email_address }}</span></span>
             <a href="{{ logout_path('portal') }}&_dp_impersonate_exit=1" class="datb-user-impersonator-toggle"><i class="fas fa-times-circle"></i></a>
         </div>
         {% endif %}
-
-        <div class="datb-interface-switcher">
-            <div class="datb-dropdown-content-container">
-                <a href="{{ path('agent') }}" id="agent-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-agent-dropdown">
-                    <i class="fas fa-users"></i>
-                    <span class="datb-button-content">
-                        <span class="datb-interface-button-title">{{ phrase('helpcenter.general.agent') }}</span>
-                        <span class="datb-interface-button-subtitle">{{ phrase('helpcenter.general.agent_bar_agent_desc') }}</span>
-                    </span>
-
-                    <span class="datb-button-dropdown">
-                        <i class="fas fa-caret-down"></i>
-                    </span>
-                </a>
-
-                <div id="agent-bar-agent-dropdown" class="datb-dropdown-content" style="display: none;">
-                    <ul>
-                        <li>
-                            <a href="{{ path('agent') }}">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_agent_home') -}}
-                            </a>
-                        </li>
-                        {% if app.user.hasPerm('agent_publish.use') %}
-                        <li>
-                            <a href="{{ path('agent') }}#app.publish">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_agent_kb') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#app.publish">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_agent_news') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#app.publish">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_agent_dl') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#app.community,ct_content">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_agent_community') -}}
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
-            </div>
-
-            {% if is_admin %}
-            <div class="datb-dropdown-content-container">
-                <a href="{{ path('agent') }}#admin:/" id="admin-dropdown-arrow" class="clickaway-dropdown" data-clickaway-target="agent-bar-admin-dropdown">
-                    <i class="fas fa-columns"></i>
-                    <span class="datb-button-content">
-                        <span class="datb-interface-button-title">{{ phrase('helpcenter.general.admin') }}</span>
-                        <span class="datb-interface-button-subtitle">{{ phrase('helpcenter.general.agent_bar_admin_desc') }}</span>
-                    </span>
-
-                    <span class="datb-button-dropdown">
-                        <i class="fas fa-caret-down"></i>
-                    </span>
-                </a>
-                <div id="agent-bar-admin-dropdown" class="datb-dropdown-content" style="display: none;">
-                    <ul>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.admin_home') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/portal_editor">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_admin_portal') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/setup/languages/default">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_admin_lang') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/kb/settings">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_admin_kb') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/news/settings">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_admin_news') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/downloads/settings">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_admin_dl') -}}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('agent') }}#admin:/portal/{{ active_brand_id }}/community/settings">
-                                <i class="fas fa-angle-double-right"></i>
-                                {{- phrase('helpcenter.general.agent_bar_admin_community') -}}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            {% endif %}
-        </div>
     </div>
 </div>
 {% endif %}

@@ -289,6 +289,7 @@ class NewsController extends AbstractPublishController
 
         $viewVars = [
             'post'               => $post,
+            'content'            => $post,
             'postData'           => $postData,
             'is_subscribed'      => $isSubscribed,
             'rating'             => $rating,
