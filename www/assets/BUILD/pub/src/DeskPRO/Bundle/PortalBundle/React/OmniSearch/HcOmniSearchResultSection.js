@@ -153,18 +153,20 @@ export class HcOmniSearchResultSection extends React.Component {
   renderItem(item) {
     let t;
 
+    console.log(item);
+
     if (true || this.state.nameApi === 'news') {
       t = (
         <a href={item.url} className="dp-po-search-link">
           {item.name}
           <div className="dp-po-time">
-            <i className="dp-po-icon far fa-clock" />
             <TimeAgo
               className="dpdesignportal-event-time"
               formatter={timeAgoFormatter}
               minPeriod={60000}
               date={moment(item.date)}
             />
+            <i className="dp-po-icon far fa-clock" />
           </div>
         </a>
       );

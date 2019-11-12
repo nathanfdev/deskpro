@@ -293,6 +293,7 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:view.html.twig',
             [
                 'file'               => $file,
+                'content'            => $file,
                 'custom_data'        => $customData,
                 'content_type'       => Download::CONTENT_TYPE,
                 'content_id'         => $file->getId(),

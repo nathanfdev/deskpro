@@ -14,7 +14,7 @@ export default class UnsplashImageModal extends React.Component {
     const { selectImage, closeModal } = this.props;
     return (
       <Modal
-        closeModal={this.onClose}
+        closeModal={closeModal}
         title={<FormattedMessage id="agent.publish.image_browser" />}
       >
         <UnsplashImageBrowser

@@ -18,9 +18,9 @@ use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
-use Exception;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
+use Exception;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -179,6 +179,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('get_splash_bgcss', [$this, 'getSplashBgcss'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('get_user', [$this, 'getPerson']),
             new \Twig_SimpleFunction('current_theme', [$this, 'getCurrentTheme']),
+            new \Twig_SimpleFunction('agent_can_edit', [$this, 'agentCanEdit']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -893,6 +894,18 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return '';
+    }
+
+    public function agentCanEdit(ContentAbstract $object = null)
+    {
+        if (!$this->getPerson()->isAgent()) {
+            return false;
+        }
+        if (!$this->getPerson()->hasPerm('agent_publish.use')) {
+            return false;
+        }
+
+        return $this->getPerson()->PermissionsManager->PublishChecker->canEdit($object);
     }
 
     /**
