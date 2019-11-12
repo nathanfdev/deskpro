@@ -12,12 +12,12 @@ const setFormFields = contentTemplate => (page) => {
     const value = field.get('value');
 
     if (name) {
-      if (name === 'newarticle[labels][]') {
+      if (name.indexOf('[labels][]') !== -1) {
         labels.push(value);
         $('.article-tags input').val(labels.join(','));
-      } else if (name === 'newarticle[content]' && page.rte.current) {
+      } else if (name.indexOf('[content]') !== -1 && page.rte.current) {
         page.rte.current.editor.current.reactEditor.current.editor.setContent(value);
-      } else if (name === 'newarticle[attach][]') {
+      } else if (name.indexOf('[attach][]') !== -1) {
         const attachment = contentTemplate
           .get('attachments')
           .find(attach => Number(attach.get('blob').get('blob_id')) === Number(value));
@@ -93,8 +93,13 @@ export const deleteContentTemplate = createAction(
 export const openNewContentPage = createAction(
   'AGENT_OPEN_CONTENT_TEMPLATE',
   (contentTemplate) => {
-    if (contentTemplate.get('type') === 'article') {
-      window.DeskPRO_Window.newArticleLoader.open(setFormFields(contentTemplate));
+    const type = contentTemplate.get('type');
+    const dataLoader = setFormFields(contentTemplate);
+
+    if (type === 'article') {
+      window.DeskPRO_Window.newArticleLoader.open(dataLoader);
+    } else if (type === 'news') {
+      window.DeskPRO_Window.newNewsLoader.open(dataLoader);
     }
   }
 );
@@ -102,8 +107,14 @@ export const openNewContentPage = createAction(
 export const openContentTemplateEditor = createAction(
   'AGENT_OPEN_CONTENT_TEMPLATE',
   (contentTemplate) => {
-    if (contentTemplate.get('type') === 'article') {
-      window.DeskPRO_Window.createEditArticleContentTemplateLoader(contentTemplate.get('id')).open(setFormFields(contentTemplate));
+    const id = contentTemplate.get('id');
+    const type = contentTemplate.get('type');
+    const dataLoader = setFormFields(contentTemplate);
+
+    if (type === 'article') {
+      window.DeskPRO_Window.createEditArticleContentTemplateLoader(id).open(dataLoader);
+    } else if (type === 'news') {
+      window.DeskPRO_Window.createEditNewsContentTemplateLoader(id).open(dataLoader);
     }
   }
 );

@@ -81,6 +81,7 @@ class LanguagesController extends CrudController
             'agent.follow_up.error_macro',
             'agent.content_templates.templates',
             'agent.content_templates.create_article_from_template',
+            'agent.content_templates.create_news_from_template',
             'agent.content_templates.manage_templates',
             'agent.content_templates.edit_template',
             'agent.content_templates.update_template',
