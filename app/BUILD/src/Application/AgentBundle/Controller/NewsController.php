@@ -275,13 +275,6 @@ class NewsController extends AbstractController
                 }
 
                 $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
-                $now  = new \DateTime('now');
-                if ($date > $now) {
-                    return $this->createJsonResponse([
-                        'success' => false,
-                        'error'   => 'Can only set date in the past',
-                    ]);
-                }
 
                 $news->date_published = $date;
                 break;
