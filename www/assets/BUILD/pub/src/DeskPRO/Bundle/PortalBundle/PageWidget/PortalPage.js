@@ -38,6 +38,7 @@ import { WidgetButton } from './WidgetButton';
 import { DpxTabs } from './Common/DpxTabs';
 import { Carousel } from './Carousel';
 import { SearchTabs } from './SearchTabs';
+import { TitleAnchorWidget } from './TitleAnchorWidget';
 
 class PortalPage extends PageWidget {
 
@@ -85,6 +86,7 @@ class PortalPage extends PageWidget {
     this.addWidgetDef(Carousel, '.dpx-carousel');
     this.addWidgetDef(SearchTabs, '.dp-po-search-sidebar-link');
     this.addWidgetDef(SearchTabs, '.dp-po-search-tabs-link');
+    this.addWidgetDef(TitleAnchorWidget, '.dp-po-post-content :header');
 
     return new Promise((resolve) => {
       $(document).ready(resolve);

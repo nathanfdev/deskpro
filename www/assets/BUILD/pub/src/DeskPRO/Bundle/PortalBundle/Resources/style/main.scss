@@ -12006,5 +12006,9 @@ button.calendars-cmd {
   clear: both;
 }
 
+.title-anchor-icon {
+  color: $brand-primary;
+}
+
 @import './guides';
 @import './oauth';
