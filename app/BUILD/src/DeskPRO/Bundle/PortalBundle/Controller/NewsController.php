@@ -108,6 +108,7 @@ class NewsController extends AbstractPublishController
             [
                 'page'          => $page,
                 'count'         => $this->getBrandSetting('portal.per_page_content'),
+                'main_class'    => 'dp-po-news',
                 'viewCategory'  => $category,
                 'newsData'      => $newsData,
                 'pager'         => $pager,
