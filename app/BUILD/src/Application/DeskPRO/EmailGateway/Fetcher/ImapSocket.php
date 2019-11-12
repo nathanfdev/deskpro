@@ -204,7 +204,7 @@ class ImapSocket extends AbstractFetcher
 
         // get messages
         if ($this->mode == self::MODE_READ) {
-            $this->messageUids = $this->protocol->search([Storage::FLAG_UNSEEN]) ?: [];
+            $this->messageUids = $this->protocol->search(['UNSEEN']) ?: [];
         } else {
             $this->messageUids = $this->protocol->search(['ALL']) ?: [];
         }
