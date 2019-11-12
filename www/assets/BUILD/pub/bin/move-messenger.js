@@ -4,8 +4,8 @@ const uglify = require('uglify-js');
 
 const pubDir             = path.join(__dirname, '..');
 const messengerBuildDir  = path.join(pubDir, 'build', 'messenger');
+const messengerAssetsDir = path.join(pubDir, 'build', 'messenger', 'assets');
 const messengerVendorDir = path.join(pubDir, 'node_modules', '@deskpro', 'messenger', 'build');
-const messengerAssetsDir = path.join(pubDir, 'node_modules', '@deskpro', 'messenger', 'build', 'assets');
 const messengerStaticDir = path.join(pubDir, 'node_modules', '@deskpro', 'messenger', 'build', 'static', 'js');
 
 if (!fs.existsSync(messengerBuildDir)) {
@@ -14,7 +14,9 @@ if (!fs.existsSync(messengerBuildDir)) {
 
 console.log('Cleaning messenger dir');
 fs.emptyDirSync(messengerBuildDir);
+
 if (!fs.existsSync(messengerAssetsDir)) {
+  console.log('Creating assets dir');
   fs.mkdirSync(messengerAssetsDir);
 }
 console.log('Moving messenger files');
@@ -47,12 +49,12 @@ fs.copyFile(path.join(messengerVendorAssetsDir, 'styles.css'), path.join(messeng
 });
 
 const messengerVendorAudioDir = path.join(messengerVendorAssetsDir, 'audio');
-const messengerAudioDir = path.join(messengerBuildDir, 'audio');
+const messengerAudioDir = path.join(messengerAssetsDir, 'audio');
 console.log('Moving messenger audio assets');
 fs.copy(messengerVendorAudioDir, messengerAudioDir);
 
 const messengerVendorImgDir = path.join(messengerVendorAssetsDir, 'img');
-const messengerImgDir = path.join(messengerBuildDir, 'img');
+const messengerImgDir = path.join(messengerAssetsDir, 'img');
 fs.copy(messengerVendorImgDir, messengerImgDir);
 
 const loaderFilePath    = `/messenger-loader.js`;
