@@ -107,7 +107,7 @@ class WidgetLoader
             'helpdeskUrl' => $urlSettings->getHelpdesk(),
         ]);
 
-        $encodedOptions = json_encode($options, \JSON_PRETTY_PRINT);
+        $encodedOptions = json_encode($options);
 
         $code   = [];
         $code[] = '<!--DESKPRO_WIDGET_LOADER::BEGIN-->';
@@ -117,7 +117,7 @@ class WidgetLoader
             $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '{$this->settingsResolver->getDevAssetsUrl()}';\n</script>";
         }
 
-        $code[] = '<script type="text/javascript" id="dp-widget-loader" src="'.$loaderSrc.'"></script>';
+        $code[] = '<script async type="text/javascript" id="dp-widget-loader" src="'.$loaderSrc.'"></script>';
         $code[] = '<!--DESKPRO_WIDGET_LOADER::END-->';
 
         return implode("\n", $code);

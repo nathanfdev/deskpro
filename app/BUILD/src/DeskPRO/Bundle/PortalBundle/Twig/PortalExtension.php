@@ -18,9 +18,11 @@ use DeskPRO\Bundle\AppBundle\Entity\HasSplashImageProperty;
 use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
+use DeskPRO\Component\Filesystem\SafeFile;
+use Exception;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
-use Exception;
+use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -180,9 +182,10 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('get_user', [$this, 'getPerson']),
             new \Twig_SimpleFunction('current_theme', [$this, 'getCurrentTheme']),
             new \Twig_SimpleFunction('agent_can_edit', [$this, 'agentCanEdit']),
+            new \Twig_SimpleFunction('asset_data_url', [$this, 'getAssetDataUrl']),
 
             // Copied from legacy templating, used to render notification rows
-            new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']])
         ];
     }
 
@@ -906,6 +909,39 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         }
 
         return $this->getPerson()->PermissionsManager->PublishChecker->canEdit($object);
+    }
+
+    /**
+     * @param string $path
+     * @param string $packageName
+     */
+    public function getAssetDataUrl($path, $packageName)
+    {
+        /** @var $DP_ENV \DpRun\DpEnv */
+        global $DP_ENV;
+
+        $path = ltrim($path, '/');
+        $type = ContentTypes::getContentTypeFromFilename($path);
+        $data = null;
+
+        switch ($packageName) {
+            case 'legacy_web':
+                $basePath = $DP_ENV->getAppWwwAssetDir().'/web';
+                $file = $basePath.'/'.$path;
+                $data = SafeFile::fileGetContents($file, $basePath);
+                break;
+
+            case 'help_center':
+                $basePath = $DP_ENV->getAppWwwAssetDir().'/pub/build/DeskPRO/Bundle/PortalBundle/portal-style';
+                $file = $basePath.'/'.$path;
+                $data = SafeFile::fileGetContents($file, $basePath);
+        }
+
+        if ($data) {
+            return 'data:'.$type.';base64,'.base64_encode($data);
+        }
+
+        return '';
     }
 
     /**
