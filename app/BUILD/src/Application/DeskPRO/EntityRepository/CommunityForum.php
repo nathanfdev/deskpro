@@ -10,6 +10,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CommunityTopic as CommunityTopicEntity;
+use Application\DeskPRO\Entity\CommunityTopicComment as CommunityTopicCommentEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\EntityRepository\Helper\CommentHelper;
 use Application\DeskPRO\Searcher\CommunitySearch;
@@ -141,36 +142,92 @@ class CommunityForum extends AbstractCategoryRepository
 
     /**
      * @param array $forumIds
-     * @param int   $numberOfComments
+     * @param int   $maxResults
      *
      * @return array
      */
-    public function getLatestCommentsPerForum(array $forumIds, $numberOfComments = 4)
+    public function getLatestActivityPerForum(array $forumIds, $maxResults = 4)
     {
-        $latestCommentsByForum = [];
-        $latestCommentsQuery   = $this->getEntityManager()->createQueryBuilder()
-            ->select('c, p, t')
-            ->from(\Application\DeskPRO\Entity\CommunityTopicComment::class, 'c')
-            ->innerJoin('c.person', 'p')
-            ->innerJoin('c.topic', 't')
-            ->andWhere('c.status != \'hidden\'')
-            ->andWhere('IDENTITY(t.forum) = :forumId')
-            ->andWhere('t.status != :hiddenStatus')
-            ->orderBy('c.date_created', 'DESC')
-            ->setParameter('hiddenStatus', \Application\DeskPRO\Entity\CommunityTopic::STATUS_HIDDEN)
-            ->setMaxResults($numberOfComments)
+        $activity = [];
+
+        $em = $this->getEntityManager();
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('t.id AS topic_id', 'c.id as comment_id', 'CASE WHEN MAX(c.date_created) IS NOT NULL THEN MAX(c.date_created) ELSE t.date_created AS date_max')
+            ->from(CommunityTopicEntity::class, 't')
+            ->leftJoin('t.comments', 'c')
+            ->where('IDENTITY(t.forum) = :forumId')
+            ->andWhere('t.status != :topic_status')
+            ->andWhere('c.status = :comment_status OR c.status IS NULL')
+            ->setParameter('topic_status', CommunityTopicEntity::STATUS_HIDDEN)
+            ->setParameter('comment_status', CommunityTopicCommentEntity::STATUS_VISIBLE)
+            ->groupBy('t.id')
+            ->orderBy('date_max', 'DESC')
+            ->setMaxResults($maxResults)
         ;
 
         /** @var \Application\DeskPRO\Entity\CommunityForum $forum */
         foreach ($this->findBy(['id' => $forumIds]) as $forum) {
-            $latestCommentsByForum[$forum->getId()] = $latestCommentsQuery
-                ->setParameter('forumId', $forum->getId())
-                ->getQuery()
-                ->getResult()
-            ;
+            $qb->setParameter('forumId', $forum->getId());
+            $recentActivity = $qb->getQuery()->getResult();
+
+            $topicIds   = [];
+            $commentIds = [];
+
+            foreach ($recentActivity as $value) {
+                if ($value['comment_id']) {
+                    $commentIds[$value['comment_id']] = $value['comment_id'];
+                }
+                if ($value['topic_id']) {
+                    $topicIds[$value['topic_id']] = $value['topic_id'];
+                }
+            }
+
+            $topics   = [];
+            $comments = [];
+
+            if ($topicIds) {
+                $topicsQb = $em->createQueryBuilder();
+                $topicsQb
+                    ->select('t, p')
+                    ->from(CommunityTopicEntity::class, 't')
+                    ->join('t.person', 'p')
+                    ->where('t.id IN (:topic_ids)')
+                    ->setParameter('topic_ids', $topicIds)
+                ;
+
+                /** @var CommunityTopicEntity[] $result */
+                $result = $topicsQb->getQuery()->getResult();
+                foreach ($result as $topic) {
+                    $topics[$topic->getId()] = $topic;
+                }
+            }
+            if ($commentIds) {
+                $commentsQb = $em->createQueryBuilder();
+                $commentsQb
+                    ->select('c, p')
+                    ->from(CommunityTopicCommentEntity::class, 'c')
+                    ->join('c.person', 'p')
+                    ->where('c.id IN (:comment_ids)')
+                    ->setParameter('comment_ids', $commentIds)
+                ;
+
+                /** @var CommunityTopicCommentEntity[] $result */
+                $result = $commentsQb->getQuery()->getResult();
+                foreach ($result as $comment) {
+                    $comments[$comment->getId()] = $comment;
+                }
+            }
+
+            $activity[$forum->getId()] = array_map(function ($data) use ($topics, $comments) {
+                return [
+                    'topic'   => isset($topics[$data['topic_id']]) ? $topics[$data['topic_id']] : null,
+                    'comment' => $data['comment_id'] && isset($comments[$data['comment_id']]) ? $comments[$data['comment_id']] : null,
+                ];
+            }, $recentActivity);
         }
 
-        return $latestCommentsByForum;
+        return $activity;
     }
 
     /**

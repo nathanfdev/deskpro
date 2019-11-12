@@ -54,16 +54,26 @@
                             <div class="dp-po-community-row-activity">
                                 <h3 class="dp-po-community-row-activity-heading">{{ phrase('helpcenter.community.recent-activity') }}</h3>
                                 <ul class="dp-po-community-row-activity-list">
-                                    {% for comment in latest_comments_per_forum[forum.id] %}
+                                    {% for activity in latest_activity_per_forum[forum.id] %}
                                         <li class="dp-po-community-row-activity-item">
-                                            <a href="{{ path('portal_community_topic_view', {slug: comment.topic.slug}) }}" class="dp-po-community-row-activity-link">
-                                                <img src="{{ avatar_url(comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
-                                                <h4 class="dp-po-community-row-activity-title">
-                                                    {{ comment.content|truncate(80) }}
-                                                </h4>
-                                                <span class="dp-po-community-row-activity-time">
-                                                    {{ date_ago(comment.date_created) }}
+                                            <a href="{{ path('portal_community_topic_view', {slug: activity.topic.slug}) }}" class="dp-po-community-row-activity-link">
+                                                {% if activity.comment %}
+                                                    <img src="{{ avatar_url(activity.comment.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                    <h4 class="dp-po-community-row-activity-title">
+                                                        {{ activity.comment.content|truncate(80) }}
+                                                    </h4>
+                                                    <span class="dp-po-community-row-activity-time">
+                                                        {{ date_ago(activity.comment.date_created) }}
+                                                    </span>
+                                                {% else %}
+                                                    <img src="{{ avatar_url(activity.topic.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
+                                                    <h4 class="dp-po-community-row-activity-title">
+                                                        {{ activity.topic.content|truncate(80) }}
+                                                    </h4>
+                                                    <span class="dp-po-community-row-activity-time">
+                                                    {{ date_ago(activity.topic.date_created) }}
                                                 </span>
+                                                {% endif %}
                                             </a>
                                         </li>
                                     {% endfor %}
