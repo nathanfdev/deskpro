@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.6",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.6.tgz",
-      "integrity": "sha512-PCo14DN4RzXOgd5Pgcyq1ByuLglqWt8GuJtfkhl+b11bFc/OdqC8ap/3YgtRN958XN4QRbBR/lwdYO4rqX+nLA==",
+      "version": "0.1.13",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.13.tgz",
+      "integrity": "sha512-fA1lvfEmj7C/dV3VnnLNHPGSAiOV6mGXIQorYSqkWwGMMAhhPdQDrV713z0WHXDhrbvtxfCrdhC7QBe0YcQiQQ==",
       "requires": {
         "@deskpro/portal-components": "^0.2.5",
         "axios": "^0.19.0-beta.1",
@@ -556,9 +556,9 @@
       }
     },
     "@deskpro/messenger-loader": {
-      "version": "0.1.3",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.3.tgz",
-      "integrity": "sha512-1A0c2nT9Vx+yzQ9DsgVxKT7LRLuMILSahpO9P/EAtQDxVRkGPhr0V1tv7rISHRcQHmTMhu40WrproP7M8tfFbg==",
+      "version": "0.1.13",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger-loader/-/messenger-loader-0.1.13.tgz",
+      "integrity": "sha512-Z02lCC8riDrQMCaq/zAmTr/9RXhtiBOxDlftNz148GDfrk/nD/G0ahhz9iDropvuR0xQt3YTksblqShRNVtzQQ==",
       "requires": {
         "whatwg-fetch": "^3.0.0"
       }
@@ -35841,9 +35841,9 @@
           }
         },
         "path-to-regexp": {
-          "version": "1.7.0",
-          "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-1.7.0.tgz",
-          "integrity": "sha1-Wf3g9DW62suhA6hOnTvGTpa5k30=",
+          "version": "1.8.0",
+          "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-1.8.0.tgz",
+          "integrity": "sha512-n43JRhlUKUAlibEJhPeir1ncUID16QnEjNpwzNdO3Lm4ywrBpBZ5oLD0I6br9evr1Y9JTqwRtAh7JLoOzAQdVA==",
           "requires": {
             "isarray": "0.0.1"
           }
