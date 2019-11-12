@@ -1,10 +1,14 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
-import Handlebars from 'handlebars';
 
 export default class DpxJavascript extends PageWidget {
 
   renderWidget() {
+    this.renderWidgetReal();
+  }
+
+  async renderWidgetReal() {
+    const { "default": Handlebars } = await import('handlebars');
     const $el = this.$element;
     const $input = $el.find('input.js-custom-field-hidden-input');
     let evCode;

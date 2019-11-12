@@ -2,9 +2,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 
-<link href="{{ asset('fontawesome.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
-<link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
-
 {% set favicon = portal_custom_favicon() %}
 {% if favicon %}
 <link rel="icon" href="{{ favicon.url }}" type="{{ favicon.type }}">
@@ -22,6 +19,9 @@
     body.with-js.with-dpui.with-pageload-dpx-done .dpx-placeholder { display: none; }
     body.with-js.without-dpui.with-pageload-done .with-dpx { visibility: visible; }
     body.with-js.with-dpui.with-pageload-dpx-done .with-dpx { visibility: visible; }
+    .dp-po .img-fluid, .dp-po .img-thumbnail { max-width: 100%; height: auto; }
+    .dp-po .fas, .dp-po .far { visibility: hidden; }
+    .fontawesome-i2svg-active .dp-po .fas, .fontawesome-i2svg-active .dp-po .far { visibility: visible; }
 </style>
 
 {% include 'Theme:Internal:modernizr-include.html.twig' %}
@@ -70,7 +70,6 @@
     };
   })();
 </script>
-<script type="text/javascript" src="{{ path('portal_api_lang_widget_phrases', {_format: 'js'}) }}"></script>
 
 {% set custom_include_code %}{%- include 'Theme:Internal:custom-head-include.html.twig' -%}{% endset %}
 
@@ -79,8 +78,21 @@
     Custom head includes often include jquery-type code, and
     so we need to make bundle load before that gets called.
 #}
-<script type="text/javascript" src="{{ asset('DeskPRO_PortalBundle.js', 'app_assets') }}"></script>
-<script type="text/javascript" src="{{ asset('DeskPRO_HelpcenterBundle.js', 'app_assets') }}"></script>
+<script type="text/javascript" src="{{ asset('DeskPRO_HelpcenterBundle.js', 'app_assets') }}" {% if not custom_include_code %}async="async"{% endif %}></script>
+
+{# Async load vendor css #}
+{% for styleFile in [
+    asset('fontawesome.css', 'app_assets'),
+    asset('DeskPRO_PortalBundle_helpcenter_vendors_style.css', 'app_assets')
+] %}
+    <link rel="preload" href="{{ styleFile }}" as="style" />
+    <link rel="stylesheet" href="{{ styleFile }}" media="print" onload="this.media='all'" />
+{% endfor %}
+
+<link href="{{ asset('style.css', 'help_center') }}" rel="stylesheet" type="text/css" />
+{% if helpcenter_css_url() %}
+    <link href="{{ helpcenter_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+{% endif %}
 
 {% if portal_mode() == 'focus-window' or portal_mode() == 'fame-embed' %}
     <script type="text/javascript" src="{{ asset('iframeResizer_contentWindow.js', 'app_assets') }}" async="async"></script>

@@ -14,7 +14,7 @@ class SplashImageRenderer
         }
         if ($splashImage->getUrnNs() === SplashImageProperty::$blobNs) {
             if ($splashImage->getBlob()) {
-                return $splashImage->getBlob()->getDownloadUrl();
+                return $splashImage->getBlob()->getDownloadUrl().'?s='.$width;
             }
         }
         if ($splashImage->getUrnNs() === SplashImageProperty::$unsplashNs) {
