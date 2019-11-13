@@ -193,7 +193,7 @@
                                     {% else %}
                                         {% set table_type = 'danger' %}
                                     {% endif %}
-                                    {{ _self.tickets_table(table, loop.index0, table_type, not search_displayed, search_query) }}
+                                    {{ _self.tickets_table(table, table.ticketCategory, table_type, not search_displayed, search_query) }}
                                     {% set search_displayed = true %}
                                 {% endif %}
                             {% endfor %}
@@ -349,7 +349,7 @@
         {% if with_search %}
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+                    <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}" id="{{ id }}">
                         <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
                     </div>
                 </div>
@@ -370,7 +370,7 @@
                 </div>
             </div>
         {% else %}
-            <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+            <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}" id="{{ id }}">
                 <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
             </div>
         {% endif %}
@@ -412,7 +412,7 @@
         </div>
         {% include 'Theme:Common:pager.html.twig' with {
             pager: ticket_table.pager,
-            pager_options: { pageParameter: '['~ticket_table.pageName~']' }
+            pager_options: { pageParameter: '['~ticket_table.pageName~']', routeParams: {'_fragment': id} }
         } %}
     {% endif %}
 {% endmacro %}
