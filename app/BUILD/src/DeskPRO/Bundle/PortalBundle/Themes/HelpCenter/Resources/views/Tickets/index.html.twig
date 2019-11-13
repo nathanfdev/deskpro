@@ -219,9 +219,9 @@
     {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir, type: ticket_table.getTicketType()}) %}
     {% set url = path(app.request.attributes.get('_route'), queryParams) %}
     {% set sort_icon = sort_dir == 'desc' ? '<i
-        class="dp-po-icon far fa-long-arrow-up"></i>' : '<i
-        class="dp-po-icon far fa-long-arrow-down"></i>' %}
-    {{ label }}<a href="{{ url }}">{% if isActive %}<span>{{ sort_icon|raw }}</span>{% else %}<i
+        class="dp-po-icon far fa-long-arrow-down"></i>' : '<i
+        class="dp-po-icon far fa-long-arrow-up"></i>' %}
+    {{ label }}<a href="{{ url }}" {% if isActive %}class="active" {% endif %}>{% if isActive %}{{ sort_icon|raw }}{% else %}<i
         class="dp-po-icon far fa-arrows-v"></i>{% endif %}</a>
 {%- endmacro -%}
 

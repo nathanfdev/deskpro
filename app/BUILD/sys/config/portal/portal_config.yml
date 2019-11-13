@@ -57,7 +57,6 @@ doctrine:
                 dql:
                     string_functions:
                         FIRST: DeskPRO\Bundle\AppBundle\DBAL\Functions\FirstFunction
-                        GREATEST: DoctrineExtensions\Query\Mysql\Greatest
 
 monolog:
     channels: # you MUST also update api_config.yml if you change these

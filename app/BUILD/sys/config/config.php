@@ -200,12 +200,6 @@ $container->loadFromExtension(
         'orm' => [
             'entity_managers' => [
                 'default' => [
-                    'dql' => [
-                        'string_functions' => [
-                            'group_concat' => 'DoctrineExtensions\Query\Mysql\GroupConcat',
-                            'greatest'     => 'DoctrineExtensions\Query\Mysql\Greatest',
-                        ],
-                    ],
                     'mappings' => [
                         'ReportBundle' => [
                             'type'      => 'annotation',
