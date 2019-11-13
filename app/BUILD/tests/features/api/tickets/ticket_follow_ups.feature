@@ -19,7 +19,7 @@ Feature: /ticket_follow_ups endpoint
     When I send a POST request to "/api/v2/tickets/{t1}/follow-ups" with body:
     """
 {
-  "date_to_run": "2017-11-09",
+  "date_to_run": "2017-11-09 00:00:00",
   "cancel_if_user_reply": true,
   "actions": [
     {

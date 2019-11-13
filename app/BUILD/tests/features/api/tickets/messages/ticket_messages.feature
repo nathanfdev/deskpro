@@ -61,7 +61,7 @@ Feature: /tickets/{id}/messages endpoint
     """
 {
   "message": "My Message",
-  "date_created": "2018-06-20"
+  "date_created": "2018-06-20 00:00:00"
 }
     """
     Then the response status code should be 201

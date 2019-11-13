@@ -45,7 +45,8 @@ Feature: /ticket_forms endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.errors[0].code" should be equal to "extra_fields"
-    And the JSON node "errors.fields.fields.errors[0].message" should be equal to "Unexpected field names: ~f1~"
+    And the JSON node "errors.fields.fields.errors[0].message" should contain "Unexpected field names: "
+    And the JSON node "errors.fields.fields.errors[0].message" should contain "~f1~"
 
   Scenario: I check criteria is not applied on layout change
     Given only the following Ticket records exist:
