@@ -297,7 +297,7 @@ class ImapSocket extends AbstractFetcher
             $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
-            $rawMessage->content = $this->storage->getRawContent($messageUid);
+            $rawMessage->content = $this->protocol->fetch('RFC822', $messageUid);
         }
 
         $headers = null;
