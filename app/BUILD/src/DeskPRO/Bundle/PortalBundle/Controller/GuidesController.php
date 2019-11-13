@@ -212,6 +212,7 @@ class GuidesController extends AbstractPublishController
 
         $viewVars = [
             'topic'            => $topic,
+            'content'          => $topic,
             'topicData'        => $topicData,
             'topic_json'       => $topicJson,
             'captcha'          => $captcha,

@@ -152,7 +152,7 @@ class CommunityTopicsController extends AbstractPublishController
 
         $communityForums    = $this->get('data.community')->getCommunityForumsForPerson($person);
         $topicCountPerForum = $this->get('data.community')->getCommunityForumTopicCountsForPerson($person);
-        $latestComments     = $this->get('data.community')->getLatestCommentsPerForum($person);
+        $latestComments     = $this->get('data.community')->getLatestActivityPerForum($person);
 
         // JS INITIAL DATA
 
@@ -193,7 +193,7 @@ class CommunityTopicsController extends AbstractPublishController
                 'lockout'                   => $check->isLockoutRecommended(),
                 'lockout_time'              => $check->getLockoutTime(true),
                 'topic_count_per_forum'     => $topicCountPerForum,
-                'latest_comments_per_forum' => $latestComments,
+                'latest_activity_per_forum' => $latestComments,
                 'is_community_enabled'      => $this->isCommunityEnabled(),
             ]
         );
@@ -563,6 +563,7 @@ class CommunityTopicsController extends AbstractPublishController
 
         $viewVars = [
             'topic'              => $topic,
+            'content'            => $topic,
             'linked_tickets'     => $ticketCommunityTopicsLinks,
             'is_subscribed'      => $isSubscribed,
             'content_id'         => $topic->getId(),

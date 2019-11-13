@@ -1,0 +1,222 @@
+<?php
+
+namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
+
+use Application\DeskPRO\Entity\Department;
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class MessengerChat.
+ */
+class MessengerChat
+{
+    const NO_ANSWER_SAVE_TICKET   = 'save_ticket';
+    const NO_ANSWER_SHOW_BUSY     = '';
+    const NO_ANSWER_CREATE_TICKET = 'create_ticket';
+
+    /**
+     * Is chat enabled.
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $enabled = true;
+
+    /**
+     * A short prompt to chat.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $prompt = 'What can we help you with today?';
+
+    /**
+     * How long to wait before consider chat is timed out.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $timeout = 90;
+
+    /**
+     * What to do if chat is not answered.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("noAnswerBehavior")
+     *
+     * @var string
+     */
+    private $noAnswerBehavior = 'save_ticket';
+
+    /**
+     * A message to show when there is no answer.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("busyMessage")
+     *
+     * @var string
+     */
+    private $busyMessage = 'It looks like all of our agents are busy at the moment. You can still send us a ticket below and we will get back to you as soon as possible';
+
+    /**
+     * A default department ID.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $department = 0;
+
+    /**
+     * A default ticket subject for missed chat.
+     *
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults")
+     * @JMS\SerializedName("ticketDefaults")
+     *
+     * @var MessengerChatTicketDefaults
+     */
+    private $ticketDefaults;
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = (bool) $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrompt()
+    {
+        return $this->prompt;
+    }
+
+    /**
+     * @param string $prompt
+     *
+     * @return $this
+     */
+    public function setPrompt($prompt)
+    {
+        $this->prompt = $prompt;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTimeout()
+    {
+        return $this->timeout;
+    }
+
+    /**
+     * @param int $timeout
+     *
+     * @return $this
+     */
+    public function setTimeout($timeout)
+    {
+        $this->timeout = $timeout;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNoAnswerBehavior()
+    {
+        return $this->noAnswerBehavior;
+    }
+
+    /**
+     * @param string $noAnswerBehavior
+     *
+     * @return $this
+     */
+    public function setNoAnswerBehavior($noAnswerBehavior)
+    {
+        $this->noAnswerBehavior = $noAnswerBehavior;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBusyMessage()
+    {
+        return $this->busyMessage;
+    }
+
+    /**
+     * @param string $busyMessage
+     *
+     * @return $this
+     */
+    public function setBusyMessage($busyMessage)
+    {
+        $this->busyMessage = $busyMessage;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment($department)
+    {
+        $this->department = $department instanceof Department ? $department->getId() : $department;
+
+        return $this;
+    }
+
+    /**
+     * @return MessengerChatTicketDefaults
+     */
+    public function getTicketDefaults()
+    {
+        return $this->ticketDefaults;
+    }
+
+    /**
+     * @param MessengerChatTicketDefaults $ticketDefaults
+     *
+     * @return $this
+     */
+    public function setTicketDefaults(MessengerChatTicketDefaults $ticketDefaults)
+    {
+        $this->ticketDefaults = $ticketDefaults;
+
+        return $this;
+    }
+}

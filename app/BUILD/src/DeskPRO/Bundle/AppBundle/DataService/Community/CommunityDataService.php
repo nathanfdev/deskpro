@@ -32,17 +32,26 @@ class CommunityDataService extends AbstractDataService
     /**
      * @var PermissionsManager
      */
-    protected $permissions_manager;
+    protected $permissionsManager;
+
     /**
      * @var AuthorizationCheckerInterface
      */
-    private $authorization_checker;
+    private $authorizationChecker;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager                 $em
+     * @param PermissionsManager            $permissionsManager
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     */
     public function __construct(EntityManager $em, PermissionsManager $permissionsManager, AuthorizationCheckerInterface $authorizationChecker)
     {
         parent::__construct($em);
-        $this->permissions_manager = $permissionsManager;
-        $this->authorization_checker = $authorizationChecker;
+
+        $this->permissionsManager   = $permissionsManager;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -63,7 +72,8 @@ class CommunityDataService extends AbstractDataService
 
     /**
      * @param Pagerfanta $pager
-     * @param int $activityCount
+     * @param int        $activityCount
+     *
      * @return array
      */
     public function getLatestActivityForEachTopicInPager(Pagerfanta $pager, $activityCount)
@@ -122,7 +132,7 @@ class CommunityDataService extends AbstractDataService
     public function getItemsPager($page, $max_per_page, CommunityFilter $filter, Person $person = null)
     {
         $em                  = $this->em;
-        $permissions_manager = $this->permissions_manager;
+        $permissions_manager = $this->permissionsManager;
 
         return $this->generateAndCache(
             [
@@ -134,13 +144,9 @@ class CommunityDataService extends AbstractDataService
             ],
             function () use ($em, $permissions_manager, $page, $max_per_page, $filter, $person) {
                 $qb = $em->createQueryBuilder();
-
                 $qb
                     ->select('ct')
                     ->from(CommunityTopic::class, 'ct')
-                ;
-
-                $qb
                     ->addSelect('stn, stnso, stnsn')
                     ->leftJoin('ct.status_transitions', 'stn')
                     ->leftJoin('stn.old_status_category', 'stnso')
@@ -149,15 +155,16 @@ class CommunityDataService extends AbstractDataService
 
                 // we have to filter the user's requested types with what they
                 // are allowed to access.
-                $permissions_bag = $permissions_manager->getPortalPermissionsBag($person);
-                $allowed_types = $permissions_bag->getAllowedCommunityForumIds();
-                $requested_types = $filter->getTypes();
+                $permissionsBag = $permissions_manager->getPortalPermissionsBag($person);
+                $allowedTypes = $permissionsBag->getAllowedCommunityForumIds();
+                $requestedTypes = $filter->getTypes();
+
                 $types = [];
-                if (null === $requested_types) {
-                    $types = $allowed_types;
-                } elseif (count($requested_types)) {
-                    foreach ($requested_types as $req_type) {
-                        if (in_array($req_type, $allowed_types)) {
+                if (null === $requestedTypes) {
+                    $types = $allowedTypes;
+                } elseif (count($requestedTypes)) {
+                    foreach ($requestedTypes as $req_type) {
+                        if (in_array($req_type, $allowedTypes)) {
                             $types[] = $req_type;
                         }
                     }
@@ -182,6 +189,7 @@ class CommunityDataService extends AbstractDataService
                     default:
                         $valid_status = [];
                 }
+
                 $qb->where('ct.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
 
                 // status_categories (community_topic->status_category)
@@ -219,7 +227,7 @@ class CommunityDataService extends AbstractDataService
                                     'WITH',
                                     'r.object_type = \'community\' AND r.object_id = ct.id'
                                 );
-                                $activitiesClauses[] ='r.person = :person';
+                                $activitiesClauses[] = 'r.person = :person';
                                 break;
                             case CommunityFilter::ACTIVITY_CREATED:
                                 $activitiesClauses[] = 'ct.person = :person';
@@ -330,44 +338,45 @@ class CommunityDataService extends AbstractDataService
      */
     public function getCommunityForumsForPerson(Person $person = null)
     {
-        $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
+        $permissionsBag = $this->permissionsManager->getPortalPermissionsBag($person);
 
-        return $this->getCommunityForumsRepo()->findBy(
-            [
-                'id' => $permissions_bag->getAllowedCommunityForumIds(),
-            ]
-        );
+        return $this->getCommunityForumsRepo()->findBy([
+            'id' => $permissionsBag->getAllowedCommunityForumIds(),
+        ]);
     }
 
     /**
      * @param Person|null $person
+     *
      * @return array
      */
     public function getCommunityForumTopicCountsForPerson(Person $person = null)
     {
-        $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
+        $permissionsBag = $this->permissionsManager->getPortalPermissionsBag($person);
 
         return $this->getCommunityForumsRepo()->getTopicCountPerForum(
-            $permissions_bag->getAllowedCommunityForumIds()
+            $permissionsBag->getAllowedCommunityForumIds()
         );
     }
 
     /**
      * @param Person|null $person
+     *
      * @return array
      */
-    public function getLatestCommentsPerForum(Person $person = null)
+    public function getLatestActivityPerForum(Person $person = null)
     {
-        $permissions_bag = $this->permissions_manager->getPortalPermissionsBag($person);
+        $permissionsBag = $this->permissionsManager->getPortalPermissionsBag($person);
 
-        return $this->getCommunityForumsRepo()->getLatestCommentsPerForum(
-            $permissions_bag->getAllowedCommunityForumIds()
+        return $this->getCommunityForumsRepo()->getLatestActivityPerForum(
+            $permissionsBag->getAllowedCommunityForumIds()
         );
     }
 
     /**
-     * @param array $options
+     * @param array       $options
      * @param Person|null $user
+     *
      * @return array
      */
     public function getFilteredTopicList(array $options, Person $user = null)
@@ -395,7 +404,7 @@ class CommunityDataService extends AbstractDataService
 
         foreach ($pager as $topic) {
             $topic->can_rate = $this
-                ->authorization_checker
+                ->authorizationChecker
                 ->isGranted(ContentRatingsVoter::RATE_COMMUNITY, $topic)
             ;
         }
@@ -403,7 +412,7 @@ class CommunityDataService extends AbstractDataService
         $types = $filter->getTypes();
 
         $allowed = $this
-            ->permissions_manager
+            ->permissionsManager
             ->getPortalPermissionsBag($user)
             ->getAllowedCommunityForumIds()
         ;

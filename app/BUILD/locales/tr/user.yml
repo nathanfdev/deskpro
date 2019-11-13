@@ -185,6 +185,7 @@ portal.news.section-title: Haberler
 portal.news.view-as-agent: 'Bir personel iseniz bu sayfayı görebilirsiniz. Normal kullanıcılar bu sayfayı göremezler.'
 portal.sidebar.news_title: Haberler
 portal.tickets.feedback_message_leave_comment: 'İsterseniz yorum bırakabilirsiniz.'
+portal.tickets.feedback.submit: 'Değerlendirme Gönder'
 portal.tickets.guest-thanks-section-title: 'Teşekkür ederiz.'
 portal.tickets.guest_thank_you_title: 'Teşekkür ederiz.'
 portal.tickets.list_agent: 'Atanmış Personel'

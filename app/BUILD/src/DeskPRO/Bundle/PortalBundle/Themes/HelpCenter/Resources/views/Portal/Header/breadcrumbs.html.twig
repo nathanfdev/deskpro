@@ -1,10 +1,10 @@
 <div class="dp-po">
     <nav class="breadcrumb-outer" aria-label="breadcrumb">
         <div class="container d-flex align-items-center">
-            {% if portal_custom_logo() %}
+            {% if portal_custom_favicon() %}
                 <div class="breadcrumb-image">
                     <a href="{{ brand_setting('core.site_url') | default(path('portal_home')) }}">
-                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
+                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_favicon().url }}" class="logo" />
                     </a>
                 </div>
             {% endif %}

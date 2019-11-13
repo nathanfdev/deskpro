@@ -674,6 +674,7 @@ portal.sidebar.top_articles_title: 热门文章
 portal.tickets.add-reply: 回复
 portal.tickets.cancel-ticket-edit: 取消编辑并再次向我显示帮助请求
 portal.tickets.feedback_message_leave_comment: 留下评论（可选）
+portal.tickets.feedback.submit: 发送反馈
 portal.tickets.form-changed-notice: 表单添加了新的区域。请查看这些区域然后再次提交表单。
 portal.tickets.guest-thanks-section-title: 谢谢
 portal.tickets.guest_thank_you_desc: 感谢您与我们联系。我们已向您发送了一封邮件，说明如何管理您的帮助请求。

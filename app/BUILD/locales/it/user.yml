@@ -684,6 +684,7 @@ portal.sidebar.top_articles_title: 'Migliori Articoli'
 portal.tickets.add-reply: Rispondi
 portal.tickets.cancel-ticket-edit: 'Annulla la modifica e mostrami di nuovo il ticket'
 portal.tickets.feedback_message_leave_comment: 'Lascia un commento opzionale'
+portal.tickets.feedback.submit: 'Invia un feedback'
 portal.tickets.form-changed-notice: 'Nuovi campi sono stati aggiunti al modulo. Per favore riguarda questi campi e poi reinvia il modulo.'
 portal.tickets.guest-thanks-section-title: Grazie
 portal.tickets.guest_thank_you_desc: 'Grazie per averci contattato. Ti abbiamo mandato una email con le istruzione su come gestire il tuo ticket con noi.'

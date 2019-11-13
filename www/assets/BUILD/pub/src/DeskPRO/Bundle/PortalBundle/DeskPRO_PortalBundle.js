@@ -1,3 +1,4 @@
+import './publicPath';
 import 'react-hot-loader/patch';
 import { portalApp } from './PortalApp';
 

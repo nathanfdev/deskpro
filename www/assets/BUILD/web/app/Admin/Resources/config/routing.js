@@ -1707,9 +1707,16 @@ define(function() {
     controller:   'AdminPortalCtrlWidgetEditor'
   });
 
-	// ###
-	// # Ticket Form Widget
-	// ###
+  routes.push({
+    id:           'portal.messenger_setup',
+    url:          '/messenger_setup',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  //###
+  //# Ticket Form Widget
+  //###
   routes.push({
     id:           'portal.ticket_form_widget',
     url:          '/ticket_form_widget',

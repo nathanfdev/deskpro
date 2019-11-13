@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -73,6 +74,9 @@ class TicketReplyType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'label' => $this->languageManager->phrase('portal.tickets.add-reply'),
+            ])
+            ->add('cc_remove', HiddenType::class, [
+                'mapped' => false,
             ])
         ;
     }

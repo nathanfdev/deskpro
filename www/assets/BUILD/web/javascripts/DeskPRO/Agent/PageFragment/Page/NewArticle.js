@@ -194,6 +194,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
     var overlayEl = $('.newarticle-template-overlay', this.wrapper);
     var triggerEl = $('.submit-template-trigger', this.wrapper);
 	  var formData = this.collectFormData();
+	  var self = this;
+
 	  if(!this.overlay) {
       this.overlay = new DeskPRO.UI.Overlay({
         triggerElement: triggerEl,
@@ -235,6 +237,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
             if (window.ManageContentTemplatesModal) {
               window.ManageContentTemplatesModal.reloadTemplates();
             }
+
+            self.overlay.close();
           },
           error: function() {
             $('.is-not-loading', overlayEl).show();

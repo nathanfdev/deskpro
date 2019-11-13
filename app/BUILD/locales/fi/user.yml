@@ -229,6 +229,7 @@ portal.news.section-title: Uutiset
 portal.news.view-as-agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
 portal.sidebar.news_title: Uutiset
 portal.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
+portal.tickets.feedback.submit: 'Lähetä palautetta'
 portal.tickets.guest-thanks-section-title: Kiitos
 portal.tickets.guest_thank_you_title: Kiitos
 portal.tickets.list_agent: 'Liitetty tukihenkilö'

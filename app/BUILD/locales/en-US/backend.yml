@@ -711,7 +711,7 @@ adm.ticket_approvals.template.can_choose.specific_approvers: 'Specific approvers
 adm.ticket_approvals.template.can_choose.let_agent_choose: 'Let agent choose'
 adm.ticket_approvals.template.approvers.allow_choose: 'Allow agent to choose approvers from set list'
 adm.ticket_approvals.template.approvers.label: 'Approvers'
-adm.ticket_approvals.template.approvers.number_of_approvers: 'Minimum number of approvers'
+adm.ticket_approvals.template.approvers.number_of_approvers: 'Number of approvers'
 adm.ticket_approvals.template.approvers.ticket_user: 'Ticket User'
 adm.ticket_approvals.template.approvers.organization_manager: 'Organization Manager'
 adm.ticket_approvals.template.approvers.all_agents: 'All Agents'
@@ -802,6 +802,8 @@ adm.ticket_macros.title_explain: 'This title will be displayed in the agent inte
 adm.ticket_settings.attachment_auth_description: 'Perform permission check on ticket attachment views'
 adm.ticket_settings.attachment_auth_help: 'When enabled, ticket attachments will only be visible by people who can view the ticket. Even if the user has the full coded URL to a file, the system will check permissions and ask the user to log-in if necessary. Doesn''t work with `Amazon S3` storage yet.'
 adm.ticket_settings.attachment_auth_title: 'Attachments Authorisation'
+adm.ticket_settings.approvals_title: 'Ticket Approvals'
+adm.ticket_settings.enable_approvals_description: 'Enable Ticket Approvals'
 adm.ticket_settings.title: 'Ticket Settings'
 adm.ticket_slas.count_slas:
   one: '{{count}} SLA'

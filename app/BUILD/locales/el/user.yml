@@ -681,6 +681,7 @@ portal.sidebar.top_articles_title: 'Κορυφαία άρθρα'
 portal.tickets.add-reply: Απάντηση
 portal.tickets.cancel-ticket-edit: 'Ακύρωση επεξεργασίας και προβολή του ticket'
 portal.tickets.feedback_message_leave_comment: 'Αφήστε προαιρετικά τα σχόλιά σας'
+portal.tickets.feedback.submit: 'Αποστολή feedback'
 portal.tickets.form-changed-notice: 'Έχουν προστεθεί νέα πεδία στη φόρμα. Παρακαλούμε ελέγξτε τα και υποβάλετε ξανά τη φόρμα.'
 portal.tickets.guest-thanks-section-title: Ευχαριστούμε!
 portal.tickets.guest_thank_you_desc: 'Ευχαριστούμε που επικοινωνήσατε μαζί μας! Σας έχουμε στείλει ένα email με οδηγίες σχετικά με την διαχείριση του ticket σας.'

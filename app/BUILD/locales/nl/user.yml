@@ -690,6 +690,7 @@ portal.sidebar.top_articles_title: Topartikelen
 portal.tickets.add-reply: Antwoorden
 portal.tickets.cancel-ticket-edit: 'Bewerking annuleren en toon het ticket nogmaals'
 portal.tickets.feedback_message_leave_comment: 'Laat eventueel een reactie achter'
+portal.tickets.feedback.submit: 'Verzend feedback'
 portal.tickets.form-changed-notice: 'Nieuwe velden zijn aan het formulier toegevoegd. Controleer deze velden en verstuur het formulier dan nogmaals.'
 portal.tickets.guest-thanks-section-title: Bedankt
 portal.tickets.guest_thank_you_desc: 'Bedankt dat u contact met ons opneemt. We hebben u een e-mail met instructies gestuurd over hoe u uw ticket beheert bij ons.'

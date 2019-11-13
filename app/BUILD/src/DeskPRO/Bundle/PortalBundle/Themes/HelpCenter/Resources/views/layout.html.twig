@@ -3,9 +3,6 @@
 <head>
     {% include 'Theme:Internal:head-include.html.twig' %}
     <title>{% if page_title is defined %}{{ page_title }}{% else %}{{ brand_setting('core.deskpro_name')|e }}{% endif %}</title>
-    <link href="{{ asset('DeskPRO_PortalBundle_helpcenter_vendors_style.css', 'app_assets') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('style.css', 'help_center') }}" rel="stylesheet" type="text/css" />
-    <link href="{{ helpcenter_css_url() }}" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body class="dp-Template {% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' and portal_mode() != 'focus-window' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
 {% include 'Theme:Internal:custom-header.html.twig' %}
@@ -61,7 +58,7 @@
                 <div class="dp-po-footer-copyright">
                     <span class="dp-po-footer-powered">{{ phrase('helpcenter.general.software_power_by') }}</span>
                     <a href="https://deskpro.com" class="dp-po-footer-deskpro" target="_blank"><img
-                                src="{{ asset('img/deskpro-logo.svg', 'help_center') }}" />
+                                src="{{ asset_data_url('img/deskpro-logo.svg', 'help_center') }}" />
                     </a>
                 </div>
             </div>

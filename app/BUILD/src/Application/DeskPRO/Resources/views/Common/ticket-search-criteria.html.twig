@@ -342,7 +342,7 @@
 	</div>
 	{% endif %}
 
-	{% if 'ticket_approval' not in no_show_fields and app.hasBeta('approvals') %}
+	{% if 'ticket_approval' not in no_show_fields and app.getSetting('core_tickets.ticket_approvals') %}
 		<div class="builder-type" title="{{ phrase('agent.tickets.ticket_approval') }}" data-rule-type="ticket_approval" data-term-type="GenericMenuTerm" data-term-triggers="ticket_approval">
 			<div class="builder-op">
 				<select name="op" class="op">

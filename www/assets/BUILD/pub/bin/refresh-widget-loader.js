@@ -1,12 +1,9 @@
 const path    = require('path');
 const uglify  = require('uglify-js');
-const sass    = require('node-sass');
 const babel   = require('babel-core');
 const fs      = require('fs');
 
 const pubDir         = path.join(__dirname, '..');
-const bowerDir       = path.resolve(pubDir, './bower_components');
-const nodeModulesDir = path.resolve(pubDir, './node_modules');
 
 function refreshWidgetLoader(loaderFilename) {
   const loaderFilePath    = `/${loaderFilename}.js`;
@@ -42,6 +39,8 @@ function refreshWidgetLoader(loaderFilename) {
 
   console.log(`... done writing ${loaderFilename}`);
 }
+
+
 
 const widgets = [
   'widget_loader',

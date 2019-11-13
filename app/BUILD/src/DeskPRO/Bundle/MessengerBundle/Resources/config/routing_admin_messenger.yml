@@ -1,0 +1,4 @@
+messenger_api_admin_routes:
+  prefix: /api/v2
+  type: annotation
+  resource: "@MessengerBundle/Admin/Controller"

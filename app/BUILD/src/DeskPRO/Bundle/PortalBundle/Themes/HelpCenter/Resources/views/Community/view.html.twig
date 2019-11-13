@@ -168,9 +168,6 @@
            {% if not attachment.blob.is_image %} data-content-type="{{ attachment.blob.content_type }}"{% endif %}
             data-no-span="1"
         >
-            {% if attachment.blob.is_image %}
-                <img class="thumbnail" src="{{ attachment.blob.download_url }}" />
-            {% endif %}
             {{ attachment.blob.filename|length > 14 ? attachment.blob.filename|slice(0, 14) ~ '...' : attachment.blob.filename  }} <span>({{ attachment.blob.getReadableFilesize() }})</span>
             <i class="dp-po-icon fal fa-arrow-to-bottom"></i>
         </a>

@@ -312,6 +312,18 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
     }
 
     /**
+     * @param DateTime $dateLastComment
+     *
+     * @return $this
+     */
+    public function setDateLastComment(\DateTime $dateLastComment = null)
+    {
+        $this->setModelField('date_last_comment', $dateLastComment);
+
+        return $this;
+    }
+
+    /**
      * @param DateTime $dateUpdated
      *
      * @return $this
@@ -782,6 +794,7 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
             $this->setModelField('num_comments', $this->num_comments + 1);
             $this->setDateUpdated();
         }
+
         $this->setModelField('date_last_comment', new DateTime());
         $comment->setObject($this);
 

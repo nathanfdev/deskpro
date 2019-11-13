@@ -348,7 +348,7 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-    api_serializer.handler.zapier_ticket_update:
+  api_serializer.handler.zapier_ticket_update:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Other\ZapierTicketUpdateHandler
     arguments:
       - "@doctrine.orm.default_entity_manager"

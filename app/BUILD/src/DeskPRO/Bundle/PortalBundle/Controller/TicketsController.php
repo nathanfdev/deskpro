@@ -183,6 +183,30 @@ class TicketsController extends AbstractController
 
                 $this->addFlash('success', $this->phrase('portal.flashes.ticket_replied'));
 
+                $ccsRemovedValue = $form['cc_remove']->getData();
+
+                if ($ccsRemovedValue) {
+                    $ccsRemoved = explode(',', $ccsRemovedValue);
+                    foreach ($ccsRemoved as $ccRemoved) {
+                        if (!$ccRemoved) {
+                            continue;
+                        }
+                        $participant = $this->getEm()->getRepository(TicketParticipant::class)->find($ccRemoved);
+                        if (!$participant instanceof TicketParticipant) {
+                            continue;
+                        }
+                        if ($participant->getTicket() === $ticket) {
+                            $ccPerson = $participant->getPerson();
+                            $ticket->removeParticipantPerson($ccPerson);
+                            $this->getEm()->flush();
+                            $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_remove', [
+                                'name'  => $ccPerson->getDisplayNameUser(),
+                                'email' => $ccPerson->getPrimaryEmailAddress(),
+                            ]));
+                        }
+                    }
+                }
+
                 return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
             }
         }

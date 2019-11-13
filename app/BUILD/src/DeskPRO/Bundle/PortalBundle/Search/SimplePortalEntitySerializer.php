@@ -90,6 +90,19 @@ class SimplePortalEntitySerializer
                 } catch (\Exception $e) {
                 }
             }
+            if ($object instanceof Entity\Article
+                || $object instanceof Entity\CommunityTopic
+                || $object instanceof Entity\Topic
+                || $object instanceof Entity\Download
+            ) {
+                if (!$date = $object->getDateUpdated()) {
+                    $date = $object->getDateCreated();
+                }
+                try {
+                    $result['date'] = $date->format(\DateTime::ISO8601);
+                } catch (\Exception $e) {
+                }
+            }
             if ($object instanceof Entity\CommunityTopic) {
                 if ($rating = $object->getTotalRating()) {
                     $result['rating'] = $rating;

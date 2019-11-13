@@ -147,7 +147,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
     setTimeout(function() {
       self.isRefreshing = false;
-      DeskPRO_Window.loadListPane(self.meta.refreshUrl);
+      var cursor = self.$scope.pageCursorStart;
+      if (cursor > 0) {
+        cursor = cursor - 1;
+      }
+
+      DeskPRO_Window.loadListPane(self.meta.refreshUrl+'&cursor='+cursor);
     }, 0);
   },
 

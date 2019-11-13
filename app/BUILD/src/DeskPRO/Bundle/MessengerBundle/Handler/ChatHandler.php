@@ -21,6 +21,8 @@ use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -74,10 +76,15 @@ class ChatHandler
     private $brandStack;
 
     /**
+     * @var MessengerSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var TicketStatusDataService
      */
     private $ticketStatuses;
-    
+
     /**
      * @var AttachmentHelper
      */
@@ -86,17 +93,20 @@ class ChatHandler
     /**
      * ChatHandler constructor.
      *
-     * @param ChatMapper               $mapper
-     * @param EntityManager            $em
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param BrandStack               $brandStack
-     * @param AttachmentHelper         $attachmentHelper
+     * @param ChatMapper                $mapper
+     * @param EntityManager             $em
+     * @param EventDispatcherInterface  $eventDispatcher
+     * @param BrandStack                $brandStack
+     * @param MessengerSettingsResolver $settingsResolver
+     * @param AttachmentHelper          $attachmentHelper
+     * @param TicketStatusDataService   $ticketStatuses
      */
     public function __construct(
         ChatMapper $mapper,
         EntityManager $em,
         EventDispatcherInterface $eventDispatcher,
         BrandStack $brandStack,
+        MessengerSettingsResolver $settingsResolver,
         AttachmentHelper $attachmentHelper,
         TicketStatusDataService $ticketStatuses
     ) {
@@ -104,6 +114,7 @@ class ChatHandler
         $this->em               = $em;
         $this->eventDispatcher  = $eventDispatcher;
         $this->brandStack       = $brandStack;
+        $this->settingsResolver = $settingsResolver;
         $this->attachmentHelper = $attachmentHelper;
         $this->ticketStatuses   = $ticketStatuses;
     }
@@ -346,7 +357,7 @@ class ChatHandler
             $person = $personRepository->findOneByEmail($request['email']);
         }
 
-        if (!$person && !isset($request['email'])) {
+        if (!$person && (!isset($request['email']) || !trim($request['email']))) {
             $errors['email']     = 'Either email or person_id parameter is required';
             $errors['person_id'] = 'Either email or person_id parameter is required';
         }
@@ -400,8 +411,16 @@ class ChatHandler
             $ticketMessage .= '<br/>'.($message->getIsUser() ? 'user: ' : 'agent: ').$message->getContentHtml();
         }
 
+        $subjectPattern = $this->settingsResolver->getSettings(
+            MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT,
+                    $this->brandStack->getActive()->getBrand(),
+                    'Missed chat with {name}'
+        );
+
+        $subjectPattern = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]+\}#', '%s', $subjectPattern);
+
         $ticket
-            ->setSubject(sprintf('Missed chat with %s', $username))
+            ->setSubject(sprintf($subjectPattern, $username))
             ->setDateCreated(new \DateTime())
             ->setCreationSystem(Ticket::CREATED_MESSENGER_UNANSWERED)
             ->setDepartment($department)

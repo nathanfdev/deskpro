@@ -695,6 +695,7 @@ portal.sidebar.top_articles_title: 'Top Artikel'
 portal.tickets.add-reply: Antwort
 portal.tickets.cancel-ticket-edit: 'Bearbeitung abbrechen und Ticket wieder anzeigen'
 portal.tickets.feedback_message_leave_comment: 'Optional einen Kommentar schreiben'
+portal.tickets.feedback.submit: 'Feedback senden'
 portal.tickets.form-changed-notice: 'Neue Felder wurden in das Formular hinzugefügt. Bitte laden Sie das Formular erneuert.'
 portal.tickets.guest-thanks-section-title: Danke
 portal.tickets.guest_thank_you_desc: 'Vielen Dank dass Sie uns kontaktiert haben. Wir haben Ihnen ein E-Mail gesendet, mit einer Anleitung wie Sie Ihre Tickets bei uns verwalten können.'

@@ -8,7 +8,6 @@ use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleBimonthlyType;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleDailyType;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleMonthlyType;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleWeeklyType;
-use DeskPRO\Bundle\ReportBundle\Service\ReportSaver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

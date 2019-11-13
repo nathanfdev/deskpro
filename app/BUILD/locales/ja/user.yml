@@ -188,6 +188,7 @@ portal.sidebar.agents_x_online:
   other: '{{count}} online'
 portal.sidebar.news_title: ニュース
 portal.tickets.feedback_message_leave_comment: オプション：コメントを残す
+portal.tickets.feedback.submit: フィードバックを送信
 portal.tickets.guest-thanks-section-title: ありがとうございました。
 portal.tickets.guest_thank_you_title: ありがとうございました。
 portal.tickets.list_agent: 担当エージェント

@@ -3,7 +3,12 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\CommunityTopic;
+use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
@@ -99,6 +104,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('icon_color', [$this, 'getIconColor'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('helpcenter_splash', [$this, 'getHelpcenterSplash'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('helpcenter_featured_articles', [$this, 'getHelpcenterFeaturedArticles']),
+            new \Twig_SimpleFunction('agent_edit_link', [$this, 'getAgentEditLink']),
         ];
 
         return $funcs;
@@ -813,6 +819,21 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return $articles;
+    }
+
+    public function getAgentEditLink(ContentAbstract $object)
+    {
+        if ($object instanceof Article) {
+            return $this->urlFull('go_to_article_id', ['id' => $object->getId()]);
+        } elseif ($object instanceof CommunityTopic) {
+            return $this->urlFull('go_to_community_topic_id', ['id' => $object->getId()]);
+        } elseif ($object instanceof News) {
+            return $this->urlFull('go_to_news_id', ['id' => $object->getId()]);
+        } elseif ($object instanceof Topic) {
+            return $this->urlFull('go_to_topic_id', ['id' => $object->getId()]);
+        } elseif ($object instanceof Download) {
+            return $this->urlFull('go_to_download_id', ['id' => $object->getId()]);
+        }
     }
 
     /**

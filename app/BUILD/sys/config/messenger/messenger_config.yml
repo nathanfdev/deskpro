@@ -121,6 +121,10 @@ security:
       pattern: ^/api/messenger/?$
       stateless: true
       anonymous: ~
+    api_anonymous_setup:
+      pattern: ^/api/messenger/service/setup/?$
+      stateless: false
+      anonymous: ~
     api:
       pattern: ^/api/messenger
       stateless: true

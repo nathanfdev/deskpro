@@ -306,6 +306,7 @@ class ArticlesController extends AbstractPublishController
 
         $viewVars = [
             'main_class'         => 'dp-po-knowledgebase-article',
+            'content'            => $article,
             'article'            => $article,
             'articleData'        => $articleData,
             'custom_data'        => $customData,

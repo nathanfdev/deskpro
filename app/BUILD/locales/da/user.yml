@@ -682,6 +682,7 @@ portal.sidebar.top_articles_title: 'Top artikler'
 portal.tickets.add-reply: Svar
 portal.tickets.cancel-ticket-edit: 'Fortryd redigering og se sagen igen'
 portal.tickets.feedback_message_leave_comment: 'Alternativ, læg en kommentar'
+portal.tickets.feedback.submit: 'Send tilbagemelding'
 portal.tickets.form-changed-notice: 'Nye felter er blevet tilføjet til formularen. Gennemse venligst disse felter, og gensend derefter formularen.'
 portal.tickets.guest-thanks-section-title: Tak
 portal.tickets.guest_thank_you_desc: 'Tak for din henvendelse. Vi har sendt dig en e-mail med instruktioner om, hvordan du håndterer din sag hos os.'

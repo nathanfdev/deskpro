@@ -192,7 +192,9 @@ class NewCommunityTopicType extends AbstractType
         $defs  = $this->fieldManager->getAvailableCommunityDefs();
 
         foreach ($defs as $def) {
-            $def->setTitle($this->phrase("portal.community.form_custom_{$def->sys_name}"));
+            if (!$def->getTitle()) {
+                $def->setTitle($this->phrase("portal.community.form_custom_{$def->sys_name}"));
+            }
 
             $forms[] = [
                 'name'    => $def->getId(),

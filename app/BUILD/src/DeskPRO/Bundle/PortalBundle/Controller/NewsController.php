@@ -108,6 +108,7 @@ class NewsController extends AbstractPublishController
             [
                 'page'          => $page,
                 'count'         => $this->getBrandSetting('portal.per_page_content'),
+                'main_class'    => 'dp-po-news',
                 'viewCategory'  => $category,
                 'newsData'      => $newsData,
                 'pager'         => $pager,
@@ -289,6 +290,7 @@ class NewsController extends AbstractPublishController
 
         $viewVars = [
             'post'               => $post,
+            'content'            => $post,
             'postData'           => $postData,
             'is_subscribed'      => $isSubscribed,
             'rating'             => $rating,

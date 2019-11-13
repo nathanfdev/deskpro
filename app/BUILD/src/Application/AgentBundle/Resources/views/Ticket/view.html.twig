@@ -416,7 +416,7 @@
                                 </li>
                             {% endif %}
 
-                            {% if app.hasBeta('approvals') %}
+                            {% if app.getSetting('core_tickets.ticket_approvals') %}
                                 <li data-tab-for="#{{ baseId }}_approvals_wrap">
                                     {{ phrase('agent.tickets.approvals.title') }} (<span id="{{ baseId }}_approvals_count">0</span>)
                                 </li>
@@ -681,7 +681,7 @@
                             {% include 'AgentBundle:Ticket:view-billing.html.twig' %}
                         </article>
                     {% endif %}
-                    {% if app.hasBeta('approvals') %}
+                    {% if app.getSetting('core_tickets.ticket_approvals') %}
                         <article id="{{ baseId }}_approvals_wrap" style="display: none;"></article>
                     {% endif %}
                     {{ dp_app_loc(baseId, 'properties.tab') }}

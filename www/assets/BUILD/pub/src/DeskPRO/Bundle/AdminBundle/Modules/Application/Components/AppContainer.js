@@ -14,6 +14,7 @@ import * as Portal from '../../Portal/Components';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import * as Apps from '../../Apps/Components/index';
+import * as Messenger from '../../Messenger/Components';
 import * as UserChat from '../../UserChat/Components/index';
 import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 import { InstallerFactory } from '../../DeskproApps';
@@ -117,6 +118,9 @@ class AppContainer extends React.Component {
               <Route path="queues" component={UserChat.Queues} />
               <Route path="queues/new" component={UserChat.NewQueueForm} />
               <Route path="queues/:queueId" component={UserChat.EditQueueForm} />
+            </Route>
+            <Route path="portal(/:brandId)" key="messenger_routes">
+              <Route path="messenger_setup" component={Messenger.MessengerSetupContainer} {...props} />
             </Route>
           </Router>
         </IntlProvider>

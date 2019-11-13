@@ -695,6 +695,7 @@ portal.sidebar.top_articles_title: Toppartiklar
 portal.tickets.add-reply: Svara
 portal.tickets.cancel-ticket-edit: 'Avbryt och visa mig ärendet igen'
 portal.tickets.feedback_message_leave_comment: 'Lämna en kommentar (frivilligt)'
+portal.tickets.feedback.submit: 'Skicka Feedback'
 portal.tickets.form-changed-notice: 'Nya fält har lagts till i formuläret. Vänligen kontrollera dessa och skicka sedan formuläret igen.'
 portal.tickets.guest-thanks-section-title: Tack
 portal.tickets.guest_thank_you_desc: 'Tack för att du kontaktar oss! Vi har skickat dig ett e-postmeddelande med instruktioner om hur du kan hantera ditt ärende.'
