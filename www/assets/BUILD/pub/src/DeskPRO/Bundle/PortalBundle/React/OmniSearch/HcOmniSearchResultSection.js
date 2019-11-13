@@ -153,8 +153,6 @@ export class HcOmniSearchResultSection extends React.Component {
   renderItem(item) {
     let t;
 
-    console.log(item);
-
     if (true || this.state.nameApi === 'news') {
       t = (
         <a href={item.url} className="dp-po-search-link">

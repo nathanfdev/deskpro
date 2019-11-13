@@ -15,7 +15,7 @@ export class HcArticleHighlighter extends PageWidget {
       const word = $el.data('word');
       const def = glossary.defs[word];
       const tooltip = $(`<span class="dp-po-tooltip" data-toggle="tooltip" data-html="true"
-      title="<p>${word}</p>${def}">${word}</span>`);
+      title="${def}">${word}</span>`);
 
       $el.replaceWith(tooltip);
 

@@ -19,6 +19,23 @@
                         {{ app.user.display_name_user }}
                     </div>
                 </div>
+                {% if ticket.participants | length > 0 %}
+                <div class="dp-po-ticket-block-cc">
+                    <ul class="dp-po-ticket-block-cc-list">
+                        <li class="dp-po-ticket-block-cc-item">CC</li>
+                        {% for participant in ticket.participants %}
+                            {% if not  participant.person.isAgent() %}
+                                <li class="dp-po-ticket-block-cc-item">
+                                    {{ participant.person }}
+                                    <a href="{{ path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id }) }}" class="remove-cc-from-reply" data-participant-id="{{ participant.id }}">
+                                        <i class="fal fa-times"></i>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
                 {{ form_errors(form) }}
                 {{ form_start(form, { attr: { class: 'dp-po-form', id: 'ticket-reply-form'} }) }}
                     {% if form_errors|length > 0 %}

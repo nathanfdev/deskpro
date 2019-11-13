@@ -82,7 +82,6 @@
 
 {# Async load vendor css #}
 {% for styleFile in [
-    asset('fontawesome.css', 'app_assets'),
     asset('DeskPRO_PortalBundle_helpcenter_vendors_style.css', 'app_assets')
 ] %}
     <link rel="preload" href="{{ styleFile }}" as="style" />
