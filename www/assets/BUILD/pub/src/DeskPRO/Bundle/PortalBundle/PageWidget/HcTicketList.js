@@ -61,6 +61,19 @@ class ColumnControlWidget extends PageWidget {
         }
       });
 
+      const colNumber = activeColIds.length + 1;
+
+      $displayTable.each((index, t) => {
+        const classNames = t.classList.values();
+
+        for (const className of classNames) {
+          if (className.match(/dp-po-table-col\d+/)) {
+            t.classList.remove(className);
+            t.classList.add(`dp-po-table-col${colNumber}`);
+          }
+        }
+      });
+
       // setup pagination links, they need the updated selected cols
       const updateLinks = function () {
         $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, newCols));

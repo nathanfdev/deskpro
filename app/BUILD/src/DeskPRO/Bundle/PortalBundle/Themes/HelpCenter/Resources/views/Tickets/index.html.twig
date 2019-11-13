@@ -375,7 +375,7 @@
             </div>
         {% endif %}
 
-        <div class="dp-po-table dp-po-table-col6 dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
+        <div class="dp-po-table dp-po-table-col{{ ticket_table.columns|filter(c => ticket_table.isActive(c))|length + 1}} dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
             <div class="dp-po-table-row dp-po-table-row-head">
                 <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
                 <span class="dp-po-table-cell">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</span>
