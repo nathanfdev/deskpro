@@ -29,6 +29,8 @@
             {% if portal_custom_logo() %}
                 <img alt="{{ brand_setting('core.deskpro_name')|e }}"
                      src="{{ portal_custom_logo() }}"
+                     height="49"
+                     style="max-height: 49px"
                      class="logo" />
             {% else %}
                 <h1>{{ brand_setting('core.deskpro_name')|e }}</h1>
@@ -63,6 +65,6 @@
             </main>
         </div>
     {% endblock %}
-    
+
 </body>
 </html>
