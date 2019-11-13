@@ -118,7 +118,6 @@ Feature: /tickets endpoint
 
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the response status code should be 200
-    And print last JSON response
     And the JSON node "data.date_resolved" should be equal to "2018-01-01T23:59:59+0000"
     And the JSON node "data.date_archived" should be equal to "2018-01-01T23:59:59+0000"
     And the JSON node "data.date_feedback_rating" should be equal to "2018-01-01T23:59:59+0000"
@@ -485,7 +484,7 @@ Feature: /tickets endpoint
 {
   "subject": "Sample Ticket",
   "person": ~admin~,
-  "date_created": "2018-06-20",
+  "date_created": "2018-06-20 00:00:00",
   "date_resolved": "2018-01-01 23:59:59",
   "date_archived": "2018-01-01 23:59:59",
   "date_feedback_rating": "2018-01-01 23:59:59",

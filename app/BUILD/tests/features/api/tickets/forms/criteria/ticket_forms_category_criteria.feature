@@ -27,7 +27,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the JSON node "errors.errors[0].code" should be equal to "extra_fields"
-    And the JSON node "errors.errors[0].message" should be equal to "Unexpected field names: cc"
+    And the JSON node "errors.errors[0].message" should contain "Unexpected field names:"
+    And the JSON node "errors.errors[0].message" should contain "cc"
 
   Scenario: I check that field is hidden if not required product
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:
@@ -38,7 +39,8 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the JSON node "errors.errors[0].code" should be equal to "extra_fields"
-    And the JSON node "errors.errors[0].message" should be equal to "Unexpected field names: cc"
+    And the JSON node "errors.errors[0].message" should contain "Unexpected field names:"
+    And the JSON node "errors.errors[0].message" should contain "cc"
 
   Scenario: I check that field is present on the form
     When I send a POST request to "/api/v2/ticket_forms/agent" with body:

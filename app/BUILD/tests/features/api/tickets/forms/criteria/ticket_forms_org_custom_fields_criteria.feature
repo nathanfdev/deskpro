@@ -64,4 +64,5 @@ Feature: /ticket_forms endpoint
 }
     """
     Then the JSON node "errors.errors[0].code" should be equal to the string "extra_fields"
-    And the JSON node "errors.errors[0].message" should be equal to the string "Unexpected field names: fields"
+    And the JSON node "errors.errors[0].message" should contain "Unexpected field names:"
+    And the JSON node "errors.errors[0].message" should contain "fields"
