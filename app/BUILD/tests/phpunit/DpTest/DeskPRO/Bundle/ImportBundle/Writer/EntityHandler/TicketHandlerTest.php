@@ -534,6 +534,32 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertNotEquals($entity1->getId(), $entity2->getId());
     }
 
+    public function test_inline_attachment()
+    {
+        $attachment1 = $this->createAttachmentModel('image.jpg');
+        $attachment1->setOid(1);
+        $attachment1->setAsInline(true);
+
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('Message with attachment [attach:1:image.jpg]');
+        $message1->setPerson(1);
+        $message1->addAttachment($attachment1);
+
+        $model = $this->createBaseModel();
+        $model->addMessage($message1);
+
+        $this->writer->writeModel($model);
+
+        $entity     = $this->getBaseEntity();
+        $message    = $entity->getFirstMessage();
+        $attachment = $entity->getAttachments()[0];
+        $blob       = $attachment->getBlob();
+
+        $this->assertRegExp('#Message with attachment <img src="(.*)image.jpg" data-blob_id="'.$blob->getId().'" />#', $message->getMessageHtml());
+        $this->assertTrue($attachment->isInline());
+    }
+
     /**
      * @return Model\Ticket
      */

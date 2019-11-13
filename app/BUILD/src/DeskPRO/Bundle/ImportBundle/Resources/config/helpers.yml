@@ -75,6 +75,7 @@ services:
       - "@dp.importer.writer.helper.person"
       - "@dp.importer.writer.helper.blob_adapter"
       - "@dp.importer.entity_persister"
+      - "@router"
       - "@dp.importer_logger"
     tags:
       - { name: dp.importer.writer.helper }
