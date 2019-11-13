@@ -196,7 +196,12 @@ class UserSearch implements UserSearchInterface
         $filteredQuery->addMust($orQuery);
         $filteredQuery->addFilter($filter);
 
-        $res     = $search->search($filteredQuery, ['limit' => self::LIMIT]);
+        if ($options['per_page'] && is_numeric($options['per_page'])) {
+            $from = ($options['page'] - 1) * $options['per_page'];
+            $res  = $search->search($filteredQuery, ['limit' => $options['per_page'], 'from' => $from]);
+        } else {
+            $res = $search->search($filteredQuery, ['limit' => self::LIMIT]);
+        }
         $objects = $this->transformer->transform($res->getResults());
 
         if ($context->getPerson() && !$context->getPerson()->is_agent) {
