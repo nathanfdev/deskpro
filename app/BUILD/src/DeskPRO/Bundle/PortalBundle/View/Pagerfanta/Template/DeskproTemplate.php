@@ -151,22 +151,28 @@ class DeskproTemplate extends Template
     /**
      * Remove params (if they exist) from a URL string's query.
      *
-     * @param string $url              source url
-     * @param array  $params_to_remove
+     * @param string $url            source url
+     * @param array  $paramsToRemove
      *
      * @return string result url
      */
-    private function removeQueryParams($url, array $params_to_remove)
+    private function removeQueryParams($url, array $paramsToRemove)
     {
         $parsed = parse_url($url);
         if ($parsed && isset($parsed['query'])) {
-            $parsed['query'] = implode('&', array_filter(explode('&', $parsed['query']), function ($param) use ($params_to_remove) {
-                $param_name = explode('=', $param)[0];
-                if ($param_name === 'page' && explode('=', $param)[1] == 1) {
+            $parsed['query'] = implode('&', array_filter(explode('&', $parsed['query']), function ($param) use ($paramsToRemove, &$parsed) {
+                $paramName = explode('=', $param)[0];
+                if ($paramName === 'page' && explode('=', $param)[1] == 1) {
+                    return false;
+                }
+                // Hack to pass anchor to pager fanta, needs to be removed after upgrading to Symfomy 3.2
+                if ($paramName === '_fragment') {
+                    $parsed['fragment'] = explode('=', $param)[1];
+
                     return false;
                 }
 
-                return !in_array($param_name, $params_to_remove);
+                return !in_array($paramName, $paramsToRemove);
             }));
             if ($parsed['query'] === '') {
                 unset($parsed['query']);

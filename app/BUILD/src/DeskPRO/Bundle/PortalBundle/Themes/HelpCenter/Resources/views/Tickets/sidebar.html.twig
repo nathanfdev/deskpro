@@ -13,10 +13,10 @@
         {% if person.organization and person.organization_manager %}
             <li class="dp-po-ticket-pages-item{% if type == 'organization' %} active{% endif %}">
                 <a href="{{ path('portal_tickets', { type: 'organization' }) }}" class="dp-po-ticket-pages-link">
-                    {% if portal_custom_logo() %}
-                    <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="dp-po-icon" />
+                    {% if portal_custom_favicon() %}
+                        <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_favicon().url }}" class="dp-po-icon" />
                     {% else %}
-                        <span class="dp-po-icon"></span>
+                        <span class="dp-po-icon fal fa-building"></span>
                     {% endif %}
                     {{ phrase('helpcenter.tickets.organization-tickets', {org_name: person.organization }) }}
                 </a>

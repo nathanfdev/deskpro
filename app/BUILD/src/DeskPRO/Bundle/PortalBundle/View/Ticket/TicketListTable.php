@@ -43,7 +43,7 @@ class TicketListTable
         $this->activeColumns     = [];
         $this->columns           = $columns;
         $this->perPage           = $perPage;
-        $this->makeFilterWithRequest($request);
+        $this->makeFilterWithRequest($request, $perPage);
     }
 
     /**

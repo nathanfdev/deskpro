@@ -17,7 +17,7 @@ class ColumnControlWidget extends PageWidget {
     const tableId = $table.data('id');
     const table = tablesData[tableId];
 
-    $colControlButton.click(function (e) {
+    $colControlButton.click((e) => {
       e.preventDefault();
       e.stopPropagation();
       if ($popup.is(':visible')) {
@@ -27,7 +27,7 @@ class ColumnControlWidget extends PageWidget {
       }
     });
 
-    $(document).click(function (e) {
+    $(document).click((e) => {
       // if not a part of the popup, close it
       if (!$(e.target).closest('.popup-tiny').length) {
         $popup.hide();
@@ -35,13 +35,13 @@ class ColumnControlWidget extends PageWidget {
     });
 
     function updateQueryStringParameter(uri, key, value) {
-      var re = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
-      var separator = uri.indexOf('?') !== -1 ? '&' : '?';
+      const re = new RegExp(`([?&])${key}=.*?(&|$)`, 'i');
+      const separator = uri.indexOf('?') !== -1 ? '&' : '?';
       if (uri.match(re)) {
-        return uri.replace(re, '$1' + key + '=' + value + '$2');
+        return uri.replace(re, `$1${key}=${value}$2`);
       }
 
-      return uri + separator + key + '=' + value;
+      return `${uri + separator + key}=${value}`;
     }
 
     function sync_table_with_active_col_ids(activeColIds) {
@@ -59,17 +59,16 @@ class ColumnControlWidget extends PageWidget {
         } else {
           $this.show();
         }
-
-        // setup pagination links, they need the updated selected cols
-        var updateLinks = function () {
-          $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, newCols));
-        };
-
-        $('.table-header a').each(updateLinks);
-        $('.pagination a').each(updateLinks);
-
-        $tdTotalCols.attr('colspan', activeColIds.length + 1); // +1 for ticket ref (fixed)
       });
+      // setup pagination links, they need the updated selected cols
+      const updateLinks = function () {
+        $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, newCols));
+      };
+
+      $('.table-header a').each(updateLinks);
+      $('.pagination a').each(updateLinks);
+
+      $tdTotalCols.attr('colspan', activeColIds.length + 1); // +1 for ticket ref (fixed)
 
       const tlf = $('#ticket_list_search_form');
 

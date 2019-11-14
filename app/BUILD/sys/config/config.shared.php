@@ -264,6 +264,12 @@ $container->loadFromExtension(
                             'prefix'    => 'DeskPRO\Bundle\ReportBundle\Entity',
                         ],
                     ],
+                    'dql' => [
+                        'string_functions' => [
+                            'group_concat' => 'DoctrineExtensions\Query\Mysql\GroupConcat',
+                            'greatest'     => 'DoctrineExtensions\Query\Mysql\Greatest',
+                        ],
+                    ],
                 ],
 
                 'system' => [

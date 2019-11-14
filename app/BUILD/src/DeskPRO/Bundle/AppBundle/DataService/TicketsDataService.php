@@ -179,11 +179,9 @@ class TicketsDataService extends AbstractDataService
                     case TicketFilter::SORT_AGENT:
                         $qb->orderBy('t.agent', $filter->getSortDirection());
                         break;
-                    // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
                     case TicketFilter::SORT_ACTIVITY:
-                        $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
-                        $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
-                        $qb->addOrderBy('t.date_created', $filter->getSortDirection());
+                        $qb->select('t, GREATEST(t.date_last_user_reply, t.date_last_agent_reply, t.date_created) as HIDDEN date_activity');
+                        $qb->addOrderBy('date_activity', $filter->getSortDirection());
                         break;
                 }
 
