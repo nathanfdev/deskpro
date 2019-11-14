@@ -1974,6 +1974,11 @@ $collection->create('agent_news_new', [
     'controller' => 'AgentBundle:News:newNews',
 ]);
 
+$collection->create('agent_news_edit_content_template', [
+    'path'       => '/news/edit_content_template/{contentTemplate}',
+    'controller' => 'AgentBundle:News:editContentTemplate',
+]);
+
 $collection->create('agent_news_comparerevs', [
     'path'       => '/news/compare-revs/{rev_old_id}/{rev_new_id}',
     'controller' => 'AgentBundle:News:compareRevisions',

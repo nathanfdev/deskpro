@@ -1,8 +1,8 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewNews';
-
-pageMeta.title = '{{ phrase('agent.publish.new_post') }}';
-pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
+pageMeta.contentTemplateId = '{{ content_template.id }}';
+pageMeta.title = '{{ content_template.title }}';
+pageMeta.uploadAttachUrl = '{{ path('agent_accept_upload') }}';
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
@@ -131,8 +131,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_news') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
-        <button class="submit-template-trigger clean-white">{{ phrase('agent.general.save_as_new_template') }}</button>
+        <button class="submit-template-update-trigger clean-white">{{ phrase('agent.content_templates.update_template') }}</button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

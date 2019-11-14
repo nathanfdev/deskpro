@@ -8,7 +8,6 @@ use Application\AgentBundle\Form\Type\NewNews as NewNewsType;
 use Application\AgentBundle\Validator\NewNewsValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -19,12 +18,14 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Entity\ContentTemplate;
 use DeskPRO\Bundle\AppBundle\Entity\SplashImageProperty;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Client;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles listing and editing of news.
@@ -548,6 +549,37 @@ class NewsController extends AbstractController
                 'success' => false,
             ]);
         }
+    }
+
+    /**
+     * @param ContentTemplate $contentTemplate
+     *
+     * @return Response
+     */
+    public function editContentTemplateAction(ContentTemplate $contentTemplate)
+    {
+        $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+
+        $articleCategories = $this->getFilteredCategory($brandId);
+
+        if (count($articleCategories) === 0) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            $brand  = array_shift($brands);
+            while (count($articleCategories) === 0 && $brand->getId()) {
+                $brandId           = $brand->getId();
+                $articleCategories = $this->getFilteredCategory($brandId);
+                $brand             = array_shift($brands);
+            }
+        }
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
+        return $this->render('AgentBundle:News:edit-content-template.html.twig', [
+            'content_template'  => $contentTemplate,
+            'news_categories'   => $articleCategories,
+            'brands'            => $brands,
+            'selected_brand_id' => $brandId,
+        ]);
     }
 
     /**

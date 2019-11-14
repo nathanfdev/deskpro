@@ -68,6 +68,8 @@ class ContentTemplate implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("string")
      *
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title;

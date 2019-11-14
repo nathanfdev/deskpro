@@ -191,7 +191,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
   submitTemplate: function() {
-    var overlayEl = $('.newarticle-template-overlay', this.wrapper);
+    var overlayEl = $('.newcontent-template-overlay', this.wrapper);
     var triggerEl = $('.submit-template-trigger', this.wrapper);
 	  var formData = this.collectFormData();
 	  var self = this;
