@@ -1,6 +1,6 @@
 import './publicPath';
 import 'react-hot-loader/patch';
-import { portalApp } from './PortalApp';
+import { helpcenterApp } from './HelpcenterApp';
 import $ from 'jquery';
 
 import('./hc-lazy-inc').then(function() {
@@ -15,5 +15,5 @@ import('./hc-lazy-inc').then(function() {
   });
 });
 
-portalApp.run();
-window.PortalBundle = portalApp;
+helpcenterApp.run();
+window.HelpcenterBundle = helpcenterApp;

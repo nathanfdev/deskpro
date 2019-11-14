@@ -203,6 +203,16 @@ class HelpCenterData
         return $userInfo;
     }
 
+    public function getTopics($guide)
+    {
+        $user = $this->getUser();
+
+        return $this->getGuidesDataService()->getGuideChildren(
+            $guide,
+            $user
+        );
+    }
+
     /**
      * @return NewsDataService
      */
