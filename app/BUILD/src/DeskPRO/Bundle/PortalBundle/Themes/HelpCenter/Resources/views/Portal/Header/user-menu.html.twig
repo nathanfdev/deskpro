@@ -71,20 +71,20 @@
                 <ul class="dp-po-user-menu-list">
                     <li class="dp-po-user-menu-item">
                         <a class="dp-po-user-menu-link" href="{{ path('portal_user_profile') }}">
-                            <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/profile.svg', 'help_center') }}"> {{ phrase('helpcenter.general.view_profile') }}
+                            <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/account.svg', 'help_center') }}"> {{ phrase('helpcenter.general.view_profile') }}
                         </a>
                     </li>
                     {% if helpcenter.getUserInfo().ticket_count > 0 and can_use_tickets() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_tickets') }}">
-                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/tickets-light.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/tickets.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-tickets') }}
                             </a>
                         </li>
                     {% endif %}
                     {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_chats') }}">
-                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/chats-light.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/chats.svg', 'help_center') }}"> {{ phrase('helpcenter.chats.my-chats') }}
                             </a>
                         </li>
                     {% endif %}
