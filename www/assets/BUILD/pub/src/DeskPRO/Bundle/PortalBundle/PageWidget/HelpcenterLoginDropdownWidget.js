@@ -46,6 +46,14 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
     this.passwordLabel.classList.remove('error');
   };
 
+  onKeyDown = (event) => {
+    if (event.keyCode === 13) {
+      this.onSubmit(event);
+      return false;
+    }
+    return true;
+  };
+
   onSubmit = (event) => {
     event.preventDefault();
 
@@ -115,9 +123,11 @@ export class HelpcenterLoginDropdownWidget extends PageWidget {
     if (this.username) {
       this.username.addEventListener('blur', this.onEmailBlur);
       this.username.addEventListener('change', this.onResetFailed);
+      this.username.addEventListener('keydown', this.onKeyDown);
     }
     if (this.password) {
       this.password.addEventListener('change', this.onResetFailed);
+      this.username.addEventListener('keydown', this.onKeyDown);
     }
   }
 }

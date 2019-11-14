@@ -193,7 +193,7 @@
                                     {% else %}
                                         {% set table_type = 'danger' %}
                                     {% endif %}
-                                    {{ _self.tickets_table(table, loop.index0, table_type, not search_displayed, search_query) }}
+                                    {{ _self.tickets_table(table, table.ticketCategory, table_type, not search_displayed, search_query) }}
                                     {% set search_displayed = true %}
                                 {% endif %}
                             {% endfor %}
@@ -219,9 +219,9 @@
     {% set queryParams = app.request.query.all|merge({(sort_param):sort_value, (sort_dir_param):linkDir, type: ticket_table.getTicketType()}) %}
     {% set url = path(app.request.attributes.get('_route'), queryParams) %}
     {% set sort_icon = sort_dir == 'desc' ? '<i
-        class="dp-po-icon far fa-long-arrow-up"></i>' : '<i
-        class="dp-po-icon far fa-long-arrow-down"></i>' %}
-    {{ label }}<a href="{{ url }}">{% if isActive %}<span>{{ sort_icon|raw }}</span>{% else %}<i
+        class="dp-po-icon far fa-long-arrow-down"></i>' : '<i
+        class="dp-po-icon far fa-long-arrow-up"></i>' %}
+    {{ label }}<a href="{{ url }}" {% if isActive %}class="active" {% endif %}>{% if isActive %}{{ sort_icon|raw }}{% else %}<i
         class="dp-po-icon far fa-arrows-v"></i>{% endif %}</a>
 {%- endmacro -%}
 
@@ -349,7 +349,7 @@
         {% if with_search %}
             <div class="row">
                 <div class="col-sm-4">
-                    <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+                    <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}" id="{{ id }}">
                         <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
                     </div>
                 </div>
@@ -370,12 +370,12 @@
                 </div>
             </div>
         {% else %}
-            <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}">
+            <div class="dp-po-ticketbadge dp-po-ticketbadge-{{ type }}" id="{{ id }}">
                 <span class="dp-po-ticketbadge-number">{{ ticket_table.pager|length }}</span>{{ ticket_table.title }}
             </div>
         {% endif %}
 
-        <div class="dp-po-table dp-po-table-col6 dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
+        <div class="dp-po-table dp-po-table-col{{ ticket_table.columns|filter(c => ticket_table.isActive(c))|length + 1}} dp-po-table-ticket dp-po-table-ticket-{{ type }} mb-4">
             <div class="dp-po-table-row dp-po-table-row-head">
                 <span class="dp-po-table-cell dp-po-table-cell-indicator"></span>
                 <span class="dp-po-table-cell">{{ phrase('helpcenter.tickets.list_ticket_ref') }}</span>
@@ -412,7 +412,7 @@
         </div>
         {% include 'Theme:Common:pager.html.twig' with {
             pager: ticket_table.pager,
-            pager_options: { pageParameter: '['~ticket_table.pageName~']' }
+            pager_options: { pageParameter: '['~ticket_table.pageName~']', routeParams: {'_fragment': id} }
         } %}
     {% endif %}
 {% endmacro %}

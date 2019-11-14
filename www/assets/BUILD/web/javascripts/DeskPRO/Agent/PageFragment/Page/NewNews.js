@@ -26,6 +26,8 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		});
 
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
+    $('button.submit-template-trigger', this.wrapper).on('click', this.submitTemplate.bind(this));
+    $('button.submit-template-update-trigger', this.wrapper).on('click', this.submitTemplateUpdate.bind(this));
 
 		this._initCategorySection();
 		this._initTitleSection();
@@ -136,6 +138,122 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 	showErrorCode: function(code) {
 		$('.' + code + '.error-message', this.wrapper).addClass('error-message-on');
 	},
+
+  submitTemplate: function() {
+    var overlayEl = $('.newcontent-template-overlay', this.wrapper);
+    var triggerEl = $('.submit-template-trigger', this.wrapper);
+    var formData = this.collectFormData();
+    var self = this;
+
+    if(!this.overlay) {
+      this.overlay = new DeskPRO.UI.Overlay({
+        triggerElement: triggerEl,
+        contentElement: overlayEl,
+        zIndex: 1900
+      });
+
+      // Reset overlay on close
+      this.overlay.addEvent('overlayClosed', function() {
+        $('.submit-template-trigger', overlayEl).removeAttr('disabled') ;
+        $('input[name=title]', overlayEl).val('');
+        $('.success', overlayEl).hide();
+      });
+
+      $('.submit-template-trigger', overlayEl).on('click', function() {
+        var $submitTrigger = this;
+        var attachments = $('input[name="newnews[attach][]"]').map(function() {
+          return $(this).val();
+        }).get();
+        var data = {
+          "type": "news",
+          "template": formData,
+          "attach": attachments,
+          "title": $('input[name=title]', overlayEl).val()
+        };
+        $('.is-loading', overlayEl).show();
+        $('.is-not-loading', overlayEl).hide();
+        $.ajax({
+          url:  DP_BASE_API_URL + "/v2/content_templates",
+          type: 'POST',
+          data: data,
+          dataType: 'json',
+          success: function() {
+            $('.is-not-loading', overlayEl).show();
+            $('.success', overlayEl).show();
+            $('.is-loading', overlayEl).hide();
+            $submitTrigger.disabled = true;
+
+            if (window.ManageContentTemplatesModal) {
+              window.ManageContentTemplatesModal.reloadTemplates();
+            }
+
+            self.overlay.close();
+          },
+          error: function() {
+            $('.is-not-loading', overlayEl).show();
+            $('.is-loading', overlayEl).hide();
+          }
+        });
+      });
+    }
+    this.overlay.open();
+  },
+
+  submitTemplateUpdate: function() {
+    var formData = this.collectFormData();
+    var attachments = $('input[name="newnews[attach][]"]').map(function() {
+      return $(this).val();
+    }).get();
+    var data = {
+      "template": formData,
+      "attach": attachments,
+    };
+
+    $('div.error.section', this.wrapper).removeClass('error');
+    $('.error-message-on', this.wrapper).removeClass('error-message-on');
+
+    this.stateSaver.stop();
+    this.stateSaver.resetState();
+    this.wrapper.addClass('loading');
+
+    var self = this;
+    var wrapper = this.wrapper;
+
+    $.ajax({
+      url:  DP_BASE_API_URL + "/v2/content_templates/"+this.meta.contentTemplateId,
+      type: 'PUT',
+      data: data,
+      dataType: 'json',
+      complete: function() {
+        wrapper.removeClass('loading');
+        if (window.ManageContentTemplatesModal) {
+          window.ManageContentTemplatesModal.reloadTemplates();
+        }
+
+        self.closeSelf();
+      }
+    });
+  },
+
+  collectFormData: function() {
+    var formData = this.form.serializeArray();
+
+    if (this.labelsInput) {
+      formData.push(this.labelsInput.getFormData());
+    }
+
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte) {
+      formData.push({
+        name:  "newnews[content]",
+        value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
+      });
+      formData.push({
+        name:  "newnews[content_input]",
+        value: this.rte.current.editor.current.reactEditor.current.editor.getJSON()
+      });
+    }
+    return formData;
+  },
 
 	//#################################################################
 	//# Category section

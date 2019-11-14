@@ -2868,7 +2868,14 @@ DeskPRO.Agent.Window = new Orb.Class({
           tabRoute: 'page:' + BASE_URL + 'agent/kb/article/edit_content_template/'+contentTemplateId,
           autostart: autostart
         });
-      }
+      };
+      this.createEditNewsContentTemplateLoader = function (contentTemplateId) {
+        return new DeskPRO.Agent.Widget.BackgroundPopout({
+          loadUrl: BASE_URL + 'agent/news/edit_content_template',
+          tabRoute: 'page:' + BASE_URL + 'agent/news/edit_content_template/'+contentTemplateId,
+          autostart: autostart
+        });
+      };
 			this.newNewsLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 				loadUrl: BASE_URL + 'agent/news/new',
 				tabRoute: 'page:' + BASE_URL + 'agent/news/new',

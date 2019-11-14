@@ -33,13 +33,20 @@ class ColumnControlWidget extends PageWidget {
     });
 
     function updateQueryStringParameter(uri, key, value) {
+      let fragment = uri.match(/#.+$/);
+      if (fragment) {
+        fragment = fragment[0];
+        uri = uri.replace(fragment, '');
+      } else {
+        fragment = '';
+      }
       const re = new RegExp(`([?&])${key}=.*?(&|$)`, 'i');
       const separator = uri.indexOf('?') !== -1 ? '&' : '?';
       if (uri.match(re)) {
-        return uri.replace(re, `$1${key}=${value}$2`);
+        return uri.replace(re, `$1${key}=${value}$2`) + fragment;
       }
 
-      return `${uri + separator + key}=${value}`;
+      return `${uri + separator + key}=${value}${fragment}`;
     }
 
     function syncTableWithActiveColIds(activeColIds) {
@@ -52,15 +59,28 @@ class ColumnControlWidget extends PageWidget {
         } else {
           $this.show();
         }
-
-        // setup pagination links, they need the updated selected cols
-        const updateLinks = function () {
-          $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, newCols));
-        };
-
-        $('.dp-po-table-row-head a').each(updateLinks);
-        $('.pagination a').each(updateLinks);
       });
+
+      const colNumber = activeColIds.length + 1;
+
+      $displayTable.each((index, t) => {
+        const classNames = t.classList.values();
+
+        for (const className of classNames) {
+          if (className.match(/dp-po-table-col\d+/)) {
+            t.classList.remove(className);
+            t.classList.add(`dp-po-table-col${colNumber}`);
+          }
+        }
+      });
+
+      // setup pagination links, they need the updated selected cols
+      const updateLinks = function () {
+        $(this).attr('href', updateQueryStringParameter($(this).attr('href'), table.active_columns_param, newCols));
+      };
+
+      $('.dp-po-table-row-head a').each(updateLinks);
+      $('.pagination a').each(updateLinks);
 
       const tlf = $('#ticket_list_search_form');
 

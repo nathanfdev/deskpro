@@ -45,6 +45,9 @@ class AddButton extends React.Component {
               <MenuItem key="create_from_article_template" onClick={this.createFromArticleTemplate}>
                 <i className="icon edit" /> <FormattedMessage id="agent.content_templates.create_article_from_template" />
               </MenuItem>
+              <MenuItem key="create_from_news_template" onClick={this.createFromNewsTemplate}>
+                <i className="icon edit" /> <FormattedMessage id="agent.content_templates.create_news_from_template" />
+              </MenuItem>
               <MenuItem key="manage_article_template" onClick={this.manageTemplates}>
                 <i className="icon sliders horizontal" /> <FormattedMessage id="agent.content_templates.manage_templates" />
               </MenuItem>
@@ -130,6 +133,19 @@ class AddButton extends React.Component {
         module: 'UseContentTemplates',
         width:  745,
         type:   'article'
+      }
+    });
+
+    window.document.dispatchEvent(event);
+    this.closePopup();
+  };
+
+  createFromNewsTemplate = () => {
+    const event = new CustomEvent('dpLeftDrawer', {
+      detail: {
+        module: 'UseContentTemplates',
+        width:  745,
+        type:   'news'
       }
     });
 

@@ -77,16 +77,18 @@ class UseContentTemplatesModal extends React.Component {
     const { type } = this.props;
     if (type === 'article') {
       return <FormattedMessage id="agent.content_templates.create_article_from_template" />;
+    } else if (type === 'news') {
+      return <FormattedMessage id="agent.content_templates.create_news_from_template" />;
     }
 
     return '';
   };
 
   render() {
-    const { closeMenu, selectTemplate, createFromTemplate, contentTemplates, selectedTemplate } = this.props;
-    const options = contentTemplates.toArray().map(contentTemplate => ({
-      value: contentTemplate.get('id'),
-      label: contentTemplate.get('title')
+    const { type, closeMenu, selectTemplate, createFromTemplate, contentTemplates, selectedTemplate } = this.props;
+    const options = contentTemplates.toArray().filter(template => template.get('type') === type).map(template => ({
+      value: template.get('id'),
+      label: template.get('title')
     }));
 
     return (

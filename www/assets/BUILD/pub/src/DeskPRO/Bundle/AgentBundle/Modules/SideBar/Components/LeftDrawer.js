@@ -69,7 +69,7 @@ export class LeftDrawerContainer extends SeparateComponent {
           module = UseContentTemplatesModal;
           props = {
             closeMenu: this.closeDrawer,
-            type:      'article'
+            type:      e.detail.type
           };
           this.resize();
           break;
