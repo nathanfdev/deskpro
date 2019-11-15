@@ -81,6 +81,13 @@
                             </a>
                         </li>
                     {% endif %}
+                    {% if app.getSetting('portal.members_community') %}
+                        <li class="dp-po-user-menu-item">
+                            <a class="dp-po-user-menu-link" href="{{ path('portal_dm') }}">
+                                <img class="dp-profile-svg dp-po-user-menu-image" src="{{ asset('img/page-icons/direct-message.svg', 'help_center') }}"> {{ phrase('helpcenter.tickets.my-messages') }}
+                            </a>
+                        </li>
+                    {% endif %}
                     {% if helpcenter.getUserInfo().chat_count > 0 and can_use_chat() %}
                         <li class="dp-po-user-menu-item">
                             <a class="dp-po-user-menu-link" href="{{ path('portal_chats') }}">
