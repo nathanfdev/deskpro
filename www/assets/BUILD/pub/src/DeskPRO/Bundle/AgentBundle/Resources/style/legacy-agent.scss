@@ -1506,8 +1506,34 @@ i.icon.fitted {
     overflow: hidden;
     background: top/40px 40px no-repeat url("../img/spinners/loading-big-circle.gif"), rgba(100, 100, 100, 0.2)
   }
+
+  .dp-editor-content {
+    h1 {
+      font-size: 2em;
+    }
+    h2 {
+      font-size: 1.5em;
+      font-weight: normal;
+    }
+    h3 {
+      font-size: 1.3em;
+    }
+    h4 {
+      font-size: 1.15em;
+    }
+    h5 {
+      font-size: 1.1em;
+    }
+    h6 {
+      font-size: 1em;
+    }
+  }
 }
 
+// overwrite too global .left/.right class defined in dp-interface and also used in tui image editor
+ul.tui-image-editor-submenu-item li.left, ul.tui-image-editor-submenu-item li.right {
+  float: none;
+}
 
 .ui.popup {
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);

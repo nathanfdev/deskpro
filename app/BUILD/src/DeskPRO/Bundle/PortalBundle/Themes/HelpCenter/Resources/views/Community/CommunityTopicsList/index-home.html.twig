@@ -68,7 +68,7 @@
                                                 {% else %}
                                                     <img src="{{ avatar_url(activity.topic.person, 30) }}" class="dp-po-community-row-activity-img rounded-circle">
                                                     <h4 class="dp-po-community-row-activity-title">
-                                                        {{ activity.topic.content|truncate(80) }}
+                                                        {{ activity.topic.content_plain|truncate(80) }}
                                                     </h4>
                                                     <span class="dp-po-community-row-activity-time">
                                                     {{ date_ago(activity.topic.date_created) }}

@@ -24,7 +24,7 @@
             </a>
         </div>
 
-        {% if show_rating_counts %}
+        {% if show_rating_counts and rating_counts['total'] > 0 %}
             <p>{{ phrase('helpcenter.general.rating_x_of_y_found_helpful', { vote_up: rating_counts['positive'], vote_count: rating_counts['total'] }) }}</p>
         {% endif %}
     </div>
