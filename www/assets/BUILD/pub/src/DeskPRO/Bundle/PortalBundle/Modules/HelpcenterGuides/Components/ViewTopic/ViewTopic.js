@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { TopicList, TopicSummary, GuideSelector, CodeBlock } from '../index';
+import { Link, Element, Events } from 'react-scroll';
+import { TopicList, Topic, GuideSelector, CodeBlock } from '../index';
 
 class ViewTopic extends React.Component {
   static propTypes = {
@@ -18,14 +20,14 @@ class ViewTopic extends React.Component {
       topic = JSON.parse(window.topic);
     }
     topic.content = this.addIdToh1(topic.content);
-    const topics = JSON.parse(window.topicList);
+    const topicList = JSON.parse(window.topicList);
     this.state = {
       fixed:     false,
       doSpin:    false,
       flashes:   [],
-      topic,
+      topics:    { [topic.id]: topic },
       guideSlug: this.getGuideSlug(this.props.params.splat),
-      topics
+      topicList,
     };
     this.contentChanged = false;
     this.ticking = false;
@@ -34,16 +36,26 @@ class ViewTopic extends React.Component {
   }
 
   componentDidMount() {
+    this.changeInternalLinks();
     this.addCodeBlocksCopy();
     window.addEventListener('scroll', () => {
       if (!this.ticking) {
         window.requestAnimationFrame(() => {
+          this.handleScroll();
           this.ticking = false;
         });
       }
       this.ticking = true;
     });
+    this.grabAllTopicsFromApi();
     window.addEventListener('resize', this.defineSizes);
+    this.defineSizes();
+    Events.scrollEvent.register('begin', () => {
+      this.scrolling = true;
+    });
+    Events.scrollEvent.register('end', () => {
+      this.scrolling = false;
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,6 +74,7 @@ class ViewTopic extends React.Component {
   componentDidUpdate() {
     if (this.contentChanged) {
       this.contentChanged = false;
+      this.defineSizes();
     }
   }
 
@@ -71,6 +84,60 @@ class ViewTopic extends React.Component {
   }
 
   getGuideSlug = splat => splat.split('/')[0];
+
+  handleScroll = () => {
+    this.setState({
+      fixed: this.elements.guidesMain.getBoundingClientRect().top < 0
+    });
+  };
+
+  defineSizes = () => {
+    if (!this.elements) {
+      this.elements = {
+        guidesMain: window.document.getElementById('react_helpcenter_bundle'),
+        search:     window.document.getElementsByClassName('dp-po-guides-search')[0],
+      };
+    }
+    if (!this.sizes) {
+      this.sizes = {
+        topMargin:   this.elements.guidesMain.getBoundingClientRect().top - document.documentElement.scrollTop,
+        searchWidth: this.elements.search.getBoundingClientRect().width,
+      };
+    }
+  };
+
+  changeInternalLinks = () => {
+    const links = document.querySelectorAll('a.internal_link.topic');
+    Array.prototype.forEach.call(links, (internalLink) => {
+      let target = internalLink.pathname;
+
+      const guideSlug = target.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
+      if (guideSlug !== this.state.guideSlug) {
+        const newLink = document.createElement('a');
+        newLink.className = 'internal_link topic';
+        newLink.onclick = e => this.internalLink(e, target);
+        newLink.href = '#';
+        if (internalLink.hash) {
+          target += internalLink.hash;
+        }
+        newLink.innerText = internalLink.text;
+        internalLink.parentNode.replaceChild(newLink, internalLink);
+      } else {
+        const topicSlug = target.replace(/^.+\/([^/]+)$/, '$1');
+        const link = (
+          <Link
+            to={`topic_${topicSlug}`}
+            offset={-178}
+            smooth
+            isDynamic
+          >
+            {internalLink.text}
+          </Link>
+        );
+        ReactDOM.render(link, internalLink);
+      }
+    });
+  };
 
   addCodeBlocksCopy = () => {
     const blocks = document.querySelectorAll('pre code');
@@ -103,10 +170,36 @@ class ViewTopic extends React.Component {
     return container.innerHTML;
   };
 
-  grabTopicFromApi(slug) {
-    this.setState({
-      doSpin: true
-    });
+  internalLink = (e, path) => {
+    e.preventDefault();
+    const guideSlug = path.replace(/^(\/[^/]+)?\/guides\//, '').replace(/\/.*/, '');
+    if (guideSlug !== this.state.guideSlug) {
+      portalHttp.sendGet(`DP_URL/portal/api/guides/topics/${guideSlug}`).then((response) => {
+        if (response.isError()) {
+          return;
+        }
+
+        const topicList = response.data.data;
+        this.setState({
+          topicList,
+        });
+      });
+    }
+    browserHistory.push(path);
+    return false;
+  };
+
+  grabTopicFromApi = (slug) => {
+    if (this.scrolling) {
+      return;
+    }
+    const { topics, topicList } = this.state;
+    const item = topicList.find(t => t.slug === slug);
+    if (item) {
+      if (topics[item.id]) {
+        return;
+      }
+    }
 
     portalHttp.sendGet(`DP_URL/portal/api/guides/topic/${slug}`).then((response) => {
       if (response.isError()) {
@@ -115,17 +208,38 @@ class ViewTopic extends React.Component {
 
       const topic = response.data.data;
       topic.content = this.addIdToh1(topic.content);
+      topics[topic.id] = topic;
       this.setState({
-        doSpin:  false,
-        topic,
+        topics,
         flashes: [],
       });
+      this.changeInternalLinks();
       this.addCodeBlocksCopy();
-      window.scrollTo(0, 0);
-      setTimeout(this.defineSizes, 100);
       setTimeout(this.hashLinkScroll, 100);
     });
-  }
+  };
+
+  grabAllTopicsFromApi = () => {
+    portalHttp.sendGet(`DP_URL/portal/api/guides/all/${this.state.guideSlug}`).then((response) => {
+      if (response.isError()) {
+        return;
+      }
+
+      const topics = {};
+      const res = response.data.data;
+      res.forEach((topic) => {
+        topic.content = this.addIdToh1(topic.content);
+        topics[topic.id] = topic;
+      });
+      this.setState({
+        topics,
+        flashes: [],
+      });
+      this.changeInternalLinks();
+      this.addCodeBlocksCopy();
+      setTimeout(this.hashLinkScroll, 100);
+    });
+  };
 
   hashLinkScroll = () => {
     const { hash } = window.location;
@@ -147,11 +261,12 @@ class ViewTopic extends React.Component {
         return;
       }
 
-      const topics = response.data.data;
+      const topicList = response.data.data;
       this.setState({
-        topics,
+        topicList,
+        guideSlug: guide.slug,
       });
-      const topic = Object.values(topics).sort(
+      const topic = Object.values(topicList).sort(
         (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
       ).shift();
 
@@ -168,77 +283,62 @@ class ViewTopic extends React.Component {
       } else {
         browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}`);
       }
+      window.scrollTo(0, 0);
     });
   };
 
+  renderTopics() {
+    const { topicList, topics } = this.state;
+    const result = [];
+
+    topicList
+      .forEach((topic) => {
+        if (parseInt(topic.no_content, 10) === 1 || topic.depth === 0) {
+          result.push(<Element name={`topic_${topic.id}`} key={topic.id} />);
+        } else {
+          result.push(
+            <Element
+              key={topic.id}
+              name={`topic_${topic.id}`}
+            >
+              <Topic
+                topic={topic}
+                data={topics[topic.id]}
+              />
+            </Element>
+          );
+        }
+      });
+    return result;
+  }
+
   render() {
-    const { topics, topic } = this.state;
+    const { topicList, fixed } = this.state;
     const { splat } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
-    const { fixed } = this.state;
-    const agentBarHeight = this.sizes ? this.agentBarHeight : 0;
 
     return (
-      <div>
-        <GuideSelector guideSlug={this.state.guideSlug} selectGuide={this.selectGuide} />
+      <div className={classNames({ fixed })}>
+        <GuideSelector
+          guideSlug={this.state.guideSlug}
+          selectGuide={this.selectGuide}
+          fixed={fixed}
+        />
         <div className="dp-po-guides-section">
           <div className="dp-po-guides-wrap">
             <div className="container-fluid">
               <div className="row">
                 <div className="col-sm-3">
-                  <TopicList topics={topics} guideSlug={guideSlug} />
+                  <TopicList
+                    topics={topicList}
+                    guideSlug={guideSlug}
+                    grabTopicFromApi={this.grabTopicFromApi}
+                    sizes={this.sizes}
+                  />
                 </div>
                 <div className="col-sm-9">
                   <div className="dp-po-guides-block">
-                    <div className="dp-po-guides-block-article" id={topic.slug}>
-                      <div className="row">
-                        <div className="col-sm-9">
-                          <div className="dp-po-guides-block-article-left">
-                            <div className="dp-po-guides-block-header">
-                              <div>
-                                <h2 className="dp-po-guides-block-title dp-po-clipboard">{topic.title} <a
-                                  className="dp-po-clipboard-link" data-toggle="tooltip"
-                                  data-placement="top" title="Copy to Clipboard"
-                                ><i
-                                  className="dp-po-icon far fa-anchor"
-                                /></a></h2>
-                                <a href="" className="dp-po-guides-block-chapter"><i
-                                  className="dp-po-icon fal fa-angle-right"
-                                />
-                                  LDAP</a>
-                              </div>
-                              <div className="dp-po-guides-block-extra">
-                                <ul className="dp-po-guides-block-extra-list">
-                                  <li className="dp-po-guides-block-extra-item">
-                                    <a href="" className="dp-po-guides-block-extra-link"><i
-                                      className="dp-po-icon fal fa-print"
-                                    /></a>
-                                  </li>
-                                  <li className="dp-po-guides-block-extra-item">
-                                    <a href="" className="dp-po-guides-block-extra-link">
-                                      <i className="dp-po-icon fal fa-file-pdf" />
-                                    </a>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <div
-                              className="dp-po-post-content dp-po-guides-block-content"
-                              dangerouslySetInnerHTML={{ __html: topic.content }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-3">
-                          <div className="dp-po-guides-block-article-right">
-                            <TopicSummary content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
-                            <div className="dp-po-guides-meta">
-                              <p>Published: <strong>{moment(topic.date_published).format('DD/MM/YYYY')}</strong></p>
-                              <p>Last updated: <strong>{moment(topic.date_updated).format('DD/MM/YYYY')}</strong></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    {this.renderTopics()}
                   </div>
                 </div>
               </div>

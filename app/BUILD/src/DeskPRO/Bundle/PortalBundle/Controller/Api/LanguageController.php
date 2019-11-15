@@ -33,6 +33,7 @@ class LanguageController extends AbstractApiController
             'helpcenter.community.status',
             'helpcenter.forms.label-choose-a-file',
             'helpcenter.forms.label-drag-and-drop',
+            'helpcenter.general.copy-to-clipboard',
             'helpcenter.general.nav-chats',
             'helpcenter.general.nav-community',
             'helpcenter.general.nav-downloads',

@@ -5,7 +5,8 @@ import classNames from 'classnames';
 class GuideSelector extends React.Component {
   static propTypes = {
     guideSlug:   PropTypes.string,
-    selectGuide: PropTypes.func
+    selectGuide: PropTypes.func,
+    fixed:       PropTypes.bool,
   };
 
   constructor(props) {
@@ -22,12 +23,14 @@ class GuideSelector extends React.Component {
     };
   }
 
-  onClickGuide = (guide) => {
+  onClickGuide = (e, guide) => {
+    e.preventDefault();
     this.props.selectGuide(guide);
   };
 
   render() {
     const { guides } = this.state;
+    const { fixed } = this.props;
     const activeGuide = guides.filter(g => g.slug === this.props.guideSlug)[0];
 
     let baseUrl = window.DESKPRO_BASE_URL;
@@ -36,12 +39,12 @@ class GuideSelector extends React.Component {
     }
 
     return (
-      <div className="dp-po-guides-carousel">
+      <div className={classNames('dp-po-guides-carousel', { fixed })}>
         <div className="dp-po-guides-carousel-list">
           {guides.map(guide => (
-            <div className={classNames('dp-po-guides-carousel-item', { active: guide.id === activeGuide.id })}>
+            <div className={classNames('dp-po-guides-carousel-item', { active: guide.id === activeGuide.id })} key={guide.id}>
               <div className="dp-po-guides-carousel-content">
-                <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-carousel-link">
+                <a href={`${baseUrl}/guides/${guide.slug}`} className="dp-po-guides-carousel-link" onClick={e => this.onClickGuide(e, guide)}>
                   <i className="dp-po-icon fal fa-user-headset" /> {guide.title}
                 </a>
               </div>

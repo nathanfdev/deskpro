@@ -10,6 +10,7 @@ use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use FOS\RestBundle\View\View;
+use Orb\Util\Arrays;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -69,6 +70,27 @@ class GuidesController extends AbstractApiController
             $guide,
             $person
         );
+
+        if ($this->isHelpCenterTheme()) {
+            $topics = array_values(Arrays::flattenHierarchy($topics));
+        }
+
+        return new View($this->wrap($topics), Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/portal/api/guides/all/{slug}", name="portal_api_guides_topics_all")
+     * @ParamConverter(name="guide", converter="deskpro_slug")
+     * @Method({"GET"})
+     *
+     * @param Guide $guide
+     *
+     * @return View|NotFoundHttpException
+     */
+    public function getGuideAllTopics(Guide $guide)
+    {
+        $person = $this->getUser();
+        $topics = $this->get('data.guides')->getGuideTopics($guide, $person);
 
         return new View($this->wrap($topics), Response::HTTP_OK);
     }

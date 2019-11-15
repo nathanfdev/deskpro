@@ -41,28 +41,28 @@ class TopicSummary extends React.Component {
 
   render() {
     const { fixed, className } = this.props;
-    const agentBar = window.document.getElementById('agent-bar');
-    const offset = agentBar ? -50 : 0;
+    if (this.state.h1s.length === 0) {
+      return null;
+    }
     return (
       <div className={classNames('dp-po-guides-contents', className, { fixed })}>
-        {this.state.h1s.length > 1 ?
-          (<div>
-            <h3 className="dp-po-guides-contents-title">Contents</h3>
-            <ul className="dp-po-guides-contents-list">
-              {this.state.h1s.map((h1, index) => <li className="dp-po-guides-contents-item" key={index}>
-                <Link
-                  href={`#${h1.id}`}
-                  className={classNames('dp-po-guides-contents-link', { active: this.state.activeId === h1.id })}
-                  to={h1.id}
-                  offset={offset}
-                  spy
-                  smooth
-                  onSetActive={this.handleSetActive}
-                ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</Link>
-              </li>)}
-            </ul>
-          </div>
-          ) : null}
+        <div>
+          <h3 className="dp-po-guides-contents-title">Contents</h3>
+          <ul className="dp-po-guides-contents-list">
+            {this.state.h1s.map((h1, index) => <li className="dp-po-guides-contents-item" key={index}>
+              <Link
+                href={`#${h1.id}`}
+                activeClass="active"
+                className={classNames('dp-po-guides-contents-link')}
+                to={h1.id}
+                offset={-178}
+                spy
+                smooth
+                onSetActive={this.handleSetActive}
+              ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</Link>
+            </li>)}
+          </ul>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,7 @@
 import ViewTopic from './ViewTopic/ViewTopic';
 import Topic from './ViewTopic/Topic';
 import TopicList from './ViewTopic/TopicList';
+import TopicListItem from './ViewTopic/TopicListItem';
 import TopicSummary from './ViewTopic/TopicSummary';
 import GuideSelector from './ViewTopic/GuideSelector';
 import Anchor from './ViewTopic/Anchor';
@@ -12,6 +13,7 @@ export {
   ViewTopic,
   Topic,
   TopicList,
+  TopicListItem,
   TopicSummary,
   GuideSelector,
   Anchor,

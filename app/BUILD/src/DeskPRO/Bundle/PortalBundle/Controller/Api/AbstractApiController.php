@@ -67,6 +67,14 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme
+     */
+    public function getPortalBrandTheme()
+    {
+        return $this->get('portal_brand_theme_loader')->getPortalBrandTheme($this->getBrandContainer()->getBrand());
+    }
+
+    /**
      * @return EntityManager
      */
     protected function getManager()
@@ -158,5 +166,13 @@ abstract class AbstractApiController extends FOSRestController
     protected function getPersonRepository()
     {
         return $this->getDoctrine()->getRepository(Person::class);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHelpCenterTheme()
+    {
+        return $this->getPortalBrandTheme()->getActiveThemeSet()->getThemeId() === 'helpcenter';
     }
 }
