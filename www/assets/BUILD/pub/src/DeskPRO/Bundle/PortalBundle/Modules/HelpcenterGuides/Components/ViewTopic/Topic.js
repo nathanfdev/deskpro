@@ -6,9 +6,12 @@ import { TopicSummary } from '../index';
 
 class Topic extends React.PureComponent {
   static propTypes = {
-    intl:  PropTypes.object,
-    topic: PropTypes.object,
-    data:  PropTypes.object,
+    intl:      PropTypes.object,
+    topic:     PropTypes.object,
+    data:      PropTypes.object,
+    guideSlug: PropTypes.string,
+    topicSlug: PropTypes.string,
+    sizes:     PropTypes.object,
   };
 
   static defaultProps = {
@@ -16,10 +19,20 @@ class Topic extends React.PureComponent {
   };
 
   render() {
-    const { data, topic, intl } = this.props;
+    const { data, topic, guideSlug, topicSlug, intl, sizes } = this.props;
 
     const fixed = false;
     const agentBarHeight = 0;
+
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+    const style = {};
+    if (sizes && topic.slug === topicSlug) {
+      style.width = sizes.articleWidth;
+      style.position = 'fixed';
+    }
 
     return (
       <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`}>
@@ -28,12 +41,18 @@ class Topic extends React.PureComponent {
             <div className="dp-po-guides-block-article-left">
               <div className="dp-po-guides-block-header">
                 <div>
-                  <h2 className="dp-po-guides-block-title dp-po-clipboard">{topic.title} <a
-                    className="dp-po-clipboard-link" data-toggle="tooltip"
-                    data-placement="top" title={intl.formatMessage({ id: 'helpcenter.general.copy-to-clipboard' })}
-                  ><i
-                    className="dp-po-icon far fa-anchor"
-                  /></a></h2>
+                  <h2 className="dp-po-guides-block-title dp-po-clipboard">
+                    {topic.title}
+                    <a
+                      className="dp-po-clipboard-link"
+                      data-toggle="tooltip"
+                      data-placement="top"
+                      href={`${baseUrl}/guides/${guideSlug}/${topic.slug}`}
+                      title={intl.formatMessage({ id: 'helpcenter.general.copy-to-clipboard' })}
+                    >
+                      <i className="dp-po-icon far fa-anchor" />
+                    </a>
+                  </h2>
                   { topic.parent &&
                   <a href="" className="dp-po-guides-block-chapter"><i
                     className="dp-po-icon fal fa-angle-right"
@@ -63,7 +82,7 @@ class Topic extends React.PureComponent {
             </div>
           </div>
           <div className="col-sm-3">
-            <div className="dp-po-guides-block-article-right">
+            <div className="dp-po-guides-block-article-right" style={style}>
               <TopicSummary content={data.content} fixed={fixed} agentBarHeight={agentBarHeight} />
               <div className="dp-po-guides-meta">
                 <p>Published: <strong>{moment(data.date_published).format('DD/MM/YYYY')}</strong></p>

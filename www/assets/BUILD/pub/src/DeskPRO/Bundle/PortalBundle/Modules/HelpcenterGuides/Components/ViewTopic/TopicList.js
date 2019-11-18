@@ -6,6 +6,7 @@ class TopicList extends React.Component {
   static propTypes = {
     topics:           PropTypes.array,
     guideSlug:        PropTypes.string,
+    topicSlug:        PropTypes.string,
     grabTopicFromApi: PropTypes.func,
     sizes:            PropTypes.object,
   };
@@ -35,7 +36,7 @@ class TopicList extends React.Component {
   };
 
   render() {
-    const { topics, guideSlug, grabTopicFromApi, sizes } = this.props;
+    const { topics, guideSlug, topicSlug, grabTopicFromApi, sizes } = this.props;
     const style = {};
     if (sizes) {
       style.width = sizes.searchWidth;
@@ -49,17 +50,19 @@ class TopicList extends React.Component {
         <div className="dp-po-guides-search-block">
           <ul className="dp-po-guides-search-content-list">
             {topics
-              .filter(a => a.depth === 0)
+              .filter(t => t.depth === 0)
               .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
               .map(topic => (
                 <TopicListItem
                   key={topic.slug}
                   topic={topic}
                   guideSlug={guideSlug}
+                  topicSlug={topicSlug}
                   expandable={false}
                   clickable={false}
                   path={this.state.path}
                   grabTopicFromApi={grabTopicFromApi}
+                  expanded={(topic.slug === topicSlug || Object.values(topic.children).find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
                 />
               )
             )}

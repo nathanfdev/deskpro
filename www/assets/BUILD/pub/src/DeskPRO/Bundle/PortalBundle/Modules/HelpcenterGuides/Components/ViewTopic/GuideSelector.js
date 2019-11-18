@@ -51,6 +51,7 @@ class GuideSelector extends React.Component {
             </div>
           ))}
         </div>
+        <div className="dp-po-carousel-shadow" />
       </div>
     );
   }

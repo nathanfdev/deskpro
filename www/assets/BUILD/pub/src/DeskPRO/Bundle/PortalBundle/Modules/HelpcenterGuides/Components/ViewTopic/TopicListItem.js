@@ -8,59 +8,14 @@ class TopicListItem extends React.Component {
   static propTypes = {
     topic:            PropTypes.object,
     guideSlug:        PropTypes.string,
+    topicSlug:        PropTypes.string,
     path:             PropTypes.string,
-    expandable:       PropTypes.bool,
+    expanded:         PropTypes.bool,
     grabTopicFromApi: PropTypes.func,
   };
 
   static defaultProps = {
     expandable: true,
-  };
-
-  constructor(props) {
-    super(props);
-    let expanded = !this.props.expandable;
-    if (this.props.expandable && window.location.href.match(props.topic.slug)) {
-      expanded = true;
-    }
-    this.state = {
-      expanded
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      expanded: (this.props.expandable && nextProps.path.match(this.props.topic.slug))
-    });
-  }
-
-  getChildren = () => {
-    const { topic, guideSlug, expandable, grabTopicFromApi } = this.props;
-    if (!Object.values(topic.children).length) {
-      return null;
-    }
-    const prefix = this.getLevelPrefix(1);
-    return (
-      <ul
-        className={classNames(`dp-po-guides-search-content-${prefix}list`, {
-          hidden: expandable && !this.state.expanded,
-          expandable
-        })}
-      >
-        {Object.values(topic.children)
-          .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
-          .map(child => (
-            <TopicListItem
-              key={child.slug}
-              topic={child}
-              guideSlug={guideSlug}
-              path={this.props.path}
-              grabTopicFromApi={grabTopicFromApi}
-            />
-          )
-        )}
-      </ul>
-    );
   };
 
   getLevelPrefix = (delta = 0) => {
@@ -83,7 +38,6 @@ class TopicListItem extends React.Component {
     e.preventDefault();
     const { topic } = this.props;
     this.props.grabTopicFromApi(topic.slug);
-    this.toggleChildren();
   };
 
   handleSetActive = () => {
@@ -97,14 +51,42 @@ class TopicListItem extends React.Component {
     browserHistory.push(`${baseUrl}/guides/${guideSlug}/${topic.slug}`);
   };
 
-  toggleChildren = () => {
-    this.setState({
-      expanded: !this.state.expanded
-    });
+  renderChildren = () => {
+    const { topic, guideSlug, topicSlug, expanded, grabTopicFromApi } = this.props;
+    if (!Object.values(topic.children).length) {
+      return null;
+    }
+    const prefix = this.getLevelPrefix(1);
+    const style = {};
+    if (!expanded) {
+      style.display = 'none';
+    }
+    return (
+      <ul
+        className={classNames(`dp-po-guides-search-content-${prefix}list`)}
+        style={style}
+      >
+        {Object.values(topic.children)
+          .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
+          .map(child => (
+            <TopicListItem
+              key={child.slug}
+              topic={child}
+              guideSlug={guideSlug}
+              topicSlug={topicSlug}
+              path={this.props.path}
+              grabTopicFromApi={grabTopicFromApi}
+              expanded={(child.slug === topicSlug || Object.values(child.children)
+                .find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
+            />
+            )
+          )}
+      </ul>
+    );
   };
 
   render() {
-    const { topic, guideSlug } = this.props;
+    const { topic, guideSlug, topicSlug } = this.props;
 
     let baseUrl = window.DESKPRO_BASE_URL;
     if (baseUrl) {
@@ -115,10 +97,10 @@ class TopicListItem extends React.Component {
     return (
       <li className={`dp-po-guides-search-content-${prefix}item`} key={topic.slug}>
         <Link
-          className={`dp-po-guides-search-content-${prefix}link`}
+          className={classNames(`dp-po-guides-search-content-${prefix}link`, { active: topic.slug === topicSlug })}
           activeClass="active"
           href={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
-          to={`topic_${topic.id}`}
+          to={`topic_${topic.slug}`}
           offset={-178}
           spy
           smooth
@@ -128,7 +110,7 @@ class TopicListItem extends React.Component {
         >
           {topic.title}
         </Link>
-        {this.getChildren()}
+        {this.renderChildren()}
       </li>
     );
   }
