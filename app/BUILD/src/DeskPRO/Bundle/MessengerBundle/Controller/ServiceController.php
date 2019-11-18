@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -45,11 +46,20 @@ class ServiceController extends AbstractMessengerController
      *
      * @return View
      */
-    public function messengerSetupAction()
+    public function messengerSetupAction(Request $request)
     {
         $brand    = $this->get('brand_stack')->getActive()->getBrand();
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
         $data     = $this->get('serializer')->toArray($settings,  new SideloadSerializationContext());
+
+        $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
+
+        $l = [];
+        foreach ($layouts as $k => $layout) {
+            $l[] = array_merge(['department' => $k], $layout->exportToArray());
+        }
+
+        $data['tickets']['formConfig'] = $l;
 
         $data['bundleUrl'] = [
             'manifest' => $this->container->get('templating.helper.assets')->getUrl('asset-manifest.json', 'messenger_assets'),

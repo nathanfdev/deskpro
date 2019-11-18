@@ -60,16 +60,14 @@ class TechInfo implements MessengerModelInterface
      */
     public function toArray()
     {
-        $self            = $this;
-        $chatDepartments = array_filter(array_map(function ($department) use ($self) {
-            /* @var Department $department */
-            return $self->departmentToArray($department);
-        }, $this->chatDepartments), 'boolval');
-
-        $ticketDepartments = array_filter(array_map(function ($department) use ($self) {
-            /* @var Department $department */
-            return array_filter($self->departmentToArray($department), 'boolval');
-        }, $this->ticketDepartments), 'boolval');
+        $chatDepartments = [];
+        foreach ($this->chatDepartments as $department) {
+            $this->departmentToArray($department, $chatDepartments);
+        }
+        $ticketDepartments = [];
+        foreach ($this->ticketDepartments as $department) {
+            $this->departmentToArray($department, $ticketDepartments);
+        }
 
         $self         = $this;
         $agentsOnline = array_map(function ($agent) use ($self) {
@@ -90,36 +88,40 @@ class TechInfo implements MessengerModelInterface
         ];
     }
 
-    private function departmentToArray(Department $department)
+    private function departmentToArray(Department $department, &$departments)
     {
         $return = [
-            'title'  => $department->getTitle(),
-            'avatar' => $this->avatarResolver->getAvatar($department),
             'id'     => $department->getId(),
-            ];
-        $self = $this;
-        if ($department->getChildren()->count()) {
-            $children =
-                array_values(array_map(
-                    [$this, 'departmentToArray'],
-                    $department->getChildren()
-                        ->filter(
-                            function ($department) use ($self) {
-                                /* @var Department $department */
-                                return $department->hasBrand($self->brandStack->getActive()->getBrand());
-                            }
-                        )
-                        ->toArray()
-                ));
+            'title'  => $department->getTitle(),
+            'parent' => $department->getParentId() ?: null,
+            'avatar' => $this->avatarResolver->getAvatarModel($department),
+            'brands' => $department->getBrands()->map(function ($brand) {
+                return $brand->getId();
+            }),
+        ];
 
-            if ($children) {
-                $return['children'] = $children;
-            } else {
-                $return = [];
+        $self = $this;
+
+        if ($department->getChildren()->count()) {
+            $children = $department->getChildren()
+                ->filter(
+                    function ($department) use ($self) {
+                        /* @var Department $department */
+                        return $department->hasBrand($self->brandStack->getActive()->getBrand());
+                    }
+                )
+                ->toArray();
+            $ids = [];
+            foreach ($children as $child) {
+                $this->departmentToArray($child, $departments);
+                $ids[] = $child->getId();
+            }
+            if ($ids) {
+                $return['children'] = $ids;
             }
         }
 
-        return $return;
+        $departments[] = $return;
     }
 
     /**
