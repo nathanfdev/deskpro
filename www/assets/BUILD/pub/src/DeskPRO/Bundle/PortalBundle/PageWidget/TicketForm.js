@@ -6,7 +6,6 @@ import throttle from 'lodash/throttle';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
-import { portalApp } from '../PortalApp';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
 import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 
@@ -205,7 +204,10 @@ export default class TicketForm extends PageWidget {
         $df.val(event.inst.currentFields);
       },
       onPostUpdate: () => {
-        const portalPage = portalApp.getPortalPage();
+        // using magic global here so as not to require importing portalApp
+        // this lib is alsoused in Widget bundle -- so requiring portalApp would
+        // inflate the bundle size needlessly
+        const portalPage = window.DESKPRO_PORTAL_PAGE;
         if (portalPage) {
           portalPage.refresh($formEl);
         } else {
