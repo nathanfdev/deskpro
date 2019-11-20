@@ -224,7 +224,7 @@ class ChatHandler
     {
         $errors = [];
         if (!isset($request['rate'])) {
-            $errors['rate'] = 'parameter wasn\'t sent';
+            $errors['rate'] = 'Rate parameter wasn\'t sent';
         }
         if (!$chat->getDateEnded()) {
             $errors['chat'] = 'Cant\'t rate not ended chat';
