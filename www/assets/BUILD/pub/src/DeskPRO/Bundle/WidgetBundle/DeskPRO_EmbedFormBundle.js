@@ -1,4 +1,5 @@
 /* eslint import/no-extraneous-dependencies: ["error", {"peerDependencies": true}] */
+import './publicPath';
 import 'babel-polyfill';
 import $ from 'jquery';
 import factory from 'iframe-resizer';
