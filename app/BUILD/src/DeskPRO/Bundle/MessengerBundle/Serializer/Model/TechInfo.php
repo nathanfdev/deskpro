@@ -80,9 +80,13 @@ class TechInfo implements MessengerModelInterface
             ];
         }, $this->agentsOnline);
 
+        $filter = function ($dep) {
+            return !isset($dep['children']) || empty($dep['children']);
+        };
+
         return [
-            'chat_departments'   => $chatDepartments,
-            'ticket_departments' => $ticketDepartments,
+            'chat_departments'   => array_values(array_filter($chatDepartments, $filter)),
+            'ticket_departments' => array_values(array_filter($ticketDepartments, $filter)),
             'agents_online'      => $agentsOnline,
             'client'             => $this->clientsSetup->getClients()[0],
         ];
