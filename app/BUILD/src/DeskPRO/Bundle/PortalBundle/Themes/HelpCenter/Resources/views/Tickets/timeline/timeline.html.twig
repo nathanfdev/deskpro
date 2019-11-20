@@ -40,11 +40,16 @@
       {% endif %}
   {% endfor %}
 
-{#  {% if timeline_pager.haveToPaginate %}#}
-{#    <div class="deskpro-pager">#}
-{#      {{ pagerfanta(timeline_pager) }}#}
-{#    </div>#}
-{#  {% endif %}#}
+  {% if timeline_pager.haveToPaginate %}
+    <div class="dp-po-section">
+      {% include 'Theme:Common:pager.html.twig' with {
+        pager: timeline_pager,
+        pager_options: {
+          omitFirstPage: false
+        }
+      } %}
+    </div>
+  {% endif %}
 
 
 

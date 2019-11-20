@@ -24,7 +24,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class TicketTimelineDataService extends AbstractDataService
 {
     /**
-     * Set to TRUE to include ticket approval logs in timeline
+     * Set to TRUE to include ticket approval logs in timeline.
      */
     const ADD_TICKET_APPROVALS_TO_TIMELINE = false;
 
@@ -36,7 +36,7 @@ class TicketTimelineDataService extends AbstractDataService
     /**
      * TicketTimelineDataService constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager         $em
      * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage)
@@ -79,6 +79,10 @@ class TicketTimelineDataService extends AbstractDataService
         $logs_source = $this->procLogLines($ticket, $raw_logs, $messages);
 
         // pager. see TicketTimelinePagerfantaAdapter.
+        $num_pages = ceil(count($logs_source) / $per_page);
+        if ($page === 'last') {
+            $page = $num_pages;
+        }
         $page_offset = ($per_page * ($page - 1));
         $logs        = array_slice($logs_source, $page_offset, $per_page);
         $timeline    = new TicketTimeline(count($logs_source));
