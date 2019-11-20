@@ -38,13 +38,23 @@ class ApiToken extends AbstractEntityRepository
         return $token_obj;
     }
 
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
+     * @return null|\Application\DeskPRO\Entity\ApiToken
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getTokenForPerson(\Application\DeskPRO\Entity\Person $person)
     {
-        return $this->getEntityManager()->createQuery("
-            SELECT t
-            FROM DeskPRO:ApiToken t
-            WHERE t.person = ?0 AND t.scope = 'client'
-        ")->setParameters([$person])->setMaxResults(1)->getOneOrNullResult();
+        return $this->getEntityManager()
+            ->createQuery("
+                SELECT t
+                FROM DeskPRO:ApiToken t
+                WHERE t.person = ?0 AND t.scope = 'client'
+            ")
+            ->setParameters([$person])
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     public function getRateLimitInfo(\Application\DeskPRO\Entity\ApiToken $api_token)

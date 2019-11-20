@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -52,11 +53,34 @@ class PersonListener implements EventSubscriber
     }
 
     /**
-     * @param Person $entity
+     * @param Person             $entity
+     * @param PreUpdateEventArgs $eventArgs
+     *
+     * @return void
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      */
-    public function preUpdate(Person $entity)
+    public function preUpdate(Person $entity, PreUpdateEventArgs $eventArgs)
     {
         $this->verifyBrand($entity);
+
+        if ($eventArgs->hasChangedField('password')) {
+            /** @var \Application\DeskPRO\DBAL\Connection $db */
+            /** @var \Doctrine\ORM\EntityManager $em */
+            $db = $this->container->getDb();
+            $em = $this->container->getEm();
+
+            $db->delete('sessions', ['person_id' => $entity->getId()]);
+            $db->delete('sess_data', ['person_id' => $entity->getId()]);
+
+            /** @var \Application\DeskPRO\Entity\ApiToken $token */
+            $token = $em
+                ->getRepository('DeskPRO:ApiToken')
+                ->getTokenForPerson($entity);
+            if ($token) {
+                $token->regenerateToken();
+                $em->persist($token);
+            }
+        }
     }
 
     /**

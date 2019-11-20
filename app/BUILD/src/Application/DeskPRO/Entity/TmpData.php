@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TmpDataListener;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\DpStrings;
@@ -255,6 +257,7 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addEntityListener(Events::prePersist, TmpDataListener::class, 'prePersist');
         $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',
