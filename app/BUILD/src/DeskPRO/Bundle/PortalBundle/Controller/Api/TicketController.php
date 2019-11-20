@@ -27,7 +27,7 @@ class TicketController extends AbstractApiController
      * @Route("/portal/api/tickets/display.js", name="portal_api_ticket_display")
      * @Method({"GET"})
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function ticketDisplayAction()
     {
@@ -50,6 +50,15 @@ class TicketController extends AbstractApiController
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
+        $brand = $this->get('brand_stack')->getActive()->getBrand();
+        $theme = $this->get('portal_brand_theme_loader')->getPortalBrandTheme($brand);
+
+        if ($theme->getActiveThemeSet()->getThemeId() === 'helpcenter') {
+            // This is a hack to force this API to render HTML from legacy templates
+            // for the old chat widget because new HC templates arent compatible
+            $theme->getActiveThemeSet()->setThemeId('standard');
+        }
+
         if (!$this->isGranted(UseSectionVoter::USE_TICKETS)) {
             $params = [
                 'can_open_ticket' => $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK),
