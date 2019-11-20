@@ -76,6 +76,8 @@ class TicketController extends AbstractMessengerController
             $person = $personRepository->findOneByEmail($requestData['email']);
         }
 
+        $requestData['message'] = ['message' => $requestData['message'], 'format' => 'html'];
+
         $form = $this->container->get('form.factory')->create(
             TicketWithLayoutsWebFullType::class,
             $ticket,
