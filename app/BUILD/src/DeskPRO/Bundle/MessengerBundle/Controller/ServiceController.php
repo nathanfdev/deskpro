@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -56,7 +57,14 @@ class ServiceController extends AbstractMessengerController
 
         $l = [];
         foreach ($layouts as $k => $layout) {
-            $l[] = array_merge(['department' => $k], $layout->exportToArray());
+            $layout = array_merge(['department' => $k], $layout->exportToArray());
+            foreach ($layout['fields'] as &$item) {
+                if ($item['field_type'] === 'ticket_field') {
+                    $item['data'] = $this->get('serializer')->toArray($this->getRepository(CustomDefTicket::class)
+                        ->find($item['id']), new SideloadSerializationContext());
+                }
+            }
+            $l[] = $layout;
         }
 
         $data['tickets']['formConfig'] = $l;

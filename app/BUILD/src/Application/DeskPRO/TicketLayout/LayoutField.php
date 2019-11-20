@@ -330,12 +330,13 @@ class LayoutField implements \Serializable
         if ($this->field_type === 'attachments') {
             return null;
         }
-        $data = [];
-
-        $data['version']    = 1;
-        $data['field_type'] = $this->field_type;
-        $data['field_id']   = $this->getId();
-        $data['options']    = [];
+        $data = [
+            'version'    => 1,
+            'field_type' => $this->field_type,
+            'field_id'   => $this->getId(),
+            'id'         => $this->getFieldId(),
+            'options'    => [],
+        ];
 
         if ($this->criteria) {
             $data['options']['criteria'] = $this->criteria->exportToArray();
