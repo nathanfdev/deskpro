@@ -19,7 +19,7 @@ class ViewTopic extends React.Component {
     if (window.topic) {
       topic = JSON.parse(window.topic);
     }
-    topic.content = this.addImagesLazyload(topic.content);
+    // topic.content = this.addImagesLazyload(topic.content);
     topic.content = this.addIdToh1(topic.content);
     const topicList = JSON.parse(window.topicList);
     this.state = {
@@ -165,7 +165,7 @@ class ViewTopic extends React.Component {
     }
   };
 
-  addImagesLazyload = html => html.replace(/<img([^>]+)src="([^"]+)"([^>]+)>/g, '<img$1data-src="$2"$3>');
+  addImagesLazyload = html => html.replace(/<img([^>]*) src="([^"]+)"([^>]+)>/g, '<img$1 data-src="$2"$3>');
 
   addReactImageLazyload = () => {
     const guideBlock = document.getElementsByClassName('dp-po-guides-block')[0];
@@ -265,7 +265,7 @@ class ViewTopic extends React.Component {
       const topics = {};
       const res = response.data.data;
       res.forEach((topic) => {
-        topic.content = this.addImagesLazyload(topic.content);
+        // topic.content = this.addImagesLazyload(topic.content);
         topic.content = this.addIdToh1(topic.content);
         topics[topic.id] = topic;
       });

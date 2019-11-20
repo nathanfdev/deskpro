@@ -10,8 +10,10 @@ class TopicListItem extends React.Component {
     guideSlug:        PropTypes.string,
     topicSlug:        PropTypes.string,
     path:             PropTypes.string,
+    filter:           PropTypes.string,
     expanded:         PropTypes.bool,
     grabTopicFromApi: PropTypes.func,
+    filterTopic:      PropTypes.func,
   };
 
   static defaultProps = {
@@ -52,7 +54,7 @@ class TopicListItem extends React.Component {
   };
 
   renderChildren = () => {
-    const { topic, guideSlug, topicSlug, expanded, grabTopicFromApi } = this.props;
+    const { topic, guideSlug, topicSlug, expanded, filter, filterTopic, grabTopicFromApi } = this.props;
     if (!Object.values(topic.children).length) {
       return null;
     }
@@ -67,6 +69,7 @@ class TopicListItem extends React.Component {
         style={style}
       >
         {Object.values(topic.children)
+          .filter(t => filterTopic(t))
           .sort((a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10))
           .map(child => (
             <TopicListItem
@@ -76,7 +79,9 @@ class TopicListItem extends React.Component {
               topicSlug={topicSlug}
               path={this.props.path}
               grabTopicFromApi={grabTopicFromApi}
-              expanded={(child.slug === topicSlug || Object.values(child.children)
+              filter={filter}
+              filterTopic={this.filterTopic}
+              expanded={(filter !== '' || child.slug === topicSlug || Object.values(child.children)
                 .find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
             />
             )
