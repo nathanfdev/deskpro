@@ -57,7 +57,7 @@ class ServiceController extends AbstractMessengerController
 
         $l = [];
         foreach ($layouts as $k => $layout) {
-            $layout = array_merge(['department' => $k], $layout->exportToArray());
+            $layout = array_merge(['department' => $k ?: null], $layout->exportToArray());
             foreach ($layout['fields'] as &$item) {
                 if ($item['field_type'] === 'ticket_field') {
                     $item['data'] = $this->get('serializer')->toArray($this->getRepository(CustomDefTicket::class)
