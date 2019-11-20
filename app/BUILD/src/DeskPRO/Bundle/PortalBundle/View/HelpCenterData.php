@@ -16,6 +16,7 @@ use DeskPRO\Bundle\AppBundle\DataService\TicketsDataService;
 use DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService;
 use DeskPRO\Bundle\PortalBundle\Model\CommunityFilter;
 use DeskPRO\Component\Util\MapUtils;
+use Orb\Util\Arrays;
 use Pagerfanta\Pagerfanta;
 
 /**
@@ -201,6 +202,20 @@ class HelpCenterData
         ];
 
         return $userInfo;
+    }
+
+    public function getTopics($guide)
+    {
+        $user = $this->getUser();
+
+        $topics = $this->getGuidesDataService()->getGuideChildren(
+            $guide,
+            $user
+        );
+
+        $topics = Arrays::flattenHierarchy($topics);
+
+        return array_values($topics);
     }
 
     /**

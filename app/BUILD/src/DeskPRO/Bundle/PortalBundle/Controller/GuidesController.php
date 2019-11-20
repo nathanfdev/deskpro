@@ -52,6 +52,9 @@ class GuidesController extends AbstractPublishController
             return $this->redirectToRoute('portal_home');
         }
 
+        if ($this->isHelpCenterTheme()) {
+            return $this->redirectToRoute('user_guides', ['slug' => $guide->getSlug()]);
+        }
         $topic = $guide->getActiveTopics()->first();
 
         if (!$topic) {
@@ -218,6 +221,8 @@ class GuidesController extends AbstractPublishController
             'captcha'          => $captcha,
             'guide'            => $topic->getGuide(),
             'guides_json'      => Strings::escapeForJson($serializer->serialize($guides, 'json', new SideloadSerializationContext())),
+            'guides'           => $guides,
+            'helpcenter'       => $this->get('helpcenter_data_helper'),
             'new_comment_form' => $newCommentForm ? $newCommentForm->createView() : null,
         ];
 

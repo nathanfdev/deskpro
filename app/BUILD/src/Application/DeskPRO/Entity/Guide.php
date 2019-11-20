@@ -5,6 +5,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Guide as ManualRepository;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -12,6 +13,9 @@ use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @PortalLinkRoute("user_guides", route_param_map={"slug":"slug"})
+ */
 class Guide extends DomainObject
 {
     /**

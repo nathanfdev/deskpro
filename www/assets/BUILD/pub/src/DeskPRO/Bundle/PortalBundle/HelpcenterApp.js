@@ -6,9 +6,9 @@ import $ from 'jquery';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import PortalPage from './PageWidget/PortalPage';
 import { portalPhrases } from './PortalPhrases';
-import App from './Modules/Application/Components/PortalAppContainer';
+import App from './Modules/Application/Components/AppContainer';
 
-const possibleLocale = (window.DESKPRO_LOCALE || 'en').replace(/-/, '_').split(/_/)[0] || 'en';
+const possibleLocale = window.DESKPRO_LOCALE.replace(/-/, '_').split(/_/)[0] || 'en';
 import(
   /* webpackPreload: true */
   `react-intl/locale-data/${possibleLocale}`
@@ -22,7 +22,7 @@ import(
 // Async load FA
 import('@fortawesome/fontawesome-pro/js/all.min');
 
-class PortalApp {
+class HelpcenterApp {
   constructor() {
     window.jQuery = window.$ = $;
     window.PortalApp = this;
@@ -42,7 +42,6 @@ class PortalApp {
     this.locale = window.DESKPRO_LOCALE.replace(/_/, '-');
     page.renderWhenReady();
     this.portalPage = page;
-    window.DESKPRO_PORTAL_PAGE = page;
   }
 
   render(props, node) {
@@ -62,4 +61,4 @@ if (module.hot) {
   module.hot.accept();
 }
 
-export const portalApp = new PortalApp();
+export const helpcenterApp = new HelpcenterApp();

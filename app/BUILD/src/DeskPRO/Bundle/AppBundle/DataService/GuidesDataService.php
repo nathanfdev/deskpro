@@ -124,6 +124,34 @@ class GuidesDataService extends AbstractDataService
         );
     }
 
+    public function getGuideTopics($guide, $person)
+    {
+        return $this->generateAndCache(
+            [
+                'getGuideTopics',
+                $guide,
+                $person,
+            ],
+            function () use ($guide, $person) {
+                $allowedIds = $this->permissionsManager->getPortalPermissionsBag(
+                    $person
+                )->getAllowedGuides();
+
+                if (!in_array($guide->getId(), $allowedIds)) {
+                    throw new AccessDeniedException('Unauthorized guide');
+                }
+
+                if (!$guide instanceof Guide) { // if not already category, try to make it one
+                    if (!$guide = $this->getGuide($guide)) {
+                        throw new \InvalidArgumentException(sprintf('could not convert "%s" into a guide'));
+                    }
+                }
+
+                return $guide->getTopics();
+            }
+        );
+    }
+
     /**
      * @param int|null|Topic $topic
      *

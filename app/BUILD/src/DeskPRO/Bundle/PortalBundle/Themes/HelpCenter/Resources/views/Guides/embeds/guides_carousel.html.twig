@@ -1,0 +1,23 @@
+<div class="dp-po-guides-carousel">
+    <div class="dp-po-guides-carousel-list">
+        {% for guide in guides %}
+            <div class="dp-po-guides-carousel-item">
+                <div class="dp-po-guides-carousel-content">
+                    <a href="{{ portal_url(guide) }}" class="dp-po-guides-carousel-link">
+                        <i class="dp-po-icon fal fa-user"></i> {{ guide }}
+                    </a>
+{#                    <div class="dp-po-guides-carousel-extra">#}
+{#                        <ul class="dp-po-guides-carousel-extra-list">#}
+{#                            <li class="dp-po-guides-carousel-extra-item">#}
+{#                                <a href="" class="dp-po-guides-carousel-extra-link"><i class="dp-po-icon fal fa-print"></i></a>#}
+{#                            </li>#}
+{#                            <li class="dp-po-guides-carousel-extra-item">#}
+{#                                <a href="" class="dp-po-guides-carousel-extra-link"><i class="dp-po-icon fal fa-file-pdf"></i></a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
