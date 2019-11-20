@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
-import { Form, Field, Toggle, Input, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Toggle, Input } from 'DeskPRO/Component/Semantic/ReactForm';
+import { PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm/PhoneInput';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import classNames from 'classnames';
 import $ from 'jquery';
