@@ -90,9 +90,14 @@ class ArticleHandler extends AbstractEntityHandler
             );
         }
         foreach ($model->getAttachments() as $attachmentModel) {
-            $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
+            $attachment = $this->helpers->getAttachmentHelper()->createOrUpdateAttachment(
                 $this->mappers->getArticleAttachmentMapper(), $attachmentModel, $entity
             );
+
+            if ($attachmentModel->isInline()) {
+                $entity->setContent($this->helpers->getAttachmentHelper()->replaceContent($attachmentModel, $attachment, $entity->getContentHtml()));
+                $this->persister->persistAndFlush($entity, $model);
+            }
         }
     }
 }

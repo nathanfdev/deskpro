@@ -348,6 +348,25 @@ class ArticleHandlerTest extends AbstractEntityHandlerTest
         $this->assertNotEmpty($entity->getCategories());
     }
 
+    public function test_inline_attachment()
+    {
+        $attachment1 = $this->createAttachmentModel('image.jpg');
+        $attachment1->setOid(1);
+        $attachment1->setAsInline(true);
+
+        $model = $this->createBaseModel();
+        $model->setContent('Message with attachment [attach:1:image.jpg]');
+        $model->addAttachment($attachment1);
+
+        $this->writer->writeModel($model);
+
+        $entity     = $this->getBaseEntity();
+        $attachment = $entity->getAttachments()[0];
+        $blob       = $attachment->getBlob();
+
+        $this->assertRegExp('#Message with attachment <img src="(.*)image.jpg" data-blob_id="'.$blob->getId().'" />#', $entity->getContentHtml());
+    }
+
     /**
      * @return Model\Article
      */
