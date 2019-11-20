@@ -3256,8 +3256,28 @@ class TicketController extends AbstractController
 
         if ($macro) {
             $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
-            $this->em->persist($macroLog);
-            $this->em->flush();
+
+            if ($this->em->isOpen()) {
+                $this->em->persist($macroLog);
+                $this->em->flush();
+            } else {
+                $this->db->beginTransaction();
+                try {
+                    $this->db->insert('ticket_object_use_logs',
+                        [
+                            'object_type'  => $macroLog->getObjectType(),
+                            'person_id'    => $this->getPerson()->getId(),
+                            'ticket_id'    => $ticket->getId(),
+                            'snippet_id'   => $macroLog->getSnippet() ? $macroLog->getSnippet()->getId() : null,
+                            'macro_id'     => $macro->getId(),
+                            'date_created' => date('Y-m-d H:i:s'),
+                        ]
+                    );
+                    $this->db->commit();
+                } catch (\Exception $exception) {
+                    $this->db->rollback();
+                }
+            }
         }
 
         if ($permission_errors) {
