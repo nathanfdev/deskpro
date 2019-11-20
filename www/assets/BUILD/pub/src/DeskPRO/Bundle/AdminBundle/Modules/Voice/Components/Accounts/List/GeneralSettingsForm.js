@@ -2,7 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import { Input, Form, Field, Checkbox, Select, NumberSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field, Checkbox, Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import { NumberSelect } from 'DeskPRO/Component/Semantic/ReactForm/NumberSelect';
 import classNames from 'classnames';
 
 class GeneralSettingsForm extends BaseForm {

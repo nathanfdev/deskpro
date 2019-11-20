@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field, PhoneInput, Checkbox, NumberSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { NumberSelect } from 'DeskPRO/Component/Semantic/ReactForm/NumberSelect';
+import { PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm/PhoneInput';
 import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';

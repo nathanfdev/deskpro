@@ -241,7 +241,7 @@ class ElasticSearchController extends AbstractController
 
         if (empty($info['error']) && isset($index) && isset($indexName)) {
             $types = [
-                'community'         => 'community_topic',
+                'community'         => 'community_topics',
                 'organization'      => 'organizations',
                 'person'            => 'people',
                 'article'           => 'articles',

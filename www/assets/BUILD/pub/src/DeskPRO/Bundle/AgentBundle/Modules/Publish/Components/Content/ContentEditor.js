@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { ArticleEditor } from '@deskpro/product-content-editor';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import '@deskpro/content-editor/styles/content.css';
+import 'tui-color-picker/dist/tui-color-picker.css';
 
 class ContentEditor extends React.PureComponent {
 

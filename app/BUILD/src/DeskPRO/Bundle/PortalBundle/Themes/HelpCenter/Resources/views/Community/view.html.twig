@@ -82,8 +82,8 @@
     {% endif %}
 
     {% if brand_setting('user.publish_comments') %}
-        {% if topic.comments | length %}
-            {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.comments } %}
+        {% if topic.visible_comments | length %}
+            {% include 'Theme:PublishCommon:comments-list.html.twig' with { comments: topic.visible_comments } %}
         {% endif %}
 
         {% if new_comment_form %}

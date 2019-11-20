@@ -171,10 +171,10 @@
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_download_total') }}</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_download_done') }}</td>
 						</tr>
-						<tr ng-class="{'success': indexer_status.deskpro_community_topics_done >= indexer_status.deskpro_community_topics_total}">
+						<tr ng-class="{'success': indexer_status.deskpro_community_done >= indexer_status.deskpro_community_total}">
 							<td>Community Topics</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_community_topics_total') }}</td>
-							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_community_topics_done') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_community_total') }}</td>
+							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_community_done') }}</td>
 						</tr>
 						<tr ng-class="{'success': indexer_status.deskpro_organization_done >= indexer_status.deskpro_organization_total}">
 							<td>Organizations</td>
@@ -264,8 +264,8 @@
 						</tr>
 						<tr>
 							<td>Community Topics</td>
-							<td>{{ ng_var('info.num_topic') }}</td>
-							<td>{{ ng_var('info.realnum_topics') }}</td>
+							<td>{{ ng_var('info.num_community') }}</td>
+							<td>{{ ng_var('info.realnum_community') }}</td>
 						</tr>
 						<tr>
 							<td>Organizations</td>

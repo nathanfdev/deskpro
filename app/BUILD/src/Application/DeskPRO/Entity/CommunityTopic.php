@@ -118,6 +118,11 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     protected $attachments;
 
     /**
+     * @var CommunityTopicComment
+     */
+    protected $officialResponse;
+
+    /**
      * @var bool
      */
     protected $_is_new = false;
@@ -627,6 +632,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
 
     /**
      * @param CommunityTopicStatusCategory $status_category
+     *
      * @throws \Exception
      */
     public function setStatusCategory(CommunityTopicStatusCategory $status_category = null)
@@ -766,6 +772,26 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
         $dateTwo = Carbon::createFromTimestamp($transitions[0]->getDateCreated()->getTimestamp());
 
         return $dateOne->diffForHumans($dateTwo, true, true);
+    }
+
+    /**
+     * @return CommunityTopicComment
+     */
+    public function getOfficialResponse()
+    {
+        return $this->officialResponse;
+    }
+
+    /**
+     * @param CommunityTopicComment $officialResponse
+     *
+     * @return $this
+     */
+    public function setOfficialResponse(CommunityTopicComment $officialResponse = null)
+    {
+        $this->setModelField('officialResponse', $officialResponse);
+
+        return $this;
     }
 
     //###########################################################################
@@ -1160,6 +1186,25 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
                 'orderBy'      => ['date_created' => 'DESC'],
             ]
         );
+        $metadata->mapOneToOne(
+            [
+                'fieldName'    => 'officialResponse',
+                'targetEntity' => CommunityTopicComment::class,
+                'cascade'      => ['persist', 'detach'],
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'official_response_id',
+                        'referencedColumnName' => 'id',
+                        'unique'               => true,
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
         $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
@@ -1176,6 +1221,7 @@ class CommunityTopic extends ContentAbstract implements HighlightableModelInterf
     /**
      * @param CommunityTopicStatusCategory $newStatusCategory
      * @param CommunityTopicStatusCategory $oldStatusCategory
+     *
      * @throws \Exception
      */
     protected function addStatusCategoryTransition(

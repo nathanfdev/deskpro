@@ -69,7 +69,11 @@ class DBStorage extends AbstractStorage
 
         foreach ($filters as $name => $value) {
             $name = StringUtils::toCamelCase($name, false);
-            $qb->andWhere($qb->expr()->eq("e.$name", ":{$name}"))->setParameter($name, $value);
+            if ($name === 'objectName') {
+                $qb->andWhere($qb->expr()->like("e.$name", ":{$name}"))->setParameter($name, "%{$value}%");
+            } else {
+                $qb->andWhere($qb->expr()->eq("e.$name", ":{$name}"))->setParameter($name, $value);
+            }
         }
 
         return $qb;
