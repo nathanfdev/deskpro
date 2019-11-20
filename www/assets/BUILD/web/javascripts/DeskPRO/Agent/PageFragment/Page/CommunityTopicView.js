@@ -484,7 +484,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 
 	_initCommentForm: function() {
 		this.commentsController = new DeskPRO.Agent.PageHelper.Comments(this, {
-			commentsWrapper: this.getEl('comments_wrap')
+			commentsWrapper: this.getEl('comments_wrap'),
+      contentType:     'community'
 		});
 		this.ownObject(this.commentsController);
 
@@ -499,6 +500,8 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			return;
 		}
 
+		var officialResponse = $('[name="official_response"]', this.newCommentWrapper).is(':checked') ? 1 : 0;
+
 		var loadingOn = $('.loading-on', this.newCommentWrapper).show();
 		var loadingOff = $('.loading-off', this.newCommentWrapper).hide();
 
@@ -507,6 +510,10 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			name: 'content',
 			value: val
 		});
+    data.push({
+      name: 'official_response',
+      value: officialResponse
+    });
 
 		if (this.getEl('agent_comment_ck').is(':checked')) {
 			data.push({
@@ -524,6 +531,10 @@ DeskPRO.Agent.PageFragment.Page.CommunityTopicView = new Orb.Class({
 			success: function(html) {
 				loadingOn.hide();
 				loadingOff.show();
+
+				if (officialResponse) {
+          this.newCommentWrapper.parent().find('.comment-official-response').hide();
+        }
 
 				$('textarea', this.newCommentWrapper).val('');
 				var el = $(html);

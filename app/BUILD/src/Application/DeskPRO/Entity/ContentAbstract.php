@@ -807,11 +807,21 @@ abstract class ContentAbstract extends DomainObject implements HasIconProperty, 
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|CommentAbstract[]
      */
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * @return ArrayCollection|CommentAbstract[]
+     */
+    public function getVisibleComments()
+    {
+        return $this->comments->filter(function (CommentAbstract $comment) {
+            return $comment->isVisible();
+        });
     }
 
     /**

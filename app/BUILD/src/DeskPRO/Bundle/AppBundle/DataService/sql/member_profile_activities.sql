@@ -31,7 +31,7 @@ FROM (
         INNER JOIN
             community_topics ON community_topic_comments.topic_id = community_topics.id AND community_topics.status <> 'hidden'
         WHERE
-            community_topic_comments.person_id = :personId
+            community_topic_comments.person_id = :personId AND community_topic_comments.status = 'visible'
         ORDER BY
             community_topic_comments.id DESC
         LIMIT :subLimit
@@ -49,7 +49,7 @@ FROM (
         INNER JOIN
             articles ON article_comments.article_id = articles.id
         WHERE
-            article_comments.person_id = :personId
+            article_comments.person_id = :personId AND article_comments.status = 'visible'
         ORDER BY
             article_comments.id DESC
         LIMIT :subLimit
@@ -67,7 +67,7 @@ FROM (
         INNER JOIN
             downloads ON download_comments.download_id = downloads.id
         WHERE
-            download_comments.person_id = :personId
+            download_comments.person_id = :personId AND download_comments.status = 'visible'
         ORDER BY
             download_comments.id DESC
         LIMIT :subLimit
@@ -85,7 +85,7 @@ FROM (
         INNER JOIN
             news ON news_comments.news_id = news.id
         WHERE
-            news_comments.person_id = :personId
+            news_comments.person_id = :personId AND news_comments.status = 'visible'
         ORDER BY
             news_comments.id DESC
         LIMIT :subLimit
@@ -103,7 +103,7 @@ FROM (
         INNER JOIN
             topics ON topic_comments.topic_id = topics.id
         WHERE
-            topic_comments.person_id = :personId
+            topic_comments.person_id = :personId AND topic_comments.status = 'visible'
         ORDER BY
             topic_comments.id DESC
         LIMIT :subLimit

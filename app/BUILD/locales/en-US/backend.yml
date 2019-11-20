@@ -3223,6 +3223,7 @@ agent.general.create_section: 'Create Section'
 agent.general.create_status: 'Create Status'
 agent.general.create_task: 'Create Task'
 agent.general.create_ticket: 'Create Ticket'
+agent.general.set_as_official_response: 'Set As Official Response'
 agent.general.create_topic: 'Create Topic'
 agent.general.created: Created
 agent.general.created_and_published: 'Created and Published'
@@ -3895,6 +3896,7 @@ agent.general.users: Users
 agent.general.usersources: Usersources
 agent.general.validate: Validate
 agent.general.validate_comment: 'Validate Comment'
+agent.general.official_response: 'Official Response'
 agent.general.value: Value
 agent.general.verified: Verified
 agent.general.via: Via
