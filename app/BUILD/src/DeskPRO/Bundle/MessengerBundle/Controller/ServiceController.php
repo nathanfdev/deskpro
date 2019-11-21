@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\TicketLayout\Layout;
+use Application\DeskPRO\TicketLayout\LayoutCollection;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -53,18 +55,28 @@ class ServiceController extends AbstractMessengerController
         $settings = $this->get('messenger.service.settings_resolver')->getMessengerSettings($brand);
         $data     = $this->get('serializer')->toArray($settings,  new SideloadSerializationContext());
 
+        /** @var LayoutCollection $layouts */
         $layouts = $this->container->getTicketLayoutManager()->getUserLayouts(true);
 
         $l = [];
         foreach ($layouts as $k => $layout) {
-            $layout = array_merge(['department' => $k ?: null], $layout->exportToArray());
-            foreach ($layout['fields'] as &$item) {
-                if ($item['field_type'] === 'ticket_field') {
-                    $item['data'] = $this->get('serializer')->toArray($this->getRepository(CustomDefTicket::class)
-                        ->find($item['id']), new SideloadSerializationContext());
+            /** @var Layout $layout */
+            $layoutData           = ['department' => $k ?: null];
+            $layoutData['fields'] = [];
+            foreach ($layout->all() as $f) {
+                if ($f->getFieldType() === 'attachments') {
+                    continue;
                 }
+                $ar             = $f->exportToArray();
+                $ar['field_id'] = $f->getId();
+                if ($f->getFieldType() === 'ticket_field') {
+                    $ar['data'] = $this->get('serializer')->toArray($this->getRepository(CustomDefTicket::class)
+                        ->find($f->getFieldId()), new SideloadSerializationContext());
+                }
+                $layoutData['fields'][] = $ar;
             }
-            $l[] = $layout;
+
+            $l[] = $layoutData;
         }
 
         $data['tickets']['formConfig'] = $l;
