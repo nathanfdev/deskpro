@@ -358,9 +358,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/messenger": {
-      "version": "0.1.15",
-      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.15.tgz",
-      "integrity": "sha512-SBFspOGlDHddhRlzVLCE4mH2S8MdfYTNBYtlGj0qo86ygsia6K2Yp3Ak69rEGSgf6d3oRck3zY/tUyyAfuSkLg==",
+      "version": "0.1.16",
+      "resolved": "https://registry.npmjs.org/@deskpro/messenger/-/messenger-0.1.16.tgz",
+      "integrity": "sha512-+1Ksr2DHJXxc24k+6ekM3x8b9KfSOhd4Z4DzvwVWGShqGHbYrpRR78wvMX0gUvWPeS0STz1A9EC2lfxTvTGWLA==",
       "requires": {
         "@deskpro/portal-components": "^0.3.1",
         "axios": "^0.19.0-beta.1",
@@ -394,9 +394,9 @@
           "integrity": "sha512-XqPLn1hXCUCCFZbNRpxp8CqGBKrT3obMHvtTWAITDUfSurJKisF9HxtzJ23Lzc/Mq9PqTOfpHaCqAjWKJuHtUA=="
         },
         "@deskpro/portal-components": {
-          "version": "0.3.3",
-          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.3.tgz",
-          "integrity": "sha512-hvQss3PriHMQ9Lr+xMBQMEysxVfYLx3D4zi7/poQfAeFoAJaBc6AJWo3ikied9HJOFVlrOZlsWCZkyltvrRl/A==",
+          "version": "0.3.4",
+          "resolved": "https://registry.npmjs.org/@deskpro/portal-components/-/portal-components-0.3.4.tgz",
+          "integrity": "sha512-ZQti7E2bJFkc6m5HipZt875Dn86Ok0upr3B5b4oYHaGcsoAfVs7mnw+m6UHoRE/r0jSf1um0oF8p3rQ4lGfa7w==",
           "requires": {
             "@deskpro/js-utils": "1.0.7",
             "@deskpro/react-datepicker-hijri": "^1.5.0",
