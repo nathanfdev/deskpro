@@ -126,7 +126,12 @@
             </div>
           </div>#}
         </div>
-        {% show members_pager %}
+
+        <div class="dp-po-section">
+          {% include 'Theme:Common:pager.html.twig' with {
+            pager: pager
+          } %}
+        </div>
 
       </div>
     </main>
