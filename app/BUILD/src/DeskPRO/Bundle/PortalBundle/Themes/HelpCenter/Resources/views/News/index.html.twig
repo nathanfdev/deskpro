@@ -41,6 +41,12 @@
                                 <span class="dp-po-news-listing-month">{{ item.date_published | date('M') | upper }} {{ item.date_published | date('j') }}</span>
                                 <span class="dp-po-news-listing-year">{{ item.date_published | date('Y') }}</span>
                             </div>
+                            {% if has_splash(item) %}
+                                <figure class="dp-po-news-listing-figure">
+                                    <img src="{{ get_splash_url(item, 300) }}"
+                                         class="dp-po-news-listing-photo img-fluid" />
+                                </figure>
+                            {% endif %}
                             <div class="dp-po-news-listing-content">
                                 <h3 class="dp-po-news-listing-title">{{ item.title }}</h3>
                                 <div class="dp-po-avatar dp-po-avatar-round">
