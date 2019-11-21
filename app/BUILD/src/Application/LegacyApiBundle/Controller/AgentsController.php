@@ -798,8 +798,12 @@ class AgentsController extends AbstractController
      */
     protected function sendWelcomeEmail(Person $agent)
     {
+        $guideType = $agent->isAdmin()
+            ? 'admin-quickstart'.(defined('DPC_IS_CLOUD') ? '-cloud' : '')
+            : 'agent-quickstart';
+
         $attach = \Swift_Attachment::fromPath(
-            DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+            DP_ROOT.'/src/Application/AgentBundle/Resources/assets/'.$guideType.'/en_US.pdf',
             'application/pdf'
         );
         $attach->setFilename('Getting Started with DeskPRO.pdf');
