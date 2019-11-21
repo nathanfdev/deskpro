@@ -81,13 +81,20 @@ trait TicketsPagerTrait
      */
     private function addLimitInCaseOfNoCriteria(SqlBuilder $qb, TicketSearchParams $searchParams, array $params)
     {
+        $paramsToTest = $params;
+        foreach (['page', 'count'] as $paramKey) {
+            if (isset($paramsToTest[$paramKey])) {
+                unset($paramsToTest[$paramKey]);
+            }
+        }
+
         if (
             $searchParams->hasOrderFields()
             && count($searchParams->getOrderFields()) == 1
             && $searchParams->getOrderFields()[0][0] === TicketSearchParams::ORDER_ID
             && !$searchParams->hasGroupFields()
             && !$searchParams->hasSubFilterFields()
-            && $params === ['not_status' => 'hidden'] // this is the default status during the search
+            && $paramsToTest === ['not_status' => 'hidden'] // this is the default status during the search
         ) {
             return;
         }
