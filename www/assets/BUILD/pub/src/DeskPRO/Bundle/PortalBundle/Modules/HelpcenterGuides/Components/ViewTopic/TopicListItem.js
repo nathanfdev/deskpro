@@ -80,7 +80,7 @@ class TopicListItem extends React.Component {
               path={this.props.path}
               grabTopicFromApi={grabTopicFromApi}
               filter={filter}
-              filterTopic={this.filterTopic}
+              filterTopic={filterTopic}
               expanded={(filter !== '' || child.slug === topicSlug || Object.values(child.children)
                 .find(c => c.slug === topicSlug || Object.values(c.children).find(cc => cc.slug === topicSlug)))}
             />
