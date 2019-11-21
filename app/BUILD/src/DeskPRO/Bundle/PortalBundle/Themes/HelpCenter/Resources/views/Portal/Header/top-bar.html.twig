@@ -1,8 +1,8 @@
 <div class="dp-po">
     <header class="dp-po-header">
         <div class="container-fluid">
-            <div class="row">
-                <div class="col-4 col-sm-4">
+            <div class="d-flex flex-row">
+                <div>
                     <div class="dp-po-brand-left">
                         <div class="dp-po-homelink">
                             {% if portal_custom_logo() %}
@@ -13,12 +13,12 @@
                                 </a>
                             {% endif %}
                             <a href="{{ path('portal_home') }}">
-                                <span class="dp-po-brand-name">{{ brand_setting('core.deskpro_name')|e }}</span>
+                                <span class="dp-po-brand-name text-truncate">{{ brand_setting('core.deskpro_name')|e }}</span>
                             </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-8 col-sm-8">
+                <div class="flex-nowrap ml-auto">
                     <div class="dp-po-header-right">
                         {% include 'Theme:Common:agent_bar.html.twig' %}
                         <div class="dp-po-language" id="hc-language-changer">

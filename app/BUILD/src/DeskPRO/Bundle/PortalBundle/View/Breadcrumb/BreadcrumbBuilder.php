@@ -382,6 +382,17 @@ class BreadcrumbBuilder
         return $this;
     }
 
+    public function addCommunityForum(CommunityForum $a)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($a),
+            $a->getTitle(),
+            $a
+        );
+
+        return $this;
+    }
+
     public function addCommunityCreate(CommunityForum $a)
     {
         $this->b->add(
