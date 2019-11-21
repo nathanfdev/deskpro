@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Orb\Validator\StringEmail;
 use Pagerfanta\Adapter\CallbackAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -221,12 +222,20 @@ class PersonDataService extends AbstractDataService
             ->andWhere('p.is_user = 1');
 
         if ($search) {
-            $qb->andWhere('p.override_display_name LIKE :override OR p.first_name LIKE :first OR p.last_name LIKE :last');
-            $qb->setParameters([
-                'override' => '%'.$search.'%',
-                'first'    => '%'.$search.'%',
-                'last'     => '%'.$search.'%',
-            ]);
+            $qb->join('p.emails', 'eml');
+
+            if (StringEmail::isValueValid($search)) {
+                $qb->andWhere('eml.email = :email');
+                $qb->setParameter('email', $search);
+            } else {
+                $qb->andWhere('p.override_display_name LIKE :override OR p.first_name LIKE :first OR p.last_name LIKE :last OR eml.email LIKE :email');
+                $qb->setParameters([
+                    'override' => '%'.$search.'%',
+                    'first'    => '%'.$search.'%',
+                    'last'     => '%'.$search.'%',
+                    'email'    => '%'.$search.'%',
+                ]);
+            }
         }
 
         $qbCount = clone $qb;
