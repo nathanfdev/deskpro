@@ -82,7 +82,7 @@
                     </div>
                   </span>
                 <span class="dp-po-table-cell dp-po-table-cell-large">{{person.primary_email}}</span>
-                <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0] }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
+                <span class="dp-po-table-cell">{% if person.phone_numbers | length > 0 %}{{ person.phone_numbers[0].getFullFormatted() }}{%  else %}{{ phrase('helpcenter.members.phone-number-none') }}{% endif %}</span>
                 <span class="dp-po-table-cell dp-po-table-cell-large">{% if person.organization %}{% if person.organization_position %}{{ person.organization_position }}, {% endif %}{{ person.organization.name }}{% endif %}</span>
                 {% if app.getSetting('portal.members_community') %}
                   <span class="dp-po-table-cell dp-po-table-cell-small dp-po-table-message text-right">
