@@ -29,11 +29,6 @@
                     <div class="dp-po-post-user">
                         <ul class="dp-po-post-user-list">
                             {% include 'Theme:PublishCommon:post-user-list.html.twig' with { users: [topic.person] } %}
-                            <li class="dp-po-post-user-item">
-                                <a class="dp-po-post-user-list-forum-link" href="{{ path('portal_community_browse', {filter_uri: "type-#{topic.forum.id}"}) }}">
-                                    {{ topic.forum.title }}
-                                </a>
-                            </li>
                         </ul>
                     </div>
                 </div>

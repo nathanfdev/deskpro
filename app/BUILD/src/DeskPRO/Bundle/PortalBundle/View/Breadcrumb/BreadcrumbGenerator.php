@@ -266,6 +266,7 @@ class BreadcrumbGenerator
     public function buildCommunityView(CommunityTopic $a)
     {
         return $this->createBuilder()->addCommunity()
+            ->addCommunityForum($a->getForum())
             ->addCommunityView($a)
             ->done();
     }
