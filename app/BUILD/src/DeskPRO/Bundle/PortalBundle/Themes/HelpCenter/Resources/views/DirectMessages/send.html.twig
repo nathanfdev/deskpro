@@ -15,7 +15,12 @@
                         <div class="dp-po-block">
                             <div class="dp-po-messages-new">
                                 {{ form_start(form, { attr: { class: 'dpx-form' } }) }}
-                                    {{ form_row(form.person) }}
+                                    {% do form.person.setRendered %}
+                                    <div class="form-group">
+                                        <label>{{ phrase('helpcenter.direct_messages.recipient') }}</label>
+                                        {{ personTo.display_name }}
+                                    </div>
+
                                     {{ form_row(form.message) }}
                                     <div class="row align-items-center">
                                         <div class="col-sm-3">
