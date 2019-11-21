@@ -1,0 +1,11 @@
+id: bulgarian
+name: Bulgarian
+nameLocal: Bălgarski
+locale: bg
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

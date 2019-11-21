@@ -1,0 +1,1215 @@
+portal.account.automatically_join_org_tickets: 'Включи се автоматично в тикетите на {{org_name}}?'
+portal.account.change-password: 'Промени парола'
+portal.account.change-password-btn: 'Обнови парола'
+portal.account.comment-lockout: 'Подали сте много коментари. Моля изчакайте за да можете да подадете още.'
+portal.account.email-add: 'Добави имейл'
+portal.account.email-add-description: 'Добави допълнителни имейл адреси към акаунта си. Можете да подавате тикети от тези имейл адреси и системата ще ги следи под един акаунт.'
+portal.account.email-btn-make-primary: 'Направи основен'
+portal.account.email-btn-remove: 'Премахни имейл'
+portal.account.email-btn-resend-validation: 'Изпрати имейл за потвърждение отново'
+portal.account.email-btn-usersource-set: 'Добави имейл адрес'
+portal.account.email-management: 'Управлявай имейли'
+portal.account.email-management-from-form: 'Управлявай своите имейл адреси'
+portal.account.email-primary-description: 'Това е основния ви имейл. Ще бъде използван по подразбиране освен ако не уточните друго.'
+portal.account.community-lockout: 'Подали сте общностна тема прекалено много пъти и за това сте заключени. Моля опитайте отново по-късно.'
+portal.account.link-expired: 'Съжалавам, но линка който сте кликнали е изтекъл или вече е бил използван.'
+portal.account.lockout_time: 'Можете да опитате отново след {{time}} минути.'
+portal.account.login-btn: Влез
+portal.account.login-btn-usersource: 'Влез с {{usersource}}'
+portal.account.login-captcha-failed: 'Въвели сте невалиден CAPTCHA код. Моля опитайте отново.'
+portal.account.login-disabled: 'Имейл адреса ви беше забранен.'
+portal.account.login-email: 'Вашият имейл'
+portal.account.login-external: 'Влезте с външна услуга'
+portal.account.login-form-disabled: 'Формата за влизане е забранена'
+portal.account.login-invalid: 'Въвели сте грешен имейл или парола. Моля опитайте отново.'
+portal.account.login-lockout: 'Не успяхте да влезете прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
+portal.account.login-not-configured: 'Няма настроена външна услуга.'
+portal.account.login-password: 'Вашата парола'
+portal.account.login-password-reminder: 'Имате ли нужда от ново подсещане за парола?'
+portal.account.login-register-btn: Регистрирай
+portal.account.login-register-header: Регистрирай
+portal.account.login-remember: 'Остани логнат?'
+portal.account.login-saved-add_email: 'Вашият имейл за добавяне все още не е подаден, Моля влезте за да продължите.'
+portal.account.login-saved-comment: 'Коментара ви не е подаден все още. Моля влезте за да продължите.'
+portal.account.login-saved-form: 'Вашата форма все още не е подадена. Моля влезте за да продължите.'
+portal.account.login-saved-new_community_topic: 'Вашата нова общностна тема все още не е подадена. Моля влезте за да продължите.'
+portal.account.login-saved-new_ticket: 'Вашият тикет все още не е подаден. Моля влезте за да продължите.'
+portal.account.login-saved-register: 'Вашият регистър все още не е подаден. Моля влезте за да продължите.'
+portal.account.login-stay-logged-in: 'Остани логнат?'
+portal.account.logout-btn: Излез
+portal.account.logout-confirm: 'Сигурни ли сте, че искате да излезете?'
+portal.account.new-ticket-no-login: 'Порталната CRM е забранена. Невъзможно е подаване на тикет.'
+portal.account.profile-btn-save: 'Запази профил'
+portal.account.profile-delete-picture: 'Промени или изтрий профилна снимка?'
+portal.account.register-btn: Регистрирай
+portal.account.register-lockout: 'Регистрирали сте се прекалено много пъти.'
+portal.account.registration-set-password: 'Вече съществува акаунт с този имейл адрес. Изпратихме ви имейл който ще ви позволи да си изберете парола и да влезете.'
+portal.account.reset-password-btn: 'Нулирай парола'
+portal.account.reset-password-click-here: 'Кликни тук за да изискаш код за нулиране на парола'
+portal.account.reset-password-invalid-desc: 'Кодът за нулиране на парола е невалиден или е изтекъл. За да нулирате паролата си моля изискайте нов код.'
+portal.account.reset-password-invalid-input: 'Моля въведете валиден имейл адрес или потребителско име'
+portal.account.reset-password-lockout: 'Опитали сте се да си нулирате паролата прекалено много пъти. Ще бъдете заключени за кратък период от време. Моля опитайте отново по-късно.'
+portal.account.reset-password-request-desc: 'Попълнете тази форма за да ви бъде изпратен линк за нулиране на парола.'
+portal.account.reset-password-request-title: 'Забравена парола?'
+portal.account.reset-password-sent-desc: 'Получихме вашето искане за нулиране на парола за имейл адреса отдолу. Ако този имейл принадлежи на регистриран акаунт сме изпратили имейл с линк за нулиране на паролата на основния имейл адрес на акаунта. Моля проверете входящата си кутия за последващи инструкции.'
+portal.account.reset-password-sent-title: 'Искане за нулиране на парола получено'
+portal.account.reset-password-sent-to: 'Изпратихме имейл на'
+portal.account.reset-password-success: 'Паролата ви беше обновен'
+portal.account.section-desc-login: 'Вече имате акаунт? Влезте отдолу.'
+portal.account.section-desc-login-external: 'Моля използвайте линковете отдолу ако имате акаунт с друг доставчик.'
+portal.account.section-desc-register: 'Регистрирайте акаунт за да можете лесно да управлявате комуникациите си.'
+portal.account.section-title-emails: Имейли
+portal.account.section-title-login: Влез
+portal.account.section-title-profile: Профил
+portal.account.section-title-register: Регистрирай
+portal.account.section-title-reset-password: 'Нулирай парола'
+portal.account.section-title-set-password: 'Задай парола'
+portal.account.section-title-usersource-email: 'Въведи твоя имейл'
+portal.account.section-title-your-account: 'Вашият акаунт'
+portal.account.set-password-btn: 'Задай парола'
+portal.account.set-password-click-here: 'Кликни тук за да зададеш паролата си'
+portal.account.set-password-for-user: 'Акаунтът ви все още няма парола. Моля задайте такава сега за да можете да влизате и да поствате съдържание за в бъдеще.'
+portal.account.set-password-invalid-desc: 'Кодът ви за парола е невалиден или изтекъл. За да зададете парола, моля изискайте нов код.'
+portal.account.set-password-invalid-input: 'Моля въведете валиден имейл адрес или потребителско име.'
+portal.account.set-password-request-desc: 'Попълнете тази форма и ние ще ви изпратим линк за нулиране на паролата.'
+portal.account.set-password-request-title: 'Задай своята парола'
+portal.account.set-password-sent-desc: 'Изпратихме ви имейл с инструкции как да си изберете парола.'
+portal.account.set-password-sent-title: 'Избери своята парола'
+portal.account.set-password-sent-to: 'Изпратихме имейл на'
+portal.account.set-password-success: 'Вашата парола беше обновена.'
+portal.account.share-lockout: 'Вие споделихте съдържание прекалено много пъти и поради това сте заключени. Моля опитайте отново по-късно.'
+portal.account.submit-saved-add_email: 'Вашият имейл за добавяне все още не беше изпратен, но ние го запазихме за вас.'
+portal.account.submit-saved-comment: 'Вашият коментар не е изпратен още, но ние го запазихме за вас.'
+portal.account.submit-saved-form: 'Вашата форма не е изпратена все още, но ние я запазихме за вас.'
+portal.account.submit-saved-form-go: 'Кликни тук за да изпратиш автоматично отново формата.'
+portal.account.submit-saved-new_community_topic: 'Вашата общностна тема не беше изпратена все още, но ние я запазихме за вас.'
+portal.account.submit-saved-new_ticket: 'Вашият тикет не беше изпратен все още, но ние го запазихме за вас.'
+portal.account.submit-saved-register: 'Вашата регистрация не беше изпратена все още, но ние я запазихме за вас.'
+portal.account.tickets-lockout: 'Изпратихте прекалено много тикети и поради това сте заключени. Моля опитайте отново по-късно.'
+portal.account.usersource-set-email-desc: 'Преди да можете да влезете се нуждаем от вашия имейл адрес. Моля въведете имейл адреса си отдолу за да можем да ви изпратим имейл за потвърждение.'
+portal.account.welcome-back: 'Добре дошли отново'
+portal.account.your-emails: 'Вашите имейл адреси'
+portal.account.your-pending-email-addresses: 'Вашите чакащи имейл адреси'
+portal.articles.by-line: 'От {{name}} на {{date}}'
+portal.articles.link: 'Линк: <a href="{{link}}">{{link}}</a>'
+portal.articles.none: 'Все още няма статии'
+portal.articles.search-title: 'База знание'
+portal.articles.section-desc: 'Нашата база знание със статии написани от нашите агенти по поддръжка за да ви помогнат.'
+portal.articles.section-title: 'База знание'
+portal.articles.share-by-email: 'Сподели тази статия по имейл:'
+portal.articles.view-as-agent: 'Виждате тази страница защото сте агент. Потребителите няма да виждат тази страница.'
+portal.articles.view-x-articles:
+  one: 'Виж 1 стати'
+  other: 'Виж {{count}} статии'
+portal.articles.x-articles:
+  one: '1 статия'
+  other: '{{count}} статии'
+portal.chat.agent_blocked_user_on: '{{name}} блокира на {{date}}'
+portal.chat.agent_disconnected: 'изглежда връзката на {{agentName}} се разпадна'
+portal.chat.agent_typing_message: '{{agentName}} пише съобщение'
+portal.chat.asset_failed: неуспешен
+portal.chat.asset_not_delivered: Недоставен
+portal.chat.assigned_to: 'Чат назначен на {{name}}'
+portal.chat.attached_photo: '{{authorName}} прикачи тази снимка'
+portal.chat.block_ip_address: 'Блокирай IP адрес'
+portal.chat.block_ip_address_info: 'Блокиране на IP адрес може да е по-ефикасно, но може да доведе до блокирането на други хора които споделят същата интернет връзка.'
+portal.chat.block_reason: 'Причина: {{reason}}'
+portal.chat.block_title: 'Приключи чат и блокирай този потребител от започване на нов чат в следващите 24 часа.'
+portal.chat.block_user: 'Блокирай потребител'
+portal.chat.cancel_end_chat: 'Откажи и се върни в чат'
+portal.chat.chat_logs_header: 'Вашият чат дневник'
+portal.chat.chat_logs_header_org: 'Чат дневник на организация'
+portal.chat.chat_transcript: 'Чат препис'
+portal.chat.check_validation_code: 'Проверете имейла си и въведете кода отдолу.'
+portal.chat.create_ticket: 'Създай тикет'
+portal.chat.details-placeholder: 'Първо име, фамилия'
+portal.chat.dismiss_message: 'Отхвърли съобщение'
+portal.chat.dropzone1: 'Пускането на този файл тук'
+portal.chat.dropzone2: 'Ще го изпрати като съобщение'
+portal.chat.end_chat: 'Приключи чат'
+portal.chat.end_chat_confirm_title: 'Сигурни ли сте, че искате да приключите този чат?'
+portal.chat.ended_by: 'Чат приключен от {{name}}'
+portal.chat.ended_by_reason: 'Чат приключен от {{name}}: {{reason}}'
+portal.chat.ended_user: 'Чат приключен от потребител'
+portal.chat.expired_jwt_token: 'Вашият JWT токен е изтекъл.'
+portal.chat.feedback_action: 'Изпрати обратна връзка'
+portal.chat.feedback_enter_message: 'Въведи съобщението си тук'
+portal.chat.feedback_label: Коментирай
+portal.chat.feedback_not_helpful_title: 'Вие оценихте <br /> {{agentName}} като <span class="negative">{{notHelpful}}</span>'
+portal.chat.feedback_title: 'Благодарим ви за обратната връзка!'
+portal.chat.find_agent_now: 'Намери друг агент сега'
+portal.chat.find_another_agent: 'Ако не се върне скоро, ще намерим друг агент за вас.'
+portal.chat.full_message: 'Пълно съобщение'
+portal.chat.helpful: Полезен
+portal.chat.ident_unconfirmed: 'Самоличност неподтвърдена, имейлът не е потвърден'
+portal.chat.invalid_jwt_token: 'Вашият JWT токен не е валиден.'
+portal.chat.label-department: 'Избери отдел'
+portal.chat.label-email: 'Вашият имейл'
+portal.chat.label-name: 'Вашето име'
+portal.chat.list_agent: Агент
+portal.chat.list_chat: Чат
+portal.chat.list_date: Дата
+portal.chat.list_switch_to_my_chats: 'Премини към моите чатове'
+portal.chat.list_switch_to_organization: 'Премини към организации'
+portal.chat.list_title:
+  one: '1 Чат'
+  other: '{{count}} Чата'
+portal.chat.list_user: Потребител
+portal.chat.log_agents: Агенти
+portal.chat.log_chat_time: 'Общо време на чат'
+portal.chat.log_department: Отдел
+portal.chat.log_linked_ticket: 'Назначи по тикет'
+portal.chat.log_title: 'Вашият чат с {{person}}'
+portal.chat.log_view_linked_ticket: 'Виж тикет'
+portal.chat.looking_for_another_agent: 'Търсим нов агент.'
+portal.chat.lost_connection: 'Връзката се разпадна. Опитваме повторно свързване.'
+portal.chat.message_agent-timeout: '{{name}} не отговаря. Моля изчакайте докато се опитваме да намерим друг агент.'
+portal.chat.message_assigned: 'Чат назначен на {{name}}'
+portal.chat.message_ended: 'Чат приключен'
+portal.chat.message_ended-by: 'Чат приключен от {{name}}'
+portal.chat.message_ended-by-user: 'Чат приключен от потребител'
+portal.chat.message_set-department: '{{name}} зададе отдел {{department}}'
+portal.chat.message_set_department: '{{name}} зададе отдел {{department}}'
+portal.chat.message_started: 'Чат стартиран'
+portal.chat.message_type: 'Въведете вашето съобщение за {{agentName}}'
+portal.chat.message_unassigned: 'Чат освободен'
+portal.chat.message_uploading: Качване...
+portal.chat.message_user-joined: '{{name}} се присъедини в чата'
+portal.chat.message_user-left: '{{name}} напусна чата'
+portal.chat.message_user-returned: 'Потребителят се върна'
+portal.chat.message_user-timeout: 'Изтекло време на потребител: Системата засече, че връзката на потребителя се е разпаднала или той е напуснал чат страницата. Ако потребителя не се върне чатът ще бъде приключен скоро автоматично.'
+portal.chat.message_user_joined: '{{name}} се присъедини към чата'
+portal.chat.message_user_left: '{{name}} напусна чата'
+portal.chat.message_wait-long: 'Извинете ни! Отнема повече време от обикновено за да открием агент който да отговори на чата ви.'
+portal.chat.message_wait-pending: 'Търсим ви агент...'
+portal.chat.message_wait-ticket: 'Искате ли вместо това да изпратите тикет?'
+portal.chat.message_wait-timeout: 'Чат приключен: Съжаляваме. Не успяхме да открием агент за вас.'
+portal.chat.missing_jwt_token: 'JWT токен се изисква'
+portal.chat.msg_agent_timeout: '{{name}} не отговаря. Моля изчакайте докато се опитваме да открием друг агент.'
+portal.chat.msg_new_user_track: 'Потребителят разглежда: {{label}}'
+portal.chat.msg_user_timeout: 'Потребителят не отоговаря'
+portal.chat.mute_button: Заглуши
+portal.chat.new_chat: 'Нов чат'
+portal.chat.not_helpful: 'Не полезен'
+portal.chat.online_agent: 'Чатите с <span class="name">{{agentName}}</span>'
+portal.chat.rate_agent_title: 'Чатихте с {{agentName}}'
+portal.chat.reopen_chat: 'Отвори повторно този чат'
+portal.chat.reopen_chat_action: 'Отвори повторно чат'
+portal.chat.reply_to: 'Отговори на {{firstName}}'
+portal.chat.require_validate_email: 'Изискваме от вас да потвърдите имейл адреса си преди да можете да чатите.'
+portal.chat.screen_share: 'Сподели екран'
+portal.chat.see_full_image: 'Кликни тук за да видиш пълното изображение'
+portal.chat.send_another_validation_email: 'Изпратете ми друг имейл'
+portal.chat.sent_validation_code: 'Изпратихме ви имейл с код за потвърждение.'
+portal.chat.start: 'Започни нов чат'
+portal.chat.support_powered_by: 'Поддръжка с помощта на {{DeskPRO}}'
+portal.chat.take_chat: 'Вземи чат'
+portal.chat.taken_by: 'Чат взет от'
+portal.chat.transcript_action: 'Изпрати ми препис'
+portal.chat.transcript_already_sent: 'Беше изпратен препис на <b>{{email}}</b>'
+portal.chat.transcript_desc: 'Въведете вашите име и имейл отдолу и ние ще ви го изпратим по имейл.'
+portal.chat.transcript_sent: 'Препис изпратен на {{email}}'
+portal.chat.transcript_title: 'Имате ли нужда от препис на този чат?'
+portal.chat.type_message_to: 'Напишете съобщение на {{firstName}}'
+portal.chat.unassigned: 'Чат освободен'
+portal.chat.unblock: Отблокирай
+portal.chat.upload_file: 'Качи файл'
+portal.chat.user_is_blocked: 'Потребител блокиран'
+portal.chat.validation_email_was_sent: 'Успешно изпратен нов имейл.'
+portal.chat.visitor_info: 'Информация за гост'
+portal.chat.you: Вие
+portal.chat.you_have_been_invited: 'Бяхте поканени да се присъедините към чат'
+portal.downloads.download: Изтегли
+portal.downloads.none: 'Все още няма изтегляния'
+portal.downloads.recent-downloads: 'Скорошни изтегляния'
+portal.downloads.search-title: Изтегляния
+portal.downloads.section-desc: 'Разгледайте нашата колекция от файлове за сваляне.'
+portal.downloads.section-title: Сваляния
+portal.downloads.uploaded-on: Качен
+portal.downloads.view-as-agent: 'Виждате тази страница защото сте агент. Потребителите няма да виждат тази страница'
+portal.downloads.view-x-files:
+  one: 'Виж 1 изтегляне'
+  other: 'Виж {{count}} изтгегляния'
+portal.email_subjects.chat_transcript: 'Чат препис'
+portal.email_subjects.comment-approved: 'Вашият коментар беше одобрен'
+portal.email_subjects.comment-confirmation: 'Благодарим ви за коментара'
+portal.email_subjects.comment-deleted: 'Вашият коментар беше прочетен от агентите ни'
+portal.email_subjects.download_sub_new: 'Нови сваляния'
+portal.email_subjects.download_sub_new_and_updated: 'Нови и обновени сваляния'
+portal.email_subjects.download_sub_updated: 'Обновени сваляния'
+portal.email_subjects.direct_message_new: 'Ново съобщение'
+portal.email_subjects.email-too-big: 'Вашият имейл "{{subject}}" не беше приет'
+portal.email_subjects.email_new-confirm: 'Потвърдете имейл адреса си'
+portal.email_subjects.email_primary-confirm: 'Потвърдете имейл адреса си'
+portal.email_subjects.email_ticket-reminder: 'Изисква се действие: Вашият тикет все още не е изпратен'
+portal.email_subjects.community_new: 'Благодаря ви, че изпратихте вашата общностна тема'
+portal.email_subjects.community_new-approved: 'Вашата общностна тема беше публикувана'
+portal.email_subjects.community_new-comment: 'Има нов коментар по "{{title}}"'
+portal.email_subjects.community_new-confirm: 'Благодаря ви, че изпратихте вашата общностна тема (изисква се потвърждение)'
+portal.email_subjects.community_new-disapproved: 'Извинете ни. Вашата общностна тема беше отхвърлена'
+portal.email_subjects.community_sub_updated: 'Обновена общностна тема'
+portal.email_subjects.community_updated: 'Вашият коментар беше обновен: {{title}}'
+portal.email_subjects.kb_sub_new: 'Нови статии'
+portal.email_subjects.kb_sub_new_and_updated: 'Нови и обновени статии'
+portal.email_subjects.kb_sub_updated: 'Обновени статии'
+portal.email_subjects.new-ticket-guest: 'Благодим ви, че се свързахте с нас'
+portal.email_subjects.news_sub_new: 'Извънредни новини'
+portal.email_subjects.news_sub_new_and_updated: 'Нови и обновени новини'
+portal.email_subjects.news_sub_updated: 'Обновени новини'
+portal.email_subjects.password_agent-reset: 'Агент нулира паролата ви'
+portal.email_subjects.password_reset: 'Нулирай парола'
+portal.email_subjects.password_set: 'Задай своя парола'
+portal.email_subjects.register-welcome: 'Благодарим ви, че се регистрирахте'
+portal.email_subjects.register-welcome-byagent: 'Вашият нов helpdesk акаунт'
+portal.email_subjects.remind_unresolved_final_subject: 'ПОДСЕЩАНЕ: {{ticket.subject}}'
+portal.email_subjects.remind_unresolved_subject: 'ПОДСЕЩАНЕ: {{ticket.subject}}'
+portal.email_subjects.share-article: '{{author_name}} иска да сподели тази статия с вас'
+portal.email_subjects.ticket-rate: 'Моля оценете поддръжката по тикет "{{ticket.subject}}"'
+portal.email_subjects.ticket_added_cc: 'Бяхте добавени към тикет "{{ticket.subject}}"'
+portal.email_subjects.ticket_new-participant: 'Беше добавен нов човек към тикета ви'
+portal.email_subjects.too-many-emails: 'ИЗВЕСТИЕ: Изпратили сте прекалено много имейли'
+portal.email_subjects.validate-email: 'Потвърдете имейл адрес'
+portal.emails.auto-close: 'Все още нямаме обратна връзка от вас относно тикет: "{{ticket.subject}}". Моля уведомете ни ако имате нужда от допълнително съдействие, в противен случай тикета ще бъде разрешен скоро.'
+portal.emails.chat_transcript: 'Благодарим ви за чата. Ето го вашия препис от чата.'
+portal.emails.comment_approved: 'Вашият отговор беше публикуван.'
+portal.emails.comment_deleted: 'Вашият коментар беше използван за да подобри тази страница: {{link}}.'
+portal.emails.comment_thank-you: 'Благодарим ви за коментара по {{link}}.'
+portal.emails.comment_validate-email: 'Моля потвърдете имейл адреса си като кликнете на следния линк:'
+portal.emails.direct_message_new: 'Има ново съобщение от {{person}} в тази тема {{link}}'
+portal.emails.do-not-reply: 'Моля не отговаряйте на този имейл. Това е автоматично генерирано съобщение и отговорите няма да бъдат прочетени от агентите ни.'
+portal.emails.download-new-downloads:
+  one: '1 Ново изтегляне'
+  other: '{{count}} Нови изтегляния'
+portal.emails.download-updated-downloads:
+  one: '1 Обновено изтегляне'
+  other: '{{count}} Обновени изтегляния'
+portal.emails.downloads-explain: 'Получавате този имейл защото сте се абонирали за обновления относно изтегляния налични на <a href="{{deskpro_url}}">{{deskpro_url}}</a><br /> Не искате повече подобни имейли? <a href="{{unsubscribe_url}}">  Кликнете тук за да прекратите абонамента си към всички известия за изтегляния.</a>'
+portal.emails.email-too-big: 'Вашият имейл "{{subject}}" не беше приет защото е прекалено дълъг. Максималният размер на имейл който helpdesk-a приема е {{max_size}}. Премахнете големи прикачени файлове и опитайте отново.'
+portal.emails.end_greeting: 'С уважение, <br /><br />{{site_name}}'
+portal.emails.community-topics-explain: 'Получавате този имейл защото сте се абонирали за обновления относно общностни теми налични на <a href="{{deskpro_url}}">{{deskpro_url}}</a><br /> Не искате повече подобни имейли? <a href="{{unsubscribe_url}}">  Кликнете тук за да прекратите абонамента си към всички известия за общностни теми.</a>'
+portal.emails.community-topics-updated:
+  one: '1 Обновена общностна тема'
+  other: '{{count}} Обновени общностни теми'
+portal.emails.community-topic_agent-validation: 'Забележете, че вашата общностна тема няма да се появи публично на нашия портал за поддръжка докато някой от нашите агенти не я одобри.'
+portal.emails.community_topic_approved: 'Искахме да знаете, че вашата общностна тема беше одобрена и вече е видима публично на нашия портал за поддръжка.'
+portal.emails.community_topic_closed: 'Изпратената от вас общностна тема "{{title}}" беше затворена: {{status}}'
+portal.emails.community-topic_disapproved: 'Искахме да знаете, че вашата общностна тема беше отхвърлена и няма да бъде видима публично на нашия портал за поддръжка.'
+portal.emails.community-topic_disapproved-reason: 'Искахме да знаете, че вашата общностна тема беше одобрена и вече е видима публично на нашия портал за поддръжка. {{name}} даде следната причина:'
+portal.emails.community-topic_new-comment: '{{name}} постна нов коментар:'
+portal.emails.community-topic_published: 'Записаната от вас общностна тема "{{title}}" беше одобрена и вече ще се вижда на нашия портал за поддръжка.'
+portal.emails.community-topic_thank-you: 'Благодарим ви, че изпратихте вашата общностна тема "{{title}}"'
+portal.emails.community-topic_updated: 'Вашата общностна тема "{{title}}" беше обновена. Новия и статус е "{{status}}"'
+portal.emails.community-topic_validate-email: 'Моля потвърдете вашия имейл като кликнете на следния линк:'
+portal.emails.community-topic_votes:
+  one: 'Вашата общностна тема в момента има <strong>1</strong> глас. Вижте вашата общностна тема онлайн на:'
+  other: 'Вашата общностна тема в момента има <strong>{{count}}</strong> гласа. Вижте вашата общностна тема онлайн на:'
+portal.emails.greeting: 'Скъпи {{to_name}},'
+portal.emails.kb-explain: 'Получавате този имейл защото сте се абонирали за обновления относно нашата база знания налични на <a href="{{deskpro_url}}">{{deskpro_url}}</a><br /> Не искате повече подобни имейли? <a href="{{unsubscribe_url}}">  Кликнете тук за да прекратите абонамента си към всички известия за базата знания.</a>'
+portal.emails.kb-new-articles:
+  one: '1 Нова статия в база знания'
+  other: '{{count}} Нови статии в база знания'
+portal.emails.kb-updated-articles:
+  one: '1 обновена статия в база знания'
+  other: '{{count}} Обновени статии в база знания'
+portal.emails.label_view-online: 'Виж онлайн'
+portal.emails.message-clipped: '(Съобщението беше изрязано)'
+portal.emails.new-ticket-guest-link: 'Благодарим ви, че се свързахте с нас. Можете да видите статуса на тикета си онлайн тук:'
+portal.emails.news-explain: 'Получавате този имейл защото сте се абонирали за обновления относно общностни теми налични на <a href="{{deskpro_url}}">{{deskpro_url}}</a><br /> Не искате повече подобни имейли? <a href="{{unsubscribe_url}}">  Кликнете тук за да прекратите абонамента си към всички известия за общностни теми.</a>'
+portal.emails.news-new-articles:
+  one: '1 Нов новинарски пост'
+  other: '{{count}} Нови новинарски поста'
+portal.emails.news-updated-articles:
+  one: '1 Обновен новинарски пост'
+  other: '{{count}} Обновени новинарски поста'
+portal.emails.password_agent-reset: 'Вашата парола беше нулирана от агент. Можете да влезете с тези данни'
+portal.emails.password_reset: 'Изискахте нулиране на парола. За да нулирате паролата си кликнете на линка отдолу:'
+portal.emails.password_set: 'За да зададете парола, кликнете на линка отдолу:'
+portal.emails.profile_email-new-confirm: 'Получихме искане от {{orig_email}} да добавим този имейл {{new_email}} към вашия акаунт в {{site_name}} helpdesk.<br /><br /> Ако вие сте направили това искане моля кликнете на линка отдолу. Ако не сте моля изтрийте този имейл.'
+portal.emails.profile_email-primary-confirm: 'За да потвърдите основния си имейл адрес просто кликнете на следния линк'
+portal.emails.profile_email_link-validate: 'Кликнете на следния лин за да потвърдите имейл адреса си'
+portal.emails.ratelimit_explain: 'Изпратили сте {{num_messagess}} съобщения за {{time_limit}}. За да предотвратим злоупотреби временно забранихме имейл адреса ви за {{time_lock}}. След {{date_lock_end}} тази временна забрана ще бъде премахната и ще можете отново да изпращате имейли.'
+portal.emails.ratelimit_submit-online: 'Ако това е грешка трябва да се свържете с нас незабавно, можете да прескочите този имейл филтър и да изпратите тикет онлайн:'
+portal.emails.register-agent-validation: 'Бележка: Преди акаунта ви да бъде напълно функционален, нашите агенти трябва да потвърдят акаунта ви. Всичко което изпратите ще бъде поставено в изчакване докато акаунта ви не бъде потвърден от агент.'
+portal.emails.register-confirm: 'Благодарим ви, че регистрирахте акаунт.<br /><br />Преди да можете да използвате акаунта си трябва да кликнете на следния линк за да потвърдите имейл адреса си'
+portal.emails.register-password: 'Вашата първоначална парола е: {{password}}'
+portal.emails.register-welcome: 'Благодарим ви, че се регистрирахте. Можете да влезете използвайки своя имейл адрес {{to_email}} в нашия helpdesk:'
+portal.emails.register-welcome-byagent: 'Беше създаден нов акаунта за вас. Можете да влезете използвайки имейл адреса си {{to_email}} на:'
+portal.emails.registration_closed: 'Скъпи {{name}}, <br /><br />Нови тикети се приемат само от съществуващи helpdesk членове. Ако вече имате акаунт, моля изпратете ни  отново имейл от регистрирания ви имейл адрес.'
+portal.emails.reject_resolved: 'Вашият отговор не беше приет защото тикета вече е маркиран като разрешен. Агентите ни няма да прочетат или отговорят на това съобщение.'
+portal.emails.reject_resolved-new: 'Ако искате да създадете нов тикет можете да изпратите имейл на <a href="mailto:{{email_to}}">{{email_to}}</a> или да използвате контактната ни форма на:<br /><a href="{{link}}">{{link}}</a>'
+portal.emails.reject_resolved-newemail: 'Ако искате да създадете нов тикет можете да ни изпратите имейл на <a href="mailto:{{email_to}}">{{email_to}}</a>'
+portal.emails.remind_unresolved: 'Това е последващо съобщение за да ви подсети, че все още имате отворен тикет с {{helpdesk_name}}.<br />Ако нямате нужда от последващо съдействие от нас моля кликнете на линка за да ни уведомите:<br /><a href="{{resolve_url}}">{{resolve_url}}</a><br />Ако все още имате нужда от помощ, отговорете на този имейл.'
+portal.emails.remind_unresolved_final: 'Скоро не сме имали обратна връзка от вас относно този тикет.<br />Ако все още имате нужда от помощ просто отговорете на този имейл.<br />Ако нямате нужда от допълнително съдействие относно този проблем, моля кликнете на линка отдолу за да ни уведомите:<br /><a href="{{resolve_url}}">{{resolve_url}}</a>'
+portal.emails.remind_unresolved_final_subject: 'ПОДСЕЩАНЕ: {{ticket.subject}}'
+portal.emails.remind_unresolved_subject: 'ПОДСЕЩАНЕ: {{ticket.subject}}'
+portal.emails.ticket-reminder: 'Тикетът ви чака имейл потвърждение. Моля кликнете на линка отдолу за да изпратите тикет и да потвърдите имейл адреса си. Тикетът ви ще бъде изтрит без да бъде прочртен от агент ако не кликнете този линк преди {{expire_date}}.'
+portal.emails.ticket_access_ticket_online: 'Вижте и управлявайте този тикет онлайн:'
+portal.emails.ticket_cc-added: '{{author_name}}, {{author_email}}, ви добави по тикет {{ticket.subject}}.'
+portal.emails.ticket_cc-added-reply: 'Отговаряне на този тикет ще отговори на тикета.'
+portal.emails.ticket_cc-added-reply-view: 'Отговаряне на този имейл ще отговори на тикета алтернативно можете да видите тикета онлайн тук:'
+portal.emails.ticket_cc-new: 'Вие бяхте включени в тикет стартиран от {{name}}.'
+portal.emails.ticket_flood: 'Скоро сте изпратили имейл до нашия helpdesk. Засекохме, че сте изпратили мнгоо съобщения бързо едно след друго които най-вероятно са автоматизирани.<br /><br /> За да предотвратим безкраен кръг от автоматични имейли, нашият helpdesk няма да изпраща повече автоматични имейл известия до вас.'
+portal.emails.ticket_message_title: 'На {{date}} в {{time}}, {{author}} написа:'
+portal.emails.ticket_no-autoresponse: 'Предупреждение: Имейлите за потвърждение са изключени'
+portal.emails.ticket_rate-negative: Не
+portal.emails.ticket_rate-neutral: 'Беше ОК'
+portal.emails.ticket_rate-positive: Да
+portal.emails.ticket_rate-question: 'Беше ли полезно това съобщение?'
+portal.emails.ticket_rate-request: 'Как бихте оценили поддръжката която получихте вашият тикет "{{ticket.subject}}"?'
+portal.emails.ticket_received: 'Вашият тикет беше получен. Един от нашите агенти ще отговори скоро.'
+portal.emails.ticket_reply-confirm: 'Благодарим ви за отговора. Един от нашите агенти ще отговори скоро.'
+portal.emails.ticket_validate: 'Благодарим ви че се свързахте с нас.<br /><br />Преди нашите агенти да могат да прочетат и отговорят на съобщението ви трябва да потвърдите имейл адреса си.'
+portal.emails.tickets_ommitted:
+  one: '1 съобщение беше пропуснато'
+  other: '{{count}} съобщения бяха пропуснати'
+portal.emails.validate-email: 'Моля потвърдете, че имейл адреса е ваш като кликнете на линка отдолу.'
+portal.emails.view_full_history_online: 'Виж пълния тикет онлайн'
+portal.error.400-desc: 'Съжаляваме, но вашата заявка е деформирана.'
+portal.error.400-title: 'Лоша заявка'
+portal.error.403-desc: 'Съжаляваме, но нямате достъп до тази страница'
+portal.error.403-title: 'Нямате достъп'
+portal.error.404-desc: 'Съжаляваме, но не можем да открием тази страница.'
+portal.error.404-title: 'Не е намерен'
+portal.error.contact: 'Ако мислите, че това е грешка, моля свържете се с нас.'
+portal.error.general-desc: 'Съжаляваме, но възникна грешка. Моля опитайте отново по-късно или се свържете с нас.'
+portal.error.general-title: 'Възникна грешка'
+portal.community.attachments: Прикачвания
+portal.community.btn-closed: Затворен
+portal.community.btn-vote: 'Съгласен съм'
+portal.community.error_hidden: 'Тази общностна тема е скрита'
+portal.community.error_login: 'Моля влезте'
+portal.community.filter_all_items: 'Всички обекти'
+portal.community.filter_closed_items: 'Затворени обекти'
+portal.community.filter_open_items: 'Отвори обекти'
+portal.community.form_attach_files: 'Прикачи файлове'
+portal.community.form_btn_submit: 'Добавете вашата общностна тема'
+portal.community.form_email_not_shown: 'Вашият имейл (няма да се показва публично)'
+portal.community.form_i_have_a: Имам
+portal.community.form_logged_in_as: 'Влязъл като: <span>{{name}}</span>, от имейл <span>{{email}}</span>.'
+portal.community.form_logout: 'Не сте вие?'
+portal.community.form_tell_us_more: 'Кажете ни повече'
+portal.community.form_title: Заглавие
+portal.community.form_custom_cat: Категория
+portal.community.module_forbidden: 'Нямате достъп до този модул'
+portal.community.no_matching: 'Няма съвпадащи общностни теми'
+portal.community.none: 'Все още няма общностни теми'
+portal.community.rate_forbidden: 'Не ви е разрешено да гласувате'
+portal.community.recent-community_topics: 'Скорошни общностни теми'
+portal.community.search-title: Общност
+portal.community.section-desc: 'Тези общностни теми са изпратени от клиенти като вас; окуражаваме ви да обсъждате и да гласувате за тези с които сте съгласни и да изпратите ваша общностна тема ако идеята вече не е изброена.'
+portal.community.section-title: Общност
+portal.community.sort_comments: Коментари
+portal.community.sort_date: Дата
+portal.community.sort_popularity: Популярност
+portal.community.sort_rating: Рейтинг
+portal.community.sort_views: Прегледи
+portal.community.status_active: 'Отвори обекти'
+portal.community.status_all: 'Всички обекти'
+portal.community.status_closed: 'Затворени обекти'
+portal.community.submit_community_topic: 'Изпрати общностна тема'
+portal.community.view-x-community-topics:
+  one: 'Виж 1 общностна тема'
+  other: 'Виж {{count}} общностни теми'
+portal.flashes.article_cat_subscribe: 'Успешно се абонирахте към тази категория. Ще получите известия когато бъдат постнати нови статии.'
+portal.flashes.article_cat_unsubscribe: 'Успешно прекратихте абонамента си за тази категория.'
+portal.flashes.article_subscribe: 'Успешно се абонирахте към тази статия. Ще бъдете известени когато бъде обновена или когато има нов коментар.'
+portal.flashes.article_unsubscribe: 'Успешно прекратихте абонамента си към тази статия.'
+portal.flashes.article_unsubscribe_everything: 'Вие прекратихте абонамента си към всички известия относно базата знания'
+portal.flashes.comment_thank_you: 'Благодарим ви за коментара!'
+portal.flashes.comment_thank_you_review: 'Благодарим ви за коментара! Ще бъде видим на портала след агентски преглед.'
+portal.flashes.download_cat_subscribe: 'Успешно се абонирахте към тази категория. Ще получавате известия когато има налични нови файлове за изтегляния.'
+portal.flashes.download_cat_unsubscribe: 'Успешно прекратихте абонамента си към тази категория.'
+portal.flashes.download_subscribe: 'Успешно се абонирахте към това изтегляне. Ще получите известия когато бъде обновено или когато има нов коментар.'
+portal.flashes.download_unsubscribe: 'Успешно прекратихте абонамента си към това изтегляне.'
+portal.flashes.download_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия относно изтегляния'
+portal.flashes.email_sent: 'Имейлът ви беше изпратен'
+portal.flashes.community_login: 'Трябва да влезете за да гласувате'
+portal.flashes.community_subscribe: 'Успешно се абонирахте към тази общностна тема. Ще получите известия когато бъде обновена или когато има нов коментар.'
+portal.flashes.community_unsubscribe: 'Успешно прекратихте абонамента си към тази общностна тема.'
+portal.flashes.community_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия относно общностни теми'
+portal.flashes.guest_content_must_verify: 'Преди да качим съдържанието ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
+portal.flashes.guest_new_ticket_must_verify: 'Преди да можем да приемем тикета ви трябва да потвърдите имейл адреса си. Моля провереде входящата си кутия. Изпратили сме ви линк за потвъждение.'
+portal.flashes.new_community_topic_awaiting_review: 'Благодарим ви за общностната тема. Ще бъде видима на портала за поддръжка след като агент я прегледа.'
+portal.flashes.new_community_topic_posted: 'Благодарим ви за общностната тема'
+portal.flashes.news_cat_subscribe: 'Успешно се абонирахте за тази категория. Ще бъдете известени за нови постове.'
+portal.flashes.news_cat_unsubscribe: 'Успешно прекратихте абонамента си към тази категория.'
+portal.flashes.news_subscribe: 'Успешно прекратихте абонамента си към тази новинарска статия. Ще бъдете известени когато има нови коментари.'
+portal.flashes.news_unsubscribe: 'Успешно прекратихте абонамента си към тази новинарска статия.'
+portal.flashes.news_unsubscribe_everything: 'Успешно прекратихте абонамента си към всички известия за новинарски статии'
+portal.flashes.rating_thanks: 'Благодарим ви за обратната връзка!'
+portal.flashes.ticket_created: 'Тикетът ви беше изпратен. Благодарим ви!'
+portal.flashes.ticket_feedback_thank_you: 'Благодарим ви за обратната връзка!'
+portal.flashes.ticket_participant_add: 'Добавихте {{name}} {{email}} като участник по този тикет.'
+portal.flashes.ticket_participant_add_unknown_error: 'Възникна проблем докато се опитвахме да добавим участника. Моля опитайте отново.'
+portal.flashes.ticket_participant_already_error: 'Човекът който се опитвате да добавите като участник вече е участник в този тикет.'
+portal.flashes.ticket_participant_cc_limit_reached: 'Максимален CC лимит ({{max}}) е достигнат'
+portal.flashes.ticket_participant_email_error: 'Моля въведете валиден имейл адрес за вашия участник и опитайте отново.'
+portal.flashes.ticket_participant_remove: 'Премахнахме {{name}} ({{email}}) като участник по този тикет'
+portal.flashes.ticket_participant_remove_unknown_error: 'Имаше проблем при опит за премахване на участника ви. Моля опитайте отново.'
+portal.flashes.ticket_re_opened: 'Вие отворихте отново този тикет.'
+portal.flashes.ticket_replied: 'Вашия отговор беше изпратен. Благодарим ви!'
+portal.flashes.ticket_resolved: 'Тикетът ви е маркиран като разрешен. Благодарим ви.'
+portal.flashes.ticket_updated: 'Вашият тикет беше обновен. Благодарим ви!'
+portal.flashes.user_add_email_verified: 'Вашият имейл адрес беше добавен към акаунта ви.'
+portal.flashes.user_add_email_verify: 'Трябва да потвърдим вашият имейл адрес преди да го добавин към акаунта ви. Моля проверете входящата си кутия за линк с потвърждение.'
+portal.flashes.user_changed_password: 'Паролата ви беше обновена.'
+portal.flashes.user_changed_primary_email: 'Основният имейл адрес беше променен.'
+portal.flashes.user_registered_must_verify: 'Благодарим ви за регистрацията. Моля проверете имейла си, изпратихме ви линк за потвърждение.'
+portal.flashes.user_registered_verified: 'Благодарим ви. Вашият имейл адрес беше потвърден.'
+portal.flashes.user_registered_verified_authenticated: 'Благодарим ви. Вашият имейл адрес беше потвърден и бяхте вписани.'
+portal.flashes.user_removed_an_email: 'Вашият имейл адрес {{email}} беше премахнат.'
+portal.flashes.user_resend_email_verify: 'Имейлът за потвърждение беше изпратен отново.'
+portal.flashes.user_updated_profile: 'Вашият профил беше обновен.'
+portal.flashes.usersource_new_add_email_verified: 'Благодарим ви, че потвърдихте имейл адреса си. Алаунтът ви вече е активен.'
+portal.flashes.usersource_new_add_email_verify: 'Трябва да потвърдим вашият имейл адрес преди да създадем акаунта ви. Моля проверете входящата си кутия за линк с потвърждение'
+portal.forms.confirm_reset: 'Сигурни ли сте, че искате да нулирате тази форма'
+portal.forms.error_accept_failed_upload: 'Имаше проблем при качването на този файл. Моля опитайте отново.'
+portal.forms.error_accept_no_file: 'Не можете да качите празен файл.'
+portal.forms.error_accept_not_allowed_exts: 'Не можете да качвате файлове със следните разширения: {{detail}}'
+portal.forms.error_accept_not_in_allowed_exts: 'Можете да качвате файлове само със следните разширения: {{detail}}'
+portal.forms.error_accept_server_error: 'Имаше проблем при качването на файла. Моля опитайте отново.'
+portal.forms.error_accept_size: 'Съжаляваме, но файла е прекалено голям. Максималният разрешен размер е {{detail}}.'
+portal.forms.error_bad_choice: 'Една или повече от дадените стойности е невалидна.'
+portal.forms.error_banned_email: 'Имейл "{{email}}" е забранен'
+portal.forms.error_captcha: 'Неправилна CAPTCHA стойност'
+portal.forms.error_csrf: 'Формата която изпратихте изтече. Моля изпратете я отново.'
+portal.forms.error_date_day: 'Това не е валиден ден от седмицата'
+portal.forms.error_date_max: 'Тази дата е прекалено напред в бъдещето. Моля изберете дата преди {{date}}.'
+portal.forms.error_date_min: 'Тази дата е прекалено назад в миналото. Моля изберете дата след {{date}}.'
+portal.forms.error_dupe_email: 'Този имейл "{{email}}" вече се използва от друг потребител'
+portal.forms.error_dupe_ticket: 'Дублиран тикет.'
+portal.forms.error_dupe_ticket_message: 'Дублирай тикет съобщение.'
+portal.forms.error_email_required: 'Трябва да предоставите имейл адреса си'
+portal.forms.error_extra_fields: 'Съжаляваме, но имаше грешка в обработката на искането ви. Моля опитайте отново.'
+portal.forms.error_invalid_data_type: 'Този тип дата беше неочакван.'
+portal.forms.error_invalid_email: 'Този имейл адрес {{value}} не е валиден'
+portal.forms.error_invalid_url: 'Тази стойност не е валиден URL.'
+portal.forms.error_length_invalid: 'Тази стойност трябва да има точно {{limit}} символа.'
+portal.forms.error_length_too_long: 'Тази стойност е прекалено голяма. Трябва да съдържа {{limit}} знака или по-малко'
+portal.forms.error_length_too_short: 'Тази стойност трябва да съдържа {{limit}} знака или повече'
+portal.forms.error_mismatch_values: 'Тази стойност не съвпада'
+portal.forms.error_no_uploaded_file: 'Каченият файл не беше намерен. Моля опитайте отново.'
+portal.forms.error_not_assignable_category: 'Не може да се избере родителска категория.'
+portal.forms.error_not_assignable_choice: 'Не може да се избере родителски избор.'
+portal.forms.error_not_assignable_department: 'Не може да се избере родителски отдел.'
+portal.forms.error_not_assignable_product: 'Не може да се избере родителски продукт.'
+portal.forms.error_not_checked: 'Това поле не е отметнато.'
+portal.forms.error_not_unique_collection: 'Една или повече от дадените стойности не е уникална.'
+portal.forms.error_numeric: 'Моля въведете номер, без никакви други знаци.'
+portal.forms.error_password_current: 'Това трябва да е текущата ви парола'
+portal.forms.error_password_forbid_reuse: 'Не можете да използвате парола, която сте използвали преди'
+portal.forms.error_password_min_length:
+  one: 'Минимум {{count}} знак'
+  other: 'Минимум {{count}} знака'
+portal.forms.error_password_require_num_lowercase:
+  one: 'Поне {{count}} знак не главна буква'
+  other: 'Поне {{count}} знака без главни букви'
+portal.forms.error_password_require_num_number:
+  one: 'Поне {{count}} цифра'
+  other: 'Поне {{count}} цифри'
+portal.forms.error_password_require_num_symbol:
+  one: 'Поне {{count}} символ'
+  other: 'Поне {{count}} символа'
+portal.forms.error_password_require_num_uppercase:
+  one: 'Поне {{count}} главна буква'
+  other: 'Поне {{count}} главни букви'
+portal.forms.error_person_not_agent: 'Човекът с идентификатор {{value}} не е агент.'
+portal.forms.error_person_not_found: 'Човекът с идентификатор "{{value}}" не беше открит.'
+portal.forms.error_dm_message_to_self: 'Моля изберете друг човек'
+portal.forms.error_person_not_user: 'Човекът с идентификатор {{value}} не е потребител.'
+portal.forms.error_regex: 'Тази стойност не съвпада с очаквания формат'
+portal.forms.error_required: 'Тази стойност е задължителна'
+portal.forms.error_server_rejected_size: 'Възникна проблем при качването на файла поради лимита за максимален размер. Моля опитайте се да качите по-малки файлове.'
+portal.forms.error_system_email: 'Имейлът "{{email}}" вече се използва като имейл акаунта.'
+portal.forms.error_ticket_department_invalid: 'Не можете да изберете родителски отдел. Опитайте се да изберете под отдел'
+portal.forms.error_ticket_department_required: 'Изисква се отдел'
+portal.forms.error_ticket_msg_length: 'Съобщението ви трябва да е дълго поне {{limit}} знака'
+portal.forms.error_ticket_msg_required: 'Трябва да въведете съобщение'
+portal.forms.error_ticket_opened: 'Тикетът трябва да бъде нито разрешен нито архивиран.'
+portal.forms.error_ticket_subject_length: 'Темата трябва да е дълга поне {{limit}} знака'
+portal.forms.error_ticket_subject_required: 'Изисква се тема на тикет'
+portal.forms.error_too_few_elements: 'Тази колекция трябва да съдържа {{limit}} елемента или повече.|Тази колекция трябва да съдържа {{limit}} елемента или повече.'
+portal.forms.error_unique_entity: 'Тази стойност вече съществува в системата.'
+portal.forms.error_upload_empty: 'Не можете да качите празен файл.'
+portal.forms.error_upload_file: 'Не можа да се качи файл'
+portal.forms.error_upload_general: 'Възникна проблем при качването на този файл. Моля опитайте отново.'
+portal.forms.error_upload_html_size: 'Файлът е прекалено голям.'
+portal.forms.error_upload_ini_size: 'Този файл е прекалено голям. Максималният разрешен размер е {{limit}} {{suffix}}.'
+portal.forms.label_add_attachment: 'Добави нов прикачен файл'
+portal.forms.label_captcha: 'За да докажете, че сте човек, моля кажете ни текста който виждате на CAPTCHA изображението'
+portal.forms.label_category: Категория
+portal.forms.label_cc: CC-я
+portal.forms.label_choose: 'Изберете файл'
+portal.forms.label_comment: 'Някакви коментари?'
+portal.forms.label_content: Съдържание
+portal.forms.label_current_password: 'Текуща парола'
+portal.forms.label_department: Отдел
+portal.forms.label_drag: 'Завлечете файл тук или'
+portal.forms.label_drag_overlay: 'Завлечете файла си тук.'
+portal.forms.label_email: Имейл
+portal.forms.label_first_name: 'Първо име'
+portal.forms.label_full_name: 'Вашето име'
+portal.forms.label_language: Език
+portal.forms.label_last_name: 'Фамилно име'
+portal.forms.label_message: Съобщение
+portal.forms.label_name: Име
+portal.forms.label_display_name: 'Име за изобразяване'
+portal.forms.label_password: Парола
+portal.forms.label_password_confirm: Потвърди
+portal.forms.label_priority: Приоритет
+portal.forms.label_product: Продукт
+portal.forms.label_reset: Нулирай
+portal.forms.label_save: Запази
+portal.forms.label_select: Избери...
+portal.forms.label_send_to_myself: 'Изпрати до мен'
+portal.forms.label_subject: Тема
+portal.forms.label_submit: Изпрати
+portal.forms.label_timezone: 'Часова зона'
+portal.forms.label_title: Заглавие
+portal.forms.label_upload_picture: 'Качи снимка'
+portal.forms.label_workflow: 'Работен поток'
+portal.general.add-comment: 'Добави коментар'
+portal.general.admin: Админ
+portal.general.admin_home: 'Начало на админ'
+portal.general.agent: Агент
+portal.general.agent_bar_admin_desc: 'Управлявайте вашия Helpdesk'
+portal.general.agent_bar_admin_dl: 'Свали настройки'
+portal.general.agent_bar_admin_community: 'Общностни настройки'
+portal.general.agent_bar_admin_kb: 'Настройки на базата знания'
+portal.general.agent_bar_admin_lang: 'Настройки на език'
+portal.general.agent_bar_admin_news: 'Нови настройки'
+portal.general.agent_bar_admin_portal: 'Дизайн на портал и шаблони'
+portal.general.agent_bar_agent_desc: 'Виж тикети / управлявай съдържание'
+portal.general.agent_bar_agent_dl: 'Управлявай изтегляния'
+portal.general.agent_bar_agent_community: 'Управлявай общност'
+portal.general.agent_bar_agent_home: 'Начало на агент'
+portal.general.agent_bar_agent_kb: 'Управлявай база знания'
+portal.general.agent_bar_agent_news: 'Управлявай новини'
+portal.general.agents-available: 'Налични агенти'
+portal.general.agree: 'Съгласен съм'
+portal.general.attachments: Приложения
+portal.general.btn-cancel: Откажи
+portal.general.btn-download-pdf: 'Изтегли PDF'
+portal.general.btn-email: Имейл
+portal.general.btn-go: Давай
+portal.general.btn-print: Принт
+portal.general.btn-send-email: 'Изпрати имейл'
+portal.general.btn-share: Сподели
+portal.general.btn-subscribe: 'Абонирай се'
+portal.general.btn-unsubscribe: 'Прекрати абонамент'
+portal.general.by: от
+portal.general.by_2: От
+portal.general.comment_btn_save: 'Запази коментар'
+portal.general.comments-count:
+  one: '1 Коментар'
+  other: '{{count}} Коментара'
+portal.general.comments-pending-validation: 'Този коментар се разглежда. Ще се визуализира скоро.'
+portal.general.comments-title:
+  one: 'Коментари (1)'
+  other: 'Коментари ({{count}})'
+portal.general.delete: Изтрий
+portal.general.everything: Всичко
+portal.general.get-in-touch: 'Свържете се с нас'
+portal.general.get-in-touch-desc: 'Изпратете ни имейл'
+portal.general.impersonation_mode: 'Режим на представяне'
+portal.general.in: в
+portal.general.label-search-enter-label: 'Моля въведете етикет за който да търсите'
+portal.general.lang-change-to-current: 'Направи <span class="italics">{{lang}}</span> моят език по подразбиране'
+portal.general.lang-diff: 'Тази страница е в <span class="italics">{{active_lang}}</span>, но акаунта ви е в <span class="italics">{{person_lang}}</span>.'
+portal.general.lang-switch: 'Премини към <span class="italics">{{lang}}</span>'
+portal.general.nav-all: Всички
+portal.general.nav-chat: 'Чат записи'
+portal.general.nav-chatlog: 'Чат запис'
+portal.general.nav-dm: Съобщения
+portal.general.nav-downloads: Изтегляния
+portal.general.nav-downloads-desc: 'Рзгледай нашите файлове за изтегляне'
+portal.general.nav-emails: Имейли
+portal.general.nav-community: Общност
+portal.general.nav-community-desc: 'Персонализирани предложения'
+portal.general.nav-guides: Упътвания
+portal.general.nav-guides-desc: 'Документация на продукт'
+portal.general.nav-kb: 'База знания'
+portal.general.nav-kb-desc: 'Прочетете помощните статии'
+portal.general.nav-login: Влез
+portal.general.nav-members: Членове
+portal.general.nav-news: Новини
+portal.general.nav-news-desc: 'Новини и обновления'
+portal.general.nav-newticket: 'Свържете се с нас'
+portal.general.nav-newticket-desc: 'На разположение сме да ви съдействаме'
+portal.general.nav-portal: Портал
+portal.general.nav-profile: Профил
+portal.general.nav-quick-jump: 'Бързо прехвърляне'
+portal.general.nav-register: Регистрирай
+portal.general.nav-reset-password: 'Нулирай парола'
+portal.general.nav-set-password: 'Задай парола'
+portal.general.nav-tickets: Тикети
+portal.general.nav-tickets-org: 'Тикети на организация'
+portal.general.nav-your-account: 'Вашият акаунт'
+portal.general.no-agents-available: 'Съжаляваме, но няма налични агенти'
+portal.general.no-search-query: 'Моля въведете запитване в полето за търсене.'
+portal.general.no-search-results: 'Не бяха открити резултати за "{{query}}"'
+portal.general.no-search-results-general: 'Не успяхме да открием нищо.'
+portal.general.on: на
+portal.general.or: или
+portal.general.prop_comments_asc: 'Най-малко коментари първо'
+portal.general.prop_comments_desc: 'Най-ммного коментари първо'
+portal.general.prop_date_asc: 'Първо най-старите'
+portal.general.prop_date_desc: 'Първо най-новите'
+portal.general.prop_popularity_asc: 'Най-малко популярните първо'
+portal.general.prop_popularity_desc: 'Най-популярните първо'
+portal.general.prop_rating_asc: 'Първи тези с най-нисък рейтинг'
+portal.general.prop_rating_desc: 'Първи тези с най-висок рейтинг'
+portal.general.prop_views_asc: 'Първо тези с най-малко прегледи'
+portal.general.prop_views_desc: 'Първо тези с най-много прегледи'
+portal.general.published: Публикуван
+portal.general.rate-page: 'Оценете качеството на тази страница'
+portal.general.rate-page-negative: 'Тази страница не беше полезна'
+portal.general.rate-page-positive: 'Тази страница беше полезна'
+portal.general.rated-negative: 'Маркирахте тази страница като не полезна'
+portal.general.rated-positive: 'Маркирахте тази страница като полезна'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} от {{vote_count}} хора намериха тази страница за полезна'
+portal.general.related-downloads: 'Свързани филтри'
+portal.general.related-community: 'Свързани общностни теми'
+portal.general.related-news: 'Свързани новини'
+portal.general.related-pages: 'Свързани страници'
+portal.general.rerender-form: 'Моля прегледайте тази форма преди да я изпратите.'
+portal.general.search-labels-section-title: 'Етикети за търсене'
+portal.general.search-section-title: Търси
+portal.general.search_btn: Търси
+portal.general.select_placeholder: Избери...
+portal.general.select_search_placeholder: 'Търси за настройка...'
+portal.general.share-this: 'Сподели това'
+portal.general.show: Покажи
+portal.general.show_less: 'Покажи по-малко'
+portal.general.show_more: 'Покажи повече'
+portal.general.show_x_more: 'Покажи още {num}'
+portal.general.software_provided_by: 'Helpdesk софтуерът предоставен от'
+portal.general.start-chat: 'Започни чат сесия'
+portal.general.submit-community-topic: 'Изпрати обностни теми'
+portal.general.submit-community-topic-desc: ' Общностни теми и предложения от клиенти като вас'
+portal.general.tagged_with: 'маркиран с'
+portal.general.tags: Маркери
+portal.general.toggle_off: изключен
+portal.general.toggle_on: включен
+portal.general.top: Топ
+portal.general.updated: Обновен
+portal.general.x-search-results: '{{num}} резултата от търсене за "{{query}}"'
+portal.general.x-search-results-no-query: '{{num}} резултата от търсене'
+portal.general.sort: Сортирай
+portal.guides.view-as-agent: 'Виждате рази страница защото сте агент. Потребителите няма да могат да виждат тази страница.'
+portal.news.none: 'Все още няма отговори'
+portal.news.recent-title: 'Скорошни новини'
+portal.news.search-title: 'Новинарски статии'
+portal.news.section-title: Новини
+portal.news.view-as-agent: 'Виждате рази страница защото сте агент. Нормалните потребители няма да могат да виждат тази страница.'
+portal.news.view-x-news:
+  one: 'Виж 1 статия'
+  other: 'Виж {{count}} статии'
+portal.direct_messages.title: Съобщения
+portal.direct_messages.none: 'Няма съобщения'
+portal.direct_messages.create_thread: Създай
+portal.members.title: Членове
+portal.sidebar.agents_available: 'Налични агенти'
+portal.sidebar.agents_none: 'Никой от агентите ми не е на линия в момента. Можете да <a href="{{new_ticket_url}}">отворите тикет</a>.'
+portal.sidebar.agents_x_online:
+  one: '{{count}} онлайн'
+  other: '{{count}} онлайн'
+portal.sidebar.article_posted_by: 'Постнат от {{name}}'
+portal.sidebar.news_title: Новини
+portal.sidebar.satisfied_customers: 'доволни клиенти'
+portal.sidebar.top_articles_title: 'Топ статии'
+portal.tickets.add-reply: Отговори
+portal.tickets.cancel-ticket-edit: 'Отмени редакцията и ми покажи тикета отново'
+portal.tickets.feedback_message_leave_comment: 'Оставете коментар ако желаете'
+portal.tickets.form-changed-notice: 'Добавени са нови полета към тази форма. Моля прегледайте тези полета и отново изпратете формата.'
+portal.tickets.guest-thanks-section-title: 'Благодарим ви'
+portal.tickets.guest_thank_you_desc: 'Благодарим ви, че се свързахте с нас. Изпратихме ви имейл с инструкции как да управлявате тикета си при нас.'
+portal.tickets.guest_thank_you_title: 'Благодарим ви'
+portal.tickets.list_agent: 'Назначи агент'
+portal.tickets.list_date_created: 'Изтрий създаденото'
+portal.tickets.list_date_last_agent: 'Последен агентски отговор'
+portal.tickets.list_date_last_user: 'Последен потребителски отговор'
+portal.tickets.list_department: Отдел
+portal.tickets.list_desc: 'Това е описанието на списъка ви с тикети'
+portal.tickets.list_desc_org: 'Това е описанието на списъка с тикети на организацията ви'
+portal.tickets.list_filter: 'Имате активен филтър на този изглед.'
+portal.tickets.list_filter_clear: 'Кликнете тук за да изчистите и да видите всичко.'
+portal.tickets.list_last_action: 'Последно действие'
+portal.tickets.list_no_tickets: 'Няма тикети за визуализиране в този раздел. <a href="{{open_ticket_url}}">Кликнете тук за да отговрите нов тикет</a>.'
+portal.tickets.list_search: 'Търси в тикети:'
+portal.tickets.list_status_agent: 'Нашите агенти ще отговорят'
+portal.tickets.list_status_open: 'Отвори тикети'
+portal.tickets.list_status_open_count:
+  one: '{{count}} чакащ отговор'
+  other: '{{count}} чакащи отговор'
+portal.tickets.list_status_resolved: Разрешен
+portal.tickets.list_status_user: 'Трябва да отговорите'
+portal.tickets.list_subject: Тема
+portal.tickets.list_switch_to_my_tickets: 'Превключи към моите тикети'
+portal.tickets.list_switch_to_organization: 'Превключи към организация'
+portal.tickets.list_ticket_ref: Препратка
+portal.tickets.list_title: 'Вашите тикети'
+portal.tickets.list_title_org: 'Организационни тикети'
+portal.tickets.list_user: Потребител
+portal.tickets.mark-unresolved: 'Отвори повторно тикет'
+portal.tickets.need-login_desc: 'Моля отидете на <a href="{{login_url}}" target="_blank">страницата за влизане</a> за да ни изпратите съобщение'
+portal.tickets.need-login_title: 'Трябва да влезете за да отворите тикет'
+portal.tickets.new-intro: 'Моля попълнете тази форма и един от нашите агенти ще ви отговори по имейл възможно най-скоро.'
+portal.tickets.new-section-title: 'Свържете се с нас'
+portal.tickets.new-title: 'Отвори нов тикет'
+portal.tickets.new_ticket_button: 'Създай нов тикет'
+portal.tickets.no_participants: 'Няма участници'
+portal.tickets.not-allowed_desc: 'Съжаляваме, но агентите ни не могат да поемат чата ви в момента.'
+portal.tickets.not-allowed_title: 'Връщаме се след малко'
+portal.tickets.please_login_to_reply: 'Влез за да отговориш.'
+portal.tickets.rate-intro: '{{name}} ви помогна относно тикет "{{subject}}"'
+portal.tickets.rate-negative: 'Не беше добре'
+portal.tickets.rate-neutral: 'Беше ОК'
+portal.tickets.rate-positive: 'Беше страхотно'
+portal.tickets.rate-question: 'Как бихте оценили поддръжката която получихте?'
+portal.tickets.related_articles_desc: 'Открихме следните статии, които може да ви помогнат да решите проблема си.'
+portal.tickets.related_articles_title: 'Свързани статии'
+portal.tickets.resolve_my_ticket_btn: 'Разреши тикета ми'
+portal.tickets.resolve_ticket: 'Разреши тикет: {{subject}}'
+portal.tickets.resolve_ticket_explain: 'Сигурни ли сте, че искате да разрешите тикета си? Веднъж разрешен нашите агенти няма да отговарят повече по него.'
+portal.tickets.search-last-activity: 'Последна активност'
+portal.tickets.search-title: Тикети
+portal.tickets.section-title: Тикети
+portal.tickets.switched-department-rerender: 'Структурата на тази форма може да се е променила. Моля прегледайте формата и изпратете отново.'
+portal.tickets.thank_you: 'Тикетът ви е на път'
+portal.tickets.thank_you_check_email: 'Моля потвърдете имейл адреса си'
+portal.tickets.thank_you_check_email_desc: 'За да довършите изпращането на тикета си, трябва да проверите входната кутия на имейла си. Моля кликнете на линка за потвърждение, който сме ви изпратили.'
+portal.tickets.thank_you_create_pw_link: 'Искате да следите тикета си? Можете да <a href="{{create_pw_link}}">зададете парола за акаунта си</a>.'
+portal.tickets.thank_you_desc: 'Благодарим ви, че се свързахте с нас. Ще бъдете известени когато някой от агентите ни отговори.'
+portal.tickets.thank_you_ticket_link: 'Искате да следите тикета си? Ето <a href="{{ticket_link}}"> линк към новия ви тикет</a>.'
+portal.tickets.ticket-ref: 'Препратка към тикет'
+portal.tickets.timeline_attached: 'Прикачено с това съобщение:'
+portal.tickets.timeline_marked: 'маркиран този тикет:'
+portal.tickets.timeline_marked_resolved: Разрешен
+portal.tickets.timeline_opened: 'отвори този тикет'
+portal.tickets.timeline_re_opened: 'отвори отново този тикет'
+portal.tickets.timeline_wrote: 'написа:'
+portal.tickets.view_assigned_agent: 'Назначи агент:'
+portal.tickets.view_awaiting_user: 'Агент чака отговор от вас на това съобщение.'
+portal.tickets.view_btn_add_cc: 'Добави потребиел за CC'
+portal.tickets.view_btn_add_to_ticket: 'Добави към тикет'
+portal.tickets.view_btn_edit: Редактирай
+portal.tickets.view_btn_edit_full: 'Редактирай този тикет'
+portal.tickets.view_cant_reply_archived: 'Не можете да отговаряте по този тикет защото е разрешен.'
+portal.tickets.view_close: 'Затвори този тикет'
+portal.tickets.view_closed: 'Този тикет е затворен {{ago}} ({{day}}).'
+portal.tickets.view_closed_more: 'Можете да <a href="{{kb_url}}">се върнете към базата знания</a> или <a href="{{new_ticket_url}}">да отворите нов тикет</a>.'
+portal.tickets.view_label_your_email: 'Вашият имейл'
+portal.tickets.view_label_your_email_placeholder: 'Имейл адрес (изисква се)'
+portal.tickets.view_label_your_name: 'Вашето име'
+portal.tickets.view_label_your_name_placeholder: 'Име (изисква се)'
+portal.tickets.view_last_message: 'Последното ви съобщение е получено {{ago}}.'
+portal.tickets.view_media: 'Медия към този тикет:'
+portal.tickets.view_more_info: 'Допълнителна информация по тикет:'
+portal.tickets.view_now_closed: 'Този тикет вече е затворен'
+portal.tickets.view_opened_by: 'Тикет отворен от:'
+portal.tickets.view_participants: 'Също по този тикет:'
+portal.tickets.view_reply: 'Добави отговор'
+portal.tickets.view_reply_errors: 'Има някои грешки с вашето изпращане.'
+portal.tickets.view_reply_or_close: 'Добавете отговор или <a href="{{close_url}}" class="close-ticket-trigger"> затвори тикета</a>'
+portal.tickets.view_scroll_reply: 'Кликни тук за да отидеш надолу във формата,'
+portal.tickets.view_ticket_info: 'Тикет информация:'
+portal.tickets.view_unassigned: Неназначен
+portal.tickets.view_unassigned_more: 'Ще бъде назначен агент'
+portal.tickets.view_will_notify_you: 'Получихме съобщението ви и ще ви изпратим имейл известие веднага щом агент добави коментар.'
+portal.tickets.view_you_created: 'Вие създадохте следния тикет {{ago}}.'
+portal.topics.none: 'Все още няма теми'
+portal.topics.search-title: Упътвания
+portal.widget.help_button: 'Чати сега'
+portal.widget.help_ticket_button: 'Свържете се с нас'
+portal.widget.label_add_attachment: 'Добави прикачен файл'
+portal.widget.label_email: 'Вашият имейл'
+portal.widget.label_message: 'Вашият въпрос'
+portal.widget.label_name: 'Вашето име'
+portal.widget.label_subject: Тема
+portal.widget.new-ticket-title: 'Задайте ни въпрос'
+portal.widget.online_agents: 'Агенти онлайн'
+portal.widget.popup_heading: 'Задайте ни въпрос!'
+portal.widget.popup_message: 'Имате нужда от съдействие? Просто отговорете за да започнете чат на живо с някой от екипа ни.'
+portal.widget.popup_start_button: 'Започни разговор'
+portal.widget.popup_subheading: 'Нашият екип е на линия и е готов да отговори на вашите запитвания. Изпратете ни съобщение за да започнете.'
+portal.widget.popup_title: 'Клиентска поддръжка'
+user.chat.email: 'Вашият имейл адрес'
+user.chat.ended-no-agent: 'Много се извиняваме, но в момента няма никой свободен за чат. Моля изпратете ни имейл или опитайте отново по-късно'
+user.chat.error: 'Чат грешка'
+user.chat.form_chat_button-submit: Изпрати
+user.chat.form_chat_send-file: 'Качи файл'
+user.chat.form_create_button-submit: 'Започни чат'
+user.chat.form_create_department: 'Избери отдел'
+user.chat.form_create_title: 'Започни чат с агент'
+user.chat.form_feedback_button-submit: 'Изпрати обратна връзка и затвори прозорец'
+user.chat.form_feedback_comments: 'Коментари?'
+user.chat.form_feedback_rate-satisfaction: 'Останахте ли доволни от този разговор?'
+user.chat.form_feedback_rate-satisfied: Да
+user.chat.form_feedback_rate-time: 'Отговорихме ли ви достатъчно бързо?'
+user.chat.form_feedback_rate-unsatisfied: Не
+user.chat.form_feedback_title: 'Изпратете ни обратна връзка'
+user.chat.form_feedback_transcript-email: 'Изпратете препис от този чат на'
+user.chat.log-title: 'Вашите чатове'
+user.chat.log_chat-id: 'Чат ID'
+user.chat.log_created-date: 'Създаден на {{date}}'
+user.chat.log_fields_agent: Агент
+user.chat.log_fields_department: Отдел
+user.chat.log_message_author-you: Вие
+user.chat.log_nav-view-chats:
+  one: 'Виж твоя последен чат запис'
+  other: 'Виж твоите последни {{count}} чат записа'
+user.chat.log_no_department: 'Няма отдел'
+user.chat.log_unassigned: 'Не беше назначен агент'
+user.chat.message_agent-timeout: 'Моля да ни извините: изглежда, че връзката на {{name}} се разпадна. Моля изчакайте докато се опитваме да открием друг агент.'
+user.chat.message_assigned: 'Чат назначен на {{name}}'
+user.chat.message_chatting-with: 'Чатите с'
+user.chat.message_ended: 'Чат приключен'
+user.chat.message_ended-by: 'Чат приключен от {{name}}'
+user.chat.message_ended-by-user: 'Чат приключен от потребиетел'
+user.chat.message_finding-agent: 'Търсене на агент'
+user.chat.message_long-wait: 'Все още се опитваме да намерим свободен агент, който да поеме вашия чат.; това обикновено отнема по-малко от минута. <br /><br />Бързате ли? <a class="cancel-and-newticket-trigger">Оставете ни съобщение?</a>'
+user.chat.message_set-department: '{{name}} зададе отдел {{department}}'
+user.chat.message_started: 'Чат започна'
+user.chat.message_unassigned: 'Чат освободен'
+user.chat.message_uploading: Качване...
+user.chat.message_user-joined: '{{name}} се присъедини към чат'
+user.chat.message_user-left: '{{name}} напусна чат'
+user.chat.message_user-returned: 'Потребителят се върна'
+user.chat.message_user-timeout: 'Връзката на потребителя се разпадна'
+user.chat.message_wait: 'Търсим агент за вас'
+user.chat.message_wait-timeout: 'Съжаляваме; няма налични агенти в момента.'
+user.chat.name: 'Вашето име'
+user.chat.submit-ticket-button: 'Изпратете ни имейл'
+user.chat.submit-ticket-title: 'Вместо това ни изпратете имейл'
+user.chat.transcript_sent: 'Препис изпратен на {{email}}'
+user.chat.window_cancel: Откажи
+user.chat.window_cancel-confirm: 'Сигурни ли сте, че искате да приключите вашия чат?'
+user.chat.window_close: 'Не благодаря, само затворете прозореца'
+user.chat.window_close_only: 'Затвори прозореца'
+user.chat.window_end-chat: 'Приключи чат'
+user.chat.window_offline-button: 'Кликнете тук за да се свържете с нас'
+user.chat.window_open-new: 'Отвори този чат в нов прозорец'
+user.chat.window_resume-button: 'Отвори твоя чат'
+user.chat.window_start-button: 'Кликнете тук за да чатите с нас'
+user.chat.window_upload-drag: 'Пуснете файл тук за да го качите в този чат'
+user.defaults.article_category_general: Общи
+user.defaults.article_example_content: 'Това е примерна статия в базата знания. Чувствайте се свободни да я изтриете от агентския интерфейс.'
+user.defaults.article_example_title: 'Примерна статия'
+user.defaults.department_sales: Продажби
+user.defaults.department_support: Поддръжка
+user.defaults.downloads_category_general: Документи
+user.defaults.navigate: Навигирай
+user.defaults.news_category_general: Общи
+user.defaults.news_example_content: 'Това е пример за нов пост. Чувствайте се свободни да го изтриете от агентския интерфейс.'
+user.defaults.news_example_title: 'Примерен нов пост'
+user.downloads.change_file: 'Промени файл'
+user.email_subjects.chat_transcript: 'Чат препис'
+user.email_subjects.chat_validate_email: 'Чат имейл потвърждение'
+user.email_subjects.comment-approved: 'Вашият коментар беше одобрен'
+user.email_subjects.comment-deleted: 'Вашият коментар беше прочетен от нашите агенти'
+user.email_subjects.download_sub_new: 'Нови изтегляния'
+user.email_subjects.download_sub_new_and_updated: 'Нови и актуализирани изтегляния'
+user.email_subjects.download_sub_updated: 'Качени изтегляния'
+user.email_subjects.email-too-big: 'Вашият имейл "{{subject}}" не беше приет'
+user.email_subjects.email_new-confirm: 'Моля потвърдете имейл адреса си'
+user.email_subjects.community_topic_created_for_user: 'Благодарим ви за вашата общностна тема'
+user.email_subjects.community_topic_new: 'Благодарим ви, че изпратихте вашата общностна тема'
+user.email_subjects.community_topic_new-approved: 'Вашата общностна тема беше одобрена'
+user.email_subjects.community_topic_new-comment: 'Има нов коментар по "{{title}}"'
+user.email_subjects.community_topic_new-disapproved: 'Съжаляваме, но вашата общностна тема беше отхвърлена'
+user.email_subjects.community_sub_updated: 'Обновена общностна тема'
+user.email_subjects.community_topic_updated: 'Вашата общност беше обновена: {{title}}'
+user.email_subjects.kb_sub_new: 'Нова статия'
+user.email_subjects.kb_sub_new_and_updated: 'Нови и обновени статии'
+user.email_subjects.kb_sub_updated: 'Обновени статии'
+user.email_subjects.new-ticket-guest: 'Благодарим ви, че се свързахте с нас'
+user.email_subjects.news_sub_new: 'Нова новина'
+user.email_subjects.news_sub_new_and_updated: 'Нови и обновени новини'
+user.email_subjects.news_sub_updated: 'Обновени новини'
+user.email_subjects.password_agent-reset: 'Агент нулира паролата ви'
+user.email_subjects.password_reset: 'Нулирай парола'
+user.email_subjects.password_set: 'Задай своя парола'
+user.email_subjects.register-welcome: 'Благодарим ви, че се гистрирахте'
+user.email_subjects.register-welcome-byagent: 'Вашият нов helpdesk акаунт'
+user.email_subjects.remind_unresolved_final_subject: 'ПРИПОМНЯНЕ: {{ticket.subject}}'
+user.email_subjects.remind_unresolved_subject: 'ПРИПОМНЯНЕ: {{ticket.subject}}'
+user.email_subjects.ticket-rate: 'Оценете качеството на поддръжка по тикет "{{ticket.subject}}"'
+user.email_subjects.tickets_re: 'RE: {{ticket.subject}}"'
+user.emails.auto-close: 'Вашият тикет "{{ticket.subject}}" ще бъде затворен скоро, защото нямаме обратна връзка от вас. Ако имате нужда от допълнително съдействие просто отговорете и някой от агентите ни ще ви съдейства.'
+user.emails.chat_transcript: 'Благодарим ви, че чатихте с нас. Ето преписа от чата.'
+user.emails.chat_validate_email: 'Моля потвърдете имейл адреса си като въведете този код "{{validation_code}}" в уиджет формата или кликнете на този линк:'
+user.emails.comment_approved: 'Вашият коментар беше публикуван.'
+user.emails.comment_deleted: 'Вашият коментар беше използван за да подобри тази страница.'
+user.emails.comment_thank-you: 'Благодарим ви за коментаара по {{link}}.'
+user.emails.download-new-downloads:
+  one: '1 Ново изтегляне'
+  other: '{{count}} Нови изтегляния'
+user.emails.download-updated-downloads:
+  one: '1 Обновено изтегляне'
+  other: '{{count}} Обновени изтегляния'
+user.emails.downloads-explain: 'Получавате този имейл защото сте абонирани към нашите изтегляния на <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Не искате повече такива имейли? <a href="{{unsubscribe_url}}">Кликнете тук за да прекратите абонамента си за известия по всички изтегляния.</a>'
+user.emails.email-too-big: 'Вашият имейл "{{subject}}" не беше приет защото е прекалено дълъг. Максималния размер за имейл е {{max_size}}. Премахнете всички прикачени файлове и опитайте отново.'
+user.emails.community-explain: 'Получавате този имейл защото сте абонирани към нашите новини на <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Не искате повече такива имейли? <a href="{{unsubscribe_url}}">Кликнете тук за да прекратите абонамента си за известия по всички новини.</a>'
+user.emails.community-updated-items:
+  one: '1 Обновена общностна тема'
+  other: '{{count}} Обновени общностни теми'
+user.emails.community-topic_agent-validation: 'Моля обърнете внимание, че вашата общностна тема няма да бъде показана публично докато някой от агентите ни не я прегледа.'
+user.emails.community-topic_approved: 'Искахме да ви информираме, че вашата общностна тема беше одобрена и вече е публично видима на нашия сайт.'
+user.emails.community-topic_closed: 'Изпратената от вас общностна тема "{{title}}" беше затворена: {{status}}'
+user.emails.community-topic_created_for_user: 'Благодарим ви за скорошната общностна тема "{{title}}". {{agentName}} създаде нова общностна тема за да ви държим в течение с нашия прогрес:'
+user.emails.community-topic_disapproved: 'Искаме да ви информираме, че за съжаление вашата общностна тема е отхвърлена и няма да бъде показана публично на нашия сайт.'
+user.emails.community-topic_disapproved-reason: 'Искаме да ви информираме, че за съжаление вашата общностна тема е отхвърлена и няма да бъде показана публично на нашия сайт. {{name}} даде следната причина:'
+user.emails.community-topic_new-comment: '{{name}} постна нов коментар'
+user.emails.community-topic_published: 'Изпратената от вас общностна тема "{{title}}" беше потвърдена и ще бъде показвана на нашия сайт.'
+user.emails.community-topic_thank-you: 'Благодарим ви, че изпратихте общностна тема "{{title}}"'
+user.emails.community-topic_updated: 'Изпратената от вас общностна тема "{{title}}" беше обновена. Статусът и сега е: нов статус "{{status}}"'
+user.emails.community-topic_votes:
+  one: 'Вашата общностна тема в моемнта има <strong>1</strong> глас. Вижте вашата общностна тема онлайн на:'
+  other: 'Вашата общностна тема в моемнта има <strong>{{count}}</strong> гласа. Вижте вашата общностна тема онлайн на:'
+user.emails.greeting: 'Скъпи {{to_name}},'
+user.emails.kb-explain: 'Получавате този имейл защото сте абонирани към нашата база знания на <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Не искате повече такива имейли? <a href="{{unsubscribe_url}}">Кликнете тук за да прекратите абонамента си за всички известия относно базата знания.</a>'
+user.emails.kb-new-articles:
+  one: '1 Нова статия'
+  other: '{{count}} Нови статии'
+user.emails.kb-updated-articles:
+  one: '1 Обновена статия'
+  other: '{{count}} Обновени статии'
+user.emails.label_view-online: 'Виж онлайн'
+user.emails.message-clipped: '(Съобщението беше изрязано)'
+user.emails.new-ticket-guest-link: 'Благодарим ви, че чатихте с нас. Можете да видите статуса на тикета си тук:'
+user.emails.news-explain: 'Получавате този имейл защото сте абонирани към нашите новини на <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Не искате повече такива имейли? <a href="{{unsubscribe_url}}">Кликнете тук за да прекратите абонамента си за известия по всички новини.</a>'
+user.emails.news-new-articles:
+  one: '1 Нова новинатска статия'
+  other: '{{count}} Нови новинарски статии'
+user.emails.news-new-news:
+  one: '1 Нова новинатска статия'
+  other: '{{count}} Нови новинарски статии'
+user.emails.news-updated-articles:
+  one: '1 Обновена новинарска статия'
+  other: '{{count}} Обновени новинарски статии'
+user.emails.news-updated-news:
+  one: '1 Обновена новинарска статия'
+  other: '{{count}} Обновени новинарски статии'
+user.emails.password_agent-reset: 'Агент нулира вашата парола. Можете да влезете с тези данни'
+user.emails.password_reset: 'Изискали сте нулиране на парола. За да нулирате паролата си кликнете на линка отдолу:'
+user.emails.password_set: 'За да зададете вашата парола кликнете на линка отдолу:'
+user.emails.profile_email-new-confirm: 'За да приключите добавянето на вторичен имейл адрес към акаунта си, просто кликнете на следния линк за потвърждение'
+user.emails.profile_email-primary-confirm: 'За да потвърдите основния си имейл арес, просто кликнете на следния линк за потвърждение'
+user.emails.profile_email_link-validate: 'Просто кликнете на следния линк за потвърдите имейл адреса си'
+user.emails.ratelimit_explain: 'Изпратили сте {{num_messagess}} съобщения за {{time_limit}}. За да редотвратиме злоупотреба временно забранихме имейл адреса ви за {{time_lock}}. След {{date_lock_end}} тази временна забрана ще бъде автоматично деактивирана и ще можете отново да изпращате имейли.'
+user.emails.ratelimit_submit-online: 'Ако това е грешка трябва да се свържете с нас незабавно, можете да пренебрегнете този имейл филтър и да изпратите тикет онлайн:'
+user.emails.register-confirm: 'Благодарим ви, че регстрирахте акаунт. <br /><br />Преди да можете да използвате акаунта си трябва да верифицирате вашия имейл чрез следния линк '
+user.emails.register-password: 'Вашата първоначална парола е: {{password}}'
+user.emails.register-welcome: 'Благодарим ви, че се регистрирахте. Можете да влезете в нашия helpdesk използвайки вашия имейл адрес {{to_email}}:'
+user.emails.register-welcome-byagent: 'За вас беше създаден нов акаунт. Можете да влезете в нашия helpdesk използвайки имейл адреса си {{to_email}}:'
+user.emails.registration_closed: 'Здравейте {{name}},<br /><br />Нови тикети се приемат от съществуващи членове на helpdesk-а. Ако вече имате акаунт, моля изпратете ни имейл отново от регистрирания имейл адрес.'
+user.emails.reject_resolved: 'Вашият отговор не беше приет, защото вашият тикет е разрешен. Нашите агенти няма да четат или отговарят по това съобщение.'
+user.emails.reject_resolved-new: 'Ако искате да създадете нов тикет можете да изпратите нов имейл на <a href="mailto:{{email_to}}">{{email_to}}</a> или попълнете нашата онлайн форма на:<br /><a href="{{link}}">{{link}}</a>'
+user.emails.reject_resolved-newemail: 'Ако искате да създадете нов тикет можете да изпратите имейл на <a href="mailto:{{email_to}}">{{email_to}}</a>'
+user.emails.remind_unresolved: 'Това е информативно съобщение за да ви напомним, че все още имате отворен тикет при {{helpdesk_name}}.<br />Ако нямате нужда от съдействие по този проблем, моля кликнете на линка отдолу за да ни информирате:<br /><a href="{{resolve_url}}">{{resolve_url}}</a><br />Ако все още имате нужда от помощ, просто отговорете на този имейл.'
+user.emails.remind_unresolved_final: 'Скоро не сме имали обратна връзка от вас относно този тикет.<br />ако все още имате нужда от съдействие моля отговорете на този имейл.<br />ако нямате нужда от последващо съдействие, моля кликнете на линка отдолу за да ин информирате:<br /><a href="{{resolve_url}}">{{resolve_url}}</a>'
+user.emails.ticket_access_ticket_online: 'Виж и управлявай този тикет онлайн:'
+user.emails.ticket_cc-new: 'Бяхте включени в тикет стартиран от {{name}}.'
+user.emails.ticket_flood: 'Наскоро сте изпратили имейл до нашия helpdesk. Виждаме, че сте изпратили много съобщения за кратък период от време, които най-вероятно са били автоматични.<br /><br />За да се предпазим от затворени кръгове от автоматични отговори нашия helpdesk няма да ви изпраща повече имейли с автоматични известия.'
+user.emails.ticket_message_title: 'На {{date}} в {{time}}, {{author}} написа:'
+user.emails.ticket_no-autoresponse: 'Внимание: Имейлите за потвърждение са изключени'
+user.emails.ticket_rate-negative: Не
+user.emails.ticket_rate-neutral: 'Беше ОК'
+user.emails.ticket_rate-positive: Да
+user.emails.ticket_rate-question: 'Беше ли това съобщение полезно?'
+user.emails.ticket_rate-request: 'Как бихте оценили поддръжката, която получихте по тикет "{{ticket.subject}}"?'
+user.emails.ticket_received: 'Тикетът ви беше получен. Някой от агентите ни ще ви отговори възможно най-скоро.'
+user.emails.ticket_reply-confirm: 'Благодарим ви за отговора. Някой от агентите ни ще ви отговори възможно най-скоро.'
+user.emails.ticket_validate: 'Благодарим ви, че се свързахте с нас.<br /><br />Преди агентите ни да могат да отговорят трябва да потвърдите имейл адреса си.'
+user.error.attach_ext-allowed: 'Само следните файлови типове могат да бъдат качвани: {{error_detail}}'
+user.error.attach_ext-not-allow: 'Типът файл който се опитвате да качите не е разрешен.'
+user.error.attach_failed: 'Вашият прикачен файл не беше качен (отказахте ли го?). Опитайте отново.'
+user.error.attach_no-file: 'Моля изберете файл за качване'
+user.error.attach_size: 'Прикачения файл е прекалено голям. Максималния размер на файл е {{error_detail}}'
+user.error.attach_unknown-error: 'Съжаляваме, но възникна проблем със сървъра ни докато се опитвахме да приемем прикачения от вас файл. Моля опитайте отново.'
+user.error.error_code: 'Код на грешка'
+user.error.error_title: Грешка
+user.error.expired-token: 'Страницата която се опитвате да достъпите е изтекла. Моля върнете се и опитайте отново.'
+user.error.form_choice_invalid: 'Моля изберете опция от списъка.'
+user.error.form_choice_max:
+  one: 'Моля изберете най-много 1 опция'
+  other: 'Моля изберете най-много {{count}} опции'
+user.error.form_choice_min:
+  one: 'Моя изберете поне 1 опция'
+  other: 'Моля изберете поне {{count}} опции'
+user.error.form_date_invalid: 'Моля въведете валидна дата'
+user.error.form_date_invalid_dow: 'Денят от седмицата който сте избрали не е разрешен'
+user.error.form_date_invalid_range: 'Датата която сте избрали не е от позволения обхват'
+user.error.form_required: 'Това поле е задължително'
+user.error.form_text_max:
+  one: 'Моля въведете най-много 1 символ'
+  other: 'Моля въведете най-много {{count}} символа'
+user.error.form_text_min:
+  one: 'Моля въведете поне 1 знак'
+  other: 'Моля въведете поне {{count}} знака'
+user.error.form_text_regex: 'Моля въведете коректна стойност'
+user.error.invalid_email: 'Невалиден имейл адрес'
+user.error.invalid_email-code: 'Линка за потвърждение изглежда невалиден.'
+user.error.invalid_email-explain: 'Съжаляваме, но не успяхме да открием този имейл адрес във вашия акаунт.'
+user.error.not-found: 'Страницата която търсите не беше намерена.'
+user.error.not-found-title: 'Не е намерена'
+user.error.permission-denied: 'Съжаляваме, действието което се опитвате да извършите не е разрешено.'
+user.error.permission-denied-login: 'В момента не сте влезли. <a href="{{login_url}}">Влезте</a> и опитайте отново.'
+user.error.permission-denied-title: 'Нямате право да правите това'
+user.error.server-error: 'Съжаляваме, но имаше сървърна грешка, която предотврати зареждането на тази страница. Моля опитайте отново.'
+user.community.submit_community_topic: 'Изпратете обществена тема'
+user.general.helpdesk_by: 'Helpdesk софтуер от <strong>{{deskpro}}</strong>'
+user.general.label_captcha: 'Код за потвърждение'
+user.general.page: Страница
+user.general.request_token_expired: 'Изискания от вас токен е изтекъл. Моля опитайте отново.'
+user.knowledgebase.auto_action_on_date: 'Автоматично {{action}} на {{date}}'
+user.knowledgebase.creating_pending_article: 'Създай чакаща статия'
+user.lang.lang_title: Английски
+user.lang.lang_title_arabic: Арабски
+user.lang.lang_title_czech: Чешки
+user.lang.lang_title_danish: Датски
+user.lang.lang_title_default: Английски
+user.lang.lang_title_dutch: Датски
+user.lang.lang_title_english_gb: 'Английски (UK)'
+user.lang.lang_title_french: Френски
+user.lang.lang_title_german: Немски
+user.lang.lang_title_hungarian: Унгарски
+user.lang.lang_title_indonesian: Индонезийски
+user.lang.lang_title_italian: Италиански
+user.lang.lang_title_japanese: Японски
+user.lang.lang_title_norwegian: Норвежки
+user.lang.lang_title_persian: Персийски
+user.lang.lang_title_polish: Полски
+user.lang.lang_title_portuguese_br: 'Португалски (Бразилия)'
+user.lang.lang_title_portuguese_pt: 'Португалски (Португалия)'
+user.lang.lang_title_romanian: Румънски
+user.lang.lang_title_russian: Руски
+user.lang.lang_title_spanish: Испански
+user.lang.lang_title_swedish: Шведски
+user.lang.lang_title_turkish: Турски
+user.news.title: Новини
+user.profile.account_disabled_message: 'Акаунтът ви в момента е деактивиран. Не можете да влизате, да взаимодействате с тикети или да чатите.'
+user.profile.choose_email: 'Изберете имейл адреса който искате да използвате'
+user.profile.connect_with: 'Свържи с'
+user.profile.or_connect_with: 'Или свържи с'
+user.profile.register: Регистрирай
+user.profile.register_password_min_length:
+  one: 'Минимум {{count}} символ'
+  other: 'Минимум {{count}} символа'
+user.profile.register_password_require_num_lowercase:
+  one: 'Поне {{count}} не главна буква'
+  other: 'Поне {{count}} не главни букви'
+user.profile.register_password_require_num_number:
+  one: 'Поне {{count}} цифра'
+  other: 'Поне {{count}} цифри'
+user.profile.register_password_require_num_symbol:
+  one: 'Поне {{count}} символ'
+  other: 'Поне {{count}} символа'
+user.profile.register_password_require_num_uppercase:
+  one: 'Поне {{count}} главна буква'
+  other: 'Поне {{count}} главни букви'
+user.profile.register_password_unused: 'Не можете да използвате парола която сте използвали преди'
+user.tickets.community_message_leave_comment: 'Ако желаете оставете коментар'
+user.tickets.fields_category: Категория
+user.tickets.fields_department: Отдел
+user.tickets.fields_priority: Приоритет
+user.tickets.fields_product: Продукт
+user.tickets.form_error_captcha: 'Моля въведете код'
+user.tickets.form_error_captcha_invalid: 'Кодът който сте въвели е неправлен.'
+user.tickets.from_x_at_y: 'От {{name}} на {{date}}'
+user.tickets.no_subject: '(Няма тема)'
+user.tickets.rate-negative: 'не беше добре'
+user.tickets.rate-neutral: 'беше ОК'
+user.tickets.rate-positive: 'беше страхотно'
+user.tickets.rate-thanks-vialink: 'Благодарим ви, че изпратихте вашата оценка. Чувствайте се свободни да оставите коментар отдолу.'
+user.tickets.rate_support: 'Оценете вашата поддръжка'
+user.time.long-day_friday: Петък
+user.time.long-day_monday: Понеделник
+user.time.long-day_saturday: Събота
+user.time.long-day_sunday: Неделя
+user.time.long-day_thursday: Четвъртък
+user.time.long-day_tuesday: Вторник
+user.time.long-day_wednesday: Сряда
+user.time.long-month_april: Април
+user.time.long-month_august: Август
+user.time.long-month_december: Декември
+user.time.long-month_february: Февруари
+user.time.long-month_january: Януари
+user.time.long-month_july: Юли
+user.time.long-month_june: Юни
+user.time.long-month_march: Март
+user.time.long-month_may: Май
+user.time.long-month_november: Ноември
+user.time.long-month_october: Октомври
+user.time.long-month_september: Септември
+user.time.short-day_friday: Пет.
+user.time.short-day_monday: Пон.
+user.time.short-day_saturday: Съб.
+user.time.short-day_sunday: Нед.
+user.time.short-day_thursday: Чет.
+user.time.short-day_tuesday: Вт.
+user.time.short-day_wednesday: Ср.
+user.time.short-month_april: Апр.
+user.time.short-month_august: Авг.
+user.time.short-month_december: Дек.
+user.time.short-month_february: Февр.
+user.time.short-month_january: Ян.
+user.time.short-month_july: Юли
+user.time.short-month_june: Юни
+user.time.short-month_march: Март
+user.time.short-month_may: Май
+user.time.short-month_november: Ноем.
+user.time.short-month_october: Окт.
+user.time.short-month_september: Септ.
+user.time.time-ago_1_day: 'Преди 1 ден'
+user.time.time-ago_1_hour: 'Преди 1 час'
+user.time.time-ago_1_minute: 'Преди 1 минута'
+user.time.time-ago_1_month: 'Преди 1 месец'
+user.time.time-ago_1_second: 'Преди 1 секунда'
+user.time.time-ago_1_week: 'Преди 1 седмица'
+user.time.time-ago_1_year: 'Преди 1 година'
+user.time.time-ago_less_second: 'Преди по-малко от секунда'
+user.time.time-ago_x_day: 'Преди {0} дни'
+user.time.time-ago_x_hour: 'Преди {0} часа'
+user.time.time-ago_x_minute: 'Преди {0} минути'
+user.time.time-ago_x_month: 'Преди {0} месеца'
+user.time.time-ago_x_second: 'Преди {0} секунди'
+user.time.time-ago_x_week: 'Преди {0} седмици'
+user.time.time-ago_x_year: 'Преди {0} години'
+user.time.time_1_day: '1 ден'
+user.time.time_1_hour: '1 час'
+user.time.time_1_minute: '1 минута'
+user.time.time_1_month: '1 месец'
+user.time.time_1_second: '1 секунда'
+user.time.time_1_week: '1 седмица'
+user.time.time_1_year: '1 година'
+user.time.time_less_second: 'по-малко от секунда'
+user.time.time_x_day: '{0} дни'
+user.time.time_x_hour: '{0} часа'
+user.time.time_x_minute: '{0} минути'
+user.time.time_x_month: '{0} месеца'
+user.time.time_x_second: '{0} секунди'
+user.time.time_x_week: '{0} седмици'
+user.time.time_x_year: '{0} години'
+user.time.x_day:
+  one: '1 ден'
+  other: '{{count}} дни'
+user.time.x_hour:
+  one: '1 час'
+  other: '{{count}} часа'
+user.time.x_minute:
+  one: '1 минута'
+  other: '{{count}} минути'
+user.time.x_month:
+  one: '1 месец'
+  other: '{{count}} месеца'
+user.time.x_second:
+  one: '1 секунда'
+  other: '{{count}} секунди'
+user.time.x_week:
+  one: '1 седмица'
+  other: '{{count}} седмици'
+user.time.x_year:
+  one: '1 година'
+  other: '{{count}} години'
