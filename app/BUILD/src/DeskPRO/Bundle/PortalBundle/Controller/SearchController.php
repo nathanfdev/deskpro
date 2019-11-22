@@ -149,7 +149,7 @@ class SearchController extends AbstractController
 
             $type = null;
             foreach ($results as $t => $rs) {
-                if ($rs['pageinfo']['total_results'] >= 1) {
+                if (!empty($rs['pageinfo']['total_results']) && $rs['pageinfo']['total_results'] >= 1) {
                     $type = $t;
                     break;
                 }
