@@ -47,19 +47,33 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 
 		$('#' + this.meta.baseId + '_parent').on('change', function() {
 			if (this.value !== '0') {
-				$('#' + self.meta.baseId + '_content_section').show();
-				$('#' + self.meta.baseId + '_topic_submit').show();
-				$('#' + self.meta.baseId + '_section_submit').hide();
-				$('#' + self.meta.baseId + '_topic_title').show();
-				$('#' + self.meta.baseId + '_section_title').hide();
+        self.setTopic();
+        if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
+          $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", true);
+          $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
+        } else {
+          $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", false);
+          $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", false);
+        }
 			} else {
-				$('#' + self.meta.baseId + '_content_section').hide();
-				$('#' + self.meta.baseId + '_topic_submit').hide();
-				$('#' + self.meta.baseId + '_section_submit').show();
-				$('#' + self.meta.baseId + '_topic_title').hide();
-				$('#' + self.meta.baseId + '_section_title').show();
+				self.setSection();
+        $('#' + self.meta.baseId + '_radio_is_section').prop("disabled", true);
+        $('#' + self.meta.baseId + '_radio_not_section').prop("disabled", true);
 			}
 		});
+
+    $('#' + this.meta.baseId + '_radio_not_section, #' + this.meta.baseId + '_radio_is_section').on('change', function() {
+      var value = $(this).val();
+      if ($( '#' + self.meta.baseId + '_parent option:selected' ).text().match('>')) {
+        alert('Sections can\'t have more than one parent');
+        self.setTopic();
+      }
+      if (value === '0') {
+        self.setTopic();
+      } else {
+        self.setSection();
+      }
+    });
 
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
@@ -75,6 +89,24 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 
 		this.activate();
 	},
+
+  setSection: function() {
+    $('#' + this.meta.baseId + '_content_section').hide();
+    $('#' + this.meta.baseId + '_topic_submit').hide();
+    $('#' + this.meta.baseId + '_section_submit').show();
+    $('#' + this.meta.baseId + '_topic_title').hide();
+    $('#' + this.meta.baseId + '_section_title').show();
+    $('#' + this.meta.baseId + '_radio_not_section').prop("checked", true);
+  },
+
+  setTopic: function() {
+    $('#' + this.meta.baseId + '_content_section').show();
+    $('#' + this.meta.baseId + '_topic_submit').show();
+    $('#' + this.meta.baseId + '_section_submit').hide();
+    $('#' + this.meta.baseId + '_topic_title').show();
+    $('#' + this.meta.baseId + '_section_title').hide();
+    $('#' + this.meta.baseId + '_radio_is_section').prop("checked", true);
+  },
 
 	activate: function() {
 

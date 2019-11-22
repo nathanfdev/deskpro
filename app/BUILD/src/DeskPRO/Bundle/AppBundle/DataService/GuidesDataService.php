@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
@@ -266,6 +267,35 @@ class GuidesDataService extends AbstractDataService
                 $topic = $that->getTopic($topic);
 
                 return $that->getTopicCommentRepo()->getDisplayComments($topic, $person);
+            }
+        );
+    }
+
+    public function getGuideTwoLevelSection($guide)
+    {
+        $em = $this->em;
+
+        return $this->generateAndCache(
+            [
+                'getGuideTwoLevelSection',
+                $guide,
+            ],
+            function () use ($em, $guide) {
+                if (!$guide) { // we need some input
+                    return;
+                }
+
+                $qb = $em->createQueryBuilder();
+                $qb->select('COUNT(t)')
+                    ->from(Topic::class, 't')
+                    ->andWhere('t.no_content = 1')
+                    ->andWhere('t.parent IS NOT NULL')
+                    ->andWhere('t.guide = :guide')
+                    ->andWhere('t.status = :status')
+                    ->setParameter('guide', $guide)
+                    ->setParameter('status', ContentAbstract::STATUS_PUBLISHED);
+
+                return $qb->getQuery()->getSingleScalarResult() > 0;
             }
         );
     }

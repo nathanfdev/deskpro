@@ -67,6 +67,7 @@
       var loggedIn = {{ app.user ? 'true' : 'false' }};
       var routePath = window.location.hash.replace(/#\//, '');
       var topicList = '{{ helpcenter.topics(guide)|json_encode|escape('js')|raw }}';
+      var twoLevelSection = {{ helpcenter.guideTwoLevelSection(guide) ? 'true' : 'false' }};
       if (routePath[0] != '/')
         routePath = '/' + routePath;
 

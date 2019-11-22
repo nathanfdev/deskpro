@@ -218,6 +218,11 @@ class HelpCenterData
         return array_values($topics);
     }
 
+    public function getGuideTwoLevelSection($guide)
+    {
+        return $this->getGuidesDataService()->getGuideTwoLevelSection($guide);
+    }
+
     /**
      * @return NewsDataService
      */
