@@ -50,6 +50,15 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
     protected $assets;
 
     /**
+     * A theme_id that temporarily overrides getThemeId but is not persisted.
+     * This is to support rendering old templates when new helpcenter theme is active.
+     * See also \DeskPRO\Bundle\PortalBundle\Controller\Api\TicketController::newTicketAction.
+     *
+     * @var string
+     */
+    private $overrideThemeId;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -68,7 +77,7 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
      */
     public function getThemeId()
     {
-        return $this->theme_id;
+        return $this->overrideThemeId ?: $this->theme_id;
     }
 
     /**
@@ -79,6 +88,18 @@ class ThemeSet implements EntityInterface, NotifyPropertyChanged
     public function setThemeId($theme_id)
     {
         $this->setModelField('theme_id', $theme_id);
+
+        return $this;
+    }
+
+    /**
+     * @param string $overrideThemeId
+     *
+     * @return ThemeSet
+     */
+    public function setOverrideThemeId($overrideThemeId)
+    {
+        $this->overrideThemeId = $overrideThemeId;
 
         return $this;
     }
