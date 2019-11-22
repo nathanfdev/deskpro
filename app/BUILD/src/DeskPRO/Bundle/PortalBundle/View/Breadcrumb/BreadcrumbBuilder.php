@@ -206,7 +206,7 @@ class BreadcrumbBuilder
         $this->b->add(
             $this->url_generator->generate('portal_guides'),
             Breadcrumbs::TOPICS,
-            ['phrase' => 'portal.general.nav-downloads']
+            ['phrase' => 'portal.general.nav-guides']
         );
 
         return $this;

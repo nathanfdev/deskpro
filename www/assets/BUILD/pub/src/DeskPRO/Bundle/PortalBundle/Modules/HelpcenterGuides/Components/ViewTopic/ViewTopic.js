@@ -135,7 +135,7 @@ class ViewTopic extends React.Component {
           <Link
             to={`topic_${topicSlug}`}
             href={target}
-            offset={-178}
+            offset={-129}
             smooth
             isDynamic
           >
@@ -279,7 +279,7 @@ class ViewTopic extends React.Component {
       scroller.scrollTo(`topic_${this.props.params.slug}`, {
         smooth:    true,
         isDynamic: true,
-        offset:    -170,
+        offset:    -129,
       });
     });
   };
