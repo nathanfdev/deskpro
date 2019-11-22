@@ -465,8 +465,23 @@ class ServeFileScript extends LowScriptAbstract
 
         switch ($asset_name) {
             case 'Getting-Started-with-DeskPRO.pdf':
+            case 'Getting-Started-with-Deskpro.pdf':
                 $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf';
-                $filename = 'Getting Started with DeskPRO.pdf';
+                $filename = 'Getting Started with Deskpro.pdf';
+                $mimetype = 'application/pdf';
+                break;
+
+            case 'Admin-Getting-Started-with-DeskPRO.pdf':
+            case 'Admin-Getting-Started-with-Deskpro.pdf':
+                $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-quickstart/en_US.pdf';
+                $filename = 'Getting Started with Deskpro - Admin.pdf';
+                $mimetype = 'application/pdf';
+                break;
+
+            case 'Cloud-Admin-Getting-Started-with-DeskPRO.pdf':
+            case 'Cloud-Admin-Getting-Started-with-Deskpro.pdf':
+                $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/admin-quickstart-cloud/en_US.pdf';
+                $filename = 'Getting Started with Deskpro - Cloud Admin.pdf';
                 $mimetype = 'application/pdf';
                 break;
 
