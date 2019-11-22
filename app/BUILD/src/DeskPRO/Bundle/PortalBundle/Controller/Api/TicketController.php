@@ -14,7 +14,6 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\FormError;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,7 +55,7 @@ class TicketController extends AbstractApiController
         if ($theme->getActiveThemeSet()->getThemeId() === 'helpcenter') {
             // This is a hack to force this API to render HTML from legacy templates
             // for the old chat widget because new HC templates arent compatible
-            $theme->getActiveThemeSet()->setThemeId('standard');
+            $theme->getActiveThemeSet()->setOverrideThemeId('standard');
         }
 
         if (!$this->isGranted(UseSectionVoter::USE_TICKETS)) {
