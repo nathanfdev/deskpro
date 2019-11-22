@@ -55,7 +55,7 @@ class TopicSummary extends React.Component {
                 activeClass="active"
                 className={classNames('dp-po-guides-contents-link')}
                 to={h1.id}
-                offset={-178}
+                offset={-129}
                 spy
                 smooth
                 onSetActive={this.handleSetActive}

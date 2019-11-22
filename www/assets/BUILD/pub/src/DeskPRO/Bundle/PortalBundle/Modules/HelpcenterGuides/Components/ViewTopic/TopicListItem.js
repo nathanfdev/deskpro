@@ -106,7 +106,7 @@ class TopicListItem extends React.Component {
           activeClass="active"
           href={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`}
           to={`topic_${topic.slug}`}
-          offset={-178}
+          offset={-129}
           spy
           smooth
           isDynamic
