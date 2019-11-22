@@ -14,7 +14,7 @@ import {
 
 const getNewTicketQueryParams = state => ({
   department_id:         ticketDefaultDepartmentSelector(state),
-  hide_department_field: isTicketDepartmentFieldHidden(state),
+  hide_department_field: isTicketDepartmentFieldHidden(state) ? 1 : 0,
   subject_type:          ticketSelectSubjectTypeSelector(state),
   subject:               ticketDefaultSubjectSelector(state)
 });
