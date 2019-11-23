@@ -14,6 +14,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class LabelDef extends AbstractEntityRepository
 {
+    const LABEL_TYPE_MAP = [
+        'tickets'       => 'label',
+        'people'        => 'person_label',
+        'organizations' => 'org_label',
+    ];
+
     protected static $types = [
         'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
         'deals'         => ['table' => 'labels_blobs',              'entity' => 'DeskPRO:LabelDeal'],
@@ -463,7 +469,7 @@ class LabelDef extends AbstractEntityRepository
                 );
 
                 // Same one -- we are just changing case
-                if ($def_new && $def_old && $def_old === $def_old) {
+                if ($def_new && $def_old && $def_new === $def_old) {
                     $def_new->label = $new_label;
                 } else {
                     $this->getEntityManager()->getConnection()->executeUpdate(
@@ -490,6 +496,31 @@ class LabelDef extends AbstractEntityRepository
                 $this->getEntityManager()->persist($def_new);
             }
 
+            // Find ticket escalations and update their terms with labels(tickets, person, organisations).
+            if (array_key_exists($type, self::LABEL_TYPE_MAP)) {
+                $escalations = $this->getEntityManager()
+                    ->getRepository(Entity\TicketEscalation::class)
+                    ->getEscalationsByLabelInTerms(self::LABEL_TYPE_MAP[$type], $old_label);
+
+                foreach ($escalations as &$escalation) {
+                    $escalation->terms = $this->getUpdatedEscalationTerms(
+                        $escalation->terms,
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+                    $escalation->terms_any = $this->getUpdatedEscalationTerms(
+                        $escalation->terms_any,
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+
+                    $this->getEntityManager()->persist($escalation);
+                }
+                unset($escalation);
+            }
+
             $this->getEntityManager()->flush();
             $this->getEntityManager()->getConnection()->commit();
         } catch (\Exception $e) {
@@ -501,5 +532,39 @@ class LabelDef extends AbstractEntityRepository
     public static function valid($type = null)
     {
         return null === $type ? array_keys(self::$types) : isset(self::$types[$type]);
+    }
+
+    /**
+     * @param array $terms
+     * @param string $old_label
+     * @param string $new_label
+     * @param string $type
+     *
+     * @return array
+     */
+    private function getUpdatedEscalationTerms($terms, $old_label, $new_label, $type)
+    {
+        $updatedTerms = [];
+        foreach ($terms as $term) {
+            if (in_array($term['type'], self::LABEL_TYPE_MAP, true) &&
+                $term['type'] === self::LABEL_TYPE_MAP[$type]
+            ) {
+                $optionsLabelKey = $term['type'] === 'label' ? 'label' : 'labels';
+                $posToChange     = array_search($old_label, $term['options'][$optionsLabelKey], true);
+
+                if ($posToChange !== false) {
+                    array_splice(
+                        $term['options'][$optionsLabelKey],
+                        $posToChange,
+                        1,
+                        $new_label
+                    );
+                }
+            }
+
+            $updatedTerms[] = $term;
+        }
+
+        return $updatedTerms;
     }
 }
