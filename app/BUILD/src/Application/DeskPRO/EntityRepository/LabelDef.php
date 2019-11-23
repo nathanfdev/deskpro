@@ -503,13 +503,13 @@ class LabelDef extends AbstractEntityRepository
                     ->getEscalationsByLabelInTerms(self::LABEL_TYPE_MAP[$type], $old_label);
 
                 foreach ($escalations as &$escalation) {
-                    $escalation->terms = $this->getUpdatedEscalationTerms(
+                    $escalation->terms = $this->getUpdatedTerms(
                         $escalation->terms,
                         $old_label,
                         $new_label,
                         $type
                     );
-                    $escalation->terms_any = $this->getUpdatedEscalationTerms(
+                    $escalation->terms_any = $this->getUpdatedTerms(
                         $escalation->terms_any,
                         $old_label,
                         $new_label,
@@ -519,6 +519,25 @@ class LabelDef extends AbstractEntityRepository
                     $this->getEntityManager()->persist($escalation);
                 }
                 unset($escalation);
+            }
+
+            // Find ticket filters and update their terms with ticket labels.
+            if ($type === 'tickets') {
+                $ticketFilters = $this->getEntityManager()
+                    ->getRepository(\DeskPRO\Bundle\AppBundle\Entity\TicketFilter::class)
+                    ->getFiltersByLabelInTerm($old_label);
+
+                foreach ($ticketFilters as &$filter) {
+                    $filter->terms = $this->getUpdatedTerms(
+                        $filter->terms,
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+
+                    $this->getEntityManager()->persist($filter);
+                }
+                unset($filter);
             }
 
             $this->getEntityManager()->flush();
@@ -542,7 +561,7 @@ class LabelDef extends AbstractEntityRepository
      *
      * @return array
      */
-    private function getUpdatedEscalationTerms($terms, $old_label, $new_label, $type)
+    private function getUpdatedTerms($terms, $old_label, $new_label, $type)
     {
         $updatedTerms = [];
         foreach ($terms as $term) {
