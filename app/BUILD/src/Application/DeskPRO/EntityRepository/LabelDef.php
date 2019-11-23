@@ -9,6 +9,8 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -19,6 +21,13 @@ class LabelDef extends AbstractEntityRepository
         'people'        => 'person_label',
         'organizations' => 'org_label',
     ];
+
+    const LABEL_TYPE_TRIGGER_MAP = [
+        'tickets'       => 'CheckLabel',
+        'people'        => 'CheckUserLabel',
+        'organizations' => 'CheckOrgLabel',
+    ];
+
 
     protected static $types = [
         'articles'      => ['table' => 'labels_articles',           'entity' => 'DeskPRO:LabelArticle'],
@@ -502,7 +511,7 @@ class LabelDef extends AbstractEntityRepository
                     ->getRepository(Entity\TicketEscalation::class)
                     ->getEscalationsByLabelInTerms(self::LABEL_TYPE_MAP[$type], $old_label);
 
-                foreach ($escalations as &$escalation) {
+                foreach ($escalations as $escalation) {
                     $escalation->terms = $this->getUpdatedTerms(
                         $escalation->terms,
                         $old_label,
@@ -518,7 +527,21 @@ class LabelDef extends AbstractEntityRepository
 
                     $this->getEntityManager()->persist($escalation);
                 }
-                unset($escalation);
+
+                $ticketTriggers = $this->getEntityManager()
+                    ->getRepository(Entity\TicketTrigger::class)
+                    ->getTriggersByLabelInTerms(self::LABEL_TYPE_TRIGGER_MAP[$type], $old_label);
+
+                foreach ($ticketTriggers as $trigger) {
+                    $trigger->terms = $this->getUpdatedTriggerTerms(
+                        $trigger->terms->getTerms(),
+                        $old_label,
+                        $new_label,
+                        $type
+                    );
+
+                    $this->getEntityManager()->persist($trigger);
+                }
             }
 
             // Find ticket filters and update their terms with ticket labels.
@@ -527,7 +550,7 @@ class LabelDef extends AbstractEntityRepository
                     ->getRepository(\DeskPRO\Bundle\AppBundle\Entity\TicketFilter::class)
                     ->getFiltersByLabelInTerm($old_label);
 
-                foreach ($ticketFilters as &$filter) {
+                foreach ($ticketFilters as $filter) {
                     $filter->terms = $this->getUpdatedTerms(
                         $filter->terms,
                         $old_label,
@@ -537,7 +560,6 @@ class LabelDef extends AbstractEntityRepository
 
                     $this->getEntityManager()->persist($filter);
                 }
-                unset($filter);
             }
 
             $this->getEntityManager()->flush();
@@ -582,6 +604,48 @@ class LabelDef extends AbstractEntityRepository
             }
 
             $updatedTerms[] = $term;
+        }
+
+        return $updatedTerms;
+    }
+
+    /**
+     * @param array $terms
+     * @param string $old_label
+     * @param string $new_label
+     * @param string $type
+     *
+     * @return TriggerTerms
+     */
+    private function getUpdatedTriggerTerms($terms, $old_label, $new_label, $type)
+    {
+        $updatedTerms = new TriggerTerms();
+
+        foreach ($terms as $term) {
+            $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
+
+            foreach ($term['set_terms'] as $setTerm) {
+                if (in_array($setTerm['type'], self::LABEL_TYPE_TRIGGER_MAP, true) &&
+                    $setTerm['type'] === self::LABEL_TYPE_TRIGGER_MAP[$type]
+                ) {
+                    $posToChange = array_search($old_label, $setTerm['options']['labels'], true);
+
+                    if ($posToChange !== false) {
+                        array_splice(
+                            $setTerm['options']['labels'],
+                            $posToChange,
+                            1,
+                            $new_label
+                        );
+                    }
+                }
+
+                $composite->add($updatedTerms->getTermFromArray($setTerm));
+            }
+
+            if ($composite->count()) {
+                $updatedTerms->addTerm($composite);
+            }
         }
 
         return $updatedTerms;

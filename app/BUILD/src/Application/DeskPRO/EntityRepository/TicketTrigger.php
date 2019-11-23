@@ -89,4 +89,36 @@ class TicketTrigger extends AbstractEntityRepository
 
         $db->commit();
     }
+
+    /**
+     * @param string $labelType
+     * @param string $label
+     *
+     * @return \Application\DeskPRO\Entity\TicketTrigger[]
+     */
+    public function getTriggersByLabelInTerms($labelType, $label)
+    {
+        return $this->_em
+            ->createQuery("
+                SELECT tt
+                FROM DeskPRO:TicketTrigger tt
+                WHERE (
+                        JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".terms[*].set_terms[*].type'), :term_label_type) = 1
+                        AND JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".terms[*].set_terms[*].options.labels'), :label) = 1
+                    )
+                    OR (
+                        JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".actions[*].type'), :action_label_type) = 1
+                        AND (
+                            JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".actions[*].options.add_labels'), :label) = 1
+                            OR JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".actions[*].options.remove_labels'), :label) = 1
+                        )
+                    )
+            ")
+            ->setParameters([
+                'term_label_type'   => "\"{$labelType}\"",
+                'action_label_type' => '"SetLabels"',
+                'label'             => "\"{$label}\"",
+            ])
+            ->execute();
+    }
 }
