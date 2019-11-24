@@ -170,7 +170,7 @@ class TicketEscalation extends AbstractEntityRepository
      *
      * @return TicketEscalationEntity[]
      */
-    public function getEscalationsByLabelInTerms($labelType, $label)
+    public function getEscalationsByLabel($labelType, $label)
     {
         $optionsLabelKey = $labelType === 'label' ? 'label' : 'labels';
 
@@ -179,17 +179,25 @@ class TicketEscalation extends AbstractEntityRepository
                 SELECT te
                 FROM DeskPRO:TicketEscalation te
                 WHERE (
-                        JSON_CONTAINS(JSON_EXTRACT(te.terms, '$[*].type'), :label_type) = 1
+                        JSON_CONTAINS(JSON_EXTRACT(te.terms, '$[*].type'), :term_type) = 1
                         AND JSON_CONTAINS(JSON_EXTRACT(te.terms, '$[*].options.{$optionsLabelKey}'), :label) = 1
                     )
                     OR (
-                        JSON_CONTAINS(JSON_EXTRACT(te.terms_any, '$[*].type'), :label_type) = 1
+                        JSON_CONTAINS(JSON_EXTRACT(te.terms_any, '$[*].type'), :term_type) = 1
                         AND JSON_CONTAINS(JSON_EXTRACT(te.terms_any, '$[*].options.{$optionsLabelKey}'), :label) = 1
+                    )
+                    OR (
+                        JSON_CONTAINS(JSON_EXTRACT(te.actions, '$.\"@DATA\".actions[*].type'), :action_type) = 1
+                        AND (
+                            JSON_CONTAINS(JSON_EXTRACT(te.actions, '$.\"@DATA\".actions[*].options.add_labels'), :label) = 1
+                            OR JSON_CONTAINS(JSON_EXTRACT(te.actions, '$.\"@DATA\".actions[*].options.remove_labels'), :label) = 1
+                        )
                     )
             ")
             ->setParameters([
-                'label_type' => "\"{$labelType}\"",
-                'label'      => "\"{$label}\"",
+                'term_type'   => "\"{$labelType}\"",
+                'action_type' => '"SetLabels"',
+                'label'       => "\"{$label}\"",
             ])
             ->execute();
     }

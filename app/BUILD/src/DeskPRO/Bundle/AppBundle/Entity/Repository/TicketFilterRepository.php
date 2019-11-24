@@ -16,18 +16,18 @@ class TicketFilterRepository extends EntityRepository
      *
      * @return \DeskPRO\Bundle\AppBundle\Entity\TicketFilter[]
      */
-    public function getFiltersByLabelInTerm($label)
+    public function getFiltersByLabel($label)
     {
         return $this->_em
             ->createQuery("
                 SELECT tf
                 FROM DeskPRO:LegacyTicketFilter tf
-                WHERE JSON_CONTAINS(JSON_EXTRACT(tf.terms, '$[*].type'), :label_type) = 1
+                WHERE JSON_CONTAINS(JSON_EXTRACT(tf.terms, '$[*].type'), :term_type) = 1
                     AND JSON_CONTAINS(JSON_EXTRACT(tf.terms, '$[*].options.label'), :label) = 1
             ")
             ->setParameters([
-                'label_type' => '"label"',
-                'label'      => "\"{$label}\"",
+                'term_type' => '"label"',
+                'label'     => "\"{$label}\"",
             ])
             ->execute();
     }
