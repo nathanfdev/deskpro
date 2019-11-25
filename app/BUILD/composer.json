@@ -115,7 +115,7 @@
     "jumbojett/openid-connect-php": "^0.8.0",
     "scssphp/scssphp": "^1.0",
     "fortawesome/font-awesome": "^5.11",
-    "scienta/doctrine-json-functions": "^4.0"
+    "scienta/doctrine-json-functions": "~2.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

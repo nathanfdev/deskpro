@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "126c97aeb364243d491ca13d8135ac43",
+    "content-hash": "9ea526309e8d21d477ad62aa2cd4ae77",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -6936,36 +6936,33 @@
         },
         {
             "name": "scienta/doctrine-json-functions",
-            "version": "4.0.2",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ScientaNL/DoctrineJsonFunctions.git",
-                "reference": "f8e2247c0d8afbe434636e87028372f1aaea53f1"
+                "reference": "3c9973d6a43ca762366bc8c0c490052fe3cf7ff6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ScientaNL/DoctrineJsonFunctions/zipball/f8e2247c0d8afbe434636e87028372f1aaea53f1",
-                "reference": "f8e2247c0d8afbe434636e87028372f1aaea53f1",
+                "url": "https://api.github.com/repos/ScientaNL/DoctrineJsonFunctions/zipball/3c9973d6a43ca762366bc8c0c490052fe3cf7ff6",
+                "reference": "3c9973d6a43ca762366bc8c0c490052fe3cf7ff6",
                 "shasum": ""
             },
             "require": {
-                "ext-pdo": "*",
-                "php": "^7.1"
+                "php": ">=5.3.2"
             },
             "require-dev": {
-                "doctrine/coding-standard": "^5.0",
-                "doctrine/orm": "~2.6",
-                "phpunit/phpunit": "^6.5"
+                "doctrine/orm": "~2.1"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "2.1-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Scienta\\DoctrineJsonFunctions\\": "src/"
+                    "Syslogic\\DoctrineJsonFunctions\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6975,7 +6972,7 @@
             "authors": [
                 {
                     "name": "Doctrine Json Functions Contributors",
-                    "homepage": "https://github.com/ScientaNL/DoctrineJsonFunctions/contributors"
+                    "homepage": "https://github.com/SyslogicNL/DoctrineJsonFunctions/contributors"
                 }
             ],
             "description": "A set of extensions to Doctrine 2 that add support for json query functions.",
@@ -6990,7 +6987,7 @@
                 "postgres",
                 "postgresql"
             ],
-            "time": "2019-03-12T08:52:10+00:00"
+            "time": "2018-01-31T09:12:42+00:00"
         },
         {
             "name": "scssphp/scssphp",
