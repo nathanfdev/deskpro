@@ -1,5 +1,5 @@
 {% if pager|length > 0 %}
-<ul class="download-list">
+<div class="dp-po-download-listing">
     {% for dl in pager %}
         <div class="dp-po-download-listing-item">
             <a href="{{ portal_path(dl) }}" class="dp-po-download-listing-link">
@@ -31,7 +31,7 @@
             </a>
         </div>
     {% endif %}
-</ul>
+</div>
 {% else %}
     <strong>{{ phrase('helpcenter.downloads.none') }}</strong>
 {% endif %}
