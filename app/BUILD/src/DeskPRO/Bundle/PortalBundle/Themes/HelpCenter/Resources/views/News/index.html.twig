@@ -66,6 +66,14 @@
             {% endif %}
         </div>
     </div>
+    <div class="dp-po-section">
+        {% include 'Theme:Common:pager.html.twig' with {
+            pager: pager,
+            pager_options: {
+                omitFirstPage: false
+            }
+        } %}
+    </div>
 {% endblock page_body %}
 
 {# ------------------------------------------ #}

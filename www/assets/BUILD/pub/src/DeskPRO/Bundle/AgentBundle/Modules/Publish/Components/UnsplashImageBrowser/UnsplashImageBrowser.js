@@ -134,9 +134,7 @@ export default class UnsplashImageBrowser extends React.Component {
                 rel="noopener noreferrer"
               >
                 {image.user.name}
-              </a>
-              by
-              <a
+              </a> by <a
                 href="https://unsplash.com/"
                 target="_blank"
                 rel="noopener noreferrer"

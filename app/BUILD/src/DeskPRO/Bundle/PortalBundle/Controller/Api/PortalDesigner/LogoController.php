@@ -86,8 +86,13 @@ class LogoController extends AbstractApiController
             'thumb' => $image->urls->thumb,
         ]);
         // Trigger Download on unsplash api to register photo usage
-        $client = new Client();
-        $client->request('GET', $image->links->download);
+        $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
+        $client    = new Client();
+        $client->requestAsync('GET', $image->links->download_location, [
+            'headers' => [
+                'Authorization' => 'Client-ID '.$accessKey,
+            ],
+        ]);
 
         $this->getManager()->persist($themeSet);
         $this->getManager()->flush();

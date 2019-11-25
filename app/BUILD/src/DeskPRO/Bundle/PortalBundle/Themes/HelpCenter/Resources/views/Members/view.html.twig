@@ -9,7 +9,7 @@
                         <div class="dp-po-block">
                             <div class="dp-po-profile">
                                 <figure class="dp-po-profile-figure">
-                                    <img src="{{ avatar_url(person, 140) }}" alt="{{ person.community_name|e }}" class="dp-po-profile-image">
+                                    {{ hc_avatar(person, 'dp-po-profile-figure', 140) }}
                                 </figure>
                                 <h2 class="dp-po-profile-name">
                                     {{ person.community_name ? person.community_name : phrase('helpcenter.members.not_set') }}
