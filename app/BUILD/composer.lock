@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "60aba6d7f130c4a0a04342444cb60500",
+    "content-hash": "f9c658287d1f4c654bab31504933be58",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -443,28 +443,35 @@
         },
         {
             "name": "defuse/php-encryption",
-            "version": "v1.2.1",
+            "version": "v2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/defuse/php-encryption.git",
-                "reference": "b87737b2eec06b13f025cabea847338fa203d1b4"
+                "reference": "0f407c43b953d571421e0020ba92082ed5fb7620"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/defuse/php-encryption/zipball/b87737b2eec06b13f025cabea847338fa203d1b4",
-                "reference": "b87737b2eec06b13f025cabea847338fa203d1b4",
+                "url": "https://api.github.com/repos/defuse/php-encryption/zipball/0f407c43b953d571421e0020ba92082ed5fb7620",
+                "reference": "0f407c43b953d571421e0020ba92082ed5fb7620",
                 "shasum": ""
             },
             "require": {
-                "ext-mcrypt": "*",
                 "ext-openssl": "*",
+                "paragonie/random_compat": ">= 2",
                 "php": ">=5.4.0"
             },
+            "require-dev": {
+                "nikic/php-parser": "^2.0|^3.0|^4.0",
+                "phpunit/phpunit": "^4|^5"
+            },
+            "bin": [
+                "bin/generate-defuse-key"
+            ],
             "type": "library",
             "autoload": {
-                "files": [
-                    "Crypto.php"
-                ]
+                "psr-4": {
+                    "Defuse\\Crypto\\": "src"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -473,18 +480,29 @@
             "authors": [
                 {
                     "name": "Taylor Hornby",
-                    "email": "havoc@defuse.ca"
+                    "email": "taylor@defuse.ca",
+                    "homepage": "https://defuse.ca/"
+                },
+                {
+                    "name": "Scott Arciszewski",
+                    "email": "info@paragonie.com",
+                    "homepage": "https://paragonie.com"
                 }
             ],
             "description": "Secure PHP Encryption Library",
             "keywords": [
                 "aes",
+                "authenticated encryption",
                 "cipher",
+                "crypto",
+                "cryptography",
+                "encrypt",
                 "encryption",
-                "mcrypt",
-                "security"
+                "openssl",
+                "security",
+                "symmetric key cryptography"
             ],
-            "time": "2015-03-14T20:27:45+00:00"
+            "time": "2018-07-24T23:27:56+00:00"
         },
         {
             "name": "deskpro/deskpro-api-php",
@@ -12833,7 +12851,6 @@
                 "MIT"
             ],
             "description": "Integrates CodeCoverage with PhpSpec",
-            "abandoned": true,
             "time": "2014-12-11T11:43:15+00:00"
         },
         {
@@ -13390,7 +13407,6 @@
                 "github",
                 "test"
             ],
-            "abandoned": "php-coveralls/php-coveralls",
             "time": "2015-12-17T18:04:18+00:00"
         },
         {
