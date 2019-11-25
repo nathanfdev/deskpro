@@ -268,8 +268,8 @@ $container->loadFromExtension(
                         'string_functions' => [
                             'group_concat'  => 'DoctrineExtensions\Query\Mysql\GroupConcat',
                             'greatest'      => 'DoctrineExtensions\Query\Mysql\Greatest',
-                            'JSON_EXTRACT'  => 'Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract',
-                            'JSON_CONTAINS' => 'Scienta\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains',
+                            'JSON_EXTRACT'  => 'Syslogic\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonExtract',
+                            'JSON_CONTAINS' => 'Syslogic\DoctrineJsonFunctions\Query\AST\Functions\Mysql\JsonContains',
                         ],
                     ],
                 ],
