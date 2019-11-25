@@ -12,6 +12,7 @@ class Topic extends React.PureComponent {
     guideSlug: PropTypes.string,
     topicSlug: PropTypes.string,
     sizes:     PropTypes.object,
+    loaded:    PropTypes.bool,
   };
 
   static defaultProps = {
@@ -19,7 +20,7 @@ class Topic extends React.PureComponent {
   };
 
   render() {
-    const { data, topic, guideSlug, topicSlug, intl, sizes } = this.props;
+    const { data, topic, guideSlug, topicSlug, intl, sizes, loaded } = this.props;
 
     const fixed = false;
     const agentBarHeight = 0;
@@ -33,9 +34,13 @@ class Topic extends React.PureComponent {
       style.width = sizes.articleWidth;
       style.position = 'fixed';
     }
+    const topicStyle = {};
+    if (!loaded) {
+      topicStyle.display = 'none';
+    }
 
     return (
-      <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`}>
+      <div className="dp-po-guides-block-article" id={`topic_${topic.slug}`} style={topicStyle}>
         <div className="row">
           <div className="col-sm-9">
             <div className="dp-po-guides-block-article-left">
