@@ -73,8 +73,13 @@ class CommunityForumsController extends CrudController
         $forum->setSplashImage($splashImage);
         $this->getManager()->flush();
         // Trigger Download on unsplash api to register photo usage
-        $client = new Client();
-        $client->request('GET', $image->links->download);
+        $accessKey = $this->get('settings_resolver')->getGlobalSettings()->get('services.unsplash_access_key', null);
+        $client    = new Client();
+        $client->requestAsync('GET', $image->links->download_location, [
+            'headers' => [
+                'Authorization' => 'Client-ID '.$accessKey,
+            ],
+        ]);
 
         return new JsonResponse($image);
     }
