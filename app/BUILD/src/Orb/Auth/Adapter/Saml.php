@@ -25,7 +25,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     protected $options;
 
     /**
-     * @var \OneLogin_Saml2_Auth
+     * @var \OneLogin\Saml2\Auth
      */
     protected $saml;
 
@@ -80,7 +80,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
                 'singleLogoutService' => [
                     'url' => $this->getSingleLogoutServiceUrl(),
                 ],
-                'NameIDFormat' => $this->options['name_id_format'] ?: \OneLogin_Saml2_Constants::NAMEID_PERSISTENT,
+                'NameIDFormat' => $this->options['name_id_format'] ?: \OneLogin\Saml2\Constants::NAMEID_PERSISTENT,
             ],
             'idp' => [
                 'entityId'            => $this->options['issuer_id'],
@@ -321,10 +321,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             throw new \Exception('The IdP does not support Single Log Out');
         }
 
-        $logoutRequest = new \OneLogin_Saml2_LogoutRequest($samlSettings);
+        $logoutRequest = new \OneLogin\Saml2\LogoutRequest($samlSettings);
         $samlRequest   = $logoutRequest->getRequest();
         $parameters    = ['SAMLRequest' => $samlRequest];
-        $url           = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
+        $url           = \OneLogin\Saml2\Utils::redirect($sloUrl, $parameters, true);
 
         return trim($url) ?: $this->backupLogoutUrl;
     }
@@ -389,11 +389,11 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     /**
      * Only create this directly before using it, as we need the callback URL to be set first.
      *
-     * @return \OneLogin_Saml2_Auth
+     * @return \OneLogin\Saml2\Auth
      */
     protected function createSamlProcessor()
     {
-        $saml = new \OneLogin_Saml2_Auth(
+        $saml = new \OneLogin\Saml2\Auth(
             $this->getSamlSettings()
         );
         $saml->setStrict(false);

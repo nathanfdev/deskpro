@@ -42,7 +42,7 @@
     "fzaninotto/faker": "~1.5",
     "firebase/php-jwt": "~4.0",
     "league/url": "~3.3",
-    "onelogin/php-saml": "dev-master@dev",
+    "onelogin/php-saml": "3.3.1",
     "google/apiclient": "^2.0",
     "predis/predis": "1.0.3",
     "react/event-loop": "0.4.*",
@@ -114,7 +114,8 @@
     "giggsey/libphonenumber-for-php": "^8.10",
     "jumbojett/openid-connect-php": "^0.8.0",
     "scssphp/scssphp": "^1.0",
-    "fortawesome/font-awesome": "^5.11"
+    "fortawesome/font-awesome": "^5.11",
+    "robrichards/xmlseclibs": "3.0.4"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
