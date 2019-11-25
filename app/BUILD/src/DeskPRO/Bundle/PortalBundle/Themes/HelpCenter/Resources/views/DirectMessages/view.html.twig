@@ -18,7 +18,7 @@
               {% for message in messages %}
                 <div class="dp-po-messages-item dp-po-messages-item-their">
                   <figure class="dp-po-messages-figure">
-                    <img src="{{ avatar_url(message.author.person, 50) }}" class="dp-po-messages-avatar">
+                    {{ hc_avatar(message.author.person, 'dp-po-messages-avatar', 50) }}
                   </figure>
                   <div class="dp-po-messages-wrap">
                     <h3 class="dp-po-messages-name">
@@ -42,7 +42,7 @@
               {% if reply_form %}
                 <div class="dp-po-messages-item dp-po-messages-item-compose">
                   <figure class="dp-po-messages-figure">
-                    <img src="{{ avatar_url(app.user, 50) }}" class="dp-po-messages-avatar">
+                    {{ hc_avatar(app.user, 'dp-po-messages-avatar', 50) }}
                   </figure>
                   <div class="dp-po-messages-wrap">
                     {{ form_start(reply_form, { attr: { class: 'form-ticket dpx-form' } }) }}

@@ -10,7 +10,7 @@
                 <div class="dp-po-download-listing-content">
                     <h3 class="dp-po-download-listing-title">{{ dl.title }}</h3>
                     <div class="dp-po-avatar dp-po-avatar-round">
-                        <img src="{{ avatar_url(dl.person) }}">
+                        {{ hc_avatar(dl.person) }}
                         <strong>{{ dl.person }}</strong>
                     </div>
                     <div class="dp-po-download-listing-count">

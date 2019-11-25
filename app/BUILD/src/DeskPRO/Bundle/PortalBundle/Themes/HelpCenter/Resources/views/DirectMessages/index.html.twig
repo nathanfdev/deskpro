@@ -29,7 +29,7 @@
                                     <figure class="dp-po-messages-figure">
                                         {% for p in participants[thread.id] %}
                                             {% if p.person.id != app.user.id %}
-                                                <img src="{{ avatar_url(p.person, 50) }}" class="dp-po-messages-avatar">
+                                                {{ hc_avatar(p.person, 'dp-po-messages-avatar', 50) }}
                                             {% endif %}
                                         {% endfor%}
                                     </figure>

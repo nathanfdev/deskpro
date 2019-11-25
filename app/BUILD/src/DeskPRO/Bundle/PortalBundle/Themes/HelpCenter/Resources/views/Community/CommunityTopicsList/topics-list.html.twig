@@ -42,7 +42,7 @@
                         </a>
                         {% if not is_compact %}
                             <div class="dp-po-avatar dp-po-avatar-round">
-                                <img src="{{ avatar_url(topic.person) }}">
+                                {{ hc_avatar(topic.person) }}
                                 {{ topic.person.display_name }}
                             </div>
                             <span class="dp-po-community-view-time">
@@ -51,11 +51,11 @@
                         {% endif %}
                     </div>
                     {% if is_compact %}
-{#                        <div class="dp-po-community-view-office">#}
+                        <div class="dp-po-community-view-office">
 {#                            <a href="javascript:void(0)">#}
 {#                                <img src="{{ asset('img/brand/logo.jpg', 'help_center') }}" class="dp-po-community-view-official-logo">#}
 {#                            </a>#}
-{#                        </div>#}
+                        </div>
                     {% endif %}
                     <div class="dp-po-community-view-status">
                         {% if topic.status_category %}
@@ -80,7 +80,7 @@
                                title="Author, {{ topic.person.display_name|e }}"
                             >
                                 <div class="dp-po-avatar dp-po-avatar-round">
-                                    <img src="{{ avatar_url(topic.person, 50) }}">
+                                    {{ hc_avatar(topic.person) }}
                                 </div>
                             </a>
                         </div>
