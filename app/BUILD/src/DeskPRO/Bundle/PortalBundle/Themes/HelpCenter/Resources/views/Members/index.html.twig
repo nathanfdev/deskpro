@@ -11,9 +11,16 @@
         <div class="dp-po-section dp-po-block">
           <div class="row">
             <div class="col-sm-6">
-              <form class="dp-po-member-search">
-                <input type="text" name="q" placeholder="Search" value="{{ q }}" />
-                <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+              <form>
+                <div class="d-flex align-items-center">
+                  <div class="dp-po-member-search">
+                    <input type="text" name="q" placeholder="" value="{{ q }}" />
+                    <button type="submit"> <i class="dp-po-icon far fa-search"></i></button>
+                  </div>
+                  <div class="ml-1">
+                    <button type="submit" class="btn btn-primary">{{ phrase('helpcenter.label.search') }}</button>
+                  </div>
+                </div>
               </form>
             </div>
             <div class="col-sm-6 text-right">
