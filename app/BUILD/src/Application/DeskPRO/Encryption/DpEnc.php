@@ -6,6 +6,8 @@
 
 namespace Application\DeskPRO\Encryption;
 
+use Defuse\Crypto\Crypto;
+
 class DpEnc
 {
     const DP_ENC_SIG_PREFIX     = 'dp_encrypted_string:::';
@@ -101,7 +103,7 @@ class DpEnc
             throw new \RuntimeException('Cannot encrypt because no key');
         }
 
-        return base64_encode(\Crypto::Encrypt($string, $this->getKey()));
+        return base64_encode(Crypto::Encrypt($string, $this->getKey()));
     }
 
     /**
@@ -118,7 +120,7 @@ class DpEnc
             throw new \InvalidCiphertextException('Cannot decrypt because no key');
         }
 
-        return \Crypto::Decrypt(base64_decode($string), $this->getKey());
+        return Crypto::Decrypt(base64_decode($string), $this->getKey());
     }
 
     /**
