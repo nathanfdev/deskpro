@@ -8,8 +8,8 @@ if (version_compare(phpversion(), '5.5.0', '<')) {
     echo "(ERR_CODE:MPHPVFT)";
     exit(1);
 }
-if (version_compare(phpversion(), '7.2.0alpha', '>')) {
-    echo "You are using PHP 7.2.x that is incompatible with this software for now.\n\n";
+if (version_compare(phpversion(), '7.3.0', '>')) {
+    echo "You are using PHP >= 7.3.x that is incompatible with this software for now.\n\n";
     echo "Please refer to the server requirements here: https://www.deskpro.com/requirements.\n";
     echo "(ERR_CODE:MPHPVFT)";
     exit(1);
@@ -174,7 +174,7 @@ if (!defined('DPC_IS_CLOUD') && !$DP_ENV->getConfig('database.host')) {
 }
 
 // Increase error reporting
-error_reporting(E_ALL);
+error_reporting(E_ALL & ~E_DEPRECATED);
 
 #------------------------------
 # Memory Limits

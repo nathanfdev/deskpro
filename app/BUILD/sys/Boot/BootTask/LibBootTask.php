@@ -26,7 +26,7 @@ class LibBootTask implements BootTaskInterface
             }
         }
 
-        error_reporting(E_ALL);
+        error_reporting(E_ALL & ~E_DEPRECATED);
 
         if ($env->isDebug() || php_sapi_name() === 'cli') {
             ini_set('display_errors', 1);
