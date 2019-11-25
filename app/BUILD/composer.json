@@ -24,7 +24,7 @@
     "kriswallsmith/assetic": "~1.4",
     "doctrine/migrations": "1.0.*@dev",
     "doctrine/doctrine-fixtures-bundle": "~2.2",
-    "guzzlehttp/guzzle": "^6.2",
+    "guzzlehttp/guzzle": "^6.3",
     "imagine/imagine": "0.5.*",
     "monolog/monolog": "1.*",
     "pda/pheanstalk": "2.1.*",
