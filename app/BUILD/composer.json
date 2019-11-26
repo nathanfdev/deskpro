@@ -38,7 +38,7 @@
     "deskpro/deskpro-api-php": "dev-master",
     "tedivm/fetch": "v0.5.3",
     "eluceo/ical": "0.1.0",
-    "friendsofsymfony/elastica-bundle": "dev-master#6206199",
+    "friendsofsymfony/elastica-bundle": "4.1.2",
     "fzaninotto/faker": "~1.5",
     "firebase/php-jwt": "~4.0",
     "league/url": "~3.3",
@@ -76,7 +76,6 @@
     "nelmio/cors-bundle": "^1.4",
     "gregwar/captcha-bundle": "^2.0",
     "google/recaptcha": "~1.1",
-    "slushie/recaptcha-secure-token": "^1.1",
     "symfony/proxy-manager-bridge": "~2.3",
     "pusher/pusher-php-server": "^2.2",
     "richsage/rms-push-notifications-bundle": "^0.1.9",
@@ -85,9 +84,8 @@
     "doctrine/mongodb-odm-bundle": "~3.0",
     "doctrine/mongodb-odm": "1.0.x-dev",
     "mongofill/mongofill": "dev-master",
-    "mpdf/mpdf": "7.0.0.3a",
+    "mpdf/mpdf": "8.0.3",
     "alchemy/zippy": "^0.4.6",
-    "mikey179/vfsstream": "^1.6",
     "eloquent/pathogen": "^0.6.1",
     "geoip2/geoip2": "~2.4",
     "egulias/email-validator": "~1.2",
@@ -105,7 +103,6 @@
     "league/oauth1-client": "dev-master",
     "guzzlehttp/oauth-subscriber": "^0.3.0",
     "friendsofsymfony/oauth-server-bundle": "^1.5",
-    "pelago/emogrifier": "^2.0",
     "jkuchar/bigfiletools": "^2.0",
     "brick/math": "dev-php-5.5-compatible as 0.5.2",
     "html2text/html2text": "^4.1",
@@ -115,7 +112,8 @@
     "jumbojett/openid-connect-php": "^0.8.0",
     "scssphp/scssphp": "^1.0",
     "fortawesome/font-awesome": "^5.11",
-    "robrichards/xmlseclibs": "3.0.4"
+    "robrichards/xmlseclibs": "3.0.4",
+    "doctrine/lexer": "1.0.2"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
@@ -139,7 +137,9 @@
     "friendsofphp/php-cs-fixer": "^1.11",
     "behat/mink-goutte-driver": "^1.2",
     "onesky/api-library-php5": "^1.0",
-    "sensio/generator-bundle": "^3.0"
+    "sensio/generator-bundle": "^3.0",
+    "mikey179/vfsstream": "^1.6",
+    "composer/composer": "^1.9"
   },
   "preferred-install": "dist"
 }
