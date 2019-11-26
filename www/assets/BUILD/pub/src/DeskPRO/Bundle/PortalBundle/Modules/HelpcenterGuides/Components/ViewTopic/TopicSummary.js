@@ -57,7 +57,6 @@ class TopicSummary extends React.Component {
                 to={h1.id}
                 offset={-129}
                 spy
-                smooth
                 onSetActive={this.handleSetActive}
               ><i className="dp-po-icon fal fa-angle-right" />{h1.innerText}</Link>
             </li>)}

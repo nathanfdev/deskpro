@@ -136,7 +136,6 @@ class ViewTopic extends React.Component {
             to={`topic_${topicSlug}`}
             href={target}
             offset={-129}
-            smooth
             isDynamic
           >
             {internalLink.text}
@@ -272,6 +271,7 @@ class ViewTopic extends React.Component {
       this.setState({
         topics,
         flashes: [],
+        loaded:  true,
       });
       this.changeInternalLinks();
       this.addCodeBlocksCopy();
@@ -318,7 +318,7 @@ class ViewTopic extends React.Component {
   };
 
   renderTopics() {
-    const { topicList, topics, guideSlug, topicSlug } = this.state;
+    const { topicList, topics, guideSlug, topicSlug, loaded } = this.state;
     const result = [];
 
     topicList
@@ -337,6 +337,7 @@ class ViewTopic extends React.Component {
                 topicSlug={topicSlug}
                 data={topics[topic.id]}
                 sizes={this.sizes}
+                loaded={loaded}
               />
             </Element>
           );
@@ -346,7 +347,7 @@ class ViewTopic extends React.Component {
   }
 
   render() {
-    const { topicList, fixed } = this.state;
+    const { topicList, fixed, loaded } = this.state;
     const { splat, slug: topicSlug } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
 
@@ -371,6 +372,11 @@ class ViewTopic extends React.Component {
                   />
                 </div>
                 <div className="col-sm-9">
+                  { loaded ||
+                    <div className={classNames({ 'dp-po-guides-loading': !loaded })}>
+                      <i className="dp-icon fa-3x far fa-spinner fa-pulse" />
+                    </div>
+                  }
                   <div className="dp-po-guides-block">
                     {this.renderTopics()}
                   </div>

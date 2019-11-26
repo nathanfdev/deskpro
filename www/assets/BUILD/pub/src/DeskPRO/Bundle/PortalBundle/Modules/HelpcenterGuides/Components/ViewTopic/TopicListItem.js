@@ -108,7 +108,6 @@ class TopicListItem extends React.Component {
           to={`topic_${topic.slug}`}
           offset={-129}
           spy
-          smooth
           isDynamic
           onClick={this.handleClick}
           onSetActive={this.handleSetActive}

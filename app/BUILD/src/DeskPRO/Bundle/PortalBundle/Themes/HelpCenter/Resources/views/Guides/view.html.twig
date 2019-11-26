@@ -49,6 +49,9 @@
                                 </div>
                             </div>
                             <div class="col-sm-9">
+                                <div class="dp-po-guides-loading" style="display: none">
+                                    <i class="dp-icon fa-3x far fa-spinner fa-pulse"></i>
+                                </div>
                                 <div class="dp-po-guides-block">
                                     {% include 'Theme:Guides:embeds/topic.html.twig' %}
                                 </div>
@@ -75,7 +78,7 @@
         routePath: routePath
       };
 
-      console.log(routePath);
+      window.document.getElementsByClassName('dp-po-guides-loading')[0].style.display = 'block';
 
       function start() {
         if (typeof window.HelpcenterBundle === 'undefined') {
