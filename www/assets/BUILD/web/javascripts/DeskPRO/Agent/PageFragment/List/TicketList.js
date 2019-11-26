@@ -627,7 +627,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       promise,
       tmp;
 
-    console.log("[TicketList.addTicketResult] %o", ticketIds);
+    if (DP_DEBUG) {
+      console.log("[TicketList.addTicketResult] %o", ticketIds);
+    }
 
     if (!$scope.realtime) {
       $('.view-alert-subheader').removeClass('hidden');
@@ -787,7 +789,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       loadExtraStartIdx,
       loadExtraEndIdx;
 
-    console.log("[TicketList.removeTicketResult] %o", ticketIds);
+    if (DP_DEBUG) {
+      console.log("[TicketList.removeTicketResult] %o", ticketIds);
+    }
 
     if (!$scope.realtime && !$scope.halfrealtime) {
       $('.view-alert-subheader').removeClass('hidden');
@@ -874,7 +878,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       validTicketIdsMap = {},
       promise;
 
-    console.log("[TicketList.refreshTicketResult] %o", ticketIds);
+    if (DP_DEBUG) {
+      console.log("[TicketList.refreshTicketResult] %o", ticketIds);
+    }
 
     if (!$scope.realtime && !$scope.halfrealtime) {
       $('.view-alert-subheader').removeClass('hidden');
@@ -1236,7 +1242,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
             frameEl:       self.getEl('mass_actions_frame'),
             "$scope":      self.$scope,
             onPostApply:   function(inst, data, info) {
-              console.log('Options', self.massActions.options);
+              if (DP_DEBUG) {
+                console.log('Options', self.massActions.options);
+              }
               $scope.$safeApply(function() {
                 $scope.checkedTickets = {};
                 $scope.checkedTicketsCount = 0;
@@ -1546,12 +1554,16 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       cursor = this.realCursorStart - 1;
     }
 
-    console.log('[TicketList] refreshCursor(%d)', cursor);
+    if (DP_DEBUG) {
+      console.log('[TicketList] refreshCursor(%d)', cursor);
+    }
 
     if (this.refreshCursorAjax) {
       this.refreshCursorAjax.abort();
       this.refreshCursorAjax = null;
-      console.log('[TicketList] refreshCursor :: abort existing request');
+      if (DP_DEBUG) {
+        console.log('[TicketList] refreshCursor :: abort existing request');
+      }
     }
 
     def = new $q.defer();
@@ -1568,21 +1580,27 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         }
         this.refreshCursorAjax = null;
         time2 = new Date();
-        console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
+        if (DP_DEBUG) {
+          console.log('[TicketList] refreshCursor :: done load (%dms) :: %o', time2.getTime() - time1.getTime(), data);
+        }
 
         $('.view-alert-subheader').addClass('hidden');
         self._handleRefreshCursor(data);
         def.resolve(data);
 
         $timeout(function() {
-          console.log('[TicketList] refreshCursor :: done render (%dms)', (new Date()).getTime() - time2.getTime());
+          if (DP_DEBUG) {
+            console.log('[TicketList] refreshCursor :: done render (%dms)', (new Date()).getTime() - time2.getTime());
+          }
           $scope.refreshCursorLoading = false;
           DeskPRO_Window.sections.tickets_section.getUpdatedSlaCounts();
         }, 10);
       },
       error:    function() {
         this.refreshCursorAjax = null;
-        console.log('[TicketList] refreshCursor :: error :: %o', arguments);
+        if (DP_DEBUG) {
+          console.log('[TicketList] refreshCursor :: error :: %o', arguments);
+        }
         $scope.refreshCursorLoading = false;
         def.reject();
       }

@@ -30,12 +30,23 @@ class AddButton extends React.Component {
         items.push(<MenuItem key="organisation" onClick={this.addOrganisation}>
           <i className="icon users" /> <FormattedMessage id="agent.general.organization" /></MenuItem>);
       }
-      // if (app.getConfig('enable_twitter') && app.user.getTwitterAccountIds()|length %}
-      //   items.push(<MenuItem key="twitter" onClick={this.addTweet}><i className="icon twitter" /> Tweet</MenuItem>);
-      // }
+      if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
+        items.push(<MenuItem key="task" onClick={this.addTask}>
+          <i className="icon check circle outline" /> <FormattedMessage id="agent.general.task" /></MenuItem>);
+      }
       if (window.DESKPRO_PERSON_PERMS['agent_publish.create']) {
         items.push(<MenuItem key="article" onClick={this.addArticle}>
           <i className="icon edit" /> <FormattedMessage id="agent.general.article" /></MenuItem>);
+        items.push(<MenuItem key="news" onClick={this.addNewsPost}>
+          <i className="icon calendar outline" /> <FormattedMessage id="agent.general.news_post" /></MenuItem>);
+        items.push(<MenuItem key="download" onClick={this.addDownload}>
+          <i className="icon download" /> <FormattedMessage id="agent.general.download" /></MenuItem>);
+        items.push(<MenuItem key="community" onClick={this.addCommunityTopic}>
+          <i className="icon thumbs outline up" /> <FormattedMessage id="agent.general.community" /></MenuItem>);
+        if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
+          items.push(<MenuItem key="topic" onClick={this.addTopic}>
+            <i className="icon book" /> <FormattedMessage id="agent.general.topic" /></MenuItem>);
+        }
         items.push(
           <div key="article_templates" className="sub-menu" onMouseOver={this.openSubMenu} onMouseOut={this.closeSubMenu}>
             <MenuItem key="article_templates_sub" onClick={this.openSubMenu}>
@@ -54,20 +65,6 @@ class AddButton extends React.Component {
             </div>
           </div>
         );
-        items.push(<MenuItem key="news" onClick={this.addNewsPost}>
-          <i className="icon calendar outline" /> <FormattedMessage id="agent.general.news_post" /></MenuItem>);
-        items.push(<MenuItem key="download" onClick={this.addDownload}>
-          <i className="icon download" /> <FormattedMessage id="agent.general.download" /></MenuItem>);
-        items.push(<MenuItem key="community" onClick={this.addCommunityTopic}>
-          <i className="icon thumbs outline up" /> <FormattedMessage id="agent.general.community" /></MenuItem>);
-        if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
-          items.push(<MenuItem key="topic" onClick={this.addTopic}>
-            <i className="icon book" /> <FormattedMessage id="agent.general.topic" /></MenuItem>);
-        }
-      }
-      if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
-        items.push(<MenuItem key="task" onClick={this.addTask}>
-          <i className="icon check circle outline" /> <FormattedMessage id="agent.general.task" /></MenuItem>);
       }
     }
     if (items.length) {

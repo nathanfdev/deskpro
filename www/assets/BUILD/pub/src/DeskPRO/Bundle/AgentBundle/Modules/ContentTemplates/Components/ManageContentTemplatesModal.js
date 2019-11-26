@@ -137,6 +137,7 @@ class ManageContentTemplatesModal extends React.Component {
     if (!contentTemplate) {
       return null;
     }
+
     return (
       <ContentTemplateItem
         key={key}
