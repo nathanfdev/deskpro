@@ -96,7 +96,7 @@
                             <div class="col-sm-6">
                                 <div class="dp-po-block">
                                     <div class="dp-po-community-status">
-                                        <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.general.latest-status-changes') }}</h2>
+                                        <h2 class="dp-po-community-status-title">{{ phrase('helpcenter.community.featured-topics') }}</h2>
                                         {% include 'Theme:Community:blocks/simple-topics-list-voter.html.twig' with {
                                             topics: helpcenter.getCommunityTopics({ count: 5, orderBy: 'most-popular' })
                                         } %}
@@ -109,6 +109,8 @@
                                     </div>
                                 </div>
                             </div>
+                            {% set lastest_status_changes = helpcenter.getCommunityTopics({ count: 5, orderBy: 'status-change' }) %}
+                            {% if lastest_status_changes | length > 0 %}
                             <div class="col-sm-6">
                                 <div class="dp-po-block">
                                     <div class="dp-po-community-status">
@@ -125,6 +127,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}

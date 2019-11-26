@@ -266,7 +266,9 @@ class CommunityDataService extends AbstractDataService
                         $qb->orderBy('ct.view_count', $filter->getSortDirection());
                         break;
                     case CommunityFilter::SORT_STATUS_CHANGE:
+                        $qb->andWhere('stn.id IS NOT NULL');
                         $qb->andWhere('ct.status_category > 1');
+                        $qb->groupBy('ct.id');
                         $qb->orderBy('ct.date_updated', $filter->getSortDirection());
                         break;
                     default:
