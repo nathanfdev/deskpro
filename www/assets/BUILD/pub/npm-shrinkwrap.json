@@ -279,9 +279,9 @@
       "integrity": "sha512-QFLxmFqomqMz7S1i8/6RBZ8Wmw/mcZ+KAFYE5H4tG35jbzcsNVNQtpaeMqdouUU7LW9BuoYo0zqEf9aVwKdylQ=="
     },
     "@deskpro/content-editor": {
-      "version": "0.1.12",
-      "resolved": "https://registry.npmjs.org/@deskpro/content-editor/-/content-editor-0.1.12.tgz",
-      "integrity": "sha512-s/fBpvAf/KuzXpBv6BgxFgljJ/TjdBwfE3WC2E1VAoBLPRvzupDi+j8tshDE/e3j8k8vVCxjMLX46s7+FRq0aA==",
+      "version": "0.1.14",
+      "resolved": "https://registry.npmjs.org/@deskpro/content-editor/-/content-editor-0.1.14.tgz",
+      "integrity": "sha512-QgoDnZuI5FEPjQXK88Nn16tA40c5nwrotKCBmATb3xOI488FAx577R8ktFCcirmGva1Yu0N4xwSfiR1sPxfmpg==",
       "requires": {
         "@types/uuid": "^3.4.6",
         "pako": "^1.0.10",
@@ -737,12 +737,12 @@
       }
     },
     "@deskpro/product-content-editor": {
-      "version": "0.1.12",
-      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.12.tgz",
-      "integrity": "sha512-6KEu2a9K7ijcYODi5p6byUhHvWL/r5dcFAacsitv0SF06BpCTccJI8411T0TY419FNNp7Zw+mNzVtwzJ/y12KQ==",
+      "version": "0.1.14",
+      "resolved": "https://registry.npmjs.org/@deskpro/product-content-editor/-/product-content-editor-0.1.14.tgz",
+      "integrity": "sha512-l3oRqtVniRPS9G+84CBQz0IOBRxhjfOayGHF28mLbz0PCBRcUpyGUMo6pUUphs36PXrAv/H10Y6doKcjBCkiNA==",
       "requires": {
-        "@deskpro/content-editor": "^0.1.12",
-        "@deskpro/react-content-editor": "^0.1.12",
+        "@deskpro/content-editor": "^0.1.14",
+        "@deskpro/react-content-editor": "^0.1.14",
         "@tippy.js/react": "^3.1.1",
         "prosemirror-commands": "^1.1.2",
         "prosemirror-model": "^1.8.2",
@@ -847,11 +847,11 @@
       }
     },
     "@deskpro/react-content-editor": {
-      "version": "0.1.12",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-content-editor/-/react-content-editor-0.1.12.tgz",
-      "integrity": "sha512-b1jrJXZJPPK89eksMcaJWcaZlT12QksgCA9y5RQYR6GaNMcD4NBQskiHokRsC19cW+d1mozEY7c9CKfN4FT7bQ==",
+      "version": "0.1.14",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-content-editor/-/react-content-editor-0.1.14.tgz",
+      "integrity": "sha512-3L25FN0cIC/oRqt43r19o3Vp2lOQFOmVWeSEgBkWX8YEJa/YC6t4o1EVrAEehqZLidM6/69MyH41EFPPGYHJ1w==",
       "requires": {
-        "@deskpro/content-editor": "^0.1.12",
+        "@deskpro/content-editor": "^0.1.14",
         "@fortawesome/fontawesome-svg-core": "^1.2.25",
         "@fortawesome/free-brands-svg-icons": "^5.11.2",
         "@fortawesome/free-regular-svg-icons": "^5.11.2",
