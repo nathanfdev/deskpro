@@ -175,29 +175,26 @@ class TicketEscalation extends AbstractEntityRepository
         $optionsLabelKey = $labelType === 'label' ? 'label' : 'labels';
 
         return $this->_em
-            ->createQuery("
+            ->createQuery('
                 SELECT te
                 FROM DeskPRO:TicketEscalation te
                 WHERE (
-                        JSON_CONTAINS(JSON_EXTRACT(te.terms, '$[*].type'), :term_type) = 1
-                        AND JSON_CONTAINS(JSON_EXTRACT(te.terms, '$[*].options.{$optionsLabelKey}'), :label) = 1
+                        te.terms LIKE :term_type
+                        AND te.terms LIKE :label
                     )
                     OR (
-                        JSON_CONTAINS(JSON_EXTRACT(te.terms_any, '$[*].type'), :term_type) = 1
-                        AND JSON_CONTAINS(JSON_EXTRACT(te.terms_any, '$[*].options.{$optionsLabelKey}'), :label) = 1
+                         te.terms_any LIKE :term_type
+                         AND te.terms_any LIKE :label
                     )
                     OR (
-                        JSON_CONTAINS(JSON_EXTRACT(te.actions, '$.\"@DATA\".actions[*].type'), :action_type) = 1
-                        AND (
-                            JSON_CONTAINS(JSON_EXTRACT(te.actions, '$.\"@DATA\".actions[*].options.add_labels'), :label) = 1
-                            OR JSON_CONTAINS(JSON_EXTRACT(te.actions, '$.\"@DATA\".actions[*].options.remove_labels'), :label) = 1
-                        )
+                        te.actions LIKE :action_type
+                        AND te.actions LIKE :label
                     )
-            ")
+            ')
             ->setParameters([
-                'term_type'   => "\"{$labelType}\"",
-                'action_type' => '"SetLabels"',
-                'label'       => "\"{$label}\"",
+                'term_type'   => "%\"type\":\"{$optionsLabelKey}\"%",
+                'action_type' => '%"type":"SetLabels"%',
+                'label'       => "%\"{$label}\"%",
             ])
             ->execute();
     }

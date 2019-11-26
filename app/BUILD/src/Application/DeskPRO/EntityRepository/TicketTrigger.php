@@ -99,25 +99,22 @@ class TicketTrigger extends AbstractEntityRepository
     public function getTriggersByLabel($labelType, $label)
     {
         return $this->_em
-            ->createQuery("
+            ->createQuery('
                 SELECT tt
                 FROM DeskPRO:TicketTrigger tt
                 WHERE (
-                        JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".terms[*].set_terms[*].type'), :term_type) = 1
-                        AND JSON_CONTAINS(JSON_EXTRACT(tt.terms, '$.\"@DATA\".terms[*].set_terms[*].options.labels'), :label) = 1
+                         tt.terms LIKE :term_type
+                         AND tt.terms LIKE :label
                     )
                     OR (
-                        JSON_CONTAINS(JSON_EXTRACT(tt.actions, '$.\"@DATA\".actions[*].type'), :action_type) = 1
-                        AND (
-                            JSON_CONTAINS(JSON_EXTRACT(tt.actions, '$.\"@DATA\".actions[*].options.add_labels'), :label) = 1
-                            OR JSON_CONTAINS(JSON_EXTRACT(tt.actions, '$.\"@DATA\".actions[*].options.remove_labels'), :label) = 1
-                        )
+                        tt.actions LIKE :action_type
+                        AND tt.actions LIKE :label
                     )
-            ")
+            ')
             ->setParameters([
-                'term_type'   => "\"{$labelType}\"",
-                'action_type' => '"SetLabels"',
-                'label'       => "\"{$label}\"",
+                'term_type'   => "%\"type\":\"{$labelType}\"%",
+                'action_type' => '%"type":"SetLabels"%',
+                'label'       => "%\"{$label}\"%",
             ])
             ->execute();
     }

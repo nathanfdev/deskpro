@@ -19,15 +19,15 @@ class TicketFilterRepository extends EntityRepository
     public function getFiltersByLabel($label)
     {
         return $this->_em
-            ->createQuery("
+            ->createQuery('
                 SELECT tf
                 FROM DeskPRO:LegacyTicketFilter tf
-                WHERE JSON_CONTAINS(JSON_EXTRACT(tf.terms, '$[*].type'), :term_type) = 1
-                    AND JSON_CONTAINS(JSON_EXTRACT(tf.terms, '$[*].options.label'), :label) = 1
-            ")
+                WHERE tf.terms LIKE :term_type
+                    AND tf.terms LIKE :label
+            ')
             ->setParameters([
-                'term_type' => '"label"',
-                'label'     => "\"{$label}\"",
+                'term_type' => '%"type":"label"%',
+                'label'     => "%\"{$label}\"%",
             ])
             ->execute();
     }

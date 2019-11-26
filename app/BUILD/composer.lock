@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ea526309e8d21d477ad62aa2cd4ae77",
+    "content-hash": "60aba6d7f130c4a0a04342444cb60500",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -6933,61 +6933,6 @@
                 "search"
             ],
             "time": "2016-09-23T10:24:25+00:00"
-        },
-        {
-            "name": "scienta/doctrine-json-functions",
-            "version": "2.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ScientaNL/DoctrineJsonFunctions.git",
-                "reference": "3c9973d6a43ca762366bc8c0c490052fe3cf7ff6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ScientaNL/DoctrineJsonFunctions/zipball/3c9973d6a43ca762366bc8c0c490052fe3cf7ff6",
-                "reference": "3c9973d6a43ca762366bc8c0c490052fe3cf7ff6",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "doctrine/orm": "~2.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Syslogic\\DoctrineJsonFunctions\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Doctrine Json Functions Contributors",
-                    "homepage": "https://github.com/SyslogicNL/DoctrineJsonFunctions/contributors"
-                }
-            ],
-            "description": "A set of extensions to Doctrine 2 that add support for json query functions.",
-            "keywords": [
-                "database",
-                "doctrine",
-                "dql",
-                "json",
-                "mariadb",
-                "mysql",
-                "orm",
-                "postgres",
-                "postgresql"
-            ],
-            "time": "2018-01-31T09:12:42+00:00"
         },
         {
             "name": "scssphp/scssphp",
