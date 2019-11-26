@@ -80,6 +80,7 @@ $loader->addClassMap([
     'tnef'                                            => DP_APP_DIR.'/vendor-src/tnef-decoder/tnef.php',
     'PDODblibBundle'                                  => DP_APP_DIR.'/vendor-src/ouster',
     'Swift_Transport_Esmtp_Auth_XOAuth2Authenticator' => DP_APP_DIR.'/vendor-src/swiftmailer/XOAuth2Authenticator.php',
+    'Pelago\Emogrifier'                               => DP_APP_DIR.'/vendor-src/pelago/emogrifier/Classes/Emogrifier.php',
 ]);
 
 foreach ([
