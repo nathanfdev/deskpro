@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import $ from 'jquery';
 import { addLocaleData, IntlProvider } from 'react-intl';
-import PortalPage from './PageWidget/PortalPage';
+import HelpCenterPage from './PageWidget/HelpCenterPage';
 import { portalPhrases } from './PortalPhrases';
 import App from './Modules/Application/Components/AppContainer';
 
@@ -38,7 +38,7 @@ class HelpcenterApp {
   }
 
   run() {
-    const page = new PortalPage();
+    const page = new HelpCenterPage();
     this.locale = window.DESKPRO_LOCALE.replace(/_/, '-');
     page.renderWhenReady();
     this.portalPage = page;
