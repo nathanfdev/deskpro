@@ -58,4 +58,16 @@ class DirectMessageParticipantRepository extends AbstractEntityRepository
 
         return $res;
     }
+
+    public function getUnreadThreadCount($person)
+    {
+        $qb = $this->createQueryBuilder('dmp');
+        $qb
+            ->select('COUNT(dmp.id) as unread')
+            ->andWhere('dmp.isUnread = true')
+            ->andWhere('dmp.person = :person')
+            ->setParameter('person', $person);
+
+        return $qb->getQuery()->getSingleScalarResult();
+    }
 }
