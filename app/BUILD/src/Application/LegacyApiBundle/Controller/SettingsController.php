@@ -88,6 +88,16 @@ class SettingsController extends AbstractController
     {
         $ticket_settings = new TicketSettings($this->settings);
         $ticket_settings->setArray($this->in->getArrayValue('ticket_settings'));
+
+        $violations = $this->get('validator')
+            ->startContext()
+            ->validate($ticket_settings)
+            ->getViolations();
+
+        if ($violations->count()) {
+            return $this->createApiValidationErrorResponse($violations);
+        }
+
         $ticket_settings->saveSettings();
 
         return $this->createSuccessResponse();
