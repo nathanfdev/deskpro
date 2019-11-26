@@ -228,13 +228,22 @@ class PersonDataService extends AbstractDataService
                 $qb->andWhere('eml.email = :email');
                 $qb->setParameter('email', $search);
             } else {
-                $qb->andWhere('p.override_display_name LIKE :override OR p.first_name LIKE :first OR p.last_name LIKE :last OR eml.email LIKE :email');
+                $cond = $qb->andWhere('COALESCE(p.override_display_name, p.name) LIKE :name OR p.first_name LIKE :first OR p.last_name LIKE :last OR eml.email LIKE :email');
                 $qb->setParameters([
-                    'override' => '%'.$search.'%',
-                    'first'    => '%'.$search.'%',
-                    'last'     => '%'.$search.'%',
-                    'email'    => '%'.$search.'%',
+                    'name'  => '%'.$search.'%',
+                    'first' => '%'.$search.'%',
+                    'last'  => '%'.$search.'%',
+                    'email' => '%'.$search.'%',
                 ]);
+
+                // phone number like
+                if (preg_match('/^(\+\d+)?[0-9\- ]+$/', $search)) {
+                    $qb->join('p.phone_numbers', 'pn');
+                    $cond->orWhere('pn.number LIKE :phoneNumber');
+
+                    $normalPhone = preg_replace('/[^0-9\-\+]/', '', $search);
+                    $qb->setParameter('phoneNumber', '%'.$normalPhone.'%');
+                }
             }
         }
 

@@ -169,6 +169,16 @@ class DirectMessagesController extends AbstractController
 
     /**
      * @Route("/dm/send", name="portal_dm_send")
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function sendNewAction()
+    {
+        // placeholder route for when we might possibly allow sending arbitrary messages
+        return $this->redirectToRoute('portal_dm');
+    }
+
+    /**
      * @Route("/dm/send/to/{to}", name="portal_dm_send_to")
      * @ParamConverter("to", class="DeskPRO:Person")
      * @Security("is_granted('ROLE_USER')")

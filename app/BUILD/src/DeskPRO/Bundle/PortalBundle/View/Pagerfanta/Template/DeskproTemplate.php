@@ -21,6 +21,7 @@ class DeskproTemplate extends Template
         'css_disabled_class'  => 'disabled',
         'css_dots_class'      => 'disabled',
         'css_active_class'    => 'active-page',
+        'omitFirstPage'       => true,
     ];
 
     public function container()
@@ -162,7 +163,7 @@ class DeskproTemplate extends Template
         if ($parsed && isset($parsed['query'])) {
             $parsed['query'] = implode('&', array_filter(explode('&', $parsed['query']), function ($param) use ($paramsToRemove, &$parsed) {
                 $paramName = explode('=', $param)[0];
-                if ($paramName === 'page' && explode('=', $param)[1] == 1) {
+                if ($this->option('omitFirstPage') && $paramName === 'page' && explode('=', $param)[1] == 1) {
                     return false;
                 }
                 // Hack to pass anchor to pager fanta, needs to be removed after upgrading to Symfomy 3.2

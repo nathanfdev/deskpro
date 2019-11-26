@@ -192,7 +192,7 @@ helpcenter.error.create-new-account: 'Create a new account'
 helpcenter.error.general-title: 'An Error Occurred'
 helpcenter.error.helpdesk: Helpdesk
 helpcenter.error.permission-denied-title: 'You are not allowed to perform this action'
-helpcenter.error.search: Search
+helpcenter.label.search: Search
 helpcenter.flashes.article-unpublish: 'This article will unpublish on {{date}}.'
 helpcenter.form.delete-question: 'Delete?'
 helpcenter.forms.label-choose-a-file: 'Choose a file'
