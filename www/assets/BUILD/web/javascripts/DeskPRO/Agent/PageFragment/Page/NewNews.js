@@ -242,7 +242,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
       formData.push(this.labelsInput.getFormData());
     }
 
-    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte) {
+    if (window.DP_HAS_NEW_CONTENT_EDITOR && this.rte && this.rte.current && this.rte.current.editor) {
       formData.push({
         name:  "newnews[content]",
         value: this.rte.current.editor.current.reactEditor.current.editor.getHTML()
