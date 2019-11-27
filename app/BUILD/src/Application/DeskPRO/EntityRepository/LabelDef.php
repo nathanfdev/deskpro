@@ -698,8 +698,7 @@ class LabelDef extends AbstractEntityRepository
 
         foreach ($actions as $action) {
             if (in_array($action['type'], ['add_labels', 'remove_labels'], true)) {
-                $this->updateLabel($action, $oldLabel, 'options.add_labels', $newLabel);
-                $this->updateLabel($action, $oldLabel, 'options.remove_labels', $newLabel);
+                $this->updateLabel($action, $oldLabel, 'options.labels', $newLabel);
             }
 
             $updatedActions[] = $action;
