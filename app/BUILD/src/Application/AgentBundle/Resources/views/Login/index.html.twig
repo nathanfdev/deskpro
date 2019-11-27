@@ -251,12 +251,12 @@
               <i class="fas fa-envelope"></i>
               <input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40"
                      placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}"
-                     autocomplete="{{ "now" | date("U") }}"
+                     autocomplete="email"
                      tabindex="1" />
             </p>
             <p>
               <i class="fas fa-lock"></i>
-              <input type="password" autocomplete="new-password" class="text" value="" name="password" id="password" size="40"
+              <input type="password" autocomplete="password" class="text" value="" name="password" id="password" size="40"
                      tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
             </p>
 
