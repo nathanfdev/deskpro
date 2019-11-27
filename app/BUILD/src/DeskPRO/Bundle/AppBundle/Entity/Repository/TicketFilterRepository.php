@@ -26,7 +26,7 @@ class TicketFilterRepository extends EntityRepository
                     AND tf.terms LIKE :label
             ')
             ->setParameters([
-                'term_type' => '%"type":"label"%',
+                'term_type' => '%"type":"label%',
                 'label'     => "%\"{$label}\"%",
             ])
             ->execute();

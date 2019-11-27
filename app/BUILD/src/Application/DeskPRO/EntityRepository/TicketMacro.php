@@ -55,4 +55,25 @@ class TicketMacro extends AbstractEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * @param string $label
+     *
+     * @return Entity\TicketMacro[]
+     */
+    public function getMacrosByLabel($label)
+    {
+        return $this->_em
+            ->createQuery('
+                SELECT m
+                FROM DeskPRO:TicketMacro m
+                WHERE m.actions LIKE :action_type
+                    AND m.actions LIKE :label
+            ')
+            ->setParameters([
+                'action_type' => '%_labels"%',
+                'label'     => "%\"{$label}\"%",
+            ])
+            ->execute();
+    }
 }

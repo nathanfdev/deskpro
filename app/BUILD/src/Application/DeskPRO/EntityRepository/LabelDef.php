@@ -509,8 +509,8 @@ class LabelDef extends AbstractEntityRepository
 
             // Update entities that use label.
             if (array_key_exists($type, self::LABEL_TYPE_MAP['plain'])) {
-                // Find ticket filters and update their terms with ticket labels.
                 if ($type === 'tickets') {
+                    // Find ticket filters and update their terms with ticket labels.
                     $ticketFilters = $this->getEntityManager()
                         ->getRepository(\DeskPRO\Bundle\AppBundle\Entity\TicketFilter::class)
                         ->getFiltersByLabel($old_label);
@@ -524,6 +524,21 @@ class LabelDef extends AbstractEntityRepository
                         );
 
                         $this->getEntityManager()->persist($filter);
+                    }
+
+                    // Find ticket macros and update their actions.
+                    $ticketMacros = $this->getEntityManager()
+                        ->getRepository(Entity\TicketMacro::class)
+                        ->getMacrosByLabel($old_label);
+
+                    foreach ($ticketMacros as $macros) {
+                        $macros->actions = $this->getUpdatedMacrosActions(
+                            $macros->actions,
+                            $old_label,
+                            $new_label
+                        );
+
+                        $this->getEntityManager()->persist($macros);
                     }
                 }
 
@@ -604,8 +619,8 @@ class LabelDef extends AbstractEntityRepository
             if (in_array($term['type'], self::LABEL_TYPE_MAP['plain'], true) &&
                 $term['type'] === self::LABEL_TYPE_MAP['plain'][$type]
             ) {
-                $optionsLabelKey = $term['type'] === 'label' ? 'label' : 'labels';
-                $this->updateLabel($term, $oldLabel, "options.{$optionsLabelKey}", $newLabel);
+                $this->updateLabel($term, $oldLabel, 'options.label', $newLabel);
+                $this->updateLabel($term, $oldLabel, 'options.labels', $newLabel);
             }
 
             $updatedTerms[] = $term;
@@ -671,6 +686,29 @@ class LabelDef extends AbstractEntityRepository
     }
 
     /**
+     * @param array $actions
+     * @param string $oldLabel
+     * @param string $newLabel
+     *
+     * @return array
+     */
+    private function getUpdatedMacrosActions($actions, $oldLabel, $newLabel)
+    {
+        $updatedActions = [];
+
+        foreach ($actions as $action) {
+            if (in_array($action['type'], ['add_labels', 'remove_labels'], true)) {
+                $this->updateLabel($action, $oldLabel, 'options.add_labels', $newLabel);
+                $this->updateLabel($action, $oldLabel, 'options.remove_labels', $newLabel);
+            }
+
+            $updatedActions[] = $action;
+        }
+
+        return $updatedActions;
+    }
+
+    /**
      * @param array &$haystack
      * @param string $needle
      * @param string $path
@@ -679,17 +717,20 @@ class LabelDef extends AbstractEntityRepository
     private function updateLabel(&$haystack, $needle, $path, $replace)
     {
         $labelsArray = Arrays::get($haystack, $path);
-        $posToChange = array_search($needle, $labelsArray, true);
 
-        if ($posToChange !== false) {
-            array_splice(
-                $labelsArray,
-                $posToChange,
-                1,
-                $replace
-            );
+        if (is_array($labelsArray)) {
+            $posToChange = array_search($needle, $labelsArray, true);
+
+            if ($posToChange !== false) {
+                array_splice(
+                    $labelsArray,
+                    $posToChange,
+                    1,
+                    $replace
+                );
+            }
+
+            Arrays::set($haystack, $path, $labelsArray);
         }
-
-        Arrays::set($haystack, $path, $labelsArray);
     }
 }
