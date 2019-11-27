@@ -1547,13 +1547,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function addCharge(Person $agent, $time, $amount = null)
     {
         if ($time !== null) {
-            $time = intval($time);
-            if ($time == 0) {
+            $time = (int) $time;
+            if ($time === 0) {
                 $time = null;
             }
         }
         if ($amount !== null) {
-            $amount = floatval($amount) ?: null;
+            $amount = (float) $amount;
         }
 
         if ($time === null && $amount === null) {
