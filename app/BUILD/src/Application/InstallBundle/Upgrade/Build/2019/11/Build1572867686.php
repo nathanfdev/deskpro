@@ -10,8 +10,8 @@ class Build1572867686 extends AbstractBuild implements BlockingBuildInterface
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE chat_conversations ADD access_token VARCHAR(30) DEFAULT NULL');
-        $this->execDbQuery('default', 'CREATE INDEX access_token_idx ON chat_conversations (access_token)');
+        $this->execDbQueryQuiet('default', 'ALTER TABLE chat_conversations ADD access_token VARCHAR(30) DEFAULT NULL');
+        $this->execDbQueryQuiet('default', 'CREATE INDEX access_token_idx ON chat_conversations (access_token)');
     }
 
     public function run()
