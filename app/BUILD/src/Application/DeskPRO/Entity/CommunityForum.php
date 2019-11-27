@@ -83,6 +83,11 @@ class CommunityForum extends CategoryAbstract implements HasValidationMetadataIn
     protected $splash_image_property;
 
     /**
+     * @var string
+     */
+    protected $color;
+
+    /**
      * Constructor.
      */
     public function __construct()
