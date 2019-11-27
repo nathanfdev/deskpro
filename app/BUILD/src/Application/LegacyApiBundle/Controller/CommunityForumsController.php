@@ -14,6 +14,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\AgentPermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use Orb\Util\Arrays;
 
 /**
@@ -103,6 +104,26 @@ class CommunityForumsController extends AbstractController implements ProtectedC
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'community_forum'), true);
 
         if ($form->isValid()) {
+            if ($this->in->getString('community_forum.icon_property.urn')) {
+                $icon = new IconProperty();
+                $icon->setUrn($this->in->getString('community_forum.icon_property.urn'));
+                $options = [];
+                if ($this->in->getString('community_forum.icon_property.options.style')) {
+                    $options['style'] = $this->in->getString('community_forum.icon_property.options.style');
+                }
+                if ($this->in->getString('community_forum.icon_property.options.color')) {
+                    $options['color'] = $this->in->getString('community_forum.icon_property.options.color');
+                }
+                if ($options) {
+                    $icon->setOptions($options);
+                }
+                $this->em->persist($icon);
+                if ($communityForumEdit->community_forum->getIcon()) {
+                    $this->em->remove($communityForumEdit->community_forum->getIcon());
+                }
+                $communityForumEdit->community_forum->setIcon($icon);
+            }
+
             $communityForumEdit->save($this->em);
             $this->em->commit();
         } else {

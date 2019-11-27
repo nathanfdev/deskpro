@@ -426,6 +426,7 @@ class LanguagesController extends CrudController
     public function adminPhrasesAction(Request $request)
     {
         $phrases = [
+            'agent.publish.pick_icon',
             'agent.voice.call_new_incoming',
             'agent.voice.call_new_outgoing',
             'agent.voice.call_auto_attendant_press_key',
